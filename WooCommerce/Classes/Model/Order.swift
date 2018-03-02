@@ -51,6 +51,9 @@ struct OrderItem {
     let variationID: Int
 }
 
+
+// MARK: -
+//
 struct OrderNote {
     let date: Date
     let contents: String

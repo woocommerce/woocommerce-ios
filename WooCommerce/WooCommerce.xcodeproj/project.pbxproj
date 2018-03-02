@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112D2049E27A007D25DC /* DashboardViewController.swift */; };
+		B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112E2049E27A007D25DC /* OrdersViewController.swift */; };
+		B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112F2049E27A007D25DC /* SettingsViewController.swift */; };
 		B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */; };
-		B56DB3CC2049BFAA00D4AA8E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3CB2049BFAA00D4AA8E /* ViewController.swift */; };
 		B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */; };
 		B56DB3D22049BFAA00D4AA8E /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3D02049BFAA00D4AA8E /* WooCommerce.xcdatamodeld */; };
 		B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */; };
@@ -31,9 +33,11 @@
 /* Begin PBXFileReference section */
 		4567EA9A7711F9B576BE500C /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
 		8F0FB96B941C02DB9A12C008 /* Pods-WooCommerce.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.debug.xcconfig"; sourceTree = "<group>"; };
+		B509112D2049E27A007D25DC /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
+		B509112E2049E27A007D25DC /* OrdersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrdersViewController.swift; sourceTree = "<group>"; };
+		B509112F2049E27A007D25DC /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WooCommerce.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B56DB3CB2049BFAA00D4AA8E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B56DB3CE2049BFAA00D4AA8E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B56DB3D12049BFAA00D4AA8E /* WooCommerce.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = WooCommerce.xcdatamodel; sourceTree = "<group>"; };
 		B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -82,6 +86,13 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		B509112B2049CFDF007D25DC /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		B56DB3BD2049BFAA00D4AA8E = {
 			isa = PBXGroup;
 			children = (
@@ -124,7 +135,9 @@
 			isa = PBXGroup;
 			children = (
 				B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */,
-				B56DB3CB2049BFAA00D4AA8E /* ViewController.swift */,
+				B509112D2049E27A007D25DC /* DashboardViewController.swift */,
+				B509112E2049E27A007D25DC /* OrdersViewController.swift */,
+				B509112F2049E27A007D25DC /* SettingsViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -132,6 +145,7 @@
 		B56DB3F12049C0B800D4AA8E /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				B509112B2049CFDF007D25DC /* Model */,
 				B56DB3EE2049C06200D4AA8E /* CoreData */,
 				B56DB3EF2049C06D00D4AA8E /* ViewControllers */,
 				B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */,
@@ -143,8 +157,8 @@
 			isa = PBXGroup;
 			children = (
 				B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */,
-				B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */,
 				B56DB3D82049BFAA00D4AA8E /* Info.plist */,
+				B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */,
 				B56DB3D02049BFAA00D4AA8E /* WooCommerce.xcdatamodeld */,
 			);
 			path = Resources;
@@ -320,8 +334,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B56DB3CC2049BFAA00D4AA8E /* ViewController.swift in Sources */,
+				B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */,
+				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
+				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				B56DB3D22049BFAA00D4AA8E /* WooCommerce.xcdatamodeld in Sources */,
 				B56DB3ED2049BFE600D4AA8E /* ContextManager.swift in Sources */,
 			);

@@ -85,11 +85,12 @@
 		B56DB3BD2049BFAA00D4AA8E = {
 			isa = PBXGroup;
 			children = (
-				B56DB3C82049BFAA00D4AA8E /* WooCommerce */,
+				B56DB3F12049C0B800D4AA8E /* Classes */,
+				B56DB3F22049C0C000D4AA8E /* Resources */,
 				B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */,
+				88A44ABE866401E6DB03AC60 /* Frameworks */,
 				B56DB3C72049BFAA00D4AA8E /* Products */,
 				580B0381D5FD3CF9393AAD46 /* Pods */,
-				88A44ABE866401E6DB03AC60 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -100,15 +101,6 @@
 				B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		B56DB3C82049BFAA00D4AA8E /* WooCommerce */ = {
-			isa = PBXGroup;
-			children = (
-				B56DB3F12049C0B800D4AA8E /* Classes */,
-				B56DB3F22049C0C000D4AA8E /* Resources */,
-			);
-			path = WooCommerce;
 			sourceTree = "<group>";
 		};
 		B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */ = {
@@ -131,8 +123,8 @@
 		B56DB3EF2049C06D00D4AA8E /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				B56DB3CB2049BFAA00D4AA8E /* ViewController.swift */,
 				B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */,
+				B56DB3CB2049BFAA00D4AA8E /* ViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -487,7 +479,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = "$(SRCROOT)/WooCommerce/Resources/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.woocommerce;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -504,7 +496,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = "$(SRCROOT)/WooCommerce/Resources/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.woocommerce;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -24,5 +24,6 @@ target 'WooCommerce' do
   #
   pod 'Alamofire', '4.6.0'
   pod 'Crashlytics', '3.9.3'
+  pod 'DynamicColor', '~> 4.0'
 
 end

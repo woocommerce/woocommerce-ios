@@ -134,23 +134,24 @@
 			path = CoreData;
 			sourceTree = "<group>";
 		};
-		B56DB3EF2049C06D00D4AA8E /* ViewControllers */ = {
+		B56DB3EF2049C06D00D4AA8E /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				CE1CCB4920570B05000EE3AC /* Orders */,
 				B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */,
 				B509112D2049E27A007D25DC /* DashboardViewController.swift */,
-				B509112E2049E27A007D25DC /* OrdersViewController.swift */,
 				B509112F2049E27A007D25DC /* SettingsViewController.swift */,
 			);
-			path = ViewControllers;
+			path = ViewRelated;
 			sourceTree = "<group>";
 		};
 		B56DB3F12049C0B800D4AA8E /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				CE1CCB3E2056F204000EE3AC /* Helpers */,
 				B509112B2049CFDF007D25DC /* Model */,
 				B56DB3EE2049C06200D4AA8E /* CoreData */,
-				B56DB3EF2049C06D00D4AA8E /* ViewControllers */,
+				B56DB3EF2049C06D00D4AA8E /* ViewRelated */,
 				B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */,
 			);
 			path = Classes;
@@ -165,6 +166,14 @@
 				B56DB3D02049BFAA00D4AA8E /* WooCommerce.xcdatamodeld */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		CE1CCB4920570B05000EE3AC /* Orders */ = {
+			isa = PBXGroup;
+			children = (
+				B509112E2049E27A007D25DC /* OrdersViewController.swift */,
+			);
+			path = Orders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

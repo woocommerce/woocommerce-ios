@@ -5,8 +5,7 @@ class OrdersViewController: UIViewController, UINavigationControllerDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.title = NSLocalizedString("Orders", comment: "Orders title")
-        self.navigationController?.navigationBar.barTintColor = ThemeColors.wooCommercePurple
+        self.navigationController?.navigationBar.topItem?.title = NSLocalizedString("Orders", comment: "Orders title")
     }
 
     // MARK - Tableview 

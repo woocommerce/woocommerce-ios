@@ -57,7 +57,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="gray" indentationWidth="10" reuseIdentifier="OrderViewCell" rowHeight="90" id="Kft-vQ-g9O">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="gray" indentationWidth="10" reuseIdentifier="OrderListCell" rowHeight="90" id="Kft-vQ-g9O" customClass="OrderListCell" customModule="WooCommerce" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="55.5" width="375" height="90"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Kft-vQ-g9O" id="khy-EP-SIe">
@@ -81,12 +81,18 @@
                                                         </label>
                                                     </subviews>
                                                 </stackView>
-                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="V8M-hW-u23">
+                                                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="4sO-ou-xrg">
                                                     <rect key="frame" x="20" y="49" width="335" height="20.5"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Order Status" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZXl-Nf-ARN">
-                                                            <rect key="frame" x="0.0" y="0.0" width="335" height="20.5"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="150" height="20.5"/>
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Optional Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="udf-hH-ktB">
+                                                            <rect key="frame" x="160" y="0.0" width="175" height="20.5"/>
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
@@ -95,13 +101,19 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="OXQ-pZ-OuY" firstAttribute="leading" secondItem="khy-EP-SIe" secondAttribute="leading" constant="20" id="9Qd-ck-RvH"/>
-                                                <constraint firstAttribute="bottom" secondItem="V8M-hW-u23" secondAttribute="bottom" constant="20" id="DuG-f1-cv2"/>
-                                                <constraint firstItem="V8M-hW-u23" firstAttribute="leading" secondItem="khy-EP-SIe" secondAttribute="leading" constant="20" id="Rrl-aP-zEC"/>
                                                 <constraint firstItem="OXQ-pZ-OuY" firstAttribute="top" secondItem="khy-EP-SIe" secondAttribute="top" constant="20" id="WiB-5N-5Zw"/>
                                                 <constraint firstAttribute="trailing" secondItem="OXQ-pZ-OuY" secondAttribute="trailing" constant="20" id="Z5D-HF-yrB"/>
-                                                <constraint firstAttribute="trailing" secondItem="V8M-hW-u23" secondAttribute="trailing" constant="20" id="tSJ-K0-I4Y"/>
+                                                <constraint firstAttribute="trailing" secondItem="4sO-ou-xrg" secondAttribute="trailing" constant="20" id="g3L-6L-OYk"/>
+                                                <constraint firstAttribute="bottom" secondItem="4sO-ou-xrg" secondAttribute="bottom" constant="20" id="oZ4-Od-SU4"/>
+                                                <constraint firstItem="4sO-ou-xrg" firstAttribute="leading" secondItem="khy-EP-SIe" secondAttribute="leading" constant="20" id="wLJ-SO-v4P"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="optionalLabel" destination="udf-hH-ktB" id="vI4-EG-BJP"/>
+                                            <outlet property="statusLabel" destination="ZXl-Nf-ARN" id="Q1d-Wt-6DB"/>
+                                            <outlet property="titleLabel" destination="i5N-V7-lzR" id="dHc-LE-wF9"/>
+                                            <outlet property="totalLabel" destination="j0k-E1-R6e" id="65V-3F-QnQ"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
@@ -120,6 +132,9 @@
                         <viewLayoutGuide key="safeArea" id="E6h-Ba-TOy"/>
                     </view>
                     <navigationItem key="navigationItem" id="qom-sz-Uvu"/>
+                    <connections>
+                        <outlet property="tableView" destination="yra-Ak-zW1" id="o3y-1L-wtB"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vy0-WI-j6l" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

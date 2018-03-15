@@ -21,6 +21,7 @@
 		CE1CCB402056F21C000EE3AC /* ThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* ThemeColors.swift */; };
 		CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = CE1CCB4620570A6B000EE3AC /* en.lproj */; };
 		CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */; };
+		CE1CCB4E20572456000EE3AC /* Order+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4D20572456000EE3AC /* Order+Helpers.swift */; };
 		D03928FCB928A909F3675117 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA556E3CCFCFAC2E31799011 /* Pods_WooCommerce.framework */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +56,7 @@
 		CE1CCB3F2056F21C000EE3AC /* ThemeColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ThemeColors.swift; path = Classes/Helpers/ThemeColors.swift; sourceTree = SOURCE_ROOT; };
 		CE1CCB4620570A6B000EE3AC /* en.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = en.lproj; sourceTree = "<group>"; };
 		CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCell.swift; sourceTree = "<group>"; };
+		CE1CCB4D20572456000EE3AC /* Order+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Helpers.swift"; sourceTree = "<group>"; };
 		EA556E3CCFCFAC2E31799011 /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -154,6 +156,7 @@
 		B56DB3F12049C0B800D4AA8E /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				CE1CCB4C20572444000EE3AC /* Extensions */,
 				CE1CCB3E2056F204000EE3AC /* Helpers */,
 				B509112B2049CFDF007D25DC /* Model */,
 				B56DB3EE2049C06200D4AA8E /* CoreData */,
@@ -191,6 +194,14 @@
 				CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */,
 			);
 			path = Orders;
+			sourceTree = "<group>";
+		};
+		CE1CCB4C20572444000EE3AC /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				CE1CCB4D20572456000EE3AC /* Order+Helpers.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -371,6 +382,7 @@
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
+				CE1CCB4E20572456000EE3AC /* Order+Helpers.swift in Sources */,
 				B56DB3D22049BFAA00D4AA8E /* WooCommerce.xcdatamodeld in Sources */,
 				B56DB3ED2049BFE600D4AA8E /* ContextManager.swift in Sources */,
 				B50911342049E493007D25DC /* Order.swift in Sources */,

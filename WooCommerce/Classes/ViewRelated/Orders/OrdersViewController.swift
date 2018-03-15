@@ -2,6 +2,10 @@ import UIKit
 
 class OrdersViewController: UIViewController, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
 
+    @IBOutlet weak var tableView: UITableView!
+
+    var orders = [Order]()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -11,10 +15,13 @@ class OrdersViewController: UIViewController, UINavigationControllerDelegate, UI
     // MARK - Tableview 
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1;
+        return orders.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        let cell: OrderListCell = tableView.dequeueReusableCell(withIdentifier: "OrderListCell", for: indexPath) as! OrderListCell
+        cell.configureCell(order: orders[indexPath.row])
+
+        return cell
     }
 }

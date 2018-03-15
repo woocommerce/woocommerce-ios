@@ -22,6 +22,7 @@
 		CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = CE1CCB4620570A6B000EE3AC /* en.lproj */; };
 		CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */; };
 		CE1CCB4E20572456000EE3AC /* Order+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4D20572456000EE3AC /* Order+Helpers.swift */; };
+		CEF18DFA205A090100C50CFC /* orders-list.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF18DF9205A090100C50CFC /* orders-list.json */; };
 		D03928FCB928A909F3675117 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA556E3CCFCFAC2E31799011 /* Pods_WooCommerce.framework */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,7 @@
 		CE1CCB4620570A6B000EE3AC /* en.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = en.lproj; sourceTree = "<group>"; };
 		CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCell.swift; sourceTree = "<group>"; };
 		CE1CCB4D20572456000EE3AC /* Order+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Helpers.swift"; sourceTree = "<group>"; };
+		CEF18DF9205A090100C50CFC /* orders-list.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "orders-list.json"; sourceTree = "<group>"; };
 		EA556E3CCFCFAC2E31799011 /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -169,6 +171,7 @@
 		B56DB3F22049C0C000D4AA8E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				CEF18DF9205A090100C50CFC /* orders-list.json */,
 				B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */,
 				B56DB3D82049BFAA00D4AA8E /* Info.plist */,
 				B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */,
@@ -293,6 +296,7 @@
 				B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
 				CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */,
+				CEF18DFA205A090100C50CFC /* orders-list.json in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

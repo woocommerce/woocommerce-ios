@@ -186,8 +186,7 @@
 			children = (
 				CE1CCB3F2056F21C000EE3AC /* ThemeColors.swift */,
 			);
-			name = Helpers;
-			path = "New Group";
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		CE1CCB4920570B05000EE3AC /* Orders */ = {

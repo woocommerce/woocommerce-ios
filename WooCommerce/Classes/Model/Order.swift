@@ -32,6 +32,25 @@ enum OrderStatus {
     case cancelled
     case refunded
     case failed
+
+    func toString() -> String {
+        switch self {
+        case .pending:
+            return "pending"
+        case .processing:
+            return "processing"
+        case .onHold:
+            return "on hold"
+        case .completed:
+            return "completed"
+        case .cancelled:
+            return "cancelled"
+        case .refunded:
+            return "refunded"
+        case .failed:
+            return "failed"
+        }
+    }
 }
 
 

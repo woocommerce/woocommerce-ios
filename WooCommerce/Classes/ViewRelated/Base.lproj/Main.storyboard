@@ -110,7 +110,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="optionalLabel" destination="udf-hH-ktB" id="vI4-EG-BJP"/>
+                                            <outlet property="secondaryStatusLabel" destination="udf-hH-ktB" id="g0K-TQ-QSL"/>
                                             <outlet property="statusLabel" destination="ZXl-Nf-ARN" id="Q1d-Wt-6DB"/>
                                             <outlet property="titleLabel" destination="i5N-V7-lzR" id="dHc-LE-wF9"/>
                                             <outlet property="totalLabel" destination="j0k-E1-R6e" id="65V-3F-QnQ"/>

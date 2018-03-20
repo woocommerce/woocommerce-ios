@@ -14,7 +14,7 @@ class OrderListCell: UITableViewCell {
         let orderTotal = order.total
         titleLabel.text = titleString
         totalLabel.text = "\(currencySymbol)\(orderTotal)"
-        statusLabel.text = order.status.toString()
+        statusLabel.text = order.status.description
         secondaryStatusLabel.text = ""
     }
 }

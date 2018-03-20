@@ -1,6 +1,6 @@
 import UIKit
 
-class OrdersViewController: UIViewController, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
+class OrdersViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     var orders = [Order]()
@@ -8,7 +8,7 @@ class OrdersViewController: UIViewController, UINavigationControllerDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("Orders", comment: "Orders title")
+        navigationController?.navigationBar.topItem?.title = NSLocalizedString("Orders", comment: "Orders title")
 
         //FIXME: this is a hack so you can see a row working on the orders list table.
         let billingAddress = Address(firstName: "Thuy", lastName: "Copeland", company: "", address1: "500 Hollywood Blvd", address2: "", city: "Las Vegas", state: "NE", postcode: "90210", country: "US")
@@ -19,9 +19,9 @@ class OrdersViewController: UIViewController, UINavigationControllerDelegate, UI
 
         orders = [order]
     }
+}
 
-    // MARK - Tableview 
-
+extension OrdersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return orders.count
     }

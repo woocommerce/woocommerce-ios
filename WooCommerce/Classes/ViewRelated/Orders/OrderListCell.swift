@@ -4,11 +4,9 @@ class OrderListCell: UITableViewCell {
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var totalLabel: UILabel!
     @IBOutlet var statusLabel: UILabel!
-    @IBOutlet var optionalLabel: UILabel?
+    @IBOutlet var secondaryStatusLabel: UILabel!
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
+    static let reuseIdentifier = "OrderListCell"
 
     func configureCell(order: Order) {
         let titleString = "#\(order.number) \(order.customer.firstName) \(order.customer.lastName)"
@@ -16,7 +14,7 @@ class OrderListCell: UITableViewCell {
         let orderTotal = order.total
         titleLabel.text = titleString
         totalLabel.text = "\(currencySymbol)\(orderTotal)"
-        statusLabel.text = order.statusToString(order.status)
-        optionalLabel?.text = ""
+        statusLabel.text = order.status.toString()
+        secondaryStatusLabel.text = ""
     }
 }

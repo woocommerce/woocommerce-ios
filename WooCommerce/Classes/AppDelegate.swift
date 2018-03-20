@@ -49,9 +49,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ContextManager.shared.saveContext()
     }
 
-    func customizeAppearance() {
+    private func customizeAppearance() {
         UINavigationBar.appearance().barTintColor = ThemeColors.wooCommercePurple
-        UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
         UINavigationBar.appearance().isTranslucent = false
         UIApplication.shared.statusBarStyle = .lightContent
     }

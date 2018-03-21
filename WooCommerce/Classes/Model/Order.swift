@@ -24,32 +24,17 @@ struct Order {
 
 // MARK: -
 //
-enum OrderStatus {
+enum OrderStatus: String {
     case pending
     case processing
-    case onHold
+    case onHold = "on hold"
     case completed
     case cancelled
     case refunded
     case failed
 
-    func toString() -> String {
-        switch self {
-        case .pending:
-            return "pending"
-        case .processing:
-            return "processing"
-        case .onHold:
-            return "on hold"
-        case .completed:
-            return "completed"
-        case .cancelled:
-            return "cancelled"
-        case .refunded:
-            return "refunded"
-        case .failed:
-            return "failed"
-        }
+    var description: String {
+        return rawValue
     }
 }
 

@@ -18,6 +18,11 @@
 		B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */; };
 		B56DB3E22049BFAA00D4AA8E /* WooCommerceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3E12049BFAA00D4AA8E /* WooCommerceTests.swift */; };
 		B56DB3ED2049BFE600D4AA8E /* ContextManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3EC2049BFE600D4AA8E /* ContextManager.swift */; };
+		CE1CCB402056F21C000EE3AC /* ThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* ThemeColors.swift */; };
+		CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = CE1CCB4620570A6B000EE3AC /* en.lproj */; };
+		CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */; };
+		CE1CCB4E20572456000EE3AC /* Order+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4D20572456000EE3AC /* Order+Helpers.swift */; };
+		CEF18DFA205A090100C50CFC /* orders-list.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF18DF9205A090100C50CFC /* orders-list.json */; };
 		D03928FCB928A909F3675117 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA556E3CCFCFAC2E31799011 /* Pods_WooCommerce.framework */; };
 /* End PBXBuildFile section */
 
@@ -49,6 +54,11 @@
 		B56DB3E12049BFAA00D4AA8E /* WooCommerceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceTests.swift; sourceTree = "<group>"; };
 		B56DB3E32049BFAA00D4AA8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B56DB3EC2049BFE600D4AA8E /* ContextManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextManager.swift; sourceTree = "<group>"; };
+		CE1CCB3F2056F21C000EE3AC /* ThemeColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ThemeColors.swift; path = Classes/Helpers/ThemeColors.swift; sourceTree = SOURCE_ROOT; };
+		CE1CCB4620570A6B000EE3AC /* en.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = en.lproj; sourceTree = "<group>"; };
+		CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCell.swift; sourceTree = "<group>"; };
+		CE1CCB4D20572456000EE3AC /* Order+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Helpers.swift"; sourceTree = "<group>"; };
+		CEF18DF9205A090100C50CFC /* orders-list.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "orders-list.json"; sourceTree = "<group>"; };
 		EA556E3CCFCFAC2E31799011 /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -134,23 +144,25 @@
 			path = CoreData;
 			sourceTree = "<group>";
 		};
-		B56DB3EF2049C06D00D4AA8E /* ViewControllers */ = {
+		B56DB3EF2049C06D00D4AA8E /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				CE1CCB4920570B05000EE3AC /* Orders */,
 				B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */,
 				B509112D2049E27A007D25DC /* DashboardViewController.swift */,
-				B509112E2049E27A007D25DC /* OrdersViewController.swift */,
 				B509112F2049E27A007D25DC /* SettingsViewController.swift */,
 			);
-			path = ViewControllers;
+			path = ViewRelated;
 			sourceTree = "<group>";
 		};
 		B56DB3F12049C0B800D4AA8E /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				CE1CCB4C20572444000EE3AC /* Extensions */,
+				CE1CCB3E2056F204000EE3AC /* Helpers */,
 				B509112B2049CFDF007D25DC /* Model */,
 				B56DB3EE2049C06200D4AA8E /* CoreData */,
-				B56DB3EF2049C06D00D4AA8E /* ViewControllers */,
+				B56DB3EF2049C06D00D4AA8E /* ViewRelated */,
 				B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */,
 			);
 			path = Classes;
@@ -159,12 +171,39 @@
 		B56DB3F22049C0C000D4AA8E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				CEF18DF9205A090100C50CFC /* orders-list.json */,
 				B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */,
 				B56DB3D82049BFAA00D4AA8E /* Info.plist */,
 				B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */,
 				B56DB3D02049BFAA00D4AA8E /* WooCommerce.xcdatamodeld */,
+				CE1CCB4620570A6B000EE3AC /* en.lproj */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		CE1CCB3E2056F204000EE3AC /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				CE1CCB3F2056F21C000EE3AC /* ThemeColors.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		CE1CCB4920570B05000EE3AC /* Orders */ = {
+			isa = PBXGroup;
+			children = (
+				B509112E2049E27A007D25DC /* OrdersViewController.swift */,
+				CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */,
+			);
+			path = Orders;
+			sourceTree = "<group>";
+		};
+		CE1CCB4C20572444000EE3AC /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				CE1CCB4D20572456000EE3AC /* Order+Helpers.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -255,6 +294,8 @@
 			files = (
 				B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
+				CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */,
+				CEF18DFA205A090100C50CFC /* orders-list.json in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -338,12 +379,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */,
+				CE1CCB402056F21C000EE3AC /* ThemeColors.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
+				CE1CCB4E20572456000EE3AC /* Order+Helpers.swift in Sources */,
 				B56DB3D22049BFAA00D4AA8E /* WooCommerce.xcdatamodeld in Sources */,
 				B56DB3ED2049BFE600D4AA8E /* ContextManager.swift in Sources */,
 				B50911342049E493007D25DC /* Order.swift in Sources */,
+				CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

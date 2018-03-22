@@ -17,6 +17,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     var window: UIWindow?
 
+    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+        customizeAppearance()
+        return true
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -43,5 +47,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         ContextManager.shared.saveContext()
+    }
+
+    private func customizeAppearance() {
+        UINavigationBar.appearance().barTintColor = ThemeColors.wooCommercePurple
+        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
+        UINavigationBar.appearance().isTranslucent = false
+        UIApplication.shared.statusBarStyle = .lightContent
     }
 }

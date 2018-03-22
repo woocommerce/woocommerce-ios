@@ -18,20 +18,24 @@ struct Order {
     let items: [OrderItem]
     let currency: String
     let total: Double
-    let notes: [OrderNote]
+    let notes: [OrderNote]?
 }
 
 
 // MARK: -
 //
-enum OrderStatus {
+enum OrderStatus: String {
     case pending
     case processing
-    case onHold
+    case onHold = "on hold"
     case completed
     case cancelled
     case refunded
     case failed
+
+    var description: String {
+        return rawValue
+    }
 }
 
 
@@ -47,7 +51,7 @@ struct OrderItem {
     let subtotalTax: String
     let taxClass: String
     let total: String
-    let tax: String
+    let totalTax: String
     let variationID: Int
 }
 
@@ -82,8 +86,8 @@ struct Customer {
     let identifier: String
     let firstName: String
     let lastName: String
-    let email: String
-    let phone: String
-    let billingAddress: Address
-    let shippingAddress: Address
+    let email: String?
+    let phone: String?
+    let billingAddress: Address?
+    let shippingAddress: Address?
 }

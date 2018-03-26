@@ -27,7 +27,7 @@ struct Order {
 enum OrderStatus: String {
     case pending
     case processing
-    case onHold = "on hold"
+    case onHold = "on-hold"
     case completed
     case cancelled
     case refunded

@@ -50,7 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func customizeAppearance() {
-        UINavigationBar.appearance().barTintColor = ThemeColors.wooCommercePurple
+        UINavigationBar.appearance().barTintColor = StyleManager.active.wooCommerceBrandColor
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
         UINavigationBar.appearance().isTranslucent = false
         UIApplication.shared.statusBarStyle = .lightContent

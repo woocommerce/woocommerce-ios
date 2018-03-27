@@ -3,8 +3,8 @@ import UIKit
 class OrderListCell: UITableViewCell {
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var totalLabel: UILabel!
-    @IBOutlet var statusLabel: PaddedLabel!
-    @IBOutlet var secondaryStatusLabel: PaddedLabel!
+    @IBOutlet var paymentStatusLabel: PaddedLabel!
+    @IBOutlet var shippingStatusLabel: PaddedLabel!
 
     static let reuseIdentifier = "OrderListCell"
 
@@ -14,9 +14,11 @@ class OrderListCell: UITableViewCell {
         let orderTotal = order.total
         titleLabel.text = titleString
         totalLabel.text = "\(currencySymbol)\(orderTotal)"
-        statusLabel.text = order.status.description
-        statusLabel.applyStatusStyle(order.status)
-        secondaryStatusLabel.text = OrderStatus.cancelled.description
-        secondaryStatusLabel.applyStatusStyle(.cancelled)
+        paymentStatusLabel.text = order.status.description
+        paymentStatusLabel.applyStatusStyle(order.status)
+        shippingStatusLabel.text = ""
+//        shippingStatusLabel.text = OrderStatus.cancelled.description
+//        shippingStatusLabel.applyStatusStyle(.cancelled)
+        accessoryType = .disclosureIndicator
     }
 }

@@ -1,4 +1,5 @@
 import UIKit
+import Gridicons
 
 class OrdersViewController: UIViewController {
 
@@ -8,7 +9,7 @@ class OrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationController?.navigationBar.topItem?.title = NSLocalizedString("Orders", comment: "Orders title")
+        configureNavigation()
 
         //FIXME: this is a hack so you can see a row working on the orders list table.
         let billingAddress = Address(firstName: "Thuy", lastName: "Copeland", company: "", address1: "500 Hollywood Blvd", address2: "", city: "Las Vegas", state: "NE", postcode: "90210", country: "US")
@@ -18,6 +19,34 @@ class OrdersViewController: UIViewController {
         let order = Order(identifier: "190", number: "190", status: .processing, customer: customer, dateCreated: Date.init(), dateUpdated: Date.init(), shippingAddress: shippingAddress, billingAddress: billingAddress, items: [item], currency: "USD", total: 91.32, notes: [])
 
         orders = [order]
+    }
+
+    func configureNavigation() {
+        navigationController?.navigationBar.topItem?.title = NSLocalizedString("Orders", comment: "Orders title")
+        let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.listUnordered),
+                                             style: .plain,
+                                             target: self,
+                                             action: #selector(rightButtonTapped))
+        rightBarButton.tintColor = UIColor.white
+        navigationItem.setRightBarButton(rightBarButton, animated: false)
+    }
+
+    @objc func rightButtonTapped() {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = StyleManager.active.wooCommerceBrandColor
+        let dismissAction = UIAlertAction(title: NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"), style: .cancel) { action in
+            // no action needed when dismissing
+        }
+        actionSheet.addAction(dismissAction)
+
+        let allAction = UIAlertAction(title: NSLocalizedString("All", comment: "All filter title"), style: .default) { action in
+            // display all of the orders
+        }
+        actionSheet.addAction(allAction)
+
+        present(actionSheet, animated: true) {
+            // things to do after presenting the action sheet
+        }
     }
 }
 

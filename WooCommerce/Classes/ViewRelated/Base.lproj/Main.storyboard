@@ -59,85 +59,68 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="gray" indentationWidth="10" reuseIdentifier="OrderListCell" rowHeight="90" id="Kft-vQ-g9O" customClass="OrderListCell" customModule="WooCommerce" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="55.5" width="375" height="90"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="OrderListCell" rowHeight="86" id="Kft-vQ-g9O" customClass="OrderListCell" customModule="WooCommerce" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="55.5" width="375" height="86"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Kft-vQ-g9O" id="khy-EP-SIe">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="89.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="85.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="275" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="OXQ-pZ-OuY">
-                                                    <rect key="frame" x="16" y="16" width="343" height="20.5"/>
-                                                    <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="240" verticalHuggingPriority="260" text="#00 First Last" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i5N-V7-lzR">
-                                                            <rect key="frame" x="0.0" y="0.0" width="245" height="20.5"/>
-                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                                            <nil key="textColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="260" verticalHuggingPriority="260" text="$75,894.63" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j0k-E1-R6e">
-                                                            <rect key="frame" x="253" y="0.0" width="90" height="20.5"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="width" constant="90" id="N4z-HT-9wB"/>
-                                                            </constraints>
-                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                            <nil key="textColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                    </subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="240" verticalHuggingPriority="260" text="#00 First Last" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i5N-V7-lzR">
+                                                    <rect key="frame" x="16" y="16" width="228" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="260" verticalHuggingPriority="260" text="$75,894.63" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j0k-E1-R6e">
+                                                    <rect key="frame" x="252" y="33" width="90" height="20"/>
                                                     <constraints>
-                                                        <constraint firstItem="i5N-V7-lzR" firstAttribute="leading" secondItem="OXQ-pZ-OuY" secondAttribute="leading" id="91Y-ht-eFJ"/>
-                                                        <constraint firstItem="j0k-E1-R6e" firstAttribute="leading" secondItem="i5N-V7-lzR" secondAttribute="trailing" constant="8" id="Rvd-f2-d1w"/>
-                                                        <constraint firstItem="i5N-V7-lzR" firstAttribute="top" secondItem="OXQ-pZ-OuY" secondAttribute="top" id="WzH-SL-Cda"/>
+                                                        <constraint firstAttribute="width" constant="90" id="N4z-HT-9wB"/>
                                                     </constraints>
-                                                </stackView>
-                                                <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="240" verticalCompressionResistancePriority="748" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="4sO-ou-xrg">
-                                                    <rect key="frame" x="16" y="44.5" width="343" height="29"/>
-                                                    <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="240" text="Order Status" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZXl-Nf-ARN" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                                            <rect key="frame" x="0.0" y="0.0" width="113.5" height="29"/>
-                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                            <nil key="textColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                            <userDefinedRuntimeAttributes>
-                                                                <userDefinedRuntimeAttribute type="number" keyPath="topInset">
-                                                                    <real key="value" value="4"/>
-                                                                </userDefinedRuntimeAttribute>
-                                                                <userDefinedRuntimeAttribute type="number" keyPath="bottomInset">
-                                                                    <real key="value" value="4"/>
-                                                                </userDefinedRuntimeAttribute>
-                                                                <userDefinedRuntimeAttribute type="number" keyPath="leftInset">
-                                                                    <real key="value" value="8"/>
-                                                                </userDefinedRuntimeAttribute>
-                                                                <userDefinedRuntimeAttribute type="number" keyPath="rightInset">
-                                                                    <real key="value" value="8"/>
-                                                                </userDefinedRuntimeAttribute>
-                                                            </userDefinedRuntimeAttributes>
-                                                        </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="240" text="Optional Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="udf-hH-ktB" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                                            <rect key="frame" x="121.5" y="0.0" width="163.5" height="29"/>
-                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                            <nil key="textColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uux-vt-zTh">
-                                                            <rect key="frame" x="293" y="0.0" width="50" height="29"/>
-                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="height" relation="lessThanOrEqual" constant="29" id="kCE-nB-KUw"/>
-                                                            </constraints>
-                                                        </view>
-                                                    </subviews>
-                                                </stackView>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="240" text="Order Status" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZXl-Nf-ARN" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
+                                                    <rect key="frame" x="16" y="45" width="97.5" height="24.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="topInset">
+                                                            <real key="value" value="4"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="bottomInset">
+                                                            <real key="value" value="4"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="leftInset">
+                                                            <real key="value" value="8"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="rightInset">
+                                                            <real key="value" value="8"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="240" text="Optional Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="udf-hH-ktB" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
+                                                    <rect key="frame" x="121" y="45" width="110.5" height="24.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="4sO-ou-xrg" firstAttribute="top" secondItem="OXQ-pZ-OuY" secondAttribute="bottom" constant="8" id="3yI-yN-Tej"/>
-                                                <constraint firstItem="OXQ-pZ-OuY" firstAttribute="leading" secondItem="khy-EP-SIe" secondAttribute="leading" constant="16" id="9Qd-ck-RvH"/>
-                                                <constraint firstItem="OXQ-pZ-OuY" firstAttribute="top" secondItem="khy-EP-SIe" secondAttribute="top" constant="16" id="WiB-5N-5Zw"/>
-                                                <constraint firstAttribute="trailing" secondItem="OXQ-pZ-OuY" secondAttribute="trailing" constant="16" id="Z5D-HF-yrB"/>
-                                                <constraint firstAttribute="trailing" secondItem="4sO-ou-xrg" secondAttribute="trailing" constant="16" id="g3L-6L-OYk"/>
-                                                <constraint firstAttribute="bottom" secondItem="4sO-ou-xrg" secondAttribute="bottom" constant="16" id="oZ4-Od-SU4"/>
-                                                <constraint firstItem="4sO-ou-xrg" firstAttribute="leading" secondItem="khy-EP-SIe" secondAttribute="leading" constant="16" id="wLJ-SO-v4P"/>
+                                                <constraint firstItem="i5N-V7-lzR" firstAttribute="top" secondItem="khy-EP-SIe" secondAttribute="top" constant="16" id="1oa-Cx-cFj"/>
+                                                <constraint firstAttribute="bottom" secondItem="udf-hH-ktB" secondAttribute="bottom" constant="16" id="7PC-ed-Rr6"/>
+                                                <constraint firstItem="udf-hH-ktB" firstAttribute="top" secondItem="i5N-V7-lzR" secondAttribute="bottom" constant="8" id="FHi-Jh-qpq"/>
+                                                <constraint firstItem="j0k-E1-R6e" firstAttribute="leading" secondItem="i5N-V7-lzR" secondAttribute="trailing" constant="8" id="Fnw-Ft-eVN"/>
+                                                <constraint firstItem="j0k-E1-R6e" firstAttribute="centerY" secondItem="khy-EP-SIe" secondAttribute="centerY" id="GjQ-oi-WS3"/>
+                                                <constraint firstAttribute="trailing" secondItem="j0k-E1-R6e" secondAttribute="trailing" id="VfJ-Dc-cU3"/>
+                                                <constraint firstItem="j0k-E1-R6e" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="udf-hH-ktB" secondAttribute="trailing" constant="8" id="c6T-NE-e4I"/>
+                                                <constraint firstItem="ZXl-Nf-ARN" firstAttribute="top" secondItem="i5N-V7-lzR" secondAttribute="bottom" constant="8" id="eRm-dC-Q9N"/>
+                                                <constraint firstItem="ZXl-Nf-ARN" firstAttribute="leading" secondItem="khy-EP-SIe" secondAttribute="leading" constant="16" id="lyI-kN-j2s"/>
+                                                <constraint firstItem="udf-hH-ktB" firstAttribute="leading" secondItem="ZXl-Nf-ARN" secondAttribute="trailing" constant="8" id="nAB-KJ-P8p"/>
+                                                <constraint firstItem="i5N-V7-lzR" firstAttribute="leading" secondItem="khy-EP-SIe" secondAttribute="leading" constant="16" id="ybx-Qf-Mzv"/>
+                                                <constraint firstAttribute="bottom" secondItem="ZXl-Nf-ARN" secondAttribute="bottom" constant="16" id="z3w-z3-u0v"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>

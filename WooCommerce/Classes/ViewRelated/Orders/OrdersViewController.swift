@@ -44,8 +44,22 @@ class OrdersViewController: UIViewController {
         }
         actionSheet.addAction(allAction)
 
+        for status in OrderStatus.array {
+            let action = UIAlertAction(title: status.description, style: .default) { action in
+                self.filterAction(status)
+            }
+            actionSheet.addAction(action)
+        }
+
         present(actionSheet, animated: true) {
             // things to do after presenting the action sheet
+        }
+    }
+
+    func filterAction(_ status: OrderStatus) {
+        switch status {
+            default:
+                print("next: filter the table data and display!")
         }
     }
 }

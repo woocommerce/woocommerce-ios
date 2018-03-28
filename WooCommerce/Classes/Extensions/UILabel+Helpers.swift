@@ -22,7 +22,7 @@ extension UILabel {
                 layer.borderColor = StyleManager.active.statusPrimaryBoldColor.cgColor
             case .onHold:
                 fallthrough
-            case .cancelled:
+            case .canceled:
                 fallthrough
             default:
                 backgroundColor = StyleManager.active.statusNotIdentifiedColor

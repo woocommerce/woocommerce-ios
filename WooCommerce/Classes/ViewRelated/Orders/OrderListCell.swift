@@ -16,9 +16,8 @@ class OrderListCell: UITableViewCell {
         totalLabel.text = "\(currencySymbol)\(orderTotal)"
         paymentStatusLabel.text = order.status.description
         paymentStatusLabel.applyStatusStyle(order.status)
-        shippingStatusLabel.text = ""
-//        shippingStatusLabel.text = OrderStatus.cancelled.description
-//        shippingStatusLabel.applyStatusStyle(.cancelled)
-        accessoryType = .disclosureIndicator
+//        shippingStatusLabel.text = ""
+        shippingStatusLabel.text = OrderStatus.refunded.description
+        shippingStatusLabel.applyStatusStyle(.refunded)
     }
 }

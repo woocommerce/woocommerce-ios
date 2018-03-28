@@ -11,6 +11,7 @@ protocol Style {
     var statusSuccessBoldColor: UIColor { get }
     var statusNotIdentifiedColor: UIColor { get }
     var statusNotIdentifiedBoldColor: UIColor { get }
+    var defaultTextColor: UIColor { get }
 }
 
 // implementation
@@ -25,6 +26,7 @@ class DefaultStyle: Style {
     let statusSuccessBoldColor = UIColor(red: 208.0/255.0, green: 231.0/255.0, blue: 185.0/255.0, alpha: 1.0)
     let statusNotIdentifiedColor = UIColor(red: 232.0/255.0, green: 232.0/255.0, blue: 232.0/255.0, alpha: 1.0)
     let statusNotIdentifiedBoldColor = UIColor(red: 221.0/255.0, green: 221.0/255.0, blue: 221.0/255.0, alpha: 1.0)
+    let defaultTextColor = UIColor.black
 }
 
 // hold the pointer

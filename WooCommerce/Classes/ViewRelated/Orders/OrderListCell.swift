@@ -13,11 +13,11 @@ class OrderListCell: UITableViewCell {
         let currencySymbol = order.currencySymbol
         let orderTotal = order.total
         titleLabel.text = titleString
+        titleLabel.applyTitleStyle()
         totalLabel.text = "\(currencySymbol)\(orderTotal)"
+        totalLabel.applyBodyStyle()
         paymentStatusLabel.text = order.status.description
         paymentStatusLabel.applyStatusStyle(order.status)
-//        shippingStatusLabel.text = ""
-        shippingStatusLabel.text = OrderStatus.refunded.description
-        shippingStatusLabel.applyStatusStyle(.refunded)
+        shippingStatusLabel.text = ""
     }
 }

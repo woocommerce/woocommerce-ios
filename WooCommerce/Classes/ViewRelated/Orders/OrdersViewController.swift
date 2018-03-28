@@ -81,3 +81,12 @@ extension OrdersViewController: UITableViewDataSource {
         return NSLocalizedString("Today", comment: "Title for header section")
     }
 }
+
+extension OrdersViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 0 {
+            return 32
+        }
+        return 12
+    }
+}

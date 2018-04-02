@@ -20,7 +20,7 @@ extension Order {
                 return .failed
             default:
                 NSLog("Error: unidentified order status: %@", statusString)
-                return .unknown
+                return .failed
             }
         }
     }

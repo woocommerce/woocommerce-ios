@@ -13,3 +13,4 @@
 "Canceled" = "Canceled";
 "Completed" = "Completed";
 "Refunded" = "Refunded";
+"Order Status Error" = "Error: unidentifiable order status";

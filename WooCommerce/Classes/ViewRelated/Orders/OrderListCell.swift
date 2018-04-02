@@ -9,12 +9,11 @@ class OrderListCell: UITableViewCell {
     static let reuseIdentifier = "OrderListCell"
 
     func configureCell(order: Order) {
-        let titleString = "#\(order.number) \(order.customer.firstName) \(order.customer.lastName)"
+        let titleString = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
         let currencySymbol = order.currencySymbol
-        let orderTotal = order.total
         titleLabel.text = titleString
         titleLabel.applyTitleStyle()
-        totalLabel.text = "\(currencySymbol)\(orderTotal)"
+        totalLabel.text = "\(currencySymbol)\(order.totalString)"
         totalLabel.applyBodyStyle()
         paymentStatusLabel.text = order.status.description
         paymentStatusLabel.applyStatusStyle(order.status)

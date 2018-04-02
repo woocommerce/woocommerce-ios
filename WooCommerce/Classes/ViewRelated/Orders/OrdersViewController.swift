@@ -9,20 +9,26 @@ class OrdersViewController: UIViewController {
     let searchController = UISearchController(searchResultsController: nil)
     var showSearchResults = false
 
+    func loadJson() -> Array<Order> {
+        if let path = Bundle.main.url(forResource: "orders-list", withExtension: "json") {
+            do {
+                let json = try Data(contentsOf: path)
+                let decoder = JSONDecoder()
+                let orders = try decoder.decode([Order].self, from: json)
+                return orders
+            } catch {
+                print("error:\(error)")
+            }
+        }
+        return []
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         configureNavigation()
         configureSearch()
-
-        //FIXME: this is a hack so you can see a row working on the orders list table.
-        let billingAddress = Address(firstName: "Thuy", lastName: "Copeland", company: "", address1: "500 Hollywood Blvd", address2: "", city: "Las Vegas", state: "NE", postcode: "90210", country: "US")
-        let shippingAddress = Address(firstName: "Thuy", lastName: "Copeland", company: "", address1: "500 Hollywood Blvd", address2: "", city: "Las Vegas", state: "NE", postcode: "90210", country: "US")
-        let customer = Customer(identifier: "1", firstName: "Thuy", lastName: "Copeland", email: nil, phone: nil, billingAddress: billingAddress, shippingAddress: shippingAddress)
-        let item = OrderItem(lineItemId: 1, name: "Belt", productID: 27, quantity: 1, sku: "", subtotal: "55.00", subtotalTax: "0.00", taxClass: "", total: "55.00", totalTax: "", variationID: 0)
-        let order = Order(identifier: "190", number: "190", status: .processing, customer: customer, dateCreated: Date.init(), dateUpdated: Date.init(), shippingAddress: shippingAddress, billingAddress: billingAddress, items: [item], currency: "USD", total: 91.32, notes: [])
-
-        orders = [order]
+        orders = loadJson()
     }
 
     func configureNavigation() {
@@ -84,6 +90,25 @@ class OrdersViewController: UIViewController {
                 print("next: filter the table data and display!")
         }
     }
+
+    // MARK: Search bar
+    func isFiltering() -> Bool {
+        return searchController.isActive && !searchBarIsEmpty()
+    }
+    func searchBarIsEmpty() -> Bool {
+        return searchController.searchBar.text?.isEmpty ?? true
+    }
+
+    func filterContentForSearchText(_ searchText: String, scope: String = "All") {
+        searchResults = orders.filter({ (order : Order) -> Bool in
+            if let firstName = order.customer?.firstName {
+                return firstName.lowercased().contains(searchText.lowercased())
+            } else {
+                return false
+            }
+        })
+        tableView.reloadData()
+    }
 }
 
 extension OrdersViewController: UITableViewDataSource {
@@ -122,14 +147,7 @@ extension OrdersViewController: UITableViewDelegate {
 
 extension OrdersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        if let searchString = searchController.searchBar.text {
-            // TODO: filter search results properly
-            searchResults = orders.filter({ (order) -> Bool in
-                let orderText: NSString = order.customer.firstName as NSString
-                return (orderText.range(of: searchString, options:NSString.CompareOptions.caseInsensitive).location) != NSNotFound
-            })
-            tableView.reloadData()
-        }
+        // TODO: filter search results
     }
 }
 

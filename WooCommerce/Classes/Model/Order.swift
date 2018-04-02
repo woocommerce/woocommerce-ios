@@ -65,7 +65,6 @@ enum OrderStatus: String {
     case canceled = "Canceled"
     case completed = "Completed"
     case refunded = "Refunded"
-    case unknown = "Order Status Error"
 
     var description: String {
         return NSLocalizedString(rawValue, comment: "Order status string")
@@ -82,8 +81,7 @@ extension OrderStatus {
             case .failed: a.append(.failed); fallthrough
             case .canceled: a.append(.canceled); fallthrough
             case .completed: a.append(.completed); fallthrough
-            case .refunded: a.append(.refunded); fallthrough
-            case .unknown: a.append(.unknown)
+            case .refunded: a.append(.refunded)
         }
         return a
     }

@@ -10,7 +10,7 @@ class OrdersViewController: UIViewController {
     var showSearchResults = false
 
     func loadJson() -> Array<Order> {
-        if let path = Bundle.main.url(forResource: "orders-list", withExtension: "json") {
+        if let path = Bundle.main.url(forResource: "real-data-orders-list", withExtension: "json") {
             do {
                 let json = try Data(contentsOf: path)
                 let decoder = JSONDecoder()
@@ -47,7 +47,7 @@ class OrdersViewController: UIViewController {
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = NSLocalizedString("Search all orders", comment: "Search placeholder text")
-        searchController.searchBar.sizeToFit() // get the proper size for displaying in table header
+//        searchController.searchBar.sizeToFit() // get the proper size for displaying in table header
 
         // MARK: This may need set app-wide in the future. Not yet.
         searchController.searchBar.barTintColor = tableView.backgroundColor
@@ -112,8 +112,12 @@ class OrdersViewController: UIViewController {
 }
 
 extension OrdersViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if showSearchResults {
+        if isFiltering() {
             return searchResults.count
         }
         return orders.count
@@ -121,7 +125,7 @@ extension OrdersViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as! OrderListCell
-        if showSearchResults {
+        if isFiltering() {
             cell.configureCell(order: searchResults[indexPath.row])
         } else {
             cell.configureCell(order: orders[indexPath.row])
@@ -131,7 +135,7 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        // FIXME: this is hard-coded data
+        // FIXME: this is hard-coded data. Will fix when WordPressShared date helpers are available to make fuzzy dates.
         return NSLocalizedString("Today", comment: "Title for header section")
     }
 }

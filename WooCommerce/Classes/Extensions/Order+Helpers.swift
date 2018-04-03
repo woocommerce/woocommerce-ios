@@ -19,8 +19,8 @@ extension Order {
             case "failed":
                 return .failed
             default:
-                NSLog("Error: unidentified order status: %@", statusString)
-                return .failed
+                NSLog("Custom order status: %@", statusString)
+                return .custom
             }
         }
     }

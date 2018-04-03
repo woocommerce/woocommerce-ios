@@ -29,6 +29,12 @@ class OrdersViewController: UIViewController {
         configureNavigation()
         configureSearch()
         orders = loadJson()
+
+        if #available(iOS 11.0, *) {
+            tableView.contentInsetAdjustmentBehavior = .never
+        } else {
+            automaticallyAdjustsScrollViewInsets = false
+        }
     }
 
     func configureNavigation() {
@@ -47,7 +53,7 @@ class OrdersViewController: UIViewController {
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = NSLocalizedString("Search all orders", comment: "Search placeholder text")
-//        searchController.searchBar.sizeToFit() // get the proper size for displaying in table header
+        searchController.searchBar.sizeToFit() // get the proper size for displaying in table header
 
         // MARK: This may need set app-wide in the future. Not yet.
         searchController.searchBar.barTintColor = tableView.backgroundColor
@@ -146,6 +152,10 @@ extension OrdersViewController: UITableViewDelegate {
             return 32
         }
         return 12
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 

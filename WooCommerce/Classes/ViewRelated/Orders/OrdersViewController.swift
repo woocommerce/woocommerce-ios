@@ -25,16 +25,9 @@ class OrdersViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         configureNavigation()
         configureSearch()
         orders = loadJson()
-
-        if #available(iOS 11.0, *) {
-            tableView.contentInsetAdjustmentBehavior = .never
-        } else {
-            automaticallyAdjustsScrollViewInsets = false
-        }
     }
 
     func configureNavigation() {

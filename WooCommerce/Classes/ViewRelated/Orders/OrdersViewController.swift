@@ -55,7 +55,7 @@ class OrdersViewController: UIViewController {
 
     @objc func rightButtonTapped() {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.active.wooCommerceBrandColor
+        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
         let dismissAction = UIAlertAction(title: NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"), style: .cancel) { action in
             // no action needed when dismissing
         }
@@ -66,7 +66,7 @@ class OrdersViewController: UIViewController {
         }
         actionSheet.addAction(allAction)
 
-        for status in OrderStatus.array {
+        for status in OrderStatus.listAll {
             let action = UIAlertAction(title: status.description, style: .default) { action in
                 self.filterAction(status)
             }
@@ -114,33 +114,28 @@ extension OrdersViewController: UITableViewDataSource {
 extension OrdersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
-            return 32
+            return Constants.groupedFirstSectionHeaderHeight
         }
-        return 12
+        return Constants.groupedSectionHeaderHeight
     }
 }
 
 extension OrdersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        if let searchString = searchController.searchBar.text {
-            // TODO: filter search results properly
-            searchResults = orders.filter({ (order) -> Bool in
-                let orderText: NSString = order.customer.firstName as NSString
-                return (orderText.range(of: searchString, options:NSString.CompareOptions.caseInsensitive).location) != NSNotFound
-            })
-            tableView.reloadData()
+        guard let searchString = searchController.searchBar.text else {
+            return
         }
+        // TODO: filter search results properly
+        searchResults = orders.filter { order in
+            return  order.customer.firstName.lowercased().contains(searchString.lowercased())
+        }
+        tableView.reloadData()
     }
 }
 
 extension OrdersViewController: UISearchBarDelegate {
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        if searchBar.text == nil || searchBar.text == "" {
-            showSearchResults = false
-        } else {
-            showSearchResults = true
-        }
-
+        showSearchResults = searchBar.text?.isEmpty == false
         tableView.reloadData()
     }
 

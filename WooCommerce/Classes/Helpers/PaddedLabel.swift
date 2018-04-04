@@ -1,20 +1,16 @@
 import UIKit
 
 @IBDesignable class PaddedLabel: UILabel {
-    @IBInspectable var topInset: CGFloat = 4.0
-    @IBInspectable var leftInset: CGFloat = 8.0
-    @IBInspectable var bottomInset: CGFloat = 4.0
-    @IBInspectable var rightInset: CGFloat = 8.0
+    @IBInspectable var insets = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
 
     override func drawText(in rect: CGRect) {
-        let insets = UIEdgeInsets.init(top: topInset, left: leftInset, bottom: bottomInset, right: rightInset)
         super.drawText(in: UIEdgeInsetsInsetRect(rect, insets))
     }
 
     override var intrinsicContentSize: CGSize {
         var intrinsicSuperViewContentSize = super.intrinsicContentSize
-        intrinsicSuperViewContentSize.height += topInset + bottomInset
-        intrinsicSuperViewContentSize.width += leftInset + rightInset
+        intrinsicSuperViewContentSize.height += insets.top + insets.bottom
+        intrinsicSuperViewContentSize.width += insets.left + insets.right
         return intrinsicSuperViewContentSize
     }
 }

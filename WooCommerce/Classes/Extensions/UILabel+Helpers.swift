@@ -3,15 +3,15 @@ import UIKit
 extension UILabel {
     func applyTitleStyle() {
         font = UIFont.headline
-        textColor = StyleManager.active.defaultTextColor
+        textColor = StyleManager.defaultTextColor
     }
 
     func applyBodyStyle() {
         font = UIFont.body
-        textColor = StyleManager.active.defaultTextColor
+        textColor = StyleManager.defaultTextColor
     }
 
-    func applyStatusStyle(_ status: OrderStatus) {
+    func applyStatusStyle(for status: OrderStatus) {
         layer.borderWidth = 1.0
         layer.cornerRadius = 4.0
         font = UIFont.footnote;
@@ -20,23 +20,23 @@ extension UILabel {
             case .processing:
                 fallthrough
             case .pending:
-                backgroundColor = StyleManager.active.statusSuccessColor
-                layer.borderColor = StyleManager.active.statusSuccessBoldColor.cgColor
+                backgroundColor = StyleManager.statusSuccessColor
+                layer.borderColor = StyleManager.statusSuccessBoldColor.cgColor
             case .failed:
                 fallthrough
             case .refunded:
-                backgroundColor = StyleManager.active.statusDangerColor
-                layer.borderColor = StyleManager.active.statusDangerBoldColor.cgColor
+                backgroundColor = StyleManager.statusDangerColor
+                layer.borderColor = StyleManager.statusDangerBoldColor.cgColor
             case .completed:
-                backgroundColor = StyleManager.active.statusPrimaryColor
-                layer.borderColor = StyleManager.active.statusPrimaryBoldColor.cgColor
+                backgroundColor = StyleManager.statusPrimaryColor
+                layer.borderColor = StyleManager.statusPrimaryBoldColor.cgColor
             case .onHold:
                 fallthrough
             case .canceled:
                 fallthrough
             default:
-                backgroundColor = StyleManager.active.statusNotIdentifiedColor
-                layer.borderColor = StyleManager.active.statusNotIdentifiedBoldColor.cgColor
+                backgroundColor = StyleManager.statusNotIdentifiedColor
+                layer.borderColor = StyleManager.statusNotIdentifiedBoldColor.cgColor
         }
     }
 }

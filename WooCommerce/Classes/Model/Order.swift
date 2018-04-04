@@ -39,7 +39,7 @@ enum OrderStatus: String {
 }
 
 extension OrderStatus {
-    static var array: [OrderStatus] {
+    static var listAll: [OrderStatus] {
         var a: [OrderStatus] = []
         switch OrderStatus.pending {
             case .pending: a.append(.pending); fallthrough

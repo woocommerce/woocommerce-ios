@@ -33,23 +33,21 @@ class DefaultStyle: Style {
 
 /// Hold the pointer
 ///
-
-let styleManagerNotificationID = "activeStyleManagerDidChange"
+extension NSNotification.Name {
+    static let StyleManagerDidUpdateActive = NSNotification.Name(rawValue: "StyleManagerDidUpdateActive")
+}
 
 class StyleManager {
     private static var active: Style = DefaultStyle() {
         didSet {
-            let name = NSNotification.Name(rawValue: styleManagerNotificationID)
-            NotificationCenter.default.post(name: name, object: self)
+            NotificationCenter.default.post(name: .StyleManagerDidUpdateActive, object: self)
         }
     }
-
     static var wooCommerceBrandColor: UIColor {
         get {
             return active.wooCommerceBrandColor
         }
     }
-
     static var statusDangerColor: UIColor {
         get {
             return active.statusDangerColor

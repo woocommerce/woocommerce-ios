@@ -21,13 +21,17 @@ class MainTabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupTabBar()
+    }
 
-        if let tabBarItems = tabBar.items {
-            for i in 0..<tabBarItems.count {
-                let item = tabBarItems[i]
-                item.title = tabTitles[i]
-                item.image = tabIcons[i]
-            }
+    func setupTabBar() {
+        guard let items = tabBar.items else {
+            fatalError()
+        }
+        
+        for (index, item) in items.enumerated() {
+            item.title = tabTitles[index]
+            item.image = tabIcons[index]
         }
     }
 }

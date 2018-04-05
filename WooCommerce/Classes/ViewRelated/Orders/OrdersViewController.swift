@@ -27,6 +27,12 @@ class OrdersViewController: UIViewController {
         return []
     }
 
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        tabBarItem.title = NSLocalizedString("Orders", comment: "Orders title")
+        tabBarItem.image = Gridicon.iconOfType(.pages)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()

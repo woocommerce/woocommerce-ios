@@ -11,7 +11,6 @@ class OrdersViewController: UIViewController {
     var orders = [Order]()
     var searchResults = [Order]()
     let searchController = UISearchController(searchResultsController: nil)
-    var showSearchResults = false
 
     func loadJson() -> Array<Order> {
         if let path = Bundle.main.url(forResource: "data", withExtension: "json") {
@@ -52,7 +51,7 @@ class OrdersViewController: UIViewController {
 
     func configureSearch() {
         searchController.searchResultsUpdater = self
-        searchController.dimsBackgroundDuringPresentation = true
+        searchController.dimsBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = NSLocalizedString("Search all orders", comment: "Search placeholder text")
@@ -141,7 +140,7 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func orderAtIndexPath(_ indexPath: IndexPath) -> Order{
-        return showSearchResults ? searchResults[indexPath.row] : orders[indexPath.row]
+        return isFiltering() ? searchResults[indexPath.row] : orders[indexPath.row]
     }
 }
 
@@ -173,15 +172,10 @@ extension OrdersViewController: UISearchResultsUpdating {
 
 extension OrdersViewController: UISearchBarDelegate {
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        showSearchResults = searchBar.text?.isEmpty == false
         tableView.reloadData()
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        if showSearchResults {
-            showSearchResults = false
-            searchController.searchBar.text = nil
-        }
         searchController.searchBar.resignFirstResponder()
         tableView.reloadData()
     }

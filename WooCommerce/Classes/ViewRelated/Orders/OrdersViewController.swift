@@ -14,7 +14,7 @@ class OrdersViewController: UIViewController {
     var showSearchResults = false
 
     func loadJson() -> Array<Order> {
-        if let path = Bundle.main.url(forResource: "data", withExtension: "json") {
+        if let path = Bundle.main.url(forResource: "/Users/thuycopeland/Desktop/real-data-orders-list", withExtension: "json") {
             do {
                 let json = try Data(contentsOf: path)
                 let decoder = JSONDecoder()

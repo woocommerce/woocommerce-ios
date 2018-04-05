@@ -2,6 +2,10 @@ import UIKit
 import Gridicons
 
 class OrdersViewController: UIViewController {
+    struct Constants {
+        static let groupedFirstSectionHeaderHeight: CGFloat = 32.0
+        static let groupedSectionHeaderHeight: CGFloat = 12.0
+    }
 
     @IBOutlet weak var tableView: UITableView!
     var orders = [Order]()
@@ -31,12 +35,12 @@ class OrdersViewController: UIViewController {
     }
 
     func configureNavigation() {
-        navigationController?.navigationBar.topItem?.title = NSLocalizedString("Orders", comment: "Orders title")
+        title = NSLocalizedString("Orders", comment: "Orders title")
         let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.listUnordered),
                                              style: .plain,
                                              target: self,
                                              action: #selector(rightButtonTapped))
-        rightBarButton.tintColor = UIColor.white
+        rightBarButton.tintColor = .white
         navigationItem.setRightBarButton(rightBarButton, animated: false)
     }
 
@@ -46,9 +50,9 @@ class OrdersViewController: UIViewController {
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = NSLocalizedString("Search all orders", comment: "Search placeholder text")
-        searchController.searchBar.sizeToFit() // get the proper size for displaying in table header
+        searchController.searchBar.sizeToFit()
 
-        // MARK: This may need set app-wide in the future. Not yet.
+        // This may need set app-wide in the future. Not yet.
         searchController.searchBar.barTintColor = tableView.backgroundColor
         searchController.searchBar.layer.borderWidth = 1
         searchController.searchBar.layer.borderColor = tableView.backgroundColor?.cgColor
@@ -60,10 +64,8 @@ class OrdersViewController: UIViewController {
 
     @objc func rightButtonTapped() {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.active.wooCommerceBrandColor
-        let dismissAction = UIAlertAction(title: NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"), style: .cancel) { action in
-            // no action needed when dismissing
-        }
+        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+        let dismissAction = UIAlertAction(title: NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"), style: .cancel)
         actionSheet.addAction(dismissAction)
 
         let allAction = UIAlertAction(title: NSLocalizedString("All", comment: "All filter title"), style: .default) { action in
@@ -71,16 +73,14 @@ class OrdersViewController: UIViewController {
         }
         actionSheet.addAction(allAction)
 
-        for status in OrderStatus.array {
+        for status in OrderStatus.allOrderStatuses {
             let action = UIAlertAction(title: status.description, style: .default) { action in
                 self.filterAction(status)
             }
             actionSheet.addAction(action)
         }
 
-        present(actionSheet, animated: true) {
-            // things to do after presenting the action sheet
-        }
+        present(actionSheet, animated: true)
     }
 
     func filterAction(_ status: OrderStatus) {
@@ -124,12 +124,8 @@ extension OrdersViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as! OrderListCell
-        if isFiltering() {
-            cell.configureCell(order: searchResults[indexPath.row])
-        } else {
-            cell.configureCell(order: orders[indexPath.row])
-        }
-
+        let order = orderAtIndexPath(indexPath)
+        cell.configureCell(order: order)
         return cell
     }
 
@@ -137,14 +133,18 @@ extension OrdersViewController: UITableViewDataSource {
         // FIXME: this is hard-coded data. Will fix when WordPressShared date helpers are available to make fuzzy dates.
         return NSLocalizedString("Today", comment: "Title for header section")
     }
+
+    func orderAtIndexPath(_ indexPath: IndexPath) -> Order{
+        return showSearchResults ? searchResults[indexPath.row] : orders[indexPath.row]
+    }
 }
 
 extension OrdersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
-            return 32
+            return Constants.groupedFirstSectionHeaderHeight
         }
-        return 12
+        return Constants.groupedSectionHeaderHeight
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -154,18 +154,20 @@ extension OrdersViewController: UITableViewDelegate {
 
 extension OrdersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        // TODO: filter search results
+        guard let searchString = searchController.searchBar.text else {
+            return
+        }
+        // TODO: filter search results properly
+        searchResults = orders.filter { order in
+            return order.shippingAddress.firstName.lowercased().contains(searchString.lowercased())
+        }
+        tableView.reloadData()
     }
 }
 
 extension OrdersViewController: UISearchBarDelegate {
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        if searchBar.text == nil || searchBar.text == "" {
-            showSearchResults = false
-        } else {
-            showSearchResults = true
-        }
-
+        showSearchResults = searchBar.text?.isEmpty == false
         tableView.reloadData()
     }
 

@@ -61,8 +61,7 @@
 		B56DB3E12049BFAA00D4AA8E /* WooCommerceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceTests.swift; sourceTree = "<group>"; };
 		B56DB3E32049BFAA00D4AA8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B56DB3EC2049BFE600D4AA8E /* ContextManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextManager.swift; sourceTree = "<group>"; };
-		CE06CC2F2073DC450090B371 /* real-data-orders-list.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "real-data-orders-list.json"; sourceTree = "<group>"; };
-		CE1CCB3F2056F21C000EE3AC /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Style.swift; path = Classes/Helpers/Style.swift; sourceTree = SOURCE_ROOT; };
+		CE1CCB3F2056F21C000EE3AC /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		CE1CCB4620570A6B000EE3AC /* en.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = en.lproj; sourceTree = "<group>"; };
 		CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCell.swift; sourceTree = "<group>"; };
 		CE1CCB4D20572456000EE3AC /* Order+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Helpers.swift"; sourceTree = "<group>"; };
@@ -175,7 +174,7 @@
 			isa = PBXGroup;
 			children = (
 				CE1CCB4C20572444000EE3AC /* Extensions */,
-				CE1CCB3E2056F204000EE3AC /* Helpers */,
+				CE1CCB3E2056F204000EE3AC /* Styles */,
 				B509112B2049CFDF007D25DC /* Model */,
 				B56DB3EE2049C06200D4AA8E /* CoreData */,
 				B56DB3EF2049C06D00D4AA8E /* ViewRelated */,
@@ -198,13 +197,13 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		CE1CCB3E2056F204000EE3AC /* Helpers */ = {
+		CE1CCB3E2056F204000EE3AC /* Styles */ = {
 			isa = PBXGroup;
 			children = (
 				CE1CCB3F2056F21C000EE3AC /* Style.swift */,
 				CE1F512A206985DF00C6C810 /* PaddedLabel.swift */,
 			);
-			path = Helpers;
+			path = Styles;
 			sourceTree = "<group>";
 		};
 		CE1CCB4920570B05000EE3AC /* Orders */ = {

@@ -73,19 +73,8 @@ enum OrderStatus: String {
 }
 
 extension OrderStatus {
-    static var array: [OrderStatus] {
-        var a: [OrderStatus] = []
-        switch OrderStatus.pending {
-            case .pending: a.append(.pending); fallthrough
-            case .processing: a.append(.processing); fallthrough
-            case .onHold: a.append(.onHold); fallthrough
-            case .failed: a.append(.failed); fallthrough
-            case .canceled: a.append(.canceled); fallthrough
-            case .completed: a.append(.completed); fallthrough
-            case .refunded: a.append(.refunded); fallthrough
-            case .custom: a.append(.custom)
-        }
-        return a
+    static var allOrderStatuses: [OrderStatus] {
+        return [.pending, .processing, .onHold, .failed, .canceled, .completed, .refunded]
     }
 }
 

@@ -13,7 +13,7 @@ class OrdersViewController: UIViewController {
     let searchController = UISearchController(searchResultsController: nil)
 
     func loadJson() -> Array<Order> {
-        if let path = Bundle.main.url(forResource: "data", withExtension: "json") {
+        if let path = Bundle.main.url(forResource: "order-list", withExtension: "json") {
             do {
                 let json = try Data(contentsOf: path)
                 let decoder = JSONDecoder()
@@ -115,6 +115,8 @@ class OrdersViewController: UIViewController {
     }
 }
 
+// MARK: UITableViewDataSource
+//
 extension OrdersViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -144,6 +146,8 @@ extension OrdersViewController: UITableViewDataSource {
     }
 }
 
+// MARK: UITableViewDelegate
+//
 extension OrdersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
@@ -154,9 +158,15 @@ extension OrdersViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let singleOrder = orderAtIndexPath(indexPath)
+        let singleOrderViewController = SingleOrderViewController(order: singleOrder)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        navigationController?.pushViewController(singleOrderViewController, animated: true)
     }
 }
 
+// MARK: UISearchResultsUpdating
+//
 extension OrdersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let searchString = searchController.searchBar.text else {
@@ -170,6 +180,8 @@ extension OrdersViewController: UISearchResultsUpdating {
     }
 }
 
+// MARK: UISearchBarDelegate
+//
 extension OrdersViewController: UISearchBarDelegate {
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         tableView.reloadData()

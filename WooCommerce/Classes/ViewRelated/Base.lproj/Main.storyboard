@@ -109,7 +109,7 @@
                     <tabBarItem key="tabBarItem" enabled="NO" title="Item" id="etY-Vs-MSy"/>
                 </viewControllerPlaceholder>
             </objects>
-            <point key="canvasLocation" x="864.79999999999995" y="542.87856071964018"/>
+            <point key="canvasLocation" x="109" y="133"/>
         </scene>
     </scenes>
 </document>

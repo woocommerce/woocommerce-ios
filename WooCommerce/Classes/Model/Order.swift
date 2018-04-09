@@ -74,7 +74,7 @@ enum OrderStatus: String {
 
 extension OrderStatus {
     static var allOrderStatuses: [OrderStatus] {
-        return [.pending, .processing, .onHold, .failed, .canceled, .completed, .refunded]
+        return [.pending, .processing, .onHold, .failed, .canceled, .completed, .refunded, .custom]
     }
 }
 

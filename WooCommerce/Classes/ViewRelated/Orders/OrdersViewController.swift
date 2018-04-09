@@ -26,6 +26,21 @@ class OrdersViewController: UIViewController {
         return []
     }
 
+    func loadSingleOrder(basicOrder: Order) -> Order {
+        let resource = "order-\(basicOrder.number)"
+        if let path = Bundle.main.url(forResource: resource, withExtension: "json") {
+            do {
+                let json = try Data(contentsOf: path)
+                let decoder = JSONDecoder()
+                let orderFromJson = try decoder.decode(Order.self, from: json)
+                return orderFromJson
+            } catch {
+                print("error:\(error)")
+            }
+        }
+        return basicOrder
+    }
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         tabBarItem.title = NSLocalizedString("Orders", comment: "Orders title")
@@ -158,8 +173,10 @@ extension OrdersViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let singleOrder = orderAtIndexPath(indexPath)
-        let singleOrderViewController = SingleOrderViewController(order: singleOrder)
+        let basicOrder = orderAtIndexPath(indexPath)
+        let singleOrder = loadSingleOrder(basicOrder: basicOrder)
+        let singleOrderViewController = storyboard?.instantiateViewController(withIdentifier: "SingleOrderViewController") as! SingleOrderViewController
+        singleOrderViewController.order = singleOrder
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         navigationController?.pushViewController(singleOrderViewController, animated: true)
     }

@@ -1,24 +1,28 @@
-//
-//  SingleOrderSummaryCell.swift
-//  WooCommerce
-//
-//  Created by Thuy Copeland on 4/6/18.
-//  Copyright © 2018 Automattic. All rights reserved.
-//
-
 import UIKit
 
 class SingleOrderSummaryCell: UITableViewCell {
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var createdLabel: UILabel!
+    @IBOutlet weak var paymentLabel: PaddedLabel!
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    static let reuseIdentifier = "SingleOrderSummaryCell"
+
+    func configureCell(order: Order) {
+        let titleString = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
+        var paymentStatusText: String
+        if order.status == .custom {
+            paymentStatusText = order.statusString
+        } else {
+            paymentStatusText = order.status.description
+        }
+        let fuzzyDate = String.localizedStringWithFormat(NSLocalizedString("Created %@", comment: "Order created date"), order.dateCreatedString) // FIXME: needs fuzzy date
+
+        titleLabel.text = titleString
+        createdLabel.text = fuzzyDate
+        paymentLabel.text = paymentStatusText
+
+        titleLabel.applyTitleStyle()
+        createdLabel.applyFootnoteStyle()
+        paymentLabel.applyStatusStyle(for: order.status)
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-    
 }

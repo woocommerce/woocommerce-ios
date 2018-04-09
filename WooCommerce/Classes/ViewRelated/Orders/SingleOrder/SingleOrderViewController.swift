@@ -11,8 +11,6 @@ class SingleOrderViewController: UIViewController {
         title = NSLocalizedString("Order #\(order.number)", comment:"Order number title")
         let nib = UINib(nibName: SingleOrderSummaryCell.reuseIdentifier, bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: SingleOrderSummaryCell.reuseIdentifier)
-//        tableView.estimatedRowHeight = 108.0
-//        tableView.rowHeight = UITableViewAutomaticDimension
     }
 }
 

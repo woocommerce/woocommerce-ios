@@ -1,2 +1,15 @@
+/* General use */
+"Dismiss" = "Dismiss";
+
 /* Orders screen title */
 "Orders" = "Orders";
+
+/* Order Status filters */
+"All" = "All";
+"Pending" = "Pending";
+"Processing" = "Processing";
+"On Hold" = "On Hold";
+"Failed" = "Failed";
+"Canceled" = "Canceled";
+"Completed" = "Completed";
+"Refunded" = "Refunded";

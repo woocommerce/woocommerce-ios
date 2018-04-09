@@ -25,16 +25,22 @@ struct Order {
 // MARK: -
 //
 enum OrderStatus: String {
-    case pending
-    case processing
-    case onHold = "on hold"
-    case completed
-    case cancelled
-    case refunded
-    case failed
+    case pending = "Pending"
+    case processing = "Processing"
+    case onHold = "On Hold"
+    case failed = "Failed"
+    case canceled = "Canceled"
+    case completed = "Completed"
+    case refunded = "Refunded"
 
     var description: String {
-        return rawValue
+        return NSLocalizedString(rawValue, comment: "Order status string")
+    }
+}
+
+extension OrderStatus {
+    static var allOrderStatuses: [OrderStatus] {
+        return [.pending, .processing, .onHold, .failed, .canceled, .completed, .refunded]
     }
 }
 

@@ -32,7 +32,9 @@ class OrdersViewController: UIViewController {
             do {
                 let json = try Data(contentsOf: path)
                 let decoder = JSONDecoder()
-                let orderFromJson = try decoder.decode(Order.self, from: json)
+                var orderFromJson = try decoder.decode(Order.self, from: json)
+                let customer  = Customer(identifier: orderFromJson.customerID, firstName: orderFromJson.billingAddress.firstName, lastName: orderFromJson.billingAddress.lastName, email: orderFromJson.billingAddress.email, phone: orderFromJson.billingAddress.phone, billingAddress: orderFromJson.billingAddress, shippingAddress: orderFromJson.shippingAddress, note: orderFromJson.customerNote)
+                orderFromJson.customer = customer
                 return orderFromJson
             } catch {
                 print("error:\(error)")

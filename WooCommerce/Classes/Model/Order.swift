@@ -19,8 +19,10 @@ struct Order: Decodable {
     let currency: String
     let totalString: String
     let notes: [OrderNote]?
+    let customerID: Int
+    let customerNote: String?
 
-    init(identifier: Int, number: String, statusString: String, customer: Customer?, dateCreatedString: String, dateUpdatedString: String, shippingAddress: Address, billingAddress: Address, items: [OrderItem], currency: String, totalString: String, notes: [OrderNote]) {
+    init(identifier: Int, number: String, statusString: String, customer: Customer?, dateCreatedString: String, dateUpdatedString: String, shippingAddress: Address, billingAddress: Address, items: [OrderItem], currency: String, totalString: String, notes: [OrderNote]?, customerID: Int, customerNote: String?) {
         self.identifier = identifier
         self.number = number
         self.statusString = statusString
@@ -33,6 +35,8 @@ struct Order: Decodable {
         self.currency = currency
         self.totalString = totalString
         self.notes = notes
+        self.customerID = customerID
+        self.customerNote = customerNote
     }
 
     init(from decoder: Decoder) throws {
@@ -48,10 +52,11 @@ struct Order: Decodable {
         let items: Array<OrderItem> = try container.decode([OrderItem].self, forKey: .orderItems)
         let currency: String = try container.decode(String.self, forKey: .currency)
         let totalString: String = try container.decode(String.self, forKey: .total)
-        let orderNote: String = try container.decode(String.self, forKey: .notes)
-        let note: OrderNote = OrderNote(date: nil, contents: orderNote, visibleToCustomers: true)
+        let notes: Array<OrderNote>? = try container.decodeIfPresent([OrderNote].self, forKey: .notes)
+        let customerID: Int = try container.decode(Int.self, forKey: .customerID)
+        let customerNote: String = try container.decode(String.self, forKey: .customerNote)
 
-        self.init(identifier: identifier, number: number, statusString: statusString, customer: customer, dateCreatedString: dateCreatedString, dateUpdatedString: dateUpdatedString, shippingAddress: shippingAddress, billingAddress: billingAddress, items: items, currency: currency, totalString: totalString, notes: [note])
+        self.init(identifier: identifier, number: number, statusString: statusString, customer: customer, dateCreatedString: dateCreatedString, dateUpdatedString: dateUpdatedString, shippingAddress: shippingAddress, billingAddress: billingAddress, items: items, currency: currency, totalString: totalString, notes: notes, customerID: customerID, customerNote: customerNote)
     }
 }
 
@@ -170,8 +175,10 @@ struct Address {
     let state: String
     let postcode: String
     let country: String
+    let email: String?
+    let phone: String?
 
-    init(firstName: String, lastName: String, company: String?, address1: String, address2: String?, city: String, state: String, postcode: String, country: String) {
+    init(firstName: String, lastName: String, company: String?, address1: String, address2: String?, city: String, state: String, postcode: String, country: String, email: String?, phone: String?) {
         self.firstName = firstName
         self.lastName = lastName
         self.company = company
@@ -181,6 +188,8 @@ struct Address {
         self.state = state
         self.postcode = postcode
         self.country = country
+        self.email = email
+        self.phone = phone
     }
 }
 
@@ -195,6 +204,8 @@ extension Address: Decodable {
         case state = "state"
         case postcode = "postcode"
         case country = "country"
+        case email = "email"
+        case phone = "phone"
     }
 
     init(from decoder: Decoder) throws {
@@ -208,23 +219,26 @@ extension Address: Decodable {
         let state: String = try container.decode(String.self, forKey: .state)
         let postcode: String = try container.decode(String.self, forKey: .postcode)
         let country: String = try container.decode(String.self, forKey: .country)
+        let email: String? = try container.decodeIfPresent(String.self, forKey: .email)
+        let phone: String? = try container.decodeIfPresent(String.self, forKey: .phone)
 
-        self.init(firstName: firstName, lastName: lastName, company: company, address1: address1, address2: address2, city: city, state: state, postcode: postcode, country: country)
+        self.init(firstName: firstName, lastName: lastName, company: company, address1: address1, address2: address2, city: city, state: state, postcode: postcode, country: country, email: email, phone: phone)
     }
 }
 
 //
 //
-struct Customer: Decodable {
-    let identifier: String
+struct Customer {
+    let identifier: Int
     let firstName: String
     let lastName: String
     let email: String?
     let phone: String?
     let billingAddress: Address?
     let shippingAddress: Address?
+    let note: String?
 
-    init(identifier: String, firstName: String, lastName: String, email: String?, phone: String?, billingAddress: Address?, shippingAddress: Address?) {
+    init(identifier: Int, firstName: String, lastName: String, email: String?, phone: String?, billingAddress: Address?, shippingAddress: Address?, note: String?) {
         self.identifier = identifier
         self.firstName = firstName
         self.lastName = lastName
@@ -232,5 +246,33 @@ struct Customer: Decodable {
         self.phone = phone
         self.billingAddress = billingAddress
         self.shippingAddress = shippingAddress
+        self.note = note
+    }
+}
+
+extension Customer: Decodable {
+    enum CustomerStructKeys: String, CodingKey {
+        case identifier = "id"
+        case firstName = "first_name"
+        case lastName = "last_name"
+        case email = "billing.email"
+        case phone = "billing.phone"
+        case billingAddress = "billing"
+        case shippingAddress = "shipping"
+        case note = "customer_note"
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CustomerStructKeys.self)
+        let identifier: Int = try container.decode(Int.self, forKey: .identifier)
+        let firstName: String = try container.decode(String.self, forKey: .firstName)
+        let lastName: String = try container.decode(String.self, forKey: .lastName)
+        let billingAddress: Address = try container.decode(Address.self, forKey: .billingAddress)
+        let shippingAddress: Address = try container.decode(Address.self, forKey: .shippingAddress)
+        let email: String? = try container.decodeIfPresent(String.self, forKey: .email)
+        let phone: String? = try container.decodeIfPresent(String.self, forKey: .phone)
+        let note: String? = try container.decode(String.self, forKey: .note)
+
+        self.init(identifier: identifier, firstName: firstName, lastName: lastName, email: email, phone: phone, billingAddress: billingAddress, shippingAddress: shippingAddress, note: note)
     }
 }

@@ -21,8 +21,7 @@ class SingleOrderViewController: UIViewController {
 
     func configureTableView() {
         configureSections()
-        let nib = UINib(nibName: SingleOrderSummaryCell.reuseIdentifier, bundle: nil)
-        tableView.register(nib, forCellReuseIdentifier: SingleOrderSummaryCell.reuseIdentifier)
+        configureNibs()
     }
 
     func configureSections() {
@@ -32,6 +31,13 @@ class SingleOrderViewController: UIViewController {
                 sectionTitles[customerNoteSection] = ""
             }
         }
+    }
+
+    func configureNibs() {
+        let summaryNib = UINib(nibName: SingleOrderSummaryCell.reuseIdentifier, bundle: nil)
+        tableView.register(summaryNib, forCellReuseIdentifier: SingleOrderSummaryCell.reuseIdentifier)
+        let noteNib = UINib(nibName: SingleOrderCustomerNoteCell.reuseIdentifier, bundle: nil)
+        tableView.register(noteNib, forCellReuseIdentifier: SingleOrderCustomerNoteCell.reuseIdentifier)
     }
 }
 
@@ -48,8 +54,8 @@ extension SingleOrderViewController: UITableViewDataSource {
         }
 
         if section == customerNoteSection {
-            if let orderNotes = order.notes {
-                if orderNotes.isEmpty == false {
+            if let customerNote = order.customerNote {
+                if customerNote.isEmpty == false {
                     return 1
                 } else {
                     return 0
@@ -84,9 +90,15 @@ extension SingleOrderViewController: UITableViewDataSource {
             let cell: SingleOrderSummaryCell = tableView.dequeueReusableCell(withIdentifier: SingleOrderSummaryCell.reuseIdentifier, for: indexPath) as! SingleOrderSummaryCell
             cell.configureCell(order: order)
             return cell
-        } else  {
-            return UITableViewCell()
         }
+
+        if indexPath.section == customerNoteSection {
+            let cell: SingleOrderCustomerNoteCell = tableView.dequeueReusableCell(withIdentifier: SingleOrderCustomerNoteCell.reuseIdentifier, for: indexPath) as! SingleOrderCustomerNoteCell
+            cell.configureCell(note: order.customerNote)
+            return cell
+        }
+
+        return UITableViewCell()
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

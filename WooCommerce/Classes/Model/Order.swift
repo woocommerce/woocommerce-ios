@@ -6,57 +6,49 @@ import Foundation
 
 // MARK: -
 //
-struct Order: Decodable {
-    let identifier: Int
-    let number: String
-    let statusString: String
-    var customer: Customer?
-    let dateCreatedString: String
-    let dateUpdatedString: String
-    let shippingAddress: Address
-    let billingAddress: Address
-    let items: [OrderItem]
+struct Order {
+//    let localSiteID: Int // Maps the Order model to the site ID in the database table
+    let identifier: Int // The unique ID for this order on the server
+    let number: String  // The order number to display to the user
+    let statusString: String // String is used in the variable's name to denote that it has a computed property counterpart
     let currency: String
-    let totalString: String
-    let notes: [OrderNote]?
+    let dateCreatedString: String
+
+    let discountTotal: String
+    let couponLines: [CouponLine]
+    let shippingTotal: String // The total shipping cost (excluding tax)
+    let totalTax: String // The total amount of tax (from products, shipping, discounts, etc.)
+    let total: String // Complete total, including taxes
+
+    let paymentMethod: String // Payment method code, e.g. 'cod', 'stripe'
+    let paymentMethodTitle: String // Displayable payment method, e.g. 'Cash on delivery', 'Credit Card (Stripe)'
+
     let customerID: Int
     let customerNote: String?
 
-    init(identifier: Int, number: String, statusString: String, customer: Customer?, dateCreatedString: String, dateUpdatedString: String, shippingAddress: Address, billingAddress: Address, items: [OrderItem], currency: String, totalString: String, notes: [OrderNote]?, customerID: Int, customerNote: String?) {
+    let billingAddress: Address
+    let shippingAddress: Address
+
+    let items: [OrderItem]
+
+    init(identifier: Int, number: String, statusString: String, currency: String, dateCreatedString: String, discountTotal: String, couponLines: [CouponLine], shippingTotal: String, totalTax: String, total: String, paymentMethod: String, paymentMethodTitle: String, customerID: Int, customerNote: String?, billingAddress: Address, shippingAddress: Address, items: [OrderItem]) {
         self.identifier = identifier
         self.number = number
         self.statusString = statusString
-        self.customer = customer
+        self.currency = currency
         self.dateCreatedString = dateCreatedString
-        self.dateUpdatedString = dateUpdatedString
+        self.discountTotal = discountTotal
+        self.couponLines = couponLines
+        self.shippingTotal = shippingTotal
+        self.totalTax = totalTax
+        self.total = total
+        self.paymentMethod = paymentMethod
+        self.paymentMethodTitle = paymentMethodTitle
+        self.customerID = customerID
+        self.customerNote = customerNote
         self.shippingAddress = shippingAddress
         self.billingAddress = billingAddress
         self.items = items
-        self.currency = currency
-        self.totalString = totalString
-        self.notes = notes
-        self.customerID = customerID
-        self.customerNote = customerNote
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: OrderStructKeys.self)
-        let identifier: Int = try container.decode(Int.self, forKey: .identifier)
-        let number: String = try container.decode(String.self, forKey: .number)
-        let statusString: String = try container.decode(String.self, forKey: .statusString)
-        let customer: Customer? = try container.decodeIfPresent(Customer.self, forKey: .customer)
-        let dateCreatedString: String = try container.decode(String.self, forKey: .dateCreatedString)
-        let dateUpdatedString: String = try container.decode(String.self, forKey: .dateUpdatedString)
-        let shippingAddress: Address = try container.decode(Address.self, forKey: .shippingAddress)
-        let billingAddress: Address = try container.decode(Address.self, forKey: .billingAddress)
-        let items: Array<OrderItem> = try container.decode([OrderItem].self, forKey: .orderItems)
-        let currency: String = try container.decode(String.self, forKey: .currency)
-        let totalString: String = try container.decode(String.self, forKey: .total)
-        let notes: Array<OrderNote>? = try container.decodeIfPresent([OrderNote].self, forKey: .notes)
-        let customerID: Int = try container.decode(Int.self, forKey: .customerID)
-        let customerNote: String = try container.decode(String.self, forKey: .customerNote)
-
-        self.init(identifier: identifier, number: number, statusString: statusString, customer: customer, dateCreatedString: dateCreatedString, dateUpdatedString: dateUpdatedString, shippingAddress: shippingAddress, billingAddress: billingAddress, items: items, currency: currency, totalString: totalString, notes: notes, customerID: customerID, customerNote: customerNote)
     }
 }
 
@@ -87,7 +79,7 @@ extension OrderStatus {
 // MARK: -
 //
 struct OrderItem {
-    let lineItemID: Int
+    let identifier: Int // The lineItemID
     let name: String
     let productID: Int
     let quantity: Int
@@ -99,8 +91,8 @@ struct OrderItem {
     let totalTax: String
     let variationID: Int
 
-    init(lineItemID: Int, name: String, productID: Int, quantity: Int, sku: String, subtotal: String, subtotalTax: String, taxClass: String, total: String, totalTax: String, variationID: Int) {
-        self.lineItemID = lineItemID
+    init(identifier: Int, name: String, productID: Int, quantity: Int, sku: String, subtotal: String, subtotalTax: String, taxClass: String, total: String, totalTax: String, variationID: Int) {
+        self.identifier = identifier
         self.name = name
         self.productID = productID
         self.quantity = quantity
@@ -116,7 +108,7 @@ struct OrderItem {
 
 extension OrderItem : Decodable {
     enum OrderItemStructKeys: String, CodingKey {
-        case lineItemID = "id"
+        case identifier = "id"
         case name = "name"
         case productID = "product_id"
         case quantity = "quantity"
@@ -131,7 +123,7 @@ extension OrderItem : Decodable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: OrderItemStructKeys.self)
-        let lineItemID: Int = try container.decode(Int.self, forKey: .lineItemID)
+        let identifier: Int = try container.decode(Int.self, forKey: .identifier)
         let name: String = try container.decode(String.self, forKey: .name)
         let productID: Int = try container.decode(Int.self, forKey: .productID)
         let quantity: Int = try container.decode(Int.self, forKey: .quantity)
@@ -143,7 +135,7 @@ extension OrderItem : Decodable {
         let totalTax: String = try container.decode(String.self, forKey: .totalTax)
         let variationID: Int = try container.decode(Int.self, forKey: .variationID)
 
-        self.init(lineItemID: lineItemID, name: name, productID: productID, quantity: quantity, sku: sku, subtotal: subtotal, subtotalTax: subtotalTax, taxClass: taxClass, total: total, totalTax: totalTax, variationID: variationID)
+        self.init(identifier: identifier, name: name, productID: productID, quantity: quantity, sku: sku, subtotal: subtotal, subtotalTax: subtotalTax, taxClass: taxClass, total: total, totalTax: totalTax, variationID: variationID)
     }
 }
 
@@ -226,53 +218,27 @@ extension Address: Decodable {
     }
 }
 
-//
-//
-struct Customer {
+struct CouponLine {
     let identifier: Int
-    let firstName: String
-    let lastName: String
-    let email: String?
-    let phone: String?
-    let billingAddress: Address?
-    let shippingAddress: Address?
-    let note: String?
+    let code: String
 
-    init(identifier: Int, firstName: String, lastName: String, email: String?, phone: String?, billingAddress: Address?, shippingAddress: Address?, note: String?) {
+    init(identifier: Int, code: String) {
         self.identifier = identifier
-        self.firstName = firstName
-        self.lastName = lastName
-        self.email = email
-        self.phone = phone
-        self.billingAddress = billingAddress
-        self.shippingAddress = shippingAddress
-        self.note = note
+        self.code = code
     }
 }
 
-extension Customer: Decodable {
-    enum CustomerStructKeys: String, CodingKey {
+extension CouponLine: Decodable {
+    enum CouponLineStructKeys: String, CodingKey {
         case identifier = "id"
-        case firstName = "first_name"
-        case lastName = "last_name"
-        case email = "billing.email"
-        case phone = "billing.phone"
-        case billingAddress = "billing"
-        case shippingAddress = "shipping"
-        case note = "customer_note"
+        case code = "code"
     }
 
     init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CustomerStructKeys.self)
+        let container = try decoder.container(keyedBy: CouponLineStructKeys.self)
         let identifier: Int = try container.decode(Int.self, forKey: .identifier)
-        let firstName: String = try container.decode(String.self, forKey: .firstName)
-        let lastName: String = try container.decode(String.self, forKey: .lastName)
-        let billingAddress: Address = try container.decode(Address.self, forKey: .billingAddress)
-        let shippingAddress: Address = try container.decode(Address.self, forKey: .shippingAddress)
-        let email: String? = try container.decodeIfPresent(String.self, forKey: .email)
-        let phone: String? = try container.decodeIfPresent(String.self, forKey: .phone)
-        let note: String? = try container.decode(String.self, forKey: .note)
+        let code: String = try container.decode(String.self, forKey: .code)
 
-        self.init(identifier: identifier, firstName: firstName, lastName: lastName, email: email, phone: phone, billingAddress: billingAddress, shippingAddress: shippingAddress, note: note)
+        self.init(identifier: identifier, code: code)
     }
 }

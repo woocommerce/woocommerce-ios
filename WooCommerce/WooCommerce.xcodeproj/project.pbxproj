@@ -31,6 +31,8 @@
 		CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */; };
 		CE2C08E7207D62370042F717 /* SingleOrderCustomerNoteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2C08E5207D62370042F717 /* SingleOrderCustomerNoteCell.swift */; };
 		CE2C08E8207D62370042F717 /* SingleOrderCustomerNoteCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2C08E6207D62370042F717 /* SingleOrderCustomerNoteCell.xib */; };
+		CE2C08EB207E98620042F717 /* SingleOrderCustomerInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2C08E9207E98620042F717 /* SingleOrderCustomerInfoCell.swift */; };
+		CE2C08EC207E98620042F717 /* SingleOrderCustomerInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2C08EA207E98620042F717 /* SingleOrderCustomerInfoCell.xib */; };
 		CEE005F62076C4040079161F /* Orders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F52076C4040079161F /* Orders.storyboard */; };
 		CEE005F82077C9690079161F /* order-list.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F72077C9690079161F /* order-list.json */; };
 		CEE005FA2077C9C00079161F /* order-925.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F92077C9C00079161F /* order-925.json */; };
@@ -84,6 +86,8 @@
 		CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		CE2C08E5207D62370042F717 /* SingleOrderCustomerNoteCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleOrderCustomerNoteCell.swift; sourceTree = "<group>"; };
 		CE2C08E6207D62370042F717 /* SingleOrderCustomerNoteCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SingleOrderCustomerNoteCell.xib; sourceTree = "<group>"; };
+		CE2C08E9207E98620042F717 /* SingleOrderCustomerInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleOrderCustomerInfoCell.swift; sourceTree = "<group>"; };
+		CE2C08EA207E98620042F717 /* SingleOrderCustomerInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SingleOrderCustomerInfoCell.xib; sourceTree = "<group>"; };
 		CEE005F52076C4040079161F /* Orders.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Orders.storyboard; sourceTree = "<group>"; };
 		CEE005F72077C9690079161F /* order-list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-list.json"; sourceTree = "<group>"; };
 		CEE005F92077C9C00079161F /* order-925.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-925.json"; sourceTree = "<group>"; };
@@ -270,6 +274,8 @@
 				CEE006072077D14C0079161F /* SingleOrderViewController.swift */,
 				CE2C08E5207D62370042F717 /* SingleOrderCustomerNoteCell.swift */,
 				CE2C08E6207D62370042F717 /* SingleOrderCustomerNoteCell.xib */,
+				CE2C08E9207E98620042F717 /* SingleOrderCustomerInfoCell.swift */,
+				CE2C08EA207E98620042F717 /* SingleOrderCustomerInfoCell.xib */,
 			);
 			path = SingleOrder;
 			sourceTree = "<group>";
@@ -373,6 +379,7 @@
 				CE2C08E8207D62370042F717 /* SingleOrderCustomerNoteCell.xib in Resources */,
 				CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
+				CE2C08EC207E98620042F717 /* SingleOrderCustomerInfoCell.xib in Resources */,
 				CEE005FA2077C9C00079161F /* order-925.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -467,6 +474,7 @@
 				CEE006082077D14C0079161F /* SingleOrderViewController.swift in Sources */,
 				CEE006052077D1280079161F /* SingleOrderSummaryCell.swift in Sources */,
 				CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */,
+				CE2C08EB207E98620042F717 /* SingleOrderCustomerInfoCell.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				B56DB3D22049BFAA00D4AA8E /* WooCommerce.xcdatamodeld in Sources */,
 				B56DB3ED2049BFE600D4AA8E /* ContextManager.swift in Sources */,

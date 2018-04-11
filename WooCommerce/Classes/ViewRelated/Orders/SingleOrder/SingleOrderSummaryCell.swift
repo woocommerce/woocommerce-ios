@@ -25,4 +25,16 @@ class SingleOrderSummaryCell: UITableViewCell {
         createdLabel.applyFootnoteStyle()
         paymentLabel.applyStatusStyle(for: order.status)
     }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        let payStatusColor = paymentLabel.backgroundColor
+        super.setSelected(selected, animated: animated)
+        paymentLabel.backgroundColor = payStatusColor
+    }
+
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        let payStatusColor = paymentLabel.backgroundColor
+        super.setHighlighted(highlighted, animated: animated)
+        paymentLabel.backgroundColor = payStatusColor
+    }
 }

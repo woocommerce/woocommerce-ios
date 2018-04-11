@@ -5,6 +5,7 @@ class SingleOrderViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
 
     var order: Order!
+    var orderNotes: [OrderNote]?
     var sectionTitles = [String]()
     let summarySection = 0
     let fulfillItemsSection = 1
@@ -76,7 +77,7 @@ extension SingleOrderViewController: UITableViewDataSource {
             let titleRow = 1
             let addNoteRow = 1
             var totalNotes = 0
-            if let notes = order.notes {
+            if let notes = orderNotes {
                 totalNotes = notes.count
             }
             return titleRow + addNoteRow + totalNotes

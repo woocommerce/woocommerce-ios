@@ -32,9 +32,7 @@ class OrdersViewController: UIViewController {
             do {
                 let json = try Data(contentsOf: path)
                 let decoder = JSONDecoder()
-                var orderFromJson = try decoder.decode(Order.self, from: json)
-                let customer  = Customer(identifier: orderFromJson.customerID, firstName: orderFromJson.billingAddress.firstName, lastName: orderFromJson.billingAddress.lastName, email: orderFromJson.billingAddress.email, phone: orderFromJson.billingAddress.phone, billingAddress: orderFromJson.billingAddress, shippingAddress: orderFromJson.shippingAddress, note: orderFromJson.customerNote)
-                orderFromJson.customer = customer
+                let orderFromJson = try decoder.decode(Order.self, from: json)
                 return orderFromJson
             } catch {
                 print("error:\(error)")
@@ -122,11 +120,7 @@ class OrdersViewController: UIViewController {
 
     func filterContentForSearchText(_ searchText: String, scope: String = "All") {
         searchResults = orders.filter({ (order : Order) -> Bool in
-            if let firstName = order.customer?.firstName {
-                return firstName.lowercased().contains(searchText.lowercased())
-            } else {
-                return false
-            }
+            return order.billingAddress.firstName.lowercased().contains(searchText.lowercased())
         })
         tableView.reloadData()
     }

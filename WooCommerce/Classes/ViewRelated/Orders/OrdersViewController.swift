@@ -172,7 +172,7 @@ extension OrdersViewController: UITableViewDelegate {
         let basicOrder = orderAtIndexPath(indexPath)
         let singleOrder = loadSingleOrder(basicOrder: basicOrder)
         let singleOrderViewController = storyboard?.instantiateViewController(withIdentifier: "SingleOrderViewController") as! SingleOrderViewController
-        singleOrderViewController.order = singleOrder
+        singleOrderViewController.viewModel = SingleOrderViewModel(withOrder: singleOrder)
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         navigationController?.pushViewController(singleOrderViewController, animated: true)
     }

@@ -1,9 +1,9 @@
 import UIKit
 
 class SingleOrderSummaryCell: UITableViewCell {
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var createdLabel: UILabel!
-    @IBOutlet weak var paymentLabel: PaddedLabel!
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var createdLabel: UILabel!
+    @IBOutlet private weak var paymentLabel: PaddedLabel!
 
     static let reuseIdentifier = "SingleOrderSummaryCell"
 

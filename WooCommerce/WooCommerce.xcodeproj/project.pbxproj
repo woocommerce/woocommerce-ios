@@ -33,6 +33,7 @@
 		CE2C08E8207D62370042F717 /* SingleOrderCustomerNoteCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2C08E6207D62370042F717 /* SingleOrderCustomerNoteCell.xib */; };
 		CE2C08EB207E98620042F717 /* SingleOrderCustomerInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2C08E9207E98620042F717 /* SingleOrderCustomerInfoCell.swift */; };
 		CE2C08EC207E98620042F717 /* SingleOrderCustomerInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2C08EA207E98620042F717 /* SingleOrderCustomerInfoCell.xib */; };
+		CE2C08F3207FBE270042F717 /* SingleOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2C08F2207FBE270042F717 /* SingleOrderViewModel.swift */; };
 		CEE005F62076C4040079161F /* Orders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F52076C4040079161F /* Orders.storyboard */; };
 		CEE005F82077C9690079161F /* order-list.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F72077C9690079161F /* order-list.json */; };
 		CEE005FA2077C9C00079161F /* order-925.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F92077C9C00079161F /* order-925.json */; };
@@ -88,6 +89,7 @@
 		CE2C08E6207D62370042F717 /* SingleOrderCustomerNoteCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SingleOrderCustomerNoteCell.xib; sourceTree = "<group>"; };
 		CE2C08E9207E98620042F717 /* SingleOrderCustomerInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleOrderCustomerInfoCell.swift; sourceTree = "<group>"; };
 		CE2C08EA207E98620042F717 /* SingleOrderCustomerInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SingleOrderCustomerInfoCell.xib; sourceTree = "<group>"; };
+		CE2C08F2207FBE270042F717 /* SingleOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleOrderViewModel.swift; sourceTree = "<group>"; };
 		CEE005F52076C4040079161F /* Orders.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Orders.storyboard; sourceTree = "<group>"; };
 		CEE005F72077C9690079161F /* order-list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-list.json"; sourceTree = "<group>"; };
 		CEE005F92077C9C00079161F /* order-925.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-925.json"; sourceTree = "<group>"; };
@@ -137,12 +139,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		B509112B2049CFDF007D25DC /* Model */ = {
+		B509112B2049CFDF007D25DC /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				B50911332049E493007D25DC /* Order.swift */,
 			);
-			path = Model;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		B56DB3BD2049BFAA00D4AA8E = {
@@ -201,8 +203,9 @@
 			children = (
 				CE1CCB4C20572444000EE3AC /* Extensions */,
 				CE1CCB3E2056F204000EE3AC /* Styles */,
-				B509112B2049CFDF007D25DC /* Model */,
+				B509112B2049CFDF007D25DC /* Models */,
 				B56DB3EE2049C06200D4AA8E /* CoreData */,
+				CE2C08F1207FBA810042F717 /* ViewModels */,
 				B56DB3EF2049C06D00D4AA8E /* ViewRelated */,
 				B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */,
 			);
@@ -252,6 +255,14 @@
 				CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		CE2C08F1207FBA810042F717 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				CE2C08F2207FBE270042F717 /* SingleOrderViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		CEE005FF2077CA5A0079161F /* fake data */ = {
@@ -469,6 +480,7 @@
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,
+				CE2C08F3207FBE270042F717 /* SingleOrderViewModel.swift in Sources */,
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				CE1CCB4E20572456000EE3AC /* Order+Helpers.swift in Sources */,
 				CEE006082077D14C0079161F /* SingleOrderViewController.swift in Sources */,

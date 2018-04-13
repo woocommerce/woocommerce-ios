@@ -1,18 +1,24 @@
 import UIKit
 
 class SingleOrderCustomerInfoCell: UITableViewCell {
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var addressLabel: UILabel!
-    @IBOutlet weak var phoneLabel: UILabel!
-    @IBOutlet weak var emailLabel: UILabel!
-    @IBOutlet weak var moreButton: UIButton!
-    @IBOutlet weak var emailButton: UIButton!
-    @IBOutlet weak var borderLine: UIView!
-    @IBOutlet weak var borderLine2: UIView!
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var addressLabel: UILabel!
+    @IBOutlet private weak var phoneLabel: UILabel!
+    @IBOutlet private weak var emailLabel: UILabel!
+    @IBOutlet private weak var moreButton: UIButton!
+    @IBOutlet private weak var emailButton: UIButton!
+    @IBOutlet private weak var borderLine: UIView!
+    @IBOutlet private weak var borderLine2: UIView!
+
+    var title: String!
+    var address: String!
+    var phone: String? = nil
+    var email: String? = nil
+    var displaysExtraBorders: Bool!
 
     static let reuseIdentifier = "SingleOrderCustomerInfoCell"
 
-    func configureCell(address: Address) {
-        // uh oh. How do I know which address is being passed here?
+    override func awakeFromNib() {
+        
     }
 }

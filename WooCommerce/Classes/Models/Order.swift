@@ -169,7 +169,6 @@ struct Address {
     let country: String
     let email: String?
     let phone: String?
-    let type: AddressType
 
     init(firstName: String, lastName: String, company: String?, address1: String, address2: String?, city: String, state: String, postcode: String, country: String, email: String?, phone: String?) {
         self.firstName = firstName
@@ -183,11 +182,6 @@ struct Address {
         self.country = country
         self.email = email
         self.phone = phone
-    }
-
-    enum AddressType {
-        case Shipping
-        case Billing
     }
 }
 

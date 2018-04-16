@@ -154,70 +154,8 @@ struct OrderNote: Decodable {
     }
 }
 
-
 // MARK: -
 //
-struct Address {
-    let firstName: String
-    let lastName: String
-    let company: String?
-    let address1: String
-    let address2: String?
-    let city: String
-    let state: String
-    let postcode: String
-    let country: String
-    let email: String?
-    let phone: String?
-
-    init(firstName: String, lastName: String, company: String?, address1: String, address2: String?, city: String, state: String, postcode: String, country: String, email: String?, phone: String?) {
-        self.firstName = firstName
-        self.lastName = lastName
-        self.company = company
-        self.address1 = address1
-        self.address2 = address2
-        self.city = city
-        self.state = state
-        self.postcode = postcode
-        self.country = country
-        self.email = email
-        self.phone = phone
-    }
-}
-
-extension Address: Decodable {
-    enum AddressStructKeys: String, CodingKey {
-        case firstName = "first_name"
-        case lastName = "last_name"
-        case company = "company"
-        case address1 = "address_1"
-        case address2 = "address_2"
-        case city = "city"
-        case state = "state"
-        case postcode = "postcode"
-        case country = "country"
-        case email = "email"
-        case phone = "phone"
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: AddressStructKeys.self)
-        let firstName: String = try container.decode(String.self, forKey: .firstName)
-        let lastName: String = try container.decode(String.self, forKey: .lastName)
-        let company: String? = try container.decodeIfPresent(String.self, forKey: .company)
-        let address1: String = try container.decode(String.self, forKey: .address1)
-        let address2: String? = try container.decodeIfPresent(String.self, forKey: .address2)
-        let city: String = try container.decode(String.self, forKey: .city)
-        let state: String = try container.decode(String.self, forKey: .state)
-        let postcode: String = try container.decode(String.self, forKey: .postcode)
-        let country: String = try container.decode(String.self, forKey: .country)
-        let email: String? = try container.decodeIfPresent(String.self, forKey: .email)
-        let phone: String? = try container.decodeIfPresent(String.self, forKey: .phone)
-
-        self.init(firstName: firstName, lastName: lastName, company: company, address1: address1, address2: address2, city: city, state: state, postcode: postcode, country: country, email: email, phone: phone)
-    }
-}
-
 struct CouponLine {
     let identifier: Int
     let code: String

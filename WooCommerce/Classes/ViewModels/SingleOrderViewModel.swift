@@ -1,4 +1,6 @@
 import UIKit
+import Contacts
+import Gridicons
 
 class SingleOrderViewModel {
     let order: Order
@@ -56,9 +58,10 @@ class SingleOrderViewModel {
 
         if section == customerInfoSection {
             let shippingRow = 1
-            let billingRow = 1
-            let showHideButtonRow = 1
-            return shippingRow + billingRow + showHideButtonRow
+            let billingAddressRow = 1
+            let billingPhoneRow =  order.billingAddress.phone?.isEmpty == false ? 1 : 0
+            let billingEmailRow = order.billingAddress.email?.isEmpty == false ? 1 : 0
+            return shippingRow + billingAddressRow + billingPhoneRow + billingEmailRow
         }
 
         if section == orderNotesSection {
@@ -84,36 +87,73 @@ class SingleOrderViewModel {
         return cell
     }
 
-    func cellForCustomerInfoSection(indexPath: IndexPath, tableView: UITableView) -> SingleOrderCustomerInfoCell {
+    func cellForCustomerInfoSection(indexPath: IndexPath, tableView: UITableView) -> UITableViewCell {
         let shippingRow = 0
         let billingRow = 1
         var billingPhoneRow = -1
         var billingEmailRow = -2
-        let showHideRow = 2
-        let cell: SingleOrderCustomerInfoCell = tableView.dequeueReusableCell(withIdentifier: SingleOrderCustomerInfoCell.reuseIdentifier, for: indexPath) as! SingleOrderCustomerInfoCell
 
-        if order.billingAddress.phone != nil {
+        if order.billingAddress.phone?.isEmpty == false {
             billingPhoneRow = 2
+        }
+
+        if order.billingAddress.email?.isEmpty == false {
             billingEmailRow = 3
-            
         }
 
         if indexPath.row == shippingRow {
-            let title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info")
-            let name = "\(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
-            let address = "\(order.shippingAddress.address1) \n\(order.shippingAddress.city), \(order.shippingAddress.state) \(order.shippingAddress.postcode) \n\(order.shippingAddress.country)"
-            cell.configureCell(title: title, name: name, address: address, phone: nil, email: nil, displayExtraBorders: false)
+            let cell = tableView.dequeueReusableCell(withIdentifier: SingleOrderCustomerInfoCell.reuseIdentifier, for: indexPath) as! SingleOrderCustomerInfoCell
+            let title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
+            let contact: CNContact = order.shippingAddress.createContact()
+            let fullName = CNContactFormatter.string(from: contact, style: .fullName)
+            let address = CNPostalAddressFormatter.string(from: contact.postalAddresses[0].value, style: .mailingAddress)
+            cell.configureCell(title: title, name: fullName, address: address)
+            cell.separatorInset = UIEdgeInsets.zero
+            return cell
         }
 
         if indexPath.row == billingRow {
-            // configure billing
+            let cell = tableView.dequeueReusableCell(withIdentifier: SingleOrderCustomerInfoCell.reuseIdentifier, for: indexPath) as! SingleOrderCustomerInfoCell
+            let title = NSLocalizedString("Billing details", comment: "Billing details for customer info cell")
+            let contact: CNContact = order.billingAddress.createContact()
+            let fullName = CNContactFormatter.string(from: contact, style: .fullName)
+            let address = CNPostalAddressFormatter.string(from: contact.postalAddresses[0].value, style: .mailingAddress)
+            cell.configureCell(title: title, name: fullName, address: address)
+            return cell
         }
 
-        if indexPath.row == showHideRow {
-            // configure show/hide button row
+        if indexPath.row == billingPhoneRow {
+            let contact: CNContact = order.billingAddress.createContact()
+            let cell = UITableViewCell(style: .default, reuseIdentifier: "BillingPhoneCell")
+            let phoneButton = UIButton(type: .custom)
+            phoneButton.frame = CGRect(x: 8, y: 0, width: 44, height: 44)
+            phoneButton.setImage(Gridicon.iconOfType(.ellipsis), for: .normal)
+            phoneButton.contentHorizontalAlignment = .right
+            phoneButton.tintColor = StyleManager.wooCommerceBrandColor
+            cell.accessoryView = phoneButton
+            if let phoneData: CNPhoneNumber = contact.phoneNumbers.first?.value {
+                cell.textLabel?.text = phoneData.stringValue
+            }
+            return cell
         }
 
-        return cell
+        if indexPath.row == billingEmailRow {
+            let contact: CNContact = order.billingAddress.createContact()
+            let cell = UITableViewCell(style: .default, reuseIdentifier: "BillingPhoneCell")
+            let emailButton = UIButton(type: .custom)
+            emailButton.frame = CGRect(x: 8, y: 0, width: 44, height: 44)
+            emailButton.setImage(Gridicon.iconOfType(.mail), for: .normal)
+            emailButton.contentHorizontalAlignment = .right
+            emailButton.tintColor = StyleManager.wooCommerceBrandColor
+            cell.accessoryView = emailButton
+            if let email = contact.emailAddresses.first?.value {
+                cell.textLabel?.text = email as String
+            }
+            cell.separatorInset = UIEdgeInsets.zero
+            return cell
+        }
+
+        return UITableViewCell()
     }
 
     private func customerNoteIsEmpty() -> Bool {

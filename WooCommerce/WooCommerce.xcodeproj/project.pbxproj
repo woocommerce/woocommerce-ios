@@ -34,6 +34,8 @@
 		CE2C08EB207E98620042F717 /* SingleOrderCustomerInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2C08E9207E98620042F717 /* SingleOrderCustomerInfoCell.swift */; };
 		CE2C08EC207E98620042F717 /* SingleOrderCustomerInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2C08EA207E98620042F717 /* SingleOrderCustomerInfoCell.xib */; };
 		CE2C08F3207FBE270042F717 /* SingleOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2C08F2207FBE270042F717 /* SingleOrderViewModel.swift */; };
+		CE998C0E20814C47003B8AAE /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE998C0D20814C47003B8AAE /* Address.swift */; };
+		CE998C1020814C83003B8AAE /* Address+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE998C0F20814C83003B8AAE /* Address+Helpers.swift */; };
 		CEE005F62076C4040079161F /* Orders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F52076C4040079161F /* Orders.storyboard */; };
 		CEE005F82077C9690079161F /* order-list.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F72077C9690079161F /* order-list.json */; };
 		CEE005FA2077C9C00079161F /* order-925.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F92077C9C00079161F /* order-925.json */; };
@@ -90,6 +92,8 @@
 		CE2C08E9207E98620042F717 /* SingleOrderCustomerInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleOrderCustomerInfoCell.swift; sourceTree = "<group>"; };
 		CE2C08EA207E98620042F717 /* SingleOrderCustomerInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SingleOrderCustomerInfoCell.xib; sourceTree = "<group>"; };
 		CE2C08F2207FBE270042F717 /* SingleOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleOrderViewModel.swift; sourceTree = "<group>"; };
+		CE998C0D20814C47003B8AAE /* Address.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
+		CE998C0F20814C83003B8AAE /* Address+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Address+Helpers.swift"; sourceTree = "<group>"; };
 		CEE005F52076C4040079161F /* Orders.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Orders.storyboard; sourceTree = "<group>"; };
 		CEE005F72077C9690079161F /* order-list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-list.json"; sourceTree = "<group>"; };
 		CEE005F92077C9C00079161F /* order-925.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-925.json"; sourceTree = "<group>"; };
@@ -143,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				B50911332049E493007D25DC /* Order.swift */,
+				CE998C0D20814C47003B8AAE /* Address.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -253,6 +258,7 @@
 				CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */,
 				CE1F51262064345B00C6C810 /* UIColor+Helpers.swift */,
 				CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */,
+				CE998C0F20814C83003B8AAE /* Address+Helpers.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -478,6 +484,7 @@
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
+				CE998C1020814C83003B8AAE /* Address+Helpers.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,
 				CE2C08F3207FBE270042F717 /* SingleOrderViewModel.swift in Sources */,
@@ -493,6 +500,7 @@
 				CE2C08E7207D62370042F717 /* SingleOrderCustomerNoteCell.swift in Sources */,
 				B50911342049E493007D25DC /* Order.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */,
+				CE998C0E20814C47003B8AAE /* Address.swift in Sources */,
 				CE1F512920697F0100C6C810 /* UIFont+Helpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -7,7 +7,7 @@ class SingleOrderCustomerInfoCell: UITableViewCell {
 
     static let reuseIdentifier = "SingleOrderCustomerInfoCell"
 
-    func configureCell(title: String!, name: String!, address: String!, phone: String?, email: String?, displayExtraBorders: Bool!) {
+    func configureCell(title: String!, name: String!, address: String!) {
         titleLabel.text = title
         nameLabel.text = name
         addressLabel.text = address

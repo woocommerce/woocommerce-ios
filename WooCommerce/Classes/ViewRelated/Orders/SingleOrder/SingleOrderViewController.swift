@@ -56,6 +56,13 @@ extension SingleOrderViewController: UITableViewDataSource {
         let titles = viewModel.getSectionTitles()
         return titles[section]
     }
+
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        if section == viewModel.customerInfoSection {
+            return NSLocalizedString("Hide billing", comment: "Hide the billing information - button title")
+        }
+        return nil
+    }
 }
 
 extension SingleOrderViewController: UITableViewDelegate {

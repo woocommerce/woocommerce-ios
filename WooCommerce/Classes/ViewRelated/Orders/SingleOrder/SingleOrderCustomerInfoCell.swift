@@ -11,5 +11,9 @@ class SingleOrderCustomerInfoCell: UITableViewCell {
         titleLabel.text = title
         nameLabel.text = name
         addressLabel.text = address
+
+        titleLabel.applyTitleStyle()
+        nameLabel.applyBodyStyle()
+        addressLabel.applyBodyStyle()
     }
 }

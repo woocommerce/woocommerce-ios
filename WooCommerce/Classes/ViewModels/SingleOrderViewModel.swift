@@ -133,6 +133,7 @@ class SingleOrderViewModel {
             cell.accessoryView = phoneButton
             if let phoneData: CNPhoneNumber = contact.phoneNumbers.first?.value {
                 cell.textLabel?.text = phoneData.stringValue
+                cell.textLabel?.applyBodyStyle()
             }
             return cell
         }
@@ -148,6 +149,8 @@ class SingleOrderViewModel {
             cell.accessoryView = emailButton
             if let email = contact.emailAddresses.first?.value {
                 cell.textLabel?.text = email as String
+                cell.textLabel?.applyBodyStyle()
+                cell.textLabel?.adjustsFontSizeToFitWidth = true
             }
             cell.separatorInset = UIEdgeInsets.zero
             return cell

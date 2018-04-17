@@ -149,7 +149,6 @@ class SingleOrderViewModel {
                     let phoneNumber = try phoneNumberKit.parse(strippedPhoneNumber, withRegion: regionShortCode, ignoreType: true)
                     let formattedPhoneNumber = phoneNumberKit.format(phoneNumber, toType: .national)
                     cell.textLabel?.text = formattedPhoneNumber
-                    cell.textLabel?.applyBodyStyle()
                     cell.textLabel?.adjustsFontSizeToFitWidth = true
                 } catch {
                     NSLog("error parsing sanitized billing phone number: %@", strippedPhoneNumber)
@@ -160,7 +159,9 @@ class SingleOrderViewModel {
 
         if indexPath.row == billingEmailRow {
             let contact: CNContact = order.billingAddress.createContact()
-            let cell = UITableViewCell(style: .default, reuseIdentifier: "BillingPhoneCell")
+            let cell = UITableViewCell(style: .default, reuseIdentifier: "BillingEmailCell")
+            cell.textLabel?.applyBodyStyle()
+
             let emailButton = UIButton(type: .custom)
             emailButton.frame = CGRect(x: 8, y: 0, width: 44, height: 44)
             emailButton.setImage(Gridicon.iconOfType(.mail), for: .normal)
@@ -169,10 +170,8 @@ class SingleOrderViewModel {
             cell.accessoryView = emailButton
             if let email = contact.emailAddresses.first?.value {
                 cell.textLabel?.text = email as String
-                cell.textLabel?.applyBodyStyle()
                 cell.textLabel?.adjustsFontSizeToFitWidth = true
             }
-            cell.separatorInset = UIEdgeInsets.zero
             return cell
         }
 

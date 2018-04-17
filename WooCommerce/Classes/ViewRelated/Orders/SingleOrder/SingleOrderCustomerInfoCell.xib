@@ -20,22 +20,22 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="KmX-Sc-g7S">
-                        <rect key="frame" x="16" y="16" width="288" height="97.5"/>
+                        <rect key="frame" x="20" y="20" width="280" height="89.5"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Address title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c05-76-euV">
-                                <rect key="frame" x="0.0" y="0.0" width="288" height="20.5"/>
+                                <rect key="frame" x="0.0" y="0.0" width="280" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="First name Last name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pQe-4r-eVj">
-                                <rect key="frame" x="0.0" y="20.5" width="288" height="20.5"/>
+                                <rect key="frame" x="0.0" y="20.5" width="280" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="240" text="Multiline, localized address that uses cnpostaladdressformatter" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KJW-Ch-VgS">
-                                <rect key="frame" x="0.0" y="41" width="288" height="56.5"/>
+                                <rect key="frame" x="0.0" y="41" width="280" height="48.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -44,10 +44,10 @@
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="KmX-Sc-g7S" secondAttribute="trailing" constant="16" id="22I-RT-0xf"/>
-                    <constraint firstItem="KmX-Sc-g7S" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="928-jx-AWB"/>
-                    <constraint firstItem="KmX-Sc-g7S" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="I6C-MZ-Na6"/>
-                    <constraint firstAttribute="bottom" secondItem="KmX-Sc-g7S" secondAttribute="bottom" constant="16" id="gFb-qk-eH5"/>
+                    <constraint firstAttribute="trailing" secondItem="KmX-Sc-g7S" secondAttribute="trailing" constant="20" id="22I-RT-0xf"/>
+                    <constraint firstItem="KmX-Sc-g7S" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="20" id="928-jx-AWB"/>
+                    <constraint firstItem="KmX-Sc-g7S" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="I6C-MZ-Na6"/>
+                    <constraint firstAttribute="bottom" secondItem="KmX-Sc-g7S" secondAttribute="bottom" constant="20" id="gFb-qk-eH5"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

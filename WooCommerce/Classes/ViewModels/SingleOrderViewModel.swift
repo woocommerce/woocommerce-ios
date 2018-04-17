@@ -1,6 +1,7 @@
 import UIKit
 import Contacts
 import Gridicons
+import PhoneNumberKit
 
 class SingleOrderViewModel {
     let order: Order
@@ -131,9 +132,24 @@ class SingleOrderViewModel {
             phoneButton.contentHorizontalAlignment = .right
             phoneButton.tintColor = StyleManager.wooCommerceBrandColor
             cell.accessoryView = phoneButton
-            if let phoneData: CNPhoneNumber = contact.phoneNumbers.first?.value {
-                cell.textLabel?.text = phoneData.stringValue
                 cell.textLabel?.applyBodyStyle()
+            if let phoneData = contact.phoneNumbers.first?.value {
+                let phoneStringArray = phoneData.stringValue.components(separatedBy: NSCharacterSet.decimalDigits.inverted)
+                let strippedPhoneNumber = NSArray(array: phoneStringArray).componentsJoined(by: "")
+                let phoneNumberKit = PhoneNumberKit()
+                let iOS639LanguageCode = NSLocale.current.identifier
+                var regionShortCode = ""
+                if iOS639LanguageCode.count > 3 { // e.g. "en-GB"
+                    let range = iOS639LanguageCode.index(iOS639LanguageCode.startIndex, offsetBy: 3)..<iOS639LanguageCode.endIndex
+                    regionShortCode = String(iOS639LanguageCode[range])
+                }
+                do {
+                    let phoneNumber = try phoneNumberKit.parse(strippedPhoneNumber, withRegion: regionShortCode, ignoreType: true)
+                    let formattedPhoneNumber = phoneNumberKit.format(phoneNumber, toType: .national)
+                    cell.textLabel?.text = formattedPhoneNumber
+                } catch {
+                    NSLog("error parsing sanitized billing phone number: %@", strippedPhoneNumber)
+                }
             }
             return cell
         }

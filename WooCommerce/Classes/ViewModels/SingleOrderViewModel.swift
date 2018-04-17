@@ -126,13 +126,15 @@ class SingleOrderViewModel {
         if indexPath.row == billingPhoneRow {
             let contact: CNContact = order.billingAddress.createContact()
             let cell = UITableViewCell(style: .default, reuseIdentifier: "BillingPhoneCell")
+            cell.textLabel?.applyBodyStyle()
+
             let phoneButton = UIButton(type: .custom)
             phoneButton.frame = CGRect(x: 8, y: 0, width: 44, height: 44)
             phoneButton.setImage(Gridicon.iconOfType(.ellipsis), for: .normal)
             phoneButton.contentHorizontalAlignment = .right
             phoneButton.tintColor = StyleManager.wooCommerceBrandColor
             cell.accessoryView = phoneButton
-                cell.textLabel?.applyBodyStyle()
+
             if let phoneData = contact.phoneNumbers.first?.value {
                 let phoneStringArray = phoneData.stringValue.components(separatedBy: NSCharacterSet.decimalDigits.inverted)
                 let strippedPhoneNumber = NSArray(array: phoneStringArray).componentsJoined(by: "")
@@ -147,6 +149,8 @@ class SingleOrderViewModel {
                     let phoneNumber = try phoneNumberKit.parse(strippedPhoneNumber, withRegion: regionShortCode, ignoreType: true)
                     let formattedPhoneNumber = phoneNumberKit.format(phoneNumber, toType: .national)
                     cell.textLabel?.text = formattedPhoneNumber
+                    cell.textLabel?.applyBodyStyle()
+                    cell.textLabel?.adjustsFontSizeToFitWidth = true
                 } catch {
                     NSLog("error parsing sanitized billing phone number: %@", strippedPhoneNumber)
                 }

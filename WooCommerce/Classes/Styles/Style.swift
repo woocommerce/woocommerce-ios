@@ -1,7 +1,8 @@
 import UIKit
 
-/// Protocol
-///
+
+// MARK: - Style defines the basic API of a Woo Skin.
+//
 protocol Style {
     var wooCommerceBrandColor: UIColor { get }
     var statusDangerColor: UIColor { get }
@@ -15,10 +16,9 @@ protocol Style {
     var defaultTextColor: UIColor { get }
 }
 
-/// Implementation
-///
+// MARK: - WooCommerce's Default Style
+//
 class DefaultStyle: Style {
-    // Android uses flat colors with no alpha, so all alphas default to 1.0
     let wooCommerceBrandColor = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
     let statusDangerColor = UIColor(red: 251.0/255.0, green: 229.0/255.0, blue: 227.0/255.0, alpha: 1.0)
     let statusDangerBoldColor = UIColor(red: 247.0/255.0, green: 204.0/255.0, blue: 201.0/255.0, alpha: 1.0)
@@ -31,12 +31,16 @@ class DefaultStyle: Style {
     let defaultTextColor = UIColor.black
 }
 
-/// Hold the pointer
-///
+
+// MARK: - StyleManager's Notifications
+//
 extension NSNotification.Name {
     static let StyleManagerDidUpdateActive = NSNotification.Name(rawValue: "StyleManagerDidUpdateActive")
 }
 
+
+// MARK: - StyleManager: Our "Active Style" Container!
+//
 class StyleManager {
 
     private static var active: Style = DefaultStyle() {

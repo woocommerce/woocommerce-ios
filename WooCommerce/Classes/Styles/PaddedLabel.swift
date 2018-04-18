@@ -1,16 +1,27 @@
 import UIKit
 
 @IBDesignable class PaddedLabel: UILabel {
-    @IBInspectable var insets = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
+    @IBInspectable var textInsets = Constants.defaultInsets
+
 
     override func drawText(in rect: CGRect) {
-        super.drawText(in: UIEdgeInsetsInsetRect(rect, insets))
+        super.drawText(in: UIEdgeInsetsInsetRect(rect, textInsets))
     }
 
     override var intrinsicContentSize: CGSize {
         var intrinsicSuperViewContentSize = super.intrinsicContentSize
-        intrinsicSuperViewContentSize.height += insets.top + insets.bottom
-        intrinsicSuperViewContentSize.width += insets.left + insets.right
+        intrinsicSuperViewContentSize.height += textInsets.top + textInsets.bottom
+        intrinsicSuperViewContentSize.width += textInsets.left + textInsets.right
         return intrinsicSuperViewContentSize
+    }
+}
+
+
+// MARK: - Constants!
+//
+private extension PaddedLabel {
+
+    enum Constants {
+        static let defaultInsets = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
     }
 }

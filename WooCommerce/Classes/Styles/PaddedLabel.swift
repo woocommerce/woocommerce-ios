@@ -1,8 +1,16 @@
 import UIKit
 
+
+// MARK: - PaddedLabel: UILabel subclass that allows for Text Insets.
+//
 @IBDesignable class PaddedLabel: UILabel {
+
+    /// Insets to be applied over the Label's Text.
+    ///
     @IBInspectable var textInsets = Constants.defaultInsets
 
+
+    // MARK: - Overriden Methods
 
     override func drawText(in rect: CGRect) {
         super.drawText(in: UIEdgeInsetsInsetRect(rect, textInsets))

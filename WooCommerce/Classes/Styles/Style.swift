@@ -38,60 +38,50 @@ extension NSNotification.Name {
 }
 
 class StyleManager {
+
     private static var active: Style = DefaultStyle() {
         didSet {
             NotificationCenter.default.post(name: .StyleManagerDidUpdateActive, object: self)
         }
     }
+
     static var wooCommerceBrandColor: UIColor {
-        get {
-            return active.wooCommerceBrandColor
-        }
+        return active.wooCommerceBrandColor
     }
+
     static var statusDangerColor: UIColor {
-        get {
-            return active.statusDangerColor
-        }
+        return active.statusDangerColor
     }
+
     static var statusDangerBoldColor: UIColor {
-        get {
-            return active.statusDangerBoldColor
-        }
+        return active.statusDangerBoldColor
     }
+
     static var statusPrimaryColor: UIColor {
-        get {
-            return active.statusPrimaryColor
-        }
+        return active.statusPrimaryColor
     }
+
     static var statusPrimaryBoldColor: UIColor {
-        get {
-            return active.statusPrimaryBoldColor
-        }
+        return active.statusPrimaryBoldColor
     }
+
     static var statusSuccessColor: UIColor {
-        get {
-            return active.statusSuccessColor
-        }
+        return active.statusSuccessColor
     }
+
     static var statusSuccessBoldColor: UIColor {
-        get {
-            return active.statusSuccessBoldColor
-        }
+        return active.statusSuccessBoldColor
     }
+
     static var statusNotIdentifiedColor: UIColor {
-        get {
-            return active.statusNotIdentifiedColor
-        }
+        return active.statusNotIdentifiedColor
     }
+
     static var statusNotIdentifiedBoldColor: UIColor {
-        get {
-            return active.statusNotIdentifiedBoldColor
-        }
+        return active.statusNotIdentifiedBoldColor
     }
+
     static var defaultTextColor: UIColor {
-        get {
-            return active.defaultTextColor
-        }
+        return active.defaultTextColor
     }
 }
-

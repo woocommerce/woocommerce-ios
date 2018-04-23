@@ -16,13 +16,6 @@ class StoreTests: XCTestCase {
     }
 
 
-    /// Verifies that both, the AccountStore and SiteStore get automatically registered in the global dispatcher.
-    ///
-    func testStoresAreRegisteredIntoTheDispatcherUponInitialization() {
-        XCTAssertTrue(dispatcher.isRegistered(accountStore))
-        XCTAssertTrue(dispatcher.isRegistered(siteStore))
-    }
-
     /// Verifies that Account Actions are only received by the Account Store.
     ///
     func testOnlyAccountStoreHandlesAccountActions() {

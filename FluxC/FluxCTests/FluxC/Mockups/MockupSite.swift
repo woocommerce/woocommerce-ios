@@ -40,6 +40,10 @@ class MockupSiteStore: Store {
 
     var receivedActions = [SiteAction]()
 
+    override func registerSupportedActions() {
+        dispatcher.register(processor: self, actionType: SiteAction.self)
+    }
+
     override func onAction(_ action: Action) {
         guard let accountAction = action as? SiteAction else {
             return

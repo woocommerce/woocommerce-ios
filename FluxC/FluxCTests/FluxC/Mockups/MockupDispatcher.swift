@@ -6,7 +6,7 @@ import Foundation
 //
 class MockupDispatcher: Dispatcher {
 
-    var numberOfProcessors: Int {
-        return processors.count
+    func numberOfProcessors(for actionType: Action.Type) -> Int {
+        return processors[actionType.identifier]?.count ?? 0
     }
 }

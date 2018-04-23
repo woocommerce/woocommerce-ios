@@ -24,17 +24,23 @@ open class Store: ActionsProcessor {
     ///
     public init(dispatcher: Dispatcher = .global) {
         self.dispatcher = dispatcher
-        dispatcher.register(self)
+        registerSupportedActions()
     }
 
     /// Deinitializer
     ///
     deinit {
-        dispatcher.unregister(self)
+        dispatcher.unregister(processor: self)
     }
 
 
     // MARK: - Dispatcher's Delegate Methods
+
+    /// Subclasses should override this and register for supported Dispatcher Actions.
+    ///
+    open func registerSupportedActions() {
+        fatalError("Override me!")
+    }
 
     /// This method is called for every Action. Subclasses should override this and deal with the Actions relevant to them.
     ///

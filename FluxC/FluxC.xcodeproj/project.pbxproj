@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B5C796208E49B600642956 /* Action+Internal.swift */; };
 		B5C9DDFF2087FEC0006B910A /* FluxC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C9DDF52087FEC0006B910A /* FluxC.framework */; };
 		B5C9DE062087FEC0006B910A /* FluxC.h in Headers */ = {isa = PBXBuildFile; fileRef = B5C9DDF82087FEC0006B910A /* FluxC.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE102087FF0E006B910A /* Dispatcher.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B5B5C796208E49B600642956 /* Action+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Action+Internal.swift"; sourceTree = "<group>"; };
 		B5C9DDF52087FEC0006B910A /* FluxC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FluxC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C9DDF82087FEC0006B910A /* FluxC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FluxC.h; sourceTree = "<group>"; };
 		B5C9DDF92087FEC0006B910A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -91,7 +93,7 @@
 		B5C9DDF72087FEC0006B910A /* FluxC */ = {
 			isa = PBXGroup;
 			children = (
-				B5C9DE132087FF0E006B910A /* Tools */,
+				B5C9DE132087FF0E006B910A /* Internal */,
 				B5C9DE0F2087FF0E006B910A /* Base */,
 				B5C9DDF82087FEC0006B910A /* FluxC.h */,
 				B5C9DDF92087FEC0006B910A /* Info.plist */,
@@ -119,12 +121,13 @@
 			path = Base;
 			sourceTree = "<group>";
 		};
-		B5C9DE132087FF0E006B910A /* Tools */ = {
+		B5C9DE132087FF0E006B910A /* Internal */ = {
 			isa = PBXGroup;
 			children = (
 				B5C9DE142087FF0E006B910A /* Assert.swift */,
+				B5B5C796208E49B600642956 /* Action+Internal.swift */,
 			);
-			path = Tools;
+			path = Internal;
 			sourceTree = "<group>";
 		};
 		B5C9DE192087FF20006B910A /* Base */ = {
@@ -259,6 +262,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */,
+				B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */,
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,
 				B5C9DE172087FF0E006B910A /* EventBus.swift in Sources */,
 				B5C9DE162087FF0E006B910A /* Store.swift in Sources */,

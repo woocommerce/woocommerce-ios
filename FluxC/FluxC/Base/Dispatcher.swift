@@ -16,22 +16,6 @@ public protocol ActionsProcessor: class {
 }
 
 
-// MARK: - Action Methods meant for internal usage.
-//
-extension Action {
-
-    /// TypeIdentifier Typealias.
-    ///
-    typealias TypeIdentifier = String
-
-    /// Returns the TypeIdentifier associated with the Receiver's Kind.
-    ///
-    static var identifier: TypeIdentifier {
-        return "\(self)"
-    }
-}
-
-
 // MARK: - Dispatcher: A Dispatcher broadcasts an Action to all registered subscribers.
 //         You can think of it as a strongly typed NotificationCenter, if it had been written for Swift instead of Objective-C.
 //

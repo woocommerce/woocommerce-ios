@@ -145,7 +145,7 @@ enum OrderStatus {
 
 extension OrderStatus {
     static var allOrderStatuses: [OrderStatus] {
-        return [.pending, .processing, .onHold, .failed, .canceled, .completed, .refunded]
+        return [.pending, .processing, .onHold, .failed, .canceled, .completed, .refunded, .custom(NSLocalizedString("Other", comment: "Title for button that catches all custom labels and displays them on the order list"))]
     }
 }
 

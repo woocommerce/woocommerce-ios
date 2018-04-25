@@ -13,25 +13,21 @@ class OrdersViewController: UIViewController {
     let searchController = UISearchController(searchResultsController: nil)
     var showSearchResults = false
 
-    func loadJson() -> Array<Order> {
-        if let path = Bundle.main.url(forResource: "data", withExtension: "json") {
-            do {
-                let json = try Data(contentsOf: path)
-                let decoder = JSONDecoder()
-                let orders = try decoder.decode([Order].self, from: json)
-                return orders
-            } catch {
-                print("error:\(error)")
-            }
+    func loadSampleOrders() -> [Order] {
+        guard let path = Bundle.main.url(forResource: "data", withExtension: "json") else {
+            return []
         }
-        return []
+
+        let json = try! Data(contentsOf: path)
+        let decoder = JSONDecoder()
+        return try! decoder.decode([Order].self, from: json)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
         configureSearch()
-        orders = loadJson()
+        orders = loadSampleOrders()
     }
 
     func configureNavigation() {
@@ -46,7 +42,7 @@ class OrdersViewController: UIViewController {
 
     func configureSearch() {
         searchController.searchResultsUpdater = self
-        searchController.dimsBackgroundDuringPresentation = true
+        searchController.obscuresBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = NSLocalizedString("Search all orders", comment: "Search placeholder text")
@@ -99,13 +95,10 @@ class OrdersViewController: UIViewController {
     }
 
     func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-        searchResults = orders.filter({ (order : Order) -> Bool in
-            if let firstName = order.customer?.firstName {
-                return firstName.lowercased().contains(searchText.lowercased())
-            } else {
-                return false
-            }
-        })
+        let searchString = searchText.lowercased()
+        searchResults = orders.filter { order in
+            return order.shippingAddress.firstName.lowercased().contains(searchString)
+        }
         tableView.reloadData()
     }
 }
@@ -134,7 +127,7 @@ extension OrdersViewController: UITableViewDataSource {
         return NSLocalizedString("Today", comment: "Title for header section")
     }
 
-    func orderAtIndexPath(_ indexPath: IndexPath) -> Order{
+    func orderAtIndexPath(_ indexPath: IndexPath) -> Order {
         return showSearchResults ? searchResults[indexPath.row] : orders[indexPath.row]
     }
 }
@@ -161,6 +154,7 @@ extension OrdersViewController: UISearchResultsUpdating {
         searchResults = orders.filter { order in
             return order.shippingAddress.firstName.lowercased().contains(searchString.lowercased())
         }
+        showSearchResults = searchResults.count > 0
         tableView.reloadData()
     }
 }

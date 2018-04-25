@@ -22,17 +22,17 @@ class OrderListCell: UITableViewCell {
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
         let payStatusColor = paymentStatusLabel.backgroundColor
         let shipStatusColor = shippingStatusLabel.backgroundColor
-        super.setSelected(selected, animated: animated)
         paymentStatusLabel.backgroundColor = payStatusColor
         shippingStatusLabel.backgroundColor = shipStatusColor
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
         let payStatusColor = paymentStatusLabel.backgroundColor
         let shipStatusColor = shippingStatusLabel.backgroundColor
-        super.setHighlighted(highlighted, animated: animated)
         paymentStatusLabel.backgroundColor = payStatusColor
         shippingStatusLabel.backgroundColor = shipStatusColor
     }

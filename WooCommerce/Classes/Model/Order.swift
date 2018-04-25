@@ -75,7 +75,7 @@ extension Order {
                 return .failed
             default:
                 NSLog("Custom order status: %@", statusString)
-                return .custom
+                return .custom(statusString)
             }
         }
     }
@@ -111,18 +111,35 @@ extension Order {
 
 // MARK: -
 //
-enum OrderStatus: String {
-    case pending = "Pending"
-    case processing = "Processing"
-    case onHold = "On Hold"
-    case failed = "Failed"
-    case canceled = "Canceled"
-    case completed = "Completed"
-    case refunded = "Refunded"
-    case custom = "Custom"
+enum OrderStatus {
+    case pending
+    case processing
+    case onHold
+    case failed
+    case canceled
+    case completed
+    case refunded
+    case custom(String)
 
     var description: String {
-        return NSLocalizedString(rawValue, comment: "Order status string")
+        switch self {
+            case .pending:
+                return NSLocalizedString("Pending", comment: "display order status to user")
+            case .processing:
+                return NSLocalizedString("Processing", comment: "display order status to user")
+            case .onHold:
+                return NSLocalizedString("On Hold", comment: "display order status to user")
+            case .failed:
+                return NSLocalizedString("Failed", comment: "display order status to user")
+            case .canceled:
+                return NSLocalizedString("Canceled", comment: "display order status to user")
+            case .completed:
+                return NSLocalizedString("Completed", comment: "display order status to user")
+            case .refunded:
+                return NSLocalizedString("Refunded", comment: "display order status to user")
+            case .custom(let payload):
+                return NSLocalizedString("\(payload)", comment: "display custom order status to user")
+        }
     }
 }
 
@@ -132,6 +149,9 @@ extension OrderStatus {
     }
 }
 
+func ==(lhs: OrderStatus, rhs: OrderStatus) -> Bool {
+    return lhs.description == rhs.description
+}
 
 // MARK: -
 //

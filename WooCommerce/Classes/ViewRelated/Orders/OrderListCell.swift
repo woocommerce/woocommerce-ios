@@ -11,12 +11,7 @@ class OrderListCell: UITableViewCell {
     func configureCell(order: Order) {
         let titleString = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
         let currencySymbol = order.currencySymbol
-        var paymentStatusText: String
-        if order.status == .custom {
-            paymentStatusText = order.statusString
-        } else {
-            paymentStatusText = order.status.description
-        }
+        let paymentStatusText = order.status.description
         titleLabel.text = titleString
         titleLabel.applyTitleStyle()
         totalLabel.text = "\(currencySymbol)\(order.totalString)"

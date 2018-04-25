@@ -12,6 +12,7 @@ class SingleOrderViewModel {
     var customerInfoSection = 3
     var paymentSection = 4
     var orderNotesSection = 5
+    var billingIsHidden = true
 
     init(withOrder order: Order) {
         self.order = order
@@ -59,9 +60,19 @@ class SingleOrderViewModel {
 
         if section == customerInfoSection {
             let shippingRow = 1
-            let billingAddressRow = 1
-            let billingPhoneRow =  order.billingAddress.phone?.isEmpty == false ? 1 : 0
-            let billingEmailRow = order.billingAddress.email?.isEmpty == false ? 1 : 0
+            var billingAddressRow: Int
+            var billingPhoneRow: Int
+            var billingEmailRow: Int
+            if billingIsHidden {
+                billingAddressRow = 0
+                billingPhoneRow = 0
+                billingEmailRow = 0
+            } else {
+                billingAddressRow = 1
+                billingPhoneRow = order.billingAddress.phone?.isEmpty == false ? 1 : 0
+                billingEmailRow = order.billingAddress.email?.isEmpty == false ? 1 : 0
+            }
+
             return shippingRow + billingAddressRow + billingPhoneRow + billingEmailRow
         }
 
@@ -90,16 +101,20 @@ class SingleOrderViewModel {
 
     func cellForCustomerInfoSection(indexPath: IndexPath, tableView: UITableView) -> UITableViewCell {
         let shippingRow = 0
-        let billingRow = 1
-        var billingPhoneRow = -1
-        var billingEmailRow = -2
+        var billingRow = -1
+        var billingPhoneRow = -2
+        var billingEmailRow = -3
 
-        if order.billingAddress.phone?.isEmpty == false {
-            billingPhoneRow = 2
-        }
+        if billingIsHidden == false {
+            billingRow = 1
 
-        if order.billingAddress.email?.isEmpty == false {
-            billingEmailRow = 3
+            if order.billingAddress.phone?.isEmpty == false {
+                billingPhoneRow = 2
+            }
+
+            if order.billingAddress.email?.isEmpty == false {
+                billingEmailRow = 3
+            }
         }
 
         if indexPath.row == shippingRow {
@@ -178,6 +193,23 @@ class SingleOrderViewModel {
         return UITableViewCell()
     }
 
+    func cellForShowHideFooter(tableView: UITableView, section: Int) -> UIView {
+        let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideFooterCell.reuseIdentifier) as! ShowHideFooterCell
+        cell.configureCell(isHidden: billingIsHidden)
+        cell.didSelectFooter = { [weak self] in
+            self?.setShowHideFooter()
+            // it would be nice to have `tableView.reloadSections([section], with: .bottom)`
+            // but iOS 11 has an ugly animation bug https://forums.developer.apple.com/thread/86703
+            tableView.reloadData()
+        }
+        return cell
+    }
+
+    func setShowHideFooter() {
+        billingIsHidden = !billingIsHidden
+    }
+
+    // MARK: - private
     private func customerNoteIsEmpty() -> Bool {
         if let customerNote = order.customerNote {
             return customerNote.isEmpty

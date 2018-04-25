@@ -13,6 +13,7 @@ protocol Style {
     var statusNotIdentifiedColor: UIColor { get }
     var statusNotIdentifiedBoldColor: UIColor { get }
     var defaultTextColor: UIColor { get }
+    var sectionTitleColor: UIColor { get }
 }
 
 /// Implementation
@@ -29,6 +30,7 @@ class DefaultStyle: Style {
     let statusNotIdentifiedColor = UIColor(red: 235.0/255.0, green: 235.0/255.0, blue: 235.0/255.0, alpha: 1.0)
     let statusNotIdentifiedBoldColor = UIColor(red: 226.0/255.0, green: 226.0/255.0, blue: 226.0/255.0, alpha: 1.0)
     let defaultTextColor = UIColor.black
+    let sectionTitleColor = UIColor.darkGray
 }
 
 /// Hold the pointer
@@ -92,5 +94,8 @@ class StyleManager {
         get {
             return active.defaultTextColor
         }
+    }
+    static var sectionTitleColor: UIColor {
+        return active.sectionTitleColor
     }
 }

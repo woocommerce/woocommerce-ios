@@ -7,6 +7,8 @@ class SingleOrderViewController: UIViewController {
     var viewModel: SingleOrderViewModel!
     var orderNotes: [OrderNote]?
 
+    static let sectionFooterHeight = CGFloat(30)
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
@@ -24,6 +26,8 @@ class SingleOrderViewController: UIViewController {
         tableView.register(noteNib, forCellReuseIdentifier: SingleOrderCustomerNoteCell.reuseIdentifier)
         let infoNib = UINib(nibName: SingleOrderCustomerInfoCell.reuseIdentifier, bundle: nil)
         tableView.register(infoNib, forCellReuseIdentifier: SingleOrderCustomerInfoCell.reuseIdentifier)
+        let footerNib = UINib(nibName: ShowHideFooterCell.reuseIdentifier, bundle: nil)
+        tableView.register(footerNib, forHeaderFooterViewReuseIdentifier: ShowHideFooterCell.reuseIdentifier)
     }
 }
 
@@ -57,9 +61,16 @@ extension SingleOrderViewController: UITableViewDataSource {
         return titles[section]
     }
 
-    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == viewModel.customerInfoSection {
-            return NSLocalizedString("Hide billing", comment: "Hide the billing information - button title")
+            return SingleOrderViewController.sectionFooterHeight
+        }
+        return 0
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if section == viewModel.customerInfoSection {
+            return viewModel.cellForShowHideFooter(tableView: tableView, section: section)
         }
         return nil
     }

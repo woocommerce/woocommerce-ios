@@ -18,6 +18,7 @@
 		B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */; };
 		B56DB3E22049BFAA00D4AA8E /* WooCommerceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3E12049BFAA00D4AA8E /* WooCommerceTests.swift */; };
 		B56DB3ED2049BFE600D4AA8E /* ContextManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3EC2049BFE600D4AA8E /* ContextManager.swift */; };
+		CE06CC302073DC450090B371 /* (null) in Resources */ = {isa = PBXBuildFile; };
 		CE1CCB402056F21C000EE3AC /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* Style.swift */; };
 		CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = CE1CCB4620570A6B000EE3AC /* en.lproj */; };
 		CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */; };
@@ -33,6 +34,8 @@
 		CE2C08EB207E98620042F717 /* SingleOrderCustomerInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2C08E9207E98620042F717 /* SingleOrderCustomerInfoCell.swift */; };
 		CE2C08EC207E98620042F717 /* SingleOrderCustomerInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2C08EA207E98620042F717 /* SingleOrderCustomerInfoCell.xib */; };
 		CE2C08F3207FBE270042F717 /* SingleOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2C08F2207FBE270042F717 /* SingleOrderViewModel.swift */; };
+		CE309CC92091172E00C01919 /* ShowHideFooterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE309CC72091172E00C01919 /* ShowHideFooterCell.swift */; };
+		CE309CCA2091172E00C01919 /* ShowHideFooterCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE309CC82091172E00C01919 /* ShowHideFooterCell.xib */; };
 		CE998C0E20814C47003B8AAE /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE998C0D20814C47003B8AAE /* Address.swift */; };
 		CE998C1020814C83003B8AAE /* Address+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE998C0F20814C83003B8AAE /* Address+Helpers.swift */; };
 		CEE005F62076C4040079161F /* Orders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F52076C4040079161F /* Orders.storyboard */; };
@@ -91,6 +94,8 @@
 		CE2C08E9207E98620042F717 /* SingleOrderCustomerInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleOrderCustomerInfoCell.swift; sourceTree = "<group>"; };
 		CE2C08EA207E98620042F717 /* SingleOrderCustomerInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SingleOrderCustomerInfoCell.xib; sourceTree = "<group>"; };
 		CE2C08F2207FBE270042F717 /* SingleOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleOrderViewModel.swift; sourceTree = "<group>"; };
+		CE309CC72091172E00C01919 /* ShowHideFooterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowHideFooterCell.swift; sourceTree = "<group>"; };
+		CE309CC82091172E00C01919 /* ShowHideFooterCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShowHideFooterCell.xib; sourceTree = "<group>"; };
 		CE998C0D20814C47003B8AAE /* Address.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
 		CE998C0F20814C83003B8AAE /* Address+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Address+Helpers.swift"; sourceTree = "<group>"; };
 		CEE005F52076C4040079161F /* Orders.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Orders.storyboard; sourceTree = "<group>"; };
@@ -292,6 +297,8 @@
 				CE2C08E6207D62370042F717 /* SingleOrderCustomerNoteCell.xib */,
 				CE2C08E9207E98620042F717 /* SingleOrderCustomerInfoCell.swift */,
 				CE2C08EA207E98620042F717 /* SingleOrderCustomerInfoCell.xib */,
+				CE309CC72091172E00C01919 /* ShowHideFooterCell.swift */,
+				CE309CC82091172E00C01919 /* ShowHideFooterCell.xib */,
 			);
 			path = SingleOrder;
 			sourceTree = "<group>";
@@ -383,8 +390,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */,
+				CE309CCA2091172E00C01919 /* ShowHideFooterCell.xib in Resources */,
 				CEEF9EBE2076AB520096D0AA /* data.json in Resources */,
 				CEE006012077CA820079161F /* order-915.json in Resources */,
+				CE06CC302073DC450090B371 /* (null) in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
 				CEE005F82077C9690079161F /* order-list.json in Resources */,
 				CEE005FC2077CA030079161F /* order-949.json in Resources */,
@@ -484,6 +493,7 @@
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
+				CE309CC92091172E00C01919 /* ShowHideFooterCell.swift in Sources */,
 				CE998C1020814C83003B8AAE /* Address+Helpers.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,

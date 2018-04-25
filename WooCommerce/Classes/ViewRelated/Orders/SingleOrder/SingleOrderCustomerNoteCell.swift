@@ -17,5 +17,4 @@ class SingleOrderCustomerNoteCell: UITableViewCell {
         iconImageView.image = Gridicon.iconOfType(.quote)
         iconImageView.tintColor = .black
     }
-    
 }

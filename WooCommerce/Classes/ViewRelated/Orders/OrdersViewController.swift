@@ -90,17 +90,9 @@ class OrdersViewController: UIViewController {
     func isFiltering() -> Bool {
         return searchController.isActive && !searchBarIsEmpty()
     }
-    
+
     func searchBarIsEmpty() -> Bool {
         return searchController.searchBar.text?.isEmpty ?? true
-    }
-
-    func filterContentForSearchText(_ searchText: String) {
-        let searchString = searchText.lowercased()
-        searchResults = orders.filter { order in
-            return order.shippingAddress.firstName.lowercased().contains(searchString)
-        }
-        tableView.reloadData()
     }
 }
 

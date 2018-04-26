@@ -94,7 +94,7 @@ class OrdersViewController: UIViewController {
         return searchController.searchBar.text?.isEmpty ?? true
     }
 
-    func filterContentForSearchText(_ searchText: String, scope: String = "All") {
+    func filterContentForSearchText(_ searchText: String) {
         let searchString = searchText.lowercased()
         searchResults = orders.filter { order in
             return order.shippingAddress.firstName.lowercased().contains(searchString)

@@ -13,20 +13,21 @@ class OrdersViewController: UIViewController {
     let searchController = UISearchController(searchResultsController: nil)
     var showSearchResults = false
 
+    func loadSampleOrders() -> [Order] {
+        guard let path = Bundle.main.url(forResource: "data", withExtension: "json") else {
+            return []
+        }
+
+        let json = try! Data(contentsOf: path)
+        let decoder = JSONDecoder()
+        return try! decoder.decode([Order].self, from: json)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-
         configureNavigation()
         configureSearch()
-
-        //FIXME: this is a hack so you can see a row working on the orders list table.
-        let billingAddress = Address(firstName: "Jane", lastName: "Tester", company: "", address1: "500 Hollywood Blvd", address2: "", city: "Las Vegas", state: "NV", postcode: "90210", country: "US")
-        let shippingAddress = Address(firstName: "Thuy", lastName: "Copeland", company: "", address1: "500 Hollywood Blvd", address2: "", city: "Las Vegas", state: "NV", postcode: "90210", country: "US")
-        let customer = Customer(identifier: "1", firstName: "Jane", lastName: "Tester", email: nil, phone: nil, billingAddress: billingAddress, shippingAddress: shippingAddress)
-        let item = OrderItem(lineItemId: 1, name: "Belt", productID: 27, quantity: 1, sku: "", subtotal: "55.00", subtotalTax: "0.00", taxClass: "", total: "55.00", totalTax: "", variationID: 0)
-        let order = Order(identifier: "190", number: "190", status: .processing, customer: customer, dateCreated: Date.init(), dateUpdated: Date.init(), shippingAddress: shippingAddress, billingAddress: billingAddress, items: [item], currency: "USD", total: 91.32, notes: [])
-
-        orders = [order]
+        orders = loadSampleOrders()
     }
 
     func configureNavigation() {
@@ -41,7 +42,7 @@ class OrdersViewController: UIViewController {
 
     func configureSearch() {
         searchController.searchResultsUpdater = self
-        searchController.dimsBackgroundDuringPresentation = true
+        searchController.obscuresBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = NSLocalizedString("Search all orders", comment: "Search placeholder text")
@@ -84,11 +85,24 @@ class OrdersViewController: UIViewController {
                 print("next: filter the table data and display!")
         }
     }
+
+    // MARK: Search bar
+    func isFiltering() -> Bool {
+        return searchController.isActive && !searchBarIsEmpty()
+    }
+
+    func searchBarIsEmpty() -> Bool {
+        return searchController.searchBar.text?.isEmpty ?? true
+    }
 }
 
 extension OrdersViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if showSearchResults {
+        if isFiltering() {
             return searchResults.count
         }
         return orders.count
@@ -102,11 +116,11 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        // FIXME: this is hard-coded data
+        // FIXME: this is hard-coded data. Will fix when WordPressShared date helpers are available to make fuzzy dates.
         return NSLocalizedString("Today", comment: "Title for header section")
     }
 
-    func orderAtIndexPath(_ indexPath: IndexPath) -> Order{
+    func orderAtIndexPath(_ indexPath: IndexPath) -> Order {
         return showSearchResults ? searchResults[indexPath.row] : orders[indexPath.row]
     }
 }
@@ -118,6 +132,10 @@ extension OrdersViewController: UITableViewDelegate {
         }
         return Constants.groupedSectionHeaderHeight
     }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }
 
 extension OrdersViewController: UISearchResultsUpdating {
@@ -127,8 +145,9 @@ extension OrdersViewController: UISearchResultsUpdating {
         }
         // TODO: filter search results properly
         searchResults = orders.filter { order in
-            return  order.customer.firstName.lowercased().contains(searchString.lowercased())
+            return order.shippingAddress.firstName.lowercased().contains(searchString.lowercased())
         }
+        showSearchResults = searchResults.count > 0
         tableView.reloadData()
     }
 }

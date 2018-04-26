@@ -34,6 +34,8 @@ extension UILabel {
                 fallthrough
             case .canceled:
                 fallthrough
+            case .custom:
+                fallthrough
             default:
                 backgroundColor = StyleManager.statusNotIdentifiedColor
                 layer.borderColor = StyleManager.statusNotIdentifiedBoldColor.cgColor

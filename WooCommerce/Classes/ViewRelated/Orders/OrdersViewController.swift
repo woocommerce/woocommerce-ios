@@ -12,18 +12,14 @@ class OrdersViewController: UIViewController {
     var searchResults = [Order]()
     let searchController = UISearchController(searchResultsController: nil)
 
-    func loadJson() -> Array<Order> {
-        if let path = Bundle.main.url(forResource: "order-list", withExtension: "json") {
-            do {
-                let json = try Data(contentsOf: path)
-                let decoder = JSONDecoder()
-                let orders = try decoder.decode([Order].self, from: json)
-                return orders
-            } catch {
-                print("error:\(error)")
-            }
+    func loadSampleOrders() -> [Order] {
+        guard let path = Bundle.main.url(forResource: "data", withExtension: "json") else {
+            return []
         }
-        return []
+
+        let json = try! Data(contentsOf: path)
+        let decoder = JSONDecoder()
+        return try! decoder.decode([Order].self, from: json)
     }
 
     func loadSingleOrder(basicOrder: Order) -> Order {
@@ -51,7 +47,7 @@ class OrdersViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureSearch()
-        orders = loadJson()
+        orders = loadSampleOrders()
     }
 
     func configureNavigation() {
@@ -66,7 +62,7 @@ class OrdersViewController: UIViewController {
 
     func configureSearch() {
         searchController.searchResultsUpdater = self
-        searchController.dimsBackgroundDuringPresentation = false
+        searchController.obscuresBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = NSLocalizedString("Search all orders", comment: "Search placeholder text")
@@ -114,19 +110,9 @@ class OrdersViewController: UIViewController {
     func isFiltering() -> Bool {
         return searchController.isActive && !searchBarIsEmpty()
     }
+
     func searchBarIsEmpty() -> Bool {
         return searchController.searchBar.text?.isEmpty ?? true
-    }
-
-    func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-        searchResults = orders.filter({ (order : Order) -> Bool in
-            if let firstName = order.customer?.firstName {
-                return firstName.lowercased().contains(searchText.lowercased())
-            } else {
-                return false
-            }
-        })
-        tableView.reloadData()
     }
 }
 

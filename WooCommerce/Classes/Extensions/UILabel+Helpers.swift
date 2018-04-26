@@ -2,12 +2,12 @@ import UIKit
 
 extension UILabel {
     func applyTitleStyle() {
-        font = UIFont.headline
+        font = .headline
         textColor = StyleManager.defaultTextColor
     }
 
     func applyBodyStyle() {
-        font = UIFont.body
+        font = .body
         textColor = StyleManager.defaultTextColor
     }
 
@@ -19,7 +19,7 @@ extension UILabel {
     func applyStatusStyle(for status: OrderStatus) {
         layer.borderWidth = 1.0
         layer.cornerRadius = 4.0
-        font = UIFont.footnote;
+        font = .footnote;
 
         switch status {
             case .processing:

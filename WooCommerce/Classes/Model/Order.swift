@@ -37,47 +37,121 @@ struct Order: Decodable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: OrderStructKeys.self)
-        let identifier: Int = try container.decode(Int.self, forKey: .identifier)
-        let number: String = try container.decode(String.self, forKey: .number)
-        let statusString: String = try container.decode(String.self, forKey: .statusString)
-        let customer: Customer? = try container.decodeIfPresent(Customer.self, forKey: .customer)
-        let dateCreatedString: String = try container.decode(String.self, forKey: .dateCreatedString)
-        let dateUpdatedString: String = try container.decode(String.self, forKey: .dateUpdatedString)
-        let shippingAddress: Address = try container.decode(Address.self, forKey: .shippingAddress)
-        let billingAddress: Address = try container.decode(Address.self, forKey: .billingAddress)
-        let items: Array<OrderItem> = try container.decode([OrderItem].self, forKey: .orderItems)
-        let currency: String = try container.decode(String.self, forKey: .currency)
-        let totalString: String = try container.decode(String.self, forKey: .total)
-        let orderNote: String = try container.decode(String.self, forKey: .notes)
-        let note: OrderNote = OrderNote(date: nil, contents: orderNote, visibleToCustomers: true)
+        let identifier = try container.decode(Int.self, forKey: .identifier)
+        let number = try container.decode(String.self, forKey: .number)
+        let statusString = try container.decode(String.self, forKey: .statusString)
+        let customer = try container.decodeIfPresent(Customer.self, forKey: .customer)
+        let dateCreatedString = try container.decode(String.self, forKey: .dateCreatedString)
+        let dateUpdatedString = try container.decode(String.self, forKey: .dateUpdatedString)
+        let shippingAddress = try container.decode(Address.self, forKey: .shippingAddress)
+        let billingAddress = try container.decode(Address.self, forKey: .billingAddress)
+        let items = try container.decode([OrderItem].self, forKey: .orderItems)
+        let currency = try container.decode(String.self, forKey: .currency)
+        let totalString = try container.decode(String.self, forKey: .total)
+        let orderNote = try container.decode(String.self, forKey: .notes)
+        let note = OrderNote(date: nil, contents: orderNote, visibleToCustomers: true)
 
         self.init(identifier: identifier, number: number, statusString: statusString, customer: customer, dateCreatedString: dateCreatedString, dateUpdatedString: dateUpdatedString, shippingAddress: shippingAddress, billingAddress: billingAddress, items: items, currency: currency, totalString: totalString, notes: [note])
     }
 }
 
+extension Order {
+    var status: OrderStatus {
+        get {
+            switch statusString {
+            case "pending":
+                return .pending
+            case "processing":
+                return .processing
+            case "on-hold":
+                return .onHold
+            case "completed":
+                return .completed
+            case "cancelled":
+                return .canceled
+            case "refunded":
+                return .refunded
+            case "failed":
+                return .failed
+            default:
+                NSLog("Custom order status: %@", statusString)
+                return .custom(statusString)
+            }
+        }
+    }
+
+    var currencySymbol: String {
+        let locale = NSLocale(localeIdentifier: self.currency)
+        return locale.displayName(forKey: .currencySymbol, value: self.currency) ?? String()
+    }
+
+    enum OrderStructKeys: String, CodingKey {
+        case identifier = "id"
+        case number = "number"
+        case statusString = "status"
+        case customer = "customer"
+        case customerID = "customer_id"
+        case dateCreatedString = "date_created"
+        case dateUpdatedString = "date_modified"
+        case shippingAddress = "shipping"
+        case billingAddress = "billing"
+        case orderItems = "line_items"
+        case currency = "currency"
+        case total = "total"
+        case notes = "customer_note"
+    }
+
+    var dateCreated: Date {
+        get {
+            // TODO: use WordPressShared date helpers to convert dateCreatedString into a Date
+            return Date()
+        }
+    }
+}
+
 // MARK: -
 //
-enum OrderStatus: String {
-    case pending = "Pending"
-    case processing = "Processing"
-    case onHold = "On Hold"
-    case failed = "Failed"
-    case canceled = "Canceled"
-    case completed = "Completed"
-    case refunded = "Refunded"
-    case custom = "Custom"
+enum OrderStatus {
+    case pending
+    case processing
+    case onHold
+    case failed
+    case canceled
+    case completed
+    case refunded
+    case custom(String)
 
     var description: String {
-        return NSLocalizedString(rawValue, comment: "Order status string")
+        switch self {
+            case .pending:
+                return NSLocalizedString("Pending", comment: "display order status to user")
+            case .processing:
+                return NSLocalizedString("Processing", comment: "display order status to user")
+            case .onHold:
+                return NSLocalizedString("On Hold", comment: "display order status to user")
+            case .failed:
+                return NSLocalizedString("Failed", comment: "display order status to user")
+            case .canceled:
+                return NSLocalizedString("Canceled", comment: "display order status to user")
+            case .completed:
+                return NSLocalizedString("Completed", comment: "display order status to user")
+            case .refunded:
+                return NSLocalizedString("Refunded", comment: "display order status to user")
+            case .custom(let payload):
+                return NSLocalizedString("\(payload)", comment: "display custom order status to user")
+        }
     }
 }
 
 extension OrderStatus {
     static var allOrderStatuses: [OrderStatus] {
-        return [.pending, .processing, .onHold, .failed, .canceled, .completed, .refunded, .custom]
+        return [.pending, .processing, .onHold, .failed, .canceled, .completed, .refunded, .custom(NSLocalizedString("Other", comment: "Title for button that catches all custom labels and displays them on the order list"))]
     }
 }
 
+func ==(lhs: OrderStatus, rhs: OrderStatus) -> Bool {
+    return lhs.description == rhs.description
+}
 
 // MARK: -
 //
@@ -126,17 +200,17 @@ extension OrderItem : Decodable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: OrderItemStructKeys.self)
-        let lineItemID: Int = try container.decode(Int.self, forKey: .lineItemID)
-        let name: String = try container.decode(String.self, forKey: .name)
-        let productID: Int = try container.decode(Int.self, forKey: .productID)
-        let quantity: Int = try container.decode(Int.self, forKey: .quantity)
-        let sku: String = try container.decode(String.self, forKey: .sku)
-        let subtotal: String = try container.decode(String.self, forKey: .subtotal)
-        let subtotalTax: String = try container.decode(String.self, forKey: .subtotalTax)
-        let taxClass: String = try container.decode(String.self, forKey: .taxClass)
-        let total: String = try container.decode(String.self, forKey: .total)
-        let totalTax: String = try container.decode(String.self, forKey: .totalTax)
-        let variationID: Int = try container.decode(Int.self, forKey: .variationID)
+        let lineItemID = try container.decode(Int.self, forKey: .lineItemID)
+        let name = try container.decode(String.self, forKey: .name)
+        let productID = try container.decode(Int.self, forKey: .productID)
+        let quantity = try container.decode(Int.self, forKey: .quantity)
+        let sku = try container.decode(String.self, forKey: .sku)
+        let subtotal = try container.decode(String.self, forKey: .subtotal)
+        let subtotalTax = try container.decode(String.self, forKey: .subtotalTax)
+        let taxClass = try container.decode(String.self, forKey: .taxClass)
+        let total = try container.decode(String.self, forKey: .total)
+        let totalTax = try container.decode(String.self, forKey: .totalTax)
+        let variationID = try container.decode(Int.self, forKey: .variationID)
 
         self.init(lineItemID: lineItemID, name: name, productID: productID, quantity: quantity, sku: sku, subtotal: subtotal, subtotalTax: subtotalTax, taxClass: taxClass, total: total, totalTax: totalTax, variationID: variationID)
     }
@@ -199,15 +273,15 @@ extension Address: Decodable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: AddressStructKeys.self)
-        let firstName: String = try container.decode(String.self, forKey: .firstName)
-        let lastName: String = try container.decode(String.self, forKey: .lastName)
-        let company: String? = try container.decodeIfPresent(String.self, forKey: .company)
-        let address1: String = try container.decode(String.self, forKey: .address1)
-        let address2: String? = try container.decodeIfPresent(String.self, forKey: .address2)
-        let city: String = try container.decode(String.self, forKey: .city)
-        let state: String = try container.decode(String.self, forKey: .state)
-        let postcode: String = try container.decode(String.self, forKey: .postcode)
-        let country: String = try container.decode(String.self, forKey: .country)
+        let firstName = try container.decode(String.self, forKey: .firstName)
+        let lastName = try container.decode(String.self, forKey: .lastName)
+        let company = try container.decodeIfPresent(String.self, forKey: .company)
+        let address1 = try container.decode(String.self, forKey: .address1)
+        let address2 = try container.decodeIfPresent(String.self, forKey: .address2)
+        let city = try container.decode(String.self, forKey: .city)
+        let state = try container.decode(String.self, forKey: .state)
+        let postcode = try container.decode(String.self, forKey: .postcode)
+        let country = try container.decode(String.self, forKey: .country)
 
         self.init(firstName: firstName, lastName: lastName, company: company, address1: address1, address2: address2, city: city, state: state, postcode: postcode, country: country)
     }

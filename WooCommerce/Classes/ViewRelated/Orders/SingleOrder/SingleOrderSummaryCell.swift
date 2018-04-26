@@ -9,12 +9,7 @@ class SingleOrderSummaryCell: UITableViewCell {
 
     func configureCell(order: Order) {
         let titleString = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
-        var paymentStatusText: String
-        if order.status == .custom {
-            paymentStatusText = order.statusString
-        } else {
-            paymentStatusText = order.status.description
-        }
+        let paymentStatusText = order.status.description
         let fuzzyDate = String.localizedStringWithFormat(NSLocalizedString("Created %@", comment: "Order created date"), order.dateCreatedString) // FIXME: needs fuzzy date
 
         titleLabel.text = titleString

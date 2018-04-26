@@ -11,12 +11,7 @@ class OrderListCell: UITableViewCell {
     func configureCell(order: Order) {
         let titleString = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
         let currencySymbol = order.currencySymbol
-        var paymentStatusText: String
-        if order.status == .custom {
-            paymentStatusText = order.statusString
-        } else {
-            paymentStatusText = order.status.description
-        }
+        let paymentStatusText = order.status.description
         titleLabel.text = titleString
         titleLabel.applyTitleStyle()
         totalLabel.text = "\(currencySymbol)\(order.totalString)"
@@ -27,17 +22,17 @@ class OrderListCell: UITableViewCell {
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
         let payStatusColor = paymentStatusLabel.backgroundColor
         let shipStatusColor = shippingStatusLabel.backgroundColor
-        super.setSelected(selected, animated: animated)
         paymentStatusLabel.backgroundColor = payStatusColor
         shippingStatusLabel.backgroundColor = shipStatusColor
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
         let payStatusColor = paymentStatusLabel.backgroundColor
         let shipStatusColor = shippingStatusLabel.backgroundColor
-        super.setHighlighted(highlighted, animated: animated)
         paymentStatusLabel.backgroundColor = payStatusColor
         shippingStatusLabel.backgroundColor = shipStatusColor
     }

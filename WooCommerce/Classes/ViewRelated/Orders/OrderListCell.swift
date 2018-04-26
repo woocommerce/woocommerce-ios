@@ -9,15 +9,31 @@ class OrderListCell: UITableViewCell {
     static let reuseIdentifier = "OrderListCell"
 
     func configureCell(order: Order) {
-        let titleString = "#\(order.number) \(order.customer.firstName) \(order.customer.lastName)"
+        let titleString = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
         let currencySymbol = order.currencySymbol
-        let orderTotal = order.total
+        let paymentStatusText = order.status.description
         titleLabel.text = titleString
         titleLabel.applyTitleStyle()
-        totalLabel.text = "\(currencySymbol)\(orderTotal)"
+        totalLabel.text = "\(currencySymbol)\(order.totalString)"
         totalLabel.applyBodyStyle()
-        paymentStatusLabel.text = order.status.description
+        paymentStatusLabel.text = paymentStatusText
         paymentStatusLabel.applyStatusStyle(for: order.status)
         shippingStatusLabel.text = ""
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        let payStatusColor = paymentStatusLabel.backgroundColor
+        let shipStatusColor = shippingStatusLabel.backgroundColor
+        paymentStatusLabel.backgroundColor = payStatusColor
+        shippingStatusLabel.backgroundColor = shipStatusColor
+    }
+
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
+        let payStatusColor = paymentStatusLabel.backgroundColor
+        let shipStatusColor = shippingStatusLabel.backgroundColor
+        paymentStatusLabel.backgroundColor = payStatusColor
+        shippingStatusLabel.backgroundColor = shipStatusColor
     }
 }

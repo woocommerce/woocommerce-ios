@@ -452,7 +452,6 @@
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
-				CE1CCB4E20572456000EE3AC /* Order+Helpers.swift in Sources */,
 				CEE006082077D14C0079161F /* SingleOrderViewController.swift in Sources */,
 				CEE006052077D1280079161F /* SingleOrderSummaryCell.swift in Sources */,
 				CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */,

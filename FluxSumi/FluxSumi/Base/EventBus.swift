@@ -1,12 +1,12 @@
 import Foundation
 
 
-// MARK: - Event: Represents a FluxC event.
+// MARK: - Event: Represents a Flux event.
 //
 public protocol Event {}
 
 
-// MARK: - Listener: Represents a FluxC Event Listener.
+// MARK: - Listener: Represents a Flux Event Listener.
 //
 public protocol EventsListener: class {
 

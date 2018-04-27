@@ -1,5 +1,5 @@
 import Foundation
-@testable import FluxC
+@testable import FluxSumi
 
 
 // MARK: - Mockup Dispatcher

@@ -3,6 +3,6 @@ import Foundation
 
 ///
 ///
-struct RemoteOrder {
+public struct RemoteOrder {
 
 }

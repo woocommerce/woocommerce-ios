@@ -3,9 +3,11 @@ import Foundation
 
 ///
 ///
-class OrdersRemote: Remote {
+public class OrdersRemote: Remote {
 
-    func fetchOrders(for siteID: Int, completion: ([RemoteOrder]) -> Void) {
+    ///
+    ///
+    public func fetchOrders(for siteID: Int, completion: ([RemoteOrder]) -> Void) {
         let endpoint = JetpackEndpoint(wooApiVersion: .mark2, method: .get, siteID: siteID, endpoint: "orders/")
 
         request(endpoint: endpoint) { (payload: [String: String]) in

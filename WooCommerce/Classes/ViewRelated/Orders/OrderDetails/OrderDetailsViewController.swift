@@ -25,12 +25,22 @@ class OrderDetailsViewController: UIViewController {
     }
 
     func configureSections() {
-        sectionTitles = Order.orderDetailSectionTitles()
+        sectionTitles = orderDetailSectionTitles()
         if let customerNote = order.customerNote {
             if customerNote.isEmpty {
                 sectionTitles[customerNoteSection] = ""
             }
         }
+    }
+
+    func orderDetailSectionTitles() -> [String] {
+        let orderSummary = ""
+        let fulfillItems = ""
+        let customerNote = NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title")
+        let customerInfo = NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title")
+        let paymentDetails = NSLocalizedString("PAYMENT", comment: "Payment section title")
+        let orderNotes = NSLocalizedString("ORDER NOTES", comment: "Order notes section title")
+        return [orderSummary, fulfillItems, customerNote, customerInfo, paymentDetails, orderNotes]
     }
 
     func configureNibs() {

@@ -3,9 +3,9 @@ import Foundation
 
 /// Authenticated Requests Credentials
 ///
-struct Credentials {
+public struct Credentials {
 
     /// WordPress.com Authentication Token
     ///
-    let authToken: String
+    public let authToken: String
 }

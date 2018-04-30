@@ -53,6 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().barTintColor = StyleManager.wooCommerceBrandColor
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
         UINavigationBar.appearance().isTranslucent = false
+        UINavigationBar.appearance().tintColor = .white
         UIApplication.shared.statusBarStyle = .lightContent
     }
 }

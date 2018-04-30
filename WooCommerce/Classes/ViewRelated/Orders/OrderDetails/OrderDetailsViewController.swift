@@ -12,11 +12,6 @@ class OrderDetailsViewController: UIViewController {
         let nib = UINib(nibName: OrderDetailsSummaryCell.reuseIdentifier, bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: OrderDetailsSummaryCell.reuseIdentifier)
     }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-         setupNavigationBar()
-    }
 }
 
 extension OrderDetailsViewController: UITableViewDataSource {
@@ -38,17 +33,5 @@ extension OrderDetailsViewController: UITableViewDataSource {
 extension OrderDetailsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-    }
-}
-
-extension OrderDetailsViewController {
-    func setupNavigationBar() {
-        // Don't show the Order title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
-
-        navigationItem.backBarButtonItem = backButton
     }
 }

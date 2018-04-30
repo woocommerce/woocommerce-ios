@@ -9,7 +9,7 @@ import Foundation
 struct Order: Decodable {
     let identifier: Int
     let number: String
-    let statusString: String
+    let status: OrderStatus
     var customer: Customer?
     let dateCreatedString: String
     let dateUpdatedString: String
@@ -22,10 +22,10 @@ struct Order: Decodable {
     let customerID: Int
     let customerNote: String?
 
-    init(identifier: Int, number: String, statusString: String, customer: Customer?, dateCreatedString: String, dateUpdatedString: String, shippingAddress: Address, billingAddress: Address, items: [OrderItem], currency: String, totalString: String, notes: [OrderNote]?, customerID: Int, customerNote: String?) {
+    init(identifier: Int, number: String, status: OrderStatus, customer: Customer?, dateCreatedString: String, dateUpdatedString: String, shippingAddress: Address, billingAddress: Address, items: [OrderItem], currency: String, totalString: String, notes: [OrderNote]?, customerID: Int, customerNote: String?) {
         self.identifier = identifier
         self.number = number
-        self.statusString = statusString
+        self.status = status
         self.customer = customer
         self.dateCreatedString = dateCreatedString
         self.dateUpdatedString = dateUpdatedString

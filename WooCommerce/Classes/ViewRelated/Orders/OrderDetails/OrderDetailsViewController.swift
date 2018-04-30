@@ -1,6 +1,6 @@
 import UIKit
 
-class SingleOrderViewController: UIViewController {
+class OrderDetailsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
@@ -9,8 +9,8 @@ class SingleOrderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = NSLocalizedString("Order #\(order.number)", comment:"Order number title")
-        let nib = UINib(nibName: SingleOrderSummaryCell.reuseIdentifier, bundle: nil)
-        tableView.register(nib, forCellReuseIdentifier: SingleOrderSummaryCell.reuseIdentifier)
+        let nib = UINib(nibName: OrderDetailsSummaryCell.reuseIdentifier, bundle: nil)
+        tableView.register(nib, forCellReuseIdentifier: OrderDetailsSummaryCell.reuseIdentifier)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -19,7 +19,7 @@ class SingleOrderViewController: UIViewController {
     }
 }
 
-extension SingleOrderViewController: UITableViewDataSource {
+extension OrderDetailsViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -29,19 +29,19 @@ extension SingleOrderViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: SingleOrderSummaryCell.reuseIdentifier, for: indexPath) as! SingleOrderSummaryCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsSummaryCell.reuseIdentifier, for: indexPath) as! OrderDetailsSummaryCell
         cell.configureCell(order: order)
         return cell
     }
 }
 
-extension SingleOrderViewController: UITableViewDelegate {
+extension OrderDetailsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
-extension SingleOrderViewController {
+extension OrderDetailsViewController {
     func setupNavigationBar() {
         // Don't show the Order title in the next-view's back button
         let backButton = UIBarButtonItem(title: String(),

@@ -2,10 +2,6 @@ import UIKit
 import Gridicons
 
 class OrdersViewController: UIViewController {
-    struct Constants {
-        static let groupedFirstSectionHeaderHeight: CGFloat = 32.0
-        static let groupedSectionHeaderHeight: CGFloat = 12.0
-    }
 
     @IBOutlet weak var tableView: UITableView!
     var orders = [Order]()
@@ -159,12 +155,12 @@ extension OrdersViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        performSegue(withIdentifier: "showSingleOrderViewController", sender: indexPath)
+        performSegue(withIdentifier: Constants.orderDetailsSegue, sender: indexPath)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showSingleOrderViewController" {
-            if let singleOrderViewController = segue.destination as? SingleOrderViewController {
+        if segue.identifier == Constants.orderDetailsSegue {
+            if let singleOrderViewController = segue.destination as? OrderDetailsViewController {
                 let indexPath = sender as! IndexPath
                 let basicOrder = orderAtIndexPath(indexPath)
                 let singleOrder = loadSingleOrder(basicOrder: basicOrder)
@@ -199,5 +195,15 @@ extension OrdersViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchController.searchBar.resignFirstResponder()
         tableView.reloadData()
+    }
+}
+
+// MARK: Constants
+//
+extension OrdersViewController {
+    struct Constants {
+        static let groupedFirstSectionHeaderHeight: CGFloat = 32.0
+        static let groupedSectionHeaderHeight: CGFloat = 12.0
+        static let orderDetailsSegue = "ShowOrderDetailsViewController"
     }
 }

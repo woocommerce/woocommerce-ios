@@ -1,11 +1,11 @@
 import UIKit
 
-class SingleOrderSummaryCell: UITableViewCell {
+class OrderDetailsSummaryCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var createdLabel: UILabel!
     @IBOutlet weak var paymentLabel: PaddedLabel!
 
-    static let reuseIdentifier = "SingleOrderSummaryCell"
+    static let reuseIdentifier = "OrderDetailsSummaryCell"
 
     func configureCell(order: Order) {
         let titleString = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"

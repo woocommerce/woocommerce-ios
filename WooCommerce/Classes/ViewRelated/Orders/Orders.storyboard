@@ -101,7 +101,7 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="tableView" destination="yra-Ak-zW1" id="o3y-1L-wtB"/>
-                        <segue destination="IgL-pI-DQK" kind="show" identifier="showSingleOrderViewController" id="2Hx-kK-8Yt"/>
+                        <segue destination="IgL-pI-DQK" kind="show" identifier="ShowOrderDetailsViewController" id="2Hx-kK-8Yt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vy0-WI-j6l" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -111,7 +111,7 @@
         <!--Single Order-->
         <scene sceneID="p5z-EU-84P">
             <objects>
-                <viewController storyboardIdentifier="SingleOrderViewController" id="IgL-pI-DQK" userLabel="Single Order" customClass="SingleOrderViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SingleOrderViewController" id="IgL-pI-DQK" userLabel="Single Order" customClass="OrderDetailsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="BSM-Pn-wcY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

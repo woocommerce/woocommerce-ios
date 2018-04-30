@@ -100,6 +100,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		B519A3E82097A91800E2603A /* Endpoint */ = {
+			isa = PBXGroup;
+			children = (
+				B519A3E62097A65F00E2603A /* EndpointTests.swift */,
+				B557D9F1209753AA005962F4 /* JetpackEndpointTests.swift */,
+			);
+			path = Endpoint;
+			sourceTree = "<group>";
+		};
 		B557D9D9209753AA005962F4 = {
 			isa = PBXGroup;
 			children = (
@@ -136,8 +145,7 @@
 		B557D9F0209753AA005962F4 /* NetworkingTests */ = {
 			isa = PBXGroup;
 			children = (
-				B519A3E62097A65F00E2603A /* EndpointTests.swift */,
-				B557D9F1209753AA005962F4 /* JetpackEndpointTests.swift */,
+				B519A3E82097A91800E2603A /* Endpoint */,
 				B557D9F3209753AA005962F4 /* Info.plist */,
 			);
 			path = NetworkingTests;

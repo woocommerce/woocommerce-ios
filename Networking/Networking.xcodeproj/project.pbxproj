@@ -16,6 +16,9 @@
 		B557DA0B20975D7E005962F4 /* WooAPIVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA0A20975D7E005962F4 /* WooAPIVersion.swift */; };
 		B557DA0D20975DB1005962F4 /* WordPressAPIVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA0C20975DB1005962F4 /* WordPressAPIVersion.swift */; };
 		B557DA0F20975E07005962F4 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA0E20975E07005962F4 /* Endpoint.swift */; };
+		B557DA1820979D51005962F4 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1720979D51005962F4 /* Credentials.swift */; };
+		B557DA1A20979D66005962F4 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1920979D66005962F4 /* Settings.swift */; };
+		B557DA1D20979E7D005962F4 /* RemoteOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1C20979E7D005962F4 /* RemoteOrder.swift */; };
 		D966E5B7ACDF2C5065B7188C /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97F8D9516BAC88E8A25EF46D /* Pods_Networking.framework */; };
 		E163BF100306BC689F6ADB6B /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3D61DD7401976E936CE38E2 /* Pods_NetworkingTests.framework */; };
 /* End PBXBuildFile section */
@@ -44,6 +47,9 @@
 		B557DA0A20975D7E005962F4 /* WooAPIVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAPIVersion.swift; sourceTree = "<group>"; };
 		B557DA0C20975DB1005962F4 /* WordPressAPIVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAPIVersion.swift; sourceTree = "<group>"; };
 		B557DA0E20975E07005962F4 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
+		B557DA1720979D51005962F4 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
+		B557DA1920979D66005962F4 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		B557DA1C20979E7D005962F4 /* RemoteOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteOrder.swift; sourceTree = "<group>"; };
 		C44FACA39A77FF6C3A21364D /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
 		D2C5CA50D8B38E253E228261 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 		D360A85A6BF832C6C9E1B4BD /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
@@ -117,6 +123,7 @@
 			children = (
 				B557DA1020975F60005962F4 /* Settings */,
 				B557DA0620975515005962F4 /* Endpoint */,
+				B557DA1B20979E6D005962F4 /* Model */,
 				B557DA0520975507005962F4 /* Remote */,
 				B557D9E6209753AA005962F4 /* Networking.h */,
 				B557D9E7209753AA005962F4 /* Info.plist */,
@@ -154,10 +161,20 @@
 		B557DA1020975F60005962F4 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				B557DA1720979D51005962F4 /* Credentials.swift */,
+				B557DA1920979D66005962F4 /* Settings.swift */,
 				B557DA0A20975D7E005962F4 /* WooAPIVersion.swift */,
 				B557DA0C20975DB1005962F4 /* WordPressAPIVersion.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		B557DA1B20979E6D005962F4 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B557DA1C20979E7D005962F4 /* RemoteOrder.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -361,9 +378,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B557DA1A20979D66005962F4 /* Settings.swift in Sources */,
 				B557DA0220975500005962F4 /* JetpackEndpoint.swift in Sources */,
 				B557DA0D20975DB1005962F4 /* WordPressAPIVersion.swift in Sources */,
+				B557DA1D20979E7D005962F4 /* RemoteOrder.swift in Sources */,
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,
+				B557DA1820979D51005962F4 /* Credentials.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
 				B557DA0F20975E07005962F4 /* Endpoint.swift in Sources */,
 				B557DA0B20975D7E005962F4 /* WooAPIVersion.swift in Sources */,
@@ -568,7 +588,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D51D6ACC93BCF4E6E6F8B2CB /* Pods-NetworkingTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = NetworkingTests/Info.plist;
@@ -588,7 +607,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D2C5CA50D8B38E253E228261 /* Pods-NetworkingTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = NetworkingTests/Info.plist;

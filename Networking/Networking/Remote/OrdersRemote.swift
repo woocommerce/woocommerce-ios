@@ -1,11 +1,8 @@
 import Foundation
 
 
-struct Credentials {
-    let authToken: String
-    let userAgent: String // mmmmmmm not here
-}
-
+///
+///
 class OrdersRemote: Remote {
 
     func fetchOrders(for siteID: Int, completion: ([RemoteOrder]) -> Void) {
@@ -16,8 +13,4 @@ class OrdersRemote: Remote {
             NSLog("Payload: \(payload)")
         }
     }
-}
-
-struct RemoteOrder {
-
 }

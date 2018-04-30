@@ -269,8 +269,8 @@ extension Address: Decodable {
 
 //
 //
-struct Customer: Decodable {
-    let identifier: String
+struct Customer {
+    let identifier: Int
     let firstName: String
     let lastName: String
     let email: String?

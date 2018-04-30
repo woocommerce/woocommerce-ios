@@ -9,6 +9,7 @@ import Foundation
 struct Order: Decodable {
     let identifier: Int
     let number: String
+    let statusString: String
     let status: OrderStatus
     var customer: Customer?
     let dateCreatedString: String
@@ -22,9 +23,10 @@ struct Order: Decodable {
     let customerID: Int
     let customerNote: String?
 
-    init(identifier: Int, number: String, status: OrderStatus, customer: Customer?, dateCreatedString: String, dateUpdatedString: String, shippingAddress: Address, billingAddress: Address, items: [OrderItem], currency: String, totalString: String, notes: [OrderNote]?, customerID: Int, customerNote: String?) {
+    init(identifier: Int, number: String, statusString: String, status: OrderStatus, customer: Customer?, dateCreatedString: String, dateUpdatedString: String, shippingAddress: Address, billingAddress: Address, items: [OrderItem], currency: String, totalString: String, notes: [OrderNote]?, customerID: Int, customerNote: String?) {
         self.identifier = identifier
         self.number = number
+        self.statusString = statusString
         self.status = status
         self.customer = customer
         self.dateCreatedString = dateCreatedString
@@ -41,10 +43,10 @@ struct Order: Decodable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: OrderStructKeys.self)
-
         let identifier = try container.decode(Int.self, forKey: .identifier)
         let number = try container.decode(String.self, forKey: .number)
         let statusString = try container.decode(String.self, forKey: .statusString)
+        let status = OrderStatus(rawValue: statusString)
         let customer = try container.decodeIfPresent(Customer.self, forKey: .customer)
         let dateCreatedString = try container.decode(String.self, forKey: .dateCreatedString)
         let dateUpdatedString = try container.decode(String.self, forKey: .dateUpdatedString)
@@ -57,7 +59,7 @@ struct Order: Decodable {
         let customerID = try container.decode(Int.self, forKey: .customerID)
         let customerNote = try container.decode(String.self, forKey: .customerNote)
 
-        self.init(identifier: identifier, number: number, statusString: statusString, customer: customer, dateCreatedString: dateCreatedString, dateUpdatedString: dateUpdatedString, shippingAddress: shippingAddress, billingAddress: billingAddress, items: items, currency: currency, totalString: totalString, notes: notes, customerID: customerID, customerNote: customerNote)
+        self.init(identifier: identifier, number: number, statusString: statusString, status: status, customer: customer, dateCreatedString: dateCreatedString, dateUpdatedString: dateUpdatedString, shippingAddress: shippingAddress, billingAddress: billingAddress, items: items, currency: currency, totalString: totalString, notes: notes, customerID: customerID, customerNote: customerNote)
     }
 
     var currencySymbol: String {
@@ -119,6 +121,37 @@ enum OrderStatus {
             case .custom(let payload):
                 return NSLocalizedString("\(payload)", comment: "display custom order status to user")
         }
+    }
+
+    init(rawValue: String) {
+        switch rawValue {
+        case Keys.pending:
+            self = .pending
+        case Keys.processing:
+            self = .processing
+        case Keys.onHold:
+            self = .onHold
+        case Keys.failed:
+            self = .failed
+        case Keys.cancelled:
+            self = .canceled
+        case Keys.completed:
+            self = .completed
+        case Keys.refunded:
+            self = .refunded
+        default:
+            self = .custom(rawValue)
+        }
+    }
+
+    private enum Keys {
+        static let pending = "pending"
+        static let processing = "processing"
+        static let onHold = "on-hold"
+        static let failed =  "failed"
+        static let cancelled = "cancelled"
+        static let completed = "completed"
+        static let refunded = "refunded"
     }
 }
 

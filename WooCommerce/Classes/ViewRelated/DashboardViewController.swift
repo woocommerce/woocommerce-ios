@@ -1,6 +1,7 @@
 import UIKit
 
-//
+
+// MARK: - DashboardViewController
 //
 class DashboardViewController: UIViewController {
 

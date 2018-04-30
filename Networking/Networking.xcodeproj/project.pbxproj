@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B519A3E72097A65F00E2603A /* EndpointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B519A3E62097A65F00E2603A /* EndpointTests.swift */; };
 		B557D9ED209753AA005962F4 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B557D9E3209753AA005962F4 /* Networking.framework */; };
 		B557D9F2209753AA005962F4 /* JetpackEndpointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557D9F1209753AA005962F4 /* JetpackEndpointTests.swift */; };
 		B557D9F4209753AA005962F4 /* Networking.h in Headers */ = {isa = PBXBuildFile; fileRef = B557D9E6209753AA005962F4 /* Networking.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -35,6 +36,7 @@
 
 /* Begin PBXFileReference section */
 		97F8D9516BAC88E8A25EF46D /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B519A3E62097A65F00E2603A /* EndpointTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndpointTests.swift; sourceTree = "<group>"; };
 		B557D9E3209753AA005962F4 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B557D9E6209753AA005962F4 /* Networking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Networking.h; sourceTree = "<group>"; };
 		B557D9E7209753AA005962F4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -134,6 +136,7 @@
 		B557D9F0209753AA005962F4 /* NetworkingTests */ = {
 			isa = PBXGroup;
 			children = (
+				B519A3E62097A65F00E2603A /* EndpointTests.swift */,
 				B557D9F1209753AA005962F4 /* JetpackEndpointTests.swift */,
 				B557D9F3209753AA005962F4 /* Info.plist */,
 			);
@@ -394,6 +397,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B519A3E72097A65F00E2603A /* EndpointTests.swift in Sources */,
 				B557D9F2209753AA005962F4 /* JetpackEndpointTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

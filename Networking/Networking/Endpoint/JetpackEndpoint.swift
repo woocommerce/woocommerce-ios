@@ -28,7 +28,7 @@ struct JetpackEndpoint: URLConvertible  {
     ///
     func asURL() throws -> URL {
         let tunneledEndpoint = wooApiVersion.path + endpoint + "&_method=" + method.rawValue.lowercased()
-        guard let encodedPath  = tunneledEndpoint.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+        guard let encodedPath = tunneledEndpoint.addingPercentEncoding(withAllowedCharacters: .alphanumerics) else {
             fatalError()
         }
 
@@ -36,6 +36,5 @@ struct JetpackEndpoint: URLConvertible  {
         let dotcomEndpoint = Endpoint(wordpressApiVersion: .mark1_1, method: dotcomMethod)
 
         return try dotcomEndpoint.asURL()
-
     }
 }

@@ -2,46 +2,46 @@ import UIKit
 
 extension UIFont {
     static var largeTitle: UIFont {
-        return UIFont.preferredFont(forTextStyle: .largeTitle)
+        return .preferredFont(forTextStyle: .largeTitle)
     }
 
     static var title1: UIFont {
-        return UIFont.preferredFont(forTextStyle: .title1)
+        return .preferredFont(forTextStyle: .title1)
     }
 
     static var title2: UIFont {
-        return UIFont.preferredFont(forTextStyle: .title2)
+        return .preferredFont(forTextStyle: .title2)
     }
 
     static var title3: UIFont {
-        return UIFont.preferredFont(forTextStyle: .title3)
+        return .preferredFont(forTextStyle: .title3)
     }
 
     static var headline: UIFont {
-        return UIFont.preferredFont(forTextStyle: .headline)
+        return .preferredFont(forTextStyle: .headline)
     }
 
     static var subheadline: UIFont {
-        return UIFont.preferredFont(forTextStyle: .subheadline)
+        return .preferredFont(forTextStyle: .subheadline)
     }
 
     static var body: UIFont {
-        return UIFont.preferredFont(forTextStyle: .body)
+        return .preferredFont(forTextStyle: .body)
     }
 
     static var callout: UIFont {
-        return UIFont.preferredFont(forTextStyle: .callout)
+        return .preferredFont(forTextStyle: .callout)
     }
 
     static var footnote: UIFont {
-        return UIFont.preferredFont(forTextStyle: .footnote)
+        return .preferredFont(forTextStyle: .footnote)
     }
 
     static var caption1: UIFont {
-        return UIFont.preferredFont(forTextStyle: .caption1)
+        return .preferredFont(forTextStyle: .caption1)
     }
 
     static var caption2: UIFont {
-        return UIFont.preferredFont(forTextStyle: .caption2)
+        return .preferredFont(forTextStyle: .caption2)
     }
 }

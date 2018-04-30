@@ -1,7 +1,8 @@
 import UIKit
 
-/// Protocol
-///
+
+// MARK: - Style defines the basic API of a Woo Skin.
+//
 protocol Style {
     var wooCommerceBrandColor: UIColor { get }
     var statusDangerColor: UIColor { get }
@@ -15,10 +16,9 @@ protocol Style {
     var defaultTextColor: UIColor { get }
 }
 
-/// Implementation
-///
+// MARK: - WooCommerce's Default Style
+//
 class DefaultStyle: Style {
-    // Android uses flat colors with no alpha, so all alphas default to 1.0
     let wooCommerceBrandColor = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
     let statusDangerColor = UIColor(red: 255.0/255.0, green: 230.0/255.0, blue: 229.0/255.0, alpha: 1.0)
     let statusDangerBoldColor = UIColor(red: 255.0/255.0, green: 197.0/255.0, blue: 195.0/255.0, alpha: 1.0)
@@ -31,66 +31,61 @@ class DefaultStyle: Style {
     let defaultTextColor = UIColor.black
 }
 
-/// Hold the pointer
-///
+
+// MARK: - StyleManager's Notifications
+//
 extension NSNotification.Name {
     static let StyleManagerDidUpdateActive = NSNotification.Name(rawValue: "StyleManagerDidUpdateActive")
 }
 
+
+// MARK: - StyleManager: Our "Active Style" Container!
+//
 class StyleManager {
+
     private static var active: Style = DefaultStyle() {
         didSet {
             NotificationCenter.default.post(name: .StyleManagerDidUpdateActive, object: self)
         }
     }
+
     static var wooCommerceBrandColor: UIColor {
-        get {
-            return active.wooCommerceBrandColor
-        }
+        return active.wooCommerceBrandColor
     }
+
     static var statusDangerColor: UIColor {
-        get {
-            return active.statusDangerColor
-        }
+        return active.statusDangerColor
     }
+
     static var statusDangerBoldColor: UIColor {
-        get {
-            return active.statusDangerBoldColor
-        }
+        return active.statusDangerBoldColor
     }
+
     static var statusPrimaryColor: UIColor {
-        get {
-            return active.statusPrimaryColor
-        }
+        return active.statusPrimaryColor
     }
+
     static var statusPrimaryBoldColor: UIColor {
-        get {
-            return active.statusPrimaryBoldColor
-        }
+        return active.statusPrimaryBoldColor
     }
+
     static var statusSuccessColor: UIColor {
-        get {
-            return active.statusSuccessColor
-        }
+        return active.statusSuccessColor
     }
+
     static var statusSuccessBoldColor: UIColor {
-        get {
-            return active.statusSuccessBoldColor
-        }
+        return active.statusSuccessBoldColor
     }
+
     static var statusNotIdentifiedColor: UIColor {
-        get {
-            return active.statusNotIdentifiedColor
-        }
+        return active.statusNotIdentifiedColor
     }
+
     static var statusNotIdentifiedBoldColor: UIColor {
-        get {
-            return active.statusNotIdentifiedBoldColor
-        }
+        return active.statusNotIdentifiedBoldColor
     }
+
     static var defaultTextColor: UIColor {
-        get {
-            return active.defaultTextColor
-        }
+        return active.defaultTextColor
     }
 }

@@ -4,7 +4,7 @@ import Alamofire
 
 ///
 ///
-class Remote {
+public class Remote {
 
     ///
     ///
@@ -12,7 +12,7 @@ class Remote {
 
     ///
     ///
-    init(credentials: Credentials) {
+    public init(credentials: Credentials) {
         self.credentials = credentials
     }
 

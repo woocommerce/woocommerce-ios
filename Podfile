@@ -22,7 +22,23 @@ target 'WooCommerce' do
   # External Libraries
   # ==================
   #
-  pod 'Alamofire', '4.6.0'
   pod 'Crashlytics', '3.9.3'
 
+end
+
+
+# Networking!
+# ===========
+#
+target 'Networking' do
+  project 'Networking/Networking.xcodeproj'
+
+  # External Libraries
+  # ==================
+  #
+  pod 'Alamofire', '4.6.0'
+
+  target 'NetworkingTests' do
+    inherit! :search_paths
+  end
 end

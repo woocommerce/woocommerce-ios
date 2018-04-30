@@ -34,8 +34,8 @@ class OrderDetailsViewController: UIViewController {
     }
 
     func configureNibs() {
-        let summaryNib = UINib(nibName: SingleOrderSummaryCell.reuseIdentifier, bundle: nil)
-        tableView.register(summaryNib, forCellReuseIdentifier: SingleOrderSummaryCell.reuseIdentifier)
+        let summaryNib = UINib(nibName: OrderDetailsSummaryCell.reuseIdentifier, bundle: nil)
+        tableView.register(summaryNib, forCellReuseIdentifier: OrderDetailsSummaryCell.reuseIdentifier)
         let noteNib = UINib(nibName: SingleOrderCustomerNoteCell.reuseIdentifier, bundle: nil)
         tableView.register(noteNib, forCellReuseIdentifier: SingleOrderCustomerNoteCell.reuseIdentifier)
     }

@@ -78,7 +78,7 @@ struct Order: Decodable {
         case orderItems = "line_items"
         case currency = "currency"
         case total = "total"
-        case notes = "customer_note"
+        case customerNote = "customer_note"
     }
 
     var dateCreated: Date {

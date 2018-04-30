@@ -12,6 +12,11 @@ class SingleOrderViewController: UIViewController {
         let nib = UINib(nibName: SingleOrderSummaryCell.reuseIdentifier, bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: SingleOrderSummaryCell.reuseIdentifier)
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+         setupNavigationBar()
+    }
 }
 
 extension SingleOrderViewController: UITableViewDataSource {
@@ -33,5 +38,17 @@ extension SingleOrderViewController: UITableViewDataSource {
 extension SingleOrderViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+extension SingleOrderViewController {
+    func setupNavigationBar() {
+        // Don't show the Order title in the next-view's back button
+        let backButton = UIBarButtonItem(title: String(),
+                                         style: .plain,
+                                         target: nil,
+                                         action: nil)
+
+        navigationItem.backBarButtonItem = backButton
     }
 }

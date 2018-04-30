@@ -159,12 +159,18 @@ extension OrdersViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let basicOrder = orderAtIndexPath(indexPath)
-        let singleOrder = loadSingleOrder(basicOrder: basicOrder)
-        let singleOrderViewController = storyboard?.instantiateViewController(withIdentifier: "SingleOrderViewController") as! SingleOrderViewController
-        singleOrderViewController.order = singleOrder
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
-        navigationController?.pushViewController(singleOrderViewController, animated: true)
+        performSegue(withIdentifier: "showSingleOrderViewController", sender: indexPath)
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showSingleOrderViewController" {
+            if let singleOrderViewController = segue.destination as? SingleOrderViewController {
+                let indexPath = sender as! IndexPath
+                let basicOrder = orderAtIndexPath(indexPath)
+                let singleOrder = loadSingleOrder(basicOrder: basicOrder)
+                singleOrderViewController.order = singleOrder
+            }
+        }
     }
 }
 

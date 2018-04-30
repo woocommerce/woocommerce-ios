@@ -1,6 +1,7 @@
 import UIKit
 
-//
+
+// MARK: - SettingsViewController
 //
 class SettingsViewController: UIViewController {
 

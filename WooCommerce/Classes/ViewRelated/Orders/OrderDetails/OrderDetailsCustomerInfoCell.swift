@@ -5,7 +5,7 @@ class OrderDetailsCustomerInfoCell: UITableViewCell {
     @IBOutlet private weak var nameLabel: UILabel!
     @IBOutlet private weak var addressLabel: UILabel!
 
-    static let reuseIdentifier = "SingleOrderCustomerInfoCell"
+    static let reuseIdentifier = "OrderDetailsCustomerInfoCell"
 
     func configureCell(title: String!, name: String!, address: String!) {
         titleLabel.text = title

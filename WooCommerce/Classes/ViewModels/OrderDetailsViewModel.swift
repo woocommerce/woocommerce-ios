@@ -3,7 +3,7 @@ import Contacts
 import Gridicons
 import PhoneNumberKit
 
-class SingleOrderViewModel {
+class OrderDetailsViewModel {
     let order: Order
     var title: String
     var summarySection = 0
@@ -93,8 +93,8 @@ class SingleOrderViewModel {
         return cell
     }
 
-    func cellForCustomerNoteSection(indexPath: IndexPath, tableView: UITableView) -> SingleOrderCustomerNoteCell {
-        let cell: SingleOrderCustomerNoteCell = tableView.dequeueReusableCell(withIdentifier: SingleOrderCustomerNoteCell.reuseIdentifier, for: indexPath) as! SingleOrderCustomerNoteCell
+    func cellForCustomerNoteSection(indexPath: IndexPath, tableView: UITableView) -> OrderDetailsCustomerNoteCell {
+        let cell: OrderDetailsCustomerNoteCell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerNoteCell
         cell.configureCell(note: order.customerNote)
         return cell
     }

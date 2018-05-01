@@ -1,11 +1,11 @@
 import UIKit
 import Gridicons
 
-class SingleOrderCustomerNoteCell: UITableViewCell {
+class OrderDetailsCustomerNoteCell: UITableViewCell {
     @IBOutlet weak var noteLabel: UILabel!
     @IBOutlet weak var iconImageView: UIImageView!
 
-    static let reuseIdentifier = "SingleOrderCustomerNoteCell"
+    static let reuseIdentifier = "OrderDetailsCustomerNoteCell"
 
     func configureCell(note: String?) {
         if let note = note {

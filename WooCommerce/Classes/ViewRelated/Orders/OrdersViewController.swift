@@ -168,11 +168,11 @@ extension OrdersViewController: UITableViewDelegate {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == Constants.orderDetailsSegue {
-            if let singleOrderViewController = segue.destination as? OrderDetailsViewController {
+            if let orderDetailViewController = segue.destination as? OrderDetailsViewController {
                 let indexPath = sender as! IndexPath
                 let basicOrder = orderAtIndexPath(indexPath)
                 let singleOrder = loadSingleOrder(basicOrder: basicOrder)
-                singleOrderViewController.order = singleOrder
+                orderDetailViewController.order = singleOrder
             }
         }
     }

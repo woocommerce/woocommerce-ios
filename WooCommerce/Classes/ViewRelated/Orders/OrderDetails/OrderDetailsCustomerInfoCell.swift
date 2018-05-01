@@ -1,6 +1,6 @@
 import UIKit
 
-class SingleOrderCustomerInfoCell: UITableViewCell {
+class OrderDetailsCustomerInfoCell: UITableViewCell {
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var nameLabel: UILabel!
     @IBOutlet private weak var addressLabel: UILabel!

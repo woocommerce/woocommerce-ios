@@ -2,28 +2,20 @@ import UIKit
 import Gridicons
 
 class OrdersViewController: UIViewController {
-    struct Constants {
-        static let groupedFirstSectionHeaderHeight: CGFloat = 32.0
-        static let groupedSectionHeaderHeight: CGFloat = 12.0
-    }
 
     @IBOutlet weak var tableView: UITableView!
     var orders = [Order]()
     var searchResults = [Order]()
     let searchController = UISearchController(searchResultsController: nil)
 
-    func loadJson() -> Array<Order> {
-        if let path = Bundle.main.url(forResource: "order-list", withExtension: "json") {
-            do {
-                let json = try Data(contentsOf: path)
-                let decoder = JSONDecoder()
-                let orders = try decoder.decode([Order].self, from: json)
-                return orders
-            } catch {
-                print("error:\(error)")
-            }
+    func loadSampleOrders() -> [Order] {
+        guard let path = Bundle.main.url(forResource: "data", withExtension: "json") else {
+            return []
         }
-        return []
+
+        let json = try! Data(contentsOf: path)
+        let decoder = JSONDecoder()
+        return try! decoder.decode([Order].self, from: json)
     }
 
     func loadSingleOrder(basicOrder: Order) -> Order {
@@ -51,7 +43,7 @@ class OrdersViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureSearch()
-        orders = loadJson()
+        orders = loadSampleOrders()
     }
 
     func configureNavigation() {
@@ -62,11 +54,19 @@ class OrdersViewController: UIViewController {
                                              action: #selector(rightButtonTapped))
         rightBarButton.tintColor = .white
         navigationItem.setRightBarButton(rightBarButton, animated: false)
+
+        // Don't show the Order title in the next-view's back button
+        let backButton = UIBarButtonItem(title: String(),
+                                         style: .plain,
+                                         target: nil,
+                                         action: nil)
+
+        navigationItem.backBarButtonItem = backButton
     }
 
     func configureSearch() {
         searchController.searchResultsUpdater = self
-        searchController.dimsBackgroundDuringPresentation = false
+        searchController.obscuresBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = NSLocalizedString("Search all orders", comment: "Search placeholder text")
@@ -114,15 +114,9 @@ class OrdersViewController: UIViewController {
     func isFiltering() -> Bool {
         return searchController.isActive && !searchBarIsEmpty()
     }
+
     func searchBarIsEmpty() -> Bool {
         return searchController.searchBar.text?.isEmpty ?? true
-    }
-
-    func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-        searchResults = orders.filter({ (order : Order) -> Bool in
-            return order.billingAddress.firstName.lowercased().contains(searchText.lowercased())
-        })
-        tableView.reloadData()
     }
 }
 
@@ -169,12 +163,18 @@ extension OrdersViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let basicOrder = orderAtIndexPath(indexPath)
-        let singleOrder = loadSingleOrder(basicOrder: basicOrder)
-        let singleOrderViewController = storyboard?.instantiateViewController(withIdentifier: "SingleOrderViewController") as! SingleOrderViewController
-        singleOrderViewController.viewModel = SingleOrderViewModel(withOrder: singleOrder)
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
-        navigationController?.pushViewController(singleOrderViewController, animated: true)
+        performSegue(withIdentifier: Constants.orderDetailsSegue, sender: indexPath)
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == Constants.orderDetailsSegue {
+            if let singleOrderViewController = segue.destination as? OrderDetailsViewController {
+                let indexPath = sender as! IndexPath
+                let basicOrder = orderAtIndexPath(indexPath)
+                let singleOrder = loadSingleOrder(basicOrder: basicOrder)
+                singleOrderViewController.order = singleOrder
+            }
+        }
     }
 }
 
@@ -203,5 +203,15 @@ extension OrdersViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchController.searchBar.resignFirstResponder()
         tableView.reloadData()
+    }
+}
+
+// MARK: Constants
+//
+extension OrdersViewController {
+    struct Constants {
+        static let groupedFirstSectionHeaderHeight: CGFloat = 32.0
+        static let groupedSectionHeaderHeight: CGFloat = 12.0
+        static let orderDetailsSegue = "ShowOrderDetailsViewController"
     }
 }

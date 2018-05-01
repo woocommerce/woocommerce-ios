@@ -40,6 +40,28 @@ extension OrderDetailsViewController: UITableViewDataSource {
         return viewModel.rowCount(for: section)
     }
 
+        if section == Section.customerNote.rawValue {
+            let numberOfRows = order.customerNote?.isEmpty == false ? 1 : 0
+            return numberOfRows
+        }
+
+        if section == Section.info.rawValue {
+            let shippingRow = 1
+            let billingRow = 1
+            let showHideButtonRow = 1
+            return shippingRow + billingRow + showHideButtonRow
+        }
+
+        if section == Section.orderNotes.rawValue {
+            let titleRow = 1
+            let addNoteRow = 1
+            let totalNotes = order.notes?.count ?? 0
+            return titleRow + addNoteRow + totalNotes
+        }
+
+        return 0
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == viewModel.summarySection {
             return viewModel.cellForSummarySection(indexPath: indexPath, tableView: tableView)

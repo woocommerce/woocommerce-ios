@@ -103,22 +103,23 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="tableView" destination="yra-Ak-zW1" id="o3y-1L-wtB"/>
+                        <segue destination="IgL-pI-DQK" kind="show" identifier="ShowOrderDetailsViewController" id="2Hx-kK-8Yt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vy0-WI-j6l" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2072.8000000000002" y="542.87856071964018"/>
+            <point key="canvasLocation" x="2105" y="543"/>
         </scene>
         <!--Single Order-->
         <scene sceneID="p5z-EU-84P">
             <objects>
-                <viewController storyboardIdentifier="SingleOrderViewController" id="IgL-pI-DQK" userLabel="Single Order" customClass="SingleOrderViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SingleOrderViewController" id="IgL-pI-DQK" userLabel="Single Order" customClass="OrderDetailsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="BSM-Pn-wcY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="114" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="hBh-xf-Cby">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <connections>
                                     <outlet property="dataSource" destination="IgL-pI-DQK" id="epc-hT-caY"/>
@@ -141,7 +142,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Z9o-7H-pWC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2970" y="543"/>
+            <point key="canvasLocation" x="2871" y="543"/>
         </scene>
         <!--Orders-->
         <scene sceneID="KDy-5N-CLG">

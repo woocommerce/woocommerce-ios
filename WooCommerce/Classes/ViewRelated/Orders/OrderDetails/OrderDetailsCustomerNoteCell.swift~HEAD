@@ -8,7 +8,11 @@ class OrderDetailsCustomerNoteCell: UITableViewCell {
     static let reuseIdentifier = "OrderDetailsCustomerNoteCell"
 
     func configureCell(note: String?) {
-        noteLabel.text = note ?? ""
+        if let note = note {
+            noteLabel.text = note
+        } else {
+            noteLabel.text = ""
+        }
         noteLabel.applyBodyStyle()
         iconImageView.image = Gridicon.iconOfType(.quote)
         iconImageView.tintColor = .black

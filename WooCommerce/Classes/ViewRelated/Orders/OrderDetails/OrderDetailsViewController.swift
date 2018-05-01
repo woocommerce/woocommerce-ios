@@ -6,12 +6,15 @@ class OrderDetailsViewController: UIViewController {
 
     var order: Order!
     var sectionTitles = [String]()
-    let summarySection = 0
-    let fulfillItemsSection = 1
-    let customerNoteSection = 2
-    let customerInfoSection = 3
-    let paymentSection = 4
-    let orderNotesSection = 5
+
+    enum Section: Int {
+        case summary = 0
+        case fulfillment = 1
+        case customerNote = 2
+        case info = 3
+        case payment = 4
+        case orderNotes = 5
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,29 +28,25 @@ class OrderDetailsViewController: UIViewController {
     }
 
     func configureSections() {
-        sectionTitles = orderDetailSectionTitles()
-        if let customerNote = order.customerNote {
-            if customerNote.isEmpty {
-                sectionTitles[customerNoteSection] = ""
-            }
-        }
-    }
-
-    func orderDetailSectionTitles() -> [String] {
         let orderSummary = ""
         let fulfillItems = ""
-        let customerNote = NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title")
+        var customerNoteTitle = NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title")
         let customerInfo = NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title")
         let paymentDetails = NSLocalizedString("PAYMENT", comment: "Payment section title")
         let orderNotes = NSLocalizedString("ORDER NOTES", comment: "Order notes section title")
-        return [orderSummary, fulfillItems, customerNote, customerInfo, paymentDetails, orderNotes]
+        if let customerNote = order.customerNote {
+            if customerNote.isEmpty {
+                customerNoteTitle = ""
+            }
+        }
+        sectionTitles = [orderSummary, fulfillItems, customerNoteTitle, customerInfo, paymentDetails, orderNotes]
     }
 
     func configureNibs() {
         let summaryNib = UINib(nibName: OrderDetailsSummaryCell.reuseIdentifier, bundle: nil)
         tableView.register(summaryNib, forCellReuseIdentifier: OrderDetailsSummaryCell.reuseIdentifier)
-        let noteNib = UINib(nibName: SingleOrderCustomerNoteCell.reuseIdentifier, bundle: nil)
-        tableView.register(noteNib, forCellReuseIdentifier: SingleOrderCustomerNoteCell.reuseIdentifier)
+        let noteNib = UINib(nibName: OrderDetailsCustomerNoteCell.reuseIdentifier, bundle: nil)
+        tableView.register(noteNib, forCellReuseIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier)
     }
 }
 
@@ -57,38 +56,28 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == summarySection ||
-            section == fulfillItemsSection ||
-            section == paymentSection {
+        if section == Section.summary.rawValue ||
+            section == Section.fulfillment.rawValue ||
+            section == Section.payment.rawValue {
         return 1
     }
 
-        if section == customerNoteSection {
-            if let customerNote = order.customerNote {
-                if customerNote.isEmpty == false {
-                    return 1
-                } else {
-                    return 0
-                }
-            } else {
-                return 0
-            }
+        if section == Section.customerNote.rawValue {
+            let numberOfRows = order.customerNote?.isEmpty == false ? 1 : 0
+            return numberOfRows
         }
 
-        if section == customerInfoSection {
+        if section == Section.info.rawValue {
             let shippingRow = 1
             let billingRow = 1
             let showHideButtonRow = 1
             return shippingRow + billingRow + showHideButtonRow
         }
 
-        if section == orderNotesSection {
+        if section == Section.orderNotes.rawValue {
             let titleRow = 1
             let addNoteRow = 1
-            var totalNotes = 0
-            if let notes = order.notes {
-                totalNotes = notes.count
-            }
+            let totalNotes = order.notes?.count ?? 0
             return titleRow + addNoteRow + totalNotes
         }
 
@@ -96,25 +85,26 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == summarySection {
-            let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsSummaryCell.reuseIdentifier, for: indexPath) as! OrderDetailsSummaryCell
-            cell.configureCell(order: order)
-            return cell
-        }
+        switch indexPath.section {
+            case Section.summary.rawValue:
+                let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsSummaryCell.reuseIdentifier, for: indexPath) as! OrderDetailsSummaryCell
+                cell.configureCell(order: order)
+                return cell
 
-        if indexPath.section == customerNoteSection {
-            let cell = tableView.dequeueReusableCell(withIdentifier: SingleOrderCustomerNoteCell.reuseIdentifier, for: indexPath) as! SingleOrderCustomerNoteCell
-            cell.configureCell(note: order.customerNote)
-            return cell
-        }
+            case Section.customerNote.rawValue:
+                let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerNoteCell
+                cell.configureCell(note: order.customerNote)
+                return cell
 
-        return UITableViewCell()
+            default:
+                fatalError()
+        }
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if sectionTitles[section].isEmpty {
             return nil
-}
+        }
         return sectionTitles[section]
     }
 }

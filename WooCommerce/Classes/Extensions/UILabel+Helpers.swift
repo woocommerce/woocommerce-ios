@@ -11,6 +11,11 @@ extension UILabel {
         textColor = StyleManager.defaultTextColor
     }
 
+    func applyFootnoteStyle() {
+        font = UIFont.footnote
+        textColor = StyleManager.defaultTextColor
+    }
+
     func applyStatusStyle(for status: OrderStatus) {
         layer.borderWidth = 1.0
         layer.cornerRadius = 4.0
@@ -33,6 +38,8 @@ extension UILabel {
             case .onHold:
                 fallthrough
             case .canceled:
+                fallthrough
+            case .custom:
                 fallthrough
             default:
                 backgroundColor = StyleManager.statusNotIdentifiedColor

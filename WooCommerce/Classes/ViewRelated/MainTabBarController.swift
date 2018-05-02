@@ -1,10 +1,9 @@
 import UIKit
 import Gridicons
 
-/// Because Gridicons are programmatically created,
-/// we can't use Interface Builder to assign tab bar icons.
-/// We need a tab bar class to set them.
-///
+
+// MARK: - MainTabBarController
+//
 class MainTabBarController: UITabBarController {
 
     private var tabTitles = [

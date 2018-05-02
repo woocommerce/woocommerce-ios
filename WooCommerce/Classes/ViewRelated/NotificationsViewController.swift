@@ -1,6 +1,7 @@
 import UIKit
 
-//
+
+// MARK: - NotificationsViewController
 //
 class NotificationsViewController: UIViewController {
 

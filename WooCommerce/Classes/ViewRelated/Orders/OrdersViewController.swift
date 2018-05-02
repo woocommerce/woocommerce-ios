@@ -2,31 +2,48 @@ import UIKit
 import Gridicons
 
 class OrdersViewController: UIViewController {
-    struct Constants {
-        static let groupedFirstSectionHeaderHeight: CGFloat = 32.0
-        static let groupedSectionHeaderHeight: CGFloat = 12.0
-    }
 
     @IBOutlet weak var tableView: UITableView!
     var orders = [Order]()
     var searchResults = [Order]()
     let searchController = UISearchController(searchResultsController: nil)
-    var showSearchResults = false
+
+    func loadSampleOrders() -> [Order] {
+        guard let path = Bundle.main.url(forResource: "data", withExtension: "json") else {
+            return []
+        }
+
+        let json = try! Data(contentsOf: path)
+        let decoder = JSONDecoder()
+        return try! decoder.decode([Order].self, from: json)
+    }
+
+    func loadSingleOrder(basicOrder: Order) -> Order {
+        let resource = "order-\(basicOrder.number)"
+        if let path = Bundle.main.url(forResource: resource, withExtension: "json") {
+            do {
+                let json = try Data(contentsOf: path)
+                let decoder = JSONDecoder()
+                let orderFromJson = try decoder.decode(Order.self, from: json)
+                return orderFromJson
+            } catch {
+                print("error:\(error)")
+            }
+        }
+        return basicOrder
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        tabBarItem.title = NSLocalizedString("Orders", comment: "Orders title")
+        tabBarItem.image = Gridicon.iconOfType(.pages)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         configureNavigation()
         configureSearch()
-
-        //FIXME: this is a hack so you can see a row working on the orders list table.
-        let billingAddress = Address(firstName: "Jane", lastName: "Tester", company: "", address1: "500 Hollywood Blvd", address2: "", city: "Las Vegas", state: "NV", postcode: "90210", country: "US")
-        let shippingAddress = Address(firstName: "Thuy", lastName: "Copeland", company: "", address1: "500 Hollywood Blvd", address2: "", city: "Las Vegas", state: "NV", postcode: "90210", country: "US")
-        let customer = Customer(identifier: "1", firstName: "Jane", lastName: "Tester", email: nil, phone: nil, billingAddress: billingAddress, shippingAddress: shippingAddress)
-        let item = OrderItem(lineItemId: 1, name: "Belt", productID: 27, quantity: 1, sku: "", subtotal: "55.00", subtotalTax: "0.00", taxClass: "", total: "55.00", totalTax: "", variationID: 0)
-        let order = Order(identifier: "190", number: "190", status: .processing, customer: customer, dateCreated: Date.init(), dateUpdated: Date.init(), shippingAddress: shippingAddress, billingAddress: billingAddress, items: [item], currency: "USD", total: 91.32, notes: [])
-
-        orders = [order]
+        orders = loadSampleOrders()
     }
 
     func configureNavigation() {
@@ -37,11 +54,19 @@ class OrdersViewController: UIViewController {
                                              action: #selector(rightButtonTapped))
         rightBarButton.tintColor = .white
         navigationItem.setRightBarButton(rightBarButton, animated: false)
+
+        // Don't show the Order title in the next-view's back button
+        let backButton = UIBarButtonItem(title: String(),
+                                         style: .plain,
+                                         target: nil,
+                                         action: nil)
+
+        navigationItem.backBarButtonItem = backButton
     }
 
     func configureSearch() {
         searchController.searchResultsUpdater = self
-        searchController.dimsBackgroundDuringPresentation = true
+        searchController.obscuresBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = NSLocalizedString("Search all orders", comment: "Search placeholder text")
@@ -84,11 +109,26 @@ class OrdersViewController: UIViewController {
                 print("next: filter the table data and display!")
         }
     }
+
+    // MARK: Search bar
+    func isFiltering() -> Bool {
+        return searchController.isActive && !searchBarIsEmpty()
+    }
+
+    func searchBarIsEmpty() -> Bool {
+        return searchController.searchBar.text?.isEmpty ?? true
+    }
 }
 
+// MARK: UITableViewDataSource
+//
 extension OrdersViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if showSearchResults {
+        if isFiltering() {
             return searchResults.count
         }
         return orders.count
@@ -102,15 +142,17 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        // FIXME: this is hard-coded data
+        // FIXME: this is hard-coded data. Will fix when WordPressShared date helpers are available to make fuzzy dates.
         return NSLocalizedString("Today", comment: "Title for header section")
     }
 
     func orderAtIndexPath(_ indexPath: IndexPath) -> Order{
-        return showSearchResults ? searchResults[indexPath.row] : orders[indexPath.row]
+        return isFiltering() ? searchResults[indexPath.row] : orders[indexPath.row]
     }
 }
 
+// MARK: UITableViewDelegate
+//
 extension OrdersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
@@ -118,8 +160,26 @@ extension OrdersViewController: UITableViewDelegate {
         }
         return Constants.groupedSectionHeaderHeight
     }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        performSegue(withIdentifier: Constants.orderDetailsSegue, sender: indexPath)
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == Constants.orderDetailsSegue {
+            if let singleOrderViewController = segue.destination as? OrderDetailsViewController {
+                let indexPath = sender as! IndexPath
+                let basicOrder = orderAtIndexPath(indexPath)
+                let singleOrder = loadSingleOrder(basicOrder: basicOrder)
+                singleOrderViewController.order = singleOrder
+            }
+        }
+    }
 }
 
+// MARK: UISearchResultsUpdating
+//
 extension OrdersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let searchString = searchController.searchBar.text else {
@@ -127,24 +187,31 @@ extension OrdersViewController: UISearchResultsUpdating {
         }
         // TODO: filter search results properly
         searchResults = orders.filter { order in
-            return  order.customer.firstName.lowercased().contains(searchString.lowercased())
+            return order.shippingAddress.firstName.lowercased().contains(searchString.lowercased())
         }
         tableView.reloadData()
     }
 }
 
+// MARK: UISearchBarDelegate
+//
 extension OrdersViewController: UISearchBarDelegate {
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        showSearchResults = searchBar.text?.isEmpty == false
         tableView.reloadData()
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        if showSearchResults {
-            showSearchResults = false
-            searchController.searchBar.text = nil
-        }
         searchController.searchBar.resignFirstResponder()
         tableView.reloadData()
+    }
+}
+
+// MARK: Constants
+//
+extension OrdersViewController {
+    struct Constants {
+        static let groupedFirstSectionHeaderHeight: CGFloat = 32.0
+        static let groupedSectionHeaderHeight: CGFloat = 12.0
+        static let orderDetailsSegue = "ShowOrderDetailsViewController"
     }
 }

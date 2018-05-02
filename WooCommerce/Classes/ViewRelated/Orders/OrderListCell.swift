@@ -6,6 +6,9 @@ class OrderListCell: UITableViewCell {
     @IBOutlet var paymentStatusLabel: PaddedLabel!
     @IBOutlet var shippingStatusLabel: PaddedLabel!
 
+    var payStatusColor: UIColor = .clear
+    var shipStatusColor: UIColor = .clear
+
     static let reuseIdentifier = "OrderListCell"
 
     func configureCell(order: Order) {
@@ -20,24 +23,21 @@ class OrderListCell: UITableViewCell {
         paymentStatusLabel.text = paymentStatusText
         paymentStatusLabel.applyStatusStyle(for: order.status)
         shippingStatusLabel.text = ""
+        // save the status colors found on the labels
+        payStatusColor = paymentStatusLabel.backgroundColor!
+        shipStatusColor = shippingStatusLabel.backgroundColor ?? .clear
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        let payStatusColor = paymentStatusLabel.backgroundColor
-        let shipStatusColor = shippingStatusLabel.backgroundColor
-
+        // label background colors get reset upon selection, so re-assign status colors here
         paymentStatusLabel.backgroundColor = payStatusColor
         shippingStatusLabel.backgroundColor = shipStatusColor
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
-
-        let payStatusColor = paymentStatusLabel.backgroundColor
-        let shipStatusColor = shippingStatusLabel.backgroundColor
-
+        // label background colors get reset upon highlight, so re-assign status colors here
         paymentStatusLabel.backgroundColor = payStatusColor
         shippingStatusLabel.backgroundColor = shipStatusColor
     }

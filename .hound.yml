@@ -1,0 +1,6 @@
+swift:
+    config_file: .swiftlint.yml
+ruby:
+  enabled: false
+
+fail_on_violations: true

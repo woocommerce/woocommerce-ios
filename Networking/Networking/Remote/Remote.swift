@@ -21,7 +21,11 @@ public class Remote {
     /// Returns the HTTPHeaders containing our Authorization Token.
     ///
     var headers: HTTPHeaders {
-        return ["Authorization": "Bearer \(credentials.authToken)"]
+        return [
+            "Authorization": "Bearer \(credentials.authToken)",
+            "Accept": "application/json",
+            "User-Agent": Settings.userAgent
+        ]
     }
 
     /// Submits a request over the Network!

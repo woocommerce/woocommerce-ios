@@ -21,6 +21,7 @@ class OrderDetailsSummaryCell: UITableViewCell {
         titleLabel.applyTitleStyle()
         createdLabel.applyFootnoteStyle()
         paymentLabel.applyStatusStyle(for: order.status)
+        paymentStatusColor = paymentLabel.backgroundColor ?? .clear
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

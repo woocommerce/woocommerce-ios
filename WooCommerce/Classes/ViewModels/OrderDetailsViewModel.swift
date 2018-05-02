@@ -95,7 +95,8 @@ class OrderDetailsViewModel {
             let title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
             let contact: CNContact = order.shippingAddress.createContact()
             let fullName = CNContactFormatter.string(from: contact, style: .fullName)
-            let address = CNPostalAddressFormatter.string(from: contact.postalAddresses[0].value, style: .mailingAddress)
+            let postalAddress = contact.postalAddresses[0].value
+            let address = CNPostalAddressFormatter.string(from: postalAddress, style: .mailingAddress)
             cell.configureCell(title: title, name: fullName, address: address)
             cell.separatorInset = UIEdgeInsets.zero
             return cell
@@ -106,7 +107,8 @@ class OrderDetailsViewModel {
             let title = NSLocalizedString("Billing details", comment: "Billing details for customer info cell")
             let contact: CNContact = order.billingAddress.createContact()
             let fullName = CNContactFormatter.string(from: contact, style: .fullName)
-            let address = CNPostalAddressFormatter.string(from: contact.postalAddresses[0].value, style: .mailingAddress)
+            let postalAddress = contact.postalAddresses[0].value
+            let address = CNPostalAddressFormatter.string(from: postalAddress, style: .mailingAddress)
             cell.configureCell(title: title, name: fullName, address: address)
             return cell
         }
@@ -124,22 +126,25 @@ class OrderDetailsViewModel {
             cell.accessoryView = phoneButton
 
             if let phoneData = contact.phoneNumbers.first?.value {
-                let phoneStringArray = phoneData.stringValue.components(separatedBy: NSCharacterSet.decimalDigits.inverted)
-                let strippedPhoneNumber = NSArray(array: phoneStringArray).componentsJoined(by: "")
+                let inverted = NSCharacterSet.decimalDigits.inverted
+                let phoneStringArray = phoneData.stringValue.components(separatedBy: inverted)
+                let cleanedPhone = NSArray(array: phoneStringArray).componentsJoined(by: "")
                 let phoneNumberKit = PhoneNumberKit()
                 let iOS639LanguageCode = NSLocale.current.identifier
-                var regionShortCode = ""
+                var region = ""
                 if iOS639LanguageCode.count > 3 { // e.g. "en-GB"
-                    let range = iOS639LanguageCode.index(iOS639LanguageCode.startIndex, offsetBy: 3)..<iOS639LanguageCode.endIndex
-                    regionShortCode = String(iOS639LanguageCode[range])
+                    let start = iOS639LanguageCode.startIndex
+                    let end = iOS639LanguageCode.endIndex
+                    let range = iOS639LanguageCode.index(start, offsetBy: 3)..<end
+                    region = String(iOS639LanguageCode[range]) // e.g. "GB"
                 }
                 do {
-                    let phoneNumber = try phoneNumberKit.parse(strippedPhoneNumber, withRegion: regionShortCode, ignoreType: true)
+                    let phoneNumber = try phoneNumberKit.parse(cleanedPhone, withRegion: region, ignoreType: true)
                     let formattedPhoneNumber = phoneNumberKit.format(phoneNumber, toType: .national)
                     cell.textLabel?.text = formattedPhoneNumber
                     cell.textLabel?.adjustsFontSizeToFitWidth = true
                 } catch {
-                    NSLog("error parsing sanitized billing phone number: %@", strippedPhoneNumber)
+                    NSLog("error parsing sanitized billing phone number: %@", cleanedPhone)
                 }
             }
             return cell

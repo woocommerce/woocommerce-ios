@@ -4,10 +4,10 @@ import Gridicons
 // MARK: - ShowHideFooterCell
 //
 class ShowHideFooterCell: UITableViewHeaderFooterView {
-    @IBOutlet private weak var footerLabel : UILabel!
-    @IBOutlet private weak var footerArrow : UIImageView!
+    @IBOutlet private weak var footerLabel: UILabel!
+    @IBOutlet private weak var footerArrow: UIImageView!
     @IBOutlet private weak var footerButton: UIButton!
-    var didSelectFooter: (() -> Void)? = nil
+    var didSelectFooter: (() -> Void)?
 
     @IBAction func footerButtonTapped(sender: UIButton) {
             didSelectFooter?()

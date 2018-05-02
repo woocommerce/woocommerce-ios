@@ -8,8 +8,9 @@ class OrdersViewController: UIViewController {
     var searchResults = [Order]()
     let searchController = UISearchController(searchResultsController: nil)
 
+
     func loadSampleOrders() -> [Order] {
-        guard let path = Bundle.main.url(forResource: "data", withExtension: "json") else {
+        guard let path = Bundle.main.url(forResource: "order-list", withExtension: "json") else {
             return []
         }
 
@@ -25,6 +26,7 @@ class OrdersViewController: UIViewController {
                 let json = try Data(contentsOf: path)
                 let decoder = JSONDecoder()
                 let orderFromJson = try decoder.decode(Order.self, from: json)
+
                 return orderFromJson
             } catch {
                 print("error:\(error)")

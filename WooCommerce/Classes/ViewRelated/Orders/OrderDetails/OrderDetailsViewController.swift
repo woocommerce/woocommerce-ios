@@ -1,111 +1,87 @@
 import UIKit
 
 class OrderDetailsViewController: UIViewController {
-
+    
     @IBOutlet weak var tableView: UITableView!
-
-    var order: Order!
-    var sectionTitles = [String]()
-
-    enum Section: Int {
-        case summary = 0
-        case fulfillment = 1
-        case customerNote = 2
-        case info = 3
-        case payment = 4
-        case orderNotes = 5
-    }
-
+    
+    var viewModel: OrderDetailsViewModel!
+    var orderNotes: [OrderNote]?
+    
+    static let sectionFooterHeight = CGFloat(30)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
-        title = NSLocalizedString("Order #\(order.number)", comment:"Order number title")
+        title = viewModel.title
     }
-
+    
     func configureTableView() {
-        configureSections()
+        tableView.estimatedSectionHeaderHeight = 0
         configureNibs()
     }
-
-    func configureSections() {
-        let orderSummary = ""
-        let fulfillItems = ""
-        var customerNoteTitle = NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title")
-        let customerInfo = NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title")
-        let paymentDetails = NSLocalizedString("PAYMENT", comment: "Payment section title")
-        let orderNotes = NSLocalizedString("ORDER NOTES", comment: "Order notes section title")
-        if let customerNote = order.customerNote {
-            if customerNote.isEmpty {
-                customerNoteTitle = ""
-            }
-        }
-        sectionTitles = [orderSummary, fulfillItems, customerNoteTitle, customerInfo, paymentDetails, orderNotes]
-    }
-
+    
     func configureNibs() {
         let summaryNib = UINib(nibName: OrderDetailsSummaryCell.reuseIdentifier, bundle: nil)
         tableView.register(summaryNib, forCellReuseIdentifier: OrderDetailsSummaryCell.reuseIdentifier)
         let noteNib = UINib(nibName: OrderDetailsCustomerNoteCell.reuseIdentifier, bundle: nil)
         tableView.register(noteNib, forCellReuseIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier)
+        let infoNib = UINib(nibName: OrderDetailsCustomerInfoCell.reuseIdentifier, bundle: nil)
+        tableView.register(infoNib, forCellReuseIdentifier: OrderDetailsCustomerInfoCell.reuseIdentifier)
+        let footerNib = UINib(nibName: ShowHideFooterCell.reuseIdentifier, bundle: nil)
+        tableView.register(footerNib, forHeaderFooterViewReuseIdentifier: ShowHideFooterCell.reuseIdentifier)
     }
 }
 
 extension OrderDetailsViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sectionTitles.count
+        return viewModel.getSectionTitles().count
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == Section.summary.rawValue ||
-            section == Section.fulfillment.rawValue ||
-            section == Section.payment.rawValue {
-        return 1
+        return viewModel.rowCount(for: section)
     }
-
-        if section == Section.customerNote.rawValue {
-            let numberOfRows = order.customerNote?.isEmpty == false ? 1 : 0
-            return numberOfRows
-        }
-
-        if section == Section.info.rawValue {
-            let shippingRow = 1
-            let billingRow = 1
-            let showHideButtonRow = 1
-            return shippingRow + billingRow + showHideButtonRow
-        }
-
-        if section == Section.orderNotes.rawValue {
-            let titleRow = 1
-            let addNoteRow = 1
-            let totalNotes = order.notes?.count ?? 0
-            return titleRow + addNoteRow + totalNotes
-        }
-
-        return 0
-    }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
-            case Section.summary.rawValue:
-                let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsSummaryCell.reuseIdentifier, for: indexPath) as! OrderDetailsSummaryCell
-                cell.configureCell(order: order)
-                return cell
-
-            case Section.customerNote.rawValue:
-                let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerNoteCell
-                cell.configureCell(note: order.customerNote)
-                return cell
-
-            default:
-                return UITableViewCell()
+        case OrderDetailsViewModel.Section.summary.rawValue:
+            return viewModel.cellForSummarySection(indexPath: indexPath, tableView: tableView)
+        case OrderDetailsViewModel.Section.customerNote.rawValue:
+            return viewModel.cellForCustomerNoteSection(indexPath: indexPath, tableView: tableView)
+        case OrderDetailsViewModel.Section.info.rawValue:
+            return viewModel.cellForCustomerInfoSection(indexPath: indexPath, tableView: tableView)
+        default:
+            fatalError()
         }
     }
-
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let titles = viewModel.getSectionTitles()
+        if titles[section].isEmpty {
+            return 0
+        }
+        return UITableViewAutomaticDimension
+    }
+    
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if sectionTitles[section].isEmpty {
+        let titles = viewModel.getSectionTitles()
+        if titles[section].isEmpty {
             return nil
         }
-        return sectionTitles[section]
+        return titles[section]
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section == OrderDetailsViewModel.Section.info.rawValue {
+            return OrderDetailsViewController.sectionFooterHeight
+        }
+        return 0
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if section == OrderDetailsViewModel.Section.info.rawValue {
+            return viewModel.cellForShowHideFooter(tableView: tableView, section: section)
+        }
+        return nil
     }
 }
 

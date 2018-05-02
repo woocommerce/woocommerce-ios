@@ -97,7 +97,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
                 return cell
 
             default:
-                fatalError()
+                return UITableViewCell()
         }
     }
 

@@ -11,8 +11,6 @@
 		B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112E2049E27A007D25DC /* OrdersViewController.swift */; };
 		B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112F2049E27A007D25DC /* SettingsViewController.swift */; };
 		B50911342049E493007D25DC /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50911332049E493007D25DC /* Order.swift */; };
-		B557DA1520979904005962F4 /* OrderDetailsCustomerNoteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1320979904005962F4 /* OrderDetailsCustomerNoteCell.swift */; };
-		B557DA1620979904005962F4 /* OrderDetailsCustomerNoteCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B557DA1420979904005962F4 /* OrderDetailsCustomerNoteCell.xib */; };
 		B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */; };
 		B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */; };
 		B56DB3D22049BFAA00D4AA8E /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3D02049BFAA00D4AA8E /* WooCommerce.xcdatamodeld */; };
@@ -31,7 +29,6 @@
 		CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */; };
 		CE53ACD6209909CD004BEFD0 /* OrderDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE53ACD5209909CD004BEFD0 /* OrderDetailsViewModel.swift */; };
 		CE53ACD8209909DF004BEFD0 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE53ACD7209909DF004BEFD0 /* Address.swift */; };
-		CE53ACDA209909E6004BEFD0 /* Address+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE53ACD9209909E6004BEFD0 /* Address+Helpers.swift */; };
 		CE53ACE5209909FA004BEFD0 /* OrderDetailsCustomerNoteCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE53ACDC209909FA004BEFD0 /* OrderDetailsCustomerNoteCell.xib */; };
 		CE53ACE6209909FA004BEFD0 /* ShowHideFooterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE53ACDD209909FA004BEFD0 /* ShowHideFooterCell.swift */; };
 		CE53ACE8209909FA004BEFD0 /* OrderDetailsCustomerInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE53ACDF209909FA004BEFD0 /* OrderDetailsCustomerInfoCell.xib */; };
@@ -67,8 +64,6 @@
 		B509112E2049E27A007D25DC /* OrdersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrdersViewController.swift; sourceTree = "<group>"; };
 		B509112F2049E27A007D25DC /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B50911332049E493007D25DC /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
-		B557DA1320979904005962F4 /* OrderDetailsCustomerNoteCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderDetailsCustomerNoteCell.swift; sourceTree = "<group>"; };
-		B557DA1420979904005962F4 /* OrderDetailsCustomerNoteCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderDetailsCustomerNoteCell.xib; sourceTree = "<group>"; };
 		B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WooCommerce.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B56DB3CE2049BFAA00D4AA8E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -91,7 +86,6 @@
 		CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		CE53ACD5209909CD004BEFD0 /* OrderDetailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewModel.swift; sourceTree = "<group>"; };
 		CE53ACD7209909DF004BEFD0 /* Address.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
-		CE53ACD9209909E6004BEFD0 /* Address+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Address+Helpers.swift"; sourceTree = "<group>"; };
 		CE53ACDC209909FA004BEFD0 /* OrderDetailsCustomerNoteCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderDetailsCustomerNoteCell.xib; sourceTree = "<group>"; };
 		CE53ACDD209909FA004BEFD0 /* ShowHideFooterCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowHideFooterCell.swift; sourceTree = "<group>"; };
 		CE53ACDF209909FA004BEFD0 /* OrderDetailsCustomerInfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderDetailsCustomerInfoCell.xib; sourceTree = "<group>"; };
@@ -256,7 +250,6 @@
 		CE1CCB4C20572444000EE3AC /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				CE53ACD9209909E6004BEFD0 /* Address+Helpers.swift */,
 				CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */,
 				CE1F51262064345B00C6C810 /* UIColor+Helpers.swift */,
 				CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */,
@@ -476,9 +469,7 @@
 				CE53ACEB209909FA004BEFD0 /* OrderDetailsCustomerNoteCell.swift in Sources */,
 				CE53ACD8209909DF004BEFD0 /* Address.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
-				B557DA1520979904005962F4 /* OrderDetailsCustomerNoteCell.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,
-				CE53ACDA209909E6004BEFD0 /* Address+Helpers.swift in Sources */,
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
 				CEE006052077D1280079161F /* OrderDetailsSummaryCell.swift in Sources */,

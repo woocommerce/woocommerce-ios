@@ -5,7 +5,7 @@ class OrderDetailsSummaryCell: UITableViewCell {
     @IBOutlet weak var createdLabel: UILabel!
     @IBOutlet weak var paymentLabel: PaddedLabel!
 
-    var paymentStatusColor:UIColor = .clear
+    var paymentStatusColor: UIColor = .clear
 
     static let reuseIdentifier = "OrderDetailsSummaryCell"
 

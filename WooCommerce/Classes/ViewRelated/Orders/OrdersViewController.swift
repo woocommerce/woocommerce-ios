@@ -173,8 +173,8 @@ extension OrdersViewController: UITableViewDelegate {
             if let orderDetailViewController = segue.destination as? OrderDetailsViewController {
                 let indexPath = sender as! IndexPath
                 let basicOrder = orderAtIndexPath(indexPath)
-                let singleOrder = loadSingleOrder(basicOrder: basicOrder)
-                orderDetailViewController.order = singleOrder
+                let detailedOrder = loadSingleOrder(basicOrder: basicOrder)
+                orderDetailViewController.viewModel = OrderDetailsViewModel(withOrder: detailedOrder)
             }
         }
     }

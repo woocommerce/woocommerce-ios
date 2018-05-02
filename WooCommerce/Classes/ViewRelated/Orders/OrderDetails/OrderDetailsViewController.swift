@@ -16,6 +16,7 @@ class OrderDetailsViewController: UIViewController {
     }
 
     func configureTableView() {
+        tableView.estimatedSectionHeaderHeight = 0
         configureNibs()
     }
 
@@ -40,58 +41,44 @@ extension OrderDetailsViewController: UITableViewDataSource {
         return viewModel.rowCount(for: section)
     }
 
-        if section == Section.customerNote.rawValue {
-            let numberOfRows = order.customerNote?.isEmpty == false ? 1 : 0
-            return numberOfRows
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.section {
+            case OrderDetailsViewModel.Section.summary.rawValue:
+                return viewModel.cellForSummarySection(indexPath: indexPath, tableView: tableView)
+            case OrderDetailsViewModel.Section.customerNote.rawValue:
+                return viewModel.cellForCustomerNoteSection(indexPath: indexPath, tableView: tableView)
+            case OrderDetailsViewModel.Section.info.rawValue:
+                return viewModel.cellForCustomerInfoSection(indexPath: indexPath, tableView: tableView)
+            default:
+                fatalError()
         }
-
-        if section == Section.info.rawValue {
-            let shippingRow = 1
-            let billingRow = 1
-            let showHideButtonRow = 1
-            return shippingRow + billingRow + showHideButtonRow
-        }
-
-        if section == Section.orderNotes.rawValue {
-            let titleRow = 1
-            let addNoteRow = 1
-            let totalNotes = order.notes?.count ?? 0
-            return titleRow + addNoteRow + totalNotes
-        }
-
-        return 0
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == viewModel.summarySection {
-            return viewModel.cellForSummarySection(indexPath: indexPath, tableView: tableView)
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let titles = viewModel.getSectionTitles()
+        if titles[section].isEmpty {
+            return 0
         }
-
-        if indexPath.section == viewModel.customerNoteSection {
-            return viewModel.cellForCustomerNoteSection(indexPath: indexPath, tableView: tableView)
-        }
-
-        if indexPath.section == viewModel.customerInfoSection {
-            return viewModel.cellForCustomerInfoSection(indexPath: indexPath, tableView: tableView)
-        }
-
-        return UITableViewCell()
+        return UITableViewAutomaticDimension
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let titles = viewModel.getSectionTitles()
+        if titles[section].isEmpty {
+            return nil
+        }
         return titles[section]
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section == viewModel.customerInfoSection {
-            return SingleOrderViewController.sectionFooterHeight
+        if section == OrderDetailsViewModel.Section.info.rawValue {
+            return OrderDetailsViewController.sectionFooterHeight
         }
         return 0
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if section == viewModel.customerInfoSection {
+        if section == OrderDetailsViewModel.Section.info.rawValue {
             return viewModel.cellForShowHideFooter(tableView: tableView, section: section)
         }
         return nil

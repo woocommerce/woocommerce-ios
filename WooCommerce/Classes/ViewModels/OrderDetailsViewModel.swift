@@ -5,90 +5,63 @@ import PhoneNumberKit
 
 class OrderDetailsViewModel {
     let order: Order
+    let notes: [OrderNote]
     var title: String
-    var summarySection = 0
-    var fulfillItemsSection = 1
-    var customerNoteSection = 2
-    var customerInfoSection = 3
-    var paymentSection = 4
-    var orderNotesSection = 5
     var billingIsHidden = true
+
+    enum Section: Int {
+        case summary = 0
+        case fulfillment = 1
+        case customerNote = 2
+        case info = 3
+        case payment = 4
+        case orderNotes = 5
+    }
 
     init(withOrder order: Order) {
         self.order = order
+        self.notes = []
         self.title = NSLocalizedString("Order #\(order.number)", comment:"Order number title")
-
-        if customerNoteIsEmpty() {
-            customerNoteSection = -1
-            customerInfoSection -= 1
-            paymentSection -= 1
-            orderNotesSection -= 1
-        }
     }
 
     func getSectionTitles() -> [String] {
-        let summaryTitle = ""
-        let itemsTitle = ""
-        let customerNoteTitle = NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title")
-        let customerInfoTitle = NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title")
-        let paymentTitle = NSLocalizedString("PAYMENT", comment: "Payment section title")
-        let orderNotesTitle = NSLocalizedString("ORDER NOTES", comment: "Order notes section title")
-
-        var titles = [
-            summaryTitle,
-            itemsTitle,
-            customerNoteTitle,
-            customerInfoTitle,
-            paymentTitle,
-            orderNotesTitle
-        ]
-
-        if customerNoteIsEmpty() {
-            titles.remove(at: 2)
+        let orderSummary = ""
+        let fulfillItems = ""
+        var customerNoteTitle = NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title")
+        let customerInfo = NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title")
+        let paymentDetails = NSLocalizedString("PAYMENT", comment: "Payment section title")
+        let orderNotes = NSLocalizedString("ORDER NOTES", comment: "Order notes section title")
+        if let customerNote = order.customerNote {
+            if customerNote.isEmpty {
+                customerNoteTitle = ""
+            }
         }
-
-        return titles
+        return [orderSummary, fulfillItems, customerNoteTitle, customerInfo, paymentDetails, orderNotes]
     }
 
     func rowCount(for section: Int) -> Int {
-        if section == summarySection
-        || section == fulfillItemsSection
-        || section == customerNoteSection
-        || section == paymentSection {
+        if section == Section.summary.rawValue {
             return 1
         }
 
-        if section == customerInfoSection {
-            let shippingRow = 1
-            var billingAddressRow: Int
-            var billingPhoneRow: Int
-            var billingEmailRow: Int
-            if billingIsHidden {
-                billingAddressRow = 0
-                billingPhoneRow = 0
-                billingEmailRow = 0
-            } else {
-                billingAddressRow = 1
-                billingPhoneRow = order.billingAddress.phone?.isEmpty == false ? 1 : 0
-                billingEmailRow = order.billingAddress.email?.isEmpty == false ? 1 : 0
-            }
-
-            return shippingRow + billingAddressRow + billingPhoneRow + billingEmailRow
+        if section == Section.customerNote.rawValue {
+            return order.customerNote?.isEmpty == false ? 1 : 0
         }
 
-        if section == orderNotesSection {
-            let titleRow = 1
-            let addNoteRow = 1
-            let totalNotes = 0
+        if section == Section.info.rawValue {
+            let shippingRow = 1
+            let billingAddressRow = billingIsHidden ? 0 : 1
+            let billingPhoneRow = billingIsHidden || order.billingAddress.phone?.isEmpty == true ? 0 : 1
+            let billingEmailRow = billingIsHidden || order.billingAddress.email?.isEmpty == true ? 0 : 1
 
-            return titleRow + addNoteRow + totalNotes
+            return shippingRow + billingAddressRow + billingPhoneRow + billingEmailRow
         }
 
         return 0
     }
 
-    func cellForSummarySection(indexPath: IndexPath, tableView: UITableView) -> SingleOrderSummaryCell {
-        let cell: SingleOrderSummaryCell = tableView.dequeueReusableCell(withIdentifier: SingleOrderSummaryCell.reuseIdentifier, for: indexPath) as! SingleOrderSummaryCell
+    func cellForSummarySection(indexPath: IndexPath, tableView: UITableView) -> OrderDetailsSummaryCell {
+        let cell: OrderDetailsSummaryCell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsSummaryCell.reuseIdentifier, for: indexPath) as! OrderDetailsSummaryCell
         cell.configureCell(order: order)
         return cell
     }
@@ -118,7 +91,7 @@ class OrderDetailsViewModel {
         }
 
         if indexPath.row == shippingRow {
-            let cell = tableView.dequeueReusableCell(withIdentifier: SingleOrderCustomerInfoCell.reuseIdentifier, for: indexPath) as! SingleOrderCustomerInfoCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerInfoCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerInfoCell
             let title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
             let contact: CNContact = order.shippingAddress.createContact()
             let fullName = CNContactFormatter.string(from: contact, style: .fullName)
@@ -129,7 +102,7 @@ class OrderDetailsViewModel {
         }
 
         if indexPath.row == billingRow {
-            let cell = tableView.dequeueReusableCell(withIdentifier: SingleOrderCustomerInfoCell.reuseIdentifier, for: indexPath) as! SingleOrderCustomerInfoCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerInfoCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerInfoCell
             let title = NSLocalizedString("Billing details", comment: "Billing details for customer info cell")
             let contact: CNContact = order.billingAddress.createContact()
             let fullName = CNContactFormatter.string(from: contact, style: .fullName)
@@ -190,7 +163,7 @@ class OrderDetailsViewModel {
             return cell
         }
 
-        return UITableViewCell()
+        fatalError()
     }
 
     func cellForShowHideFooter(tableView: UITableView, section: Int) -> UIView {
@@ -207,17 +180,5 @@ class OrderDetailsViewModel {
 
     func setShowHideFooter() {
         billingIsHidden = !billingIsHidden
-    }
-
-    // MARK: - private
-    private func customerNoteIsEmpty() -> Bool {
-        if let customerNote = order.customerNote {
-            return customerNote.isEmpty
-        }
-        return true
-    }
-
-    private func configureSections() {
-
     }
 }

@@ -7,7 +7,7 @@ enum WooAPIVersion: String {
 
     /// Woo Endpoint Mark 2
     ///
-    case mark2 = "wc/v2/"
+    case mark2 = "/wc/v2/"
 
     /// Returns the path for the current API Version
     ///

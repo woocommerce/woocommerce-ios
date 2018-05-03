@@ -49,6 +49,6 @@ extension JetpackEndpoint {
     /// Returns the Jetpack-Tunneled-Request's Path
     ///
     var jetpackPath: String {
-        return wooApiVersion.path + path + "&_method=" + method.rawValue.lowercased()
+        return wooApiVersion.path + path + "?_method=" + method.rawValue.lowercased()
     }
 }

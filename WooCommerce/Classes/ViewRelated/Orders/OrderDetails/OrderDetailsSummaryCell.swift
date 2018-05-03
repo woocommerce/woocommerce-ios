@@ -33,6 +33,7 @@ class OrderDetailsSummaryCell: UITableViewCell {
         }
         set {
             paymentLabel.text = newValue
+            paymentLabel.applyPaddedLabelDefaultStyles()
         }
     }
 

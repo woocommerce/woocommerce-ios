@@ -11,8 +11,8 @@ class ContextManager {
     static let shared = ContextManager()
 
 
+    /// Main PersistentStoreContainer.
     ///
-    //
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "WooCommerce")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
@@ -23,7 +23,7 @@ class ContextManager {
         return container
     }()
 
-    ///
+    /// Default Initializer
     ///
     private init() {
         // NO-OP!
@@ -35,7 +35,7 @@ class ContextManager {
 //
 extension ContextManager {
 
-    ///
+    /// Saves the Main Context.
     ///
     func saveContext () {
         let context = persistentContainer.viewContext

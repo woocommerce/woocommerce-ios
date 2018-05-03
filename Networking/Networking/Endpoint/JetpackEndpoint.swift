@@ -43,12 +43,12 @@ extension JetpackEndpoint {
     ///
     func dotcomPath(for jetpackPath: String) -> String {
         let jetpackEncodedPath = jetpackPath.addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
-        return "jetpack-blogs/" + String(siteID) + "/rest-api/?path=" + jetpackEncodedPath + "&json=true"
+        return "jetpack-blogs/" + String(siteID) + "/rest-api/?path=" + jetpackEncodedPath + "&json=true" + "&_method=" + method.rawValue.lowercased()
     }
 
     /// Returns the Jetpack-Tunneled-Request's Path
     ///
     var jetpackPath: String {
-        return wooApiVersion.path + path + "?_method=" + method.rawValue.lowercased()
+        return wooApiVersion.path + path
     }
 }

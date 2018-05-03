@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 // Mockup Entities
 // Ref.: http://woocommerce.github.io/woocommerce-rest-api-docs/#orders
@@ -158,6 +159,50 @@ enum OrderStatus {
 extension OrderStatus {
     static var allOrderStatuses: [OrderStatus] {
         return [.pending, .processing, .onHold, .failed, .canceled, .completed, .refunded, .custom(NSLocalizedString("Other", comment: "Title for button that catches all custom labels and displays them on the order list"))]
+    }
+    var backgroundColor: UIColor {
+        switch self {
+        case .processing:
+            fallthrough
+        case .pending:
+            return StyleManager.statusSuccessColor
+        case .failed:
+            fallthrough
+        case .refunded:
+            return StyleManager.statusDangerColor
+        case .completed:
+            return StyleManager.statusPrimaryColor
+        case .onHold:
+            fallthrough
+        case .canceled:
+            fallthrough
+        case .custom:
+            fallthrough
+        default:
+            return StyleManager.statusNotIdentifiedColor
+        }
+    }
+    var borderColor: CGColor {
+        switch self {
+        case .processing:
+            fallthrough
+        case .pending:
+            return StyleManager.statusSuccessBoldColor.cgColor
+        case .failed:
+            fallthrough
+        case .refunded:
+            return StyleManager.statusDangerBoldColor.cgColor
+        case .completed:
+            return StyleManager.statusPrimaryBoldColor.cgColor
+        case .onHold:
+            fallthrough
+        case .canceled:
+            fallthrough
+        case .custom:
+            fallthrough
+        default:
+            return StyleManager.statusNotIdentifiedBoldColor.cgColor
+        }
     }
 }
 

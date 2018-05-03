@@ -14,15 +14,14 @@ struct Endpoint: URLConvertible  {
     ///
     let wordpressApiVersion: WordPressAPIVersion
 
-    /// Method name that should be called.
+    /// Path of the RPC
     ///
-    let method: String
+    let path: String
 
 
     /// Returns a URL instance reprensenting the current Endpoint.
     ///
     func asURL() throws -> URL {
-        let path = wordpressApiBaseURL + wordpressApiVersion.path + method
-        return URL(string: path)!
+        return URL(string: wordpressApiBaseURL + wordpressApiVersion.path + path)!
     }
 }

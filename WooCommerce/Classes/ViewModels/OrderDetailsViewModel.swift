@@ -12,7 +12,7 @@ class OrderDetailsViewModel {
         summaryTitle = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
         dateCreated = String.localizedStringWithFormat(NSLocalizedString("Created %@", comment: "Order created date"), order.dateCreatedString) //FIXME: use a formatted date instead of raw timestamp
         paymentStatus = order.status.description
-        paymentBackgroundColor = order.status.backgroundColor
-        paymentBorderColor = order.status.borderColor
+        paymentBackgroundColor = order.status.backgroundColor // MVVM: who should own color responsibilities? Maybe address this down the road.
+        paymentBorderColor = order.status.borderColor // same here
     }
 }

@@ -14,7 +14,7 @@ struct Endpoint: URLConvertible  {
     ///
     let wordpressApiVersion: WordPressAPIVersion
 
-    /// Path of the RPC
+    /// RPC
     ///
     let path: String
 

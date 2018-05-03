@@ -7,6 +7,6 @@ import XCTest
 class JetpackEndpointTests: XCTestCase {
     
     func testExample() {
-        let test = JetpackEndpoint(wooApiVersion: .mark2, method: .get, siteID: 123, endpoint: "test")
+        let test = JetpackEndpoint(wooApiVersion: .mark2, method: .get, siteID: 123, path: "test")
     }
 }

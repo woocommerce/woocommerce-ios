@@ -13,6 +13,7 @@ class OrderDetailsSummaryCell: UITableViewCell {
         }
         set {
             titleLabel.text = newValue
+            titleLabel.applyTitleStyle()
         }
     }
 
@@ -22,6 +23,7 @@ class OrderDetailsSummaryCell: UITableViewCell {
         }
         set {
             createdLabel.text = newValue
+            createdLabel.applyFootnoteStyle()
         }
     }
 
@@ -34,19 +36,31 @@ class OrderDetailsSummaryCell: UITableViewCell {
         }
     }
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        refreshLabelStyles()
+    var paymentBackgroundColor: UIColor? {
+        get {
+            return paymentLabel.backgroundColor
+        }
+        set {
+            paymentLabel.backgroundColor = newValue
+        }
+    }
+
+    var paymentBorderColor: CGColor? {
+        get {
+            return paymentLabel.layer.borderColor
+        }
+        set {
+            paymentLabel.layer.borderColor = newValue
+        }
     }
 }
 
-private extension OrderDetailsSummaryCell {
-    func refreshLabelStyles() {
-        titleLabel.applyTitleStyle()
-        createdLabel.applyFootnoteStyle()
-        guard let paymentStatus = paymentStatus else {
-            return
-        }
-        paymentLabel.applyStatusStyle(for: paymentStatus)
+extension OrderDetailsSummaryCell {
+    func configure(with viewModel: OrderDetailsViewModel) {
+        title = viewModel.summaryTitle
+        dateCreated = viewModel.dateCreated
+        paymentStatus = viewModel.paymentStatus
+        paymentBackgroundColor = viewModel.paymentBackgroundColor
+        paymentBorderColor = viewModel.paymentBorderColor
     }
 }

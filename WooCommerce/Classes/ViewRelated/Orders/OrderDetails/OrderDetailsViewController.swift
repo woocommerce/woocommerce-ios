@@ -5,6 +5,7 @@ class OrderDetailsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
 
     var order: Order!
+    var viewModel: OrderDetailsViewModel!
     var sectionTitles = [String]()
 
     enum Section: Int {
@@ -19,6 +20,7 @@ class OrderDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
+        viewModel = OrderDetailsViewModel(order: order)
         title = NSLocalizedString("Order #\(order.number)", comment:"Order number title")
     }
 
@@ -88,13 +90,12 @@ extension OrderDetailsViewController: UITableViewDataSource {
         switch indexPath.section {
             case Section.summary.rawValue:
                 let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsSummaryCell.reuseIdentifier, for: indexPath) as! OrderDetailsSummaryCell
-                let viewModel = OrderDetailsViewModel(order: order)
                 cell.configure(with: viewModel)
                 return cell
 
             case Section.customerNote.rawValue:
                 let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerNoteCell
-                cell.configureCell(note: order.customerNote)
+                cell.configure(with: viewModel)
                 return cell
 
             default:

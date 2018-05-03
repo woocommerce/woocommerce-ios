@@ -18,7 +18,7 @@ class OrderListCell: UITableViewCell {
         totalLabel.text = "\(currencySymbol)\(order.totalString)"
         totalLabel.applyBodyStyle()
         paymentStatusLabel.text = paymentStatusText
-        paymentStatusLabel.applyStatusStyle(for: order.status)
+        paymentStatusLabel.applyStatusStyle(for: order.statusString)
         shippingStatusLabel.text = ""
     }
 

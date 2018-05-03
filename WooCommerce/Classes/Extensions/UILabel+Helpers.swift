@@ -16,10 +16,12 @@ extension UILabel {
         textColor = StyleManager.defaultTextColor
     }
 
-    func applyStatusStyle(for status: OrderStatus) {
+    func applyStatusStyle(for statusString: String) {
         layer.borderWidth = 1.0
         layer.cornerRadius = 4.0
         font = .footnote;
+
+        let status = OrderStatus(rawValue: statusString)
 
         switch status {
             case .processing:

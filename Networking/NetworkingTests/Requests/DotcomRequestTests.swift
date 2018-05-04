@@ -34,8 +34,8 @@ class DotcomRequestTests: XCTestCase {
     func testRequestUrlContainsExpectedComponents() {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: sampleRPC)
 
-        let expectedURL = URL(string: request.wordpressApiBaseURL + request.wordpressApiVersion.path + sampleRPC)
-        let generatedURL = try? request.asURLRequest().url
+        let expectedURL = URL(string: DotcomRequest.wordpressApiBaseURL + request.wordpressApiVersion.path + sampleRPC)!
+        let generatedURL = try! request.asURLRequest().url!
         XCTAssertEqual(expectedURL, generatedURL)
     }
 
@@ -44,8 +44,8 @@ class DotcomRequestTests: XCTestCase {
     func testParametersAreSerializedAsPartOfTheUrlQueryWhenMethodIsSetToGet() {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: sampleRPC, parameters: sampleParameters)
 
-        let expectedURL = URL(string: request.wordpressApiBaseURL + request.wordpressApiVersion.path + sampleRPC + sampleParametersForQuery)
-        let generatedURL = try? request.asURLRequest().url
+        let expectedURL = URL(string: DotcomRequest.wordpressApiBaseURL + request.wordpressApiVersion.path + sampleRPC + sampleParametersForQuery)!
+        let generatedURL = try! request.asURLRequest().url!
         XCTAssertEqual(expectedURL, generatedURL)
     }
 
@@ -53,9 +53,9 @@ class DotcomRequestTests: XCTestCase {
     ///
     func testParametersAreNotSerializedAsPartOfTheUrlQueryWhenMethodIsSetToPost() {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: sampleRPC, parameters: sampleParameters)
-        let generatedURL = try? request.asURLRequest().url
 
-        let expectedURL = URL(string: request.wordpressApiBaseURL + request.wordpressApiVersion.path + sampleRPC)!
+        let generatedURL = try! request.asURLRequest().url!
+        let expectedURL = URL(string: DotcomRequest.wordpressApiBaseURL + request.wordpressApiVersion.path + sampleRPC)!
         XCTAssertEqual(expectedURL, generatedURL)
     }
 
@@ -64,8 +64,8 @@ class DotcomRequestTests: XCTestCase {
     func testParametersAreSerializedAsPartOfTheBodyWhenMethodIsSetToPost() {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: sampleRPC, parameters: sampleParameters)
 
-        let generatedBodyAsData = try! request.asURLRequest().httpBody
-        let generatedBodyAsString = String(data: generatedBodyAsData!, encoding: .utf8)
+        let generatedBodyAsData = try! request.asURLRequest().httpBody!
+        let generatedBodyAsString = String(data: generatedBodyAsData, encoding: .utf8)
         XCTAssertEqual(generatedBodyAsString, sampleParametersForBody)
     }
 }

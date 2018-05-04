@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B519A3E72097A65F00E2603A /* DotcomRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B519A3E62097A65F00E2603A /* DotcomRequestTests.swift */; };
+		B520CA87209CAF6B002F930A /* AuthenticatedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B520CA86209CAF6B002F930A /* AuthenticatedRequestTests.swift */; };
 		B53AB7E7209BD6DD00C4C526 /* AuthenticatedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53AB7E6209BD6DD00C4C526 /* AuthenticatedRequest.swift */; };
 		B557D9ED209753AA005962F4 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B557D9E3209753AA005962F4 /* Networking.framework */; };
 		B557D9F2209753AA005962F4 /* JetpackRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557D9F1209753AA005962F4 /* JetpackRequestTests.swift */; };
@@ -38,6 +39,7 @@
 /* Begin PBXFileReference section */
 		97F8D9516BAC88E8A25EF46D /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B519A3E62097A65F00E2603A /* DotcomRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomRequestTests.swift; sourceTree = "<group>"; };
+		B520CA86209CAF6B002F930A /* AuthenticatedRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedRequestTests.swift; sourceTree = "<group>"; };
 		B53AB7E6209BD6DD00C4C526 /* AuthenticatedRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedRequest.swift; sourceTree = "<group>"; };
 		B557D9E3209753AA005962F4 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B557D9E6209753AA005962F4 /* Networking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Networking.h; sourceTree = "<group>"; };
@@ -102,13 +104,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		B519A3E82097A91800E2603A /* Endpoint */ = {
+		B519A3E82097A91800E2603A /* Requests */ = {
 			isa = PBXGroup;
 			children = (
+				B520CA86209CAF6B002F930A /* AuthenticatedRequestTests.swift */,
 				B519A3E62097A65F00E2603A /* DotcomRequestTests.swift */,
 				B557D9F1209753AA005962F4 /* JetpackRequestTests.swift */,
 			);
-			path = Endpoint;
+			path = Requests;
 			sourceTree = "<group>";
 		};
 		B557D9D9209753AA005962F4 = {
@@ -147,7 +150,7 @@
 		B557D9F0209753AA005962F4 /* NetworkingTests */ = {
 			isa = PBXGroup;
 			children = (
-				B519A3E82097A91800E2603A /* Endpoint */,
+				B519A3E82097A91800E2603A /* Requests */,
 				B557D9F3209753AA005962F4 /* Info.plist */,
 			);
 			path = NetworkingTests;
@@ -378,6 +381,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B519A3E72097A65F00E2603A /* DotcomRequestTests.swift in Sources */,
+				B520CA87209CAF6B002F930A /* AuthenticatedRequestTests.swift in Sources */,
 				B557D9F2209753AA005962F4 /* JetpackRequestTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

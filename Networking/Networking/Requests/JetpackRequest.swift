@@ -6,6 +6,10 @@ import Alamofire
 ///
 struct JetpackRequest: URLRequestConvertible  {
 
+    /// WordPress.com API Version: By Default, we'll go thru Mark 1.1.
+    ///
+    static let wordpressApiVersion =  WordPressAPIVersion.mark1_1
+
     /// WooCommerce API Version
     ///
     let wooApiVersion: WooAPIVersion
@@ -48,7 +52,7 @@ struct JetpackRequest: URLRequestConvertible  {
     /// Returns a URLRequest instance reprensenting the current Jetpack Request.
     ///
     func asURLRequest() throws -> URLRequest {
-        let dotcomEndpoint = DotcomRequest(wordpressApiVersion: .mark1_1, method: method, path: dotcomPath)
+        let dotcomEndpoint = DotcomRequest(wordpressApiVersion: JetpackRequest.wordpressApiVersion, method: method, path: dotcomPath)
         let dotcomRequest = try dotcomEndpoint.asURLRequest()
 
         return try dotcomEncoder.encode(dotcomRequest, with: dotcomParams)
@@ -58,7 +62,7 @@ struct JetpackRequest: URLRequestConvertible  {
 
 // MARK: - Dotcom Request: Internal
 //
-extension JetpackRequest {
+private extension JetpackRequest {
 
     /// Returns the WordPress.com Tunneling Request
     ///
@@ -92,7 +96,7 @@ extension JetpackRequest {
 
 // MARK: - Jetpack Tunneled Request: Internal
 //
-extension JetpackRequest {
+private extension JetpackRequest {
 
     /// Returns the Jetpack-Tunneled-Request's Path
     ///

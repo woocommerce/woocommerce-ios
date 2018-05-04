@@ -4,7 +4,7 @@ import Alamofire
 
 /// Represents a WordPress.com Endpoint
 ///
-struct Endpoint: URLConvertible  {
+struct DotcomEndpoint: URLConvertible  {
 
     /// WordPress.com Base URL
     ///

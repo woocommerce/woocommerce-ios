@@ -19,21 +19,11 @@ public class Remote {
     }
 
 
-    /// Enqueues a given Network Request.
+    /// Enqueues the specified Network Request.
     ///
     /// - Parameters:
-    ///     - url: Request that should be executed.
+    ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion.
-    ///
-    func request(endpoint: URLConvertible, method: HTTPMethod = .get, completion: @escaping (Any?, Error?) -> Void) {
-        Alamofire.request(endpoint, method: method)
-            .validate()
-            .responseJSON { response in
-                completion(response.result.value, response.result.error)
-        }
-    }
-
-    ///
     ///
     func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)

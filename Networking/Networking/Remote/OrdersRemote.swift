@@ -7,21 +7,23 @@ public class OrdersRemote: Remote {
 
     ///
     ///
-    public func fetchOrders(for siteID: Int, completion: ([RemoteOrder]) -> Void) {
-        let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: "orders")
+    public func fetchOrders(for siteID: Int, completion: @escaping ([RemoteOrder]) -> Void) {
+        let path = "orders"
+        let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path)
 
         enqueue(request) { (response, error) in
             guard let parsed = response as? [String: Any] else {
                 return
             }
 
-            NSLog("Payload: \(parsed)")
+            print("Payload: \(parsed)")
+            completion([])
         }
     }
 
     ///
     ///
-    public func updateOrder(with orderID: String, from siteID: Int, status: String, completion: () -> Void) {
+    public func updateOrder(with orderID: String, from siteID: Int, status: String, completion: @escaping () -> Void) {
         let path = "orders/" + orderID
         let parameters = ["status": status]
 
@@ -33,6 +35,7 @@ public class OrdersRemote: Remote {
             }
 
             print("Payload: \(parsed)")
+            completion()
         }
     }
 }

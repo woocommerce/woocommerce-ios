@@ -5,7 +5,7 @@ import XCTest
 
 /// WordPress.com Endpoint Unit Tests
 ///
-class DotcomEndpointTests: XCTestCase {
+class DotcomRequestTests: XCTestCase {
 
     /// RPC Sample Method Path
     ///
@@ -15,8 +15,8 @@ class DotcomEndpointTests: XCTestCase {
     /// Verifies that the Endpoint's generated URL starts with WordPress.com API BaseURL.
     ///
     func testEndpointUrlStartsWithWordPressBaseURL() {
-        let endpoint = DotcomEndpoint(wordpressApiVersion: .mark1_1, path: sampleRPC)
-        let absoluteString = try! endpoint.asURL().absoluteString
+        let endpoint = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: sampleRPC)
+        let absoluteString = try! endpoint.asURLRequest().url!.absoluteString
 
         XCTAssertTrue(absoluteString.hasPrefix(endpoint.wordpressApiBaseURL))
     }
@@ -24,8 +24,8 @@ class DotcomEndpointTests: XCTestCase {
     /// Verifies that the Endpoint's generated URL has the API Version + Method Name as suffix.
     ///
     func testEndpointUrlEndsWithApiVersionAndMethod() {
-        let request = DotcomEndpoint(wordpressApiVersion: .mark1_1, path: sampleRPC)
-        let absoluteString = try! request.asURL().absoluteString
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: sampleRPC)
+        let absoluteString = try! request.asURLRequest().url!.absoluteString
 
         let expectedSuffix = request.wordpressApiVersion.path + sampleRPC
         XCTAssertTrue(absoluteString.hasSuffix(expectedSuffix))

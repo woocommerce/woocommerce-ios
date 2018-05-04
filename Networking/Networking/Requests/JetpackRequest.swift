@@ -45,11 +45,11 @@ struct JetpackRequest: URLRequestConvertible  {
     }
 
 
-    /// Returns a URL instance reprensenting the current Endpoint.
+    /// Returns a URLRequest instance reprensenting the current Jetpack Request.
     ///
     func asURLRequest() throws -> URLRequest {
-        let dotcomEndpoint = DotcomEndpoint(wordpressApiVersion: .mark1_1, path: dotcomPath)
-        let dotcomRequest = try URLRequest(url: dotcomEndpoint.asURL(), method: method)
+        let dotcomEndpoint = DotcomRequest(wordpressApiVersion: .mark1_1, method: method, path: dotcomPath)
+        let dotcomRequest = try dotcomEndpoint.asURLRequest()
 
         return try dotcomEncoder.encode(dotcomRequest, with: dotcomParams)
     }

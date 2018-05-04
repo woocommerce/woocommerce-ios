@@ -27,7 +27,13 @@ struct DotcomRequest: URLRequestConvertible  {
     let parameters: [String: String]?
 
 
+    /// Designated Initializer.
     ///
+    /// - Parameters:
+    ///     - wordpressApiVersion: Endpoint Version.
+    ///     - method: HTTP Method we should use.
+    ///     - path: RPC that should be executed.
+    ///     - parameters: Collection of String parameters to be passed over to our target RPC.
     ///
     init(wordpressApiVersion: WordPressAPIVersion, method: HTTPMethod, path: String, parameters: [String: String]? = nil) {
         self.wordpressApiVersion = wordpressApiVersion

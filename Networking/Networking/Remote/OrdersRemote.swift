@@ -5,7 +5,7 @@ import Foundation
 ///
 public class OrdersRemote: Remote {
 
-    ///
+    /// NOTE: This is a Stub. To be completed + Unit Tested in a second PR.
     ///
     public func fetchOrders(for siteID: Int, completion: @escaping ([RemoteOrder]) -> Void) {
         let path = "orders"
@@ -21,7 +21,7 @@ public class OrdersRemote: Remote {
         }
     }
 
-    ///
+    /// NOTE: This is a Stub. To be completed + Unit Tested in a second PR.
     ///
     public func updateOrder(with orderID: String, from siteID: Int, status: String, completion: @escaping () -> Void) {
         let path = "orders/" + orderID

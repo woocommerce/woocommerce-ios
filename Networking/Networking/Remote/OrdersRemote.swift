@@ -1,21 +1,38 @@
 import Foundation
 
 
-/// WooCommerce Order Endpoints
+/// Order: Remote Endpoints
 ///
 public class OrdersRemote: Remote {
 
     ///
     ///
     public func fetchOrders(for siteID: Int, completion: ([RemoteOrder]) -> Void) {
-        let endpoint = JetpackEndpoint(wooApiVersion: .mark2, method: .get, siteID: siteID, path: "orders")
+        let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: "orders")
 
-        request(endpoint: endpoint) { (response, error) in
-            guard let response = response as? [String: Any] else {
+        enqueue(request) { (response, error) in
+            guard let parsed = response as? [String: Any] else {
                 return
             }
 
-            NSLog("Payload: \(response)")
+            NSLog("Payload: \(parsed)")
+        }
+    }
+
+    ///
+    ///
+    public func updateOrder(with orderID: String, from siteID: Int, status: String, completion: () -> Void) {
+        let path = "orders/" + orderID
+        let parameters = ["status": status]
+
+        let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
+
+        enqueue(request) { (response, error) in
+            guard let parsed = response as? [String: Any] else {
+                return
+            }
+
+            print("Payload: \(parsed)")
         }
     }
 }

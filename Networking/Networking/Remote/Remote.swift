@@ -33,6 +33,7 @@ public class Remote {
         self.network = network
     }
 
+
     /// Enqueues the specified Network Request.
     ///
     /// - Parameters:

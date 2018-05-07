@@ -46,4 +46,10 @@ extension UILabel {
                 layer.borderColor = StyleManager.statusNotIdentifiedBoldColor.cgColor
         }
     }
+
+    func applyPaddedLabelDefaultStyles() {
+        layer.borderWidth = 1.0
+        layer.cornerRadius = 4.0
+        font = .footnote;
+    }
 }

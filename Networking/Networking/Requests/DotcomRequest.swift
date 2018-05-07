@@ -42,8 +42,7 @@ struct DotcomRequest: URLRequestConvertible  {
         self.parameters = parameters ?? [:]
     }
 
-
-    /// Returns a URLRequest instance reprensenting the current WordPress.com Request.
+    /// Returns a URLRequest instance representing the current WordPress.com Request.
     ///
     func asURLRequest() throws -> URLRequest {
         let dotcomURL = URL(string: DotcomRequest.wordpressApiBaseURL + wordpressApiVersion.path + path)!

@@ -34,7 +34,7 @@ struct JetpackRequest: URLRequestConvertible  {
     /// Designated Initializer.
     ///
     /// - Parameters:
-    ///     - wooApiVersion: Version of the Woo Endpoint that will be hitted.
+    ///     - wooApiVersion: Version of the Woo Endpoint that will be hit.
     ///     - method: HTTP Method we should use.
     ///     - siteID: Identifier of the Jetpack-Connected site we'll query.
     ///     - path: RPC that should be called.

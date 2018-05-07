@@ -12,7 +12,7 @@ PODS:
     - CocoaLumberjack/Default
   - Crashlytics (3.9.3):
     - Fabric (~> 1.7.2)
-  - Fabric (1.7.5)
+  - Fabric (1.7.6)
   - Gridicons (0.14)
   - Reachability (3.2)
   - UIDeviceIdentifier (0.5.0)
@@ -22,6 +22,16 @@ DEPENDENCIES:
   - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.1`)
   - Crashlytics (= 3.9.3)
   - Gridicons (= 0.14)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Alamofire
+    - CocoaLumberjack
+    - Crashlytics
+    - Fabric
+    - Gridicons
+    - Reachability
+    - UIDeviceIdentifier
 
 EXTERNAL SOURCES:
   Automattic-Tracks-iOS:
@@ -38,11 +48,11 @@ SPEC CHECKSUMS:
   Automattic-Tracks-iOS: edc4365d31602490af88dbed181b0b666cbdcf75
   CocoaLumberjack: 2800c03334042fe80589423c8d80e582dcaec482
   Crashlytics: dbb07d01876c171c5ccbdf7826410380189e452c
-  Fabric: ae7146a5f505ea370a1e44820b4b1dc8890e2890
+  Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
   Gridicons: 558073b1ff34092a49336ee0955ad97d2ef799f0
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
 
 PODFILE CHECKSUM: feafa1ad29ca70583ff1a300f00c39c7717f36e1
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.0

@@ -1,6 +1,6 @@
 # Project configuration
 included:
-  - WordPress
+  - WooCommerce
 
 # Rules
 whitelist_rules:

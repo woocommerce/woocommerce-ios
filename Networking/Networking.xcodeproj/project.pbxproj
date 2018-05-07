@@ -28,6 +28,7 @@
 		B557DA1820979D51005962F4 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1720979D51005962F4 /* Credentials.swift */; };
 		B557DA1A20979D66005962F4 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1920979D66005962F4 /* Settings.swift */; };
 		B557DA1D20979E7D005962F4 /* RemoteOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1C20979E7D005962F4 /* RemoteOrder.swift */; };
+		B559EBAA20A0B5CD00836CD4 /* orders-fetch-all.json in Resources */ = {isa = PBXBuildFile; fileRef = B559EBA920A0B5CD00836CD4 /* orders-fetch-all.json */; };
 		D966E5B7ACDF2C5065B7188C /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97F8D9516BAC88E8A25EF46D /* Pods_Networking.framework */; };
 		E163BF100306BC689F6ADB6B /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3D61DD7401976E936CE38E2 /* Pods_NetworkingTests.framework */; };
 /* End PBXBuildFile section */
@@ -68,6 +69,7 @@
 		B557DA1720979D51005962F4 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		B557DA1920979D66005962F4 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		B557DA1C20979E7D005962F4 /* RemoteOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteOrder.swift; sourceTree = "<group>"; };
+		B559EBA920A0B5CD00836CD4 /* orders-fetch-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "orders-fetch-all.json"; sourceTree = "<group>"; };
 		C44FACA39A77FF6C3A21364D /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
 		D2C5CA50D8B38E253E228261 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 		D360A85A6BF832C6C9E1B4BD /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 			children = (
 				B518663220A0A2E800037A38 /* Tools */,
 				B518662520A09BB900037A38 /* Mockups */,
+				B559EBA820A0B5B100836CD4 /* Responses */,
 				B519A3E82097A91800E2603A /* Requests */,
 				B518662820A09C5D00037A38 /* Remote */,
 				B557D9F3209753AA005962F4 /* Info.plist */,
@@ -242,6 +245,14 @@
 				B557DA1C20979E7D005962F4 /* RemoteOrder.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		B559EBA820A0B5B100836CD4 /* Responses */ = {
+			isa = PBXGroup;
+			children = (
+				B559EBA920A0B5CD00836CD4 /* orders-fetch-all.json */,
+			);
+			path = Responses;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -346,6 +357,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B559EBAA20A0B5CD00836CD4 /* orders-fetch-all.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

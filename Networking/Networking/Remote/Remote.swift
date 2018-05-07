@@ -34,7 +34,7 @@ public class Remote {
     }
 
 
-    /// Enqueues the specified Network Request.
+    /// Enqueues the specified Network Request: Authentication Headers will be injected!.
     ///
     /// - Parameters:
     ///     - request: Request that should be performed.
@@ -44,14 +44,28 @@ public class Remote {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
         network.enqueue(authenticated, completion: completion)
     }
-}
 
 
-/// Default Remote Errors
-///
-enum RemoteError: Error {
-
-    /// Triggered whenever the backend's response isn't in the expected format.
+    /// Enqueues the specified Network Request: Authentication Headers will be injected!.
     ///
-    case unknownFormat
+    /// - Parameters:
+    ///     - request: Request that should be performed.
+    ///     - mapper: Mapper entitity that will be used to attempt to parse the Backend's Response.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M, completion: @escaping (M.T?, Error?) -> Void) {
+        enqueue(request) { (response, error) in
+            if let error = error {
+                completion(nil, error)
+                return
+            }
+
+            guard let payload = response as? [String: Any], let parsed = try? mapper.map(response: payload) else {
+                completion(nil, MappingError.unknownFormat)
+                return
+            }
+
+            completion(parsed, nil)
+        }
+    }
 }

@@ -88,7 +88,8 @@ extension OrderDetailsViewController: UITableViewDataSource {
         switch indexPath.section {
             case Section.summary.rawValue:
                 let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsSummaryCell.reuseIdentifier, for: indexPath) as! OrderDetailsSummaryCell
-                cell.configureCell(order: order)
+                let viewModel = OrderDetailsViewModel(order: order)
+                cell.configure(with: viewModel)
                 return cell
 
             case Section.customerNote.rawValue:

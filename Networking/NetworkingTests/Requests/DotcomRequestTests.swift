@@ -59,7 +59,7 @@ class DotcomRequestTests: XCTestCase {
         XCTAssertEqual(expectedURL, generatedURL)
     }
 
-    /// Verifies that the DotcomRequest's generated httpBody contains the Parameters, serialized sa expected.
+    /// Verifies that the DotcomRequest's generated httpBody contains the Parameters, serialized as expected.
     ///
     func testParametersAreSerializedAsPartOfTheBodyWhenMethodIsSetToPost() {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: sampleRPC, parameters: sampleParameters)

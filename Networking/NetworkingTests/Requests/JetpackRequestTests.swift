@@ -57,7 +57,7 @@ class JetpackRequestTests: XCTestCase {
         XCTAssertEqual(expectedBody, generatedBody)
     }
 
-    /// Verifis that a GET JetpackRequest will query the Jetpack Tunneled WordPress.com API, with the expected query parameters.
+    /// Verifies that a GET JetpackRequest will query the Jetpack Tunneled WordPress.com API, with the expected query parameters.
     ///
     func testGetRequestQueriesDotcomJetpackTunnelEndpointWithExpectedQueryParameters() {
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: sampleSiteID, path: sampleRPC)
@@ -67,7 +67,7 @@ class JetpackRequestTests: XCTestCase {
         XCTAssertEqual(generatedURL, expectedURL)
     }
 
-    /// Verifis that a GET JetpackRequest will not serialize anything in the body.
+    /// Verifies that a GET JetpackRequest will not serialize anything in the body.
     ///
     func testGetRequestDoesNotSerializeAnythingInTheBody() {
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
@@ -109,7 +109,6 @@ private extension JetpackRequestTests {
             "&body=" + parametersAsPercentEncoded +
             "&json=true" +
             "&path=" + sampleWooApiVersion.path + sampleRPC
-
     }
 
     /// Concatenates the specified collection of Parameters for the URLRequest's httpBody.

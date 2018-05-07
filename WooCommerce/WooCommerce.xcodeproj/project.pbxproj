@@ -12,8 +12,11 @@
 		B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112F2049E27A007D25DC /* SettingsViewController.swift */; };
 		B50911342049E493007D25DC /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50911332049E493007D25DC /* Order.swift */; };
 		B546CCF4209363A5007CDA5F /* FluxSumi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B546CCF3209363A5007CDA5F /* FluxSumi.framework */; };
+		B557D9FE209753BB005962F4 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B557D9FD209753BB005962F4 /* Networking.framework */; };
 		B557DA1520979904005962F4 /* OrderDetailsCustomerNoteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1320979904005962F4 /* OrderDetailsCustomerNoteCell.swift */; };
 		B557DA1620979904005962F4 /* OrderDetailsCustomerNoteCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B557DA1420979904005962F4 /* OrderDetailsCustomerNoteCell.xib */; };
+		B559EBAF20A0BF8F00836CD4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B559EBAD20A0BF8E00836CD4 /* README.md */; };
+		B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = B559EBAE20A0BF8F00836CD4 /* LICENSE */; };
 		B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */; };
 		B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */; };
 		B56DB3D22049BFAA00D4AA8E /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3D02049BFAA00D4AA8E /* WooCommerce.xcdatamodeld */; };
@@ -60,8 +63,11 @@
 		B509112F2049E27A007D25DC /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B50911332049E493007D25DC /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
 		B546CCF3209363A5007CDA5F /* FluxSumi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FluxSumi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B557D9FD209753BB005962F4 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B557DA1320979904005962F4 /* OrderDetailsCustomerNoteCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderDetailsCustomerNoteCell.swift; sourceTree = "<group>"; };
 		B557DA1420979904005962F4 /* OrderDetailsCustomerNoteCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderDetailsCustomerNoteCell.xib; sourceTree = "<group>"; };
+		B559EBAD20A0BF8E00836CD4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		B559EBAE20A0BF8F00836CD4 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WooCommerce.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B56DB3CE2049BFAA00D4AA8E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -72,7 +78,6 @@
 		B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3E32049BFAA00D4AA8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B56DB3EC2049BFE600D4AA8E /* ContextManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextManager.swift; sourceTree = "<group>"; };
-		B5C9DE292087FF65006B910A /* FluxC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FluxC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE1CCB3F2056F21C000EE3AC /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		CE1CCB4620570A6B000EE3AC /* en.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = en.lproj; sourceTree = "<group>"; };
 		CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCell.swift; sourceTree = "<group>"; };
@@ -100,6 +105,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B557D9FE209753BB005962F4 /* Networking.framework in Frameworks */,
 				B546CCF4209363A5007CDA5F /* FluxSumi.framework in Frameworks */,
 				D03928FCB928A909F3675117 /* Pods_WooCommerce.framework in Frameworks */,
 			);
@@ -127,8 +133,8 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B557D9FD209753BB005962F4 /* Networking.framework */,
 				B546CCF3209363A5007CDA5F /* FluxSumi.framework */,
-				B5C9DE292087FF65006B910A /* FluxC.framework */,
 				EA556E3CCFCFAC2E31799011 /* Pods_WooCommerce.framework */,
 			);
 			name = Frameworks;
@@ -151,6 +157,8 @@
 				88A44ABE866401E6DB03AC60 /* Frameworks */,
 				B56DB3C72049BFAA00D4AA8E /* Products */,
 				580B0381D5FD3CF9393AAD46 /* Pods */,
+				B559EBAE20A0BF8F00836CD4 /* LICENSE */,
+				B559EBAD20A0BF8E00836CD4 /* README.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -370,11 +378,13 @@
 				CEE006012077CA820079161F /* order-915.json in Resources */,
 				B557DA1620979904005962F4 /* OrderDetailsCustomerNoteCell.xib in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
+				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,
 				CEE005F82077C9690079161F /* order-list.json in Resources */,
 				CEE005FC2077CA030079161F /* order-949.json in Resources */,
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
 				CEE005FE2077CA2F0079161F /* order-937.json in Resources */,
 				CEE006062077D1280079161F /* OrderDetailsSummaryCell.xib in Resources */,
+				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
 				CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
 				CEE005FA2077C9C00079161F /* order-925.json in Resources */,

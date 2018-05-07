@@ -14,6 +14,7 @@ protocol Style {
     var statusNotIdentifiedColor: UIColor { get }
     var statusNotIdentifiedBoldColor: UIColor { get }
     var defaultTextColor: UIColor { get }
+    var sectionTitleColor: UIColor { get }
 }
 
 // MARK: - WooCommerce's Default Style
@@ -29,6 +30,7 @@ class DefaultStyle: Style {
     let statusNotIdentifiedColor = UIColor(red: 235.0/255.0, green: 235.0/255.0, blue: 235.0/255.0, alpha: 1.0)
     let statusNotIdentifiedBoldColor = UIColor(red: 226.0/255.0, green: 226.0/255.0, blue: 226.0/255.0, alpha: 1.0)
     let defaultTextColor = UIColor.black
+    let sectionTitleColor = UIColor.lightGray
 }
 
 
@@ -87,5 +89,9 @@ class StyleManager {
 
     static var defaultTextColor: UIColor {
         return active.defaultTextColor
+    }
+
+    static var sectionTitleColor: UIColor {
+        return active.sectionTitleColor
     }
 }

@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B518662220A097C200037A38 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662120A097C200037A38 /* Network.swift */; };
+		B518662420A099BF00037A38 /* AlamofireWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662320A099BF00037A38 /* AlamofireWrapper.swift */; };
+		B518662720A09BCC00037A38 /* NetworkMockup.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662620A09BCC00037A38 /* NetworkMockup.swift */; };
+		B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */; };
+		B518663520A0A2E800037A38 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518663320A0A2E800037A38 /* Constants.swift */; };
+		B518663620A0A2E800037A38 /* JSONLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518663420A0A2E800037A38 /* JSONLoader.swift */; };
 		B519A3E72097A65F00E2603A /* DotcomRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B519A3E62097A65F00E2603A /* DotcomRequestTests.swift */; };
 		B520CA87209CAF6B002F930A /* AuthenticatedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B520CA86209CAF6B002F930A /* AuthenticatedRequestTests.swift */; };
 		B53AB7E7209BD6DD00C4C526 /* AuthenticatedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53AB7E6209BD6DD00C4C526 /* AuthenticatedRequest.swift */; };
@@ -38,6 +44,12 @@
 
 /* Begin PBXFileReference section */
 		97F8D9516BAC88E8A25EF46D /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B518662120A097C200037A38 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
+		B518662320A099BF00037A38 /* AlamofireWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlamofireWrapper.swift; sourceTree = "<group>"; };
+		B518662620A09BCC00037A38 /* NetworkMockup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMockup.swift; sourceTree = "<group>"; };
+		B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersRemoteTests.swift; sourceTree = "<group>"; };
+		B518663320A0A2E800037A38 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		B518663420A0A2E800037A38 /* JSONLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONLoader.swift; sourceTree = "<group>"; };
 		B519A3E62097A65F00E2603A /* DotcomRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomRequestTests.swift; sourceTree = "<group>"; };
 		B520CA86209CAF6B002F930A /* AuthenticatedRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedRequestTests.swift; sourceTree = "<group>"; };
 		B53AB7E6209BD6DD00C4C526 /* AuthenticatedRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedRequest.swift; sourceTree = "<group>"; };
@@ -104,6 +116,40 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		B518662020A097B200037A38 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				B518662120A097C200037A38 /* Network.swift */,
+				B518662320A099BF00037A38 /* AlamofireWrapper.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		B518662520A09BB900037A38 /* Mockups */ = {
+			isa = PBXGroup;
+			children = (
+				B518662620A09BCC00037A38 /* NetworkMockup.swift */,
+			);
+			path = Mockups;
+			sourceTree = "<group>";
+		};
+		B518662820A09C5D00037A38 /* Remote */ = {
+			isa = PBXGroup;
+			children = (
+				B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */,
+			);
+			path = Remote;
+			sourceTree = "<group>";
+		};
+		B518663220A0A2E800037A38 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				B518663320A0A2E800037A38 /* Constants.swift */,
+				B518663420A0A2E800037A38 /* JSONLoader.swift */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
 		B519A3E82097A91800E2603A /* Requests */ = {
 			isa = PBXGroup;
 			children = (
@@ -138,6 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				B557DA1020975F60005962F4 /* Settings */,
+				B518662020A097B200037A38 /* Network */,
 				B557DA0620975515005962F4 /* Requests */,
 				B557DA1B20979E6D005962F4 /* Model */,
 				B557DA0520975507005962F4 /* Remote */,
@@ -150,7 +197,10 @@
 		B557D9F0209753AA005962F4 /* NetworkingTests */ = {
 			isa = PBXGroup;
 			children = (
+				B518663220A0A2E800037A38 /* Tools */,
+				B518662520A09BB900037A38 /* Mockups */,
 				B519A3E82097A91800E2603A /* Requests */,
+				B518662820A09C5D00037A38 /* Remote */,
 				B557D9F3209753AA005962F4 /* Info.plist */,
 			);
 			path = NetworkingTests;
@@ -368,7 +418,9 @@
 				B557DA0D20975DB1005962F4 /* WordPressAPIVersion.swift in Sources */,
 				B557DA1D20979E7D005962F4 /* RemoteOrder.swift in Sources */,
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,
+				B518662220A097C200037A38 /* Network.swift in Sources */,
 				B53AB7E7209BD6DD00C4C526 /* AuthenticatedRequest.swift in Sources */,
+				B518662420A099BF00037A38 /* AlamofireWrapper.swift in Sources */,
 				B557DA1820979D51005962F4 /* Credentials.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
 				B557DA0F20975E07005962F4 /* DotcomRequest.swift in Sources */,
@@ -381,8 +433,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				B519A3E72097A65F00E2603A /* DotcomRequestTests.swift in Sources */,
+				B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */,
+				B518663620A0A2E800037A38 /* JSONLoader.swift in Sources */,
 				B520CA87209CAF6B002F930A /* AuthenticatedRequestTests.swift in Sources */,
 				B557D9F2209753AA005962F4 /* JetpackRequestTests.swift in Sources */,
+				B518662720A09BCC00037A38 /* NetworkMockup.swift in Sources */,
+				B518663520A0A2E800037A38 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -531,6 +587,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Networking/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -559,6 +616,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Networking/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

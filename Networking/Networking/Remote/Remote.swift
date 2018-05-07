@@ -45,3 +45,13 @@ public class Remote {
         network.enqueue(authenticated, completion: completion)
     }
 }
+
+
+/// Default Remote Errors
+///
+enum RemoteError: Error {
+
+    /// Triggered whenever the backend's response isn't in the expected format.
+    ///
+    case unknownFormat
+}

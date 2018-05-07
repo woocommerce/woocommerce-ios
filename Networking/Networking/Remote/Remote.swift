@@ -6,18 +6,32 @@ import Alamofire
 ///
 public class Remote {
 
-    /// WordPress.com Credentials
+    /// WordPress.com Credentials.
     ///
     let credentials: Credentials
 
-    /// Designated Initializer.
+    /// Networking Wrapper. Useful for Unit Testing purposes.
     ///
-    /// - Parameter credentials: Credentials to be used in order to authenticate every request.
+    let network: Network
+
+
+    /// Initializes the Remote Instance with the specified Credentials, and, by default, our Networking requests will be handled
+    /// by Alamofire.
     ///
-    public init(credentials: Credentials) {
-        self.credentials = credentials
+    public convenience init(credentials: Credentials) {
+        self.init(credentials: credentials, network: AlamofireWrapper())
     }
 
+    /// Designated Initializer.
+    ///
+    /// - Parameters:
+    ///     - credentials: Credentials to be used in order to authenticate every request.
+    ///     - network: Network Wrapper, in charge of actually enqueueing a given network request.
+    ///
+    init(credentials: Credentials, network: Network) {
+        self.credentials = credentials
+        self.network = network
+    }
 
     /// Enqueues the specified Network Request.
     ///
@@ -27,11 +41,6 @@ public class Remote {
     ///
     func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
-
-        Alamofire.request(authenticated)
-            .validate()
-            .responseJSON { response in
-                completion(response.result.value, response.result.error)
-        }
+        network.enqueue(authenticated, completion: completion)
     }
 }

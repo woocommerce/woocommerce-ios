@@ -13,10 +13,7 @@
 		B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */; };
 		B518663520A0A2E800037A38 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518663320A0A2E800037A38 /* Constants.swift */; };
 		B518663620A0A2E800037A38 /* JSONLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518663420A0A2E800037A38 /* JSONLoader.swift */; };
-		B519A3E72097A65F00E2603A /* DotcomRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B519A3E62097A65F00E2603A /* DotcomRequestTests.swift */; };
-		B520CA87209CAF6B002F930A /* AuthenticatedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B520CA86209CAF6B002F930A /* AuthenticatedRequestTests.swift */; };
 		B557D9ED209753AA005962F4 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B557D9E3209753AA005962F4 /* Networking.framework */; };
-		B557D9F2209753AA005962F4 /* JetpackRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557D9F1209753AA005962F4 /* JetpackRequestTests.swift */; };
 		B557D9F4209753AA005962F4 /* Networking.h in Headers */ = {isa = PBXBuildFile; fileRef = B557D9E6209753AA005962F4 /* Networking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B557DA0220975500005962F4 /* JetpackRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557D9FF209754FF005962F4 /* JetpackRequest.swift */; };
 		B557DA0320975500005962F4 /* Remote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA0020975500005962F4 /* Remote.swift */; };
@@ -29,6 +26,11 @@
 		B557DA1D20979E7D005962F4 /* RemoteOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1C20979E7D005962F4 /* RemoteOrder.swift */; };
 		B559EBAA20A0B5CD00836CD4 /* orders-load-all.json in Resources */ = {isa = PBXBuildFile; fileRef = B559EBA920A0B5CD00836CD4 /* orders-load-all.json */; };
 		B567AF2520A0CCA300AB6C62 /* AuthenticatedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2420A0CCA300AB6C62 /* AuthenticatedRequest.swift */; };
+		B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2820A0FA1E00AB6C62 /* Mapper.swift */; };
+		B567AF2B20A0FA4200AB6C62 /* RemoteOrderMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2A20A0FA4200AB6C62 /* RemoteOrderMapper.swift */; };
+		B567AF2F20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2C20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift */; };
+		B567AF3020A0FB8F00AB6C62 /* DotcomRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2D20A0FB8F00AB6C62 /* DotcomRequestTests.swift */; };
+		B567AF3120A0FB8F00AB6C62 /* JetpackRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2E20A0FB8F00AB6C62 /* JetpackRequestTests.swift */; };
 		D966E5B7ACDF2C5065B7188C /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97F8D9516BAC88E8A25EF46D /* Pods_Networking.framework */; };
 		E163BF100306BC689F6ADB6B /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3D61DD7401976E936CE38E2 /* Pods_NetworkingTests.framework */; };
 /* End PBXBuildFile section */
@@ -51,13 +53,10 @@
 		B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersRemoteTests.swift; sourceTree = "<group>"; };
 		B518663320A0A2E800037A38 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B518663420A0A2E800037A38 /* JSONLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONLoader.swift; sourceTree = "<group>"; };
-		B519A3E62097A65F00E2603A /* DotcomRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomRequestTests.swift; sourceTree = "<group>"; };
-		B520CA86209CAF6B002F930A /* AuthenticatedRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedRequestTests.swift; sourceTree = "<group>"; };
 		B557D9E3209753AA005962F4 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B557D9E6209753AA005962F4 /* Networking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Networking.h; sourceTree = "<group>"; };
 		B557D9E7209753AA005962F4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B557D9EC209753AA005962F4 /* NetworkingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B557D9F1209753AA005962F4 /* JetpackRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackRequestTests.swift; sourceTree = "<group>"; };
 		B557D9F3209753AA005962F4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B557D9FF209754FF005962F4 /* JetpackRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JetpackRequest.swift; sourceTree = "<group>"; };
 		B557DA0020975500005962F4 /* Remote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Remote.swift; sourceTree = "<group>"; };
@@ -70,6 +69,11 @@
 		B557DA1C20979E7D005962F4 /* RemoteOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteOrder.swift; sourceTree = "<group>"; };
 		B559EBA920A0B5CD00836CD4 /* orders-load-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "orders-load-all.json"; sourceTree = "<group>"; };
 		B567AF2420A0CCA300AB6C62 /* AuthenticatedRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedRequest.swift; sourceTree = "<group>"; };
+		B567AF2820A0FA1E00AB6C62 /* Mapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mapper.swift; sourceTree = "<group>"; };
+		B567AF2A20A0FA4200AB6C62 /* RemoteOrderMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteOrderMapper.swift; sourceTree = "<group>"; };
+		B567AF2C20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedRequestTests.swift; sourceTree = "<group>"; };
+		B567AF2D20A0FB8F00AB6C62 /* DotcomRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotcomRequestTests.swift; sourceTree = "<group>"; };
+		B567AF2E20A0FB8F00AB6C62 /* JetpackRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JetpackRequestTests.swift; sourceTree = "<group>"; };
 		C44FACA39A77FF6C3A21364D /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
 		D2C5CA50D8B38E253E228261 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 		D360A85A6BF832C6C9E1B4BD /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
@@ -155,9 +159,9 @@
 		B519A3E82097A91800E2603A /* Requests */ = {
 			isa = PBXGroup;
 			children = (
-				B520CA86209CAF6B002F930A /* AuthenticatedRequestTests.swift */,
-				B519A3E62097A65F00E2603A /* DotcomRequestTests.swift */,
-				B557D9F1209753AA005962F4 /* JetpackRequestTests.swift */,
+				B567AF2C20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift */,
+				B567AF2D20A0FB8F00AB6C62 /* DotcomRequestTests.swift */,
+				B567AF2E20A0FB8F00AB6C62 /* JetpackRequestTests.swift */,
 			);
 			path = Requests;
 			sourceTree = "<group>";
@@ -186,6 +190,7 @@
 			isa = PBXGroup;
 			children = (
 				B557DA1020975F60005962F4 /* Settings */,
+				B567AF2720A0FA0A00AB6C62 /* Mapper */,
 				B518662020A097B200037A38 /* Network */,
 				B557DA0620975515005962F4 /* Requests */,
 				B557DA1B20979E6D005962F4 /* Model */,
@@ -253,6 +258,15 @@
 				B559EBA920A0B5CD00836CD4 /* orders-load-all.json */,
 			);
 			path = Responses;
+			sourceTree = "<group>";
+		};
+		B567AF2720A0FA0A00AB6C62 /* Mapper */ = {
+			isa = PBXGroup;
+			children = (
+				B567AF2820A0FA1E00AB6C62 /* Mapper.swift */,
+				B567AF2A20A0FA4200AB6C62 /* RemoteOrderMapper.swift */,
+			);
+			path = Mapper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -431,12 +445,14 @@
 				B557DA0D20975DB1005962F4 /* WordPressAPIVersion.swift in Sources */,
 				B557DA1D20979E7D005962F4 /* RemoteOrder.swift in Sources */,
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,
+				B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireWrapper.swift in Sources */,
 				B557DA1820979D51005962F4 /* Credentials.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
 				B557DA0F20975E07005962F4 /* DotcomRequest.swift in Sources */,
 				B557DA0B20975D7E005962F4 /* WooAPIVersion.swift in Sources */,
+				B567AF2B20A0FA4200AB6C62 /* RemoteOrderMapper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -444,15 +460,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B519A3E72097A65F00E2603A /* DotcomRequestTests.swift in Sources */,
+				B567AF3120A0FB8F00AB6C62 /* JetpackRequestTests.swift in Sources */,
 				B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */,
+				B567AF2F20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift in Sources */,
 				B518663620A0A2E800037A38 /* JSONLoader.swift in Sources */,
-				B520CA87209CAF6B002F930A /* AuthenticatedRequestTests.swift in Sources */,
-				B557D9F2209753AA005962F4 /* JetpackRequestTests.swift in Sources */,
 				B518662720A09BCC00037A38 /* NetworkMockup.swift in Sources */,
 				B518663520A0A2E800037A38 /* Constants.swift in Sources */,
-				B520CA87209CAF6B002F930A /* AuthenticatedRequestTests.swift in Sources */,
-				B557D9F2209753AA005962F4 /* JetpackRequestTests.swift in Sources */,
+				B567AF3020A0FB8F00AB6C62 /* DotcomRequestTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

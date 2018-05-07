@@ -27,7 +27,7 @@ class OrdersRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "/orders", filename: "orders-load-all")
 
-        remote.loadAllOrders(for: sampleSiteID) { orders in
+        remote.loadAllOrders(for: sampleSiteID) { orders, error in
 // TODO: This is a mockup! Fill me!
             expectation.fulfill()
         }

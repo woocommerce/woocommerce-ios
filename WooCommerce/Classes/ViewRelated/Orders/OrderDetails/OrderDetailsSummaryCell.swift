@@ -5,7 +5,7 @@ class OrderDetailsSummaryCell: UITableViewCell {
     @IBOutlet private weak var createdLabel: UILabel!
     @IBOutlet private weak var paymentLabel: PaddedLabel!
 
-    var paymentStatusColor: UIColor = .clear
+    var paymentBackgroundColor: UIColor = .clear
 
     static let reuseIdentifier = "OrderDetailsSummaryCell"
 
@@ -37,16 +37,6 @@ class OrderDetailsSummaryCell: UITableViewCell {
             paymentLabel.text = newValue
             paymentLabel.applyPaddedLabelDefaultStyles()
         }
-        paymentStatusColor = paymentLabel.backgroundColor ?? .clear
-    }
-
-    var paymentBackgroundColor: UIColor? {
-        get {
-            return paymentLabel.backgroundColor
-        }
-        set {
-            paymentLabel.backgroundColor = newValue
-        }
     }
 
     var paymentBorderColor: CGColor? {
@@ -62,14 +52,14 @@ class OrderDetailsSummaryCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         // label background colors get reset upon selection
         // to fix it, re-assign the background color
-        paymentLabel.backgroundColor = paymentStatusColor
+        paymentLabel.backgroundColor = paymentBackgroundColor
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
         // label background colors get reset upon highlight
         // to fix it, re-assign the background color
-        paymentLabel.backgroundColor = paymentStatusColor
+        paymentLabel.backgroundColor = paymentBackgroundColor
     }
 }
 

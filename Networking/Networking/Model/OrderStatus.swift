@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents all of the possible Order Statuses
 ///
-enum OrderStatus {
+public enum OrderStatus {
     case pending
     case processing
     case onHold
@@ -21,7 +21,7 @@ extension OrderStatus: RawRepresentable {
 
     /// Designated Initializer.
     ///
-    init(rawValue: String) {
+    public init(rawValue: String) {
         switch rawValue {
         case Keys.pending:
             self = .pending
@@ -44,7 +44,7 @@ extension OrderStatus: RawRepresentable {
 
     /// Returns the current Enum Case's Raw Value
     ///
-    var rawValue: String {
+    public var rawValue: String {
         switch self {
         case .pending:
             return Keys.pending
@@ -73,7 +73,7 @@ extension OrderStatus: CustomStringConvertible {
 
     /// Returns a string describing the current OrderStatus Instance
     ///
-    var description: String {
+    public var description: String {
         switch self {
         case .pending:
             return NSLocalizedString("Pending", comment: "Pending Order Status")
@@ -111,6 +111,6 @@ private enum Keys {
 
 /// Equality!
 ///
-func ==(lhs: OrderStatus, rhs: OrderStatus) -> Bool {
+public func ==(lhs: OrderStatus, rhs: OrderStatus) -> Bool {
     return lhs.rawValue == rhs.rawValue
 }

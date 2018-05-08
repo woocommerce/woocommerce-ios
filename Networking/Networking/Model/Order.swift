@@ -1,7 +1,7 @@
 import Foundation
 
 
-///
+/// Represents an Order Entity.
 ///
 public struct Order {
     public let identifier: Int
@@ -9,7 +9,7 @@ public struct Order {
     public let customerIdentifier: Int
 
     public let number: String
-    public let status: String
+    public let status: OrderStatus
     public let currency: String
     public let customerNote: String?
 
@@ -27,10 +27,13 @@ public struct Order {
     public let shippingTax: String
     public let total: String
     public let totalTax: String
+
+    public let billingAddress: Address
+    public let shippingAddress: Address
 }
 
 
-///
+/// Decodable Conformance
 ///
 extension Order: Decodable {
 
@@ -41,8 +44,9 @@ extension Order: Decodable {
         parentIdentifier = try container.decode(Int.self, forKey: .parentIdentifier)
         customerIdentifier = try container.decode(Int.self, forKey: .customerIdentifier)
 
+        let statusAsString = try container.decode(String.self, forKey: .status)
+        status = OrderStatus(rawValue: statusAsString)
         number = try container.decode(String.self, forKey: .number)
-        status = try container.decode(String.self, forKey: .status)
         currency = try container.decode(String.self, forKey: .currency)
         customerNote = try container.decode(String.self, forKey: .customerNote)
 
@@ -60,11 +64,14 @@ extension Order: Decodable {
         shippingTax = try container.decode(String.self, forKey: .shippingTax)
         total = try container.decode(String.self, forKey: .total)
         totalTax = try container.decode(String.self, forKey: .dateCreatedGMT)
+
+        billingAddress = try container.decode(Address.self, forKey: .billingAddress)
+        shippingAddress = try container.decode(Address.self, forKey: .shippingAddress)
     }
 }
 
 
-///
+/// Decoding Keys
 ///
 private enum OrderKeys: String, CodingKey {
     case identifier = "id"
@@ -93,9 +100,10 @@ private enum OrderKeys: String, CodingKey {
     case total = "total"
     case totalTax = "total_tax"
 
+    case shippingAddress = "shipping"
+    case billingAddress = "billing"
+
 //    case customer = "customer"
-//    case shippingAddress = "shipping"
-//    case billingAddress = "billing"
 //    case orderItems = "line_items"
 //    case notes = "notes"
 }

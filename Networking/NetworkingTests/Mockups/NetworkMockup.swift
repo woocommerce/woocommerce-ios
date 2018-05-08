@@ -12,18 +12,33 @@ class NetworkMockup: Network {
     private var responseMap = [String: String]()
 
 
-    /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the specified response.
+    /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the specified response, *PARSED* as json.
     /// Otherwise, an error will be relayed back (.unavailable!).
     ///
-    func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
-        guard let response = mockup(for: request) else {
+    func responseJSON(for request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
+        guard let filename = filename(for: request), let response = loadJSON(for: filename) else {
             completion(nil, NetworkMockupError.unavailable)
             return
         }
 
         completion(response, nil)
     }
+
+    /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the specified response file, loaded as *Data*.
+    /// Otherwise, an error will be relayed back (.unavailable!).
+    ///
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
+        guard let filename = filename(for: request),
+            let url = Bundle(for: type(of: self)).url(forResource: filename, withExtension: JSONLoader.defaultJsonExtension),
+            let data = try? Data(contentsOf: url) else {
+                completion(nil, NetworkMockupError.unavailable)
+                return
+        }
+
+        completion(data, nil)
+    }
 }
+
 
 /// Public Methods
 ///
@@ -38,7 +53,13 @@ extension NetworkMockup {
 
     /// Returns the Mockup JSON Response, provided that there's a mapping for the specified Request URL's Suffix.
     ///
-    private func mockup(for request: URLRequestConvertible) -> Any? {
+    private func loadJSON(for filename: String) -> Any? {
+        return JSONLoader.load(filename: filename)
+    }
+
+    /// Returns the Mockup JSON Filename.
+    ///
+    private func filename(for request: URLRequestConvertible) -> String? {
         guard let requestURL = try? request.asURLRequest().url, let urlAsString = requestURL?.absoluteString else {
             return nil
         }
@@ -47,11 +68,7 @@ extension NetworkMockup {
             urlAsString.hasSuffix(suffix)
         }
 
-        guard let filename = simulated?.value else {
-            return nil
-        }
-
-        return JSONLoader.load(filename: filename)
+        return simulated?.value
     }
 }
 

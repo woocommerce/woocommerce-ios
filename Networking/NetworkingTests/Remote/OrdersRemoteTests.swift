@@ -21,14 +21,13 @@ class OrdersRemoteTests: XCTestCase {
 
     /// TODO: This is a stub. To be completed in another PR!
     ///
-    func testLoadAllOrdersProperlyReturnsParsedRemoteOrders() {
+    func testLoadAllOrdersProperlyReturnsParsedOrders() {
         let remote = OrdersRemote(credentials: credentials, network: network)
         let expectation = self.expectation(description: "Fetch Order")
 
         network.simulateResponse(requestUrlSuffix: "/orders", filename: "orders-load-all")
 
         remote.loadAllOrders(for: sampleSiteID) { orders, error in
-// TODO: This is a mockup! Fill me!
             expectation.fulfill()
         }
 

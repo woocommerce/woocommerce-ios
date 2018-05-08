@@ -8,7 +8,7 @@ public class OrdersRemote: Remote {
 
     /// NOTE: This is a Stub. To be completed + Unit Tested in a second PR.
     ///
-    public func loadAllOrders(for siteID: Int, completion: @escaping ([RemoteOrder]?, Error?) -> Void) {
+    public func loadAllOrders(for siteID: Int, completion: @escaping ([Order]?, Error?) -> Void) {
         let path = "orders"
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path)
         let mapper = OrderListMapper()

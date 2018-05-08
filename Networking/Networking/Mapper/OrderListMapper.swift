@@ -1,17 +1,17 @@
 import Foundation
 
 
-/// Maps a JSON Document into a collection of [RemoteOrder]
+/// Maps a JSON Document into a collection of [Order]
 ///
 class OrderListMapper: Mapper {
 
     /// Defines the Output Type
     ///
-    typealias Output = [RemoteOrder]
+    typealias Output = [Order]
 
-    /// (Attempts) to convert a dictionary into [RemoteOrder].
+    /// (Attempts) to convert a dictionary into [Order].
     ///
-    func map(response: Data) throws -> [RemoteOrder] {
+    func map(response: Data) throws -> [Order] {
         let list = try JSONDecoder().decode(OrdersList.self, from: response)
         return list.orders
     }
@@ -24,7 +24,7 @@ class OrderListMapper: Mapper {
 /// JSONDecoder.
 ///
 struct OrdersList: Decodable {
-    let orders: [RemoteOrder]
+    let orders: [Order]
 
     private enum CodingKeys: String, CodingKey {
         case orders = "data"

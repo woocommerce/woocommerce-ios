@@ -7,11 +7,11 @@ protocol Mapper {
 
     /// Defines the Mapping Return Type.
     ///
-    associatedtype T
+    associatedtype Output
 
-    /// Maps a Backend Response into a generic entity of Type `T`. This method *can throw* errors.
+    /// Maps a Backend Response into a generic entity of Type `Output`. This method *can throw* errors.
     ///
-    func map(response: [String: Any]) throws -> T
+    func map(response: [String: Any]) throws -> Output
 }
 
 

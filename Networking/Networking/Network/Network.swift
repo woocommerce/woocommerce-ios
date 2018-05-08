@@ -7,11 +7,29 @@ import Alamofire
 ///
 public protocol Network {
 
-    /// Enqueues the specified Network Request.
+    /// Executes the specified Network Request. Upon completion, the payload will be parsed as JSON, and sent back to the caller.
     ///
     /// - Parameters:
     ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion.
     ///
-    func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void)
+    func responseJSON(for request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void)
+
+    /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
+    ///
+    /// - Parameters:
+    ///     - request: Request that should be performed.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void)
+}
+
+
+/// Networking Errors
+///
+enum NetworkError: Error {
+
+    /// Indicates that there's not been an actual response!
+    ///
+    case emptyResponse
 }

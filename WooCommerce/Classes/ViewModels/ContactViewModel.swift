@@ -8,27 +8,38 @@ enum ContactType {
 
 class ContactViewModel {
     let title: String
-    var fullName = ""
-    var formattedAddress = ""
-    var phoneNumber = ""
-    var email = ""
+    var fullName: String
+    var formattedAddress: String
+    var phoneNumber: String?
+    var email: String?
 
     init(with address: Address, contactType: ContactType) {
         switch contactType {
         case .billing:
-            title =  NSLocalizedString("Billing details", comment: "Shipping title for customer info cell")
+            title =  NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
         case .shipping:
             title =  NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
         }
-        let contact = createContact(address)
-        fullName = CNContactFormatter.string(from: contact, style: .fullName)!
-        phoneNumber = contact.phoneNumbers[0].value.stringValue
-        email = contact.emailAddresses[0].value as String
-        let postalAddress = contact.postalAddresses[0].value
-        formattedAddress = CNPostalAddressFormatter.string(from: postalAddress, style: .mailingAddress)
-    }
+        let contact = CNContact(address: address)
+        fullName = CNContactFormatter.string(from: contact, style: .fullName) ?? address.firstName + " " + address.lastName
 
-    func createContact(_ address: Address) -> CNContact {
+        if let cnPhoneNumber = contact.phoneNumbers.first {
+            phoneNumber = cnPhoneNumber.value.stringValue
+        }
+
+        if let cnAddress = contact.postalAddresses.first {
+            let postalAddress = cnAddress.value
+            formattedAddress = CNPostalAddressFormatter.string(from: postalAddress, style: .mailingAddress)
+        }
+
+        if let cnEmail = contact.emailAddresses.first {
+            email = cnEmail.value as String
+        }
+    }
+}
+
+extension CNContact {
+    convenience init(address: Address) {
         let contact = CNMutableContact()
         contact.givenName = address.firstName
         contact.familyName = address.lastName
@@ -61,12 +72,12 @@ class ContactViewModel {
             contact.phoneNumbers = [CNLabeledValue(label: CNLabelPhoneNumberMain, value: CNPhoneNumber(stringValue: phone))]
         }
 
-        if let emailAddress = email as NSString? {
+        if let emailAddress = address.email as NSString? {
             contact.emailAddresses = [CNLabeledValue(label: CNLabelWork, value: emailAddress)]
         }
 
         contact.postalAddresses = [CNLabeledValue(label: CNLabelWork, value: postalAddress)]
 
-        return contact
+        self.init(address: address)
     }
 }

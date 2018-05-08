@@ -11,7 +11,7 @@ public class OrdersRemote: Remote {
     public func loadAllOrders(for siteID: Int, completion: @escaping ([RemoteOrder]?, Error?) -> Void) {
         let path = "orders"
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path)
-        let mapper = RemoteOrderMapper()
+        let mapper = OrderListMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }

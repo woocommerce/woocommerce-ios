@@ -42,7 +42,7 @@ public class Remote {
     ///
     func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
-        network.enqueue(authenticated, completion: completion)
+        network.responseJSON(for: authenticated, completion: completion)
     }
 
 
@@ -54,18 +54,20 @@ public class Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M, completion: @escaping (M.Output?, Error?) -> Void) {
-        enqueue(request) { (response, error) in
-            if let error = error {
+        let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
+        network.responseData(for: authenticated) { (data, error) in
+            guard let data = data else {
+                completion(nil, error ?? NetworkError.emptyResponse)
+                return
+            }
+
+            do {
+                let parsed = try mapper.map(response: data)
+                completion(parsed, nil)
+            } catch {
+                NSLog("Mapping Error: \(error)")
                 completion(nil, error)
-                return
             }
-
-            guard let payload = response as? [String: Any], let parsed = try? mapper.map(response: payload) else {
-                completion(nil, MappingError.unknownFormat)
-                return
-            }
-
-            completion(parsed, nil)
         }
     }
 }

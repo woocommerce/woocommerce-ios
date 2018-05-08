@@ -8,10 +8,10 @@ enum ContactType {
 
 class ContactViewModel {
     let title: String
-    let fullName: String
-    var formattedAddress: String
-    let phoneNumber: String
-    let email: String
+    var fullName = ""
+    var formattedAddress = ""
+    var phoneNumber = ""
+    var email = ""
 
     init(with address: Address, contactType: ContactType) {
         switch contactType {

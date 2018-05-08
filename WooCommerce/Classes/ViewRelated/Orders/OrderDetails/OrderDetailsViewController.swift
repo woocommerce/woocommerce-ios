@@ -4,7 +4,12 @@ class OrderDetailsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
-    var order: Order!
+    var order: Order! {
+        didSet {
+            refreshViewModel()
+        }
+    }
+
     var viewModel: OrderDetailsViewModel!
     var sectionTitles = [String]()
 
@@ -15,6 +20,10 @@ class OrderDetailsViewController: UIViewController {
         case info = 3
         case payment = 4
         case orderNotes = 5
+    }
+
+    func refreshViewModel() {
+        viewModel = OrderDetailsViewModel(order: order)
     }
 
     override func viewDidLoad() {

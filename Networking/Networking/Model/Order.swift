@@ -33,6 +33,9 @@ public struct Order: Decodable {
 }
 
 
+// TODO: Add missing properties
+
+
 /// Defines all of the Order CodingKeys
 ///
 private extension Order {

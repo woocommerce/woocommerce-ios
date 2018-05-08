@@ -46,22 +46,14 @@ extension OrderStatus: RawRepresentable {
     ///
     public var rawValue: String {
         switch self {
-        case .pending:
-            return Keys.pending
-        case .processing:
-            return Keys.processing
-        case .onHold:
-            return Keys.onHold
-        case .failed:
-            return Keys.failed
-        case .cancelled:
-            return Keys.cancelled
-        case .completed:
-            return Keys.completed
-        case .refunded:
-            return Keys.refunded
-        case .custom(let payload):
-            return payload
+        case .pending:              return Keys.pending
+        case .processing:           return Keys.processing
+        case .onHold:               return Keys.onHold
+        case .failed:               return Keys.failed
+        case .cancelled:            return Keys.cancelled
+        case .completed:            return Keys.completed
+        case .refunded:             return Keys.refunded
+        case .custom(let payload):  return payload
         }
     }
 }
@@ -75,22 +67,14 @@ extension OrderStatus: CustomStringConvertible {
     ///
     public var description: String {
         switch self {
-        case .pending:
-            return NSLocalizedString("Pending", comment: "Pending Order Status")
-        case .processing:
-            return NSLocalizedString("Processing", comment: "Processing Order Status")
-        case .onHold:
-            return NSLocalizedString("On Hold", comment: "On Hold Order Status")
-        case .failed:
-            return NSLocalizedString("Failed", comment: "Failed Order Status")
-        case .cancelled:
-            return NSLocalizedString("Canceled", comment: "Cancelled Order Status")
-        case .completed:
-            return NSLocalizedString("Completed", comment: "Completed Order Status")
-        case .refunded:
-            return NSLocalizedString("Refunded", comment: "Refunded Order Status")
-        case .custom(let payload):
-            return NSLocalizedString("\(payload)", comment: "Custom Order Status")
+        case .pending:              return NSLocalizedString("Pending", comment: "Pending Order Status")
+        case .processing:           return NSLocalizedString("Processing", comment: "Processing Order Status")
+        case .onHold:               return NSLocalizedString("On Hold", comment: "On Hold Order Status")
+        case .failed:               return NSLocalizedString("Failed", comment: "Failed Order Status")
+        case .cancelled:            return NSLocalizedString("Canceled", comment: "Cancelled Order Status")
+        case .completed:            return NSLocalizedString("Completed", comment: "Completed Order Status")
+        case .refunded:             return NSLocalizedString("Refunded", comment: "Refunded Order Status")
+        case .custom(let payload):  return NSLocalizedString("\(payload)", comment: "Custom Order Status")
         }
     }
 }
@@ -99,18 +83,11 @@ extension OrderStatus: CustomStringConvertible {
 /// Enum containing the 'Known' OrderStatus Keys
 ///
 private enum Keys {
-    static let pending = "pending"
-    static let processing = "processing"
-    static let onHold = "on-hold"
-    static let failed =  "failed"
-    static let cancelled = "cancelled"
-    static let completed = "completed"
-    static let refunded = "refunded"
-}
-
-
-/// Equality!
-///
-public func ==(lhs: OrderStatus, rhs: OrderStatus) -> Bool {
-    return lhs.rawValue == rhs.rawValue
+    static let pending      = "pending"
+    static let processing   = "processing"
+    static let onHold       = "on-hold"
+    static let failed       = "failed"
+    static let cancelled    = "cancelled"
+    static let completed    = "completed"
+    static let refunded     = "refunded"
 }

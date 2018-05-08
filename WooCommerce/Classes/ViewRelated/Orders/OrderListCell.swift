@@ -23,22 +23,27 @@ class OrderListCell: UITableViewCell {
         paymentStatusLabel.text = paymentStatusText
         paymentStatusLabel.applyStatusStyle(for: order.status)
         shippingStatusLabel.text = ""
-        // save the status colors found on the labels
-        payStatusColor = paymentStatusLabel.backgroundColor!
-        shipStatusColor = shippingStatusLabel.backgroundColor ?? .clear
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        // label background colors get reset upon selection, so re-assign status colors here
-        paymentStatusLabel.backgroundColor = payStatusColor
-        shippingStatusLabel.backgroundColor = shipStatusColor
+        preserveLabelColors {
+            super.setSelected(selected, animated: animated)
+        }
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        super.setHighlighted(highlighted, animated: animated)
-        // label background colors get reset upon highlight, so re-assign status colors here
-        paymentStatusLabel.backgroundColor = payStatusColor
-        shippingStatusLabel.backgroundColor = shipStatusColor
+        preserveLabelColors {
+            super.setHighlighted(highlighted, animated: animated)
+        }
+    }
+
+    func preserveLabelColors(action: () -> Void) {
+        let paymentColor = paymentStatusLabel.backgroundColor
+        let shippingColor = shippingStatusLabel.backgroundColor
+
+        action()
+
+        paymentStatusLabel.backgroundColor = paymentColor
+        shippingStatusLabel.backgroundColor = shippingColor
     }
 }

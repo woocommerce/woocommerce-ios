@@ -3,7 +3,7 @@ import UIKit
 class OrderDetailsSummaryCell: UITableViewCell {
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var createdLabel: UILabel!
-    @IBOutlet private weak var paymentLabel: PaddedLabel!
+    @IBOutlet private weak var paymentStatusLabel: PaddedLabel!
 
     var paymentBackgroundColor: UIColor = .clear
 
@@ -31,35 +31,38 @@ class OrderDetailsSummaryCell: UITableViewCell {
 
     var paymentStatus: String? {
         get {
-            return paymentLabel.text
+            return paymentStatusLabel.text
         }
         set {
-            paymentLabel.text = newValue
-            paymentLabel.applyPaddedLabelDefaultStyles()
+            paymentStatusLabel.text = newValue
+            paymentStatusLabel.applyPaddedLabelDefaultStyles()
         }
     }
 
     var paymentBorderColor: CGColor? {
         get {
-            return paymentLabel.layer.borderColor
+            return paymentStatusLabel.layer.borderColor
         }
         set {
-            paymentLabel.layer.borderColor = newValue
+            paymentStatusLabel.layer.borderColor = newValue
         }
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        // label background colors get reset upon selection
-        // to fix it, re-assign the background color
-        paymentLabel.backgroundColor = paymentBackgroundColor
+        preserveLabelColors {
+            super.setSelected(selected, animated: animated)
+        }
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        super.setHighlighted(highlighted, animated: animated)
-        // label background colors get reset upon highlight
-        // to fix it, re-assign the background color
-        paymentLabel.backgroundColor = paymentBackgroundColor
+        preserveLabelColors {
+            super.setHighlighted(highlighted, animated: animated)
+        }
+    }
+
+    func preserveLabelColors(action: () -> Void) {
+        action()
+        paymentStatusLabel.backgroundColor = paymentBackgroundColor
     }
 }
 

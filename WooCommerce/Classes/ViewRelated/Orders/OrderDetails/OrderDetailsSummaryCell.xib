@@ -54,7 +54,7 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="createdLabel" destination="Kz9-1h-fRY" id="lxU-eQ-lCc"/>
-                <outlet property="paymentLabel" destination="uIV-Sn-Yeh" id="Bn9-2o-24D"/>
+                <outlet property="paymentStatusLabel" destination="uIV-Sn-Yeh" id="7Go-fW-UgK"/>
                 <outlet property="titleLabel" destination="VuR-wG-Bbc" id="d7c-2Y-FFD"/>
             </connections>
             <point key="canvasLocation" x="71" y="123"/>

@@ -23,6 +23,16 @@ DEPENDENCIES:
   - Crashlytics (= 3.9.3)
   - Gridicons (= 0.14)
 
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Alamofire
+    - CocoaLumberjack
+    - Crashlytics
+    - Fabric
+    - Gridicons
+    - Reachability
+    - UIDeviceIdentifier
+
 EXTERNAL SOURCES:
   Automattic-Tracks-iOS:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
@@ -45,4 +55,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: feafa1ad29ca70583ff1a300f00c39c7717f36e1
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.0

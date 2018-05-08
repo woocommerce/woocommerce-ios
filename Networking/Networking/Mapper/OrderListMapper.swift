@@ -12,8 +12,10 @@ class OrderListMapper: Mapper {
     /// (Attempts) to convert a dictionary into [Order].
     ///
     func map(response: Data) throws -> [Order] {
-        let list = try JSONDecoder().decode(OrdersList.self, from: response)
-        return list.orders
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
+
+        return try decoder.decode(OrdersList.self, from: response).orders
     }
 }
 

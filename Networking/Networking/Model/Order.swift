@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents an Order Entity.
 ///
-public struct Order {
+public struct Order: Decodable {
     public let identifier: Int
     public let parentIdentifier: Int
     public let customerIdentifier: Int
@@ -33,77 +33,38 @@ public struct Order {
 }
 
 
-/// Decodable Conformance
+/// Defines all of the Order CodingKeys
 ///
-extension Order: Decodable {
+private extension Order {
 
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: OrderKeys.self)
+    enum CodingKeys: String, CodingKey {
+        case identifier = "id"
+        case parentIdentifier = "parent_id"
+        case customerIdentifier = "customer_id"
 
-        identifier = try container.decode(Int.self, forKey: .identifier)
-        parentIdentifier = try container.decode(Int.self, forKey: .parentIdentifier)
-        customerIdentifier = try container.decode(Int.self, forKey: .customerIdentifier)
+        case number = "number"
+        case status = "status"
+        case currency = "currency"
+        case customerNote = "customer_note"
 
-        let statusAsString = try container.decode(String.self, forKey: .status)
-        status = OrderStatus(rawValue: statusAsString)
-        number = try container.decode(String.self, forKey: .number)
-        currency = try container.decode(String.self, forKey: .currency)
-        customerNote = try container.decode(String.self, forKey: .customerNote)
+        case dateCreated = "date_created"
+        case dateModified = "date_modified"
+        case datePaid = "date_paid"
 
-        dateCreated = try container.decodeDateAsString(forKey: .dateCreated)
-        dateModified = try container.decodeDateAsString(forKey: .dateModified)
-        datePaid = try container.decodeDateAsStringIfExists(forKey: .datePaid)
+        case dateCreatedGMT = "date_created_gmt"
+        case dateModifiedGMT = "date_modified_gmt"
+        case datePaidGMT = "date_paid_gmt"
 
-        dateCreatedGMT = try container.decodeDateAsString(forKey: .dateCreatedGMT)
-        dateModifiedGMT = try container.decodeDateAsString(forKey: .dateModifiedGMT)
-        datePaidGMT = try container.decodeDateAsStringIfExists(forKey: .datePaidGMT)
+        case discountTotal = "discount_total"
+        case discountTax = "discount_tax"
 
-        discountTotal = try container.decode(String.self, forKey: .discountTotal)
-        discountTax = try container.decode(String.self, forKey: .discountTax)
-        shippingTotal = try container.decode(String.self, forKey: .shippingTotal)
-        shippingTax = try container.decode(String.self, forKey: .shippingTax)
-        total = try container.decode(String.self, forKey: .total)
-        totalTax = try container.decode(String.self, forKey: .dateCreatedGMT)
+        case shippingTotal = "shipping_total"
+        case shippingTax = "shipping_tax"
 
-        billingAddress = try container.decode(Address.self, forKey: .billingAddress)
-        shippingAddress = try container.decode(Address.self, forKey: .shippingAddress)
+        case total = "total"
+        case totalTax = "total_tax"
+
+        case shippingAddress = "shipping"
+        case billingAddress = "billing"
     }
-}
-
-
-/// Decoding Keys
-///
-private enum OrderKeys: String, CodingKey {
-    case identifier = "id"
-    case parentIdentifier = "parent_id"
-    case customerIdentifier = "customer_id"
-
-    case number = "number"
-    case status = "status"
-    case currency = "currency"
-    case customerNote = "customer_note"
-
-    case dateCreated = "date_created"
-    case dateModified = "date_modified"
-    case datePaid = "date_paid"
-
-    case dateCreatedGMT = "date_created_gmt"
-    case dateModifiedGMT = "date_modified_gmt"
-    case datePaidGMT = "date_paid_gmt"
-
-    case discountTotal = "discount_total"
-    case discountTax = "discount_tax"
-
-    case shippingTotal = "shipping_total"
-    case shippingTax = "shipping_tax"
-
-    case total = "total"
-    case totalTax = "total_tax"
-
-    case shippingAddress = "shipping"
-    case billingAddress = "billing"
-
-//    case customer = "customer"
-//    case orderItems = "line_items"
-//    case notes = "notes"
 }

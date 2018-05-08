@@ -13,17 +13,3 @@ protocol Mapper {
     ///
     func map(response: Data) throws -> Output
 }
-
-
-/// Default Remote Errors
-///
-enum MappingError: Error {
-
-    /// Indicates that the Backend's Response is not in the expected format.
-    ///
-    case unknownFormat
-
-    /// Indicates that the value for a mandatory key is missing.
-    ///
-    case missingKey
-}

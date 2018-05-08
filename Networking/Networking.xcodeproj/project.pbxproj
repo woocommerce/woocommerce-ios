@@ -31,6 +31,8 @@
 		B567AF2F20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2C20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift */; };
 		B567AF3020A0FB8F00AB6C62 /* DotcomRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2D20A0FB8F00AB6C62 /* DotcomRequestTests.swift */; };
 		B567AF3120A0FB8F00AB6C62 /* JetpackRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2E20A0FB8F00AB6C62 /* JetpackRequestTests.swift */; };
+		B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */; };
+		B5BB1D0E20A205F400112D92 /* KeyedDecodingContainer+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0D20A205F400112D92 /* KeyedDecodingContainer+Woo.swift */; };
 		D966E5B7ACDF2C5065B7188C /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97F8D9516BAC88E8A25EF46D /* Pods_Networking.framework */; };
 		E163BF100306BC689F6ADB6B /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3D61DD7401976E936CE38E2 /* Pods_NetworkingTests.framework */; };
 /* End PBXBuildFile section */
@@ -74,6 +76,8 @@
 		B567AF2C20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedRequestTests.swift; sourceTree = "<group>"; };
 		B567AF2D20A0FB8F00AB6C62 /* DotcomRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotcomRequestTests.swift; sourceTree = "<group>"; };
 		B567AF2E20A0FB8F00AB6C62 /* JetpackRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JetpackRequestTests.swift; sourceTree = "<group>"; };
+		B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Woo.swift"; sourceTree = "<group>"; };
+		B5BB1D0D20A205F400112D92 /* KeyedDecodingContainer+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyedDecodingContainer+Woo.swift"; sourceTree = "<group>"; };
 		C44FACA39A77FF6C3A21364D /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
 		D2C5CA50D8B38E253E228261 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 		D360A85A6BF832C6C9E1B4BD /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
@@ -189,6 +193,7 @@
 		B557D9E5209753AA005962F4 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				B5BB1D0A20A204F400112D92 /* Extensions */,
 				B557DA1020975F60005962F4 /* Settings */,
 				B567AF2720A0FA0A00AB6C62 /* Mapper */,
 				B518662020A097B200037A38 /* Network */,
@@ -267,6 +272,15 @@
 				B567AF2A20A0FA4200AB6C62 /* RemoteOrderMapper.swift */,
 			);
 			path = Mapper;
+			sourceTree = "<group>";
+		};
+		B5BB1D0A20A204F400112D92 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */,
+				B5BB1D0D20A205F400112D92 /* KeyedDecodingContainer+Woo.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -440,6 +454,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B557DA1A20979D66005962F4 /* Settings.swift in Sources */,
+				B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */,
 				B567AF2520A0CCA300AB6C62 /* AuthenticatedRequest.swift in Sources */,
 				B557DA0220975500005962F4 /* JetpackRequest.swift in Sources */,
 				B557DA0D20975DB1005962F4 /* WordPressAPIVersion.swift in Sources */,
@@ -448,6 +463,7 @@
 				B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireWrapper.swift in Sources */,
+				B5BB1D0E20A205F400112D92 /* KeyedDecodingContainer+Woo.swift in Sources */,
 				B557DA1820979D51005962F4 /* Credentials.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
 				B557DA0F20975E07005962F4 /* DotcomRequest.swift in Sources */,

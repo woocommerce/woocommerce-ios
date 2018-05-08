@@ -8,11 +8,11 @@ public class Remote {
 
     /// WordPress.com Credentials.
     ///
-    let credentials: Credentials
+    private let credentials: Credentials
 
-    /// Networking Wrapper. Useful for Unit Testing purposes.
+    /// Networking Wrapper: Dependency Injection Mechanism, useful for Unit Testing purposes.
     ///
-    let network: Network
+    private let network: Network
 
 
     /// Initializes the Remote Instance with the specified Credentials, and, by default, our Networking requests will be handled
@@ -34,11 +34,14 @@ public class Remote {
     }
 
 
-    /// Enqueues the specified Network Request: Authentication Headers will be injected!.
+    /// Enqueues the specified Network Request.
+    ///
+    /// - Important:
+    ///     - Authentication Headers will be injected, based on the Remote's Credentials.
     ///
     /// - Parameters:
     ///     - request: Request that should be performed.
-    ///     - completion: Closure to be executed upon completion.
+    ///     - completion: Closure to be executed upon completion. Will receive the JSON Parsed Response (if successfull)
     ///
     func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
@@ -46,7 +49,11 @@ public class Remote {
     }
 
 
-    /// Enqueues the specified Network Request: Authentication Headers will be injected!.
+    /// Enqueues the specified Network Request.
+    ///
+    /// - Important:
+    ///     - Authentication Headers will be injected, based on the Remote's Credentials.
+    ///     - Parsing will be performed by the Mapper.
     ///
     /// - Parameters:
     ///     - request: Request that should be performed.
@@ -65,7 +72,7 @@ public class Remote {
                 let parsed = try mapper.map(response: data)
                 completion(parsed, nil)
             } catch {
-                NSLog("Mapping Error: \(error)")
+                NSLog("<> Mapping Error: \(error)")
                 completion(nil, error)
             }
         }

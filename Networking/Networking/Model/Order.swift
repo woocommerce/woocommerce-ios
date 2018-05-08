@@ -41,33 +41,31 @@ public struct Order: Decodable {
 private extension Order {
 
     enum CodingKeys: String, CodingKey {
-        case identifier = "id"
-        case parentIdentifier = "parent_id"
+        case identifier         = "id"
+        case parentIdentifier   = "parent_id"
         case customerIdentifier = "customer_id"
 
-        case number = "number"
-        case status = "status"
-        case currency = "currency"
-        case customerNote = "customer_note"
+        case number             = "number"
+        case status             = "status"
+        case currency           = "currency"
+        case customerNote       = "customer_note"
 
-        case dateCreated = "date_created"
-        case dateModified = "date_modified"
-        case datePaid = "date_paid"
+        case dateCreated        = "date_created"
+        case dateModified       = "date_modified"
+        case datePaid           = "date_paid"
 
-        case dateCreatedGMT = "date_created_gmt"
-        case dateModifiedGMT = "date_modified_gmt"
-        case datePaidGMT = "date_paid_gmt"
+        case dateCreatedGMT     = "date_created_gmt"
+        case dateModifiedGMT    = "date_modified_gmt"
+        case datePaidGMT        = "date_paid_gmt"
 
-        case discountTotal = "discount_total"
-        case discountTax = "discount_tax"
+        case discountTotal      = "discount_total"
+        case discountTax        = "discount_tax"
+        case shippingTotal      = "shipping_total"
+        case shippingTax        = "shipping_tax"
+        case total              = "total"
+        case totalTax           = "total_tax"
 
-        case shippingTotal = "shipping_total"
-        case shippingTax = "shipping_tax"
-
-        case total = "total"
-        case totalTax = "total_tax"
-
-        case shippingAddress = "shipping"
-        case billingAddress = "billing"
+        case shippingAddress    = "shipping"
+        case billingAddress     = "billing"
     }
 }

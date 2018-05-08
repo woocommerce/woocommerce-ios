@@ -21,14 +21,14 @@ public struct Address: Decodable {
 private extension Address {
 
     enum CodingKeys: String, CodingKey {
-        case firstName = "first_name"
-        case lastName = "last_name"
-        case company = "company"
-        case address1 = "address_1"
-        case address2 = "address_2"
-        case city = "city"
-        case state = "state"
-        case postcode = "postcode"
-        case country = "country"
+        case firstName  = "first_name"
+        case lastName   = "last_name"
+        case company    = "company"
+        case address1   = "address_1"
+        case address2   = "address_2"
+        case city       = "city"
+        case state      = "state"
+        case postcode   = "postcode"
+        case country    = "country"
     }
 }

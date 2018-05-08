@@ -53,7 +53,7 @@ public class Remote {
     ///     - mapper: Mapper entitity that will be used to attempt to parse the Backend's Response.
     ///     - completion: Closure to be executed upon completion.
     ///
-    func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M, completion: @escaping (M.T?, Error?) -> Void) {
+    func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M, completion: @escaping (M.Output?, Error?) -> Void) {
         enqueue(request) { (response, error) in
             if let error = error {
                 completion(nil, error)

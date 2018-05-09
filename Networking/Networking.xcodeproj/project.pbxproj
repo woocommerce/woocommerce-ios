@@ -35,6 +35,7 @@
 		B5BB1D1020A237FB00112D92 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0F20A237FB00112D92 /* Address.swift */; };
 		B5BB1D1220A255EC00112D92 /* OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D1120A255EC00112D92 /* OrderStatus.swift */; };
 		B5C6FCC820A32E4800A4F8E4 /* DateFormatterWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6FCC720A32E4800A4F8E4 /* DateFormatterWooTests.swift */; };
+		B5C6FCCD20A34B8300A4F8E4 /* OrderListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6FCCC20A34B8300A4F8E4 /* OrderListMapperTests.swift */; };
 		D966E5B7ACDF2C5065B7188C /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97F8D9516BAC88E8A25EF46D /* Pods_Networking.framework */; };
 		E163BF100306BC689F6ADB6B /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3D61DD7401976E936CE38E2 /* Pods_NetworkingTests.framework */; };
 /* End PBXBuildFile section */
@@ -82,6 +83,7 @@
 		B5BB1D0F20A237FB00112D92 /* Address.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
 		B5BB1D1120A255EC00112D92 /* OrderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatus.swift; sourceTree = "<group>"; };
 		B5C6FCC720A32E4800A4F8E4 /* DateFormatterWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatterWooTests.swift; sourceTree = "<group>"; };
+		B5C6FCCC20A34B8300A4F8E4 /* OrderListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListMapperTests.swift; sourceTree = "<group>"; };
 		C44FACA39A77FF6C3A21364D /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
 		D2C5CA50D8B38E253E228261 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 		D360A85A6BF832C6C9E1B4BD /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
@@ -139,14 +141,6 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
-		B518662520A09BB900037A38 /* Mockups */ = {
-			isa = PBXGroup;
-			children = (
-				B518662620A09BCC00037A38 /* NetworkMockup.swift */,
-			);
-			path = Mockups;
-			sourceTree = "<group>";
-		};
 		B518662820A09C5D00037A38 /* Remote */ = {
 			isa = PBXGroup;
 			children = (
@@ -160,6 +154,7 @@
 			children = (
 				B518663320A0A2E800037A38 /* Constants.swift */,
 				B518663420A0A2E800037A38 /* Loader.swift */,
+				B518662620A09BCC00037A38 /* NetworkMockup.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -198,12 +193,12 @@
 			isa = PBXGroup;
 			children = (
 				B5BB1D0A20A204F400112D92 /* Extensions */,
-				B557DA1020975F60005962F4 /* Settings */,
 				B567AF2720A0FA0A00AB6C62 /* Mapper */,
+				B557DA1B20979E6D005962F4 /* Model */,
 				B518662020A097B200037A38 /* Network */,
 				B557DA0620975515005962F4 /* Requests */,
-				B557DA1B20979E6D005962F4 /* Model */,
 				B557DA0520975507005962F4 /* Remote */,
+				B557DA1020975F60005962F4 /* Settings */,
 				B557D9E6209753AA005962F4 /* Networking.h */,
 				B557D9E7209753AA005962F4 /* Info.plist */,
 			);
@@ -213,10 +208,10 @@
 		B557D9F0209753AA005962F4 /* NetworkingTests */ = {
 			isa = PBXGroup;
 			children = (
-				B518662520A09BB900037A38 /* Mockups */,
 				B559EBA820A0B5B100836CD4 /* Responses */,
-				B5C6FCC620A32E3100A4F8E4 /* Extensions */,
 				B518663220A0A2E800037A38 /* Tools */,
+				B5C6FCC620A32E3100A4F8E4 /* Extensions */,
+				B5C6FCCB20A34B5E00A4F8E4 /* Mapper */,
 				B518662820A09C5D00037A38 /* Remote */,
 				B519A3E82097A91800E2603A /* Requests */,
 				B557D9F3209753AA005962F4 /* Info.plist */,
@@ -295,6 +290,14 @@
 				B5C6FCC720A32E4800A4F8E4 /* DateFormatterWooTests.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		B5C6FCCB20A34B5E00A4F8E4 /* Mapper */ = {
+			isa = PBXGroup;
+			children = (
+				B5C6FCCC20A34B8300A4F8E4 /* OrderListMapperTests.swift */,
+			);
+			path = Mapper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -497,6 +500,7 @@
 				B567AF2F20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift in Sources */,
 				B518663620A0A2E800037A38 /* Loader.swift in Sources */,
 				B518662720A09BCC00037A38 /* NetworkMockup.swift in Sources */,
+				B5C6FCCD20A34B8300A4F8E4 /* OrderListMapperTests.swift in Sources */,
 				B518663520A0A2E800037A38 /* Constants.swift in Sources */,
 				B567AF3020A0FB8F00AB6C62 /* DotcomRequestTests.swift in Sources */,
 			);

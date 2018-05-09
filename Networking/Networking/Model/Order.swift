@@ -17,10 +17,6 @@ public struct Order: Decodable {
     public let dateModified: Date
     public let datePaid: Date?
 
-    public let dateCreatedGMT: Date
-    public let dateModifiedGMT: Date
-    public let datePaidGMT: Date?
-
     public let discountTotal: String
     public let discountTax: String
     public let shippingTotal: String
@@ -50,13 +46,9 @@ private extension Order {
         case currency           = "currency"
         case customerNote       = "customer_note"
 
-        case dateCreated        = "date_created"
-        case dateModified       = "date_modified"
-        case datePaid           = "date_paid"
-
-        case dateCreatedGMT     = "date_created_gmt"
-        case dateModifiedGMT    = "date_modified_gmt"
-        case datePaidGMT        = "date_paid_gmt"
+        case dateCreated        = "date_created_gmt"
+        case dateModified       = "date_modified_gmt"
+        case datePaid           = "date_paid_gmt"
 
         case discountTotal      = "discount_total"
         case discountTax        = "discount_tax"

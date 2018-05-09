@@ -30,7 +30,7 @@ class DefaultStyle: Style {
     let statusNotIdentifiedColor = UIColor(red: 235.0/255.0, green: 235.0/255.0, blue: 235.0/255.0, alpha: 1.0)
     let statusNotIdentifiedBoldColor = UIColor(red: 226.0/255.0, green: 226.0/255.0, blue: 226.0/255.0, alpha: 1.0)
     let defaultTextColor = UIColor.black
-    let sectionTitleColor = UIColor.lightGray
+    let sectionTitleColor = UIColor.darkGray
 }
 
 

@@ -49,6 +49,12 @@ extension NetworkMockup {
         responseMap[requestUrlSuffix] = filename
     }
 
+    /// Removes all of the stored Simulated Responses.
+    ///
+    func removeAllSimulatedResponses() {
+        responseMap.removeAll()
+    }
+
     /// Returns the Mockup JSON Filename.
     ///
     private func filename(for request: URLRequestConvertible) -> String? {

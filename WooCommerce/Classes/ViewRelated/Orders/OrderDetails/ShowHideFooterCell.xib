@@ -28,7 +28,7 @@
                             <constraint firstAttribute="width" secondItem="ymV-Hu-zNF" secondAttribute="height" multiplier="1:1" id="WTD-DS-vw2"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Iz3-cy-XKS">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Iz3-cy-XKS">
                         <rect key="frame" x="134" y="0.0" width="33" height="30"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                         <nil key="textColor"/>

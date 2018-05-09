@@ -1,4 +1,6 @@
 import UIKit
+import Gridicons
+import Contacts
 
 class OrderDetailsViewController: UIViewController {
 
@@ -6,6 +8,7 @@ class OrderDetailsViewController: UIViewController {
 
     var order: Order!
     var sectionTitles = [String]()
+    var billingIsHidden = false
 
     enum Section: Int {
         case summary = 0
@@ -14,6 +17,13 @@ class OrderDetailsViewController: UIViewController {
         case info = 3
         case payment = 4
         case orderNotes = 5
+    }
+
+    enum CustomerInfoRow: Int {
+        case shipping = 0
+        case billing = 1
+        case billingPhone = 2
+        case billingEmail = 3
     }
 
     override func viewDidLoad() {
@@ -47,6 +57,8 @@ class OrderDetailsViewController: UIViewController {
         tableView.register(summaryNib, forCellReuseIdentifier: OrderDetailsSummaryCell.reuseIdentifier)
         let noteNib = UINib(nibName: OrderDetailsCustomerNoteCell.reuseIdentifier, bundle: nil)
         tableView.register(noteNib, forCellReuseIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier)
+        let infoNib = UINib(nibName: OrderDetailsCustomerInfoCell.reuseIdentifier, bundle: nil)
+        tableView.register(infoNib, forCellReuseIdentifier: OrderDetailsCustomerInfoCell.reuseIdentifier)
     }
 }
 
@@ -69,9 +81,10 @@ extension OrderDetailsViewController: UITableViewDataSource {
 
         if section == Section.info.rawValue {
             let shippingRow = 1
-            let billingRow = 1
-            let showHideButtonRow = 1
-            return shippingRow + billingRow + showHideButtonRow
+            let billingAddressRow = billingIsHidden ? 0 : 1
+            let billingPhoneRow = billingIsHidden || order.billingAddress.phone?.isEmpty == true ? 0 : 1
+            let billingEmailRow = billingIsHidden || order.billingAddress.email?.isEmpty == true ? 0 : 1
+            return shippingRow + billingAddressRow + billingPhoneRow + billingEmailRow
         }
 
         if section == Section.orderNotes.rawValue {
@@ -86,17 +99,38 @@ extension OrderDetailsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
-            case Section.summary.rawValue:
-                let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsSummaryCell.reuseIdentifier, for: indexPath) as! OrderDetailsSummaryCell
-                let viewModel = OrderDetailsViewModel(order: order)
+        case Section.summary.rawValue:
+            let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsSummaryCell.reuseIdentifier, for: indexPath) as! OrderDetailsSummaryCell
+            let viewModel = OrderDetailsViewModel(order: order)
+            cell.configure(with: viewModel)
+            return cell
+
+        case Section.customerNote.rawValue:
+            let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerNoteCell
+            cell.configureCell(note: order.customerNote)
+            return cell
+
+        case Section.info.rawValue:
+            switch indexPath.row {
+            case CustomerInfoRow.shipping.rawValue:
+                let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerInfoCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerInfoCell
+                let viewModel = ContactViewModel(with: order.shippingAddress, contactType: .shipping)
                 cell.configure(with: viewModel)
                 return cell
-
-            case Section.customerNote.rawValue:
-                let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerNoteCell
-                cell.configureCell(note: order.customerNote)
+            case CustomerInfoRow.billing.rawValue:
+                let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerInfoCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerInfoCell
+                let viewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
+                cell.configure(with: viewModel)
                 return cell
-
+            case CustomerInfoRow.billingPhone.rawValue:
+                let viewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
+                return configureBillingPhoneCell(viewModel: viewModel)
+            case CustomerInfoRow.billingEmail.rawValue:
+                let viewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
+                return configureBillingEmailCell(viewModel: viewModel)
+            default:
+                fatalError()
+            }
             default:
                 return UITableViewCell()
         }
@@ -113,5 +147,38 @@ extension OrderDetailsViewController: UITableViewDataSource {
 extension OrderDetailsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+extension OrderDetailsViewController {
+    func configureBillingPhoneCell(viewModel: ContactViewModel) -> UITableViewCell {
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "BillingPhoneCell")
+        cell.textLabel?.applyBodyStyle()
+
+        let phoneButton = UIButton(type: .custom)
+        phoneButton.frame = CGRect(x: 8, y: 0, width: 44, height: 44)
+        phoneButton.setImage(Gridicon.iconOfType(.ellipsis), for: .normal)
+        phoneButton.contentHorizontalAlignment = .right
+        phoneButton.tintColor = StyleManager.wooCommerceBrandColor
+        cell.accessoryView = phoneButton
+        cell.textLabel?.text = viewModel.formattedPhoneNumber
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
+
+        return cell
+    }
+
+    func configureBillingEmailCell(viewModel: ContactViewModel) -> UITableViewCell {
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "BillingEmailCell")
+        cell.textLabel?.applyBodyStyle()
+
+        let emailButton = UIButton(type: .custom)
+        emailButton.frame = CGRect(x: 8, y: 0, width: 44, height: 44)
+        emailButton.setImage(Gridicon.iconOfType(.mail), for: .normal)
+        emailButton.contentHorizontalAlignment = .right
+        emailButton.tintColor = StyleManager.wooCommerceBrandColor
+        cell.accessoryView = emailButton
+        cell.textLabel?.text = viewModel.email
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
+        return cell
     }
 }

@@ -26,7 +26,7 @@ class OrderDetailsViewModel {
 
     func getSectionTitles() -> [String] {
         let orderSummary = ""
-        let fulfillItems = ""
+        let fulfillItems = NSLocalizedString("PRODUCT QTY", comment: "Product and Quantity section title")
         var customerNoteTitle = NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title")
         let customerInfo = NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title")
         let paymentDetails = NSLocalizedString("PAYMENT", comment: "Payment section title")
@@ -40,7 +40,10 @@ class OrderDetailsViewModel {
     }
 
     func rowCount(for section: Int) -> Int {
-        if section == Section.summary.rawValue {
+        if section == Section.summary.rawValue ||
+            section == Section.fulfillment.rawValue ||
+            section == Section.payment.rawValue ||
+            section == Section.orderNotes.rawValue {
             return 1
         }
 

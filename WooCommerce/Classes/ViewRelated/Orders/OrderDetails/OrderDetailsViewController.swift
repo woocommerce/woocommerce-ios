@@ -50,14 +50,14 @@ extension OrderDetailsViewController: UITableViewDataSource {
         case OrderDetailsViewModel.Section.info.rawValue:
             return viewModel.cellForCustomerInfoSection(indexPath: indexPath, tableView: tableView)
         default:
-            fatalError()
+            return UITableViewCell()
         }
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let titles = viewModel.getSectionTitles()
         if titles[section].isEmpty {
-            return 0
+            return 0.0001
         }
         return UITableViewAutomaticDimension
     }
@@ -74,18 +74,26 @@ extension OrderDetailsViewController: UITableViewDataSource {
         if section == OrderDetailsViewModel.Section.info.rawValue {
             return OrderDetailsViewController.sectionFooterHeight
         }
-        return 0
+        return 0.0001
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if section == OrderDetailsViewModel.Section.info.rawValue {
             return viewModel.cellForShowHideFooter(tableView: tableView, section: section)
         }
-        return nil
+        return UIView(frame: .zero)
     }
 }
 
 extension OrderDetailsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if section == OrderDetailsViewModel.Section.fulfillment.rawValue {
+            if let tableViewHeader = view as? UITableViewHeaderFooterView {
+                tableViewHeader.textLabel?.textAlignment = .justified
+            }
+        }
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }

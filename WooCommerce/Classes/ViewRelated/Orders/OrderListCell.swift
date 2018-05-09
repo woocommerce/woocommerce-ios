@@ -23,22 +23,24 @@ class OrderListCell: UITableViewCell {
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        let payStatusColor = paymentStatusLabel.backgroundColor
-        let shipStatusColor = shippingStatusLabel.backgroundColor
-
-        paymentStatusLabel.backgroundColor = payStatusColor
-        shippingStatusLabel.backgroundColor = shipStatusColor
+        preserveLabelColors {
+            super.setSelected(selected, animated: animated)
+        }
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        super.setHighlighted(highlighted, animated: animated)
+        preserveLabelColors {
+            super.setHighlighted(highlighted, animated: animated)
+        }
+    }
 
-        let payStatusColor = paymentStatusLabel.backgroundColor
-        let shipStatusColor = shippingStatusLabel.backgroundColor
+    func preserveLabelColors(action: () -> Void) {
+        let paymentColor = paymentStatusLabel.backgroundColor
+        let shippingColor = shippingStatusLabel.backgroundColor
 
-        paymentStatusLabel.backgroundColor = payStatusColor
-        shippingStatusLabel.backgroundColor = shipStatusColor
+        action()
+
+        paymentStatusLabel.backgroundColor = paymentColor
+        shippingStatusLabel.backgroundColor = shippingColor
     }
 }

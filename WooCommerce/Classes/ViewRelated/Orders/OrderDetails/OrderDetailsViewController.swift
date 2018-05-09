@@ -156,7 +156,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == Section.info.rawValue {
-            return 30
+            return 38
         }
         return 0.0001
     }

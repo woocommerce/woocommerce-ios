@@ -7,6 +7,7 @@ class OrderDetailsViewModel {
     let paymentStatus: String
     let paymentBackgroundColor: UIColor
     let paymentBorderColor: CGColor
+    let customerNote: String?
 
     init(order: Order) {
         summaryTitle = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
@@ -14,5 +15,6 @@ class OrderDetailsViewModel {
         paymentStatus = order.status.description
         paymentBackgroundColor = order.status.backgroundColor // MVVM: who should own color responsibilities? Maybe address this down the road.
         paymentBorderColor = order.status.borderColor // same here
+        customerNote = order.customerNote
     }
 }

@@ -4,7 +4,13 @@ class OrderDetailsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
-    var order: Order!
+    var order: Order! {
+        didSet {
+            refreshViewModel()
+        }
+    }
+
+    var viewModel: OrderDetailsViewModel!
     var sectionTitles = [String]()
 
     enum Section: Int {
@@ -14,6 +20,10 @@ class OrderDetailsViewController: UIViewController {
         case info = 3
         case payment = 4
         case orderNotes = 5
+    }
+
+    func refreshViewModel() {
+        viewModel = OrderDetailsViewModel(order: order)
     }
 
     override func viewDidLoad() {
@@ -88,13 +98,12 @@ extension OrderDetailsViewController: UITableViewDataSource {
         switch indexPath.section {
             case Section.summary.rawValue:
                 let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsSummaryCell.reuseIdentifier, for: indexPath) as! OrderDetailsSummaryCell
-                let viewModel = OrderDetailsViewModel(order: order)
                 cell.configure(with: viewModel)
                 return cell
 
             case Section.customerNote.rawValue:
                 let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerNoteCell
-                cell.configureCell(note: order.customerNote)
+                cell.configure(with: viewModel)
                 return cell
 
             default:

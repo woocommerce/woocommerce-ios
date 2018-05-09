@@ -16,9 +16,8 @@ class OrderListMapper: Mapper {
 }
 
 
-
 /// OrderList Disposable Entity:
-/// `Load All Orders` endpoint returns all of it's orders within the `data` key. This entity
+/// `Load All Orders` endpoint returns all of its orders within the `data` key. This entity
 /// allows us to do parse all the things with JSONDecoder.
 ///
 struct OrdersList: Decodable {

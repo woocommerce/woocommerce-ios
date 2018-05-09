@@ -16,7 +16,7 @@ class NetworkMockup: Network {
     /// Otherwise, an error will be relayed back (.unavailable!).
     ///
     func responseJSON(for request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
-        guard let filename = filename(for: request), let response = loadJSON(for: filename) else {
+        guard let filename = filename(for: request), let response = Loader.jsonObject(for: filename) else {
             completion(nil, NetworkMockupError.unavailable)
             return
         }
@@ -28,11 +28,9 @@ class NetworkMockup: Network {
     /// Otherwise, an error will be relayed back (.unavailable!).
     ///
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
-        guard let filename = filename(for: request),
-            let url = Bundle(for: type(of: self)).url(forResource: filename, withExtension: JSONLoader.defaultJsonExtension),
-            let data = try? Data(contentsOf: url) else {
-                completion(nil, NetworkMockupError.unavailable)
-                return
+        guard let filename = filename(for: request), let data = Loader.contentsOf(filename) else {
+            completion(nil, NetworkMockupError.unavailable)
+            return
         }
 
         completion(data, nil)
@@ -51,12 +49,6 @@ extension NetworkMockup {
         responseMap[requestUrlSuffix] = filename
     }
 
-    /// Returns the Mockup JSON Response, provided that there's a mapping for the specified Request URL's Suffix.
-    ///
-    private func loadJSON(for filename: String) -> Any? {
-        return JSONLoader.load(filename: filename)
-    }
-
     /// Returns the Mockup JSON Filename.
     ///
     private func filename(for request: URLRequestConvertible) -> String? {
@@ -64,7 +56,7 @@ extension NetworkMockup {
             return nil
         }
 
-        let simulated = responseMap.first { (suffix, _) -> Bool in
+        let simulated = responseMap.first { (suffix, _) in
             urlAsString.hasSuffix(suffix)
         }
 

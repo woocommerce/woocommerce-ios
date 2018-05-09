@@ -24,6 +24,7 @@ public struct Order: Decodable {
     public let total: String
     public let totalTax: String
 
+    public let items: [OrderItem]
     public let billingAddress: Address
     public let shippingAddress: Address
 }
@@ -57,6 +58,7 @@ private extension Order {
         case total              = "total"
         case totalTax           = "total_tax"
 
+        case items              = "line_items"
         case shippingAddress    = "shipping"
         case billingAddress     = "billing"
     }

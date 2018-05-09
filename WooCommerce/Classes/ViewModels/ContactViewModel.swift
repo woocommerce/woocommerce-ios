@@ -31,7 +31,6 @@ class ContactViewModel {
         let postalAddress = cnAddress!.value
         formattedAddress = CNPostalAddressFormatter.string(from: postalAddress, style: .mailingAddress)
 
-
         if let cnEmail = contact.emailAddresses.first {
             email = cnEmail.value as String
         }

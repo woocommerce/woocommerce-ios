@@ -29,7 +29,6 @@ class OrderDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
-        viewModel = OrderDetailsViewModel(order: order)
         title = NSLocalizedString("Order #\(order.number)", comment:"Order number title")
     }
 

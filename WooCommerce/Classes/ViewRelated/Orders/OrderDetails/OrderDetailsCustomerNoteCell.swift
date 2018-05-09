@@ -21,7 +21,7 @@ class OrderDetailsCustomerNoteCell: UITableViewCell {
             return noteLabel.text
         }
         set {
-            noteLabel.text = newValue ?? ""
+            noteLabel.text = newValue
         }
     }
 }

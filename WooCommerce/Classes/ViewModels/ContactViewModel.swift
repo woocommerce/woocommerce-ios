@@ -20,7 +20,7 @@ class ContactViewModel {
         case .shipping:
             title =  NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
         }
-        let contact = CNContact(address: address)
+        let contact = CNContact.from(address: address)
         fullName = CNContactFormatter.string(from: contact, style: .fullName) ?? address.firstName + " " + address.lastName
 
         if let cnPhoneNumber = contact.phoneNumbers.first {
@@ -38,7 +38,7 @@ class ContactViewModel {
 }
 
 extension CNContact {
-    convenience init(address: Address) {
+    static func from(address: Address) -> CNContact {
         let contact = CNMutableContact()
         contact.givenName = address.firstName
         contact.familyName = address.lastName
@@ -77,6 +77,6 @@ extension CNContact {
 
         contact.postalAddresses = [CNLabeledValue(label: CNLabelWork, value: postalAddress)]
 
-        self.init(address: address)
+        return contact
     }
 }

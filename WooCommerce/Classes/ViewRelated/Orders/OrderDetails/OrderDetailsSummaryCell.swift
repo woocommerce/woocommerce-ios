@@ -36,6 +36,7 @@ class OrderDetailsSummaryCell: UITableViewCell {
         set {
             paymentStatusLabel.text = newValue
             paymentStatusLabel.applyPaddedLabelDefaultStyles()
+            paymentStatusLabel.backgroundColor = paymentBackgroundColor
         }
     }
 

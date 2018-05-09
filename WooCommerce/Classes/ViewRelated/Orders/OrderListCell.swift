@@ -6,9 +6,6 @@ class OrderListCell: UITableViewCell {
     @IBOutlet var paymentStatusLabel: PaddedLabel!
     @IBOutlet var shippingStatusLabel: PaddedLabel!
 
-    var payStatusColor: UIColor = .clear
-    var shipStatusColor: UIColor = .clear
-
     static let reuseIdentifier = "OrderListCell"
 
     func configureCell(order: Order) {

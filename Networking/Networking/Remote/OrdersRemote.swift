@@ -1,41 +1,40 @@
 import Foundation
+import Alamofire
 
 
 /// Order: Remote Endpoints
 ///
 public class OrdersRemote: Remote {
 
-    /// NOTE: This is a Stub. To be completed + Unit Tested in a second PR.
+    /// Retrieves all of the `Orders` available.
     ///
-    public func fetchOrders(for siteID: Int, completion: @escaping ([RemoteOrder]) -> Void) {
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch remote orders.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func loadAllOrders(for siteID: Int, completion: @escaping ([Order]?, Error?) -> Void) {
         let path = "orders"
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path)
+        let mapper = OrderListMapper()
 
-        enqueue(request) { (response, error) in
-            guard let parsed = response as? [String: Any] else {
-                return
-            }
-
-            print("Payload: \(parsed)")
-            completion([])
-        }
+        enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// NOTE: This is a Stub. To be completed + Unit Tested in a second PR.
+    /// Updates the `OrderStatus` of a given Order.
     ///
-    public func updateOrder(with orderID: String, from siteID: Int, status: String, completion: @escaping () -> Void) {
+    /// - Parameters:
+    ///     - siteID: Site which hosts the Order.
+    ///     - orderID: Identifier of the Order to be updated.
+    ///     - status: New Status to be set.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateOrder(from siteID: Int, with orderID: String, status: String, completion: @escaping (Error?) -> Void) {
         let path = "orders/" + orderID
         let parameters = ["status": status]
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
-
-        enqueue(request) { (response, error) in
-            guard let parsed = response as? [String: Any] else {
-                return
-            }
-
-            print("Payload: \(parsed)")
-            completion()
+        enqueue(request) { (_, error) in
+            completion(error)
         }
     }
 }

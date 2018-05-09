@@ -55,18 +55,31 @@ extension NetworkMockup {
         responseMap.removeAll()
     }
 
-    /// Returns the Mockup JSON Filename.
+    /// Returns the Mockup JSON Filename for a given URLRequestConvertible.
     ///
     private func filename(for request: URLRequestConvertible) -> String? {
-        guard let requestURL = try? request.asURLRequest().url, let urlAsString = requestURL?.absoluteString else {
-            return nil
+        let searchPath = path(for: request)
+        for (pattern, filename) in responseMap where searchPath.hasSuffix(pattern) {
+            return filename
         }
 
-        let simulated = responseMap.first { (suffix, _) in
-            urlAsString.hasSuffix(suffix)
-        }
+        return nil
+    }
 
-        return simulated?.value
+    /// Returns the "Request Path" for a given URLRequestConvertible instance.
+    ///
+    private func path(for request: URLRequestConvertible) -> String {
+        switch request {
+        case let request as AuthenticatedRequest:
+            return path(for: request.request)
+        case let request as JetpackRequest:
+            return request.path
+        case let request as DotcomRequest:
+            return request.path
+        default:
+            let targetURL = try! request.asURLRequest().url?.absoluteString
+            return targetURL ?? ""
+        }
     }
 }
 

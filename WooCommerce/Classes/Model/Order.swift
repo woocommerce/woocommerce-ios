@@ -347,8 +347,8 @@ extension Address: Decodable {
         let state = try container.decode(String.self, forKey: .state)
         let postcode = try container.decode(String.self, forKey: .postcode)
         let country = try container.decode(String.self, forKey: .country)
-        let phone = try container.decode(String.self, forKey: .phone)
-        let email = try container.decode(String.self, forKey: .email)
+        let phone = try container.decodeIfPresent(String.self, forKey: .phone)
+        let email = try container.decodeIfPresent(String.self, forKey: .email)
 
         self.init(firstName: firstName, lastName: lastName, company: company, address1: address1, address2: address2, city: city, state: state, postcode: postcode, country: country, phone: phone, email: email)
     }

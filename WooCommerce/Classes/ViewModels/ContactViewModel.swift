@@ -1,5 +1,6 @@
 import Foundation
 import Contacts
+import PhoneNumberKit
 
 enum ContactType {
     case billing
@@ -10,6 +11,7 @@ class ContactViewModel {
     let title: String
     var fullName: String
     var formattedAddress: String
+    var formattedPhoneNumber: String?
     var phoneNumber: String?
     var email: String?
 
@@ -25,6 +27,28 @@ class ContactViewModel {
 
         if let cnPhoneNumber = contact.phoneNumbers.first {
             phoneNumber = cnPhoneNumber.value.stringValue
+        }
+
+        if let phoneData = contact.phoneNumbers.first?.value {
+            let inverted = NSCharacterSet.decimalDigits.inverted
+            let phoneStringArray = phoneData.stringValue.components(separatedBy: inverted)
+            let cleanedPhone = NSArray(array: phoneStringArray).componentsJoined(by: "")
+            let phoneNumberKit = PhoneNumberKit()
+            let iOS639LanguageCode = NSLocale.current.identifier
+            var region = ""
+            if iOS639LanguageCode.count > 3 { // e.g. "en-GB"
+                let start = iOS639LanguageCode.startIndex
+                let end = iOS639LanguageCode.endIndex
+                let range = iOS639LanguageCode.index(start, offsetBy: 3)..<end
+                region = String(iOS639LanguageCode[range]) // e.g. "GB"
+            }
+            do {
+                let cleanedPhoneNumber = try phoneNumberKit.parse(cleanedPhone, withRegion: region, ignoreType: true)
+                formattedPhoneNumber = phoneNumberKit.format(cleanedPhoneNumber, toType: .national)
+            } catch {
+                formattedPhoneNumber = address.phone
+                NSLog("error parsing sanitized billing phone number: %@", cleanedPhone)
+            }
         }
 
         let cnAddress = contact.postalAddresses.first

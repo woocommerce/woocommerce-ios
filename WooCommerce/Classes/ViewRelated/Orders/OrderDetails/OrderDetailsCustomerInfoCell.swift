@@ -39,7 +39,9 @@ class OrderDetailsCustomerInfoCell: UITableViewCell {
 }
 
 extension OrderDetailsCustomerInfoCell {
-    func configure(with viewModel: OrderDetailsViewModel) {
-        title = "hi" // what now? How to tell between shipping or billing display?
+    func configure(with viewModel: ContactViewModel) {
+        title = viewModel.title
+        name = viewModel.fullName
+        address = viewModel.formattedAddress
     }
 }

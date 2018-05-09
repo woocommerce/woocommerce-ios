@@ -8,7 +8,7 @@ class OrderDetailsViewController: UIViewController {
 
     var order: Order!
     var sectionTitles = [String]()
-    var billingIsHidden = false
+    var billingIsHidden = true
 
     enum Section: Int {
         case summary = 0
@@ -59,9 +59,13 @@ class OrderDetailsViewController: UIViewController {
         tableView.register(noteNib, forCellReuseIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier)
         let infoNib = UINib(nibName: OrderDetailsCustomerInfoCell.reuseIdentifier, bundle: nil)
         tableView.register(infoNib, forCellReuseIdentifier: OrderDetailsCustomerInfoCell.reuseIdentifier)
+        let footerNib = UINib(nibName: ShowHideFooterCell.reuseIdentifier, bundle: nil)
+        tableView.register(footerNib, forHeaderFooterViewReuseIdentifier: ShowHideFooterCell.reuseIdentifier)
     }
 }
 
+// MARK: - Table Data Source
+//
 extension OrderDetailsViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return sectionTitles.count
@@ -136,20 +140,54 @@ extension OrderDetailsViewController: UITableViewDataSource {
         }
     }
 
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if sectionTitles[section].isEmpty {
+            return 0.0001
+        }
+        return UITableViewAutomaticDimension
+    }
+
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if sectionTitles[section].isEmpty {
             return nil
         }
         return sectionTitles[section]
     }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section == Section.info.rawValue {
+            return 30
+        }
+        return 0.0001
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if section == Section.info.rawValue {
+            let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideFooterCell.reuseIdentifier) as! ShowHideFooterCell
+            cell.configureCell(isHidden: billingIsHidden)
+            cell.didSelectFooter = { [weak self] in
+                self?.setShowHideFooter()
+                // it would be nice to have `tableView.reloadSections([section], with: .bottom)`
+                // but iOS 11 has an ugly animation bug https://forums.developer.apple.com/thread/86703
+                tableView.reloadData()
+            }
+            return cell
+        }
+        let zeroFrame = CGRect(x: 0, y: 0, width: 0, height: 0.001)
+        return UIView(frame: zeroFrame)
+    }
 }
 
+// MARK: - Table Delegate
+//
 extension OrderDetailsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
+// MARK: - Extension
+//
 extension OrderDetailsViewController {
     func configureBillingPhoneCell(viewModel: ContactViewModel) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "BillingPhoneCell")
@@ -180,5 +218,9 @@ extension OrderDetailsViewController {
         cell.textLabel?.text = viewModel.email
         cell.textLabel?.adjustsFontSizeToFitWidth = true
         return cell
+    }
+
+    func setShowHideFooter() {
+        billingIsHidden = !billingIsHidden
     }
 }

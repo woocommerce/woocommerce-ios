@@ -41,7 +41,7 @@ public class Remote {
     ///
     /// - Parameters:
     ///     - request: Request that should be performed.
-    ///     - completion: Closure to be executed upon completion. Will receive the JSON Parsed Response (if successfull)
+    ///     - completion: Closure to be executed upon completion. Will receive the JSON Parsed Response (if successful)
     ///
     func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)

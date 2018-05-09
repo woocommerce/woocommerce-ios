@@ -4,9 +4,9 @@ import Foundation
 /// Represents an Order Entity.
 ///
 public struct Order: Decodable {
-    public let identifier: Int
-    public let parentIdentifier: Int
-    public let customerIdentifier: Int
+    public let orderID: Int
+    public let parentID: Int
+    public let customerID: Int
 
     public let number: String
     public let status: OrderStatus
@@ -37,9 +37,9 @@ public struct Order: Decodable {
 private extension Order {
 
     enum CodingKeys: String, CodingKey {
-        case identifier         = "id"
-        case parentIdentifier   = "parent_id"
-        case customerIdentifier = "customer_id"
+        case orderID            = "id"
+        case parentID           = "parent_id"
+        case customerID         = "customer_id"
 
         case number             = "number"
         case status             = "status"

@@ -16,7 +16,6 @@ class OrderMapper: Mapper {
 }
 
 
-
 /// OrdersEnvelope Disposable Entity:
 /// `Update Order` endpoint returns the updated order document in the `data` key. This entity
 /// allows us to do parse all the things with JSONDecoder.

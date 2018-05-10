@@ -28,13 +28,12 @@ public class OrdersRemote: Remote {
     ///     - status: New Status to be set.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateOrder(from siteID: Int, with orderID: String, status: String, completion: @escaping (Error?) -> Void) {
-        let path = "orders/" + orderID
+    public func updateOrder(from siteID: Int, orderID: Int, status: String, completion: @escaping (Order?, Error?) -> Void) {
+        let path = "orders/" + String(orderID)
         let parameters = ["status": status]
+        let mapper = OrderMapper()
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
-        enqueue(request) { (_, error) in
-            completion(error)
-        }
+        enqueue(request, mapper: mapper, completion: completion)
     }
 }

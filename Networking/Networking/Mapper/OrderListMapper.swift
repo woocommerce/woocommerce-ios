@@ -11,16 +11,17 @@ class OrderListMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
 
-        return try decoder.decode(OrdersList.self, from: response).orders
+        return try decoder.decode(OrderListEnvelope.self, from: response).orders
     }
 }
+
 
 
 /// OrderList Disposable Entity:
 /// `Load All Orders` endpoint returns all of its orders within the `data` key. This entity
 /// allows us to do parse all the things with JSONDecoder.
 ///
-struct OrdersList: Decodable {
+private struct OrderListEnvelope: Decodable {
     let orders: [Order]
 
     private enum CodingKeys: String, CodingKey {

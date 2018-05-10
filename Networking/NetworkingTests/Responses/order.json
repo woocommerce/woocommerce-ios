@@ -1,0 +1,147 @@
+{
+    "data": {
+        "id": 1467,
+        "parent_id": 0,
+        "number": "1467",
+        "order_key": "wc_order_5a68b29ca587a",
+        "created_via": "checkout",
+        "version": "3.2.6",
+        "status": "processing",
+        "currency": "USD",
+        "date_created": "2018-01-24T16:21:48",
+        "date_created_gmt": "2018-01-24T16:21:48",
+        "date_modified": "2018-05-09T18:15:30",
+        "date_modified_gmt": "2018-05-09T18:15:30",
+        "discount_total": "0.00",
+        "discount_tax": "0.00",
+        "shipping_total": "0.00",
+        "shipping_tax": "0.00",
+        "cart_tax": "0.00",
+        "total": "100.00",
+        "total_tax": "0.00",
+        "prices_include_tax": false,
+        "customer_id": 0,
+        "customer_ip_address": "174.227.1.93",
+        "customer_user_agent": "mozilla\/5.0 (macintosh; intel mac os x 10_12_6) applewebkit\/537.36 (khtml, like gecko) chrome\/63.0.3239.132 safari\/537.36",
+        "customer_note": "",
+        "billing": {
+            "first_name": "Maria",
+            "last_name": "Scrambled",
+            "company": "Logged Out",
+            "address_1": "9999 Scrambled",
+            "address_2": "",
+            "city": "Omaha",
+            "state": "NE",
+            "postcode": "9191",
+            "country": "US",
+            "email": "scrambled",
+            "phone": "99999999"
+        },
+        "shipping": {
+            "first_name": "Maria",
+            "last_name": "Scrambled",
+            "company": "Logged Out",
+            "address_1": "2309 S 89ct",
+            "address_2": "",
+            "city": "Omaha",
+            "state": "NE",
+            "postcode": "68124",
+            "country": "US"
+        },
+        "payment_method": "cod",
+        "payment_method_title": "Cash on delivery",
+        "transaction_id": "",
+        "date_paid": "2018-05-03T19:24:55",
+        "date_paid_gmt": "2018-05-03T19:24:55",
+        "date_completed": "2018-05-04T01:22:06",
+        "date_completed_gmt": "2018-05-04T01:22:06",
+        "cart_hash": "35ca1b0b9d3ec0f3d511179dda8c7c19",
+        "meta_data": [
+                      {
+                      "id": 8439,
+                      "key": "_shipping_phone",
+                      "value": "4025986670"
+                      },
+                      {
+                      "id": 8440,
+                      "key": "mailchimp_woocommerce_is_subscribed",
+                      "value": "1"
+                      },
+                      {
+                      "id": 8441,
+                      "key": "_download_permissions_granted",
+                      "value": "yes"
+                      },
+                      {
+                      "id": 8444,
+                      "key": "_order_stock_reduced",
+                      "value": "yes"
+                      }
+                      ],
+        "line_items": [
+                       {
+                       "id": 3,
+                       "name": "ARC Reactor",
+                       "product_id": 1450,
+                       "variation_id": 0,
+                       "quantity": 1,
+                       "tax_class": "",
+                       "subtotal": "100.00",
+                       "subtotal_tax": "0.00",
+                       "total": "100.00",
+                       "total_tax": "0.00",
+                       "taxes": [
+
+                       ],
+                       "meta_data": [
+
+                       ],
+                       "sku": "100",
+                       "price": 100
+                       }
+                       ],
+        "tax_lines": [
+
+        ],
+        "shipping_lines": [
+                           {
+                           "id": 4,
+                           "method_title": "Free shipping",
+                           "method_id": "free_shipping:1",
+                           "total": "0.00",
+                           "total_tax": "0.00",
+                           "taxes": [
+
+                           ],
+                           "meta_data": [
+                                         {
+                                         "id": 28,
+                                         "key": "Items",
+                                         "value": "ARC Reactor &times; 1"
+                                         }
+                                         ]
+                           }
+                           ],
+        "fee_lines": [
+
+        ],
+        "coupon_lines": [
+
+        ],
+        "refunds": [
+
+        ],
+        "_links": {
+            "self": [
+                     {
+                     "href": "https:\/\/scrambled\/wp-json\/wc\/v2\/orders\/1467"
+                     }
+                     ],
+            "collection": [
+                           {
+                           "href": "https:\/\/scrambled\/wp-json\/wc\/v2\/orders"
+                           }
+                           ]
+        }
+    }
+}

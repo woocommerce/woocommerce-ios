@@ -27,3 +27,20 @@ target 'WooCommerce' do
   pod 'PhoneNumberKit', '~> 2.1'
 
 end
+
+
+# Networking!
+# ===========
+#
+target 'Networking' do
+  project 'Networking/Networking.xcodeproj'
+
+  # External Libraries
+  # ==================
+  #
+  pod 'Alamofire', '4.6.0'
+
+  target 'NetworkingTests' do
+    inherit! :search_paths
+  end
+end

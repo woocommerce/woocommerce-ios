@@ -6,7 +6,13 @@ class OrderDetailsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
-    var order: Order!
+    var order: Order! {
+        didSet {
+            refreshViewModel()
+        }
+    }
+
+    var viewModel: OrderDetailsViewModel!
     var sectionTitles = [String]()
     var billingIsHidden = true
 
@@ -24,6 +30,10 @@ class OrderDetailsViewController: UIViewController {
         case billing = 1
         case billingPhone = 2
         case billingEmail = 3
+    }
+
+    func refreshViewModel() {
+        viewModel = OrderDetailsViewModel(order: order)
     }
 
     override func viewDidLoad() {

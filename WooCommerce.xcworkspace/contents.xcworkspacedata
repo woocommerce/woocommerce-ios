@@ -5,10 +5,10 @@
       location = "group:WooCommerce/WooCommerce.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:LICENSE">
+      location = "group:Networking/Networking.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:README.md">
+      location = "group:FluxSumi/FluxSumi.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

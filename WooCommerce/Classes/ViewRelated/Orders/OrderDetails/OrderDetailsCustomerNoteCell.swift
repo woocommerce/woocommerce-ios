@@ -2,15 +2,32 @@ import UIKit
 import Gridicons
 
 class OrderDetailsCustomerNoteCell: UITableViewCell {
-    @IBOutlet weak var noteLabel: UILabel!
-    @IBOutlet weak var iconImageView: UIImageView!
+    @IBOutlet private weak var noteLabel: UILabel! {
+        didSet {
+            noteLabel.applyBodyStyle()
+        }
+    }
+    @IBOutlet private weak var iconImageView: UIImageView! {
+        didSet {
+            iconImageView.image = Gridicon.iconOfType(.quote)
+            iconImageView.tintColor = .black
+        }
+    }
 
     static let reuseIdentifier = "OrderDetailsCustomerNoteCell"
 
-    func configureCell(note: String?) {
-        noteLabel.text = note ?? ""
-        noteLabel.applyBodyStyle()
-        iconImageView.image = Gridicon.iconOfType(.quote)
-        iconImageView.tintColor = .black
+    var quote: String? {
+        get {
+            return noteLabel.text
+        }
+        set {
+            noteLabel.text = newValue
+        }
+    }
+}
+
+extension OrderDetailsCustomerNoteCell {
+    func configure(with viewModel: OrderDetailsViewModel) {
+        quote = viewModel.customerNote
     }
 }

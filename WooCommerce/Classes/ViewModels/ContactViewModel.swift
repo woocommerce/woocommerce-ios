@@ -47,7 +47,7 @@ extension CNContact {
         contact.givenName = address.firstName
         contact.familyName = address.lastName
 
-        if let organization = address.company  {
+        if let organization = address.company {
             if organization.isEmpty == false {
                 contact.organizationName = organization
             }

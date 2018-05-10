@@ -210,10 +210,12 @@ extension OrderDetailsViewController {
         let phoneButton = UIButton(type: .custom)
         phoneButton.frame = CGRect(x: 8, y: 0, width: 44, height: 44)
         phoneButton.setImage(Gridicon.iconOfType(.ellipsis), for: .normal)
-        phoneButton.contentHorizontalAlignment = .right
         phoneButton.tintColor = StyleManager.wooCommerceBrandColor
         phoneButton.addTarget(self, action: #selector(phoneButtonAction), for: .touchUpInside)
-        cell.accessoryView = phoneButton
+
+        let iconView = UIView(frame: CGRect(x: 0, y: 0, width: 44, height: 44))
+        iconView .addSubview(phoneButton)
+        cell.accessoryView = iconView
         cell.textLabel?.text = viewModel.phoneNumber
         cell.textLabel?.adjustsFontSizeToFitWidth = true
 
@@ -227,10 +229,12 @@ extension OrderDetailsViewController {
         let emailButton = UIButton(type: .custom)
         emailButton.frame = CGRect(x: 8, y: 0, width: 44, height: 44)
         emailButton.setImage(Gridicon.iconOfType(.mail), for: .normal)
-        emailButton.contentHorizontalAlignment = .right
         emailButton.tintColor = StyleManager.wooCommerceBrandColor
         emailButton.addTarget(self, action: #selector(emailButtonAction), for: .touchUpInside)
-        cell.accessoryView = emailButton
+
+        let iconView = UIView(frame: CGRect(x: 0, y: 0, width: 44, height: 44))
+        iconView .addSubview(emailButton)
+        cell.accessoryView = iconView
         cell.textLabel?.text = viewModel.email
         cell.textLabel?.adjustsFontSizeToFitWidth = true
         return cell

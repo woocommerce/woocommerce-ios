@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import Contacts
+import MessageUI
 
 class OrderDetailsViewController: UIViewController {
 
@@ -40,6 +41,10 @@ class OrderDetailsViewController: UIViewController {
         super.viewDidLoad()
         configureTableView()
         title = NSLocalizedString("Order #\(order.number)", comment:"Order number title")
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        self.navigationController?.isNavigationBarHidden = false
     }
 
     func configureTableView() {
@@ -207,8 +212,9 @@ extension OrderDetailsViewController {
         phoneButton.setImage(Gridicon.iconOfType(.ellipsis), for: .normal)
         phoneButton.contentHorizontalAlignment = .right
         phoneButton.tintColor = StyleManager.wooCommerceBrandColor
+        phoneButton.addTarget(self, action: #selector(phoneButtonAction), for: .touchUpInside)
         cell.accessoryView = phoneButton
-        cell.textLabel?.text = viewModel.formattedPhoneNumber
+        cell.textLabel?.text = viewModel.phoneNumber
         cell.textLabel?.adjustsFontSizeToFitWidth = true
 
         return cell
@@ -223,13 +229,86 @@ extension OrderDetailsViewController {
         emailButton.setImage(Gridicon.iconOfType(.mail), for: .normal)
         emailButton.contentHorizontalAlignment = .right
         emailButton.tintColor = StyleManager.wooCommerceBrandColor
+        emailButton.addTarget(self, action: #selector(emailButtonAction), for: .touchUpInside)
         cell.accessoryView = emailButton
         cell.textLabel?.text = viewModel.email
         cell.textLabel?.adjustsFontSizeToFitWidth = true
         return cell
     }
 
+    @objc func phoneButtonAction() {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+        let dismissAction = UIAlertAction(title: NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"), style: .cancel)
+        actionSheet.addAction(dismissAction)
+
+        let callAction = UIAlertAction(title: NSLocalizedString("Call", comment: "Call phone number button title"), style: .default) { [weak self] action in
+            let contactViewModel = ContactViewModel(with: (self?.order.billingAddress)!, contactType: .billing)
+            guard let phone = contactViewModel.cleanedPhoneNumber else {
+                return
+            }
+            if let url = URL(string: "telprompt://" + phone),
+                UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }
+        actionSheet.addAction(callAction)
+
+        let messageAction = UIAlertAction(title: NSLocalizedString("Message", comment: "Message phone number button title"), style: .default) { [weak self] action in
+            self?.sendTextMessage()
+        }
+        actionSheet.addAction(messageAction)
+
+        present(actionSheet, animated: true)
+    }
+
+    @objc func emailButtonAction() {
+        sendEmail()
+    }
+
     func setShowHideFooter() {
         billingIsHidden = !billingIsHidden
+    }
+}
+
+// MARK: - Messages Delgate
+//
+extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
+    func sendTextMessage() {
+        let contactViewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
+        guard let phoneNumber = contactViewModel.cleanedPhoneNumber else {
+            return
+        }
+        if MFMessageComposeViewController.canSendText() {
+            let controller = MFMessageComposeViewController()
+            controller.recipients = [phoneNumber]
+            controller.messageComposeDelegate = self
+            present(controller, animated: true, completion: nil)
+        }
+    }
+
+    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        dismiss(animated: true, completion: nil)
+    }
+}
+
+// MARK: - Email Delegate
+//
+extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
+    func sendEmail() {
+        if MFMailComposeViewController.canSendMail() {
+            let contactViewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
+            guard let email = contactViewModel.email else {
+                return
+            }
+            let controller = MFMailComposeViewController()
+            controller.setToRecipients([email])
+            controller.mailComposeDelegate = self
+            present(controller, animated: true, completion: nil)
+        }
+    }
+
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true, completion: nil)
     }
 }

@@ -31,6 +31,7 @@
 		B567AF2F20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2C20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift */; };
 		B567AF3020A0FB8F00AB6C62 /* DotcomRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2D20A0FB8F00AB6C62 /* DotcomRequestTests.swift */; };
 		B567AF3120A0FB8F00AB6C62 /* JetpackRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2E20A0FB8F00AB6C62 /* JetpackRequestTests.swift */; };
+		B5969E1520A47F99005E9DF1 /* RemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5969E1420A47F99005E9DF1 /* RemoteTests.swift */; };
 		B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */; };
 		B5BB1D1020A237FB00112D92 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0F20A237FB00112D92 /* Address.swift */; };
 		B5BB1D1220A255EC00112D92 /* OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D1120A255EC00112D92 /* OrderStatus.swift */; };
@@ -82,6 +83,7 @@
 		B567AF2C20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedRequestTests.swift; sourceTree = "<group>"; };
 		B567AF2D20A0FB8F00AB6C62 /* DotcomRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotcomRequestTests.swift; sourceTree = "<group>"; };
 		B567AF2E20A0FB8F00AB6C62 /* JetpackRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JetpackRequestTests.swift; sourceTree = "<group>"; };
+		B5969E1420A47F99005E9DF1 /* RemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteTests.swift; sourceTree = "<group>"; };
 		B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Woo.swift"; sourceTree = "<group>"; };
 		B5BB1D0F20A237FB00112D92 /* Address.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
 		B5BB1D1120A255EC00112D92 /* OrderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatus.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 		B518662820A09C5D00037A38 /* Remote */ = {
 			isa = PBXGroup;
 			children = (
+				B5969E1420A47F99005E9DF1 /* RemoteTests.swift */,
 				B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */,
 			);
 			path = Remote;
@@ -509,6 +512,7 @@
 				B5C6FCC820A32E4800A4F8E4 /* DateFormatterWooTests.swift in Sources */,
 				B567AF3120A0FB8F00AB6C62 /* JetpackRequestTests.swift in Sources */,
 				B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */,
+				B5969E1520A47F99005E9DF1 /* RemoteTests.swift in Sources */,
 				B567AF2F20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift in Sources */,
 				B518663620A0A2E800037A38 /* Loader.swift in Sources */,
 				B518662720A09BCC00037A38 /* NetworkMockup.swift in Sources */,

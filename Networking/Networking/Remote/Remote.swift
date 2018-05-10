@@ -8,11 +8,11 @@ public class Remote {
 
     /// WordPress.com Credentials.
     ///
-    private let credentials: Credentials
+    let credentials: Credentials
 
     /// Networking Wrapper: Dependency Injection Mechanism, useful for Unit Testing purposes.
     ///
-    private let network: Network
+    let network: Network
 
 
     /// Initializes the Remote Instance with the specified Credentials, and, by default, our Networking requests will be handled
@@ -45,7 +45,14 @@ public class Remote {
     ///
     func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
-        network.responseJSON(for: authenticated, completion: completion)
+        network.responseJSON(for: authenticated) { (payload, error) in
+            guard let payload = payload else {
+                completion(nil, error ?? NetworkError.emptyResponse)
+                return
+            }
+
+            completion(payload, error)
+        }
     }
 
 

@@ -15,7 +15,7 @@ extension NSManagedObject {
         return entity().name ?? classNameWithoutNamespaces()
     }
 
-    /// Returns a NSFetchRequest instance with it's *Entity Name* always set.
+    /// Returns a NSFetchRequest instance with its *Entity Name* always set.
     ///
     /// Note: entity().name returns nil as per iOS 10, in Unit Testing Targets. Awesome.
     ///

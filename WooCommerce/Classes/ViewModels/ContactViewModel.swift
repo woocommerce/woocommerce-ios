@@ -9,7 +9,7 @@ enum ContactType {
 class ContactViewModel {
     let title: String
     let fullName: String
-    var formattedAddress: String?
+    let formattedAddress: String?
     let cleanedPhoneNumber: String?
     let phoneNumber: String?
     let email: String?

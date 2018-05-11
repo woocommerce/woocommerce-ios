@@ -1,9 +1,21 @@
 import UIKit
 
 class OrderDetailsCustomerInfoCell: UITableViewCell {
-    @IBOutlet private weak var titleLabel: UILabel!
-    @IBOutlet private weak var nameLabel: UILabel!
-    @IBOutlet private weak var addressLabel: UILabel!
+    @IBOutlet private weak var titleLabel: UILabel! {
+        didSet {
+            titleLabel.applyTitleStyle()
+        }
+    }
+    @IBOutlet private weak var nameLabel: UILabel! {
+        didSet {
+            nameLabel.applyBodyStyle()
+        }
+    }
+    @IBOutlet private weak var addressLabel: UILabel! {
+        didSet {
+            addressLabel.applyBodyStyle()
+        }
+    }
 
     static let reuseIdentifier = "OrderDetailsCustomerInfoCell"
 
@@ -13,7 +25,6 @@ class OrderDetailsCustomerInfoCell: UITableViewCell {
         }
         set {
             titleLabel.text = newValue
-            titleLabel.applyTitleStyle()
         }
     }
 
@@ -23,7 +34,6 @@ class OrderDetailsCustomerInfoCell: UITableViewCell {
         }
         set {
             nameLabel.text = newValue
-            nameLabel.applyBodyStyle()
         }
     }
 
@@ -33,7 +43,6 @@ class OrderDetailsCustomerInfoCell: UITableViewCell {
         }
         set {
             addressLabel.text = newValue
-            addressLabel.applyBodyStyle()
         }
     }
 }

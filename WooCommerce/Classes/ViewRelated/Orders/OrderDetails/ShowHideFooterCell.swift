@@ -10,15 +10,19 @@ class ShowHideFooterCell: UITableViewHeaderFooterView {
     var didSelectFooter: (() -> Void)?
 
     @IBAction func footerButtonTapped(sender: UIButton) {
-            didSelectFooter?()
+        didSelectFooter?()
     }
 
     static let reuseIdentifier = "ShowHideFooterCell"
 
-    func configureCell(isHidden: Bool) {
+    override func awakeFromNib() {
+        super.awakeFromNib()
         footerLabel.applyFootnoteStyle()
         footerLabel.textColor = StyleManager.sectionTitleColor
         footerArrow.tintColor = StyleManager.wooCommerceBrandColor
+    }
+
+    func configureCell(isHidden: Bool) {
         if isHidden {
             footerLabel.text = NSLocalizedString("Show billing", comment: "Footer text to show the billing cell")
             footerArrow.image = Gridicon.iconOfType(.chevronDown)

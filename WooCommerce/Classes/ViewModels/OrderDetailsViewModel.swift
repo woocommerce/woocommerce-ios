@@ -8,8 +8,8 @@ class OrderDetailsViewModel {
     let paymentBackgroundColor: UIColor
     let paymentBorderColor: CGColor
     let customerNote: String?
-    let shippingAddress: String
-    let billingAddress: String
+    let shippingAddress: String?
+    let billingAddress: String?
 
     init(order: Order) {
         summaryTitle = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"

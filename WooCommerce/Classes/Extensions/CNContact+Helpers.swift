@@ -36,3 +36,9 @@ extension CNContact {
         return contact
     }
 }
+
+extension CNPostalAddress {
+    func formatted(as style: CNPostalAddressFormatterStyle) -> String {
+        return CNPostalAddressFormatter.string(from: self, style: style)
+    }
+}

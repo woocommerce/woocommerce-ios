@@ -4,7 +4,6 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -48,11 +47,8 @@
                     <constraint firstItem="B8O-JO-04S" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="Axh-5T-w7h"/>
                     <constraint firstAttribute="trailing" secondItem="B8O-JO-04S" secondAttribute="trailing" id="MZn-Th-qRi"/>
                     <constraint firstItem="Iz3-cy-XKS" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" constant="-10" id="SKm-yU-3SV"/>
-                    <constraint firstItem="Iz3-cy-XKS" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="goK-za-Ndd"/>
                     <constraint firstAttribute="bottom" secondItem="B8O-JO-04S" secondAttribute="bottom" id="hHd-q4-7fz"/>
-                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ymV-Hu-zNF" secondAttribute="trailing" constant="20" id="qHg-CC-BfZ"/>
                     <constraint firstAttribute="bottom" secondItem="Iz3-cy-XKS" secondAttribute="bottom" id="tEs-Sp-YgT"/>
-                    <constraint firstItem="B8O-JO-04S" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="vEW-0s-d8u"/>
                     <constraint firstItem="B8O-JO-04S" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="vJW-kO-VMn"/>
                     <constraint firstItem="ymV-Hu-zNF" firstAttribute="centerY" secondItem="Iz3-cy-XKS" secondAttribute="centerY" id="yMo-eU-Wa1"/>
                 </constraints>

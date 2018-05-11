@@ -14,12 +14,6 @@ PODS:
     - Fabric (~> 1.7.2)
   - Fabric (1.7.6)
   - Gridicons (0.14)
-  - PhoneNumberKit (2.1.0):
-    - PhoneNumberKit/PhoneNumberKitCore (= 2.1.0)
-    - PhoneNumberKit/UIKit (= 2.1.0)
-  - PhoneNumberKit/PhoneNumberKitCore (2.1.0)
-  - PhoneNumberKit/UIKit (2.1.0):
-    - PhoneNumberKit/PhoneNumberKitCore
   - Reachability (3.2)
   - UIDeviceIdentifier (0.5.0)
 
@@ -28,7 +22,6 @@ DEPENDENCIES:
   - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.1`)
   - Crashlytics (= 3.9.3)
   - Gridicons (= 0.14)
-  - PhoneNumberKit (~> 2.1)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -37,7 +30,6 @@ SPEC REPOS:
     - Crashlytics
     - Fabric
     - Gridicons
-    - PhoneNumberKit
     - Reachability
     - UIDeviceIdentifier
 
@@ -58,10 +50,9 @@ SPEC CHECKSUMS:
   Crashlytics: dbb07d01876c171c5ccbdf7826410380189e452c
   Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
   Gridicons: 558073b1ff34092a49336ee0955ad97d2ef799f0
-  PhoneNumberKit: 62003f40ff75315fd3738286558bc365365ac222
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
 
-PODFILE CHECKSUM: 5d683986778f9028b47e55e6a6fda0cac626948c
+PODFILE CHECKSUM: 08010c97100223abdf7a351cb2a8b1bdfd158453
 
 COCOAPODS: 1.5.0

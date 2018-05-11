@@ -68,12 +68,15 @@ class OrderDetailsViewController: UIViewController {
     }
 
     func configureNibs() {
-        let summaryNib = UINib(nibName: OrderDetailsSummaryCell.reuseIdentifier, bundle: nil)
-        tableView.register(summaryNib, forCellReuseIdentifier: OrderDetailsSummaryCell.reuseIdentifier)
-        let noteNib = UINib(nibName: OrderDetailsCustomerNoteCell.reuseIdentifier, bundle: nil)
-        tableView.register(noteNib, forCellReuseIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier)
-        let infoNib = UINib(nibName: OrderDetailsCustomerInfoCell.reuseIdentifier, bundle: nil)
-        tableView.register(infoNib, forCellReuseIdentifier: OrderDetailsCustomerInfoCell.reuseIdentifier)
+        let identifiers = [OrderDetailsSummaryCell.reuseIdentifier,
+                           OrderDetailsCustomerNoteCell.reuseIdentifier,
+                           OrderDetailsCustomerInfoCell.reuseIdentifier]
+
+        for identifier in identifiers {
+            let nib = UINib(nibName: identifier, bundle: nil)
+            tableView.register(nib, forCellReuseIdentifier: identifier)
+        }
+
         let footerNib = UINib(nibName: ShowHideFooterCell.reuseIdentifier, bundle: nil)
         tableView.register(footerNib, forHeaderFooterViewReuseIdentifier: ShowHideFooterCell.reuseIdentifier)
     }
@@ -156,7 +159,8 @@ extension OrderDetailsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if sectionTitles[section].isEmpty {
-            return 0.0001
+            // iOS 11 table bug. Must return a tiny value to collapse empty section headers.
+            return CGFloat.leastNonzeroMagnitude
         }
         return UITableViewAutomaticDimension
     }
@@ -170,25 +174,25 @@ extension OrderDetailsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == Section.info.rawValue {
-            return 38
+            return Constants.rowHeight
         }
-        return 0.0001
+        // iOS 11 table bug. Must return a tiny value to collapse empty section footers.
+        return CGFloat.leastNonzeroMagnitude
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if section == Section.info.rawValue {
-            let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideFooterCell.reuseIdentifier) as! ShowHideFooterCell
-            cell.configureCell(isHidden: billingIsHidden)
-            cell.didSelectFooter = { [weak self] in
-                self?.setShowHideFooter()
-                // it would be nice to have `tableView.reloadSections([section], with: .bottom)`
-                // but iOS 11 has an ugly animation bug https://forums.developer.apple.com/thread/86703
-                tableView.reloadData()
-            }
-            return cell
+        guard section == Section.info.rawValue else {
+            return nil
         }
-        let zeroFrame = CGRect(x: 0, y: 0, width: 0, height: 0.001)
-        return UIView(frame: zeroFrame)
+        let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideFooterCell.reuseIdentifier) as! ShowHideFooterCell
+        cell.configureCell(isHidden: billingIsHidden)
+        cell.didSelectFooter = { [weak self] in
+            self?.setShowHideFooter()
+            // it would be nice to have `tableView.reloadSections([section], with: .bottom)`
+            // but iOS 11 has an ugly animation bug https://forums.developer.apple.com/thread/86703
+            tableView.reloadData()
+        }
+        return cell
     }
 }
 
@@ -208,12 +212,12 @@ extension OrderDetailsViewController {
         cell.textLabel?.applyBodyStyle()
 
         let phoneButton = UIButton(type: .custom)
-        phoneButton.frame = CGRect(x: 8, y: 0, width: 44, height: 44)
+        phoneButton.frame = Constants.iconFrame
         phoneButton.setImage(Gridicon.iconOfType(.ellipsis), for: .normal)
         phoneButton.tintColor = StyleManager.wooCommerceBrandColor
         phoneButton.addTarget(self, action: #selector(phoneButtonAction), for: .touchUpInside)
 
-        let iconView = UIView(frame: CGRect(x: 0, y: 0, width: 44, height: 44))
+        let iconView = UIView(frame: Constants.accessoryFrame)
         iconView .addSubview(phoneButton)
         cell.accessoryView = iconView
         cell.textLabel?.text = viewModel.phoneNumber
@@ -227,12 +231,12 @@ extension OrderDetailsViewController {
         cell.textLabel?.applyBodyStyle()
 
         let emailButton = UIButton(type: .custom)
-        emailButton.frame = CGRect(x: 8, y: 0, width: 44, height: 44)
+        emailButton.frame = Constants.iconFrame
         emailButton.setImage(Gridicon.iconOfType(.mail), for: .normal)
         emailButton.tintColor = StyleManager.wooCommerceBrandColor
         emailButton.addTarget(self, action: #selector(emailButtonAction), for: .touchUpInside)
 
-        let iconView = UIView(frame: CGRect(x: 0, y: 0, width: 44, height: 44))
+        let iconView = UIView(frame: Constants.accessoryFrame)
         iconView .addSubview(emailButton)
         cell.accessoryView = iconView
         cell.textLabel?.text = viewModel.email
@@ -314,5 +318,13 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
 
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         controller.dismiss(animated: true, completion: nil)
+    }
+}
+
+private extension OrderDetailsViewController {
+    struct Constants {
+        static let rowHeight = CGFloat(38)
+        static let iconFrame = CGRect(x: 8, y: 0, width: 44, height: 44)
+        static let accessoryFrame = CGRect(x: 0, y: 0, width: 44, height: 44)
     }
 }

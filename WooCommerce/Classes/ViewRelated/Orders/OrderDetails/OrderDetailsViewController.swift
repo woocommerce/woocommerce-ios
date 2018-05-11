@@ -188,9 +188,8 @@ extension OrderDetailsViewController: UITableViewDataSource {
         cell.configureCell(isHidden: billingIsHidden)
         cell.didSelectFooter = { [weak self] in
             self?.setShowHideFooter()
-            // it would be nice to have `tableView.reloadSections([section], with: .bottom)`
-            // but iOS 11 has an ugly animation bug https://forums.developer.apple.com/thread/86703
-            tableView.reloadData()
+            let sections = IndexSet(integer: section)
+            tableView.reloadSections(sections, with: .fade)
         }
         return cell
     }
@@ -263,7 +262,7 @@ extension OrderDetailsViewController {
         actionSheet.addAction(callAction)
 
         let messageAction = UIAlertAction(title: NSLocalizedString("Message", comment: "Message phone number button title"), style: .default) { [weak self] action in
-            self?.sendTextMessage()
+            self?.sendTextMessageIfPossible()
         }
         actionSheet.addAction(messageAction)
 
@@ -271,7 +270,7 @@ extension OrderDetailsViewController {
     }
 
     @objc func emailButtonAction() {
-        sendEmail()
+        sendEmailIfPossible()
     }
 
     func setShowHideFooter() {
@@ -282,17 +281,21 @@ extension OrderDetailsViewController {
 // MARK: - Messages Delgate
 //
 extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
-    func sendTextMessage() {
+    func sendTextMessageIfPossible() {
         let contactViewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
         guard let phoneNumber = contactViewModel.cleanedPhoneNumber else {
             return
         }
         if MFMessageComposeViewController.canSendText() {
-            let controller = MFMessageComposeViewController()
-            controller.recipients = [phoneNumber]
-            controller.messageComposeDelegate = self
-            present(controller, animated: true, completion: nil)
+            sendTextMessage(to: phoneNumber)
         }
+    }
+
+    private func sendTextMessage(to phoneNumber: String) {
+        let controller = MFMessageComposeViewController()
+        controller.recipients = [phoneNumber]
+        controller.messageComposeDelegate = self
+        present(controller, animated: true, completion: nil)
     }
 
     func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
@@ -303,17 +306,21 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
 // MARK: - Email Delegate
 //
 extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
-    func sendEmail() {
+    func sendEmailIfPossible() {
         if MFMailComposeViewController.canSendMail() {
             let contactViewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
             guard let email = contactViewModel.email else {
                 return
             }
-            let controller = MFMailComposeViewController()
-            controller.setToRecipients([email])
-            controller.mailComposeDelegate = self
-            present(controller, animated: true, completion: nil)
+            sendEmail(to: email)
         }
+    }
+
+    private func sendEmail(to email: String) {
+        let controller = MFMailComposeViewController()
+        controller.setToRecipients([email])
+        controller.mailComposeDelegate = self
+        present(controller, animated: true, completion: nil)
     }
 
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {

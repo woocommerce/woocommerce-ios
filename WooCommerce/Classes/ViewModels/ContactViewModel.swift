@@ -9,11 +9,11 @@ enum ContactType {
 
 class ContactViewModel {
     let title: String
-    var fullName: String
-    var formattedAddress: String
-    var cleanedPhoneNumber: String?
-    var phoneNumber: String?
-    var email: String?
+    let fullName: String
+    let formattedAddress: String
+    let cleanedPhoneNumber: String?
+    let phoneNumber: String?
+    let email: String?
 
     init(with address: Address, contactType: ContactType) {
         switch contactType {
@@ -25,9 +25,7 @@ class ContactViewModel {
         let contact = CNContact.from(address: address)
         fullName = CNContactFormatter.string(from: contact, style: .fullName) ?? address.firstName + " " + address.lastName
 
-        if let cnPhoneNumber = contact.phoneNumbers.first {
-            phoneNumber = cnPhoneNumber.value.stringValue
-        }
+        phoneNumber = contact.phoneNumbers.first?.value.stringValue
 
         cleanedPhoneNumber = address.phone?.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
 
@@ -35,8 +33,6 @@ class ContactViewModel {
         let postalAddress = cnAddress!.value
         formattedAddress = CNPostalAddressFormatter.string(from: postalAddress, style: .mailingAddress)
 
-        if let cnEmail = contact.emailAddresses.first {
-            email = cnEmail.value as String
-        }
+        email = contact.emailAddresses.first?.value as String?
     }
 }

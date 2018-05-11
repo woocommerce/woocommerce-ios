@@ -24,7 +24,6 @@ target 'WooCommerce' do
   #
   pod 'Alamofire', '4.6.0'
   pod 'Crashlytics', '3.9.3'
-  pod 'PhoneNumberKit', '~> 2.1'
 
 end
 

@@ -1,6 +1,5 @@
 import Foundation
 import Contacts
-import PhoneNumberKit
 
 enum ContactType {
     case billing

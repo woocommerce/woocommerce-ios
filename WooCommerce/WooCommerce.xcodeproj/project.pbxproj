@@ -37,7 +37,13 @@
 		CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F512A206985DF00C6C810 /* PaddedLabel.swift */; };
 		CE263DE6206ACD220015A693 /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE263DE5206ACD220015A693 /* NotificationsViewController.swift */; };
 		CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */; };
+		CE34DA2520A1ECD6005D8523 /* ContactViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE34DA2420A1ECD6005D8523 /* ContactViewModel.swift */; };
+		CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */; };
 		CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */; };
+		CE855364209BA6A700938BDC /* ShowHideFooterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE855360209BA6A700938BDC /* ShowHideFooterCell.swift */; };
+		CE855365209BA6A700938BDC /* OrderDetailsCustomerInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE855361209BA6A700938BDC /* OrderDetailsCustomerInfoCell.xib */; };
+		CE855366209BA6A700938BDC /* OrderDetailsCustomerInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE855362209BA6A700938BDC /* OrderDetailsCustomerInfoCell.swift */; };
+		CE855367209BA6A700938BDC /* ShowHideFooterCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE855363209BA6A700938BDC /* ShowHideFooterCell.xib */; };
 		CEE005F62076C4040079161F /* Orders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F52076C4040079161F /* Orders.storyboard */; };
 		CEE005F82077C9690079161F /* order-list.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F72077C9690079161F /* order-list.json */; };
 		CEE005FA2077C9C00079161F /* order-925.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F92077C9C00079161F /* order-925.json */; };
@@ -109,7 +115,13 @@
 		CE1F512A206985DF00C6C810 /* PaddedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedLabel.swift; sourceTree = "<group>"; };
 		CE263DE5206ACD220015A693 /* NotificationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
 		CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
+		CE34DA2420A1ECD6005D8523 /* ContactViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactViewModel.swift; sourceTree = "<group>"; };
+		CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContact+Helpers.swift"; sourceTree = "<group>"; };
 		CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewModel.swift; sourceTree = "<group>"; };
+		CE855360209BA6A700938BDC /* ShowHideFooterCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowHideFooterCell.swift; sourceTree = "<group>"; };
+		CE855361209BA6A700938BDC /* OrderDetailsCustomerInfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderDetailsCustomerInfoCell.xib; sourceTree = "<group>"; };
+		CE855362209BA6A700938BDC /* OrderDetailsCustomerInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderDetailsCustomerInfoCell.swift; sourceTree = "<group>"; };
+		CE855363209BA6A700938BDC /* ShowHideFooterCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShowHideFooterCell.xib; sourceTree = "<group>"; };
 		CEE005F52076C4040079161F /* Orders.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Orders.storyboard; sourceTree = "<group>"; };
 		CEE005F72077C9690079161F /* order-list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-list.json"; sourceTree = "<group>"; };
 		CEE005F92077C9C00079161F /* order-925.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-925.json"; sourceTree = "<group>"; };
@@ -275,9 +287,10 @@
 		CE1CCB4C20572444000EE3AC /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */,
+				CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */,
 				CE1F51262064345B00C6C810 /* UIColor+Helpers.swift */,
 				CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */,
+				CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -286,6 +299,7 @@
 			isa = PBXGroup;
 			children = (
 				CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */,
+				CE34DA2420A1ECD6005D8523 /* ContactViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -309,6 +323,10 @@
 				CEE006042077D1280079161F /* OrderDetailsSummaryCell.xib */,
 				B557DA1320979904005962F4 /* OrderDetailsCustomerNoteCell.swift */,
 				B557DA1420979904005962F4 /* OrderDetailsCustomerNoteCell.xib */,
+				CE855362209BA6A700938BDC /* OrderDetailsCustomerInfoCell.swift */,
+				CE855361209BA6A700938BDC /* OrderDetailsCustomerInfoCell.xib */,
+				CE855360209BA6A700938BDC /* ShowHideFooterCell.swift */,
+				CE855363209BA6A700938BDC /* ShowHideFooterCell.xib */,
 				CEE006072077D14C0079161F /* OrderDetailsViewController.swift */,
 			);
 			path = OrderDetails;
@@ -408,12 +426,14 @@
 				CEE005F82077C9690079161F /* order-list.json in Resources */,
 				CEE005FC2077CA030079161F /* order-949.json in Resources */,
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
+				CE855367209BA6A700938BDC /* ShowHideFooterCell.xib in Resources */,
 				CEE005FE2077CA2F0079161F /* order-937.json in Resources */,
 				CEE006062077D1280079161F /* OrderDetailsSummaryCell.xib in Resources */,
 				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
 				CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
 				CEE005FA2077C9C00079161F /* order-925.json in Resources */,
+				CE855365209BA6A700938BDC /* OrderDetailsCustomerInfoCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -485,12 +505,16 @@
 				B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */,
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
+				CE855364209BA6A700938BDC /* ShowHideFooterCell.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				B557DA1520979904005962F4 /* OrderDetailsCustomerNoteCell.swift in Sources */,
+				CE855366209BA6A700938BDC /* OrderDetailsCustomerInfoCell.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
+				CE34DA2520A1ECD6005D8523 /* ContactViewModel.swift in Sources */,
+				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,
 				CEE006052077D1280079161F /* OrderDetailsSummaryCell.swift in Sources */,
 				CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,

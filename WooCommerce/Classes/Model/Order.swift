@@ -158,7 +158,7 @@ enum OrderStatus {
 
 extension OrderStatus {
     static var allOrderStatuses: [OrderStatus] {
-        return [.pending, .processing, .onHold, .failed, .canceled, .completed, .refunded, .custom(NSLocalizedString("Other", comment: "Title for button that catches all custom labels and displays them on the order list"))]
+        return [.pending, .processing, .onHold, .failed, .canceled, .completed, .refunded, .custom(NSLocalizedString("Custom", comment: "Title for button that catches all custom labels and displays them on the order list"))]
     }
     var backgroundColor: UIColor {
         switch self {
@@ -302,8 +302,10 @@ struct Address {
     let state: String
     let postcode: String
     let country: String
+    let phone: String?
+    let email: String?
 
-    init(firstName: String, lastName: String, company: String?, address1: String, address2: String?, city: String, state: String, postcode: String, country: String) {
+    init(firstName: String, lastName: String, company: String?, address1: String, address2: String?, city: String, state: String, postcode: String, country: String, phone: String?, email: String?) {
         self.firstName = firstName
         self.lastName = lastName
         self.company = company
@@ -313,6 +315,8 @@ struct Address {
         self.state = state
         self.postcode = postcode
         self.country = country
+        self.phone = phone
+        self.email = email
     }
 }
 
@@ -327,6 +331,8 @@ extension Address: Decodable {
         case state = "state"
         case postcode = "postcode"
         case country = "country"
+        case phone = "phone"
+        case email = "email"
     }
 
     init(from decoder: Decoder) throws {
@@ -341,8 +347,10 @@ extension Address: Decodable {
         let state = try container.decode(String.self, forKey: .state)
         let postcode = try container.decode(String.self, forKey: .postcode)
         let country = try container.decode(String.self, forKey: .country)
+        let phone = try container.decodeIfPresent(String.self, forKey: .phone)
+        let email = try container.decodeIfPresent(String.self, forKey: .email)
 
-        self.init(firstName: firstName, lastName: lastName, company: company, address1: address1, address2: address2, city: city, state: state, postcode: postcode, country: country)
+        self.init(firstName: firstName, lastName: lastName, company: company, address1: address1, address2: address2, city: city, state: state, postcode: postcode, country: country, phone: phone, email: email)
     }
 }
 

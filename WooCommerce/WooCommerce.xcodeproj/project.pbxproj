@@ -11,15 +11,12 @@
 		B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112E2049E27A007D25DC /* OrdersViewController.swift */; };
 		B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112F2049E27A007D25DC /* SettingsViewController.swift */; };
 		B50911342049E493007D25DC /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50911332049E493007D25DC /* Order.swift */; };
-		B546CCF4209363A5007CDA5F /* FluxSumi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B546CCF3209363A5007CDA5F /* FluxSumi.framework */; };
 		B557DA1520979904005962F4 /* OrderDetailsCustomerNoteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1320979904005962F4 /* OrderDetailsCustomerNoteCell.swift */; };
 		B557DA1620979904005962F4 /* OrderDetailsCustomerNoteCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B557DA1420979904005962F4 /* OrderDetailsCustomerNoteCell.xib */; };
 		B559EBAF20A0BF8F00836CD4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B559EBAD20A0BF8E00836CD4 /* README.md */; };
 		B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = B559EBAE20A0BF8F00836CD4 /* LICENSE */; };
 		B5650B0920A4CD7F009702D0 /* FluxSumi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B546CCF3209363A5007CDA5F /* FluxSumi.framework */; };
 		B5650B0A20A4CD7F009702D0 /* FluxSumi.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B546CCF3209363A5007CDA5F /* FluxSumi.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		B5650B0C20A4CD7F009702D0 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5650B0B20A4CD7F009702D0 /* Storage.framework */; };
-		B5650B0D20A4CD7F009702D0 /* Storage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5650B0B20A4CD7F009702D0 /* Storage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B5650B0E20A4CD7F009702D0 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B557D9FD209753BB005962F4 /* Networking.framework */; };
 		B5650B0F20A4CD7F009702D0 /* Networking.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B557D9FD209753BB005962F4 /* Networking.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */; };
@@ -28,6 +25,8 @@
 		B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */; };
 		B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */; };
 		B56DB3ED2049BFE600D4AA8E /* ContextManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3EC2049BFE600D4AA8E /* ContextManager.swift */; };
+		B5EE268A20A5DA7200468622 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5EE268920A5DA7200468622 /* Storage.framework */; };
+		B5EE268B20A5DA7200468622 /* Storage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5EE268920A5DA7200468622 /* Storage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CE1CCB402056F21C000EE3AC /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* Style.swift */; };
 		CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = CE1CCB4620570A6B000EE3AC /* en.lproj */; };
 		CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */; };
@@ -67,9 +66,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B5650B0D20A4CD7F009702D0 /* Storage.framework in Embed Frameworks */,
 				B5650B0A20A4CD7F009702D0 /* FluxSumi.framework in Embed Frameworks */,
 				B5650B0F20A4CD7F009702D0 /* Networking.framework in Embed Frameworks */,
+				B5EE268B20A5DA7200468622 /* Storage.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -89,8 +88,6 @@
 		B557DA1420979904005962F4 /* OrderDetailsCustomerNoteCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderDetailsCustomerNoteCell.xib; sourceTree = "<group>"; };
 		B559EBAD20A0BF8E00836CD4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		B559EBAE20A0BF8F00836CD4 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		B5650B0B20A4CD7F009702D0 /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B5650B1120A4CD86009702D0 /* Storage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Storage.framework; path = "../../../../Library/Developer/Xcode/DerivedData/WooCommerce-bhjipgzkwzandrgmducfcxabeppr/Build/Products/Debug-iphoneos/Storage.framework"; sourceTree = "<group>"; };
 		B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WooCommerce.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B56DB3CE2049BFAA00D4AA8E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -101,6 +98,8 @@
 		B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3E32049BFAA00D4AA8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B56DB3EC2049BFE600D4AA8E /* ContextManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextManager.swift; sourceTree = "<group>"; };
+		B5EE268520A5DA3700468622 /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5EE268920A5DA7200468622 /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE1CCB3F2056F21C000EE3AC /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		CE1CCB4620570A6B000EE3AC /* en.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = en.lproj; sourceTree = "<group>"; };
 		CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCell.swift; sourceTree = "<group>"; };
@@ -129,9 +128,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5650B0920A4CD7F009702D0 /* FluxSumi.framework in Frameworks */,
-				B546CCF4209363A5007CDA5F /* FluxSumi.framework in Frameworks */,
-				B5650B0C20A4CD7F009702D0 /* Storage.framework in Frameworks */,
 				B5650B0E20A4CD7F009702D0 /* Networking.framework in Frameworks */,
+				B5EE268A20A5DA7200468622 /* Storage.framework in Frameworks */,
 				D03928FCB928A909F3675117 /* Pods_WooCommerce.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -158,7 +156,7 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B5650B1120A4CD86009702D0 /* Storage.framework */,
+				B5EE268520A5DA3700468622 /* Storage.framework */,
 				B557D9FD209753BB005962F4 /* Networking.framework */,
 				B546CCF3209363A5007CDA5F /* FluxSumi.framework */,
 				EA556E3CCFCFAC2E31799011 /* Pods_WooCommerce.framework */,
@@ -177,7 +175,7 @@
 		B56DB3BD2049BFAA00D4AA8E = {
 			isa = PBXGroup;
 			children = (
-				B5650B0B20A4CD7F009702D0 /* Storage.framework */,
+				B5EE268920A5DA7200468622 /* Storage.framework */,
 				B56DB3F12049C0B800D4AA8E /* Classes */,
 				B56DB3F22049C0C000D4AA8E /* Resources */,
 				B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */,

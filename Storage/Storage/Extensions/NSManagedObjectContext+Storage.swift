@@ -91,6 +91,21 @@ extension NSManagedObjectContext {
         return nil
     }
 
+    /// Persists the changes (if any) to disk.
+    ///
+    func saveIfNeeded() {
+        guard hasChanges else {
+            return
+        }
+
+        do {
+            try save()
+        } catch {
+            let nserror = error as NSError
+            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+        }
+    }
+
     /// Loads the collection of entities that match with a given Fetch Request
     ///
     private func loadObjects<T: NSManagedObject>(ofType type: T.Type, with request: NSFetchRequest<NSFetchRequestResult>) -> [T] {

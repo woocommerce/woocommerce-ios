@@ -121,7 +121,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
         let section = sections[indexPath.section]
         let row = section.rows[indexPath.row]
 
-        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath) as row.cellType
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath) as! row.cellType
             cell.configure(with: viewModel)
         return cell
 

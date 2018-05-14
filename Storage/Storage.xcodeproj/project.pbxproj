@@ -17,6 +17,8 @@
 		B54CA5C720A4BFDC00F38CD1 /* DummyStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54CA5C620A4BFDC00F38CD1 /* DummyStack.swift */; };
 		B54CA5C920A4C17800F38CD1 /* NSObject+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54CA5C820A4C17800F38CD1 /* NSObject+Storage.swift */; };
 		B59E11DA20A9D00C004121A4 /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */; };
+		B59E11DE20A9F1FB004121A4 /* ContextManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DD20A9F1FB004121A4 /* ContextManagerTests.swift */; };
+		B59E11E020A9F5E6004121A4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DF20A9F5E6004121A4 /* Constants.swift */; };
 		B5EE26C520A624D900468622 /* ContextManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EE26C420A624D900468622 /* ContextManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +46,8 @@
 		B54CA5C620A4BFDC00F38CD1 /* DummyStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyStack.swift; sourceTree = "<group>"; };
 		B54CA5C820A4C17800F38CD1 /* NSObject+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Storage.swift"; sourceTree = "<group>"; };
 		B59E11D920A9D00C004121A4 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		B59E11DD20A9F1FB004121A4 /* ContextManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextManagerTests.swift; sourceTree = "<group>"; };
+		B59E11DF20A9F5E6004121A4 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B5EE26C420A624D900468622 /* ContextManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -89,11 +93,11 @@
 		B54CA59B20A4BBA500F38CD1 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
-				B59E11D720A9CFF3004121A4 /* Model */,
 				B54CA5BE20A4BD9A00F38CD1 /* Extensions */,
+				B59E11D720A9CFF3004121A4 /* Model */,
+				B59E11DB20A9F1B9004121A4 /* Managers */,
 				B54CA59C20A4BBA500F38CD1 /* Storage.h */,
 				B54CA59D20A4BBA600F38CD1 /* Info.plist */,
-				B5EE26C420A624D900468622 /* ContextManager.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -103,6 +107,7 @@
 			children = (
 				B54CA5C520A4BFC800F38CD1 /* Tools */,
 				B54CA5C420A4BF7300F38CD1 /* Extensions */,
+				B59E11DC20A9F1E6004121A4 /* Managers */,
 				B54CA5A920A4BBA600F38CD1 /* Info.plist */,
 			);
 			path = StorageTests;
@@ -138,6 +143,7 @@
 		B54CA5C520A4BFC800F38CD1 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				B59E11DF20A9F5E6004121A4 /* Constants.swift */,
 				B54CA5C620A4BFDC00F38CD1 /* DummyStack.swift */,
 			);
 			path = Tools;
@@ -149,6 +155,22 @@
 				B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		B59E11DB20A9F1B9004121A4 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				B5EE26C420A624D900468622 /* ContextManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		B59E11DC20A9F1E6004121A4 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				B59E11DD20A9F1FB004121A4 /* ContextManagerTests.swift */,
+			);
+			path = Managers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -273,9 +295,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B59E11E020A9F5E6004121A4 /* Constants.swift in Sources */,
 				B54CA5C320A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift in Sources */,
 				B54CA5C720A4BFDC00F38CD1 /* DummyStack.swift in Sources */,
 				B54CA5C220A4BF6900F38CD1 /* NSManagedObjectStorageTests.swift in Sources */,
+				B59E11DE20A9F1FB004121A4 /* ContextManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

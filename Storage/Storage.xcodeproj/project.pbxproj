@@ -87,6 +87,15 @@
 			path = Protocols;
 			sourceTree = "<group>";
 		};
+		B52B0F7D20AA2F1200477698 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B54CA5C020A4BF6900F38CD1 /* NSManagedObjectStorageTests.swift */,
+				B54CA5C120A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		B54CA58F20A4BBA500F38CD1 = {
 			isa = PBXGroup;
 			children = (
@@ -123,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				B54CA5C520A4BFC800F38CD1 /* Tools */,
+				B52B0F7D20AA2F1200477698 /* Extensions */,
 				B59E11DC20A9F1E6004121A4 /* CoreData */,
 				B54CA5A920A4BBA600F38CD1 /* Info.plist */,
 			);
@@ -141,6 +151,8 @@
 			isa = PBXGroup;
 			children = (
 				B54CA5C820A4C17800F38CD1 /* NSObject+Storage.swift */,
+				B54CA5BA20A4BD2800F38CD1 /* NSManagedObject+Object.swift */,
+				B54CA5BC20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -166,8 +178,6 @@
 			isa = PBXGroup;
 			children = (
 				B5EE26C420A624D900468622 /* CoreDataManager.swift */,
-				B54CA5BA20A4BD2800F38CD1 /* NSManagedObject+Object.swift */,
-				B54CA5BC20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -176,8 +186,6 @@
 			isa = PBXGroup;
 			children = (
 				B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */,
-				B54CA5C020A4BF6900F38CD1 /* NSManagedObjectStorageTests.swift */,
-				B54CA5C120A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";

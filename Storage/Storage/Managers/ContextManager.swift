@@ -81,6 +81,7 @@ extension ContextManager {
     var storeDescription: NSPersistentStoreDescription {
         let description = NSPersistentStoreDescription(url: storeURL)
         description.shouldAddStoreAsynchronously = true
+        description.shouldMigrateStoreAutomatically = true
         return description
     }
 }

@@ -46,4 +46,18 @@ class CoreDataManagerTests: XCTestCase {
         let context = CoreDataManager(name: "WooCommerce")
         XCTAssertEqual(context.viewStorage as? NSManagedObjectContext, context.persistentContainer.viewContext)
     }
+
+    /// Verifies that performBackgroundTask effectively runs received closure in BG.
+    ///
+    func testPerformTaskInBackgroundEffectivelyRunsReceivedClosureInBackgroundThread() {
+        let context = CoreDataManager(name: "WooCommerce")
+        let expectation = self.expectation(description: "Background")
+
+        context.performBackgroundTask { (_) in
+            XCTAssertFalse(Thread.isMainThread)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }

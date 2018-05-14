@@ -5,7 +5,7 @@ import XCTest
 /// ContextManager Unit Tests
 ///
 class ContextManagerTests: XCTestCase {
-    
+
     /// Verifies that the Data Model URL contains the ContextIdentifier String.
     ///
     func testModelUrlMapsToDataModelWithContextIdentifier() {
@@ -37,5 +37,12 @@ class ContextManagerTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies taht the ContextManager's viewContext matches the PersistenContainer.viewContext
+    ///
+    func testViewContextPropertyReturnsPersistentContainerMainContext() {
+        let context = ContextManager(name: "WooCommerce")
+        XCTAssertEqual(context.viewContext, context.persistentContainer.viewContext)
     }
 }

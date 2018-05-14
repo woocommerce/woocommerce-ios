@@ -43,22 +43,6 @@ public class ContextManager {
 
         return container
     }()
-
-
-    /// Persists the specified NSManagedObjectContext instance
-    ///
-    public func saveContext(context: NSManagedObjectContext) {
-        guard context.hasChanges else {
-            return
-        }
-
-        do {
-            try context.save()
-        } catch {
-            let nserror = error as NSError
-            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-        }
-    }
 }
 
 

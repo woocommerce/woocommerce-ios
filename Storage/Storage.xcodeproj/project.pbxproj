@@ -19,6 +19,7 @@
 		B59E11DA20A9D00C004121A4 /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */; };
 		B59E11DE20A9F1FB004121A4 /* ContextManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DD20A9F1FB004121A4 /* ContextManagerTests.swift */; };
 		B59E11E020A9F5E6004121A4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DF20A9F5E6004121A4 /* Constants.swift */; };
+		B59E11E220A9F8A3004121A4 /* NSObjectStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11E120A9F8A3004121A4 /* NSObjectStorageTests.swift */; };
 		B5EE26C520A624D900468622 /* ContextManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EE26C420A624D900468622 /* ContextManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -48,6 +49,7 @@
 		B59E11D920A9D00C004121A4 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		B59E11DD20A9F1FB004121A4 /* ContextManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextManagerTests.swift; sourceTree = "<group>"; };
 		B59E11DF20A9F5E6004121A4 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		B59E11E120A9F8A3004121A4 /* NSObjectStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSObjectStorageTests.swift; sourceTree = "<group>"; };
 		B5EE26C420A624D900468622 /* ContextManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -136,6 +138,7 @@
 			children = (
 				B54CA5C020A4BF6900F38CD1 /* NSManagedObjectStorageTests.swift */,
 				B54CA5C120A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift */,
+				B59E11E120A9F8A3004121A4 /* NSObjectStorageTests.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -296,6 +299,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B59E11E020A9F5E6004121A4 /* Constants.swift in Sources */,
+				B59E11E220A9F8A3004121A4 /* NSObjectStorageTests.swift in Sources */,
 				B54CA5C320A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift in Sources */,
 				B54CA5C720A4BFDC00F38CD1 /* DummyStack.swift in Sources */,
 				B54CA5C220A4BF6900F38CD1 /* NSManagedObjectStorageTests.swift in Sources */,

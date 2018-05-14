@@ -8,7 +8,10 @@ extension NSManagedObjectContext: Storage {
 
     /// Returns all of the entities that match with a given predicate.
     ///
-    /// - Parameter predicate: Defines the conditions that any given object should meet. Optional.
+    /// - Parameters:
+    ///     - type: Defines the `kind` of objects to be retrieved.
+    ///     - predicate: Defines the conditions that any given object should meet.
+    ///     - sortedBy: Sort Descriptors to be applied.
     ///
     public func allObjects<T: Object>(ofType type: T.Type, matching predicate: NSPredicate? = nil, sortedBy descriptors: [NSSortDescriptor]? = nil) -> [T] {
         let request = fetchRequest(forType: type)
@@ -21,7 +24,9 @@ extension NSManagedObjectContext: Storage {
 
     /// Returns the number of entities found that match with a given predicate.
     ///
-    /// - Parameter predicate: Defines the conditions that any given object should meet. Optional.
+    /// - Parameters:
+    ///     - type: Defines the `kind` of objects to be counted.
+    ///     - predicate: Defines the conditions that any given object should meet.
     ///
     public func countObjects<T: Object>(ofType type: T.Type, matching predicate: NSPredicate? = nil) -> Int {
         let request = fetchRequest(forType: type)
@@ -51,7 +56,7 @@ extension NSManagedObjectContext: Storage {
         delete(object)
     }
 
-    /// Deletes all of the NSMO instances associated to the current kind
+    /// Deletes all of the NSMO instances associated to the specified kind
     ///
     public func deleteAllObjects<T: Object>(ofType type: T.Type) {
         let request = fetchRequest(forType: type)
@@ -65,7 +70,9 @@ extension NSManagedObjectContext: Storage {
 
     /// Retrieves the first entity that matches with a given predicate
     ///
-    /// - Parameter predicate: Defines the conditions that any given object should meet.
+    /// - Parameters:
+    ///     - type: Defines the `kind` of object to be retrieved.
+    ///     - predicate: Defines the conditions that any given object should meet.
     ///
     public func firstObject<T: Object>(ofType type: T.Type, matching predicate: NSPredicate) -> T? {
         let request = fetchRequest(forType: type)
@@ -83,7 +90,9 @@ extension NSManagedObjectContext: Storage {
 
     /// Loads a single NSManagedObject instance, given its ObjectID, if available.
     ///
-    /// - Parameter objectID: Unique Identifier of the entity to retrieve, if available.
+    /// - Parameters:
+    ///     - type: Defines the `kind` of objects to be loaded.
+    ///     - objectID: Unique Identifier of the entity to retrieve, if available.
     ///
     public func loadObject<T: Object>(ofType type: T.Type, with objectID: T.ObjectID) -> T? {
         guard let objectID = objectID as? NSManagedObjectID else {

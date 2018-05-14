@@ -2,16 +2,16 @@ import Foundation
 import CoreData
 
 
-/// NSManagedObjectContext Helpers!
+/// NSManagedObjectContext Storage Conformance
 ///
-extension NSManagedObjectContext {
+extension NSManagedObjectContext: Storage {
 
     /// Returns all of the entities that match with a given predicate.
     ///
     /// - Parameter predicate: Defines the conditions that any given object should meet. Optional.
     ///
-    func allObjects<T: NSManagedObject>(ofType type: T.Type, matching predicate: NSPredicate? = nil, sortedBy descriptors: [NSSortDescriptor]? = nil) -> [T] {
-        let request = T.safeFetchRequest()
+    public func allObjects<T: Object>(ofType type: T.Type, matching predicate: NSPredicate? = nil, sortedBy descriptors: [NSSortDescriptor]? = nil) -> [T] {
+        let request = fetchRequest(forType: type)
         request.predicate = predicate
         request.sortDescriptors = descriptors
 
@@ -23,8 +23,8 @@ extension NSManagedObjectContext {
     ///
     /// - Parameter predicate: Defines the conditions that any given object should meet. Optional.
     ///
-    func countObjects<T: NSManagedObject>(ofType type: T.Type, matching predicate: NSPredicate? = nil) -> Int {
-        let request = T.safeFetchRequest()
+    public func countObjects<T: Object>(ofType type: T.Type, matching predicate: NSPredicate? = nil) -> Int {
+        let request = fetchRequest(forType: type)
         request.includesSubentities = false
         request.predicate = predicate
         request.resultType = .countResultType
@@ -43,19 +43,23 @@ extension NSManagedObjectContext {
 
     /// Deletes the specified Object Instance
     ///
-    func deleteObject<T: NSManagedObject>(_ object: T) {
+    public func deleteObject<T: Object>(_ object: T) {
+        guard let object = object as? NSManagedObject else {
+            fatalError("Invalid Object Kind")
+        }
+
         delete(object)
     }
 
     /// Deletes all of the NSMO instances associated to the current kind
     ///
-    func deleteAllObjects<T: NSManagedObject>(ofType type: T.Type) {
-        let request = T.safeFetchRequest()
+    public func deleteAllObjects<T: Object>(ofType type: T.Type) {
+        let request = fetchRequest(forType: type)
         request.includesPropertyValues = false
         request.includesSubentities = false
 
         for object in loadObjects(ofType: type, with: request) {
-            delete(object)
+            deleteObject(object)
         }
     }
 
@@ -63,8 +67,8 @@ extension NSManagedObjectContext {
     ///
     /// - Parameter predicate: Defines the conditions that any given object should meet.
     ///
-    func firstObject<T: NSManagedObject>(ofType type: T.Type, matching predicate: NSPredicate) -> T? {
-        let request = T.safeFetchRequest()
+    public func firstObject<T: Object>(ofType type: T.Type, matching predicate: NSPredicate) -> T? {
+        let request = fetchRequest(forType: type)
         request.predicate = predicate
         request.fetchLimit = 1
 
@@ -73,15 +77,19 @@ extension NSManagedObjectContext {
 
     /// Inserts a new Entity. For performance reasons, this helper *DOES NOT* persists the context.
     ///
-    func insertNewObject<T: NSManagedObject>(ofType type: T.Type) -> T {
-        return NSEntityDescription.insertNewObject(forEntityName: T.entityName(), into: self) as! T
+    public func insertNewObject<T: Object>(ofType type: T.Type) -> T {
+        return NSEntityDescription.insertNewObject(forEntityName: T.entityName, into: self) as! T
     }
 
     /// Loads a single NSManagedObject instance, given its ObjectID, if available.
     ///
     /// - Parameter objectID: Unique Identifier of the entity to retrieve, if available.
     ///
-    func loadObject<T: NSManagedObject>(ofType type: T.Type, with objectID: NSManagedObjectID) -> T? {
+    public func loadObject<T: Object>(ofType type: T.Type, with objectID: T.ObjectID) -> T? {
+        guard let objectID = objectID as? NSManagedObjectID else {
+            fatalError("Invalid ObjectID Kind")
+        }
+
         do {
             return try existingObject(with: objectID) as? T
         } catch {
@@ -93,7 +101,7 @@ extension NSManagedObjectContext {
 
     /// Persists the changes (if any) to disk.
     ///
-    func saveIfNeeded() {
+    public func saveIfNeeded() {
         guard hasChanges else {
             return
         }
@@ -108,7 +116,7 @@ extension NSManagedObjectContext {
 
     /// Loads the collection of entities that match with a given Fetch Request
     ///
-    private func loadObjects<T: NSManagedObject>(ofType type: T.Type, with request: NSFetchRequest<NSFetchRequestResult>) -> [T] {
+    private func loadObjects<T: Object>(ofType type: T.Type, with request: NSFetchRequest<NSFetchRequestResult>) -> [T] {
         var objects: [T]?
 
         do {
@@ -119,5 +127,11 @@ extension NSManagedObjectContext {
         }
 
         return objects ?? []
+    }
+
+    /// Returns a NSFetchRequest instance with its *Entity Name* always set, for the specified Object Type.
+    ///
+    private func fetchRequest<T: Object>(forType type: T.Type) -> NSFetchRequest<NSFetchRequestResult> {
+        return NSFetchRequest<NSFetchRequestResult>(entityName: type.entityName)
     }
 }

@@ -4,7 +4,7 @@ import CoreData
 @testable import Storage
 
 
-/// NSManagedObjectContext UnitTests
+/// NSManagedObjectContext+Storage UnitTests
 ///
 class NSManagedObjectContextStorageTests: XCTestCase {
     var stack: DummyStack!

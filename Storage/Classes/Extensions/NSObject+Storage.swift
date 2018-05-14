@@ -1,7 +1,7 @@
 import Foundation
 
 
-/// NSObject Helper Methods
+/// NSObject: Helper Methods
 ///
 extension NSObject {
 

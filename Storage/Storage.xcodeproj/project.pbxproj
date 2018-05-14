@@ -80,7 +80,7 @@
 		B54CA58F20A4BBA500F38CD1 = {
 			isa = PBXGroup;
 			children = (
-				B54CA59B20A4BBA500F38CD1 /* Classes */,
+				B54CA59B20A4BBA500F38CD1 /* Storage */,
 				B54CA5A620A4BBA600F38CD1 /* StorageTests */,
 				B54CA59A20A4BBA500F38CD1 /* Products */,
 				B54CA5B320A4BC0200F38CD1 /* Frameworks */,
@@ -96,7 +96,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B54CA59B20A4BBA500F38CD1 /* Classes */ = {
+		B54CA59B20A4BBA500F38CD1 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
 				B54CA5BE20A4BD9A00F38CD1 /* Extensions */,
@@ -105,7 +105,7 @@
 				B54CA59C20A4BBA500F38CD1 /* Storage.h */,
 				B54CA59D20A4BBA600F38CD1 /* Info.plist */,
 			);
-			path = Classes;
+			path = Storage;
 			sourceTree = "<group>";
 		};
 		B54CA5A620A4BBA600F38CD1 /* StorageTests */ = {

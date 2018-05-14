@@ -1,15 +1,16 @@
 import XCTest
+import CoreData
 @testable import Storage
 
 
-/// ContextManager Unit Tests
+/// CoreDataManager Unit Tests
 ///
-class ContextManagerTests: XCTestCase {
+class CoreDataManagerTests: XCTestCase {
 
     /// Verifies that the Data Model URL contains the ContextIdentifier String.
     ///
     func testModelUrlMapsToDataModelWithContextIdentifier() {
-        let context = ContextManager(name: "WooCommerce")
+        let context = CoreDataManager(name: "WooCommerce")
         XCTAssertEqual(context.modelURL.lastPathComponent, "WooCommerce.momd")
         XCTAssertNoThrow(context.managedModel)
     }
@@ -17,7 +18,7 @@ class ContextManagerTests: XCTestCase {
     /// Verifies that the Store URL contains the ContextIdentifier string.
     ///
     func testStorageUrlMapsToSqliteFileWithContextIdentifier() {
-        let context = ContextManager(name: "WooCommerce")
+        let context = CoreDataManager(name: "WooCommerce")
         XCTAssertEqual(context.storeURL.lastPathComponent, "WooCommerce.sqlite")
         XCTAssertEqual(context.storeDescription.url?.lastPathComponent, "WooCommerce.sqlite")
     }
@@ -25,7 +26,7 @@ class ContextManagerTests: XCTestCase {
     /// Verifies that the PersistentContainer properly loads the sqlite database.
     ///
     func testPersistentContainerLoadsExpectedDataModelAndSqliteDatabase() {
-        let context = ContextManager(name: "WooCommerce")
+        let context = CoreDataManager(name: "WooCommerce")
 
         let container = context.persistentContainer
         XCTAssertEqual(container.managedObjectModel, context.managedModel)
@@ -42,7 +43,7 @@ class ContextManagerTests: XCTestCase {
     /// Verifies taht the ContextManager's viewContext matches the PersistenContainer.viewContext
     ///
     func testViewContextPropertyReturnsPersistentContainerMainContext() {
-        let context = ContextManager(name: "WooCommerce")
-        XCTAssertEqual(context.viewContext, context.persistentContainer.viewContext)
+        let context = CoreDataManager(name: "WooCommerce")
+        XCTAssertEqual(context.viewStorage as? NSManagedObjectContext, context.persistentContainer.viewContext)
     }
 }

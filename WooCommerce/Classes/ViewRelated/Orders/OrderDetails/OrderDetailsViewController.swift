@@ -16,21 +16,54 @@ class OrderDetailsViewController: UIViewController {
     var viewModel: OrderDetailsViewModel!
     var sectionTitles = [String]()
     var billingIsHidden = true
+    private var sections = [Section]()
 
-    enum Section: Int {
-        case summary = 0
-        case fulfillment = 1
-        case customerNote = 2
-        case info = 3
-        case payment = 4
-        case orderNotes = 5
+    private struct Section {
+        let title: String
+        let rows: [Row]
     }
 
-    enum CustomerInfoRow: Int {
-        case shipping = 0
-        case billing = 1
-        case billingPhone = 2
-        case billingEmail = 3
+    private enum Row {
+        case summary
+        case customerNote
+        case shippingAddress
+        case billingAddress
+        case billingPhone
+        case billingEmail
+
+        var reuseIdentifier: String {
+            switch self {
+            case .summary:
+                return OrderDetailsSummaryCell.reuseIdentifier
+            case .customerNote:
+                return OrderDetailsCustomerNoteCell.reuseIdentifier
+            case .shippingAddress:
+                return OrderDetailsCustomerInfoCell.reuseIdentifier
+            case .billingAddress:
+                return OrderDetailsCustomerInfoCell.reuseIdentifier
+            case .billingPhone:
+                return Constants.billingPhoneReuseIdentifier
+            case .billingEmail:
+                return Constants.billingEmailReuseIdentifier
+            }
+        }
+
+        var cellType: AnyClass {
+            switch self {
+            case .summary:
+                return OrderDetailsSummaryCell.self
+            case .customerNote:
+                return OrderDetailsCustomerNoteCell.self
+            case .shippingAddress:
+                return OrderDetailsCustomerInfoCell.self
+            case .billingAddress:
+                return OrderDetailsCustomerInfoCell.self
+            case .billingPhone:
+                return UITableViewCell.self
+            case .billingEmail:
+                return UITableViewCell.self
+            }
+        }
     }
 
     func refreshViewModel() {
@@ -53,28 +86,19 @@ class OrderDetailsViewController: UIViewController {
     }
 
     func configureSections() {
-        let orderSummary = ""
-        let fulfillItems = ""
-        var customerNoteTitle = NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title")
-        let customerInfo = NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title")
-        let paymentDetails = NSLocalizedString("PAYMENT", comment: "Payment section title")
-        let orderNotes = NSLocalizedString("ORDER NOTES", comment: "Order notes section title")
-        if let customerNote = order.customerNote {
-            if customerNote.isEmpty {
-                customerNoteTitle = ""
-            }
-        }
-        sectionTitles = [orderSummary, fulfillItems, customerNoteTitle, customerInfo, paymentDetails, orderNotes]
+        let summarySection = Section(title: "", rows: [.summary])
+        let customerNoteSection = Section(title: NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title"), rows: [.customerNote])
+        let customerInfoSection = Section(title: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), rows: [.shippingAddress, .billingAddress, .billingPhone, .billingEmail])
+
+        sections = [summarySection, customerNoteSection, customerInfoSection]
     }
 
     func configureNibs() {
-        let identifiers = [OrderDetailsSummaryCell.reuseIdentifier,
-                           OrderDetailsCustomerNoteCell.reuseIdentifier,
-                           OrderDetailsCustomerInfoCell.reuseIdentifier]
-
-        for identifier in identifiers {
-            let nib = UINib(nibName: identifier, bundle: nil)
-            tableView.register(nib, forCellReuseIdentifier: identifier)
+        for section in sections {
+            for row in section.rows {
+                let nib = UINib(nibName: row.reuseIdentifier, bundle: nil)
+                tableView.register(nib, forCellReuseIdentifier: row.reuseIdentifier)
+            }
         }
 
         let footerNib = UINib(nibName: ShowHideFooterCell.reuseIdentifier, bundle: nil)
@@ -86,79 +110,60 @@ class OrderDetailsViewController: UIViewController {
 //
 extension OrderDetailsViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sectionTitles.count
+        return sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == Section.summary.rawValue ||
-            section == Section.fulfillment.rawValue ||
-            section == Section.payment.rawValue {
-        return 1
-    }
-
-        if section == Section.customerNote.rawValue {
-            let numberOfRows = order.customerNote?.isEmpty == false ? 1 : 0
-            return numberOfRows
-        }
-
-        if section == Section.info.rawValue {
-            let shippingRow = 1
-            let billingAddressRow = billingIsHidden ? 0 : 1
-            let billingPhoneRow = billingIsHidden || order.billingAddress.phone?.isEmpty == true ? 0 : 1
-            let billingEmailRow = billingIsHidden || order.billingAddress.email?.isEmpty == true ? 0 : 1
-            return shippingRow + billingAddressRow + billingPhoneRow + billingEmailRow
-        }
-
-        if section == Section.orderNotes.rawValue {
-            let titleRow = 1
-            let addNoteRow = 1
-            let totalNotes = order.notes?.count ?? 0
-            return titleRow + addNoteRow + totalNotes
-        }
-
-        return 0
+        return sections[section].rows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch indexPath.section {
-        case Section.summary.rawValue:
-            let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsSummaryCell.reuseIdentifier, for: indexPath) as! OrderDetailsSummaryCell
-            cell.configure(with: viewModel)
-            return cell
+        let section = sections[indexPath.section]
+        let row = section.rows[indexPath.row]
 
-        case Section.customerNote.rawValue:
-            let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerNoteCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath) as row.cellType
             cell.configure(with: viewModel)
-            return cell
+        return cell
 
-        case Section.info.rawValue:
-            switch indexPath.row {
-            case CustomerInfoRow.shipping.rawValue:
-                let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerInfoCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerInfoCell
-                let viewModel = ContactViewModel(with: order.shippingAddress, contactType: .shipping)
-                cell.configure(with: viewModel)
-                return cell
-            case CustomerInfoRow.billing.rawValue:
-                let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerInfoCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerInfoCell
-                let viewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
-                cell.configure(with: viewModel)
-                return cell
-            case CustomerInfoRow.billingPhone.rawValue:
-                let viewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
-                return configureBillingPhoneCell(viewModel: viewModel)
-            case CustomerInfoRow.billingEmail.rawValue:
-                let viewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
-                return configureBillingEmailCell(viewModel: viewModel)
-            default:
-                fatalError()
-            }
-            default:
-                return UITableViewCell()
-        }
+//        switch indexPath.section {
+//        case Section.summary:
+//            let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsSummaryCell.reuseIdentifier, for: indexPath) as! OrderDetailsSummaryCell
+//            cell.configure(with: viewModel)
+//            return cell
+//
+//        case Section.customerNote.rawValue:
+//            let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerNoteCell
+//            cell.configure(with: viewModel)
+//            return cell
+//
+//        case Section.info.rawValue:
+//            switch indexPath.row {
+//            case CustomerInfoRow.shipping.rawValue:
+//                let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerInfoCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerInfoCell
+//                let viewModel = ContactViewModel(with: order.shippingAddress, contactType: .shipping)
+//                cell.configure(with: viewModel)
+//                return cell
+//            case CustomerInfoRow.billing.rawValue:
+//                let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerInfoCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerInfoCell
+//                let viewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
+//                cell.configure(with: viewModel)
+//                return cell
+//            case CustomerInfoRow.billingPhone.rawValue:
+//                let viewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
+//                return configureBillingPhoneCell(viewModel: viewModel)
+//            case CustomerInfoRow.billingEmail.rawValue:
+//                let viewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
+//                return configureBillingEmailCell(viewModel: viewModel)
+//            default:
+//                fatalError()
+//            }
+//            default:
+//                return UITableViewCell()
+//        }
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if sectionTitles[section].isEmpty {
+        if sections[section].title.isEmpty {
             // iOS 11 table bug. Must return a tiny value to collapse empty section headers.
             return CGFloat.leastNonzeroMagnitude
         }
@@ -166,18 +171,18 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if sectionTitles[section].isEmpty {
+        if sections[section].title.isEmpty {
             return nil
         }
         return sectionTitles[section]
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section == Section.info.rawValue {
-            return Constants.rowHeight
+        if sections[section].title.isEmpty{
+            // iOS 11 table bug. Must return a tiny value to collapse empty section footers.
+            return CGFloat.leastNonzeroMagnitude
         }
-        // iOS 11 table bug. Must return a tiny value to collapse empty section footers.
-        return CGFloat.leastNonzeroMagnitude
+        return Constants.rowHeight
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -333,5 +338,7 @@ private extension OrderDetailsViewController {
         static let rowHeight = CGFloat(38)
         static let iconFrame = CGRect(x: 8, y: 0, width: 44, height: 44)
         static let accessoryFrame = CGRect(x: 0, y: 0, width: 44, height: 44)
+        static let billingPhoneReuseIdentifier = "BillingPhoneCell"
+        static let billingEmailReuseIdentifier = "BillingEmailCell"
     }
 }

@@ -2,7 +2,7 @@ import Foundation
 import CoreData
 
 
-/// CoreDataManager
+/// CoreDataManager: Manages the entire CoreData Stack. Conforms to the StorageManager API.
 ///
 public class CoreDataManager: StorageManager {
 
@@ -44,7 +44,7 @@ public class CoreDataManager: StorageManager {
         return container
     }()
 
-    ///
+    /// Performs the received closure in Background. Note that you should use the received Storage instance (BG friendly!).
     ///
     public func performBackgroundTask(_ closure: @escaping (Storage) -> Void) {
         persistentContainer.performBackgroundTask { context in

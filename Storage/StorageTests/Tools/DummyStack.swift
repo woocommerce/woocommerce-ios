@@ -27,7 +27,7 @@ class DummyStack {
 
         // Entity
         let entity = NSEntityDescription()
-        entity.name = DummyEntity.entityName()
+        entity.name = DummyEntity.entityName
         entity.managedObjectClassName = String(reflecting: DummyEntity.self)
         entity.properties = [keyAttribute, valueAttribute]
 

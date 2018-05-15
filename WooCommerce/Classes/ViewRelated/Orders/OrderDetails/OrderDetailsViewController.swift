@@ -92,7 +92,7 @@ class OrderDetailsViewController: UIViewController {
     func configureNibs() {
         for section in sections {
             for row in section.rows {
-                if row != .billingEmail || row != .billingPhone { 
+                if row != .billingEmail || row != .billingPhone {
                     let nib = UINib(nibName: row.reuseIdentifier, bundle: nil)
                     tableView.register(nib, forCellReuseIdentifier: row.reuseIdentifier)
                 }

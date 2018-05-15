@@ -116,9 +116,8 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let section = sections[indexPath.section]
-        let row = section.rows[indexPath.row]
-        var cell: UITableViewCell
+        let row = sections[indexPath.section].rows[indexPath.row]
+        let cell: UITableViewCell
         switch row {
         case .billingPhone:
             cell = UITableViewCell(style: .default, reuseIdentifier: row.reuseIdentifier)
@@ -127,7 +126,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
         default:
             cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         }
-        configure(cell, at: indexPath)
+        configure(cell, for: row)
         return cell
     }
 
@@ -152,10 +151,10 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let aSection = sections[section]
-        guard let footerText = aSection.footer else {
+        guard let footerText = sections[section].footer else {
             return nil
         }
+
         let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideFooterCell.reuseIdentifier) as! ShowHideFooterCell
         let image = billingIsHidden ? Gridicon.iconOfType(.chevronDown) : Gridicon.iconOfType(.chevronUp)
         cell.configure(text: footerText, image: image)
@@ -180,9 +179,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
 // MARK: - Extension
 //
 extension OrderDetailsViewController {
-    func configure(_ cell: UITableViewCell, at indexPath: IndexPath) {
-        let section = sections[indexPath.section]
-        let row = section.rows[indexPath.row]
+    private func configure(_ cell: UITableViewCell, for row: Row) {
         var contactViewModel: ContactViewModel
         switch cell {
         case let cell as OrderDetailsSummaryCell:

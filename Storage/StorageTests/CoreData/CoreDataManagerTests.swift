@@ -40,7 +40,7 @@ class CoreDataManagerTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies taht the ContextManager's viewContext matches the PersistenContainer.viewContext
+    /// Verifies that the ContextManager's viewContext matches the PersistenContainer.viewContext
     ///
     func testViewContextPropertyReturnsPersistentContainerMainContext() {
         let manager = CoreDataManager(name: "WooCommerce")

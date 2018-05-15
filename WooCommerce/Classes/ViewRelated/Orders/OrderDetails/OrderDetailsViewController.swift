@@ -19,7 +19,8 @@ class OrderDetailsViewController: UIViewController {
     private var sections = [Section]()
 
     private struct Section {
-        let title: String
+        let title: String?
+        let footer: String?
         let rows: [Row]
     }
 
@@ -47,23 +48,6 @@ class OrderDetailsViewController: UIViewController {
                 return Constants.billingEmailReuseIdentifier
             }
         }
-
-        var cellType: AnyClass {
-            switch self {
-            case .summary:
-                return OrderDetailsSummaryCell.self
-            case .customerNote:
-                return OrderDetailsCustomerNoteCell.self
-            case .shippingAddress:
-                return OrderDetailsCustomerInfoCell.self
-            case .billingAddress:
-                return OrderDetailsCustomerInfoCell.self
-            case .billingPhone:
-                return UITableViewCell.self
-            case .billingEmail:
-                return UITableViewCell.self
-            }
-        }
     }
 
     func refreshViewModel() {
@@ -86,18 +70,32 @@ class OrderDetailsViewController: UIViewController {
     }
 
     func configureSections() {
-        let summarySection = Section(title: "", rows: [.summary])
-        let customerNoteSection = Section(title: NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title"), rows: [.customerNote])
-        let customerInfoSection = Section(title: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), rows: [.shippingAddress, .billingAddress, .billingPhone, .billingEmail])
+        let summarySection = Section(title: nil, footer: nil, rows: [.summary])
+        let customerNoteSection = Section(title: NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title"), footer: nil, rows: [.customerNote])
 
+        let infoFooter = billingIsHidden ? NSLocalizedString("Show billing", comment: "Footer text to show the billing cell") : NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
+        let infoRows: [Row] = billingIsHidden ? [.shippingAddress] : [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
+        let customerInfoSection = Section(title: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), footer: infoFooter, rows: infoRows)
+
+        // FIXME: this is temporary
+        // the API response always sends customer note data
+        // if there is no customer note it sends an empty string
+        // but order has customerNote as an optional property right now
+        guard let customerNote = order.customerNote,
+            !customerNote.isEmpty else {
+            sections = [summarySection, customerInfoSection]
+            return
+        }
         sections = [summarySection, customerNoteSection, customerInfoSection]
     }
 
     func configureNibs() {
         for section in sections {
             for row in section.rows {
-                let nib = UINib(nibName: row.reuseIdentifier, bundle: nil)
-                tableView.register(nib, forCellReuseIdentifier: row.reuseIdentifier)
+                if row != .billingEmail || row != .billingPhone { 
+                    let nib = UINib(nibName: row.reuseIdentifier, bundle: nil)
+                    tableView.register(nib, forCellReuseIdentifier: row.reuseIdentifier)
+                }
             }
         }
 
@@ -120,79 +118,50 @@ extension OrderDetailsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let section = sections[indexPath.section]
         let row = section.rows[indexPath.row]
-
-        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath) as! row.cellType
-            cell.configure(with: viewModel)
+        var cell: UITableViewCell
+        switch row {
+        case .billingPhone:
+            cell = UITableViewCell(style: .default, reuseIdentifier: row.reuseIdentifier)
+        case .billingEmail:
+            cell = UITableViewCell(style: .default, reuseIdentifier: row.reuseIdentifier)
+        default:
+            cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        }
+        configure(cell, at: indexPath)
         return cell
-
-//        switch indexPath.section {
-//        case Section.summary:
-//            let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsSummaryCell.reuseIdentifier, for: indexPath) as! OrderDetailsSummaryCell
-//            cell.configure(with: viewModel)
-//            return cell
-//
-//        case Section.customerNote.rawValue:
-//            let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerNoteCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerNoteCell
-//            cell.configure(with: viewModel)
-//            return cell
-//
-//        case Section.info.rawValue:
-//            switch indexPath.row {
-//            case CustomerInfoRow.shipping.rawValue:
-//                let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerInfoCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerInfoCell
-//                let viewModel = ContactViewModel(with: order.shippingAddress, contactType: .shipping)
-//                cell.configure(with: viewModel)
-//                return cell
-//            case CustomerInfoRow.billing.rawValue:
-//                let cell = tableView.dequeueReusableCell(withIdentifier: OrderDetailsCustomerInfoCell.reuseIdentifier, for: indexPath) as! OrderDetailsCustomerInfoCell
-//                let viewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
-//                cell.configure(with: viewModel)
-//                return cell
-//            case CustomerInfoRow.billingPhone.rawValue:
-//                let viewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
-//                return configureBillingPhoneCell(viewModel: viewModel)
-//            case CustomerInfoRow.billingEmail.rawValue:
-//                let viewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
-//                return configureBillingEmailCell(viewModel: viewModel)
-//            default:
-//                fatalError()
-//            }
-//            default:
-//                return UITableViewCell()
-//        }
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if sections[section].title.isEmpty {
-            // iOS 11 table bug. Must return a tiny value to collapse empty section headers.
+        guard sections[section].title != nil else {
+            // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
             return CGFloat.leastNonzeroMagnitude
         }
         return UITableViewAutomaticDimension
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if sections[section].title.isEmpty {
-            return nil
-        }
-        return sectionTitles[section]
+        return sections[section].title
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if sections[section].title.isEmpty{
-            // iOS 11 table bug. Must return a tiny value to collapse empty section footers.
+        guard sections[section].footer != nil else {
+            // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section footers.
             return CGFloat.leastNonzeroMagnitude
         }
         return Constants.rowHeight
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        guard section == Section.info.rawValue else {
+        let aSection = sections[section]
+        guard let footerText = aSection.footer else {
             return nil
         }
         let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideFooterCell.reuseIdentifier) as! ShowHideFooterCell
-        cell.configureCell(isHidden: billingIsHidden)
+        let image = billingIsHidden ? Gridicon.iconOfType(.chevronDown) : Gridicon.iconOfType(.chevronUp)
+        cell.configure(text: footerText, image: image)
         cell.didSelectFooter = { [weak self] in
             self?.setShowHideFooter()
+            self?.configureSections()
             let sections = IndexSet(integer: section)
             tableView.reloadSections(sections, with: .fade)
         }
@@ -211,8 +180,45 @@ extension OrderDetailsViewController: UITableViewDelegate {
 // MARK: - Extension
 //
 extension OrderDetailsViewController {
-    func configureBillingPhoneCell(viewModel: ContactViewModel) -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "BillingPhoneCell")
+    func configure(_ cell: UITableViewCell, at indexPath: IndexPath) {
+        let section = sections[indexPath.section]
+        let row = section.rows[indexPath.row]
+        var contactViewModel: ContactViewModel
+        switch cell {
+        case let cell as OrderDetailsSummaryCell:
+            cell.configure(with: viewModel)
+        case let cell as OrderDetailsCustomerNoteCell:
+            cell.configure(with: viewModel)
+        case let cell as OrderDetailsCustomerInfoCell:
+            switch row {
+            case .shippingAddress:
+                contactViewModel = ContactViewModel(with: order.shippingAddress, contactType: .shipping)
+                cell.configure(with: contactViewModel)
+            case .billingAddress:
+                contactViewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
+                cell.configure(with: contactViewModel)
+            case .billingPhone:
+                fatalError("Billing phone number cell should be default tableview cell type")
+            case .billingEmail:
+                fatalError("Billing email cell should be default tableview cell type")
+            default:
+                fatalError()
+            }
+        default:
+            switch row {
+            case .billingPhone:
+                contactViewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
+                configureBillingPhone(cell, with: contactViewModel)
+            case .billingEmail:
+                contactViewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
+                configureBillingEmail(cell, with: contactViewModel)
+            default:
+                fatalError()
+            }
+        }
+    }
+
+    func configureBillingPhone(_ cell: UITableViewCell, with viewModel: ContactViewModel) {
         cell.textLabel?.applyBodyStyle()
 
         let phoneButton = UIButton(type: .custom)
@@ -226,12 +232,9 @@ extension OrderDetailsViewController {
         cell.accessoryView = iconView
         cell.textLabel?.text = viewModel.phoneNumber
         cell.textLabel?.adjustsFontSizeToFitWidth = true
-
-        return cell
     }
 
-    func configureBillingEmailCell(viewModel: ContactViewModel) -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "BillingEmailCell")
+    func configureBillingEmail(_ cell: UITableViewCell, with viewModel: ContactViewModel) {
         cell.textLabel?.applyBodyStyle()
 
         let emailButton = UIButton(type: .custom)
@@ -245,7 +248,6 @@ extension OrderDetailsViewController {
         cell.accessoryView = iconView
         cell.textLabel?.text = viewModel.email
         cell.textLabel?.adjustsFontSizeToFitWidth = true
-        return cell
     }
 
     @objc func phoneButtonAction() {

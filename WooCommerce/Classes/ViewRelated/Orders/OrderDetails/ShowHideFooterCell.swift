@@ -22,13 +22,8 @@ class ShowHideFooterCell: UITableViewHeaderFooterView {
         footerArrow.tintColor = StyleManager.wooCommerceBrandColor
     }
 
-    func configureCell(isHidden: Bool) {
-        if isHidden {
-            footerLabel.text = NSLocalizedString("Show billing", comment: "Footer text to show the billing cell")
-            footerArrow.image = Gridicon.iconOfType(.chevronDown)
-        } else {
-            footerLabel.text = NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
-            footerArrow.image = Gridicon.iconOfType(.chevronUp)
-        }
+    func configure(text: String, image: UIImage) {
+        footerLabel.text = text
+        footerArrow.image = image
     }
 }

@@ -4,7 +4,7 @@ import CoreData
 @testable import Storage
 
 
-/// NSManagedObjectContext UnitTests
+/// NSManagedObjectContext+Storage UnitTests
 ///
 class NSManagedObjectContextStorageTests: XCTestCase {
     var stack: DummyStack!
@@ -136,6 +136,18 @@ class NSManagedObjectContextStorageTests: XCTestCase {
         // Upcast to AnyObject to make really sure this works
         let anyObject = entity as AnyObject
         XCTAssert(anyObject is DummyEntity)
+    }
+
+    /// Verifies that the `saveIfNeeded` persists changes (if any)
+    ///
+    func testSaveIfNeededEffectivelyPersistChangesIfAny() {
+        XCTAssertFalse(context.hasChanges)
+
+        _ = context.insertNewObject(ofType: DummyEntity.self)
+        XCTAssertTrue(context.hasChanges)
+
+        context.saveIfNeeded()
+        XCTAssertFalse(context.hasChanges)
     }
 
     /// Verifies that loadObject returns nil whenever the entity was deleted

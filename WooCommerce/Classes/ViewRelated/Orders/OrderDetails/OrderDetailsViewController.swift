@@ -18,38 +18,6 @@ class OrderDetailsViewController: UIViewController {
     var billingIsHidden = true
     private var sections = [Section]()
 
-    private struct Section {
-        let title: String?
-        let footer: String?
-        let rows: [Row]
-    }
-
-    private enum Row {
-        case summary
-        case customerNote
-        case shippingAddress
-        case billingAddress
-        case billingPhone
-        case billingEmail
-
-        var reuseIdentifier: String {
-            switch self {
-            case .summary:
-                return OrderDetailsSummaryCell.reuseIdentifier
-            case .customerNote:
-                return OrderDetailsCustomerNoteCell.reuseIdentifier
-            case .shippingAddress:
-                return OrderDetailsCustomerInfoCell.reuseIdentifier
-            case .billingAddress:
-                return OrderDetailsCustomerInfoCell.reuseIdentifier
-            case .billingPhone:
-                return Constants.billingPhoneReuseIdentifier
-            case .billingEmail:
-                return Constants.billingEmailReuseIdentifier
-            }
-        }
-    }
-
     func refreshViewModel() {
         viewModel = OrderDetailsViewModel(order: order)
     }
@@ -339,5 +307,37 @@ private extension OrderDetailsViewController {
         static let accessoryFrame = CGRect(x: 0, y: 0, width: 44, height: 44)
         static let billingPhoneReuseIdentifier = "BillingPhoneCell"
         static let billingEmailReuseIdentifier = "BillingEmailCell"
+    }
+
+    private struct Section {
+        let title: String?
+        let footer: String?
+        let rows: [Row]
+    }
+
+    private enum Row {
+        case summary
+        case customerNote
+        case shippingAddress
+        case billingAddress
+        case billingPhone
+        case billingEmail
+
+        var reuseIdentifier: String {
+            switch self {
+            case .summary:
+                return OrderDetailsSummaryCell.reuseIdentifier
+            case .customerNote:
+                return OrderDetailsCustomerNoteCell.reuseIdentifier
+            case .shippingAddress:
+                return OrderDetailsCustomerInfoCell.reuseIdentifier
+            case .billingAddress:
+                return OrderDetailsCustomerInfoCell.reuseIdentifier
+            case .billingPhone:
+                return Constants.billingPhoneReuseIdentifier
+            case .billingEmail:
+                return Constants.billingEmailReuseIdentifier
+            }
+        }
     }
 }

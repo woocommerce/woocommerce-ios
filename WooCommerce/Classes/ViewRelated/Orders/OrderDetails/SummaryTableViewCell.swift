@@ -1,13 +1,13 @@
 import UIKit
 
-class OrderDetailsSummaryCell: UITableViewCell {
+class SummaryTableViewCell: UITableViewCell {
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var createdLabel: UILabel!
     @IBOutlet private weak var paymentStatusLabel: PaddedLabel!
 
     var paymentBackgroundColor: UIColor = .clear
 
-    static let reuseIdentifier = "OrderDetailsSummaryCell"
+    static let reuseIdentifier = "SummaryTableViewCell"
 
     var title: String? {
         get {
@@ -67,7 +67,7 @@ class OrderDetailsSummaryCell: UITableViewCell {
     }
 }
 
-extension OrderDetailsSummaryCell {
+extension SummaryTableViewCell {
     func configure(with viewModel: OrderDetailsViewModel) {
         title = viewModel.summaryTitle
         dateCreated = viewModel.dateCreated

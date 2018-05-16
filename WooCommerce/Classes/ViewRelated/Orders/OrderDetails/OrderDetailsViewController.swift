@@ -60,10 +60,8 @@ class OrderDetailsViewController: UIViewController {
     func configureNibs() {
         for section in sections {
             for row in section.rows {
-                if row != .billingEmail || row != .billingPhone {
-                    let nib = UINib(nibName: row.reuseIdentifier, bundle: nil)
-                    tableView.register(nib, forCellReuseIdentifier: row.reuseIdentifier)
-                }
+                let nib = UINib(nibName: row.reuseIdentifier, bundle: nil)
+                tableView.register(nib, forCellReuseIdentifier: row.reuseIdentifier)
             }
         }
 
@@ -85,15 +83,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].rows[indexPath.row]
-        let cell: UITableViewCell
-        switch row {
-        case .billingPhone:
-            cell = UITableViewCell(style: .default, reuseIdentifier: row.reuseIdentifier)
-        case .billingEmail:
-            cell = UITableViewCell(style: .default, reuseIdentifier: row.reuseIdentifier)
-        default:
-            cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         configure(cell, for: row)
         return cell
     }
@@ -305,8 +295,8 @@ private extension OrderDetailsViewController {
         static let rowHeight = CGFloat(38)
         static let iconFrame = CGRect(x: 8, y: 0, width: 44, height: 44)
         static let accessoryFrame = CGRect(x: 0, y: 0, width: 44, height: 44)
-        static let billingPhoneReuseIdentifier = "BillingPhoneCell"
-        static let billingEmailReuseIdentifier = "BillingEmailCell"
+        static let billingPhoneReuseIdentifier = "DefaultStyleTableViewCell"
+        static let billingEmailReuseIdentifier = "DefaultStyleTableViewCell"
     }
 
     private struct Section {

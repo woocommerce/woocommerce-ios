@@ -89,10 +89,11 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        guard sections[section].title != nil else {
+        guard let _ = sections[section].title else {
             // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
             return CGFloat.leastNonzeroMagnitude
         }
+
         return UITableViewAutomaticDimension
     }
 
@@ -101,10 +102,11 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        guard sections[section].footer != nil else {
+        guard let _ = sections[section].footer else {
             // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section footers.
             return CGFloat.leastNonzeroMagnitude
         }
+
         return Constants.rowHeight
     }
 

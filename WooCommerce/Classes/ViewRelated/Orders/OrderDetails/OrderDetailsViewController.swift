@@ -118,7 +118,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
         cell.configure(text: footerText, image: image)
         cell.didSelectFooter = { [weak self] in
             self?.setShowHideFooter()
-            self?.configureSections()
+            self?.configureTableView()
             let sections = IndexSet(integer: section)
             tableView.reloadSections(sections, with: .fade)
         }
@@ -138,71 +138,38 @@ extension OrderDetailsViewController: UITableViewDelegate {
 //
 extension OrderDetailsViewController {
     private func configure(_ cell: UITableViewCell, for row: Row) {
-        var contactViewModel: ContactViewModel
         switch cell {
         case let cell as OrderDetailsSummaryCell:
             cell.configure(with: viewModel)
         case let cell as OrderDetailsCustomerNoteCell:
             cell.configure(with: viewModel)
-        case let cell as OrderDetailsCustomerInfoCell:
-            switch row {
-            case .shippingAddress:
-                contactViewModel = ContactViewModel(with: order.shippingAddress, contactType: .shipping)
-                cell.configure(with: contactViewModel)
-            case .billingAddress:
-                contactViewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
-                cell.configure(with: contactViewModel)
-            case .billingPhone:
-                fatalError("Billing phone number cell should be default tableview cell type")
-            case .billingEmail:
-                fatalError("Billing email cell should be default tableview cell type")
-            default:
-                fatalError()
-            }
+        case let cell as OrderDetailsCustomerInfoCell where row == .shippingAddress:
+            cell.configure(with: viewModel.shippingViewModel)
+        case let cell as OrderDetailsCustomerInfoCell where row == .billingAddress:
+            cell.configure(with: viewModel.billingViewModel)
+        case let cell as BillingDetailsTableViewCell where row == .billingPhone:
+            configure(cell, for: .billingPhone)
+        case let cell as BillingDetailsTableViewCell where row == .billingEmail:
+            configure(cell, for: .billingEmail)
         default:
-            switch row {
-            case .billingPhone:
-                contactViewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
-                configureBillingPhone(cell, with: contactViewModel)
-            case .billingEmail:
-                contactViewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
-                configureBillingEmail(cell, with: contactViewModel)
-            default:
-                fatalError()
-            }
+            fatalError("Unidentified customer info row type")
         }
     }
 
-    func configureBillingPhone(_ cell: UITableViewCell, with viewModel: ContactViewModel) {
-        cell.textLabel?.applyBodyStyle()
-
-        let phoneButton = UIButton(type: .custom)
-        phoneButton.frame = Constants.iconFrame
-        phoneButton.setImage(Gridicon.iconOfType(.ellipsis), for: .normal)
-        phoneButton.tintColor = StyleManager.wooCommerceBrandColor
-        phoneButton.addTarget(self, action: #selector(phoneButtonAction), for: .touchUpInside)
-
-        let iconView = UIView(frame: Constants.accessoryFrame)
-        iconView .addSubview(phoneButton)
-        cell.accessoryView = iconView
-        cell.textLabel?.text = viewModel.phoneNumber
-        cell.textLabel?.adjustsFontSizeToFitWidth = true
-    }
-
-    func configureBillingEmail(_ cell: UITableViewCell, with viewModel: ContactViewModel) {
-        cell.textLabel?.applyBodyStyle()
-
-        let emailButton = UIButton(type: .custom)
-        emailButton.frame = Constants.iconFrame
-        emailButton.setImage(Gridicon.iconOfType(.mail), for: .normal)
-        emailButton.tintColor = StyleManager.wooCommerceBrandColor
-        emailButton.addTarget(self, action: #selector(emailButtonAction), for: .touchUpInside)
-
-        let iconView = UIView(frame: Constants.accessoryFrame)
-        iconView .addSubview(emailButton)
-        cell.accessoryView = iconView
-        cell.textLabel?.text = viewModel.email
-        cell.textLabel?.adjustsFontSizeToFitWidth = true
+    private func configure(_ cell: BillingDetailsTableViewCell, for billingRow: Row) {
+        if billingRow == .billingPhone {
+            cell.configure(text: viewModel.billingViewModel.phoneNumber, image: Gridicon.iconOfType(.ellipsis))
+            cell.didTapButton = { [weak self] in
+                self?.phoneButtonAction()
+            }
+        } else if billingRow == .billingEmail {
+            cell.configure(text: viewModel.billingViewModel.email, image: Gridicon.iconOfType(.mail))
+            cell.didTapButton = { [weak self] in
+                self?.emailButtonAction()
+            }
+        } else {
+            fatalError("Unidentified billing detail row")
+        }
     }
 
     @objc func phoneButtonAction() {
@@ -293,10 +260,6 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
 private extension OrderDetailsViewController {
     struct Constants {
         static let rowHeight = CGFloat(38)
-        static let iconFrame = CGRect(x: 8, y: 0, width: 44, height: 44)
-        static let accessoryFrame = CGRect(x: 0, y: 0, width: 44, height: 44)
-        static let billingPhoneReuseIdentifier = "DefaultStyleTableViewCell"
-        static let billingEmailReuseIdentifier = "DefaultStyleTableViewCell"
     }
 
     private struct Section {
@@ -324,9 +287,9 @@ private extension OrderDetailsViewController {
             case .billingAddress:
                 return OrderDetailsCustomerInfoCell.reuseIdentifier
             case .billingPhone:
-                return Constants.billingPhoneReuseIdentifier
+                return BillingDetailsTableViewCell.reuseIdentifier
             case .billingEmail:
-                return Constants.billingEmailReuseIdentifier
+                return BillingDetailsTableViewCell.reuseIdentifier
             }
         }
     }

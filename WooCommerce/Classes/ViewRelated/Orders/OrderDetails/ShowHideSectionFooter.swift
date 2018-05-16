@@ -3,7 +3,7 @@ import Gridicons
 
 // MARK: - ShowHideFooterCell
 //
-class ShowHideFooterCell: UITableViewHeaderFooterView {
+class ShowHideSectionFooter: UITableViewHeaderFooterView {
     @IBOutlet private weak var footerLabel: UILabel!
     @IBOutlet private weak var footerArrow: UIImageView!
     @IBOutlet private weak var footerButton: UIButton!
@@ -13,7 +13,7 @@ class ShowHideFooterCell: UITableViewHeaderFooterView {
         didSelectFooter?()
     }
 
-    static let reuseIdentifier = "ShowHideFooterCell"
+    static let reuseIdentifier = "ShowHideSectionFooter"
 
     override func awakeFromNib() {
         super.awakeFromNib()

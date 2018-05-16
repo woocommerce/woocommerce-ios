@@ -65,8 +65,8 @@ class OrderDetailsViewController: UIViewController {
             }
         }
 
-        let footerNib = UINib(nibName: ShowHideFooterCell.reuseIdentifier, bundle: nil)
-        tableView.register(footerNib, forHeaderFooterViewReuseIdentifier: ShowHideFooterCell.reuseIdentifier)
+        let footerNib = UINib(nibName: ShowHideSectionFooter.reuseIdentifier, bundle: nil)
+        tableView.register(footerNib, forHeaderFooterViewReuseIdentifier: ShowHideSectionFooter.reuseIdentifier)
     }
 }
 
@@ -115,7 +115,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
             return nil
         }
 
-        let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideFooterCell.reuseIdentifier) as! ShowHideFooterCell
+        let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideSectionFooter.reuseIdentifier) as! ShowHideSectionFooter
         let image = billingIsHidden ? Gridicon.iconOfType(.chevronDown) : Gridicon.iconOfType(.chevronUp)
         cell.configure(text: footerText, image: image)
         cell.didSelectFooter = { [weak self] in
@@ -141,13 +141,13 @@ extension OrderDetailsViewController: UITableViewDelegate {
 extension OrderDetailsViewController {
     private func configure(_ cell: UITableViewCell, for row: Row) {
         switch cell {
-        case let cell as OrderDetailsSummaryCell:
+        case let cell as SummaryTableViewCell:
             cell.configure(with: viewModel)
-        case let cell as OrderDetailsCustomerNoteCell:
+        case let cell as CustomerNoteTableViewCell:
             cell.configure(with: viewModel)
-        case let cell as OrderDetailsCustomerInfoCell where row == .shippingAddress:
+        case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
             cell.configure(with: viewModel.shippingViewModel)
-        case let cell as OrderDetailsCustomerInfoCell where row == .billingAddress:
+        case let cell as CustomerInfoTableViewCell where row == .billingAddress:
             cell.configure(with: viewModel.billingViewModel)
         case let cell as BillingDetailsTableViewCell where row == .billingPhone:
             configure(cell, for: .billingPhone)
@@ -281,13 +281,13 @@ private extension OrderDetailsViewController {
         var reuseIdentifier: String {
             switch self {
             case .summary:
-                return OrderDetailsSummaryCell.reuseIdentifier
+                return SummaryTableViewCell.reuseIdentifier
             case .customerNote:
-                return OrderDetailsCustomerNoteCell.reuseIdentifier
+                return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:
-                return OrderDetailsCustomerInfoCell.reuseIdentifier
+                return CustomerInfoTableViewCell.reuseIdentifier
             case .billingAddress:
-                return OrderDetailsCustomerInfoCell.reuseIdentifier
+                return CustomerInfoTableViewCell.reuseIdentifier
             case .billingPhone:
                 return BillingDetailsTableViewCell.reuseIdentifier
             case .billingEmail:

@@ -46,7 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        ContextManager.shared.saveContext()
+
     }
 
     private func customizeAppearance() {

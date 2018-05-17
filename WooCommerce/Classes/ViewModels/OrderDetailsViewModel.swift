@@ -10,6 +10,8 @@ class OrderDetailsViewModel {
     let customerNote: String?
     let shippingAddress: String?
     let billingAddress: String?
+    let shippingViewModel: ContactViewModel
+    let billingViewModel: ContactViewModel
 
     init(order: Order) {
         summaryTitle = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
@@ -18,9 +20,9 @@ class OrderDetailsViewModel {
         paymentBackgroundColor = order.status.backgroundColor // MVVM: who should own color responsibilities? Maybe address this down the road.
         paymentBorderColor = order.status.borderColor // same here
         customerNote = order.customerNote
-        let shippingContact = ContactViewModel(with: order.shippingAddress, contactType: ContactType.shipping)
-        shippingAddress = shippingContact.formattedAddress
-        let billingContact = ContactViewModel(with: order.billingAddress, contactType: ContactType.billing)
-        billingAddress = billingContact.formattedAddress
+        shippingViewModel = ContactViewModel(with: order.shippingAddress, contactType: ContactType.shipping)
+        shippingAddress = shippingViewModel.formattedAddress
+        billingViewModel = ContactViewModel(with: order.billingAddress, contactType: ContactType.billing)
+        billingAddress = billingViewModel.formattedAddress
     }
 }

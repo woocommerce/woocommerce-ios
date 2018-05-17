@@ -1,4 +1,6 @@
 import Foundation
+import UIKit
+import Gridicons
 import Contacts
 
 enum ContactType {

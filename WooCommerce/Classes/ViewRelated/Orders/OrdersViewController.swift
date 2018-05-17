@@ -44,6 +44,7 @@ class OrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
+        configureTableView()
         configureSearch()
         orders = loadSampleOrders()
     }
@@ -64,6 +65,11 @@ class OrdersViewController: UIViewController {
                                          action: nil)
 
         navigationItem.backBarButtonItem = backButton
+    }
+
+    func configureTableView() {
+        tableView.estimatedRowHeight = 86
+        tableView.rowHeight = UITableViewAutomaticDimension
     }
 
     func configureSearch() {
@@ -220,10 +226,7 @@ extension OrdersViewController: UITableViewDataSource {
 //
 extension OrdersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 {
-            return UITableViewAutomaticDimension //Constants.groupedFirstSectionHeaderHeight
-        }
-        return Constants.groupedSectionHeaderHeight
+        return UITableViewAutomaticDimension
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -277,8 +280,6 @@ extension OrdersViewController: UISearchBarDelegate {
 //
 extension OrdersViewController {
     struct Constants {
-        static let groupedFirstSectionHeaderHeight: CGFloat = 32.0
-        static let groupedSectionHeaderHeight: CGFloat = 12.0
         static let orderDetailsSegue = "ShowOrderDetailsViewController"
         static let noSearchResultsCount = 1
     }

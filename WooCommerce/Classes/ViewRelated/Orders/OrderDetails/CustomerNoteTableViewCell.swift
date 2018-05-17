@@ -1,7 +1,7 @@
 import UIKit
 import Gridicons
 
-class OrderDetailsCustomerNoteCell: UITableViewCell {
+class CustomerNoteTableViewCell: UITableViewCell {
     @IBOutlet private weak var noteLabel: UILabel! {
         didSet {
             noteLabel.applyBodyStyle()
@@ -14,7 +14,7 @@ class OrderDetailsCustomerNoteCell: UITableViewCell {
         }
     }
 
-    static let reuseIdentifier = "OrderDetailsCustomerNoteCell"
+    static let reuseIdentifier = "CustomerNoteTableViewCell"
 
     var quote: String? {
         get {
@@ -26,7 +26,7 @@ class OrderDetailsCustomerNoteCell: UITableViewCell {
     }
 }
 
-extension OrderDetailsCustomerNoteCell {
+extension CustomerNoteTableViewCell {
     func configure(with viewModel: OrderDetailsViewModel) {
         quote = viewModel.customerNote
     }

@@ -193,17 +193,16 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let anOrder = orderAtIndexPath(indexPath)
-        guard anOrder != nil else {
+        let order = orderAtIndexPath(indexPath)
+        guard let singleOrder = order else {
             let cell = UITableViewCell(style: .default, reuseIdentifier: "NoResultsCell")
             cell.textLabel?.text = "No results found. Clear the filter or search bar to try again."
             cell.textLabel?.numberOfLines = 0
             return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as! OrderListCell
-        if let order = anOrder {
-            cell.configureCell(order: order)
-        }
+        cell.configureCell(order: singleOrder)
+
         return cell
     }
 

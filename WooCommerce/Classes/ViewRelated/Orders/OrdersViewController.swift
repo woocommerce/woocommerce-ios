@@ -7,7 +7,7 @@ class OrdersViewController: UIViewController {
     var orders = [Order]()
     var searchResults = [Order]()
     let searchController = UISearchController(searchResultsController: nil)
-
+    var isUsingFilterAction = false
 
     func loadSampleOrders() -> [Order] {
         guard let path = Bundle.main.url(forResource: "order-list", withExtension: "json") else {
@@ -90,8 +90,9 @@ class OrdersViewController: UIViewController {
         let dismissAction = UIAlertAction(title: NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"), style: .cancel)
         actionSheet.addAction(dismissAction)
 
-        let allAction = UIAlertAction(title: NSLocalizedString("All", comment: "All filter title"), style: .default) { action in
-            // display all of the orders
+        let allAction = UIAlertAction(title: NSLocalizedString("All", comment: "All filter title"), style: .default) { [weak self ] action in
+            self?.isUsingFilterAction = false
+            self?.tableView.reloadData()
         }
         actionSheet.addAction(allAction)
 
@@ -101,20 +102,66 @@ class OrdersViewController: UIViewController {
             }
             actionSheet.addAction(action)
         }
-
         present(actionSheet, animated: true)
     }
 
     func filterAction(_ status: OrderStatus) {
         switch status {
-            default:
-                print("next: filter the table data and display!")
+        case .processing:
+            fallthrough
+        case .pending:
+            fallthrough
+        case .failed:
+            fallthrough
+        case .canceled:
+            fallthrough
+        case .completed:
+            fallthrough
+        case .onHold:
+            fallthrough
+        case .refunded:
+            searchResults = orders.filter { order in
+                return order.status.description.contains(status.description)
+            }
+            isUsingFilterAction = searchResults.count != orders.count
+            tableView.reloadData()
+        default:
+            filterByAllCustomStatuses()
         }
+    }
+
+    func filterByAllCustomStatuses() {
+        var customOrders = [Order]()
+        for order in orders {
+            switch order.status {
+            case .processing:
+                continue
+            case .pending:
+                continue
+            case .failed:
+                continue
+            case .canceled:
+                continue
+            case .completed:
+                continue
+            case .onHold:
+                continue
+            case .refunded:
+                continue
+            default:
+                customOrders.append(order)
+            }
+        }
+        searchResults = customOrders
+        isUsingFilterAction = searchResults.count != orders.count
+        tableView.reloadData()
     }
 
     // MARK: Search bar
     func isFiltering() -> Bool {
-        return searchController.isActive && !searchBarIsEmpty()
+        let usingSearch = searchController.isActive && !searchBarIsEmpty()
+        let usingFilter = isUsingFilterAction
+        return usingSearch || usingFilter
     }
 
     func searchBarIsEmpty() -> Bool {
@@ -131,15 +178,25 @@ extension OrdersViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering() {
+            if searchResults.count == 0 {
+                return 1 // for the "no results" cell
+            }
             return searchResults.count
         }
         return orders.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let anOrder = orderAtIndexPath(indexPath)
+        guard anOrder != nil else {
+            let cell = UITableViewCell(style: .default, reuseIdentifier: "NoResultsCell")
+            cell.textLabel?.text = "No results found. Clear filter or search to try again."
+            return cell
+        }
         let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as! OrderListCell
-        let order = orderAtIndexPath(indexPath)
-        cell.configureCell(order: order)
+        if let order = anOrder {
+            cell.configureCell(order: order)
+        }
         return cell
     }
 
@@ -148,8 +205,14 @@ extension OrdersViewController: UITableViewDataSource {
         return NSLocalizedString("Today", comment: "Title for header section")
     }
 
-    func orderAtIndexPath(_ indexPath: IndexPath) -> Order{
-        return isFiltering() ? searchResults[indexPath.row] : orders[indexPath.row]
+    func orderAtIndexPath(_ indexPath: IndexPath) -> Order? {
+        if isFiltering() {
+            if indexPath.row > searchResults.count - 1 {
+                return nil
+            }
+            return searchResults[indexPath.row]
+        }
+        return orders[indexPath.row]
     }
 }
 
@@ -158,7 +221,7 @@ extension OrdersViewController: UITableViewDataSource {
 extension OrdersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
-            return Constants.groupedFirstSectionHeaderHeight
+            return UITableViewAutomaticDimension //Constants.groupedFirstSectionHeaderHeight
         }
         return Constants.groupedSectionHeaderHeight
     }
@@ -172,9 +235,11 @@ extension OrdersViewController: UITableViewDelegate {
         if segue.identifier == Constants.orderDetailsSegue {
             if let singleOrderViewController = segue.destination as? OrderDetailsViewController {
                 let indexPath = sender as! IndexPath
-                let basicOrder = orderAtIndexPath(indexPath)
-                let singleOrder = loadSingleOrder(basicOrder: basicOrder)
-                singleOrderViewController.order = singleOrder
+                let anOrder = orderAtIndexPath(indexPath)
+                if let basicOrder = anOrder {
+                    let singleOrder = loadSingleOrder(basicOrder: basicOrder)
+                    singleOrderViewController.order = singleOrder
+                }
             }
         }
     }
@@ -215,5 +280,6 @@ extension OrdersViewController {
         static let groupedFirstSectionHeaderHeight: CGFloat = 32.0
         static let groupedSectionHeaderHeight: CGFloat = 12.0
         static let orderDetailsSegue = "ShowOrderDetailsViewController"
+        static let noSearchResultsCount = 1
     }
 }

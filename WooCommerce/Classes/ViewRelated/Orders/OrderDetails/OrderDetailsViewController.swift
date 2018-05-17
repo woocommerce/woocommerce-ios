@@ -43,7 +43,7 @@ class OrderDetailsViewController: UIViewController {
 
         let infoFooter = billingIsHidden ? NSLocalizedString("Show billing", comment: "Footer text to show the billing cell") : NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
         let infoRows: [Row] = billingIsHidden ? [.shippingAddress] : [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
-        let customerInfoSection = Section(title: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), footer: infoFooter, rows: infoRows)
+        let infoSection = Section(title: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), footer: infoFooter, rows: infoRows)
 
         // FIXME: this is temporary
         // the API response always sends customer note data
@@ -51,10 +51,10 @@ class OrderDetailsViewController: UIViewController {
         // but order has customerNote as an optional property right now
         guard let customerNote = order.customerNote,
             !customerNote.isEmpty else {
-            sections = [summarySection, customerInfoSection]
+            sections = [summarySection, infoSection]
             return
         }
-        sections = [summarySection, customerNoteSection, customerInfoSection]
+        sections = [summarySection, customerNoteSection, infoSection]
     }
 
     func configureNibs() {

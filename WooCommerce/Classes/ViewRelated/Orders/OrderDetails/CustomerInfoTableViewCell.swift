@@ -1,6 +1,6 @@
 import UIKit
 
-class OrderDetailsCustomerInfoCell: UITableViewCell {
+class CustomerInfoTableViewCell: UITableViewCell {
     @IBOutlet private weak var titleLabel: UILabel! {
         didSet {
             titleLabel.applyTitleStyle()
@@ -17,7 +17,7 @@ class OrderDetailsCustomerInfoCell: UITableViewCell {
         }
     }
 
-    static let reuseIdentifier = "OrderDetailsCustomerInfoCell"
+    static let reuseIdentifier = "CustomerInfoTableViewCell"
 
     var title: String? {
         get {
@@ -47,7 +47,7 @@ class OrderDetailsCustomerInfoCell: UITableViewCell {
     }
 }
 
-extension OrderDetailsCustomerInfoCell {
+extension CustomerInfoTableViewCell {
     func configure(with viewModel: ContactViewModel) {
         title = viewModel.title
         name = viewModel.fullName

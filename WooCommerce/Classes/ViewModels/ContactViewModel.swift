@@ -30,10 +30,4 @@ class ContactViewModel {
         formattedAddress = contact.postalAddresses.first?.value.formatted(as: .mailingAddress) ?? ""
         email = contact.emailAddresses.first?.value as String?
     }
-
-    struct Constants {
-        static let rowHeight = CGFloat(38)
-        static let iconFrame = CGRect(x: 8, y: 0, width: 44, height: 44)
-        static let accessoryFrame = CGRect(x: 0, y: 0, width: 44, height: 44)
-    }
 }

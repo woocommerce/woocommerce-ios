@@ -235,6 +235,9 @@ extension OrdersViewController: UITableViewDelegate {
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if searchController.isActive {
+            searchController.dismiss(animated: true, completion: nil)
+        }
         if segue.identifier == Constants.orderDetailsSegue {
             if let singleOrderViewController = segue.destination as? OrderDetailsViewController {
                 let indexPath = sender as! IndexPath

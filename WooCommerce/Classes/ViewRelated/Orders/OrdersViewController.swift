@@ -185,7 +185,7 @@ extension OrdersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering() {
             if searchResults.count == 0 {
-                return 1 // for the "no results" cell
+                return Constants.noSearchResultsRow
             }
             return searchResults.count
         }
@@ -196,7 +196,8 @@ extension OrdersViewController: UITableViewDataSource {
         let anOrder = orderAtIndexPath(indexPath)
         guard anOrder != nil else {
             let cell = UITableViewCell(style: .default, reuseIdentifier: "NoResultsCell")
-            cell.textLabel?.text = "No results found. Clear filter or search to try again."
+            cell.textLabel?.text = "No results found. Clear the filter or search bar to try again."
+            cell.textLabel?.numberOfLines = 0
             return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as! OrderListCell
@@ -281,6 +282,6 @@ extension OrdersViewController: UISearchBarDelegate {
 extension OrdersViewController {
     struct Constants {
         static let orderDetailsSegue = "ShowOrderDetailsViewController"
-        static let noSearchResultsCount = 1
+        static let noSearchResultsRow = 1
     }
 }

@@ -17,7 +17,7 @@ class NoResultsTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         titleLabel?.applyBodyStyle()
-    }    
+    }
 }
 
 extension NoResultsTableViewCell {

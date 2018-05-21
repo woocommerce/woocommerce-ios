@@ -162,7 +162,13 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return isFiltering() ? searchResults.count : orders.count
+        if isFiltering() {
+            if searchResults.isEmpty {
+                return Constants.searchResultsNotFoundRowCount
+            }
+            return searchResults.count
+        }
+        return orders.count 
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

@@ -70,6 +70,8 @@ class OrdersViewController: UIViewController {
     func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
+        let nib = UINib(nibName: NoResultsTableViewCell.reuseIdentifier, bundle: nil)
+        tableView.register(nib, forCellReuseIdentifier: NoResultsTableViewCell.reuseIdentifier)
     }
 
     func configureSearch() {
@@ -169,9 +171,9 @@ extension OrdersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let order = orderAtIndexPath(indexPath)
         guard let singleOrder = order else {
-            let cell = UITableViewCell(style: .default, reuseIdentifier: "NoResultsCell")
-            cell.textLabel?.text = "No results found. Clear the filter or search bar to try again."
-            cell.textLabel?.numberOfLines = 0
+            let cell = tableView.dequeueReusableCell(withIdentifier: NoResultsTableViewCell.reuseIdentifier, for: indexPath) as! NoResultsTableViewCell
+            cell.configure(text: NSLocalizedString("No results found. Clear the filter or search bar to try again.", comment: "Displays message to user when no filter or search results were found."))
+
             return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as! OrderListCell
@@ -205,6 +207,9 @@ extension OrdersViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        guard let _ = orderAtIndexPath(indexPath) else {
+            return
+        }
         performSegue(withIdentifier: Constants.orderDetailsSegue, sender: indexPath)
     }
 

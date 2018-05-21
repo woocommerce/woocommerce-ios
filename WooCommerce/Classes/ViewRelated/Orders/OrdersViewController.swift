@@ -8,6 +8,9 @@ class OrdersViewController: UIViewController {
     var searchResults = [Order]()
     let searchController = UISearchController(searchResultsController: nil)
     private var isUsingFilterAction = false
+    var displaysNoResults: Bool {
+        return searchResults.isEmpty && isUsingFilterAction
+    }
 
     func loadSampleOrders() -> [Order] {
         guard let path = Bundle.main.url(forResource: "order-list", withExtension: "json") else {
@@ -159,26 +162,18 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if isFiltering() {
-            if searchResults.isEmpty {
-                return Constants.searchResultsNotFoundRowCount
-            }
-            return searchResults.count
-        }
-        return orders.count
+        return isFiltering() ? searchResults.count : orders.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let order = orderAtIndexPath(indexPath)
-        guard let singleOrder = order else {
+        guard !displaysNoResults else {
             let cell = tableView.dequeueReusableCell(withIdentifier: NoResultsTableViewCell.reuseIdentifier, for: indexPath) as! NoResultsTableViewCell
             cell.configure(text: NSLocalizedString("No results found. Clear the filter or search bar to try again.", comment: "Displays message to user when no filter or search results were found."))
-
             return cell
         }
+        let order = orderAtIndexPath(indexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as! OrderListCell
-        cell.configureCell(order: singleOrder)
-
+        cell.configureCell(order: order)
         return cell
     }
 
@@ -187,14 +182,8 @@ extension OrdersViewController: UITableViewDataSource {
         return NSLocalizedString("Today", comment: "Title for header section")
     }
 
-    func orderAtIndexPath(_ indexPath: IndexPath) -> Order? {
-        if isFiltering() {
-            if indexPath.row > searchResults.count - 1 {
-                return nil
-            }
-            return searchResults[indexPath.row]
-        }
-        return orders[indexPath.row]
+    func orderAtIndexPath(_ indexPath: IndexPath) -> Order {
+        return isFiltering() ? searchResults[indexPath.row] : orders[indexPath.row]
     }
 }
 
@@ -207,24 +196,23 @@ extension OrdersViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard let _ = orderAtIndexPath(indexPath) else {
-            return
-        }
         performSegue(withIdentifier: Constants.orderDetailsSegue, sender: indexPath)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard displaysNoResults == false else {
+            return
+        }
+
         if searchController.isActive {
             searchController.dismiss(animated: true, completion: nil)
         }
+
         if segue.identifier == Constants.orderDetailsSegue {
             if let singleOrderViewController = segue.destination as? OrderDetailsViewController {
                 let indexPath = sender as! IndexPath
-                let anOrder = orderAtIndexPath(indexPath)
-                if let basicOrder = anOrder {
-                    let singleOrder = loadSingleOrder(basicOrder: basicOrder)
-                    singleOrderViewController.order = singleOrder
-                }
+                let order = orderAtIndexPath(indexPath)
+                singleOrderViewController.order = loadSingleOrder(basicOrder: order)
             }
         }
     }

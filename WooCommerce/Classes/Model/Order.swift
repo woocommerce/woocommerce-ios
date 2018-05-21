@@ -161,7 +161,7 @@ extension OrderStatus {
         return [.pending, .processing, .onHold, .failed, .canceled, .completed, .refunded, .custom(NSLocalizedString("Custom", comment: "Title for button that catches all custom labels and displays them on the order list"))]
     }
     static var allOrderStatusDescriptions: [String] {
-        return [self.pending.description, self.processing.description, self.onHold.description, self.failed.description, self.canceled.description, self.completed.description, self.custom(NSLocalizedString("Custom", comment: "Title for button that catches all custom labels and displays them on the order list")).description]
+        return allOrderStatuses.map { $0.description }
     }
     var backgroundColor: UIColor {
         switch self {

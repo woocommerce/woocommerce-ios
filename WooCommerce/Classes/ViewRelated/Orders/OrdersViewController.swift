@@ -168,7 +168,7 @@ extension OrdersViewController: UITableViewDataSource {
             }
             return searchResults.count
         }
-        return orders.count 
+        return orders.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

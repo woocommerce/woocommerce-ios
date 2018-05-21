@@ -24,7 +24,7 @@ DEPENDENCIES:
   - Gridicons (= 0.14)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - Alamofire
     - CocoaLumberjack
     - Crashlytics
@@ -55,4 +55,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 08010c97100223abdf7a351cb2a8b1bdfd158453
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.2

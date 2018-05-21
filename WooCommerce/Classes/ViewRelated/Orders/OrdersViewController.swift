@@ -7,7 +7,7 @@ class OrdersViewController: UIViewController {
     var orders = [Order]()
     var searchResults = [Order]()
     let searchController = UISearchController(searchResultsController: nil)
-    var isUsingFilterAction = false
+    private var isUsingFilterAction = false
 
     func loadSampleOrders() -> [Order] {
         guard let path = Bundle.main.url(forResource: "order-list", withExtension: "json") else {
@@ -68,7 +68,7 @@ class OrdersViewController: UIViewController {
     }
 
     func configureTableView() {
-        tableView.estimatedRowHeight = 86
+        tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
     }
 
@@ -112,49 +112,23 @@ class OrdersViewController: UIViewController {
     }
 
     func filterAction(_ status: OrderStatus) {
-        switch status {
-        case .processing:
-            fallthrough
-        case .pending:
-            fallthrough
-        case .failed:
-            fallthrough
-        case .canceled:
-            fallthrough
-        case .completed:
-            fallthrough
-        case .onHold:
-            fallthrough
-        case .refunded:
-            searchResults = orders.filter { order in
-                return order.status.description.contains(status.description)
-            }
-            isUsingFilterAction = searchResults.count != orders.count
-            tableView.reloadData()
-        default:
+        if case .custom(_) = status {
             filterByAllCustomStatuses()
+            return
         }
+
+        searchResults = orders.filter { order in
+            return order.status.description.contains(status.description)
+        }
+
+        isUsingFilterAction = searchResults.count != orders.count
+        tableView.reloadData()
     }
 
     func filterByAllCustomStatuses() {
         var customOrders = [Order]()
         for order in orders {
-            switch order.status {
-            case .processing:
-                continue
-            case .pending:
-                continue
-            case .failed:
-                continue
-            case .canceled:
-                continue
-            case .completed:
-                continue
-            case .onHold:
-                continue
-            case .refunded:
-                continue
-            default:
+            if case .custom(_) = order.status {
                 customOrders.append(order)
             }
         }
@@ -184,8 +158,8 @@ extension OrdersViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering() {
-            if searchResults.count == 0 {
-                return Constants.noSearchResultsRow
+            if searchResults.isEmpty {
+                return Constants.searchResultsNotFoundRowCount
             }
             return searchResults.count
         }
@@ -283,7 +257,8 @@ extension OrdersViewController: UISearchBarDelegate {
 //
 extension OrdersViewController {
     struct Constants {
+        static let rowHeight = CGFloat(86)
         static let orderDetailsSegue = "ShowOrderDetailsViewController"
-        static let noSearchResultsRow = 1
+        static let searchResultsNotFoundRowCount = 1
     }
 }

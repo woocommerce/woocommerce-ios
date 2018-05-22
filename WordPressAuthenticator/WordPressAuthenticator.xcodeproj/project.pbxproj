@@ -86,11 +86,11 @@
 		B5609143208A563800399AE4 /* LoginSocialErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5609132208A563700399AE4 /* LoginSocialErrorViewController.swift */; };
 		B5609144208A563800399AE4 /* LoginPrologueSignupMethodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5609133208A563700399AE4 /* LoginPrologueSignupMethodViewController.swift */; };
 		B5609145208A563800399AE4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5609134208A563700399AE4 /* LoginViewController.swift */; };
-		B5A5274620B478160065BE81 /* jetpack.json in Resources */ = {isa = PBXBuildFile; fileRef = B5A5274120B478160065BE81 /* jetpack.json */; };
-		B5A5274720B478160065BE81 /* reader.json in Resources */ = {isa = PBXBuildFile; fileRef = B5A5274220B478160065BE81 /* reader.json */; };
-		B5A5274820B478160065BE81 /* notifications.json in Resources */ = {isa = PBXBuildFile; fileRef = B5A5274320B478160065BE81 /* notifications.json */; };
-		B5A5274920B478160065BE81 /* stats.json in Resources */ = {isa = PBXBuildFile; fileRef = B5A5274420B478160065BE81 /* stats.json */; };
-		B5A5274A20B478160065BE81 /* post.json in Resources */ = {isa = PBXBuildFile; fileRef = B5A5274520B478160065BE81 /* post.json */; };
+		B5A5275120B47A540065BE81 /* jetpack.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5A5274120B478160065BE81 /* jetpack.json */; };
+		B5A5275220B47A540065BE81 /* reader.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5A5274220B478160065BE81 /* reader.json */; };
+		B5A5275320B47A540065BE81 /* notifications.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5A5274320B478160065BE81 /* notifications.json */; };
+		B5A5275420B47A540065BE81 /* stats.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5A5274420B478160065BE81 /* stats.json */; };
+		B5A5275520B47A540065BE81 /* post.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5A5274520B478160065BE81 /* post.json */; };
 		B5CDBED420B4714500BC1EF2 /* UIImage+Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5CDBED320B4714500BC1EF2 /* UIImage+Assets.swift */; };
 		B5E07FF4208FD13800657A9A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5E07FF3208FD13800657A9A /* Assets.xcassets */; };
 		B5ED78FE207E976500A8FD8C /* WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5ED78F4207E976500A8FD8C /* WordPressAuthenticator.framework */; };
@@ -110,6 +110,23 @@
 			remoteInfo = WordPressAuthenticator;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B5A5274B20B479D30065BE81 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				B5A5275120B47A540065BE81 /* jetpack.json in CopyFiles */,
+				B5A5275220B47A540065BE81 /* reader.json in CopyFiles */,
+				B5A5275320B47A540065BE81 /* notifications.json in CopyFiles */,
+				B5A5275420B47A540065BE81 /* stats.json in CopyFiles */,
+				B5A5275520B47A540065BE81 /* post.json in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		276354F054C34AD36CA32AB6 /* Pods-WordPressAuthenticator.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.release-alpha.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.release-alpha.xcconfig"; sourceTree = "<group>"; };
@@ -436,7 +453,6 @@
 			children = (
 				B5ED78F6207E976500A8FD8C /* WordPressAuthenticator */,
 				B5ED7901207E976500A8FD8C /* WordPressAuthenticatorTests */,
-				B5A5273F20B477F70065BE81 /* Resources */,
 				B5ED78F5207E976500A8FD8C /* Products */,
 				B5ED7910207E981400A8FD8C /* Frameworks */,
 				6205895375D954F46B1DFE53 /* Pods */,
@@ -464,6 +480,7 @@
 				B5609095208A4EAF00399AE4 /* Signin */,
 				B5609096208A4EAF00399AE4 /* Signup */,
 				B5609094208A4EAF00399AE4 /* UI */,
+				B5A5273F20B477F70065BE81 /* Resources */,
 				B5ED78F7207E976500A8FD8C /* WordPressAuthenticator.h */,
 				B5ED78F8207E976500A8FD8C /* Info.plist */,
 			);
@@ -538,6 +555,7 @@
 				B5ED78F0207E976500A8FD8C /* Frameworks */,
 				B5ED78F1207E976500A8FD8C /* Headers */,
 				B5ED78F2207E976500A8FD8C /* Resources */,
+				B5A5274B20B479D30065BE81 /* CopyFiles */,
 				5ABD4390CE7F425565FA9BD2 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -615,15 +633,10 @@
 			files = (
 				B5E07FF4208FD13800657A9A /* Assets.xcassets in Resources */,
 				B56090CA208A4F5400399AE4 /* NUXButtonView.storyboard in Resources */,
-				B5A5274A20B478160065BE81 /* post.json in Resources */,
 				B560911E208A555E00399AE4 /* Signup.storyboard in Resources */,
-				B5A5274620B478160065BE81 /* jetpack.json in Resources */,
 				B5609118208A555600399AE4 /* SearchTableViewCell.xib in Resources */,
-				B5A5274820B478160065BE81 /* notifications.json in Resources */,
 				B560913F208A563800399AE4 /* Login.storyboard in Resources */,
-				B5A5274720B478160065BE81 /* reader.json in Resources */,
 				B5609137208A563800399AE4 /* EmailMagicLink.storyboard in Resources */,
-				B5A5274920B478160065BE81 /* stats.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

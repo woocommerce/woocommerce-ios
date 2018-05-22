@@ -86,6 +86,11 @@
 		B5609143208A563800399AE4 /* LoginSocialErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5609132208A563700399AE4 /* LoginSocialErrorViewController.swift */; };
 		B5609144208A563800399AE4 /* LoginPrologueSignupMethodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5609133208A563700399AE4 /* LoginPrologueSignupMethodViewController.swift */; };
 		B5609145208A563800399AE4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5609134208A563700399AE4 /* LoginViewController.swift */; };
+		B5A5274620B478160065BE81 /* jetpack.json in Resources */ = {isa = PBXBuildFile; fileRef = B5A5274120B478160065BE81 /* jetpack.json */; };
+		B5A5274720B478160065BE81 /* reader.json in Resources */ = {isa = PBXBuildFile; fileRef = B5A5274220B478160065BE81 /* reader.json */; };
+		B5A5274820B478160065BE81 /* notifications.json in Resources */ = {isa = PBXBuildFile; fileRef = B5A5274320B478160065BE81 /* notifications.json */; };
+		B5A5274920B478160065BE81 /* stats.json in Resources */ = {isa = PBXBuildFile; fileRef = B5A5274420B478160065BE81 /* stats.json */; };
+		B5A5274A20B478160065BE81 /* post.json in Resources */ = {isa = PBXBuildFile; fileRef = B5A5274520B478160065BE81 /* post.json */; };
 		B5CDBED420B4714500BC1EF2 /* UIImage+Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5CDBED320B4714500BC1EF2 /* UIImage+Assets.swift */; };
 		B5E07FF4208FD13800657A9A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5E07FF3208FD13800657A9A /* Assets.xcassets */; };
 		B5ED78FE207E976500A8FD8C /* WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5ED78F4207E976500A8FD8C /* WordPressAuthenticator.framework */; };
@@ -192,6 +197,11 @@
 		B5609132208A563700399AE4 /* LoginSocialErrorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginSocialErrorViewController.swift; sourceTree = "<group>"; };
 		B5609133208A563700399AE4 /* LoginPrologueSignupMethodViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginPrologueSignupMethodViewController.swift; sourceTree = "<group>"; };
 		B5609134208A563700399AE4 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		B5A5274120B478160065BE81 /* jetpack.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = jetpack.json; sourceTree = "<group>"; };
+		B5A5274220B478160065BE81 /* reader.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = reader.json; sourceTree = "<group>"; };
+		B5A5274320B478160065BE81 /* notifications.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = notifications.json; sourceTree = "<group>"; };
+		B5A5274420B478160065BE81 /* stats.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats.json; sourceTree = "<group>"; };
+		B5A5274520B478160065BE81 /* post.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = post.json; sourceTree = "<group>"; };
 		B5CDBED320B4714500BC1EF2 /* UIImage+Assets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Assets.swift"; sourceTree = "<group>"; };
 		B5E07FF3208FD13800657A9A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B5ED78F4207E976500A8FD8C /* WordPressAuthenticator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WordPressAuthenticator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -400,11 +410,33 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		B5A5273F20B477F70065BE81 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B5A5274020B478160065BE81 /* Animations */,
+				B5E07FF3208FD13800657A9A /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B5A5274020B478160065BE81 /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				B5A5274120B478160065BE81 /* jetpack.json */,
+				B5A5274220B478160065BE81 /* reader.json */,
+				B5A5274320B478160065BE81 /* notifications.json */,
+				B5A5274420B478160065BE81 /* stats.json */,
+				B5A5274520B478160065BE81 /* post.json */,
+			);
+			path = Animations;
+			sourceTree = "<group>";
+		};
 		B5ED78EA207E976500A8FD8C = {
 			isa = PBXGroup;
 			children = (
 				B5ED78F6207E976500A8FD8C /* WordPressAuthenticator */,
 				B5ED7901207E976500A8FD8C /* WordPressAuthenticatorTests */,
+				B5A5273F20B477F70065BE81 /* Resources */,
 				B5ED78F5207E976500A8FD8C /* Products */,
 				B5ED7910207E981400A8FD8C /* Frameworks */,
 				6205895375D954F46B1DFE53 /* Pods */,
@@ -432,7 +464,6 @@
 				B5609095208A4EAF00399AE4 /* Signin */,
 				B5609096208A4EAF00399AE4 /* Signup */,
 				B5609094208A4EAF00399AE4 /* UI */,
-				B5E07FF3208FD13800657A9A /* Assets.xcassets */,
 				B5ED78F7207E976500A8FD8C /* WordPressAuthenticator.h */,
 				B5ED78F8207E976500A8FD8C /* Info.plist */,
 			);
@@ -584,10 +615,15 @@
 			files = (
 				B5E07FF4208FD13800657A9A /* Assets.xcassets in Resources */,
 				B56090CA208A4F5400399AE4 /* NUXButtonView.storyboard in Resources */,
+				B5A5274A20B478160065BE81 /* post.json in Resources */,
 				B560911E208A555E00399AE4 /* Signup.storyboard in Resources */,
+				B5A5274620B478160065BE81 /* jetpack.json in Resources */,
 				B5609118208A555600399AE4 /* SearchTableViewCell.xib in Resources */,
+				B5A5274820B478160065BE81 /* notifications.json in Resources */,
 				B560913F208A563800399AE4 /* Login.storyboard in Resources */,
+				B5A5274720B478160065BE81 /* reader.json in Resources */,
 				B5609137208A563800399AE4 /* EmailMagicLink.storyboard in Resources */,
+				B5A5274920B478160065BE81 /* stats.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

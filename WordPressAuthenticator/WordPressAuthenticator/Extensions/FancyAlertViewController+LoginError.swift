@@ -34,7 +34,7 @@ extension FancyAlertViewController {
             }
         }
 
-        let image = UIImage(named: "site-address-modal")
+        let image = UIImage.siteAddressModalPlaceholder
 
         let config = FancyAlertViewController.Config(titleText: Strings.titleText,
                                                      bodyText: Strings.bodyText,

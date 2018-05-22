@@ -60,7 +60,9 @@ class LoginProloguePromoViewController: UIViewController {
         stackView = UIStackView()
         headingLabel = UILabel()
         animationHolder = UIView()
-        animationView = Lottie.LOTAnimationView(name: type.animationKey)
+
+        let bundle = Bundle(for: WordPressAuthenticator.self)
+        animationView = LOTAnimationView(name: type.animationKey, bundle: bundle)
 
         super.init(nibName: nil, bundle: nil)
     }

@@ -4,44 +4,54 @@
       "resizing" : {
         "mode" : "9-part",
         "center" : {
-          "mode" : "tile",
+          "mode" : "stretch",
           "width" : 1,
           "height" : 1
         },
         "cap-insets" : {
-          "bottom" : 8,
-          "top" : 8,
-          "right" : 8,
-          "left" : 8
+          "bottom" : 20,
+          "top" : 18,
+          "right" : 18,
+          "left" : 18
         }
       },
       "idiom" : "universal",
       "filename" : "beveled-blue-button.png",
-      "alignment-insets" : {
-        "top" : 18,
-        "left" : 18,
-        "bottom" : 18,
-        "right" : 20
-      },
       "scale" : "1x"
     },
     {
-      "alignment-insets" : {
-        "top" : 18,
-        "left" : 18,
-        "bottom" : 18,
-        "right" : 20
+      "resizing" : {
+        "mode" : "9-part",
+        "center" : {
+          "mode" : "stretch",
+          "width" : 1,
+          "height" : 1
+        },
+        "cap-insets" : {
+          "bottom" : 20,
+          "top" : 18,
+          "right" : 18,
+          "left" : 18
+        }
       },
       "idiom" : "universal",
       "filename" : "beveled-blue-button@2x.png",
       "scale" : "2x"
     },
     {
-      "alignment-insets" : {
-        "top" : 24,
-        "left" : 24,
-        "bottom" : 24,
-        "right" : 30
+      "resizing" : {
+        "mode" : "9-part",
+        "center" : {
+          "mode" : "stretch",
+          "width" : 1,
+          "height" : 1
+        },
+        "cap-insets" : {
+          "bottom" : 30,
+          "top" : 24,
+          "right" : 24,
+          "left" : 24
+        }
       },
       "idiom" : "universal",
       "filename" : "beveled-blue-button@3x.png",

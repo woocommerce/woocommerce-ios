@@ -32,6 +32,10 @@
 		CE1CCB402056F21C000EE3AC /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* Style.swift */; };
 		CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = CE1CCB4620570A6B000EE3AC /* en.lproj */; };
 		CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */; };
+		CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */; };
+		CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */; };
+		CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */; };
+		CE1EC8CA20B479F1009762BF /* TwoColumnLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */; };
 		CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */; };
 		CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F51262064345B00C6C810 /* UIColor+Helpers.swift */; };
 		CE1F512920697F0100C6C810 /* UIFont+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */; };
@@ -113,6 +117,10 @@
 		CE1CCB3F2056F21C000EE3AC /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		CE1CCB4620570A6B000EE3AC /* en.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = en.lproj; sourceTree = "<group>"; };
 		CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCell.swift; sourceTree = "<group>"; };
+		CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTableViewCell.swift; sourceTree = "<group>"; };
+		CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaymentTableViewCell.xib; sourceTree = "<group>"; };
+		CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnLabelView.xib; sourceTree = "<group>"; };
+		CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnLabelView.swift; sourceTree = "<group>"; };
 		CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Helpers.swift"; sourceTree = "<group>"; };
 		CE1F51262064345B00C6C810 /* UIColor+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Helpers.swift"; sourceTree = "<group>"; };
 		CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Helpers.swift"; sourceTree = "<group>"; };
@@ -307,6 +315,8 @@
 			children = (
 				CED6021B20B35FDF0032C639 /* NoResultsTableViewCell.swift */,
 				CED6021C20B35FDF0032C639 /* NoResultsTableViewCell.xib */,
+				CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */,
+				CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -337,6 +347,8 @@
 				CE855360209BA6A700938BDC /* ShowHideSectionFooter.swift */,
 				CE855363209BA6A700938BDC /* ShowHideSectionFooter.xib */,
 				CEE006072077D14C0079161F /* OrderDetailsViewController.swift */,
+				CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */,
+				CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */,
 			);
 			path = OrderDetails;
 			sourceTree = "<group>";
@@ -442,8 +454,10 @@
 				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
 				CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */,
 				CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */,
+				CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
 				CEE005FA2077C9C00079161F /* order-925.json in Resources */,
+				CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */,
 				CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -526,10 +540,12 @@
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
 				CE34DA2520A1ECD6005D8523 /* ContactViewModel.swift in Sources */,
+				CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */,
 				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
 				CED6021D20B35FDF0032C639 /* NoResultsTableViewCell.swift in Sources */,
 				CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */,
+				CE1EC8CA20B479F1009762BF /* TwoColumnLabelView.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				B56DB3D22049BFAA00D4AA8E /* WooCommerce.xcdatamodeld in Sources */,
 				B50911342049E493007D25DC /* Order.swift in Sources */,

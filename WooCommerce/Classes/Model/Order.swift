@@ -114,12 +114,13 @@ struct Order: Decodable {
         return Date()
     }
 
-    var subtotal: Double {
+    var subtotal: String {
         var subtotalList = [Double]()
         for item in items {
             subtotalList.append(Double(item.subtotal)!)
         }
-        return subtotalList.reduce(0, +)
+        let reduced = subtotalList.reduce(0, +)
+        return String(format: "%.2f", reduced)
     }
 }
 

@@ -40,7 +40,7 @@ class OrderDetailsViewModel {
         billingAddress = billingViewModel.formattedAddress
 
         subtotalLabel = NSLocalizedString("Subtotal", comment: "Subtotal label for payment view")
-        subtotalValue = order.currencySymbol + String(order.subtotal)
+        subtotalValue = order.currencySymbol + order.subtotal
 
         if Double(order.discountTotal) != 0 {
             hasDiscount = true

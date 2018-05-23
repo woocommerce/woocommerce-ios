@@ -1,14 +1,14 @@
 /// WooCommerce API Credentials. Generated on %{timestamp}
 ///
 struct ApiCredentials {
-	
-	/// WordPress.com AppID
-	///
-	static let dotcomAppId = "%{dotcom_app_id}"
 
-	/// WordPress.com Secret
-	///
-	static let dotcomSecret = "%{dotcom_secret}"
+    /// WordPress.com AppID
+    ///
+    static let dotcomAppId = "%{dotcom_app_id}"
+
+    /// WordPress.com Secret
+    ///
+    static let dotcomSecret = "%{dotcom_secret}"
 
     /// Google SDK's ClientID
     ///

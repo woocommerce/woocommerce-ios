@@ -539,6 +539,7 @@
 			inputPaths = (
 				"$(SRCROOT)/Credentials/replace_secrets.rb",
 				"$(SRCROOT)/Credentials/ApiCredentials.swift",
+				"~/.woo_app_credentials.json",
 			);
 			name = "Generate ApiCredentials";
 			outputPaths = (

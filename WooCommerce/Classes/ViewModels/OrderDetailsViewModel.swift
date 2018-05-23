@@ -51,7 +51,7 @@ class OrderDetailsViewModel {
                 for coupon in couponLines {
                     couponList.append(coupon.code)
                 }
-                couponLine = " " + couponList.joined(separator: ",")
+                couponLine = " (" + couponList.joined(separator: ",") + ")"
             } else {
                 couponLine = ""
             }

@@ -19,12 +19,18 @@ struct Order: Decodable {
     let billingAddress: Address
     let items: [OrderItem]
     let currency: String
-    let totalString: String
+    let total: String
     let notes: [OrderNote]?
     let customerID: Int
     let customerNote: String?
+    let couponLines: [CouponLine]?
+    let discountTotal: String
+    let shippingTotal: String
+    let totalTax: String
+    let paymentMethod: String
+    let paymentMethodTitle: String
 
-    init(identifier: Int, number: String, statusString: String, status: OrderStatus, customer: Customer?, dateCreatedString: String, dateUpdatedString: String, shippingAddress: Address, billingAddress: Address, items: [OrderItem], currency: String, totalString: String, notes: [OrderNote]?, customerID: Int, customerNote: String?) {
+    init(identifier: Int, number: String, statusString: String, status: OrderStatus, customer: Customer?, dateCreatedString: String, dateUpdatedString: String, shippingAddress: Address, billingAddress: Address, items: [OrderItem], currency: String, total: String, notes: [OrderNote]?, customerID: Int, customerNote: String?, couponLines: [CouponLine]?, discountTotal: String, shippingTotal: String, totalTax: String, paymentMethod: String, paymentMethodTitle: String) {
         self.identifier = identifier
         self.number = number
         self.statusString = statusString
@@ -36,10 +42,16 @@ struct Order: Decodable {
         self.billingAddress = billingAddress
         self.items = items
         self.currency = currency
-        self.totalString = totalString
+        self.total = total
         self.notes = notes
         self.customerID = customerID
         self.customerNote = customerNote
+        self.couponLines = couponLines
+        self.discountTotal = discountTotal
+        self.shippingTotal = shippingTotal
+        self.totalTax = totalTax
+        self.paymentMethod = paymentMethod
+        self.paymentMethodTitle = paymentMethodTitle
     }
 
     init(from decoder: Decoder) throws {
@@ -55,12 +67,18 @@ struct Order: Decodable {
         let billingAddress = try container.decode(Address.self, forKey: .billingAddress)
         let items = try container.decode([OrderItem].self, forKey: .orderItems)
         let currency = try container.decode(String.self, forKey: .currency)
-        let totalString = try container.decode(String.self, forKey: .total)
+        let total = try container.decode(String.self, forKey: .total)
         let notes = try container.decodeIfPresent([OrderNote].self, forKey: .notes)
         let customerID = try container.decode(Int.self, forKey: .customerID)
         let customerNote = try container.decode(String.self, forKey: .customerNote)
+        let couponLines = try container.decodeIfPresent([CouponLine].self, forKey: .couponLines)
+        let discountTotal = try container.decode(String.self, forKey: .discountTotal)
+        let shippingTotal = try container.decode(String.self, forKey: .shippingTotal)
+        let totalTax = try container.decode(String.self, forKey: .totalTax)
+        let paymentMethod = try container.decode(String.self, forKey: .paymentMethod)
+        let paymentMethodTitle = try container.decode(String.self, forKey: .paymentMethodTitle)
 
-        self.init(identifier: identifier, number: number, statusString: statusString, status: status, customer: customer, dateCreatedString: dateCreatedString, dateUpdatedString: dateUpdatedString, shippingAddress: shippingAddress, billingAddress: billingAddress, items: items, currency: currency, totalString: totalString, notes: notes, customerID: customerID, customerNote: customerNote)
+        self.init(identifier: identifier, number: number, statusString: statusString, status: status, customer: customer, dateCreatedString: dateCreatedString, dateUpdatedString: dateUpdatedString, shippingAddress: shippingAddress, billingAddress: billingAddress, items: items, currency: currency, total: total, notes: notes, customerID: customerID, customerNote: customerNote, couponLines: couponLines, discountTotal: discountTotal, shippingTotal: shippingTotal, totalTax: totalTax, paymentMethod: paymentMethod, paymentMethodTitle: paymentMethodTitle)
     }
 
     var currencySymbol: String {
@@ -83,11 +101,25 @@ struct Order: Decodable {
         case total = "total"
         case customerNote = "customer_note"
         case notes = "notes"
+        case couponLines = "coupon_lines"
+        case discountTotal = "discount_total"
+        case shippingTotal = "shipping_total"
+        case totalTax = "total_tax"
+        case paymentMethod = "payment_method"
+        case paymentMethodTitle = "payment_method_title"
     }
 
     var dateCreated: Date {
         // TODO: use WordPressShared date helpers to convert dateCreatedString into a Date
         return Date()
+    }
+
+    var subtotal: Double {
+        var subtotalList = [Double]()
+        for item in items {
+            subtotalList.append(Double(item.subtotal)!)
+        }
+        return subtotalList.reduce(0, +)
     }
 }
 
@@ -405,5 +437,28 @@ extension Customer: Decodable {
         let note: String? = try container.decode(String.self, forKey: .note)
 
         self.init(identifier: identifier, firstName: firstName, lastName: lastName, email: email, phone: phone, billingAddress: billingAddress, shippingAddress: shippingAddress, note: note)
+    }
+}
+
+struct CouponLine: Decodable {
+    let id: Int
+    let code: String
+
+    init(id: Int, code: String) {
+        self.id = id
+        self.code = code
+    }
+
+    enum CouponLineStructKeys: String, CodingKey {
+        case id = "id"
+        case code = "code"
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CouponLineStructKeys.self)
+        let id = try container.decode(Int.self, forKey: .id)
+        let code = try container.decode(String.self, forKey: .code)
+
+        self.init(id: id, code: code)
     }
 }

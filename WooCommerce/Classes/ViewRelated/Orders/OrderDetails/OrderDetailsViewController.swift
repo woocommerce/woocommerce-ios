@@ -33,6 +33,8 @@ class OrderDetailsViewController: UIViewController {
     }
 
     func configureTableView() {
+        tableView.estimatedRowHeight = Constants.rowHeight
+        tableView.rowHeight = UITableViewAutomaticDimension
         configureSections()
         configureNibs()
     }
@@ -45,16 +47,18 @@ class OrderDetailsViewController: UIViewController {
         let infoRows: [Row] = billingIsHidden ? [.shippingAddress] : [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
         let infoSection = Section(title: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), footer: infoFooter, rows: infoRows)
 
+        let paymentSection = Section(title: NSLocalizedString("PAYMENT", comment: "Payment section title"), footer: nil, rows: [.payment])
+
         // FIXME: this is temporary
         // the API response always sends customer note data
         // if there is no customer note it sends an empty string
         // but order has customerNote as an optional property right now
         guard let customerNote = order.customerNote,
             !customerNote.isEmpty else {
-            sections = [summarySection, infoSection]
+            sections = [summarySection, infoSection, paymentSection]
             return
         }
-        sections = [summarySection, customerNoteSection, infoSection]
+        sections = [summarySection, customerNoteSection, infoSection, paymentSection]
     }
 
     func configureNibs() {
@@ -153,6 +157,8 @@ extension OrderDetailsViewController {
             configure(cell, for: .billingPhone)
         case let cell as BillingDetailsTableViewCell where row == .billingEmail:
             configure(cell, for: .billingEmail)
+        case let cell as PaymentTableViewCell:
+            cell.configure(with: viewModel)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -277,6 +283,7 @@ private extension OrderDetailsViewController {
         case billingAddress
         case billingPhone
         case billingEmail
+        case payment
 
         var reuseIdentifier: String {
             switch self {
@@ -292,6 +299,8 @@ private extension OrderDetailsViewController {
                 return BillingDetailsTableViewCell.reuseIdentifier
             case .billingEmail:
                 return BillingDetailsTableViewCell.reuseIdentifier
+            case .payment:
+                return PaymentTableViewCell.reuseIdentifier
             }
         }
     }

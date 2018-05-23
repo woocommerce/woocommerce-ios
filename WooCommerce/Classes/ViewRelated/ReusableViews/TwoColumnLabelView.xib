@@ -45,8 +45,10 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
+                <outlet property="bottomConstraint" destination="6YY-h7-JXn" id="Cdz-44-d8b"/>
                 <outlet property="leftColumn" destination="3Td-Am-Wbd" id="tmZ-dE-xL2"/>
                 <outlet property="rightColumn" destination="v4f-dh-0ZA" id="QOA-XC-1Cx"/>
+                <outlet property="topConstraint" destination="JkY-Xb-WQU" id="joY-O6-w5i"/>
             </connections>
             <point key="canvasLocation" x="-104.5" y="133"/>
         </view>

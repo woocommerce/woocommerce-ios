@@ -15,6 +15,8 @@
 		B557DA1620979904005962F4 /* CustomerNoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B557DA1420979904005962F4 /* CustomerNoteTableViewCell.xib */; };
 		B559EBAF20A0BF8F00836CD4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B559EBAD20A0BF8E00836CD4 /* README.md */; };
 		B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = B559EBAE20A0BF8F00836CD4 /* LICENSE */; };
+		B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */ = {isa = PBXBuildFile; fileRef = B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */; };
+		B55D4C0220B5CE3D00D7A50F /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55D4C0020B5CE3D00D7A50F /* ApiCredentials.swift */; };
 		B5650B0920A4CD7F009702D0 /* FluxSumi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B546CCF3209363A5007CDA5F /* FluxSumi.framework */; };
 		B5650B0A20A4CD7F009702D0 /* FluxSumi.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B546CCF3209363A5007CDA5F /* FluxSumi.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B5650B0E20A4CD7F009702D0 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B557D9FD209753BB005962F4 /* Networking.framework */; };
@@ -102,6 +104,9 @@
 		B557DA1420979904005962F4 /* CustomerNoteTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomerNoteTableViewCell.xib; sourceTree = "<group>"; };
 		B559EBAD20A0BF8E00836CD4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		B559EBAE20A0BF8F00836CD4 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		B55D4BFA20B5CDE600D7A50F /* ApiCredentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiCredentials.swift; sourceTree = "<group>"; };
+		B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = replace_secrets.rb; sourceTree = "<group>"; };
+		B55D4C0020B5CE3D00D7A50F /* ApiCredentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiCredentials.swift; sourceTree = "<group>"; };
 		B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WooCommerce.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B56DB3CE2049BFAA00D4AA8E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -199,10 +204,30 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		B55D4BF920B5CDE600D7A50F /* Credentials */ = {
+			isa = PBXGroup;
+			children = (
+				B55D4BFA20B5CDE600D7A50F /* ApiCredentials.swift */,
+				B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */,
+			);
+			path = Credentials;
+			sourceTree = "<group>";
+		};
+		B55D4BFE20B5CE3D00D7A50F /* Derived Sources */ = {
+			isa = PBXGroup;
+			children = (
+				B55D4C0020B5CE3D00D7A50F /* ApiCredentials.swift */,
+			);
+			name = "Derived Sources";
+			path = /private/tmp/WooCommerce.build;
+			sourceTree = "<absolute>";
+		};
 		B56DB3BD2049BFAA00D4AA8E = {
 			isa = PBXGroup;
 			children = (
+				B55D4BF920B5CDE600D7A50F /* Credentials */,
 				B56DB3F12049C0B800D4AA8E /* Classes */,
+				B55D4BFE20B5CE3D00D7A50F /* Derived Sources */,
 				B56DB3F22049C0C000D4AA8E /* Resources */,
 				B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */,
 				88A44ABE866401E6DB03AC60 /* Frameworks */,
@@ -360,6 +385,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B56DB3E62049BFAA00D4AA8E /* Build configuration list for PBXNativeTarget "WooCommerce" */;
 			buildPhases = (
+				B55D4BF820B5CD9300D7A50F /* Generate ApiCredentials */,
 				0B1466AADF9347CBC9D9760E /* [CP] Check Pods Manifest.lock */,
 				B56DB3C22049BFAA00D4AA8E /* Sources */,
 				B56DB3C32049BFAA00D4AA8E /* Frameworks */,
@@ -450,6 +476,7 @@
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
 				CE855367209BA6A700938BDC /* ShowHideSectionFooter.xib in Resources */,
 				CEE005FE2077CA2F0079161F /* order-937.json in Resources */,
+				B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */,
 				CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */,
 				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
 				CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */,
@@ -518,6 +545,24 @@
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		B55D4BF820B5CD9300D7A50F /* Generate ApiCredentials */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Credentials/replace_secrets.rb",
+				"$(SRCROOT)/Credentials/ApiCredentials.swift",
+				"~/.woo_app_credentials.json",
+			);
+			name = "Generate ApiCredentials";
+			outputPaths = (
+				/tmp/WooCommerce.build/ApiCredentials.swift,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "DERIVED_PATH=/tmp/WooCommerce.build\nSCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb\nINPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.swift\nOUTPUT_PATH=${DERIVED_PATH}/ApiCredentials.swift\n\n\nif [ ! -f $SECRETS_PATH ]\nthen\n    echo \">> Missing Secrets ${SECRETS_PATH}\"\n    exit -1\nfi\n\necho \">> Loading Secrets ${SECRETS_PATH}\"\necho \">> Generating Credentials ${OUTPUT_PATH}\"\n\nruby ${SCRIPT_PATH} -i ${INPUT_PATH} -s ${SECRETS_PATH} > ${OUTPUT_PATH}\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -531,6 +576,7 @@
 				CE17C2E220ACA06800AFBD20 /* BillingDetailsTableViewCell.swift in Sources */,
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
+				B55D4C0220B5CE3D00D7A50F /* ApiCredentials.swift in Sources */,
 				CE855364209BA6A700938BDC /* ShowHideSectionFooter.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
@@ -716,6 +762,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce Development";
+				SECRETS_PATH = $HOME/.woo_app_credentials.json;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -734,6 +781,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce App Store";
+				SECRETS_PATH = $HOME/.woo_app_credentials.json;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

@@ -1,7 +1,23 @@
 import UIKit
 
 class PaymentTableViewCell: UITableViewCell {
+    let verticalStackView = UIStackView()
+
     static let reuseIdentifier = "PaymentTableViewCell"
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        verticalStackView.axis = .vertical
+        verticalStackView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(verticalStackView)
+
+        NSLayoutConstraint.activate([
+            verticalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            verticalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            verticalStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 14),
+            verticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            ])
+    }
 }
 
 extension PaymentTableViewCell {
@@ -19,30 +35,30 @@ extension PaymentTableViewCell {
 
         let subtotalView = TwoColumnLabelView.makeFromNib()
         subtotalView.configure(leftText: subtotalLabel, rightText: subtotalValue)
-        contentView.addSubview(subtotalView)
+        verticalStackView.addArrangedSubview(subtotalView)
 
         if detailsViewModel.hasDiscount,
         let discountLabelText = discountLabel,
         let discountValueText = discountValue {
             let discountView = TwoColumnLabelView.makeFromNib()
             discountView.configure(leftText: discountLabelText, rightText: discountValueText)
-            contentView.addSubview(discountView)
+            verticalStackView.addArrangedSubview(discountView)
         }
 
         let shippingView = TwoColumnLabelView.makeFromNib()
         shippingView.configure(leftText: shippingLabel, rightText: shippingValue)
-        contentView.addSubview(shippingView)
+        verticalStackView.addArrangedSubview(shippingView)
 
         if detailsViewModel.hasTaxes,
         let taxesLabelText = taxesLabel,
         let taxesValueText = taxesValue {
             let taxesView = TwoColumnLabelView.makeFromNib()
             taxesView.configure(leftText: taxesLabelText, rightText: taxesValueText)
-            contentView.addSubview(taxesView)
+            verticalStackView.addArrangedSubview(taxesView)
         }
 
         let totalView = TwoColumnLabelView.makeFromNib()
         totalView.configureWithTitleStyle(leftText: totalLabel, rightText: totalValue)
-        contentView.addSubview(totalView)
+        verticalStackView.addArrangedSubview(totalView)
     }
 }

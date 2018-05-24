@@ -78,6 +78,6 @@ class OrderDetailsViewModel {
 
         totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
         totalValue = order.currencySymbol + order.total
-        paymentSummary = NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethod) (\(order.paymentMethodTitle))", comment: "Payment of <currency symbol><payment total> via <payment method> (payment method title)")
+        paymentSummary = NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
     }
 }

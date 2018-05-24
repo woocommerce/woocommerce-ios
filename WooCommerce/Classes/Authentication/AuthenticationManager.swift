@@ -7,6 +7,8 @@ import WordPressAuthenticator
 ///
 class AuthenticationManager {
 
+    /// Initializes the WordPress Authenticator.
+    ///
     func initialize() {
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
@@ -21,8 +23,30 @@ class AuthenticationManager {
         WordPressAuthenticator.shared.delegate = self
     }
 
-    func showLogin(from presenter: UIViewController, animated: Bool) {
+    /// Displays the Login Flow using the specified UIViewController as presenter.
+    ///
+    func showLogin(from presenter: UIViewController) {
         WordPressAuthenticator.showLoginForJustWPCom(from: presenter)
+    }
+
+    /// Handles an Authentication URL Callback. Returns *true* on success.
+    ///
+    func handleAuthenticationUrl(_ url: URL, options: [UIApplicationOpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
+        let source = options[.sourceApplication] as? String
+        let annotation = options[.annotation]
+        let path = url.absoluteString
+
+        if WordPressAuthenticator.isGoogleAuthURL(url: url, sourceApplication: source, annotation: annotation) {
+            return true
+        }
+
+        // TODO: This should be an Authenticator method
+        let magicLoginPath = "magic-login"
+        if path.hasPrefix(ApiCredentials.dotcomAuthScheme) && path.contains(magicLoginPath) {
+            return WordPressAuthenticator.openAuthenticationURL(url, allowWordPressComAuth: true, fromRootViewController: rootViewController)
+        }
+
+        return false
     }
 }
 

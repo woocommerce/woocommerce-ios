@@ -16,14 +16,14 @@ target 'WooCommerce' do
   # Automattic Libraries
   # ====================
   #
-  pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.1'
-  pod 'Gridicons', '0.14'
+  pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.3'
+  pod 'Gridicons', '0.15'
+  pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => '599083a'
 
   # External Libraries
   # ==================
   #
-  pod 'Alamofire', '4.6.0'
-  pod 'Crashlytics', '3.9.3'
+  pod 'Crashlytics', '3.10.1'
 
 end
 
@@ -37,7 +37,7 @@ target 'Networking' do
   # External Libraries
   # ==================
   #
-  pod 'Alamofire', '4.6.0'
+  pod 'Alamofire', '4.7.2'
 
   target 'NetworkingTests' do
     inherit! :search_paths

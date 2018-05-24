@@ -37,6 +37,6 @@ extension TwoColumnLabelView {
 
     struct Constants {
         static let topConstant = CGFloat(14)
-        static let bottomConstant = CGFloat(14)
+        static let bottomConstant = CGFloat(20)
     }
 }

@@ -38,6 +38,8 @@
 		CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */; };
 		CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */; };
 		CE1EC8CA20B479F1009762BF /* TwoColumnLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */; };
+		CE1EC8CF20B6FD53009762BF /* FootnoteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8CE20B6FD53009762BF /* FootnoteView.xib */; };
+		CE1EC8D120B6FE39009762BF /* FootnoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8D020B6FE39009762BF /* FootnoteView.swift */; };
 		CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */; };
 		CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F51262064345B00C6C810 /* UIColor+Helpers.swift */; };
 		CE1F512920697F0100C6C810 /* UIFont+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */; };
@@ -126,6 +128,8 @@
 		CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaymentTableViewCell.xib; sourceTree = "<group>"; };
 		CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnLabelView.xib; sourceTree = "<group>"; };
 		CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnLabelView.swift; sourceTree = "<group>"; };
+		CE1EC8CE20B6FD53009762BF /* FootnoteView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = FootnoteView.xib; path = Classes/ViewRelated/ReusableViews/FootnoteView.xib; sourceTree = SOURCE_ROOT; };
+		CE1EC8D020B6FE39009762BF /* FootnoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FootnoteView.swift; sourceTree = "<group>"; };
 		CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Helpers.swift"; sourceTree = "<group>"; };
 		CE1F51262064345B00C6C810 /* UIColor+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Helpers.swift"; sourceTree = "<group>"; };
 		CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Helpers.swift"; sourceTree = "<group>"; };
@@ -338,6 +342,8 @@
 		CED6021A20B35FBF0032C639 /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
+				CE1EC8D020B6FE39009762BF /* FootnoteView.swift */,
+				CE1EC8CE20B6FD53009762BF /* FootnoteView.xib */,
 				CED6021B20B35FDF0032C639 /* NoResultsTableViewCell.swift */,
 				CED6021C20B35FDF0032C639 /* NoResultsTableViewCell.xib */,
 				CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */,
@@ -473,6 +479,7 @@
 				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,
 				CEE005F82077C9690079161F /* order-list.json in Resources */,
 				CEE005FC2077CA030079161F /* order-949.json in Resources */,
+				CE1EC8CF20B6FD53009762BF /* FootnoteView.xib in Resources */,
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
 				CE855367209BA6A700938BDC /* ShowHideSectionFooter.xib in Resources */,
 				CEE005FE2077CA2F0079161F /* order-937.json in Resources */,
@@ -580,6 +587,7 @@
 				CE855364209BA6A700938BDC /* ShowHideSectionFooter.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
+				CE1EC8D120B6FE39009762BF /* FootnoteView.swift in Sources */,
 				B557DA1520979904005962F4 /* CustomerNoteTableViewCell.swift in Sources */,
 				CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,

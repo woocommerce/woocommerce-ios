@@ -64,14 +64,14 @@ PODS:
     - WordPressShared (~> 1.0)
     - WordPressUI (~> 1.0)
     - wpxmlrpc (~> 0.8)
-  - WordPressKit (1.0.3):
+  - WordPressKit (1.0.4):
     - AFNetworking (= 3.2.1)
     - Alamofire (= 4.7.2)
     - CocoaLumberjack (= 3.4.2)
     - UIDeviceIdentifier (~> 0.4)
-    - WordPressShared (= 1.0.1)
+    - WordPressShared (~> 1.0.1)
     - wpxmlrpc (= 0.8.3)
-  - WordPressShared (1.0.1):
+  - WordPressShared (1.0.2):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
     - NSObject-SafeExpectations (= 0.0.2)
@@ -83,7 +83,7 @@ DEPENDENCIES:
   - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.3`)
   - Crashlytics (= 3.10.1)
   - Gridicons (= 0.15)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `599083a`)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `f50be0f`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -113,7 +113,7 @@ EXTERNAL SOURCES:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
     :tag: 0.2.3
   WordPressAuthenticator:
-    :commit: 599083a
+    :commit: f50be0f
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 CHECKOUT OPTIONS:
@@ -121,7 +121,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
     :tag: 0.2.3
   WordPressAuthenticator:
-    :commit: 599083a
+    :commit: f50be0f
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
@@ -143,11 +143,11 @@ SPEC CHECKSUMS:
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
   WordPressAuthenticator: 4c802aa18781858253daf984f873e3efe0dac7ef
-  WordPressKit: 58a8663d557c4c8def59b6492f9ef7736a69b60d
-  WordPressShared: 13a743d923796382419e03521e47491e9322087e
+  WordPressKit: 4444d268171d0e1fd34f513513c16c1289a2bafa
+  WordPressShared: 378a62d09417209278bf68b57720579dbcd76e0c
   WordPressUI: 9f90f8e1e629af13e1021c6281660623d62ff953
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
 
-PODFILE CHECKSUM: 743530d448a9f05c305c1fe20870ea07bdcb8942
+PODFILE CHECKSUM: 75978e00c3ec7983658fe283818fc3aecea38937
 
 COCOAPODS: 1.5.2

@@ -55,10 +55,21 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
+			<string>com.automattic.woocommerce</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>wordpress-oauth-v2</string>
+				<string>DOTCOM_AUTH_SCHEME</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
 			<string>GoogleSignIn</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>GOOGLE_URL_SCHEME</string>
+				<string>GOOGLE_AUTH_SCHEME</string>
 			</array>
 		</dict>
 	</array>

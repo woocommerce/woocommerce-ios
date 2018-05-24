@@ -10,6 +10,10 @@ struct ApiCredentials {
     ///
     static let dotcomSecret = "%{dotcom_secret}"
 
+    /// WordPress.com Magic Link Scheme
+    ///
+    static let dotcomAuthScheme = "%{dotcom_auth_scheme}"
+
     /// Google SDK's ClientID
     ///
     static let googleClientId = "%{google_client_id}"

@@ -123,7 +123,7 @@ private extension AppDelegate {
             fatalError()
         }
 
-        authenticationManager.showLogin(from: rootViewController, animated: true)
+        authenticationManager.showLogin(from: rootViewController)
     }
 
     /// Indicates if there's a default WordPress.com account.

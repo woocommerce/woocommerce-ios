@@ -878,7 +878,6 @@
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
-				WOO_SCHEME = woo;
 			};
 			name = Debug;
 		};
@@ -902,7 +901,6 @@
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
-				WOO_SCHEME = woo;
 			};
 			name = Release;
 		};

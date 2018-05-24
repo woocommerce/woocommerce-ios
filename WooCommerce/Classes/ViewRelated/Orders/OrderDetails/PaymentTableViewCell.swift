@@ -22,6 +22,10 @@ class PaymentTableViewCell: UITableViewCell {
 
 extension PaymentTableViewCell {
     func configure(with detailsViewModel: OrderDetailsViewModel) {
+        // Don't re-draw the subviews on an existing table cell
+        if verticalStackView.subviews.count > 0 {
+            return
+        }
         let subtotalView = buildSubtotalView(with: detailsViewModel)
         verticalStackView.addArrangedSubview(subtotalView)
 

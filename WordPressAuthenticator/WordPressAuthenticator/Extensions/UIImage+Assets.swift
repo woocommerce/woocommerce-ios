@@ -17,7 +17,7 @@ extension UIImage {
     ///
     @objc
     public static var onePasswordImage: UIImage {
-        return UIImage(named: "onepassword-wp-button", in: bundle, compatibleWith: nil)!
+        return UIImage(named: "onepassword-button", in: bundle, compatibleWith: nil)!
     }
 
     /// Returns the Link Image.

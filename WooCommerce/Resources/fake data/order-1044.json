@@ -1,0 +1,173 @@
+
+{
+    "id": 1044,
+    "parent_id": 0,
+    "number": "1044",
+    "order_key": "wc_order_5ae0817b45e8d",
+    "created_via": "checkout",
+    "version": "3.3.5",
+    "status": "completed",
+    "currency": "USD",
+    "date_created": "2018-04-25T09:24:11",
+    "date_created_gmt": "2018-04-25T13:24:11",
+    "date_modified": "2018-05-23T13:39:33",
+    "date_modified_gmt": "2018-05-23T17:39:33",
+    "discount_total": "0.00",
+    "discount_tax": "0.00",
+    "shipping_total": "0.00",
+    "shipping_tax": "0.00",
+    "cart_tax": "0.00",
+    "total": "30.00",
+    "total_tax": "0.00",
+    "prices_include_tax": false,
+    "customer_id": 5,
+    "customer_ip_address": "75.86.132.7",
+    "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_4) applewebkit/605.1.15 (khtml, like gecko) version/11.1 safari/605.1.15",
+    "customer_note": "I love pancake syrup!",
+    "billing": {
+        "first_name": "Pickles",
+        "last_name": "Salty Pork Von Hausen",
+        "company": "",
+        "address_1": "101 E Clay St",
+        "address_2": "",
+        "city": "Saukville",
+        "state": "WI",
+        "postcode": "53080-1903",
+        "country": "US",
+        "email": "test@example.com",
+        "phone": "262-284-3271"
+    },
+    "shipping": {
+        "first_name": "Pickles",
+        "last_name": "Salty Pork Von Hausen",
+        "company": "",
+        "address_1": "101 E CLAY ST",
+        "address_2": "",
+        "city": "SAUKVILLE",
+        "state": "WI",
+        "postcode": "53080-1903",
+        "country": "US"
+    },
+    "payment_method": "stripe",
+    "payment_method_title": "Credit Card (Stripe)",
+    "transaction_id": "ch_1CKnbUJK48mSkzFLKh1h23Ln",
+    "date_paid": "2018-04-25T09:24:13",
+    "date_paid_gmt": "2018-04-25T13:24:13",
+    "date_completed": "2018-05-23T13:39:33",
+    "date_completed_gmt": "2018-05-23T17:39:33",
+    "cart_hash": "611eb0cc7aa90912553db6f1c61330f0",
+    "meta_data": [
+        {
+            "id": 44242,
+            "key": "_stripe_source_id",
+            "value": "src_1CKnbRJK48mSkzFLYbpkEsMv"
+        },
+        {
+            "id": 44243,
+            "key": "_stripe_charge_captured",
+            "value": "yes"
+        },
+        {
+            "id": 44244,
+            "key": "_stripe_fee",
+            "value": "1.17"
+        },
+        {
+            "id": 44245,
+            "key": "_stripe_net",
+            "value": "28.83"
+        },
+        {
+            "id": 44246,
+            "key": "_stripe_currency",
+            "value": "USD"
+        },
+        {
+            "id": 44466,
+            "key": "_shipstation_exported",
+            "value": "yes"
+        },
+        {
+            "id": 44621,
+            "key": "_shipping_phone",
+            "value": "262-284-3271"
+        },
+        {
+            "id": 44622,
+            "key": "_wc_connect_destination_normalized",
+            "value": "1"
+        }
+    ],
+    "line_items": [
+        {
+            "id": 931,
+            "name": "Fabric (Variable Product)",
+            "product_id": 262,
+            "variation_id": 264,
+            "quantity": 1,
+            "tax_class": "",
+            "subtotal": "30.00",
+            "subtotal_tax": "0.00",
+            "total": "30.00",
+            "total_tax": "0.00",
+            "taxes": [],
+            "meta_data": [
+                {
+                    "id": 6838,
+                    "key": "pa_fabric",
+                    "value": "italian"
+                },
+                {
+                    "id": 6839,
+                    "key": "size",
+                    "value": "Medium"
+                },
+                {
+                    "id": 6840,
+                    "key": "pa_color",
+                    "value": "green"
+                }
+            ],
+            "sku": "",
+            "price": 30
+        }
+    ],
+    "tax_lines": [],
+    "shipping_lines": [
+        {
+            "id": 932,
+            "method_title": "Free shipping",
+            "method_id": "free_shipping:26",
+            "total": "0.00",
+            "total_tax": "0.00",
+            "taxes": [],
+            "meta_data": [
+                {
+                    "id": 6845,
+                    "key": "Items",
+                    "value": "Fabric (Variable Product) &times; 1"
+                }
+            ]
+        }
+    ],
+    "fee_lines": [],
+    "coupon_lines": [],
+    "refunds": [],
+    "_links": {
+        "self": [
+            {
+                "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/1044"
+            }
+        ],
+        "collection": [
+            {
+                "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
+            }
+        ],
+        "customer": [
+            {
+                "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/5"
+            }
+        ]
+    }
+}

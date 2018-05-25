@@ -143,6 +143,10 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let googleLoginServerClientId: String
 
+    /// GoogleLogin Callback Scheme
+    ///
+    let googleLoginScheme: String
+
     /// UserAgent
     ///
     let userAgent: String
@@ -159,6 +163,7 @@ public struct WordPressAuthenticatorConfiguration {
                  wpcomTermsOfServiceURL: String,
                  googleLoginClientId: String,
                  googleLoginServerClientId: String,
+                 googleLoginScheme: String,
                  userAgent: String,
                  supportNotificationIndicatorFeatureFlag: Bool) {
         self.wpcomClientId = wpcomClientId
@@ -167,6 +172,7 @@ public struct WordPressAuthenticatorConfiguration {
         self.wpcomTermsOfServiceURL = wpcomTermsOfServiceURL
         self.googleLoginClientId =  googleLoginClientId
         self.googleLoginServerClientId = googleLoginServerClientId
+        self.googleLoginScheme = googleLoginScheme
         self.userAgent = userAgent
         self.supportNotificationIndicatorFeatureFlag = supportNotificationIndicatorFeatureFlag
     }
@@ -211,6 +217,7 @@ public struct WordPressAuthenticatorConfiguration {
         static let jetpackBlogUsername      = "jetpackBlogUsername"
         static let username                 = "username"
         static let emailMagicLinkSource     = "emailMagicLinkSource"
+        static let magicLinkUrlPath         = "magic-login"
     }
 
     // MARK: - Initialization
@@ -251,10 +258,29 @@ public struct WordPressAuthenticatorConfiguration {
         return viewController is LoginPrologueViewController || viewController is NUXViewControllerBase
     }
 
-    /// Indicates if the specified URL is a Google Authentication Link.
+    /// Indicates if the received URL is a Google Authentication Callback.
     ///
-    @objc public class func isGoogleAuthURL(url: URL, sourceApplication: String?, annotation: Any?) -> Bool {
+    @objc public func isGoogleAuthUrl(_ url: URL) -> Bool {
+        return url.absoluteString.hasPrefix(configuration.googleLoginScheme)
+    }
+
+    /// Indicates if the received URL is a WordPress.com Authentication Callback.
+    ///
+    @objc public func isWordPressAuthUrl(_ url: URL) -> Bool {
+        let expectedPrefix = configuration.wpcomScheme + "://" + Constants.magicLinkUrlPath
+        return url.absoluteString.hasPrefix(expectedPrefix)
+    }
+
+    /// Attempts to process the specified URL as a Google Authentication Link. Returns *true* on success.
+    ///
+    @objc public func handleGoogleAuthUrl(_ url: URL, sourceApplication: String?, annotation: Any?) -> Bool {
         return GIDSignIn.sharedInstance().handle(url, sourceApplication: sourceApplication, annotation: annotation)
+    }
+
+    /// Attempts to process the specified URL as a WordPress Authentication Link. Returns *true* on success.
+    ///
+    @objc public func handleWordPressAuthUrl(_ url: URL, allowWordPressComAuth: Bool, rootViewController: UIViewController) -> Bool {
+        return WordPressAuthenticator.openAuthenticationURL(url, allowWordPressComAuth: allowWordPressComAuth, fromRootViewController: rootViewController)
     }
 
 

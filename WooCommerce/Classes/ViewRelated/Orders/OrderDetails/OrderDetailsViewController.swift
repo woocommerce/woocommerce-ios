@@ -14,7 +14,6 @@ class OrderDetailsViewController: UIViewController {
     }
 
     var viewModel: OrderDetailsViewModel!
-    var sectionTitles = [String]()
     var billingIsHidden = true
     private var sections = [Section]()
 

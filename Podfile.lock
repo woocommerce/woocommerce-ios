@@ -83,7 +83,7 @@ DEPENDENCIES:
   - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.3`)
   - Crashlytics (= 3.10.1)
   - Gridicons (= 0.15)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `f50be0f`)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `74ec8d1c4341e58569e1f75ad0fb0f8bb5c4e723`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -113,7 +113,7 @@ EXTERNAL SOURCES:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
     :tag: 0.2.3
   WordPressAuthenticator:
-    :commit: f50be0f
+    :commit: 74ec8d1c4341e58569e1f75ad0fb0f8bb5c4e723
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 CHECKOUT OPTIONS:
@@ -121,7 +121,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
     :tag: 0.2.3
   WordPressAuthenticator:
-    :commit: f50be0f
+    :commit: 74ec8d1c4341e58569e1f75ad0fb0f8bb5c4e723
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
@@ -148,6 +148,6 @@ SPEC CHECKSUMS:
   WordPressUI: 9f90f8e1e629af13e1021c6281660623d62ff953
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
 
-PODFILE CHECKSUM: 75978e00c3ec7983658fe283818fc3aecea38937
+PODFILE CHECKSUM: a361a8c3ae886e9a8fa816446f9b442d16ad2654
 
 COCOAPODS: 1.5.2

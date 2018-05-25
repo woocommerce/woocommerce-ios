@@ -16,6 +16,7 @@ class AuthenticationManager {
                                                                 wpcomTermsOfServiceURL: Constants.termsOfServiceURL,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
+                                                                googleLoginScheme: ApiCredentials.googleAuthScheme,
                                                                 userAgent: UserAgent.defaultUserAgent,
                                                                 supportNotificationIndicatorFeatureFlag: false)
 
@@ -34,16 +35,13 @@ class AuthenticationManager {
     func handleAuthenticationUrl(_ url: URL, options: [UIApplicationOpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
         let source = options[.sourceApplication] as? String
         let annotation = options[.annotation]
-        let path = url.absoluteString
 
-        if WordPressAuthenticator.isGoogleAuthURL(url: url, sourceApplication: source, annotation: annotation) {
-            return true
+        if WordPressAuthenticator.shared.isGoogleAuthUrl(url) {
+            return WordPressAuthenticator.shared.handleGoogleAuthUrl(url, sourceApplication: source, annotation: annotation)
         }
 
-        // TODO: This should be an Authenticator method
-        let magicLoginPath = "magic-login"
-        if path.hasPrefix(ApiCredentials.dotcomAuthScheme) && path.contains(magicLoginPath) {
-            return WordPressAuthenticator.openAuthenticationURL(url, allowWordPressComAuth: true, fromRootViewController: rootViewController)
+        if WordPressAuthenticator.shared.isWordPressAuthUrl(url) {
+            return WordPressAuthenticator.shared.handleWordPressAuthUrl(url, allowWordPressComAuth: true, rootViewController: rootViewController)
         }
 
         return false

@@ -36,6 +36,8 @@
 		CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */; };
 		CE1EC8D420B75925009762BF /* AddItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8D220B75925009762BF /* AddItemTableViewCell.swift */; };
 		CE1EC8D520B75925009762BF /* AddItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8D320B75925009762BF /* AddItemTableViewCell.xib */; };
+		CE1EC8E220B862CB009762BF /* OrderNoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8E020B862CB009762BF /* OrderNoteTableViewCell.swift */; };
+		CE1EC8E320B862CB009762BF /* OrderNoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8E120B862CB009762BF /* OrderNoteTableViewCell.xib */; };
 		CE1EC8E520B8895F009762BF /* OrderNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8E420B8895F009762BF /* OrderNoteViewModel.swift */; };
 		CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */; };
 		CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F51262064345B00C6C810 /* UIColor+Helpers.swift */; };
@@ -123,6 +125,8 @@
 		CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCell.swift; sourceTree = "<group>"; };
 		CE1EC8D220B75925009762BF /* AddItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemTableViewCell.swift; sourceTree = "<group>"; };
 		CE1EC8D320B75925009762BF /* AddItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddItemTableViewCell.xib; sourceTree = "<group>"; };
+		CE1EC8E020B862CB009762BF /* OrderNoteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteTableViewCell.swift; sourceTree = "<group>"; };
+		CE1EC8E120B862CB009762BF /* OrderNoteTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderNoteTableViewCell.xib; sourceTree = "<group>"; };
 		CE1EC8E420B8895F009762BF /* OrderNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteViewModel.swift; sourceTree = "<group>"; };
 		CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Helpers.swift"; sourceTree = "<group>"; };
 		CE1F51262064345B00C6C810 /* UIColor+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Helpers.swift"; sourceTree = "<group>"; };
@@ -370,6 +374,8 @@
 				CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */,
 				CE855360209BA6A700938BDC /* ShowHideSectionFooter.swift */,
 				CE855363209BA6A700938BDC /* ShowHideSectionFooter.xib */,
+				CE1EC8E020B862CB009762BF /* OrderNoteTableViewCell.swift */,
+				CE1EC8E120B862CB009762BF /* OrderNoteTableViewCell.xib */,
 				CEE006072077D14C0079161F /* OrderDetailsViewController.swift */,
 			);
 			path = OrderDetails;
@@ -475,6 +481,7 @@
 				CE855367209BA6A700938BDC /* ShowHideSectionFooter.xib in Resources */,
 				CEE005FE2077CA2F0079161F /* order-937.json in Resources */,
 				B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */,
+				CE1EC8E320B862CB009762BF /* OrderNoteTableViewCell.xib in Resources */,
 				CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */,
 				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
 				CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */,
@@ -590,6 +597,7 @@
 				CE1EC8E520B8895F009762BF /* OrderNoteViewModel.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				B56DB3D22049BFAA00D4AA8E /* WooCommerce.xcdatamodeld in Sources */,
+				CE1EC8E220B862CB009762BF /* OrderNoteTableViewCell.swift in Sources */,
 				B50911342049E493007D25DC /* Order.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */,
 				CE1F512920697F0100C6C810 /* UIFont+Helpers.swift in Sources */,

@@ -1,5 +1,6 @@
 import Foundation
 import WordPressAuthenticator
+import WordPressUI
 
 
 
@@ -26,12 +27,10 @@ class AuthenticationManager {
 
     /// Displays the Login Flow using the specified UIViewController as presenter.
     ///
-    func showLogin(from presenter: UIViewController) {
-        let loginViewController = WordPressAuthenticator.signinForWordPress()
-        loginViewController.restrictToWPCom = true
-        loginViewController.offerSignupOption = false
+    func displayAuthentication(from presenter: UIViewController) {
+        let prologueViewController = LoginPrologueViewController()
 
-        let navigationController = UINavigationController(rootViewController: loginViewController)
+        let navigationController = RotationAwareNavigationViewController(rootViewController: prologueViewController)
         presenter.present(navigationController, animated: true, completion: nil)
     }
 

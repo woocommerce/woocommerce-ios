@@ -59,66 +59,69 @@ class AuthenticationManager {
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
-    /// Indicates if the active Authenticator can be dismissed, or not. Authentication is Dismissable when there is a
-    /// default wpcom account, or at least one self-hosted blog.
+    /// Indicates if the active Authenticator can be dismissed or not.
     ///
     var dismissActionEnabled: Bool {
+        // TODO: Return *true* only if there is no default account already set.
         return false
     }
 
     /// Indicates whether if the Support Action should be enabled, or not.
     ///
     var supportActionEnabled: Bool {
+        // TODO: Wire Zendesk
         return false
     }
 
     /// Indicates if Support is Enabled.
     ///
     var supportEnabled: Bool {
+        // TODO: Wire Zendesk
         return false
     }
 
     /// Indicates if the Support notification indicator should be displayed.
     ///
     var showSupportNotificationIndicator: Bool {
+        // TODO: Wire Zendesk
         return false
     }
 
     /// Returns Helpshift's Unread Messages Count.
     ///
     var supportBadgeCount: Int {
+        // TODO: Wire Zendesk
         return Int.min
     }
 
     /// Refreshes Helpshift's Unread Count.
     ///
     func refreshSupportBadgeCount() {
-
+        // TODO: Wire Zendesk
     }
 
     /// Returns an instance of a SupportView, configured to be displayed from a specified Support Source.
     ///
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, options: [String: Any] = [:]) {
-
+        // TODO: Wire Zendesk
     }
 
     /// Presents Support new request, with the specified ViewController as a source.
-    /// Additional metadata is supplied, such as the sourceTag and Login details.
     ///
     func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, options: [String: Any]) {
-
+        // TODO: Wire Zendesk
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, onDismiss: @escaping () -> Void) {
-
+        // TODO: Wire Store Picker
     }
 
     /// Presents the Signup Epilogue, in the specified NavigationController.
     ///
     func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, service: SocialService?) {
-
+        // NO-OP: The current WC version does not support Signup.
     }
 
     /// Indicates if the Login Epilogue should be presented. This is false only when we're doing a Jetpack Connect, and the new
@@ -131,38 +134,39 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Indicates if the Signup Epilogue should be displayed.
     ///
     func shouldPresentSignupEpilogue() -> Bool {
+        // Note: The current WC version does not support Signup.
         return false
     }
 
-    /// Whenever a WordPress.com acocunt has been created during the Auth flow, we'll add a new local WPCOM Account, and set it as
-    /// the new DefaultWordPressComAccount.
+    /// Executed whenever a new WordPress.com account has been created.
     ///
     func createdWordPressComAccount(username: String, authToken: String) {
-
+        // NO-OP: The current WC version does not support Signup.
     }
 
     /// Synchronizes the specified WordPress Account.
     ///
     func sync(credentials: WordPressCredentials, onCompletion: @escaping (Error?) -> Void) {
+        // TODO: Download all of the Account's metadata!
         onCompletion(nil)
     }
 
     /// Tracks a given Analytics Event.
     ///
     func track(event: WPAnalyticsStat) {
-
+        // TODO: Integrate Tracks
     }
 
     /// Tracks a given Analytics Event, with the specified properties.
     ///
     func track(event: WPAnalyticsStat, properties: [AnyHashable: Any]) {
-
+        // TODO: Integrate Tracks
     }
 
     /// Tracks a given Analytics Event, with the specified error.
     ///
     func track(event: WPAnalyticsStat, error: Error) {
-
+        // TODO: Integrate Tracks
     }
 }
 

@@ -331,7 +331,6 @@ public struct WordPressAuthenticatorConfiguration {
         presenter.present(navController, animated: true, completion: nil)
     }
 
-
     /// Used to present the new self-hosted login flow from BlogListViewController
     @objc public class func showLoginForSelfHostedSite(_ presenter: UIViewController) {
         defer {
@@ -373,6 +372,20 @@ public struct WordPressAuthenticatorConfiguration {
 
         return NUXNavigationController(rootViewController: controller)
     }
+
+
+    /// Returns an instance of LoginEmailViewController. This allows the host app to fine tune the way it's displayed / configure
+    /// it's features.
+    ///
+    public class func signinForWordPress() -> LoginEmailViewController {
+        let storyboard = UIStoryboard(name: "Login", bundle: bundle)
+        guard let controller = storyboard.instantiateViewController(withIdentifier: "emailEntry") as? LoginEmailViewController else {
+            fatalError()
+        }
+
+        return controller
+    }
+
 
     private class func trackOpenedLogin() {
         WordPressAuthenticator.track(.openedLogin)

@@ -233,16 +233,6 @@
 			path = Credentials;
 			sourceTree = "<group>";
 		};
-		B55D4BFE20B5CE3D00D7A50F /* DerivedSources */ = {
-			isa = PBXGroup;
-			children = (
-				B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */,
-				B5A8F8A820B84D3F00D211DE /* InfoPlist.h */,
-			);
-			name = DerivedSources;
-			path = /private/tmp/WooCommerce.build;
-			sourceTree = "<absolute>";
-		};
 		B55D4C0420B6026700D7A50F /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
@@ -263,7 +253,6 @@
 			isa = PBXGroup;
 			children = (
 				B55D4BF920B5CDE600D7A50F /* Credentials */,
-				B55D4BFE20B5CE3D00D7A50F /* DerivedSources */,
 				B5A8F8A620B84CF600D211DE /* DerivedSources */,
 				B56DB3F12049C0B800D4AA8E /* Classes */,
 				B56DB3F22049C0C000D4AA8E /* Resources */,
@@ -338,6 +327,8 @@
 		B5A8F8A620B84CF600D211DE /* DerivedSources */ = {
 			isa = PBXGroup;
 			children = (
+				B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */,
+				B5A8F8A820B84D3F00D211DE /* InfoPlist.h */,
 			);
 			path = DerivedSources;
 			sourceTree = "<group>";

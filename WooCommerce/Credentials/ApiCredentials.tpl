@@ -22,6 +22,10 @@ struct ApiCredentials {
     ///
     static let googleServerId = "%{google_server_id}"
 
+    /// Google SDK's Auth Scheme
+    ///
+    static let googleAuthScheme = "%{google_auth_scheme}"
+
     /// Tracks Prefix
     ///
     static let tracksPrefix = "%{tracks_prefix}"

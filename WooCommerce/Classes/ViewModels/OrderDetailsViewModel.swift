@@ -16,6 +16,7 @@ class OrderDetailsViewModel {
 
     let addNoteIcon: UIImage
     let addNoteText: String
+    var orderNotes = [OrderNoteViewModel]()
 
     init(order: Order) {
         summaryTitle = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
@@ -31,5 +32,11 @@ class OrderDetailsViewModel {
 
         addNoteIcon = Gridicon.iconOfType(.addOutline)
         addNoteText = NSLocalizedString("Add a note", comment: "Button text for adding a new order note")
+        if let notes = order.notes {
+            for note in notes {
+                let noteViewModel = OrderNoteViewModel(with: note)
+                orderNotes.append(noteViewModel)
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Gridicons
 
 class OrderDetailsViewModel {
     let summaryTitle: String
@@ -13,6 +14,9 @@ class OrderDetailsViewModel {
     let shippingViewModel: ContactViewModel
     let billingViewModel: ContactViewModel
 
+    let addNoteIcon: UIImage
+    let addNoteText: String
+
     init(order: Order) {
         summaryTitle = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
         dateCreated = String.localizedStringWithFormat(NSLocalizedString("Created %@", comment: "Order created date"), order.dateCreatedString) //FIXME: use a formatted date instead of raw timestamp
@@ -24,5 +28,8 @@ class OrderDetailsViewModel {
         shippingAddress = shippingViewModel.formattedAddress
         billingViewModel = ContactViewModel(with: order.billingAddress, contactType: ContactType.billing)
         billingAddress = billingViewModel.formattedAddress
+
+        addNoteIcon = Gridicon.iconOfType(.addOutline)
+        addNoteText = NSLocalizedString("Add a note", comment: "Button text for adding a new order note")
     }
 }

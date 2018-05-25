@@ -45,16 +45,18 @@ class OrderDetailsViewController: UIViewController {
         let infoRows: [Row] = billingIsHidden ? [.shippingAddress] : [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
         let infoSection = Section(title: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), footer: infoFooter, rows: infoRows)
 
+        let orderNotesSection = Section(title: NSLocalizedString("ORDER NOTES", comment: "Order notes section title"), footer: nil, rows: [.addOrderNote])
+
         // FIXME: this is temporary
         // the API response always sends customer note data
         // if there is no customer note it sends an empty string
         // but order has customerNote as an optional property right now
         guard let customerNote = order.customerNote,
             !customerNote.isEmpty else {
-            sections = [summarySection, infoSection]
+            sections = [summarySection, infoSection, orderNotesSection]
             return
         }
-        sections = [summarySection, customerNoteSection, infoSection]
+        sections = [summarySection, customerNoteSection, infoSection, orderNotesSection]
     }
 
     func configureNibs() {
@@ -133,6 +135,10 @@ extension OrderDetailsViewController: UITableViewDataSource {
 extension OrderDetailsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        if sections[indexPath.section].rows[indexPath.row] == .addOrderNote {
+            // TODO: present modal for Add Note screen
+        }
     }
 }
 
@@ -153,6 +159,8 @@ extension OrderDetailsViewController {
             configure(cell, for: .billingPhone)
         case let cell as BillingDetailsTableViewCell where row == .billingEmail:
             configure(cell, for: .billingEmail)
+        case let cell as AddItemTableViewCell:
+            cell.configure(image: viewModel.addNoteIcon, text: viewModel.addNoteText)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -277,6 +285,7 @@ private extension OrderDetailsViewController {
         case billingAddress
         case billingPhone
         case billingEmail
+        case addOrderNote
 
         var reuseIdentifier: String {
             switch self {
@@ -292,6 +301,8 @@ private extension OrderDetailsViewController {
                 return BillingDetailsTableViewCell.reuseIdentifier
             case .billingEmail:
                 return BillingDetailsTableViewCell.reuseIdentifier
+            case .addOrderNote:
+                return AddItemTableViewCell.reuseIdentifier
             }
         }
     }

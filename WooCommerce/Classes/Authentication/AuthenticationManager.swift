@@ -27,7 +27,12 @@ class AuthenticationManager {
     /// Displays the Login Flow using the specified UIViewController as presenter.
     ///
     func showLogin(from presenter: UIViewController) {
-        WordPressAuthenticator.showLoginForJustWPCom(from: presenter)
+        let loginViewController = WordPressAuthenticator.signinForWordPress()
+        loginViewController.restrictToWPCom = true
+        loginViewController.offerSignupOption = false
+
+        let navigationController = UINavigationController(rootViewController: loginViewController)
+        presenter.present(navigationController, animated: true, completion: nil)
     }
 
     /// Handles an Authentication URL Callback. Returns *true* on success.

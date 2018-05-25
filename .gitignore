@@ -5,9 +5,7 @@
 ## Build generated
 build/
 DerivedData/
-
-## Header Preprocessor Constants
-WooCommerce/Resources/InfoPlist.h
+DerivedSources/
 
 ## Various settings
 *.pbxuser

@@ -6,10 +6,10 @@ import WordPressKit
 
 /// This is the first screen following the log in prologue screen if the user chooses to log in.
 ///
-class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
+open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     @IBOutlet var emailTextField: WPWalkthroughTextField!
-    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
-    @IBOutlet var verticalCenterConstraint: NSLayoutConstraint?
+    @IBOutlet open var bottomContentConstraint: NSLayoutConstraint?
+    @IBOutlet open var verticalCenterConstraint: NSLayoutConstraint?
     @IBOutlet var inputStack: UIStackView?
     @IBOutlet var alternativeLoginLabel: UILabel?
 
@@ -19,7 +19,7 @@ class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     // This signup button isn't for the main flow; it's only shown during Jetpack installation
     var wpcomSignupButton: UIButton?
 
-    override var sourceTag: WordPressSupportSourceTag {
+    override open var sourceTag: WordPressSupportSourceTag {
         get {
             return .loginEmail
         }
@@ -27,7 +27,7 @@ class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
     var didFindSafariSharedCredentials = false
     var didRequestSafariSharedCredentials = false
-    var offerSignupOption = false
+    open var offerSignupOption = false
     fileprivate var awaitingGoogle = false
 
     private struct Constants {
@@ -39,7 +39,7 @@ class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     // MARK: Lifecycle Methods
 
 
-    override func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
 
         localizeControls()
@@ -49,13 +49,13 @@ class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         addSignupButton()
     }
 
-    override func didChangePreferredContentSize() {
+    override open func didChangePreferredContentSize() {
         super.didChangePreferredContentSize()
         configureEmailField()
         configureAlternativeLabel()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
+    override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         // The old create account vc hides the nav bar, so make sure its always visible.
@@ -70,7 +70,7 @@ class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         configureForWPComOnlyIfNeeded()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
+    override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
@@ -80,7 +80,7 @@ class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     }
 
 
-    override func viewWillDisappear(_ animated: Bool) {
+    override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
     }
@@ -234,7 +234,7 @@ class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     ///
     /// - Parameter loading: True if the form should be configured to a "loading" state.
     ///
-    override func configureViewLoading(_ loading: Bool) {
+    override open func configureViewLoading(_ loading: Bool) {
         emailTextField.isEnabled = !loading
         googleLoginButton?.isEnabled = !loading
 
@@ -365,7 +365,7 @@ class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         })
     }
 
-    override func displayRemoteError(_ error: Error) {
+    override open func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
 
         if awaitingGoogle {
@@ -403,7 +403,7 @@ class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
     // MARK: - Segue
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    override open func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 
         if let vc = segue.destination as? LoginPrologueSignupMethodViewController {
@@ -532,7 +532,7 @@ extension LoginEmailViewController {
 }
 
 extension LoginEmailViewController: GIDSignInDelegate {
-    func sign(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
+    open func sign(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
         guard let user = user,
             let token = user.authentication.idToken,
             let email = user.profile.email else {

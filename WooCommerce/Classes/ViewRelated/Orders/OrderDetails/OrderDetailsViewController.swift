@@ -44,7 +44,13 @@ class OrderDetailsViewController: UIViewController {
         let infoRows: [Row] = billingIsHidden ? [.shippingAddress] : [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
         let infoSection = Section(title: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), footer: infoFooter, rows: infoRows)
 
-        let orderNotesSection = Section(title: NSLocalizedString("ORDER NOTES", comment: "Order notes section title"), footer: nil, rows: [.addOrderNote])
+        var noteRows: [Row] = [.addOrderNote]
+        if let notes = order.notes {
+            for _ in notes {
+                noteRows.append(.orderNote)
+            }
+        }
+        let orderNotesSection = Section(title: NSLocalizedString("ORDER NOTES", comment: "Order notes section title"), footer: nil, rows: noteRows)
 
         // FIXME: this is temporary
         // the API response always sends customer note data
@@ -85,7 +91,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        configure(cell, for: row)
+        configure(cell, for: row, at: indexPath)
         return cell
     }
 
@@ -144,7 +150,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
 // MARK: - Extension
 //
 extension OrderDetailsViewController {
-    private func configure(_ cell: UITableViewCell, for row: Row) {
+    private func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as SummaryTableViewCell:
             cell.configure(with: viewModel)
@@ -160,6 +166,8 @@ extension OrderDetailsViewController {
             configure(cell, for: .billingEmail)
         case let cell as AddItemTableViewCell:
             cell.configure(image: viewModel.addNoteIcon, text: viewModel.addNoteText)
+        case let cell as OrderNoteTableViewCell where row == .orderNote:
+            cell.configure(with: viewModel.orderNotes[indexPath.row - 1])
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -285,6 +293,7 @@ private extension OrderDetailsViewController {
         case billingPhone
         case billingEmail
         case addOrderNote
+        case orderNote
 
         var reuseIdentifier: String {
             switch self {
@@ -302,6 +311,8 @@ private extension OrderDetailsViewController {
                 return BillingDetailsTableViewCell.reuseIdentifier
             case .addOrderNote:
                 return AddItemTableViewCell.reuseIdentifier
+            case .orderNote:
+                return OrderNoteTableViewCell.reuseIdentifier
             }
         }
     }

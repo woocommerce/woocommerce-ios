@@ -9,7 +9,6 @@
 ///
 #define GOOGLE_AUTH_SCHEME %{google_auth_scheme}
 
-
 /// WordPress.com Auth Callback Scheme (AKA Magic Link!)
 ///
 #define DOTCOM_AUTH_SCHEME %{dotcom_auth_scheme}

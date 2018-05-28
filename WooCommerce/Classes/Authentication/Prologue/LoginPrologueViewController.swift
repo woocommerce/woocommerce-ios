@@ -8,6 +8,10 @@ import WordPressAuthenticator
 ///
 class LoginPrologueViewController: UIViewController {
 
+    /// White-Background View, to be placed surrounding the bottom area.
+    ///
+    @IBOutlet var backgroundView: UIView!
+
     /// Label to be displayed at the top of the Prologue.
     ///
     @IBOutlet var upperLabel: UILabel!
@@ -36,7 +40,9 @@ class LoginPrologueViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         setupMainView()
+        setupBackgroundView()
         setupJetpackImage()
         setupDisclaimerLabel()
         setupUpperLabel()
@@ -56,6 +62,11 @@ private extension LoginPrologueViewController {
 
     func setupMainView() {
         view.backgroundColor = StyleManager.wooCommerceBrandColor
+    }
+
+    func setupBackgroundView() {
+        backgroundView.layer.masksToBounds = false
+        backgroundView.layer.shadowOpacity = 0.5
     }
 
     func setupUpperLabel() {

@@ -12,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LoginPrologueViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="backgroundView" destination="Jev-3G-uUK" id="IRD-vv-J2K"/>
                 <outlet property="disclaimerTextView" destination="vue-fy-kfo" id="Pph-D3-yFK"/>
                 <outlet property="jetpackImageView" destination="ua7-QM-6C0" id="EZJ-r0-klP"/>
                 <outlet property="loginButton" destination="6pL-xH-OzE" id="BmO-7R-g01"/>
@@ -24,8 +25,14 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="prologue-hands" translatesAutoresizingMaskIntoConstraints="NO" id="2hE-S0-vwt">
+                    <rect key="frame" x="0.0" y="298" width="303" height="303"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="2hE-S0-vwt" secondAttribute="height" multiplier="1:1" id="7dD-Yb-Srf"/>
+                    </constraints>
+                </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jev-3G-uUK" userLabel="Background View">
-                    <rect key="frame" x="0.0" y="601.66666666666663" width="375" height="210.33333333333337"/>
+                    <rect key="frame" x="0.0" y="601" width="375" height="211"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o29-Vv-KDs" userLabel="Container View">
@@ -79,12 +86,6 @@ L3</string>
                         <constraint firstItem="ua7-QM-6C0" firstAttribute="leading" secondItem="o29-Vv-KDs" secondAttribute="leading" constant="20" id="wt3-Fc-eK8"/>
                     </constraints>
                 </view>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="prologue-hands" translatesAutoresizingMaskIntoConstraints="NO" id="2hE-S0-vwt">
-                    <rect key="frame" x="0.0" y="298.66666666666669" width="303" height="303.00000000000006"/>
-                    <constraints>
-                        <constraint firstAttribute="width" secondItem="2hE-S0-vwt" secondAttribute="height" multiplier="1:1" id="7dD-Yb-Srf"/>
-                    </constraints>
-                </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n36-ix-D75">
                     <rect key="frame" x="20" y="74" width="335" height="61"/>
                     <string key="text">Check your WooCommerce Store on

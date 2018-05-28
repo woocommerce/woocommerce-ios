@@ -4,7 +4,7 @@ import UIKit
 
 /// WooCommerce UIImage Assets
 ///
-extension UIImage  {
+extension UIImage {
 
     /// Jetpack Logo Image
     ///

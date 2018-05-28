@@ -48,6 +48,8 @@
 		B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFB720BC510200DB0E8C /* UIImage+Woo.swift */; };
 		B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFB920BC515600DB0E8C /* UIColor+Woo.swift */; };
 		B5D1AFC020BC67C200DB0E8C /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
+		B5D1AFC620BC7B7300DB0E8C /* StorePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFC520BC7B7300DB0E8C /* StorePickerViewController.swift */; };
+		B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5D1AFC720BC7B9600DB0E8C /* StorePickerViewController.xib */; };
 		B5EE26C020A5EE6600468622 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5EE26BF20A5EE6600468622 /* Storage.framework */; };
 		B5EE26C120A5EE8100468622 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5EE26BF20A5EE6600468622 /* Storage.framework */; };
 		B5EE26C220A5EE8100468622 /* Storage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5EE26BF20A5EE6600468622 /* Storage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -151,6 +153,8 @@
 		B5D1AFB720BC510200DB0E8C /* UIImage+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Woo.swift"; sourceTree = "<group>"; };
 		B5D1AFB920BC515600DB0E8C /* UIColor+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Woo.swift"; sourceTree = "<group>"; };
 		B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooConstants.swift; sourceTree = "<group>"; };
+		B5D1AFC520BC7B7300DB0E8C /* StorePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePickerViewController.swift; sourceTree = "<group>"; };
+		B5D1AFC720BC7B9600DB0E8C /* StorePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StorePickerViewController.xib; sourceTree = "<group>"; };
 		B5EE26BF20A5EE6600468622 /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE17C2E020ACA06800AFBD20 /* BillingDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		CE17C2E120ACA06800AFBD20 /* BillingDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BillingDetailsTableViewCell.xib; sourceTree = "<group>"; };
@@ -249,6 +253,7 @@
 			isa = PBXGroup;
 			children = (
 				B5A8F8AB20B88D8400D211DE /* Prologue */,
+				B5D1AFC420BC7B3000DB0E8C /* Epilogue */,
 				B55D4C0520B6027100D7A50F /* AuthenticationManager.swift */,
 			);
 			path = Authentication;
@@ -363,6 +368,15 @@
 				B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */,
 			);
 			path = System;
+			sourceTree = "<group>";
+		};
+		B5D1AFC420BC7B3000DB0E8C /* Epilogue */ = {
+			isa = PBXGroup;
+			children = (
+				B5D1AFC520BC7B7300DB0E8C /* StorePickerViewController.swift */,
+				B5D1AFC720BC7B9600DB0E8C /* StorePickerViewController.xib */,
+			);
+			path = Epilogue;
 			sourceTree = "<group>";
 		};
 		CE1CCB3E2056F204000EE3AC /* Styles */ = {
@@ -541,6 +555,7 @@
 			files = (
 				B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */,
 				B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */,
+				B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */,
 				CED6021E20B35FDF0032C639 /* NoResultsTableViewCell.xib in Resources */,
 				CEE006012077CA820079161F /* order-915.json in Resources */,
 				B557DA1620979904005962F4 /* CustomerNoteTableViewCell.xib in Resources */,
@@ -695,6 +710,7 @@
 				CE263DE6206ACD220015A693 /* NotificationsViewController.swift in Sources */,
 				B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */,
 				B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */,
+				B5D1AFC620BC7B7300DB0E8C /* StorePickerViewController.swift in Sources */,
 				B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */,
 				CE17C2E220ACA06800AFBD20 /* BillingDetailsTableViewCell.swift in Sources */,
 				B55D4C2720B717C000D7A50F /* UserAgent.swift in Sources */,

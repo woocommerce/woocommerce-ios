@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina5_5" orientation="portrait">
+    <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LoginPrologueViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="disclaimerTextView" destination="vue-fy-kfo" id="Pph-D3-yFK"/>
+                <outlet property="jetpackImageView" destination="ua7-QM-6C0" id="EZJ-r0-klP"/>
                 <outlet property="loginButton" destination="6pL-xH-OzE" id="BmO-7R-g01"/>
                 <outlet property="upperLabel" destination="n36-ix-D75" id="crr-RQ-Us6"/>
                 <outlet property="view" destination="V2X-Xj-JeZ" id="Vob-Ki-8K1"/>
@@ -18,38 +21,72 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="V2X-Xj-JeZ">
-            <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o29-Vv-KDs">
-                    <rect key="frame" x="0.0" y="599" width="414" height="137"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jev-3G-uUK" userLabel="Background View">
+                    <rect key="frame" x="0.0" y="601.66666666666663" width="375" height="210.33333333333337"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o29-Vv-KDs" userLabel="Container View">
+                    <rect key="frame" x="0.0" y="601.66666666666663" width="375" height="176.33333333333337"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6pL-xH-OzE" customClass="FancyButton" customModule="WordPressUI">
+                            <rect key="frame" x="20" y="106.33333333333337" width="335" height="50"/>
+                            <color key="backgroundColor" red="0.58823529409999997" green="0.34509803919999998" blue="0.54117647059999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="50" id="Np7-w5-zh4"/>
+                            </constraints>
+                            <state key="normal" title="Log in with Jetpack"/>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="loginWasPressed" destination="-1" eventType="touchUpInside" id="TN0-aw-ptZ"/>
+                            </connections>
+                        </button>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-jetpack-gray" translatesAutoresizingMaskIntoConstraints="NO" id="ua7-QM-6C0">
+                            <rect key="frame" x="20" y="20" width="20" height="20"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="20" id="1sl-aL-ruy"/>
+                                <constraint firstAttribute="width" constant="20" id="nqC-Mn-V1d"/>
+                            </constraints>
+                        </imageView>
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="scrollableAxes" bouncesZoom="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="vue-fy-kfo">
+                            <rect key="frame" x="55" y="20" width="300" height="66.333333333333329"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <string key="text">L1
+L2
+L3</string>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            <dataDetectorType key="dataDetectorTypes" link="YES"/>
+                            <connections>
+                                <outlet property="delegate" destination="-1" id="9tD-Ce-KS4"/>
+                            </connections>
+                        </textView>
+                    </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="137" id="BmJ-FK-aG5"/>
+                        <constraint firstItem="vue-fy-kfo" firstAttribute="leading" secondItem="ua7-QM-6C0" secondAttribute="trailing" constant="15" id="2Yg-40-duj"/>
+                        <constraint firstAttribute="bottom" secondItem="6pL-xH-OzE" secondAttribute="bottom" constant="20" id="3AT-L4-GA4"/>
+                        <constraint firstItem="6pL-xH-OzE" firstAttribute="leading" secondItem="o29-Vv-KDs" secondAttribute="leading" constant="20" id="LDE-r7-1zp"/>
+                        <constraint firstAttribute="trailing" secondItem="6pL-xH-OzE" secondAttribute="trailing" constant="20" id="Px3-by-aP4"/>
+                        <constraint firstAttribute="trailing" secondItem="vue-fy-kfo" secondAttribute="trailing" constant="20" id="R7H-B6-HbM"/>
+                        <constraint firstItem="6pL-xH-OzE" firstAttribute="top" secondItem="vue-fy-kfo" secondAttribute="bottom" constant="20" id="XB1-jj-rMu"/>
+                        <constraint firstItem="vue-fy-kfo" firstAttribute="top" secondItem="ua7-QM-6C0" secondAttribute="top" id="hro-Pt-llj"/>
+                        <constraint firstItem="vue-fy-kfo" firstAttribute="top" secondItem="o29-Vv-KDs" secondAttribute="top" constant="20" id="jTm-wv-BIa"/>
+                        <constraint firstItem="ua7-QM-6C0" firstAttribute="leading" secondItem="o29-Vv-KDs" secondAttribute="leading" constant="20" id="wt3-Fc-eK8"/>
                     </constraints>
                 </view>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6pL-xH-OzE" customClass="FancyButton" customModule="WordPressUI">
-                    <rect key="frame" x="20" y="666" width="374" height="50"/>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="prologue-hands" translatesAutoresizingMaskIntoConstraints="NO" id="2hE-S0-vwt">
+                    <rect key="frame" x="0.0" y="298.66666666666669" width="303" height="303.00000000000006"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="50" id="Np7-w5-zh4"/>
-                    </constraints>
-                    <state key="normal" title="Log in with Jetpack"/>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
-                    </userDefinedRuntimeAttributes>
-                    <connections>
-                        <action selector="loginWasPressed" destination="-1" eventType="touchUpInside" id="TN0-aw-ptZ"/>
-                    </connections>
-                </button>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="prologue-hands" translatesAutoresizingMaskIntoConstraints="NO" id="2hE-S0-vwt" customClass="Test">
-                    <rect key="frame" x="-112" y="281" width="360" height="360"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="360" id="BT0-cM-c07"/>
-                        <constraint firstAttribute="width" constant="360" id="c6h-45-bGW"/>
+                        <constraint firstAttribute="width" secondItem="2hE-S0-vwt" secondAttribute="height" multiplier="1:1" id="7dD-Yb-Srf"/>
                     </constraints>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n36-ix-D75">
-                    <rect key="frame" x="20" y="50" width="374" height="61"/>
+                    <rect key="frame" x="20" y="74" width="335" height="61"/>
                     <string key="text">Check your WooCommerce Store on
 the go, fulfill your orders and get
 notifications of new sales.</string>
@@ -60,23 +97,27 @@ notifications of new sales.</string>
             </subviews>
             <color key="backgroundColor" red="0.55686274509803924" green="0.36078431372549019" blue="0.52941176470588236" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="2hE-S0-vwt" firstAttribute="leading" secondItem="3oc-0l-uZX" secondAttribute="leading" constant="-112" id="ETf-3y-Pg1"/>
+                <constraint firstItem="o29-Vv-KDs" firstAttribute="leading" secondItem="3oc-0l-uZX" secondAttribute="leading" id="EIM-fi-cgJ"/>
+                <constraint firstItem="3oc-0l-uZX" firstAttribute="trailing" secondItem="2hE-S0-vwt" secondAttribute="trailing" constant="72" id="EIj-ht-8er"/>
+                <constraint firstItem="2hE-S0-vwt" firstAttribute="leading" secondItem="3oc-0l-uZX" secondAttribute="leading" id="ETf-3y-Pg1"/>
+                <constraint firstItem="3oc-0l-uZX" firstAttribute="trailing" secondItem="o29-Vv-KDs" secondAttribute="trailing" id="LER-Vg-1a4"/>
                 <constraint firstItem="n36-ix-D75" firstAttribute="leading" secondItem="3oc-0l-uZX" secondAttribute="leading" constant="20" id="MMp-M0-NrU"/>
-                <constraint firstItem="6pL-xH-OzE" firstAttribute="leading" secondItem="3oc-0l-uZX" secondAttribute="leading" constant="20" id="QRx-7E-NfQ"/>
-                <constraint firstItem="3oc-0l-uZX" firstAttribute="trailing" secondItem="o29-Vv-KDs" secondAttribute="trailing" id="afA-AH-DEl"/>
-                <constraint firstItem="3oc-0l-uZX" firstAttribute="trailing" secondItem="6pL-xH-OzE" secondAttribute="trailing" constant="20" id="hHB-ki-V4H"/>
+                <constraint firstItem="o29-Vv-KDs" firstAttribute="top" secondItem="2hE-S0-vwt" secondAttribute="bottom" id="NzG-8S-Yfs"/>
+                <constraint firstItem="Jev-3G-uUK" firstAttribute="bottom" secondItem="V2X-Xj-JeZ" secondAttribute="bottom" id="gLs-0S-nU7"/>
                 <constraint firstItem="3oc-0l-uZX" firstAttribute="trailing" secondItem="n36-ix-D75" secondAttribute="trailing" constant="20" id="hsc-B1-wwU"/>
-                <constraint firstItem="3oc-0l-uZX" firstAttribute="bottom" secondItem="6pL-xH-OzE" secondAttribute="bottom" constant="20" id="jr9-ju-TAR"/>
-                <constraint firstItem="o29-Vv-KDs" firstAttribute="leading" secondItem="3oc-0l-uZX" secondAttribute="leading" id="kXe-zY-O0h"/>
-                <constraint firstAttribute="bottom" secondItem="o29-Vv-KDs" secondAttribute="bottom" id="l6k-t6-6qS"/>
+                <constraint firstItem="o29-Vv-KDs" firstAttribute="top" secondItem="Jev-3G-uUK" secondAttribute="top" id="kDe-al-HFq"/>
+                <constraint firstItem="o29-Vv-KDs" firstAttribute="trailing" secondItem="Jev-3G-uUK" secondAttribute="trailing" id="p8O-ce-ete"/>
                 <constraint firstItem="n36-ix-D75" firstAttribute="top" secondItem="3oc-0l-uZX" secondAttribute="top" constant="30" id="tiy-ph-ork"/>
-                <constraint firstItem="o29-Vv-KDs" firstAttribute="top" secondItem="2hE-S0-vwt" secondAttribute="bottom" constant="-42" id="wCV-xo-wNn"/>
+                <constraint firstItem="o29-Vv-KDs" firstAttribute="leading" secondItem="Jev-3G-uUK" secondAttribute="leading" id="vQ0-iU-CVv"/>
+                <constraint firstItem="o29-Vv-KDs" firstAttribute="top" secondItem="2hE-S0-vwt" secondAttribute="bottom" id="wCV-xo-wNn"/>
+                <constraint firstItem="o29-Vv-KDs" firstAttribute="bottom" secondItem="3oc-0l-uZX" secondAttribute="bottom" id="yj6-tl-g4o"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="3oc-0l-uZX"/>
-            <point key="canvasLocation" x="-136.5" y="3.5"/>
+            <point key="canvasLocation" x="-474.5" y="20"/>
         </view>
     </objects>
     <resources>
-        <image name="prologue-hands" width="500" height="500"/>
+        <image name="icon-jetpack-gray" width="72" height="72"/>
+        <image name="prologue-hands" width="464" height="428"/>
     </resources>
 </document>

@@ -143,7 +143,7 @@ private extension LoginPrologueViewController {
 
         let readText = NSLocalizedString("read here.", comment: "Login Disclaimer Linked Text")
         var readAttributes = disclaimerAttributes
-        readAttributes[.link] = WooConstants.jetpackSetupUrl
+        readAttributes[.link] = URL(string: WooConstants.jetpackSetupUrl)
 
         let readAttrText = NSMutableAttributedString(string: readText, attributes: readAttributes)
         let disclaimerAttrText = NSMutableAttributedString(string: disclaimerText, attributes: disclaimerAttributes)

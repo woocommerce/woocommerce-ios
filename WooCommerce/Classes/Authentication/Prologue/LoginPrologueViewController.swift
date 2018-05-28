@@ -76,6 +76,7 @@ private extension LoginPrologueViewController {
     func setupLoginButton() {
         let title = NSLocalizedString("Log in with Jetpack", comment: "Authentication Login Button")
         loginButton.setTitle(title, for: .normal)
+        loginButton.backgroundColor = .clear
     }
 }
 

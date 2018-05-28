@@ -14,7 +14,7 @@ class AuthenticationManager {
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
-                                                                wpcomTermsOfServiceURL: Constants.termsOfServiceURL,
+                                                                wpcomTermsOfServiceURL: WooConstants.termsOfServiceUrl,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
@@ -166,18 +166,5 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func track(event: WPAnalyticsStat, error: Error) {
         // TODO: Integrate Tracks
-    }
-}
-
-
-/// Nested Types
-///
-extension AuthenticationManager {
-
-    struct Constants {
-
-        /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
-        ///
-        static let termsOfServiceURL = "https://wordpress.com/tos/"
     }
 }

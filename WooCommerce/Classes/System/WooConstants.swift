@@ -11,5 +11,9 @@ struct WooConstants {
 
     /// Jetpack Setup URL
     ///
-    static let jetpackSetupUrl = URL(string: "https://jetpack.com/support/getting-started-with-jetpack/")!
+    static let jetpackSetupUrl = "https://jetpack.com/support/getting-started-with-jetpack/"
+
+    /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
+    ///
+    static let termsOfServiceUrl = "https://wordpress.com/tos/"
 }

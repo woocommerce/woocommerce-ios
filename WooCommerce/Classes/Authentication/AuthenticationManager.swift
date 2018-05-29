@@ -31,7 +31,7 @@ class AuthenticationManager {
         loginViewController.restrictToWPCom = true
         loginViewController.offerSignupOption = false
 
-        let navigationController = UINavigationController(rootViewController: loginViewController)
+        let navigationController = LoginNavigationController(rootViewController: loginViewController)
         presenter.present(navigationController, animated: true, completion: nil)
     }
 

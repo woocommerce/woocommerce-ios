@@ -1,4 +1,4 @@
-/// WooCommerce API Credentials. Generated on May 25, 2018 at 15:24:42
+/// WooCommerce API Credentials. Generated on May 29, 2018 at 11:16:32
 ///
 struct ApiCredentials {
 

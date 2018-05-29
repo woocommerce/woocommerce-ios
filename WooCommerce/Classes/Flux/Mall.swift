@@ -1,5 +1,6 @@
 import Foundation
 import FluxSumi
+import Storage
 
 
 // MARK: - A Mall contains pointers to the active Stores. Ain't that a cool name?
@@ -16,7 +17,7 @@ class Mall {
 
     /// Account Store
     ///
-    let accountStore = AccountStore()
+    let accountStore = AccountStore(storageManager: CoreDataManager.global)
 
 
 

@@ -10,6 +10,7 @@
 		B546CCF22093636A007CDA5F /* FluxSumi.h in Headers */ = {isa = PBXBuildFile; fileRef = B546CCF12093636A007CDA5F /* FluxSumi.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5A8532520BDC73D00FAAB4D /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8532420BDC73D00FAAB4D /* AccountStore.swift */; };
 		B5A8533420BDCE1E00FAAB4D /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5A8533320BDCE1E00FAAB4D /* Networking.framework */; };
+		B5AE413420BDF6FD0034E641 /* MockupStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AE413320BDF6FC0034E641 /* MockupStorage.swift */; };
 		B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B5C796208E49B600642956 /* Action+Internal.swift */; };
 		B5C9DDFF2087FEC0006B910A /* FluxSumi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C9DDF52087FEC0006B910A /* FluxSumi.framework */; };
 		B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE102087FF0E006B910A /* Dispatcher.swift */; };
@@ -40,6 +41,7 @@
 		B5A8532420BDC73D00FAAB4D /* AccountStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountStore.swift; sourceTree = "<group>"; };
 		B5A8533120BDCDCC00FAAB4D /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5A8533320BDCE1E00FAAB4D /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5AE413320BDF6FC0034E641 /* MockupStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupStorage.swift; sourceTree = "<group>"; };
 		B5B5C796208E49B600642956 /* Action+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Action+Internal.swift"; sourceTree = "<group>"; };
 		B5C9DDF52087FEC0006B910A /* FluxSumi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FluxSumi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C9DDF92087FEC0006B910A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 				B5C9DE1F2087FF20006B910A /* MockupDispatcher.swift */,
 				B5C9DE202087FF20006B910A /* MockupAcount.swift */,
 				B5C9DE212087FF20006B910A /* MockupSite.swift */,
+				B5AE413320BDF6FC0034E641 /* MockupStorage.swift */,
 			);
 			name = Mockups;
 			path = FluxC/Mockups;
@@ -301,6 +304,7 @@
 			files = (
 				B5C9DE232087FF20006B910A /* EventBusTests.swift in Sources */,
 				B5C9DE272087FF20006B910A /* MockupAcount.swift in Sources */,
+				B5AE413420BDF6FD0034E641 /* MockupStorage.swift in Sources */,
 				B5C9DE262087FF20006B910A /* MockupDispatcher.swift in Sources */,
 				B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */,
 				B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */,

@@ -66,7 +66,7 @@ private extension LoginPrologueViewController {
 
     func setupBackgroundView() {
         backgroundView.layer.masksToBounds = false
-        backgroundView.layer.shadowOpacity = 0.5
+        backgroundView.layer.shadowOpacity = 0.2
     }
 
     func setupUpperLabel() {

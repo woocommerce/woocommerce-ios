@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		B546CCF22093636A007CDA5F /* FluxSumi.h in Headers */ = {isa = PBXBuildFile; fileRef = B546CCF12093636A007CDA5F /* FluxSumi.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B5A8532520BDC73D00FAAB4D /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8532420BDC73D00FAAB4D /* AccountStore.swift */; };
+		B5A8533420BDCE1E00FAAB4D /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5A8533320BDCE1E00FAAB4D /* Networking.framework */; };
 		B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B5C796208E49B600642956 /* Action+Internal.swift */; };
 		B5C9DDFF2087FEC0006B910A /* FluxSumi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C9DDF52087FEC0006B910A /* FluxSumi.framework */; };
 		B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE102087FF0E006B910A /* Dispatcher.swift */; };
@@ -35,6 +37,9 @@
 
 /* Begin PBXFileReference section */
 		B546CCF12093636A007CDA5F /* FluxSumi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FluxSumi.h; sourceTree = "<group>"; };
+		B5A8532420BDC73D00FAAB4D /* AccountStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountStore.swift; sourceTree = "<group>"; };
+		B5A8533120BDCDCC00FAAB4D /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5A8533320BDCE1E00FAAB4D /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5B5C796208E49B600642956 /* Action+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Action+Internal.swift"; sourceTree = "<group>"; };
 		B5C9DDF52087FEC0006B910A /* FluxSumi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FluxSumi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C9DDF92087FEC0006B910A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -58,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5A8533420BDCE1E00FAAB4D /* Networking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,12 +78,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B5A8532320BDC72A00FAAB4D /* Account */ = {
+			isa = PBXGroup;
+			children = (
+				B5A8532420BDC73D00FAAB4D /* AccountStore.swift */,
+			);
+			path = Account;
+			sourceTree = "<group>";
+		};
+		B5A8533020BDCDCC00FAAB4D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B5A8533320BDCE1E00FAAB4D /* Networking.framework */,
+				B5A8533120BDCDCC00FAAB4D /* Networking.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B5C9DDEB2087FEC0006B910A = {
 			isa = PBXGroup;
 			children = (
 				B5C9DDF72087FEC0006B910A /* FluxSumi */,
 				B5C9DE022087FEC0006B910A /* FluxSumiTests */,
 				B5C9DDF62087FEC0006B910A /* Products */,
+				B5A8533020BDCDCC00FAAB4D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -95,6 +119,7 @@
 			children = (
 				B5C9DE132087FF0E006B910A /* Internal */,
 				B5C9DE0F2087FF0E006B910A /* Base */,
+				B5A8532320BDC72A00FAAB4D /* Account */,
 				B546CCF12093636A007CDA5F /* FluxSumi.h */,
 				B5C9DDF92087FEC0006B910A /* Info.plist */,
 			);
@@ -264,6 +289,7 @@
 				B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */,
 				B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */,
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,
+				B5A8532520BDC73D00FAAB4D /* AccountStore.swift in Sources */,
 				B5C9DE172087FF0E006B910A /* EventBus.swift in Sources */,
 				B5C9DE162087FF0E006B910A /* Store.swift in Sources */,
 			);

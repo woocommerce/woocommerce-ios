@@ -3,7 +3,7 @@ import Foundation
 
 /// Defines all of the methods made available by the Storage.
 ///
-public protocol Storage {
+public protocol StorageType {
 
     /// Returns all of the available objects of a given Type, matching the specified Predicate (and sorted with a given collection of
     /// SortDescriptors).

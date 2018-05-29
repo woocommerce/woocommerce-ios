@@ -24,7 +24,7 @@ public class CoreDataManager: StorageManager {
 
     /// Returns the Storage associated with the View Thread.
     ///
-    public var viewStorage: Storage {
+    public var viewStorage: StorageType {
         return persistentContainer.viewContext
     }
 
@@ -46,9 +46,9 @@ public class CoreDataManager: StorageManager {
 
     /// Performs the received closure in Background. Note that you should use the received Storage instance (BG friendly!).
     ///
-    public func performBackgroundTask(_ closure: @escaping (Storage) -> Void) {
+    public func performBackgroundTask(_ closure: @escaping (StorageType) -> Void) {
         persistentContainer.performBackgroundTask { context in
-            closure(context as Storage)
+            closure(context as StorageType)
         }
     }
 }

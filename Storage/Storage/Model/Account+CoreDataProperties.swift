@@ -10,7 +10,7 @@ extension Account {
 
     @NSManaged public var displayName: String?
     @NSManaged public var email: String?
+    @NSManaged public var gravatarUrl: String?
     @NSManaged public var username: String?
-    @NSManaged public var uuid: String?
     @NSManaged public var userID: Int64
 }

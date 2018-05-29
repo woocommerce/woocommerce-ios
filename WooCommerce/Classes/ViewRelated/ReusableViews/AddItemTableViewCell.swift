@@ -8,7 +8,6 @@ class AddItemTableViewCell: UITableViewCell {
         super.awakeFromNib()
         imageView?.tintColor = StyleManager.wooCommerceBrandColor
     }
-    
 }
 
 extension AddItemTableViewCell {

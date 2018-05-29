@@ -45,7 +45,7 @@ PODS:
   - "GoogleToolboxForMac/NSString+URLArguments (2.1.4)"
   - Gridicons (0.15)
   - lottie-ios (2.5.0)
-  - NSObject-SafeExpectations (0.0.2)
+  - NSObject-SafeExpectations (0.0.3)
   - "NSURL+IDN (0.3)"
   - Reachability (3.2)
   - SVProgressHUD (2.2.5)
@@ -64,18 +64,18 @@ PODS:
     - WordPressShared (~> 1.0)
     - WordPressUI (~> 1.0)
     - wpxmlrpc (~> 0.8)
-  - WordPressKit (1.0.4):
+  - WordPressKit (1.0.5):
     - AFNetworking (= 3.2.1)
     - Alamofire (= 4.7.2)
     - CocoaLumberjack (= 3.4.2)
+    - NSObject-SafeExpectations (= 0.0.3)
     - UIDeviceIdentifier (~> 0.4)
-    - WordPressShared (~> 1.0.1)
+    - WordPressShared (= 1.0.3)
     - wpxmlrpc (= 0.8.3)
-  - WordPressShared (1.0.2):
+  - WordPressShared (1.0.3):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
-    - NSObject-SafeExpectations (= 0.0.2)
-  - WordPressUI (1.0.1)
+  - WordPressUI (1.0.2)
   - wpxmlrpc (0.8.3)
 
 DEPENDENCIES:
@@ -83,7 +83,7 @@ DEPENDENCIES:
   - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.3`)
   - Crashlytics (= 3.10.1)
   - Gridicons (= 0.15)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `74ec8d1c4341e58569e1f75ad0fb0f8bb5c4e723`)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `58ed623`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -113,7 +113,7 @@ EXTERNAL SOURCES:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
     :tag: 0.2.3
   WordPressAuthenticator:
-    :commit: 74ec8d1c4341e58569e1f75ad0fb0f8bb5c4e723
+    :commit: 58ed623
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 CHECKOUT OPTIONS:
@@ -121,7 +121,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
     :tag: 0.2.3
   WordPressAuthenticator:
-    :commit: 74ec8d1c4341e58569e1f75ad0fb0f8bb5c4e723
+    :commit: 58ed623
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
@@ -137,17 +137,17 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
   Gridicons: 0e5e76ad9fc6f7cbc3da137a9751ef516c5aef73
   lottie-ios: d699fdee68d7b63e721d949388b015fef1aaa4ac
-  NSObject-SafeExpectations: 7d7f48df90df4e11da7cfe86b64f45eff7a7f521
+  NSObject-SafeExpectations: b989b68a8a9b7b9f2b264a8b52ba9d7aab8f3129
   "NSURL+IDN": 82355a0afd532fe1de08f6417c134b49b1a1c4b3
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
   WordPressAuthenticator: 4c802aa18781858253daf984f873e3efe0dac7ef
-  WordPressKit: 4444d268171d0e1fd34f513513c16c1289a2bafa
-  WordPressShared: 378a62d09417209278bf68b57720579dbcd76e0c
-  WordPressUI: 9f90f8e1e629af13e1021c6281660623d62ff953
+  WordPressKit: afe6d2c23db6d4f110638c25e86b029e899ffc34
+  WordPressShared: b8e910d8133a54e9452ab7bd9d8e27e78dc2f5ba
+  WordPressUI: 70bceaff582bdd6fd8f3ed67aaa200e72fce245d
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
 
-PODFILE CHECKSUM: a361a8c3ae886e9a8fa816446f9b442d16ad2654
+PODFILE CHECKSUM: 9049dbd0cd98e7a655f9dafc27c3eb744ac72fc5
 
 COCOAPODS: 1.5.2

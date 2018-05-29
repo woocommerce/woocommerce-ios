@@ -29,8 +29,7 @@ class AuthenticationManager {
     ///
     func displayAuthentication(from presenter: UIViewController) {
         let prologueViewController = LoginPrologueViewController()
-
-        let navigationController = RotationAwareNavigationViewController(rootViewController: prologueViewController)
+        let navigationController = LoginNavigationController(rootViewController: loginViewController)
         presenter.present(navigationController, animated: true, completion: nil)
     }
 

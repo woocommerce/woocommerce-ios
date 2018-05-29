@@ -21,7 +21,9 @@
 		B59E11DA20A9D00C004121A4 /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */; };
 		B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */; };
 		B59E11E020A9F5E6004121A4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DF20A9F5E6004121A4 /* Constants.swift */; };
-		B5C1F2A220AA15630085058E /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C1F2A120AA15630085058E /* Storage.swift */; };
+		B5A8532C20BDCA0F00FAAB4D /* Account+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8532A20BDCA0E00FAAB4D /* Account+CoreDataProperties.swift */; };
+		B5A8532D20BDCA0F00FAAB4D /* Account+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8532B20BDCA0F00FAAB4D /* Account+CoreDataClass.swift */; };
+		B5C1F2A220AA15630085058E /* StorageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C1F2A120AA15630085058E /* StorageType.swift */; };
 		B5EE26C520A624D900468622 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EE26C420A624D900468622 /* CoreDataManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -53,7 +55,9 @@
 		B59E11D920A9D00C004121A4 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManagerTests.swift; sourceTree = "<group>"; };
 		B59E11DF20A9F5E6004121A4 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		B5C1F2A120AA15630085058E /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
+		B5A8532A20BDCA0E00FAAB4D /* Account+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B5A8532B20BDCA0F00FAAB4D /* Account+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B5C1F2A120AA15630085058E /* StorageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageType.swift; sourceTree = "<group>"; };
 		B5EE26C420A624D900468622 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -81,7 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				B52B0F7A20AA28A800477698 /* Object.swift */,
-				B5C1F2A120AA15630085058E /* Storage.swift */,
+				B5C1F2A120AA15630085058E /* StorageType.swift */,
 				B52B0F7820AA287C00477698 /* StorageManager.swift */,
 			);
 			path = Protocols;
@@ -170,6 +174,8 @@
 			isa = PBXGroup;
 			children = (
 				B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */,
+				B5A8532B20BDCA0F00FAAB4D /* Account+CoreDataClass.swift */,
+				B5A8532A20BDCA0E00FAAB4D /* Account+CoreDataProperties.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -301,13 +307,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				B54CA5BB20A4BD2800F38CD1 /* NSManagedObject+Object.swift in Sources */,
+				B5A8532D20BDCA0F00FAAB4D /* Account+CoreDataClass.swift in Sources */,
 				B54CA5BD20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift in Sources */,
 				B59E11DA20A9D00C004121A4 /* WooCommerce.xcdatamodeld in Sources */,
 				B52B0F7920AA287C00477698 /* StorageManager.swift in Sources */,
 				B54CA5C920A4C17800F38CD1 /* NSObject+Storage.swift in Sources */,
 				B5EE26C520A624D900468622 /* CoreDataManager.swift in Sources */,
+				B5A8532C20BDCA0F00FAAB4D /* Account+CoreDataProperties.swift in Sources */,
 				B52B0F7B20AA28A800477698 /* Object.swift in Sources */,
-				B5C1F2A220AA15630085058E /* Storage.swift in Sources */,
+				B5C1F2A220AA15630085058E /* StorageType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

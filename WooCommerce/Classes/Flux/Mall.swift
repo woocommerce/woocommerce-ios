@@ -16,7 +16,7 @@ class Mall {
 
     /// Account Store
     ///
-    let orderStore = OrderStore()
+    let accountStore = AccountStore()
 
 
 

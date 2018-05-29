@@ -1,6 +1,11 @@
 import UIKit
 import CoreData
+
+import CocoaLumberjack
 import WordPressUI
+import WordPressKit
+import WordPressAuthenticator
+
 
 
 // MARK: - Woo's App Delegate!
@@ -32,6 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Setup Components
         setupAuthenticationManager()
+        setupLogLevel(.verbose)
 
         // Display the Authentication UI
         displayAuthenticatorIfNeeded()
@@ -119,6 +125,14 @@ private extension AppDelegate {
     ///
     func setupAuthenticationManager() {
         authenticationManager.initialize()
+    }
+
+    func setupLogLevel(_ level: DDLogLevel) {
+        let rawLevel = Int32(level.rawValue)
+
+        WPSharedSetLoggingLevel(rawLevel)
+        WPAuthenticatorSetLoggingLevel(rawLevel)
+        WPKitSetLoggingLevel(rawLevel)
     }
 }
 

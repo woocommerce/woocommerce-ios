@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B546CCF22093636A007CDA5F /* FluxSumi.h in Headers */ = {isa = PBXBuildFile; fileRef = B546CCF12093636A007CDA5F /* FluxSumi.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B57AF58620BDFD5E00494681 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B57AF58520BDFD5E00494681 /* Storage.framework */; };
 		B5A8532520BDC73D00FAAB4D /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8532420BDC73D00FAAB4D /* AccountStore.swift */; };
 		B5A8533420BDCE1E00FAAB4D /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5A8533320BDCE1E00FAAB4D /* Networking.framework */; };
 		B5AE413420BDF6FD0034E641 /* MockupStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AE413320BDF6FC0034E641 /* MockupStorage.swift */; };
@@ -38,6 +39,7 @@
 
 /* Begin PBXFileReference section */
 		B546CCF12093636A007CDA5F /* FluxSumi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FluxSumi.h; sourceTree = "<group>"; };
+		B57AF58520BDFD5E00494681 /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5A8532420BDC73D00FAAB4D /* AccountStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountStore.swift; sourceTree = "<group>"; };
 		B5A8533120BDCDCC00FAAB4D /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5A8533320BDCE1E00FAAB4D /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -65,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B57AF58620BDFD5E00494681 /* Storage.framework in Frameworks */,
 				B5A8533420BDCE1E00FAAB4D /* Networking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -91,6 +94,7 @@
 		B5A8533020BDCDCC00FAAB4D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B57AF58520BDFD5E00494681 /* Storage.framework */,
 				B5A8533320BDCE1E00FAAB4D /* Networking.framework */,
 				B5A8533120BDCDCC00FAAB4D /* Networking.framework */,
 			);

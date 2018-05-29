@@ -342,6 +342,8 @@
 				B5A8F8A820B84D3F00D211DE /* InfoPlist.h */,
 			);
 			path = DerivedSources;
+			sourceTree = "<group>";
+		};
 		B5AA557320AE17560097FDC8 /* Flux */ = {
 			isa = PBXGroup;
 			children = (

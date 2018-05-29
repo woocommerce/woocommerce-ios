@@ -1,4 +1,4 @@
-/// WooCommerce Preprocessed InfoPlist.h. Generated on May 25, 2018 at 15:24:42
+/// WooCommerce Preprocessed InfoPlist.h. Generated on May 29, 2018 at 11:16:32
 ///
 /// Note: the following constants are being translated into `InfoPlist.h`, and can be picked up by the App's
 /// Info.plist.

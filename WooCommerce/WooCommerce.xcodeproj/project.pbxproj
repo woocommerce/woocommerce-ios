@@ -34,15 +34,15 @@
 		CE1CCB402056F21C000EE3AC /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* Style.swift */; };
 		CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = CE1CCB4620570A6B000EE3AC /* en.lproj */; };
 		CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */; };
-		CE1EC8D420B75925009762BF /* (null) in Sources */ = {isa = PBXBuildFile; };
-		CE1EC8D520B75925009762BF /* (null) in Resources */ = {isa = PBXBuildFile; };
+		CE1EC8D420B75925009762BF /* BuildFile in Sources */ = {isa = PBXBuildFile; };
+		CE1EC8D520B75925009762BF /* BuildFile in Resources */ = {isa = PBXBuildFile; };
 		CE1EC8D720B75FBA009762BF /* order-1112.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8D620B75FBA009762BF /* order-1112.json */; };
 		CE1EC8D920B75FF7009762BF /* order-1107.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8D820B75FF7009762BF /* order-1107.json */; };
 		CE1EC8DB20B76088009762BF /* order-notes-1107.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8DA20B76088009762BF /* order-notes-1107.json */; };
 		CE1EC8DD20B76636009762BF /* order-1044.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8DC20B76636009762BF /* order-1044.json */; };
 		CE1EC8DF20B76651009762BF /* order-notes-1044.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8DE20B76651009762BF /* order-notes-1044.json */; };
-		CE1EC8E220B862CB009762BF /* (null) in Sources */ = {isa = PBXBuildFile; };
-		CE1EC8E520B8895F009762BF /* (null) in Sources */ = {isa = PBXBuildFile; };
+		CE1EC8E220B862CB009762BF /* BuildFile in Sources */ = {isa = PBXBuildFile; };
+		CE1EC8E520B8895F009762BF /* BuildFile in Sources */ = {isa = PBXBuildFile; };
 		CE1EC8E920B8A3F5009762BF /* OrderNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8E820B8A3F5009762BF /* OrderNoteViewModel.swift */; };
 		CE1EC8EC20B8A3FF009762BF /* AddItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8EA20B8A3FF009762BF /* AddItemTableViewCell.swift */; };
 		CE1EC8ED20B8A3FF009762BF /* AddItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8EB20B8A3FF009762BF /* AddItemTableViewCell.xib */; };
@@ -404,8 +404,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B56DB3E62049BFAA00D4AA8E /* Build configuration list for PBXNativeTarget "WooCommerce" */;
 			buildPhases = (
-				B55D4BF820B5CD9300D7A50F /* Generate ApiCredentials */,
 				0B1466AADF9347CBC9D9760E /* [CP] Check Pods Manifest.lock */,
+				B55D4BF820B5CD9300D7A50F /* Generate ApiCredentials */,
 				B56DB3C22049BFAA00D4AA8E /* Sources */,
 				B56DB3C32049BFAA00D4AA8E /* Frameworks */,
 				B56DB3C42049BFAA00D4AA8E /* Resources */,
@@ -487,7 +487,7 @@
 				B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */,
 				CED6021E20B35FDF0032C639 /* NoResultsTableViewCell.xib in Resources */,
 				B557DA1620979904005962F4 /* CustomerNoteTableViewCell.xib in Resources */,
-				CE1EC8D520B75925009762BF /* (null) in Resources */,
+				CE1EC8D520B75925009762BF /* BuildFile in Resources */,
 				CE1EC8ED20B8A3FF009762BF /* AddItemTableViewCell.xib in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
 				CE1EC8D720B75FBA009762BF /* order-1112.json in Resources */,
@@ -614,13 +614,13 @@
 				CE34DA2520A1ECD6005D8523 /* ContactViewModel.swift in Sources */,
 				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
-				CE1EC8D420B75925009762BF /* (null) in Sources */,
+				CE1EC8D420B75925009762BF /* BuildFile in Sources */,
 				CED6021D20B35FDF0032C639 /* NoResultsTableViewCell.swift in Sources */,
 				CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */,
-				CE1EC8E520B8895F009762BF /* (null) in Sources */,
+				CE1EC8E520B8895F009762BF /* BuildFile in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				B56DB3D22049BFAA00D4AA8E /* WooCommerce.xcdatamodeld in Sources */,
-				CE1EC8E220B862CB009762BF /* (null) in Sources */,
+				CE1EC8E220B862CB009762BF /* BuildFile in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* AddItemTableViewCell.swift in Sources */,
 				B50911342049E493007D25DC /* Order.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */,
@@ -790,7 +790,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce Development";
-				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				SECRETS_PATH = "$HOME/.woo_app_credentials.json";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -809,7 +809,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce App Store";
-				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				SECRETS_PATH = "$HOME/.woo_app_credentials.json";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

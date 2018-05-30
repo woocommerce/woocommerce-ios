@@ -4,7 +4,7 @@ import CoreData
 
 /// NSManagedObjectContext Storage Conformance
 ///
-extension NSManagedObjectContext: Storage {
+extension NSManagedObjectContext: StorageType {
 
     /// Returns all of the entities that match with a given predicate.
     ///

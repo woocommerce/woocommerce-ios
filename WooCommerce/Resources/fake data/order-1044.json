@@ -25,8 +25,8 @@
     "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_4) applewebkit/605.1.15 (khtml, like gecko) version/11.1 safari/605.1.15",
     "customer_note": "I love pancake syrup!",
     "billing": {
-        "first_name": "Pickles",
-        "last_name": "Salty Pork Von Hausen",
+        "first_name": "Woo Billing",
+        "last_name": "User",
         "company": "",
         "address_1": "101 E Clay St",
         "address_2": "",
@@ -38,8 +38,8 @@
         "phone": "262-284-3271"
     },
     "shipping": {
-        "first_name": "Pickles",
-        "last_name": "Salty Pork Von Hausen",
+        "first_name": "Woo Sample",
+        "last_name": "User 6",
         "company": "",
         "address_1": "101 E CLAY ST",
         "address_2": "",

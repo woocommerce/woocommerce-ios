@@ -24,8 +24,8 @@
     "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_4) applewebkit/537.36 (khtml, like gecko) chrome/66.0.3359.117 safari/537.36",
     "customer_note": "",
     "billing": {
-        "first_name": "Julia",
-        "last_name": "Woo",
+        "first_name": "Woo Billing",
+        "last_name": "User",
         "company": "The Nuttery",
         "address_1": "200 Collins Ave",
         "address_2": "",
@@ -37,8 +37,8 @@
         "phone": "333-333-3333"
     },
     "shipping": {
-        "first_name": "Julia",
-        "last_name": "Woo",
+        "first_name": "Woo Sample",
+        "last_name": "User 2",
         "company": "The Nuttery",
         "address_1": "200 Collins Ave",
         "address_2": "",

@@ -39,14 +39,23 @@ class OrderDetailsViewController: UIViewController {
     }
 
     func configureSections() {
-        let summarySection = Section(title: nil, footer: nil, rows: [.summary])
-        let customerNoteSection = Section(title: NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title"), footer: nil, rows: [.customerNote])
+        let summarySection = Section(titles: [], footer: nil, rows: [.summary])
+
+        let productSectionTitles = [NSLocalizedString("PRODUCT", comment: "Product section title"),
+                                    NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")]
+        var productRows = [Row]()
+//        for _ in viewModel.items {
+//            productRows.append(.item) // add two column label row here
+//        }
+        let productListSection = Section(titles: productSectionTitles, footer: nil, rows: productRows)
+
+        let customerNoteSection = Section(titles: [NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title")], footer: nil, rows: [.customerNote])
 
         let infoFooter = billingIsHidden ? NSLocalizedString("Show billing", comment: "Footer text to show the billing cell") : NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
         let infoRows: [Row] = billingIsHidden ? [.shippingAddress] : [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
-        let infoSection = Section(title: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), footer: infoFooter, rows: infoRows)
+        let infoSection = Section(titles: [NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title")], footer: infoFooter, rows: infoRows)
 
-        let paymentSection = Section(title: NSLocalizedString("PAYMENT", comment: "Payment section title"), footer: nil, rows: [.payment])
+        let paymentSection = Section(titles: [NSLocalizedString("PAYMENT", comment: "Payment section title")], footer: nil, rows: [.payment])
 
         // FIXME: this is temporary
         // the API response always sends customer note data
@@ -54,10 +63,10 @@ class OrderDetailsViewController: UIViewController {
         // but order has customerNote as an optional property right now
         guard let customerNote = order.customerNote,
             !customerNote.isEmpty else {
-            sections = [summarySection, infoSection, paymentSection]
+            sections = [summarySection, productListSection, infoSection, paymentSection]
             return
         }
-        sections = [summarySection, customerNoteSection, infoSection, paymentSection]
+        sections = [summarySection, productListSection, customerNoteSection, infoSection, paymentSection]
     }
 
     func configureNibs() {
@@ -68,6 +77,8 @@ class OrderDetailsViewController: UIViewController {
             }
         }
 
+        let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
+        tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
         let footerNib = UINib(nibName: ShowHideSectionFooter.reuseIdentifier, bundle: nil)
         tableView.register(footerNib, forHeaderFooterViewReuseIdentifier: ShowHideSectionFooter.reuseIdentifier)
     }
@@ -92,16 +103,28 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        guard let _ = sections[section].title else {
+        if sections[section].titles?.count == 0 {
             // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
             return CGFloat.leastNonzeroMagnitude
         }
 
-        return UITableViewAutomaticDimension
+        return Constants.sectionHeight
     }
 
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sections[section].title
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let titles = sections[section].titles else {
+            return nil
+        }
+        let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
+        let header = view as! TwoColumnSectionHeaderView
+        guard let leftText = titles.first else {
+            return nil
+        }
+
+        let rightText = titles.count > 1 ? titles[1] : nil
+        header.configure(leftText: leftText, rightText: rightText)
+
+        return view
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -267,16 +290,18 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
 private extension OrderDetailsViewController {
     struct Constants {
         static let rowHeight = CGFloat(38)
+        static let sectionHeight = CGFloat(44)
     }
 
     private struct Section {
-        let title: String?
+        let titles: [String]?
         let footer: String?
         let rows: [Row]
     }
 
     private enum Row {
         case summary
+//        case items
         case customerNote
         case shippingAddress
         case billingAddress
@@ -288,6 +313,8 @@ private extension OrderDetailsViewController {
             switch self {
             case .summary:
                 return SummaryTableViewCell.reuseIdentifier
+//            case .items
+//                return ProductTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:

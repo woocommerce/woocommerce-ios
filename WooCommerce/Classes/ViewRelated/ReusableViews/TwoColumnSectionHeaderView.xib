@@ -16,13 +16,13 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nAe-82-c1s">
-                    <rect key="frame" x="317" y="8" width="42" height="16"/>
+                    <rect key="frame" x="317" y="3.5" width="42" height="20.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Fd-ta-Azy">
-                    <rect key="frame" x="16" y="8" width="42" height="16"/>
+                    <rect key="frame" x="16" y="3.5" width="42" height="20.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -30,12 +30,12 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="nAe-82-c1s" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="8" id="0kc-FX-RQ6"/>
+                <constraint firstItem="nAe-82-c1s" firstAttribute="top" relation="greaterThanOrEqual" secondItem="vUN-kp-3ea" secondAttribute="top" constant="1" id="0kc-FX-RQ6"/>
                 <constraint firstItem="nAe-82-c1s" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="4Fd-ta-Azy" secondAttribute="trailing" constant="8" id="MHS-dz-djd"/>
                 <constraint firstItem="4Fd-ta-Azy" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="N7Z-zB-jsT"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="4Fd-ta-Azy" secondAttribute="bottom" constant="8" id="Oor-MN-PIo"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="nAe-82-c1s" secondAttribute="trailing" constant="16" id="TIP-cN-VHO"/>
-                <constraint firstItem="4Fd-ta-Azy" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="8" id="Wk4-94-JdF"/>
+                <constraint firstItem="4Fd-ta-Azy" firstAttribute="top" relation="greaterThanOrEqual" secondItem="vUN-kp-3ea" secondAttribute="top" constant="1" id="Wk4-94-JdF"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="nAe-82-c1s" secondAttribute="bottom" constant="8" id="vuR-9k-8Ku"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>

@@ -27,6 +27,8 @@ class OrderDetailsViewModel {
     let totalValue: String
     let paymentSummary: String
 
+    let items: [OrderItem]
+
     init(order: Order) {
         summaryTitle = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
         dateCreated = String.localizedStringWithFormat(NSLocalizedString("Created %@", comment: "Order created date"), order.dateCreatedString) //FIXME: use a formatted date instead of raw timestamp
@@ -79,5 +81,6 @@ class OrderDetailsViewModel {
         totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
         totalValue = order.currencySymbol + order.total
         paymentSummary = NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
+        items = order.items
     }
 }

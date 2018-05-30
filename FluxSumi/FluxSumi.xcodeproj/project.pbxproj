@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		B505F6E320BEF31000BB1B69 /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6E220BEF31000BB1B69 /* AccountStore.swift */; };
-		B505F6E520BEF35E00BB1B69 /* MockupStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6E420BEF35E00BB1B69 /* MockupStorage.swift */; };
 		B505F6E720BEF69D00BB1B69 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B505F6E620BEF69D00BB1B69 /* Networking.framework */; };
 		B505F6E920BEF6A100BB1B69 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B505F6E820BEF6A100BB1B69 /* Storage.framework */; };
 		B546CCF22093636A007CDA5F /* FluxSumi.h in Headers */ = {isa = PBXBuildFile; fileRef = B546CCF12093636A007CDA5F /* FluxSumi.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -18,13 +17,17 @@
 		B5C9DE162087FF0E006B910A /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE112087FF0E006B910A /* Store.swift */; };
 		B5C9DE172087FF0E006B910A /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE122087FF0E006B910A /* EventBus.swift */; };
 		B5C9DE182087FF0E006B910A /* Assert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE142087FF0E006B910A /* Assert.swift */; };
-		B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1A2087FF20006B910A /* DispatcherTests.swift */; };
-		B5C9DE232087FF20006B910A /* EventBusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1B2087FF20006B910A /* EventBusTests.swift */; };
-		B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1C2087FF20006B910A /* StoreTests.swift */; };
-		B5C9DE252087FF20006B910A /* MockupProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1E2087FF20006B910A /* MockupProcessor.swift */; };
-		B5C9DE262087FF20006B910A /* MockupDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1F2087FF20006B910A /* MockupDispatcher.swift */; };
-		B5C9DE272087FF20006B910A /* MockupAcount.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE202087FF20006B910A /* MockupAcount.swift */; };
-		B5C9DE282087FF20006B910A /* MockupSite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE212087FF20006B910A /* MockupSite.swift */; };
+		B5E472C920BF092200BC8CD9 /* AccountStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E472C820BF092200BC8CD9 /* AccountStoreTests.swift */; };
+		B5E472D020BF092B00BC8CD9 /* MockupProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E472CB20BF092A00BC8CD9 /* MockupProcessor.swift */; };
+		B5E472D120BF092B00BC8CD9 /* MockupDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E472CC20BF092A00BC8CD9 /* MockupDispatcher.swift */; };
+		B5E472D220BF092B00BC8CD9 /* MockupStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E472CD20BF092A00BC8CD9 /* MockupStorage.swift */; };
+		B5E472D320BF092B00BC8CD9 /* MockupAcount.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E472CE20BF092A00BC8CD9 /* MockupAcount.swift */; };
+		B5E472D420BF092B00BC8CD9 /* MockupSite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E472CF20BF092A00BC8CD9 /* MockupSite.swift */; };
+		B5E472D920BF093100BC8CD9 /* DispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E472D620BF093100BC8CD9 /* DispatcherTests.swift */; };
+		B5E472DA20BF093100BC8CD9 /* EventBusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E472D720BF093100BC8CD9 /* EventBusTests.swift */; };
+		B5E472DB20BF093100BC8CD9 /* StoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E472D820BF093100BC8CD9 /* StoreTests.swift */; };
+		B5E472DE20BF0C8000BC8CD9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E472DD20BF0C8000BC8CD9 /* Constants.swift */; };
+		B5E472E120BF0F1D00BC8CD9 /* me.json in Resources */ = {isa = PBXBuildFile; fileRef = B5E472E020BF0F1D00BC8CD9 /* me.json */; };
 		CC11CA9F40DB52C2A049D9F8 /* Pods_FluxSumi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E9FFEC35E04DDAE239FD9C4 /* Pods_FluxSumi.framework */; };
 		F22B32B67F87FD370446BB18 /* Pods_FluxSumiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70FBE3D15258FC0406F114F2 /* Pods_FluxSumiTests.framework */; };
 /* End PBXBuildFile section */
@@ -46,7 +49,6 @@
 		70FBE3D15258FC0406F114F2 /* Pods_FluxSumiTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FluxSumiTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BDC17F8B7DA0383A79EBCE0 /* Pods-FluxSumi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FluxSumi.release.xcconfig"; path = "../Pods/Target Support Files/Pods-FluxSumi/Pods-FluxSumi.release.xcconfig"; sourceTree = "<group>"; };
 		B505F6E220BEF31000BB1B69 /* AccountStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountStore.swift; sourceTree = "<group>"; };
-		B505F6E420BEF35E00BB1B69 /* MockupStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupStorage.swift; sourceTree = "<group>"; };
 		B505F6E620BEF69D00BB1B69 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B505F6E820BEF6A100BB1B69 /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B546CCF12093636A007CDA5F /* FluxSumi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FluxSumi.h; sourceTree = "<group>"; };
@@ -59,13 +61,17 @@
 		B5C9DE112087FF0E006B910A /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		B5C9DE122087FF0E006B910A /* EventBus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
 		B5C9DE142087FF0E006B910A /* Assert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Assert.swift; sourceTree = "<group>"; };
-		B5C9DE1A2087FF20006B910A /* DispatcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatcherTests.swift; sourceTree = "<group>"; };
-		B5C9DE1B2087FF20006B910A /* EventBusTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventBusTests.swift; sourceTree = "<group>"; };
-		B5C9DE1C2087FF20006B910A /* StoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreTests.swift; sourceTree = "<group>"; };
-		B5C9DE1E2087FF20006B910A /* MockupProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupProcessor.swift; sourceTree = "<group>"; };
-		B5C9DE1F2087FF20006B910A /* MockupDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupDispatcher.swift; sourceTree = "<group>"; };
-		B5C9DE202087FF20006B910A /* MockupAcount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupAcount.swift; sourceTree = "<group>"; };
-		B5C9DE212087FF20006B910A /* MockupSite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupSite.swift; sourceTree = "<group>"; };
+		B5E472C820BF092200BC8CD9 /* AccountStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountStoreTests.swift; sourceTree = "<group>"; };
+		B5E472CB20BF092A00BC8CD9 /* MockupProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupProcessor.swift; sourceTree = "<group>"; };
+		B5E472CC20BF092A00BC8CD9 /* MockupDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupDispatcher.swift; sourceTree = "<group>"; };
+		B5E472CD20BF092A00BC8CD9 /* MockupStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupStorage.swift; sourceTree = "<group>"; };
+		B5E472CE20BF092A00BC8CD9 /* MockupAcount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupAcount.swift; sourceTree = "<group>"; };
+		B5E472CF20BF092A00BC8CD9 /* MockupSite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupSite.swift; sourceTree = "<group>"; };
+		B5E472D620BF093100BC8CD9 /* DispatcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatcherTests.swift; sourceTree = "<group>"; };
+		B5E472D720BF093100BC8CD9 /* EventBusTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventBusTests.swift; sourceTree = "<group>"; };
+		B5E472D820BF093100BC8CD9 /* StoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreTests.swift; sourceTree = "<group>"; };
+		B5E472DD20BF0C8000BC8CD9 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		B5E472E020BF0F1D00BC8CD9 /* me.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = me.json; sourceTree = "<group>"; };
 		C86F7798348F086ABB3FCF81 /* Pods-FluxSumiTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FluxSumiTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-FluxSumiTests/Pods-FluxSumiTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -157,8 +163,11 @@
 		B5C9DE022087FEC0006B910A /* FluxSumiTests */ = {
 			isa = PBXGroup;
 			children = (
-				B5C9DE1D2087FF20006B910A /* Mockups */,
-				B5C9DE192087FF20006B910A /* Base */,
+				B5E472CA20BF092A00BC8CD9 /* Mockups */,
+				B5E472DF20BF0F0000BC8CD9 /* Responses */,
+				B5E472DC20BF0C8000BC8CD9 /* Settings */,
+				B5E472D520BF093100BC8CD9 /* Base */,
+				B5E472C720BF092200BC8CD9 /* Account */,
 				B5C9DE052087FEC0006B910A /* Info.plist */,
 			);
 			path = FluxSumiTests;
@@ -183,28 +192,50 @@
 			path = Internal;
 			sourceTree = "<group>";
 		};
-		B5C9DE192087FF20006B910A /* Base */ = {
+		B5E472C720BF092200BC8CD9 /* Account */ = {
 			isa = PBXGroup;
 			children = (
-				B5C9DE1A2087FF20006B910A /* DispatcherTests.swift */,
-				B5C9DE1B2087FF20006B910A /* EventBusTests.swift */,
-				B5C9DE1C2087FF20006B910A /* StoreTests.swift */,
+				B5E472C820BF092200BC8CD9 /* AccountStoreTests.swift */,
 			);
-			name = Base;
-			path = FluxC/Base;
+			path = Account;
 			sourceTree = "<group>";
 		};
-		B5C9DE1D2087FF20006B910A /* Mockups */ = {
+		B5E472CA20BF092A00BC8CD9 /* Mockups */ = {
 			isa = PBXGroup;
 			children = (
-				B5C9DE202087FF20006B910A /* MockupAcount.swift */,
-				B5C9DE1F2087FF20006B910A /* MockupDispatcher.swift */,
-				B5C9DE1E2087FF20006B910A /* MockupProcessor.swift */,
-				B5C9DE212087FF20006B910A /* MockupSite.swift */,
-				B505F6E420BEF35E00BB1B69 /* MockupStorage.swift */,
+				B5E472CB20BF092A00BC8CD9 /* MockupProcessor.swift */,
+				B5E472CC20BF092A00BC8CD9 /* MockupDispatcher.swift */,
+				B5E472CD20BF092A00BC8CD9 /* MockupStorage.swift */,
+				B5E472CE20BF092A00BC8CD9 /* MockupAcount.swift */,
+				B5E472CF20BF092A00BC8CD9 /* MockupSite.swift */,
 			);
-			name = Mockups;
-			path = FluxC/Mockups;
+			path = Mockups;
+			sourceTree = "<group>";
+		};
+		B5E472D520BF093100BC8CD9 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				B5E472D620BF093100BC8CD9 /* DispatcherTests.swift */,
+				B5E472D720BF093100BC8CD9 /* EventBusTests.swift */,
+				B5E472D820BF093100BC8CD9 /* StoreTests.swift */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		B5E472DC20BF0C8000BC8CD9 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				B5E472DD20BF0C8000BC8CD9 /* Constants.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		B5E472DF20BF0F0000BC8CD9 /* Responses */ = {
+			isa = PBXGroup;
+			children = (
+				B5E472E020BF0F1D00BC8CD9 /* me.json */,
+			);
+			path = Responses;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -308,6 +339,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5E472E120BF0F1D00BC8CD9 /* me.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,14 +422,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5C9DE232087FF20006B910A /* EventBusTests.swift in Sources */,
-				B5C9DE272087FF20006B910A /* MockupAcount.swift in Sources */,
-				B505F6E520BEF35E00BB1B69 /* MockupStorage.swift in Sources */,
-				B5C9DE262087FF20006B910A /* MockupDispatcher.swift in Sources */,
-				B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */,
-				B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */,
-				B5C9DE252087FF20006B910A /* MockupProcessor.swift in Sources */,
-				B5C9DE282087FF20006B910A /* MockupSite.swift in Sources */,
+				B5E472D320BF092B00BC8CD9 /* MockupAcount.swift in Sources */,
+				B5E472C920BF092200BC8CD9 /* AccountStoreTests.swift in Sources */,
+				B5E472D120BF092B00BC8CD9 /* MockupDispatcher.swift in Sources */,
+				B5E472D220BF092B00BC8CD9 /* MockupStorage.swift in Sources */,
+				B5E472D020BF092B00BC8CD9 /* MockupProcessor.swift in Sources */,
+				B5E472DE20BF0C8000BC8CD9 /* Constants.swift in Sources */,
+				B5E472DA20BF093100BC8CD9 /* EventBusTests.swift in Sources */,
+				B5E472D420BF092B00BC8CD9 /* MockupSite.swift in Sources */,
+				B5E472D920BF093100BC8CD9 /* DispatcherTests.swift in Sources */,
+				B5E472DB20BF093100BC8CD9 /* StoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

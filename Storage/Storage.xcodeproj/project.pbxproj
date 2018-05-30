@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		104A6AE04AFF9F32803E3B89 /* Pods_StorageTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F0035136AB4F06D368E45E9 /* Pods_StorageTests.framework */; };
 		B52B0F7920AA287C00477698 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52B0F7820AA287C00477698 /* StorageManager.swift */; };
 		B52B0F7B20AA28A800477698 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52B0F7A20AA28A800477698 /* Object.swift */; };
 		B54CA5A320A4BBA600F38CD1 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B54CA59920A4BBA500F38CD1 /* Storage.framework */; };
@@ -25,6 +26,7 @@
 		B5A8532D20BDCA0F00FAAB4D /* Account+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8532B20BDCA0F00FAAB4D /* Account+CoreDataClass.swift */; };
 		B5C1F2A220AA15630085058E /* StorageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C1F2A120AA15630085058E /* StorageType.swift */; };
 		B5EE26C520A624D900468622 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EE26C420A624D900468622 /* CoreDataManager.swift */; };
+		D9E6411A1C70B891AF78A66E /* Pods_Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D64116399D84A7395694204A /* Pods_Storage.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +40,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		43386AC7D990E38B20E618B7 /* Pods-StorageTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.release.xcconfig"; sourceTree = "<group>"; };
+		44C705B92C7B1E1C9620F39C /* Pods-Storage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.debug.xcconfig"; sourceTree = "<group>"; };
+		6F0035136AB4F06D368E45E9 /* Pods_StorageTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StorageTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B52B0F7820AA287C00477698 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		B52B0F7A20AA28A800477698 /* Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		B54CA59920A4BBA500F38CD1 /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -59,6 +64,9 @@
 		B5A8532B20BDCA0F00FAAB4D /* Account+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B5C1F2A120AA15630085058E /* StorageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageType.swift; sourceTree = "<group>"; };
 		B5EE26C420A624D900468622 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		BFA296FA83D1470B017E4F1B /* Pods-Storage.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.release.xcconfig"; sourceTree = "<group>"; };
+		C6FA25E55A785AC97CE35FA0 /* Pods-StorageTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.debug.xcconfig"; sourceTree = "<group>"; };
+		D64116399D84A7395694204A /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +75,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B54CA5B520A4BC0300F38CD1 /* CoreData.framework in Frameworks */,
+				D9E6411A1C70B891AF78A66E /* Pods_Storage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,12 +84,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				B54CA5A320A4BBA600F38CD1 /* Storage.framework in Frameworks */,
+				104A6AE04AFF9F32803E3B89 /* Pods_StorageTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		05186A6D6A4D70001FF0650C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				44C705B92C7B1E1C9620F39C /* Pods-Storage.debug.xcconfig */,
+				BFA296FA83D1470B017E4F1B /* Pods-Storage.release.xcconfig */,
+				C6FA25E55A785AC97CE35FA0 /* Pods-StorageTests.debug.xcconfig */,
+				43386AC7D990E38B20E618B7 /* Pods-StorageTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		B52B0F7C20AA2D9900477698 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
@@ -107,6 +128,7 @@
 				B54CA5A620A4BBA600F38CD1 /* StorageTests */,
 				B54CA59A20A4BBA500F38CD1 /* Products */,
 				B54CA5B320A4BC0200F38CD1 /* Frameworks */,
+				05186A6D6A4D70001FF0650C /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -147,6 +169,8 @@
 			isa = PBXGroup;
 			children = (
 				B54CA5B420A4BC0300F38CD1 /* CoreData.framework */,
+				D64116399D84A7395694204A /* Pods_Storage.framework */,
+				6F0035136AB4F06D368E45E9 /* Pods_StorageTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -214,6 +238,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B54CA5AD20A4BBA600F38CD1 /* Build configuration list for PBXNativeTarget "Storage" */;
 			buildPhases = (
+				97DFA0647C6F5EEA41C030AB /* [CP] Check Pods Manifest.lock */,
 				B54CA59420A4BBA500F38CD1 /* Sources */,
 				B54CA59520A4BBA500F38CD1 /* Frameworks */,
 				B54CA59620A4BBA500F38CD1 /* Headers */,
@@ -232,9 +257,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B54CA5B020A4BBA600F38CD1 /* Build configuration list for PBXNativeTarget "StorageTests" */;
 			buildPhases = (
+				AD724846E91DE067B7D9C7A2 /* [CP] Check Pods Manifest.lock */,
 				B54CA59E20A4BBA600F38CD1 /* Sources */,
 				B54CA59F20A4BBA600F38CD1 /* Frameworks */,
 				B54CA5A020A4BBA600F38CD1 /* Resources */,
+				AA6FBAA1E0700F6E73C2B200 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -300,6 +327,63 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		97DFA0647C6F5EEA41C030AB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Storage-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AA6FBAA1E0700F6E73C2B200 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/SAMKeychain/SAMKeychain.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SAMKeychain.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AD724846E91DE067B7D9C7A2 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-StorageTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B54CA59420A4BBA500F38CD1 /* Sources */ = {
@@ -464,6 +548,7 @@
 		};
 		B54CA5AE20A4BBA600F38CD1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 44C705B92C7B1E1C9620F39C /* Pods-Storage.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -476,11 +561,7 @@
 				INFOPLIST_FILE = Storage/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Storage;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -492,6 +573,7 @@
 		};
 		B54CA5AF20A4BBA600F38CD1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BFA296FA83D1470B017E4F1B /* Pods-Storage.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -504,11 +586,7 @@
 				INFOPLIST_FILE = Storage/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Storage;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -519,17 +597,14 @@
 		};
 		B54CA5B120A4BBA600F38CD1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C6FA25E55A785AC97CE35FA0 /* Pods-StorageTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = StorageTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.StorageTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -540,17 +615,14 @@
 		};
 		B54CA5B220A4BBA600F38CD1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 43386AC7D990E38B20E618B7 /* Pods-StorageTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = StorageTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.StorageTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

@@ -364,7 +364,7 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-FluxSumi-FluxSumiTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-FluxSumiTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -377,7 +377,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/../Pods/Target Support Files/Pods-FluxSumi-FluxSumiTests/Pods-FluxSumi-FluxSumiTests-frameworks.sh",
+				"${SRCROOT}/../Pods/Target Support Files/Pods-FluxSumiTests/Pods-FluxSumiTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -386,7 +386,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-FluxSumi-FluxSumiTests/Pods-FluxSumi-FluxSumiTests-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-FluxSumiTests/Pods-FluxSumiTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -566,11 +566,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/FluxSumi/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.FluxSumi;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -593,11 +589,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/FluxSumi/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.FluxSumi;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -608,16 +600,12 @@
 		};
 		B5C9DE0D2087FEC0006B910A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F5F708406D645AE7ED73251B /* Pods-FluxSumi-FluxSumiTests.debug.xcconfig */;
+			baseConfigurationReference = 8EBC3756C4FB973AF3907ACF /* Pods-FluxSumiTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = FluxSumiTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.FluxSumiTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -627,16 +615,12 @@
 		};
 		B5C9DE0E2087FEC0006B910A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6B9283AD468479363C2E717D /* Pods-FluxSumi-FluxSumiTests.release.xcconfig */;
+			baseConfigurationReference = 2876FB987FB831BE80EEAF74 /* Pods-FluxSumiTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = FluxSumiTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.FluxSumiTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

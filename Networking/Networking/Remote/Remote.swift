@@ -28,7 +28,7 @@ public class Remote {
     ///     - credentials: Credentials to be used in order to authenticate every request.
     ///     - network: Network Wrapper, in charge of actually enqueueing a given network request.
     ///
-    init(credentials: Credentials, network: Network) {
+    public init(credentials: Credentials, network: Network) {
         self.credentials = credentials
         self.network = network
     }

@@ -8,8 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		14992CBEB5041F9F4EE50180 /* Pods_FluxSumi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65F83A300781720E6CBD27E5 /* Pods_FluxSumi.framework */; };
-		29E7B18C373A935E8FFCEBED /* Pods_FluxSumiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD880B1ADE8E80A35355BE1E /* Pods_FluxSumiTests.framework */; };
-		88A98BC2751409E9D99ADD21 /* Pods_FluxSumi_FluxSumiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93681984FADF5CFCD41A1EEC /* Pods_FluxSumi_FluxSumiTests.framework */; };
+		69C4CB36D7D0548D341A203A /* Pods_FluxSumiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD880B1ADE8E80A35355BE1E /* Pods_FluxSumiTests.framework */; };
 		B546CCF22093636A007CDA5F /* FluxSumi.h in Headers */ = {isa = PBXBuildFile; fileRef = B546CCF12093636A007CDA5F /* FluxSumi.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B57AF58620BDFD5E00494681 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B57AF58520BDFD5E00494681 /* Storage.framework */; };
 		B5A8532520BDC73D00FAAB4D /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8532420BDC73D00FAAB4D /* AccountStore.swift */; };
@@ -93,8 +92,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5C9DDFF2087FEC0006B910A /* FluxSumi.framework in Frameworks */,
-				29E7B18C373A935E8FFCEBED /* Pods_FluxSumiTests.framework in Frameworks */,
-				88A98BC2751409E9D99ADD21 /* Pods_FluxSumi_FluxSumiTests.framework in Frameworks */,
+				69C4CB36D7D0548D341A203A /* Pods_FluxSumiTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

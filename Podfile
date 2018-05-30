@@ -26,6 +26,7 @@ target 'WooCommerce' do
   # External Libraries
   # ==================
   #
+  pod 'Alamofire', '4.7.2'
   pod 'Crashlytics', '3.10.1'
   pod 'SAMKeychain', '1.5.3'
 
@@ -40,12 +41,6 @@ target 'FluxSumi' do
   project 'FluxSumi/FluxSumi.xcodeproj'
 
 
-  # External Libraries
-  # ==================
-  #
-  pod 'SAMKeychain', '1.5.3'
-
-
   # Unit Tests
   # ==========
   #
@@ -56,23 +51,6 @@ target 'FluxSumi' do
 
 end
 
-
-
-# Storage Layer:
-# ==============
-#
-target 'Storage' do
-  project 'Storage/Storage.xcodeproj'
-
-
-  # Unit Tests
-  # ==========
-  #
-  target 'StorageTests' do
-    inherit! :search_paths
-  end
-
-end
 
 
 # Networking Layer:
@@ -94,5 +72,4 @@ target 'Networking' do
   target 'NetworkingTests' do
     inherit! :search_paths
   end
-
 end

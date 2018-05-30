@@ -29,14 +29,14 @@ class LoginPrologueViewController: UIViewController {
     @IBOutlet var loginButton: UIButton!
 
 
-    // MARK: - Overriden Properties
+    // MARK: - Overridden Properties
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
 
 
-    // MARK: - Overriden Methods
+    // MARK: - Overridden Methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -110,7 +110,7 @@ extension LoginPrologueViewController {
     /// Opens SafariViewController at the specified URL.
     ///
     func displaySafariViewController(at url: URL) {
-        let safariViewController = SFSafariViewController(url: url)
+        let safariViewController = SafariViewController(url: url)
         safariViewController.modalPresentationStyle = .pageSheet
         present(safariViewController, animated: true, completion: nil)
     }

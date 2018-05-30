@@ -15,13 +15,6 @@ public class Remote {
     let network: Network
 
 
-    /// Initializes the Remote Instance with the specified Credentials, and, by default, our Networking requests will be handled
-    /// by Alamofire.
-    ///
-    public convenience init(credentials: Credentials) {
-        self.init(credentials: credentials, network: AlamofireNetwork())
-    }
-
     /// Designated Initializer.
     ///
     /// - Parameters:

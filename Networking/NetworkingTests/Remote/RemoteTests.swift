@@ -16,13 +16,6 @@ class RemoteTests: XCTestCase {
     private let request = try! URLRequest(url: "www.a8c.com", method: .get)
 
 
-    /// Verifies that, by default, the Remote Layer gets AlamofireWrapper set as the Networking Layer.
-    ///
-    func testRemoteGetsAlamofireNetworkByDefault() {
-        let remote = Remote(credentials: credentials)
-        XCTAssert(remote.network is AlamofireNetwork)
-    }
-
     /// Verifies that `enqueue` properly wraps up the received request within an AuthenticatedRequest, with the remote credentials.
     ///
     func testEnqueueProperlyWrapsUpJsonRequestsIntoAuthenticatedRequestWithCredentials() {

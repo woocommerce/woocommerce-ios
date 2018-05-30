@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="TwoColumnSectionHeaderView" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="32"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nAe-82-c1s">
+                    <rect key="frame" x="317" y="8" width="42" height="16"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Fd-ta-Azy">
+                    <rect key="frame" x="16" y="8" width="42" height="16"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="nAe-82-c1s" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="8" id="0kc-FX-RQ6"/>
+                <constraint firstItem="nAe-82-c1s" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="4Fd-ta-Azy" secondAttribute="trailing" constant="8" id="MHS-dz-djd"/>
+                <constraint firstItem="4Fd-ta-Azy" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="N7Z-zB-jsT"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="4Fd-ta-Azy" secondAttribute="bottom" constant="8" id="Oor-MN-PIo"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="nAe-82-c1s" secondAttribute="trailing" constant="16" id="TIP-cN-VHO"/>
+                <constraint firstItem="4Fd-ta-Azy" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="8" id="Wk4-94-JdF"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="nAe-82-c1s" secondAttribute="bottom" constant="8" id="vuR-9k-8Ku"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="leftColumn" destination="4Fd-ta-Azy" id="RMc-vo-ssc"/>
+                <outlet property="rightColumn" destination="nAe-82-c1s" id="kEj-jV-tZ2"/>
+            </connections>
+        </view>
+    </objects>
+</document>

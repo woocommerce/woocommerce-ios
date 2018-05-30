@@ -12,7 +12,7 @@ class OrdersRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = NetworkMockup()
+    let network = MockupNetwork()
 
     /// Dummy Site ID
     ///

@@ -28,6 +28,21 @@ target 'WooCommerce' do
 end
 
 
+# FluxSumi!
+# =========
+#
+target 'FluxSumi' do
+  project 'FluxSumi/FluxSumi.xcodeproj'
+
+  inherit! :search_paths
+
+  target 'FluxSumiTests' do
+    pod 'Alamofire', '4.7.2'
+  end
+
+end
+
+
 # Networking!
 # ===========
 #
@@ -42,4 +57,5 @@ target 'Networking' do
   target 'NetworkingTests' do
     inherit! :search_paths
   end
+
 end

@@ -33,7 +33,7 @@ extension AccountStore  {
                 return
             }
 
-            self?.updateStoredAccount(with: account)
+            self?.updateStoredAccount(remote: account)
             onCompletion(nil)
         }
     }
@@ -42,16 +42,15 @@ extension AccountStore  {
 
 // MARK: - Private Methods
 //
-private extension AccountStore {
+extension AccountStore {
 
     /// Updates the Storage's Account with the specified Networking (Remote) Account.
     ///
-    func updateStoredAccount(with remote: Networking.Account) {
+    func updateStoredAccount(remote: Networking.Account) {
         assert(Thread.isMainThread)
 
-        let predicate = NSPredicate(format: "userID = %ld", remote.userID)
         let storage = storageManager.viewStorage
-        let account = storage.firstObject(ofType: Storage.Account.self, matching: predicate) ?? storage.insertNewObject(ofType: Storage.Account.self)
+        let account = loadStoredAccount(userId: remote.userID) ?? storage.insertNewObject(ofType: Storage.Account.self)
 
         account.displayName = remote.displayName
         account.email = remote.email
@@ -60,5 +59,16 @@ private extension AccountStore {
         account.username = remote.username
 
         storage.saveIfNeeded()
+    }
+
+    /// Retrieves the Stored Account.
+    ///
+    func loadStoredAccount(userId: Int) -> Storage.Account? {
+        assert(Thread.isMainThread)
+
+        let predicate = NSPredicate(format: "userID = %ld", userId)
+        let storage = storageManager.viewStorage
+
+        return storage.firstObject(ofType: Storage.Account.self, matching: predicate)
     }
 }

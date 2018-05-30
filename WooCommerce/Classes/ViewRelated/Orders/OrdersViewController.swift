@@ -12,7 +12,7 @@ class OrdersViewController: UIViewController {
         return searchResults.isEmpty && isUsingFilterAction
     }
 
-    func loadSampleOrders() -> [Order] {
+    func loadMockupOrders() -> [Order] {
         guard let path = Bundle.main.url(forResource: "order-list", withExtension: "json") else {
             return []
         }
@@ -22,7 +22,7 @@ class OrdersViewController: UIViewController {
         return try! decoder.decode([Order].self, from: json)
     }
 
-    func loadSingleOrder(basicOrder: Order) -> Order {
+    func loadMockupOrder(basicOrder: Order) -> Order {
         let resource = "order-\(basicOrder.number)"
         if let path = Bundle.main.url(forResource: resource, withExtension: "json") {
             do {
@@ -49,7 +49,7 @@ class OrdersViewController: UIViewController {
         configureNavigation()
         configureTableView()
         configureSearch()
-        orders = loadSampleOrders()
+        orders = loadMockupOrders()
     }
 
     func configureNavigation() {
@@ -218,7 +218,7 @@ extension OrdersViewController: UITableViewDelegate {
             if let singleOrderViewController = segue.destination as? OrderDetailsViewController {
                 let indexPath = sender as! IndexPath
                 let order = orderAtIndexPath(indexPath)
-                singleOrderViewController.order = loadSingleOrder(basicOrder: order)
+                singleOrderViewController.order = loadMockupOrder(basicOrder: order)
             }
         }
     }

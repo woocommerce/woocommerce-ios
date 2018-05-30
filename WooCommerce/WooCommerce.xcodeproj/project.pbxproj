@@ -327,7 +327,7 @@
 				B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */,
 				B56DB3D02049BFAA00D4AA8E /* WooCommerce.xcdatamodeld */,
 				CE1CCB4620570A6B000EE3AC /* en.lproj */,
-				CEE005FF2077CA5A0079161F /* fake data */,
+				CEE005FF2077CA5A0079161F /* mockup orders */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -390,7 +390,7 @@
 			path = ReusableViews;
 			sourceTree = "<group>";
 		};
-		CEE005FF2077CA5A0079161F /* fake data */ = {
+		CEE005FF2077CA5A0079161F /* mockup orders */ = {
 			isa = PBXGroup;
 			children = (
 				CEE005F72077C9690079161F /* order-list.json */,
@@ -403,7 +403,7 @@
 				CE1EC8DC20B76636009762BF /* order-1044.json */,
 				CE1EC8DE20B76651009762BF /* order-notes-1044.json */,
 			);
-			path = "fake data";
+			path = "mockup orders";
 			sourceTree = "<group>";
 		};
 		CEE006022077D0F80079161F /* OrderDetails */ = {

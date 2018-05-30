@@ -10,7 +10,7 @@ class StorePickerViewController: UIViewController {
     /// White-Background View, to be placed surrounding the bottom area.
     ///
     @IBOutlet private var backgroundView: UIView! {
-        didSet  {
+        didSet {
             backgroundView.layer.masksToBounds = false
             backgroundView.layer.shadowOpacity = Constants.backgroundShadowOpacity
         }

@@ -74,7 +74,7 @@ extension NSManagedObjectContext: StorageType {
     ///     - type: Defines the `kind` of object to be retrieved.
     ///     - predicate: Defines the conditions that any given object should meet.
     ///
-    public func firstObject<T: Object>(ofType type: T.Type, matching predicate: NSPredicate) -> T? {
+    public func firstObject<T: Object>(ofType type: T.Type, matching predicate: NSPredicate?) -> T? {
         let request = fetchRequest(forType: type)
         request.predicate = predicate
         request.fetchLimit = 1

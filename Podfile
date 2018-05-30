@@ -7,11 +7,13 @@ platform :ios, '11.0'
 workspace 'WooCommerce.xcworkspace'
 
 
+
 # Main Target!
 # ============
 #
 target 'WooCommerce' do
   project 'WooCommerce/WooCommerce.xcodeproj'
+
 
   # Automattic Libraries
   # ====================
@@ -19,6 +21,7 @@ target 'WooCommerce' do
   pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.3'
   pod 'Gridicons', '0.15'
   pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => '58ed623'
+
 
   # External Libraries
   # ==================
@@ -28,11 +31,18 @@ target 'WooCommerce' do
 end
 
 
+
 # Flux Layer:
 # ===========
 #
 target 'FluxSumi' do
   project 'FluxSumi/FluxSumi.xcodeproj'
+
+
+  # External Libraries
+  # ==================
+  #
+  pod 'SAMKeychain', '1.5.3'
 
 
   # Unit Tests
@@ -46,16 +56,13 @@ target 'FluxSumi' do
 end
 
 
+
 # Storage Layer:
 # ==============
 #
 target 'Storage' do
   project 'Storage/Storage.xcodeproj'
 
-  # External Libraries
-  # ==================
-  #
-  pod 'SAMKeychain', '1.5.3'
 
   # Unit Tests
   # ==========
@@ -72,6 +79,7 @@ end
 #
 target 'Networking' do
   project 'Networking/Networking.xcodeproj'
+
 
   # External Libraries
   # ==================

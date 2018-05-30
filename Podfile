@@ -27,6 +27,7 @@ target 'WooCommerce' do
   # ==================
   #
   pod 'Crashlytics', '3.10.1'
+  pod 'SAMKeychain', '1.5.3'
 
 end
 

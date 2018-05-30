@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B505F6E320BEF31000BB1B69 /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6E220BEF31000BB1B69 /* AccountStore.swift */; };
+		B505F6E520BEF35E00BB1B69 /* MockupStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6E420BEF35E00BB1B69 /* MockupStorage.swift */; };
+		B505F6E720BEF69D00BB1B69 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B505F6E620BEF69D00BB1B69 /* Networking.framework */; };
+		B505F6E920BEF6A100BB1B69 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B505F6E820BEF6A100BB1B69 /* Storage.framework */; };
 		B546CCF22093636A007CDA5F /* FluxSumi.h in Headers */ = {isa = PBXBuildFile; fileRef = B546CCF12093636A007CDA5F /* FluxSumi.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B5C796208E49B600642956 /* Action+Internal.swift */; };
 		B5C9DDFF2087FEC0006B910A /* FluxSumi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C9DDF52087FEC0006B910A /* FluxSumi.framework */; };
@@ -21,6 +25,8 @@
 		B5C9DE262087FF20006B910A /* MockupDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1F2087FF20006B910A /* MockupDispatcher.swift */; };
 		B5C9DE272087FF20006B910A /* MockupAcount.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE202087FF20006B910A /* MockupAcount.swift */; };
 		B5C9DE282087FF20006B910A /* MockupSite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE212087FF20006B910A /* MockupSite.swift */; };
+		CC11CA9F40DB52C2A049D9F8 /* Pods_FluxSumi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E9FFEC35E04DDAE239FD9C4 /* Pods_FluxSumi.framework */; };
+		F22B32B67F87FD370446BB18 /* Pods_FluxSumiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70FBE3D15258FC0406F114F2 /* Pods_FluxSumiTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +40,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0FCCE38458EF9D6E528A1A99 /* Pods-FluxSumiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FluxSumiTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-FluxSumiTests/Pods-FluxSumiTests.release.xcconfig"; sourceTree = "<group>"; };
+		3513BD22E04802AC20564BAB /* Pods-FluxSumi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FluxSumi.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-FluxSumi/Pods-FluxSumi.debug.xcconfig"; sourceTree = "<group>"; };
+		6E9FFEC35E04DDAE239FD9C4 /* Pods_FluxSumi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FluxSumi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		70FBE3D15258FC0406F114F2 /* Pods_FluxSumiTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FluxSumiTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7BDC17F8B7DA0383A79EBCE0 /* Pods-FluxSumi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FluxSumi.release.xcconfig"; path = "../Pods/Target Support Files/Pods-FluxSumi/Pods-FluxSumi.release.xcconfig"; sourceTree = "<group>"; };
+		B505F6E220BEF31000BB1B69 /* AccountStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountStore.swift; sourceTree = "<group>"; };
+		B505F6E420BEF35E00BB1B69 /* MockupStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupStorage.swift; sourceTree = "<group>"; };
+		B505F6E620BEF69D00BB1B69 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B505F6E820BEF6A100BB1B69 /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B546CCF12093636A007CDA5F /* FluxSumi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FluxSumi.h; sourceTree = "<group>"; };
 		B5B5C796208E49B600642956 /* Action+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Action+Internal.swift"; sourceTree = "<group>"; };
 		B5C9DDF52087FEC0006B910A /* FluxSumi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FluxSumi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -51,6 +66,7 @@
 		B5C9DE1F2087FF20006B910A /* MockupDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupDispatcher.swift; sourceTree = "<group>"; };
 		B5C9DE202087FF20006B910A /* MockupAcount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupAcount.swift; sourceTree = "<group>"; };
 		B5C9DE212087FF20006B910A /* MockupSite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupSite.swift; sourceTree = "<group>"; };
+		C86F7798348F086ABB3FCF81 /* Pods-FluxSumiTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FluxSumiTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-FluxSumiTests/Pods-FluxSumiTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +74,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B505F6E920BEF6A100BB1B69 /* Storage.framework in Frameworks */,
+				B505F6E720BEF69D00BB1B69 /* Networking.framework in Frameworks */,
+				CC11CA9F40DB52C2A049D9F8 /* Pods_FluxSumi.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,18 +85,51 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5C9DDFF2087FEC0006B910A /* FluxSumi.framework in Frameworks */,
+				F22B32B67F87FD370446BB18 /* Pods_FluxSumiTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		74884D37DE8EDF6712830893 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B505F6E820BEF6A100BB1B69 /* Storage.framework */,
+				B505F6E620BEF69D00BB1B69 /* Networking.framework */,
+				6E9FFEC35E04DDAE239FD9C4 /* Pods_FluxSumi.framework */,
+				70FBE3D15258FC0406F114F2 /* Pods_FluxSumiTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		84613F211593C8AF12A815FC /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3513BD22E04802AC20564BAB /* Pods-FluxSumi.debug.xcconfig */,
+				7BDC17F8B7DA0383A79EBCE0 /* Pods-FluxSumi.release.xcconfig */,
+				C86F7798348F086ABB3FCF81 /* Pods-FluxSumiTests.debug.xcconfig */,
+				0FCCE38458EF9D6E528A1A99 /* Pods-FluxSumiTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		B505F6E120BEF31000BB1B69 /* Account */ = {
+			isa = PBXGroup;
+			children = (
+				B505F6E220BEF31000BB1B69 /* AccountStore.swift */,
+			);
+			path = Account;
+			sourceTree = "<group>";
+		};
 		B5C9DDEB2087FEC0006B910A = {
 			isa = PBXGroup;
 			children = (
 				B5C9DDF72087FEC0006B910A /* FluxSumi */,
 				B5C9DE022087FEC0006B910A /* FluxSumiTests */,
 				B5C9DDF62087FEC0006B910A /* Products */,
+				84613F211593C8AF12A815FC /* Pods */,
+				74884D37DE8EDF6712830893 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -95,6 +147,7 @@
 			children = (
 				B5C9DE132087FF0E006B910A /* Internal */,
 				B5C9DE0F2087FF0E006B910A /* Base */,
+				B505F6E120BEF31000BB1B69 /* Account */,
 				B546CCF12093636A007CDA5F /* FluxSumi.h */,
 				B5C9DDF92087FEC0006B910A /* Info.plist */,
 			);
@@ -144,10 +197,11 @@
 		B5C9DE1D2087FF20006B910A /* Mockups */ = {
 			isa = PBXGroup;
 			children = (
-				B5C9DE1E2087FF20006B910A /* MockupProcessor.swift */,
-				B5C9DE1F2087FF20006B910A /* MockupDispatcher.swift */,
 				B5C9DE202087FF20006B910A /* MockupAcount.swift */,
+				B5C9DE1F2087FF20006B910A /* MockupDispatcher.swift */,
+				B5C9DE1E2087FF20006B910A /* MockupProcessor.swift */,
 				B5C9DE212087FF20006B910A /* MockupSite.swift */,
+				B505F6E420BEF35E00BB1B69 /* MockupStorage.swift */,
 			);
 			name = Mockups;
 			path = FluxC/Mockups;
@@ -171,6 +225,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B5C9DE092087FEC0006B910A /* Build configuration list for PBXNativeTarget "FluxSumi" */;
 			buildPhases = (
+				257B0F04E18BF7207F3D3292 /* [CP] Check Pods Manifest.lock */,
 				B5C9DDF02087FEC0006B910A /* Sources */,
 				B5C9DDF12087FEC0006B910A /* Frameworks */,
 				B5C9DDF22087FEC0006B910A /* Headers */,
@@ -189,9 +244,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B5C9DE0C2087FEC0006B910A /* Build configuration list for PBXNativeTarget "FluxSumiTests" */;
 			buildPhases = (
+				680078D8660F2129B09914DD /* [CP] Check Pods Manifest.lock */,
 				B5C9DDFA2087FEC0006B910A /* Sources */,
 				B5C9DDFB2087FEC0006B910A /* Frameworks */,
 				B5C9DDFC2087FEC0006B910A /* Resources */,
+				BFC57AB072FB853BE7AA9311 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -256,6 +313,65 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		257B0F04E18BF7207F3D3292 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FluxSumi-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		680078D8660F2129B09914DD /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FluxSumiTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BFC57AB072FB853BE7AA9311 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/../Pods/Target Support Files/Pods-FluxSumiTests/Pods-FluxSumiTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/SAMKeychain/SAMKeychain.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SAMKeychain.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-FluxSumiTests/Pods-FluxSumiTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		B5C9DDF02087FEC0006B910A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -264,6 +380,7 @@
 				B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */,
 				B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */,
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,
+				B505F6E320BEF31000BB1B69 /* AccountStore.swift in Sources */,
 				B5C9DE172087FF0E006B910A /* EventBus.swift in Sources */,
 				B5C9DE162087FF0E006B910A /* Store.swift in Sources */,
 			);
@@ -275,6 +392,7 @@
 			files = (
 				B5C9DE232087FF20006B910A /* EventBusTests.swift in Sources */,
 				B5C9DE272087FF20006B910A /* MockupAcount.swift in Sources */,
+				B505F6E520BEF35E00BB1B69 /* MockupStorage.swift in Sources */,
 				B5C9DE262087FF20006B910A /* MockupDispatcher.swift in Sources */,
 				B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */,
 				B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */,
@@ -416,6 +534,7 @@
 		};
 		B5C9DE0A2087FEC0006B910A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3513BD22E04802AC20564BAB /* Pods-FluxSumi.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -442,6 +561,7 @@
 		};
 		B5C9DE0B2087FEC0006B910A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7BDC17F8B7DA0383A79EBCE0 /* Pods-FluxSumi.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -468,8 +588,8 @@
 		};
 		B5C9DE0D2087FEC0006B910A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C86F7798348F086ABB3FCF81 /* Pods-FluxSumiTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = FluxSumiTests/Info.plist;
@@ -487,8 +607,8 @@
 		};
 		B5C9DE0E2087FEC0006B910A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0FCCE38458EF9D6E528A1A99 /* Pods-FluxSumiTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = FluxSumiTests/Info.plist;

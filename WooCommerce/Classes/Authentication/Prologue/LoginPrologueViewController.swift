@@ -29,14 +29,14 @@ class LoginPrologueViewController: UIViewController {
     @IBOutlet var loginButton: UIButton!
 
 
-    // MARK: - Overriden Properties
+    // MARK: - Overridden Properties
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
 
 
-    // MARK: - Overriden Methods
+    // MARK: - Overridden Methods
 
     override func viewDidLoad() {
         super.viewDidLoad()

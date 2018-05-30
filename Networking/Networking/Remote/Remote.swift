@@ -19,7 +19,7 @@ public class Remote {
     /// by Alamofire.
     ///
     public convenience init(credentials: Credentials) {
-        self.init(credentials: credentials, network: AlamofireWrapper())
+        self.init(credentials: credentials, network: AlamofireNetwork())
     }
 
     /// Designated Initializer.

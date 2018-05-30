@@ -12,7 +12,7 @@ class AccountRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = NetworkMockup()
+    let network = MockupNetwork()
 
     /// Repeat always!
     ///

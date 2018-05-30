@@ -110,7 +110,7 @@ extension LoginPrologueViewController {
     /// Opens SafariViewController at the specified URL.
     ///
     func displaySafariViewController(at url: URL) {
-        let safariViewController = SFSafariViewController(url: url)
+        let safariViewController = SafariViewController(url: url)
         safariViewController.modalPresentationStyle = .pageSheet
         present(safariViewController, animated: true, completion: nil)
     }

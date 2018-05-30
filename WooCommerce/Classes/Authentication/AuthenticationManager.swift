@@ -147,11 +147,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Synchronizes the specified WordPress Account. Note: Only Dotcom is supported!
     ///
     func sync(credentials: WordPressCredentials, onCompletion: @escaping (Error?) -> Void) {
-        guard case let .wpcom(_, authToken, _, _) = credentials else {
+        guard case let .wpcom(username, authToken, _, _) = credentials else {
             fatalError("WordPress.org is not supported")
         }
 
-        Mall.shared.accountStore.synchronizeDotcomAccount(with: authToken) { error in
+        Mall.shared.accountStore.synchronizeDotcomAccount(username: username, authToken: authToken) { error in
             onCompletion(error)
         }
     }

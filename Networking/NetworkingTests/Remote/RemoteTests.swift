@@ -19,8 +19,8 @@ class RemoteTests: XCTestCase {
     /// Verifies that `enqueue` properly wraps up the received request within an AuthenticatedRequest, with the remote credentials.
     ///
     func testEnqueueProperlyWrapsUpJsonRequestsIntoAuthenticatedRequestWithCredentials() {
-        let network = DummyNetwork()
-        let remote = Remote(credentials: credentials, network: network)
+        let network = MockupNetwork()
+        let remote = Remote(network: network)
         let expectation = self.expectation(description: "Enqueue")
 
         remote.enqueue(request) { (payload, error) in
@@ -46,7 +46,7 @@ class RemoteTests: XCTestCase {
     func testEnqueueProperlyWrapsUpDataRequestsIntoAuthenticatedRequestWithCredentials() {
         let network = DummyNetwork()
         let mapper = DummyMapper()
-        let remote = Remote(credentials: credentials, network: network)
+        let remote = Remote(network: network)
         let expectation = self.expectation(description: "Enqueue with Mapper")
 
         remote.enqueue(request, mapper: mapper) { (payload, error) in
@@ -72,7 +72,7 @@ class RemoteTests: XCTestCase {
     func testEnqueueWithMapperProperlyRelaysReceivedPayloadToMapper() {
         let network = DummyNetwork()
         let mapper = DummyMapper()
-        let remote = Remote(credentials: credentials, network: network)
+        let remote = Remote(network: network)
 
         let expectation = self.expectation(description: "Enqueue with Mapper")
 

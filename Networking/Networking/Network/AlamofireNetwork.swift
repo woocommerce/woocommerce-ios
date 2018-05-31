@@ -4,12 +4,11 @@ import Alamofire
 
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
-public struct AlamofireWrapper: Network {
+public struct AlamofireNetwork: Network {
 
     /// Public Initializer
     ///
-    public init() {
-    }
+    public init() { }
 
     /// Executes the specified Network Request. Upon completion, the payload will be parsed as JSON, and sent back to the caller.
     ///

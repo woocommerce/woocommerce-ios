@@ -1,0 +1,115 @@
+{
+    "id": 1112,
+    "parent_id": 0,
+    "number": "1112",
+    "order_key": "wc_order_5afafec4d0830",
+    "created_via": "checkout",
+    "version": "3.3.5",
+    "status": "on-hold",
+    "currency": "USD",
+    "date_created": "2018-05-15T11:37:40",
+    "date_created_gmt": "2018-05-15T15:37:40",
+    "date_modified": "2018-05-15T11:37:41",
+    "date_modified_gmt": "2018-05-15T15:37:41",
+    "discount_total": "0.00",
+    "discount_tax": "0.00",
+    "shipping_total": "0.00",
+    "shipping_tax": "0.00",
+    "cart_tax": "0.00",
+    "total": "20.00",
+    "total_tax": "0.00",
+    "prices_include_tax": false,
+    "customer_id": 9,
+    "customer_ip_address": "192.0.125.251",
+    "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10.13; rv:60.0) gecko/20100101 firefox/60.0",
+    "customer_note": "",
+    "billing": {
+        "first_name": "Woo Billing",
+        "last_name": "User",
+        "company": "",
+        "address_1": "567 Place",
+        "address_2": "",
+        "city": "Toronto",
+        "state": "AZ",
+        "postcode": "64364",
+        "country": "US",
+        "email": "sampleuser@woocommerce.com",
+        "phone": "4264262624"
+    },
+    "shipping": {
+        "first_name": "Woo Sample",
+        "last_name": "User 1",
+        "company": "",
+        "address_1": "567 Place",
+        "address_2": "",
+        "city": "Toronto",
+        "state": "AZ",
+        "postcode": "64364",
+        "country": "US"
+    },
+    "payment_method": "bacs",
+    "payment_method_title": "Direct bank transfer",
+    "transaction_id": "",
+    "date_paid": null,
+    "date_paid_gmt": null,
+    "date_completed": null,
+    "date_completed_gmt": null,
+    "cart_hash": "a9bea4238913d2cc0bdd6ab12f5fabb1",
+    "meta_data": [],
+    "line_items": [
+        {
+            "id": 950,
+            "name": "Almonds",
+            "product_id": 693,
+            "variation_id": 0,
+            "quantity": 1,
+            "tax_class": "",
+            "subtotal": "20.00",
+            "subtotal_tax": "0.00",
+            "total": "20.00",
+            "total_tax": "0.00",
+            "taxes": [],
+            "meta_data": [],
+            "sku": "1111",
+            "price": 20
+        }
+    ],
+    "tax_lines": [],
+    "shipping_lines": [
+        {
+            "id": 951,
+            "method_title": "Free shipping",
+            "method_id": "free_shipping:26",
+            "total": "0.00",
+            "total_tax": "0.00",
+            "taxes": [],
+            "meta_data": [
+                {
+                    "id": 6985,
+                    "key": "Items",
+                    "value": "Almonds &times; 1"
+                }
+            ]
+        }
+    ],
+    "fee_lines": [],
+    "coupon_lines": [],
+    "refunds": [],
+    "_links": {
+        "self": [
+            {
+                "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/1112"
+            }
+        ],
+        "collection": [
+            {
+                "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
+            }
+        ],
+        "customer": [
+            {
+                "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/9"
+            }
+        ]
+    }
+}

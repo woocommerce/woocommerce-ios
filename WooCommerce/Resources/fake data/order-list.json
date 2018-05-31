@@ -1,144 +1,84 @@
 [
     {
-        "id": 963,
+        "id": 1112,
         "parent_id": 0,
-        "number": "963",
-        "order_key": "wc_order_5ac408a83dba3",
+        "number": "1112",
+        "order_key": "wc_order_5afafec4d0830",
         "created_via": "checkout",
-        "version": "3.3.4",
-        "status": "processing",
+        "version": "3.3.5",
+        "status": "on-hold",
         "currency": "USD",
-        "date_created": "2018-04-03T19:05:12",
-        "date_created_gmt": "2018-04-03T23:05:12",
-        "date_modified": "2018-04-03T19:05:14",
-        "date_modified_gmt": "2018-04-03T23:05:14",
-        "discount_total": "30.00",
-        "discount_tax": "1.20",
+        "date_created": "2018-05-15T11:37:40",
+        "date_created_gmt": "2018-05-15T15:37:40",
+        "date_modified": "2018-05-15T11:37:41",
+        "date_modified_gmt": "2018-05-15T15:37:41",
+        "discount_total": "0.00",
+        "discount_tax": "0.00",
         "shipping_total": "0.00",
         "shipping_tax": "0.00",
-        "cart_tax": "1.20",
-        "total": "31.20",
-        "total_tax": "1.20",
+        "cart_tax": "0.00",
+        "total": "20.00",
+        "total_tax": "0.00",
         "prices_include_tax": false,
-        "customer_id": 11,
-        "customer_ip_address": "24.52.34.206",
-        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/65.0.3325.181 safari/537.36",
+        "customer_id": 9,
+        "customer_ip_address": "192.0.125.251",
+        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10.13; rv:60.0) gecko/20100101 firefox/60.0",
         "customer_note": "",
         "billing": {
-            "first_name": "Johnny",
-            "last_name": "Appleseed",
+            "first_name": "Woo Billing",
+            "last_name": "User",
             "company": "",
-            "address_1": "234 70th Street",
+            "address_1": "567 Place",
             "address_2": "",
-            "city": "Niagara Falls",
-            "state": "NY",
-            "postcode": "14304",
+            "city": "Toronto",
+            "state": "AZ",
+            "postcode": "64364",
             "country": "US",
-            "email": "amanda.riu+wootester@automattic.com",
-            "phone": "7165551234"
+            "email": "sampleuser@woocommerce.com",
+            "phone": "4264262624"
         },
         "shipping": {
-            "first_name": "Johnny",
-            "last_name": "Appleseed",
+            "first_name": "Woo Sample",
+            "last_name": "User 1",
             "company": "",
-            "address_1": "234 70th Street",
+            "address_1": "567 Place",
             "address_2": "",
-            "city": "Niagara Falls",
-            "state": "NY",
-            "postcode": "14304",
+            "city": "Toronto",
+            "state": "AZ",
+            "postcode": "64364",
             "country": "US"
         },
-        "payment_method": "stripe",
-        "payment_method_title": "Credit Card (Stripe)",
-        "transaction_id": "ch_1CCyBiJK48mSkzFLoXQiCziz",
-        "date_paid": "2018-04-03T19:05:14",
-        "date_paid_gmt": "2018-04-03T23:05:14",
+        "payment_method": "bacs",
+        "payment_method_title": "Direct bank transfer",
+        "transaction_id": "",
+        "date_paid": null,
+        "date_paid_gmt": null,
         "date_completed": null,
         "date_completed_gmt": null,
-        "cart_hash": "c51a4e7d1d0762abbe726b4f6d489391",
-        "meta_data": [
-            {
-                "id": 24155,
-                "key": "_stripe_source_id",
-                "value": "src_1CCyBeJK48mSkzFLxOpLtdNk"
-            },
-            {
-                "id": 24156,
-                "key": "_stripe_charge_captured",
-                "value": "yes"
-            },
-            {
-                "id": 24157,
-                "key": "Stripe Fee",
-                "value": "1.20"
-            },
-            {
-                "id": 24158,
-                "key": "Net Revenue From Stripe",
-                "value": "30.00"
-            }
-        ],
+        "cart_hash": "a9bea4238913d2cc0bdd6ab12f5fabb1",
+        "meta_data": [],
         "line_items": [
             {
-                "id": 890,
-                "name": "Fruits Basket (Mix & Match Product)",
-                "product_id": 52,
+                "id": 950,
+                "name": "Almonds",
+                "product_id": 693,
                 "variation_id": 0,
                 "quantity": 1,
                 "tax_class": "",
-                "subtotal": "50.00",
-                "subtotal_tax": "2.00",
-                "total": "30.00",
-                "total_tax": "1.20",
-                "taxes": [
-                    {
-                        "id": 1,
-                        "total": "1.2",
-                        "subtotal": "2"
-                    }
-                ],
-                "meta_data": [],
-                "sku": "",
-                "price": 30
-            },
-            {
-                "id": 891,
-                "name": "Fruits Bundle",
-                "product_id": 234,
-                "variation_id": 0,
-                "quantity": 1,
-                "tax_class": "",
-                "subtotal": "10.00",
-                "subtotal_tax": "0.40",
-                "total": "0.00",
+                "subtotal": "20.00",
+                "subtotal_tax": "0.00",
+                "total": "20.00",
                 "total_tax": "0.00",
-                "taxes": [
-                    {
-                        "id": 1,
-                        "total": "0",
-                        "subtotal": "0.4"
-                    }
-                ],
+                "taxes": [],
                 "meta_data": [],
-                "sku": "5555-A",
-                "price": 0
+                "sku": "1111",
+                "price": 20
             }
         ],
-        "tax_lines": [
-            {
-                "id": 893,
-                "rate_code": "US-NY-STATE TAX-1",
-                "rate_id": 1,
-                "label": "State Tax",
-                "compound": false,
-                "tax_total": "1.20",
-                "shipping_tax_total": "0.00",
-                "meta_data": []
-            }
-        ],
+        "tax_lines": [],
         "shipping_lines": [
             {
-                "id": 892,
+                "id": 951,
                 "method_title": "Free shipping",
                 "method_id": "free_shipping:26",
                 "total": "0.00",
@@ -146,9 +86,1266 @@
                 "taxes": [],
                 "meta_data": [
                     {
-                        "id": 6507,
+                        "id": 6985,
                         "key": "Items",
-                        "value": "Fruits Basket (Mix & Match Product) &times; 1, Fruits Bundle &times; 1"
+                        "value": "Almonds &times; 1"
+                    }
+                ]
+            }
+        ],
+        "fee_lines": [],
+        "coupon_lines": [],
+        "refunds": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/1112"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
+                }
+            ],
+            "customer": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/9"
+                }
+            ]
+        }
+    },
+    {
+        "id": 1107,
+        "parent_id": 0,
+        "number": "1107",
+        "order_key": "wc_order_5af1f51d8b947",
+        "created_via": "checkout",
+        "version": "3.3.5",
+        "status": "pending",
+        "currency": "USD",
+        "date_created": "2018-05-08T15:06:05",
+        "date_created_gmt": "2018-05-08T19:06:05",
+        "date_modified": "2018-05-08T15:06:05",
+        "date_modified_gmt": "2018-05-08T19:06:05",
+        "discount_total": "0.00",
+        "discount_tax": "0.00",
+        "shipping_total": "0.00",
+        "shipping_tax": "0.00",
+        "cart_tax": "0.00",
+        "total": "30.00",
+        "total_tax": "0.00",
+        "prices_include_tax": false,
+        "customer_id": 1,
+        "customer_ip_address": "192.0.124.251",
+        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_4) applewebkit/537.36 (khtml, like gecko) chrome/66.0.3359.117 safari/537.36",
+        "customer_note": "",
+        "billing": {
+            "first_name": "Woo Billing",
+            "last_name": "User",
+            "company": "The Nuttery",
+            "address_1": "200 Collins Ave",
+            "address_2": "",
+            "city": "Miami Beach",
+            "state": "FL",
+            "postcode": "33139",
+            "country": "US",
+            "email": "sampleuser@woocommerce.com",
+            "phone": "333-333-3333"
+        },
+        "shipping": {
+            "first_name": "Woo Sample",
+            "last_name": "User 2",
+            "company": "The Nuttery",
+            "address_1": "200 Collins Ave",
+            "address_2": "",
+            "city": "Miami Beach",
+            "state": "FL",
+            "postcode": "33139",
+            "country": "US"
+        },
+        "payment_method": "bluepayecheck",
+        "payment_method_title": "ECheck (BluePay)",
+        "transaction_id": "",
+        "date_paid": null,
+        "date_paid_gmt": null,
+        "date_completed": null,
+        "date_completed_gmt": null,
+        "cart_hash": "4b64cfb28c0e6b2d5e25c958fc9826ba",
+        "meta_data": [
+            {
+                "id": 44670,
+                "key": "_fue_conversion",
+                "value": "1050"
+            },
+            {
+                "id": 44671,
+                "key": "_fue_recorded",
+                "value": "1"
+            },
+            {
+                "id": 44673,
+                "key": "_shipping_phone",
+                "value": "333-333-3333"
+            }
+        ],
+        "line_items": [
+            {
+                "id": 948,
+                "name": "Black Dress (H&M)",
+                "product_id": 373,
+                "variation_id": 0,
+                "quantity": 1,
+                "tax_class": "",
+                "subtotal": "30.00",
+                "subtotal_tax": "0.00",
+                "total": "30.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [],
+                "sku": "111-111-111",
+                "price": 30
+            }
+        ],
+        "tax_lines": [],
+        "shipping_lines": [
+            {
+                "id": 949,
+                "method_title": "Free shipping",
+                "method_id": "free_shipping:26",
+                "total": "0.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 6971,
+                        "key": "Items",
+                        "value": "Black Dress (H&M) &times; 1"
+                    }
+                ]
+            }
+        ],
+        "fee_lines": [],
+        "coupon_lines": [],
+        "refunds": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/1107"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
+                }
+            ],
+            "customer": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
+                }
+            ]
+        }
+    },
+    {
+        "id": 1067,
+        "parent_id": 0,
+        "number": "1067",
+        "order_key": "wc_order_5ae73ee519999",
+        "created_via": "checkout",
+        "version": "3.3.5",
+        "status": "completed",
+        "currency": "USD",
+        "date_created": "2018-04-30T12:05:57",
+        "date_created_gmt": "2018-04-30T16:05:57",
+        "date_modified": "2018-05-24T00:48:32",
+        "date_modified_gmt": "2018-05-24T04:48:32",
+        "discount_total": "0.00",
+        "discount_tax": "0.00",
+        "shipping_total": "0.00",
+        "shipping_tax": "0.00",
+        "cart_tax": "2.00",
+        "total": "52.00",
+        "total_tax": "2.00",
+        "prices_include_tax": false,
+        "customer_id": 1,
+        "customer_ip_address": "192.0.124.251",
+        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_4) applewebkit/537.36 (khtml, like gecko) chrome/66.0.3359.117 safari/537.36",
+        "customer_note": "",
+        "billing": {
+            "first_name": "Woo Billing",
+            "last_name": "User",
+            "company": "The Nuttery",
+            "address_1": "200 Collins Ave",
+            "address_2": "",
+            "city": "Miami Beach",
+            "state": "FL",
+            "postcode": "33139",
+            "country": "US",
+            "email": "sampleuser@woocommerce.com",
+            "phone": "333-333-3333"
+        },
+        "shipping": {
+            "first_name": "Woo Sample",
+            "last_name": "User 3",
+            "company": "Zhizha",
+            "address_1": "1480 YORK AVE",
+            "address_2": "",
+            "city": "NEW YORK",
+            "state": "NY",
+            "postcode": "10075-8822",
+            "country": "US"
+        },
+        "payment_method": "stripe",
+        "payment_method_title": "Credit Card (Stripe)",
+        "transaction_id": "ch_1CMeVnJK48mSkzFLBjZVhpPk",
+        "date_paid": "2018-04-30T12:05:59",
+        "date_paid_gmt": "2018-04-30T16:05:59",
+        "date_completed": "2018-05-24T00:48:32",
+        "date_completed_gmt": "2018-05-24T04:48:32",
+        "cart_hash": "a1ea3d765c2957c508e4805f852125e7",
+        "meta_data": [
+            {
+                "id": 44534,
+                "key": "_fue_conversion",
+                "value": "974"
+            },
+            {
+                "id": 44535,
+                "key": "_fue_recorded",
+                "value": "1"
+            },
+            {
+                "id": 44536,
+                "key": "_stripe_customer_id",
+                "value": "cus_B9aZmYbtbK1ryN"
+            },
+            {
+                "id": 44537,
+                "key": "_stripe_source_id",
+                "value": "src_1CMeVjJK48mSkzFLqxCWNlu0"
+            },
+            {
+                "id": 44538,
+                "key": "_stripe_charge_captured",
+                "value": "yes"
+            },
+            {
+                "id": 44539,
+                "key": "_stripe_fee",
+                "value": "1.81"
+            },
+            {
+                "id": 44540,
+                "key": "_stripe_net",
+                "value": "50.19"
+            },
+            {
+                "id": 44541,
+                "key": "_stripe_currency",
+                "value": "USD"
+            },
+            {
+                "id": 44545,
+                "key": "_order_status_emails_queued",
+                "value": "1"
+            },
+            {
+                "id": 44549,
+                "key": "_shipstation_exported",
+                "value": "yes"
+            },
+            {
+                "id": 44619,
+                "key": "_shipping_phone",
+                "value": "333-333-3333"
+            },
+            {
+                "id": 44620,
+                "key": "_wc_connect_destination_normalized",
+                "value": "1"
+            }
+        ],
+        "line_items": [
+            {
+                "id": 935,
+                "name": "Funky Hoodie - Short Sleeve",
+                "product_id": 296,
+                "variation_id": 299,
+                "quantity": 1,
+                "tax_class": "",
+                "subtotal": "50.00",
+                "subtotal_tax": "2.00",
+                "total": "50.00",
+                "total_tax": "2.00",
+                "taxes": [
+                    {
+                        "id": 1,
+                        "total": "2",
+                        "subtotal": "2"
+                    }
+                ],
+                "meta_data": [
+                    {
+                        "id": 6877,
+                        "key": "type",
+                        "value": "Short Sleeve"
+                    }
+                ],
+                "sku": "",
+                "price": 50
+            }
+        ],
+        "tax_lines": [
+            {
+                "id": 937,
+                "rate_code": "US-NY-STATE TAX-1",
+                "rate_id": 1,
+                "label": "State Tax",
+                "compound": false,
+                "tax_total": "2.00",
+                "shipping_tax_total": "0.00",
+                "meta_data": []
+            }
+        ],
+        "shipping_lines": [
+            {
+                "id": 936,
+                "method_title": "Free shipping",
+                "method_id": "free_shipping:26",
+                "total": "0.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 6882,
+                        "key": "Items",
+                        "value": "Funky Hoodie - Short Sleeve &times; 1"
+                    }
+                ]
+            }
+        ],
+        "fee_lines": [],
+        "coupon_lines": [],
+        "refunds": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/1067"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
+                }
+            ],
+            "customer": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
+                }
+            ]
+        }
+    },
+    {
+        "id": 1054,
+        "parent_id": 0,
+        "number": "1054",
+        "order_key": "wc_order_5ae38c86e5f68",
+        "created_via": "checkout",
+        "version": "3.3.5",
+        "status": "completed",
+        "currency": "USD",
+        "date_created": "2018-04-27T16:48:06",
+        "date_created_gmt": "2018-04-27T20:48:06",
+        "date_modified": "2018-05-24T01:31:14",
+        "date_modified_gmt": "2018-05-24T05:31:14",
+        "discount_total": "0.00",
+        "discount_tax": "0.00",
+        "shipping_total": "0.00",
+        "shipping_tax": "0.00",
+        "cart_tax": "0.00",
+        "total": "10.00",
+        "total_tax": "0.00",
+        "prices_include_tax": false,
+        "customer_id": 1,
+        "customer_ip_address": "192.0.124.251",
+        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/66.0.3359.117 safari/537.36",
+        "customer_note": "Bookings Order paid in full.",
+        "billing": {
+            "first_name": "Woo Billing",
+            "last_name": "User",
+            "company": "The Nuttery",
+            "address_1": "200 Collins Ave",
+            "address_2": "",
+            "city": "Miami Beach",
+            "state": "FL",
+            "postcode": "33139",
+            "country": "US",
+            "email": "sampleuser@woocommerce.com",
+            "phone": "333-333-3333"
+        },
+        "shipping": {
+            "first_name": "Woo Sample",
+            "last_name": "User 4",
+            "company": "",
+            "address_1": "",
+            "address_2": "",
+            "city": "",
+            "state": "",
+            "postcode": "",
+            "country": ""
+        },
+        "payment_method": "stripe",
+        "payment_method_title": "Credit Card (Stripe)",
+        "transaction_id": "ch_1CLdUCJK48mSkzFLtLjQTpKt",
+        "date_paid": "2018-04-27T16:48:09",
+        "date_paid_gmt": "2018-04-27T20:48:09",
+        "date_completed": "2018-05-24T01:31:14",
+        "date_completed_gmt": "2018-05-24T05:31:14",
+        "cart_hash": "8fc20bbbcab715cf5c7134c04c241182",
+        "meta_data": [
+            {
+                "id": 44417,
+                "key": "_fue_conversion",
+                "value": "974"
+            },
+            {
+                "id": 44418,
+                "key": "_fue_recorded",
+                "value": "1"
+            },
+            {
+                "id": 44419,
+                "key": "_stripe_customer_id",
+                "value": "cus_B9aZmYbtbK1ryN"
+            },
+            {
+                "id": 44420,
+                "key": "_stripe_source_id",
+                "value": "src_1CLdU9JK48mSkzFLMCzcKI6a"
+            },
+            {
+                "id": 44421,
+                "key": "_stripe_charge_captured",
+                "value": "yes"
+            },
+            {
+                "id": 44422,
+                "key": "_stripe_fee",
+                "value": "0.59"
+            },
+            {
+                "id": 44423,
+                "key": "_stripe_net",
+                "value": "9.41"
+            },
+            {
+                "id": 44424,
+                "key": "_stripe_currency",
+                "value": "USD"
+            },
+            {
+                "id": 44429,
+                "key": "_order_status_emails_queued",
+                "value": "1"
+            }
+        ],
+        "line_items": [
+            {
+                "id": 934,
+                "name": "Book a Co-Working Desk (Bookable Product)",
+                "product_id": 760,
+                "variation_id": 0,
+                "quantity": 1,
+                "tax_class": "",
+                "subtotal": "10.00",
+                "subtotal_tax": "0.00",
+                "total": "10.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [],
+                "sku": "LE272-A8",
+                "price": 10
+            }
+        ],
+        "tax_lines": [],
+        "shipping_lines": [],
+        "fee_lines": [],
+        "coupon_lines": [],
+        "refunds": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/1054"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
+                }
+            ],
+            "customer": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
+                }
+            ]
+        }
+    },
+    {
+        "id": 1052,
+        "parent_id": 0,
+        "number": "1052",
+        "order_key": "wc_order_5ae38c3391252",
+        "created_via": "checkout",
+        "version": "3.3.5",
+        "status": "partial-payment",
+        "currency": "USD",
+        "date_created": "2018-04-27T16:46:43",
+        "date_created_gmt": "2018-04-27T20:46:43",
+        "date_modified": "2018-04-27T16:46:47",
+        "date_modified_gmt": "2018-04-27T20:46:47",
+        "discount_total": "0.00",
+        "discount_tax": "0.00",
+        "shipping_total": "0.00",
+        "shipping_tax": "0.00",
+        "cart_tax": "0.00",
+        "total": "2.50",
+        "total_tax": "0.00",
+        "prices_include_tax": false,
+        "customer_id": 1,
+        "customer_ip_address": "192.0.124.251",
+        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/66.0.3359.117 safari/537.36",
+        "customer_note": "Booking Order paid using Deposit.",
+        "billing": {
+            "first_name": "Woo Billing",
+            "last_name": "User",
+            "company": "The Nuttery",
+            "address_1": "200 Collins Ave",
+            "address_2": "",
+            "city": "Miami Beach",
+            "state": "FL",
+            "postcode": "33139",
+            "country": "US",
+            "email": "sampleuser@woocommerce.com",
+            "phone": "333-333-3333"
+        },
+        "shipping": {
+            "first_name": "Woo Sample",
+            "last_name": "User 5",
+            "company": "",
+            "address_1": "",
+            "address_2": "",
+            "city": "",
+            "state": "",
+            "postcode": "",
+            "country": ""
+        },
+        "payment_method": "stripe",
+        "payment_method_title": "Credit Card (Stripe)",
+        "transaction_id": "ch_1CLdSrJK48mSkzFLL0P58ocF",
+        "date_paid": "2018-04-27T16:46:47",
+        "date_paid_gmt": "2018-04-27T20:46:47",
+        "date_completed": null,
+        "date_completed_gmt": null,
+        "cart_hash": "afe22f2c8cde33adeb161d7b137a5243",
+        "meta_data": [
+            {
+                "id": 44351,
+                "key": "_fue_conversion",
+                "value": "974"
+            },
+            {
+                "id": 44352,
+                "key": "_fue_recorded",
+                "value": "1"
+            },
+            {
+                "id": 44353,
+                "key": "_stripe_customer_id",
+                "value": "cus_B9aZmYbtbK1ryN"
+            },
+            {
+                "id": 44354,
+                "key": "_stripe_source_id",
+                "value": "src_1CLdSnJK48mSkzFLvr0X8UAm"
+            },
+            {
+                "id": 44355,
+                "key": "_stripe_charge_captured",
+                "value": "yes"
+            },
+            {
+                "id": 44356,
+                "key": "_stripe_fee",
+                "value": "0.37"
+            },
+            {
+                "id": 44357,
+                "key": "_stripe_net",
+                "value": "2.13"
+            },
+            {
+                "id": 44358,
+                "key": "_stripe_currency",
+                "value": "USD"
+            }
+        ],
+        "line_items": [
+            {
+                "id": 933,
+                "name": "Book a Co-Working Desk (Bookable Product)",
+                "product_id": 760,
+                "variation_id": 0,
+                "quantity": 1,
+                "tax_class": "",
+                "subtotal": "2.50",
+                "subtotal_tax": "0.00",
+                "total": "2.50",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 6855,
+                        "key": "_is_deposit",
+                        "value": "yes"
+                    },
+                    {
+                        "id": 6856,
+                        "key": "_deposit_full_amount",
+                        "value": "10"
+                    },
+                    {
+                        "id": 6857,
+                        "key": "_deposit_full_amount_ex_tax",
+                        "value": "10"
+                    },
+                    {
+                        "id": 6858,
+                        "key": "_deposit_deposit_amount_ex_tax",
+                        "value": "2.5"
+                    }
+                ],
+                "sku": "LE272-A8",
+                "price": 2.5
+            }
+        ],
+        "tax_lines": [],
+        "shipping_lines": [],
+        "fee_lines": [],
+        "coupon_lines": [],
+        "refunds": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/1052"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
+                }
+            ],
+            "customer": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
+                }
+            ]
+        }
+    },
+    {
+        "id": 1044,
+        "parent_id": 0,
+        "number": "1044",
+        "order_key": "wc_order_5ae0817b45e8d",
+        "created_via": "checkout",
+        "version": "3.3.5",
+        "status": "completed",
+        "currency": "USD",
+        "date_created": "2018-04-25T09:24:11",
+        "date_created_gmt": "2018-04-25T13:24:11",
+        "date_modified": "2018-05-23T13:39:33",
+        "date_modified_gmt": "2018-05-23T17:39:33",
+        "discount_total": "0.00",
+        "discount_tax": "0.00",
+        "shipping_total": "0.00",
+        "shipping_tax": "0.00",
+        "cart_tax": "0.00",
+        "total": "30.00",
+        "total_tax": "0.00",
+        "prices_include_tax": false,
+        "customer_id": 5,
+        "customer_ip_address": "75.86.132.7",
+        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_4) applewebkit/605.1.15 (khtml, like gecko) version/11.1 safari/605.1.15",
+        "customer_note": "I love pancake syrup!",
+        "billing": {
+            "first_name": "Woo Billing",
+            "last_name": "User",
+            "company": "",
+            "address_1": "101 E Clay St",
+            "address_2": "",
+            "city": "Saukville",
+            "state": "WI",
+            "postcode": "53080-1903",
+            "country": "US",
+            "email": "sampleuser@woocommerce.com",
+            "phone": "262-284-3271"
+        },
+        "shipping": {
+            "first_name": "Woo Sample",
+            "last_name": "User 6",
+            "company": "",
+            "address_1": "101 E CLAY ST",
+            "address_2": "",
+            "city": "SAUKVILLE",
+            "state": "WI",
+            "postcode": "53080-1903",
+            "country": "US"
+        },
+        "payment_method": "stripe",
+        "payment_method_title": "Credit Card (Stripe)",
+        "transaction_id": "ch_1CKnbUJK48mSkzFLKh1h23Ln",
+        "date_paid": "2018-04-25T09:24:13",
+        "date_paid_gmt": "2018-04-25T13:24:13",
+        "date_completed": "2018-05-23T13:39:33",
+        "date_completed_gmt": "2018-05-23T17:39:33",
+        "cart_hash": "611eb0cc7aa90912553db6f1c61330f0",
+        "meta_data": [
+            {
+                "id": 44242,
+                "key": "_stripe_source_id",
+                "value": "src_1CKnbRJK48mSkzFLYbpkEsMv"
+            },
+            {
+                "id": 44243,
+                "key": "_stripe_charge_captured",
+                "value": "yes"
+            },
+            {
+                "id": 44244,
+                "key": "_stripe_fee",
+                "value": "1.17"
+            },
+            {
+                "id": 44245,
+                "key": "_stripe_net",
+                "value": "28.83"
+            },
+            {
+                "id": 44246,
+                "key": "_stripe_currency",
+                "value": "USD"
+            },
+            {
+                "id": 44466,
+                "key": "_shipstation_exported",
+                "value": "yes"
+            },
+            {
+                "id": 44621,
+                "key": "_shipping_phone",
+                "value": "262-284-3271"
+            },
+            {
+                "id": 44622,
+                "key": "_wc_connect_destination_normalized",
+                "value": "1"
+            }
+        ],
+        "line_items": [
+            {
+                "id": 931,
+                "name": "Fabric (Variable Product)",
+                "product_id": 262,
+                "variation_id": 264,
+                "quantity": 1,
+                "tax_class": "",
+                "subtotal": "30.00",
+                "subtotal_tax": "0.00",
+                "total": "30.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 6838,
+                        "key": "pa_fabric",
+                        "value": "italian"
+                    },
+                    {
+                        "id": 6839,
+                        "key": "size",
+                        "value": "Medium"
+                    },
+                    {
+                        "id": 6840,
+                        "key": "pa_color",
+                        "value": "green"
+                    }
+                ],
+                "sku": "",
+                "price": 30
+            }
+        ],
+        "tax_lines": [],
+        "shipping_lines": [
+            {
+                "id": 932,
+                "method_title": "Free shipping",
+                "method_id": "free_shipping:26",
+                "total": "0.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 6845,
+                        "key": "Items",
+                        "value": "Fabric (Variable Product) &times; 1"
+                    }
+                ]
+            }
+        ],
+        "fee_lines": [],
+        "coupon_lines": [],
+        "refunds": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/1044"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
+                }
+            ],
+            "customer": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/5"
+                }
+            ]
+        }
+    },
+    {
+        "id": 1043,
+        "parent_id": 0,
+        "number": "1043",
+        "order_key": "wc_order_5adfa6da66cbc",
+        "created_via": "checkout",
+        "version": "3.3.5",
+        "status": "completed",
+        "currency": "USD",
+        "date_created": "2018-04-24T17:51:22",
+        "date_created_gmt": "2018-04-24T21:51:22",
+        "date_modified": "2018-05-22T23:36:13",
+        "date_modified_gmt": "2018-05-23T03:36:13",
+        "discount_total": "0.00",
+        "discount_tax": "0.00",
+        "shipping_total": "0.00",
+        "shipping_tax": "0.00",
+        "cart_tax": "0.00",
+        "total": "20.00",
+        "total_tax": "0.00",
+        "prices_include_tax": false,
+        "customer_id": 1,
+        "customer_ip_address": "100.2.138.170",
+        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/66.0.3359.117 safari/537.36",
+        "customer_note": "",
+        "billing": {
+            "first_name": "Woo Billing",
+            "last_name": "User",
+            "company": "The Nuttery",
+            "address_1": "200 Collins Ave",
+            "address_2": "",
+            "city": "Miami Beach",
+            "state": "FL",
+            "postcode": "33139",
+            "country": "US",
+            "email": "sampleuser@woocommerce.com",
+            "phone": "333-333-3333"
+        },
+        "shipping": {
+            "first_name": "Woo Sample",
+            "last_name": "User 7",
+            "company": "The Nuttery",
+            "address_1": "200 Collins Ave",
+            "address_2": "",
+            "city": "Miami Beach",
+            "state": "FL",
+            "postcode": "33139",
+            "country": "US"
+        },
+        "payment_method": "stripe",
+        "payment_method_title": "Credit Card (Stripe)",
+        "transaction_id": "ch_1CKZ2mJK48mSkzFLqwpHoCaC",
+        "date_paid": "2018-04-24T17:51:24",
+        "date_paid_gmt": "2018-04-24T21:51:24",
+        "date_completed": "2018-05-22T23:36:13",
+        "date_completed_gmt": "2018-05-23T03:36:13",
+        "cart_hash": "112c284a9c62872983abf2978f46da56",
+        "meta_data": [
+            {
+                "id": 44187,
+                "key": "_stripe_customer_id",
+                "value": "cus_B9aZmYbtbK1ryN"
+            },
+            {
+                "id": 44188,
+                "key": "_stripe_source_id",
+                "value": "src_1CKZ2iJK48mSkzFLdaeb0u5o"
+            },
+            {
+                "id": 44189,
+                "key": "_stripe_charge_captured",
+                "value": "yes"
+            },
+            {
+                "id": 44190,
+                "key": "_stripe_fee",
+                "value": "0.88"
+            },
+            {
+                "id": 44191,
+                "key": "_stripe_net",
+                "value": "19.12"
+            },
+            {
+                "id": 44192,
+                "key": "_stripe_currency",
+                "value": "USD"
+            },
+            {
+                "id": 44467,
+                "key": "_shipstation_exported",
+                "value": "yes"
+            }
+        ],
+        "line_items": [
+            {
+                "id": 929,
+                "name": "Poster (Product Add-On)",
+                "product_id": 956,
+                "variation_id": 0,
+                "quantity": 1,
+                "tax_class": "",
+                "subtotal": "20.00",
+                "subtotal_tax": "0.00",
+                "total": "20.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 6823,
+                        "key": "Poster Image - Image Label",
+                        "value": "https://jamosova3.mystagingwebsite.com/wp-content/uploads/product_addons_uploads/c4ca4238a0b923820dcc509a6f75849b/IMG_20180424_173301.jpg"
+                    }
+                ],
+                "sku": "",
+                "price": 20
+            }
+        ],
+        "tax_lines": [],
+        "shipping_lines": [
+            {
+                "id": 930,
+                "method_title": "Free shipping",
+                "method_id": "free_shipping:26",
+                "total": "0.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 6828,
+                        "key": "Items",
+                        "value": "Poster (Product Add-On) &times; 1"
+                    }
+                ]
+            }
+        ],
+        "fee_lines": [],
+        "coupon_lines": [],
+        "refunds": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/1043"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
+                }
+            ],
+            "customer": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
+                }
+            ]
+        }
+    },
+    {
+        "id": 1042,
+        "parent_id": 1041,
+        "number": "1042",
+        "order_key": "wc_order_5adf8fd553b75",
+        "created_via": "wc_deposits",
+        "version": "3.3.5",
+        "status": "pending-deposit",
+        "currency": "USD",
+        "date_created": "2018-04-24T16:13:09",
+        "date_created_gmt": "2018-04-24T20:13:09",
+        "date_modified": "2018-04-24T16:13:09",
+        "date_modified_gmt": "2018-04-24T20:13:09",
+        "discount_total": "20.00",
+        "discount_tax": "0.00",
+        "shipping_total": "0.00",
+        "shipping_tax": "0.00",
+        "cart_tax": "0.00",
+        "total": "40.00",
+        "total_tax": "0.00",
+        "prices_include_tax": false,
+        "customer_id": 1,
+        "customer_ip_address": "",
+        "customer_user_agent": "",
+        "customer_note": "",
+        "billing": {
+            "first_name": "Woo Billing",
+            "last_name": "User",
+            "company": "The Nuttery",
+            "address_1": "200 Collins Ave",
+            "address_2": "",
+            "city": "Miami Beach",
+            "state": "FL",
+            "postcode": "33139",
+            "country": "US",
+            "email": "sampleuser@woocommerce.com",
+            "phone": "333-333-3333"
+        },
+        "shipping": {
+            "first_name": "Woo Sample",
+            "last_name": "User 8",
+            "company": "The Nuttery",
+            "address_1": "200 Collins Ave",
+            "address_2": "",
+            "city": "Miami Beach",
+            "state": "FL",
+            "postcode": "33139",
+            "country": "US"
+        },
+        "payment_method": "",
+        "payment_method_title": "",
+        "transaction_id": "",
+        "date_paid": null,
+        "date_paid_gmt": null,
+        "date_completed": null,
+        "date_completed_gmt": null,
+        "cart_hash": "",
+        "meta_data": [],
+        "line_items": [
+            {
+                "id": 928,
+                "name": "Payment #2 for Smile T-Shirt",
+                "product_id": 1033,
+                "variation_id": 0,
+                "quantity": 1,
+                "tax_class": "",
+                "subtotal": "60.00",
+                "subtotal_tax": "0.00",
+                "total": "40.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 6812,
+                        "key": "_original_order_id",
+                        "value": "1041"
+                    }
+                ],
+                "sku": "",
+                "price": 40
+            }
+        ],
+        "tax_lines": [],
+        "shipping_lines": [],
+        "fee_lines": [],
+        "coupon_lines": [],
+        "refunds": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/1042"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
+                }
+            ],
+            "customer": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
+                }
+            ],
+            "up": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/1041"
+                }
+            ]
+        }
+    },
+    {
+        "id": 1041,
+        "parent_id": 0,
+        "number": "1041",
+        "order_key": "wc_order_5adf8dfbafaaf",
+        "created_via": "checkout",
+        "version": "3.3.5",
+        "status": "partial-payment",
+        "currency": "USD",
+        "date_created": "2018-04-24T16:05:15",
+        "date_created_gmt": "2018-04-24T20:05:15",
+        "date_modified": "2018-04-24T16:05:18",
+        "date_modified_gmt": "2018-04-24T20:05:18",
+        "discount_total": "20.00",
+        "discount_tax": "0.00",
+        "shipping_total": "0.00",
+        "shipping_tax": "0.00",
+        "cart_tax": "0.00",
+        "total": "20.00",
+        "total_tax": "0.00",
+        "prices_include_tax": false,
+        "customer_id": 1,
+        "customer_ip_address": "100.2.138.170",
+        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/66.0.3359.117 safari/537.36",
+        "customer_note": "",
+        "billing": {
+            "first_name": "Woo Billing",
+            "last_name": "User",
+            "company": "The Nuttery",
+            "address_1": "200 Collins Ave",
+            "address_2": "",
+            "city": "Miami Beach",
+            "state": "FL",
+            "postcode": "33139",
+            "country": "US",
+            "email": "sampleuser@woocommerce.com",
+            "phone": "333-333-3333"
+        },
+        "shipping": {
+            "first_name": "Woo Sample",
+            "last_name": "User 9",
+            "company": "The Nuttery",
+            "address_1": "200 Collins Ave",
+            "address_2": "",
+            "city": "Miami Beach",
+            "state": "FL",
+            "postcode": "33139",
+            "country": "US"
+        },
+        "payment_method": "stripe",
+        "payment_method_title": "Credit Card (Stripe)",
+        "transaction_id": "ch_1CKXO5JK48mSkzFLKJhUIwtA",
+        "date_paid": "2018-04-24T16:05:18",
+        "date_paid_gmt": "2018-04-24T20:05:18",
+        "date_completed": null,
+        "date_completed_gmt": null,
+        "cart_hash": "3f844cf79cc44c493d8f3702bc52fb28",
+        "meta_data": [
+            {
+                "id": 44082,
+                "key": "_stripe_customer_id",
+                "value": "cus_B9aZmYbtbK1ryN"
+            },
+            {
+                "id": 44083,
+                "key": "_stripe_source_id",
+                "value": "src_1CKXO2JK48mSkzFL0zX2jdP8"
+            },
+            {
+                "id": 44084,
+                "key": "_stripe_charge_captured",
+                "value": "yes"
+            },
+            {
+                "id": 44085,
+                "key": "_stripe_fee",
+                "value": "0.88"
+            },
+            {
+                "id": 44086,
+                "key": "_stripe_net",
+                "value": "19.12"
+            },
+            {
+                "id": 44087,
+                "key": "_stripe_currency",
+                "value": "USD"
+            }
+        ],
+        "line_items": [
+            {
+                "id": 925,
+                "name": "Smile T-Shirt",
+                "product_id": 1033,
+                "variation_id": 0,
+                "quantity": 1,
+                "tax_class": "",
+                "subtotal": "20.00",
+                "subtotal_tax": "0.00",
+                "total": "15.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 6789,
+                        "key": "_is_deposit",
+                        "value": "yes"
+                    },
+                    {
+                        "id": 6790,
+                        "key": "_deposit_full_amount",
+                        "value": "80"
+                    },
+                    {
+                        "id": 6791,
+                        "key": "_deposit_full_amount_ex_tax",
+                        "value": "80"
+                    },
+                    {
+                        "id": 6792,
+                        "key": "_deposit_deposit_amount_ex_tax",
+                        "value": "20"
+                    },
+                    {
+                        "id": 6793,
+                        "key": "_deposit_deferred_discount",
+                        "value": "20"
+                    },
+                    {
+                        "id": 6794,
+                        "key": "_deposit_deferred_discount_ex_tax",
+                        "value": "20"
+                    },
+                    {
+                        "id": 6813,
+                        "key": "_remaining_balance_order_id",
+                        "value": "1042"
+                    }
+                ],
+                "sku": "",
+                "price": 15
+            }
+        ],
+        "tax_lines": [],
+        "shipping_lines": [
+            {
+                "id": 926,
+                "method_title": "Free shipping",
+                "method_id": "free_shipping:26",
+                "total": "0.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 6799,
+                        "key": "Items",
+                        "value": "Smile T-Shirt &times; 1"
                     }
                 ]
             }
@@ -156,25 +1353,25 @@
         "fee_lines": [],
         "coupon_lines": [
             {
-                "id": 894,
-                "code": "30$off",
-                "discount": "30",
-                "discount_tax": "1.2",
+                "id": 927,
+                "code": "20$off",
+                "discount": "20",
+                "discount_tax": "0",
                 "meta_data": [
                     {
-                        "id": 6515,
+                        "id": 6802,
                         "key": "coupon_data",
                         "value": {
-                            "id": 673,
-                            "code": "30$off",
-                            "amount": "30",
+                            "id": 672,
+                            "code": "20$off",
+                            "amount": "20",
                             "date_created": {
-                                "date": "2017-10-29 18:20:07.000000",
+                                "date": "2017-10-29 18:19:18.000000",
                                 "timezone_type": 3,
                                 "timezone": "America/New_York"
                             },
                             "date_modified": {
-                                "date": "2017-10-29 18:20:07.000000",
+                                "date": "2017-10-29 18:19:18.000000",
                                 "timezone_type": 3,
                                 "timezone": "America/New_York"
                             },
@@ -210,7 +1407,7 @@
         "_links": {
             "self": [
                 {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/963"
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/1041"
                 }
             ],
             "collection": [
@@ -220,39 +1417,39 @@
             ],
             "customer": [
                 {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/11"
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
                 }
             ]
         }
     },
     {
-        "id": 961,
+        "id": 1038,
         "parent_id": 0,
-        "number": "961",
-        "order_key": "wc_order_5ac3e9fd7c8b9",
+        "number": "1038",
+        "order_key": "wc_order_5ada434a8984e",
         "created_via": "checkout",
-        "version": "3.3.4",
-        "status": "processing",
+        "version": "3.3.5",
+        "status": "on-hold",
         "currency": "USD",
-        "date_created": "2018-04-03T16:54:21",
-        "date_created_gmt": "2018-04-03T20:54:21",
-        "date_modified": "2018-04-03T16:54:23",
-        "date_modified_gmt": "2018-04-03T20:54:23",
+        "date_created": "2018-04-20T15:45:14",
+        "date_created_gmt": "2018-04-20T19:45:14",
+        "date_modified": "2018-04-20T15:45:14",
+        "date_modified_gmt": "2018-04-20T19:45:14",
         "discount_total": "0.00",
         "discount_tax": "0.00",
         "shipping_total": "0.00",
         "shipping_tax": "0.00",
         "cart_tax": "0.00",
-        "total": "20.00",
+        "total": "17.50",
         "total_tax": "0.00",
         "prices_include_tax": false,
         "customer_id": 1,
         "customer_ip_address": "100.2.138.170",
-        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/65.0.3325.181 safari/537.36",
+        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_4) applewebkit/537.36 (khtml, like gecko) chrome/65.0.3325.181 safari/537.36",
         "customer_note": "",
         "billing": {
-            "first_name": "Julia",
-            "last_name": "Woo",
+            "first_name": "Woo Billing",
+            "last_name": "User",
             "company": "The Nuttery",
             "address_1": "200 Collins Ave",
             "address_2": "",
@@ -260,12 +1457,12 @@
             "state": "FL",
             "postcode": "33139",
             "country": "US",
-            "email": "julia.amosova@gmail.com",
+            "email": "sampleuser@woocommerce.com",
             "phone": "333-333-3333"
         },
         "shipping": {
-            "first_name": "Julia",
-            "last_name": "Woo",
+            "first_name": "Woo Sample",
+            "last_name": "User 10",
             "company": "The Nuttery",
             "address_1": "200 Collins Ave",
             "address_2": "",
@@ -274,1349 +1471,79 @@
             "postcode": "33139",
             "country": "US"
         },
-        "payment_method": "stripe",
-        "payment_method_title": "Credit Card (Stripe)",
-        "transaction_id": "ch_1CCw94JK48mSkzFLFNlJqrEW",
-        "date_paid": "2018-04-03T16:54:23",
-        "date_paid_gmt": "2018-04-03T20:54:23",
-        "date_completed": null,
-        "date_completed_gmt": null,
-        "cart_hash": "b615a3a375d574ed3ccfedea4b91e854",
-        "meta_data": [
-            {
-                "id": 24086,
-                "key": "_stripe_customer_id",
-                "value": "cus_B9aZmYbtbK1ryN"
-            },
-            {
-                "id": 24087,
-                "key": "_stripe_source_id",
-                "value": "src_1CCw92JK48mSkzFLYrjh01FM"
-            },
-            {
-                "id": 24088,
-                "key": "_stripe_charge_captured",
-                "value": "yes"
-            },
-            {
-                "id": 24089,
-                "key": "Stripe Fee",
-                "value": "0.88"
-            },
-            {
-                "id": 24090,
-                "key": "Net Revenue From Stripe",
-                "value": "19.12"
-            }
-        ],
-        "line_items": [
-            {
-                "id": 888,
-                "name": "Poster (Product Add-On)",
-                "product_id": 956,
-                "variation_id": 0,
-                "quantity": 1,
-                "tax_class": "",
-                "subtotal": "20.00",
-                "subtotal_tax": "0.00",
-                "total": "20.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [],
-                "sku": "",
-                "price": 20
-            }
-        ],
-        "tax_lines": [],
-        "shipping_lines": [
-            {
-                "id": 889,
-                "method_title": "Free shipping",
-                "method_id": "free_shipping:26",
-                "total": "0.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [
-                    {
-                        "id": 6484,
-                        "key": "Items",
-                        "value": "Poster (Product Add-On) &times; 1"
-                    }
-                ]
-            }
-        ],
-        "fee_lines": [],
-        "coupon_lines": [],
-        "refunds": [],
-        "_links": {
-            "self": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/961"
-                }
-            ],
-            "collection": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
-                }
-            ],
-            "customer": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
-                }
-            ]
-        }
-    },
-    {
-        "id": 960,
-        "parent_id": 0,
-        "number": "960",
-        "order_key": "wc_order_5ac3e9968343a",
-        "created_via": "checkout",
-        "version": "3.3.4",
-        "status": "processing",
-        "currency": "USD",
-        "date_created": "2018-04-03T16:52:38",
-        "date_created_gmt": "2018-04-03T20:52:38",
-        "date_modified": "2018-04-03T16:52:41",
-        "date_modified_gmt": "2018-04-03T20:52:41",
-        "discount_total": "0.00",
-        "discount_tax": "0.00",
-        "shipping_total": "0.00",
-        "shipping_tax": "0.00",
-        "cart_tax": "0.00",
-        "total": "20.00",
-        "total_tax": "0.00",
-        "prices_include_tax": false,
-        "customer_id": 1,
-        "customer_ip_address": "100.2.138.170",
-        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/65.0.3325.181 safari/537.36",
-        "customer_note": "",
-        "billing": {
-            "first_name": "Julia",
-            "last_name": "Woo",
-            "company": "The Nuttery",
-            "address_1": "200 Collins Ave",
-            "address_2": "",
-            "city": "Miami Beach",
-            "state": "FL",
-            "postcode": "33139",
-            "country": "US",
-            "email": "julia.amosova@gmail.com",
-            "phone": "333-333-3333"
-        },
-        "shipping": {
-            "first_name": "Julia",
-            "last_name": "Woo",
-            "company": "The Nuttery",
-            "address_1": "200 Collins Ave",
-            "address_2": "",
-            "city": "Miami Beach",
-            "state": "FL",
-            "postcode": "33139",
-            "country": "US"
-        },
-        "payment_method": "stripe",
-        "payment_method_title": "Credit Card (Stripe)",
-        "transaction_id": "ch_1CCw7QJK48mSkzFLIbQnSl7Z",
-        "date_paid": "2018-04-03T16:52:41",
-        "date_paid_gmt": "2018-04-03T20:52:41",
-        "date_completed": null,
-        "date_completed_gmt": null,
-        "cart_hash": "f2143aeb75a9d378b29ddfa165ee67fd",
-        "meta_data": [
-            {
-                "id": 24030,
-                "key": "_stripe_customer_id",
-                "value": "cus_B9aZmYbtbK1ryN"
-            },
-            {
-                "id": 24031,
-                "key": "_stripe_source_id",
-                "value": "src_1CCw7NJK48mSkzFLyas6aoCp"
-            },
-            {
-                "id": 24032,
-                "key": "_stripe_charge_captured",
-                "value": "yes"
-            },
-            {
-                "id": 24033,
-                "key": "Stripe Fee",
-                "value": "0.88"
-            },
-            {
-                "id": 24034,
-                "key": "Net Revenue From Stripe",
-                "value": "19.12"
-            }
-        ],
-        "line_items": [
-            {
-                "id": 886,
-                "name": "Poster (Product Add-On)",
-                "product_id": 956,
-                "variation_id": 0,
-                "quantity": 1,
-                "tax_class": "",
-                "subtotal": "20.00",
-                "subtotal_tax": "0.00",
-                "total": "20.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [
-                    {
-                        "id": 6465,
-                        "key": "Poster Image",
-                        "value": "https://jamosova3.mystagingwebsite.com/wp-content/uploads/product_addons_uploads/c4ca4238a0b923820dcc509a6f75849b/ST-Upload-1.jpg"
-                    }
-                ],
-                "sku": "",
-                "price": 20
-            }
-        ],
-        "tax_lines": [],
-        "shipping_lines": [
-            {
-                "id": 887,
-                "method_title": "Free shipping",
-                "method_id": "free_shipping:26",
-                "total": "0.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [
-                    {
-                        "id": 6470,
-                        "key": "Items",
-                        "value": "Poster (Product Add-On) &times; 1"
-                    }
-                ]
-            }
-        ],
-        "fee_lines": [],
-        "coupon_lines": [],
-        "refunds": [],
-        "_links": {
-            "self": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/960"
-                }
-            ],
-            "collection": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
-                }
-            ],
-            "customer": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
-                }
-            ]
-        }
-    },
-    {
-        "id": 959,
-        "parent_id": 0,
-        "number": "959",
-        "order_key": "wc_order_5ac3e832745c9",
-        "created_via": "checkout",
-        "version": "3.3.4",
-        "status": "processing",
-        "currency": "USD",
-        "date_created": "2018-04-03T16:46:42",
-        "date_created_gmt": "2018-04-03T20:46:42",
-        "date_modified": "2018-04-03T16:46:44",
-        "date_modified_gmt": "2018-04-03T20:46:44",
-        "discount_total": "0.00",
-        "discount_tax": "0.00",
-        "shipping_total": "0.00",
-        "shipping_tax": "0.00",
-        "cart_tax": "0.00",
-        "total": "20.00",
-        "total_tax": "0.00",
-        "prices_include_tax": false,
-        "customer_id": 1,
-        "customer_ip_address": "100.2.138.170",
-        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/65.0.3325.181 safari/537.36",
-        "customer_note": "",
-        "billing": {
-            "first_name": "Julia",
-            "last_name": "Woo",
-            "company": "The Nuttery",
-            "address_1": "200 Collins Ave",
-            "address_2": "",
-            "city": "Miami Beach",
-            "state": "FL",
-            "postcode": "33139",
-            "country": "US",
-            "email": "julia.amosova@gmail.com",
-            "phone": "333-333-3333"
-        },
-        "shipping": {
-            "first_name": "Julia",
-            "last_name": "Woo",
-            "company": "The Nuttery",
-            "address_1": "200 Collins Ave",
-            "address_2": "",
-            "city": "Miami Beach",
-            "state": "FL",
-            "postcode": "33139",
-            "country": "US"
-        },
-        "payment_method": "stripe",
-        "payment_method_title": "Credit Card (Stripe)",
-        "transaction_id": "ch_1CCw1fJK48mSkzFLEufi4hMS",
-        "date_paid": "2018-04-03T16:46:44",
-        "date_paid_gmt": "2018-04-03T20:46:44",
-        "date_completed": null,
-        "date_completed_gmt": null,
-        "cart_hash": "b615a3a375d574ed3ccfedea4b91e854",
-        "meta_data": [
-            {
-                "id": 23973,
-                "key": "_stripe_customer_id",
-                "value": "cus_B9aZmYbtbK1ryN"
-            },
-            {
-                "id": 23974,
-                "key": "_stripe_source_id",
-                "value": "src_1CCw1dJK48mSkzFL2B7wcfrL"
-            },
-            {
-                "id": 23975,
-                "key": "_stripe_charge_captured",
-                "value": "yes"
-            },
-            {
-                "id": 23976,
-                "key": "Stripe Fee",
-                "value": "0.88"
-            },
-            {
-                "id": 23977,
-                "key": "Net Revenue From Stripe",
-                "value": "19.12"
-            }
-        ],
-        "line_items": [
-            {
-                "id": 884,
-                "name": "Poster (Product Add-On)",
-                "product_id": 956,
-                "variation_id": 0,
-                "quantity": 1,
-                "tax_class": "",
-                "subtotal": "20.00",
-                "subtotal_tax": "0.00",
-                "total": "20.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [],
-                "sku": "",
-                "price": 20
-            }
-        ],
-        "tax_lines": [],
-        "shipping_lines": [
-            {
-                "id": 885,
-                "method_title": "Free shipping",
-                "method_id": "free_shipping:26",
-                "total": "0.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [
-                    {
-                        "id": 6455,
-                        "key": "Items",
-                        "value": "Poster (Product Add-On) &times; 1"
-                    }
-                ]
-            }
-        ],
-        "fee_lines": [],
-        "coupon_lines": [],
-        "refunds": [],
-        "_links": {
-            "self": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/959"
-                }
-            ],
-            "collection": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
-                }
-            ],
-            "customer": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
-                }
-            ]
-        }
-    },
-    {
-        "id": 958,
-        "parent_id": 0,
-        "number": "958",
-        "order_key": "wc_order_5ac3e7e5b75d2",
-        "created_via": "checkout",
-        "version": "3.3.4",
-        "status": "processing",
-        "currency": "USD",
-        "date_created": "2018-04-03T16:45:25",
-        "date_created_gmt": "2018-04-03T20:45:25",
-        "date_modified": "2018-04-03T16:45:28",
-        "date_modified_gmt": "2018-04-03T20:45:28",
-        "discount_total": "0.00",
-        "discount_tax": "0.00",
-        "shipping_total": "0.00",
-        "shipping_tax": "0.00",
-        "cart_tax": "0.00",
-        "total": "20.00",
-        "total_tax": "0.00",
-        "prices_include_tax": false,
-        "customer_id": 1,
-        "customer_ip_address": "100.2.138.170",
-        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/65.0.3325.181 safari/537.36",
-        "customer_note": "",
-        "billing": {
-            "first_name": "Julia",
-            "last_name": "Woo",
-            "company": "The Nuttery",
-            "address_1": "200 Collins Ave",
-            "address_2": "",
-            "city": "Miami Beach",
-            "state": "FL",
-            "postcode": "33139",
-            "country": "US",
-            "email": "julia.amosova@gmail.com",
-            "phone": "333-333-3333"
-        },
-        "shipping": {
-            "first_name": "Julia",
-            "last_name": "Woo",
-            "company": "The Nuttery",
-            "address_1": "200 Collins Ave",
-            "address_2": "",
-            "city": "Miami Beach",
-            "state": "FL",
-            "postcode": "33139",
-            "country": "US"
-        },
-        "payment_method": "stripe",
-        "payment_method_title": "Credit Card (Stripe)",
-        "transaction_id": "ch_1CCw0RJK48mSkzFLXMvXtAje",
-        "date_paid": "2018-04-03T16:45:28",
-        "date_paid_gmt": "2018-04-03T20:45:28",
-        "date_completed": null,
-        "date_completed_gmt": null,
-        "cart_hash": "be21415164e6473df772499a962837ad",
-        "meta_data": [
-            {
-                "id": 23917,
-                "key": "_stripe_customer_id",
-                "value": "cus_B9aZmYbtbK1ryN"
-            },
-            {
-                "id": 23918,
-                "key": "_stripe_source_id",
-                "value": "src_1CCw0OJK48mSkzFLRWY3aeO6"
-            },
-            {
-                "id": 23919,
-                "key": "_stripe_charge_captured",
-                "value": "yes"
-            },
-            {
-                "id": 23920,
-                "key": "Stripe Fee",
-                "value": "0.88"
-            },
-            {
-                "id": 23921,
-                "key": "Net Revenue From Stripe",
-                "value": "19.12"
-            }
-        ],
-        "line_items": [
-            {
-                "id": 882,
-                "name": "Poster (Product Add-On)",
-                "product_id": 956,
-                "variation_id": 0,
-                "quantity": 1,
-                "tax_class": "",
-                "subtotal": "20.00",
-                "subtotal_tax": "0.00",
-                "total": "20.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [
-                    {
-                        "id": 6436,
-                        "key": "Poster Image",
-                        "value": "https://jamosova3.mystagingwebsite.com/wp-content/uploads/product_addons_uploads/c4ca4238a0b923820dcc509a6f75849b/ST-Upload.jpg"
-                    }
-                ],
-                "sku": "",
-                "price": 20
-            }
-        ],
-        "tax_lines": [],
-        "shipping_lines": [
-            {
-                "id": 883,
-                "method_title": "Free shipping",
-                "method_id": "free_shipping:26",
-                "total": "0.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [
-                    {
-                        "id": 6441,
-                        "key": "Items",
-                        "value": "Poster (Product Add-On) &times; 1"
-                    }
-                ]
-            }
-        ],
-        "fee_lines": [],
-        "coupon_lines": [],
-        "refunds": [],
-        "_links": {
-            "self": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/958"
-                }
-            ],
-            "collection": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
-                }
-            ],
-            "customer": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
-                }
-            ]
-        }
-    },
-    {
-        "id": 949,
-        "parent_id": 0,
-        "number": "949",
-        "order_key": "wc_order_5ac244e370297",
-        "created_via": "checkout",
-        "version": "3.3.4",
-        "status": "completed",
-        "currency": "USD",
-        "date_created": "2018-04-02T10:57:39",
-        "date_created_gmt": "2018-04-02T14:57:39",
-        "date_modified": "2018-04-02T18:28:23",
-        "date_modified_gmt": "2018-04-02T22:28:23",
-        "discount_total": "0.00",
-        "discount_tax": "0.00",
-        "shipping_total": "4.00",
-        "shipping_tax": "0.00",
-        "cart_tax": "0.00",
-        "total": "44.00",
-        "total_tax": "0.00",
-        "prices_include_tax": false,
-        "customer_id": 1,
-        "customer_ip_address": "100.2.138.170",
-        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/65.0.3325.162 safari/537.36",
-        "customer_note": "",
-        "billing": {
-            "first_name": "Julia",
-            "last_name": "Woo",
-            "company": "The Nuttery",
-            "address_1": "200 Collins Ave",
-            "address_2": "",
-            "city": "Miami Beach",
-            "state": "FL",
-            "postcode": "33139",
-            "country": "US",
-            "email": "julia.amosova@gmail.com",
-            "phone": "333-333-3333"
-        },
-        "shipping": {
-            "first_name": "Julia",
-            "last_name": "Woo",
-            "company": "The Nuttery",
-            "address_1": "200 Collins Ave",
-            "address_2": "",
-            "city": "Miami Beach",
-            "state": "FL",
-            "postcode": "33139",
-            "country": "US"
-        },
-        "payment_method": "stripe",
-        "payment_method_title": "Credit Card (Stripe)",
-        "transaction_id": "ch_1CCU6MJK48mSkzFLRqW1VYEf",
-        "date_paid": "2018-04-02T10:57:43",
-        "date_paid_gmt": "2018-04-02T14:57:43",
-        "date_completed": "2018-04-02T18:28:23",
-        "date_completed_gmt": "2018-04-02T22:28:23",
-        "cart_hash": "a0597f6b453e1ba567b415358b469219",
-        "meta_data": [
-            {
-                "id": 23796,
-                "key": "_fue_conversion",
-                "value": "924"
-            },
-            {
-                "id": 23797,
-                "key": "_fue_recorded",
-                "value": "1"
-            },
-            {
-                "id": 23798,
-                "key": "_stripe_customer_id",
-                "value": "cus_B9aZmYbtbK1ryN"
-            },
-            {
-                "id": 23799,
-                "key": "_stripe_source_id",
-                "value": "src_1CCU6HJK48mSkzFLT9ORG5Sg"
-            },
-            {
-                "id": 23800,
-                "key": "_stripe_charge_captured",
-                "value": "yes"
-            },
-            {
-                "id": 23801,
-                "key": "Stripe Fee",
-                "value": "1.58"
-            },
-            {
-                "id": 23802,
-                "key": "Net Revenue From Stripe",
-                "value": "42.42"
-            },
-            {
-                "id": 23806,
-                "key": "_order_status_emails_queued",
-                "value": "1"
-            }
-        ],
-        "line_items": [
-            {
-                "id": 879,
-                "name": "PDF Doc (Downloadable Product)",
-                "product_id": 290,
-                "variation_id": 0,
-                "quantity": 1,
-                "tax_class": "",
-                "subtotal": "10.00",
-                "subtotal_tax": "0.00",
-                "total": "10.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [],
-                "sku": "",
-                "price": 10
-            },
-            {
-                "id": 880,
-                "name": "Black Dress (H&M)",
-                "product_id": 373,
-                "variation_id": 0,
-                "quantity": 1,
-                "tax_class": "",
-                "subtotal": "30.00",
-                "subtotal_tax": "0.00",
-                "total": "30.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [],
-                "sku": "111-111-111",
-                "price": 30
-            }
-        ],
-        "tax_lines": [],
-        "shipping_lines": [
-            {
-                "id": 881,
-                "method_title": "Flat rate",
-                "method_id": "flat_rate:31",
-                "total": "4.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [
-                    {
-                        "id": 6426,
-                        "key": "Items",
-                        "value": "Black Dress (H&M) &times; 1"
-                    }
-                ]
-            }
-        ],
-        "fee_lines": [],
-        "coupon_lines": [],
-        "refunds": [],
-        "_links": {
-            "self": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/949"
-                }
-            ],
-            "collection": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
-                }
-            ],
-            "customer": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
-                }
-            ]
-        }
-    },
-    {
-        "id": 939,
-        "parent_id": 0,
-        "number": "939",
-        "order_key": "wc_order_5abff457cc653",
-        "created_via": "checkout",
-        "version": "3.3.4",
-        "status": "processing",
-        "currency": "USD",
-        "date_created": "2018-03-31T16:49:27",
-        "date_created_gmt": "2018-03-31T20:49:27",
-        "date_modified": "2018-03-31T16:49:28",
-        "date_modified_gmt": "2018-03-31T20:49:28",
-        "discount_total": "0.00",
-        "discount_tax": "0.00",
-        "shipping_total": "4.00",
-        "shipping_tax": "0.00",
-        "cart_tax": "0.00",
-        "total": "64.00",
-        "total_tax": "0.00",
-        "prices_include_tax": false,
-        "customer_id": 1,
-        "customer_ip_address": "100.2.138.170",
-        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/65.0.3325.162 safari/537.36",
-        "customer_note": "test checkout field editor note",
-        "billing": {
-            "first_name": "Juli",
-            "last_name": "Woo",
-            "company": "The Nuttery",
-            "address_1": "200 Collins Ave",
-            "address_2": "",
-            "city": "Miami Beach",
-            "state": "FL",
-            "postcode": "33139",
-            "country": "US",
-            "email": "julia.amosova@gmail.com",
-            "phone": "333-333-3333"
-        },
-        "shipping": {
-            "first_name": "Juli",
-            "last_name": "Woo",
-            "company": "The Nuttery",
-            "address_1": "200 Collins Ave",
-            "address_2": "",
-            "city": "Miami Beach",
-            "state": "FL",
-            "postcode": "33139",
-            "country": "US"
-        },
-        "payment_method": "cod",
-        "payment_method_title": "Cash on delivery",
+        "payment_method": "bacs",
+        "payment_method_title": "Direct bank transfer",
         "transaction_id": "",
         "date_paid": null,
         "date_paid_gmt": null,
         "date_completed": null,
         "date_completed_gmt": null,
-        "cart_hash": "39cdc8d8a0783447d8268b03c433065a",
+        "cart_hash": "20d7a5e901494aa98b683d1a06697ef0",
         "meta_data": [
             {
-                "id": 23721,
-                "key": "test-field",
-                "value": "AST"
-            },
-            {
-                "id": 23722,
-                "key": "partenaire",
-                "value": "N-D"
-            },
-            {
-                "id": 23723,
-                "key": "date",
-                "value": "April 4, 2018"
-            },
-            {
-                "id": 23724,
-                "key": "_fue_conversion",
-                "value": "924"
-            },
-            {
-                "id": 23725,
-                "key": "_fue_recorded",
+                "id": 43950,
+                "key": "_wc_customer_order_csv_export_is_exported",
                 "value": "1"
             },
             {
-                "id": 23729,
-                "key": "_order_status_emails_queued",
-                "value": "1"
-            }
-        ],
-        "line_items": [
-            {
-                "id": 877,
-                "name": "Blue Dress (Zara)",
-                "product_id": 371,
-                "variation_id": 0,
-                "quantity": 1,
-                "tax_class": "",
-                "subtotal": "60.00",
-                "subtotal_tax": "0.00",
-                "total": "60.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [],
-                "sku": "",
-                "price": 60
-            }
-        ],
-        "tax_lines": [],
-        "shipping_lines": [
-            {
-                "id": 878,
-                "method_title": "Flat rate",
-                "method_id": "flat_rate:31",
-                "total": "4.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [
-                    {
-                        "id": 6403,
-                        "key": "Items",
-                        "value": "Blue Dress (Zara) &times; 1"
-                    }
-                ]
-            }
-        ],
-        "fee_lines": [],
-        "coupon_lines": [],
-        "refunds": [],
-        "_links": {
-            "self": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/939"
-                }
-            ],
-            "collection": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
-                }
-            ],
-            "customer": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
-                }
-            ]
-        }
-    },
-    {
-        "id": 937,
-        "parent_id": 0,
-        "number": "937",
-        "order_key": "wc_order_5abfef9ba073e",
-        "created_via": "checkout",
-        "version": "3.3.4",
-        "status": "refunded",
-        "currency": "USD",
-        "date_created": "2018-03-31T16:29:15",
-        "date_created_gmt": "2018-03-31T20:29:15",
-        "date_modified": "2018-03-31T16:52:05",
-        "date_modified_gmt": "2018-03-31T20:52:05",
-        "discount_total": "0.00",
-        "discount_tax": "0.00",
-        "shipping_total": "7.00",
-        "shipping_tax": "0.00",
-        "cart_tax": "0.00",
-        "total": "92.00",
-        "total_tax": "0.00",
-        "prices_include_tax": false,
-        "customer_id": 1,
-        "customer_ip_address": "100.2.138.170",
-        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/65.0.3325.162 safari/537.36",
-        "customer_note": "",
-        "billing": {
-            "first_name": "Juli",
-            "last_name": "Woo",
-            "company": "The Nuttery",
-            "address_1": "200 Collins Ave",
-            "address_2": "",
-            "city": "Miami Beach",
-            "state": "FL",
-            "postcode": "33139",
-            "country": "US",
-            "email": "julia.amosova@gmail.com",
-            "phone": "333-333-3333"
-        },
-        "shipping": {
-            "first_name": "Juli",
-            "last_name": "Woo",
-            "company": "The Nuttery",
-            "address_1": "200 Collins Ave",
-            "address_2": "",
-            "city": "Miami Beach",
-            "state": "FL",
-            "postcode": "33139",
-            "country": "US"
-        },
-        "payment_method": "cod",
-        "payment_method_title": "Cash on delivery",
-        "transaction_id": "",
-        "date_paid": null,
-        "date_paid_gmt": null,
-        "date_completed": null,
-        "date_completed_gmt": null,
-        "cart_hash": "35f59e8300493534a18de289245b8f8e",
-        "meta_data": [
-            {
-                "id": 23668,
-                "key": "_fue_conversion",
-                "value": "924"
-            },
-            {
-                "id": 23673,
-                "key": "_order_status_emails_queued",
-                "value": "1"
-            }
-        ],
-        "line_items": [
-            {
-                "id": 874,
-                "name": "Twin Peaks T-Shirt (Product Add-On)",
-                "product_id": 348,
-                "variation_id": 0,
-                "quantity": 1,
-                "tax_class": "",
-                "subtotal": "25.00",
-                "subtotal_tax": "0.00",
-                "total": "25.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [],
-                "sku": "",
-                "price": 25
-            },
-            {
-                "id": 875,
-                "name": "Black Dress (H&M)",
-                "product_id": 373,
-                "variation_id": 0,
-                "quantity": 2,
-                "tax_class": "",
-                "subtotal": "60.00",
-                "subtotal_tax": "0.00",
-                "total": "60.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [],
-                "sku": "111-111-111",
-                "price": 30
-            }
-        ],
-        "tax_lines": [],
-        "shipping_lines": [
-            {
-                "id": 876,
-                "method_title": "Flat rate",
-                "method_id": "flat_rate:31",
-                "total": "7.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [
-                    {
-                        "id": 6389,
-                        "key": "Items",
-                        "value": "Twin Peaks T-Shirt (Product Add-On) &times; 1, Black Dress (H&M) &times; 2"
-                    }
-                ]
-            }
-        ],
-        "fee_lines": [],
-        "coupon_lines": [],
-        "refunds": [
-            {
-                "id": 940,
-                "refund": "Order fully refunded",
-                "total": "-92.00"
-            }
-        ],
-        "_links": {
-            "self": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/937"
-                }
-            ],
-            "collection": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
-                }
-            ],
-            "customer": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
-                }
-            ]
-        }
-    },
-    {
-        "id": 925,
-        "parent_id": 0,
-        "number": "925",
-        "order_key": "wc_order_5abe57b203c15",
-        "created_via": "checkout",
-        "version": "3.3.4",
-        "status": "processing",
-        "currency": "USD",
-        "date_created": "2018-03-30T11:28:50",
-        "date_created_gmt": "2018-03-30T15:28:50",
-        "date_modified": "2018-03-30T11:28:53",
-        "date_modified_gmt": "2018-03-30T15:28:53",
-        "discount_total": "0.00",
-        "discount_tax": "0.00",
-        "shipping_total": "10.33",
-        "shipping_tax": "0.00",
-        "cart_tax": "0.00",
-        "total": "40.33",
-        "total_tax": "0.00",
-        "prices_include_tax": false,
-        "customer_id": 1,
-        "customer_ip_address": "100.2.138.170",
-        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/65.0.3325.162 safari/537.36",
-        "customer_note": "",
-        "billing": {
-            "first_name": "Juli",
-            "last_name": "Woo",
-            "company": "The Nuttery",
-            "address_1": "200 Collins Ave",
-            "address_2": "",
-            "city": "Miami Beach",
-            "state": "FL",
-            "postcode": "33139",
-            "country": "US",
-            "email": "julia.amosova@gmail.com",
-            "phone": "333-333-3333"
-        },
-        "shipping": {
-            "first_name": "Juli",
-            "last_name": "Woo",
-            "company": "The Nuttery",
-            "address_1": "200 Collins Ave",
-            "address_2": "",
-            "city": "Miami Beach",
-            "state": "FL",
-            "postcode": "33139",
-            "country": "US"
-        },
-        "payment_method": "stripe",
-        "payment_method_title": "Credit Card (Stripe)",
-        "transaction_id": "ch_1CBP9sJK48mSkzFLRiKTEvXE",
-        "date_paid": "2018-03-30T11:28:53",
-        "date_paid_gmt": "2018-03-30T15:28:53",
-        "date_completed": null,
-        "date_completed_gmt": null,
-        "cart_hash": "c03a7f5c1c37504a4b23a231a13d56bf",
-        "meta_data": [
-            {
-                "id": 23425,
-                "key": "_shipping_phone",
-                "value": "333-333-3333"
-            },
-            {
-                "id": 23426,
-                "key": "_fue_conversion",
-                "value": "924"
-            },
-            {
-                "id": 23427,
-                "key": "_fue_recorded",
-                "value": "1"
-            },
-            {
-                "id": 23428,
-                "key": "_stripe_customer_id",
-                "value": "cus_B9aZmYbtbK1ryN"
-            },
-            {
-                "id": 23429,
-                "key": "_stripe_source_id",
-                "value": "src_1CBP9oJK48mSkzFLI1sOSBDS"
-            },
-            {
-                "id": 23430,
-                "key": "_stripe_charge_captured",
+                "id": 44468,
+                "key": "_shipstation_exported",
                 "value": "yes"
-            },
-            {
-                "id": 23431,
-                "key": "Stripe Fee",
-                "value": "1.47"
-            },
-            {
-                "id": 23432,
-                "key": "Net Revenue From Stripe",
-                "value": "38.86"
-            },
-            {
-                "id": 23436,
-                "key": "_order_status_emails_queued",
-                "value": "1"
-            },
-            {
-                "id": 23437,
-                "key": "se_order_created",
-                "value": "1"
             }
         ],
         "line_items": [
             {
-                "id": 872,
-                "name": "Black Dress (H&M)",
-                "product_id": 373,
+                "id": 923,
+                "name": "Green Dress (H&M)",
+                "product_id": 375,
                 "variation_id": 0,
                 "quantity": 1,
                 "tax_class": "",
-                "subtotal": "30.00",
+                "subtotal": "17.50",
                 "subtotal_tax": "0.00",
-                "total": "30.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [],
-                "sku": "111-111-111",
-                "price": 30
-            }
-        ],
-        "tax_lines": [],
-        "shipping_lines": [
-            {
-                "id": 873,
-                "method_title": "Retail Ground&#8482;",
-                "method_id": "usps:D_STANDARD_POST",
-                "total": "10.33",
+                "total": "17.50",
                 "total_tax": "0.00",
                 "taxes": [],
                 "meta_data": [
                     {
-                        "id": 6366,
-                        "key": "Package 1",
-                        "value": "15 × 12 × 0.75 (in) 2lbs"
-                    }
-                ]
-            }
-        ],
-        "fee_lines": [],
-        "coupon_lines": [],
-        "refunds": [],
-        "_links": {
-            "self": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/925"
-                }
-            ],
-            "collection": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders"
-                }
-            ],
-            "customer": [
-                {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/customers/1"
-                }
-            ]
-        }
-    },
-    {
-        "id": 915,
-        "parent_id": 0,
-        "number": "915",
-        "order_key": "wc_order_5abbe2cde427d",
-        "created_via": "checkout",
-        "version": "3.3.4",
-        "status": "partial-payment",
-        "currency": "USD",
-        "date_created": "2018-03-28T14:45:33",
-        "date_created_gmt": "2018-03-28T18:45:33",
-        "date_modified": "2018-03-28T14:45:37",
-        "date_modified_gmt": "2018-03-28T18:45:37",
-        "discount_total": "0.00",
-        "discount_tax": "0.00",
-        "shipping_total": "37.80",
-        "shipping_tax": "0.00",
-        "cart_tax": "0.00",
-        "total": "82.80",
-        "total_tax": "0.00",
-        "prices_include_tax": false,
-        "customer_id": 1,
-        "customer_ip_address": "100.2.138.170",
-        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/65.0.3325.162 safari/537.36",
-        "customer_note": "",
-        "billing": {
-            "first_name": "Sandra",
-            "last_name": "Anderson",
-            "company": "The Nuttery",
-            "address_1": "Oituz 52",
-            "address_2": "",
-            "city": "Miami",
-            "state": "FL",
-            "postcode": "33131",
-            "country": "US",
-            "email": "test@test.com",
-            "phone": "333-333-3333"
-        },
-        "shipping": {
-            "first_name": "Sandra",
-            "last_name": "Anderson",
-            "company": "The Nuttery",
-            "address_1": "Oituz 52",
-            "address_2": "",
-            "city": "Miami",
-            "state": "FL",
-            "postcode": "33131",
-            "country": "US"
-        },
-        "payment_method": "stripe",
-        "payment_method_title": "Credit Card (Stripe)",
-        "transaction_id": "ch_1CAjHAJK48mSkzFLtLvibPF8",
-        "date_paid": "2018-03-28T14:45:37",
-        "date_paid_gmt": "2018-03-28T18:45:37",
-        "date_completed": null,
-        "date_completed_gmt": null,
-        "cart_hash": "6473c0b36ac876e60bfbb9e5a6f9397e",
-        "meta_data": [
-            {
-                "id": 23327,
-                "key": "_shipping_phone",
-                "value": "333-333-3333"
-            },
-            {
-                "id": 23328,
-                "key": "_fue_recorded",
-                "value": "1"
-            },
-            {
-                "id": 23329,
-                "key": "_stripe_customer_id",
-                "value": "cus_B9aZmYbtbK1ryN"
-            },
-            {
-                "id": 23330,
-                "key": "_stripe_source_id",
-                "value": "src_1CAjH6JK48mSkzFLhxMsg9MV"
-            },
-            {
-                "id": 23331,
-                "key": "_stripe_charge_captured",
-                "value": "yes"
-            },
-            {
-                "id": 23332,
-                "key": "Stripe Fee",
-                "value": "2.70"
-            },
-            {
-                "id": 23333,
-                "key": "Net Revenue From Stripe",
-                "value": "80.10"
-            }
-        ],
-        "line_items": [
-            {
-                "id": 869,
-                "name": "Fabric (Variable Product)",
-                "product_id": 262,
-                "variation_id": 264,
-                "quantity": 1,
-                "tax_class": "",
-                "subtotal": "30.00",
-                "subtotal_tax": "0.00",
-                "total": "30.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [
-                    {
-                        "id": 6331,
-                        "key": "pa_fabric",
-                        "value": "italian"
-                    },
-                    {
-                        "id": 6332,
-                        "key": "size",
-                        "value": "Small"
-                    },
-                    {
-                        "id": 6333,
-                        "key": "pa_color",
-                        "value": "blue"
-                    }
-                ],
-                "sku": "",
-                "price": 30
-            },
-            {
-                "id": 870,
-                "name": "Black Dress (H&M)",
-                "product_id": 373,
-                "variation_id": 0,
-                "quantity": 1,
-                "tax_class": "",
-                "subtotal": "15.00",
-                "subtotal_tax": "0.00",
-                "total": "15.00",
-                "total_tax": "0.00",
-                "taxes": [],
-                "meta_data": [
-                    {
-                        "id": 6343,
+                        "id": 6771,
                         "key": "_is_deposit",
                         "value": "yes"
                     },
                     {
-                        "id": 6344,
+                        "id": 6772,
                         "key": "_deposit_full_amount",
-                        "value": "30"
+                        "value": "35"
                     },
                     {
-                        "id": 6345,
+                        "id": 6773,
                         "key": "_deposit_full_amount_ex_tax",
-                        "value": "30"
+                        "value": "35"
                     },
                     {
-                        "id": 6346,
+                        "id": 6774,
                         "key": "_deposit_deposit_amount_ex_tax",
-                        "value": "15"
+                        "value": "17.5"
                     }
                 ],
-                "sku": "111-111-111",
-                "price": 15
+                "sku": "",
+                "price": 17.5
             }
         ],
         "tax_lines": [],
         "shipping_lines": [
             {
-                "id": 871,
-                "method_title": "Priority Mail Flat Rate&#0174;",
-                "method_id": "usps:flat_rate_box_priority",
-                "total": "37.80",
+                "id": 924,
+                "method_title": "Free shipping",
+                "method_id": "free_shipping:26",
+                "total": "0.00",
                 "total_tax": "0.00",
                 "taxes": [],
                 "meta_data": [
                     {
-                        "id": 6351,
-                        "key": "Package 1",
-                        "value": "Priority Mail Flat Rate Large Box - 12 × 12 × 5.5 (in) 5lbs × 1"
-                    },
-                    {
-                        "id": 6352,
-                        "key": "Package 2",
-                        "value": "Priority Mail Large Flat Rate Board Game Box - 23.69 × 11.75 × 3 (in) 2lbs × 1"
+                        "id": 6779,
+                        "key": "Items",
+                        "value": "Green Dress (H&M) &times; 1"
                     }
                 ]
             }
@@ -1627,7 +1554,7 @@
         "_links": {
             "self": [
                 {
-                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/915"
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/orders/1038"
                 }
             ],
             "collection": [
@@ -1643,4 +1570,3 @@
         }
     }
 ]
-

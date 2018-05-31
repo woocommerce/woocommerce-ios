@@ -1,30 +1,60 @@
 import UIKit
 import CoreData
 
+import CocoaLumberjack
+import WordPressUI
+import WordPressKit
+import WordPressAuthenticator
+
+
 
 // MARK: - Woo's App Delegate!
 //
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    ///
+    /// AppDelegate's Instance
     ///
     static var shared: AppDelegate {
         return UIApplication.shared.delegate as! AppDelegate
     }
 
-    ///
+    /// Main Window
     ///
     var window: UIWindow?
 
+    /// WordPressAuthenticator Wrapper
+    ///
+    let authenticationManager = AuthenticationManager()
+
+
+
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
-        customizeAppearance()
+
+        // Setup the Interface!
+        setupMainWindow()
+        setupComponentsAppearance()
+
+        // Setup Components
+        setupAuthenticationManager()
+        setupLogLevel(.verbose)
+
+        // Display the Authentication UI
+        displayAuthenticatorIfNeeded()
+
         return true
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
         return true
+    }
+
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
+        guard let rootViewController = window?.rootViewController else {
+            fatalError()
+        }
+
+        return authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -48,12 +78,93 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
 
     }
+}
 
-    private func customizeAppearance() {
+
+// MARK: - Initialization Methods
+//
+private extension AppDelegate {
+
+    /// Sets up the main UIWindow instance.
+    ///
+    func setupMainWindow() {
+        window?.makeKeyAndVisible()
+    }
+
+    /// Sets up all of the component(s) Appearance.
+    ///
+    func setupComponentsAppearance() {
+        setupWooAppearance()
+        setupFancyButtonAppearance()
+    }
+
+    /// Sets up WooCommerce's UIAppearance.
+    ///
+    func setupWooAppearance() {
         UINavigationBar.appearance().barTintColor = StyleManager.wooCommerceBrandColor
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
         UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().tintColor = .white
         UIApplication.shared.statusBarStyle = .lightContent
+    }
+
+    /// Sets up FancyButton's UIAppearance.
+    ///
+    func setupFancyButtonAppearance() {
+        let appearance = FancyButton.appearance()
+        appearance.titleFont = UIFont.font(forStyle: .headline, weight: .bold)
+        appearance.primaryNormalBackgroundColor = StyleManager.buttonPrimaryColor
+        appearance.primaryNormalBorderColor = StyleManager.buttonPrimaryHighlightedColor
+        appearance.primaryHighlightBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
+        appearance.primaryHighlightBorderColor = StyleManager.buttonPrimaryHighlightedColor
+        appearance.disabledBorderColor = StyleManager.buttonPrimaryHighlightedColor
+        appearance.disabledBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
+    }
+
+    /// Sets up the WordPress Authenticator.
+    ///
+    func setupAuthenticationManager() {
+        authenticationManager.initialize()
+    }
+
+    func setupLogLevel(_ level: DDLogLevel) {
+        let rawLevel = Int32(level.rawValue)
+
+        WPSharedSetLoggingLevel(rawLevel)
+        WPAuthenticatorSetLoggingLevel(rawLevel)
+        WPKitSetLoggingLevel(rawLevel)
+    }
+}
+
+
+// MARK: - Authentication Methods
+//
+private extension AppDelegate {
+
+    /// Whenever there is no default WordPress.com Account, let's display the Authentication UI.
+    ///
+    func displayAuthenticatorIfNeeded() {
+        guard needsAuthentication else {
+            return
+        }
+
+        displayAuthenticator()
+    }
+
+    /// Displays the WordPress.com Authentication UI.
+    ///
+    func displayAuthenticator() {
+        guard let rootViewController = window?.rootViewController else {
+            fatalError()
+        }
+
+        authenticationManager.displayAuthentication(from: rootViewController)
+    }
+
+    /// Indicates if there's a default WordPress.com account.
+    ///
+    var needsAuthentication: Bool {
+        // TODO: Wire Me! >> AccountStore!
+        return true
     }
 }

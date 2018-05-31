@@ -1,58 +1,153 @@
 PODS:
-  - Alamofire (4.6.0)
-  - Automattic-Tracks-iOS (0.2.0):
-    - CocoaLumberjack (~> 3.2.0)
+  - 1PasswordExtension (1.8.5)
+  - AFNetworking (3.2.1):
+    - AFNetworking/NSURLSession (= 3.2.1)
+    - AFNetworking/Reachability (= 3.2.1)
+    - AFNetworking/Security (= 3.2.1)
+    - AFNetworking/Serialization (= 3.2.1)
+    - AFNetworking/UIKit (= 3.2.1)
+  - AFNetworking/NSURLSession (3.2.1):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.2.1)
+  - AFNetworking/Security (3.2.1)
+  - AFNetworking/Serialization (3.2.1)
+  - AFNetworking/UIKit (3.2.1):
+    - AFNetworking/NSURLSession
+  - Alamofire (4.7.2)
+  - Automattic-Tracks-iOS (0.2.3):
+    - CocoaLumberjack (~> 3.4.1)
     - Reachability (~> 3.1)
     - UIDeviceIdentifier (~> 0.4)
-  - CocoaLumberjack (3.2.1):
-    - CocoaLumberjack/Default (= 3.2.1)
-    - CocoaLumberjack/Extensions (= 3.2.1)
-  - CocoaLumberjack/Default (3.2.1)
-  - CocoaLumberjack/Extensions (3.2.1):
+  - CocoaLumberjack (3.4.2):
+    - CocoaLumberjack/Default (= 3.4.2)
+    - CocoaLumberjack/Extensions (= 3.4.2)
+  - CocoaLumberjack/Default (3.4.2)
+  - CocoaLumberjack/Extensions (3.4.2):
     - CocoaLumberjack/Default
-  - Crashlytics (3.9.3):
-    - Fabric (~> 1.7.2)
-  - Fabric (1.7.6)
-  - Gridicons (0.14)
+  - Crashlytics (3.10.1):
+    - Fabric (~> 1.7.5)
+  - Fabric (1.7.7)
+  - FormatterKit/Resources (1.8.2)
+  - FormatterKit/TimeIntervalFormatter (1.8.2):
+    - FormatterKit/Resources
+  - GoogleSignInRepacked (4.1.2):
+    - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
+    - "GoogleToolboxForMac/NSString+URLArguments (~> 2.1)"
+  - GoogleToolboxForMac/DebugUtils (2.1.4):
+    - GoogleToolboxForMac/Defines (= 2.1.4)
+  - GoogleToolboxForMac/Defines (2.1.4)
+  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.1.4)":
+    - GoogleToolboxForMac/DebugUtils (= 2.1.4)
+    - GoogleToolboxForMac/Defines (= 2.1.4)
+    - "GoogleToolboxForMac/NSString+URLArguments (= 2.1.4)"
+  - "GoogleToolboxForMac/NSString+URLArguments (2.1.4)"
+  - Gridicons (0.15)
+  - lottie-ios (2.5.0)
+  - NSObject-SafeExpectations (0.0.3)
+  - "NSURL+IDN (0.3)"
   - Reachability (3.2)
+  - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (0.5.0)
+  - WordPressAuthenticator (1.0.0):
+    - 1PasswordExtension (= 1.8.5)
+    - Alamofire (= 4.7.2)
+    - CocoaLumberjack (= 3.4.2)
+    - GoogleSignInRepacked (= 4.1.2)
+    - Gridicons (~> 0.15)
+    - lottie-ios (= 2.5.0)
+    - "NSURL+IDN (= 0.3)"
+    - SVProgressHUD (= 2.2.5)
+    - UIDeviceIdentifier (~> 0.4)
+    - WordPressKit (~> 1.0)
+    - WordPressShared (~> 1.0)
+    - WordPressUI (~> 1.0)
+    - wpxmlrpc (~> 0.8)
+  - WordPressKit (1.0.6):
+    - AFNetworking (= 3.2.1)
+    - Alamofire (= 4.7.2)
+    - CocoaLumberjack (= 3.4.2)
+    - NSObject-SafeExpectations (= 0.0.3)
+    - UIDeviceIdentifier (~> 0.4)
+    - WordPressShared (~> 1.0.3)
+    - wpxmlrpc (= 0.8.3)
+  - WordPressShared (1.0.5):
+    - CocoaLumberjack (~> 3.4)
+    - FormatterKit/TimeIntervalFormatter (= 1.8.2)
+  - WordPressUI (1.0.3)
+  - wpxmlrpc (0.8.3)
 
 DEPENDENCIES:
-  - Alamofire (= 4.6.0)
-  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.1`)
-  - Crashlytics (= 3.9.3)
-  - Gridicons (= 0.14)
+  - Alamofire (= 4.7.2)
+  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.3`)
+  - Crashlytics (= 3.10.1)
+  - Gridicons (= 0.15)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `58ed623`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - 1PasswordExtension
+    - AFNetworking
     - Alamofire
     - CocoaLumberjack
     - Crashlytics
     - Fabric
+    - FormatterKit
+    - GoogleSignInRepacked
+    - GoogleToolboxForMac
     - Gridicons
+    - lottie-ios
+    - NSObject-SafeExpectations
+    - "NSURL+IDN"
     - Reachability
+    - SVProgressHUD
     - UIDeviceIdentifier
+    - WordPressKit
+    - WordPressShared
+    - WordPressUI
+    - wpxmlrpc
 
 EXTERNAL SOURCES:
   Automattic-Tracks-iOS:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
-    :tag: 0.2.1
+    :tag: 0.2.3
+  WordPressAuthenticator:
+    :commit: 58ed623
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 CHECKOUT OPTIONS:
   Automattic-Tracks-iOS:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
-    :tag: 0.2.1
+    :tag: 0.2.3
+  WordPressAuthenticator:
+    :commit: 58ed623
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
-  Alamofire: f41a599bd63041760b26d393ec1069d9d7b917f4
-  Automattic-Tracks-iOS: edc4365d31602490af88dbed181b0b666cbdcf75
-  CocoaLumberjack: 2800c03334042fe80589423c8d80e582dcaec482
-  Crashlytics: dbb07d01876c171c5ccbdf7826410380189e452c
-  Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
-  Gridicons: 558073b1ff34092a49336ee0955ad97d2ef799f0
+  1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
+  AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
+  Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
+  Automattic-Tracks-iOS: d8c6c6c1351b1905a73e45f431b15598d71963b5
+  CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
+  Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
+  Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
+  FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
+  GoogleSignInRepacked: d357702618c555f38923576924661325eb1ef22b
+  GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
+  Gridicons: 0e5e76ad9fc6f7cbc3da137a9751ef516c5aef73
+  lottie-ios: d699fdee68d7b63e721d949388b015fef1aaa4ac
+  NSObject-SafeExpectations: b989b68a8a9b7b9f2b264a8b52ba9d7aab8f3129
+  "NSURL+IDN": 82355a0afd532fe1de08f6417c134b49b1a1c4b3
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
+  WordPressAuthenticator: 4c802aa18781858253daf984f873e3efe0dac7ef
+  WordPressKit: f62f8e68ce2300d9a8b4c2b7c743c911bbdbd343
+  WordPressShared: d7fdb0ca9302cf4bc7f3ec0fbe98d0d8eb721438
+  WordPressUI: ebf73505c8957df23a1c9fe565fba553be296dc5
+  wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
 
-PODFILE CHECKSUM: 08010c97100223abdf7a351cb2a8b1bdfd158453
+PODFILE CHECKSUM: 9049dbd0cd98e7a655f9dafc27c3eb744ac72fc5
 
 COCOAPODS: 1.5.2

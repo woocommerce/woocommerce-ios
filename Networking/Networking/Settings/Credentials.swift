@@ -8,6 +8,12 @@ public struct Credentials: Equatable {
     /// WordPress.com Authentication Token
     ///
     public let authToken: String
+
+    /// Designated Initializer
+    ///
+    public init(authToken: String) {
+        self.authToken = authToken
+    }
 }
 
 

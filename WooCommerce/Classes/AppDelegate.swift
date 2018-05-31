@@ -1,8 +1,11 @@
 import UIKit
 import CoreData
+
 import CocoaLumberjack
+import WordPressUI
 import WordPressKit
 import WordPressAuthenticator
+
 
 
 // MARK: - Woo's App Delegate!
@@ -30,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Setup the Interface!
         setupMainWindow()
-        setupInterfaceAppearance()
+        setupComponentsAppearance()
 
         // Setup Components
         setupAuthenticationManager()
@@ -88,14 +91,34 @@ private extension AppDelegate {
         window?.makeKeyAndVisible()
     }
 
+    /// Sets up all of the component(s) Appearance.
+    ///
+    func setupComponentsAppearance() {
+        setupWooAppearance()
+        setupFancyButtonAppearance()
+    }
+
     /// Sets up WooCommerce's UIAppearance.
     ///
-    func setupInterfaceAppearance() {
+    func setupWooAppearance() {
         UINavigationBar.appearance().barTintColor = StyleManager.wooCommerceBrandColor
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
         UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().tintColor = .white
         UIApplication.shared.statusBarStyle = .lightContent
+    }
+
+    /// Sets up FancyButton's UIAppearance.
+    ///
+    func setupFancyButtonAppearance() {
+        let appearance = FancyButton.appearance()
+        appearance.titleFont = UIFont.font(forStyle: .headline, weight: .bold)
+        appearance.primaryNormalBackgroundColor = StyleManager.buttonPrimaryColor
+        appearance.primaryNormalBorderColor = StyleManager.buttonPrimaryHighlightedColor
+        appearance.primaryHighlightBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
+        appearance.primaryHighlightBorderColor = StyleManager.buttonPrimaryHighlightedColor
+        appearance.disabledBorderColor = StyleManager.buttonPrimaryHighlightedColor
+        appearance.disabledBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
     }
 
     /// Sets up the WordPress Authenticator.
@@ -135,7 +158,7 @@ private extension AppDelegate {
             fatalError()
         }
 
-        authenticationManager.showLogin(from: rootViewController)
+        authenticationManager.displayAuthentication(from: rootViewController)
     }
 
     /// Indicates if there's a default WordPress.com account.

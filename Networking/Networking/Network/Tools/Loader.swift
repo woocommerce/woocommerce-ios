@@ -30,10 +30,24 @@ class Loader {
     /// Loads the contents of the specified file (in the current bundle), and returns it's contents as `Data`.
     ///
     static func contentsOf(_ filename: String, extension: String = jsonExtension) -> Data? {
-        guard let url = Bundle(for: self).url(forResource: filename, withExtension: `extension`) else {
+        guard let url = path(for: filename, extension: `extension`) else {
             return nil
         }
 
         return try? Data(contentsOf: url)
+    }
+
+    /// Fins the specified resource in *all* of the available bundles.
+    ///
+    private static func path(for filename: String, extension: String = jsonExtension) -> URL? {
+        for bundle in Bundle.allBundles {
+            guard let path = bundle.url(forResource: filename, withExtension: `extension`) else {
+                continue
+            }
+
+            return path
+        }
+
+        return nil
     }
 }

@@ -1,11 +1,10 @@
 import Foundation
 import Alamofire
-@testable import Networking
 
 
 /// Network Mockup: Allows us to simulate HTTP Responses.
 ///
-class NetworkMockup: Network {
+class MockupNetwork: Network {
 
     /// Mapping between URL Suffix and JSON Mockup responses.
     ///
@@ -40,7 +39,7 @@ class NetworkMockup: Network {
 
 /// Public Methods
 ///
-extension NetworkMockup {
+extension MockupNetwork {
 
     /// Whenever a request is enqueued, we'll return the specified JSON Encoded file, whenever the Request's URL suffix matches with
     /// the specified one.

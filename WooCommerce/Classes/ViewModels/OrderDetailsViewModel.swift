@@ -28,6 +28,7 @@ class OrderDetailsViewModel {
     let paymentSummary: String
 
     let items: [OrderItem]
+    let fulfillTitle: String
 
     init(order: Order) {
         summaryTitle = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
@@ -82,5 +83,6 @@ class OrderDetailsViewModel {
         totalValue = order.currencySymbol + order.total
         paymentSummary = NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
         items = order.items
+        fulfillTitle = NSLocalizedString("Fulfill order", comment: "Fulfill order button title")
     }
 }

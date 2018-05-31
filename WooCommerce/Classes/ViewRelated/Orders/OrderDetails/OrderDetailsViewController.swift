@@ -43,11 +43,7 @@ class OrderDetailsViewController: UIViewController {
 
         let productSectionTitles = [NSLocalizedString("PRODUCT", comment: "Product section title"),
                                     NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")]
-        var productRows = [Row]()
-//        for _ in viewModel.items {
-//            productRows.append(.item) // add two column label row here
-//        }
-        let productListSection = Section(titles: productSectionTitles, footer: nil, rows: productRows)
+        let productListSection = Section(titles: productSectionTitles, footer: nil, rows: [.productList])
 
         let customerNoteSection = Section(titles: [NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title")], footer: nil, rows: [.customerNote])
 
@@ -168,6 +164,8 @@ extension OrderDetailsViewController {
     private func configure(_ cell: UITableViewCell, for row: Row) {
         switch cell {
         case let cell as SummaryTableViewCell:
+            cell.configure(with: viewModel)
+        case let cell as ProductListTableViewCell:
             cell.configure(with: viewModel)
         case let cell as CustomerNoteTableViewCell:
             cell.configure(with: viewModel)
@@ -301,7 +299,7 @@ private extension OrderDetailsViewController {
 
     private enum Row {
         case summary
-//        case items
+        case productList
         case customerNote
         case shippingAddress
         case billingAddress
@@ -313,8 +311,8 @@ private extension OrderDetailsViewController {
             switch self {
             case .summary:
                 return SummaryTableViewCell.reuseIdentifier
-//            case .items
-//                return ProductTableViewCell.reuseIdentifier
+            case .productList:
+                return ProductListTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:

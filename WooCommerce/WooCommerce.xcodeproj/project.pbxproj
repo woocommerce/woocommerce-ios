@@ -73,6 +73,7 @@
 		CE32B11620BF8779006FBCF4 /* ProductListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B11420BF8779006FBCF4 /* ProductListTableViewCell.xib */; };
 		CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11920BF8E32006FBCF4 /* UIButton+Helpers.swift */; };
 		CE32B11C20C02DA3006FBCF4 /* IntrinsicHeightButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11B20C02DA3006FBCF4 /* IntrinsicHeightButton.swift */; };
+		CE32B11E20C05A95006FBCF4 /* IntrinsicHeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11D20C05A94006FBCF4 /* IntrinsicHeightView.swift */; };
 		CE34DA2520A1ECD6005D8523 /* ContactViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE34DA2420A1ECD6005D8523 /* ContactViewModel.swift */; };
 		CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */; };
 		CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */; };
@@ -184,6 +185,7 @@
 		CE32B11420BF8779006FBCF4 /* ProductListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductListTableViewCell.xib; sourceTree = "<group>"; };
 		CE32B11920BF8E32006FBCF4 /* UIButton+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Helpers.swift"; sourceTree = "<group>"; };
 		CE32B11B20C02DA3006FBCF4 /* IntrinsicHeightButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntrinsicHeightButton.swift; sourceTree = "<group>"; };
+		CE32B11D20C05A94006FBCF4 /* IntrinsicHeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntrinsicHeightView.swift; sourceTree = "<group>"; };
 		CE34DA2420A1ECD6005D8523 /* ContactViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactViewModel.swift; sourceTree = "<group>"; };
 		CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContact+Helpers.swift"; sourceTree = "<group>"; };
 		CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewModel.swift; sourceTree = "<group>"; };
@@ -411,13 +413,14 @@
 			children = (
 				CE1EC8D020B6FE39009762BF /* FootnoteView.swift */,
 				CE1EC8CE20B6FD53009762BF /* FootnoteView.xib */,
+				CE32B11B20C02DA3006FBCF4 /* IntrinsicHeightButton.swift */,
+				CE32B11D20C05A94006FBCF4 /* IntrinsicHeightView.swift */,
 				CED6021B20B35FDF0032C639 /* NoResultsTableViewCell.swift */,
 				CED6021C20B35FDF0032C639 /* NoResultsTableViewCell.xib */,
 				CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */,
 				CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */,
 				CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */,
 				CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */,
-				CE32B11B20C02DA3006FBCF4 /* IntrinsicHeightButton.swift */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -730,6 +733,7 @@
 				B557DA1520979904005962F4 /* CustomerNoteTableViewCell.swift in Sources */,
 				CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,
+				CE32B11E20C05A95006FBCF4 /* IntrinsicHeightView.swift in Sources */,
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
 				CE34DA2520A1ECD6005D8523 /* ContactViewModel.swift in Sources */,

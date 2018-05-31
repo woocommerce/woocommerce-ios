@@ -17,23 +17,8 @@
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
                 <rect key="frame" x="0.0" y="0.0" width="331" height="187.5"/>
                 <autoresizingMask key="autoresizingMask"/>
-                <subviews>
-                    <stackView autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="Jri-KN-r1a">
-                        <rect key="frame" x="0.0" y="16" width="331" height="155.5"/>
-                        <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    </stackView>
-                </subviews>
-                <constraints>
-                    <constraint firstItem="Jri-KN-r1a" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="4mA-g9-9yM"/>
-                    <constraint firstItem="Jri-KN-r1a" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="6Vp-4o-aae"/>
-                    <constraint firstAttribute="trailing" secondItem="Jri-KN-r1a" secondAttribute="trailing" id="ZBo-nt-OUh"/>
-                    <constraint firstAttribute="bottom" secondItem="Jri-KN-r1a" secondAttribute="bottom" constant="16" id="jtx-Mb-kEf"/>
-                </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
-            <connections>
-                <outlet property="verticalStackView" destination="Jri-KN-r1a" id="ewF-ph-In3"/>
-            </connections>
             <point key="canvasLocation" x="39.5" y="126"/>
         </tableViewCell>
     </objects>

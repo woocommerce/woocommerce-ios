@@ -41,7 +41,9 @@
 		B56DB3D22049BFAA00D4AA8E /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3D02049BFAA00D4AA8E /* WooCommerce.xcdatamodeld */; };
 		B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */; };
 		B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */; };
+		B5A8533E20BDE63600FAAB4D /* CoreDataManager+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8533D20BDE63600FAAB4D /* CoreDataManager+Woo.swift */; };
 		B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */; };
+		B5AA557520AE17560097FDC8 /* Mall.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AA557420AE17560097FDC8 /* Mall.swift */; };
 		B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8AC20B88D9900D211DE /* LoginPrologueViewController.swift */; };
 		B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5A8F8AE20B88DCC00D211DE /* LoginPrologueViewController.xib */; };
 		B5BE368E20BED80B00BE0A8C /* SafariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BE368D20BED80B00BE0A8C /* SafariViewController.swift */; };
@@ -128,6 +130,7 @@
 		B509112E2049E27A007D25DC /* OrdersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrdersViewController.swift; sourceTree = "<group>"; };
 		B509112F2049E27A007D25DC /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B50911332049E493007D25DC /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
+		B517E88A20BE4A1F00488DB1 /* WooCommerce.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerce.entitlements; sourceTree = "<group>"; };
 		B546CCF3209363A5007CDA5F /* FluxSumi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FluxSumi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B557D9FD209753BB005962F4 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B557DA1320979904005962F4 /* CustomerNoteTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerNoteTableViewCell.swift; sourceTree = "<group>"; };
@@ -148,8 +151,10 @@
 		B56DB3D82049BFAA00D4AA8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3E32049BFAA00D4AA8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B5A8533D20BDE63600FAAB4D /* CoreDataManager+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataManager+Woo.swift"; sourceTree = "<group>"; };
 		B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ApiCredentials.swift; path = DerivedSources/ApiCredentials.swift; sourceTree = SOURCE_ROOT; };
 		B5A8F8A820B84D3F00D211DE /* InfoPlist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InfoPlist.h; path = DerivedSources/InfoPlist.h; sourceTree = SOURCE_ROOT; };
+		B5AA557420AE17560097FDC8 /* Mall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mall.swift; sourceTree = "<group>"; };
 		B5A8F8AC20B88D9900D211DE /* LoginPrologueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPrologueViewController.swift; sourceTree = "<group>"; };
 		B5A8F8AE20B88DCC00D211DE /* LoginPrologueViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginPrologueViewController.xib; sourceTree = "<group>"; };
 		B5BE368D20BED80B00BE0A8C /* SafariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariViewController.swift; sourceTree = "<group>"; };
@@ -268,6 +273,7 @@
 			isa = PBXGroup;
 			children = (
 				B55D4C2620B717C000D7A50F /* UserAgent.swift */,
+				B5A8533D20BDE63600FAAB4D /* CoreDataManager+Woo.swift */,
 				B5BE368D20BED80B00BE0A8C /* SafariViewController.swift */,
 			);
 			path = Tools;
@@ -326,6 +332,7 @@
 				B55D4C2220B716CE00D7A50F /* Tools */,
 				B55D4C0420B6026700D7A50F /* Authentication */,
 				CE1CCB4C20572444000EE3AC /* Extensions */,
+				B5AA557320AE17560097FDC8 /* Flux */,
 				CE1CCB3E2056F204000EE3AC /* Styles */,
 				B5D1AFBE20BC67B500DB0E8C /* System */,
 				B509112B2049CFDF007D25DC /* Model */,
@@ -345,6 +352,8 @@
 				B56DB3D82049BFAA00D4AA8E /* Info.plist */,
 				B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */,
 				B56DB3D02049BFAA00D4AA8E /* WooCommerce.xcdatamodeld */,
+				B517E88A20BE4A1F00488DB1 /* WooCommerce.entitlements */,
+				CE1CCB4620570A6B000EE3AC /* en.lproj */,
 				CEE005FF2077CA5A0079161F /* fake data */,
 			);
 			path = Resources;
@@ -358,6 +367,13 @@
 			);
 			path = DerivedSources;
 			sourceTree = "<group>";
+		};
+		B5AA557320AE17560097FDC8 /* Flux */ = {
+			isa = PBXGroup;
+			children = (
+				B5AA557420AE17560097FDC8 /* Mall.swift */,
+			);
+			path = Flux;
 		};
 		B5A8F8AB20B88D8400D211DE /* Prologue */ = {
 			isa = PBXGroup;
@@ -521,9 +537,15 @@
 					B56DB3C52049BFAA00D4AA8E = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 					B56DB3DC2049BFAA00D4AA8E = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 0930;
 						ProvisioningStyle = Automatic;
 						TestTargetID = B56DB3C52049BFAA00D4AA8E;
 					};
@@ -647,6 +669,7 @@
 				"${BUILT_PRODUCTS_DIR}/NSObject-SafeExpectations/NSObject_SafeExpectations.framework",
 				"${BUILT_PRODUCTS_DIR}/NSURL+IDN/NSURL_IDN.framework",
 				"${BUILT_PRODUCTS_DIR}/Reachability/Reachability.framework",
+				"${BUILT_PRODUCTS_DIR}/SAMKeychain/SAMKeychain.framework",
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/UIDeviceIdentifier/UIDeviceIdentifier.framework",
 				"${BUILT_PRODUCTS_DIR}/WordPressAuthenticator/WordPressAuthenticator.framework",
@@ -670,6 +693,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NSObject_SafeExpectations.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NSURL_IDN.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SAMKeychain.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIDeviceIdentifier.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WordPressAuthenticator.framework",
@@ -726,6 +750,8 @@
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				B557DA1520979904005962F4 /* CustomerNoteTableViewCell.swift in Sources */,
 				CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */,
+				B5A8533E20BDE63600FAAB4D /* CoreDataManager+Woo.swift in Sources */,
+				B5AA557520AE17560097FDC8 /* Mall.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */,
@@ -921,6 +947,7 @@
 			baseConfigurationReference = 8F0FB96B941C02DB9A12C008 /* Pods-WooCommerce.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Resources/WooCommerce.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_BITCODE = NO;
@@ -945,6 +972,7 @@
 			baseConfigurationReference = 4567EA9A7711F9B576BE500C /* Pods-WooCommerce.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Resources/WooCommerce.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_BITCODE = NO;
@@ -968,12 +996,14 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = WooCommerceTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.woocommerce.WooCommerceTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WooCommerce.app/WooCommerce";
@@ -985,6 +1015,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = WooCommerceTests/Info.plist;

@@ -1,4 +1,5 @@
 import Foundation
+import Storage
 
 
 // MARK: - Store: Holds the data associated to a specific domain of the application.
@@ -13,6 +14,10 @@ open class Store: ActionsProcessor {
     ///
     public let dispatcher: Dispatcher
 
+    /// StorageManager: Persistance-Y
+    ///
+    public let storageManager: StorageManager
+
     /// The dispatcher used to notify observer of changes.
     ///
     public let eventBus = EventBus()
@@ -22,8 +27,9 @@ open class Store: ActionsProcessor {
     ///
     /// - Parameter dispatcher: the Dispatcher to use to receive Actions.
     ///
-    public init(dispatcher: Dispatcher = .global) {
+    public init(dispatcher: Dispatcher = .global, storageManager: StorageManager) {
         self.dispatcher = dispatcher
+        self.storageManager = storageManager
         registerSupportedActions()
     }
 

@@ -38,6 +38,11 @@
 		B567AF3020A0FB8F00AB6C62 /* DotcomRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2D20A0FB8F00AB6C62 /* DotcomRequestTests.swift */; };
 		B567AF3120A0FB8F00AB6C62 /* JetpackRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2E20A0FB8F00AB6C62 /* JetpackRequestTests.swift */; };
 		B5969E1520A47F99005E9DF1 /* RemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5969E1420A47F99005E9DF1 /* RemoteTests.swift */; };
+		B5A8532F20BDCACC00FAAB4D /* AccountRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8532E20BDCACC00FAAB4D /* AccountRemote.swift */; };
+		B5A8533620BDD0F800FAAB4D /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8533520BDD0F800FAAB4D /* Account.swift */; };
+		B5A8533820BDD24900FAAB4D /* AccountMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8533720BDD24900FAAB4D /* AccountMapper.swift */; };
+		B5A8533A20BDD46700FAAB4D /* AccountMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8533920BDD46700FAAB4D /* AccountMapperTests.swift */; };
+		B5A8533C20BDD4A100FAAB4D /* me.json in Resources */ = {isa = PBXBuildFile; fileRef = B5A8533B20BDD4A100FAAB4D /* me.json */; };
 		B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */; };
 		B5BB1D1020A237FB00112D92 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0F20A237FB00112D92 /* Address.swift */; };
 		B5BB1D1220A255EC00112D92 /* OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D1120A255EC00112D92 /* OrderStatus.swift */; };
@@ -96,6 +101,11 @@
 		B567AF2D20A0FB8F00AB6C62 /* DotcomRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotcomRequestTests.swift; sourceTree = "<group>"; };
 		B567AF2E20A0FB8F00AB6C62 /* JetpackRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JetpackRequestTests.swift; sourceTree = "<group>"; };
 		B5969E1420A47F99005E9DF1 /* RemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteTests.swift; sourceTree = "<group>"; };
+		B5A8532E20BDCACC00FAAB4D /* AccountRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountRemote.swift; sourceTree = "<group>"; };
+		B5A8533520BDD0F800FAAB4D /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		B5A8533720BDD24900FAAB4D /* AccountMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountMapper.swift; sourceTree = "<group>"; };
+		B5A8533920BDD46700FAAB4D /* AccountMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountMapperTests.swift; sourceTree = "<group>"; };
+		B5A8533B20BDD4A100FAAB4D /* me.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = me.json; sourceTree = "<group>"; };
 		B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Woo.swift"; sourceTree = "<group>"; };
 		B5BB1D0F20A237FB00112D92 /* Address.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
 		B5BB1D1120A255EC00112D92 /* OrderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatus.swift; sourceTree = "<group>"; };
@@ -299,6 +309,7 @@
 				B505F6D420BEE4E600BB1B69 /* me.json */,
 				B559EBA920A0B5CD00836CD4 /* orders-load-all.json */,
 				B5C6FCD520A3768900A4F8E4 /* order.json */,
+				B5A8533B20BDD4A100FAAB4D /* me.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -520,6 +531,7 @@
 				B557DA0D20975DB1005962F4 /* WordPressAPIVersion.swift in Sources */,
 				B557DA1D20979E7D005962F4 /* Order.swift in Sources */,
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,
+				B5A8532F20BDCACC00FAAB4D /* AccountRemote.swift in Sources */,
 				B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,
@@ -529,6 +541,7 @@
 				B5BB1D1220A255EC00112D92 /* OrderStatus.swift in Sources */,
 				B5BB1D1020A237FB00112D92 /* Address.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
+				B5A8533820BDD24900FAAB4D /* AccountMapper.swift in Sources */,
 				B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */,
 				B557DA0F20975E07005962F4 /* DotcomRequest.swift in Sources */,
 				B557DA0B20975D7E005962F4 /* WooAPIVersion.swift in Sources */,

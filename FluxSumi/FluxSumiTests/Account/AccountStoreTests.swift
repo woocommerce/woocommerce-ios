@@ -31,7 +31,7 @@ class AccountStoreTests: XCTestCase {
         let accountStore = AccountStore(storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Synchronize")
 
-        accountStore.synchronizeDotcomAccount(authToken: "Dummy") { error in
+        accountStore.synchronizeAccountDetails { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -49,7 +49,7 @@ class AccountStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "me", filename: "me")
         XCTAssertNil(storageManager.viewStorage.firstObject(ofType: Storage.Account.self, matching: nil))
 
-        accountStore.synchronizeDotcomAccount(authToken: "Dummy") { error in
+        accountStore.synchronizeAccountDetails { error in
             guard let account = self.storageManager.viewStorage.firstObject(ofType: Storage.Account.self, matching: nil) else {
                 XCTFail()
                 return

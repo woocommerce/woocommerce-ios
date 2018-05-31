@@ -23,9 +23,8 @@ extension AccountStore  {
 
     /// Synchronizes the WordPress.com account associated with a specified Authentication Token.
     ///
-    public func synchronizeDotcomAccount(authToken: String, onCompletion: @escaping (Error?) -> Void) {
-        let credentials = Credentials(authToken: authToken)
-        let remote = AccountRemote(credentials: credentials, network: network)
+    public func synchronizeAccountDetails(onCompletion: @escaping (Error?) -> Void) {
+        let remote = AccountRemote(network: network)
 
         remote.loadAccountDetails { [weak self] (account, error) in
             guard let account = account else {
@@ -40,7 +39,7 @@ extension AccountStore  {
 }
 
 
-// MARK: - Private Methods
+// MARK: - Internal Methods: Persistance
 //
 extension AccountStore {
 

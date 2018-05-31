@@ -21,9 +21,8 @@ extension ProductListTableViewCell {
             itemView.configure(leftText: item.name, rightText: item.quantity.description)
             verticalStackView.addArrangedSubview(itemView)
         }
-        let fulfillButton = RoundedButton()
-        fulfillButton.height = 48.0
         let fulfillButton = IntrinsicHeightButton()
+        fulfillButton.height = 48.0
         fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
         fulfillButton.applyFilledRoundStyle()
         verticalStackView.addArrangedSubview(fulfillButton)

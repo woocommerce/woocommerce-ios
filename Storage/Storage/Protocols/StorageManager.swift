@@ -7,10 +7,10 @@ public protocol StorageManager {
 
     /// Returns the `Storage` associated to the main thread.
     ///
-    var viewStorage: Storage { get }
+    var viewStorage: StorageType { get }
 
     /// Performs a task in Background: a special `Storage` instance will be provided (which is expected to be used within the closure!).
     /// Note that you must NEVER use the viewStorage within the backgroundClosure.
     ///
-    func performBackgroundTask(_ closure: @escaping (Storage) -> Void)
+    func performBackgroundTask(_ closure: @escaping (StorageType) -> Void)
 }

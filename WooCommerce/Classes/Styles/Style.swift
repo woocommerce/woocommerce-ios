@@ -15,6 +15,8 @@ protocol Style {
     var statusNotIdentifiedBoldColor: UIColor { get }
     var defaultTextColor: UIColor { get }
     var sectionTitleColor: UIColor { get }
+    var buttonPrimaryColor: UIColor { get }
+    var buttonPrimaryHighlightedColor: UIColor { get }
     var wooGreyMid: UIColor { get }
 }
 
@@ -32,6 +34,8 @@ class DefaultStyle: Style {
     let statusNotIdentifiedBoldColor = UIColor(red: 226.0/255.0, green: 226.0/255.0, blue: 226.0/255.0, alpha: 1.0)
     let defaultTextColor = UIColor.black
     let sectionTitleColor = UIColor.darkGray
+    let buttonPrimaryColor = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
+    let buttonPrimaryHighlightedColor = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
     let wooGreyMid = UIColor(red: 150.0/255.0, green: 150.0/255.0, blue: 150.0/255.0, alpha: 1.0)
 }
 
@@ -95,6 +99,14 @@ class StyleManager {
 
     static var sectionTitleColor: UIColor {
         return active.sectionTitleColor
+    }
+
+    static var buttonPrimaryColor: UIColor {
+        return active.buttonPrimaryColor
+    }
+
+    static var buttonPrimaryHighlightedColor: UIColor {
+        return active.buttonPrimaryHighlightedColor
     }
 
     static var wooGreyMid: UIColor {

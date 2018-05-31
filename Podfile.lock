@@ -48,7 +48,6 @@ PODS:
   - NSObject-SafeExpectations (0.0.3)
   - "NSURL+IDN (0.3)"
   - Reachability (3.2)
-  - SAMKeychain (1.5.3)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (0.5.0)
   - WordPressAuthenticator (1.0.0):
@@ -84,7 +83,6 @@ DEPENDENCIES:
   - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.3`)
   - Crashlytics (= 3.10.1)
   - Gridicons (= 0.15)
-  - SAMKeychain (= 1.5.3)
   - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `58ed623`)
 
 SPEC REPOS:
@@ -103,7 +101,6 @@ SPEC REPOS:
     - NSObject-SafeExpectations
     - "NSURL+IDN"
     - Reachability
-    - SAMKeychain
     - SVProgressHUD
     - UIDeviceIdentifier
     - WordPressKit
@@ -143,7 +140,6 @@ SPEC CHECKSUMS:
   NSObject-SafeExpectations: b989b68a8a9b7b9f2b264a8b52ba9d7aab8f3129
   "NSURL+IDN": 82355a0afd532fe1de08f6417c134b49b1a1c4b3
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  SAMKeychain: 483e1c9f32984d50ca961e26818a534283b4cd5c
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
   WordPressAuthenticator: 4c802aa18781858253daf984f873e3efe0dac7ef
@@ -152,6 +148,6 @@ SPEC CHECKSUMS:
   WordPressUI: 70bceaff582bdd6fd8f3ed67aaa200e72fce245d
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
 
-PODFILE CHECKSUM: cba00a4b6f2b227812fbfe7fa3e7a442f1bb3d5a
+PODFILE CHECKSUM: 9fff56ebb8133b8f7c20fdea1a88bb9b9a97576b
 
 COCOAPODS: 1.5.2

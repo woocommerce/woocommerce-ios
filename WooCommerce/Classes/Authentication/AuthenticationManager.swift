@@ -1,5 +1,6 @@
 import Foundation
 import WordPressAuthenticator
+import WordPressUI
 
 
 
@@ -13,7 +14,7 @@ class AuthenticationManager {
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
-                                                                wpcomTermsOfServiceURL: Constants.termsOfServiceURL,
+                                                                wpcomTermsOfServiceURL: WooConstants.termsOfServiceUrl,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
@@ -26,12 +27,10 @@ class AuthenticationManager {
 
     /// Displays the Login Flow using the specified UIViewController as presenter.
     ///
-    func showLogin(from presenter: UIViewController) {
-        let loginViewController = WordPressAuthenticator.signinForWordPress()
-        loginViewController.restrictToWPCom = true
-        loginViewController.offerSignupOption = false
+    func displayAuthentication(from presenter: UIViewController) {
+        let prologueViewController = LoginPrologueViewController()
+        let navigationController = LoginNavigationController(rootViewController: prologueViewController)
 
-        let navigationController = LoginNavigationController(rootViewController: loginViewController)
         presenter.present(navigationController, animated: true, completion: nil)
     }
 
@@ -167,18 +166,5 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func track(event: WPAnalyticsStat, error: Error) {
         // TODO: Integrate Tracks
-    }
-}
-
-
-/// Nested Types
-///
-extension AuthenticationManager {
-
-    struct Constants {
-
-        /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
-        ///
-        static let termsOfServiceURL = "https://wordpress.com/tos/"
     }
 }

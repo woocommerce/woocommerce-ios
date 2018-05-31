@@ -20,7 +20,7 @@ class RemoteTests: XCTestCase {
     ///
     func testRemoteGetsAlamofireNetworkByDefault() {
         let remote = Remote(credentials: credentials)
-        XCTAssert(remote.network is AlamofireWrapper)
+        XCTAssert(remote.network is AlamofireNetwork)
     }
 
     /// Verifies that `enqueue` properly wraps up the received request within an AuthenticatedRequest, with the remote credentials.

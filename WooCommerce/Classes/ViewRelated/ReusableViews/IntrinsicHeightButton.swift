@@ -1,6 +1,6 @@
 import UIKit
 
-class RoundedButton: UIButton {
+class IntrinsicHeightButton: UIButton {
     var height = 4.0
 
     override var intrinsicContentSize: CGSize {

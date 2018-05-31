@@ -10,7 +10,7 @@ import UIKit
     @IBInspectable var textInsets = Constants.defaultInsets
 
 
-    // MARK: - Overriden Methods
+    // MARK: - Overridden Methods
 
     override func drawText(in rect: CGRect) {
         super.drawText(in: UIEdgeInsetsInsetRect(rect, textInsets))

@@ -24,7 +24,7 @@ public protocol StorageType {
 
     /// Returns the first available object, of a given kind, matching the specified Predicate.
     ///
-    func firstObject<T: Object>(ofType type: T.Type, matching predicate: NSPredicate) -> T?
+    func firstObject<T: Object>(ofType type: T.Type, matching predicate: NSPredicate?) -> T?
 
     /// Inserts a new object of the given Type.
     ///

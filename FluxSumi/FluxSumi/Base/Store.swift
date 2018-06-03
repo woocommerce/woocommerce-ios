@@ -1,4 +1,6 @@
 import Foundation
+import Storage
+import Networking
 
 
 // MARK: - Store: Holds the data associated to a specific domain of the application.
@@ -17,13 +19,27 @@ open class Store: ActionsProcessor {
     ///
     public let eventBus = EventBus()
 
+    /// Storage Layer
+    ///
+    public let storageManager: StorageManager
+
+    /// Network Layer
+    ///
+    public let network: Network
+
 
     /// Initializes a new Store.
     ///
-    /// - Parameter dispatcher: the Dispatcher to use to receive Actions.
+    /// - Parameters:
+    ///     - dispatcher: the Dispatcher to use to receive Actions.
+    ///     - storageManager: Storage Provider to be used in all of the current Store OP's.
+    ///     - network: Network that should be used, when it comes to building a Remote.
     ///
-    public init(dispatcher: Dispatcher = .global) {
+    public init(dispatcher: Dispatcher = .global, storageManager: StorageManager, network: Network) {
         self.dispatcher = dispatcher
+        self.storageManager = storageManager
+        self.network = network
+
         registerSupportedActions()
     }
 

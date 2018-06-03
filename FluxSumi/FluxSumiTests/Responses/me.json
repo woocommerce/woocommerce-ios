@@ -1,0 +1,37 @@
+{
+    "ID": 78972699,
+    "display_name": "apiexamples",
+    "username": "apiexamples",
+    "email": "example@example.blog",
+    "primary_blog": 82974409,
+    "primary_blog_url": "http:\/\/apiexamples.wordpress.com",
+    "primary_blog_is_jetpack": false,
+    "language": "en",
+    "locale_variant": "",
+    "token_site_id": 82974409,
+    "token_scope": [
+                    "global"
+                    ],
+    "avatar_URL": "https:\/\/1.gravatar.com\/avatar\/a2afb7b6c0e23e5d363d8612fb1bd5ad?s=96&d=identicon&r=G",
+    "profile_URL": "http:\/\/en.gravatar.com\/apiexamples",
+    "verified": true,
+    "email_verified": true,
+    "date": "2015-01-15T06:56:07+00:00",
+    "site_count": 2,
+    "visible_site_count": 2,
+    "has_unseen_notes": false,
+    "newest_note_type": "",
+    "phone_account": false,
+    "meta": {
+        "links": {
+            "self": "https:\/\/public-api.wordpress.com\/rest\/v1\/me",
+            "help": "https:\/\/public-api.wordpress.com\/rest\/v1\/me\/help",
+            "site": "https:\/\/public-api.wordpress.com\/rest\/v1\/sites\/82974409",
+            "flags": "https:\/\/public-api.wordpress.com\/rest\/v1\/me\/flags"
+        }
+    },
+    "is_valid_google_apps_country": true,
+    "user_ip_country_code": "US",
+    "social_signup_service": "",
+    "abtests": {}
+}

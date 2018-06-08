@@ -159,7 +159,7 @@ extension NUXButtonViewController {
     public func move(to parentViewController: UIViewController, into containerView: UIView) {
         containerView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(view)
-        containerView.pinSubviewToAllEdgeMargins(view)
+        containerView.pinSubviewToAllEdges(view)
 
         willMove(toParentViewController: parentViewController)
         parentViewController.addChildViewController(self)

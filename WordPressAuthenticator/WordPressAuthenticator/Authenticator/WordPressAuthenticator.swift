@@ -498,7 +498,7 @@ public struct WordPressAuthenticatorConfiguration {
         try? path.removeSuffix(pattern: "/wp-admin/?")
         path.removeSuffix("/")
 
-        return NSURL.idnDecodedURL(path)
+        return path
     }
 
 

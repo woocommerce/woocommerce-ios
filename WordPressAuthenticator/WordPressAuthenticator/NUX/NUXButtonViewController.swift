@@ -150,3 +150,30 @@ extension NUXButtonViewController {
         }
     }
 }
+
+extension NUXButtonViewController {
+
+    /// Sets the parentViewControlleras the receiver instance's container. Plus: the containerView will also get the receiver's
+    /// view, attached to it's edges. This is effectively analog to using an Embed Segue with the NUXButtonViewController.
+    ///
+    public func move(to parentViewController: UIViewController, into containerView: UIView) {
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(view)
+        containerView.pinSubviewToAllEdgeMargins(view)
+
+        willMove(toParentViewController: parentViewController)
+        parentViewController.addChildViewController(self)
+        didMove(toParentViewController: parentViewController)
+    }
+
+    /// Returns a new NUXButtonViewController Instance
+    ///
+    public class func instance() -> NUXButtonViewController {
+        let storyboard = UIStoryboard(name: "NUXButtonView", bundle: Bundle(for: self))
+        guard let buttonViewController = storyboard.instantiateViewController(withIdentifier: "ButtonView") as? NUXButtonViewController else {
+            fatalError()
+        }
+
+        return buttonViewController
+    }
+}

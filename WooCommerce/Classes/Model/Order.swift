@@ -115,12 +115,12 @@ struct Order: Decodable {
     }
 
     var subtotal: String {
-        var subtotalList = [Double]()
-        for item in items {
-            subtotalList.append(Double(item.subtotal)!)
+        let subtotal = items.reduce(0.0) { (output, item) in
+            let itemSubtotal = Double(item.subtotal) ?? 0.0
+            return output + itemSubtotal
         }
-        let reduced = subtotalList.reduce(0, +)
-        return String(format: "%.2f", reduced)
+
+        return String(format: "%.2f", subtotal)
     }
 }
 

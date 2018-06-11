@@ -3,7 +3,7 @@ import UIKit
 
 class OrderDetailsViewModel {
     let summaryTitle: String
-    private let dateCreatedString: String
+    private let dateUpdatedString: String
     let paymentStatus: String
     let paymentBackgroundColor: UIColor
     let paymentBorderColor: CGColor
@@ -15,7 +15,7 @@ class OrderDetailsViewModel {
 
     init(order: Order) {
         summaryTitle = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
-        dateCreatedString = order.dateCreatedString
+        dateUpdatedString = order.dateUpdatedString
         paymentStatus = order.status.description
         paymentBackgroundColor = order.status.backgroundColor // MVVM: who should own color responsibilities? Maybe address this down the road.
         paymentBorderColor = order.status.borderColor // same here
@@ -32,7 +32,7 @@ class OrderDetailsViewModel {
         let gmt = TimeZone(abbreviation: "GMT")
         format.timeZone = gmt
         format.formatOptions = [.withFullDate, .withTime, .withDashSeparatorInDate, .withColonSeparatorInTime]
-        let date = format.date(from: dateCreatedString)
+        let date = format.date(from: dateUpdatedString)
 
         let shortFormat = DateFormatter()
         shortFormat.dateFormat = "HH:mm:ss"
@@ -40,12 +40,12 @@ class OrderDetailsViewModel {
 
         guard let orderDate = date else {
             NSLog("Order date not found!")
-            return dateCreatedString
+            return dateUpdatedString
         }
 
         let time = shortFormat.string(from: orderDate)
 
-        let summaryDate = String.localizedStringWithFormat(NSLocalizedString("Updated on \(orderDate.mediumString()) at \(time)", comment: "Order created date"))
+        let summaryDate = String.localizedStringWithFormat(NSLocalizedString("Updated on \(orderDate.mediumString()) at \(time)", comment: "Order updated summary date"))
         return summaryDate
     }
 }

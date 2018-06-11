@@ -74,7 +74,6 @@
 		CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */; };
 		CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */; };
 		CE855367209BA6A700938BDC /* ShowHideSectionFooter.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE855363209BA6A700938BDC /* ShowHideSectionFooter.xib */; };
-		CEC525A820C098CF00AF094B /* Date+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC525A720C098CF00AF094B /* Date+Helpers.swift */; };
 		CED6021D20B35FDF0032C639 /* NoResultsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED6021B20B35FDF0032C639 /* NoResultsTableViewCell.swift */; };
 		CED6021E20B35FDF0032C639 /* NoResultsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CED6021C20B35FDF0032C639 /* NoResultsTableViewCell.xib */; };
 		CEE005F62076C4040079161F /* Orders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F52076C4040079161F /* Orders.storyboard */; };
@@ -178,7 +177,6 @@
 		CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomerInfoTableViewCell.xib; sourceTree = "<group>"; };
 		CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerInfoTableViewCell.swift; sourceTree = "<group>"; };
 		CE855363209BA6A700938BDC /* ShowHideSectionFooter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShowHideSectionFooter.xib; sourceTree = "<group>"; };
-		CEC525A720C098CF00AF094B /* Date+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Helpers.swift"; sourceTree = "<group>"; };
 		CED6021B20B35FDF0032C639 /* NoResultsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoResultsTableViewCell.swift; sourceTree = "<group>"; };
 		CED6021C20B35FDF0032C639 /* NoResultsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoResultsTableViewCell.xib; sourceTree = "<group>"; };
 		CEE005F52076C4040079161F /* Orders.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Orders.storyboard; sourceTree = "<group>"; };
@@ -399,7 +397,6 @@
 				CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */,
 				CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */,
 				B5D1AFB720BC510200DB0E8C /* UIImage+Woo.swift */,
-				CEC525A720C098CF00AF094B /* Date+Helpers.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -706,7 +703,6 @@
 				B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */,
 				CE17C2E220ACA06800AFBD20 /* BillingDetailsTableViewCell.swift in Sources */,
 				B55D4C2720B717C000D7A50F /* UserAgent.swift in Sources */,
-				CEC525A820C098CF00AF094B /* Date+Helpers.swift in Sources */,
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,

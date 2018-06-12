@@ -16,7 +16,6 @@ class OrderDetailsViewModel {
     let subtotalLabel: String
     let subtotalValue: String
     let hasDiscount: Bool
-    let discountLabel: String?
     let discountValue: String?
     let shippingLabel: String
     let shippingValue: String
@@ -26,6 +25,8 @@ class OrderDetailsViewModel {
     let totalLabel: String
     let totalValue: String
     let paymentSummary: String
+
+    private let couponLines: [CouponLine]?
 
     init(order: Order) {
         summaryTitle = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
@@ -42,24 +43,12 @@ class OrderDetailsViewModel {
         subtotalLabel = NSLocalizedString("Subtotal", comment: "Subtotal label for payment view")
         subtotalValue = order.currencySymbol + order.subtotal
 
+        couponLines = order.couponLines
         if Double(order.discountTotal) != 0 {
             hasDiscount = true
-            var couponList = [String]()
-            let couponLine: String
-            if let couponLines = order.couponLines,
-                couponLines.isEmpty == false {
-                for coupon in couponLines {
-                    couponList.append(coupon.code)
-                }
-                couponLine = " (" + couponList.joined(separator: ",") + ")"
-            } else {
-                couponLine = ""
-            }
-            discountLabel = NSLocalizedString("Discount", comment: "Discount label for payment view") + couponLine
             discountValue = "−" + order.currencySymbol + order.discountTotal
         } else {
             hasDiscount = false
-            discountLabel = nil
             discountValue = nil
         }
 
@@ -79,5 +68,26 @@ class OrderDetailsViewModel {
         totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
         totalValue = order.currencySymbol + order.total
         paymentSummary = NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
+    }
+
+    func summarizeCoupons(from lines: [CouponLine]?) -> String? {
+        guard let couponLines = lines else {
+            return nil
+        }
+
+        let output = couponLines.reduce("") { (output, line) in
+            let prefix = output.isEmpty ? "" : ","
+            return output + prefix + line.code
+        }
+
+        guard !output.isEmpty else {
+            return nil
+        }
+
+        return NSLocalizedString("Discount", comment: "Discount label for payment view") + " (" + output + ")"
+    }
+
+    var discountLabel: String? {
+        return summarizeCoupons(from: couponLines)
     }
 }

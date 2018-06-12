@@ -49,10 +49,6 @@ public protocol WordPressAuthenticatorDelegate: class {
     ///
     var supportEnabled: Bool { get }
 
-    /// Returns the Support's Badge Count.
-    ///
-    var supportBadgeCount: Int { get }
-
     /// Signals the Host App that a new WordPress.com account has just been created.
     ///
     /// - Parameters:
@@ -62,10 +58,9 @@ public protocol WordPressAuthenticatorDelegate: class {
     ///
     func createdWordPressComAccount(username: String, authToken: String)
 
-    /// Presents the Support new request, from a given ViewController, with a specified SourceTag, and additional metadata,
-    /// such as all of the User's Login details.
+    /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
     ///
-    func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, options: [String: Any])
+    func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag)
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
@@ -77,11 +72,7 @@ public protocol WordPressAuthenticatorDelegate: class {
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, options: [String: Any])
-
-    /// Refreshes Support's Badge Count.
-    ///
-    func refreshSupportBadgeCount()
+    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag)
 
     /// Indicates if the Login Epilogue should be displayed.
     ///
@@ -146,10 +137,6 @@ public struct WordPressAuthenticatorConfiguration {
     /// UserAgent
     ///
     let userAgent: String
-
-    /// Used to determine which view to use for new Support notifications.
-    ///
-    let supportNotificationIndicatorFeatureFlag: Bool
     
     /// Designated Initializer
     ///
@@ -159,8 +146,7 @@ public struct WordPressAuthenticatorConfiguration {
                  wpcomTermsOfServiceURL: String,
                  googleLoginClientId: String,
                  googleLoginServerClientId: String,
-                 userAgent: String,
-                 supportNotificationIndicatorFeatureFlag: Bool) {
+                 userAgent: String) {
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
         self.wpcomScheme = wpcomScheme
@@ -168,7 +154,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.googleLoginClientId =  googleLoginClientId
         self.googleLoginServerClientId = googleLoginServerClientId
         self.userAgent = userAgent
-        self.supportNotificationIndicatorFeatureFlag = supportNotificationIndicatorFeatureFlag
     }
 }
 
@@ -232,10 +217,6 @@ public struct WordPressAuthenticatorConfiguration {
     }
 
     // MARK: - Public Methods
-
-    public func supportBadgeCountWasUpdated() {
-        NotificationCenter.default.post(name: .wordpressSupportBadgeUpdated, object: nil)
-    }
     
     public func supportPushNotificationReceived() {
         NotificationCenter.default.post(name: .wordpressSupportNotificationReceived, object: nil)

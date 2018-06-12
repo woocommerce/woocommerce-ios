@@ -6,7 +6,30 @@ class TwoColumnLabelView: UIView {
     @IBOutlet private var topConstraint: NSLayoutConstraint!
     @IBOutlet private var bottomConstraint: NSLayoutConstraint!
 
+    enum Mode {
+        case body
+        case title
+    }
+
+    var mode: Mode {
+        didSet {
+            refreshStyle(mode: mode)
+        }
+    }
+
+    func refreshStyle(mode: Mode) {
+        switch mode {
+        case .body:
+            leftColumn.applyBodyStyle()
+            rightColumn.applyBodyStyle()
+        case .title:
+            leftColumn.applyTitleStyle()
+            rightColumn.applyTitleStyle()
+        }
+    }
+
     required init?(coder aDecoder: NSCoder) {
+        mode = .body
         super.init(coder: aDecoder)
     }
 
@@ -16,8 +39,6 @@ class TwoColumnLabelView: UIView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        leftColumn.applyBodyStyle()
-        rightColumn.applyBodyStyle()
     }
 }
 
@@ -28,8 +49,7 @@ extension TwoColumnLabelView {
     }
 
     func configureWithTitleStyle(leftText: String?, rightText: String?) {
-        leftColumn.applyTitleStyle()
-        rightColumn.applyTitleStyle()
+        mode = .title
         topConstraint.constant = Constants.topConstant
         bottomConstraint.constant = Constants.bottomConstant
         configure(leftText: leftText, rightText: rightText)

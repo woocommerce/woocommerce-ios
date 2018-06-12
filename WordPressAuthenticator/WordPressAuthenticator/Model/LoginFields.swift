@@ -38,18 +38,6 @@ public class LoginFields: NSObject {
     @objc public var meta = LoginFieldsMeta()
     var storedCredentials: SafariStoredCredentials?
 
-
-    /// Returns a dictionary of login related data to include with a Helpshift session.
-    /// Used to help diagnose trouble reports via helpshift.
-    ///
-    @objc func helpshiftLoginOptions() -> [String: Any] {
-        return [
-            "Source": "Login",
-            "Username": username,
-            "SiteURL": siteAddress,
-        ]
-    }
-
     /// Convenience method for persisting stored credentials.
     ///
     @objc func setStoredCredentials(usernameHash: Int, passwordHash: Int) {

@@ -58,10 +58,9 @@ public protocol WordPressAuthenticatorDelegate: class {
     ///
     func createdWordPressComAccount(username: String, authToken: String)
 
-    /// Presents the Support new request, from a given ViewController, with a specified SourceTag, and additional metadata,
-    /// such as all of the User's Login details.
+    /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
     ///
-    func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, options: [String: Any])
+    func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag)
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
@@ -73,7 +72,7 @@ public protocol WordPressAuthenticatorDelegate: class {
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, options: [String: Any])
+    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag)
 
     /// Indicates if the Login Epilogue should be displayed.
     ///

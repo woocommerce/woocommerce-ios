@@ -30,7 +30,7 @@ extension FancyAlertViewController {
                     return
                 }
 
-                WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: viewController, sourceTag: sourceTag, options: loginFields.helpshiftLoginOptions())
+                WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: viewController, sourceTag: sourceTag)
             }
         }
 
@@ -114,8 +114,7 @@ extension FancyAlertViewController {
                     return
                 }
 
-                let options = loginFields.helpshiftLoginOptions()
-                authDelegate.presentSupport(from: sourceViewController, sourceTag: sourceTag, options: options)
+                authDelegate.presentSupport(from: sourceViewController, sourceTag: sourceTag)
             }
         }
 
@@ -150,7 +149,7 @@ extension FancyAlertViewController {
                     return
                 }
 
-                WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: viewController, sourceTag: sourceTag, options: loginFields.helpshiftLoginOptions())
+                WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: viewController, sourceTag: sourceTag)
             }
         }
 

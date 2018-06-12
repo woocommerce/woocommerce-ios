@@ -21,7 +21,6 @@ private enum Constants {
 /// base protocol for NUX view controllers
 public protocol NUXViewControllerBase {
     var sourceTag: WordPressSupportSourceTag { get }
-    var helpBadge: NUXHelpBadgeLabel { get }
     var helpNotificationIndicator: WPHelpIndicatorView { get }
     var helpButton: UIButton { get }
     var loginFields: LoginFields { get }
@@ -113,14 +112,8 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
 
     // MARK: - Notifications
 
-    /// Updates the badge count and its visibility.
+    /// Updates the notification indicatorand its visibility.
     ///
-    func refreshSupportBadge() {
-        let count = WordPressAuthenticator.shared.delegate?.supportBadgeCount ?? 0
-        helpBadge.text = "\(count)"
-        helpBadge.isHidden = (count == 0)
-    }
-
     func refreshSupportNotificationIndicator() {
         let showIndicator = WordPressAuthenticator.shared.delegate?.showSupportNotificationIndicator ?? false
         helpNotificationIndicator.isHidden = !showIndicator
@@ -171,7 +164,6 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
         }
 
         addHelpButtonToNavController()
-        refreshSupportBadge()
         refreshSupportNotificationIndicator()
     }
 
@@ -219,23 +211,11 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
         helpButton.bottomAnchor.constraint(equalTo: superView.bottomAnchor).isActive = true
     }
 
-    // MARK: Badge settings
+    // MARK: Notification Indicator settings
 
     private func addNotificationIndicatorView(to superView: UIView) {
-        if WordPressAuthenticator.shared.configuration.supportNotificationIndicatorFeatureFlag == true {
-            setupNotificationsIndicator()
-            layoutNotificationIndicatorView(helpNotificationIndicator, to: superView)
-        } else {
-            setupBadge()
-            layoutNotificationIndicatorView(helpBadge, to: superView)
-        }
-    }
-
-    private func setupBadge() {
-        helpBadge.isHidden = true
-        NotificationCenter.default.addObserver(forName: .wordpressSupportBadgeUpdated, object: nil, queue: nil) { [weak self] _ in
-            self?.refreshSupportBadge()
-        }
+        setupNotificationsIndicator()
+        layoutNotificationIndicatorView(helpNotificationIndicator, to: superView)
     }
 
     private func setupNotificationsIndicator() {

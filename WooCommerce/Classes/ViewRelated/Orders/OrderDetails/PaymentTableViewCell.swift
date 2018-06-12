@@ -111,7 +111,8 @@ extension PaymentTableViewCell {
 
     func buildFootnoteView(with detailsViewModel: OrderDetailsViewModel) -> FootnoteView {
         let footnoteView = FootnoteView.makeFromNib()
-        footnoteView.configure(footnoteText: detailsViewModel.paymentSummary, borderColor: StyleManager.cellSeparatorColor)
+        footnoteView.footnote = detailsViewModel.paymentSummary
+        footnoteView.separatorColor = StyleManager.cellSeparatorColor
         return footnoteView
     }
 

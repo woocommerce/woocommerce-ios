@@ -87,7 +87,7 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
     ///
     public func displayErrorAlert(_ message: String, sourceTag: WordPressSupportSourceTag) {
         let presentingController = navigationController ?? self
-        let controller = FancyAlertViewController.alertForGenericErrorMessageWithHelpshiftButton(message, loginFields: loginFields, sourceTag: sourceTag)
+        let controller = FancyAlertViewController.alertForGenericErrorMessageWithHelpButton(message, loginFields: loginFields, sourceTag: sourceTag)
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = self
         presentingController.present(controller, animated: true, completion: nil)

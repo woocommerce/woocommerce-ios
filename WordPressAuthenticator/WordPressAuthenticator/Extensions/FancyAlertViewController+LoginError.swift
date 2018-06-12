@@ -73,13 +73,13 @@ extension FancyAlertViewController {
             if WordPressAuthenticator.shared.delegate?.supportEnabled == true {
                 // TODO: Placeholder Jetpack login error message. Needs updating with final wording. 2017-06-15 Aerych.
                 message = NSLocalizedString("We're not able to connect to the Jetpack site at that URL.  Contact us for assistance.", comment: "Error message shown when having trouble connecting to a Jetpack site.")
-                return alertForGenericErrorMessageWithHelpshiftButton(message, loginFields: loginFields, sourceTag: sourceTag)
+                return alertForGenericErrorMessageWithHelpButton(message, loginFields: loginFields, sourceTag: sourceTag)
             }
         }
 
         if error.domain != WPXMLRPCFaultErrorDomain && error.code != NSURLErrorBadURL {
             if WordPressAuthenticator.shared.delegate?.supportEnabled == true {
-                return alertForGenericErrorMessageWithHelpshiftButton(message, loginFields: loginFields, sourceTag: sourceTag)
+                return alertForGenericErrorMessageWithHelpButton(message, loginFields: loginFields, sourceTag: sourceTag)
             }
 
             return alertForGenericErrorMessage(message, loginFields: loginFields, sourceTag: sourceTag)
@@ -132,12 +132,12 @@ extension FancyAlertViewController {
 
 
     /// Shows a generic error message. The view
-    /// is configured so the user can open Helpshift for assistance.
+    /// is configured so the user can open Support for assistance.
     ///
     /// - Parameter message: The error message to show.
     /// - Parameter sourceTag: tag of the source of the error
     ///
-    static func alertForGenericErrorMessageWithHelpshiftButton(_ message: String, loginFields: LoginFields, sourceTag: WordPressSupportSourceTag) -> FancyAlertViewController {
+    static func alertForGenericErrorMessageWithHelpButton(_ message: String, loginFields: LoginFields, sourceTag: WordPressSupportSourceTag) -> FancyAlertViewController {
         let moreHelpButton = ButtonConfig(Strings.moreHelp) { controller, _ in
             controller.dismiss(animated: true) {
                 // Find the topmost view controller that we can present from

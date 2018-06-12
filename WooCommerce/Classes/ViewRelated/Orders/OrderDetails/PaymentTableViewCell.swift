@@ -7,6 +7,11 @@ class PaymentTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+    }
+}
+
+extension PaymentTableViewCell {
+    func configureVerticalStackView() {
         verticalStackView.axis = .vertical
         verticalStackView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(verticalStackView)
@@ -18,97 +23,90 @@ class PaymentTableViewCell: UITableViewCell {
             verticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
             ])
     }
-}
-
-extension PaymentTableViewCell {
     func configure(with detailsViewModel: OrderDetailsViewModel) {
-        // Don't re-draw the subviews on an existing table cell
-        if verticalStackView.subviews.count > 0 {
-            return
-        }
-        let subtotalView = buildSubtotalView(with: detailsViewModel)
+        verticalStackView.removeFromSuperview()
+        configureVerticalStackView()
+
+        let subtotal = buildSubtotalView(with: detailsViewModel)
+        let subtotalView = subtotal.0
+        subtotalView.isHidden = subtotal.1
         verticalStackView.addArrangedSubview(subtotalView)
 
-        let discountView = buildDiscountView(with: detailsViewModel)
-        if let discountSubview = discountView {
-            verticalStackView.addArrangedSubview(discountSubview)
-        }
+        let discount = buildDiscountView(with: detailsViewModel)
+        let discountView = discount.0
+        discountView.isHidden = discount.1
+        verticalStackView.addArrangedSubview(discountView)
 
-        let shippingView = buildShippingView(with: detailsViewModel)
+        let shipping = buildShippingView(with: detailsViewModel)
+        let shippingView = shipping.0
+        shippingView.isHidden = shipping.1
         verticalStackView.addArrangedSubview(shippingView)
 
-        let taxesView = buildTaxesView(with: detailsViewModel)
-        if let taxesSubview = taxesView {
-            verticalStackView.addArrangedSubview(taxesSubview)
-        }
+        let taxes = buildTaxesView(with: detailsViewModel)
+        let taxesView = taxes.0
+        taxesView.isHidden = taxes.1
+        verticalStackView.addArrangedSubview(taxesView)
 
-        let totalView = buildTotalView(with: detailsViewModel)
+        let total = buildTotalView(with: detailsViewModel)
+        let totalView = total.0
+        totalView.isHidden = total.1
         verticalStackView.addArrangedSubview(totalView)
 
         let footnoteView = buildFootnoteView(with: detailsViewModel)
         verticalStackView.addArrangedSubview(footnoteView)
     }
 
-    func buildSubtotalView(with detailsViewModel: OrderDetailsViewModel) -> TwoColumnLabelView {
+    func buildSubtotalView(with detailsViewModel: OrderDetailsViewModel) -> (TwoColumnLabelView, Bool)  {
         let subtotalLabel = detailsViewModel.subtotalLabel
         let subtotalValue = detailsViewModel.subtotalValue
+        let isHidden = false
 
         let subtotalView = TwoColumnLabelView.makeFromNib()
         subtotalView.configure(leftText: subtotalLabel, rightText: subtotalValue)
 
-        return subtotalView
+        return (subtotalView, isHidden)
     }
 
-    func buildDiscountView(with detailsViewModel: OrderDetailsViewModel) -> TwoColumnLabelView? {
+    func buildDiscountView(with detailsViewModel: OrderDetailsViewModel) -> (TwoColumnLabelView, Bool) {
         let discountLabel = detailsViewModel.discountLabel
         let discountValue = detailsViewModel.discountValue
+        let isHidden = discountValue == nil
 
-        if detailsViewModel.hasDiscount,
-            let discountLabelText = discountLabel,
-            let discountValueText = discountValue {
+        let discountView = TwoColumnLabelView.makeFromNib()
+        discountView.configure(leftText: discountLabel, rightText: discountValue)
+        verticalStackView.addArrangedSubview(discountView)
 
-            let discountView = TwoColumnLabelView.makeFromNib()
-            discountView.configure(leftText: discountLabelText, rightText: discountValueText)
-            verticalStackView.addArrangedSubview(discountView)
-
-            return discountView
-        }
-
-        return nil
+        return (discountView, isHidden)
     }
 
-    func buildShippingView(with detailsViewModel: OrderDetailsViewModel) -> TwoColumnLabelView {
+    func buildShippingView(with detailsViewModel: OrderDetailsViewModel) -> (TwoColumnLabelView, Bool) {
         let shippingLabel = detailsViewModel.shippingLabel
         let shippingValue = detailsViewModel.shippingValue
 
         let shippingView = TwoColumnLabelView.makeFromNib()
         shippingView.configure(leftText: shippingLabel, rightText: shippingValue)
 
-        return shippingView
+        return (shippingView, false)
     }
 
-    func buildTaxesView(with detailsViewModel: OrderDetailsViewModel) -> TwoColumnLabelView? {
+    func buildTaxesView(with detailsViewModel: OrderDetailsViewModel) -> (TwoColumnLabelView, Bool) {
         let taxesLabel = detailsViewModel.taxesLabel
         let taxesValue = detailsViewModel.taxesValue
+        let isHidden = taxesValue == nil
 
-        if detailsViewModel.hasTaxes,
-            let taxesLabelText = taxesLabel,
-            let taxesValueText = taxesValue {
-            let taxesView = TwoColumnLabelView.makeFromNib()
-            taxesView.configure(leftText: taxesLabelText, rightText: taxesValueText)
+        let taxesView = TwoColumnLabelView.makeFromNib()
+        taxesView.configure(leftText: taxesLabel, rightText: taxesValue)
 
-            return taxesView
-        }
-        return nil
+        return (taxesView, isHidden)
     }
 
-    func buildTotalView(with detailsViewModel: OrderDetailsViewModel) -> TwoColumnLabelView {
+    func buildTotalView(with detailsViewModel: OrderDetailsViewModel) -> (TwoColumnLabelView, Bool) {
         let totalLabel = detailsViewModel.totalLabel
         let totalValue = detailsViewModel.totalValue
 
         let totalView = TwoColumnLabelView.makeFromNib()
         totalView.configureWithTitleStyle(leftText: totalLabel, rightText: totalValue)
-        return totalView
+        return (totalView, false)
     }
 
     func buildFootnoteView(with detailsViewModel: OrderDetailsViewModel) -> FootnoteView {

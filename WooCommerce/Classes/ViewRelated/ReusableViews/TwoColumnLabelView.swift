@@ -22,12 +22,12 @@ class TwoColumnLabelView: UIView {
 }
 
 extension TwoColumnLabelView {
-    func configure(leftText: String, rightText: String) {
+    func configure(leftText: String?, rightText: String?) {
         leftColumn.text = leftText
         rightColumn.text = rightText
     }
 
-    func configureWithTitleStyle(leftText: String, rightText: String) {
+    func configureWithTitleStyle(leftText: String?, rightText: String?) {
         leftColumn.applyTitleStyle()
         rightColumn.applyTitleStyle()
         topConstraint.constant = Constants.topConstant

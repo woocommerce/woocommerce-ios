@@ -49,10 +49,6 @@ public protocol WordPressAuthenticatorDelegate: class {
     ///
     var supportEnabled: Bool { get }
 
-    /// Returns the Support's Badge Count.
-    ///
-    var supportBadgeCount: Int { get }
-
     /// Signals the Host App that a new WordPress.com account has just been created.
     ///
     /// - Parameters:
@@ -78,10 +74,6 @@ public protocol WordPressAuthenticatorDelegate: class {
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, options: [String: Any])
-
-    /// Refreshes Support's Badge Count.
-    ///
-    func refreshSupportBadgeCount()
 
     /// Indicates if the Login Epilogue should be displayed.
     ///
@@ -232,10 +224,6 @@ public struct WordPressAuthenticatorConfiguration {
     }
 
     // MARK: - Public Methods
-
-    public func supportBadgeCountWasUpdated() {
-        NotificationCenter.default.post(name: .wordpressSupportBadgeUpdated, object: nil)
-    }
     
     public func supportPushNotificationReceived() {
         NotificationCenter.default.post(name: .wordpressSupportNotificationReceived, object: nil)

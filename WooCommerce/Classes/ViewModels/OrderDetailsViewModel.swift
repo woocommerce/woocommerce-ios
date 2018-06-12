@@ -2,75 +2,95 @@ import Foundation
 import UIKit
 
 class OrderDetailsViewModel {
-    let summaryTitle: String
-    let dateCreated: String
-    let paymentStatus: String
-    let paymentBackgroundColor: UIColor
-    let paymentBorderColor: CGColor
-    let customerNote: String?
-    let shippingAddress: String?
-    let billingAddress: String?
-    let shippingViewModel: ContactViewModel
-    let billingViewModel: ContactViewModel
-
-    let subtotalLabel: String
-    let subtotalValue: String
-    let hasDiscount: Bool
-    let discountValue: String?
-    let shippingLabel: String
-    let shippingValue: String
-    let hasTaxes: Bool
-    let taxesLabel: String?
-    let taxesValue: String?
-    let totalLabel: String
-    let totalValue: String
-    let paymentSummary: String
-
+    private let order: Order
     private let couponLines: [CouponLine]?
 
     init(order: Order) {
-        summaryTitle = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
-        dateCreated = String.localizedStringWithFormat(NSLocalizedString("Created %@", comment: "Order created date"), order.dateCreatedString) //FIXME: use a formatted date instead of raw timestamp
-        paymentStatus = order.status.description
-        paymentBackgroundColor = order.status.backgroundColor // MVVM: who should own color responsibilities? Maybe address this down the road.
-        paymentBorderColor = order.status.borderColor // same here
-        customerNote = order.customerNote
-        shippingViewModel = ContactViewModel(with: order.shippingAddress, contactType: ContactType.shipping)
-        shippingAddress = shippingViewModel.formattedAddress
-        billingViewModel = ContactViewModel(with: order.billingAddress, contactType: ContactType.billing)
-        billingAddress = billingViewModel.formattedAddress
-
-        subtotalLabel = NSLocalizedString("Subtotal", comment: "Subtotal label for payment view")
-        subtotalValue = order.currencySymbol + order.subtotal
-
-        couponLines = order.couponLines
-        if Double(order.discountTotal) != 0 {
-            hasDiscount = true
-            discountValue = "−" + order.currencySymbol + order.discountTotal
-        } else {
-            hasDiscount = false
-            discountValue = nil
-        }
-
-        shippingLabel = NSLocalizedString("Shipping", comment: "Shipping label for payment view")
-        shippingValue = order.currencySymbol + order.shippingTotal
-
-        if Double(order.totalTax) != 0 {
-            hasTaxes = true
-            taxesLabel = NSLocalizedString("Taxes", comment: "Taxes label for payment view")
-            taxesValue = order.currencySymbol + order.totalTax
-        } else {
-            hasTaxes = false
-            taxesLabel = nil
-            taxesValue = nil
-        }
-
-        totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
-        totalValue = order.currencySymbol + order.total
-        paymentSummary = NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
+        self.order = order
+        self.couponLines = order.couponLines
     }
 
-    func summarizeCoupons(from lines: [CouponLine]?) -> String? {
+    var summaryTitle: String {
+        return "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
+    }
+
+    var dateCreated: String {
+        return String.localizedStringWithFormat(NSLocalizedString("Created %@", comment: "Order created date"), order.dateCreatedString) //FIXME: use a formatted date instead of raw timestamp
+    }
+
+    var paymentStatus: String {
+        return order.status.description
+    }
+
+    var paymentBackgroundColor: UIColor {
+        return order.status.backgroundColor // MVVM: who should own color responsibilities? Maybe address this down the road.
+    }
+
+    var paymentBorderColor: CGColor {
+        return order.status.borderColor // same here
+    }
+
+    var customerNote: String? {
+        return order.customerNote
+    }
+
+    var shippingViewModel: ContactViewModel {
+        return ContactViewModel(with: order.shippingAddress, contactType: ContactType.shipping)
+    }
+    var shippingAddress: String? {
+        return shippingViewModel.formattedAddress
+    }
+
+    lazy var billingViewModel = ContactViewModel(with: order.billingAddress, contactType: ContactType.billing)
+    lazy var billingAddress = billingViewModel.formattedAddress
+
+    var subtotalLabel: String {
+        return NSLocalizedString("Subtotal", comment: "Subtotal label for payment view")
+    }
+
+    var subtotalValue: String {
+        return order.currencySymbol + order.subtotal
+    }
+
+    var discountLabel: String? {
+        return summarizeCoupons(from: couponLines)
+    }
+
+    var discountValue: String? {
+        return Double(order.discountTotal) != 0 ? "−" + order.currencySymbol + order.discountTotal : nil
+    }
+
+    var shippingLabel: String {
+        return NSLocalizedString("Shipping", comment: "Shipping label for payment view")
+    }
+
+    var shippingValue: String {
+        return order.currencySymbol + order.shippingTotal
+    }
+
+    var taxesLabel: String? {
+        return Double(order.totalTax) != 0 ? NSLocalizedString("Taxes", comment: "Taxes label for payment view") : nil
+    }
+
+    var taxesValue: String? {
+        return Double(order.totalTax) != 0 ? order.currencySymbol + order.totalTax : nil
+    }
+
+    var totalLabel: String {
+        return NSLocalizedString("Total", comment: "Total label for payment view")
+    }
+
+    var totalValue: String {
+        return order.currencySymbol + order.total
+    }
+
+    var paymentSummary: String {
+        return NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
+    }
+
+    /// MARK: Private
+    ///
+    private func summarizeCoupons(from lines: [CouponLine]?) -> String? {
         guard let couponLines = lines else {
             return nil
         }
@@ -85,9 +105,5 @@ class OrderDetailsViewModel {
         }
 
         return NSLocalizedString("Discount", comment: "Discount label for payment view") + " (" + output + ")"
-    }
-
-    var discountLabel: String? {
-        return summarizeCoupons(from: couponLines)
     }
 }

@@ -137,10 +137,6 @@ public struct WordPressAuthenticatorConfiguration {
     /// UserAgent
     ///
     let userAgent: String
-
-    /// Used to determine which view to use for new Support notifications.
-    ///
-    let supportNotificationIndicatorFeatureFlag: Bool
     
     /// Designated Initializer
     ///
@@ -150,8 +146,7 @@ public struct WordPressAuthenticatorConfiguration {
                  wpcomTermsOfServiceURL: String,
                  googleLoginClientId: String,
                  googleLoginServerClientId: String,
-                 userAgent: String,
-                 supportNotificationIndicatorFeatureFlag: Bool) {
+                 userAgent: String) {
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
         self.wpcomScheme = wpcomScheme
@@ -159,7 +154,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.googleLoginClientId =  googleLoginClientId
         self.googleLoginServerClientId = googleLoginServerClientId
         self.userAgent = userAgent
-        self.supportNotificationIndicatorFeatureFlag = supportNotificationIndicatorFeatureFlag
     }
 }
 

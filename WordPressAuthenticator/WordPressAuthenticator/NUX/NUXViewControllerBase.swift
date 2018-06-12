@@ -9,13 +9,7 @@ private enum Constants {
     static let helpButtonItemMinimumSize = CGSize(width: 44.0, height: 44.0)
 
     static let notificationIndicatorCenterOffset = CGPoint(x: 5, y: 12)
-    static var notificationIndicatorSize: CGSize {
-        if WordPressAuthenticator.shared.configuration.supportNotificationIndicatorFeatureFlag == true {
-            return CGSize(width: 10, height: 10)
-        } else {
-            return CGSize(width: 12, height: 12)
-        }
-    }
+    static var notificationIndicatorSize = CGSize(width: 10, height: 10)
 }
 
 /// base protocol for NUX view controllers

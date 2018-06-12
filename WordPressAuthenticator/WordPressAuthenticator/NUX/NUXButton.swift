@@ -17,21 +17,23 @@ import WordPressShared
         titleLabel?.adjustsFontForContentSizeCategory = true
         titleLabel?.textAlignment = .center
 
-        let normalImage: UIImage?
-        let highlightImage: UIImage?
+        let normalImage: UIImage
+        let highlightImage: UIImage
         let titleColorNormal: UIColor
+
         if isPrimary {
-            normalImage = UIImage(named: "beveled-blue-button")
-            highlightImage = UIImage(named: "beveled-blue-button-down")
+            normalImage = .beveledBlueButtonImage
+            highlightImage = .belevedBlueButtonDownImage
 
             titleColorNormal = UIColor.white
         } else {
-            normalImage = UIImage(named: "beveled-secondary-button")
-            highlightImage = UIImage(named: "beveled-secondary-button-down")
+            normalImage = .beveledSecondaryButtonImage
+            highlightImage = .beveledSecondaryButtonDownImage
 
             titleColorNormal = WPStyleGuide.darkGrey()
         }
-        let disabledImage = UIImage(named: "beveled-disabled-button")
+
+        let disabledImage = UIImage.beveledDisabledButtonImage
         let titleColorDisabled = WPStyleGuide.greyLighten30()
 
         setBackgroundImage(normalImage, for: .normal)

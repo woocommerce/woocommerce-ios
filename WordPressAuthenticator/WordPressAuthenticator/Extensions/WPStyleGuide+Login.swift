@@ -38,7 +38,7 @@ extension WPStyleGuide {
         }
 
         let onePasswordButton = UIButton(type: .custom)
-        onePasswordButton.setImage(UIImage(named: "onepassword-wp-button"), for: UIControlState())
+        onePasswordButton.setImage(.onePasswordImage, for: UIControlState())
         onePasswordButton.sizeToFit()
 
         textField.rightView = onePasswordButton
@@ -55,7 +55,7 @@ extension WPStyleGuide {
         }
 
         let onePasswordButton = UIButton(type: .custom)
-        onePasswordButton.setImage(UIImage(named: "onepassword-wp-button"), for: UIControlState())
+        onePasswordButton.setImage(.onePasswordImage, for: UIControlState())
         onePasswordButton.sizeToFit()
         onePasswordButton.setContentHuggingPriority(.required, for: .horizontal)
         onePasswordButton.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -186,7 +186,8 @@ extension WPStyleGuide {
 
         let labelString = NSMutableAttributedString(string: firstPart, attributes: [.foregroundColor: WPStyleGuide.greyDarken30()])
 
-        if let googleIcon = UIImage(named: "google"), lastPart != "" {
+        if lastPart != "" {
+            let googleIcon = UIImage.googleIcon
             let googleAttachment = NSTextAttachment()
             googleAttachment.image = googleIcon
             googleAttachment.bounds = CGRect(x: 0.0, y: font.descender + Constants.googleIconOffset, width: googleIcon.size.width, height: googleIcon.size.height)

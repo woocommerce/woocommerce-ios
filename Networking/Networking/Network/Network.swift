@@ -7,6 +7,13 @@ import Alamofire
 ///
 public protocol Network {
 
+    /// Designated Initializer.
+    ///
+    /// - Parameters:
+    ///     - credentials: WordPress.com Credentials.
+    ///
+    init(credentials: Credentials)
+
     /// Executes the specified Network Request. Upon completion, the payload will be parsed as JSON, and sent back to the caller.
     ///
     /// - Parameters:

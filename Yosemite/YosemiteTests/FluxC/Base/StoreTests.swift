@@ -1,5 +1,5 @@
 import XCTest
-@testable import FluxSumi
+import Yosemite
 
 
 // MARK: - Store Unit Tests!

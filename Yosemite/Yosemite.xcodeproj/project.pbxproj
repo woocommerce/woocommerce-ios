@@ -7,18 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B546CCF22093636A007CDA5F /* FluxSumi.h in Headers */ = {isa = PBXBuildFile; fileRef = B546CCF12093636A007CDA5F /* FluxSumi.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */; };
+		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
+		B546CCF22093636A007CDA5F /* Yosemite.h in Headers */ = {isa = PBXBuildFile; fileRef = B546CCF12093636A007CDA5F /* Yosemite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B5C796208E49B600642956 /* Action+Internal.swift */; };
-		B5C9DDFF2087FEC0006B910A /* FluxSumi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C9DDF52087FEC0006B910A /* FluxSumi.framework */; };
+		B5C9DDFF2087FEC0006B910A /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C9DDF52087FEC0006B910A /* Yosemite.framework */; };
 		B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE102087FF0E006B910A /* Dispatcher.swift */; };
 		B5C9DE162087FF0E006B910A /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE112087FF0E006B910A /* Store.swift */; };
-		B5C9DE172087FF0E006B910A /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE122087FF0E006B910A /* EventBus.swift */; };
 		B5C9DE182087FF0E006B910A /* Assert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE142087FF0E006B910A /* Assert.swift */; };
 		B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1A2087FF20006B910A /* DispatcherTests.swift */; };
-		B5C9DE232087FF20006B910A /* EventBusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1B2087FF20006B910A /* EventBusTests.swift */; };
 		B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1C2087FF20006B910A /* StoreTests.swift */; };
 		B5C9DE252087FF20006B910A /* MockupProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1E2087FF20006B910A /* MockupProcessor.swift */; };
-		B5C9DE262087FF20006B910A /* MockupDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1F2087FF20006B910A /* MockupDispatcher.swift */; };
 		B5C9DE272087FF20006B910A /* MockupAcount.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE202087FF20006B910A /* MockupAcount.swift */; };
 		B5C9DE282087FF20006B910A /* MockupSite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE212087FF20006B910A /* MockupSite.swift */; };
 /* End PBXBuildFile section */
@@ -34,23 +33,28 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B546CCF12093636A007CDA5F /* FluxSumi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FluxSumi.h; sourceTree = "<group>"; };
+		79402E7AD394EEB60C39A4B8 /* Pods-YosemiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.debug.xcconfig"; sourceTree = "<group>"; };
+		7F47E19203B04CF6BB5EA659 /* Pods-Yosemite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.debug.xcconfig"; sourceTree = "<group>"; };
+		93D120F57D5D14A10B3AFFFD /* Pods-Yosemite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release.xcconfig"; sourceTree = "<group>"; };
+		991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YosemiteTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		ABE0D84C5393D9EE2CCF2B7E /* Pods-YosemiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release.xcconfig"; sourceTree = "<group>"; };
+		B546CCF12093636A007CDA5F /* Yosemite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Yosemite.h; sourceTree = "<group>"; };
 		B5B5C796208E49B600642956 /* Action+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Action+Internal.swift"; sourceTree = "<group>"; };
-		B5C9DDF52087FEC0006B910A /* FluxSumi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FluxSumi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5C4EB7820D17329002AC0AF /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5C4EB7A20D1732E002AC0AF /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5C9DDF52087FEC0006B910A /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C9DDF92087FEC0006B910A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B5C9DDFE2087FEC0006B910A /* FluxSumiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FluxSumiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5C9DDFE2087FEC0006B910A /* YosemiteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YosemiteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C9DE052087FEC0006B910A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B5C9DE102087FF0E006B910A /* Dispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dispatcher.swift; sourceTree = "<group>"; };
 		B5C9DE112087FF0E006B910A /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
-		B5C9DE122087FF0E006B910A /* EventBus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
 		B5C9DE142087FF0E006B910A /* Assert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Assert.swift; sourceTree = "<group>"; };
 		B5C9DE1A2087FF20006B910A /* DispatcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatcherTests.swift; sourceTree = "<group>"; };
-		B5C9DE1B2087FF20006B910A /* EventBusTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventBusTests.swift; sourceTree = "<group>"; };
 		B5C9DE1C2087FF20006B910A /* StoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreTests.swift; sourceTree = "<group>"; };
 		B5C9DE1E2087FF20006B910A /* MockupProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupProcessor.swift; sourceTree = "<group>"; };
-		B5C9DE1F2087FF20006B910A /* MockupDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupDispatcher.swift; sourceTree = "<group>"; };
 		B5C9DE202087FF20006B910A /* MockupAcount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupAcount.swift; sourceTree = "<group>"; };
 		B5C9DE212087FF20006B910A /* MockupSite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupSite.swift; sourceTree = "<group>"; };
+		C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,50 +70,64 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5C9DDFF2087FEC0006B910A /* FluxSumi.framework in Frameworks */,
+				B5C9DDFF2087FEC0006B910A /* Yosemite.framework in Frameworks */,
+				36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B5C4EB7720D17329002AC0AF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B5C4EB7A20D1732E002AC0AF /* Networking.framework */,
+				B5C4EB7820D17329002AC0AF /* Storage.framework */,
+				C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */,
+				991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B5C9DDEB2087FEC0006B910A = {
 			isa = PBXGroup;
 			children = (
-				B5C9DDF72087FEC0006B910A /* FluxSumi */,
-				B5C9DE022087FEC0006B910A /* FluxSumiTests */,
+				B5C9DDF72087FEC0006B910A /* Yosemite */,
+				B5C9DE022087FEC0006B910A /* YosemiteTests */,
 				B5C9DDF62087FEC0006B910A /* Products */,
+				B5C4EB7720D17329002AC0AF /* Frameworks */,
+				E35A5B190486BCE158B0320B /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
 		B5C9DDF62087FEC0006B910A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B5C9DDF52087FEC0006B910A /* FluxSumi.framework */,
-				B5C9DDFE2087FEC0006B910A /* FluxSumiTests.xctest */,
+				B5C9DDF52087FEC0006B910A /* Yosemite.framework */,
+				B5C9DDFE2087FEC0006B910A /* YosemiteTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B5C9DDF72087FEC0006B910A /* FluxSumi */ = {
+		B5C9DDF72087FEC0006B910A /* Yosemite */ = {
 			isa = PBXGroup;
 			children = (
 				B5C9DE132087FF0E006B910A /* Internal */,
 				B5C9DE0F2087FF0E006B910A /* Base */,
-				B546CCF12093636A007CDA5F /* FluxSumi.h */,
+				B546CCF12093636A007CDA5F /* Yosemite.h */,
 				B5C9DDF92087FEC0006B910A /* Info.plist */,
 			);
-			path = FluxSumi;
+			path = Yosemite;
 			sourceTree = "<group>";
 		};
-		B5C9DE022087FEC0006B910A /* FluxSumiTests */ = {
+		B5C9DE022087FEC0006B910A /* YosemiteTests */ = {
 			isa = PBXGroup;
 			children = (
 				B5C9DE1D2087FF20006B910A /* Mockups */,
 				B5C9DE192087FF20006B910A /* Base */,
 				B5C9DE052087FEC0006B910A /* Info.plist */,
 			);
-			path = FluxSumiTests;
+			path = YosemiteTests;
 			sourceTree = "<group>";
 		};
 		B5C9DE0F2087FF0E006B910A /* Base */ = {
@@ -116,7 +135,6 @@
 			children = (
 				B5C9DE102087FF0E006B910A /* Dispatcher.swift */,
 				B5C9DE112087FF0E006B910A /* Store.swift */,
-				B5C9DE122087FF0E006B910A /* EventBus.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -134,7 +152,6 @@
 			isa = PBXGroup;
 			children = (
 				B5C9DE1A2087FF20006B910A /* DispatcherTests.swift */,
-				B5C9DE1B2087FF20006B910A /* EventBusTests.swift */,
 				B5C9DE1C2087FF20006B910A /* StoreTests.swift */,
 			);
 			name = Base;
@@ -145,12 +162,22 @@
 			isa = PBXGroup;
 			children = (
 				B5C9DE1E2087FF20006B910A /* MockupProcessor.swift */,
-				B5C9DE1F2087FF20006B910A /* MockupDispatcher.swift */,
 				B5C9DE202087FF20006B910A /* MockupAcount.swift */,
 				B5C9DE212087FF20006B910A /* MockupSite.swift */,
 			);
 			name = Mockups;
 			path = FluxC/Mockups;
+			sourceTree = "<group>";
+		};
+		E35A5B190486BCE158B0320B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7F47E19203B04CF6BB5EA659 /* Pods-Yosemite.debug.xcconfig */,
+				93D120F57D5D14A10B3AFFFD /* Pods-Yosemite.release.xcconfig */,
+				79402E7AD394EEB60C39A4B8 /* Pods-YosemiteTests.debug.xcconfig */,
+				ABE0D84C5393D9EE2CCF2B7E /* Pods-YosemiteTests.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -160,17 +187,18 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B546CCF22093636A007CDA5F /* FluxSumi.h in Headers */,
+				B546CCF22093636A007CDA5F /* Yosemite.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		B5C9DDF42087FEC0006B910A /* FluxSumi */ = {
+		B5C9DDF42087FEC0006B910A /* Yosemite */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B5C9DE092087FEC0006B910A /* Build configuration list for PBXNativeTarget "FluxSumi" */;
+			buildConfigurationList = B5C9DE092087FEC0006B910A /* Build configuration list for PBXNativeTarget "Yosemite" */;
 			buildPhases = (
+				D05CE52EBA8EDA14B248EF77 /* [CP] Check Pods Manifest.lock */,
 				B5C9DDF02087FEC0006B910A /* Sources */,
 				B5C9DDF12087FEC0006B910A /* Frameworks */,
 				B5C9DDF22087FEC0006B910A /* Headers */,
@@ -180,27 +208,29 @@
 			);
 			dependencies = (
 			);
-			name = FluxSumi;
+			name = Yosemite;
 			productName = FluxC;
-			productReference = B5C9DDF52087FEC0006B910A /* FluxSumi.framework */;
+			productReference = B5C9DDF52087FEC0006B910A /* Yosemite.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		B5C9DDFD2087FEC0006B910A /* FluxSumiTests */ = {
+		B5C9DDFD2087FEC0006B910A /* YosemiteTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B5C9DE0C2087FEC0006B910A /* Build configuration list for PBXNativeTarget "FluxSumiTests" */;
+			buildConfigurationList = B5C9DE0C2087FEC0006B910A /* Build configuration list for PBXNativeTarget "YosemiteTests" */;
 			buildPhases = (
+				18AB88228C25CBAA8D621FD0 /* [CP] Check Pods Manifest.lock */,
 				B5C9DDFA2087FEC0006B910A /* Sources */,
 				B5C9DDFB2087FEC0006B910A /* Frameworks */,
 				B5C9DDFC2087FEC0006B910A /* Resources */,
+				4EECCF127A5436F180F934F4 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				B5C9DE012087FEC0006B910A /* PBXTargetDependency */,
 			);
-			name = FluxSumiTests;
+			name = YosemiteTests;
 			productName = FluxCTests;
-			productReference = B5C9DDFE2087FEC0006B910A /* FluxSumiTests.xctest */;
+			productReference = B5C9DDFE2087FEC0006B910A /* YosemiteTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -221,7 +251,7 @@
 					};
 				};
 			};
-			buildConfigurationList = B5C9DDEF2087FEC0006B910A /* Build configuration list for PBXProject "FluxSumi" */;
+			buildConfigurationList = B5C9DDEF2087FEC0006B910A /* Build configuration list for PBXProject "Yosemite" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -233,8 +263,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B5C9DDF42087FEC0006B910A /* FluxSumi */,
-				B5C9DDFD2087FEC0006B910A /* FluxSumiTests */,
+				B5C9DDF42087FEC0006B910A /* Yosemite */,
+				B5C9DDFD2087FEC0006B910A /* YosemiteTests */,
 			);
 		};
 /* End PBXProject section */
@@ -256,6 +286,63 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		18AB88228C25CBAA8D621FD0 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-YosemiteTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4EECCF127A5436F180F934F4 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D05CE52EBA8EDA14B248EF77 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Yosemite-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		B5C9DDF02087FEC0006B910A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -264,7 +351,6 @@
 				B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */,
 				B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */,
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,
-				B5C9DE172087FF0E006B910A /* EventBus.swift in Sources */,
 				B5C9DE162087FF0E006B910A /* Store.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -273,9 +359,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5C9DE232087FF20006B910A /* EventBusTests.swift in Sources */,
 				B5C9DE272087FF20006B910A /* MockupAcount.swift in Sources */,
-				B5C9DE262087FF20006B910A /* MockupDispatcher.swift in Sources */,
 				B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */,
 				B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */,
 				B5C9DE252087FF20006B910A /* MockupProcessor.swift in Sources */,
@@ -288,7 +372,7 @@
 /* Begin PBXTargetDependency section */
 		B5C9DE012087FEC0006B910A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B5C9DDF42087FEC0006B910A /* FluxSumi */;
+			target = B5C9DDF42087FEC0006B910A /* Yosemite */;
 			targetProxy = B5C9DE002087FEC0006B910A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -346,7 +430,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -403,7 +487,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -416,6 +500,7 @@
 		};
 		B5C9DE0A2087FEC0006B910A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7F47E19203B04CF6BB5EA659 /* Pods-Yosemite.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -424,15 +509,11 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/FluxSumi/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Yosemite/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.FluxSumi;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.Yosemite;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
@@ -442,6 +523,7 @@
 		};
 		B5C9DE0B2087FEC0006B910A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 93D120F57D5D14A10B3AFFFD /* Pods-Yosemite.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -450,15 +532,11 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/FluxSumi/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Yosemite/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.FluxSumi;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.Yosemite;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
@@ -468,17 +546,13 @@
 		};
 		B5C9DE0D2087FEC0006B910A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 79402E7AD394EEB60C39A4B8 /* Pods-YosemiteTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
-				INFOPLIST_FILE = FluxSumiTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.FluxSumiTests;
+				INFOPLIST_FILE = YosemiteTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.YosemiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -487,17 +561,13 @@
 		};
 		B5C9DE0E2087FEC0006B910A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = ABE0D84C5393D9EE2CCF2B7E /* Pods-YosemiteTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
-				INFOPLIST_FILE = FluxSumiTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.FluxSumiTests;
+				INFOPLIST_FILE = YosemiteTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.YosemiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -507,7 +577,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B5C9DDEF2087FEC0006B910A /* Build configuration list for PBXProject "FluxSumi" */ = {
+		B5C9DDEF2087FEC0006B910A /* Build configuration list for PBXProject "Yosemite" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B5C9DE072087FEC0006B910A /* Debug */,
@@ -516,7 +586,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B5C9DE092087FEC0006B910A /* Build configuration list for PBXNativeTarget "FluxSumi" */ = {
+		B5C9DE092087FEC0006B910A /* Build configuration list for PBXNativeTarget "Yosemite" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B5C9DE0A2087FEC0006B910A /* Debug */,
@@ -525,7 +595,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B5C9DE0C2087FEC0006B910A /* Build configuration list for PBXNativeTarget "FluxSumiTests" */ = {
+		B5C9DE0C2087FEC0006B910A /* Build configuration list for PBXNativeTarget "YosemiteTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B5C9DE0D2087FEC0006B910A /* Debug */,

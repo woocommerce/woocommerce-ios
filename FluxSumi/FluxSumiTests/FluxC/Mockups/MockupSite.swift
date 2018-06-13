@@ -10,30 +10,6 @@ enum SiteAction: Action {
 }
 
 
-// MARK: - Represents a Site Event.
-//
-enum SiteEvent: Event {
-    case refreshedSite(identifier: Int)
-    case refreshedSites
-}
-
-
-// MARK: - Site Events Listener Mockup Instance.
-//
-class MockupSiteEventsListener: EventsListener {
-
-    var receivedEvents = [SiteEvent]()
-
-    func onEvent(_ event: Event) {
-        guard let event = event as? SiteEvent else {
-            return
-        }
-
-        receivedEvents.append(event)
-    }
-}
-
-
 // MARK: - Account Site Store.
 //
 class MockupSiteStore: Store {

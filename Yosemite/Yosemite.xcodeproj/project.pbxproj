@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0BECDFE08B768A652061A64D /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 540D56ADD275C66C392384FB /* Pods_YosemiteTests.framework */; };
+		190FA0C1BEC01B47EF7255B5 /* Pods_Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B17292A4A9BD6B446EFFDAE /* Pods_Yosemite.framework */; };
+		3D8C94CE7B17D1FCE1EC7078 /* Pods_Yosemite_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E97BE348245D8761E413809 /* Pods_Yosemite_YosemiteTests.framework */; };
 		B546CCF22093636A007CDA5F /* Yosemite.h in Headers */ = {isa = PBXBuildFile; fileRef = B546CCF12093636A007CDA5F /* Yosemite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B5C796208E49B600642956 /* Action+Internal.swift */; };
 		B5C4EB7920D17329002AC0AF /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C4EB7820D17329002AC0AF /* Storage.framework */; };
@@ -20,8 +23,6 @@
 		B5C9DE252087FF20006B910A /* MockupProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1E2087FF20006B910A /* MockupProcessor.swift */; };
 		B5C9DE272087FF20006B910A /* MockupAcount.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE202087FF20006B910A /* MockupAcount.swift */; };
 		B5C9DE282087FF20006B910A /* MockupSite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE212087FF20006B910A /* MockupSite.swift */; };
-		B6B294653699ECBCC3FF9BAE /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0E7F374292A10817BD94D /* Pods_YosemiteTests.framework */; };
-		E73BFFF6F11E76126CB0F12A /* Pods_Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6108EFB080B2C21CFAECB48D /* Pods_Yosemite.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,11 +36,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2D65B8AD7CCF6DF2A06755F4 /* Pods-Yosemite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.debug.xcconfig"; sourceTree = "<group>"; };
-		2F4088E8D26C5CACF15A7BFF /* Pods-Yosemite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release.xcconfig"; sourceTree = "<group>"; };
-		445B78BBAF85873EAF0AD85C /* Pods-YosemiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.debug.xcconfig"; sourceTree = "<group>"; };
-		6108EFB080B2C21CFAECB48D /* Pods_Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6AF0E7F374292A10817BD94D /* Pods_YosemiteTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YosemiteTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1B17292A4A9BD6B446EFFDAE /* Pods_Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3085EA9A50A0113CC092CF8A /* Pods-Yosemite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.debug.xcconfig"; sourceTree = "<group>"; };
+		38FB0568D390F9C6695F7198 /* Pods-Yosemite-YosemiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite-YosemiteTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite-YosemiteTests/Pods-Yosemite-YosemiteTests.release.xcconfig"; sourceTree = "<group>"; };
+		3E65FC0498F8D5E4E9500DCB /* Pods-YosemiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release.xcconfig"; sourceTree = "<group>"; };
+		449068211358BC631EA9D7E0 /* Pods-Yosemite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release.xcconfig"; sourceTree = "<group>"; };
+		540D56ADD275C66C392384FB /* Pods_YosemiteTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YosemiteTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6855D52378F6D6E9370B1BBB /* Pods-YosemiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.debug.xcconfig"; sourceTree = "<group>"; };
+		8E97BE348245D8761E413809 /* Pods_Yosemite_YosemiteTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yosemite_YosemiteTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B546CCF12093636A007CDA5F /* Yosemite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Yosemite.h; sourceTree = "<group>"; };
 		B5B5C796208E49B600642956 /* Action+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Action+Internal.swift"; sourceTree = "<group>"; };
 		B5C4EB7820D17329002AC0AF /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -56,7 +60,7 @@
 		B5C9DE1E2087FF20006B910A /* MockupProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupProcessor.swift; sourceTree = "<group>"; };
 		B5C9DE202087FF20006B910A /* MockupAcount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupAcount.swift; sourceTree = "<group>"; };
 		B5C9DE212087FF20006B910A /* MockupSite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupSite.swift; sourceTree = "<group>"; };
-		B7E908DF3275D2E3F072D338 /* Pods-YosemiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release.xcconfig"; sourceTree = "<group>"; };
+		CE2E005D1AE6EFA7B8B2C55C /* Pods-Yosemite-YosemiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite-YosemiteTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite-YosemiteTests/Pods-Yosemite-YosemiteTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,7 +70,7 @@
 			files = (
 				B5C4EB7B20D1732E002AC0AF /* Networking.framework in Frameworks */,
 				B5C4EB7920D17329002AC0AF /* Storage.framework in Frameworks */,
-				E73BFFF6F11E76126CB0F12A /* Pods_Yosemite.framework in Frameworks */,
+				190FA0C1BEC01B47EF7255B5 /* Pods_Yosemite.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,7 +79,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5C9DDFF2087FEC0006B910A /* Yosemite.framework in Frameworks */,
-				B6B294653699ECBCC3FF9BAE /* Pods_YosemiteTests.framework in Frameworks */,
+				3D8C94CE7B17D1FCE1EC7078 /* Pods_Yosemite_YosemiteTests.framework in Frameworks */,
+				0BECDFE08B768A652061A64D /* Pods_YosemiteTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,8 +92,9 @@
 			children = (
 				B5C4EB7A20D1732E002AC0AF /* Networking.framework */,
 				B5C4EB7820D17329002AC0AF /* Storage.framework */,
-				6108EFB080B2C21CFAECB48D /* Pods_Yosemite.framework */,
-				6AF0E7F374292A10817BD94D /* Pods_YosemiteTests.framework */,
+				1B17292A4A9BD6B446EFFDAE /* Pods_Yosemite.framework */,
+				8E97BE348245D8761E413809 /* Pods_Yosemite_YosemiteTests.framework */,
+				540D56ADD275C66C392384FB /* Pods_YosemiteTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -100,7 +106,7 @@
 				B5C9DE022087FEC0006B910A /* YosemiteTests */,
 				B5C9DDF62087FEC0006B910A /* Products */,
 				B5C4EB7720D17329002AC0AF /* Frameworks */,
-				F634563867F3C36C55F75397 /* Pods */,
+				DAC1163C48C105F957C4390E /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -173,13 +179,15 @@
 			path = FluxC/Mockups;
 			sourceTree = "<group>";
 		};
-		F634563867F3C36C55F75397 /* Pods */ = {
+		DAC1163C48C105F957C4390E /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				2D65B8AD7CCF6DF2A06755F4 /* Pods-Yosemite.debug.xcconfig */,
-				2F4088E8D26C5CACF15A7BFF /* Pods-Yosemite.release.xcconfig */,
-				445B78BBAF85873EAF0AD85C /* Pods-YosemiteTests.debug.xcconfig */,
-				B7E908DF3275D2E3F072D338 /* Pods-YosemiteTests.release.xcconfig */,
+				3085EA9A50A0113CC092CF8A /* Pods-Yosemite.debug.xcconfig */,
+				449068211358BC631EA9D7E0 /* Pods-Yosemite.release.xcconfig */,
+				CE2E005D1AE6EFA7B8B2C55C /* Pods-Yosemite-YosemiteTests.debug.xcconfig */,
+				38FB0568D390F9C6695F7198 /* Pods-Yosemite-YosemiteTests.release.xcconfig */,
+				6855D52378F6D6E9370B1BBB /* Pods-YosemiteTests.debug.xcconfig */,
+				3E65FC0498F8D5E4E9500DCB /* Pods-YosemiteTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -202,7 +210,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B5C9DE092087FEC0006B910A /* Build configuration list for PBXNativeTarget "Yosemite" */;
 			buildPhases = (
-				5C8BB9FBD51E25D809D07C83 /* [CP] Check Pods Manifest.lock */,
+				2944B6406B418812F344CA0F /* [CP] Check Pods Manifest.lock */,
 				B5C9DDF02087FEC0006B910A /* Sources */,
 				B5C9DDF12087FEC0006B910A /* Frameworks */,
 				B5C9DDF22087FEC0006B910A /* Headers */,
@@ -221,11 +229,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B5C9DE0C2087FEC0006B910A /* Build configuration list for PBXNativeTarget "YosemiteTests" */;
 			buildPhases = (
-				4644BB8E2807A50EB650DFE1 /* [CP] Check Pods Manifest.lock */,
+				8ED7538ABDB6640536C69387 /* [CP] Check Pods Manifest.lock */,
 				B5C9DDFA2087FEC0006B910A /* Sources */,
 				B5C9DDFB2087FEC0006B910A /* Frameworks */,
 				B5C9DDFC2087FEC0006B910A /* Resources */,
-				0A8F38EDA9912DDC3C001AC1 /* [CP] Embed Pods Frameworks */,
+				F637E9B056FEF54E01F7DDC9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -291,25 +299,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0A8F38EDA9912DDC3C001AC1 /* [CP] Embed Pods Frameworks */ = {
+		2944B6406B418812F344CA0F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"$(DERIVED_FILE_DIR)/Pods-Yosemite-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests-frameworks.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		4644BB8E2807A50EB650DFE1 /* [CP] Check Pods Manifest.lock */ = {
+		8ED7538ABDB6640536C69387 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -327,22 +335,22 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		5C8BB9FBD51E25D809D07C83 /* [CP] Check Pods Manifest.lock */ = {
+		F637E9B056FEF54E01F7DDC9 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
+				"${SRCROOT}/../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Yosemite-checkManifestLockResult.txt",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -504,7 +512,7 @@
 		};
 		B5C9DE0A2087FEC0006B910A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2D65B8AD7CCF6DF2A06755F4 /* Pods-Yosemite.debug.xcconfig */;
+			baseConfigurationReference = 3085EA9A50A0113CC092CF8A /* Pods-Yosemite.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -516,11 +524,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Yosemite/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.Yosemite;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -531,7 +535,7 @@
 		};
 		B5C9DE0B2087FEC0006B910A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F4088E8D26C5CACF15A7BFF /* Pods-Yosemite.release.xcconfig */;
+			baseConfigurationReference = 449068211358BC631EA9D7E0 /* Pods-Yosemite.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -543,11 +547,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Yosemite/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.Yosemite;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -558,16 +558,12 @@
 		};
 		B5C9DE0D2087FEC0006B910A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 445B78BBAF85873EAF0AD85C /* Pods-YosemiteTests.debug.xcconfig */;
+			baseConfigurationReference = 6855D52378F6D6E9370B1BBB /* Pods-YosemiteTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = YosemiteTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.YosemiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -577,16 +573,12 @@
 		};
 		B5C9DE0E2087FEC0006B910A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B7E908DF3275D2E3F072D338 /* Pods-YosemiteTests.release.xcconfig */;
+			baseConfigurationReference = 3E65FC0498F8D5E4E9500DCB /* Pods-YosemiteTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = YosemiteTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.YosemiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

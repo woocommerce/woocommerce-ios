@@ -10,30 +10,6 @@ enum AccountAction: Action {
 }
 
 
-// MARK: - Represents an Account Event.
-//
-enum AccountEvent: Event {
-    case authenticated
-    case deauthenticated
-}
-
-
-// MARK: - Account Events Listener Mockup Instance.
-//
-class MockupAccountEventsListener: EventsListener {
-
-    var receivedEvents = [AccountEvent]()
-
-    func onEvent(_ event: Event) {
-        guard let event = event as? AccountEvent else {
-            return
-        }
-
-        receivedEvents.append(event)
-    }
-}
-
-
 // MARK: - Account Mockup Store.
 //
 class MockupAccountStore: Store {

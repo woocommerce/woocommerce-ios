@@ -13,9 +13,6 @@ open class Store: ActionsProcessor {
     ///
     public let dispatcher: Dispatcher
 
-    /// The dispatcher used to notify observer of changes.
-    ///
-    public let eventBus = EventBus()
 
 
     /// Initializes a new Store.

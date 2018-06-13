@@ -21,6 +21,13 @@ extension NSManagedObjectContext: StorageType {
         return loadObjects(ofType: type, with: request)
     }
 
+    /// Returns the count of all of the available objects, of a given Type.
+    ///
+    /// - Note: This is a Convenience method. As of Swift 4.1, you can't declare optionals with default values within Protocols.
+    ///
+    public func countObjects<T: Object>(ofType type: T.Type) -> Int {
+        return countObjects(ofType: type, matching: nil)
+    }
 
     /// Returns the number of entities found that match with a given predicate.
     ///
@@ -28,7 +35,7 @@ extension NSManagedObjectContext: StorageType {
     ///     - type: Defines the `kind` of objects to be counted.
     ///     - predicate: Defines the conditions that any given object should meet.
     ///
-    public func countObjects<T: Object>(ofType type: T.Type, matching predicate: NSPredicate? = nil) -> Int {
+    public func countObjects<T: Object>(ofType type: T.Type, matching predicate: NSPredicate?) -> Int {
         let request = fetchRequest(forType: type)
         request.includesSubentities = false
         request.predicate = predicate
@@ -68,13 +75,21 @@ extension NSManagedObjectContext: StorageType {
         }
     }
 
+    /// Retrieves the first entity of a given Type.
+    ///
+    /// - Note: This is a Convenience method. As of Swift 4.1, you can't declare optionals with default values within Protocols.
+    ///
+    public func firstObject<T: Object>(ofType type: T.Type) -> T? {
+        return firstObject(ofType: type, matching: nil)
+    }
+
     /// Retrieves the first entity that matches with a given predicate
     ///
     /// - Parameters:
     ///     - type: Defines the `kind` of object to be retrieved.
     ///     - predicate: Defines the conditions that any given object should meet.
     ///
-    public func firstObject<T: Object>(ofType type: T.Type, matching predicate: NSPredicate) -> T? {
+    public func firstObject<T: Object>(ofType type: T.Type, matching predicate: NSPredicate?) -> T? {
         let request = fetchRequest(forType: type)
         request.predicate = predicate
         request.fetchLimit = 1

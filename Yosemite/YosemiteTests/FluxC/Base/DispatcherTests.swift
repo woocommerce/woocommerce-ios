@@ -1,40 +1,34 @@
 import XCTest
-@testable import FluxSumi
+import Yosemite
 
 
 // MARK: - Dispatcher Unit Tests!
 //
 class DispatcherTests: XCTestCase {
 
-    var dispatcher: MockupDispatcher!
+    var dispatcher: Dispatcher!
     var processor: MockupProcessor!
 
     override func setUp() {
         super.setUp()
 
-        dispatcher = MockupDispatcher()
+        dispatcher = Dispatcher()
         processor = MockupProcessor()
     }
 
 
     /// Verifies that multiple instances of the same processor get properly registered.
     ///
-    func testMultipleProcessorInstancesGetProperlyRegistered() {
-        var processors = [ActionsProcessor]()
-
-        for _ in 0..<100 {
-            let processor = MockupProcessor()
-            dispatcher.register(processor: processor, actionType: SiteAction.self)
-            processors.append(processor)
-
-            XCTAssertEqual(processors.count, dispatcher.numberOfProcessors(for: SiteAction.self))
-        }
+    func testProcessorEffectivelyGetsRegistered() {
+        let processor = MockupProcessor()
+        dispatcher.register(processor: processor, for: SiteAction.self)
+        XCTAssertTrue(dispatcher.isProcessorRegistered(processor, for: SiteAction.self))
     }
 
     /// Verifies that a processor only receives the actions it's been registered to.
     ///
     func testProcessorsReceiveOnlyRegisteredActions() {
-        dispatcher.register(processor: processor, actionType: SiteAction.self)
+        dispatcher.register(processor: processor, for: SiteAction.self)
 
         XCTAssertTrue(processor.receivedActions.isEmpty)
         dispatcher.dispatch(SiteAction.refreshSites)
@@ -47,7 +41,7 @@ class DispatcherTests: XCTestCase {
     /// Verifies that a registered processor receive all of the posted actions.
     ///
     func testProcessorsReceiveRegisteredActions() {
-        dispatcher.register(processor: processor, actionType: SiteAction.self)
+        dispatcher.register(processor: processor, for: SiteAction.self)
         XCTAssertTrue(processor.receivedActions.isEmpty)
 
         dispatcher.dispatch(SiteAction.refreshSites)
@@ -62,7 +56,7 @@ class DispatcherTests: XCTestCase {
     func testUnregisteredProcessorsDoNotReceiveAnyActions() {
         XCTAssertTrue(processor.receivedActions.isEmpty)
 
-        dispatcher.register(processor: processor, actionType: SiteAction.self)
+        dispatcher.register(processor: processor, for: SiteAction.self)
         dispatcher.dispatch(SiteAction.refreshSites)
         XCTAssertEqual(processor.receivedActions.count, 1)
 

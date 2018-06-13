@@ -1,5 +1,5 @@
 import Foundation
-@testable import Yosemite
+import Yosemite
 
 
 // MARK: - Represents an Account Action.

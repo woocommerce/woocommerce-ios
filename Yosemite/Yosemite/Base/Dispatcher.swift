@@ -32,6 +32,10 @@ public class Dispatcher {
     private(set) var processors = [Action.TypeIdentifier: ActionsProcessor]()
 
 
+    ///  Designated Initializer
+    ///
+    public init() {}
+
     /// Registers the specified processor to receive Actions of a given kind.
     ///
     public func register(processor: ActionsProcessor, for actionType: Action.Type) {

@@ -1,5 +1,6 @@
 import XCTest
-import Yosemite
+@testable import Yosemite
+@testable import Networking
 
 
 // MARK: - Store Unit Tests!
@@ -7,12 +8,14 @@ import Yosemite
 class StoreTests: XCTestCase {
 
     let dispatcher = Dispatcher.global
+    let storageManager = MockupStorageManager()
+    let network = MockupNetwork()
     var accountStore: MockupAccountStore!
     var siteStore: MockupSiteStore!
 
     override func setUp() {
-        accountStore = MockupAccountStore()
-        siteStore = MockupSiteStore()
+        accountStore = MockupAccountStore(storageManager: storageManager, network: network)
+        siteStore = MockupSiteStore(storageManager: storageManager, network: network)
     }
 
 

@@ -1,5 +1,5 @@
 import XCTest
-@testable import FluxSumi
+@testable import Yosemite
 
 
 // MARK: - Dispatcher Unit Tests!

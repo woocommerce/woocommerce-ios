@@ -17,7 +17,7 @@ public protocol ActionsProcessor: class {
 
 
 // MARK: - Dispatcher: A Dispatcher broadcasts an Action to all registered subscribers.
-//         You can think of it as a strongly typed NotificationCenter, if it had been written for Swift instead of Objective-C.
+//                     One Action can only have One Processor!
 //
 // NOTE: - Dispatcher is not thread safe yet, and it expects its methods to be called from the main thread only.
 //
@@ -29,17 +29,19 @@ public class Dispatcher {
 
     /// Collection of active Action Processors, per action kind.
     ///
-    var processors = [Action.TypeIdentifier: [ActionsProcessor]]()
+    private(set) var processors = [Action.TypeIdentifier: ActionsProcessor]()
 
 
     /// Registers the specified processor to receive Actions of a given kind.
     ///
-    public func register(processor: ActionsProcessor, actionType: Action.Type) {
+    public func register(processor: ActionsProcessor, for actionType: Action.Type) {
         assertMainThread()
 
-        var updated = processors[actionType.identifier] ?? []
-        updated.append(processor)
-        processors[actionType.identifier] = updated
+        guard processors[actionType.identifier] == nil else {
+            fatalError("An action type can only be handled by a single processor!")
+        }
+
+        processors[actionType.identifier] = processor
     }
 
     /// Unregisters the specified Processor from *ALL* of the dispatcher queues.
@@ -47,9 +49,8 @@ public class Dispatcher {
     public func unregister(processor: ActionsProcessor) {
         assertMainThread()
 
-        let removedProcessorIdentifier = ObjectIdentifier(processor)
-        for (identifier, subprocessors) in processors {
-            processors[identifier] = subprocessors.filter { ObjectIdentifier($0) != removedProcessorIdentifier }
+        for (identifier, subprocessor) in processors where subprocessor.identifier == processor.identifier {
+            processors[identifier] = nil
         }
     }
 
@@ -58,9 +59,6 @@ public class Dispatcher {
     public func dispatch(_ action: Action) {
         assertMainThread()
 
-        let identifier = type(of: action).identifier
-        processors[identifier]?.forEach { processor in
-            processor.onAction(action)
-        }
+        processors[action.identifier]?.onAction(action)
     }
 }

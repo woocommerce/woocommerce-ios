@@ -11,6 +11,18 @@ class MockupNetwork: Network {
     private var responseMap = [String: String]()
 
 
+    /// Public Initializer
+    ///
+    required init(credentials: Credentials) { }
+
+    /// Dummy convenience initializer. Remember: Real Network wrappers will allways need credentials!
+    ///
+    convenience init() {
+        let dummy = Credentials(authToken: String())
+        self.init(credentials: dummy)
+    }
+
+
     /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the specified response, *PARSED* as json.
     /// Otherwise, an error will be relayed back (.unavailable!).
     ///

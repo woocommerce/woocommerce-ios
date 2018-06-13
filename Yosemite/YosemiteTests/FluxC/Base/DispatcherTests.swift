@@ -1,5 +1,5 @@
 import XCTest
-@testable import Yosemite
+import Yosemite
 
 
 // MARK: - Dispatcher Unit Tests!

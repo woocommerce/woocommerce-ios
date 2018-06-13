@@ -19,15 +19,11 @@ class DispatcherTests: XCTestCase {
 
     /// Verifies that multiple instances of the same processor get properly registered.
     ///
-//    func testMultipleProcessorInstancesGetProperlyRegistered() {
-//        for _ in 0..<100 {
-//            let processor = MockupProcessor()
-//            dispatcher.register(processor: processor, for: SiteAction.self)
-//
-//
-//            XCTAssertTrue(dispatcher.isProcessorRegistered(processor, for: SiteAction.self))
-//        }
-//    }
+    func testProcessorEffectivelyGetsRegistered() {
+        let processor = MockupProcessor()
+        dispatcher.register(processor: processor, for: SiteAction.self)
+        XCTAssertTrue(dispatcher.isProcessorRegistered(processor, for: SiteAction.self))
+    }
 
     /// Verifies that a processor only receives the actions it's been registered to.
     ///

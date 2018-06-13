@@ -140,17 +140,17 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K4G-Fo-ooM" userLabel="totalView">
                                 <rect key="frame" x="0.0" y="201.5" width="288" height="46"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ehO-OF-bQV">
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="firstBaseline" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ehO-OF-bQV">
                                         <rect key="frame" x="0.0" y="0.0" width="288" height="46"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalCompressionResistancePriority="1000" text="TOTAL" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pi1-x5-niy">
-                                                <rect key="frame" x="0.0" y="8" width="51.5" height="20.5"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="$40.00" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Pa-jd-Tcj">
+                                                <rect key="frame" x="0.0" y="8" width="55.5" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalCompressionResistancePriority="1000" text="$40.00" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="awb-Pi-AeE">
-                                                <rect key="frame" x="232.5" y="8" width="55.5" height="20.5"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="$40.00" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="awb-Pi-AeE">
+                                                <rect key="frame" x="232.5" y="8" width="55.5" height="22"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -159,8 +159,6 @@
                                         <constraints>
                                             <constraint firstAttribute="bottom" secondItem="awb-Pi-AeE" secondAttribute="bottom" constant="16" id="D0q-sd-BVi"/>
                                             <constraint firstItem="awb-Pi-AeE" firstAttribute="top" secondItem="ehO-OF-bQV" secondAttribute="top" constant="8" id="XTD-sz-WbO"/>
-                                            <constraint firstItem="pi1-x5-niy" firstAttribute="bottom" secondItem="awb-Pi-AeE" secondAttribute="bottom" id="ySS-tH-Uvg"/>
-                                            <constraint firstItem="awb-Pi-AeE" firstAttribute="top" secondItem="pi1-x5-niy" secondAttribute="top" id="yc3-AN-MIn"/>
                                         </constraints>
                                     </stackView>
                                 </subviews>
@@ -260,7 +258,7 @@
                 <outlet property="taxesLabel" destination="z9r-YA-aG9" id="wEN-D1-H8l"/>
                 <outlet property="taxesValue" destination="pCA-4f-cjt" id="kP4-iN-Nx0"/>
                 <outlet property="taxesView" destination="BAA-Mv-unS" id="wOK-9o-G7C"/>
-                <outlet property="totalLabel" destination="pi1-x5-niy" id="kUo-Un-F2X"/>
+                <outlet property="totalLabel" destination="6Pa-jd-Tcj" id="Ebx-MN-9VH"/>
                 <outlet property="totalValue" destination="awb-Pi-AeE" id="rSC-nG-idX"/>
                 <outlet property="totalView" destination="K4G-Fo-ooM" id="TjD-wt-oyz"/>
                 <outlet property="verticalStackView" destination="QyU-yD-WDZ" id="5fd-fc-1Dn"/>

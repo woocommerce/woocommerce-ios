@@ -10,13 +10,36 @@ class MockupNetwork: Network {
     ///
     private var responseMap = [String: String]()
 
+    /// Keeps a collection of all of the `responseJSON` requests.
+    ///
+    var requestsForResponseJSON = [URLRequestConvertible]()
+
+    /// Keeps a collection of all of the `responseData` requests.
+    ///
+    var requestsForResponseData = [URLRequestConvertible]()
+
+
+
+    /// Public Initializer
+    ///
+    required init(credentials: Credentials) { }
+
+    /// Dummy convenience initializer. Remember: Real Network wrappers will allways need credentials!
+    ///
+    convenience init() {
+        let dummy = Credentials(authToken: String())
+        self.init(credentials: dummy)
+    }
+
 
     /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the specified response, *PARSED* as json.
     /// Otherwise, an error will be relayed back (.unavailable!).
     ///
     func responseJSON(for request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
+        requestsForResponseJSON.append(request)
+
         guard let filename = filename(for: request), let response = Loader.jsonObject(for: filename) else {
-            completion(nil, NetworkMockupError.unavailable)
+            completion(nil, NetworkError.emptyResponse)
             return
         }
 
@@ -27,8 +50,10 @@ class MockupNetwork: Network {
     /// Otherwise, an error will be relayed back (.unavailable!).
     ///
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
+        requestsForResponseData.append(request)
+
         guard let filename = filename(for: request), let data = Loader.contentsOf(filename) else {
-            completion(nil, NetworkMockupError.unavailable)
+            completion(nil, NetworkError.emptyResponse)
             return
         }
 
@@ -80,11 +105,4 @@ extension MockupNetwork {
             return targetURL ?? ""
         }
     }
-}
-
-
-/// NetworkMockup Errors
-///
-enum NetworkMockupError: Error {
-    case unavailable
 }

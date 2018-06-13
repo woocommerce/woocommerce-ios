@@ -29,12 +29,12 @@ open class Store: ActionsProcessor {
     ///     - storageManager: Storage Provider to be used in all of the current Store OP's.
     ///     - network: Network that should be used, when it comes to building a Remote.
     ///
-    public init(dispatcher: Dispatcher = .global, storageManager: StorageManager, network: Network) {
+    public init(dispatcher: Dispatcher, storageManager: StorageManager, network: Network) {
         self.dispatcher = dispatcher
         self.storageManager = storageManager
         self.network = network
 
-        registerSupportedActions()
+        registerSupportedActions(in: dispatcher)
     }
 
     /// Deinitializer
@@ -48,7 +48,7 @@ open class Store: ActionsProcessor {
 
     /// Subclasses should override this and register for supported Dispatcher Actions.
     ///
-    open func registerSupportedActions() {
+    open func registerSupportedActions(in dispatcher: Dispatcher) {
         fatalError("Override me!")
     }
 

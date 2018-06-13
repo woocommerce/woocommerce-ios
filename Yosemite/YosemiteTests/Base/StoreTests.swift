@@ -14,8 +14,8 @@ class StoreTests: XCTestCase {
     var siteStore: MockupSiteStore!
 
     override func setUp() {
-        accountStore = MockupAccountStore(storageManager: storageManager, network: network)
-        siteStore = MockupSiteStore(storageManager: storageManager, network: network)
+        accountStore = MockupAccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        siteStore = MockupSiteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
 

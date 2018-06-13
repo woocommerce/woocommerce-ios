@@ -1,5 +1,5 @@
 import Foundation
-@testable import FluxSumi
+@testable import Yosemite
 
 
 // MARK: - Mockup Dispatcher

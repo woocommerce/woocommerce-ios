@@ -1,5 +1,5 @@
 import Foundation
-import FluxSumi
+import Yosemite
 
 
 // MARK: - Represents a Site Action.

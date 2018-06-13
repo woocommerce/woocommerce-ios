@@ -5,7 +5,7 @@
       location = "group:WooCommerce/WooCommerce.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:FluxSumi/FluxSumi.xcodeproj">
+      location = "group:/Users/lantean/Developer/Automattic/woocommerce-ios/FluxSumi/Yosemite.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Storage/Storage.xcodeproj">

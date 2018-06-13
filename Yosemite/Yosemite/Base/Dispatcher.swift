@@ -54,6 +54,12 @@ public class Dispatcher {
         }
     }
 
+    /// Indicates if an ActionProcessor is registered to handle a given ActionType
+    ///
+    public func isProcessorRegistered(_ processor: ActionsProcessor, for actionType: Action.Type) -> Bool {
+        return processors[actionType.identifier]?.identifier == processor.identifier
+    }
+
     /// Dispatches the given action to all registered processors.
     ///
     public func dispatch(_ action: Action) {

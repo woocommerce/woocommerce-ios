@@ -17,7 +17,7 @@ class MockupSiteStore: Store {
     var receivedActions = [SiteAction]()
 
     override func registerSupportedActions() {
-        dispatcher.register(processor: self, actionType: SiteAction.self)
+        dispatcher.register(processor: self, for: SiteAction.self)
     }
 
     override func onAction(_ action: Action) {

@@ -1,5 +1,5 @@
 import Foundation
-import Yosemite
+@testable import Yosemite
 
 
 // MARK: - Represents an Account Action.
@@ -17,7 +17,7 @@ class MockupAccountStore: Store {
     var receivedActions = [AccountAction]()
 
     override func registerSupportedActions() {
-        dispatcher.register(processor: self, actionType: AccountAction.self)
+        dispatcher.register(processor: self, for: AccountAction.self)
     }
 
     override func onAction(_ action: Action) {

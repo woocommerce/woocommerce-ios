@@ -23,8 +23,10 @@ public class AccountStore: Store {
         }
 
         switch action {
-        case .synchronizeAccountDetails(let onCompletion):
-            synchronizeAccountDetails(onCompletion: onCompletion)
+        case .synchronizeAccount(let onCompletion):
+            synchronizeAccount(onCompletion: onCompletion)
+        case .retrieveAccount(let userId, let onCompletion):
+            retrieveAccount(userId: userId, onCompletion: onCompletion)
         }
     }
 }
@@ -34,20 +36,27 @@ public class AccountStore: Store {
 //
 extension AccountStore  {
 
-    /// Synchronizes the WordPress.com account associated with a specified Authentication Token.
+    /// Synchronizes the WordPress.com account associated with the Network's Auth Token.
     ///
-    func synchronizeAccountDetails(onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeAccount(onCompletion: @escaping (Account?, Error?) -> Void) {
         let remote = AccountRemote(network: network)
 
         remote.loadAccountDetails { [weak self] (account, error) in
             guard let account = account else {
-                onCompletion(error)
+                onCompletion(nil, error)
                 return
             }
 
-            self?.updateStoredAccount(remote: account)
-            onCompletion(nil)
+            self?.upsertStoredAccount(remote: account)
+            onCompletion(account, nil)
         }
+    }
+
+    /// Retrieves the account associated with a  given User ID (if any!).
+    ///
+    func retrieveAccount(userId: Int, onCompletion: (Account?) -> Void) {
+        let account = loadStoredAccount(userId: userId)?.toStruct()
+        onCompletion(account)
     }
 }
 
@@ -56,20 +65,15 @@ extension AccountStore  {
 //
 extension AccountStore {
 
-    /// Updates the Storage's Account with the specified Networking (Remote) Account.
+    /// Updates (OR Inserts) the Storage's Account with the specified (Networking) Account entity.
     ///
-    func updateStoredAccount(remote: Networking.Account) {
+    func upsertStoredAccount(remote: Networking.Account) {
         assert(Thread.isMainThread)
 
         let storage = storageManager.viewStorage
         let account = loadStoredAccount(userId: remote.userID) ?? storage.insertNewObject(ofType: Storage.Account.self)
 
-        account.displayName = remote.displayName
-        account.email = remote.email
-        account.gravatarUrl = remote.gravatarUrl
-        account.userID = Int64(remote.userID)
-        account.username = remote.username
-
+        account.update(with: remote)
         storage.saveIfNeeded()
     }
 

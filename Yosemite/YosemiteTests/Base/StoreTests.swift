@@ -25,7 +25,7 @@ class StoreTests: XCTestCase {
         XCTAssertTrue(accountStore.receivedActions.isEmpty)
         XCTAssertTrue(siteStore.receivedActions.isEmpty)
 
-        dispatcher.dispatch(AccountAction.authenticate)
+        dispatcher.dispatch(MockupAccountAction.authenticate)
         XCTAssertEqual(accountStore.receivedActions.count, 1)
         XCTAssertTrue(siteStore.receivedActions.isEmpty)
     }

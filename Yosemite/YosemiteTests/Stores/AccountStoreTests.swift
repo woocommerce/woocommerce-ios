@@ -36,10 +36,13 @@ class AccountStoreTests: XCTestCase {
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Synchronize")
 
-        accountStore.synchronizeAccountDetails { error in
+        let action = AccountAction.synchronizeAccount { (account, error) in
             XCTAssertNotNil(error)
+            XCTAssertNil(account)
             expectation.fulfill()
         }
+
+        accountStore.onAction(action)
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
@@ -54,18 +57,15 @@ class AccountStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "me", filename: "me")
         XCTAssertNil(storageManager.viewStorage.firstObject(ofType: Storage.Account.self, matching: nil))
 
-        accountStore.synchronizeAccountDetails { error in
-            guard let account = self.storageManager.viewStorage.firstObject(ofType: Storage.Account.self, matching: nil) else {
-                XCTFail()
-                return
-            }
-
+        let action = AccountAction.synchronizeAccount { (account, error) in
             XCTAssertNil(error)
-            XCTAssertEqual(account.userID, Int64(78972699))
-            XCTAssertEqual(account.username, "apiexamples")
+            XCTAssertEqual(account?.userID, 78972699)
+            XCTAssertEqual(account?.username, "apiexamples")
 
             expectation.fulfill()
         }
+
+        accountStore.onAction(action)
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
@@ -78,8 +78,8 @@ class AccountStoreTests: XCTestCase {
 
         XCTAssertNil(storageManager.viewStorage.firstObject(ofType: Storage.Account.self, matching: nil))
 
-        accountStore.updateStoredAccount(remote: sampleAccountPristine())
-        accountStore.updateStoredAccount(remote: sampleAccountUpdate())
+        accountStore.upsertStoredAccount(remote: sampleAccountPristine())
+        accountStore.upsertStoredAccount(remote: sampleAccountUpdate())
 
         XCTAssert(storageManager.viewStorage.countObjects(ofType: Storage.Account.self, matching: nil) == 1)
 
@@ -95,7 +95,7 @@ class AccountStoreTests: XCTestCase {
         let remoteAccount = sampleAccountPristine()
 
         XCTAssertNil(accountStore.loadStoredAccount(userId: remoteAccount.userID))
-        accountStore.updateStoredAccount(remote: remoteAccount)
+        accountStore.upsertStoredAccount(remote: remoteAccount)
 
         let storageAccount = accountStore.loadStoredAccount(userId: remoteAccount.userID)!
         compare(storageAccount: storageAccount, remoteAccount: remoteAccount)

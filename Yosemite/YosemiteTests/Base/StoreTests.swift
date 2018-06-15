@@ -14,8 +14,8 @@ class StoreTests: XCTestCase {
     var siteStore: MockupSiteStore!
 
     override func setUp() {
-        accountStore = MockupAccountStore(storageManager: storageManager, network: network)
-        siteStore = MockupSiteStore(storageManager: storageManager, network: network)
+        accountStore = MockupAccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        siteStore = MockupSiteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
 
@@ -25,7 +25,7 @@ class StoreTests: XCTestCase {
         XCTAssertTrue(accountStore.receivedActions.isEmpty)
         XCTAssertTrue(siteStore.receivedActions.isEmpty)
 
-        dispatcher.dispatch(AccountAction.authenticate)
+        dispatcher.dispatch(MockupAccountAction.authenticate)
         XCTAssertEqual(accountStore.receivedActions.count, 1)
         XCTAssertTrue(siteStore.receivedActions.isEmpty)
     }

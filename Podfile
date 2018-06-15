@@ -29,6 +29,7 @@ target 'WooCommerce' do
   pod 'Alamofire', '4.7.2'
   pod 'Crashlytics', '3.10.1'
 
+  pod 'KeychainAccess', '~> 3.1'
 end
 
 

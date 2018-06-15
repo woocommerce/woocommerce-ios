@@ -27,7 +27,7 @@ class MockupNetwork: Network {
     /// Dummy convenience initializer. Remember: Real Network wrappers will allways need credentials!
     ///
     convenience init() {
-        let dummy = Credentials(authToken: String())
+        let dummy = Credentials(authToken: "", username: "")
         self.init(credentials: dummy)
     }
 

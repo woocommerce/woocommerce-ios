@@ -234,6 +234,14 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		B53B898A20D4606400EDB467 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				B53B898820D450AF00EDB467 /* CredentialsManagerTests.swift */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
 		B55D4BF920B5CDE600D7A50F /* Credentials */ = {
 			isa = PBXGroup;
 			children = (
@@ -290,7 +298,7 @@
 		B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */ = {
 			isa = PBXGroup;
 			children = (
-				B53B898820D450AF00EDB467 /* CredentialsManagerTests.swift */,
+				B53B898A20D4606400EDB467 /* System */,
 				B56DB3E32049BFAA00D4AA8E /* Info.plist */,
 			);
 			path = WooCommerceTests;

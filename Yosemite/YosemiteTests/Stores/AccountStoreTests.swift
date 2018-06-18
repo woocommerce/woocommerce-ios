@@ -48,6 +48,28 @@ class AccountStoreTests: XCTestCase {
     }
 
 
+    /// Verifies that AccountAction.synchronizeAccount returns an error whenever there is an error response from the backend.
+    ///
+    func testSynchronizeAccountReturnsErrorUponReponseError() {
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectation = self.expectation(description: "Synchronize")
+
+        network.simulateResponse(requestUrlSuffix: "me", filename: "generic_error")
+        let action = AccountAction.synchronizeAccount { (account, error) in
+            XCTAssertNil(account)
+            XCTAssertNotNil(error)
+            guard let _ = error as NSError? else {
+                XCTFail()
+                return
+            }
+            expectation.fulfill()
+        }
+
+        accountStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
     /// Verifies that AccountAction.synchronizeAccount effectively inserts a new Default Account.
     ///
     func testSynchronizeAccountreturnsExpectedAccountDetails() {

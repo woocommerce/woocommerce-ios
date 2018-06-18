@@ -66,10 +66,6 @@ private extension Order {
 //
 extension Order: Comparable {
     public static func == (lhs: Order, rhs: Order) -> Bool {
-        print(lhs.items.sorted())
-        print("&&")
-        print(rhs.items.sorted())
-        print("---")
         return lhs.orderID == rhs.orderID &&
             lhs.parentID == rhs.parentID &&
             lhs.customerID == rhs.customerID &&

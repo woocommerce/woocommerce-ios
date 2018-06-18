@@ -60,3 +60,35 @@ private extension Order {
         case billingAddress     = "billing"
     }
 }
+
+
+// MARK: - Comparable Conformance
+//
+extension Order: Comparable {
+    public static func == (lhs: Order, rhs: Order) -> Bool {
+        return lhs.orderID == rhs.orderID &&
+            lhs.parentID == rhs.parentID &&
+            lhs.customerID == rhs.customerID &&
+            lhs.number == rhs.number &&
+            lhs.status == rhs.status &&
+            lhs.dateCreated == rhs.dateCreated &&
+            lhs.dateModified == rhs.dateModified &&
+            lhs.datePaid == rhs.datePaid &&
+            lhs.discountTotal == rhs.discountTotal &&
+            lhs.discountTax == rhs.discountTax &&
+            lhs.shippingTotal == rhs.shippingTotal &&
+            lhs.shippingTax == rhs.shippingTax &&
+            lhs.total == rhs.total &&
+            lhs.totalTax == rhs.totalTax &&
+            lhs.billingAddress == rhs.billingAddress &&
+            lhs.shippingAddress == rhs.shippingAddress &&
+            lhs.items.count == rhs.items.count &&
+            lhs.items.sorted() == rhs.items.sorted()
+    }
+
+    public static func < (lhs: Order, rhs: Order) -> Bool {
+        return lhs.orderID < rhs.orderID ||
+            (lhs.orderID == rhs.orderID && lhs.dateCreated < rhs.dateCreated) ||
+            (lhs.orderID == rhs.orderID && lhs.dateCreated == rhs.dateCreated && lhs.dateModified < rhs.dateModified)
+    }
+}

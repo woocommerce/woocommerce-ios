@@ -113,7 +113,7 @@ private extension OrderStoreTests {
                      shippingTax: "0.00",
                      total: "31.20",
                      totalTax: "1.20",
-                     items: [],
+                     items: sampleItems(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress())
     }
@@ -122,12 +122,38 @@ private extension OrderStoreTests {
         return Address(firstName: "Johnny",
                        lastName: "Appleseed",
                        company: "",
-                       address1: "234 70th Street.",
+                       address1: "234 70th Street",
                        address2: "",
                        city: "Niagara Falls",
                        state: "NY",
                        postcode: "14304",
                        country: "US")
+    }
+
+    func sampleItems() -> [Networking.OrderItem] {
+        let item1 = OrderItem(itemID: 890,
+                              name: "Fruits Basket (Mix & Match Product)",
+                              productID: 52,
+                              quantity: 1,
+                              sku: "",
+                              subtotal: "50.00",
+                              subtotalTax: "2.00",
+                              taxClass: "",
+                              total: "30.00",
+                              totalTax: "1.20",
+                              variationID: 0)
+        let item2 = OrderItem(itemID: 891,
+                              name: "Fruits Bundle",
+                              productID: 234,
+                              quantity: 1,
+                              sku: "5555-A",
+                              subtotal: "10.00",
+                              subtotalTax: "0.40",
+                              taxClass: "",
+                              total: "0.00",
+                              totalTax: "0.00",
+                              variationID: 0)
+        return [item1, item2]
     }
 
     func date(with dateString: String) -> Date {

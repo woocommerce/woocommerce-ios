@@ -62,10 +62,14 @@ private extension Order {
 }
 
 
-// MARK: - Equatable Conformance
+// MARK: - Comparable Conformance
 //
-extension Order: Equatable {
+extension Order: Comparable {
     public static func == (lhs: Order, rhs: Order) -> Bool {
+        print(lhs.items.sorted())
+        print("&&")
+        print(rhs.items.sorted())
+        print("---")
         return lhs.orderID == rhs.orderID &&
             lhs.parentID == rhs.parentID &&
             lhs.customerID == rhs.customerID &&
@@ -79,6 +83,16 @@ extension Order: Equatable {
             lhs.shippingTotal == rhs.shippingTotal &&
             lhs.shippingTax == rhs.shippingTax &&
             lhs.total == rhs.total &&
-            lhs.totalTax == rhs.totalTax
+            lhs.totalTax == rhs.totalTax &&
+            lhs.billingAddress == rhs.billingAddress &&
+            lhs.shippingAddress == rhs.shippingAddress &&
+            lhs.items.count == rhs.items.count &&
+            lhs.items.sorted() == rhs.items.sorted()
+    }
+
+    public static func < (lhs: Order, rhs: Order) -> Bool {
+        return lhs.orderID < rhs.orderID ||
+            (lhs.orderID == rhs.orderID && lhs.dateCreated < rhs.dateCreated) ||
+            (lhs.orderID == rhs.orderID && lhs.dateCreated == rhs.dateCreated && lhs.dateModified < rhs.dateModified)
     }
 }

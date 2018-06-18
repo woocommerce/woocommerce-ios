@@ -32,7 +32,7 @@ public class OrderStore: Store {
 //
 extension OrderStore  {
 
-    /// Retrieves the account associated with a  given User ID (if any!).
+    /// Retrieves the orders associated with a given Site ID (if any!).
     ///
     func retrieveOrders(siteId: Int, onCompletion: @escaping ([Order]?, Error?) -> Void) {
         let remote = OrdersRemote(network: network)

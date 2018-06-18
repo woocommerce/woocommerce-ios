@@ -48,7 +48,7 @@ extension CredentialsManager {
             return nil
         }
 
-        return Credentials(authToken: authToken, username: username)
+        return Credentials(username: username, authToken: authToken)
     }
 
     /// Persists the Credentials's authToken in the keychain, and username in User Defaults.

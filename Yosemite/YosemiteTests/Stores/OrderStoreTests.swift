@@ -31,7 +31,7 @@ class OrderStoreTests: XCTestCase {
     /// Verifies that OrderAction.retrieveOrders returns the expected Orders.
     ///
     func testRetrieveOrdersReturnsExpectedFields() {
-        let expectation = self.expectation(description: "Synchronize")
+        let expectation = self.expectation(description: "Retrieve order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
         
@@ -44,6 +44,28 @@ class OrderStoreTests: XCTestCase {
             }
             XCTAssertEqual(orders.count, 3, "Orders count should be 3")
             XCTAssertTrue(orders.contains(remoteOrder))
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that OrderAction.retrieveOrders returns an error when something bad happens in the network layer.
+    ///
+    func testRetrieveOrdersReturnsError() {
+        let expectation = self.expectation(description: "Error")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "generic_error")
+        let action = OrderAction.retrieveOrders(siteID: 123) { (orders, error) in
+            XCTAssertNil(orders)
+            XCTAssertNotNil(error)
+            guard let error = error as NSError? else {
+                XCTFail()
+                return
+            }
+            XCTAssertNotEqual(error.debugDescription, "", "Error should have a description.")
             expectation.fulfill()
         }
 

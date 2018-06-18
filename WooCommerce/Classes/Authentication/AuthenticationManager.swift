@@ -1,6 +1,7 @@
 import Foundation
 import WordPressAuthenticator
 import WordPressUI
+import Networking
 
 
 
@@ -146,7 +147,13 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Synchronizes the specified WordPress Account.
     ///
     func sync(credentials: WordPressCredentials, onCompletion: @escaping (Error?) -> Void) {
-        // TODO: Download all of the Account's metadata!
+        guard case let .wpcom(username, authToken, _, _) = credentials else {
+            fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
+        }
+
+        StoresManager.authenticate(username: username, authToken: authToken)
+
+        // TODO: Review
         onCompletion(nil)
     }
 

@@ -51,21 +51,40 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that OrderAction.retrieveOrders returns an error when something bad happens in the network layer.
+    /// Verifies that OrderAction.retrieveOrders returns an error whenever there is an error response from the backend.
     ///
-    func testRetrieveOrdersReturnsError() {
-        let expectation = self.expectation(description: "Error")
+    func testRetrieveOrdersReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve orders error response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "generic_error")
         let action = OrderAction.retrieveOrders(siteID: 123) { (orders, error) in
             XCTAssertNil(orders)
             XCTAssertNotNil(error)
-            guard let error = error as NSError? else {
+            guard let _ = error as NSError? else {
                 XCTFail()
                 return
             }
-            XCTAssertNotEqual(error.debugDescription, "", "Error should have a description.")
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that OrderAction.retrieveOrders returns an error whenever there is no backend response.
+    ///
+    func testRetrieveOrdersReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve orders empty response")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = OrderAction.retrieveOrders(siteID: 123) { (account, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(account)
+            guard let _ = error as NSError? else {
+                XCTFail()
+                return
+            }
             expectation.fulfill()
         }
 
@@ -73,7 +92,6 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }
-
 
 // MARK: - Private Methods
 //

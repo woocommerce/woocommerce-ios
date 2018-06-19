@@ -62,12 +62,10 @@ class OrderDetailsViewController: UIViewController {
         // but order has customerNote as an optional property right now
         guard let customerNote = order.customerNote,
             !customerNote.isEmpty else {
-            sections = [summarySection, infoSection, paymentSection]
-            sections = [summarySection, infoSection, orderNotesSection]
+            sections = [summarySection, infoSection, paymentSection, orderNotesSection]
             return
         }
-        sections = [summarySection, customerNoteSection, infoSection, paymentSection]
-        sections = [summarySection, customerNoteSection, infoSection, orderNotesSection]
+        sections = [summarySection, customerNoteSection, infoSection, paymentSection, orderNotesSection]
     }
 
     func configureNibs() {
@@ -170,12 +168,12 @@ extension OrderDetailsViewController {
             configure(cell, for: .billingPhone)
         case let cell as BillingDetailsTableViewCell where row == .billingEmail:
             configure(cell, for: .billingEmail)
+        case let cell as PaymentTableViewCell:
+            cell.configure(with: viewModel)
         case let cell as AddItemTableViewCell:
             cell.configure(image: viewModel.addNoteIcon, text: viewModel.addNoteText)
         case let cell as OrderNoteTableViewCell where row == .orderNote:
             cell.configure(with: viewModel.orderNotes[indexPath.row - 1])
-        case let cell as PaymentTableViewCell:
-            cell.configure(with: viewModel)
         default:
             fatalError("Unidentified customer info row type")
         }

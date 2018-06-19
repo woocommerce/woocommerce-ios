@@ -5,22 +5,12 @@ import Gridicons
 class OrderDetailsViewModel {
     private let order: Order
     private let couponLines: [CouponLine]?
-
-    let addNoteIcon: UIImage
-    let addNoteText: String
-    var orderNotes = [OrderNoteViewModel]()
+    private let notes: [OrderNote]?
 
     init(order: Order) {
         self.order = order
         self.couponLines = order.couponLines
-        addNoteIcon = Gridicon.iconOfType(.addOutline)
-        addNoteText = NSLocalizedString("Add a note", comment: "Button text for adding a new order note")
-        if let notes = order.notes {
-            for note in notes {
-                let noteViewModel = OrderNoteViewModel(with: note)
-                orderNotes.append(noteViewModel)
-            }
-        }
+        self.notes = order.notes
     }
 
     var summaryTitle: String {
@@ -71,9 +61,7 @@ class OrderDetailsViewModel {
         return Double(order.discountTotal) != 0 ? "−" + order.currencySymbol + order.discountTotal : nil
     }
 
-    var shippingLabel: String {
-        return NSLocalizedString("Shipping", comment: "Shipping label for payment view")
-    }
+    let shippingLabel = NSLocalizedString("Shipping", comment: "Shipping label for payment view")
 
     var shippingValue: String {
         return order.currencySymbol + order.shippingTotal
@@ -87,9 +75,7 @@ class OrderDetailsViewModel {
         return Double(order.totalTax) != 0 ? order.currencySymbol + order.totalTax : nil
     }
 
-    var totalLabel: String {
-        return NSLocalizedString("Total", comment: "Total label for payment view")
-    }
+    let totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
 
     var totalValue: String {
         return order.currencySymbol + order.total
@@ -97,6 +83,22 @@ class OrderDetailsViewModel {
 
     var paymentSummary: String {
         return NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
+    }
+
+    let addNoteIcon = Gridicon.iconOfType(.addOutline)
+
+    let addNoteText = NSLocalizedString("Add a note", comment: "Button text for adding a new order note")
+
+    var orderNotes: [OrderNoteViewModel] {
+        var array = [OrderNoteViewModel]()
+        if let allNotes = notes {
+            for note in allNotes {
+                let noteViewModel = OrderNoteViewModel(with: note)
+                array.append(noteViewModel)
+            }
+        }
+
+        return array
     }
 
     /// MARK: Private

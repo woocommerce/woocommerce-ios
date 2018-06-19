@@ -17,6 +17,24 @@ class TwoColumnLabelView: UIView {
         }
     }
 
+    var leftText: String? {
+        get {
+            return leftColumn.text
+        }
+        set {
+            leftColumn.text = newValue
+        }
+    }
+
+    var rightText: String? {
+        get {
+            return rightColumn.text
+        }
+        set {
+            rightColumn.text = newValue
+        }
+    }
+
     func refreshStyle(mode: Mode) {
         switch mode {
         case .body:
@@ -25,6 +43,8 @@ class TwoColumnLabelView: UIView {
         case .title:
             leftColumn.applyTitleStyle()
             rightColumn.applyTitleStyle()
+            topConstraint.constant = Constants.topConstant
+            bottomConstraint.constant = Constants.bottomConstant
         }
     }
 
@@ -36,25 +56,9 @@ class TwoColumnLabelView: UIView {
     class func makeFromNib() -> TwoColumnLabelView {
         return Bundle.main.loadNibNamed("TwoColumnLabelView", owner: self, options: nil)?.first as! TwoColumnLabelView
     }
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
 }
 
 extension TwoColumnLabelView {
-    func configure(leftText: String?, rightText: String?) {
-        leftColumn.text = leftText
-        rightColumn.text = rightText
-    }
-
-    func configureWithTitleStyle(leftText: String?, rightText: String?) {
-        mode = .title
-        topConstraint.constant = Constants.topConstant
-        bottomConstraint.constant = Constants.bottomConstant
-        configure(leftText: leftText, rightText: rightText)
-    }
-
     struct Constants {
         static let topConstant = CGFloat(14)
         static let bottomConstant = CGFloat(20)

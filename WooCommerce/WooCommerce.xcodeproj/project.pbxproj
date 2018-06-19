@@ -57,17 +57,17 @@
 		CE1CCB402056F21C000EE3AC /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* Style.swift */; };
 		CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = CE1CCB4620570A6B000EE3AC /* en.lproj */; };
 		CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */; };
-		CE1EC8D720B75FBA009762BF /* order-1112.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8D620B75FBA009762BF /* order-1112.json */; };
-		CE1EC8D920B75FF7009762BF /* order-1107.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8D820B75FF7009762BF /* order-1107.json */; };
-		CE1EC8DB20B76088009762BF /* order-notes-1107.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8DA20B76088009762BF /* order-notes-1107.json */; };
-		CE1EC8DD20B76636009762BF /* order-1044.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8DC20B76636009762BF /* order-1044.json */; };
-		CE1EC8DF20B76651009762BF /* order-notes-1044.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8DE20B76651009762BF /* order-notes-1044.json */; };
 		CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */; };
 		CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */; };
 		CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */; };
 		CE1EC8CA20B479F1009762BF /* TwoColumnLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */; };
 		CE1EC8CF20B6FD53009762BF /* FootnoteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8CE20B6FD53009762BF /* FootnoteView.xib */; };
 		CE1EC8D120B6FE39009762BF /* FootnoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8D020B6FE39009762BF /* FootnoteView.swift */; };
+		CE1EC8D720B75FBA009762BF /* order-1112.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8D620B75FBA009762BF /* order-1112.json */; };
+		CE1EC8D920B75FF7009762BF /* order-1107.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8D820B75FF7009762BF /* order-1107.json */; };
+		CE1EC8DB20B76088009762BF /* order-notes-1107.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8DA20B76088009762BF /* order-notes-1107.json */; };
+		CE1EC8DD20B76636009762BF /* order-1044.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8DC20B76636009762BF /* order-1044.json */; };
+		CE1EC8DF20B76651009762BF /* order-notes-1044.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8DE20B76651009762BF /* order-notes-1044.json */; };
 		CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */; };
 		CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F51262064345B00C6C810 /* UIColor+Helpers.swift */; };
 		CE1F512920697F0100C6C810 /* UIFont+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */; };
@@ -166,17 +166,17 @@
 		CE1CCB3F2056F21C000EE3AC /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		CE1CCB4620570A6B000EE3AC /* en.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = en.lproj; sourceTree = "<group>"; };
 		CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCell.swift; sourceTree = "<group>"; };
-		CE1EC8D620B75FBA009762BF /* order-1112.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-1112.json"; sourceTree = "<group>"; };
-		CE1EC8D820B75FF7009762BF /* order-1107.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-1107.json"; sourceTree = "<group>"; };
-		CE1EC8DA20B76088009762BF /* order-notes-1107.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-notes-1107.json"; sourceTree = "<group>"; };
-		CE1EC8DC20B76636009762BF /* order-1044.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-1044.json"; sourceTree = "<group>"; };
-		CE1EC8DE20B76651009762BF /* order-notes-1044.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-notes-1044.json"; sourceTree = "<group>"; };
 		CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTableViewCell.swift; sourceTree = "<group>"; };
 		CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaymentTableViewCell.xib; sourceTree = "<group>"; };
 		CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnLabelView.xib; sourceTree = "<group>"; };
 		CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnLabelView.swift; sourceTree = "<group>"; };
 		CE1EC8CE20B6FD53009762BF /* FootnoteView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = FootnoteView.xib; path = Classes/ViewRelated/ReusableViews/FootnoteView.xib; sourceTree = SOURCE_ROOT; };
 		CE1EC8D020B6FE39009762BF /* FootnoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FootnoteView.swift; sourceTree = "<group>"; };
+		CE1EC8D620B75FBA009762BF /* order-1112.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-1112.json"; sourceTree = "<group>"; };
+		CE1EC8D820B75FF7009762BF /* order-1107.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-1107.json"; sourceTree = "<group>"; };
+		CE1EC8DA20B76088009762BF /* order-notes-1107.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-notes-1107.json"; sourceTree = "<group>"; };
+		CE1EC8DC20B76636009762BF /* order-1044.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-1044.json"; sourceTree = "<group>"; };
+		CE1EC8DE20B76651009762BF /* order-notes-1044.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-notes-1044.json"; sourceTree = "<group>"; };
 		CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Helpers.swift"; sourceTree = "<group>"; };
 		CE1F51262064345B00C6C810 /* UIColor+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Helpers.swift"; sourceTree = "<group>"; };
 		CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Helpers.swift"; sourceTree = "<group>"; };
@@ -645,7 +645,6 @@
 			inputPaths = (
 				"${SRCROOT}/../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework",
-				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Automattic-Tracks-iOS/AutomatticTracks.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
@@ -668,7 +667,6 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OnePasswordExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AutomatticTracks.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
@@ -804,7 +802,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				SECRETS_PATH = "$HOME/.woo_app_credentials.json";
 			};
 			name = Debug;
 		};
@@ -813,7 +811,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				SECRETS_PATH = "$HOME/.woo_app_credentials.json";
 			};
 			name = Release;
 		};
@@ -945,7 +943,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce Development";
-				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				SECRETS_PATH = "$HOME/.woo_app_credentials.json";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -969,7 +967,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce App Store";
-				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				SECRETS_PATH = "$HOME/.woo_app_credentials.json";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";

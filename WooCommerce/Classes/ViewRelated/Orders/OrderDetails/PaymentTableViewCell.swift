@@ -66,8 +66,4 @@ extension PaymentTableViewCell {
         separatorLine.backgroundColor = StyleManager.cellSeparatorColor
         footerValue.text = detailsViewModel.paymentSummary
     }
-
-    struct Constants {
-        static let topConstant = CGFloat(14)
-    }
 }

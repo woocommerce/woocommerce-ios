@@ -25,6 +25,7 @@
 		B59E11DA20A9D00C004121A4 /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */; };
 		B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */; };
 		B59E11E020A9F5E6004121A4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DF20A9F5E6004121A4 /* Constants.swift */; };
+		B5DC3CAA20D1B2FE0063AC41 /* WooCommerce.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -289,6 +290,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5DC3CAA20D1B2FE0063AC41 /* WooCommerce.xcdatamodeld in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -525,11 +527,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = StorageTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MACH_O_TYPE = mh_dylib;
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.StorageTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -546,11 +550,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = StorageTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MACH_O_TYPE = mh_dylib;
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.StorageTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

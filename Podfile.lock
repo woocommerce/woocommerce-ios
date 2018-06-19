@@ -66,6 +66,7 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 4.7)
   - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.3`)
+  - CocoaLumberjack (~> 3.4)
   - Crashlytics (~> 3.10)
   - Gridicons (= 0.15)
   - KeychainAccess (~> 3.1)
@@ -134,6 +135,6 @@ SPEC CHECKSUMS:
   WordPressUI: f2348649b63b5a9392a72b1d2f46dd1d72e80ad9
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
 
-PODFILE CHECKSUM: 9e88c6035703ae23fe97a113810d175b9a9bca25
+PODFILE CHECKSUM: dbdece70d54d53b4fc1d8221c0a7627e0c17857d
 
 COCOAPODS: 1.5.2

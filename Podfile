@@ -29,6 +29,7 @@ target 'WooCommerce' do
   pod 'Alamofire', '~> 4.7'
   pod 'Crashlytics', '~> 3.10'
   pod 'KeychainAccess', '~> 3.1'
+  pod 'CocoaLumberjack', '~> 3.4'
 end
 
 

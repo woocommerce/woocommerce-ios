@@ -20,7 +20,7 @@ struct Order: Decodable {
     let items: [OrderItem]
     let currency: String
     let total: String
-    let notes: [OrderNote]?
+    var notes: [OrderNote]?
     let customerID: Int
     let customerNote: String?
     let couponLines: [CouponLine]?

@@ -64,6 +64,7 @@ target 'Networking' do
   # ==================
   #
   pod 'Alamofire', '~> 4.7'
+  pod 'CocoaLumberjack', '~> 3.4'
 
 
   # Unit Tests

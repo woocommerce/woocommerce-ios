@@ -45,6 +45,21 @@ class CredentialsManagerTests: XCTestCase {
         let retrieved = manager.loadDefaultCredentials()
         XCTAssertNil(retrieved)
     }
+
+    /// Verifies that `saveDefaultCredentials` overrides previous stored credentials
+    ///
+    func testDefaultCredentialsCanBeUpdated() {
+        manager.saveDefaultCredentials(Constants.testingCredentials)
+
+        let retrieved = manager.loadDefaultCredentials()
+        XCTAssertEqual(retrieved, Constants.testingCredentials)
+
+        let updated = Credentials(authToken: "5678", username: Constants.testingCredentials.username)
+        manager.saveDefaultCredentials(updated)
+
+        let reloaded = manager.loadDefaultCredentials()
+        XCTAssertEqual(reloaded, updated)
+    }
 }
 
 

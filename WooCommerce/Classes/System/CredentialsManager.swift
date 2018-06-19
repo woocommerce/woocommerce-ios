@@ -9,7 +9,7 @@ class CredentialsManager {
 
     /// Shared Instance!
     ///
-    static let shared = CredentialsManager()
+    static let shared = CredentialsManager(serviceName: Constants.defaultServiceName)
 
     /// KeychainAccess shared instance
     ///
@@ -31,7 +31,7 @@ class CredentialsManager {
     /// Designated Initializer: Exposed only for unit testing purposes. For Main App Usage, please, consider using the
     /// shared instance instead!
     ///
-    init(serviceName: String = Constants.defaultServiceName) {
+    init(serviceName: String) {
         keychain = Keychain(service: serviceName).accessibility(.afterFirstUnlock)
     }
 }
@@ -41,6 +41,12 @@ class CredentialsManager {
 //
 extension CredentialsManager {
 
+    /// Indicates if we'd need Default Credentials to be set!
+    ///
+    var needsDefaultCredentials: Bool {
+        return loadDefaultCredentials() == nil
+    }
+
     /// Returns the Default Credentials, if any.
     ///
     func loadDefaultCredentials() -> Credentials? {
@@ -48,12 +54,16 @@ extension CredentialsManager {
             return nil
         }
 
-        return Credentials(authToken: authToken, username: username)
+        return Credentials(username: username, authToken: authToken)
     }
 
     /// Persists the Credentials's authToken in the keychain, and username in User Defaults.
     ///
     func saveDefaultCredentials(_ credentials: Credentials) {
+        guard defaultUsername != credentials.username || keychain[credentials.username] != credentials.username else {
+            return
+        }
+
         keychain[credentials.username] = credentials.authToken
         defaultUsername = credentials.username
     }

@@ -9,7 +9,7 @@ import Networking
 //
 class StoresManager {
 
-    ///
+    /// Active (Internal) State
     ///
     private static var state: StoresManagerState = initialState() {
         didSet {
@@ -38,7 +38,7 @@ class StoresManager {
     }
 
 
-    ///
+    /// Forwards the Action to the current State.
     ///
     class func dispatch(_ action: Action) {
         state.onAction(action)
@@ -50,7 +50,7 @@ class StoresManager {
 //
 private extension StoresManager {
 
-    ///
+    /// Returns the Initial State, depending on whether we've got credentials or not.
     ///
     class func initialState() -> StoresManagerState {
         guard let credentials = CredentialsManager.shared.loadDefaultCredentials() else {
@@ -66,11 +66,11 @@ private extension StoresManager {
 //
 private protocol StoresManagerState {
 
-    ///
+    /// Executed whenever the State is activated.
     ///
     func didEnter()
 
-    ///
+    /// Executed whenever an Action is received
     ///
     func onAction(_ action: Action)
 
@@ -88,26 +88,26 @@ private protocol StoresManagerState {
 //
 private class DeauthenticatedState: StoresManagerState {
 
-    ///
+    /// This method should run only when the app got deauthenticated.
     ///
     func didEnter() {
         CredentialsManager.shared.removeDefaultCredentials()
         AppDelegate.shared.displayAuthenticator()
     }
 
-    ///
+    /// NO-OP: During deauth method, we're not running any actions.
     ///
     func onAction(_ action: Action) { }
 
 
-    ///
+    /// Returns the next valid state, whenever there was a deauth event.
     ///
     func deauthenticate() -> StoresManagerState {
         return self
     }
 
 
-    ///
+    /// Returns the next valid state, whenever there was an auth event.
     ///
     func authenticate(with credentials: Credentials) -> StoresManagerState {
         return AuthenticatedState(credentials: credentials)
@@ -119,20 +119,20 @@ private class DeauthenticatedState: StoresManagerState {
 //
 private class AuthenticatedState: StoresManagerState {
 
-    ///
+    /// Active Credentials
     ///
     private let credentials: Credentials
 
-    ///
+    /// Dispatcher: Glues all of the Stores!
     ///
     private let dispatcher = Dispatcher.global
 
-    ///
+    /// Retains all of the active Services
     ///
     private let services: [ActionsProcessor]
 
 
-    ///
+    /// Designated Initializer
     ///
     init(credentials: Credentials) {
         let storageManager = CoreDataManager.global
@@ -146,28 +146,28 @@ private class AuthenticatedState: StoresManagerState {
     }
 
 
-    ///
+    /// Executed whenever the state is activated.
     ///
     func didEnter() {
         CredentialsManager.shared.saveDefaultCredentials(credentials)
     }
 
 
-    ///
+    /// Convenience Method: Forwards the received action to the active dispatcher.
     ///
     func onAction(_ action: Action) {
         dispatcher.dispatch(action)
     }
 
 
-    ///
+    /// Returns the next valid state, whenever there was a deauth event.
     ///
     func deauthenticate() -> StoresManagerState {
         return DeauthenticatedState()
     }
 
 
-    ///
+    /// Returns the next valid state, whenever there was an auth event.
     ///
     func authenticate(with credentials: Credentials) -> StoresManagerState {
         return AuthenticatedState(credentials: credentials)

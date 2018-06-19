@@ -5,8 +5,6 @@ class OrderDetailsViewModel {
     private let order: Order
     private let couponLines: [CouponLine]?
 
-    let items: [OrderItem]
-    let fulfillTitle: String
     init(order: Order) {
         self.order = order
         self.couponLines = order.couponLines
@@ -19,6 +17,12 @@ class OrderDetailsViewModel {
     var dateCreated: String {
         return String.localizedStringWithFormat(NSLocalizedString("Created %@", comment: "Order created date"), order.dateCreatedString) //FIXME: use a formatted date instead of raw timestamp
     }
+
+    var items: [OrderItem] {
+        return order.items
+    }
+
+    let fulfillTitle = NSLocalizedString("Fulfill order", comment: "Fulfill order button title")
 
     var paymentStatus: String {
         return order.status.description
@@ -105,7 +109,5 @@ class OrderDetailsViewModel {
         }
 
         return NSLocalizedString("Discount", comment: "Discount label for payment view") + " (" + output + ")"
-        items = order.items
-        fulfillTitle = NSLocalizedString("Fulfill order", comment: "Fulfill order button title")
     }
 }

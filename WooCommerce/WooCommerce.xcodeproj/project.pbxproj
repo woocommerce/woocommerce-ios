@@ -52,6 +52,8 @@
 		B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFB720BC510200DB0E8C /* UIImage+Woo.swift */; };
 		B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFB920BC515600DB0E8C /* UIColor+Woo.swift */; };
 		B5D1AFC020BC67C200DB0E8C /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
+		B5EE26C020A5EE6600468622 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5EE26BF20A5EE6600468622 /* Storage.framework */; };
+		B5EE26C220A5EE8100468622 /* Storage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5EE26BF20A5EE6600468622 /* Storage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CE17C2E220ACA06800AFBD20 /* BillingDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE17C2E020ACA06800AFBD20 /* BillingDetailsTableViewCell.swift */; };
 		CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE17C2E120ACA06800AFBD20 /* BillingDetailsTableViewCell.xib */; };
 		CE1CCB402056F21C000EE3AC /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* Style.swift */; };
@@ -518,7 +520,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = Automattic;
 				TargetAttributes = {
 					B55D4C0F20B612F300D7A50F = {
@@ -800,7 +802,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SECRETS_PATH = "$HOME/.woo_app_credentials.json";
+				SECRETS_PATH = $HOME/.woo_app_credentials.json;
 			};
 			name = Debug;
 		};
@@ -809,7 +811,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SECRETS_PATH = "$HOME/.woo_app_credentials.json";
+				SECRETS_PATH = $HOME/.woo_app_credentials.json;
 			};
 			name = Release;
 		};
@@ -941,7 +943,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce Development";
-				SECRETS_PATH = "$HOME/.woo_app_credentials.json";
+				SECRETS_PATH = $HOME/.woo_app_credentials.json;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -965,7 +967,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce App Store";
-				SECRETS_PATH = "$HOME/.woo_app_credentials.json";
+				SECRETS_PATH = $HOME/.woo_app_credentials.json;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";

@@ -73,10 +73,10 @@
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="dqG-xo-5BL" firstAttribute="top" secondItem="Q5b-zU-7fY" secondAttribute="top" id="3JV-to-qqx"/>
-                                    <constraint firstAttribute="bottom" secondItem="dqG-xo-5BL" secondAttribute="bottom" id="7HZ-2O-N35"/>
-                                    <constraint firstAttribute="trailing" secondItem="dqG-xo-5BL" secondAttribute="trailing" id="CaG-2E-b4I"/>
-                                    <constraint firstItem="dqG-xo-5BL" firstAttribute="leading" secondItem="Q5b-zU-7fY" secondAttribute="leading" id="LXA-BI-hrf"/>
+                                    <constraint firstItem="dqG-xo-5BL" firstAttribute="top" secondItem="Q5b-zU-7fY" secondAttribute="top" priority="800" id="3JV-to-qqx"/>
+                                    <constraint firstAttribute="bottom" secondItem="dqG-xo-5BL" secondAttribute="bottom" priority="800" id="7HZ-2O-N35"/>
+                                    <constraint firstAttribute="trailing" secondItem="dqG-xo-5BL" secondAttribute="trailing" priority="800" id="CaG-2E-b4I"/>
+                                    <constraint firstItem="dqG-xo-5BL" firstAttribute="leading" secondItem="Q5b-zU-7fY" secondAttribute="leading" priority="800" id="LXA-BI-hrf"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MYg-Hq-mwx" userLabel="shippingView">
@@ -131,10 +131,10 @@
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="Dmz-oH-Z9g" secondAttribute="trailing" id="7gB-gm-450"/>
-                                    <constraint firstAttribute="bottom" secondItem="Dmz-oH-Z9g" secondAttribute="bottom" id="A67-cb-9Wa"/>
-                                    <constraint firstItem="Dmz-oH-Z9g" firstAttribute="top" secondItem="BAA-Mv-unS" secondAttribute="top" id="UNm-q5-HmI"/>
-                                    <constraint firstItem="Dmz-oH-Z9g" firstAttribute="leading" secondItem="BAA-Mv-unS" secondAttribute="leading" id="hQt-g6-22g"/>
+                                    <constraint firstAttribute="trailing" secondItem="Dmz-oH-Z9g" secondAttribute="trailing" priority="800" id="7gB-gm-450"/>
+                                    <constraint firstAttribute="bottom" secondItem="Dmz-oH-Z9g" secondAttribute="bottom" priority="800" id="A67-cb-9Wa"/>
+                                    <constraint firstItem="Dmz-oH-Z9g" firstAttribute="top" secondItem="BAA-Mv-unS" secondAttribute="top" priority="800" id="UNm-q5-HmI"/>
+                                    <constraint firstItem="Dmz-oH-Z9g" firstAttribute="leading" secondItem="BAA-Mv-unS" secondAttribute="leading" priority="800" id="hQt-g6-22g"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K4G-Fo-ooM" userLabel="totalView">
@@ -208,27 +208,23 @@
                         </subviews>
                         <constraints>
                             <constraint firstItem="bJ7-xj-eoW" firstAttribute="leading" secondItem="QyU-yD-WDZ" secondAttribute="leading" id="1TF-wj-7YY"/>
-                            <constraint firstItem="MYg-Hq-mwx" firstAttribute="top" secondItem="Q5b-zU-7fY" secondAttribute="bottom" constant="4" id="2uL-C8-wJC"/>
-                            <constraint firstItem="BAA-Mv-unS" firstAttribute="top" secondItem="MYg-Hq-mwx" secondAttribute="bottom" constant="4" id="5GW-iM-K9c"/>
-                            <constraint firstItem="Q5b-zU-7fY" firstAttribute="top" secondItem="tfd-et-ehF" secondAttribute="bottom" constant="4" id="B6p-sM-ELM"/>
+                            <constraint firstItem="MYg-Hq-mwx" firstAttribute="top" secondItem="Q5b-zU-7fY" secondAttribute="bottom" priority="800" constant="4" id="2uL-C8-wJC"/>
+                            <constraint firstItem="BAA-Mv-unS" firstAttribute="top" secondItem="MYg-Hq-mwx" secondAttribute="bottom" priority="800" constant="4" id="5GW-iM-K9c"/>
                             <constraint firstAttribute="trailing" secondItem="bJ7-xj-eoW" secondAttribute="trailing" id="CFT-45-1tj"/>
-                            <constraint firstItem="K4G-Fo-ooM" firstAttribute="top" secondItem="BAA-Mv-unS" secondAttribute="bottom" constant="4" id="LHY-vu-PvN"/>
+                            <constraint firstItem="K4G-Fo-ooM" firstAttribute="top" secondItem="BAA-Mv-unS" secondAttribute="bottom" priority="800" constant="4" id="LHY-vu-PvN"/>
                             <constraint firstItem="bJ7-xj-eoW" firstAttribute="top" secondItem="K4G-Fo-ooM" secondAttribute="bottom" constant="4" id="Rbf-QL-bsq"/>
                             <constraint firstAttribute="trailing" secondItem="MYg-Hq-mwx" secondAttribute="trailing" id="TBI-BM-5f4"/>
                             <constraint firstItem="MYg-Hq-mwx" firstAttribute="leading" secondItem="QyU-yD-WDZ" secondAttribute="leading" id="V6y-Ck-4N2"/>
-                            <constraint firstItem="Q5b-zU-7fY" firstAttribute="leading" secondItem="QyU-yD-WDZ" secondAttribute="leading" id="WxF-73-ge1"/>
-                            <constraint firstItem="BAA-Mv-unS" firstAttribute="top" secondItem="MYg-Hq-mwx" secondAttribute="bottom" constant="4" id="X1T-ki-MKr"/>
+                            <constraint firstItem="Q5b-zU-7fY" firstAttribute="leading" secondItem="QyU-yD-WDZ" secondAttribute="leading" priority="800" id="WxF-73-ge1"/>
                             <constraint firstItem="tfd-et-ehF" firstAttribute="leading" secondItem="QyU-yD-WDZ" secondAttribute="leading" id="e9b-u3-A3o"/>
                             <constraint firstItem="tfd-et-ehF" firstAttribute="top" secondItem="QyU-yD-WDZ" secondAttribute="top" id="eFm-wJ-DZD"/>
-                            <constraint firstItem="MYg-Hq-mwx" firstAttribute="top" secondItem="Q5b-zU-7fY" secondAttribute="bottom" constant="4" id="f8R-ta-dJ8"/>
                             <constraint firstAttribute="trailing" secondItem="tfd-et-ehF" secondAttribute="trailing" id="gyA-Sr-LBQ"/>
-                            <constraint firstItem="Q5b-zU-7fY" firstAttribute="top" secondItem="tfd-et-ehF" secondAttribute="bottom" constant="4" id="jIr-NW-2C1"/>
+                            <constraint firstItem="Q5b-zU-7fY" firstAttribute="top" secondItem="tfd-et-ehF" secondAttribute="bottom" priority="800" constant="4" id="jIr-NW-2C1"/>
                             <constraint firstAttribute="trailing" secondItem="K4G-Fo-ooM" secondAttribute="trailing" id="jTq-2i-ozc"/>
-                            <constraint firstAttribute="trailing" secondItem="Q5b-zU-7fY" secondAttribute="trailing" id="kaX-32-fed"/>
-                            <constraint firstItem="BAA-Mv-unS" firstAttribute="leading" secondItem="QyU-yD-WDZ" secondAttribute="leading" id="pFU-PB-CSS"/>
-                            <constraint firstItem="K4G-Fo-ooM" firstAttribute="top" secondItem="BAA-Mv-unS" secondAttribute="bottom" constant="4" id="plM-O1-MY7"/>
+                            <constraint firstAttribute="trailing" secondItem="Q5b-zU-7fY" secondAttribute="trailing" priority="800" id="kaX-32-fed"/>
+                            <constraint firstItem="BAA-Mv-unS" firstAttribute="leading" secondItem="QyU-yD-WDZ" secondAttribute="leading" priority="800" id="pFU-PB-CSS"/>
                             <constraint firstItem="K4G-Fo-ooM" firstAttribute="leading" secondItem="QyU-yD-WDZ" secondAttribute="leading" id="qpJ-Mq-2TX"/>
-                            <constraint firstAttribute="trailing" secondItem="BAA-Mv-unS" secondAttribute="trailing" id="rHo-rR-9g9"/>
+                            <constraint firstAttribute="trailing" secondItem="BAA-Mv-unS" secondAttribute="trailing" priority="800" id="rHo-rR-9g9"/>
                             <constraint firstAttribute="bottom" secondItem="bJ7-xj-eoW" secondAttribute="bottom" id="x7r-6M-kgO"/>
                             <constraint firstItem="bJ7-xj-eoW" firstAttribute="top" secondItem="K4G-Fo-ooM" secondAttribute="bottom" constant="4" id="yNc-0h-tOe"/>
                         </constraints>

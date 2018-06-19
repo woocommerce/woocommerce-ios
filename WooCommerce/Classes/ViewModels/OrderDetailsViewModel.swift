@@ -41,12 +41,10 @@ class OrderDetailsViewModel {
         return shippingViewModel.formattedAddress
     }
 
-    lazy var billingViewModel = ContactViewModel(with: order.billingAddress, contactType: ContactType.billing)
-    lazy var billingAddress = billingViewModel.formattedAddress
+    private(set) lazy var billingViewModel = ContactViewModel(with: order.billingAddress, contactType: ContactType.billing)
+    private(set) lazy var billingAddress = billingViewModel.formattedAddress
 
-    var subtotalLabel: String {
-        return NSLocalizedString("Subtotal", comment: "Subtotal label for payment view")
-    }
+    let subtotalLabel = NSLocalizedString("Subtotal", comment: "Subtotal label for payment view")
 
     var subtotalValue: String {
         return order.currencySymbol + order.subtotal

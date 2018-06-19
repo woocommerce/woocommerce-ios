@@ -32,6 +32,8 @@ class OrderDetailsViewController: UIViewController {
     }
 
     func configureTableView() {
+        tableView.estimatedRowHeight = Constants.rowHeight
+        tableView.rowHeight = UITableViewAutomaticDimension
         configureSections()
         configureNibs()
     }
@@ -52,15 +54,19 @@ class OrderDetailsViewController: UIViewController {
         }
         let orderNotesSection = Section(title: NSLocalizedString("ORDER NOTES", comment: "Order notes section title"), footer: nil, rows: noteRows)
 
+        let paymentSection = Section(title: NSLocalizedString("PAYMENT", comment: "Payment section title"), footer: nil, rows: [.payment])
+
         // FIXME: this is temporary
         // the API response always sends customer note data
         // if there is no customer note it sends an empty string
         // but order has customerNote as an optional property right now
         guard let customerNote = order.customerNote,
             !customerNote.isEmpty else {
+            sections = [summarySection, infoSection, paymentSection]
             sections = [summarySection, infoSection, orderNotesSection]
             return
         }
+        sections = [summarySection, customerNoteSection, infoSection, paymentSection]
         sections = [summarySection, customerNoteSection, infoSection, orderNotesSection]
     }
 
@@ -168,6 +174,8 @@ extension OrderDetailsViewController {
             cell.configure(image: viewModel.addNoteIcon, text: viewModel.addNoteText)
         case let cell as OrderNoteTableViewCell where row == .orderNote:
             cell.configure(with: viewModel.orderNotes[indexPath.row - 1])
+        case let cell as PaymentTableViewCell:
+            cell.configure(with: viewModel)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -294,6 +302,7 @@ private extension OrderDetailsViewController {
         case billingEmail
         case addOrderNote
         case orderNote
+        case payment
 
         var reuseIdentifier: String {
             switch self {
@@ -313,6 +322,8 @@ private extension OrderDetailsViewController {
                 return AddItemTableViewCell.reuseIdentifier
             case .orderNote:
                 return OrderNoteTableViewCell.reuseIdentifier
+            case .payment:
+                return PaymentTableViewCell.reuseIdentifier
             }
         }
     }

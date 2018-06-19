@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
 		B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112D2049E27A007D25DC /* DashboardViewController.swift */; };
 		B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112E2049E27A007D25DC /* OrdersViewController.swift */; };
 		B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112F2049E27A007D25DC /* SettingsViewController.swift */; };
@@ -32,10 +33,6 @@
 		B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */ = {isa = PBXBuildFile; fileRef = B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */; };
 		B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55D4C0520B6027100D7A50F /* AuthenticationManager.swift */; };
 		B55D4C2720B717C000D7A50F /* UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55D4C2620B717C000D7A50F /* UserAgent.swift */; };
-		B5650B0920A4CD7F009702D0 /* FluxSumi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B546CCF3209363A5007CDA5F /* FluxSumi.framework */; };
-		B5650B0A20A4CD7F009702D0 /* FluxSumi.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B546CCF3209363A5007CDA5F /* FluxSumi.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		B5650B0E20A4CD7F009702D0 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B557D9FD209753BB005962F4 /* Networking.framework */; };
-		B5650B0F20A4CD7F009702D0 /* Networking.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B557D9FD209753BB005962F4 /* Networking.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */; };
 		B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */; };
 		B56DB3D22049BFAA00D4AA8E /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3D02049BFAA00D4AA8E /* WooCommerce.xcdatamodeld */; };
@@ -45,20 +42,29 @@
 		B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8AC20B88D9900D211DE /* LoginPrologueViewController.swift */; };
 		B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5A8F8AE20B88DCC00D211DE /* LoginPrologueViewController.xib */; };
 		B5BE368E20BED80B00BE0A8C /* SafariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BE368D20BED80B00BE0A8C /* SafariViewController.swift */; };
+		B5C3B5E320D189E60072CB9D /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E220D189E60072CB9D /* Networking.framework */; };
+		B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E420D189EA0072CB9D /* Storage.framework */; };
+		B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E620D189ED0072CB9D /* Yosemite.framework */; };
+		B5C3B5E820D189F30072CB9D /* Networking.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E220D189E60072CB9D /* Networking.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B5C3B5E920D189F70072CB9D /* Yosemite.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E620D189ED0072CB9D /* Yosemite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B5C3B5EA20D189FC0072CB9D /* Storage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E420D189EA0072CB9D /* Storage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5D1AFB320BC445900DB0E8C /* Images.xcassets */; };
 		B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFB720BC510200DB0E8C /* UIImage+Woo.swift */; };
 		B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFB920BC515600DB0E8C /* UIColor+Woo.swift */; };
 		B5D1AFC020BC67C200DB0E8C /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
 		B5EE26C020A5EE6600468622 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5EE26BF20A5EE6600468622 /* Storage.framework */; };
-		B5EE26C120A5EE8100468622 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5EE26BF20A5EE6600468622 /* Storage.framework */; };
 		B5EE26C220A5EE8100468622 /* Storage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5EE26BF20A5EE6600468622 /* Storage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CE17C2E220ACA06800AFBD20 /* BillingDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE17C2E020ACA06800AFBD20 /* BillingDetailsTableViewCell.swift */; };
 		CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE17C2E120ACA06800AFBD20 /* BillingDetailsTableViewCell.xib */; };
 		CE1CCB402056F21C000EE3AC /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* Style.swift */; };
 		CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = CE1CCB4620570A6B000EE3AC /* en.lproj */; };
 		CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */; };
-		CE1EC8D420B75925009762BF /* BuildFile in Sources */ = {isa = PBXBuildFile; };
-		CE1EC8D520B75925009762BF /* BuildFile in Resources */ = {isa = PBXBuildFile; };
+		CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */; };
+		CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */; };
+		CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */; };
+		CE1EC8CA20B479F1009762BF /* TwoColumnLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */; };
+		CE1EC8CF20B6FD53009762BF /* FootnoteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8CE20B6FD53009762BF /* FootnoteView.xib */; };
+		CE1EC8D120B6FE39009762BF /* FootnoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8D020B6FE39009762BF /* FootnoteView.swift */; };
 		CE1EC8D720B75FBA009762BF /* order-1112.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8D620B75FBA009762BF /* order-1112.json */; };
 		CE1EC8D920B75FF7009762BF /* order-1107.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8D820B75FF7009762BF /* order-1107.json */; };
 		CE1EC8DB20B76088009762BF /* order-notes-1107.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8DA20B76088009762BF /* order-notes-1107.json */; };
@@ -91,7 +97,6 @@
 		CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE006032077D1280079161F /* SummaryTableViewCell.swift */; };
 		CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEE006042077D1280079161F /* SummaryTableViewCell.xib */; };
 		CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE006072077D14C0079161F /* OrderDetailsViewController.swift */; };
-		D03928FCB928A909F3675117 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA556E3CCFCFAC2E31799011 /* Pods_WooCommerce.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,9 +123,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B5650B0A20A4CD7F009702D0 /* FluxSumi.framework in Embed Frameworks */,
-				B5650B0F20A4CD7F009702D0 /* Networking.framework in Embed Frameworks */,
-				B5EE26C220A5EE8100468622 /* Storage.framework in Embed Frameworks */,
+				B5C3B5EA20D189FC0072CB9D /* Storage.framework in Embed Frameworks */,
+				B5C3B5E920D189F70072CB9D /* Yosemite.framework in Embed Frameworks */,
+				B5C3B5E820D189F30072CB9D /* Networking.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -128,14 +133,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		4567EA9A7711F9B576BE500C /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
-		8F0FB96B941C02DB9A12C008 /* Pods-WooCommerce.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.debug.xcconfig"; sourceTree = "<group>"; };
+		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
+		90AC1C0B391E04A837BDC64E /* Pods-WooCommerce.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.debug.xcconfig"; sourceTree = "<group>"; };
 		B509112D2049E27A007D25DC /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		B509112E2049E27A007D25DC /* OrdersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrdersViewController.swift; sourceTree = "<group>"; };
 		B509112F2049E27A007D25DC /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B50911332049E493007D25DC /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
-		B546CCF3209363A5007CDA5F /* FluxSumi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FluxSumi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B557D9FD209753BB005962F4 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B557DA1320979904005962F4 /* CustomerNoteTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerNoteTableViewCell.swift; sourceTree = "<group>"; };
 		B557DA1420979904005962F4 /* CustomerNoteTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomerNoteTableViewCell.xib; sourceTree = "<group>"; };
 		B559EBAD20A0BF8E00836CD4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
@@ -159,16 +162,25 @@
 		B5A8F8AC20B88D9900D211DE /* LoginPrologueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPrologueViewController.swift; sourceTree = "<group>"; };
 		B5A8F8AE20B88DCC00D211DE /* LoginPrologueViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginPrologueViewController.xib; sourceTree = "<group>"; };
 		B5BE368D20BED80B00BE0A8C /* SafariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariViewController.swift; sourceTree = "<group>"; };
+		B5C3B5E220D189E60072CB9D /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5C3B5E420D189EA0072CB9D /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5C3B5E620D189ED0072CB9D /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5D1AFB320BC445900DB0E8C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		B5D1AFB720BC510200DB0E8C /* UIImage+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Woo.swift"; sourceTree = "<group>"; };
 		B5D1AFB920BC515600DB0E8C /* UIColor+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Woo.swift"; sourceTree = "<group>"; };
 		B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooConstants.swift; sourceTree = "<group>"; };
-		B5EE26BF20A5EE6600468622 /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE17C2E020ACA06800AFBD20 /* BillingDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		CE17C2E120ACA06800AFBD20 /* BillingDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BillingDetailsTableViewCell.xib; sourceTree = "<group>"; };
 		CE1CCB3F2056F21C000EE3AC /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		CE1CCB4620570A6B000EE3AC /* en.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = en.lproj; sourceTree = "<group>"; };
 		CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCell.swift; sourceTree = "<group>"; };
+		CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTableViewCell.swift; sourceTree = "<group>"; };
+		CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaymentTableViewCell.xib; sourceTree = "<group>"; };
+		CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnLabelView.xib; sourceTree = "<group>"; };
+		CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnLabelView.swift; sourceTree = "<group>"; };
+		CE1EC8CE20B6FD53009762BF /* FootnoteView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = FootnoteView.xib; path = Classes/ViewRelated/ReusableViews/FootnoteView.xib; sourceTree = SOURCE_ROOT; };
+		CE1EC8D020B6FE39009762BF /* FootnoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FootnoteView.swift; sourceTree = "<group>"; };
 		CE1EC8D620B75FBA009762BF /* order-1112.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-1112.json"; sourceTree = "<group>"; };
 		CE1EC8D820B75FF7009762BF /* order-1107.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-1107.json"; sourceTree = "<group>"; };
 		CE1EC8DA20B76088009762BF /* order-notes-1107.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-notes-1107.json"; sourceTree = "<group>"; };
@@ -199,7 +211,6 @@
 		CEE006032077D1280079161F /* SummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCell.swift; sourceTree = "<group>"; };
 		CEE006042077D1280079161F /* SummaryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SummaryTableViewCell.xib; sourceTree = "<group>"; };
 		CEE006072077D14C0079161F /* OrderDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewController.swift; sourceTree = "<group>"; };
-		EA556E3CCFCFAC2E31799011 /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -207,11 +218,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5EE26C020A5EE6600468622 /* Storage.framework in Frameworks */,
-				B5650B0920A4CD7F009702D0 /* FluxSumi.framework in Frameworks */,
-				B5EE26C120A5EE8100468622 /* Storage.framework in Frameworks */,
-				B5650B0E20A4CD7F009702D0 /* Networking.framework in Frameworks */,
-				D03928FCB928A909F3675117 /* Pods_WooCommerce.framework in Frameworks */,
+				B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */,
+				B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */,
+				B5C3B5E320D189E60072CB9D /* Networking.framework in Frameworks */,
+				86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,22 +235,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		580B0381D5FD3CF9393AAD46 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				8F0FB96B941C02DB9A12C008 /* Pods-WooCommerce.debug.xcconfig */,
-				4567EA9A7711F9B576BE500C /* Pods-WooCommerce.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B5EE26BF20A5EE6600468622 /* Storage.framework */,
-				B557D9FD209753BB005962F4 /* Networking.framework */,
-				B546CCF3209363A5007CDA5F /* FluxSumi.framework */,
-				EA556E3CCFCFAC2E31799011 /* Pods_WooCommerce.framework */,
+				B5C3B5E620D189ED0072CB9D /* Yosemite.framework */,
+				B5C3B5E420D189EA0072CB9D /* Storage.framework */,
+				B5C3B5E220D189E60072CB9D /* Networking.framework */,
+				BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -291,9 +292,9 @@
 				B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */,
 				88A44ABE866401E6DB03AC60 /* Frameworks */,
 				B56DB3C72049BFAA00D4AA8E /* Products */,
-				580B0381D5FD3CF9393AAD46 /* Pods */,
 				B559EBAE20A0BF8F00836CD4 /* LICENSE */,
 				B559EBAD20A0BF8E00836CD4 /* README.md */,
+				F4B77A83B2A3D94EA331691B /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -430,10 +431,14 @@
 		CED6021A20B35FBF0032C639 /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
+				CE1EC8D020B6FE39009762BF /* FootnoteView.swift */,
+				CE1EC8CE20B6FD53009762BF /* FootnoteView.xib */,
 				CE1EC8EA20B8A3FF009762BF /* AddItemTableViewCell.swift */,
 				CE1EC8EB20B8A3FF009762BF /* AddItemTableViewCell.xib */,
 				CED6021B20B35FDF0032C639 /* NoResultsTableViewCell.swift */,
 				CED6021C20B35FDF0032C639 /* NoResultsTableViewCell.xib */,
+				CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */,
+				CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -467,8 +472,19 @@
 				CE855360209BA6A700938BDC /* ShowHideSectionFooter.swift */,
 				CE855363209BA6A700938BDC /* ShowHideSectionFooter.xib */,
 				CEE006072077D14C0079161F /* OrderDetailsViewController.swift */,
+				CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */,
+				CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */,
 			);
 			path = OrderDetails;
+			sourceTree = "<group>";
+		};
+		F4B77A83B2A3D94EA331691B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				90AC1C0B391E04A837BDC64E /* Pods-WooCommerce.debug.xcconfig */,
+				33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -478,14 +494,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B56DB3E62049BFAA00D4AA8E /* Build configuration list for PBXNativeTarget "WooCommerce" */;
 			buildPhases = (
-				0B1466AADF9347CBC9D9760E /* [CP] Check Pods Manifest.lock */,
-				B55D4BF820B5CD9300D7A50F /* Generate ApiCredentials */,
+				91990E72B3E1D58AC13D7628 /* [CP] Check Pods Manifest.lock */,
 				B56DB3C22049BFAA00D4AA8E /* Sources */,
 				B56DB3C32049BFAA00D4AA8E /* Frameworks */,
 				B56DB3C42049BFAA00D4AA8E /* Resources */,
-				970A8C75D3A7AB71F6A8D56E /* [CP] Embed Pods Frameworks */,
 				B5650B1020A4CD7F009702D0 /* Embed Frameworks */,
-				5B3552B2BBE1294629C73E91 /* [CP] Copy Pods Resources */,
+				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
+				20B459508F75052BDBC0902F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -522,7 +537,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = Automattic;
 				TargetAttributes = {
 					B55D4C0F20B612F300D7A50F = {
@@ -576,6 +591,7 @@
 				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,
 				CEE005F82077C9690079161F /* order-list.json in Resources */,
 				B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */,
+				CE1EC8CF20B6FD53009762BF /* FootnoteView.xib in Resources */,
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
 				CE855367209BA6A700938BDC /* ShowHideSectionFooter.xib in Resources */,
 				CE1EC8D920B75FF7009762BF /* order-1107.json in Resources */,
@@ -587,8 +603,10 @@
 				CE1EC8DD20B76636009762BF /* order-1044.json in Resources */,
 				CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */,
 				CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */,
+				CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
 				CE1EC8DF20B76651009762BF /* order-notes-1044.json in Resources */,
+				CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */,
 				CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -603,25 +621,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0B1466AADF9347CBC9D9760E /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WooCommerce-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5B3552B2BBE1294629C73E91 /* [CP] Copy Pods Resources */ = {
+		20B459508F75052BDBC0902F /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -639,7 +639,44 @@
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		970A8C75D3A7AB71F6A8D56E /* [CP] Embed Pods Frameworks */ = {
+		91990E72B3E1D58AC13D7628 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WooCommerce-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B55D4C1320B612FE00D7A50F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Credentials/replace_secrets.rb",
+				"$(SRCROOT)/Credentials/ApiCredentials.tpl",
+				"$(SRCROOT)/Credentials/InfoPlist.tpl",
+				"~/.woo_app_credentials.json",
+			);
+			outputPaths = (
+				"$(SRCROOT)/DerivedSources/ApiCredentials.swift",
+				"$(SRCROOT)/DerivedSources/InfoPlist.h",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "DERIVED_PATH=${SOURCE_ROOT}/DerivedSources\nSCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb\n\nCREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl\nCREDS_OUTPUT_PATH=${DERIVED_PATH}/ApiCredentials.swift\n\nPLIST_INPUT_PATH=${SOURCE_ROOT}/Credentials/InfoPlist.tpl\nPLIST_OUTPUT_PATH=${DERIVED_PATH}/InfoPlist.h\n\n## Validate Secrets!\n##\nif [ ! -f $SECRETS_PATH ]\nthen\n    echo \">> Missing Secrets ${SECRETS_PATH}\"\n    exit -1\nfi\n\necho \">> Loading Secrets ${SECRETS_PATH}\"\n\n## Generate the Derived Folder. If needed\n##\nmkdir -p ${DERIVED_PATH}\n\n## Generate ApiCredentials.swift\n##\necho \">> Generating Credentials ${CREDENTIALS_OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${CREDS_INPUT_PATH} -s ${SECRETS_PATH} > ${CREDS_OUTPUT_PATH}\n\n## Generate InfoPlist.h\n##\necho \">> Generating Credentials ${OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${PLIST_INPUT_PATH} -s ${SECRETS_PATH} > ${PLIST_OUTPUT_PATH}\n";
+		};
+		B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -647,7 +684,6 @@
 			inputPaths = (
 				"${SRCROOT}/../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework",
-				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Automattic-Tracks-iOS/AutomatticTracks.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
@@ -670,7 +706,6 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OnePasswordExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AutomatticTracks.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
@@ -695,25 +730,6 @@
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		B55D4C1320B612FE00D7A50F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Credentials/replace_secrets.rb",
-				"$(SRCROOT)/Credentials/ApiCredentials.tpl",
-				"$(SRCROOT)/Credentials/InfoPlist.tpl",
-				"~/.woo_app_credentials.json",
-			);
-			outputPaths = (
-				"$(SRCROOT)/DerivedSources/ApiCredentials.swift",
-				"$(SRCROOT)/DerivedSources/InfoPlist.h",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "DERIVED_PATH=${SOURCE_ROOT}/DerivedSources\nSCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb\n\nCREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl\nCREDS_OUTPUT_PATH=${DERIVED_PATH}/ApiCredentials.swift\n\nPLIST_INPUT_PATH=${SOURCE_ROOT}/Credentials/InfoPlist.tpl\nPLIST_OUTPUT_PATH=${DERIVED_PATH}/InfoPlist.h\n\n## Validate Secrets!\n##\nif [ ! -f $SECRETS_PATH ]\nthen\n    echo \">> Missing Secrets ${SECRETS_PATH}\"\n    exit -1\nfi\n\necho \">> Loading Secrets ${SECRETS_PATH}\"\n\n## Generate the Derived Folder. If needed\n##\nmkdir -p ${DERIVED_PATH}\n\n## Generate ApiCredentials.swift\n##\necho \">> Generating Credentials ${CREDENTIALS_OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${CREDS_INPUT_PATH} -s ${SECRETS_PATH} > ${CREDS_OUTPUT_PATH}\n\n## Generate InfoPlist.h\n##\necho \">> Generating Credentials ${OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${PLIST_INPUT_PATH} -s ${SECRETS_PATH} > ${PLIST_OUTPUT_PATH}\n";
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -736,6 +752,7 @@
 				CE855364209BA6A700938BDC /* ShowHideSectionFooter.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
+				CE1EC8D120B6FE39009762BF /* FootnoteView.swift in Sources */,
 				B557DA1520979904005962F4 /* CustomerNoteTableViewCell.swift in Sources */,
 				CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,
@@ -744,12 +761,13 @@
 				CE1EC8E920B8A3F5009762BF /* OrderNoteViewModel.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
 				CE34DA2520A1ECD6005D8523 /* ContactViewModel.swift in Sources */,
+				CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */,
 				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
 				CE1EC8D420B75925009762BF /* BuildFile in Sources */,
 				CED6021D20B35FDF0032C639 /* NoResultsTableViewCell.swift in Sources */,
 				CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */,
-				CE1EC8E520B8895F009762BF /* BuildFile in Sources */,
+				CE1EC8CA20B479F1009762BF /* TwoColumnLabelView.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				B56DB3D22049BFAA00D4AA8E /* WooCommerce.xcdatamodeld in Sources */,
 				CE1EC8E220B862CB009762BF /* BuildFile in Sources */,
@@ -935,7 +953,7 @@
 		};
 		B56DB3E72049BFAA00D4AA8E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F0FB96B941C02DB9A12C008 /* Pods-WooCommerce.debug.xcconfig */;
+			baseConfigurationReference = 90AC1C0B391E04A837BDC64E /* Pods-WooCommerce.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
@@ -959,7 +977,7 @@
 		};
 		B56DB3E82049BFAA00D4AA8E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4567EA9A7711F9B576BE500C /* Pods-WooCommerce.release.xcconfig */;
+			baseConfigurationReference = 33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";

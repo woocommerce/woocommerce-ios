@@ -29,6 +29,13 @@ xcuserdata/
 *.dSYM.zip
 *.dSYM
 
+## Bundler
+/vendor/bundle/
+.bundle/
+
+## Dependencies
+/vendor/
+
 ## Playgrounds
 timeline.xctimeline
 playground.xcworkspace

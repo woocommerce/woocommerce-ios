@@ -1,20 +1,5 @@
 PODS:
   - 1PasswordExtension (1.8.5)
-  - AFNetworking (3.2.1):
-    - AFNetworking/NSURLSession (= 3.2.1)
-    - AFNetworking/Reachability (= 3.2.1)
-    - AFNetworking/Security (= 3.2.1)
-    - AFNetworking/Serialization (= 3.2.1)
-    - AFNetworking/UIKit (= 3.2.1)
-  - AFNetworking/NSURLSession (3.2.1):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/Reachability (3.2.1)
-  - AFNetworking/Security (3.2.1)
-  - AFNetworking/Serialization (3.2.1)
-  - AFNetworking/UIKit (3.2.1):
-    - AFNetworking/NSURLSession
   - Alamofire (4.7.2)
   - Automattic-Tracks-iOS (0.2.3):
     - CocoaLumberjack (~> 3.4.1)
@@ -64,9 +49,8 @@ PODS:
     - WordPressShared (~> 1.0)
     - WordPressUI (~> 1.0)
     - wpxmlrpc (~> 0.8)
-  - WordPressKit (1.0.6):
-    - AFNetworking (= 3.2.1)
-    - Alamofire (= 4.7.2)
+  - WordPressKit (1.1):
+    - Alamofire (~> 4.7)
     - CocoaLumberjack (= 3.4.2)
     - NSObject-SafeExpectations (= 0.0.3)
     - UIDeviceIdentifier (~> 0.4)
@@ -75,7 +59,7 @@ PODS:
   - WordPressShared (1.0.5):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
-  - WordPressUI (1.0.3)
+  - WordPressUI (1.0.4)
   - wpxmlrpc (0.8.3)
 
 DEPENDENCIES:
@@ -88,7 +72,6 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - 1PasswordExtension
-    - AFNetworking
     - Alamofire
     - CocoaLumberjack
     - Crashlytics
@@ -126,7 +109,6 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
-  AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   Automattic-Tracks-iOS: d8c6c6c1351b1905a73e45f431b15598d71963b5
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
@@ -143,11 +125,11 @@ SPEC CHECKSUMS:
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
   WordPressAuthenticator: 4c802aa18781858253daf984f873e3efe0dac7ef
-  WordPressKit: f62f8e68ce2300d9a8b4c2b7c743c911bbdbd343
+  WordPressKit: a24baaa783c3a221f2d9a51c19318cbb27333373
   WordPressShared: d7fdb0ca9302cf4bc7f3ec0fbe98d0d8eb721438
-  WordPressUI: ebf73505c8957df23a1c9fe565fba553be296dc5
+  WordPressUI: f2348649b63b5a9392a72b1d2f46dd1d72e80ad9
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
 
-PODFILE CHECKSUM: 9049dbd0cd98e7a655f9dafc27c3eb744ac72fc5
+PODFILE CHECKSUM: 1a514306be7bf312acfaeb1ec608a21807147f66
 
-COCOAPODS: 1.5.2
+COCOAPODS: 1.5.3

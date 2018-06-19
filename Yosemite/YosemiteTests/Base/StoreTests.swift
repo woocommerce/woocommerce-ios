@@ -1,5 +1,6 @@
 import XCTest
-@testable import FluxSumi
+@testable import Yosemite
+@testable import Networking
 
 
 // MARK: - Store Unit Tests!
@@ -7,12 +8,14 @@ import XCTest
 class StoreTests: XCTestCase {
 
     let dispatcher = Dispatcher.global
+    let storageManager = MockupStorageManager()
+    let network = MockupNetwork()
     var accountStore: MockupAccountStore!
     var siteStore: MockupSiteStore!
 
     override func setUp() {
-        accountStore = MockupAccountStore()
-        siteStore = MockupSiteStore()
+        accountStore = MockupAccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        siteStore = MockupSiteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
 
@@ -22,7 +25,7 @@ class StoreTests: XCTestCase {
         XCTAssertTrue(accountStore.receivedActions.isEmpty)
         XCTAssertTrue(siteStore.receivedActions.isEmpty)
 
-        dispatcher.dispatch(AccountAction.authenticate)
+        dispatcher.dispatch(MockupAccountAction.authenticate)
         XCTAssertEqual(accountStore.receivedActions.count, 1)
         XCTAssertTrue(siteStore.receivedActions.isEmpty)
     }

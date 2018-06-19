@@ -35,7 +35,8 @@ extension ProductListTableViewCell {
         }
         for item in viewModel.items {
             let itemView = TwoColumnLabelView.makeFromNib()
-            itemView.configure(leftText: item.name, rightText: item.quantity.description)
+            itemView.leftText = item.name
+            itemView.rightText = item.quantity.description
             verticalStackView.addArrangedSubview(itemView)
         }
         let spacerView = IntrinsicHeightView()

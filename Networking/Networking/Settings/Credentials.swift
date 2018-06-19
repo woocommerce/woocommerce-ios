@@ -9,10 +9,16 @@ public struct Credentials: Equatable {
     ///
     public let authToken: String
 
+    /// WordPress.com Username
+    ///
+    public let username: String
+
+
     /// Designated Initializer
     ///
-    public init(authToken: String) {
+    public init(authToken: String, username: String) {
         self.authToken = authToken
+        self.username =  username
     }
 }
 

@@ -127,12 +127,28 @@ private extension AppDelegate {
         authenticationManager.initialize()
     }
 
+    /// Sets up CocoaLumberjack logging.
+    ///
     func setupLogLevel(_ level: DDLogLevel) {
+        DDLog.add(DDOSLogger.sharedInstance) // os_log based, iOS 10+
+
+        let fileLogger: DDFileLogger = DDFileLogger() // File Logger
+        fileLogger.rollingFrequency = TimeInterval(60*60*24)  // 24 hours
+        fileLogger.logFileManager.maximumNumberOfLogFiles = 7
+        DDLog.add(fileLogger)
+
         let rawLevel = Int32(level.rawValue)
 
         WPSharedSetLoggingLevel(rawLevel)
         WPAuthenticatorSetLoggingLevel(rawLevel)
         WPKitSetLoggingLevel(rawLevel)
+
+        // Test print each log level
+        DDLogVerbose("Verbose")
+        DDLogDebug("Debug")
+        DDLogInfo("Info")
+        DDLogWarn("Warn")
+        DDLogError("Error")
     }
 }
 

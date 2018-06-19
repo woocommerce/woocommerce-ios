@@ -28,6 +28,8 @@
 		B50911342049E493007D25DC /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50911332049E493007D25DC /* Order.swift */; };
 		B53B898420D43B2A00EDB467 /* CredentialsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B898320D43B2A00EDB467 /* CredentialsManager.swift */; };
 		B53B898920D450AF00EDB467 /* CredentialsManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B898820D450AF00EDB467 /* CredentialsManagerTests.swift */; };
+		B53B898D20D462A000EDB467 /* StoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B898C20D462A000EDB467 /* StoresManager.swift */; };
+		B54175F220D4C15D0083BB8C /* CoreDataManager+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54175F120D4C15D0083BB8C /* CoreDataManager+Woo.swift */; };
 		B557DA1520979904005962F4 /* CustomerNoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1320979904005962F4 /* CustomerNoteTableViewCell.swift */; };
 		B557DA1620979904005962F4 /* CustomerNoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B557DA1420979904005962F4 /* CustomerNoteTableViewCell.xib */; };
 		B559EBAF20A0BF8F00836CD4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B559EBAD20A0BF8E00836CD4 /* README.md */; };
@@ -135,6 +137,8 @@
 		B50911332049E493007D25DC /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
 		B53B898320D43B2A00EDB467 /* CredentialsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialsManager.swift; sourceTree = "<group>"; };
 		B53B898820D450AF00EDB467 /* CredentialsManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialsManagerTests.swift; sourceTree = "<group>"; };
+		B53B898C20D462A000EDB467 /* StoresManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresManager.swift; sourceTree = "<group>"; };
+		B54175F120D4C15D0083BB8C /* CoreDataManager+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataManager+Woo.swift"; sourceTree = "<group>"; };
 		B557DA1320979904005962F4 /* CustomerNoteTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerNoteTableViewCell.swift; sourceTree = "<group>"; };
 		B557DA1420979904005962F4 /* CustomerNoteTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomerNoteTableViewCell.xib; sourceTree = "<group>"; };
 		B559EBAD20A0BF8E00836CD4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
@@ -257,6 +261,15 @@
 			path = System;
 			sourceTree = "<group>";
 		};
+		B53B898B20D4627A00EDB467 /* Yosemite */ = {
+			isa = PBXGroup;
+			children = (
+				B53B898C20D462A000EDB467 /* StoresManager.swift */,
+				B54175F120D4C15D0083BB8C /* CoreDataManager+Woo.swift */,
+			);
+			path = Yosemite;
+			sourceTree = "<group>";
+		};
 		B55D4BF920B5CDE600D7A50F /* Credentials */ = {
 			isa = PBXGroup;
 			children = (
@@ -345,6 +358,7 @@
 				B509112B2049CFDF007D25DC /* Model */,
 				CE85535B209B5B6A00938BDC /* ViewModels */,
 				B56DB3EF2049C06D00D4AA8E /* ViewRelated */,
+				B53B898B20D4627A00EDB467 /* Yosemite */,
 				B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */,
 			);
 			path = Classes;
@@ -757,6 +771,7 @@
 				CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */,
 				CE263DE6206ACD220015A693 /* NotificationsViewController.swift in Sources */,
 				B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */,
+				B54175F220D4C15D0083BB8C /* CoreDataManager+Woo.swift in Sources */,
 				B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */,
 				B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */,
 				CE17C2E220ACA06800AFBD20 /* BillingDetailsTableViewCell.swift in Sources */,
@@ -789,6 +804,7 @@
 				B50911342049E493007D25DC /* Order.swift in Sources */,
 				B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */,
+				B53B898D20D462A000EDB467 /* StoresManager.swift in Sources */,
 				B5D1AFC020BC67C200DB0E8C /* WooConstants.swift in Sources */,
 				CE1F512920697F0100C6C810 /* UIFont+Helpers.swift in Sources */,
 			);

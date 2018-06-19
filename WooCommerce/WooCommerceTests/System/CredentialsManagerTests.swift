@@ -54,7 +54,7 @@ class CredentialsManagerTests: XCTestCase {
         let retrieved = manager.loadDefaultCredentials()
         XCTAssertEqual(retrieved, Constants.testingCredentials)
 
-        let updated = Credentials(authToken: "5678", username: Constants.testingCredentials.username)
+        let updated = Credentials(username: Constants.testingCredentials.username, authToken: "5678")
         manager.saveDefaultCredentials(updated)
 
         let reloaded = manager.loadDefaultCredentials()
@@ -69,6 +69,6 @@ private extension CredentialsManagerTests {
 
     struct Constants {
         static let testingServiceName = "com.automattic.woocommerce.tests"
-        static let testingCredentials = Credentials(authToken: "1234", username: "lalala")
+        static let testingCredentials = Credentials(username: "lalala", authToken: "1234")
     }
 }

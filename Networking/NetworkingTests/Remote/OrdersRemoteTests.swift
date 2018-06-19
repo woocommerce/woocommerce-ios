@@ -6,10 +6,6 @@ import XCTest
 ///
 class OrdersRemoteTests: XCTestCase {
 
-    /// Dummy Credentials
-    ///
-    let credentials = Credentials(authToken: "Dummy!")
-
     /// Dummy Network Wrapper
     ///
     let network = MockupNetwork()
@@ -33,7 +29,7 @@ class OrdersRemoteTests: XCTestCase {
     /// Verifies that loadAllOrders properly parses the `orders-load-all` sample response.
     ///
     func testLoadAllOrdersProperlyReturnsParsedOrders() {
-        let remote = OrdersRemote(credentials: credentials, network: network)
+        let remote = OrdersRemote(network: network)
         let expectation = self.expectation(description: "Load All Orders")
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
@@ -51,7 +47,7 @@ class OrdersRemoteTests: XCTestCase {
     /// Verifies that loadAllOrders properly relays Networking Layer errors.
     ///
     func testLoadAllOrdersProperlyRelaysNetwokingErrors() {
-        let remote = OrdersRemote(credentials: credentials, network: network)
+        let remote = OrdersRemote(network: network)
         let expectation = self.expectation(description: "Load All Orders")
 
         remote.loadAllOrders(for: sampleSiteID) { orders, error in
@@ -66,7 +62,7 @@ class OrdersRemoteTests: XCTestCase {
     /// Verifies that updateOrder properly parses the `order` sample response.
     ///
     func testUpdateOrderProperlyReturnsParsedOrder() {
-        let remote = OrdersRemote(credentials: credentials, network: network)
+        let remote = OrdersRemote(network: network)
         let expectation = self.expectation(description: "Update Order")
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)", filename: "order")
@@ -83,7 +79,7 @@ class OrdersRemoteTests: XCTestCase {
     /// Verifies that updateOrder properly relays any Networking Layer errors.
     ///
     func testUpdateOrderProperlyRelaysNetwokingErrors() {
-        let remote = OrdersRemote(credentials: credentials, network: network)
+        let remote = OrdersRemote(network: network)
         let expectation = self.expectation(description: "Update Order")
 
         remote.updateOrder(from: sampleSiteID, orderID: sampleOrderID, status: "pending") { (order, error) in

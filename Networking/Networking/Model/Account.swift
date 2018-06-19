@@ -24,6 +24,17 @@ public struct Account: Decodable {
     /// Account's Gravatar
     ///
     public let gravatarUrl: String?
+
+
+    /// Designated Initializer.
+    ///
+    public init(userID: Int, displayName: String, email: String, username: String, gravatarUrl: String?) {
+        self.userID = userID
+        self.displayName = displayName
+        self.email = email
+        self.username = username
+        self.gravatarUrl = gravatarUrl
+    }
 }
 
 

@@ -8,7 +8,7 @@ struct JetpackRequest: URLRequestConvertible  {
 
     /// WordPress.com API Version: By Default, we'll go thru Mark 1.1.
     ///
-    static let wordpressApiVersion =  WordPressAPIVersion.mark1_1
+    static let wordpressApiVersion = WordPressAPIVersion.mark1_1
 
     /// WooCommerce API Version
     ///

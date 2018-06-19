@@ -10,6 +10,10 @@ public protocol StorageType {
     ///
     func allObjects<T: Object>(ofType type: T.Type, matching predicate: NSPredicate?, sortedBy descriptors: [NSSortDescriptor]?) -> [T]
 
+    /// Returns the count of all of the available objects, of a given Type.
+    ///
+    func countObjects<T: Object>(ofType type: T.Type) -> Int
+
     /// Returns the count of objects, of a given Type, matching a specified Predicate.
     ///
     func countObjects<T: Object>(ofType type: T.Type, matching predicate: NSPredicate?) -> Int
@@ -24,7 +28,11 @@ public protocol StorageType {
 
     /// Returns the first available object, of a given kind, matching the specified Predicate.
     ///
-    func firstObject<T: Object>(ofType type: T.Type, matching predicate: NSPredicate) -> T?
+    func firstObject<T: Object>(ofType type: T.Type) -> T?
+
+    /// Returns the first available object, of a given kind, matching the specified Predicate.
+    ///
+    func firstObject<T: Object>(ofType type: T.Type, matching predicate: NSPredicate?) -> T?
 
     /// Inserts a new object of the given Type.
     ///

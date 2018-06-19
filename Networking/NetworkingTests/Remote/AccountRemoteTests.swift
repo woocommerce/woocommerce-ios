@@ -6,10 +6,6 @@ import XCTest
 ///
 class AccountRemoteTests: XCTestCase {
 
-    /// Dummy Credentials
-    ///
-    let credentials = Credentials(authToken: "Dummy!")
-
     /// Dummy Network Wrapper
     ///
     let network = MockupNetwork()
@@ -24,7 +20,7 @@ class AccountRemoteTests: XCTestCase {
     /// Verifies that loadAccountDetails properly parses the `me` sample response.
     ///
     func testLoadAccountDetailsProperlyReturnsParsedAccount() {
-        let remote = AccountRemote(credentials: credentials, network: network)
+        let remote = AccountRemote(network: network)
         let expectation = self.expectation(description: "Load Account Details")
 
         network.simulateResponse(requestUrlSuffix: "me", filename: "me")

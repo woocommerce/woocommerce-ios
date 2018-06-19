@@ -1,123 +1,69 @@
 import UIKit
 
 class PaymentTableViewCell: UITableViewCell {
-    let verticalStackView = UIStackView()
+    @IBOutlet var verticalStackView: UIStackView!
+    @IBOutlet var subtotalView: UIView!
+    @IBOutlet private weak var subtotalLabel: UILabel!
+    @IBOutlet private weak var subtotalValue: UILabel!
+
+    @IBOutlet var discountView: UIView!
+    @IBOutlet private weak var discountLabel: UILabel!
+    @IBOutlet private weak var discountValue: UILabel!
+
+    @IBOutlet var shippingView: UIView!
+    @IBOutlet private weak var shippingLabel: UILabel!
+    @IBOutlet private weak var shippingValue: UILabel!
+
+    @IBOutlet var taxesView: UIView!
+    @IBOutlet private weak var taxesLabel: UILabel!
+    @IBOutlet private weak var taxesValue: UILabel!
+
+    @IBOutlet var totalView: UIView!
+    @IBOutlet private weak var totalLabel: UILabel!
+    @IBOutlet private weak var totalValue: UILabel!
+
+    @IBOutlet var footerView: UIView!
+    @IBOutlet private weak var separatorLine: UIView!
+    @IBOutlet private weak var footerValue: UILabel!
 
     static let reuseIdentifier = "PaymentTableViewCell"
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        verticalStackView.axis = .vertical
-        verticalStackView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(verticalStackView)
-
-        NSLayoutConstraint.activate([
-            verticalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            verticalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            verticalStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.topConstant),
-            verticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-            ])
+        subtotalLabel.applyBodyStyle()
+        subtotalValue.applyBodyStyle()
+        discountLabel.applyBodyStyle()
+        discountValue.applyBodyStyle()
+        shippingLabel.applyBodyStyle()
+        shippingValue.applyBodyStyle()
+        taxesLabel.applyBodyStyle()
+        taxesValue.applyBodyStyle()
+        totalLabel.applyTitleStyle()
+        totalValue.applyTitleStyle()
+        footerValue.applyFootnoteStyle()
     }
 }
 
 extension PaymentTableViewCell {
     func configure(with detailsViewModel: OrderDetailsViewModel) {
-        // Don't re-draw the subviews on an existing table cell
-        if verticalStackView.subviews.count > 0 {
-            return
-        }
-        let subtotalView = buildSubtotalView(with: detailsViewModel)
-        verticalStackView.addArrangedSubview(subtotalView)
+        subtotalLabel.text = detailsViewModel.subtotalLabel
+        subtotalValue.text = detailsViewModel.subtotalValue
 
-        let discountView = buildDiscountView(with: detailsViewModel)
-        if let discountSubview = discountView {
-            verticalStackView.addArrangedSubview(discountSubview)
-        }
+        discountLabel.text = detailsViewModel.discountLabel
+        discountValue.text = detailsViewModel.discountValue
+        discountView.isHidden = detailsViewModel.discountValue == nil
 
-        let shippingView = buildShippingView(with: detailsViewModel)
-        verticalStackView.addArrangedSubview(shippingView)
+        shippingLabel.text = detailsViewModel.shippingLabel
+        shippingValue.text = detailsViewModel.shippingValue
 
-        let taxesView = buildTaxesView(with: detailsViewModel)
-        if let taxesSubview = taxesView {
-            verticalStackView.addArrangedSubview(taxesSubview)
-        }
+        taxesLabel.text = detailsViewModel.taxesLabel
+        taxesValue.text = detailsViewModel.taxesValue
+        taxesView.isHidden = detailsViewModel.taxesValue == nil
 
-        let totalView = buildTotalView(with: detailsViewModel)
-        verticalStackView.addArrangedSubview(totalView)
+        totalLabel.text = detailsViewModel.totalLabel
+        totalValue.text = detailsViewModel.totalValue
 
-        let footnoteView = buildFootnoteView(with: detailsViewModel)
-        verticalStackView.addArrangedSubview(footnoteView)
-    }
-
-    func buildSubtotalView(with detailsViewModel: OrderDetailsViewModel) -> TwoColumnLabelView {
-        let subtotalLabel = detailsViewModel.subtotalLabel
-        let subtotalValue = detailsViewModel.subtotalValue
-
-        let subtotalView = TwoColumnLabelView.makeFromNib()
-        subtotalView.configure(leftText: subtotalLabel, rightText: subtotalValue)
-
-        return subtotalView
-    }
-
-    func buildDiscountView(with detailsViewModel: OrderDetailsViewModel) -> TwoColumnLabelView? {
-        let discountLabel = detailsViewModel.discountLabel
-        let discountValue = detailsViewModel.discountValue
-
-        if detailsViewModel.hasDiscount,
-            let discountLabelText = discountLabel,
-            let discountValueText = discountValue {
-
-            let discountView = TwoColumnLabelView.makeFromNib()
-            discountView.configure(leftText: discountLabelText, rightText: discountValueText)
-            verticalStackView.addArrangedSubview(discountView)
-
-            return discountView
-        }
-
-        return nil
-    }
-
-    func buildShippingView(with detailsViewModel: OrderDetailsViewModel) -> TwoColumnLabelView {
-        let shippingLabel = detailsViewModel.shippingLabel
-        let shippingValue = detailsViewModel.shippingValue
-
-        let shippingView = TwoColumnLabelView.makeFromNib()
-        shippingView.configure(leftText: shippingLabel, rightText: shippingValue)
-
-        return shippingView
-    }
-
-    func buildTaxesView(with detailsViewModel: OrderDetailsViewModel) -> TwoColumnLabelView? {
-        let taxesLabel = detailsViewModel.taxesLabel
-        let taxesValue = detailsViewModel.taxesValue
-
-        if detailsViewModel.hasTaxes,
-            let taxesLabelText = taxesLabel,
-            let taxesValueText = taxesValue {
-            let taxesView = TwoColumnLabelView.makeFromNib()
-            taxesView.configure(leftText: taxesLabelText, rightText: taxesValueText)
-
-            return taxesView
-        }
-        return nil
-    }
-
-    func buildTotalView(with detailsViewModel: OrderDetailsViewModel) -> TwoColumnLabelView {
-        let totalLabel = detailsViewModel.totalLabel
-        let totalValue = detailsViewModel.totalValue
-
-        let totalView = TwoColumnLabelView.makeFromNib()
-        totalView.configureWithTitleStyle(leftText: totalLabel, rightText: totalValue)
-        return totalView
-    }
-
-    func buildFootnoteView(with detailsViewModel: OrderDetailsViewModel) -> FootnoteView {
-        let footnoteView = FootnoteView.makeFromNib()
-        footnoteView.configure(footnoteText: detailsViewModel.paymentSummary, borderColor: StyleManager.cellSeparatorColor)
-        return footnoteView
-    }
-
-    struct Constants {
-        static let topConstant = CGFloat(14)
+        separatorLine.backgroundColor = StyleManager.cellSeparatorColor
+        footerValue.text = detailsViewModel.paymentSummary
     }
 }

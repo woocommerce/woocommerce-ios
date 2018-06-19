@@ -32,3 +32,28 @@ private extension Address {
         case country    = "country"
     }
 }
+
+
+// MARK: - Comparable Conformance
+//
+extension Address: Comparable {
+    public static func == (lhs: Address, rhs: Address) -> Bool {
+        return lhs.firstName == rhs.firstName &&
+            lhs.lastName == rhs.lastName &&
+            lhs.company == rhs.company &&
+            lhs.address1 == rhs.address1 &&
+            lhs.address2 == rhs.address2 &&
+            lhs.city == rhs.city &&
+            lhs.state == rhs.state &&
+            lhs.postcode == rhs.postcode &&
+            lhs.country == rhs.country
+    }
+
+    public static func < (lhs: Address, rhs: Address) -> Bool {
+        return lhs.city < rhs.city ||
+        (lhs.city == rhs.city && lhs.state < rhs.state) ||
+        (lhs.city == rhs.city && lhs.state == rhs.state && lhs.postcode < rhs.postcode) ||
+        (lhs.city == rhs.city && lhs.state == rhs.state && lhs.postcode == rhs.postcode && lhs.lastName < rhs.lastName)
+    }
+}
+

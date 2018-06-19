@@ -17,18 +17,20 @@ class FootnoteView: UIView {
         }
     }
 
+    var separatorColor: UIColor? {
+        get {
+            return separatorLine.backgroundColor
+        }
+        set {
+            separatorLine.backgroundColor = newValue
+        }
+    }
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 
     class func makeFromNib() -> FootnoteView {
         return Bundle.main.loadNibNamed("FootnoteView", owner: self, options: nil)?.first as! FootnoteView
-    }
-}
-
-extension FootnoteView {
-    func configure(footnoteText: String?, borderColor: UIColor?) {
-        footnote = footnoteText
-        separatorLine.backgroundColor = borderColor
     }
 }

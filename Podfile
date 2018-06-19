@@ -74,3 +74,24 @@ target 'Networking' do
     inherit! :search_paths
   end
 end
+
+
+# Storage Layer:
+# ==============
+#
+target 'Storage' do
+  project 'Storage/Storage.xcodeproj'
+
+  # External Libraries
+  # ==================
+  #
+  pod 'CocoaLumberjack', '~> 3.4'
+
+
+  # Unit Tests
+  # ==========
+  #
+  target 'StorageTests' do
+    inherit! :search_paths
+  end
+end

@@ -155,7 +155,7 @@ private extension AppDelegate {
 
 // MARK: - Authentication Methods
 //
-private extension AppDelegate {
+extension AppDelegate {
 
     /// Whenever there is no default WordPress.com Account, let's display the Authentication UI.
     ///
@@ -180,7 +180,6 @@ private extension AppDelegate {
     /// Indicates if there's a default WordPress.com account.
     ///
     var needsAuthentication: Bool {
-        // TODO: Wire Me! >> AccountStore!
-        return true
+        return CredentialsManager.shared.needsDefaultCredentials
     }
 }

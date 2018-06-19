@@ -1,11 +1,11 @@
 import Foundation
+import Storage
+import Networking
 
 
 // MARK: - Store: Holds the data associated to a specific domain of the application.
 //         Every store is subscribed to the global action dispatcher (although it can be initialized with a custom dispatcher), and should
 //         respond to relevant Actions by implementing onAction(_:), and change its internal state according to those actions.
-//
-// NOTE: - Consumers can hook up to the EventBus, and listen for specific events.
 //
 open class Store: ActionsProcessor {
 
@@ -13,18 +13,28 @@ open class Store: ActionsProcessor {
     ///
     public let dispatcher: Dispatcher
 
-    /// The dispatcher used to notify observer of changes.
+    /// Storage Layer
     ///
-    public let eventBus = EventBus()
+    public let storageManager: StorageManager
+
+    /// Network Layer
+    ///
+    public let network: Network
 
 
     /// Initializes a new Store.
     ///
-    /// - Parameter dispatcher: the Dispatcher to use to receive Actions.
+    /// - Parameters:
+    ///     - dispatcher: the Dispatcher to use to receive Actions.
+    ///     - storageManager: Storage Provider to be used in all of the current Store OP's.
+    ///     - network: Network that should be used, when it comes to building a Remote.
     ///
-    public init(dispatcher: Dispatcher = .global) {
+    public init(dispatcher: Dispatcher, storageManager: StorageManager, network: Network) {
         self.dispatcher = dispatcher
-        registerSupportedActions()
+        self.storageManager = storageManager
+        self.network = network
+
+        registerSupportedActions(in: dispatcher)
     }
 
     /// Deinitializer
@@ -38,7 +48,7 @@ open class Store: ActionsProcessor {
 
     /// Subclasses should override this and register for supported Dispatcher Actions.
     ///
-    open func registerSupportedActions() {
+    open func registerSupportedActions(in dispatcher: Dispatcher) {
         fatalError("Override me!")
     }
 

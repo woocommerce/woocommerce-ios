@@ -148,7 +148,7 @@ private extension AppDelegate {
             return
         }
 
-//        displayAuthenticator()
+        displayAuthenticator()
     }
 
     /// Displays the WordPress.com Authentication UI.

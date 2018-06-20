@@ -70,7 +70,7 @@ class SummaryTableViewCell: UITableViewCell {
 extension SummaryTableViewCell {
     func configure(with viewModel: OrderDetailsViewModel) {
         title = viewModel.summaryTitle
-        dateCreated = viewModel.dateCreated
+        dateCreated = viewModel.summaryDateCreated
         paymentStatus = viewModel.paymentStatus
         paymentBackgroundColor = viewModel.paymentBackgroundColor
         paymentBorderColor = viewModel.paymentBorderColor

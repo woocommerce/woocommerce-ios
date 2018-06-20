@@ -14,10 +14,6 @@ class OrderDetailsViewModel {
         return "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
     }
 
-    var dateCreated: String {
-        return String.localizedStringWithFormat(NSLocalizedString("Created %@", comment: "Order created date"), order.dateCreatedString) //FIXME: use a formatted date instead of raw timestamp
-    }
-
     var summaryDateCreated: String {
         // "date_created": "2017-03-21T16:46:41",
         let format = ISO8601DateFormatter()

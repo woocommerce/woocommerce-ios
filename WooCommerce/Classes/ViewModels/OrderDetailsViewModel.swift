@@ -21,8 +21,6 @@ class OrderDetailsViewModel {
     var summaryDateCreated: String {
         // "date_created": "2017-03-21T16:46:41",
         let format = ISO8601DateFormatter()
-        let gmt = TimeZone(abbreviation: "GMT")
-        format.timeZone = gmt
         format.formatOptions = [.withFullDate, .withTime, .withDashSeparatorInDate, .withColonSeparatorInTime]
         let date = format.date(from: order.dateUpdatedString)
 
@@ -37,7 +35,7 @@ class OrderDetailsViewModel {
 
         let time = shortFormat.string(from: orderDate)
 
-        let summaryDate = String.localizedStringWithFormat(NSLocalizedString("Updated on \(orderDate.mediumString()) at \(time)", comment: "Order updated summary date"))
+        let summaryDate = String.localizedStringWithFormat(NSLocalizedString("Updated on %@ at %@", comment: "Order updated summary date"), orderDate.mediumString(), time)
         return summaryDate
     }
 

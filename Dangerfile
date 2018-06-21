@@ -17,4 +17,4 @@ warn("Core Data: Do not edit an existing model in a release branch unless it has
 
 
 ### Enable SwiftLint
-swiftlint.lint_files
+swiftlint.lint_files inline_mode: true

@@ -1,6 +1,6 @@
 import Foundation
 import Alamofire
-
+import CocoaLumberjack
 
 /// Represents a collection of Remote Endpoints
 ///
@@ -61,7 +61,7 @@ public class Remote {
                 let parsed = try mapper.map(response: data)
                 completion(parsed, nil)
             } catch {
-                NSLog("<> Mapping Error: \(error)")
+                DDLogError("<> Mapping Error: \(error)")
                 completion(nil, error)
             }
         }

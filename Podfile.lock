@@ -11,6 +11,8 @@ PODS:
   - CocoaLumberjack/Default (3.4.2)
   - CocoaLumberjack/Extensions (3.4.2):
     - CocoaLumberjack/Default
+  - CocoaLumberjack/Swift (3.4.2):
+    - CocoaLumberjack/Default
   - Crashlytics (3.10.1):
     - Fabric (~> 1.7.5)
   - Fabric (1.7.7)
@@ -29,6 +31,7 @@ PODS:
     - "GoogleToolboxForMac/NSString+URLArguments (= 2.1.4)"
   - "GoogleToolboxForMac/NSString+URLArguments (2.1.4)"
   - Gridicons (0.15)
+  - KeychainAccess (3.1.1)
   - lottie-ios (2.5.0)
   - NSObject-SafeExpectations (0.0.3)
   - "NSURL+IDN (0.3)"
@@ -63,10 +66,12 @@ PODS:
   - wpxmlrpc (0.8.3)
 
 DEPENDENCIES:
-  - Alamofire (= 4.7.2)
+  - Alamofire (~> 4.7)
   - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.3`)
-  - Crashlytics (= 3.10.1)
+  - CocoaLumberjack/Swift (~> 3.4)
+  - Crashlytics (~> 3.10)
   - Gridicons (= 0.15)
+  - KeychainAccess (~> 3.1)
   - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `58ed623`)
 
 SPEC REPOS:
@@ -80,6 +85,7 @@ SPEC REPOS:
     - GoogleSignInRepacked
     - GoogleToolboxForMac
     - Gridicons
+    - KeychainAccess
     - lottie-ios
     - NSObject-SafeExpectations
     - "NSURL+IDN"
@@ -118,6 +124,7 @@ SPEC CHECKSUMS:
   GoogleSignInRepacked: d357702618c555f38923576924661325eb1ef22b
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
   Gridicons: 0e5e76ad9fc6f7cbc3da137a9751ef516c5aef73
+  KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
   lottie-ios: d699fdee68d7b63e721d949388b015fef1aaa4ac
   NSObject-SafeExpectations: b989b68a8a9b7b9f2b264a8b52ba9d7aab8f3129
   "NSURL+IDN": 82355a0afd532fe1de08f6417c134b49b1a1c4b3
@@ -130,6 +137,6 @@ SPEC CHECKSUMS:
   WordPressUI: f2348649b63b5a9392a72b1d2f46dd1d72e80ad9
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
 
-PODFILE CHECKSUM: 1a514306be7bf312acfaeb1ec608a21807147f66
+PODFILE CHECKSUM: abbce9ad6ad138846899daee69ccb83f25d6f3be
 
-COCOAPODS: 1.5.2
+COCOAPODS: 1.5.3

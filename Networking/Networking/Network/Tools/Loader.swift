@@ -1,5 +1,5 @@
 import Foundation
-
+import CocoaLumberjack
 
 /// File-Loading Tools: Only for Unit Testing purposes.
 ///
@@ -20,7 +20,7 @@ class Loader {
         do {
             return try JSONSerialization.jsonObject(with: data, options: [.mutableContainers, .mutableLeaves])
         } catch {
-            NSLog("Parsing Error: \(error)")
+            DDLogError("Parsing Error: \(error)")
         }
 
         return nil

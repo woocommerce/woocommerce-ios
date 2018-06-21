@@ -26,9 +26,10 @@ target 'WooCommerce' do
   # External Libraries
   # ==================
   #
-  pod 'Alamofire', '4.7.2'
-  pod 'Crashlytics', '3.10.1'
-
+  pod 'Alamofire', '~> 4.7'
+  pod 'Crashlytics', '~> 3.10'
+  pod 'KeychainAccess', '~> 3.1'
+  pod 'CocoaLumberjack/Swift', '~> 3.4'
 end
 
 
@@ -45,7 +46,7 @@ target 'Yosemite' do
   #
   target 'YosemiteTests' do
     inherit! :search_paths
-    pod 'Alamofire', '4.7.2'
+    pod 'Alamofire', '~> 4.7'
   end
 
 end
@@ -62,13 +63,35 @@ target 'Networking' do
   # External Libraries
   # ==================
   #
-  pod 'Alamofire', '4.7.2'
+  pod 'Alamofire', '~> 4.7'
+  pod 'CocoaLumberjack/Swift', '~> 3.4'
 
 
   # Unit Tests
   # ==========
   #
   target 'NetworkingTests' do
+    inherit! :search_paths
+  end
+end
+
+
+# Storage Layer:
+# ==============
+#
+target 'Storage' do
+  project 'Storage/Storage.xcodeproj'
+
+  # External Libraries
+  # ==================
+  #
+  pod 'CocoaLumberjack/Swift', '~> 3.4'
+
+
+  # Unit Tests
+  # ==========
+  #
+  target 'StorageTests' do
     inherit! :search_paths
   end
 end

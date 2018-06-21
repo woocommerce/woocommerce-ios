@@ -127,35 +127,19 @@ private extension AppDelegate {
         authenticationManager.initialize()
     }
 
-    /// Sets up CocoaLumberjack logging.
-    ///
     func setupLogLevel(_ level: DDLogLevel) {
-        DDLog.add(DDOSLogger.sharedInstance) // os_log based, iOS 10+
-
-        let fileLogger: DDFileLogger = DDFileLogger() // File Logger
-        fileLogger.rollingFrequency = TimeInterval(60*60*24)  // 24 hours
-        fileLogger.logFileManager.maximumNumberOfLogFiles = 7
-        DDLog.add(fileLogger)
-
         let rawLevel = Int32(level.rawValue)
 
         WPSharedSetLoggingLevel(rawLevel)
         WPAuthenticatorSetLoggingLevel(rawLevel)
         WPKitSetLoggingLevel(rawLevel)
-
-        // Test print each log level
-        CocoaLumberjack.DDLogVerbose("Verbose")
-        CocoaLumberjack.DDLogDebug("Debug")
-        CocoaLumberjack.DDLogInfo("Info")
-        CocoaLumberjack.DDLogWarn("Warn")
-        CocoaLumberjack.DDLogError("Error")
     }
 }
 
 
 // MARK: - Authentication Methods
 //
-extension AppDelegate {
+private extension AppDelegate {
 
     /// Whenever there is no default WordPress.com Account, let's display the Authentication UI.
     ///
@@ -180,6 +164,7 @@ extension AppDelegate {
     /// Indicates if there's a default WordPress.com account.
     ///
     var needsAuthentication: Bool {
-        return CredentialsManager.shared.needsDefaultCredentials
+        // TODO: Wire Me! >> AccountStore!
+        return true
     }
 }

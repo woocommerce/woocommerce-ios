@@ -93,7 +93,7 @@ struct Order: Decodable {
         case customer = "customer"
         case customerID = "customer_id"
         case dateCreatedString = "date_created"
-        case dateUpdatedString = "date_modified_gmt"
+        case dateUpdatedString = "date_modified"
         case shippingAddress = "shipping"
         case billingAddress = "billing"
         case orderItems = "line_items"

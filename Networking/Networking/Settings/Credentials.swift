@@ -5,19 +5,13 @@ import Foundation
 ///
 public struct Credentials: Equatable {
 
-    /// WordPress.com Username
-    ///
-    public let username: String
-
     /// WordPress.com Authentication Token
     ///
     public let authToken: String
 
-
     /// Designated Initializer
     ///
-    public init(username: String, authToken: String) {
-        self.username =  username
+    public init(authToken: String) {
         self.authToken = authToken
     }
 }
@@ -26,5 +20,5 @@ public struct Credentials: Equatable {
 /// Equatable Support
 ///
 public func ==(lhs: Credentials, rhs: Credentials) -> Bool {
-    return lhs.authToken == rhs.authToken && lhs.username == rhs.username
+    return lhs.authToken == rhs.authToken
 }

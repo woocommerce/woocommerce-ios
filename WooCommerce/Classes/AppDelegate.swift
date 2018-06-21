@@ -144,11 +144,11 @@ private extension AppDelegate {
         WPKitSetLoggingLevel(rawLevel)
 
         // Test print each log level
-        DDLogVerbose("Verbose")
-        DDLogDebug("Debug")
-        DDLogInfo("Info")
-        DDLogWarn("Warn")
-        DDLogError("Error")
+        CocoaLumberjack.DDLogVerbose("Verbose")
+        CocoaLumberjack.DDLogDebug("Debug")
+        CocoaLumberjack.DDLogInfo("Info")
+        CocoaLumberjack.DDLogWarn("Warn")
+        CocoaLumberjack.DDLogError("Error")
     }
 }
 

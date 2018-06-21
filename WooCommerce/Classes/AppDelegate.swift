@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     /// AppDelegate's Instance
     ///
-    static var shared: AppDelegate {
+    static var shared: AppDelegate { 
         return UIApplication.shared.delegate as! AppDelegate
     }
 

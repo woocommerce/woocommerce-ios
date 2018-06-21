@@ -107,15 +107,13 @@ class OrderDetailsViewModel {
     let addNoteText = NSLocalizedString("Add a note", comment: "Button text for adding a new order note")
 
     var orderNotes: [OrderNoteViewModel] {
-        var array = [OrderNoteViewModel]()
-        if let allNotes = notes {
-            for note in allNotes {
-                let noteViewModel = OrderNoteViewModel(with: note)
-                array.append(noteViewModel)
-            }
+        guard let notes = notes else {
+            return []
         }
 
-        return array
+        return notes.map { note in
+            return OrderNoteViewModel(with: note)
+        }
     }
 
     /// MARK: Private

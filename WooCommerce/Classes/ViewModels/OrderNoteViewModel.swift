@@ -19,8 +19,7 @@ class OrderNoteViewModel {
         }
 
         // "date_created": "2017-03-21T16:46:41",
-        let format = DateFormatter()
-        format.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        let format = DateFormatter.Defaults.dateTimeFormatter
         date = format.date(from: orderNote.dateCreated)!
 
         contents = orderNote.contents

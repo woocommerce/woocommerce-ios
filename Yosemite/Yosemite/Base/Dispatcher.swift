@@ -23,10 +23,6 @@ public protocol ActionsProcessor: class {
 //
 public class Dispatcher {
 
-    /// Shared global dispatcher
-    ///
-    public static let global = Dispatcher()
-
     /// Collection of active Action Processors, per action kind.
     ///
     private(set) var processors = [Action.TypeIdentifier: ActionsProcessor]()

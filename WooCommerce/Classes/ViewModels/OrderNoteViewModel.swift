@@ -4,7 +4,8 @@ import Gridicons
 class OrderNoteViewModel {
     let iconImage: UIImage
     let iconColor: UIColor
-    private let date: Date?
+    private let formattedDate: Date?
+    private let jsonDate: String
     let statusText: String
     let contents: String
 
@@ -18,8 +19,9 @@ class OrderNoteViewModel {
             statusText = NSLocalizedString("Private note", comment: "Labels an order note to let the user know it's private and not seen by the customer")
         }
 
+        jsonDate = orderNote.dateCreated
         let format = DateFormatter.Defaults.dateTimeFormatter
-        date = format.date(from: orderNote.dateCreated)
+        formattedDate = format.date(from: orderNote.dateCreated)
 
         contents = orderNote.contents
     }
@@ -29,9 +31,9 @@ class OrderNoteViewModel {
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
 
-        if let theDate = date {
-            return formatter.string(from: theDate)
+        if let date = formattedDate {
+            return formatter.string(from: date)
         }
-        return nil
+        return jsonDate
     }
 }

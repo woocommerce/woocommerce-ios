@@ -5,11 +5,10 @@ class OrdersViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     var orders = [Order]()
-    var searchResults = [Order]()
-    let searchController = UISearchController(searchResultsController: nil)
+    var filterResults = [Order]()
     private var isUsingFilterAction = false
     var displaysNoResults: Bool {
-        return searchResults.isEmpty && isUsingFilterAction
+        return filterResults.isEmpty && isUsingFilterAction
     }
 
     func loadSampleOrders() -> [Order] {
@@ -67,7 +66,6 @@ class OrdersViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
-        configureSearch()
         orders = loadSampleOrders()
     }
 
@@ -94,24 +92,6 @@ class OrdersViewController: UIViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         let nib = UINib(nibName: NoResultsTableViewCell.reuseIdentifier, bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: NoResultsTableViewCell.reuseIdentifier)
-    }
-
-    func configureSearch() {
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.hidesNavigationBarDuringPresentation = false
-        searchController.searchBar.delegate = self
-        searchController.searchBar.placeholder = NSLocalizedString("Search all orders", comment: "Search placeholder text")
-        searchController.searchBar.sizeToFit()
-
-        // This may need set app-wide in the future. Not yet.
-        searchController.searchBar.barTintColor = tableView.backgroundColor
-        searchController.searchBar.layer.borderWidth = 1
-        searchController.searchBar.layer.borderColor = tableView.backgroundColor?.cgColor
-
-        // add it to the table header, which leaves us room for pull-to-refresh control
-        tableView.tableHeaderView = searchController.searchBar
-        tableView.contentOffset = CGPoint(x: 0.0, y: searchController.searchBar.frame.size.height)
     }
 
     @objc func rightButtonTapped() {
@@ -141,11 +121,11 @@ class OrdersViewController: UIViewController {
             return
         }
 
-        searchResults = orders.filter { order in
+        filterResults = orders.filter { order in
             return order.status.description.contains(status.description)
         }
 
-        isUsingFilterAction = searchResults.count != orders.count
+        isUsingFilterAction = filterResults.count != orders.count
         tableView.reloadData()
     }
 
@@ -156,20 +136,9 @@ class OrdersViewController: UIViewController {
                 customOrders.append(order)
             }
         }
-        searchResults = customOrders
-        isUsingFilterAction = searchResults.count != orders.count
+        filterResults = customOrders
+        isUsingFilterAction = filterResults.count != orders.count
         tableView.reloadData()
-    }
-
-    // MARK: Search bar
-    func isFiltering() -> Bool {
-        let usingSearch = searchController.isActive && !searchBarIsEmpty()
-        let usingFilter = isUsingFilterAction
-        return usingSearch || usingFilter
-    }
-
-    func searchBarIsEmpty() -> Bool {
-        return searchController.searchBar.text?.isEmpty ?? true
     }
 }
 
@@ -181,11 +150,11 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if isFiltering() {
-            if searchResults.isEmpty {
-                return Constants.searchResultsNotFoundRowCount
+        if isUsingFilterAction == true {
+            if filterResults.isEmpty {
+                return Constants.filterResultsNotFoundRowCount
             }
-            return searchResults.count
+            return filterResults.count
         }
         return orders.count
     }
@@ -193,7 +162,7 @@ extension OrdersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard !displaysNoResults else {
             let cell = tableView.dequeueReusableCell(withIdentifier: NoResultsTableViewCell.reuseIdentifier, for: indexPath) as! NoResultsTableViewCell
-            cell.configure(text: NSLocalizedString("No results found. Clear the filter or search bar to try again.", comment: "Displays message to user when no filter or search results were found."))
+            cell.configure(text: NSLocalizedString("No results found. Clear the filter to try again.", comment: "Displays message to user when no filter results were found."))
             return cell
         }
         let order = orderAtIndexPath(indexPath)
@@ -208,7 +177,7 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func orderAtIndexPath(_ indexPath: IndexPath) -> Order {
-        return isFiltering() ? searchResults[indexPath.row] : orders[indexPath.row]
+        return isUsingFilterAction ? filterResults[indexPath.row] : orders[indexPath.row]
     }
 }
 
@@ -229,10 +198,6 @@ extension OrdersViewController: UITableViewDelegate {
             return
         }
 
-        if searchController.isActive {
-            searchController.dismiss(animated: true, completion: nil)
-        }
-
         if segue.identifier == Constants.orderDetailsSegue {
             if let singleOrderViewController = segue.destination as? OrderDetailsViewController {
                 let indexPath = sender as! IndexPath
@@ -245,40 +210,12 @@ extension OrdersViewController: UITableViewDelegate {
     }
 }
 
-// MARK: UISearchResultsUpdating
-//
-extension OrdersViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        guard let searchString = searchController.searchBar.text else {
-            return
-        }
-        // TODO: filter search results properly
-        searchResults = orders.filter { order in
-            return order.shippingAddress.firstName.lowercased().contains(searchString.lowercased())
-        }
-        tableView.reloadData()
-    }
-}
-
-// MARK: UISearchBarDelegate
-//
-extension OrdersViewController: UISearchBarDelegate {
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        tableView.reloadData()
-    }
-
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchController.searchBar.resignFirstResponder()
-        tableView.reloadData()
-    }
-}
-
 // MARK: Constants
 //
 extension OrdersViewController {
     struct Constants {
         static let rowHeight = CGFloat(86)
         static let orderDetailsSegue = "ShowOrderDetailsViewController"
-        static let searchResultsNotFoundRowCount = 1
+        static let filterResultsNotFoundRowCount = 1
     }
 }

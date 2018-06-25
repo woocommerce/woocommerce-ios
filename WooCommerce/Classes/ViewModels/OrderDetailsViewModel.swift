@@ -17,8 +17,25 @@ class OrderDetailsViewModel {
         return "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
     }
 
-    var dateCreated: String {
-        return String.localizedStringWithFormat(NSLocalizedString("Created %@", comment: "Order created date"), order.dateCreatedString) //FIXME: use a formatted date instead of raw timestamp
+    var summaryDateCreated: String {
+        // "date_created": "2017-03-21T16:46:41",
+        let format = ISO8601DateFormatter()
+        format.formatOptions = [.withFullDate, .withTime, .withDashSeparatorInDate, .withColonSeparatorInTime]
+        let date = format.date(from: order.dateUpdatedString)
+
+        let shortFormat = DateFormatter()
+        shortFormat.dateFormat = "HH:mm:ss"
+        shortFormat.timeStyle = .short
+
+        guard let orderDate = date else {
+            NSLog("Order date not found!")
+            return order.dateUpdatedString
+        }
+
+        let time = shortFormat.string(from: orderDate)
+
+        let summaryDate = String.localizedStringWithFormat(NSLocalizedString("Updated on %@ at %@", comment: "Order updated summary date"), orderDate.mediumString(), time)
+        return summaryDate
     }
 
     var paymentStatus: String {

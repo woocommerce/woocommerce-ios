@@ -52,16 +52,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B5C9DDFD2087FEC0006B910A"
-               BuildableName = "FluxSumiTests.xctest"
-               BlueprintName = "FluxSumiTests"
-               ReferencedContainer = "container:../FluxSumi/FluxSumi.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "B54CA5A120A4BBA600F38CD1"
                BuildableName = "StorageTests.xctest"
                BlueprintName = "StorageTests"

@@ -17,6 +17,12 @@ class StoresManager {
         }
     }
 
+    /// Indicates if the StoresManager is currently authenticated, or not.
+    ///
+    static var isAuthenticated: Bool {
+        return state is AuthenticatedState
+    }
+
 
     /// This class is meant to be non (publicly) instantiable!
     ///

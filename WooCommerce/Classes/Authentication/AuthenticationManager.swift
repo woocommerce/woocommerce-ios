@@ -152,8 +152,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
 
         StoresManager.authenticate(username: username, authToken: authToken)
-
-        // TODO: Review
         onCompletion(nil)
     }
 

@@ -47,6 +47,7 @@ target 'Yosemite' do
   target 'YosemiteTests' do
     inherit! :search_paths
     pod 'Alamofire', '~> 4.7'
+	pod 'CocoaLumberjack/Swift', '~> 3.4'
   end
 
 end

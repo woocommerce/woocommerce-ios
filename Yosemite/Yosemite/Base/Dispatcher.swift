@@ -60,7 +60,7 @@ public class Dispatcher {
         return processors[actionType.identifier]?.identifier == processor.identifier
     }
 
-    /// Returns the registered ActionsProcessor, for a specified Action. If any!.
+    /// Returns the registered ActionsProcessor, for a specified Action, if any exist.
     ///
     public func processor(for actionType: Action.Type) -> ActionsProcessor? {
         return processors[actionType.identifier]?.processor

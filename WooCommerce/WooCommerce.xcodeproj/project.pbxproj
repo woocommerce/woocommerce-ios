@@ -22,6 +22,7 @@
 
 /* Begin PBXBuildFile section */
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
+		93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */; };
 		B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112D2049E27A007D25DC /* DashboardViewController.swift */; };
 		B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112E2049E27A007D25DC /* OrdersViewController.swift */; };
 		B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112F2049E27A007D25DC /* SettingsViewController.swift */; };
@@ -130,6 +131,7 @@
 /* Begin PBXFileReference section */
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
 		90AC1C0B391E04A837BDC64E /* Pods-WooCommerce.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.debug.xcconfig"; sourceTree = "<group>"; };
+		93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bash_secrets.tpl; sourceTree = "<group>"; };
 		B509112D2049E27A007D25DC /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		B509112E2049E27A007D25DC /* OrdersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrdersViewController.swift; sourceTree = "<group>"; };
 		B509112F2049E27A007D25DC /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -273,6 +275,7 @@
 			children = (
 				B55D4BFA20B5CDE600D7A50F /* ApiCredentials.tpl */,
 				B55D4C1920B6193000D7A50F /* InfoPlist.tpl */,
+				93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */,
 				B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */,
 			);
 			path = Credentials;
@@ -524,6 +527,7 @@
 				B5650B1020A4CD7F009702D0 /* Embed Frameworks */,
 				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
 				20B459508F75052BDBC0902F /* [CP] Copy Pods Resources */,
+				93BCF01B20DC21EF00EBF7A1 /* Fabric / Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -613,6 +617,7 @@
 				B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */,
 				CED6021E20B35FDF0032C639 /* NoResultsTableViewCell.xib in Resources */,
 				B557DA1620979904005962F4 /* CustomerNoteTableViewCell.xib in Resources */,
+				93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
 				CE1EC8D720B75FBA009762BF /* order-1112.json in Resources */,
 				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,
@@ -683,6 +688,20 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		93BCF01B20DC21EF00EBF7A1 /* Fabric / Crashlytics */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Fabric / Crashlytics";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "[ -f ${SOURCE_ROOT}/DerivedSources/bash_secrets ] && source ${SOURCE_ROOT}/DerivedSources/bash_secrets\n\nif [[ \"Debug\" == \"${CONFIGURATION}\" ]]; then\necho \"Skipping Fabric\";\nexit 0;\nfi\n\nif [ \"x$FABRIC_SCRIPT_KEY\" != \"x\" ]; then\n\"${PODS_ROOT}/Fabric/run\" $FABRIC_API_KEY $FABRIC_SCRIPT_KEY\nelse\necho \"warning: Fabric API Key not found\"\nfi";
+		};
 		B55D4C1320B612FE00D7A50F /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -700,7 +719,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DERIVED_PATH=${SOURCE_ROOT}/DerivedSources\nSCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb\n\nCREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl\nCREDS_OUTPUT_PATH=${DERIVED_PATH}/ApiCredentials.swift\n\nPLIST_INPUT_PATH=${SOURCE_ROOT}/Credentials/InfoPlist.tpl\nPLIST_OUTPUT_PATH=${DERIVED_PATH}/InfoPlist.h\n\n## Validate Secrets!\n##\nif [ ! -f $SECRETS_PATH ]\nthen\n    echo \">> Missing Secrets ${SECRETS_PATH}\"\n    exit -1\nfi\n\necho \">> Loading Secrets ${SECRETS_PATH}\"\n\n## Generate the Derived Folder. If needed\n##\nmkdir -p ${DERIVED_PATH}\n\n## Generate ApiCredentials.swift\n##\necho \">> Generating Credentials ${CREDENTIALS_OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${CREDS_INPUT_PATH} -s ${SECRETS_PATH} > ${CREDS_OUTPUT_PATH}\n\n## Generate InfoPlist.h\n##\necho \">> Generating Credentials ${OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${PLIST_INPUT_PATH} -s ${SECRETS_PATH} > ${PLIST_OUTPUT_PATH}\n";
+			shellScript = "DERIVED_PATH=${SOURCE_ROOT}/DerivedSources\nSCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb\n\nCREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl\nCREDS_OUTPUT_PATH=${DERIVED_PATH}/ApiCredentials.swift\n\nPLIST_INPUT_PATH=${SOURCE_ROOT}/Credentials/InfoPlist.tpl\nPLIST_OUTPUT_PATH=${DERIVED_PATH}/InfoPlist.h\n\nBASH_INPUT_PATH=${SOURCE_ROOT}/Credentials/bash_secrets.tpl\nBASH_OUTPUT_PATH=${DERIVED_PATH}/bash_secrets\n\n## Validate Secrets!\n##\nif [ ! -f $SECRETS_PATH ]\nthen\n    echo \">> Missing Secrets ${SECRETS_PATH}\"\n    exit -1\nfi\n\necho \">> Loading Secrets ${SECRETS_PATH}\"\n\n## Generate the Derived Folder. If needed\n##\nmkdir -p ${DERIVED_PATH}\n\n## Generate ApiCredentials.swift\n##\necho \">> Generating Credentials ${CREDS_OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${CREDS_INPUT_PATH} -s ${SECRETS_PATH} > ${CREDS_OUTPUT_PATH}\n\n## Generate InfoPlist.h\n##\necho \">> Generating Credentials ${PLIST_OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${PLIST_INPUT_PATH} -s ${SECRETS_PATH} > ${PLIST_OUTPUT_PATH}\n\n## Generate bash_secrets\n##\necho \">> Generating Credentials ${BASH_OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${BASH_INPUT_PATH} -s ${SECRETS_PATH} > ${BASH_OUTPUT_PATH}\n";
 		};
 		B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -853,6 +872,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SECRETS_PATH = $HOME/.woo_app_credentials.json;
 			};
@@ -862,6 +882,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SECRETS_PATH = $HOME/.woo_app_credentials.json;
 			};

@@ -70,7 +70,7 @@ private extension LoginPrologueViewController {
     }
 
     func setupUpperLabel() {
-        upperLabel.text = NSLocalizedString("Check your WooCommerce store on the go, fulfill your orders and get notifications of new sales.", comment: "Login Prologue Legend")
+        upperLabel.text = NSLocalizedString("Your WooCommerce store on the go. Check your sales, fulfill your orders, and get notifications of new sales.", comment: "Login Prologue Legend")
         upperLabel.font = UIFont.font(forStyle: .subheadline, weight: .bold)
         upperLabel.textColor = .white
     }
@@ -135,19 +135,23 @@ private extension LoginPrologueViewController {
     /// Returns the Disclaimer Attributed Text (which contains a link to the Jetpack Setup URL).
     ///
     var disclaimerAttributedText: NSAttributedString {
-        let disclaimerText = NSLocalizedString("This app requires Jetpack to be able to connect to your WooCommerce Store.\nFor configuration instructions, ", comment: "Login Disclaimer Text")
+        let disclaimerText = NSLocalizedString("This app requires Jetpack to be able to connect to your WooCommerce Store.\nRead the ", comment: "Login Disclaimer Text and Jetpack config instructions")
         let disclaimerAttributes: [NSAttributedStringKey: Any] =  [
             .font: UIFont.font(forStyle: .caption1, weight: .thin),
             .foregroundColor: UIColor.black
         ]
 
-        let readText = NSLocalizedString("read here.", comment: "Login Disclaimer Linked Text")
+        let readText = NSLocalizedString("configuration instructions", comment: "Login Disclaimer Linked Text")
         var readAttributes = disclaimerAttributes
         readAttributes[.link] = URL(string: WooConstants.jetpackSetupUrl)
-
         let readAttrText = NSMutableAttributedString(string: readText, attributes: readAttributes)
+
+        let endSentenceText = "."
+        let endSentenceAttrText = NSMutableAttributedString(string: endSentenceText, attributes: disclaimerAttributes)
+
         let disclaimerAttrText = NSMutableAttributedString(string: disclaimerText, attributes: disclaimerAttributes)
         disclaimerAttrText.append(readAttrText)
+        disclaimerAttrText.append(endSentenceAttrText)
 
         return disclaimerAttrText
     }

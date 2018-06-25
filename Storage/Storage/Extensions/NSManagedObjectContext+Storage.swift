@@ -1,6 +1,6 @@
 import Foundation
 import CoreData
-
+import CocoaLumberjack
 
 /// NSManagedObjectContext Storage Conformance
 ///
@@ -46,7 +46,7 @@ extension NSManagedObjectContext: StorageType {
         do {
             result = try count(for: request)
         } catch {
-            NSLog("Error counting objects [\(T.entityName)]: \(error)")
+            DDLogError("Error counting objects [\(T.entityName)]: \(error)")
             assertionFailure()
         }
 
@@ -117,7 +117,7 @@ extension NSManagedObjectContext: StorageType {
         do {
             return try existingObject(with: objectID) as? T
         } catch {
-            NSLog("Error loading Object [\(T.entityName)]")
+            DDLogError("Error loading Object [\(T.entityName)]")
         }
 
         return nil
@@ -146,7 +146,7 @@ extension NSManagedObjectContext: StorageType {
         do {
             objects = try fetch(request) as? [T]
         } catch {
-            NSLog("Error loading Objects [\(T.entityName)")
+            DDLogError("Error loading Objects [\(T.entityName)")
             assertionFailure()
         }
 

@@ -636,7 +636,6 @@
 				CED6021E20B35FDF0032C639 /* NoResultsTableViewCell.xib in Resources */,
 				B557DA1620979904005962F4 /* CustomerNoteTableViewCell.xib in Resources */,
 				93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */,
-				CE1EC8ED20B8A3FF009762BF /* AddItemTableViewCell.xib in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
 				CE1EC8D720B75FBA009762BF /* order-1112.json in Resources */,
 				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,

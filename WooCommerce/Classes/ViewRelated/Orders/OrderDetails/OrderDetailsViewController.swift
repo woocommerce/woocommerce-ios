@@ -57,9 +57,9 @@ class OrderDetailsViewController: UIViewController {
                 noteRows.append(.orderNote)
             }
         }
-        let orderNotesSection = Section(title: NSLocalizedString("ORDER NOTES", comment: "Order notes section title"), footer: nil, rows: noteRows)
+        let orderNotesSection = Section(titles: [NSLocalizedString("ORDER NOTES", comment: "Order notes section title")], footer: nil, rows: noteRows)
 
-        let paymentSection = Section(title: NSLocalizedString("PAYMENT", comment: "Payment section title"), footer: nil, rows: [.payment])
+        let paymentSection = Section(titles: [NSLocalizedString("PAYMENT", comment: "Payment section title")], footer: nil, rows: [.payment])
 
         // FIXME: this is temporary
         // the API response always sends customer note data

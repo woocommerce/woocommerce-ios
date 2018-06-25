@@ -9,7 +9,7 @@ import Networking
 //
 class StoresManager {
 
-    /// Active (Internal) State
+    /// Active (Internal) State.
     ///
     private static var state: StoresManagerState = initialState() {
         didSet {
@@ -23,7 +23,7 @@ class StoresManager {
     private init() { }
 
 
-    ///
+    /// Switches the internal state to Authenticated.
     ///
     class func authenticate(username: String, authToken: String) {
         let credentials = Credentials(username: username, authToken: authToken)
@@ -31,7 +31,7 @@ class StoresManager {
     }
 
 
-    ///
+    /// Switches the internal state to Deauthenticated.
     ///
     class func deauthenticate() {
         state = state.deauthenticate()
@@ -70,18 +70,19 @@ private protocol StoresManagerState {
     ///
     func didEnter()
 
-    /// Executed whenever an Action is received
+    /// Executed whenever an Action is received.
     ///
     func onAction(_ action: Action)
 
-    ///
+    /// Returns the next valid state, whenever there was a deauth event.
     ///
     func deauthenticate() -> StoresManagerState
 
-    ///
+    /// Returns the next valid state, whenever there was an auth event.
     ///
     func authenticate(with credentials: Credentials) -> StoresManagerState
 }
+
 
 
 // MARK: - DeauthenticatedState
@@ -94,6 +95,7 @@ private class DeauthenticatedState: StoresManagerState {
         CredentialsManager.shared.removeDefaultCredentials()
         AppDelegate.shared.displayAuthenticator()
     }
+
 
     /// NO-OP: During deauth method, we're not running any actions.
     ///
@@ -113,6 +115,7 @@ private class DeauthenticatedState: StoresManagerState {
         return AuthenticatedState(credentials: credentials)
     }
 }
+
 
 
 // MARK: - AuthenticatedState

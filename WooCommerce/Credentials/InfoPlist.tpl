@@ -12,3 +12,7 @@
 /// WordPress.com Auth Callback Scheme (AKA Magic Link!)
 ///
 #define DOTCOM_AUTH_SCHEME %{dotcom_auth_scheme}
+
+/// Fabric / Crashlytics API key
+///
+#define FABRIC_API_KEY %{fabric_api_key}

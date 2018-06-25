@@ -7,11 +7,11 @@ import XCTest
 //
 class StoreTests: XCTestCase {
 
-    let dispatcher = Dispatcher.global
-    let storageManager = MockupStorageManager()
-    let network = MockupNetwork()
-    var accountStore: MockupAccountStore!
-    var siteStore: MockupSiteStore!
+    private let dispatcher = Dispatcher()
+    private let storageManager = MockupStorageManager()
+    private let network = MockupNetwork()
+    private var accountStore: MockupAccountStore!
+    private var siteStore: MockupSiteStore!
 
     override func setUp() {
         accountStore = MockupAccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

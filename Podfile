@@ -26,7 +26,7 @@ target 'WooCommerce' do
   # External Libraries
   # ==================
   #
-  pod 'Alamofire', '4.7.2'
+  pod 'Alamofire', '~> 4.7'
   pod 'Crashlytics', '3.10.1'
 
 end
@@ -63,7 +63,7 @@ target 'Networking' do
   # External Libraries
   # ==================
   #
-  pod 'Alamofire', '4.7.2'
+  pod 'Alamofire', '~> 4.7'
 
 
   # Unit Tests

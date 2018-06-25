@@ -70,7 +70,7 @@ private extension StoresManager {
 
 // MARK: - StoresManagerState
 //
-private protocol StoresManagerState {
+protocol StoresManagerState {
 
     /// Executed whenever the State is activated.
     ///
@@ -79,70 +79,4 @@ private protocol StoresManagerState {
     /// Executed whenever an Action is received.
     ///
     func onAction(_ action: Action)
-}
-
-
-
-// MARK: - DeauthenticatedState
-//
-private class DeauthenticatedState: StoresManagerState {
-
-    /// This method should run only when the app got deauthenticated.
-    ///
-    func didEnter() {
-        CredentialsManager.shared.removeDefaultCredentials()
-        AppDelegate.shared.displayAuthenticator()
-    }
-
-
-    /// NO-OP: During deauth method, we're not running any actions.
-    ///
-    func onAction(_ action: Action) { }
-}
-
-
-
-// MARK: - AuthenticatedState
-//
-private class AuthenticatedState: StoresManagerState {
-
-    /// Active Credentials
-    ///
-    private let credentials: Credentials
-
-    /// Dispatcher: Glues all of the Stores!
-    ///
-    private let dispatcher = Dispatcher()
-
-    /// Retains all of the active Services
-    ///
-    private let services: [ActionsProcessor]
-
-
-    /// Designated Initializer
-    ///
-    init(credentials: Credentials) {
-        let storageManager = CoreDataManager.global
-        let network = AlamofireNetwork(credentials: credentials)
-
-        services = [
-            AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        ]
-
-        self.credentials = credentials
-    }
-
-
-    /// Executed whenever the state is activated.
-    ///
-    func didEnter() {
-        CredentialsManager.shared.saveDefaultCredentials(credentials)
-    }
-
-
-    /// Forwards the received action to the Actions Dispatcher.
-    ///
-    func onAction(_ action: Action) {
-        dispatcher.dispatch(action)
-    }
 }

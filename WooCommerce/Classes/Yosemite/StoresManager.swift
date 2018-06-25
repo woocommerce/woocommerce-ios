@@ -125,7 +125,7 @@ private class AuthenticatedState: StoresManagerState {
 
     /// Dispatcher: Glues all of the Stores!
     ///
-    private let dispatcher = Dispatcher.global
+    private let dispatcher = Dispatcher()
 
     /// Retains all of the active Services
     ///

@@ -11,6 +11,8 @@ PODS:
   - CocoaLumberjack/Default (3.4.2)
   - CocoaLumberjack/Extensions (3.4.2):
     - CocoaLumberjack/Default
+  - CocoaLumberjack/Swift (3.4.2):
+    - CocoaLumberjack/Default
   - Crashlytics (3.10.1):
     - Fabric (~> 1.7.5)
   - Fabric (1.7.7)
@@ -63,8 +65,9 @@ PODS:
   - wpxmlrpc (0.8.3)
 
 DEPENDENCIES:
-  - Alamofire (= 4.7.2)
+  - Alamofire (~> 4.7)
   - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.3`)
+  - CocoaLumberjack/Swift (~> 3.4)
   - Crashlytics (= 3.10.1)
   - Gridicons (= 0.15)
   - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `58ed623`)
@@ -130,6 +133,6 @@ SPEC CHECKSUMS:
   WordPressUI: f2348649b63b5a9392a72b1d2f46dd1d72e80ad9
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
 
-PODFILE CHECKSUM: 1b3a8db08db7d0827c6bad2b1ed8dc6ea93041f4
+PODFILE CHECKSUM: be940516077517b2ea482cc7d9b85df8f5a35fc2
 
 COCOAPODS: 1.5.3

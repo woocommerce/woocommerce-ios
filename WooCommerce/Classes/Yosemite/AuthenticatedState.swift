@@ -21,10 +21,17 @@ class AuthenticatedState: StoresManagerState {
     ///
     private let services: [ActionsProcessor]
 
+    /// CredentialsManager: By Reference, for unit testing purposes.
+    ///
+    private let keychain: CredentialsManager
+
+
 
     /// Designated Initializer
     ///
-    init(credentials: Credentials) {
+    /// Designated Initializer
+    ///
+    init(keychain: CredentialsManager, credentials: Credentials) {
         let storageManager = CoreDataManager.global
         let network = AlamofireNetwork(credentials: credentials)
 
@@ -33,13 +40,14 @@ class AuthenticatedState: StoresManagerState {
         ]
 
         self.credentials = credentials
+        self.keychain = keychain
     }
 
 
     /// Executed whenever the state is activated.
     ///
     func didEnter() {
-        CredentialsManager.shared.saveDefaultCredentials(credentials)
+        keychain.saveDefaultCredentials(credentials)
     }
 
 

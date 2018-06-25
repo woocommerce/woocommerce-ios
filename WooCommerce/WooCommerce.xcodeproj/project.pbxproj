@@ -351,7 +351,6 @@
 			isa = PBXGroup;
 			children = (
 				B55D4C2220B716CE00D7A50F /* Tools */,
-				CECA64AB20D996B0005A44C4 /* Utility */,
 				B55D4C0420B6026700D7A50F /* Authentication */,
 				CE1CCB4C20572444000EE3AC /* Extensions */,
 				CE1CCB3E2056F204000EE3AC /* Styles */,
@@ -449,13 +448,6 @@
 				CE34DA2420A1ECD6005D8523 /* ContactViewModel.swift */,
 			);
 			path = ViewModels;
-			sourceTree = "<group>";
-		};
-		CECA64AB20D996B0005A44C4 /* Utility */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Utility;
 			sourceTree = "<group>";
 		};
 		CED6021A20B35FBF0032C639 /* ReusableViews */ = {

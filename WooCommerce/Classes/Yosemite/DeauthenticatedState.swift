@@ -7,10 +7,21 @@ import Yosemite
 //
 class DeauthenticatedState: StoresManagerState {
 
+    /// CredentialsManager: By Reference, for unit testing purposes.
+    ///
+    private let keychain: CredentialsManager
+
+
+    /// Designated Initializer
+    ///
+    init(keychain: CredentialsManager) {
+        self.keychain = keychain
+    }
+
     /// This method should run only when the app got deauthenticated.
     ///
     func didEnter() {
-        CredentialsManager.shared.removeDefaultCredentials()
+        keychain.removeDefaultCredentials()
         AppDelegate.shared.displayAuthenticator()
     }
 

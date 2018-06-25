@@ -23,25 +23,25 @@ class StoresManager {
     private init() { }
 
 
-    /// Switches the internal state to Authenticated.
-    ///
-    class func authenticate(username: String, authToken: String) {
-        let credentials = Credentials(username: username, authToken: authToken)
-        state = state.authenticate(with: credentials)
-    }
-
-
-    /// Switches the internal state to Deauthenticated.
-    ///
-    class func deauthenticate() {
-        state = state.deauthenticate()
-    }
-
-
     /// Forwards the Action to the current State.
     ///
     class func dispatch(_ action: Action) {
         state.onAction(action)
+    }
+
+
+    /// Switches the internal state to Authenticated.
+    ///
+    class func authenticate(username: String, authToken: String) {
+        let credentials = Credentials(username: username, authToken: authToken)
+        state = AuthenticatedState(credentials: credentials)
+    }
+
+
+    /// Switches the state to a Deauthenticated one.
+    ///
+    class func deauthenticate() {
+        state = DeauthenticatedState()
     }
 }
 
@@ -73,14 +73,6 @@ private protocol StoresManagerState {
     /// Executed whenever an Action is received.
     ///
     func onAction(_ action: Action)
-
-    /// Returns the next valid state, whenever there was a deauth event.
-    ///
-    func deauthenticate() -> StoresManagerState
-
-    /// Returns the next valid state, whenever there was an auth event.
-    ///
-    func authenticate(with credentials: Credentials) -> StoresManagerState
 }
 
 
@@ -100,20 +92,6 @@ private class DeauthenticatedState: StoresManagerState {
     /// NO-OP: During deauth method, we're not running any actions.
     ///
     func onAction(_ action: Action) { }
-
-
-    /// Returns the next valid state, whenever there was a deauth event.
-    ///
-    func deauthenticate() -> StoresManagerState {
-        return self
-    }
-
-
-    /// Returns the next valid state, whenever there was an auth event.
-    ///
-    func authenticate(with credentials: Credentials) -> StoresManagerState {
-        return AuthenticatedState(credentials: credentials)
-    }
 }
 
 
@@ -156,23 +134,9 @@ private class AuthenticatedState: StoresManagerState {
     }
 
 
-    /// Convenience Method: Forwards the received action to the active dispatcher.
+    /// Forwards the received action to the Actions Dispatcher.
     ///
     func onAction(_ action: Action) {
         dispatcher.dispatch(action)
-    }
-
-
-    /// Returns the next valid state, whenever there was a deauth event.
-    ///
-    func deauthenticate() -> StoresManagerState {
-        return DeauthenticatedState()
-    }
-
-
-    /// Returns the next valid state, whenever there was an auth event.
-    ///
-    func authenticate(with credentials: Credentials) -> StoresManagerState {
-        return AuthenticatedState(credentials: credentials)
     }
 }

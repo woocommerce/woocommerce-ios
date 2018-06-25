@@ -789,7 +789,6 @@
 				CE1EC8CA20B479F1009762BF /* TwoColumnLabelView.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				B56DB3D22049BFAA00D4AA8E /* WooCommerce.xcdatamodeld in Sources */,
-				CE1EC8E220B862CB009762BF /* BuildFile in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* AddItemTableViewCell.swift in Sources */,
 				B50911342049E493007D25DC /* Order.swift in Sources */,
 				B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */,

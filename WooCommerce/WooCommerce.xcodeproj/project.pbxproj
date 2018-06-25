@@ -655,7 +655,6 @@
 				CE22571B20E16FBC0037F478 /* AddItemTableViewCell.xib in Resources */,
 				CEE005F82077C9690079161F /* order-list.json in Resources */,
 				B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */,
-				CEE005FC2077CA030079161F /* order-949.json in Resources */,
 				CE1EC8CF20B6FD53009762BF /* FootnoteView.xib in Resources */,
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
 				CE855367209BA6A700938BDC /* ShowHideSectionFooter.xib in Resources */,
@@ -673,7 +672,6 @@
 				CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
 				CE1EC8DF20B76651009762BF /* order-notes-1044.json in Resources */,
-				CEE005FA2077C9C00079161F /* order-925.json in Resources */,
 				CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */,
 				CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */,
 			);

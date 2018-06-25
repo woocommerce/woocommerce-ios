@@ -9,45 +9,56 @@ import Networking
 //
 class StoresManager {
 
-    /// Active (Internal) State.
+    /// Shared Instance
     ///
-    private static var state: StoresManagerState = initialState() {
+    static var shared = StoresManager(keychain: .shared)
+
+    /// Active StoresManager State.
+    ///
+    private var state: StoresManagerState {
         didSet {
             state.didEnter()
         }
     }
 
+    /// Credentials Manager: By Reference, for unit testing purposes.
+    ///
+    private let keychain: CredentialsManager
+
     /// Indicates if the StoresManager is currently authenticated, or not.
     ///
-    static var isAuthenticated: Bool {
+    var isAuthenticated: Bool {
         return state is AuthenticatedState
     }
 
 
-    /// This class is meant to be non (publicly) instantiable!
+    /// Designated Initializer
     ///
-    private init() { }
+    init(keychain: CredentialsManager) {
+        self.state = StoresManager.initialState(from: keychain)
+        self.keychain = keychain
+    }
 
 
     /// Forwards the Action to the current State.
     ///
-    class func dispatch(_ action: Action) {
+    func dispatch(_ action: Action) {
         state.onAction(action)
     }
 
 
     /// Switches the internal state to Authenticated.
     ///
-    class func authenticate(username: String, authToken: String) {
+    func authenticate(username: String, authToken: String) {
         let credentials = Credentials(username: username, authToken: authToken)
-        state = AuthenticatedState(credentials: credentials)
+        state = AuthenticatedState(keychain: keychain, credentials: credentials)
     }
 
 
     /// Switches the state to a Deauthenticated one.
     ///
-    class func deauthenticate() {
-        state = DeauthenticatedState()
+    func deauthenticate() {
+        state = DeauthenticatedState(keychain: keychain)
     }
 }
 
@@ -58,12 +69,12 @@ private extension StoresManager {
 
     /// Returns the Initial State, depending on whether we've got credentials or not.
     ///
-    class func initialState() -> StoresManagerState {
-        guard let credentials = CredentialsManager.shared.loadDefaultCredentials() else {
-            return DeauthenticatedState()
+    class func initialState(from keychain: CredentialsManager) -> StoresManagerState {
+        guard let credentials = keychain.loadDefaultCredentials() else {
+            return DeauthenticatedState(keychain: keychain)
         }
 
-        return AuthenticatedState(credentials: credentials)
+        return AuthenticatedState(keychain: keychain, credentials: credentials)
     }
 }
 

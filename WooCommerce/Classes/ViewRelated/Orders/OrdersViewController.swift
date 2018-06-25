@@ -71,7 +71,7 @@ class OrdersViewController: UIViewController {
 
     func configureNavigation() {
         title = NSLocalizedString("Orders", comment: "Orders title")
-        let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.listUnordered),
+        let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
                                              style: .plain,
                                              target: self,
                                              action: #selector(rightButtonTapped))

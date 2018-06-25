@@ -78,7 +78,7 @@ public class Dispatcher {
 
 // MARK: - WeakProcessor: Allows us to weakly-store ActionProcessors, and thus, prevent retain cycles.
 //
-private class WeakProcessor: ActionsProcessor {
+private class WeakProcessor {
 
     /// The actual ActionsProcessor we're proxying.
     ///

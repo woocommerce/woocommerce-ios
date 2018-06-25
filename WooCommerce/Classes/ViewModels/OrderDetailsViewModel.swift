@@ -1,13 +1,16 @@
 import Foundation
 import UIKit
+import Gridicons
 
 class OrderDetailsViewModel {
     private let order: Order
     private let couponLines: [CouponLine]?
+    private let notes: [OrderNote]?
 
     init(order: Order) {
         self.order = order
         self.couponLines = order.couponLines
+        self.notes = order.notes
     }
 
     var summaryTitle: String {
@@ -75,9 +78,7 @@ class OrderDetailsViewModel {
         return Double(order.discountTotal) != 0 ? "−" + order.currencySymbol + order.discountTotal : nil
     }
 
-    var shippingLabel: String {
-        return NSLocalizedString("Shipping", comment: "Shipping label for payment view")
-    }
+    let shippingLabel = NSLocalizedString("Shipping", comment: "Shipping label for payment view")
 
     var shippingValue: String {
         return order.currencySymbol + order.shippingTotal
@@ -91,9 +92,7 @@ class OrderDetailsViewModel {
         return Double(order.totalTax) != 0 ? order.currencySymbol + order.totalTax : nil
     }
 
-    var totalLabel: String {
-        return NSLocalizedString("Total", comment: "Total label for payment view")
-    }
+    let totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
 
     var totalValue: String {
         return order.currencySymbol + order.total
@@ -101,6 +100,20 @@ class OrderDetailsViewModel {
 
     var paymentSummary: String {
         return NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
+    }
+
+    let addNoteIcon = Gridicon.iconOfType(.addOutline)
+
+    let addNoteText = NSLocalizedString("Add a note", comment: "Button text for adding a new order note")
+
+    var orderNotes: [OrderNoteViewModel] {
+        guard let notes = notes else {
+            return []
+        }
+
+        return notes.map { note in
+            return OrderNoteViewModel(with: note)
+        }
     }
 
     /// MARK: Private

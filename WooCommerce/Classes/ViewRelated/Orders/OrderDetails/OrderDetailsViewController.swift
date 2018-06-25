@@ -46,6 +46,14 @@ class OrderDetailsViewController: UIViewController {
         let infoRows: [Row] = billingIsHidden ? [.shippingAddress] : [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
         let infoSection = Section(title: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), footer: infoFooter, rows: infoRows)
 
+        var noteRows: [Row] = [.addOrderNote]
+        if let notes = order.notes {
+            for _ in notes {
+                noteRows.append(.orderNote)
+            }
+        }
+        let orderNotesSection = Section(title: NSLocalizedString("ORDER NOTES", comment: "Order notes section title"), footer: nil, rows: noteRows)
+
         let paymentSection = Section(title: NSLocalizedString("PAYMENT", comment: "Payment section title"), footer: nil, rows: [.payment])
 
         // FIXME: this is temporary
@@ -54,10 +62,10 @@ class OrderDetailsViewController: UIViewController {
         // but order has customerNote as an optional property right now
         guard let customerNote = order.customerNote,
             !customerNote.isEmpty else {
-            sections = [summarySection, infoSection, paymentSection]
+            sections = [summarySection, infoSection, paymentSection, orderNotesSection]
             return
         }
-        sections = [summarySection, customerNoteSection, infoSection, paymentSection]
+        sections = [summarySection, customerNoteSection, infoSection, paymentSection, orderNotesSection]
     }
 
     func configureNibs() {
@@ -87,7 +95,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        configure(cell, for: row)
+        configure(cell, for: row, at: indexPath)
         return cell
     }
 
@@ -136,13 +144,17 @@ extension OrderDetailsViewController: UITableViewDataSource {
 extension OrderDetailsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        if sections[indexPath.section].rows[indexPath.row] == .addOrderNote {
+            // TODO: present modal for Add Note screen
+        }
     }
 }
 
 // MARK: - Extension
 //
 extension OrderDetailsViewController {
-    private func configure(_ cell: UITableViewCell, for row: Row) {
+    private func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as SummaryTableViewCell:
             cell.configure(with: viewModel)
@@ -158,6 +170,10 @@ extension OrderDetailsViewController {
             configure(cell, for: .billingEmail)
         case let cell as PaymentTableViewCell:
             cell.configure(with: viewModel)
+        case let cell as AddItemTableViewCell:
+            cell.configure(image: viewModel.addNoteIcon, text: viewModel.addNoteText)
+        case let cell as OrderNoteTableViewCell where row == .orderNote:
+            cell.configure(with: viewModel.orderNotes[indexPath.row - 1])
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -282,6 +298,8 @@ private extension OrderDetailsViewController {
         case billingAddress
         case billingPhone
         case billingEmail
+        case addOrderNote
+        case orderNote
         case payment
 
         var reuseIdentifier: String {
@@ -298,6 +316,10 @@ private extension OrderDetailsViewController {
                 return BillingDetailsTableViewCell.reuseIdentifier
             case .billingEmail:
                 return BillingDetailsTableViewCell.reuseIdentifier
+            case .addOrderNote:
+                return AddItemTableViewCell.reuseIdentifier
+            case .orderNote:
+                return OrderNoteTableViewCell.reuseIdentifier
             case .payment:
                 return PaymentTableViewCell.reuseIdentifier
             }

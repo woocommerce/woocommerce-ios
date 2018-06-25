@@ -40,19 +40,21 @@ class OrdersViewController: UIViewController {
 
     func loadOrderNotes(basicOrder: Order) -> Order {
         let resource = "order-notes-\(basicOrder.number)"
-        if let path = Bundle.main.url(forResource: resource, withExtension: "json") {
-            do {
-                let json = try Data(contentsOf: path)
-                let decoder = JSONDecoder()
-                let orderNotesFromJson = try decoder.decode([OrderNote].self, from: json)
-                var order = basicOrder
-                order.notes = orderNotesFromJson
-                return order
-            } catch {
-                print("error:\(error)")
-            }
+        guard let path = Bundle.main.url(forResource: resource, withExtension: "json") else {
+            return basicOrder
         }
-        return basicOrder
+
+        do {
+            let json = try Data(contentsOf: path)
+            let decoder = JSONDecoder()
+            let orderNotesFromJson = try decoder.decode([OrderNote].self, from: json)
+            var order = basicOrder
+            order.notes = orderNotesFromJson
+            return order
+        } catch {
+            print("error:\(error)")
+            return basicOrder
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {

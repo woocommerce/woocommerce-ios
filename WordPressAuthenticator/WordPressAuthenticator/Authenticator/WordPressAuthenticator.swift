@@ -254,7 +254,7 @@ public struct WordPressAuthenticatorConfiguration {
         let storyboard = UIStoryboard(name: "Login", bundle: bundle)
         if let controller = storyboard.instantiateInitialViewController() {
             if let childController = controller.childViewControllers.first as? LoginPrologueViewController {
-                childController.restrictToWPCom = restrictToWPCom
+                childController.loginFields.restrictToWPCom = restrictToWPCom
                 childController.showCancel = showCancel
             }
             presenter.present(controller, animated: animated, completion: nil)
@@ -272,7 +272,7 @@ public struct WordPressAuthenticatorConfiguration {
             return
         }
 
-        controller.restrictToWPCom = true
+        controller.loginFields.restrictToWPCom = true
         controller.loginFields.meta.jetpackBlogXMLRPC = xmlrpc
         controller.loginFields.meta.jetpackBlogUsername = username
 

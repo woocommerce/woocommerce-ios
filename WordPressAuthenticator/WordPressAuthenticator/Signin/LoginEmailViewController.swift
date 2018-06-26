@@ -93,7 +93,7 @@ class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     ///
     func configureForWPComOnlyIfNeeded() {
         wpcomSignupButton?.isHidden = !offerSignupOption
-        selfHostedLoginButton?.isHidden = restrictToWPCom
+        selfHostedLoginButton?.isHidden = loginFields.restrictToWPCom
     }
 
 

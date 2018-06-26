@@ -386,6 +386,7 @@ class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             let socialErrorVC = LoginSocialErrorViewController(title: errorTitle, description: errorDescription)
             let socialErrorNav = LoginNavigationController(rootViewController: socialErrorVC)
             socialErrorVC.delegate = self
+            socialErrorVC.loginFields = loginFields
             present(socialErrorNav, animated: true) {}
         } else {
             errorToPresent = error

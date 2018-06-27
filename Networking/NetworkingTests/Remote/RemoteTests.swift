@@ -7,27 +7,16 @@ import Alamofire
 ///
 class RemoteTests: XCTestCase {
 
-    /// Sample Credentials
-    ///
-    private let credentials = Credentials(authToken: "yosemite")
-
     /// Sample Request
     ///
-    private let request = try! URLRequest(url: "www.a8c.com", method: .get)
+    private let request = try! URLRequest(url: "www.a8c.com/something", method: .get)
 
-
-    /// Verifies that, by default, the Remote Layer gets AlamofireWrapper set as the Networking Layer.
-    ///
-    func testRemoteGetsAlamofireNetworkByDefault() {
-        let remote = Remote(credentials: credentials)
-        XCTAssert(remote.network is AlamofireWrapper)
-    }
 
     /// Verifies that `enqueue` properly wraps up the received request within an AuthenticatedRequest, with the remote credentials.
     ///
     func testEnqueueProperlyWrapsUpJsonRequestsIntoAuthenticatedRequestWithCredentials() {
-        let network = DummyNetwork()
-        let remote = Remote(credentials: credentials, network: network)
+        let network = MockupNetwork()
+        let remote = Remote(network: network)
         let expectation = self.expectation(description: "Enqueue")
 
         remote.enqueue(request) { (payload, error) in
@@ -37,10 +26,9 @@ class RemoteTests: XCTestCase {
             XCTAssert(network.requestsForResponseData.isEmpty)
             XCTAssert(network.requestsForResponseJSON.count == 1)
 
-            let first = network.requestsForResponseJSON.first as! AuthenticatedRequest
+            let first = network.requestsForResponseJSON.first as! URLRequest
             XCTAssertNotNil(first)
-            XCTAssertEqual(first.credentials, self.credentials)
-            XCTAssertEqual(first.request as! URLRequest, self.request)
+            XCTAssertEqual(first, self.request)
 
             expectation.fulfill()
         }
@@ -51,9 +39,9 @@ class RemoteTests: XCTestCase {
     /// Verifies that `enqueue:mapper:` properly wraps up the received request within an AuthenticatedRequest, with the remote credentials.
     ///
     func testEnqueueProperlyWrapsUpDataRequestsIntoAuthenticatedRequestWithCredentials() {
-        let network = DummyNetwork()
+        let network = MockupNetwork()
         let mapper = DummyMapper()
-        let remote = Remote(credentials: credentials, network: network)
+        let remote = Remote(network: network)
         let expectation = self.expectation(description: "Enqueue with Mapper")
 
         remote.enqueue(request, mapper: mapper) { (payload, error) in
@@ -63,10 +51,9 @@ class RemoteTests: XCTestCase {
             XCTAssert(network.requestsForResponseJSON.isEmpty)
             XCTAssert(network.requestsForResponseData.count == 1)
 
-            let first = network.requestsForResponseData.first as! AuthenticatedRequest
+            let first = network.requestsForResponseData.first as! URLRequest
             XCTAssertNotNil(first)
-            XCTAssertEqual(first.credentials, self.credentials)
-            XCTAssertEqual(first.request as! URLRequest, self.request)
+            XCTAssertEqual(first, self.request)
 
             expectation.fulfill()
         }
@@ -77,17 +64,17 @@ class RemoteTests: XCTestCase {
     /// Verifies that `enqueue:mapper:` relays any received payload over to the Mapper.
     ///
     func testEnqueueWithMapperProperlyRelaysReceivedPayloadToMapper() {
-        let network = DummyNetwork()
+        let network = MockupNetwork()
         let mapper = DummyMapper()
-        let remote = Remote(credentials: credentials, network: network)
+        let remote = Remote(network: network)
 
         let expectation = self.expectation(description: "Enqueue with Mapper")
 
-        let orderData = Loader.contentsOf("order")
-        network.dummyDataResponse = orderData
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         remote.enqueue(request, mapper: mapper) { (payload, error) in
-            XCTAssertEqual(mapper.input, orderData)
+            XCTAssertEqual(mapper.input, Loader.contentsOf("order"))
+            XCTAssertNotNil(mapper.input)
             expectation.fulfill()
         }
 
@@ -107,34 +94,5 @@ private class DummyMapper: Mapper {
     func map(response: Data) throws -> Any {
         input = response
         return response
-    }
-}
-
-
-/// Dummy Network: Useful only for Remote UnitTests
-///
-private class DummyNetwork: Network  {
-
-    /// Keeps a collection of all of the `responseJSON` requests.
-    ///
-    var requestsForResponseJSON = [URLRequestConvertible]()
-
-    /// Keeps a collection of all of the `responseData` requests.
-    ///
-    var requestsForResponseData = [URLRequestConvertible]()
-
-    /// Dummy Data Response
-    ///
-    var dummyDataResponse: Data?
-
-
-    func responseJSON(for request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
-        requestsForResponseJSON.append(request)
-        completion(nil, nil)
-    }
-
-    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
-        requestsForResponseData.append(request)
-        completion(dummyDataResponse, nil)
     }
 }

@@ -24,8 +24,8 @@
     "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10.13; rv:60.0) gecko/20100101 firefox/60.0",
     "customer_note": "",
     "billing": {
-        "first_name": "Bill",
-        "last_name": "Jameson",
+        "first_name": "Woo Billing",
+        "last_name": "User",
         "company": "",
         "address_1": "567 Place",
         "address_2": "",
@@ -33,12 +33,12 @@
         "state": "AZ",
         "postcode": "64364",
         "country": "US",
-        "email": "alex.forcier@automattic.com",
+        "email": "sampleuser@woocommerce.com",
         "phone": "4264262624"
     },
     "shipping": {
-        "first_name": "Bill",
-        "last_name": "Jameson",
+        "first_name": "Woo Sample",
+        "last_name": "User 1",
         "company": "",
         "address_1": "567 Place",
         "address_2": "",

@@ -20,7 +20,7 @@ class StoresManagerTests: XCTestCase {
     private var manager: StoresManager!
 
 
-    // MARK: - Overriden Methods
+    // MARK: - Overridden Methods
     override func setUp() {
         super.setUp()
         keychain.removeDefaultCredentials()

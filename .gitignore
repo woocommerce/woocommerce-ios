@@ -5,7 +5,7 @@
 ## Build generated
 build/
 DerivedData/
-DerivedSources/
+WooCommerce/DerivedSources/
 
 ## Various settings
 *.pbxuser
@@ -28,6 +28,13 @@ xcuserdata/
 *.ipa
 *.dSYM.zip
 *.dSYM
+
+## Bundler
+/vendor/bundle/
+.bundle/
+
+## Dependencies
+/vendor/
 
 ## Playgrounds
 timeline.xctimeline

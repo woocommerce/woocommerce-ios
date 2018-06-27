@@ -29,8 +29,6 @@ class AuthenticatedState: StoresManagerState {
 
     /// Designated Initializer
     ///
-    /// Designated Initializer
-    ///
     init(keychain: CredentialsManager, credentials: Credentials) {
         let storageManager = CoreDataManager.global
         let network = AlamofireNetwork(credentials: credentials)

@@ -121,7 +121,7 @@ class StyleManager {
         return active.sectionTitleColor
     }
 
-    static var tableViewBackgroundColor: UIColor  {
+    static var tableViewBackgroundColor: UIColor {
         return active.tableViewBackgroundColor
     }
 

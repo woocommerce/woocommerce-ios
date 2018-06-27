@@ -65,4 +65,14 @@ class DispatcherTests: XCTestCase {
         dispatcher.dispatch(MockupAccountAction.authenticate)
         XCTAssertEqual(processor.receivedActions.count, 1)
     }
+
+    /// Verifies that the Dispatcher does not strongly retain the ActionsProcessors.
+    ///
+    func testProcessorsAreNotStronglyRetainedByDispatcher() {
+        dispatcher.register(processor: processor, for: SiteAction.self)
+        XCTAssertNotNil(dispatcher.processor(for: SiteAction.self))
+        processor = nil
+
+        XCTAssertNil(dispatcher.processor(for: SiteAction.self))
+    }
 }

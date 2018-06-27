@@ -25,7 +25,7 @@ public class Dispatcher {
 
     /// Collection of active Action Processors, per action kind.
     ///
-    private(set) var processors = [Action.TypeIdentifier: ActionsProcessor]()
+    private var processors = [Action.TypeIdentifier: WeakProcessor]()
 
 
     ///  Designated Initializer
@@ -41,7 +41,7 @@ public class Dispatcher {
             fatalError("An action type can only be handled by a single processor!")
         }
 
-        processors[actionType.identifier] = processor
+        processors[actionType.identifier] = WeakProcessor(processor: processor)
     }
 
     /// Unregisters the specified Processor from *ALL* of the dispatcher queues.
@@ -60,11 +60,45 @@ public class Dispatcher {
         return processors[actionType.identifier]?.identifier == processor.identifier
     }
 
+    /// Returns the registered ActionsProcessor, for a specified Action, if any exist.
+    ///
+    public func processor(for actionType: Action.Type) -> ActionsProcessor? {
+        return processors[actionType.identifier]?.processor
+    }
+
     /// Dispatches the given action to all registered processors.
     ///
     public func dispatch(_ action: Action) {
         assertMainThread()
 
         processors[action.identifier]?.onAction(action)
+    }
+}
+
+
+// MARK: - WeakProcessor: Allows us to weakly-store ActionProcessors, and thus, prevent retain cycles.
+//
+private class WeakProcessor {
+
+    /// The actual ActionsProcessor we're proxying.
+    ///
+    private(set) weak var processor: ActionsProcessor?
+
+    /// Returns the internal Processor's Identifier, if any.
+    ///
+    var identifier: ActionsProcessor.TypeIdentifier? {
+        return processor?.identifier
+    }
+
+    /// Designated Initializer
+    ///
+    init(processor: ActionsProcessor) {
+        self.processor = processor
+    }
+
+    /// Called whenever a given Action is dispatched.
+    ///
+    func onAction(_ action: Action) {
+        processor?.onAction(action)
     }
 }

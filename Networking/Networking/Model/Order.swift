@@ -13,9 +13,23 @@ public struct Order: Decodable {
     public let currency: String
     public let customerNote: String?
 
-    public let dateCreated: Date
     public let dateModified: Date
     public let datePaid: Date?
+
+    private let dateCreatedString: String?
+    private let dateModifiedString: String?
+    
+    private(set) public lazy var dateCreated: Date = {
+        let format = ISO8601DateFormatter()
+        
+        guard let dateString = dateCreatedString else {
+            return Date()
+        }
+
+        if let date = format.date(from: dateString) {
+            return date
+        }
+    }()
 
     public let discountTotal: String
     public let discountTax: String
@@ -27,6 +41,60 @@ public struct Order: Decodable {
     public let items: [OrderItem]
     public let billingAddress: Address
     public let shippingAddress: Address
+
+    init(orderID: Int, parentID: Int, customerID: Int, number: String, status: OrderStatus, currency: String, customerNote: String?, dateCreatedString: String?, dateModifiedString: String?, datePaid: Date?, discountTotal: String, discountTax: String, shippingTotal: String, shippingTax: String, total: String, totalTax: String, items: [OrderItem], billingAddress: Address, shippingAddress: Address) {
+        self.orderID = orderID
+        self.parentID = parentID
+        self.customerID = customerID
+
+        self.number = number
+        self.status = status
+        self.currency = currency
+        self.customerNote = customerNote
+
+        self.dateCreatedString = dateCreatedString
+        self.dateModifiedString = dateModifiedString
+        self.datePaid = datePaid
+
+        self.discountTotal = discountTotal
+        self.discountTax = discountTax
+        self.shippingTax = shippingTax
+        self.total = total
+        self.totalTax = totalTax
+
+        self.items = items
+        self.billingAddress = billingAddress
+        self.shippingAddress = shippingAddress
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let orderID = try container.decode(Int.self, forKey: .orderID)
+        let parentID = try container.decode(Int.self, forKey: .parentID)
+        let customerID = try container.decode(Int.self, forKey: .customerID)
+
+        let number = try container.decode(String.self, forKey: .number)
+        let status = try container.decode(OrderStatus.self, forKey: .status)
+        let currency = try container.decode(String.self, forKey: .currency)
+        let customerNote = try container.decode(String.self, forKey: .customerNote)
+
+        let dateCreatedString = try container.decode(String.self, forKey: .dateCreatedString)
+        let dateModifiedString = try container.decode(String.self, forKey: .dateModifiedString)
+        let datePaid = try container.decode(Date.self, forKey: .datePaid)
+
+        let discountTotal = try container.decode(String.self, forKey: .discountTotal)
+        let discountTax = try container.decode(String.self, forKey: .discountTax)
+        let shippingTax = try container.decode(String.self, forKey: .shippingTax)
+        let shippingTotal = try container.decode(String.self, forKey: .shippingTotal)
+        let total = try container.decode(String.self, forKey: .total)
+        let totalTax = try container.decode(String.self, forKey: .totalTax)
+
+        let items = try container.decode([OrderItem].self, forKey: .items)
+        let shippingAddress = try container.decode(Address.self, forKey: .shippingAddress)
+        let billingAddress = try container.decode(Address.self, forKey: .billingAddress)
+
+        self.init(orderID: orderID, parentID: parentID, customerID: customerID, number: number, status: status, currency: currency, customerNote: customerNote, dateCreatedString: dateCreatedString, dateModifiedString: dateModifiedString, datePaid: datePaid, discountTotal: discountTotal, discountTax: discountTax, shippingTotal: shippingTotal, shippingTax: shippingTax, total: total, totalTax: totalTax, items: items, billingAddress: billingAddress, shippingAddress: shippingAddress)
+    }
 }
 
 
@@ -44,8 +112,8 @@ private extension Order {
         case currency           = "currency"
         case customerNote       = "customer_note"
 
-        case dateCreated        = "date_created_gmt"
-        case dateModified       = "date_modified_gmt"
+        case dateCreatedString  = "date_created_gmt"
+        case dateModifiedString = "date_modified_gmt"
         case datePaid           = "date_paid_gmt"
 
         case discountTotal      = "discount_total"

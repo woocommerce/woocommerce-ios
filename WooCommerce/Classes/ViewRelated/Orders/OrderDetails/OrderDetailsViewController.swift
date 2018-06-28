@@ -39,17 +39,17 @@ class OrderDetailsViewController: UIViewController {
     }
 
     func configureSections() {
-        let summarySection = Section(titles: [], footer: nil, rows: [.summary])
+        let summarySection = Section(leftTitle: nil, rightTitle: nil, footer: nil, rows: [.summary])
 
-        let productSectionTitles = [NSLocalizedString("PRODUCT", comment: "Product section title"),
-                                    NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")]
-        let productListSection = Section(titles: productSectionTitles, footer: nil, rows: [.productList])
+        let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
+        let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")
+        let productListSection = Section(leftTitle: productLeftTitle, rightTitle: productRightTitle, footer: nil, rows: [.productList])
 
-        let customerNoteSection = Section(titles: [NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title")], footer: nil, rows: [.customerNote])
+        let customerNoteSection = Section(leftTitle: NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title"), rightTitle: nil, footer: nil, rows: [.customerNote])
 
         let infoFooter = billingIsHidden ? NSLocalizedString("Show billing", comment: "Footer text to show the billing cell") : NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
         let infoRows: [Row] = billingIsHidden ? [.shippingAddress] : [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
-        let infoSection = Section(titles: [NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title")], footer: infoFooter, rows: infoRows)
+        let infoSection = Section(leftTitle: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), rightTitle: nil, footer: infoFooter, rows: infoRows)
 
         var noteRows: [Row] = [.addOrderNote]
         if let notes = order.notes {
@@ -57,9 +57,9 @@ class OrderDetailsViewController: UIViewController {
                 noteRows.append(.orderNote)
             }
         }
-        let orderNotesSection = Section(titles: [NSLocalizedString("ORDER NOTES", comment: "Order notes section title")], footer: nil, rows: noteRows)
+        let orderNotesSection = Section(leftTitle: NSLocalizedString("ORDER NOTES", comment: "Order notes section title"), rightTitle: nil, footer: nil, rows: noteRows)
 
-        let paymentSection = Section(titles: [NSLocalizedString("PAYMENT", comment: "Payment section title")], footer: nil, rows: [.payment])
+        let paymentSection = Section(leftTitle: NSLocalizedString("PAYMENT", comment: "Payment section title"), rightTitle: nil, footer: nil, rows: [.payment])
 
         // FIXME: this is temporary
         // the API response always sends customer note data
@@ -106,7 +106,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if sections[section].titles?.count == 0 {
+        if sections[section].leftTitle == nil {
             // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
             return CGFloat.leastNonzeroMagnitude
         }
@@ -115,19 +115,17 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let titles = sections[section].titles else {
-            return nil
-        }
-        let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
-        let header = view as! TwoColumnSectionHeaderView
-        guard let leftText = titles.first else {
+        guard let leftText = sections[section].leftTitle else {
             return nil
         }
 
-        let rightText = titles.count > 1 ? titles[1] : nil
-        header.configure(leftText: leftText, rightText: rightText)
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
+            fatalError()
+        }
 
-        return view
+        header.configure(leftText: leftText, rightText: sections[section].rightTitle)
+
+        return header
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -307,7 +305,8 @@ private extension OrderDetailsViewController {
     }
 
     private struct Section {
-        let titles: [String]?
+        let leftTitle: String?
+        let rightTitle: String?
         let footer: String?
         let rows: [Row]
     }

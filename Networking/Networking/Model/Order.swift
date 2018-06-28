@@ -27,6 +27,66 @@ public struct Order: Decodable {
     public let items: [OrderItem]
     public let billingAddress: Address
     public let shippingAddress: Address
+
+    /// Order struct initializer.
+    ///
+    init(orderID: Int, parentID: Int, customerID: Int, number: String, status: OrderStatus, currency: String, customerNote: String?, dateCreated: Date, dateModified: Date, datePaid: Date?, discountTotal: String, discountTax: String, shippingTotal: String, shippingTax: String, total: String, totalTax: String, items: [OrderItem], billingAddress: Address, shippingAddress: Address) {
+        self.orderID = orderID
+        self.parentID = parentID
+        self.customerID = customerID
+
+        self.number = number
+        self.status = status
+        self.currency = currency
+        self.customerNote = customerNote
+
+        self.dateCreated = dateCreated
+        self.dateModified = dateModified
+        self.datePaid = datePaid
+
+        self.discountTotal = discountTotal
+        self.discountTax = discountTax
+        self.shippingTotal = shippingTotal
+        self.shippingTax = shippingTax
+        self.total = total
+        self.totalTax = totalTax
+
+        self.items = items
+        self.billingAddress = billingAddress
+        self.shippingAddress = shippingAddress
+    }
+
+
+    /// The public initializer for Order.
+    ///
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let orderID = try container.decode(Int.self, forKey: .orderID)
+        let parentID = try container.decode(Int.self, forKey: .parentID)
+        let customerID = try container.decode(Int.self, forKey: .customerID)
+
+        let number = try container.decode(String.self, forKey: .number)
+        let status = try container.decode(OrderStatus.self, forKey: .status)
+        let currency = try container.decode(String.self, forKey: .currency)
+        let customerNote = try container.decode(String.self, forKey: .customerNote)
+
+        let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
+        let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified) ?? Date()
+        let datePaid = try container.decodeIfPresent(Date.self, forKey: .datePaid)
+
+        let discountTotal = try container.decode(String.self, forKey: .discountTotal)
+        let discountTax = try container.decode(String.self, forKey: .discountTax)
+        let shippingTax = try container.decode(String.self, forKey: .shippingTax)
+        let shippingTotal = try container.decode(String.self, forKey: .shippingTotal)
+        let total = try container.decode(String.self, forKey: .total)
+        let totalTax = try container.decode(String.self, forKey: .totalTax)
+
+        let items = try container.decode([OrderItem].self, forKey: .items)
+        let shippingAddress = try container.decode(Address.self, forKey: .shippingAddress)
+        let billingAddress = try container.decode(Address.self, forKey: .billingAddress)
+
+        self.init(orderID: orderID, parentID: parentID, customerID: customerID, number: number, status: status, currency: currency, customerNote: customerNote, dateCreated: dateCreated, dateModified: dateModified, datePaid: datePaid, discountTotal: discountTotal, discountTax: discountTax, shippingTotal: shippingTotal, shippingTax: shippingTax, total: total, totalTax: totalTax, items: items, billingAddress: billingAddress, shippingAddress: shippingAddress) // initialize the struct
+    }
 }
 
 

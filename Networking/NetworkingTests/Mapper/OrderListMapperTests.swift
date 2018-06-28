@@ -76,6 +76,16 @@ class OrderListMapperTests: XCTestCase {
         XCTAssertEqual(firstItem.totalTax, "1.20")
         XCTAssertEqual(firstItem.variationID, 0)
     }
+
+    /// Verifies that an Order in a broken state does [gets default values] | [gets skipped while parsing]
+    ///
+    func testOrderHasDefaultValuesWhenInInvalidState() {
+        let orders = mapLoadBrokenOrderResponse()
+        XCTAssert(orders.count == 1)
+
+        let brokenOrder = orders[0]
+        
+    }
 }
 
 
@@ -87,6 +97,16 @@ private extension OrderListMapperTests {
     ///
     func mapLoadAllOrdersResponse() -> [Order] {
         guard let response = Loader.contentsOf("orders-load-all") else {
+            return []
+        }
+
+        return try! OrderListMapper().map(response: response)
+    }
+
+    /// Returns the OrderlistMapper output upon receiving `broken-order`
+    ///
+    func mapLoadBrokenOrderResponse() -> [Order] {
+        guard let response = Loader.contentsOf("broken-order") else {
             return []
         }
 

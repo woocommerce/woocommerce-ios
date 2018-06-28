@@ -17,9 +17,6 @@ public struct Order: Decodable {
     public let dateModified: Date
     public let datePaid: Date?
 
-    private let dateCreatedString: String?
-    private let dateModifiedString: String?
-
     public let discountTotal: String
     public let discountTax: String
     public let shippingTotal: String
@@ -31,7 +28,9 @@ public struct Order: Decodable {
     public let billingAddress: Address
     public let shippingAddress: Address
 
-    init(orderID: Int, parentID: Int, customerID: Int, number: String, status: OrderStatus, currency: String, customerNote: String?, dateCreatedString: String?, dateModifiedString: String?, datePaid: Date?, discountTotal: String, discountTax: String, shippingTotal: String, shippingTax: String, total: String, totalTax: String, items: [OrderItem], billingAddress: Address, shippingAddress: Address) {
+    /// Order struct initializer.
+    ///
+    init(orderID: Int, parentID: Int, customerID: Int, number: String, status: OrderStatus, currency: String, customerNote: String?, dateCreated: Date, dateModified: Date, datePaid: Date?, discountTotal: String, discountTax: String, shippingTotal: String, shippingTax: String, total: String, totalTax: String, items: [OrderItem], billingAddress: Address, shippingAddress: Address) {
         self.orderID = orderID
         self.parentID = parentID
         self.customerID = customerID
@@ -41,32 +40,9 @@ public struct Order: Decodable {
         self.currency = currency
         self.customerNote = customerNote
 
-        self.dateCreatedString = dateCreatedString == nil ? "" : dateCreatedString
-        self.dateModifiedString = dateModifiedString
+        self.dateCreated = dateCreated
+        self.dateModified = dateModified
         self.datePaid = datePaid
-
-        let format = ISO8601DateFormatter()
-        var dateCreated: Date?
-        if let createdString = dateCreatedString {
-            dateCreated = format.date(from: createdString)
-        }
-
-        if let dateCreated = dateCreated {
-            self.dateCreated = dateCreated
-        } else {
-            self.dateCreated = Date()
-        }
-
-        var dateModified: Date?
-        if let modifiedString = dateModifiedString {
-            dateModified = format.date(from: modifiedString)
-        }
-
-        if let dateModified = dateModified {
-            self.dateModified = dateModified
-        } else {
-            self.dateModified = Date()
-        }
 
         self.discountTotal = discountTotal
         self.discountTax = discountTax
@@ -80,6 +56,9 @@ public struct Order: Decodable {
         self.shippingAddress = shippingAddress
     }
 
+
+    /// The public initializer for Order.
+    ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let orderID = try container.decode(Int.self, forKey: .orderID)
@@ -91,8 +70,8 @@ public struct Order: Decodable {
         let currency = try container.decode(String.self, forKey: .currency)
         let customerNote = try container.decode(String.self, forKey: .customerNote)
 
-        let dateCreatedString = try container.decodeIfPresent(String.self, forKey: .dateCreatedString)
-        let dateModifiedString = try container.decodeIfPresent(String.self, forKey: .dateModifiedString)
+        let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
+        let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified) ?? Date()
         let datePaid = try container.decodeIfPresent(Date.self, forKey: .datePaid)
 
         let discountTotal = try container.decode(String.self, forKey: .discountTotal)
@@ -106,7 +85,7 @@ public struct Order: Decodable {
         let shippingAddress = try container.decode(Address.self, forKey: .shippingAddress)
         let billingAddress = try container.decode(Address.self, forKey: .billingAddress)
 
-        self.init(orderID: orderID, parentID: parentID, customerID: customerID, number: number, status: status, currency: currency, customerNote: customerNote, dateCreatedString: dateCreatedString, dateModifiedString: dateModifiedString, datePaid: datePaid, discountTotal: discountTotal, discountTax: discountTax, shippingTotal: shippingTotal, shippingTax: shippingTax, total: total, totalTax: totalTax, items: items, billingAddress: billingAddress, shippingAddress: shippingAddress)
+        self.init(orderID: orderID, parentID: parentID, customerID: customerID, number: number, status: status, currency: currency, customerNote: customerNote, dateCreated: dateCreated, dateModified: dateModified, datePaid: datePaid, discountTotal: discountTotal, discountTax: discountTax, shippingTotal: shippingTotal, shippingTax: shippingTax, total: total, totalTax: totalTax, items: items, billingAddress: billingAddress, shippingAddress: shippingAddress) // initialize the struct
     }
 }
 
@@ -125,8 +104,8 @@ private extension Order {
         case currency           = "currency"
         case customerNote       = "customer_note"
 
-        case dateCreatedString  = "date_created_gmt"
-        case dateModifiedString = "date_modified_gmt"
+        case dateCreated        = "date_created_gmt"
+        case dateModified       = "date_modified_gmt"
         case datePaid           = "date_paid_gmt"
 
         case discountTotal      = "discount_total"

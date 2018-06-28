@@ -165,7 +165,7 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
         super.prepare(for: segue, sender: sender)
         // Configure login flow to allow only .com login and prefill the email
         if let destination = segue.destination as? LoginEmailViewController {
-            destination.restrictToWPCom = true
+            destination.loginFields.restrictToWPCom = true
             destination.loginFields.username = loginFields.emailAddress
         }
     }

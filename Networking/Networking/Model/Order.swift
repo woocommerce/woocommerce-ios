@@ -13,23 +13,12 @@ public struct Order: Decodable {
     public let currency: String
     public let customerNote: String?
 
+    public let dateCreated: Date
     public let dateModified: Date
     public let datePaid: Date?
 
     private let dateCreatedString: String?
     private let dateModifiedString: String?
-    
-    private(set) public lazy var dateCreated: Date = {
-        let format = ISO8601DateFormatter()
-        
-        guard let dateString = dateCreatedString else {
-            return Date()
-        }
-
-        if let date = format.date(from: dateString) {
-            return date
-        }
-    }()
 
     public let discountTotal: String
     public let discountTax: String
@@ -52,12 +41,36 @@ public struct Order: Decodable {
         self.currency = currency
         self.customerNote = customerNote
 
-        self.dateCreatedString = dateCreatedString
+        self.dateCreatedString = dateCreatedString == nil ? "" : dateCreatedString
         self.dateModifiedString = dateModifiedString
         self.datePaid = datePaid
 
+        let format = ISO8601DateFormatter()
+        var dateCreated: Date?
+        if let createdString = dateCreatedString {
+            dateCreated = format.date(from: createdString)
+        }
+
+        if let dateCreated = dateCreated {
+            self.dateCreated = dateCreated
+        } else {
+            self.dateCreated = Date()
+        }
+
+        var dateModified: Date?
+        if let modifiedString = dateModifiedString {
+            dateModified = format.date(from: modifiedString)
+        }
+
+        if let dateModified = dateModified {
+            self.dateModified = dateModified
+        } else {
+            self.dateModified = Date()
+        }
+
         self.discountTotal = discountTotal
         self.discountTax = discountTax
+        self.shippingTotal = shippingTotal
         self.shippingTax = shippingTax
         self.total = total
         self.totalTax = totalTax
@@ -78,9 +91,9 @@ public struct Order: Decodable {
         let currency = try container.decode(String.self, forKey: .currency)
         let customerNote = try container.decode(String.self, forKey: .customerNote)
 
-        let dateCreatedString = try container.decode(String.self, forKey: .dateCreatedString)
-        let dateModifiedString = try container.decode(String.self, forKey: .dateModifiedString)
-        let datePaid = try container.decode(Date.self, forKey: .datePaid)
+        let dateCreatedString = try container.decodeIfPresent(String.self, forKey: .dateCreatedString)
+        let dateModifiedString = try container.decodeIfPresent(String.self, forKey: .dateModifiedString)
+        let datePaid = try container.decodeIfPresent(Date.self, forKey: .datePaid)
 
         let discountTotal = try container.decode(String.self, forKey: .discountTotal)
         let discountTax = try container.decode(String.self, forKey: .discountTax)

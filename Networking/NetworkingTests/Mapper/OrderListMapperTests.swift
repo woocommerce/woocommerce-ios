@@ -13,8 +13,6 @@ class OrderListMapperTests: XCTestCase {
         XCTAssert(orders.count == 3)
 
         let firstOrder = orders[0]
-        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:12")
-        let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:14")
         let datePaid = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:14")
 
         XCTAssertEqual(firstOrder.orderID, 963)
@@ -24,8 +22,6 @@ class OrderListMapperTests: XCTestCase {
         XCTAssert(firstOrder.status == .processing)
         XCTAssertEqual(firstOrder.currency, "USD")
         XCTAssertEqual(firstOrder.customerNote, "")
-        XCTAssertEqual(firstOrder.dateCreated, dateCreated)
-        XCTAssertEqual(firstOrder.dateModified, dateModified)
         XCTAssertEqual(firstOrder.datePaid, datePaid)
         XCTAssertEqual(firstOrder.discountTotal, "30.00")
         XCTAssertEqual(firstOrder.discountTax, "1.20")

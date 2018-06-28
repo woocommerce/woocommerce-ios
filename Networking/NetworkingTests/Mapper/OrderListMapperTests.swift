@@ -79,12 +79,17 @@ class OrderListMapperTests: XCTestCase {
 
     /// Verifies that an Order in a broken state does [gets default values] | [gets skipped while parsing]
     ///
-    func testOrderHasDefaultValuesWhenInInvalidState() {
+    func testOrderHasDefaultDateCreatedWhenNullDateReceived() {
         let orders = mapLoadBrokenOrderResponse()
         XCTAssert(orders.count == 1)
 
         let brokenOrder = orders[0]
-        
+        let format = DateFormatter()
+        format.dateStyle = .short
+        let orderCreatedString = format.string(from: brokenOrder.dateCreated)
+        let todayCreatedString = format.string(from: Date())
+
+        XCTAssert(orderCreatedString == todayCreatedString)
     }
 }
 

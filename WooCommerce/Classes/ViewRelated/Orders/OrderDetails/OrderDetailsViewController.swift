@@ -32,6 +32,8 @@ class OrderDetailsViewController: UIViewController {
     }
 
     func configureTableView() {
+        tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
+        tableView.estimatedSectionFooterHeight = Constants.rowHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         configureSections()
@@ -111,7 +113,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
             return CGFloat.leastNonzeroMagnitude
         }
 
-        return Constants.sectionHeight
+        return UITableViewAutomaticDimension
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -134,7 +136,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
             return CGFloat.leastNonzeroMagnitude
         }
 
-        return Constants.rowHeight
+        return UITableViewAutomaticDimension
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {

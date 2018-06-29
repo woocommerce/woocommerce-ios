@@ -28,6 +28,10 @@ extension ProductListTableViewCell {
         fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
         fulfillButton.applyFilledRoundStyle()
 
-        verticalStackView.setCustomSpacing(8.0, after: fulfillButton)
+        verticalStackView.setCustomSpacing(Constants.spacing, after: fulfillButton)
+    }
+
+    struct Constants {
+        static let spacing = CGFloat(8.0)
     }
 }

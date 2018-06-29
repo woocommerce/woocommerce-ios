@@ -12,7 +12,7 @@ class CredentialsManagerTests: XCTestCase {
     private let manager = CredentialsManager(serviceName: Constants.testingServiceName)
 
 
-    // MARK: - Overriden Methods
+    // MARK: - Overridden Methods
 
     override func setUp() {
         super.setUp()

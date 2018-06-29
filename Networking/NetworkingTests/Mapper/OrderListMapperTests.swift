@@ -76,6 +76,24 @@ class OrderListMapperTests: XCTestCase {
         XCTAssertEqual(firstItem.totalTax, "1.20")
         XCTAssertEqual(firstItem.variationID, 0)
     }
+
+    /// Verifies that an Order in a broken state does [gets default values] | [gets skipped while parsing]
+    ///
+    func testOrderHasDefaultDateCreatedWhenNullDateReceived() {
+        let orders = mapLoadBrokenOrderResponse()
+        XCTAssert(orders.count == 1)
+
+        let brokenOrder = orders[0]
+        let format = DateFormatter()
+        format.dateStyle = .short
+        
+        let orderCreatedString = format.string(from: brokenOrder.dateCreated)
+        let todayCreatedString = format.string(from: Date())
+        XCTAssertEqual(orderCreatedString, todayCreatedString)
+
+        let orderModifiedString = format.string(from: brokenOrder.dateModified)
+        XCTAssertEqual(orderModifiedString, todayCreatedString)
+    }
 }
 
 
@@ -83,13 +101,25 @@ class OrderListMapperTests: XCTestCase {
 ///
 private extension OrderListMapperTests {
 
-    /// Returns the OrderListMapper output upon receiving `orders-load-all` (Data Encoded)
+    /// Returns the OrderListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapLoadAllOrdersResponse() -> [Order] {
-        guard let response = Loader.contentsOf("orders-load-all") else {
+    func mapOrders(from filename: String) -> [Order] {
+        guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
         return try! OrderListMapper().map(response: response)
+    }
+
+    /// Returns the OrderListMapper output upon receiving `orders-load-all`
+    ///
+    func mapLoadAllOrdersResponse() -> [Order] {
+        return mapOrders(from: "orders-load-all")
+    }
+
+    /// Returns the OrderlistMapper output upon receiving `broken-order`
+    ///
+    func mapLoadBrokenOrderResponse() -> [Order] {
+        return mapOrders(from: "broken-order")
     }
 }

@@ -1,6 +1,6 @@
 import XCTest
 @testable import WooCommerce
-@testable import Networking
+import Yosemite
 
 
 /// CredentialsManager Unit Tests

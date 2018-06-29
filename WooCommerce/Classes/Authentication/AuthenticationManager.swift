@@ -1,7 +1,7 @@
 import Foundation
 import WordPressAuthenticator
 import WordPressUI
-import Networking
+import Yosemite
 
 
 

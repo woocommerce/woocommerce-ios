@@ -221,7 +221,6 @@
 				B557DA0520975507005962F4 /* Remote */,
 				B557DA1020975F60005962F4 /* Settings */,
 				B505F6EB20BEFD9100BB1B69 /* Tools */,
-				CE60505720D9A99C00A74DD6 /* Utilities */,
 				B557D9E6209753AA005962F4 /* Networking.h */,
 				B557D9E7209753AA005962F4 /* Info.plist */,
 			);
@@ -341,13 +340,6 @@
 				F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */,
 			);
 			name = Pods;
-			sourceTree = "<group>";
-		};
-		CE60505720D9A99C00A74DD6 /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

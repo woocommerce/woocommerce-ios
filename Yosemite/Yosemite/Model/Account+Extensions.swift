@@ -3,8 +3,8 @@ import Storage
 import Networking
 
 
-/// Storage.Account Convenience Methods.
-///
+// MARK: - Storage.Account Convenience Methods.
+//
 extension Storage.Account {
 
     /// Updates the Storage.Account with the Yosemite.Account's Payload.

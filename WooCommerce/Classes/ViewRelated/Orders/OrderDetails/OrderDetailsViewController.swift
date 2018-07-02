@@ -121,13 +121,12 @@ extension OrderDetailsViewController: UITableViewDataSource {
             return nil
         }
 
-        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
+        guard let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
             fatalError()
         }
+        cell.configure(leftText: leftText, rightText: sections[section].rightTitle)
 
-        header.configure(leftText: leftText, rightText: sections[section].rightTitle)
-
-        return header
+        return cell
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -153,6 +152,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
             let sections = IndexSet(integer: section)
             tableView.reloadSections(sections, with: .fade)
         }
+
         return cell
     }
 }

@@ -38,6 +38,12 @@ class OrderDetailsViewModel {
         return summaryDate
     }
 
+    var items: [OrderItem] {
+        return order.items
+    }
+
+    let fulfillTitle = NSLocalizedString("Fulfill order", comment: "Fulfill order button title")
+
     var paymentStatus: String {
         return order.status.description
     }

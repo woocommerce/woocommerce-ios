@@ -7,9 +7,9 @@ import Networking
 ///
 extension Storage.Account {
 
-    /// Updates the Storage.Account with the Networking.Account's Payload.
+    /// Updates the Storage.Account with the Yosemite.Account's Payload.
     ///
-    func update(with account: Networking.Account) {
+    func update(with account: Yosemite.Account) {
         displayName = account.displayName
         email = account.email
         gravatarUrl = account.gravatarUrl
@@ -25,7 +25,7 @@ extension Storage.Account: ReadOnlyConvertible {
 
     /// Returns a ReadOnly version of the receiver.
     ///
-    public func toReadOnly() -> Networking.Account {
+    public func toReadOnly() -> Yosemite.Account {
         return Account(userID: Int(userID),
                        displayName: displayName ?? "",
                        email: email ?? "",

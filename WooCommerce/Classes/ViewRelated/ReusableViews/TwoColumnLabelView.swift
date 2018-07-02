@@ -3,8 +3,6 @@ import UIKit
 class TwoColumnLabelView: UIView {
     @IBOutlet private var leftColumn: UILabel!
     @IBOutlet private var rightColumn: UILabel!
-    @IBOutlet private var topConstraint: NSLayoutConstraint!
-    @IBOutlet private var bottomConstraint: NSLayoutConstraint!
 
     enum Mode {
         case body
@@ -43,8 +41,6 @@ class TwoColumnLabelView: UIView {
         case .title:
             leftColumn.applyTitleStyle()
             rightColumn.applyTitleStyle()
-            topConstraint.constant = Constants.topConstant
-            bottomConstraint.constant = Constants.bottomConstant
         }
     }
 
@@ -58,9 +54,5 @@ class TwoColumnLabelView: UIView {
     }
 }
 
-extension TwoColumnLabelView {
-    struct Constants {
-        static let topConstant = CGFloat(14)
-        static let bottomConstant = CGFloat(20)
     }
 }

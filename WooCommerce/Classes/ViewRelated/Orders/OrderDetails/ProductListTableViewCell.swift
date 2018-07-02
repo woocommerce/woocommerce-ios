@@ -15,7 +15,7 @@ class ProductListTableViewCell: UITableViewCell {
 extension ProductListTableViewCell {
     func configure(with viewModel: OrderDetailsViewModel) {
         for subView in verticalStackView.arrangedSubviews {
-            verticalStackView.removeArrangedSubview(subView)
+            subView.removeFromSuperview()
         }
 
         for (index, item) in viewModel.items.enumerated() {

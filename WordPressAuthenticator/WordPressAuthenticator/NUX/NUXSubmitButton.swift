@@ -14,12 +14,6 @@ public protocol ActivityIndicatorButton {
 ///
 @objc
 open class NUXSubmitButton: UIButton, ActivityIndicatorButton {
-    @IBInspectable open var isPrimary: Bool = false {
-        didSet {
-            configureButton()
-        }
-    }
-    @objc let cornerRadius = CGFloat(5.0)
 
     @objc var isAnimating: Bool {
         get {
@@ -33,29 +27,6 @@ open class NUXSubmitButton: UIButton, ActivityIndicatorButton {
         return indicator
     }()
 
-
-    override open var isEnabled: Bool {
-        didSet {
-            configureBorderColor()
-        }
-    }
-
-
-    override open var isHighlighted: Bool {
-        didSet {
-            configureBorderColor()
-        }
-    }
-
-
-    // MARK: - LifeCycle Methods
-
-    override open func awakeFromNib() {
-        super.awakeFromNib()
-        configureButton()
-    }
-
-
     override open func layoutSubviews() {
         super.layoutSubviews()
 
@@ -68,58 +39,6 @@ open class NUXSubmitButton: UIButton, ActivityIndicatorButton {
             activityIndicator.frame = frm
         }
     }
-
-
-    // MARK: - Configuration
-
-
-    /// Configure the appearance of the configure button.
-    ///
-    @objc func configureButton() {
-        contentEdgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
-
-        layer.cornerRadius = cornerRadius
-        layer.borderWidth = 1
-        layer.borderColor = UIColor.white.cgColor
-        clipsToBounds = true
-
-        titleLabel?.font = WPFontManager.systemSemiBoldFont(ofSize: 17.0)
-
-        let capInsets = UIEdgeInsets(top: cornerRadius, left: cornerRadius, bottom: cornerRadius, right: cornerRadius)
-        var backgroundColor = UIColor.clear
-        var titleColorNormal = UIColor.white
-        var titleColorHighlighted = WPStyleGuide.lightBlue()
-        var titleColorDisabled = UIColor(white: 1.0, alpha: NUXSubmitButtonDisabledAlpha)
-        if isPrimary {
-            backgroundColor = UIColor.white
-            titleColorNormal = WPStyleGuide.wordPressBlue()
-            titleColorHighlighted = WPStyleGuide.darkBlue()
-            titleColorDisabled = titleColorNormal.withAlphaComponent(NUXSubmitButtonDisabledAlpha)
-        }
-        let normalImage = UIImage(color: backgroundColor, havingSize: CGSize(width: 44, height: 44))
-        setBackgroundImage(normalImage?.resizableImage(withCapInsets: capInsets), for: .normal)
-        setBackgroundImage(normalImage?.resizableImage(withCapInsets: capInsets), for: .highlighted)
-
-        setTitleColor(titleColorNormal, for: .normal)
-        setTitleColor(titleColorHighlighted, for: .highlighted)
-        setTitleColor(titleColorDisabled, for: .disabled)
-
-        addSubview(activityIndicator)
-    }
-
-
-    /// Configures the border color.
-    ///
-    @objc func configureBorderColor() {
-        var color: UIColor
-        if isEnabled {
-            color = isHighlighted ? WPStyleGuide.lightBlue() : UIColor.white
-        } else {
-            color = UIColor(white: 1.0, alpha: NUXSubmitButtonDisabledAlpha)
-        }
-        layer.borderColor = color.cgColor
-    }
-
 
     // MARK: - Instance Methods
 
@@ -135,20 +54,240 @@ open class NUXSubmitButton: UIButton, ActivityIndicatorButton {
         } else {
             activityIndicator.stopAnimating()
         }
-        configureBorderColor()
+        configureBackgrounds()
+        configureTitleColors()
         setNeedsLayout()
     }
 
     func didChangePreferredContentSize() {
         titleLabel?.adjustsFontForContentSizeCategory = true
     }
+
+
+    // MARK: UIAppearance Customizations
+    /// Style: Primary + Normal State
+    ///
+    @objc public dynamic var primaryNormalBackgroundColor = Primary.normalBackgroundColor {
+        didSet {
+            configureBackgrounds()
+        }
+    }
+    @objc public dynamic var primaryNormalBorderColor = Primary.normalBorderColor {
+        didSet {
+            configureBackgrounds()
+        }
+    }
+
+    /// Style: Primary + Highlighted State
+    ///
+    @objc public dynamic var primaryHighlightBackgroundColor = Primary.highlightBackgroundColor {
+        didSet {
+            configureBackgrounds()
+        }
+    }
+    @objc public dynamic var primaryHighlightBorderColor = Primary.highlightBorderColor {
+        didSet {
+            configureBackgrounds()
+        }
+    }
+
+    /// Style: Secondary
+    ///
+    @objc public dynamic var secondaryNormalBackgroundColor = Secondary.normalBackgroundColor {
+        didSet {
+            configureBackgrounds()
+        }
+    }
+    @objc public dynamic var secondaryNormalBorderColor = Secondary.normalBorderColor {
+        didSet {
+            configureBackgrounds()
+        }
+    }
+    @objc public dynamic var secondaryHighlightBackgroundColor = Secondary.highlightBackgroundColor {
+        didSet {
+            configureBackgrounds()
+        }
+    }
+    @objc public dynamic var secondaryHighlightBorderColor = Secondary.highlightBorderColor {
+        didSet {
+            configureBackgrounds()
+        }
+    }
+
+    /// Style: Disabled State
+    ///
+    @objc public dynamic var disabledBackgroundColor = Disabled.backgroundColor {
+        didSet {
+            configureBackgrounds()
+        }
+    }
+    @objc public dynamic var disabledBorderColor = Disabled.borderColor {
+        didSet {
+            configureBackgrounds()
+        }
+    }
+
+    /// Style: Title!
+    ///
+    @objc public dynamic var titleFont = Title.defaultFont {
+        didSet {
+            configureTitleLabel()
+        }
+    }
+    @objc public dynamic var primaryTitleColor = Title.primaryColor {
+        didSet {
+            configureTitleColors()
+        }
+    }
+    @objc public dynamic var secondaryTitleColor = Title.secondaryColor {
+        didSet {
+            configureTitleColors()
+        }
+    }
+    @objc public dynamic var disabledTitleColor = Title.disabledColor {
+        didSet {
+            configureTitleColors()
+        }
+    }
+
+    /// Insets to be applied over the Contents.
+    ///
+    @objc public dynamic var contentInsets = UIImage.Metrics.contentInsets {
+        didSet {
+            configureInsets()
+        }
+    }
+
+    /// Indicates if the current instance should be rendered with the "Primary" Style.
+    ///
+    @IBInspectable var isPrimary: Bool = false {
+        didSet {
+            configureBackgrounds()
+            configureTitleColors()
+        }
+    }
+
+
+    // MARK: - LifeCycle Methods
+
+    open override func didMoveToWindow() {
+        super.didMoveToWindow()
+        configureAppearance()
+    }
+
+    open override func awakeFromNib() {
+        super.awakeFromNib()
+        configureAppearance()
+    }
+
+
+    /// Setup: Everything = [Insets, Backgrounds, titleColor(s), titleLabel]
+    ///
+    private func configureAppearance() {
+        configureInsets()
+        configureBackgrounds()
+        configureTitleColors()
+        configureTitleLabel()
+    }
+
+    /// Setup: FancyButton's Default Settings
+    ///
+    private func configureInsets() {
+        contentEdgeInsets = contentInsets
+    }
+
+    /// Setup: BackgroundImage
+    ///
+    private func configureBackgrounds() {
+        let normalImage: UIImage
+        let highlightedImage: UIImage
+        let disabledImage = UIImage.renderBackgroundImage(fill: disabledBackgroundColor, border: disabledBorderColor, cornerRadius: Metrics.backgroundCornerRadius)
+
+        if isPrimary {
+            normalImage = UIImage.renderBackgroundImage(fill: primaryNormalBackgroundColor, border: primaryNormalBorderColor, cornerRadius: Metrics.backgroundCornerRadius)
+            highlightedImage = UIImage.renderBackgroundImage(fill: primaryHighlightBackgroundColor, border: primaryHighlightBorderColor, cornerRadius: Metrics.backgroundCornerRadius)
+        } else {
+            normalImage = UIImage.renderBackgroundImage(fill: secondaryNormalBackgroundColor, border: secondaryNormalBorderColor, cornerRadius: Metrics.backgroundCornerRadius)
+            highlightedImage = UIImage.renderBackgroundImage(fill: secondaryHighlightBackgroundColor, border: secondaryHighlightBorderColor, cornerRadius: Metrics.backgroundCornerRadius)
+        }
+
+        setBackgroundImage(normalImage, for: .normal)
+        setBackgroundImage(highlightedImage, for: .highlighted)
+        setBackgroundImage(disabledImage, for: .disabled)
+
+        addSubview(activityIndicator)
+    }
+
+    /// Setup: TitleColor
+    ///
+    private func configureTitleColors() {
+        let titleColorNormal = isPrimary ? primaryTitleColor : secondaryTitleColor
+
+        setTitleColor(titleColorNormal, for: .normal)
+        setTitleColor(titleColorNormal, for: .highlighted)
+        setTitleColor(disabledTitleColor, for: .disabled)
+    }
+
+    /// Setup: TitleLabel
+    ///
+    private func configureTitleLabel() {
+        titleLabel?.font = titleFont
+        titleLabel?.adjustsFontForContentSizeCategory = true
+        titleLabel?.textAlignment = .center
+    }
 }
 
+// MARK: - Nested types
+private extension NUXSubmitButton {
+    /// Style: Primary
+    ///
+    struct Primary {
+        static let normalBackgroundColor = WPStyleGuide.lightBlue()
+        static let normalBorderColor = WPStyleGuide.darkBlue()
+        static let highlightBackgroundColor = WPStyleGuide.darkBlue()
+        static let highlightBorderColor = normalBorderColor
+    }
+
+    /// Style: Secondary
+    ///
+    struct Secondary {
+        static let normalBackgroundColor = UIColor.clear
+        static let normalBorderColor = UIColor.white
+        static let highlightBackgroundColor = UIColor.white
+        static let highlightBorderColor = highlightBackgroundColor
+    }
+
+    /// Style: Disabled
+    ///
+    struct Disabled {
+        static let backgroundColor = UIColor.white
+        static let borderColor = UIColor(white: 1.0, alpha: NUXSubmitButtonDisabledAlpha)
+    }
+
+    /// Style: Title
+    ///
+    struct Title {
+        static let primaryColor = UIColor.white
+        static let secondaryColor = WPStyleGuide.darkBlue()
+        static let disabledColor = UIColor(white: 1.0, alpha: NUXSubmitButtonDisabledAlpha)
+        static let defaultFont = WPFontManager.systemSemiBoldFont(ofSize: 17.0)
+    }
+}
+
+// MARK: -
+//
 extension NUXSubmitButton {
     override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
             didChangePreferredContentSize()
         }
+    }
+
+    struct Metrics {
+        static let backgroundCornerRadius = CGFloat(5.0)
+        static let backgroundCapInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        static let backgroundShadowOffset = CGSize(width: 1, height: 1)
+        static var contentInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
     }
 }

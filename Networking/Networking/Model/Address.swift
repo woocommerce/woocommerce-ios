@@ -50,6 +50,7 @@ extension Address: Comparable {
             lhs.city == rhs.city &&
             lhs.state == rhs.state &&
             lhs.postcode == rhs.postcode &&
+            lhs.country == rhs.country &&
             lhs.phone == rhs.phone &&
             lhs.email == rhs.email
     }

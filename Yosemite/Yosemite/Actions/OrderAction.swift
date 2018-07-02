@@ -7,4 +7,5 @@ import Networking
 //
 public enum OrderAction: Action {
     case retrieveOrders(siteID: Int, onCompletion: ([Order]?, Error?) -> Void)
+    case retrieveOrder(siteID: Int, orderID: Int, onCompletion: (Order?, Error?) -> Void)
 }

@@ -23,6 +23,8 @@ public class OrderStore: Store {
         switch action {
         case .retrieveOrders(let siteId, let onCompletion):
             retrieveOrders(siteId: siteId, onCompletion: onCompletion)
+        case .retrieveOrder(let siteId, let orderId, let onCompletion):
+            retrieveOrder(siteId: siteId, orderId: orderId, onCompletion: onCompletion)
         }
     }
 }
@@ -44,6 +46,21 @@ extension OrderStore  {
             }
 
             onCompletion(orders, nil)
+        }
+    }
+
+    /// Retrieves a specific order associated with a given Site ID (if any!).
+    ///
+    func retrieveOrder(siteId: Int, orderId: Int, onCompletion: @escaping (Order?, Error?) -> Void) {
+        let remote = OrdersRemote(network: network)
+
+        remote.loadOrder(for: siteId, orderID: orderId) { (order, error) in
+            guard let order = order else {
+                onCompletion(nil, error)
+                return
+            }
+
+            onCompletion(order, nil)
         }
     }
 }

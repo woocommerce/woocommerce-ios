@@ -35,7 +35,7 @@ class AuthenticatedState: StoresManagerState {
 
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)            
+            OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
         self.credentials = credentials

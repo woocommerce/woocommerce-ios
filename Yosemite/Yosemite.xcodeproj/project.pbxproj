@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */; };
 		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
+		7424B49420EAD37C00CC62F6 /* order.json in Resources */ = {isa = PBXBuildFile; fileRef = 7424B49320EAD37C00CC62F6 /* order.json */; };
 		74A7688C20D45EBA00F9D437 /* OrderStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7688B20D45EBA00F9D437 /* OrderStore.swift */; };
 		74A7688E20D45ED400F9D437 /* OrderStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7688D20D45ED400F9D437 /* OrderStoreTests.swift */; };
 		74A7689020D45F9300F9D437 /* OrderAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7688F20D45F9300F9D437 /* OrderAction.swift */; };
@@ -47,6 +48,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7424B49320EAD37C00CC62F6 /* order.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = order.json; sourceTree = "<group>"; };
 		745D21C120D8043A00BBE7C3 /* generic_error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = generic_error.json; sourceTree = "<group>"; };
 		74A7688B20D45EBA00F9D437 /* OrderStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStore.swift; sourceTree = "<group>"; };
 		74A7688D20D45ED400F9D437 /* OrderStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStoreTests.swift; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 			children = (
 				B5BC736A20D1AAE900B5B6FA /* me.json */,
 				74A7689120D47F9E00F9D437 /* orders.json */,
+				7424B49320EAD37C00CC62F6 /* order.json */,
 				745D21C120D8043A00BBE7C3 /* generic_error.json */,
 			);
 			path = Resources;
@@ -379,6 +382,7 @@
 			files = (
 				74A7689220D47F9E00F9D437 /* orders.json in Resources */,
 				B5BC736B20D1AAE900B5B6FA /* me.json in Resources */,
+				7424B49420EAD37C00CC62F6 /* order.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

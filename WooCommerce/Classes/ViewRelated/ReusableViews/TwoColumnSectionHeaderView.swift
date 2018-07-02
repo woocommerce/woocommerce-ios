@@ -6,14 +6,6 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
 
     static let reuseIdentifier = "TwoColumnSectionHeaderView"
 
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-
-    class func makeFromNib() -> TwoColumnSectionHeaderView {
-        return Bundle.main.loadNibNamed("TwoColumnSectionHeaderView", owner: self, options: nil)?.first as! TwoColumnSectionHeaderView
-    }
-
     override func awakeFromNib() {
         super.awakeFromNib()
         tintColor = .clear

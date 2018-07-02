@@ -16,10 +16,16 @@ extension Storage.Account {
         userID = Int64(account.userID)
         username = account.username
     }
+}
 
-    /// Returns an immutable version of the receiver.
+
+// MARK: - Storage.Account ReadOnlyConvertible
+//
+extension Storage.Account: ReadOnlyConvertible {
+
+    /// Returns a ReadOnly version of the receiver.
     ///
-    func toStruct() -> Networking.Account {
+    public func toReadOnly() -> Networking.Account {
         return Account(userID: Int(userID),
                        displayName: displayName ?? "",
                        email: email ?? "",

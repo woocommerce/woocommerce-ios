@@ -9,7 +9,7 @@ class TwoColumnLabelView: UIView {
         case title
     }
 
-    var mode: Mode = .body{
+    var mode: Mode = .body {
         didSet {
             refreshStyle(mode: mode)
         }

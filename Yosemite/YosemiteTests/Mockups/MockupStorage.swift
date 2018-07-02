@@ -5,7 +5,7 @@ import CoreData
 
 /// MockupStorageManager: InMemory CoreData Stack.
 ///
-public class MockupStorageManager: StorageManager {
+public class MockupStorageManager: StorageManagerType {
 
     /// DataModel Name
     ///

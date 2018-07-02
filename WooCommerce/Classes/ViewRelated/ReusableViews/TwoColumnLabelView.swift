@@ -9,7 +9,7 @@ class TwoColumnLabelView: UIView {
         case title
     }
 
-    var mode: Mode {
+    var mode: Mode = .body{
         didSet {
             refreshStyle(mode: mode)
         }
@@ -45,14 +45,17 @@ class TwoColumnLabelView: UIView {
     }
 
     required init?(coder aDecoder: NSCoder) {
-        mode = .body
+        // initializers don't call property observers,
+        // so don't set the default for mode here.
         super.init(coder: aDecoder)
+    }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        mode = .body // trigger the property observer
     }
 
     class func makeFromNib() -> TwoColumnLabelView {
         return Bundle.main.loadNibNamed("TwoColumnLabelView", owner: self, options: nil)?.first as! TwoColumnLabelView
-    }
-}
-
     }
 }

@@ -33,7 +33,7 @@ public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
         return request
     }()
 
-    ///
+    /// Internal NSFetchedResultsController Instance.
     ///
     private lazy var controller: NSFetchedResultsController<T> = {
         return NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -42,23 +42,23 @@ public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
                                           cacheName: nil)
     }()
 
-    ///
+    /// FetchedResultsController Delegate Wrapper.
     ///
     private let internalDelegate = FetchedResultsControllerDelegateWrapper()
 
-    ///
+    /// Closure to be executed before the results are changed.
     ///
     public var onWillChangeContent: (() -> Void)?
 
-    ///
+    /// Closure to be executed after the results are changed.
     ///
     public var onDidChangeContent: (() -> Void)?
 
-    ///
+    /// Closure to be executed whenever an Object is updated.
     ///
     public var onDidChangeObject: ((_ object: T.ReadOnlyType, _ indexPath: IndexPath?, _ type: ChangeType, _ newIndexPath: IndexPath?) -> Void)?
 
-    ///
+    /// Closure to be executed whenever an entire Section is updated.
     ///
     public var onDidChangeSection: ((_ sectionInfo: SectionInfo, _ sectionIndex: Int, _ type: ChangeType) -> Void)?
 
@@ -76,8 +76,8 @@ public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
         self.predicate = predicate
         self.sortDescriptors = descriptors
 
-        setupEventsForwarding()
         setupResultsController()
+        setupEventsForwarding()
     }
 
 
@@ -97,24 +97,23 @@ public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
 
     /// Returns an array of SectionInfo Entitites.
     ///
-    private(set) public lazy var sections: [SectionInfo] = {
-        return controller.sections?.compactMap { mutableSection in
-            self.readonlySection(from: mutableSection)
-        } ?? []
-    }()
+    public var sections: [SectionInfo] {
+        let readOnlySections = controller.sections?.compactMap { mutableSection in
+            SectionInfo(mutableSection: mutableSection)
+        }
 
-
-    ///
-    ///
-    private func readonlySection(from mutableSection: NSFetchedResultsSectionInfo) -> SectionInfo {
-        let mutableObjects = mutableSection.objects as? [T] ?? []
-        let readonlyObjects = mutableObjects.map { $0.toReadOnly() }
-
-        return SectionInfo(name: mutableSection.name, objects: readonlyObjects)
+        return readOnlySections ?? []
     }
 
 
+    /// Initializes the FetchedResultsController
     ///
+    private func setupResultsController() {
+        controller.delegate = internalDelegate
+    }
+
+
+    /// Initializes FRC's Event Forwarding.
     ///
     private func setupEventsForwarding() {
         internalDelegate.onWillChangeContent = { [weak self] in
@@ -139,17 +138,9 @@ public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
                 return
             }
 
-            let readOnlySection = self.readonlySection(from: mutableSection)
-            self.sections[sectionIndex] = readOnlySection
+            let readOnlySection = SectionInfo(mutableSection: mutableSection)
             self.onDidChangeSection?(readOnlySection, sectionIndex, type)
         }
-    }
-
-
-    /// Initializes the FetchedResultsController
-    ///
-    private func setupResultsController() {
-        controller.delegate = internalDelegate
     }
 }
 
@@ -165,7 +156,7 @@ public extension ResultsController {
 
     // MARK: - ResultsController.SectionInfo
     //
-    public struct SectionInfo {
+    public class SectionInfo {
 
         /// Name of the section
         ///
@@ -174,11 +165,26 @@ public extension ResultsController {
         /// Number of objects in the current section
         ///
         public var numberOfObjects: Int {
-            return objects.count
+            return mutableObjects.count
         }
 
         /// Returns the array of (ReadOnly) objects in the section.
         ///
-        private(set) public var objects: [T.ReadOnlyType]
+        private(set) public lazy var objects: [T.ReadOnlyType] = {
+            return mutableObjects.map { $0.toReadOnly() }
+        }()
+
+
+        /// Array of Mutable Objects!
+        ///
+        private let mutableObjects: [T]
+
+
+        /// Designated Initializer
+        ///
+        init(mutableSection: NSFetchedResultsSectionInfo) {
+            name = mutableSection.name
+            mutableObjects = mutableSection.objects as? [T] ?? []
+        }
     }
 }

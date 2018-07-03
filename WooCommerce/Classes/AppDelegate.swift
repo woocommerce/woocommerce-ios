@@ -112,6 +112,9 @@ private extension AppDelegate {
         UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().tintColor = .white
         UIApplication.shared.statusBarStyle = .lightContent
+
+        let appearance = UIButton.appearance()
+        appearance.setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
     }
 
     /// Sets up FancyButton's UIAppearance.

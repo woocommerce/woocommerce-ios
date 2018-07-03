@@ -3,8 +3,7 @@ import WordPressShared
 import WordPressUI
 
 /// A protocol for an element that can display a UIActivityIndicatorView
-@objc
-public protocol ActivityIndicatorButton {
+@objc public protocol ActivityIndicatorButton {
     func showActivityIndicator(_ show: Bool)
 }
 

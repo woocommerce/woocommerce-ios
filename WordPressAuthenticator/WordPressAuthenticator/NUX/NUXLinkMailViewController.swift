@@ -8,7 +8,7 @@ import WordPressShared
 ///
 class NUXLinkMailViewController: LoginViewController {
     @IBOutlet var label: UILabel?
-    @IBOutlet var openMailButton: NUXSubmitButton?
+    @IBOutlet var openMailButton: NUXButton?
     @IBOutlet var usePasswordButton: UIButton?
     var emailMagicLinkSource: EmailMagicLinkSource?
     override var sourceTag: WordPressSupportSourceTag {

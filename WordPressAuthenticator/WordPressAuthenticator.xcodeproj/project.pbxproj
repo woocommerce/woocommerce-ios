@@ -23,7 +23,6 @@
 		B56090CB208A4F5400399AE4 /* NUXNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090BD208A4F5400399AE4 /* NUXNavigationController.swift */; };
 		B56090CC208A4F5400399AE4 /* NUXTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090BE208A4F5400399AE4 /* NUXTableViewController.swift */; };
 		B56090CD208A4F5400399AE4 /* NUXSegueHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090BF208A4F5400399AE4 /* NUXSegueHandler.swift */; };
-		B56090CE208A4F5400399AE4 /* NUXSubmitButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090C0208A4F5400399AE4 /* NUXSubmitButton.swift */; };
 		B56090CF208A4F5400399AE4 /* NUXCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090C1208A4F5400399AE4 /* NUXCollectionViewController.swift */; };
 		B56090D0208A4F5400399AE4 /* NUXViewControllerBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090C2208A4F5400399AE4 /* NUXViewControllerBase.swift */; };
 		B56090D1208A4F5400399AE4 /* NUXViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090C3208A4F5400399AE4 /* NUXViewController.swift */; };
@@ -151,7 +150,6 @@
 		B56090BD208A4F5400399AE4 /* NUXNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXNavigationController.swift; sourceTree = "<group>"; };
 		B56090BE208A4F5400399AE4 /* NUXTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXTableViewController.swift; sourceTree = "<group>"; };
 		B56090BF208A4F5400399AE4 /* NUXSegueHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXSegueHandler.swift; sourceTree = "<group>"; };
-		B56090C0208A4F5400399AE4 /* NUXSubmitButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXSubmitButton.swift; sourceTree = "<group>"; };
 		B56090C1208A4F5400399AE4 /* NUXCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXCollectionViewController.swift; sourceTree = "<group>"; };
 		B56090C2208A4F5400399AE4 /* NUXViewControllerBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXViewControllerBase.swift; sourceTree = "<group>"; };
 		B56090C3208A4F5400399AE4 /* NUXViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXViewController.swift; sourceTree = "<group>"; };
@@ -357,7 +355,6 @@
 				B56090BB208A4F5300399AE4 /* NUXLinkMailViewController.swift */,
 				B56090BD208A4F5400399AE4 /* NUXNavigationController.swift */,
 				B56090BF208A4F5400399AE4 /* NUXSegueHandler.swift */,
-				B56090C0208A4F5400399AE4 /* NUXSubmitButton.swift */,
 				B56090BE208A4F5400399AE4 /* NUXTableViewController.swift */,
 				B56090C3208A4F5400399AE4 /* NUXViewController.swift */,
 				B56090C2208A4F5400399AE4 /* NUXViewControllerBase.swift */,
@@ -844,7 +841,6 @@
 				B56090E4208A4F9D00399AE4 /* WPNUXMainButton.m in Sources */,
 				B560913B208A563800399AE4 /* LoginSelfHostedViewController.swift in Sources */,
 				B5609136208A563800399AE4 /* Login2FAViewController.swift in Sources */,
-				B56090CE208A4F5400399AE4 /* NUXSubmitButton.swift in Sources */,
 				B56090E1208A4F9D00399AE4 /* WPWalkthroughTextField.m in Sources */,
 				B56090EF208A527000399AE4 /* WPStyleGuide+Login.swift in Sources */,
 				B56090D0208A4F5400399AE4 /* NUXViewControllerBase.swift in Sources */,

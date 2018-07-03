@@ -34,19 +34,173 @@ class ResultsControllerTests: XCTestCase {
     }
 
 
-    /// Verifies thatt he ResultsController starts with zero sections, whenever there are no actual entities stored.
     ///
-    func testResultsControllerStartsWithNoSectionsWhenNoAccountsAreAvailable() {
+    ///
+    func testResultsControllerStartsEmptySectionAfterPerformingFetch() {
         let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sampleSortDescriptor])
         XCTAssertEqual(resultsController.sections.count, 0)
 
         try? resultsController.performFetch()
-        XCTAssertEqual(resultsController.sections.count, 0)
+        XCTAssertEqual(resultsController.sections.count, 1)
+        XCTAssertEqual(resultsController.sections.first?.objects.count, 0)
     }
 
 
-//    let newAccount = insertSampleAccount(into: viewContext)
-//    viewContext.saveIfNeeded()
+    ///
+    ///
+    func testResultsControllerPicksUpEntitiesAvailablePriorToInstantiation() {
+        insertSampleAccount(into: viewContext)
+        viewContext.saveIfNeeded()
+
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sampleSortDescriptor])
+        try? resultsController.performFetch()
+
+        XCTAssertEqual(resultsController.sections.count, 1)
+        XCTAssertEqual(resultsController.sections.first?.objects.count, 1)
+    }
+
+
+    ///
+    ///
+    func testResultsControllerPicksUpEntitiesInsertedAfterInstantiation() {
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sampleSortDescriptor])
+        try? resultsController.performFetch()
+
+        insertSampleAccount(into: viewContext)
+        viewContext.saveIfNeeded()
+
+        XCTAssertEqual(resultsController.sections.count, 1)
+        XCTAssertEqual(resultsController.sections.first?.objects.count, 1)
+    }
+
+
+    ///
+    ///
+    func testResultsControllerGroupSectionsBySectionNameKeypath() {
+        let sectionNameKeyPath = "userID"
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sectionNameKeyPath: sectionNameKeyPath, sortedBy: [sampleSortDescriptor])
+        try? resultsController.performFetch()
+
+        let numberOfAccounts = 100
+        for _ in 0 ..< numberOfAccounts {
+            insertSampleAccount(into: viewContext)
+        }
+
+        viewContext.saveIfNeeded()
+
+        XCTAssertEqual(resultsController.sections.count, numberOfAccounts)
+
+        for section in resultsController.sections {
+            XCTAssertEqual(section.numberOfObjects, 1)
+        }
+    }
+
+
+    ///
+    ///
+    func testObjectAtIndexPathReturnsExpectedEntity() {
+        let sectionNameKeyPath = "userID"
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sectionNameKeyPath: sectionNameKeyPath, sortedBy: [sampleSortDescriptor])
+        try? resultsController.performFetch()
+
+        let mutableAccount = insertSampleAccount(into: viewContext)
+        viewContext.saveIfNeeded()
+
+        let indexPath = IndexPath(row: 0, section: 0)
+        let readOnlyAccount = resultsController.object(at: indexPath)
+
+        XCTAssertEqual(Int(mutableAccount.userID), readOnlyAccount.userID)
+        XCTAssertEqual(mutableAccount.displayName, readOnlyAccount.displayName)
+    }
+
+
+    ///
+    ///
+    func testOnWillChangeContentIsEffectivelyCalledBeforeChanges() {
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sampleSortDescriptor])
+        try? resultsController.performFetch()
+
+        let expectation = self.expectation(description: "OnWillChange")
+        var didChangeObjectWasCalled = false
+
+        resultsController.onWillChangeContent = {
+            XCTAssertFalse(didChangeObjectWasCalled)
+            expectation.fulfill()
+        }
+        resultsController.onDidChangeObject = { (_, _, _, _) in
+            didChangeObjectWasCalled = true
+        }
+
+        insertSampleAccount(into: viewContext)
+        viewContext.saveIfNeeded()
+
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
+    ///
+    ///
+    func testOnDidChangeContentIsEffectivelyCalledAfterChangesArePerformed() {
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sampleSortDescriptor])
+        try? resultsController.performFetch()
+
+        let expectation = self.expectation(description: "OnDidChange")
+        var didChangeObjectWasCalled = false
+
+        resultsController.onDidChangeObject = { (_, _, _, _) in
+            didChangeObjectWasCalled = true
+        }
+        resultsController.onDidChangeContent = {
+            XCTAssertTrue(didChangeObjectWasCalled)
+            expectation.fulfill()
+        }
+
+        insertSampleAccount(into: viewContext)
+        viewContext.saveIfNeeded()
+
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
+
+    ///
+    ///
+    func testOnDidChangeObjectIsEffectivelyCalledOnceChangesArePerformed() {
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sampleSortDescriptor])
+        try? resultsController.performFetch()
+
+        let expectation = self.expectation(description: "OnDidChange")
+        resultsController.onDidChangeObject = { (object, indexPath, type, newIndexPath) in
+            let expectedIndexPath = IndexPath(row: 0, section: 0)
+
+            XCTAssertEqual(type, .insert)
+            XCTAssertEqual(newIndexPath, expectedIndexPath)
+            expectation.fulfill()
+        }
+
+        insertSampleAccount(into: viewContext)
+        viewContext.saveIfNeeded()
+
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
+
+    ///
+    ///
+    func testOnDidChangeSectionIsCalledWheneverNewSectionsAreAdded() {
+        let sectionNameKeyPath = "userID"
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sectionNameKeyPath: sectionNameKeyPath, sortedBy: [sampleSortDescriptor])
+        try? resultsController.performFetch()
+
+        let expectation = self.expectation(description: "OnDidChange")
+        resultsController.onDidChangeSection = { (sectionInfo, index, type) in
+            XCTAssertEqual(type, .insert)
+            expectation.fulfill()
+        }
+
+        insertSampleAccount(into: viewContext)
+        viewContext.saveIfNeeded()
+
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
 }
 
 
@@ -56,6 +210,7 @@ private extension ResultsControllerTests {
 
     /// Inserts a new (Sample) account into the specified context.
     ///
+    @discardableResult
     func insertSampleAccount(into context: NSManagedObjectContext) -> Storage.Account {
         let newAccount = context.insertNewObject(ofType: Storage.Account.self)
         newAccount.userID = Int64(arc4random())

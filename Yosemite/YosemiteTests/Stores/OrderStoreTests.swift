@@ -61,7 +61,7 @@ class OrderStoreTests: XCTestCase {
         let action = OrderAction.retrieveOrders(siteID: 123) { (orders, error) in
             XCTAssertNil(orders)
             XCTAssertNotNil(error)
-            guard let _ = error as NSError? else {
+            guard let _ = error else {
                 XCTFail()
                 return
             }
@@ -81,7 +81,7 @@ class OrderStoreTests: XCTestCase {
         let action = OrderAction.retrieveOrders(siteID: 123) { (orders, error) in
             XCTAssertNotNil(error)
             XCTAssertNil(orders)
-            guard let _ = error as NSError? else {
+            guard let _ = error else {
                 XCTFail()
                 return
             }
@@ -124,7 +124,7 @@ class OrderStoreTests: XCTestCase {
         let action = OrderAction.retrieveOrder(siteID: 123, orderID: 963) { (order, error) in
             XCTAssertNil(order)
             XCTAssertNotNil(error)
-            guard let _ = error as NSError? else {
+            guard let _ = error else {
                 XCTFail()
                 return
             }
@@ -144,7 +144,7 @@ class OrderStoreTests: XCTestCase {
         let action = OrderAction.retrieveOrder(siteID: 123, orderID: 963) { (order, error) in
             XCTAssertNotNil(error)
             XCTAssertNil(order)
-            guard let _ = error as NSError? else {
+            guard let _ = error else {
                 XCTFail()
                 return
             }

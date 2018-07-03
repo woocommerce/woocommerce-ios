@@ -14,8 +14,8 @@ public class OrdersRemote: Remote {
     ///
     public func loadAllOrders(for siteID: Int, page: Int = 1, completion: @escaping ([Order]?, Error?) -> Void) {
         let path = Constants.ordersPath
-        let parameters = [Parameters.pageParameterKey: String(page),
-                          Parameters.perPageParameterKey: String(Constants.defaultPageSize)]
+        let parameters = [ParameterKeys.page: String(page),
+                          ParameterKeys.perPage: String(Constants.defaultPageSize)]
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = OrderListMapper()
 
@@ -47,7 +47,7 @@ public class OrdersRemote: Remote {
     ///
     public func updateOrder(from siteID: Int, orderID: Int, status: String, completion: @escaping (Order?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID)
-        let parameters = [Parameters.statusParameterKey: status]
+        let parameters = [ParameterKeys.status: status]
         let mapper = OrderMapper()
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
@@ -64,9 +64,9 @@ private extension OrdersRemote {
         static let ordersPath: String           = "orders"
     }
 
-    enum Parameters {
-        static let statusParameterKey: String   = "status"
-        static let pageParameterKey: String     = "page"
-        static let perPageParameterKey: String  = "per_page"
+    enum ParameterKeys {
+        static let status: String   = "status"
+        static let page: String     = "page"
+        static let perPage: String  = "per_page"
     }
 }

@@ -101,6 +101,7 @@ private extension AppDelegate {
     func setupComponentsAppearance() {
         setupWooAppearance()
         setupFancyButtonAppearance()
+        setupNUXButtonAppearance()
     }
 
     /// Sets up WooCommerce's UIAppearance.
@@ -117,13 +118,22 @@ private extension AppDelegate {
     ///
     func setupFancyButtonAppearance() {
         let appearance = FancyButton.appearance()
-        appearance.titleFont = UIFont.font(forStyle: .headline, weight: .bold)
+        appearance.titleFont = UIFont.font(forStyle: .headline, weight: .semibold)
         appearance.primaryNormalBackgroundColor = StyleManager.buttonPrimaryColor
         appearance.primaryNormalBorderColor = StyleManager.buttonPrimaryHighlightedColor
         appearance.primaryHighlightBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
         appearance.primaryHighlightBorderColor = StyleManager.buttonPrimaryHighlightedColor
-        appearance.disabledBorderColor = StyleManager.buttonPrimaryHighlightedColor
-        appearance.disabledBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
+    }
+
+    /// Sets up NUXButton's UIAppearance.
+    ///
+    func setupNUXButtonAppearance() {
+        let appearance = NUXButton.appearance()
+        appearance.titleFont = UIFont.font(forStyle: .headline, weight: .semibold)
+        appearance.primaryNormalBackgroundColor = StyleManager.buttonPrimaryColor
+        appearance.primaryNormalBorderColor = StyleManager.buttonPrimaryHighlightedColor
+        appearance.primaryHighlightBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
+        appearance.primaryHighlightBorderColor = StyleManager.buttonPrimaryHighlightedColor
     }
 
     /// Sets up the WordPress Authenticator.

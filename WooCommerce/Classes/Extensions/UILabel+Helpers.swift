@@ -1,4 +1,6 @@
 import UIKit
+import Yosemite
+
 
 extension UILabel {
     func applyTitleStyle() {
@@ -37,7 +39,7 @@ extension UILabel {
                 layer.borderColor = StyleManager.statusPrimaryBoldColor.cgColor
             case .onHold:
                 fallthrough
-            case .canceled:
+            case .cancelled:
                 fallthrough
             case .custom:
                 fallthrough

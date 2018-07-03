@@ -82,6 +82,11 @@ private extension LoginPrologueViewController {
     func setupDisclaimerLabel() {
         disclaimerTextView.attributedText = disclaimerAttributedText
         disclaimerTextView.textContainerInset = .zero
+        disclaimerTextView.linkTextAttributes = [
+            NSAttributedStringKey.foregroundColor.rawValue: StyleManager.wooCommerceBrandColor,
+            NSAttributedStringKey.underlineColor.rawValue: StyleManager.wooCommerceBrandColor,
+            NSAttributedStringKey.underlineStyle.rawValue: NSUnderlineStyle.styleSingle.rawValue
+        ]
     }
 
     func setupLoginButton() {
@@ -136,14 +141,16 @@ private extension LoginPrologueViewController {
     ///
     var disclaimerAttributedText: NSAttributedString {
         let disclaimerText = NSLocalizedString("This app requires Jetpack to be able to connect to your WooCommerce Store.\nRead the ", comment: "Login Disclaimer Text and Jetpack config instructions")
-        let disclaimerAttributes: [NSAttributedStringKey: Any] =  [
+        let disclaimerAttributes: [NSAttributedStringKey: Any] = [
             .font: UIFont.font(forStyle: .caption1, weight: .thin),
             .foregroundColor: UIColor.black
         ]
 
         let readText = NSLocalizedString("configuration instructions", comment: "Login Disclaimer Linked Text")
-        var readAttributes = disclaimerAttributes
-        readAttributes[.link] = URL(string: WooConstants.jetpackSetupUrl)
+        let readAttributes: [NSAttributedStringKey: Any] = [
+            .link: URL(string: WooConstants.jetpackSetupUrl) as Any,
+            .font: UIFont.font(forStyle: .caption1, weight: .thin)
+        ]
         let readAttrText = NSMutableAttributedString(string: readText, attributes: readAttributes)
 
         let endSentenceText = "."

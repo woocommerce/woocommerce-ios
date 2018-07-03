@@ -67,6 +67,7 @@ class OrdersViewController: UIViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         let nib = UINib(nibName: NoResultsTableViewCell.reuseIdentifier, bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: NoResultsTableViewCell.reuseIdentifier)
+        tableView.refreshControl = refreshControl
     }
 
     // MARK: - Actions

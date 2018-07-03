@@ -34,7 +34,7 @@ class ResultsControllerTests: XCTestCase {
     }
 
 
-    ///
+    /// Verifies that the Results Controller has an Empty Section right after the Fetch OP is performed.
     ///
     func testResultsControllerStartsEmptySectionAfterPerformingFetch() {
         let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sampleSortDescriptor])
@@ -46,7 +46,7 @@ class ResultsControllerTests: XCTestCase {
     }
 
 
-    ///
+    /// Verifies that ResultsController does pick up pre-existant entities, right after performFetch runs.
     ///
     func testResultsControllerPicksUpEntitiesAvailablePriorToInstantiation() {
         insertSampleAccount(into: viewContext)
@@ -60,7 +60,7 @@ class ResultsControllerTests: XCTestCase {
     }
 
 
-    ///
+    /// Verifies that ResultsController does pick up entities inserted after being instantiated.
     ///
     func testResultsControllerPicksUpEntitiesInsertedAfterInstantiation() {
         let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sampleSortDescriptor])
@@ -74,7 +74,7 @@ class ResultsControllerTests: XCTestCase {
     }
 
 
-    ///
+    /// Verifies that `sectionNameKeyPath` effectively causes the ResultsController to produce multiple sections, based on the grouping parameter.
     ///
     func testResultsControllerGroupSectionsBySectionNameKeypath() {
         let sectionNameKeyPath = "userID"
@@ -96,7 +96,7 @@ class ResultsControllerTests: XCTestCase {
     }
 
 
-    ///
+    /// Verifies that `object(at indexPath:)` effectively returns the expected (ReadOnly) Entity.
     ///
     func testObjectAtIndexPathReturnsExpectedEntity() {
         let sectionNameKeyPath = "userID"
@@ -114,7 +114,7 @@ class ResultsControllerTests: XCTestCase {
     }
 
 
-    ///
+    /// Verifies that `onWillChangeContent` is called *before* anything is updated.
     ///
     func testOnWillChangeContentIsEffectivelyCalledBeforeChanges() {
         let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sampleSortDescriptor])
@@ -137,7 +137,7 @@ class ResultsControllerTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
-    ///
+    /// Verifies that onDidChangeContent is effectivelyc alled *after* the results are altered.
     ///
     func testOnDidChangeContentIsEffectivelyCalledAfterChangesArePerformed() {
         let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sampleSortDescriptor])
@@ -161,9 +161,9 @@ class ResultsControllerTests: XCTestCase {
     }
 
 
+    /// Verifies that `onDidChangeObject` is called whenever a new object is inserted.
     ///
-    ///
-    func testOnDidChangeObjectIsEffectivelyCalledOnceChangesArePerformed() {
+    func testOnDidChangeObjectIsEffectivelyCalledOnceNewObjectsAreInserted() {
         let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
 
@@ -183,7 +183,7 @@ class ResultsControllerTests: XCTestCase {
     }
 
 
-    ///
+    /// Verifies that `onDidChangeSection` is called whenever new sections are added.
     ///
     func testOnDidChangeSectionIsCalledWheneverNewSectionsAreAdded() {
         let sectionNameKeyPath = "userID"

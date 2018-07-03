@@ -12,10 +12,27 @@ public class OrdersRemote: Remote {
     ///     - siteID: Site for which we'll fetch remote orders.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadAllOrders(for siteID: Int, completion: @escaping ([Order]?, Error?) -> Void) {
-        let path = "orders"
-        let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path)
+    public func loadAllOrders(for siteID: Int, page: Int = 1, completion: @escaping ([Order]?, Error?) -> Void) {
+        let path = Constants.ordersPath
+        let parameters = [ParameterKeys.page: String(page),
+                          ParameterKeys.perPage: String(Constants.defaultPageSize)]
+        let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = OrderListMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Retrieves a specific `Order`
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch remote orders.
+    ///     - orderID: Order for which we'll fetch remote orders.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func loadOrder(for siteID: Int, orderID: Int, completion: @escaping (Order?, Error?) -> Void) {
+        let path = "\(Constants.ordersPath)/\(orderID)"
+        let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
+        let mapper = OrderMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -29,11 +46,27 @@ public class OrdersRemote: Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func updateOrder(from siteID: Int, orderID: Int, status: String, completion: @escaping (Order?, Error?) -> Void) {
-        let path = "orders/" + String(orderID)
-        let parameters = ["status": status]
+        let path = "\(Constants.ordersPath)/" + String(orderID)
+        let parameters = [ParameterKeys.status: status]
         let mapper = OrderMapper()
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
         enqueue(request, mapper: mapper, completion: completion)
+    }
+}
+
+
+// MARK: - Constants!
+//
+private extension OrdersRemote {
+    enum Constants {
+        static let defaultPageSize: Int         = 75
+        static let ordersPath: String           = "orders"
+    }
+
+    enum ParameterKeys {
+        static let status: String   = "status"
+        static let page: String     = "page"
+        static let perPage: String  = "per_page"
     }
 }

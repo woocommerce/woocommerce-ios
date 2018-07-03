@@ -178,7 +178,8 @@ private extension OrderStoreTests {
                                 totalTax: "1.20",
                                 items: sampleItems(),
                                 billingAddress: sampleAddress(),
-                                shippingAddress: sampleAddress())
+                                shippingAddress: sampleAddress(),
+                                coupons: sampleCoupons())
     }
 
     func sampleAddress() -> Networking.Address {
@@ -193,6 +194,14 @@ private extension OrderStoreTests {
                        country: "US",
                        phone: "333-333-3333",
                        email: "scrambled@scrambled.com")
+    }
+
+    func sampleCoupons() -> [Networking.OrderCouponLine] {
+        let coupon1 = OrderCouponLine(couponID: 894,
+                                      code: "30$off",
+                                      discount: "30",
+                                      discountTax: "1.2")
+        return [coupon1]
     }
 
     func sampleItems() -> [Networking.OrderItem] {

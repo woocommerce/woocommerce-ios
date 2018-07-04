@@ -10,6 +10,10 @@ public protocol ReadOnlyConvertible: class {
     ///
     associatedtype ReadOnlyType
 
+    /// Updates the Receiver with the ReadOnly Instance.
+    ///
+    func update(with entity: ReadOnlyType)
+
     /// Returns a ReadOnly version of the receiver.
     ///
     func toReadOnly() -> ReadOnlyType

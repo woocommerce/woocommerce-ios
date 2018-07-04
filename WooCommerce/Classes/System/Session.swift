@@ -5,7 +5,7 @@ import Networking
 
 /// Represents the current Session's State: Credentials + Active SiteID.
 ///
-class Session {
+struct Session {
 
     /// KeychainAccess Wrapper.
     ///
@@ -52,7 +52,7 @@ class Session {
 
     /// Nukes all of the known Session's properties.
     ///
-    func reset() {
+    mutating func reset() {
         credentials = nil
         storeID = nil
     }

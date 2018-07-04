@@ -14,7 +14,7 @@ class StoresManager {
 
     /// Represents the Active Session's State
     ///
-    private let session: Session
+    private(set) var session: Session
 
     /// Active StoresManager State.
     ///

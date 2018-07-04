@@ -3,13 +3,13 @@ import Storage
 import Networking
 
 
-/// Storage.Account Convenience Methods.
-///
-extension Storage.Account {
+// MARK: - Storage.Account: ReadOnlyConvertible
+//
+extension Storage.Account: ReadOnlyConvertible {
 
-    /// Updates the Storage.Account with the Networking.Account's Payload.
+    /// Updates the Storage.Account with the a ReadOnly.
     ///
-    func update(with account: Networking.Account) {
+    public func update(with account: Yosemite.Account) {
         displayName = account.displayName
         email = account.email
         gravatarUrl = account.gravatarUrl
@@ -17,9 +17,9 @@ extension Storage.Account {
         username = account.username
     }
 
-    /// Returns an immutable version of the receiver.
+    /// Returns a ReadOnly version of the receiver.
     ///
-    func toStruct() -> Networking.Account {
+    public func toReadOnly() -> Yosemite.Account {
         return Account(userID: Int(userID),
                        displayName: displayName ?? "",
                        email: email ?? "",

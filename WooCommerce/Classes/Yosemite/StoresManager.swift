@@ -10,7 +10,7 @@ class StoresManager {
 
     /// Shared Instance
     ///
-    static var shared = StoresManager()
+    static var shared = StoresManager(keychainServiceName: Settings.keychainServiceName, defaultsStorage: .standard)
 
     /// Represents the Active Session's State
     ///
@@ -33,7 +33,7 @@ class StoresManager {
 
     /// Designated Initializer
     ///
-    init(keychainServiceName: String = Settings.keychainServiceName, defaultsStorage: UserDefaults = .standard) {
+    init(keychainServiceName: String, defaultsStorage: UserDefaults) {
         self.session = Session(keychainServiceName: keychainServiceName, defaultsStorage: defaultsStorage)
 
         authenticateIfPossible()

@@ -10,19 +10,19 @@ class StoresManager {
 
     /// Shared Instance
     ///
-    static var shared = StoresManager(keychain: .shared)
+    static var shared = StoresManager()
+
+    /// Represents the Active Session's State
+    ///
+    private let session: Session
 
     /// Active StoresManager State.
     ///
-    private var state: StoresManagerState {
+    private var state: StoresManagerState = DeauthenticatedState() {
         didSet {
             state.didEnter()
         }
     }
-
-    /// Credentials Manager: By Reference, for unit testing purposes.
-    ///
-    private let keychain: CredentialsManager
 
     /// Indicates if the StoresManager is currently authenticated, or not.
     ///
@@ -33,9 +33,10 @@ class StoresManager {
 
     /// Designated Initializer
     ///
-    init(keychain: CredentialsManager) {
-        self.state = StoresManager.initialState(from: keychain)
-        self.keychain = keychain
+    init(keychainServiceName: String = Settings.keychainServiceName, defaultsStorage: UserDefaults = .standard) {
+        self.session = Session(keychainServiceName: keychainServiceName, defaultsStorage: defaultsStorage)
+
+        authenticateIfPossible()
     }
 
 
@@ -50,14 +51,17 @@ class StoresManager {
     ///
     func authenticate(username: String, authToken: String) {
         let credentials = Credentials(username: username, authToken: authToken)
-        state = AuthenticatedState(keychain: keychain, credentials: credentials)
+
+        state = AuthenticatedState(credentials: credentials)
+        session.credentials = credentials
     }
 
 
     /// Switches the state to a Deauthenticated one.
     ///
     func deauthenticate() {
-        state = DeauthenticatedState(keychain: keychain)
+        state = DeauthenticatedState()
+        session.credentials = nil
     }
 }
 
@@ -66,14 +70,26 @@ class StoresManager {
 //
 private extension StoresManager {
 
-    /// Returns the Initial State, depending on whether we've got credentials or not.
+    /// Switches over to the AuthenticatedState whenever needed / possible!.
     ///
-    class func initialState(from keychain: CredentialsManager) -> StoresManagerState {
-        guard let credentials = keychain.loadDefaultCredentials() else {
-            return DeauthenticatedState(keychain: keychain)
+    func authenticateIfPossible() {
+        guard !isAuthenticated, let credentials = session.credentials else {
+            return
         }
 
-        return AuthenticatedState(keychain: keychain, credentials: credentials)
+        state = AuthenticatedState(credentials: credentials)
+    }
+}
+
+
+// MARK: - Nested Types
+//
+private extension StoresManager {
+
+    /// Default Settings.
+    ///
+    enum Settings  {
+        static let keychainServiceName = "com.automattic.woocommerce"
     }
 }
 

@@ -7,31 +7,18 @@ import Networking
 ///
 class StoresManagerTests: XCTestCase {
 
-    /// Default Credentials
-    ///
-    private let defaultCredentials = Credentials(username: "username", authToken: "authToken")
-
-    /// Unit Testing Keychain
-    ///
-    private let keychain = CredentialsManager(serviceName: "com.woocommerce.storesmanagertests")
-
-    /// StoresManager Testing Instance
-    ///
-    private var manager: StoresManager!
-
-
     // MARK: - Overridden Methods
+
     override func setUp() {
         super.setUp()
-        keychain.removeDefaultCredentials()
-        manager = StoresManager(keychain: keychain)
+        initializeTestingSession().reset()
     }
 
 
     /// Verifies that the Initial State is Deauthenticated, whenever there are no Default Credentials.
     ///
     func testInitialStateIsDeauthenticatedAssumingCredentialsWereMissing() {
-        XCTAssertTrue(keychain.needsDefaultCredentials)
+        let manager = initializeTestingStoresManager()
         XCTAssertFalse(manager.isAuthenticated)
     }
 
@@ -39,10 +26,10 @@ class StoresManagerTests: XCTestCase {
     /// Verifies that the Initial State is Authenticated, whenever there are Default Credentials set.
     ///
     func testInitialStateIsAuthenticatedAssumingCredentialsWereNotMissing() {
-        keychain.saveDefaultCredentials(defaultCredentials)
-        XCTAssertFalse(keychain.needsDefaultCredentials)
+        let session = initializeTestingSession()
+        session.credentials = Settings.credentials
 
-        manager = StoresManager(keychain: keychain)
+        let manager = initializeTestingStoresManager()
         XCTAssertTrue(manager.isAuthenticated)
     }
 
@@ -50,7 +37,9 @@ class StoresManagerTests: XCTestCase {
     /// Verifies that `authenticate(username: authToken:)` effectively switches the Manager to an Authenticated State.
     ///
     func testAuthenticateEffectivelyTogglesStoreManagerToAuthenticatedState() {
-        manager.authenticate(username: defaultCredentials.username, authToken: defaultCredentials.authToken)
+        let manager = initializeTestingStoresManager()
+        manager.authenticate(username: Settings.credentials.username, authToken: Settings.credentials.authToken)
+
         XCTAssertTrue(manager.isAuthenticated)
     }
 
@@ -58,8 +47,10 @@ class StoresManagerTests: XCTestCase {
     /// Verifies that `deauthenticate` effectively switches the Manager to a Deauthenticated State.
     ///
     func testDeauthenticateEffectivelyTogglesStoreManagerToDeauthenticatedState() {
-        manager.authenticate(username: defaultCredentials.username, authToken: defaultCredentials.authToken)
+        let manager = initializeTestingStoresManager()
+        manager.authenticate(username: Settings.credentials.username, authToken: Settings.credentials.authToken)
         manager.deauthenticate()
+
         XCTAssertFalse(manager.isAuthenticated)
     }
 
@@ -67,10 +58,37 @@ class StoresManagerTests: XCTestCase {
     /// Verifies that `authenticate(username: authToken:)` persists the Credentials in the Keychain Storage.
     ///
     func testAuthenticatePersistsDefaultCredentialsInKeychain() {
-        XCTAssertTrue(keychain.needsDefaultCredentials)
-        manager.authenticate(username: defaultCredentials.username, authToken: defaultCredentials.authToken)
+        let manager = initializeTestingStoresManager()
+        manager.authenticate(username: Settings.credentials.username, authToken: Settings.credentials.authToken)
 
-        let credentials = keychain.loadDefaultCredentials()
-        XCTAssertEqual(credentials, defaultCredentials)
+        let session = initializeTestingSession()
+        XCTAssertEqual(session.credentials, Settings.credentials)
     }
+}
+
+
+// MARK: - Private Methods
+//
+private extension StoresManagerTests {
+
+    /// Returns a Session instance with testing Keychain/UserDefaults
+    ///
+    func initializeTestingSession() -> Session {
+        return Session(keychainServiceName: Settings.keychainServiceName, defaultsStorage: Settings.defaultsStorage)
+    }
+
+    /// Returns a StoresManager instance with testing Keychain/UserDefaults
+    ///
+    func initializeTestingStoresManager() -> StoresManager {
+        return StoresManager(keychainServiceName: Settings.keychainServiceName, defaultsStorage: Settings.defaultsStorage)
+    }
+}
+
+
+// MARK: - Nested Types
+//
+private enum Settings {
+    static let credentials = Credentials(username: "username", authToken: "authToken")
+    static let defaultsStorage = UserDefaults(suiteName: "testingKeychainServiceName")!
+    static let keychainServiceName = "com.woocommerce.storesmanagertests"
 }

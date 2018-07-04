@@ -33,4 +33,15 @@ extension UserDefaults {
     func removeObject(forKey key: Key) {
         removeObject(forKey: key.rawValue)
     }
+
+    /// Subscript Accessible via our new Key type!
+    ///
+    subscript<T>(key: Key) -> T? {
+        get {
+            return value(forKey: key.rawValue) as? T
+        }
+        set {
+            set(newValue, forKey: key.rawValue)
+        }
+    }
 }

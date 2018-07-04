@@ -15,6 +15,7 @@ class CredentialsStorage {
     ///
     private let defaults: UserDefaults
 
+    
 
     /// Designated Initializer.
     ///
@@ -22,17 +23,11 @@ class CredentialsStorage {
         self.keychain = Keychain(service: keychainServiceName).accessibility(.afterFirstUnlock)
         self.defaults = defaults
     }
-}
-
-
-// MARK: - Public Methods
-//
-extension CredentialsStorage {
 
     /// Returns the Default Credentials, if any.
     ///
     func loadCredentials() -> Credentials? {
-        guard let username = loadUsername(), let authToken = keychain[username] else {
+        guard let username: String = defaults[.defaultUsername], let authToken = keychain[username] else {
             return nil
         }
 
@@ -42,46 +37,22 @@ extension CredentialsStorage {
     /// Persists the Credentials's authToken in the keychain, and username in User Settings.
     ///
     func saveCredentials(_ credentials: Credentials) {
-        saveUsername(credentials.username)
+        defaults[.defaultUsername] = credentials.username
         keychain[credentials.username] = credentials.authToken
     }
 
     /// Nukes both, the AuthToken and Default Username.
     ///
     func removeCredentials() {
-        guard let username = loadUsername() else {
+        guard let username: String = defaults[.defaultUsername] else {
             return
         }
 
         do {
             try keychain.remove(username)
-            removeUsername()
+            defaults.removeObject(forKey: .defaultUsername)
         } catch {
             NSLog("# CredentialsStorage Error: \(error)")
         }
-    }
-}
-
-
-// MARK: - Credentials Storage
-//
-private extension CredentialsStorage {
-
-    /// Returns the stored Username.
-    ///
-    func loadUsername() -> String? {
-        return defaults.object(forKey: .defaultUsername)
-    }
-
-    /// Saves the specified Username.
-    ///
-    func saveUsername(_ username: String) {
-        defaults.set(username, forKey: .defaultUsername)
-    }
-
-    /// Nukes any known Username.
-    ///
-    func removeUsername() {
-        defaults.removeObject(forKey: .defaultUsername)
     }
 }

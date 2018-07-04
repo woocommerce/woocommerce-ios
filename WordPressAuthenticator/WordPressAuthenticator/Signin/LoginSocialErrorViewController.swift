@@ -29,6 +29,10 @@ class LoginSocialErrorViewController: NUXTableViewController {
         case tryEmail = 0
         case tryAddress = 1
         case signup = 2
+
+        static var count: Int {
+            return signup.rawValue + 1
+        }
     }
 
     /// Create and instance of LoginSocialErrorViewController
@@ -67,7 +71,11 @@ class LoginSocialErrorViewController: NUXTableViewController {
         case Buttons.tryEmail.rawValue:
             delegate.retryWithEmail()
         case Buttons.tryAddress.rawValue:
-            delegate.retryWithAddress()
+            if loginFields.restrictToWPCom {
+                fallthrough
+            } else {
+                delegate.retryWithAddress()
+            }
         case Buttons.signup.rawValue:
             fallthrough
         default:
@@ -98,8 +106,8 @@ extension LoginSocialErrorViewController {
 // MARK: UITableViewDataSource methods
 
 extension LoginSocialErrorViewController {
-    private struct Constants {
-        static let buttonCount = 3
+    private func numberOfButtonsToShow() -> Int {
+        return loginFields.restrictToWPCom ? Buttons.count - 1 : Buttons.count
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -111,7 +119,7 @@ extension LoginSocialErrorViewController {
         case Sections.titleAndDescription.rawValue:
             return 1
         case Sections.buttons.rawValue:
-            return Constants.buttonCount
+            return numberOfButtonsToShow()
         default:
             return 0
         }
@@ -153,8 +161,12 @@ extension LoginSocialErrorViewController {
             buttonText = NSLocalizedString("Try with another email", comment: "When social login fails, this button offers to let the user try again with a differen email address")
             buttonIcon = Gridicon.iconOfType(.undo)
         case Buttons.tryAddress.rawValue:
-            buttonText = NSLocalizedString("Try with the site address", comment: "When social login fails, this button offers to let them try tp login using a URL")
-            buttonIcon = Gridicon.iconOfType(.domains)
+            if loginFields.restrictToWPCom {
+                fallthrough
+            } else {
+                buttonText = NSLocalizedString("Try with the site address", comment: "When social login fails, this button offers to let them try tp login using a URL")
+                buttonIcon = Gridicon.iconOfType(.domains)
+            }
         case Buttons.signup.rawValue:
             fallthrough
         default:

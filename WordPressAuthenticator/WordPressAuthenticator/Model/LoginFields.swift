@@ -30,6 +30,9 @@ public class LoginFields: NSObject {
     /// User ID for use with the nonce for social login
     @objc public var nonceUserID: Int = 0
 
+    /// Used to restrict login to WordPress.com
+    public var restrictToWPCom = false
+
     /// Used by the SignupViewController. Signup currently asks for both a
     /// username and an email address.  This can be factored away when we revamp
     /// the signup flow.
@@ -37,18 +40,6 @@ public class LoginFields: NSObject {
 
     @objc public var meta = LoginFieldsMeta()
     var storedCredentials: SafariStoredCredentials?
-
-
-    /// Returns a dictionary of login related data to include with a Helpshift session.
-    /// Used to help diagnose trouble reports via helpshift.
-    ///
-    @objc func helpshiftLoginOptions() -> [String: Any] {
-        return [
-            "Source": "Login",
-            "Username": username,
-            "SiteURL": siteAddress,
-        ]
-    }
 
     /// Convenience method for persisting stored credentials.
     ///

@@ -61,7 +61,7 @@ class StoresManager {
     ///
     func deauthenticate() {
         state = DeauthenticatedState()
-        session.credentials = nil
+        session.reset()
     }
 }
 

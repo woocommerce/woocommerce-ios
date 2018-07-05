@@ -6,7 +6,6 @@ import WordPressKit
 open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     @IBOutlet var instructionLabel: UILabel?
     @objc var errorToPresent: Error?
-    open var restrictToWPCom = false
 
     lazy var loginFacade: LoginFacade = {
         let configuration = WordPressAuthenticator.shared.configuration
@@ -142,7 +141,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         }
 
         destination.loginFields = source.loginFields
-        destination.restrictToWPCom = source.restrictToWPCom
         destination.dismissBlock = source.dismissBlock
         destination.errorToPresent = source.errorToPresent
     }

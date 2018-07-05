@@ -9,7 +9,7 @@ extension UIImage {
     ///
     @objc
     public static var siteAddressModalPlaceholder: UIImage {
-        return UIImage(named: "site-address-modal", in: bundle, compatibleWith: nil)!
+        return UIImage(named: "site-address", in: bundle, compatibleWith: nil)!
     }
 
     /// Returns the Default Gravatar Placeholder Image.

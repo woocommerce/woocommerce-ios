@@ -17,7 +17,6 @@
 		B56052A42090B2ED001B91FD /* CircularImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56052A32090B2ED001B91FD /* CircularImageView.swift */; };
 		B56090C6208A4F5400399AE4 /* NUXButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090B8208A4F5300399AE4 /* NUXButtonViewController.swift */; };
 		B56090C7208A4F5400399AE4 /* NUXKeyboardResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090B9208A4F5300399AE4 /* NUXKeyboardResponder.swift */; };
-		B56090C8208A4F5400399AE4 /* NUXHelpBadgeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090BA208A4F5300399AE4 /* NUXHelpBadgeLabel.swift */; };
 		B56090C9208A4F5400399AE4 /* NUXLinkMailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090BB208A4F5300399AE4 /* NUXLinkMailViewController.swift */; };
 		B56090CA208A4F5400399AE4 /* NUXButtonView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56090BC208A4F5300399AE4 /* NUXButtonView.storyboard */; };
 		B56090CB208A4F5400399AE4 /* NUXNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090BD208A4F5400399AE4 /* NUXNavigationController.swift */; };
@@ -144,7 +143,6 @@
 		B56052A32090B2ED001B91FD /* CircularImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularImageView.swift; sourceTree = "<group>"; };
 		B56090B8208A4F5300399AE4 /* NUXButtonViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXButtonViewController.swift; sourceTree = "<group>"; };
 		B56090B9208A4F5300399AE4 /* NUXKeyboardResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXKeyboardResponder.swift; sourceTree = "<group>"; };
-		B56090BA208A4F5300399AE4 /* NUXHelpBadgeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXHelpBadgeLabel.swift; sourceTree = "<group>"; };
 		B56090BB208A4F5300399AE4 /* NUXLinkMailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXLinkMailViewController.swift; sourceTree = "<group>"; };
 		B56090BC208A4F5300399AE4 /* NUXButtonView.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = NUXButtonView.storyboard; sourceTree = "<group>"; };
 		B56090BD208A4F5400399AE4 /* NUXNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXNavigationController.swift; sourceTree = "<group>"; };
@@ -349,7 +347,6 @@
 				B56090BC208A4F5300399AE4 /* NUXButtonView.storyboard */,
 				B56090B8208A4F5300399AE4 /* NUXButtonViewController.swift */,
 				B56090C1208A4F5400399AE4 /* NUXCollectionViewController.swift */,
-				B56090BA208A4F5300399AE4 /* NUXHelpBadgeLabel.swift */,
 				B56090B9208A4F5300399AE4 /* NUXKeyboardResponder.swift */,
 				B56090C5208A4F5400399AE4 /* NUXLinkAuthViewController.swift */,
 				B56090BB208A4F5300399AE4 /* NUXLinkMailViewController.swift */,
@@ -822,7 +819,6 @@
 				B56090C9208A4F5400399AE4 /* NUXLinkMailViewController.swift in Sources */,
 				B56090F1208A527000399AE4 /* String+Underline.swift in Sources */,
 				B56052A42090B2ED001B91FD /* CircularImageView.swift in Sources */,
-				B56090C8208A4F5400399AE4 /* NUXHelpBadgeLabel.swift in Sources */,
 				B5609141208A563800399AE4 /* LoginPrologueViewController.swift in Sources */,
 				B56090EB208A51D000399AE4 /* LoginFields.swift in Sources */,
 				B56090FB208A533200399AE4 /* WordPressSupportSourceTag.swift in Sources */,

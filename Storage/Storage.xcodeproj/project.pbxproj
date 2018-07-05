@@ -11,6 +11,7 @@
 		7028A41485A08AC748206184 /* Pods_Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */; };
 		B505254920EE6080008090F5 /* Site+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505254720EE607F008090F5 /* Site+CoreDataProperties.swift */; };
 		B505254A20EE6080008090F5 /* Site+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505254820EE6080008090F5 /* Site+CoreDataClass.swift */; };
+		B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505255320EE6914008090F5 /* StorageType+Extensions.swift */; };
 		B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6D820BEEA3100BB1B69 /* Account+CoreDataProperties.swift */; };
 		B505F6DB20BEEA3200BB1B69 /* Account+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6D920BEEA3200BB1B69 /* Account+CoreDataClass.swift */; };
 		B505F6DE20BEEA4F00BB1B69 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6DD20BEEA4F00BB1B69 /* CoreDataManager.swift */; };
@@ -49,6 +50,7 @@
 		A3821B262583F14863740A37 /* Pods-Storage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.debug.xcconfig"; sourceTree = "<group>"; };
 		B505254720EE607F008090F5 /* Site+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Site+CoreDataProperties.swift"; path = "/Users/lantean/Developer/Automattic/woocommerce-ios/Storage/Storage/Model/Site+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		B505254820EE6080008090F5 /* Site+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Site+CoreDataClass.swift"; path = "/Users/lantean/Developer/Automattic/woocommerce-ios/Storage/Storage/Model/Site+CoreDataClass.swift"; sourceTree = "<absolute>"; };
+		B505255320EE6914008090F5 /* StorageType+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageType+Extensions.swift"; sourceTree = "<group>"; };
 		B505F6D820BEEA3100BB1B69 /* Account+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B505F6D920BEEA3200BB1B69 /* Account+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B505F6DD20BEEA4F00BB1B69 /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
@@ -107,6 +109,14 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		B505255520EE694F008090F5 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				B505255320EE6914008090F5 /* StorageType+Extensions.swift */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
 		B505F6DC20BEEA4F00BB1B69 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
@@ -160,6 +170,7 @@
 				B52B0F7C20AA2D9900477698 /* Protocols */,
 				B54CA5BE20A4BD9A00F38CD1 /* Extensions */,
 				B59E11D720A9CFF3004121A4 /* Model */,
+				B505255520EE694F008090F5 /* Tools */,
 				B505F6DC20BEEA4F00BB1B69 /* CoreData */,
 				B54CA59C20A4BBA500F38CD1 /* Storage.h */,
 				B54CA59D20A4BBA600F38CD1 /* Info.plist */,
@@ -408,6 +419,7 @@
 				B505F6E020BEEA8100BB1B69 /* StorageType.swift in Sources */,
 				B54CA5C920A4C17800F38CD1 /* NSObject+Storage.swift in Sources */,
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,
+				B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */,
 				B52B0F7B20AA28A800477698 /* Object.swift in Sources */,
 				B505F6DE20BEEA4F00BB1B69 /* CoreDataManager.swift in Sources */,
 			);

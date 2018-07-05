@@ -72,7 +72,7 @@ private extension AccountStore {
 
 // MARK: - Persistance
 //
-private extension AccountStore {
+extension AccountStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Account Entity into the Storage Layer.
     ///
@@ -99,25 +99,5 @@ private extension AccountStore {
         }
 
         storage.saveIfNeeded()
-    }
-}
-
-
-// MARK: - StorageType (AccountStore) private methods.
-//
-private extension StorageType {
-
-    /// Retrieves the Stored Account.
-    ///
-    func loadAccount(userId: Int) -> Storage.Account? {
-        let predicate = NSPredicate(format: "userID = %ld", userId)
-        return firstObject(ofType: Storage.Account.self, matching: predicate)
-    }
-
-    /// Retrieves the Stored Site.
-    ///
-    func loadSite(siteID: Int) -> Storage.Site? {
-        let predicate = NSPredicate(format: "siteID = %ld", siteID)
-        return firstObject(ofType: Storage.Site.self, matching: predicate)
     }
 }

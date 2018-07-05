@@ -6,7 +6,6 @@ import WordPressShared
 import WordPressUI
 
 
-
 // MARK: - WordPress Credentials
 //
 public enum WordPressCredentials {
@@ -182,27 +181,26 @@ public struct WordPressAuthenticatorConfiguration {
 // MARK: - WordPress Authenticator Styles
 //
 public struct WordPressAuthenticatorStyle {
-    /// (Private) Shared Instance.
+    /// Alternative logins link color
     ///
-    private static var privateInstance: WordPressAuthenticatorStyle?
+    let linkColor: UIColor
 
-    /// Shared Instance.
+    /// Alternative logins highlight color
     ///
-    public static var shared: WordPressAuthenticatorStyle {
-        guard let privateInstance = privateInstance else {
-            fatalError("WordPressAuthenticatorStyle wasn't initialized")
-        }
+    let highlightColor: UIColor
 
-        return privateInstance
+    /// Designated initializer
+    ///
+    public init(linkColor: UIColor, highlightColor: UIColor) {
+        self.linkColor = linkColor
+        self.highlightColor = highlightColor
     }
+}
 
-    /// Log in with google link
-    ///
-    var linkColor: UIColor = WPStyleGuide.wordPressBlue()
-
-    /// Log in with google highlight
-    ///
-    var highlightColor: UIColor = WPStyleGuide.lightBlue()
+public extension WordPressAuthenticatorStyle {
+    static var defaultStyle: WordPressAuthenticatorStyle {
+        return WordPressAuthenticatorStyle(linkColor: WPStyleGuide.wordPressBlue(), highlightColor: WPStyleGuide.lightBlue())
+    }
 }
 
 
@@ -234,7 +232,7 @@ public struct WordPressAuthenticatorStyle {
 
     /// Authenticator's Styles.
     ///
-    public var style: WordPressAuthenticatorStyle
+    public let style: WordPressAuthenticatorStyle
 
     /// Notification to be posted whenever the signing flow completes.
     ///
@@ -255,18 +253,19 @@ public struct WordPressAuthenticatorStyle {
 
     /// Designated Initializer
     ///
-    private init(configuration: WordPressAuthenticatorConfiguration) {
+    private init(configuration: WordPressAuthenticatorConfiguration, style: WordPressAuthenticatorStyle) {
         self.configuration = configuration
+        self.style = style
     }
 
     /// Initializes the WordPressAuthenticator with the specified Configuration.
     ///
-    public static func initialize(configuration: WordPressAuthenticatorConfiguration) {
+    public static func initialize(configuration: WordPressAuthenticatorConfiguration, style: WordPressAuthenticatorStyle) {
         guard privateInstance == nil else {
             fatalError("WordPressAuthenticator is already initialized")
         }
 
-        privateInstance = WordPressAuthenticator(configuration: configuration)
+        privateInstance = WordPressAuthenticator(configuration: configuration, style: style)
     }
 
     // MARK: - Public Methods

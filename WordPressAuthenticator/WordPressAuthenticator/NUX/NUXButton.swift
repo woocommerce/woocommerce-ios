@@ -30,7 +30,7 @@ import WordPressUI
             var frm = activityIndicator.frame
             frm.origin.x = (frame.width - frm.width) / 2.0
             frm.origin.y = (frame.height - frm.height) / 2.0
-            activityIndicator.frame = frm
+            activityIndicator.frame = frm.integral
         }
     }
 

@@ -75,7 +75,7 @@ private extension SessionManager {
     /// Returns a SessionManager instance with testing Keychain/UserDefaults
     ///
     static var testingInstance: SessionManager {
-        return SessionManager(defaults: Settings.defaults,  keychainServiceName: Settings.keychainServiceName)
+        return SessionManager(defaults: Settings.defaults, keychainServiceName: Settings.keychainServiceName)
     }
 }
 

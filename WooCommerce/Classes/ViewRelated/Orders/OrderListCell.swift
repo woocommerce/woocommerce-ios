@@ -1,5 +1,6 @@
 import UIKit
 
+
 class OrderListCell: UITableViewCell {
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var totalLabel: UILabel!
@@ -8,17 +9,13 @@ class OrderListCell: UITableViewCell {
 
     static let reuseIdentifier = "OrderListCell"
 
-    func configureCell(order: Order) {
-        let titleString = "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
-        let currencySymbol = order.currencySymbol
-        let paymentStatusText = order.status.description
-
-        titleLabel.text = titleString
+    func configureCell(order: OrderDetailsViewModel) {
+        titleLabel.text = order.summaryTitle
         titleLabel.applyTitleStyle()
-        totalLabel.text = "\(currencySymbol)\(order.total)"
+        totalLabel.text = order.totalValue
         totalLabel.applyBodyStyle()
-        paymentStatusLabel.text = paymentStatusText
-        paymentStatusLabel.applyStatusStyle(for: order.status)
+        paymentStatusLabel.text = order.paymentStatus
+        paymentStatusLabel.applyStatusStyle(for: order.orderStatusViewModel.orderStatus)
         shippingStatusLabel.text = ""
     }
 

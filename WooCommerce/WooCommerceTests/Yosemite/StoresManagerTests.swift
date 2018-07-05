@@ -92,10 +92,10 @@ private extension StoresManager {
 }
 
 
-// MARK: - Nested Types
+// MARK: - Testing Constants
 //
 private enum Settings {
     static let credentials = Credentials(username: "username", authToken: "authToken")
-    static let defaults = UserDefaults(suiteName: "testingKeychainServiceName")!
+    static let defaults = UserDefaults(suiteName: "storesManagerTests")!
     static let keychainServiceName = "com.woocommerce.storesmanagertests"
 }

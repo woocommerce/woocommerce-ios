@@ -9,7 +9,7 @@ class SessionManagerTests: XCTestCase {
 
     /// CredentialsStorage Unit-Testing Instance
     ///
-    private var manager = SessionManager(defaults: .standard, keychainServiceName: Constants.testingServiceName)
+    private var manager = SessionManager(defaults: .standard, keychainServiceName: Settings.keychainServiceName)
 
 
     // MARK: - Overridden Methods
@@ -26,44 +26,45 @@ class SessionManagerTests: XCTestCase {
         XCTAssertNil(manager.credentials)
     }
 
+
     /// Verifies that `loadDefaultCredentials` effectively returns the last stored credentials
     ///
     func testDefaultCredentialsAreProperlyPersisted() {
-        manager.credentials = Constants.testingCredentials1
+        manager.credentials = Settings.credentials1
 
         let retrieved = manager.credentials
-        XCTAssertEqual(retrieved?.authToken, Constants.testingCredentials1.authToken)
-        XCTAssertEqual(retrieved?.username, Constants.testingCredentials1.username)
+        XCTAssertEqual(retrieved?.authToken, Settings.credentials1.authToken)
+        XCTAssertEqual(retrieved?.username, Settings.credentials1.username)
     }
+
 
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {
-        manager.credentials = Constants.testingCredentials1
+        manager.credentials = Settings.credentials1
         manager.credentials = nil
 
         XCTAssertNil(manager.credentials)
     }
 
+
     /// Verifies that `saveDefaultCredentials` overrides previous stored credentials
     ///
     func testDefaultCredentialsCanBeUpdated() {
-        manager.credentials = Constants.testingCredentials1
-        XCTAssertEqual(manager.credentials, Constants.testingCredentials1)
+        manager.credentials = Settings.credentials1
+        XCTAssertEqual(manager.credentials, Settings.credentials1)
 
-        manager.credentials = Constants.testingCredentials2
-        XCTAssertEqual(manager.credentials, Constants.testingCredentials2)
+        manager.credentials = Settings.credentials2
+        XCTAssertEqual(manager.credentials, Settings.credentials2)
     }
 }
 
 
-// MARK: - Nested Types
+// MARK: - Testing Constants
 //
-private extension SessionManagerTests {
-
-    struct Constants {
-        static let testingServiceName = "com.automattic.woocommerce.tests"
-        static let testingCredentials1 = Credentials(username: "lalala", authToken: "1234")
-        static let testingCredentials2 = Credentials(username: "yayaya", authToken: "5678")
-    }
+private enum Settings {
+    static let keychainServiceName = "com.automattic.woocommerce.tests"
+    static let defaults = UserDefaults(suiteName: "sessionManagerTests")!
+    static let credentials1 = Credentials(username: "lalala", authToken: "1234")
+    static let credentials2 = Credentials(username: "yayaya", authToken: "5678")
 }

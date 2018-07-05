@@ -26,7 +26,7 @@ public struct Site: Decodable {
     public let isWordPressStore: Bool
 
 
-    /// Designated Initializer.
+    /// Decodable Conformance.
     ///
     public init(from decoder: Decoder) throws {
         let siteContainer = try decoder.container(keyedBy: SiteKeys.self)
@@ -38,6 +38,16 @@ public struct Site: Decodable {
 
         let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
         isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
+    }
+
+    /// Designated Initializer.
+    ///
+    public init(siteID: Int, name: String, description: String, url: String, isWordPressStore: Bool) {
+        self.siteID = siteID
+        self.name = name
+        self.description = description
+        self.url = url
+        self.isWordPressStore = isWordPressStore
     }
 }
 

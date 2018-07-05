@@ -61,6 +61,14 @@ class AuthenticationManager {
 // MARK: - WordPressAuthenticator Delegate
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
+    func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
+        // TODO: wire Zendesk
+    }
+
+    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
+        // TODO: wire Zendesk
+    }
+
 
     /// Indicates if the active Authenticator can be dismissed or not.
     ///

@@ -88,7 +88,7 @@ private extension StoresManager {
 
     /// Default Settings.
     ///
-    enum Settings  {
+    enum Settings {
         static let keychainServiceName = "com.automattic.woocommerce"
     }
 }

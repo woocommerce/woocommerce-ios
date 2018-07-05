@@ -179,6 +179,33 @@ public struct WordPressAuthenticatorConfiguration {
 }
 
 
+// MARK: - WordPress Authenticator Styles
+//
+public struct WordPressAuthenticatorStyle {
+    /// (Private) Shared Instance.
+    ///
+    private static var privateInstance: WordPressAuthenticatorStyle?
+
+    /// Shared Instance.
+    ///
+    public static var shared: WordPressAuthenticatorStyle {
+        guard let privateInstance = privateInstance else {
+            fatalError("WordPressAuthenticatorStyle wasn't initialized")
+        }
+
+        return privateInstance
+    }
+
+    /// Log in with google link
+    ///
+    var linkColor: UIColor = WPStyleGuide.wordPressBlue()
+
+    /// Log in with google highlight
+    ///
+    var highlightColor: UIColor = WPStyleGuide.lightBlue()
+}
+
+
 // MARK: - WordPressAuthenticator: Public API to deal with WordPress.com and WordPress.org authentication.
 //
 @objc public class WordPressAuthenticator: NSObject {
@@ -204,6 +231,10 @@ public struct WordPressAuthenticatorConfiguration {
     /// Authenticator's Configuration.
     ///
     public let configuration: WordPressAuthenticatorConfiguration
+
+    /// Authenticator's Styles.
+    ///
+    public var style: WordPressAuthenticatorStyle
 
     /// Notification to be posted whenever the signing flow completes.
     ///

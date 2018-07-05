@@ -103,8 +103,8 @@ extension WPStyleGuide {
     class func googleLoginButton() -> UIButton {
         let baseString =  NSLocalizedString("{G} Log in with Google.", comment: "Label for button to log in using Google. The {G} will be replaced with the Google logo.")
 
-        let attrStrNormal = googleButtonString(baseString, linkColor: WPStyleGuide.wordPressBlue())
-        let attrStrHighlight = googleButtonString(baseString, linkColor: WPStyleGuide.lightBlue())
+        let attrStrNormal = googleButtonString(baseString, linkColor: WordPressAuthenticatorStyle.shared.linkColor)
+        let attrStrHighlight = googleButtonString(baseString, linkColor: WordPressAuthenticatorStyle.shared.highlightColor)
 
         let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
 

@@ -1,4 +1,6 @@
 import UIKit
+import Yosemite
+
 
 extension UILabel {
     func applyTitleStyle() {
@@ -19,7 +21,7 @@ extension UILabel {
     func applyStatusStyle(for status: OrderStatus) {
         layer.borderWidth = 1.0
         layer.cornerRadius = 4.0
-        font = .footnote;
+        font = .footnote
 
         switch status {
             case .processing:
@@ -37,7 +39,7 @@ extension UILabel {
                 layer.borderColor = StyleManager.statusPrimaryBoldColor.cgColor
             case .onHold:
                 fallthrough
-            case .canceled:
+            case .cancelled:
                 fallthrough
             case .custom:
                 fallthrough
@@ -50,6 +52,6 @@ extension UILabel {
     func applyPaddedLabelDefaultStyles() {
         layer.borderWidth = 1.0
         layer.cornerRadius = 4.0
-        font = .footnote;
+        font = .footnote
     }
 }

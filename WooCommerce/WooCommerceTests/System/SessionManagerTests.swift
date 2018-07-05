@@ -3,35 +3,35 @@ import XCTest
 import Yosemite
 
 
-/// CredentialsStorage Unit Tests
+/// SessionManager Unit Tests
 ///
-class CredentialsStorageTests: XCTestCase {
+class SessionManagerTests: XCTestCase {
 
     /// CredentialsStorage Unit-Testing Instance
     ///
-    private let manager = CredentialsStorage(keychainServiceName: Constants.testingServiceName, defaults: .standard)
+    private var manager = SessionManager(defaults: .standard, keychainServiceName: Constants.testingServiceName)
 
 
     // MARK: - Overridden Methods
 
     override func setUp() {
         super.setUp()
-        manager.removeCredentials()
+        manager.credentials = nil
     }
 
 
     /// Verifies that `loadDefaultCredentials` returns nil whenever there are no default credentials stored.
     ///
     func testLoadDefaultCredentialsReturnsNilWhenThereAreNoDefaultCredentials() {
-        XCTAssertNil(manager.loadCredentials())
+        XCTAssertNil(manager.credentials)
     }
 
     /// Verifies that `loadDefaultCredentials` effectively returns the last stored credentials
     ///
     func testDefaultCredentialsAreProperlyPersisted() {
-        manager.saveCredentials(Constants.testingCredentials1)
+        manager.credentials = Constants.testingCredentials1
 
-        let retrieved = manager.loadCredentials()
+        let retrieved = manager.credentials
         XCTAssertEqual(retrieved?.authToken, Constants.testingCredentials1.authToken)
         XCTAssertEqual(retrieved?.username, Constants.testingCredentials1.username)
     }
@@ -39,27 +39,27 @@ class CredentialsStorageTests: XCTestCase {
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {
-        manager.saveCredentials(Constants.testingCredentials1)
-        manager.removeCredentials()
+        manager.credentials = Constants.testingCredentials1
+        manager.credentials = nil
 
-        XCTAssertNil(manager.loadCredentials())
+        XCTAssertNil(manager.credentials)
     }
 
     /// Verifies that `saveDefaultCredentials` overrides previous stored credentials
     ///
     func testDefaultCredentialsCanBeUpdated() {
-        manager.saveCredentials(Constants.testingCredentials1)
-        XCTAssertEqual(manager.loadCredentials(), Constants.testingCredentials1)
+        manager.credentials = Constants.testingCredentials1
+        XCTAssertEqual(manager.credentials, Constants.testingCredentials1)
 
-        manager.saveCredentials(Constants.testingCredentials2)
-        XCTAssertEqual(manager.loadCredentials(), Constants.testingCredentials2)
+        manager.credentials = Constants.testingCredentials2
+        XCTAssertEqual(manager.credentials, Constants.testingCredentials2)
     }
 }
 
 
 // MARK: - Nested Types
 //
-private extension CredentialsStorageTests {
+private extension SessionManagerTests {
 
     struct Constants {
         static let testingServiceName = "com.automattic.woocommerce.tests"

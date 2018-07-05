@@ -9,7 +9,7 @@ class StoresManager {
 
     /// Shared Instance
     ///
-    static var shared = StoresManager(defaults: .standard, keychainServiceName: Settings.keychainServiceName)
+    static var shared = StoresManager(defaults: .standard, keychainServiceName: WooConstants.keychainServiceName)
 
     /// SessionManager: Persistent Storage for Session-Y Properties.
     ///
@@ -77,18 +77,6 @@ private extension StoresManager {
         }
 
         state = AuthenticatedState(credentials: credentials)
-    }
-}
-
-
-// MARK: - Nested Types
-//
-private extension StoresManager {
-
-    /// Default Settings.
-    ///
-    enum Settings {
-        static let keychainServiceName = "com.automattic.woocommerce"
     }
 }
 

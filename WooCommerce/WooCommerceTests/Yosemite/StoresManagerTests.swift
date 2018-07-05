@@ -87,7 +87,7 @@ private extension StoresManager {
     /// Returns a StoresManager instance with testing Keychain/UserDefaults
     ///
     static var testingInstance: StoresManager {
-        return StoresManager(defaults: Settings.defaults, keychainServiceName: Settings.keychainServiceName)
+        return StoresManager(sessionManager: .testingInstance)
     }
 }
 

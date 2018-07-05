@@ -9,7 +9,7 @@ class SessionManagerTests: XCTestCase {
 
     /// CredentialsStorage Unit-Testing Instance
     ///
-    private var manager = SessionManager(defaults: .standard, keychainServiceName: Settings.keychainServiceName)
+    private var manager = SessionManager(defaults: Settings.defaults, keychainServiceName: Settings.keychainServiceName)
 
 
     // MARK: - Overridden Methods

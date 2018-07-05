@@ -39,7 +39,7 @@ extension AccountStore  {
     func synchronizeAccount(onCompletion: @escaping (Account?, Error?) -> Void) {
         let remote = AccountRemote(network: network)
 
-        remote.loadAccountDetails { [weak self] (account, error) in
+        remote.loadAccount { [weak self] (account, error) in
             guard let account = account else {
                 onCompletion(nil, error)
                 return

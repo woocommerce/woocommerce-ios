@@ -10,11 +10,11 @@ class StoresManager {
 
     /// Shared Instance
     ///
-    static var shared = StoresManager(keychainServiceName: Settings.keychainServiceName, defaultsStorage: .standard)
+    static var shared = StoresManager(defaults: .standard, keychainServiceName: Settings.keychainServiceName)
 
-    /// Represents the Active Session's State
+    /// SessionManager: Persistent Storage for Session-Y Properties.
     ///
-    private(set) var session: Session
+    private(set) var sessionManager: SessionManager
 
     /// Active StoresManager State.
     ///
@@ -33,8 +33,8 @@ class StoresManager {
 
     /// Designated Initializer
     ///
-    init(keychainServiceName: String, defaultsStorage: UserDefaults) {
-        self.session = Session(keychainServiceName: keychainServiceName, defaultsStorage: defaultsStorage)
+    init(defaults: UserDefaults, keychainServiceName: String) {
+        sessionManager = SessionManager(defaults: defaults, keychainServiceName: keychainServiceName)
 
         authenticateIfPossible()
     }
@@ -53,7 +53,7 @@ class StoresManager {
         let credentials = Credentials(username: username, authToken: authToken)
 
         state = AuthenticatedState(credentials: credentials)
-        session.credentials = credentials
+        sessionManager.credentials = credentials
     }
 
 
@@ -61,7 +61,7 @@ class StoresManager {
     ///
     func deauthenticate() {
         state = DeauthenticatedState()
-        session.reset()
+        sessionManager.reset()
     }
 }
 
@@ -73,7 +73,7 @@ private extension StoresManager {
     /// Switches over to the AuthenticatedState whenever needed / possible!.
     ///
     func authenticateIfPossible() {
-        guard !isAuthenticated, let credentials = session.credentials else {
+        guard !isAuthenticated, let credentials = sessionManager.credentials else {
             return
         }
 

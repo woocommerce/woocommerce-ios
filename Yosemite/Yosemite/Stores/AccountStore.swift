@@ -55,7 +55,7 @@ extension AccountStore  {
     /// Retrieves the account associated with a  given User ID (if any!).
     ///
     func retrieveAccount(userId: Int, onCompletion: (Account?) -> Void) {
-        let account = loadStoredAccount(userId: userId)?.toStruct()
+        let account = loadStoredAccount(userId: userId)?.toReadOnly()
         onCompletion(account)
     }
 }

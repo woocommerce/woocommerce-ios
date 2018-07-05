@@ -3,7 +3,7 @@ import Foundation
 
 /// Defines the methods and properties implemented by any concrete StorageManager implementation.
 ///
-public protocol StorageManager {
+public protocol StorageManagerType {
 
     /// Returns the `Storage` associated to the main thread.
     ///

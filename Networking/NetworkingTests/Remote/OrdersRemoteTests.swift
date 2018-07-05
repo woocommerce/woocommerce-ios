@@ -44,6 +44,23 @@ class OrdersRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that loadOrder properly parses the `order` sample response.
+    ///
+    func testLoadSingleOrderProperlyReturnsParsedOrder() {
+        let remote = OrdersRemote(network: network)
+        let expectation = self.expectation(description: "Load Order")
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)", filename: "order")
+
+        remote.loadOrder(for: sampleSiteID, orderID: sampleOrderID) { order, error in
+            XCTAssertNil(error)
+            XCTAssertNotNil(order)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that loadAllOrders properly relays Networking Layer errors.
     ///
     func testLoadAllOrdersProperlyRelaysNetwokingErrors() {

@@ -13,6 +13,8 @@ public struct Address: Decodable {
     public let state: String
     public let postcode: String
     public let country: String
+    public let phone: String?
+    public let email: String?
 }
 
 
@@ -30,6 +32,8 @@ private extension Address {
         case state      = "state"
         case postcode   = "postcode"
         case country    = "country"
+        case phone      = "phone"
+        case email      = "email"
     }
 }
 
@@ -46,7 +50,9 @@ extension Address: Comparable {
             lhs.city == rhs.city &&
             lhs.state == rhs.state &&
             lhs.postcode == rhs.postcode &&
-            lhs.country == rhs.country
+            lhs.country == rhs.country &&
+            lhs.phone == rhs.phone &&
+            lhs.email == rhs.email
     }
 
     public static func < (lhs: Address, rhs: Address) -> Bool {

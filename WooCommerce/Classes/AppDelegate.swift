@@ -178,7 +178,7 @@ extension AppDelegate {
     /// Whenever there is no default WordPress.com Account, let's display the Authentication UI.
     ///
     func displayAuthenticatorIfNeeded() {
-        guard needsAuthentication else {
+        guard StoresManager.shared.isAuthenticated == false else {
             return
         }
 
@@ -193,11 +193,5 @@ extension AppDelegate {
         }
 
         authenticationManager.displayAuthentication(from: rootViewController)
-    }
-
-    /// Indicates if there's a default WordPress.com account.
-    ///
-    var needsAuthentication: Bool {
-        return CredentialsManager.shared.needsDefaultCredentials
     }
 }

@@ -47,22 +47,23 @@ private extension AccountStore {
                 return
             }
 
-            self?.upsertStoredAccount(remote: account)
+            self?.upsertStoredAccount(readOnlyAccount: account)
             onCompletion(account, nil)
         }
     }
 
-    ///
+    /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.
     ///
     func synchronizeSites(onCompletion: @escaping (Error?) -> Void) {
         let remote = AccountRemote(network: network)
 
-        remote.loadSites { (sites, error) in
-            guard error == nil else {
+        remote.loadSites { [weak self]  (sites, error) in
+            guard let sites = sites else {
                 onCompletion(error)
                 return
             }
 
+            self?.upsertStoredSites(readOnlySites: sites)
             onCompletion(nil)
         }
     }
@@ -73,26 +74,50 @@ private extension AccountStore {
 //
 private extension AccountStore {
 
-    /// Updates (OR Inserts) the Storage's Account with the specified (Networking) Account entity.
+    /// Updates (OR Inserts) the specified ReadOnly Account Entity into the Storage Layer.
     ///
-    func upsertStoredAccount(remote: Networking.Account) {
+    func upsertStoredAccount(readOnlyAccount: Networking.Account) {
         assert(Thread.isMainThread)
 
         let storage = storageManager.viewStorage
-        let account = loadStoredAccount(userId: remote.userID) ?? storage.insertNewObject(ofType: Storage.Account.self)
+        let storageAccount = storage.loadAccount(userId: readOnlyAccount.userID) ?? storage.insertNewObject(ofType: Storage.Account.self)
 
-        account.update(with: remote)
+        storageAccount.update(with: readOnlyAccount)
         storage.saveIfNeeded()
     }
 
-    /// Retrieves the Stored Account.
+    /// Updates (OR Inserts) the specified ReadOnly Site Entities into the Storage Layer.
     ///
-    func loadStoredAccount(userId: Int) -> Storage.Account? {
+    func upsertStoredSites(readOnlySites: [Networking.Site]) {
         assert(Thread.isMainThread)
 
-        let predicate = NSPredicate(format: "userID = %ld", userId)
         let storage = storageManager.viewStorage
 
-        return storage.firstObject(ofType: Storage.Account.self, matching: predicate)
+        for readOnlySite in readOnlySites {
+            let storageSite = storage.loadSite(siteID: readOnlySite.siteID) ?? storage.insertNewObject(ofType: Storage.Site.self)
+            storageSite.update(with: readOnlySite)
+        }
+
+        storage.saveIfNeeded()
+    }
+}
+
+
+// MARK: - StorageType (AccountStore) private methods.
+//
+private extension StorageType {
+
+    /// Retrieves the Stored Account.
+    ///
+    func loadAccount(userId: Int) -> Storage.Account? {
+        let predicate = NSPredicate(format: "userID = %ld", userId)
+        return firstObject(ofType: Storage.Account.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored Site.
+    ///
+    func loadSite(siteID: Int) -> Storage.Site? {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        return firstObject(ofType: Storage.Site.self, matching: predicate)
     }
 }

@@ -1,6 +1,8 @@
 import UIKit
 import Gridicons
 import Yosemite
+import CocoaLumberjack
+
 
 class OrdersViewController: UIViewController {
 
@@ -39,7 +41,9 @@ class OrdersViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        syncOrders()
+        if orders.isEmpty {
+            syncOrders()
+        }
     }
 
     // MARK: - User Interface Initialization
@@ -134,7 +138,9 @@ private extension OrdersViewController {
         let action = OrderAction.retrieveOrders(siteID: 131820877) { [weak self] (orders, error) in
             self?.refreshControl.endRefreshing()
             guard error == nil else {
-                print(error.debugDescription)
+                if let error = error {
+                    DDLogError("⛔️ Error synchronizing orders: \(error)")
+                }
                 return
             }
             guard let orders = orders else {
@@ -144,6 +150,9 @@ private extension OrdersViewController {
             self?.tableView.reloadData()
         }
 
+        if refreshControl.isRefreshing {
+            refreshControl.endRefreshing()
+        }
         refreshControl.beginRefreshing()
         StoresManager.shared.dispatch(action)
     }

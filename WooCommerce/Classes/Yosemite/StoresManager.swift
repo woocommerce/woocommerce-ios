@@ -9,7 +9,7 @@ class StoresManager {
 
     /// Shared Instance
     ///
-    static var shared = StoresManager(defaults: .standard, keychainServiceName: WooConstants.keychainServiceName)
+    static var shared = StoresManager(sessionManager: .standard)
 
     /// SessionManager: Persistent Storage for Session-Y Properties.
     ///
@@ -32,9 +32,8 @@ class StoresManager {
 
     /// Designated Initializer
     ///
-    init(defaults: UserDefaults, keychainServiceName: String) {
-        sessionManager = SessionManager(defaults: defaults, keychainServiceName: keychainServiceName)
-
+    init(sessionManager: SessionManager) {
+        self.sessionManager = sessionManager
         authenticateIfPossible()
     }
 
@@ -72,7 +71,7 @@ private extension StoresManager {
     /// Switches over to the AuthenticatedState whenever needed / possible!.
     ///
     func authenticateIfPossible() {
-        guard !isAuthenticated, let credentials = sessionManager.credentials else {
+        guard let credentials = sessionManager.credentials else {
             return
         }
 

@@ -8,6 +8,12 @@ import KeychainAccess
 ///
 struct SessionManager {
 
+    /// Standard Session Manager
+    ///
+    static var standard: SessionManager {
+        return SessionManager(defaults: .standard, keychainServiceName: WooConstants.keychainServiceName)
+    }
+
     /// Reference to the UserDefaults Instance that should be used.
     ///
     private let defaults: UserDefaults

@@ -27,7 +27,7 @@ class MainTabBarController: UITabBarController {
         guard let items = tabBar.items else {
             fatalError()
         }
-        
+
         for (index, item) in items.enumerated() {
             item.title = tabTitles[index]
             item.image = tabIcons[index]

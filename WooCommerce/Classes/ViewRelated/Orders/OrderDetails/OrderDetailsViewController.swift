@@ -26,7 +26,7 @@ class OrderDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
-        title = NSLocalizedString("Order #\(order.number)", comment:"Order number title")
+        title = NSLocalizedString("Order #\(order.number)", comment: "Order number title")
     }
 
     override func viewWillDisappear(_ animated: Bool) {

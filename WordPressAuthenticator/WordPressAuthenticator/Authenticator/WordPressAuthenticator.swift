@@ -389,11 +389,12 @@ public extension WordPressAuthenticatorStyle {
     /// Returns an instance of LoginEmailViewController. This allows the host app to fine tune the way it's displayed / configure
     /// it's features.
     ///
-    public class func signinForWordPress() -> LoginEmailViewController {
+    public class func signinForWPCom() -> LoginEmailViewController {
         let storyboard = UIStoryboard(name: "Login", bundle: bundle)
         guard let controller = storyboard.instantiateViewController(withIdentifier: "emailEntry") as? LoginEmailViewController else {
             fatalError()
         }
+        controller.loginFields.restrictToWPCom = true
 
         return controller
     }

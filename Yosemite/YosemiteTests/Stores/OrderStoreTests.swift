@@ -34,7 +34,7 @@ class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
-        
+
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders")
         let action = OrderAction.retrieveOrders(siteID: 123) { (orders, error) in
             XCTAssertNil(error)
@@ -61,7 +61,7 @@ class OrderStoreTests: XCTestCase {
         let action = OrderAction.retrieveOrders(siteID: 123) { (orders, error) in
             XCTAssertNil(orders)
             XCTAssertNotNil(error)
-            guard let _ = error as NSError? else {
+            guard let _ = error else {
                 XCTFail()
                 return
             }
@@ -78,10 +78,73 @@ class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve orders empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = OrderAction.retrieveOrders(siteID: 123) { (account, error) in
+        let action = OrderAction.retrieveOrders(siteID: 123) { (orders, error) in
             XCTAssertNotNil(error)
-            XCTAssertNil(account)
-            guard let _ = error as NSError? else {
+            XCTAssertNil(orders)
+            guard let _ = error else {
+                XCTFail()
+                return
+            }
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that OrderAction.retrieveOrder returns the expected Order.
+    ///
+    func testRetrieveSingleOrderReturnsExpectedFields() {
+        let expectation = self.expectation(description: "Retrieve single order")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteOrder = sampleOrder()
+
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+        let action = OrderAction.retrieveOrder(siteID: 123, orderID: 963) { (order, error) in
+            XCTAssertNil(error)
+            guard let order = order else {
+                XCTFail()
+                return
+            }
+            XCTAssertEqual(order, remoteOrder)
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that OrderAction.retrieveOrder returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveSingleOrderReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve single order error response")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "generic_error")
+        let action = OrderAction.retrieveOrder(siteID: 123, orderID: 963) { (order, error) in
+            XCTAssertNil(order)
+            XCTAssertNotNil(error)
+            guard let _ = error else {
+                XCTFail()
+                return
+            }
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that OrderAction.retrieveOrder returns an error whenever there is no backend response.
+    ///
+    func testRetrieveSingleOrderReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve single order empty response")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = OrderAction.retrieveOrder(siteID: 123, orderID: 963) { (order, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(order)
+            guard let _ = error else {
                 XCTFail()
                 return
             }
@@ -98,24 +161,24 @@ class OrderStoreTests: XCTestCase {
 private extension OrderStoreTests {
     func sampleOrder() -> Networking.Order {
         return Networking.Order(orderID: 963,
-                     parentID: 0,
-                     customerID: 11,
-                     number: "963",
-                     status: .processing,
-                     currency: "USD",
-                     customerNote: "",
-                     dateCreated: date(with: "2018-04-03T23:05:12"),
-                     dateModified: date(with: "2018-04-03T23:05:14"),
-                     datePaid: date(with: "2018-04-03T23:05:14"),
-                     discountTotal: "30.00",
-                     discountTax: "1.20",
-                     shippingTotal: "0.00",
-                     shippingTax: "0.00",
-                     total: "31.20",
-                     totalTax: "1.20",
-                     items: sampleItems(),
-                     billingAddress: sampleAddress(),
-                     shippingAddress: sampleAddress())
+                                parentID: 0,
+                                customerID: 11,
+                                number: "963",
+                                status: .processing,
+                                currency: "USD",
+                                customerNote: "",
+                                dateCreated: date(with: "2018-04-03T23:05:12"),
+                                dateModified: date(with: "2018-04-03T23:05:14"),
+                                datePaid: date(with: "2018-04-03T23:05:14"),
+                                discountTotal: "30.00",
+                                discountTax: "1.20",
+                                shippingTotal: "0.00",
+                                shippingTax: "0.00",
+                                total: "31.20",
+                                totalTax: "1.20",
+                                items: sampleItems(),
+                                billingAddress: sampleAddress(),
+                                shippingAddress: sampleAddress())
     }
 
     func sampleAddress() -> Networking.Address {
@@ -127,7 +190,9 @@ private extension OrderStoreTests {
                        city: "Niagara Falls",
                        state: "NY",
                        postcode: "14304",
-                       country: "US")
+                       country: "US",
+                       phone: "333-333-3333",
+                       email: "scrambled@scrambled.com")
     }
 
     func sampleItems() -> [Networking.OrderItem] {

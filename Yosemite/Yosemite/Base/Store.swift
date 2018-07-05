@@ -15,7 +15,7 @@ open class Store: ActionsProcessor {
 
     /// Storage Layer
     ///
-    public let storageManager: StorageManager
+    public let storageManager: StorageManagerType
 
     /// Network Layer
     ///
@@ -29,7 +29,7 @@ open class Store: ActionsProcessor {
     ///     - storageManager: Storage Provider to be used in all of the current Store OP's.
     ///     - network: Network that should be used, when it comes to building a Remote.
     ///
-    public init(dispatcher: Dispatcher, storageManager: StorageManager, network: Network) {
+    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.dispatcher = dispatcher
         self.storageManager = storageManager
         self.network = network

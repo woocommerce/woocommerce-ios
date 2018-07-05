@@ -5,7 +5,7 @@ import CoreData
 
 /// MockupStorageManager: InMemory CoreData Stack.
 ///
-public class MockupStorageManager: StorageManager {
+public class MockupStorageManager: StorageManagerType {
 
     /// DataModel Name
     ///
@@ -17,6 +17,11 @@ public class MockupStorageManager: StorageManager {
         return persistentContainer.viewContext
     }
 
+    /// Returns the NSManagedObjectContext associated with the Main Thread. Convenience helper!!
+    ///
+    public var viewContext: NSManagedObjectContext {
+        return persistentContainer.viewContext
+    }
 
     /// Persistent Container: Holds the full CoreData Stack
     ///

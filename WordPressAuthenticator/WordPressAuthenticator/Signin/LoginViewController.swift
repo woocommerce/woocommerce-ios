@@ -3,7 +3,7 @@ import WordPressKit
 
 
 /// View Controller for login-specific screens
-class LoginViewController: NUXViewController, LoginFacadeDelegate {
+open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     @IBOutlet var instructionLabel: UILabel?
     @objc var errorToPresent: Error?
 
@@ -34,7 +34,7 @@ class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     // MARK: Lifecycle Methods
 
-    override func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         displayError(message: "")
         setupNavBarIcon()
@@ -135,7 +135,7 @@ class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     /// Manages data transfer when seguing to a new VC
     ///
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    override open func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let source = segue.source as? LoginViewController, let destination = segue.destination as? LoginViewController else {
             return
         }
@@ -146,7 +146,7 @@ class LoginViewController: NUXViewController, LoginFacadeDelegate {
     }
 
     // MARK: SigninWPComSyncHandler methods
-    dynamic func finishedLogin(withUsername username: String, authToken: String, requiredMultifactorCode: Bool) {
+    dynamic open func finishedLogin(withUsername username: String, authToken: String, requiredMultifactorCode: Bool) {
         let credentials = WordPressCredentials.wpcom(username: username, authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: requiredMultifactorCode)
 
         syncWPComAndPresentEpilogue(credentials: credentials)
@@ -159,7 +159,7 @@ class LoginViewController: NUXViewController, LoginFacadeDelegate {
     }
 
     /// Overridden here to direct these errors to the login screen's error label
-    dynamic func displayRemoteError(_ error: Error) {
+    dynamic open func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
 
         let err = error as NSError
@@ -172,7 +172,7 @@ class LoginViewController: NUXViewController, LoginFacadeDelegate {
         displayError(err, sourceTag: sourceTag)
     }
 
-    func needsMultifactorCode() {
+    open func needsMultifactorCode() {
         displayError(message: "")
         configureViewLoading(false)
 
@@ -289,7 +289,7 @@ extension LoginViewController {
 // MARK: - Handle changes in traitCollections. In particular, changes in Dynamic Type
 //
 extension LoginViewController {
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
         if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {

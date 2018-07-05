@@ -4,8 +4,8 @@ import WordPressUI
 
 
 public class LoginNavigationController: RotationAwareNavigationViewController {
-    override public func viewDidLoad() {
-        super.viewDidLoad()
+    override public func awakeFromNib() {
+        super.awakeFromNib()
 
         navigationBar.barTintColor = WPStyleGuide.wordPressBlue()
     }

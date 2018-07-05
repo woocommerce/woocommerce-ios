@@ -22,8 +22,11 @@ class AuthenticationManager {
                                                                 userAgent: UserAgent.defaultUserAgent,
                                                                 supportNotificationIndicatorFeatureFlag: false)
 
-        WordPressAuthenticator.initialize(configuration: configuration)
+        let style = WordPressAuthenticatorStyle(linkColor: StyleManager.buttonPrimaryHighlightedColor, highlightColor: StyleManager.buttonPrimaryColor)
+
+        WordPressAuthenticator.initialize(configuration: configuration, style: style)
         WordPressAuthenticator.shared.delegate = self
+
     }
 
     /// Displays the Login Flow using the specified UIViewController as presenter.

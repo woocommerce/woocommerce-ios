@@ -106,7 +106,7 @@ class OrderMapperTests: XCTestCase {
 ///
 private extension OrderMapperTests {
 
-    /// Returns the OrderListMapper output upon receiving `filename` (Data Encoded)
+    /// Returns the OrderMapper output upon receiving `filename` (Data Encoded)
     ///
     func mapOrder(from filename: String) -> Order? {
         guard let response = Loader.contentsOf(filename) else {

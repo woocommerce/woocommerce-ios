@@ -47,7 +47,7 @@ public class OrdersRemote: Remote {
     public func loadOrderNotes(for siteID: Int, orderID: Int, completion: @escaping ([OrderNote]?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/\(orderID)/\(Constants.notesPath)/"
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
-        let mapper = OrderNoteMapper()
+        let mapper = OrderNotesMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }

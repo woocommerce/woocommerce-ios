@@ -27,8 +27,7 @@
 		B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112E2049E27A007D25DC /* OrdersViewController.swift */; };
 		B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112F2049E27A007D25DC /* SettingsViewController.swift */; };
 		B50911342049E493007D25DC /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50911332049E493007D25DC /* Order.swift */; };
-		B53B898420D43B2A00EDB467 /* CredentialsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B898320D43B2A00EDB467 /* CredentialsStorage.swift */; };
-		B53B898920D450AF00EDB467 /* CredentialsStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B898820D450AF00EDB467 /* CredentialsStorageTests.swift */; };
+		B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B898820D450AF00EDB467 /* SessionManagerTests.swift */; };
 		B53B898D20D462A000EDB467 /* StoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B898C20D462A000EDB467 /* StoresManager.swift */; };
 		B54175F220D4C15D0083BB8C /* CoreDataManager+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54175F120D4C15D0083BB8C /* CoreDataManager+Woo.swift */; };
 		B557DA1520979904005962F4 /* CustomerNoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1320979904005962F4 /* CustomerNoteTableViewCell.swift */; };
@@ -45,7 +44,7 @@
 		B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */; };
 		B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8AC20B88D9900D211DE /* LoginPrologueViewController.swift */; };
 		B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5A8F8AE20B88DCC00D211DE /* LoginPrologueViewController.xib */; };
-		B5AA7B3D20ED5D15004DA14F /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AA7B3C20ED5D15004DA14F /* Session.swift */; };
+		B5AA7B3D20ED5D15004DA14F /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AA7B3C20ED5D15004DA14F /* SessionManager.swift */; };
 		B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AA7B3E20ED81C2004DA14F /* UserDefaults+Woo.swift */; };
 		B5BE368E20BED80B00BE0A8C /* SafariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BE368D20BED80B00BE0A8C /* SafariViewController.swift */; };
 		B5C3B5E320D189E60072CB9D /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E220D189E60072CB9D /* Networking.framework */; };
@@ -151,8 +150,7 @@
 		B509112E2049E27A007D25DC /* OrdersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrdersViewController.swift; sourceTree = "<group>"; };
 		B509112F2049E27A007D25DC /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B50911332049E493007D25DC /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
-		B53B898320D43B2A00EDB467 /* CredentialsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialsStorage.swift; sourceTree = "<group>"; };
-		B53B898820D450AF00EDB467 /* CredentialsStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialsStorageTests.swift; sourceTree = "<group>"; };
+		B53B898820D450AF00EDB467 /* SessionManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManagerTests.swift; sourceTree = "<group>"; };
 		B53B898C20D462A000EDB467 /* StoresManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresManager.swift; sourceTree = "<group>"; };
 		B54175F120D4C15D0083BB8C /* CoreDataManager+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataManager+Woo.swift"; sourceTree = "<group>"; };
 		B557DA1320979904005962F4 /* CustomerNoteTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerNoteTableViewCell.swift; sourceTree = "<group>"; };
@@ -178,7 +176,7 @@
 		B5A8F8A820B84D3F00D211DE /* InfoPlist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InfoPlist.h; path = DerivedSources/InfoPlist.h; sourceTree = SOURCE_ROOT; };
 		B5A8F8AC20B88D9900D211DE /* LoginPrologueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPrologueViewController.swift; sourceTree = "<group>"; };
 		B5A8F8AE20B88DCC00D211DE /* LoginPrologueViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginPrologueViewController.xib; sourceTree = "<group>"; };
-		B5AA7B3C20ED5D15004DA14F /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		B5AA7B3C20ED5D15004DA14F /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		B5AA7B3E20ED81C2004DA14F /* UserDefaults+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Woo.swift"; sourceTree = "<group>"; };
 		B5BE368D20BED80B00BE0A8C /* SafariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariViewController.swift; sourceTree = "<group>"; };
 		B5C3B5E220D189E60072CB9D /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -286,7 +284,7 @@
 		B53B898A20D4606400EDB467 /* System */ = {
 			isa = PBXGroup;
 			children = (
-				B53B898820D450AF00EDB467 /* CredentialsStorageTests.swift */,
+				B53B898820D450AF00EDB467 /* SessionManagerTests.swift */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -433,8 +431,7 @@
 		B5D1AFBE20BC67B500DB0E8C /* System */ = {
 			isa = PBXGroup;
 			children = (
-				B53B898320D43B2A00EDB467 /* CredentialsStorage.swift */,
-				B5AA7B3C20ED5D15004DA14F /* Session.swift */,
+				B5AA7B3C20ED5D15004DA14F /* SessionManager.swift */,
 				B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */,
 				CECA64B020D9990E005A44C4 /* WooCommerce-Bridging-Header.h */,
 			);
@@ -853,7 +850,6 @@
 				B5BE368E20BED80B00BE0A8C /* SafariViewController.swift in Sources */,
 				CE855364209BA6A700938BDC /* ShowHideSectionFooter.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
-				B53B898420D43B2A00EDB467 /* CredentialsStorage.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				CE1EC8D120B6FE39009762BF /* FootnoteView.swift in Sources */,
 				B557DA1520979904005962F4 /* CustomerNoteTableViewCell.swift in Sources */,
@@ -877,7 +873,7 @@
 				B50911342049E493007D25DC /* Order.swift in Sources */,
 				B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */,
-				B5AA7B3D20ED5D15004DA14F /* Session.swift in Sources */,
+				B5AA7B3D20ED5D15004DA14F /* SessionManager.swift in Sources */,
 				B53B898D20D462A000EDB467 /* StoresManager.swift in Sources */,
 				B5D1AFC020BC67C200DB0E8C /* WooConstants.swift in Sources */,
 				CE1F512920697F0100C6C810 /* UIFont+Helpers.swift in Sources */,
@@ -888,7 +884,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B53B898920D450AF00EDB467 /* CredentialsStorageTests.swift in Sources */,
+				B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */,
 				B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

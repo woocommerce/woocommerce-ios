@@ -44,4 +44,15 @@ extension UserDefaults {
             set(newValue, forKey: key.rawValue)
         }
     }
+
+    /// Subscript: "Type Inference Fallback". To be used whenever the type cannot be automatically inferred!
+    ///
+    subscript(key: Key) -> Any? {
+        get {
+            return value(forKey: key.rawValue)
+        }
+        set {
+            set(newValue, forKey: key.rawValue)
+        }
+    }
 }

@@ -6,8 +6,29 @@ import Foundation
 public struct OrderNote: Decodable {
     public let noteId: Int
     public let dateCreated: Date
-    public let contents: String
+    public let note: String
     public let isCustomerNote: Bool
+
+    /// Order struct initializer.
+    ///
+    init(noteId: Int, dateCreated: Date, note: String, isCustomerNote: Bool) {
+        self.noteId = noteId
+        self.dateCreated = dateCreated
+        self.note = note
+        self.isCustomerNote = isCustomerNote
+    }
+
+    /// The public initializer for OrderNote.
+    ///
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let noteId = try container.decode(Int.self, forKey: .noteId)
+        let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
+        let note = try container.decode(String.self, forKey: .note)
+        let isCustomerNote = try container.decode(Bool.self, forKey: .isCustomerNote)
+
+        self.init(noteId: noteId, dateCreated: dateCreated, note: note, isCustomerNote: isCustomerNote) // initialize the struct
+    }
 }
 
 
@@ -18,7 +39,7 @@ private extension OrderNote {
     enum CodingKeys: String, CodingKey {
         case noteId         = "id"
         case dateCreated    = "date_created_gmt"
-        case contents       = "note"
+        case note           = "note"
         case isCustomerNote = "customer_note"
     }
 }
@@ -30,13 +51,13 @@ extension OrderNote: Comparable {
     public static func == (lhs: OrderNote, rhs: OrderNote) -> Bool {
         return lhs.noteId == rhs.noteId &&
             lhs.dateCreated == rhs.dateCreated &&
-            lhs.contents == rhs.contents &&
+            lhs.note == rhs.note &&
             lhs.isCustomerNote == rhs.isCustomerNote
     }
 
     public static func < (lhs: OrderNote, rhs: OrderNote) -> Bool {
         return lhs.noteId < rhs.noteId ||
             (lhs.noteId == rhs.noteId && lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.noteId == rhs.noteId && lhs.dateCreated == rhs.dateCreated && lhs.contents < rhs.contents)
+            (lhs.noteId == rhs.noteId && lhs.dateCreated == rhs.dateCreated && lhs.note < rhs.note)
     }
 }

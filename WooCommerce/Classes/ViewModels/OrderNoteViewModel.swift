@@ -22,7 +22,7 @@ class OrderNoteViewModel {
         }
 
         dateCreated = orderNote.dateCreated
-        contents = orderNote.contents
+        contents = orderNote.note
     }
 
     var formattedDateCreated: String? {

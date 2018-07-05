@@ -4,8 +4,8 @@
              "id": 2261,
              "date_created": "2018-06-23T13:06:55",
              "date_created_gmt": "2018-06-23T17:06:55",
-             "note": "Order exported to CSV and successfully downloaded.",
-             "customer_note": false,
+             "note": "I love your products!",
+             "customer_note": true,
              "_links": {
              "self": [
                       {

@@ -25,7 +25,7 @@ class AccountRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "me", filename: "me")
 
-        remote.loadAccountDetails { (account, error) in
+        remote.loadAccount { (account, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(account)
 

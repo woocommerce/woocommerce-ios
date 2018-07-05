@@ -7,23 +7,23 @@ public struct Site: Decodable {
 
     /// WordPress.com Site Identifier.
     ///
-    let siteID: Int
+    public let siteID: Int
 
     /// Site's Name.
     ///
-    let name: String
+    public let name: String
 
     /// Site's Description.
     ///
-    let description: String
+    public let description: String
 
     /// Site's URL.
     ///
-    let url: String
+    public let url: String
 
     /// Indicates if this site hosts a WordPress Store.
     ///
-    let isWordPressStore: Bool
+    public let isWordPressStore: Bool
 
 
     /// Designated Initializer.

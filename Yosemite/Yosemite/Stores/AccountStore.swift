@@ -25,6 +25,8 @@ public class AccountStore: Store {
         switch action {
         case .synchronizeAccount(let onCompletion):
             synchronizeAccount(onCompletion: onCompletion)
+        case .synchronizeSites(let onCompletion):
+            synchronizeSites(onCompletion: onCompletion)
         }
     }
 }
@@ -32,7 +34,7 @@ public class AccountStore: Store {
 
 // MARK: - Services!
 //
-extension AccountStore  {
+private extension AccountStore {
 
     /// Synchronizes the WordPress.com account associated with the Network's Auth Token.
     ///
@@ -49,12 +51,27 @@ extension AccountStore  {
             onCompletion(account, nil)
         }
     }
+
+    ///
+    ///
+    func synchronizeSites(onCompletion: @escaping (Error?) -> Void) {
+        let remote = AccountRemote(network: network)
+
+        remote.loadSites { (sites, error) in
+            guard error == nil else {
+                onCompletion(error)
+                return
+            }
+
+            onCompletion(nil)
+        }
+    }
 }
 
 
 // MARK: - Persistance
 //
-extension AccountStore {
+private extension AccountStore {
 
     /// Updates (OR Inserts) the Storage's Account with the specified (Networking) Account entity.
     ///

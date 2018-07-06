@@ -43,7 +43,7 @@ struct SessionManager {
     }
 
     /// Ephemeral: Default Account.
-    ///√
+    ///
     var defaultAccount: Yosemite.Account? {
         didSet {
             defaults[.defaultAccountID] = defaultAccount?.userID

@@ -18,6 +18,12 @@ protocol Style {
     var buttonPrimaryColor: UIColor { get }
     var buttonPrimaryHighlightedColor: UIColor { get }
     var buttonPrimaryTitleColor: UIColor { get }
+    var buttonSecondaryColor: UIColor { get }
+    var buttonSecondaryHighlightedColor: UIColor { get }
+    var buttonSecondaryTitleColor: UIColor { get }
+    var buttonDisabledColor: UIColor { get }
+    var buttonDisabledHighlightedColor: UIColor { get }
+    var buttonDisabledTitleColor: UIColor { get }
     var cellSeparatorColor: UIColor { get }
     var wooGreyMid: UIColor { get }
     var alternativeLoginsTitleFont: UIFont { get }
@@ -40,6 +46,12 @@ class DefaultStyle: Style {
     let buttonPrimaryColor = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
     let buttonPrimaryHighlightedColor = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
     let buttonPrimaryTitleColor = UIColor.white
+    let buttonSecondaryColor = UIColor.white
+    let buttonSecondaryHighlightedColor = UIColor.gray
+    let buttonSecondaryTitleColor = UIColor.gray
+    let buttonDisabledColor = UIColor.white
+    let buttonDisabledHighlightedColor = UIColor.lightGray
+    let buttonDisabledTitleColor = UIColor.lightGray
     let cellSeparatorColor = UIColor.lightGray
     let wooGreyMid = UIColor(red: 150.0/255.0, green: 150.0/255.0, blue: 150.0/255.0, alpha: 1.0)
     let alternativeLoginsTitleFont = UIFont.font(forStyle: .subheadline, weight: .regular)
@@ -117,6 +129,30 @@ class StyleManager {
 
     static var buttonPrimaryTitleColor: UIColor {
         return active.buttonPrimaryTitleColor
+    }
+
+    static var buttonSecondaryColor: UIColor {
+        return active.buttonSecondaryColor
+    }
+
+    static var buttonSecondaryHighlightedColor: UIColor {
+        return active.buttonSecondaryHighlightedColor
+    }
+
+    static var buttonSecondaryTitleColor: UIColor {
+        return active.buttonSecondaryTitleColor
+    }
+
+    static var buttonDisabledColor: UIColor {
+        return active.buttonDisabledColor
+    }
+
+    static var buttonDisabledHighlightedColor: UIColor {
+        return active.buttonDisabledHighlightedColor
+    }
+
+    static var buttonDisabledTitleColor: UIColor {
+        return active.buttonDisabledTitleColor
     }
 
     static var cellSeparatorColor: UIColor {

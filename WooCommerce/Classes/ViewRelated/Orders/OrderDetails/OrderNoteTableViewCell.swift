@@ -59,7 +59,7 @@ extension OrderNoteTableViewCell {
     func configure(with viewModel: OrderNoteViewModel) {
         iconButton.setImage(viewModel.iconImage, for: .normal)
         iconButton.backgroundColor = viewModel.iconColor
-        dateCreated = viewModel.dateCreated
+        dateCreated = viewModel.formattedDateCreated
         statusText = viewModel.statusText
         contents = viewModel.contents
     }

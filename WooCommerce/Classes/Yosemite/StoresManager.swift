@@ -49,6 +49,7 @@ class StoresManager {
 
     /// Switches the internal state to Authenticated.
     ///
+    @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
         state = AuthenticatedState(credentials: credentials)
         sessionManager.defaultCredentials = credentials
@@ -58,15 +59,21 @@ class StoresManager {
 
     /// Synchronizes all of the Session's Entities.
     ///
-    func synchronizeEntities(onCompletion: ((Error?) -> Void)? = nil) {
+    @discardableResult
+    func synchronizeEntities(onCompletion: ((Error?) -> Void)? = nil) -> StoresManager {
         synchronizeAccount(onCompletion: onCompletion)
+
+        return self
     }
 
     /// Switches the state to a Deauthenticated one.
     ///
-    func deauthenticate() {
+    @discardableResult
+    func deauthenticate() -> StoresManager {
         state = DeauthenticatedState()
         sessionManager.reset()
+
+        return self
     }
 }
 

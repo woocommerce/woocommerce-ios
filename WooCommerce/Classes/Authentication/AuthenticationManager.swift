@@ -21,11 +21,23 @@ class AuthenticationManager {
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
                                                                 userAgent: UserAgent.defaultUserAgent)
 
-        let style = WordPressAuthenticatorStyle(linkColor: StyleManager.buttonPrimaryHighlightedColor, highlightColor: StyleManager.buttonPrimaryColor)
+        let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: StyleManager.buttonPrimaryColor,
+                                                primaryNormalBorderColor: StyleManager.buttonPrimaryHighlightedColor,
+                                                primaryHighlightBackgroundColor: StyleManager.buttonPrimaryHighlightedColor,
+                                                primaryHighlightBorderColor: StyleManager.buttonPrimaryHighlightedColor,
+                                                secondaryNormalBackgroundColor: WordPressAuthenticatorStyle.defaultStyle.secondaryNormalBackgroundColor,
+                                                secondaryNormalBorderColor: WordPressAuthenticatorStyle.defaultStyle.secondaryNormalBorderColor,
+                                                secondaryHighlightBackgroundColor: WordPressAuthenticatorStyle.defaultStyle.secondaryHighlightBackgroundColor,
+                                                secondaryHighlightBorderColor: WordPressAuthenticatorStyle.defaultStyle.secondaryHighlightBorderColor,
+                                                disabledBackgroundColor: WordPressAuthenticatorStyle.defaultStyle.disabledBackgroundColor,
+                                                disabledBorderColor: WordPressAuthenticatorStyle.defaultStyle.disabledBorderColor,
+                                                titleFont: StyleManager.alternativeLoginsTitleFont,
+                                                primaryTitleColor: StyleManager.buttonPrimaryTitleColor,
+                                                secondaryTitleColor: WordPressAuthenticatorStyle.defaultStyle.secondaryTitleColor,
+                                                disabledTitleColor: WordPressAuthenticatorStyle.defaultStyle.disabledTitleColor)
 
         WordPressAuthenticator.initialize(configuration: configuration, style: style)
         WordPressAuthenticator.shared.delegate = self
-
     }
 
     /// Displays the Login Flow using the specified UIViewController as presenter.

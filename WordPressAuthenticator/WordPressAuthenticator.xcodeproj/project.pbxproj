@@ -96,6 +96,11 @@
 		B5ED791D207E993E00A8FD8C /* WPAuthenticatorLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = B5ED7918207E993E00A8FD8C /* WPAuthenticatorLogging.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5ED791F207E993E00A8FD8C /* CocoaLumberjack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5ED791A207E993E00A8FD8C /* CocoaLumberjack.swift */; };
 		B5ED7920207E993E00A8FD8C /* WPAuthenticatorLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = B5ED791B207E993E00A8FD8C /* WPAuthenticatorLogging.m */; };
+		CE1B18C920EEC2C200BECC3F /* SocialService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1B18C820EEC2C200BECC3F /* SocialService.swift */; };
+		CE1B18CC20EEC32400BECC3F /* WordPressCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1B18CB20EEC32400BECC3F /* WordPressCredentials.swift */; };
+		CE1B18CE20EEC3CB00BECC3F /* WordPressAuthenticatorDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1B18CD20EEC3CB00BECC3F /* WordPressAuthenticatorDelegateProtocol.swift */; };
+		CE1B18D020EEC41600BECC3F /* WordPressAuthenticatorConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1B18CF20EEC41600BECC3F /* WordPressAuthenticatorConfiguration.swift */; };
+		CE1B18D220EEC44400BECC3F /* WordPressAuthenticatorStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1B18D120EEC44400BECC3F /* WordPressAuthenticatorStyles.swift */; };
 		E8AF6B9EF50902F2117DFAF9 /* Pods_WordPressAuthenticatorTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A441EC80D2B8D2209C2E228 /* Pods_WordPressAuthenticatorTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -229,6 +234,11 @@
 		B5ED791A207E993E00A8FD8C /* CocoaLumberjack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaLumberjack.swift; sourceTree = "<group>"; };
 		B5ED791B207E993E00A8FD8C /* WPAuthenticatorLogging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WPAuthenticatorLogging.m; sourceTree = "<group>"; };
 		C736FF243DE333FCAB1C2614 /* Pods_WordPressAuthenticator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WordPressAuthenticator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE1B18C820EEC2C200BECC3F /* SocialService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialService.swift; sourceTree = "<group>"; };
+		CE1B18CB20EEC32400BECC3F /* WordPressCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressCredentials.swift; sourceTree = "<group>"; };
+		CE1B18CD20EEC3CB00BECC3F /* WordPressAuthenticatorDelegateProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorDelegateProtocol.swift; sourceTree = "<group>"; };
+		CE1B18CF20EEC41600BECC3F /* WordPressAuthenticatorConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorConfiguration.swift; sourceTree = "<group>"; };
+		CE1B18D120EEC44400BECC3F /* WordPressAuthenticatorStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorStyles.swift; sourceTree = "<group>"; };
 		E9414A95E29F3297555AC92B /* Pods-WordPressAuthenticator.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.debug.xcconfig"; sourceTree = "<group>"; };
 		FF475C5056EB60A277696BA9 /* Pods-WordPressAuthenticatorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -387,7 +397,10 @@
 				B56090F2208A533100399AE4 /* WordPressAuthenticator+Errors.swift */,
 				B56090F4208A533200399AE4 /* WordPressAuthenticator+Events.swift */,
 				B56090F3208A533100399AE4 /* WordPressAuthenticator+Notifications.swift */,
+				CE1B18CD20EEC3CB00BECC3F /* WordPressAuthenticatorDelegateProtocol.swift */,
 				B56090F6208A533200399AE4 /* WordPressSupportSourceTag.swift */,
+				CE1B18CF20EEC41600BECC3F /* WordPressAuthenticatorConfiguration.swift */,
+				CE1B18D120EEC44400BECC3F /* WordPressAuthenticatorStyles.swift */,
 			);
 			path = Authenticator;
 			sourceTree = "<group>";
@@ -400,6 +413,7 @@
 				B5609105208A54F800399AE4 /* OnePasswordFacade.swift */,
 				B5609104208A54F800399AE4 /* SafariCredentialsService.swift */,
 				B56090FE208A54F700399AE4 /* SignupService.swift */,
+				CE1B18C820EEC2C200BECC3F /* SocialService.swift */,
 				B56090FF208A54F800399AE4 /* WordPressComAccountService.swift */,
 				B56090FC208A54F700399AE4 /* WordPressComBlogService.swift */,
 				B56090FD208A54F700399AE4 /* WordPressComOAuthClientFacade.h */,
@@ -465,6 +479,7 @@
 		B5ED78F6207E976500A8FD8C /* WordPressAuthenticator */ = {
 			isa = PBXGroup;
 			children = (
+				CE1B18CA20EEC31000BECC3F /* Credentials */,
 				B5609099208A4EAF00399AE4 /* Authenticator */,
 				B560909B208A4EB000399AE4 /* Extensions */,
 				B5ED7917207E993E00A8FD8C /* Logging */,
@@ -514,6 +529,14 @@
 				B55272C120B2FE4100E18BC5 /* WPAuthenticatorLoggingPrivate.m */,
 			);
 			path = Logging;
+			sourceTree = "<group>";
+		};
+		CE1B18CA20EEC31000BECC3F /* Credentials */ = {
+			isa = PBXGroup;
+			children = (
+				CE1B18CB20EEC32400BECC3F /* WordPressCredentials.swift */,
+			);
+			path = Credentials;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -785,11 +808,13 @@
 				B5609140208A563800399AE4 /* LoginSocialErrorCell.swift in Sources */,
 				B56090F7208A533200399AE4 /* WordPressAuthenticator+Errors.swift in Sources */,
 				B56090D2208A4F5400399AE4 /* NUXButton.swift in Sources */,
+				CE1B18C920EEC2C200BECC3F /* SocialService.swift in Sources */,
 				B56090D3208A4F5400399AE4 /* NUXLinkAuthViewController.swift in Sources */,
 				B5609120208A555E00399AE4 /* SignupNavigationController.swift in Sources */,
 				B5609143208A563800399AE4 /* LoginSocialErrorViewController.swift in Sources */,
 				B56090F8208A533200399AE4 /* WordPressAuthenticator+Notifications.swift in Sources */,
 				B56090EA208A51D000399AE4 /* LoginFields+Validation.swift in Sources */,
+				CE1B18CC20EEC32400BECC3F /* WordPressCredentials.swift in Sources */,
 				98AA5A5720AA1A7000A5958A /* WPHelpIndicatorView.swift in Sources */,
 				B560913C208A563800399AE4 /* LoginProloguePromoViewController.swift in Sources */,
 				B560910F208A54F800399AE4 /* SafariCredentialsService.swift in Sources */,
@@ -811,7 +836,10 @@
 				B560910C208A54F800399AE4 /* WordPressComOAuthClientFacade.m in Sources */,
 				B55272C320B2FE4100E18BC5 /* WPAuthenticatorLoggingPrivate.m in Sources */,
 				B56090C7208A4F5400399AE4 /* NUXKeyboardResponder.swift in Sources */,
+				CE1B18D020EEC41600BECC3F /* WordPressAuthenticatorConfiguration.swift in Sources */,
+				CE1B18D220EEC44400BECC3F /* WordPressAuthenticatorStyles.swift in Sources */,
 				B56090F0208A527000399AE4 /* FancyAlertViewController+LoginError.swift in Sources */,
+				CE1B18CE20EEC3CB00BECC3F /* WordPressAuthenticatorDelegateProtocol.swift in Sources */,
 				B5609110208A54F800399AE4 /* OnePasswordFacade.swift in Sources */,
 				B5609109208A54F800399AE4 /* SignupService.swift in Sources */,
 				B560913D208A563800399AE4 /* LoginProloguePageViewController.swift in Sources */,

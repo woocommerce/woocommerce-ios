@@ -2,17 +2,10 @@ import UIKit
 import WordPressShared
 import WordPressUI
 
-/// A protocol for an element that can display a UIActivityIndicatorView
-@objc public protocol ActivityIndicatorButton {
-    func showActivityIndicator(_ show: Bool)
-}
-
 /// A stylized button used by Login controllers. It also can display a `UIActivityIndicatorView`.
-@objc open class NUXButton: UIButton, ActivityIndicatorButton {
+@objc open class NUXButton: UIButton {
     @objc var isAnimating: Bool {
-        get {
-            return activityIndicator.isAnimating
-        }
+        return activityIndicator.isAnimating
     }
 
     @objc let activityIndicator: UIActivityIndicatorView = {
@@ -57,93 +50,6 @@ import WordPressUI
         titleLabel?.adjustsFontForContentSizeCategory = true
     }
 
-
-    // MARK: UIAppearance Customizations
-    /// Style: Primary + Normal State
-    ///
-    @objc public dynamic var primaryNormalBackgroundColor = Primary.normalBackgroundColor {
-        didSet {
-            configureBackgrounds()
-        }
-    }
-    @objc public dynamic var primaryNormalBorderColor = Primary.normalBorderColor {
-        didSet {
-            configureBackgrounds()
-        }
-    }
-
-    /// Style: Primary + Highlighted State
-    ///
-    @objc public dynamic var primaryHighlightBackgroundColor = Primary.highlightBackgroundColor {
-        didSet {
-            configureBackgrounds()
-        }
-    }
-    @objc public dynamic var primaryHighlightBorderColor = Primary.highlightBorderColor {
-        didSet {
-            configureBackgrounds()
-        }
-    }
-
-    /// Style: Secondary
-    ///
-    @objc public dynamic var secondaryNormalBackgroundColor = Secondary.normalBackgroundColor {
-        didSet {
-            configureBackgrounds()
-        }
-    }
-    @objc public dynamic var secondaryNormalBorderColor = Secondary.normalBorderColor {
-        didSet {
-            configureBackgrounds()
-        }
-    }
-    @objc public dynamic var secondaryHighlightBackgroundColor = Secondary.highlightBackgroundColor {
-        didSet {
-            configureBackgrounds()
-        }
-    }
-    @objc public dynamic var secondaryHighlightBorderColor = Secondary.highlightBorderColor {
-        didSet {
-            configureBackgrounds()
-        }
-    }
-
-    /// Style: Disabled State
-    ///
-    @objc public dynamic var disabledBackgroundColor = Disabled.backgroundColor {
-        didSet {
-            configureBackgrounds()
-        }
-    }
-    @objc public dynamic var disabledBorderColor = Disabled.borderColor {
-        didSet {
-            configureBackgrounds()
-        }
-    }
-
-    /// Style: Title!
-    ///
-    @objc public dynamic var titleFont = Title.defaultFont {
-        didSet {
-            configureTitleLabel()
-        }
-    }
-    @objc public dynamic var primaryTitleColor = Title.primaryColor {
-        didSet {
-            configureTitleColors()
-        }
-    }
-    @objc public dynamic var secondaryTitleColor = Title.secondaryColor {
-        didSet {
-            configureTitleColors()
-        }
-    }
-    @objc public dynamic var disabledTitleColor = Title.disabledColor {
-        didSet {
-            configureTitleColors()
-        }
-    }
-
     /// Insets to be applied over the Contents.
     ///
     @objc public dynamic var contentInsets = UIImage.DefaultRenderMetrics.contentInsets {
@@ -174,6 +80,9 @@ import WordPressUI
         configureAppearance()
     }
 
+    /// Setup: shorter reference for default style
+    ///
+    private let style = WordPressAuthenticatorStyle.defaultStyle
 
     /// Setup: Everything = [Insets, Backgrounds, titleColor(s), titleLabel]
     ///
@@ -195,14 +104,14 @@ import WordPressUI
     private func configureBackgrounds() {
         let normalImage: UIImage
         let highlightedImage: UIImage
-        let disabledImage = UIImage.renderBackgroundImage(fill: disabledBackgroundColor, border: disabledBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
+        let disabledImage = UIImage.renderBackgroundImage(fill: style.disabledBackgroundColor, border: style.disabledBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
 
         if isPrimary {
-            normalImage = UIImage.renderBackgroundImage(fill: primaryNormalBackgroundColor, border: primaryNormalBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
-            highlightedImage = UIImage.renderBackgroundImage(fill: primaryHighlightBackgroundColor, border: primaryHighlightBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
+            normalImage = UIImage.renderBackgroundImage(fill: style.primaryNormalBackgroundColor, border: style.primaryNormalBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
+            highlightedImage = UIImage.renderBackgroundImage(fill: style.primaryHighlightBackgroundColor, border: style.primaryHighlightBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
         } else {
-            normalImage = UIImage.renderBackgroundImage(fill: secondaryNormalBackgroundColor, border: secondaryNormalBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
-            highlightedImage = UIImage.renderBackgroundImage(fill: secondaryHighlightBackgroundColor, border: secondaryHighlightBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
+            normalImage = UIImage.renderBackgroundImage(fill: style.secondaryNormalBackgroundColor, border: style.secondaryNormalBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
+            highlightedImage = UIImage.renderBackgroundImage(fill: style.secondaryHighlightBackgroundColor, border: style.secondaryHighlightBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
         }
 
         setBackgroundImage(normalImage, for: .normal)
@@ -216,56 +125,19 @@ import WordPressUI
     /// Setup: TitleColor
     ///
     private func configureTitleColors() {
-        let titleColorNormal = isPrimary ? primaryTitleColor : secondaryTitleColor
+        let titleColorNormal = isPrimary ? style.primaryTitleColor : style.secondaryTitleColor
 
         setTitleColor(titleColorNormal, for: .normal)
         setTitleColor(titleColorNormal, for: .highlighted)
-        setTitleColor(disabledTitleColor, for: .disabled)
+        setTitleColor(style.disabledTitleColor, for: .disabled)
     }
 
     /// Setup: TitleLabel
     ///
     private func configureTitleLabel() {
-        titleLabel?.font = titleFont
+        titleLabel?.font = style.titleFont
         titleLabel?.adjustsFontForContentSizeCategory = true
         titleLabel?.textAlignment = .center
-    }
-}
-
-// MARK: - Nested types
-private extension NUXButton {
-    /// Style: Primary
-    ///
-    struct Primary {
-        static let normalBackgroundColor = WPStyleGuide.mediumBlue()
-        static let normalBorderColor = WPStyleGuide.wordPressBlue()
-        static let highlightBackgroundColor = WPStyleGuide.wordPressBlue()
-        static let highlightBorderColor = normalBorderColor
-    }
-
-    /// Style: Secondary
-    ///
-    struct Secondary {
-        static let normalBackgroundColor = UIColor.white
-        static let normalBorderColor = WPStyleGuide.greyLighten20()
-        static let highlightBackgroundColor = WPStyleGuide.greyLighten20()
-        static let highlightBorderColor = highlightBackgroundColor
-    }
-
-    /// Style: Disabled
-    ///
-    struct Disabled {
-        static let backgroundColor = UIColor.white
-        static let borderColor = WPStyleGuide.greyLighten30()
-    }
-
-    /// Style: Title
-    ///
-    struct Title {
-        static let primaryColor = UIColor.white
-        static let secondaryColor = WPStyleGuide.darkGrey()
-        static let disabledColor = WPStyleGuide.greyLighten30()
-        static let defaultFont = WPFontManager.systemSemiBoldFont(ofSize: 17.0)
     }
 }
 

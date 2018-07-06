@@ -73,9 +73,9 @@ import WordPressUI
         configureAppearance()
     }
 
-    /// Setup: shorter reference for default style
+    /// Setup: shorter reference for style
     ///
-    private let style = WordPressAuthenticatorStyle.defaultStyle
+    private let style = WordPressAuthenticator.shared.style
 
     /// Setup: Everything = [Insets, Backgrounds, titleColor(s), titleLabel]
     ///

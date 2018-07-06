@@ -3,35 +3,41 @@ import Gridicons
 import Contacts
 import MessageUI
 import Yosemite
+import CocoaLumberjack
 
 
 class OrderDetailsViewController: UIViewController {
 
-    @IBOutlet weak var tableView: UITableView!
+    // MARK: - Properties
 
-    var order: Order! {
+    @IBOutlet weak var tableView: UITableView!
+    var viewModel: OrderDetailsViewModel!
+    var orderNotes: [OrderNoteViewModel]? {
         didSet {
-            refreshViewModel()
+            tableView.reloadData()
         }
     }
 
-    var viewModel: OrderDetailsViewModel!
-    var billingIsHidden = true
+    private var billingIsHidden = true
     private var sections = [Section]()
 
-    func refreshViewModel() {
-        viewModel = OrderDetailsViewModel(order: order)
-    }
+    // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
-        title = NSLocalizedString("Order #\(order.number)", comment: "Order number title")
+        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        syncOrderNotes()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.isNavigationBarHidden = false
     }
+
+    // MARK: - Configuration
 
     func configureTableView() {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
@@ -55,7 +61,6 @@ class OrderDetailsViewController: UIViewController {
         let infoRows: [Row] = billingIsHidden ? [.shippingAddress] : [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
         let infoSection = Section(leftTitle: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), rightTitle: nil, footer: infoFooter, rows: infoRows)
 
-        // FIXME: Order Notes
 //        var noteRows: [Row] = [.addOrderNote]
 //        if let notes = order.notes {
 //            for _ in notes {
@@ -168,6 +173,41 @@ extension OrderDetailsViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - Sync'ing Helpers
+//
+private extension OrderDetailsViewController {
+    func syncOrderNotes() {
+        guard let viewModel = viewModel else {
+            return
+        }
+
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
+            guard error == nil else {
+                if let error = error {
+                    DDLogError("⛔️ Error synchronizing order notes: \(error)")
+                }
+                self?.orderNotes = nil
+                return
+            }
+            guard let orderNotes = orderNotes else {
+                self?.orderNotes = nil
+                return
+            }
+
+            let orderNotesViewModels = orderNotes.map { OrderNoteViewModel(with: $0) }
+            self?.orderNotes = orderNotesViewModels
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
+    func clearOrderNotes() {
+        orderNotes = []
+        tableView.reloadData()
+    }
+}
+
+
 // MARK: - Extension
 //
 extension OrderDetailsViewController {
@@ -192,7 +232,9 @@ extension OrderDetailsViewController {
         case let cell as AddItemTableViewCell:
             cell.configure(image: viewModel.addNoteIcon, text: viewModel.addNoteText)
         case let cell as OrderNoteTableViewCell where row == .orderNote:
-            cell.configure(with: viewModel.orderNotes[indexPath.row - 1])
+            if let orderNotes = orderNotes {
+                cell.configure(with: orderNotes[indexPath.row - 1])
+            }
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -221,7 +263,7 @@ extension OrderDetailsViewController {
         actionSheet.addAction(dismissAction)
 
         let callAction = UIAlertAction(title: NSLocalizedString("Call", comment: "Call phone number button title"), style: .default) { [weak self] action in
-            let contactViewModel = ContactViewModel(with: (self?.order.billingAddress)!, contactType: .billing)
+            let contactViewModel = ContactViewModel(with: (self?.viewModel.order.billingAddress)!, contactType: .billing)
             guard let phone = contactViewModel.cleanedPhoneNumber else {
                 return
             }
@@ -253,7 +295,7 @@ extension OrderDetailsViewController {
 //
 extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
     func sendTextMessageIfPossible() {
-        let contactViewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
+        let contactViewModel = ContactViewModel(with: viewModel.order.billingAddress, contactType: .billing)
         guard let phoneNumber = contactViewModel.cleanedPhoneNumber else {
             return
         }
@@ -279,7 +321,7 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
 extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
     func sendEmailIfPossible() {
         if MFMailComposeViewController.canSendMail() {
-            let contactViewModel = ContactViewModel(with: order.billingAddress, contactType: .billing)
+            let contactViewModel = ContactViewModel(with: viewModel.order.billingAddress, contactType: .billing)
             guard let email = contactViewModel.email else {
                 return
             }

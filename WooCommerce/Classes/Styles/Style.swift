@@ -50,11 +50,11 @@ class DefaultStyle: Style {
     let buttonSecondaryHighlightedColor = UIColor.gray
     let buttonSecondaryTitleColor = UIColor.gray
     let buttonDisabledColor = UIColor.white
-    let buttonDisabledHighlightedColor = UIColor.lightGray
-    let buttonDisabledTitleColor = UIColor.lightGray
+    let buttonDisabledHighlightedColor = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0) // equivalent to WPStyle.greyLighten30()
+    let buttonDisabledTitleColor = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0) // equivalent to WPStyle.greyLighten30()
     let cellSeparatorColor = UIColor.lightGray
     let wooGreyMid = UIColor(red: 150.0/255.0, green: 150.0/255.0, blue: 150.0/255.0, alpha: 1.0)
-    let alternativeLoginsTitleFont = UIFont.font(forStyle: .subheadline, weight: .regular)
+    let alternativeLoginsTitleFont = UIFont.font(forStyle: .subheadline, weight: .semibold)
 }
 
 

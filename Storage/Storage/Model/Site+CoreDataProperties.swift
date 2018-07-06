@@ -3,7 +3,6 @@ import CoreData
 
 
 extension Site {
-
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Site> {
         return NSFetchRequest<Site>(entityName: "Site")
     }

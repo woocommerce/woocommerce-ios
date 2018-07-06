@@ -49,10 +49,17 @@ class StoresManager {
 
     /// Switches the internal state to Authenticated.
     ///
-    func authenticate(credentials: Credentials, onCompletion: ((Error?) -> Void)? = nil) {
+    func authenticate(credentials: Credentials) -> StoresManager {
         state = AuthenticatedState(credentials: credentials)
         sessionManager.defaultCredentials = credentials
 
+        return self
+    }
+
+    /// Synchronizes all of the Session's Entities.
+    ///
+    func synchronizeEntities(onCompletion: ((Error?) -> Void)? = nil) {
+        synchronizeAccount(onCompletion: onCompletion)
     }
 
     /// Switches the state to a Deauthenticated one.
@@ -91,6 +98,19 @@ private extension StoresManager {
 
         dispatch(action)
     }
+
+    /// Synchronizes the WordPress.com Account, associated with the current credentials.
+    ///
+    func synchronizeAccount(onCompletion: ((Error?) -> Void)?) {
+        let action = AccountAction.synchronizeAccount { [weak self] (account, error) in
+            if let `self` = self, let account = account, self.isAuthenticated {
+                self.sessionManager.defaultAccount = account
+            }
+
+            onCompletion?(error)
+        }
+
+        dispatch(action)
     }
 }
 

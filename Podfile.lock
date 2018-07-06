@@ -13,9 +13,9 @@ PODS:
     - CocoaLumberjack/Default
   - CocoaLumberjack/Swift (3.4.2):
     - CocoaLumberjack/Default
-  - Crashlytics (3.10.1):
-    - Fabric (~> 1.7.5)
-  - Fabric (1.7.7)
+  - Crashlytics (3.10.3):
+    - Fabric (~> 1.7.8)
+  - Fabric (1.7.8)
   - FormatterKit/Resources (1.8.2)
   - FormatterKit/TimeIntervalFormatter (1.8.2):
     - FormatterKit/Resources
@@ -59,10 +59,10 @@ PODS:
     - UIDeviceIdentifier (~> 0.4)
     - WordPressShared (~> 1.0.3)
     - wpxmlrpc (= 0.8.3)
-  - WordPressShared (1.0.7):
+  - WordPressShared (1.0.8):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
-  - WordPressUI (1.0.4)
+  - WordPressUI (1.0.5)
   - wpxmlrpc (0.8.3)
 
 DEPENDENCIES:
@@ -118,8 +118,8 @@ SPEC CHECKSUMS:
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   Automattic-Tracks-iOS: d8c6c6c1351b1905a73e45f431b15598d71963b5
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
-  Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
-  Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
+  Crashlytics: 2aea305161a2122492698c75af27f2b98aa49a25
+  Fabric: fba4684a95df789565b0b27fc5b6e68f1755af32
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
   GoogleSignInRepacked: d357702618c555f38923576924661325eb1ef22b
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
@@ -133,8 +133,8 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
   WordPressAuthenticator: 4c802aa18781858253daf984f873e3efe0dac7ef
   WordPressKit: a24baaa783c3a221f2d9a51c19318cbb27333373
-  WordPressShared: db964b81e02ff9be1ea2ff65ca9a4d57c49e82ba
-  WordPressUI: f2348649b63b5a9392a72b1d2f46dd1d72e80ad9
+  WordPressShared: 063e1e8b1a7aaf635abf17f091a2d235a068abdc
+  WordPressUI: ab90086350f1e26bf39e578e443d0abf0347e542
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
 
 PODFILE CHECKSUM: b0058ebc467be802babc234b85e02282da5d9d42

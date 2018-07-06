@@ -60,21 +60,18 @@ class OrderDetailsViewController: UIViewController {
         let infoFooter = billingIsHidden ? NSLocalizedString("Show billing", comment: "Footer text to show the billing cell") : NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
         let infoRows: [Row] = billingIsHidden ? [.shippingAddress] : [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
         let infoSection = Section(leftTitle: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), rightTitle: nil, footer: infoFooter, rows: infoRows)
-
-//        var noteRows: [Row] = [.addOrderNote]
-//        if let notes = order.notes {
-//            for _ in notes {
-//                noteRows.append(.orderNote)
-//            }
-//        }
-//        let orderNotesSection = Section(leftTitle: NSLocalizedString("ORDER NOTES", comment: "Order notes section title"), rightTitle: nil, footer: nil, rows: noteRows)
-
         let paymentSection = Section(leftTitle: NSLocalizedString("PAYMENT", comment: "Payment section title"), rightTitle: nil, footer: nil, rows: [.payment])
 
+        var orderNoteRows: [Row] = [.addOrderNote]
+        orderNotes?.forEach({ _ in
+            orderNoteRows.append(.orderNote)
+        })
+        let orderNotesSection = Section(leftTitle: NSLocalizedString("ORDER NOTES", comment: "Order notes section title"), rightTitle: nil, footer: nil, rows: orderNoteRows)
+
         if viewModel.customerNote.isEmpty {
-            sections = [summarySection, productListSection, infoSection, paymentSection]
+            sections = [summarySection, productListSection, infoSection, paymentSection, orderNotesSection]
         } else {
-            sections = [summarySection, productListSection, customerNoteSection, infoSection, paymentSection]
+            sections = [summarySection, productListSection, customerNoteSection, infoSection, paymentSection, orderNotesSection]
         }
     }
 
@@ -202,7 +199,7 @@ private extension OrderDetailsViewController {
     }
 
     func clearOrderNotes() {
-        orderNotes = []
+        orderNotes = nil
         tableView.reloadData()
     }
 }

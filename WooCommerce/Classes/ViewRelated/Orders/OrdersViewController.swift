@@ -11,7 +11,7 @@ class OrdersViewController: UIViewController {
     // FIXME: Need "current" site id
     let siteID: Int = 131820877
     ///
-    
+
     @IBOutlet weak var tableView: UITableView!
     private var orders = [Order]()
     private var filterResults = [Order]()

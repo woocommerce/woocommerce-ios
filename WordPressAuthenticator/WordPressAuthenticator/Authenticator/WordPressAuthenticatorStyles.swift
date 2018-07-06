@@ -73,7 +73,7 @@ public extension WordPressAuthenticatorStyle {
                                            secondaryHighlightBorderColor: WPStyleGuide.greyLighten20(),
                                            disabledBackgroundColor: UIColor.white,
                                            disabledBorderColor: WPStyleGuide.greyLighten30(),
-                                           titleFont: WPFontManager.systemSemiBoldFont(ofSize: 17.0),
+                                           titleFont: WPStyleGuide.mediumWeightFont(forStyle: .subheadline),
                                            primaryTitleColor: UIColor.white,
                                            secondaryTitleColor: WPStyleGuide.darkGrey(),
                                            disabledTitleColor: WPStyleGuide.greyLighten30())

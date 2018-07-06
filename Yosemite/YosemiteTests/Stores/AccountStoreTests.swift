@@ -122,33 +122,6 @@ class AccountStoreTests: XCTestCase {
         let storageAccount = accountStore.loadStoredAccount(userId: remoteAccount.userID)!
         compare(storageAccount: storageAccount, remoteAccount: remoteAccount)
     }
-
-    /// Verifies that AccountAction.retrieveAccount returns the expected Account.
-    ///
-    func testRetrieveAccountReturnsEntityWithExpectedFields() {
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let sampleAccount = sampleAccountPristine()
-
-        let expectation = self.expectation(description: "Synchronize")
-        accountStore.upsertStoredAccount(remote: sampleAccount)
-
-        let retrieveAccountAction = AccountAction.retrieveAccount(userId: sampleAccount.userID) { account in
-            guard let retrieved = account else {
-                XCTFail()
-                return
-            }
-
-            XCTAssertEqual(retrieved.displayName, sampleAccount.displayName)
-            XCTAssertEqual(retrieved.email, sampleAccount.email)
-            XCTAssertEqual(retrieved.gravatarUrl, sampleAccount.gravatarUrl)
-            XCTAssertEqual(retrieved.userID, sampleAccount.userID)
-            XCTAssertEqual(retrieved.username, sampleAccount.username)
-            expectation.fulfill()
-        }
-
-        accountStore.onAction(retrieveAccountAction)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
 }
 
 

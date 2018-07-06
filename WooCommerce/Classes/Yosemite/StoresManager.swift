@@ -17,7 +17,7 @@ class StoresManager {
 
     /// Active StoresManager State.
     ///
-    private var state: StoresManagerState = DeauthenticatedState() {
+    private var state: StoresManagerState {
         didSet {
             state.didEnter()
         }
@@ -30,11 +30,14 @@ class StoresManager {
     }
 
 
+
     /// Designated Initializer
     ///
     init(sessionManager: SessionManager) {
         self.sessionManager = sessionManager
-        authenticateIfPossible()
+        self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
+
+        restoreSessionAccountIfPossible()
     }
 
 
@@ -44,16 +47,13 @@ class StoresManager {
         state.onAction(action)
     }
 
-
     /// Switches the internal state to Authenticated.
     ///
-    func authenticate(username: String, authToken: String) {
-        let credentials = Credentials(username: username, authToken: authToken)
-
+    func authenticate(credentials: Credentials, onCompletion: ((Error?) -> Void)? = nil) {
         state = AuthenticatedState(credentials: credentials)
-        sessionManager.credentials = credentials
-    }
+        sessionManager.defaultCredentials = credentials
 
+    }
 
     /// Switches the state to a Deauthenticated one.
     ///
@@ -64,18 +64,33 @@ class StoresManager {
 }
 
 
-// MARK: - StoresManager Private Methods
+// MARK: - Private Methods
 //
 private extension StoresManager {
 
-    /// Switches over to the AuthenticatedState whenever needed / possible!.
+    /// Loads the Default Account into the current Session, if possible.
     ///
-    func authenticateIfPossible() {
-        guard let credentials = sessionManager.credentials else {
+    func restoreSessionAccountIfPossible() {
+        guard let accountID = sessionManager.defaultAccountID else {
             return
         }
 
-        state = AuthenticatedState(credentials: credentials)
+        restoreSessionAccount(with: accountID)
+    }
+
+    /// Loads the specified accountID into the Session, if possible.
+    ///
+    func restoreSessionAccount(with accountID: Int) {
+        let action = AccountAction.loadAccount(userID: accountID) { [weak self] account in
+            guard let `self` = self, let account = account else {
+                return
+            }
+
+            self.sessionManager.defaultAccount = account
+        }
+
+        dispatch(action)
+    }
     }
 }
 

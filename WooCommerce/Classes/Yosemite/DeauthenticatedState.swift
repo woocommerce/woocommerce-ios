@@ -13,7 +13,6 @@ class DeauthenticatedState: StoresManagerState {
         AppDelegate.shared.displayAuthenticator()
     }
 
-
     /// NO-OP: During deauth method, we're not running any actions.
     ///
     func onAction(_ action: Action) { }

@@ -25,14 +25,29 @@ public class OrdersRemote: Remote {
     /// Retrieves a specific `Order`
     ///
     /// - Parameters:
-    ///     - siteID: Site for which we'll fetch remote orders.
-    ///     - orderID: Order for which we'll fetch remote orders.
+    ///     - siteID: Site which hosts the Order.
+    ///     - orderID: Identifier of the Order.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadOrder(for siteID: Int, orderID: Int, completion: @escaping (Order?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/\(orderID)"
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = OrderMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Retrieves the notes for a specific `Order`
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the Order.
+    ///     - orderID: Identifier of the Order.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func loadOrderNotes(for siteID: Int, orderID: Int, completion: @escaping ([OrderNote]?, Error?) -> Void) {
+        let path = "\(Constants.ordersPath)/\(orderID)/\(Constants.notesPath)/"
+        let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
+        let mapper = OrderNotesMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -60,8 +75,9 @@ public class OrdersRemote: Remote {
 //
 private extension OrdersRemote {
     enum Constants {
-        static let defaultPageSize: Int         = 75
-        static let ordersPath: String           = "orders"
+        static let defaultPageSize: Int     = 75
+        static let ordersPath: String       = "orders"
+        static let notesPath: String        = "notes"
     }
 
     enum ParameterKeys {

@@ -2,6 +2,8 @@ import UIKit
 import Gridicons
 import Contacts
 import MessageUI
+import Yosemite
+
 
 class OrderDetailsViewController: UIViewController {
 
@@ -24,7 +26,7 @@ class OrderDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
-        title = NSLocalizedString("Order #\(order.number)", comment:"Order number title")
+        title = NSLocalizedString("Order #\(order.number)", comment: "Order number title")
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -53,25 +55,28 @@ class OrderDetailsViewController: UIViewController {
         let infoRows: [Row] = billingIsHidden ? [.shippingAddress] : [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
         let infoSection = Section(leftTitle: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), rightTitle: nil, footer: infoFooter, rows: infoRows)
 
-        var noteRows: [Row] = [.addOrderNote]
-        if let notes = order.notes {
-            for _ in notes {
-                noteRows.append(.orderNote)
-            }
-        }
-        let orderNotesSection = Section(leftTitle: NSLocalizedString("ORDER NOTES", comment: "Order notes section title"), rightTitle: nil, footer: nil, rows: noteRows)
+        // FIXME: Order Notes
+//        var noteRows: [Row] = [.addOrderNote]
+//        if let notes = order.notes {
+//            for _ in notes {
+//                noteRows.append(.orderNote)
+//            }
+//        }
+//        let orderNotesSection = Section(leftTitle: NSLocalizedString("ORDER NOTES", comment: "Order notes section title"), rightTitle: nil, footer: nil, rows: noteRows)
 
         let paymentSection = Section(leftTitle: NSLocalizedString("PAYMENT", comment: "Payment section title"), rightTitle: nil, footer: nil, rows: [.payment])
 
-        // FIXME: this is temporary
-        // the API response always sends customer note data
-        // if there is no customer note it sends an empty string
-        // but order has customerNote as an optional property right now
-        guard let customerNote = order.customerNote, !customerNote.isEmpty else {
-            sections = [summarySection, productListSection, infoSection, paymentSection, orderNotesSection]
-            return
-        }
-        sections = [summarySection, productListSection, customerNoteSection, infoSection, paymentSection, orderNotesSection]
+//        // FIXME: this is temporary
+//        // the API response always sends customer note data
+//        // if there is no customer note it sends an empty string
+//        // but order has customerNote as an optional property right now
+//        guard let customerNote = order.customerNote, !customerNote.isEmpty else {
+//            sections = [summarySection, productListSection, infoSection, paymentSection, orderNotesSection]
+//            return
+//        }
+//        sections = [summarySection, productListSection, customerNoteSection, infoSection, paymentSection, orderNotesSection]
+
+        sections = [summarySection, productListSection, infoSection, paymentSection]
     }
 
     func configureNibs() {

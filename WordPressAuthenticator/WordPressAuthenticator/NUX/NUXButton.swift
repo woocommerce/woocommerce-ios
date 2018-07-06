@@ -43,6 +43,7 @@ import WordPressUI
         }
         configureBackgrounds()
         configureTitleColors()
+        activityIndicator.activityIndicatorViewStyle = .gray
         setNeedsLayout()
     }
 
@@ -110,7 +111,6 @@ import WordPressUI
         setBackgroundImage(highlightedImage, for: .highlighted)
         setBackgroundImage(disabledImage, for: .disabled)
 
-        activityIndicator.activityIndicatorViewStyle = .gray
         addSubview(activityIndicator)
     }
 

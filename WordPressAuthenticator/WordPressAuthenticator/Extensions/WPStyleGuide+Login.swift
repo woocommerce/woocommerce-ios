@@ -6,8 +6,8 @@ final class SubheadlineButton: UIButton {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
-            titleLabel?.font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
-            titleLabel?.textColor = WPStyleGuide.wordPressBlue()
+            titleLabel?.font = WordPressAuthenticator.shared.style.titleFont
+            titleLabel?.textColor = WordPressAuthenticator.shared.style.primaryTitleColor
         }
     }
 }

@@ -25,16 +25,16 @@ class AuthenticationManager {
                                                 primaryNormalBorderColor: StyleManager.buttonPrimaryHighlightedColor,
                                                 primaryHighlightBackgroundColor: StyleManager.buttonPrimaryHighlightedColor,
                                                 primaryHighlightBorderColor: StyleManager.buttonPrimaryHighlightedColor,
-                                                secondaryNormalBackgroundColor: WordPressAuthenticatorStyle.defaultStyle.secondaryNormalBackgroundColor,
-                                                secondaryNormalBorderColor: WordPressAuthenticatorStyle.defaultStyle.secondaryNormalBorderColor,
-                                                secondaryHighlightBackgroundColor: WordPressAuthenticatorStyle.defaultStyle.secondaryHighlightBackgroundColor,
-                                                secondaryHighlightBorderColor: WordPressAuthenticatorStyle.defaultStyle.secondaryHighlightBorderColor,
-                                                disabledBackgroundColor: WordPressAuthenticatorStyle.defaultStyle.disabledBackgroundColor,
-                                                disabledBorderColor: WordPressAuthenticatorStyle.defaultStyle.disabledBorderColor,
+                                                secondaryNormalBackgroundColor: StyleManager.buttonSecondaryColor,
+                                                secondaryNormalBorderColor: StyleManager.buttonSecondaryHighlightedColor,
+                                                secondaryHighlightBackgroundColor: StyleManager.buttonSecondaryHighlightedColor,
+                                                secondaryHighlightBorderColor: StyleManager.buttonSecondaryHighlightedColor,
+                                                disabledBackgroundColor: StyleManager.buttonDisabledColor,
+                                                disabledBorderColor: StyleManager.buttonDisabledHighlightedColor,
                                                 titleFont: StyleManager.alternativeLoginsTitleFont,
                                                 primaryTitleColor: StyleManager.buttonPrimaryTitleColor,
-                                                secondaryTitleColor: WordPressAuthenticatorStyle.defaultStyle.secondaryTitleColor,
-                                                disabledTitleColor: WordPressAuthenticatorStyle.defaultStyle.disabledTitleColor)
+                                                secondaryTitleColor: StyleManager.buttonSecondaryTitleColor,
+                                                disabledTitleColor: StyleManager.buttonDisabledTitleColor)
 
         WordPressAuthenticator.initialize(configuration: configuration, style: style)
         WordPressAuthenticator.shared.delegate = self

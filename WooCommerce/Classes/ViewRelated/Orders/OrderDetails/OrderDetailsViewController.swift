@@ -14,6 +14,7 @@ class OrderDetailsViewController: UIViewController {
     var viewModel: OrderDetailsViewModel!
     var orderNotes: [OrderNoteViewModel]? {
         didSet {
+            configureTableView()
             tableView.reloadData()
         }
     }
@@ -196,11 +197,6 @@ private extension OrderDetailsViewController {
         }
 
         StoresManager.shared.dispatch(action)
-    }
-
-    func clearOrderNotes() {
-        orderNotes = nil
-        tableView.reloadData()
     }
 }
 

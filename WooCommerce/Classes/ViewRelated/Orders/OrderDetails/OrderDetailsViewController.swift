@@ -66,17 +66,11 @@ class OrderDetailsViewController: UIViewController {
 
         let paymentSection = Section(leftTitle: NSLocalizedString("PAYMENT", comment: "Payment section title"), rightTitle: nil, footer: nil, rows: [.payment])
 
-//        // FIXME: this is temporary
-//        // the API response always sends customer note data
-//        // if there is no customer note it sends an empty string
-//        // but order has customerNote as an optional property right now
-//        guard let customerNote = order.customerNote, !customerNote.isEmpty else {
-//            sections = [summarySection, productListSection, infoSection, paymentSection, orderNotesSection]
-//            return
-//        }
-//        sections = [summarySection, productListSection, customerNoteSection, infoSection, paymentSection, orderNotesSection]
-
-        sections = [summarySection, productListSection, infoSection, paymentSection]
+        if viewModel.customerNote.isEmpty {
+            sections = [summarySection, productListSection, infoSection, paymentSection]
+        } else {
+            sections = [summarySection, productListSection, customerNoteSection, infoSection, paymentSection]
+        }
     }
 
     func configureNibs() {

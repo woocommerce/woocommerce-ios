@@ -50,8 +50,8 @@ class OrderDetailsViewModel {
         return orderStatusViewModel.borderColor
     }
 
-    var customerNote: String? {
-        return order.customerNote
+    var customerNote: String {
+        return order.customerNote ?? String()
     }
 
     var shippingViewModel: ContactViewModel {

@@ -20,6 +20,27 @@ class AccountMapperTests: XCTestCase {
         XCTAssertEqual(account.userID, 78972699)
         XCTAssertEqual(account.username, "apiexamples")
     }
+
+    /// Verifies that all of the Site fields are properly parsed.
+    ///
+    func testSiteFieldsAreProperlyParsed() {
+        let sites = mapLoadSitesResponse()
+        XCTAssert(sites?.count == 2)
+
+        let first = sites!.first!
+        XCTAssertEqual(first.siteID, 1112233334444555)
+        XCTAssertEqual(first.name, "Testing Blog")
+        XCTAssertEqual(first.description, "Testing Tagline")
+        XCTAssertEqual(first.url, "https://some-testing-url.testing.blog")
+        XCTAssertEqual(first.isWordPressStore, true)
+
+        let second = sites!.last!
+        XCTAssertEqual(second.siteID, 11122333344446666)
+        XCTAssertEqual(second.name, "Thoughts")
+        XCTAssertEqual(second.description, "Your Favorite Blog")
+        XCTAssertEqual(second.url, "https://thoughts.testing.blog")
+        XCTAssertEqual(second.isWordPressStore, false)
+    }
 }
 
 
@@ -28,7 +49,7 @@ class AccountMapperTests: XCTestCase {
 //
 private extension AccountMapperTests {
 
-    /// Returns the AccountMapper output upon receiving `me` (Data Encoded)
+    /// Returns the AccountMapper output upon receiving `me` mockup response (Data Encoded).
     ///
     func mapLoadAccountResponse() -> Account? {
         guard let response = Loader.contentsOf("me") else {
@@ -36,5 +57,15 @@ private extension AccountMapperTests {
         }
 
         return try? AccountMapper().map(response: response)
+    }
+
+    /// Returns the SiteListMapper output upon receiving `me/sites` mockup response (Data Encoded).
+    ///
+    func mapLoadSitesResponse() -> [Site]? {
+        guard let response = Loader.contentsOf("sites") else {
+            return nil
+        }
+
+        return try? SiteListMapper().map(response: response)
     }
 }

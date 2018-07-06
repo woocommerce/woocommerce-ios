@@ -25,8 +25,6 @@ public class AccountStore: Store {
         switch action {
         case .synchronizeAccount(let onCompletion):
             synchronizeAccount(onCompletion: onCompletion)
-        case .retrieveAccount(let userId, let onCompletion):
-            retrieveAccount(userId: userId, onCompletion: onCompletion)
         }
     }
 }
@@ -50,13 +48,6 @@ extension AccountStore  {
             self?.upsertStoredAccount(remote: account)
             onCompletion(account, nil)
         }
-    }
-
-    /// Retrieves the account associated with a  given User ID (if any!).
-    ///
-    func retrieveAccount(userId: Int, onCompletion: (Account?) -> Void) {
-        let account = loadStoredAccount(userId: userId)?.toReadOnly()
-        onCompletion(account)
     }
 }
 

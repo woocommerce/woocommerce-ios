@@ -24,6 +24,7 @@
 		B5B19DE020E6A45900899568 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B19DDF20E6A45900899568 /* Storage.framework */; };
 		B5B19DE220E6A45E00899568 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B19DE120E6A45E00899568 /* Networking.framework */; };
 		B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B5C796208E49B600642956 /* Action+Internal.swift */; };
+		B5B914C220EFE03200F2F832 /* sites.json in Resources */ = {isa = PBXBuildFile; fileRef = B5B914C120EFE03200F2F832 /* sites.json */; };
 		B5BC736520D1A98500B5B6FA /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BC736420D1A98500B5B6FA /* AccountStore.swift */; };
 		B5BC736820D1AA8F00B5B6FA /* AccountStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BC736720D1AA8F00B5B6FA /* AccountStoreTests.swift */; };
 		B5BC736B20D1AAE900B5B6FA /* me.json in Resources */ = {isa = PBXBuildFile; fileRef = B5BC736A20D1AAE900B5B6FA /* me.json */; };
@@ -74,6 +75,7 @@
 		B5B19DDF20E6A45900899568 /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5B19DE120E6A45E00899568 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5B5C796208E49B600642956 /* Action+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Action+Internal.swift"; sourceTree = "<group>"; };
+		B5B914C120EFE03200F2F832 /* sites.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sites.json; sourceTree = "<group>"; };
 		B5BC736420D1A98500B5B6FA /* AccountStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountStore.swift; sourceTree = "<group>"; };
 		B5BC736720D1AA8F00B5B6FA /* AccountStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountStoreTests.swift; sourceTree = "<group>"; };
 		B5BC736A20D1AAE900B5B6FA /* me.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = me.json; sourceTree = "<group>"; };
@@ -160,10 +162,11 @@
 		B5BC736920D1AAE900B5B6FA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				745D21C120D8043A00BBE7C3 /* generic_error.json */,
 				B5BC736A20D1AAE900B5B6FA /* me.json */,
 				74A7689120D47F9E00F9D437 /* orders.json */,
 				7424B49320EAD37C00CC62F6 /* order.json */,
-				745D21C120D8043A00BBE7C3 /* generic_error.json */,
+				B5B914C120EFE03200F2F832 /* sites.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -405,6 +408,7 @@
 			files = (
 				74A7689220D47F9E00F9D437 /* orders.json in Resources */,
 				B5BC736B20D1AAE900B5B6FA /* me.json in Resources */,
+				B5B914C220EFE03200F2F832 /* sites.json in Resources */,
 				7424B49420EAD37C00CC62F6 /* order.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

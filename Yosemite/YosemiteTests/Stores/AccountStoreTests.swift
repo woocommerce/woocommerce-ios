@@ -78,7 +78,7 @@ class AccountStoreTests: XCTestCase {
 
     /// Verifies that AccountAction.synchronizeAccount effectively inserts a new Default Account.
     ///
-    func testSynchronizeAccountreturnsExpectedAccountDetails() {
+    func testSynchronizeAccountReturnsExpectedAccountDetails() {
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Synchronize")
 
@@ -127,6 +127,42 @@ class AccountStoreTests: XCTestCase {
 
         let storageAccount = viewStorage.loadAccount(userId: remoteAccount.userID)!
         compare(storageAccount: storageAccount, remoteAccount: remoteAccount)
+    }
+
+    /// Verifies that `synchronizeSites` returns an error, whenever there is no backend reply.
+    ///
+    func testSynchronizeSitesReturnsErrorOnEmptyResponse() {
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectation = self.expectation(description: "Synchronize")
+
+        let action = AccountAction.synchronizeSites { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        accountStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `synchronizeSites` effectively persists any retrieved sites.
+    ///
+    func testSynchronizeSitesEffectivelyPersistsRetrievedSites() {
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectation = self.expectation(description: "Synchronize")
+
+        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
+
+        let action = AccountAction.synchronizeSites { error in
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 2)
+            XCTAssertNil(error)
+            expectation.fulfill()
+        }
+
+        accountStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }
 

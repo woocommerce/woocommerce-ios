@@ -12,5 +12,5 @@ extension Site {
     @NSManaged public var name: String?
     @NSManaged public var tagline: String?
     @NSManaged public var url: String?
-    @NSManaged public var isWordPressStore: Bool
+    @NSManaged public var isWordPressStore: NSNumber?
 }

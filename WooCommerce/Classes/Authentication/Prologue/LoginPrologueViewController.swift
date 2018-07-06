@@ -123,8 +123,7 @@ extension LoginPrologueViewController {
     /// Proceeds with the Login Flow.
     ///
     @IBAction func loginWasPressed() {
-        let loginViewController = WordPressAuthenticator.signinForWordPress()
-        loginViewController.restrictToWPCom = true
+        let loginViewController = WordPressAuthenticator.signinForWPCom()
         loginViewController.offerSignupOption = false
 
         navigationController?.pushViewController(loginViewController, animated: true)

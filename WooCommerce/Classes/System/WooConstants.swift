@@ -3,11 +3,11 @@ import Foundation
 
 /// WooCommerce Constants
 ///
-struct WooConstants {
+enum WooConstants {
 
-    /// Private: No-OP!
+    /// Keychain Access's Service Name
     ///
-    private init() {}
+    static let keychainServiceName = "com.automattic.woocommerce"
 
     /// Jetpack Setup URL
     ///

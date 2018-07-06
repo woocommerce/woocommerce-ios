@@ -13,7 +13,7 @@ extension Storage.Site: ReadOnlyConvertible {
         name = site.name
         tagline = site.description
         url = site.url
-        isWordPressStore = site.isWordPressStore
+        isWordPressStore = NSNumber(booleanLiteral: site.isWordPressStore)
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -23,6 +23,6 @@ extension Storage.Site: ReadOnlyConvertible {
                     name: name ?? "",
                     description: tagline ?? "",
                     url: url ?? "",
-                    isWordPressStore: isWordPressStore)
+                    isWordPressStore: isWordPressStore?.boolValue ?? false)
     }
 }

@@ -190,7 +190,7 @@ extension AppDelegate {
     /// Whenever we're in an Authenticated state, let's Sync all of the WC-Y entities.
     ///
     func synchronizeEntitiesIfPossible() {
-        guard StoresManager.shared.isAuthenticated == false else {
+        guard StoresManager.shared.isAuthenticated else {
             return
         }
 

@@ -3,15 +3,13 @@ import UIKit
 class TwoColumnLabelView: UIView {
     @IBOutlet private var leftColumn: UILabel!
     @IBOutlet private var rightColumn: UILabel!
-    @IBOutlet private var topConstraint: NSLayoutConstraint!
-    @IBOutlet private var bottomConstraint: NSLayoutConstraint!
 
     enum Mode {
         case body
         case title
     }
 
-    var mode: Mode {
+    var mode: Mode = .body {
         didSet {
             refreshStyle(mode: mode)
         }
@@ -43,24 +41,21 @@ class TwoColumnLabelView: UIView {
         case .title:
             leftColumn.applyTitleStyle()
             rightColumn.applyTitleStyle()
-            topConstraint.constant = Constants.topConstant
-            bottomConstraint.constant = Constants.bottomConstant
         }
     }
 
     required init?(coder aDecoder: NSCoder) {
-        mode = .body
+        // initializers don't call property observers,
+        // so don't set the default for mode here.
         super.init(coder: aDecoder)
+    }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        mode = .body // trigger the property observer
     }
 
     class func makeFromNib() -> TwoColumnLabelView {
         return Bundle.main.loadNibNamed("TwoColumnLabelView", owner: self, options: nil)?.first as! TwoColumnLabelView
-    }
-}
-
-extension TwoColumnLabelView {
-    struct Constants {
-        static let topConstant = CGFloat(14)
-        static let bottomConstant = CGFloat(20)
     }
 }

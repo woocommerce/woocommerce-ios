@@ -86,7 +86,7 @@ class OrderListMapperTests: XCTestCase {
         let brokenOrder = orders[0]
         let format = DateFormatter()
         format.dateStyle = .short
-        
+
         let orderCreatedString = format.string(from: brokenOrder.dateCreated)
         let todayCreatedString = format.string(from: Date())
         XCTAssertEqual(orderCreatedString, todayCreatedString)
@@ -120,6 +120,6 @@ private extension OrderListMapperTests {
     /// Returns the OrderlistMapper output upon receiving `broken-order`
     ///
     func mapLoadBrokenOrderResponse() -> [Order] {
-        return mapOrders(from: "broken-order")
+        return mapOrders(from: "broken-orders")
     }
 }

@@ -50,17 +50,9 @@ import WordPressUI
         titleLabel?.adjustsFontForContentSizeCategory = true
     }
 
-    /// Insets to be applied over the Contents.
-    ///
-    @objc public dynamic var contentInsets = UIImage.DefaultRenderMetrics.contentInsets {
-        didSet {
-            configureInsets()
-        }
-    }
-
     /// Indicates if the current instance should be rendered with the "Primary" Style.
     ///
-    @IBInspectable var isPrimary: Bool = false {
+    @IBInspectable public var isPrimary: Bool = false {
         didSet {
             configureBackgrounds()
             configureTitleColors()
@@ -96,7 +88,7 @@ import WordPressUI
     /// Setup: FancyButton's Default Settings
     ///
     private func configureInsets() {
-        contentEdgeInsets = contentInsets
+        contentEdgeInsets = UIImage.DefaultRenderMetrics.contentInsets
     }
 
     /// Setup: BackgroundImage

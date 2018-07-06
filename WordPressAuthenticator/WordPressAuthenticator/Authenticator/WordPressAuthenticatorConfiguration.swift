@@ -1,4 +1,4 @@
-
+import GoogleSignIn
 
 // MARK: - WordPressAuthenticator Configuration
 //

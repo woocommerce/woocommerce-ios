@@ -12,3 +12,4 @@ public typealias Order = Networking.Order
 public typealias OrderItem = Networking.OrderItem
 public typealias OrderStatus = Networking.OrderStatus
 public typealias OrderCouponLine = Networking.OrderCouponLine
+public typealias OrderNote = Networking.OrderNote

@@ -56,7 +56,7 @@ public struct WordPressAuthenticatorStyle {
         self.disabledBorderColor = disabledBorderColor
         self.titleFont = titleFont
         self.primaryTitleColor = primaryTitleColor
-        self.secondaryTitleColor = primaryTitleColor
+        self.secondaryTitleColor = secondaryTitleColor
         self.disabledTitleColor = disabledTitleColor
     }
 }

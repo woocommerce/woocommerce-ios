@@ -110,7 +110,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
     :tag: 0.2.3
   WordPressAuthenticator:
-    :commit: 1fef7ae80a8f8b1b96fd1d94bd92dd7659ce2716
+    :commit: 16c47248b1835903f06445035eaef88497f5b750
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:

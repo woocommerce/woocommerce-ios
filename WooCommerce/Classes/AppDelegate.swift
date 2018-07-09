@@ -119,7 +119,6 @@ private extension AppDelegate {
     ///
     func setupFancyButtonAppearance() {
         let appearance = FancyButton.appearance()
-        appearance.titleFont = UIFont.font(forStyle: .headline, weight: .semibold)
         appearance.primaryNormalBackgroundColor = StyleManager.buttonPrimaryColor
         appearance.primaryNormalBorderColor = StyleManager.buttonPrimaryHighlightedColor
         appearance.primaryHighlightBackgroundColor = StyleManager.buttonPrimaryHighlightedColor

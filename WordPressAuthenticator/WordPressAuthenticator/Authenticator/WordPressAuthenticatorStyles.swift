@@ -31,10 +31,6 @@ public struct WordPressAuthenticatorStyle {
 
     public let disabledBorderColor: UIColor
 
-    /// Style: Title!
-    ///
-    public let titleFont: UIFont
-
     public let primaryTitleColor: UIColor
 
     public let secondaryTitleColor: UIColor
@@ -43,7 +39,7 @@ public struct WordPressAuthenticatorStyle {
 
     /// Designated initializer
     ///
-    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, titleFont: UIFont, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor) {
+    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor) {
         self.primaryNormalBackgroundColor = primaryNormalBackgroundColor
         self.primaryNormalBorderColor = primaryNormalBorderColor
         self.primaryHighlightBackgroundColor = primaryHighlightBackgroundColor
@@ -54,7 +50,6 @@ public struct WordPressAuthenticatorStyle {
         self.secondaryHighlightBorderColor = secondaryHighlightBorderColor
         self.disabledBackgroundColor = disabledBackgroundColor
         self.disabledBorderColor = disabledBorderColor
-        self.titleFont = titleFont
         self.primaryTitleColor = primaryTitleColor
         self.secondaryTitleColor = secondaryTitleColor
         self.disabledTitleColor = disabledTitleColor
@@ -73,7 +68,6 @@ public extension WordPressAuthenticatorStyle {
                                            secondaryHighlightBorderColor: WPStyleGuide.greyLighten20(),
                                            disabledBackgroundColor: UIColor.white,
                                            disabledBorderColor: WPStyleGuide.greyLighten30(),
-                                           titleFont: WPStyleGuide.mediumWeightFont(forStyle: .subheadline),
                                            primaryTitleColor: UIColor.white,
                                            secondaryTitleColor: WPStyleGuide.darkGrey(),
                                            disabledTitleColor: WPStyleGuide.greyLighten30())

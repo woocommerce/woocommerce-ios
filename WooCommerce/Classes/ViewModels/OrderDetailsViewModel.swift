@@ -4,19 +4,16 @@ import Gridicons
 import Yosemite
 
 class OrderDetailsViewModel {
-    let orderStatusViewModel: OrderStatusViewModel
+    let siteID: Int
     let order: Order
+    let orderStatusViewModel: OrderStatusViewModel
     let couponLines: [OrderCouponLine]?
-    let notes: [OrderNote]?
 
-    init(order: Order) {
+    init(siteID: Int, order: Order) {
+        self.siteID = siteID
         self.order = order
         self.couponLines = order.coupons
         self.orderStatusViewModel = OrderStatusViewModel(orderStatus: order.status)
-
-        // FIXME: Add order notes to remote/models
-        //self.notes = order.notes
-        self.notes = nil
     }
 
     var summaryTitle: String {
@@ -50,8 +47,8 @@ class OrderDetailsViewModel {
         return orderStatusViewModel.borderColor
     }
 
-    var customerNote: String? {
-        return order.customerNote
+    var customerNote: String {
+        return order.customerNote ?? String()
     }
 
     var shippingViewModel: ContactViewModel {
@@ -119,16 +116,6 @@ class OrderDetailsViewModel {
     let addNoteIcon = Gridicon.iconOfType(.addOutline)
 
     let addNoteText = NSLocalizedString("Add a note", comment: "Button text for adding a new order note")
-
-    var orderNotes: [OrderNoteViewModel] {
-        guard let notes = notes else {
-            return []
-        }
-
-        return notes.map { note in
-            return OrderNoteViewModel(with: note)
-        }
-    }
 
     /// MARK: Private
     ///

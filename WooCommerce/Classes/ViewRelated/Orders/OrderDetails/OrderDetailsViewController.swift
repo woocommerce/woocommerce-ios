@@ -39,9 +39,12 @@ class OrderDetailsViewController: UIViewController {
         super.viewWillDisappear(animated)
         self.navigationController?.isNavigationBarHidden = false
     }
+}
 
-    // MARK: - Configuration
 
+// MARK: - TableView Configuration
+//
+private extension OrderDetailsViewController {
     func configureTableView() {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedSectionFooterHeight = Constants.rowHeight
@@ -93,7 +96,132 @@ class OrderDetailsViewController: UIViewController {
     }
 }
 
-// MARK: - Table Data Source
+
+// MARK: - Cell Configuration
+//
+private extension OrderDetailsViewController {
+    private func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as SummaryTableViewCell:
+            cell.configure(with: viewModel)
+        case let cell as ProductListTableViewCell:
+            cell.configure(with: viewModel)
+        case let cell as CustomerNoteTableViewCell:
+            cell.configure(with: viewModel)
+        case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
+            cell.configure(with: viewModel.shippingViewModel)
+        case let cell as CustomerInfoTableViewCell where row == .billingAddress:
+            cell.configure(with: viewModel.billingViewModel)
+        case let cell as BillingDetailsTableViewCell where row == .billingPhone:
+            configure(cell, for: .billingPhone)
+        case let cell as BillingDetailsTableViewCell where row == .billingEmail:
+            configure(cell, for: .billingEmail)
+        case let cell as PaymentTableViewCell:
+            cell.configure(with: viewModel)
+        case let cell as AddItemTableViewCell:
+            cell.configure(image: viewModel.addNoteIcon, text: viewModel.addNoteText)
+        case let cell as OrderNoteTableViewCell where row == .orderNote:
+            if let note = orderNote(at: indexPath) {
+                cell.configure(with: note)
+            }
+        default:
+            fatalError("Unidentified customer info row type")
+        }
+    }
+
+    private func configure(_ cell: BillingDetailsTableViewCell, for billingRow: Row) {
+        if billingRow == .billingPhone {
+            cell.configure(text: viewModel.billingViewModel.phoneNumber, image: Gridicon.iconOfType(.ellipsis))
+            cell.didTapButton = { [weak self] in
+                self?.phoneButtonAction()
+            }
+        } else if billingRow == .billingEmail {
+            cell.configure(text: viewModel.billingViewModel.email, image: Gridicon.iconOfType(.mail))
+            cell.didTapButton = { [weak self] in
+                self?.emailButtonAction()
+            }
+        } else {
+            fatalError("Unidentified billing detail row")
+        }
+    }
+
+    func orderNote(at indexPath: IndexPath) -> OrderNoteViewModel? {
+        // We need to subract 1 here because the first order note row is the "Add Order" cell
+        let orderNoteIndex = indexPath.row - 1
+        guard let orderNotes = orderNotes, !orderNotes.isEmpty, orderNotes.indices.contains(orderNoteIndex) else {
+            return nil
+        }
+        
+        return orderNotes[orderNoteIndex]
+    }
+}
+
+
+// MARK: - Sync'ing Helpers
+//
+private extension OrderDetailsViewController {
+    func syncOrderNotes() {
+        guard let viewModel = viewModel else {
+            return
+        }
+
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
+            guard let orderNotes = orderNotes else {
+                if let error = error {
+                    DDLogError("⛔️ Error synchronizing order notes: \(error)")
+                }
+                self?.orderNotes = nil
+                return
+            }
+
+            self?.orderNotes = orderNotes.map { OrderNoteViewModel(with: $0) }
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+}
+
+
+// MARK: - Actions
+//
+extension OrderDetailsViewController {
+    @objc func phoneButtonAction() {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+        let dismissAction = UIAlertAction(title: NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"), style: .cancel)
+        actionSheet.addAction(dismissAction)
+
+        let callAction = UIAlertAction(title: NSLocalizedString("Call", comment: "Call phone number button title"), style: .default) { [weak self] action in
+            let contactViewModel = ContactViewModel(with: (self?.viewModel.order.billingAddress)!, contactType: .billing)
+            guard let phone = contactViewModel.cleanedPhoneNumber else {
+                return
+            }
+            if let url = URL(string: "telprompt://" + phone),
+                UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }
+        actionSheet.addAction(callAction)
+
+        let messageAction = UIAlertAction(title: NSLocalizedString("Message", comment: "Message phone number button title"), style: .default) { [weak self] action in
+            self?.sendTextMessageIfPossible()
+        }
+        actionSheet.addAction(messageAction)
+
+        present(actionSheet, animated: true)
+    }
+
+    @objc func emailButtonAction() {
+        sendEmailIfPossible()
+    }
+
+    func setShowHideFooter() {
+        billingIsHidden = !billingIsHidden
+    }
+}
+
+
+// MARK: - UITableViewDataSource Conformance
 //
 extension OrderDetailsViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -161,7 +289,8 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - Table Delegate
+
+// MARK: - UITableViewDelegate Conformance
 //
 extension OrderDetailsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -173,115 +302,8 @@ extension OrderDetailsViewController: UITableViewDelegate {
     }
 }
 
-// MARK: - Sync'ing Helpers
-//
-private extension OrderDetailsViewController {
-    func syncOrderNotes() {
-        guard let viewModel = viewModel else {
-            return
-        }
 
-        let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
-            guard let orderNotes = orderNotes else {
-                if let error = error {
-                    DDLogError("⛔️ Error synchronizing order notes: \(error)")
-                }
-                self?.orderNotes = nil
-                return
-            }
-
-            self?.orderNotes = orderNotes.map { OrderNoteViewModel(with: $0) }
-        }
-
-        StoresManager.shared.dispatch(action)
-    }
-}
-
-
-// MARK: - Extension
-//
-extension OrderDetailsViewController {
-    private func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
-        switch cell {
-        case let cell as SummaryTableViewCell:
-            cell.configure(with: viewModel)
-        case let cell as ProductListTableViewCell:
-            cell.configure(with: viewModel)
-        case let cell as CustomerNoteTableViewCell:
-            cell.configure(with: viewModel)
-        case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
-            cell.configure(with: viewModel.shippingViewModel)
-        case let cell as CustomerInfoTableViewCell where row == .billingAddress:
-            cell.configure(with: viewModel.billingViewModel)
-        case let cell as BillingDetailsTableViewCell where row == .billingPhone:
-            configure(cell, for: .billingPhone)
-        case let cell as BillingDetailsTableViewCell where row == .billingEmail:
-            configure(cell, for: .billingEmail)
-        case let cell as PaymentTableViewCell:
-            cell.configure(with: viewModel)
-        case let cell as AddItemTableViewCell:
-            cell.configure(image: viewModel.addNoteIcon, text: viewModel.addNoteText)
-        case let cell as OrderNoteTableViewCell where row == .orderNote:
-            if let orderNotes = orderNotes {
-                cell.configure(with: orderNotes[indexPath.row - 1])
-            }
-        default:
-            fatalError("Unidentified customer info row type")
-        }
-    }
-
-    private func configure(_ cell: BillingDetailsTableViewCell, for billingRow: Row) {
-        if billingRow == .billingPhone {
-            cell.configure(text: viewModel.billingViewModel.phoneNumber, image: Gridicon.iconOfType(.ellipsis))
-            cell.didTapButton = { [weak self] in
-                self?.phoneButtonAction()
-            }
-        } else if billingRow == .billingEmail {
-            cell.configure(text: viewModel.billingViewModel.email, image: Gridicon.iconOfType(.mail))
-            cell.didTapButton = { [weak self] in
-                self?.emailButtonAction()
-            }
-        } else {
-            fatalError("Unidentified billing detail row")
-        }
-    }
-
-    @objc func phoneButtonAction() {
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
-        let dismissAction = UIAlertAction(title: NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"), style: .cancel)
-        actionSheet.addAction(dismissAction)
-
-        let callAction = UIAlertAction(title: NSLocalizedString("Call", comment: "Call phone number button title"), style: .default) { [weak self] action in
-            let contactViewModel = ContactViewModel(with: (self?.viewModel.order.billingAddress)!, contactType: .billing)
-            guard let phone = contactViewModel.cleanedPhoneNumber else {
-                return
-            }
-            if let url = URL(string: "telprompt://" + phone),
-                UIApplication.shared.canOpenURL(url) {
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            }
-        }
-        actionSheet.addAction(callAction)
-
-        let messageAction = UIAlertAction(title: NSLocalizedString("Message", comment: "Message phone number button title"), style: .default) { [weak self] action in
-            self?.sendTextMessageIfPossible()
-        }
-        actionSheet.addAction(messageAction)
-
-        present(actionSheet, animated: true)
-    }
-
-    @objc func emailButtonAction() {
-        sendEmailIfPossible()
-    }
-
-    func setShowHideFooter() {
-        billingIsHidden = !billingIsHidden
-    }
-}
-
-// MARK: - Messages Delgate
+// MARK: - MFMessageComposeViewControllerDelegate Conformance
 //
 extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
     func sendTextMessageIfPossible() {
@@ -306,7 +328,8 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
     }
 }
 
-// MARK: - Email Delegate
+
+// MARK: - MFMailComposeViewControllerDelegate Conformance
 //
 extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
     func sendEmailIfPossible() {
@@ -331,6 +354,9 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
     }
 }
 
+
+// MARK: - Constants
+//
 private extension OrderDetailsViewController {
     struct Constants {
         static let rowHeight = CGFloat(38)

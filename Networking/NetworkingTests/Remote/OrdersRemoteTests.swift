@@ -26,6 +26,8 @@ class OrdersRemoteTests: XCTestCase {
     }
 
 
+    // MARK: - Load All Orders Tests
+
     /// Verifies that loadAllOrders properly parses the `orders-load-all` sample response.
     ///
     func testLoadAllOrdersProperlyReturnsParsedOrders() {
@@ -38,23 +40,6 @@ class OrdersRemoteTests: XCTestCase {
             XCTAssertNil(error)
             XCTAssertNotNil(orders)
             XCTAssert(orders!.count == 3)
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
-    /// Verifies that loadOrder properly parses the `order` sample response.
-    ///
-    func testLoadSingleOrderProperlyReturnsParsedOrder() {
-        let remote = OrdersRemote(network: network)
-        let expectation = self.expectation(description: "Load Order")
-
-        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)", filename: "order")
-
-        remote.loadOrder(for: sampleSiteID, orderID: sampleOrderID) { order, error in
-            XCTAssertNil(error)
-            XCTAssertNotNil(order)
             expectation.fulfill()
         }
 
@@ -75,6 +60,44 @@ class OrdersRemoteTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+
+    // MARK: - Load Order Tests
+
+    /// Verifies that loadOrder properly parses the `order` sample response.
+    ///
+    func testLoadSingleOrderProperlyReturnsParsedOrder() {
+        let remote = OrdersRemote(network: network)
+        let expectation = self.expectation(description: "Load Order")
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)", filename: "order")
+
+        remote.loadOrder(for: sampleSiteID, orderID: sampleOrderID) { order, error in
+            XCTAssertNil(error)
+            XCTAssertNotNil(order)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that loadOrder properly relays any Networking Layer errors.
+    ///
+    func testLoadSingleOrderProperlyRelaysNetwokingErrors() {
+        let remote = OrdersRemote(network: network)
+        let expectation = self.expectation(description: "Update Order")
+
+        remote.loadOrder(for: sampleSiteID, orderID: sampleOrderID) { order, error in
+            XCTAssertNil(order)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - Update Orders Tests
 
     /// Verifies that updateOrder properly parses the `order` sample response.
     ///
@@ -101,6 +124,42 @@ class OrdersRemoteTests: XCTestCase {
 
         remote.updateOrder(from: sampleSiteID, orderID: sampleOrderID, status: "pending") { (order, error) in
             XCTAssertNil(order)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - Load Order Notes Tests
+
+    /// Verifies that loadOrderNotes properly parses the `order-notes` sample response.
+    ///
+    func testLoadOrderNotesProperlyReturnsParsedNotes() {
+        let remote = OrdersRemote(network: network)
+        let expectation = self.expectation(description: "Load Order Notes")
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes/", filename: "order-notes")
+
+        remote.loadOrderNotes(for: sampleSiteID, orderID: sampleOrderID) { orderNotes, error in
+            XCTAssertNil(error)
+            XCTAssertNotNil(orderNotes)
+            XCTAssertEqual(orderNotes?.count, 18)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that loadOrderNotes properly relays any Networking Layer errors.
+    ///
+    func testLoadOrderNotesProperlyRelaysNetwokingErrors() {
+        let remote = OrdersRemote(network: network)
+        let expectation = self.expectation(description: "Load Order Notes")
+
+        remote.loadOrderNotes(for: sampleSiteID, orderID: sampleOrderID) { orderNotes, error in
+            XCTAssertNil(orderNotes)
             XCTAssertNotNil(error)
             expectation.fulfill()
         }

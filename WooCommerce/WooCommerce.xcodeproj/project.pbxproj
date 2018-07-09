@@ -21,12 +21,12 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		7403F7E220EC04070097198F /* OrderStatusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7403F7E120EC04070097198F /* OrderStatusViewModel.swift */; };
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
 		93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */; };
 		B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112D2049E27A007D25DC /* DashboardViewController.swift */; };
 		B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112E2049E27A007D25DC /* OrdersViewController.swift */; };
 		B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112F2049E27A007D25DC /* SettingsViewController.swift */; };
-		B50911342049E493007D25DC /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50911332049E493007D25DC /* Order.swift */; };
 		B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B898820D450AF00EDB467 /* SessionManagerTests.swift */; };
 		B53B898D20D462A000EDB467 /* StoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B898C20D462A000EDB467 /* StoresManager.swift */; };
 		B54175F220D4C15D0083BB8C /* CoreDataManager+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54175F120D4C15D0083BB8C /* CoreDataManager+Woo.swift */; };
@@ -71,11 +71,6 @@
 		CE1EC8CA20B479F1009762BF /* TwoColumnLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */; };
 		CE1EC8CF20B6FD53009762BF /* FootnoteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8CE20B6FD53009762BF /* FootnoteView.xib */; };
 		CE1EC8D120B6FE39009762BF /* FootnoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8D020B6FE39009762BF /* FootnoteView.swift */; };
-		CE1EC8D720B75FBA009762BF /* order-1112.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8D620B75FBA009762BF /* order-1112.json */; };
-		CE1EC8D920B75FF7009762BF /* order-1107.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8D820B75FF7009762BF /* order-1107.json */; };
-		CE1EC8DB20B76088009762BF /* order-notes-1107.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8DA20B76088009762BF /* order-notes-1107.json */; };
-		CE1EC8DD20B76636009762BF /* order-1044.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8DC20B76636009762BF /* order-1044.json */; };
-		CE1EC8DF20B76651009762BF /* order-notes-1044.json in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8DE20B76651009762BF /* order-notes-1044.json */; };
 		CE1EC8E920B8A3F5009762BF /* OrderNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8E820B8A3F5009762BF /* OrderNoteViewModel.swift */; };
 		CE1EC8EC20B8A3FF009762BF /* AddItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8EA20B8A3FF009762BF /* AddItemTableViewCell.swift */; };
 		CE1EC8F020B8A408009762BF /* OrderNoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8EE20B8A408009762BF /* OrderNoteTableViewCell.xib */; };
@@ -103,7 +98,6 @@
 		CED6021D20B35FDF0032C639 /* NoResultsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED6021B20B35FDF0032C639 /* NoResultsTableViewCell.swift */; };
 		CED6021E20B35FDF0032C639 /* NoResultsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CED6021C20B35FDF0032C639 /* NoResultsTableViewCell.xib */; };
 		CEE005F62076C4040079161F /* Orders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F52076C4040079161F /* Orders.storyboard */; };
-		CEE005F82077C9690079161F /* order-list.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F72077C9690079161F /* order-list.json */; };
 		CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE006032077D1280079161F /* SummaryTableViewCell.swift */; };
 		CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEE006042077D1280079161F /* SummaryTableViewCell.xib */; };
 		CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE006072077D14C0079161F /* OrderDetailsViewController.swift */; };
@@ -144,12 +138,12 @@
 
 /* Begin PBXFileReference section */
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
+		7403F7E120EC04070097198F /* OrderStatusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusViewModel.swift; sourceTree = "<group>"; };
 		90AC1C0B391E04A837BDC64E /* Pods-WooCommerce.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.debug.xcconfig"; sourceTree = "<group>"; };
 		93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bash_secrets.tpl; sourceTree = "<group>"; };
 		B509112D2049E27A007D25DC /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		B509112E2049E27A007D25DC /* OrdersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrdersViewController.swift; sourceTree = "<group>"; };
 		B509112F2049E27A007D25DC /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		B50911332049E493007D25DC /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
 		B53B898820D450AF00EDB467 /* SessionManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManagerTests.swift; sourceTree = "<group>"; };
 		B53B898C20D462A000EDB467 /* StoresManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresManager.swift; sourceTree = "<group>"; };
 		B54175F120D4C15D0083BB8C /* CoreDataManager+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataManager+Woo.swift"; sourceTree = "<group>"; };
@@ -201,11 +195,6 @@
 		CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnLabelView.swift; sourceTree = "<group>"; };
 		CE1EC8CE20B6FD53009762BF /* FootnoteView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = FootnoteView.xib; path = Classes/ViewRelated/ReusableViews/FootnoteView.xib; sourceTree = SOURCE_ROOT; };
 		CE1EC8D020B6FE39009762BF /* FootnoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FootnoteView.swift; sourceTree = "<group>"; };
-		CE1EC8D620B75FBA009762BF /* order-1112.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-1112.json"; sourceTree = "<group>"; };
-		CE1EC8D820B75FF7009762BF /* order-1107.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-1107.json"; sourceTree = "<group>"; };
-		CE1EC8DA20B76088009762BF /* order-notes-1107.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-notes-1107.json"; sourceTree = "<group>"; };
-		CE1EC8DC20B76636009762BF /* order-1044.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-1044.json"; sourceTree = "<group>"; };
-		CE1EC8DE20B76651009762BF /* order-notes-1044.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-notes-1044.json"; sourceTree = "<group>"; };
 		CE1EC8E820B8A3F5009762BF /* OrderNoteViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNoteViewModel.swift; sourceTree = "<group>"; };
 		CE1EC8EA20B8A3FF009762BF /* AddItemTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddItemTableViewCell.swift; sourceTree = "<group>"; };
 		CE1EC8EB20B8A3FF009762BF /* AddItemTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AddItemTableViewCell.xib; sourceTree = "<group>"; };
@@ -234,7 +223,6 @@
 		CED6021B20B35FDF0032C639 /* NoResultsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoResultsTableViewCell.swift; sourceTree = "<group>"; };
 		CED6021C20B35FDF0032C639 /* NoResultsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoResultsTableViewCell.xib; sourceTree = "<group>"; };
 		CEE005F52076C4040079161F /* Orders.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Orders.storyboard; sourceTree = "<group>"; };
-		CEE005F72077C9690079161F /* order-list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-list.json"; sourceTree = "<group>"; };
 		CEE006032077D1280079161F /* SummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCell.swift; sourceTree = "<group>"; };
 		CEE006042077D1280079161F /* SummaryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SummaryTableViewCell.xib; sourceTree = "<group>"; };
 		CEE006072077D14C0079161F /* OrderDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewController.swift; sourceTree = "<group>"; };
@@ -271,14 +259,6 @@
 				BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		B509112B2049CFDF007D25DC /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				B50911332049E493007D25DC /* Order.swift */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		B53B898A20D4606400EDB467 /* System */ = {
@@ -386,7 +366,6 @@
 				CE1CCB4C20572444000EE3AC /* Extensions */,
 				CE1CCB3E2056F204000EE3AC /* Styles */,
 				B5D1AFBE20BC67B500DB0E8C /* System */,
-				B509112B2049CFDF007D25DC /* Model */,
 				CE85535B209B5B6A00938BDC /* ViewModels */,
 				B56DB3EF2049C06D00D4AA8E /* ViewRelated */,
 				B53B898B20D4627A00EDB467 /* Yosemite */,
@@ -405,7 +384,6 @@
 				B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */,
 				B59F38DF20D40A24008C1829 /* WooCommerce.debug.entitlements */,
 				B59F38E020D40A24008C1829 /* WooCommerce.release.entitlements */,
-				CEE005FF2077CA5A0079161F /* fake data */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -487,6 +465,7 @@
 			children = (
 				CE1EC8E820B8A3F5009762BF /* OrderNoteViewModel.swift */,
 				CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */,
+				7403F7E120EC04070097198F /* OrderStatusViewModel.swift */,
 				CE34DA2420A1ECD6005D8523 /* ContactViewModel.swift */,
 			);
 			path = ViewModels;
@@ -507,19 +486,6 @@
 				CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */,
 			);
 			path = ReusableViews;
-			sourceTree = "<group>";
-		};
-		CEE005FF2077CA5A0079161F /* fake data */ = {
-			isa = PBXGroup;
-			children = (
-				CEE005F72077C9690079161F /* order-list.json */,
-				CE1EC8D620B75FBA009762BF /* order-1112.json */,
-				CE1EC8D820B75FF7009762BF /* order-1107.json */,
-				CE1EC8DA20B76088009762BF /* order-notes-1107.json */,
-				CE1EC8DC20B76636009762BF /* order-1044.json */,
-				CE1EC8DE20B76651009762BF /* order-notes-1044.json */,
-			);
-			path = "fake data";
 			sourceTree = "<group>";
 		};
 		CEE006022077D0F80079161F /* OrderDetails */ = {
@@ -661,28 +627,22 @@
 				B557DA1620979904005962F4 /* CustomerNoteTableViewCell.xib in Resources */,
 				93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
-				CE1EC8D720B75FBA009762BF /* order-1112.json in Resources */,
 				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,
 				CE22571B20E16FBC0037F478 /* AddItemTableViewCell.xib in Resources */,
-				CEE005F82077C9690079161F /* order-list.json in Resources */,
 				B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */,
 				CE1EC8CF20B6FD53009762BF /* FootnoteView.xib in Resources */,
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
 				CE855367209BA6A700938BDC /* ShowHideSectionFooter.xib in Resources */,
-				CE1EC8D920B75FF7009762BF /* order-1107.json in Resources */,
 				CE1EC8F020B8A408009762BF /* OrderNoteTableViewCell.xib in Resources */,
 				B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */,
-				CE1EC8DB20B76088009762BF /* order-notes-1107.json in Resources */,
 				CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */,
 				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
 				CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */,
-				CE1EC8DD20B76636009762BF /* order-1044.json in Resources */,
 				CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */,
 				CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */,
 				CE32B11620BF8779006FBCF4 /* ProductListTableViewCell.xib in Resources */,
 				CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
-				CE1EC8DF20B76651009762BF /* order-notes-1044.json in Resources */,
 				CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */,
 				CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */,
 			);
@@ -869,8 +829,8 @@
 				CE32B11520BF8779006FBCF4 /* ProductListTableViewCell.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* AddItemTableViewCell.swift in Sources */,
+				7403F7E220EC04070097198F /* OrderStatusViewModel.swift in Sources */,
 				CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */,
-				B50911342049E493007D25DC /* Order.swift in Sources */,
 				B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */,
 				B5AA7B3D20ED5D15004DA14F /* SessionManager.swift in Sources */,

@@ -23,14 +23,17 @@ public struct Order: Decodable {
     public let shippingTax: String
     public let total: String
     public let totalTax: String
+    public let paymentMethodTitle: String
 
     public let items: [OrderItem]
     public let billingAddress: Address
     public let shippingAddress: Address
+    public let coupons: [OrderCouponLine]
 
     /// Order struct initializer.
     ///
-    init(orderID: Int, parentID: Int, customerID: Int, number: String, status: OrderStatus, currency: String, customerNote: String?, dateCreated: Date, dateModified: Date, datePaid: Date?, discountTotal: String, discountTax: String, shippingTotal: String, shippingTax: String, total: String, totalTax: String, items: [OrderItem], billingAddress: Address, shippingAddress: Address) {
+    init(orderID: Int, parentID: Int, customerID: Int, number: String, status: OrderStatus, currency: String, customerNote: String?, dateCreated: Date, dateModified: Date, datePaid: Date?, discountTotal: String, discountTax: String, shippingTotal: String, shippingTax: String, total: String, totalTax: String, paymentMethodTitle: String, items: [OrderItem], billingAddress: Address, shippingAddress: Address, coupons: [OrderCouponLine]) {
+
         self.orderID = orderID
         self.parentID = parentID
         self.customerID = customerID
@@ -50,10 +53,12 @@ public struct Order: Decodable {
         self.shippingTax = shippingTax
         self.total = total
         self.totalTax = totalTax
+        self.paymentMethodTitle = paymentMethodTitle
 
         self.items = items
         self.billingAddress = billingAddress
         self.shippingAddress = shippingAddress
+        self.coupons = coupons
     }
 
 
@@ -80,12 +85,14 @@ public struct Order: Decodable {
         let shippingTotal = try container.decode(String.self, forKey: .shippingTotal)
         let total = try container.decode(String.self, forKey: .total)
         let totalTax = try container.decode(String.self, forKey: .totalTax)
+        let paymentMethodTitle = try container.decode(String.self, forKey: .paymentMethodTitle)
 
         let items = try container.decode([OrderItem].self, forKey: .items)
         let shippingAddress = try container.decode(Address.self, forKey: .shippingAddress)
         let billingAddress = try container.decode(Address.self, forKey: .billingAddress)
+        let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
 
-        self.init(orderID: orderID, parentID: parentID, customerID: customerID, number: number, status: status, currency: currency, customerNote: customerNote, dateCreated: dateCreated, dateModified: dateModified, datePaid: datePaid, discountTotal: discountTotal, discountTax: discountTax, shippingTotal: shippingTotal, shippingTax: shippingTax, total: total, totalTax: totalTax, items: items, billingAddress: billingAddress, shippingAddress: shippingAddress) // initialize the struct
+        self.init(orderID: orderID, parentID: parentID, customerID: customerID, number: number, status: status, currency: currency, customerNote: customerNote, dateCreated: dateCreated, dateModified: dateModified, datePaid: datePaid, discountTotal: discountTotal, discountTax: discountTax, shippingTotal: shippingTotal, shippingTax: shippingTax, total: total, totalTax: totalTax, paymentMethodTitle: paymentMethodTitle, items: items, billingAddress: billingAddress, shippingAddress: shippingAddress, coupons: coupons) // initialize the struct
     }
 }
 
@@ -114,10 +121,12 @@ private extension Order {
         case shippingTax        = "shipping_tax"
         case total              = "total"
         case totalTax           = "total_tax"
+        case paymentMethodTitle = "payment_method_title"
 
         case items              = "line_items"
         case shippingAddress    = "shipping"
         case billingAddress     = "billing"
+        case couponLines        = "coupon_lines"
     }
 }
 
@@ -140,8 +149,10 @@ extension Order: Comparable {
             lhs.shippingTax == rhs.shippingTax &&
             lhs.total == rhs.total &&
             lhs.totalTax == rhs.totalTax &&
+            lhs.paymentMethodTitle == rhs.paymentMethodTitle &&
             lhs.billingAddress == rhs.billingAddress &&
             lhs.shippingAddress == rhs.shippingAddress &&
+            lhs.coupons == rhs.coupons &&
             lhs.items.count == rhs.items.count &&
             lhs.items.sorted() == rhs.items.sorted()
     }

@@ -13,9 +13,9 @@ PODS:
     - CocoaLumberjack/Default
   - CocoaLumberjack/Swift (3.4.2):
     - CocoaLumberjack/Default
-  - Crashlytics (3.10.3):
-    - Fabric (~> 1.7.8)
-  - Fabric (1.7.8)
+  - Crashlytics (3.10.4):
+    - Fabric (~> 1.7.9)
+  - Fabric (1.7.9)
   - FormatterKit/Resources (1.8.2)
   - FormatterKit/TimeIntervalFormatter (1.8.2):
     - FormatterKit/Resources
@@ -110,7 +110,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
     :tag: 0.2.3
   WordPressAuthenticator:
-    :commit: db510d5eb8e539d981a6db3e6fdb508c36155aa7
+    :commit: e730a8988e41aa13c3f66fbc9b3aa0feaadcccee
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
@@ -118,8 +118,8 @@ SPEC CHECKSUMS:
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   Automattic-Tracks-iOS: d8c6c6c1351b1905a73e45f431b15598d71963b5
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
-  Crashlytics: 2aea305161a2122492698c75af27f2b98aa49a25
-  Fabric: fba4684a95df789565b0b27fc5b6e68f1755af32
+  Crashlytics: 915a7787b84f635fb2a81f92a90e265c2c413f76
+  Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
   GoogleSignInRepacked: d357702618c555f38923576924661325eb1ef22b
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f

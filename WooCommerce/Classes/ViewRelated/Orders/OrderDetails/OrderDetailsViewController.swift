@@ -31,10 +31,12 @@ class OrderDetailsViewController: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         syncOrderNotes()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         self.navigationController?.isNavigationBarHidden = false
     }
 
@@ -180,20 +182,15 @@ private extension OrderDetailsViewController {
         }
 
         let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
-            guard error == nil else {
+            guard let orderNotes = orderNotes else {
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing order notes: \(error)")
                 }
                 self?.orderNotes = nil
                 return
             }
-            guard let orderNotes = orderNotes else {
-                self?.orderNotes = nil
-                return
-            }
 
-            let orderNotesViewModels = orderNotes.map { OrderNoteViewModel(with: $0) }
-            self?.orderNotes = orderNotesViewModels
+            self?.orderNotes = orderNotes.map { OrderNoteViewModel(with: $0) }
         }
 
         StoresManager.shared.dispatch(action)

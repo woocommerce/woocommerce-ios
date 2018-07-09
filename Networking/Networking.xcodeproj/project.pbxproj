@@ -9,6 +9,14 @@
 /* Begin PBXBuildFile section */
 		21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */; };
 		6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */; };
+		741B950120EBC8A700DD6E2D /* OrderCouponLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */; };
+		74C8F06420EEB44800B6EDC9 /* OrderNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C8F06320EEB44800B6EDC9 /* OrderNote.swift */; };
+		74C8F06620EEB76400B6EDC9 /* order-notes.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C8F06520EEB76400B6EDC9 /* order-notes.json */; };
+		74C8F06820EEB7BD00B6EDC9 /* OrderNotesMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */; };
+		74C8F06A20EEBC8C00B6EDC9 /* OrderMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C8F06920EEBC8C00B6EDC9 /* OrderMapperTests.swift */; };
+		74C8F06C20EEBD5D00B6EDC9 /* broken-order.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C8F06B20EEBD5D00B6EDC9 /* broken-order.json */; };
+		74C8F06E20EEC1E800B6EDC9 /* OrderNotesMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C8F06D20EEC1E700B6EDC9 /* OrderNotesMapperTests.swift */; };
+		74C8F07020EEC3A800B6EDC9 /* broken-notes.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C8F06F20EEC3A800B6EDC9 /* broken-notes.json */; };
 		B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */; };
 		B505F6CF20BEE38B00BB1B69 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6CE20BEE38B00BB1B69 /* Account.swift */; };
 		B505F6D120BEE39600BB1B69 /* AccountRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6D020BEE39600BB1B69 /* AccountRemote.swift */; };
@@ -39,6 +47,9 @@
 		B567AF2F20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2C20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift */; };
 		B567AF3020A0FB8F00AB6C62 /* DotcomRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2D20A0FB8F00AB6C62 /* DotcomRequestTests.swift */; };
 		B567AF3120A0FB8F00AB6C62 /* JetpackRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2E20A0FB8F00AB6C62 /* JetpackRequestTests.swift */; };
+		B56C1EB620EA757B00D749F9 /* SiteListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C1EB520EA757B00D749F9 /* SiteListMapper.swift */; };
+		B56C1EB820EA76F500D749F9 /* Site.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C1EB720EA76F500D749F9 /* Site.swift */; };
+		B56C1EBA20EA7D2C00D749F9 /* sites.json in Resources */ = {isa = PBXBuildFile; fileRef = B56C1EB920EA7D2C00D749F9 /* sites.json */; };
 		B5969E1520A47F99005E9DF1 /* RemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5969E1420A47F99005E9DF1 /* RemoteTests.swift */; };
 		B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */; };
 		B5BB1D1020A237FB00112D92 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0F20A237FB00112D92 /* Address.swift */; };
@@ -48,7 +59,7 @@
 		B5C6FCCF20A3592900A4F8E4 /* OrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6FCCE20A3592900A4F8E4 /* OrderItem.swift */; };
 		B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6FCD320A373BA00A4F8E4 /* OrderMapper.swift */; };
 		B5C6FCD620A3768900A4F8E4 /* order.json in Resources */ = {isa = PBXBuildFile; fileRef = B5C6FCD520A3768900A4F8E4 /* order.json */; };
-		CE20179320E3EFA7005B4C18 /* broken-order.json in Resources */ = {isa = PBXBuildFile; fileRef = CE20179220E3EFA7005B4C18 /* broken-order.json */; };
+		CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */ = {isa = PBXBuildFile; fileRef = CE20179220E3EFA7005B4C18 /* broken-orders.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +74,14 @@
 
 /* Begin PBXFileReference section */
 		69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCouponLine.swift; sourceTree = "<group>"; };
+		74C8F06320EEB44800B6EDC9 /* OrderNote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNote.swift; sourceTree = "<group>"; };
+		74C8F06520EEB76400B6EDC9 /* order-notes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-notes.json"; sourceTree = "<group>"; };
+		74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNotesMapper.swift; sourceTree = "<group>"; };
+		74C8F06920EEBC8C00B6EDC9 /* OrderMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderMapperTests.swift; sourceTree = "<group>"; };
+		74C8F06B20EEBD5D00B6EDC9 /* broken-order.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "broken-order.json"; sourceTree = "<group>"; };
+		74C8F06D20EEC1E700B6EDC9 /* OrderNotesMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNotesMapperTests.swift; sourceTree = "<group>"; };
+		74C8F06F20EEC3A800B6EDC9 /* broken-notes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "broken-notes.json"; sourceTree = "<group>"; };
 		753D6504FF01F09F6A33B73E /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
 		B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountMapper.swift; sourceTree = "<group>"; };
 		B505F6CE20BEE38B00BB1B69 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
@@ -97,6 +116,9 @@
 		B567AF2C20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedRequestTests.swift; sourceTree = "<group>"; };
 		B567AF2D20A0FB8F00AB6C62 /* DotcomRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotcomRequestTests.swift; sourceTree = "<group>"; };
 		B567AF2E20A0FB8F00AB6C62 /* JetpackRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JetpackRequestTests.swift; sourceTree = "<group>"; };
+		B56C1EB520EA757B00D749F9 /* SiteListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteListMapper.swift; sourceTree = "<group>"; };
+		B56C1EB720EA76F500D749F9 /* Site.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Site.swift; sourceTree = "<group>"; };
+		B56C1EB920EA7D2C00D749F9 /* sites.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = sites.json; sourceTree = "<group>"; };
 		B5969E1420A47F99005E9DF1 /* RemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteTests.swift; sourceTree = "<group>"; };
 		B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Woo.swift"; sourceTree = "<group>"; };
 		B5BB1D0F20A237FB00112D92 /* Address.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
@@ -108,7 +130,7 @@
 		B5C6FCD520A3768900A4F8E4 /* order.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = order.json; sourceTree = "<group>"; };
 		BD9439D9B8F2C1ED2EADAA51 /* Pods-NetworkingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C8F9A8CC6F90A8C9B5EF2EE2 /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
-		CE20179220E3EFA7005B4C18 /* broken-order.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "broken-order.json"; sourceTree = "<group>"; };
+		CE20179220E3EFA7005B4C18 /* broken-orders.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "broken-orders.json"; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -278,8 +300,11 @@
 				B505F6CE20BEE38B00BB1B69 /* Account.swift */,
 				B5BB1D0F20A237FB00112D92 /* Address.swift */,
 				B557DA1C20979E7D005962F4 /* Order.swift */,
-				B5BB1D1120A255EC00112D92 /* OrderStatus.swift */,
+				741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */,
 				B5C6FCCE20A3592900A4F8E4 /* OrderItem.swift */,
+				74C8F06320EEB44800B6EDC9 /* OrderNote.swift */,
+				B5BB1D1120A255EC00112D92 /* OrderStatus.swift */,
+				B56C1EB720EA76F500D749F9 /* Site.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -290,7 +315,11 @@
 				B505F6D420BEE4E600BB1B69 /* me.json */,
 				B559EBA920A0B5CD00836CD4 /* orders-load-all.json */,
 				B5C6FCD520A3768900A4F8E4 /* order.json */,
-				CE20179220E3EFA7005B4C18 /* broken-order.json */,
+				CE20179220E3EFA7005B4C18 /* broken-orders.json */,
+				74C8F06B20EEBD5D00B6EDC9 /* broken-order.json */,
+				74C8F06520EEB76400B6EDC9 /* order-notes.json */,
+				74C8F06F20EEC3A800B6EDC9 /* broken-notes.json */,
+				B56C1EB920EA7D2C00D749F9 /* sites.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -302,6 +331,8 @@
 				B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */,
 				B5C6FCD320A373BA00A4F8E4 /* OrderMapper.swift */,
 				B567AF2A20A0FA4200AB6C62 /* OrderListMapper.swift */,
+				B56C1EB520EA757B00D749F9 /* SiteListMapper.swift */,
+				74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -327,6 +358,8 @@
 			children = (
 				B505F6D220BEE3A500BB1B69 /* AccountMapperTests.swift */,
 				B5C6FCCC20A34B8300A4F8E4 /* OrderListMapperTests.swift */,
+				74C8F06920EEBC8C00B6EDC9 /* OrderMapperTests.swift */,
+				74C8F06D20EEC1E700B6EDC9 /* OrderNotesMapperTests.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -444,10 +477,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74C8F06620EEB76400B6EDC9 /* order-notes.json in Resources */,
+				74C8F06C20EEBD5D00B6EDC9 /* broken-order.json in Resources */,
 				B505F6D520BEE4E700BB1B69 /* me.json in Resources */,
 				B5C6FCD620A3768900A4F8E4 /* order.json in Resources */,
 				B559EBAA20A0B5CD00836CD4 /* orders-load-all.json in Resources */,
-				CE20179320E3EFA7005B4C18 /* broken-order.json in Resources */,
+				B56C1EBA20EA7D2C00D749F9 /* sites.json in Resources */,
+				CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */,
+				74C8F07020EEC3A800B6EDC9 /* broken-notes.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,11 +554,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B56C1EB620EA757B00D749F9 /* SiteListMapper.swift in Sources */,
 				B557DA1A20979D66005962F4 /* Settings.swift in Sources */,
+				741B950120EBC8A700DD6E2D /* OrderCouponLine.swift in Sources */,
+				74C8F06420EEB44800B6EDC9 /* OrderNote.swift in Sources */,
 				B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */,
 				B567AF2520A0CCA300AB6C62 /* AuthenticatedRequest.swift in Sources */,
 				B505F6EA20BEFC3700BB1B69 /* MockupNetwork.swift in Sources */,
 				B557DA0220975500005962F4 /* JetpackRequest.swift in Sources */,
+				B56C1EB820EA76F500D749F9 /* Site.swift in Sources */,
 				B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */,
 				B557DA0D20975DB1005962F4 /* WordPressAPIVersion.swift in Sources */,
 				B557DA1D20979E7D005962F4 /* Order.swift in Sources */,
@@ -533,6 +574,7 @@
 				B5C6FCCF20A3592900A4F8E4 /* OrderItem.swift in Sources */,
 				B505F6EC20BEFDC200BB1B69 /* Loader.swift in Sources */,
 				B5BB1D1220A255EC00112D92 /* OrderStatus.swift in Sources */,
+				74C8F06820EEB7BD00B6EDC9 /* OrderNotesMapper.swift in Sources */,
 				B5BB1D1020A237FB00112D92 /* Address.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
 				B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */,
@@ -550,10 +592,12 @@
 			files = (
 				B505F6D320BEE3A500BB1B69 /* AccountMapperTests.swift in Sources */,
 				B5C6FCC820A32E4800A4F8E4 /* DateFormatterWooTests.swift in Sources */,
+				74C8F06A20EEBC8C00B6EDC9 /* OrderMapperTests.swift in Sources */,
 				B567AF3120A0FB8F00AB6C62 /* JetpackRequestTests.swift in Sources */,
 				B505F6D720BEE58800BB1B69 /* AccountRemoteTests.swift in Sources */,
 				B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */,
 				B5969E1520A47F99005E9DF1 /* RemoteTests.swift in Sources */,
+				74C8F06E20EEC1E800B6EDC9 /* OrderNotesMapperTests.swift in Sources */,
 				B567AF2F20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift in Sources */,
 				B5C6FCCD20A34B8300A4F8E4 /* OrderListMapperTests.swift in Sources */,
 				B518663520A0A2E800037A38 /* Constants.swift in Sources */,

@@ -1,60 +1,31 @@
 import UIKit
 import Gridicons
+import Yosemite
+import CocoaLumberjack
+
 
 class OrdersViewController: UIViewController {
 
+    // MARK: - Properties
+
     @IBOutlet weak var tableView: UITableView!
-    var orders = [Order]()
-    var filterResults = [Order]()
+    private var orders = [Order]()
+    private var filterResults = [Order]()
     private var isUsingFilterAction = false
-    var displaysNoResults: Bool {
+
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(pullToRefresh(sender:)), for: .valueChanged)
+        return refreshControl
+    }()
+
+    // MARK: - Computed Properties
+
+    private var displaysNoResults: Bool {
         return filterResults.isEmpty && isUsingFilterAction
     }
 
-    func loadSampleOrders() -> [Order] {
-        guard let path = Bundle.main.url(forResource: "order-list", withExtension: "json") else {
-            return []
-        }
-
-        let json = try! Data(contentsOf: path)
-        let decoder = JSONDecoder()
-        return try! decoder.decode([Order].self, from: json)
-    }
-
-    func loadSingleOrder(basicOrder: Order) -> Order {
-        let resource = "order-\(basicOrder.number)"
-        if let path = Bundle.main.url(forResource: resource, withExtension: "json") {
-            do {
-                let json = try Data(contentsOf: path)
-                let decoder = JSONDecoder()
-                let orderFromJson = try decoder.decode(Order.self, from: json)
-
-                return orderFromJson
-            } catch {
-                print("error:\(error)")
-            }
-        }
-        return basicOrder
-    }
-
-    func loadOrderNotes(basicOrder: Order) -> Order {
-        let resource = "order-notes-\(basicOrder.number)"
-        guard let path = Bundle.main.url(forResource: resource, withExtension: "json") else {
-            return basicOrder
-        }
-
-        do {
-            let json = try Data(contentsOf: path)
-            let decoder = JSONDecoder()
-            let orderNotesFromJson = try decoder.decode([OrderNote].self, from: json)
-            var order = basicOrder
-            order.notes = orderNotesFromJson
-            return order
-        } catch {
-            print("error:\(error)")
-            return basicOrder
-        }
-    }
+    // MARK: - View Lifecycle
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -66,8 +37,16 @@ class OrdersViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
-        orders = loadSampleOrders()
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if orders.isEmpty {
+            syncOrders()
+        }
+    }
+
+    // MARK: - User Interface Initialization
 
     func configureNavigation() {
         title = NSLocalizedString("Orders", comment: "Orders title")
@@ -92,7 +71,10 @@ class OrdersViewController: UIViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         let nib = UINib(nibName: NoResultsTableViewCell.reuseIdentifier, bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: NoResultsTableViewCell.reuseIdentifier)
+        tableView.refreshControl = refreshControl
     }
+
+    // MARK: - Actions
 
     @objc func rightButtonTapped() {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -106,13 +88,18 @@ class OrdersViewController: UIViewController {
         }
         actionSheet.addAction(allAction)
 
-        for status in OrderStatus.allOrderStatuses {
+        for status in OrderStatusViewModel.allOrderStatuses {
             let action = UIAlertAction(title: status.description, style: .default) { action in
                 self.filterAction(status)
             }
             actionSheet.addAction(action)
         }
         present(actionSheet, animated: true)
+    }
+
+    @objc func pullToRefresh(sender: UIRefreshControl) {
+        clearOrders()
+        syncOrders()
     }
 
     func filterAction(_ status: OrderStatus) {
@@ -142,7 +129,43 @@ class OrdersViewController: UIViewController {
     }
 }
 
-// MARK: UITableViewDataSource
+
+// MARK: - Sync'ing Helpers
+//
+private extension OrdersViewController {
+    func syncOrders() {
+        // FIXME: need "current" site id
+        let action = OrderAction.retrieveOrders(siteID: 131820877) { [weak self] (orders, error) in
+            self?.refreshControl.endRefreshing()
+            guard error == nil else {
+                if let error = error {
+                    DDLogError("⛔️ Error synchronizing orders: \(error)")
+                }
+                return
+            }
+            guard let orders = orders else {
+                return
+            }
+            self?.orders = orders
+            self?.tableView.reloadData()
+        }
+
+        if refreshControl.isRefreshing {
+            refreshControl.endRefreshing()
+        }
+        refreshControl.beginRefreshing()
+        StoresManager.shared.dispatch(action)
+    }
+
+    func clearOrders() {
+        orders = []
+        isUsingFilterAction = false
+        tableView.reloadData()
+    }
+}
+
+
+// MARK: - UITableViewDataSource Conformance
 //
 extension OrdersViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -167,7 +190,7 @@ extension OrdersViewController: UITableViewDataSource {
         }
         let order = orderAtIndexPath(indexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as! OrderListCell
-        cell.configureCell(order: order)
+        cell.configureCell(order: OrderDetailsViewModel(order: order))
         return cell
     }
 
@@ -181,7 +204,8 @@ extension OrdersViewController: UITableViewDataSource {
     }
 }
 
-// MARK: UITableViewDelegate
+
+// MARK: - UITableViewDelegate Conformance
 //
 extension OrdersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -201,18 +225,21 @@ extension OrdersViewController: UITableViewDelegate {
         if segue.identifier == Constants.orderDetailsSegue {
             if let singleOrderViewController = segue.destination as? OrderDetailsViewController {
                 let indexPath = sender as! IndexPath
-                let order = orderAtIndexPath(indexPath)
-                let singleOrder = loadSingleOrder(basicOrder: order)
-                let detailedOrder = loadOrderNotes(basicOrder: singleOrder)
-                singleOrderViewController.order = detailedOrder
+                // FIXME: Order notes loading!
+//                let order = orderAtIndexPath(indexPath)
+//                let singleOrder = loadSingleOrder(basicOrder: order)
+//                let detailedOrder = loadOrderNotes(basicOrder: singleOrder)
+//                singleOrderViewController.order = detailedOrder
+                singleOrderViewController.order = orderAtIndexPath(indexPath)
             }
         }
     }
 }
 
-// MARK: Constants
+
+// MARK: - Constants
 //
-extension OrdersViewController {
+private extension OrdersViewController {
     struct Constants {
         static let rowHeight = CGFloat(86)
         static let orderDetailsSegue = "ShowOrderDetailsViewController"

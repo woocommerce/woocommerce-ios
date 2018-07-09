@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import Gridicons
 import Contacts
+import Yosemite
 
 enum ContactType {
     case billing

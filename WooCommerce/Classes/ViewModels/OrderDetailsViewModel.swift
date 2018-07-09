@@ -1,16 +1,22 @@
 import Foundation
 import UIKit
 import Gridicons
+import Yosemite
 
 class OrderDetailsViewModel {
-    private let order: Order
-    private let couponLines: [CouponLine]?
-    private let notes: [OrderNote]?
+    let orderStatusViewModel: OrderStatusViewModel
+    let order: Order
+    let couponLines: [OrderCouponLine]?
+    let notes: [OrderNote]?
 
     init(order: Order) {
         self.order = order
-        self.couponLines = order.couponLines
-        self.notes = order.notes
+        self.couponLines = order.coupons
+        self.orderStatusViewModel = OrderStatusViewModel(orderStatus: order.status)
+
+        // FIXME: Add order notes to remote/models
+        //self.notes = order.notes
+        self.notes = nil
     }
 
     var summaryTitle: String {
@@ -18,24 +24,12 @@ class OrderDetailsViewModel {
     }
 
     var summaryDateCreated: String {
-        // "date_created": "2017-03-21T16:46:41",
-        let format = ISO8601DateFormatter()
-        format.formatOptions = [.withFullDate, .withTime, .withDashSeparatorInDate, .withColonSeparatorInTime]
-        let date = format.date(from: order.dateUpdatedString)
-
         let shortFormat = DateFormatter()
         shortFormat.dateFormat = "HH:mm:ss"
         shortFormat.timeStyle = .short
-
-        guard let orderDate = date else {
-            NSLog("Order date not found!")
-            return order.dateUpdatedString
-        }
-
-        let time = shortFormat.string(from: orderDate)
-
-        let summaryDate = String.localizedStringWithFormat(NSLocalizedString("Updated on %@ at %@", comment: "Order updated summary date"), orderDate.mediumString(), time)
-        return summaryDate
+        let time = shortFormat.string(from: order.dateModified)
+        return String.localizedStringWithFormat(NSLocalizedString("Updated on %@ at %@",
+                                                                  comment: "Order updated summary date"), order.dateModified.mediumString(), time)
     }
 
     var items: [OrderItem] {
@@ -49,11 +43,11 @@ class OrderDetailsViewModel {
     }
 
     var paymentBackgroundColor: UIColor {
-        return order.status.backgroundColor // MVVM: who should own color responsibilities? Maybe address this down the road.
+        return orderStatusViewModel.backgroundColor
     }
 
     var paymentBorderColor: CGColor {
-        return order.status.borderColor // same here
+        return orderStatusViewModel.borderColor
     }
 
     var customerNote: String? {
@@ -72,8 +66,17 @@ class OrderDetailsViewModel {
 
     let subtotalLabel = NSLocalizedString("Subtotal", comment: "Subtotal label for payment view")
 
+    var subtotal: String {
+        let subtotal = order.items.reduce(0.0) { (output, item) in
+            let itemSubtotal = Double(item.subtotal) ?? 0.0
+            return output + itemSubtotal
+        }
+
+        return String(format: "%.2f", subtotal)
+    }
+
     var subtotalValue: String {
-        return order.currencySymbol + order.subtotal
+        return currencySymbol + subtotal
     }
 
     var discountLabel: String? {
@@ -81,13 +84,13 @@ class OrderDetailsViewModel {
     }
 
     var discountValue: String? {
-        return Double(order.discountTotal) != 0 ? "−" + order.currencySymbol + order.discountTotal : nil
+        return Double(order.discountTotal) != 0 ? "−" + currencySymbol + order.discountTotal : nil
     }
 
     let shippingLabel = NSLocalizedString("Shipping", comment: "Shipping label for payment view")
 
     var shippingValue: String {
-        return order.currencySymbol + order.shippingTotal
+        return currencySymbol + order.shippingTotal
     }
 
     var taxesLabel: String? {
@@ -95,17 +98,22 @@ class OrderDetailsViewModel {
     }
 
     var taxesValue: String? {
-        return Double(order.totalTax) != 0 ? order.currencySymbol + order.totalTax : nil
+        return Double(order.totalTax) != 0 ? currencySymbol + order.totalTax : nil
     }
 
     let totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
 
     var totalValue: String {
-        return order.currencySymbol + order.total
+        return currencySymbol + order.total
     }
 
     var paymentSummary: String {
         return NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
+    }
+
+    var currencySymbol: String {
+        let locale = NSLocale(localeIdentifier: order.currency)
+        return locale.displayName(forKey: .currencySymbol, value: order.currency) ?? String()
     }
 
     let addNoteIcon = Gridicon.iconOfType(.addOutline)
@@ -124,7 +132,7 @@ class OrderDetailsViewModel {
 
     /// MARK: Private
     ///
-    private func summarizeCoupons(from lines: [CouponLine]?) -> String? {
+    private func summarizeCoupons(from lines: [OrderCouponLine]?) -> String? {
         guard let couponLines = lines else {
             return nil
         }

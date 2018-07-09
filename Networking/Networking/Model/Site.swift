@@ -1,0 +1,60 @@
+import Foundation
+
+
+/// Represents a WordPress.com Site.
+///
+public struct Site: Decodable {
+
+    /// WordPress.com Site Identifier.
+    ///
+    let siteID: Int
+
+    /// Site's Name.
+    ///
+    let name: String
+
+    /// Site's Description.
+    ///
+    let description: String
+
+    /// Site's URL.
+    ///
+    let url: String
+
+    /// Indicates if this site hosts a WordPress Store.
+    ///
+    let isWordPressStore: Bool
+
+
+    /// Designated Initializer.
+    ///
+    public init(from decoder: Decoder) throws {
+        let siteContainer = try decoder.container(keyedBy: SiteKeys.self)
+
+        siteID = try siteContainer.decode(Int.self, forKey: .siteID)
+        name = try siteContainer.decode(String.self, forKey: .name)
+        description = try siteContainer.decode(String.self, forKey: .description)
+        url = try siteContainer.decode(String.self, forKey: .url)
+
+        let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
+        isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
+    }
+}
+
+
+/// Defines all of the Site CodingKeys.
+///
+private extension Site {
+
+    enum SiteKeys: String, CodingKey {
+        case siteID         = "ID"
+        case name           = "name"
+        case description    = "description"
+        case url            = "URL"
+        case options        = "options"
+    }
+
+    enum OptionKeys: String, CodingKey {
+        case isWordPressStore = "is_wpcom_store"
+    }
+}

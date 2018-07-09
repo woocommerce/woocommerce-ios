@@ -130,6 +130,7 @@ import WordPressUI
         titleLabel?.font = style.titleFont
         titleLabel?.adjustsFontForContentSizeCategory = true
         titleLabel?.textAlignment = .center
+        titleLabel?.font = WPStyleGuide.fontForTextStyle(.headline, maximumPointSize: Metrics.maxFontSize)
     }
 }
 
@@ -145,5 +146,6 @@ extension NUXButton {
 
     struct Metrics {
         static let backgroundShadowOffset = CGSize(width: 0, height: 2)
+        static let maxFontSize = CGFloat(22)
     }
 }

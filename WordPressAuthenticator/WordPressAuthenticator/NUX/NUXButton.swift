@@ -41,9 +41,6 @@ import WordPressUI
         } else {
             activityIndicator.stopAnimating()
         }
-        configureBackgrounds()
-        configureTitleColors()
-        activityIndicator.activityIndicatorViewStyle = .gray
         setNeedsLayout()
     }
 
@@ -71,6 +68,7 @@ import WordPressUI
     open override func awakeFromNib() {
         super.awakeFromNib()
         configureAppearance()
+        activityIndicator.activityIndicatorViewStyle = .gray
     }
 
     /// Setup: shorter reference for style
@@ -143,7 +141,7 @@ extension NUXButton {
         }
     }
 
-    struct Metrics {
+    private struct Metrics {
         static let backgroundShadowOffset = CGSize(width: 0, height: 2)
         static let maxFontSize = CGFloat(22)
     }

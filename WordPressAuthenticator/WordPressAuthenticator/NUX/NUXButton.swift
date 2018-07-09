@@ -86,7 +86,7 @@ import WordPressUI
         configureTitleLabel()
     }
 
-    /// Setup: FancyButton's Default Settings
+    /// Setup: NUXButton's Default Settings
     ///
     private func configureInsets() {
         contentEdgeInsets = UIImage.DefaultRenderMetrics.contentInsets

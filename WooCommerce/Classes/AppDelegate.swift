@@ -31,6 +31,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 
+    // MARK: - AppDelegate Methods
+
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) -> Bool {
 
         // Setup the Interface!
@@ -43,6 +45,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Display the Authentication UI
         displayAuthenticatorIfNeeded()
+
+        // Yosemite Initialization
+        synchronizeEntitiesIfPossible()
 
         return true
     }
@@ -180,5 +185,15 @@ extension AppDelegate {
         }
 
         authenticationManager.displayAuthentication(from: rootViewController)
+    }
+
+    /// Whenever we're in an Authenticated state, let's Sync all of the WC-Y entities.
+    ///
+    func synchronizeEntitiesIfPossible() {
+        guard StoresManager.shared.isAuthenticated else {
+            return
+        }
+
+        StoresManager.shared.synchronizeEntities()
     }
 }

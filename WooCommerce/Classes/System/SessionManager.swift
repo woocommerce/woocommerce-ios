@@ -22,13 +22,17 @@ struct SessionManager {
     ///
     private let keychain: Keychain
 
-    /// Active Credentials.
+    /// Default Credentials.
     ///
-    var credentials: Credentials? {
+    var defaultCredentials: Credentials? {
         get {
             return loadCredentials()
         }
         set {
+            guard newValue != defaultCredentials else {
+                return
+            }
+
             guard let credentials = newValue else {
                 removeCredentials()
                 return
@@ -38,14 +42,28 @@ struct SessionManager {
         }
     }
 
-    /// Active Store's Site ID.
+    /// Ephemeral: Default Account.
     ///
-    var storeID: Int? {
+    var defaultAccount: Yosemite.Account? {
+        didSet {
+            defaults[.defaultAccountID] = defaultAccount?.userID
+        }
+    }
+
+    /// Default AccountID: Returns the last known Account's User ID.
+    ///
+    var defaultAccountID: Int? {
+        return defaults[.defaultAccountID]
+    }
+
+    /// Default StoreID.
+    ///
+    var defaultStoreID: Int? {
         get {
             return defaults[.defaultStoreID]
         }
         set {
-            defaults[.defaultStoreID] = storeID
+            defaults[.defaultStoreID] = defaultStoreID
         }
     }
 
@@ -60,8 +78,9 @@ struct SessionManager {
     /// Nukes all of the known Session's properties.
     ///
     mutating func reset() {
-        credentials = nil
-        storeID = nil
+        defaultAccount = nil
+        defaultCredentials = nil
+        defaultStoreID = nil
     }
 }
 

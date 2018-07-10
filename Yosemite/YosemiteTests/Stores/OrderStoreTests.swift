@@ -4,7 +4,7 @@ import XCTest
 @testable import Storage
 
 
-/// AccountStore Unit Tests
+/// OrderStore Unit Tests
 ///
 class OrderStoreTests: XCTestCase {
 

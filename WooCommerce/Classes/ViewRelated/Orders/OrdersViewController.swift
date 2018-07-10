@@ -8,6 +8,10 @@ class OrdersViewController: UIViewController {
 
     // MARK: - Properties
 
+    // FIXME: Need "current" site id
+    let siteID: Int = 131820877
+    ///
+
     @IBOutlet weak var tableView: UITableView!
     private var orders = [Order]()
     private var filterResults = [Order]()
@@ -134,8 +138,7 @@ class OrdersViewController: UIViewController {
 //
 private extension OrdersViewController {
     func syncOrders() {
-        // FIXME: need "current" site id
-        let action = OrderAction.retrieveOrders(siteID: 131820877) { [weak self] (orders, error) in
+        let action = OrderAction.retrieveOrders(siteID: siteID) { [weak self] (orders, error) in
             self?.refreshControl.endRefreshing()
             guard error == nil else {
                 if let error = error {
@@ -190,7 +193,7 @@ extension OrdersViewController: UITableViewDataSource {
         }
         let order = orderAtIndexPath(indexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as! OrderListCell
-        cell.configureCell(order: OrderDetailsViewModel(order: order))
+        cell.configureCell(order: OrderDetailsViewModel(siteID: siteID, order: order))
         return cell
     }
 
@@ -225,12 +228,7 @@ extension OrdersViewController: UITableViewDelegate {
         if segue.identifier == Constants.orderDetailsSegue {
             if let singleOrderViewController = segue.destination as? OrderDetailsViewController {
                 let indexPath = sender as! IndexPath
-                // FIXME: Order notes loading!
-//                let order = orderAtIndexPath(indexPath)
-//                let singleOrder = loadSingleOrder(basicOrder: order)
-//                let detailedOrder = loadOrderNotes(basicOrder: singleOrder)
-//                singleOrderViewController.order = detailedOrder
-                singleOrderViewController.order = orderAtIndexPath(indexPath)
+                singleOrderViewController.viewModel = OrderDetailsViewModel(siteID: siteID, order: orderAtIndexPath(indexPath))
             }
         }
     }

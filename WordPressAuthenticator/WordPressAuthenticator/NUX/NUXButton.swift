@@ -125,7 +125,7 @@ import WordPressUI
     /// Setup: TitleLabel
     ///
     private func configureTitleLabel() {
-        titleLabel?.font = WPStyleGuide.fontForTextStyle(.headline, maximumPointSize: Metrics.maxFontSize)
+        titleLabel?.font = WPFontManager.systemSemiBoldFont(ofSize: 17.0)
         titleLabel?.adjustsFontForContentSizeCategory = true
         titleLabel?.textAlignment = .center
     }

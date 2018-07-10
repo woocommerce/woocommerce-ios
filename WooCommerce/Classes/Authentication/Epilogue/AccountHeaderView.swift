@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 
 
+
 /// AccountHeaderView: Displays an Account's Details: [Gravatar + Name + Username]
 ///
 class AccountHeaderView: UIView {

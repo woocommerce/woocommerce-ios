@@ -24,7 +24,7 @@ class StorePickerViewController: UIViewController {
     /// Header View: Displays all of the Account Details
     ///
     private let accountHeaderView: AccountHeaderView = {
-        return AccountHeaderView.loadFromNib()
+        return AccountHeaderView.instantiateFromNib()
     }()
 
     /// Main tableView
@@ -40,7 +40,7 @@ class StorePickerViewController: UIViewController {
     @IBOutlet private var actionBackgroundView: UIView! {
         didSet {
             actionBackgroundView.layer.masksToBounds = false
-            actionBackgroundView.layer.shadowOpacity = Constants.backgroundShadowOpacity
+            actionBackgroundView.layer.shadowOpacity = StorePickerConstants.backgroundShadowOpacity
         }
     }
 
@@ -64,7 +64,8 @@ class StorePickerViewController: UIViewController {
         super.viewDidLoad()
 
         setup(mainView: view)
-        setup(headerView: accountHeaderView)
+        registerTableViewCells()
+        displayAccountDetails(in: accountHeaderView)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -87,7 +88,17 @@ private extension StorePickerViewController {
         mainView.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
-    func setup(headerView: AccountHeaderView) {
+    func registerTableViewCells() {
+        let cells = [
+            EmptyStoresTableViewCell.reuseIdentifier: EmptyStoresTableViewCell.loadNib()
+        ]
+
+        for (reuseIdentifier, nib) in cells {
+            tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
+        }
+    }
+
+    func displayAccountDetails(in headerView: AccountHeaderView) {
         guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
             return
         }
@@ -111,11 +122,35 @@ extension StorePickerViewController {
 }
 
 
-// MARK: - Nested Types
+// MARK: - Action Handlers
 //
-extension StorePickerViewController {
+extension StorePickerViewController: UITableViewDataSource {
 
-    struct Constants {
-        static let backgroundShadowOpacity = Float(0.2)
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
     }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return tableView.dequeueReusableCell(withIdentifier: EmptyStoresTableViewCell.reuseIdentifier, for: indexPath)
+    }
+}
+
+
+// MARK: - StorePickerConstants: Contains all of the constants required by the Picker.
+//
+private enum StorePickerConstants {
+    static let backgroundShadowOpacity = Float(0.2)
+}
+
+
+// MARK: - Represents the StorePickerViewController's Internal State.
+//
+private enum StorePickerState {
+    case empty
+    case single
+    case multiple
 }

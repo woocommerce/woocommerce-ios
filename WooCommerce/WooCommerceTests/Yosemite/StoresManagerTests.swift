@@ -28,7 +28,7 @@ class StoresManagerTests: XCTestCase {
     ///
     func testInitialStateIsAuthenticatedAssumingCredentialsWereNotMissing() {
         var session = SessionManager.testingInstance
-        session.credentials = Settings.credentials
+        session.defaultCredentials = Settings.credentials
 
         let manager = StoresManager.testingInstance
         XCTAssertTrue(manager.isAuthenticated)
@@ -39,7 +39,7 @@ class StoresManagerTests: XCTestCase {
     ///
     func testAuthenticateEffectivelyTogglesStoreManagerToAuthenticatedState() {
         let manager = StoresManager.testingInstance
-        manager.authenticate(username: Settings.credentials.username, authToken: Settings.credentials.authToken)
+        manager.authenticate(credentials: Settings.credentials)
 
         XCTAssertTrue(manager.isAuthenticated)
     }
@@ -49,7 +49,7 @@ class StoresManagerTests: XCTestCase {
     ///
     func testDeauthenticateEffectivelyTogglesStoreManagerToDeauthenticatedState() {
         let manager = StoresManager.testingInstance
-        manager.authenticate(username: Settings.credentials.username, authToken: Settings.credentials.authToken)
+        manager.authenticate(credentials: Settings.credentials)
         manager.deauthenticate()
 
         XCTAssertFalse(manager.isAuthenticated)
@@ -60,10 +60,10 @@ class StoresManagerTests: XCTestCase {
     ///
     func testAuthenticatePersistsDefaultCredentialsInKeychain() {
         let manager = StoresManager.testingInstance
-        manager.authenticate(username: Settings.credentials.username, authToken: Settings.credentials.authToken)
+        manager.authenticate(credentials: Settings.credentials)
 
         let session = SessionManager.testingInstance
-        XCTAssertEqual(session.credentials, Settings.credentials)
+        XCTAssertEqual(session.defaultCredentials, Settings.credentials)
     }
 }
 

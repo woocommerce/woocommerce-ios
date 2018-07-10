@@ -151,8 +151,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
 
-        StoresManager.shared.authenticate(username: username, authToken: authToken)
-        onCompletion(nil)
+        StoresManager.shared
+            .authenticate(credentials: .init(username: username, authToken: authToken))
+            .synchronizeEntities(onCompletion: onCompletion)
     }
 
     /// Tracks a given Analytics Event.

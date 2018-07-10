@@ -7,4 +7,5 @@ import Networking
 //
 public enum AccountAction: Action {
     case synchronizeAccount(onCompletion: (Account?, Error?) -> Void)
+    case loadAccount(userID: Int, onCompletion: (Account?) -> Void)
 }

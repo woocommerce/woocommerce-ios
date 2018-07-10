@@ -9,10 +9,6 @@ import Networking
 //
 class AuthenticatedState: StoresManagerState {
 
-    /// Active Credentials
-    ///
-    private let credentials: Credentials
-
     /// Dispatcher: Glues all of the Stores!
     ///
     private let dispatcher = Dispatcher()
@@ -33,8 +29,16 @@ class AuthenticatedState: StoresManagerState {
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
+    }
 
-        self.credentials = credentials
+    /// Convenience Initializer
+    ///
+    convenience init?(sessionManager: SessionManager) {
+        guard let credentials = sessionManager.defaultCredentials else {
+            return nil
+        }
+
+        self.init(credentials: credentials)
     }
 
 

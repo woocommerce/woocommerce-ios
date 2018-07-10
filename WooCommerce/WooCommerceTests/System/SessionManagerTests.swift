@@ -16,23 +16,23 @@ class SessionManagerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        manager.credentials = nil
+        manager.defaultCredentials = nil
     }
 
 
     /// Verifies that `loadDefaultCredentials` returns nil whenever there are no default credentials stored.
     ///
     func testLoadDefaultCredentialsReturnsNilWhenThereAreNoDefaultCredentials() {
-        XCTAssertNil(manager.credentials)
+        XCTAssertNil(manager.defaultCredentials)
     }
 
 
     /// Verifies that `loadDefaultCredentials` effectively returns the last stored credentials
     ///
     func testDefaultCredentialsAreProperlyPersisted() {
-        manager.credentials = Settings.credentials1
+        manager.defaultCredentials = Settings.credentials1
 
-        let retrieved = manager.credentials
+        let retrieved = manager.defaultCredentials
         XCTAssertEqual(retrieved?.authToken, Settings.credentials1.authToken)
         XCTAssertEqual(retrieved?.username, Settings.credentials1.username)
     }
@@ -41,21 +41,21 @@ class SessionManagerTests: XCTestCase {
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {
-        manager.credentials = Settings.credentials1
-        manager.credentials = nil
+        manager.defaultCredentials = Settings.credentials1
+        manager.defaultCredentials = nil
 
-        XCTAssertNil(manager.credentials)
+        XCTAssertNil(manager.defaultCredentials)
     }
 
 
     /// Verifies that `saveDefaultCredentials` overrides previous stored credentials
     ///
     func testDefaultCredentialsCanBeUpdated() {
-        manager.credentials = Settings.credentials1
-        XCTAssertEqual(manager.credentials, Settings.credentials1)
+        manager.defaultCredentials = Settings.credentials1
+        XCTAssertEqual(manager.defaultCredentials, Settings.credentials1)
 
-        manager.credentials = Settings.credentials2
-        XCTAssertEqual(manager.credentials, Settings.credentials2)
+        manager.defaultCredentials = Settings.credentials2
+        XCTAssertEqual(manager.defaultCredentials, Settings.credentials2)
     }
 }
 

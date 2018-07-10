@@ -23,6 +23,8 @@ public class AccountStore: Store {
         }
 
         switch action {
+        case .loadAccount(let userID, let onCompletion):
+            loadAccount(userID: userID, onCompletion: onCompletion)
         case .synchronizeAccount(let onCompletion):
             synchronizeAccount(onCompletion: onCompletion)
         case .synchronizeSites(let onCompletion):
@@ -66,6 +68,13 @@ private extension AccountStore {
             self?.upsertStoredSites(readOnlySites: sites)
             onCompletion(nil)
         }
+    }
+
+    /// Loads the Account associated with the specified userID (if any!).
+    ///
+    func loadAccount(userID: Int, onCompletion: @escaping (Account?) -> Void) {
+        let account = storageManager.viewStorage.loadAccount(userId: userID)?.toReadOnly()
+        onCompletion(account)
     }
 }
 

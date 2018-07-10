@@ -1,54 +1,147 @@
 import UIKit
 import WordPressShared
+import WordPressUI
 
 /// A stylized button used by Login controllers. It also can display a `UIActivityIndicatorView`.
-@objc open class NUXButton: NUXSubmitButton {
-    // MARK: - Configuration
-    fileprivate let horizontalInset: CGFloat = 20
-    fileprivate let verticalInset: CGFloat = 12
-    fileprivate let maxFontSize: CGFloat = 22
+@objc open class NUXButton: UIButton {
+    @objc var isAnimating: Bool {
+        return activityIndicator.isAnimating
+    }
 
-    /// Configure the appearance of the button.
+    @objc let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(activityIndicatorStyle: .white)
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+
+    override open func layoutSubviews() {
+        super.layoutSubviews()
+
+        if activityIndicator.isAnimating {
+            titleLabel?.frame = CGRect.zero
+
+            var frm = activityIndicator.frame
+            frm.origin.x = (frame.width - frm.width) / 2.0
+            frm.origin.y = (frame.height - frm.height) / 2.0
+            activityIndicator.frame = frm.integral
+        }
+    }
+
+    // MARK: - Instance Methods
+
+
+    /// Toggles the visibility of the activity indicator.  When visible the button
+    /// title is hidden.
     ///
-    override open func configureButton() {
-        contentEdgeInsets = UIEdgeInsets(top: verticalInset, left: horizontalInset, bottom: verticalInset, right: horizontalInset)
+    /// - Parameter show: True to show the spinner. False hides it.
+    ///
+    open func showActivityIndicator(_ show: Bool) {
+        if show {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
+        }
+        setNeedsLayout()
+    }
 
-        titleLabel?.font = WPStyleGuide.fontForTextStyle(.headline, maximumPointSize: maxFontSize)
+    func didChangePreferredContentSize() {
         titleLabel?.adjustsFontForContentSizeCategory = true
-        titleLabel?.textAlignment = .center
+    }
 
+    /// Indicates if the current instance should be rendered with the "Primary" Style.
+    ///
+    @IBInspectable public var isPrimary: Bool = false {
+        didSet {
+            configureBackgrounds()
+            configureTitleColors()
+        }
+    }
+
+
+    // MARK: - LifeCycle Methods
+
+    open override func didMoveToWindow() {
+        super.didMoveToWindow()
+        configureAppearance()
+    }
+
+    open override func awakeFromNib() {
+        super.awakeFromNib()
+        configureAppearance()
+        activityIndicator.activityIndicatorViewStyle = .gray
+    }
+
+    /// Setup: shorter reference for style
+    ///
+    private let style = WordPressAuthenticator.shared.style
+
+    /// Setup: Everything = [Insets, Backgrounds, titleColor(s), titleLabel]
+    ///
+    private func configureAppearance() {
+        configureInsets()
+        configureBackgrounds()
+        configureTitleColors()
+        configureTitleLabel()
+    }
+
+    /// Setup: NUXButton's Default Settings
+    ///
+    private func configureInsets() {
+        contentEdgeInsets = UIImage.DefaultRenderMetrics.contentInsets
+    }
+
+    /// Setup: BackgroundImage
+    ///
+    private func configureBackgrounds() {
         let normalImage: UIImage
-        let highlightImage: UIImage
-        let titleColorNormal: UIColor
+        let highlightedImage: UIImage
+        let disabledImage = UIImage.renderBackgroundImage(fill: style.disabledBackgroundColor, border: style.disabledBorderColor)
 
         if isPrimary {
-            normalImage = .beveledBlueButtonImage
-            highlightImage = .belevedBlueButtonDownImage
-
-            titleColorNormal = UIColor.white
+            normalImage = UIImage.renderBackgroundImage(fill: style.primaryNormalBackgroundColor, border: style.primaryNormalBorderColor)
+            highlightedImage = UIImage.renderBackgroundImage(fill: style.primaryHighlightBackgroundColor, border: style.primaryHighlightBorderColor)
         } else {
-            normalImage = .beveledSecondaryButtonImage
-            highlightImage = .beveledSecondaryButtonDownImage
-
-            titleColorNormal = WPStyleGuide.darkGrey()
+            normalImage = UIImage.renderBackgroundImage(fill: style.secondaryNormalBackgroundColor, border: style.secondaryNormalBorderColor)
+            highlightedImage = UIImage.renderBackgroundImage(fill: style.secondaryHighlightBackgroundColor, border: style.secondaryHighlightBorderColor)
         }
 
-        let disabledImage = UIImage.beveledDisabledButtonImage
-        let titleColorDisabled = WPStyleGuide.greyLighten30()
-
         setBackgroundImage(normalImage, for: .normal)
-        setBackgroundImage(highlightImage, for: .highlighted)
+        setBackgroundImage(highlightedImage, for: .highlighted)
         setBackgroundImage(disabledImage, for: .disabled)
-
-        setTitleColor(titleColorNormal, for: .normal)
-        setTitleColor(titleColorNormal, for: .highlighted)
-        setTitleColor(titleColorDisabled, for: .disabled)
-
-        activityIndicator.activityIndicatorViewStyle = .gray
 
         addSubview(activityIndicator)
     }
 
-    override open func configureBorderColor() {
+    /// Setup: TitleColor
+    ///
+    private func configureTitleColors() {
+        let titleColorNormal = isPrimary ? style.primaryTitleColor : style.secondaryTitleColor
+
+        setTitleColor(titleColorNormal, for: .normal)
+        setTitleColor(titleColorNormal, for: .highlighted)
+        setTitleColor(style.disabledTitleColor, for: .disabled)
+    }
+
+    /// Setup: TitleLabel
+    ///
+    private func configureTitleLabel() {
+        titleLabel?.font = WPFontManager.systemSemiBoldFont(ofSize: 17.0)
+        titleLabel?.adjustsFontForContentSizeCategory = true
+        titleLabel?.textAlignment = .center
+    }
+}
+
+// MARK: -
+//
+extension NUXButton {
+    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
+            didChangePreferredContentSize()
+        }
+    }
+
+    private struct Metrics {
+        static let maxFontSize = CGFloat(22)
     }
 }

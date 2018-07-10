@@ -10,7 +10,7 @@ import WordPressShared
 class LoginLinkRequestViewController: LoginViewController {
     @IBOutlet var gravatarView: UIImageView?
     @IBOutlet var label: UILabel?
-    @IBOutlet var sendLinkButton: NUXSubmitButton?
+    @IBOutlet var sendLinkButton: NUXButton?
     @IBOutlet var usePasswordButton: UIButton?
     override var sourceTag: WordPressSupportSourceTag {
         get {

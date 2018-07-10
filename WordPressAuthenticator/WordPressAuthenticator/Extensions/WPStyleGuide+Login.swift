@@ -102,8 +102,8 @@ extension WPStyleGuide {
     class func googleLoginButton() -> UIButton {
         let baseString =  NSLocalizedString("{G} Log in with Google.", comment: "Label for button to log in using Google. The {G} will be replaced with the Google logo.")
 
-        let attrStrNormal = googleButtonString(baseString, linkColor: WPStyleGuide.wordPressBlue())
-        let attrStrHighlight = googleButtonString(baseString, linkColor: WPStyleGuide.lightBlue())
+        let attrStrNormal = googleButtonString(baseString, linkColor: WordPressAuthenticator.shared.style.primaryNormalBorderColor)
+        let attrStrHighlight = googleButtonString(baseString, linkColor: WordPressAuthenticator.shared.style.primaryHighlightBorderColor)
 
         let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
 
@@ -117,8 +117,8 @@ extension WPStyleGuide {
     class func selfHostedLoginButton() -> UIButton {
         let baseString =  NSLocalizedString("Log in by entering your site address.", comment: "Label for button to log in using your site address.")
 
-        let attrStrNormal = selfHostedButtonString(baseString, linkColor: WPStyleGuide.wordPressBlue())
-        let attrStrHighlight = selfHostedButtonString(baseString, linkColor: WPStyleGuide.lightBlue())
+        let attrStrNormal = selfHostedButtonString(baseString, linkColor:  WordPressAuthenticator.shared.style.primaryNormalBorderColor)
+        let attrStrHighlight = selfHostedButtonString(baseString, linkColor: WordPressAuthenticator.shared.style.primaryHighlightBorderColor)
 
         let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
 

@@ -50,7 +50,7 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
     }
 
     // properties specific to NUXViewController
-    @IBOutlet var submitButton: NUXSubmitButton?
+    @IBOutlet var submitButton: NUXButton?
     @IBOutlet var errorLabel: UILabel?
 
     func configureSubmitButton(animating: Bool) {

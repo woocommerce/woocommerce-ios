@@ -8,35 +8,6 @@ import WordPressUI
 ///
 class StorePickerViewController: UIViewController {
 
-    /// White-Background View, to be placed surrounding the bottom area.
-    ///
-    @IBOutlet private var buttonBackgroundView: UIView! {
-        didSet {
-            buttonBackgroundView.layer.masksToBounds = false
-            buttonBackgroundView.layer.shadowOpacity = Constants.backgroundShadowOpacity
-        }
-    }
-
-    /// Account's Gravatar.
-    ///
-    @IBOutlet private var gravatarImageView: UIImageView! {
-        didSet {
-            gravatarImageView.image = .gravatarPlaceholderImage
-        }
-    }
-
-    /// Account's Full Name.
-    ///
-    @IBOutlet private var fullnameLabel: UILabel!
-
-    /// Account's Username.
-    ///
-    @IBOutlet private var usernameLabel: UILabel! {
-        didSet {
-            usernameLabel.textColor = StyleManager.wooGreyTextMin
-        }
-    }
-
     /// No Results Placeholder Image
     ///
     @IBOutlet private var noResultsImageView: UIImageView!
@@ -50,11 +21,34 @@ class StorePickerViewController: UIViewController {
         }
     }
 
+    /// Header View: Displays all of the Account Details
+    ///
+    private let accountHeaderView: AccountHeaderView = {
+        return AccountHeaderView.loadFromNib()
+    }()
+
+    /// Main tableView
+    ///
+    @IBOutlet private var tableView: UITableView! {
+        didSet {
+            tableView.tableHeaderView = accountHeaderView
+        }
+    }
+
+    /// White-Background View, to be placed surrounding the bottom area.
+    ///
+    @IBOutlet private var actionBackgroundView: UIView! {
+        didSet {
+            actionBackgroundView.layer.masksToBounds = false
+            actionBackgroundView.layer.shadowOpacity = Constants.backgroundShadowOpacity
+        }
+    }
+
     /// Default Action Button.
     ///
-    @IBOutlet private var continueButton: UIButton! {
+    @IBOutlet private var actionButton: UIButton! {
         didSet {
-            continueButton.backgroundColor = .clear
+            actionButton.backgroundColor = .clear
         }
     }
 
@@ -69,9 +63,8 @@ class StorePickerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupMainView()
-        setupAccountDetails()
-        downloadGravatarImage()
+        setup(mainView: view)
+        setup(headerView: accountHeaderView)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -90,25 +83,18 @@ class StorePickerViewController: UIViewController {
 //
 private extension StorePickerViewController {
 
-    func setupMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+    func setup(mainView: UIView) {
+        mainView.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
-    func downloadGravatarImage() {
-        guard let targetURL = StoresManager.shared.sessionManager.defaultAccount?.gravatarUrl, let gravatarURL = URL(string: targetURL) else  {
-            return
-        }
-
-        gravatarImageView.downloadImage(from: gravatarURL, placeholderImage: .gravatarPlaceholderImage)
-    }
-
-    func setupAccountDetails() {
+    func setup(headerView: AccountHeaderView) {
         guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
             return
         }
 
-        fullnameLabel.text = defaultAccount.displayName
-        usernameLabel.text = "@" + defaultAccount.username
+        headerView.username = "@" + defaultAccount.username
+        headerView.fullname = defaultAccount.displayName
+        headerView.downloadGravatar(with: defaultAccount.email)
     }
 }
 

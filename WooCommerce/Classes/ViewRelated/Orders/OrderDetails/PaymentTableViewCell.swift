@@ -26,7 +26,6 @@ class PaymentTableViewCell: UITableViewCell {
     @IBOutlet private weak var separatorLine: UIView!
     @IBOutlet private weak var footerValue: UILabel!
 
-    static let reuseIdentifier = "PaymentTableViewCell"
 
     override func awakeFromNib() {
         super.awakeFromNib()

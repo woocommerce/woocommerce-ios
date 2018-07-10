@@ -7,7 +7,6 @@ class SummaryTableViewCell: UITableViewCell {
 
     var paymentBackgroundColor: UIColor = .clear
 
-    static let reuseIdentifier = "SummaryTableViewCell"
 
     var title: String? {
         get {

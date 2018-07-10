@@ -4,7 +4,6 @@ class ProductListTableViewCell: UITableViewCell {
     @IBOutlet private var verticalStackView: UIStackView!
     @IBOutlet private var fulfillButton: UIButton!
 
-    static let reuseIdentifier = "ProductListTableViewCell"
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)

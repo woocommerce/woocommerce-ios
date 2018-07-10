@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import WordPressAuthenticator
+import WordPressUI
 
 
 /// Allows the user to pick which WordPress.com (OR) Jetpack-Connected-Store we should set up as the Main Store.
@@ -9,16 +10,12 @@ class StorePickerViewController: UIViewController {
 
     /// White-Background View, to be placed surrounding the bottom area.
     ///
-    @IBOutlet private var backgroundView: UIView! {
+    @IBOutlet private var buttonBackgroundView: UIView! {
         didSet {
-            backgroundView.layer.masksToBounds = false
-            backgroundView.layer.shadowOpacity = Constants.backgroundShadowOpacity
+            buttonBackgroundView.layer.masksToBounds = false
+            buttonBackgroundView.layer.shadowOpacity = Constants.backgroundShadowOpacity
         }
     }
-
-    /// Spinner, to be displayed while the User Details are being retrieved.
-    ///
-    @IBOutlet private var activityIndicator: UIActivityIndicatorView!
 
     /// Account's Gravatar.
     ///
@@ -34,7 +31,24 @@ class StorePickerViewController: UIViewController {
 
     /// Account's Username.
     ///
-    @IBOutlet private var usernameLabel: UILabel!
+    @IBOutlet private var usernameLabel: UILabel! {
+        didSet {
+            usernameLabel.textColor = StyleManager.wooGreyTextMin
+        }
+    }
+
+    /// No Results Placeholder Image
+    ///
+    @IBOutlet private var noResultsImageView: UIImageView!
+
+    /// No Results Placeholder Text
+    ///
+    @IBOutlet private var noResultsLabel: UILabel! {
+        didSet {
+            noResultsLabel.font = UIFont.font(forStyle: .subheadline, weight: .regular)
+            noResultsLabel.textColor = StyleManager.wooGreyTextMin
+        }
+    }
 
     /// Default Action Button.
     ///
@@ -43,10 +57,6 @@ class StorePickerViewController: UIViewController {
             continueButton.backgroundColor = .clear
         }
     }
-
-    ///
-    ///
-    var credentials: WordPressCredentials!
 
     /// Closure to be executed upon dismissal.
     ///
@@ -58,7 +68,10 @@ class StorePickerViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         setupMainView()
+        setupAccountDetails()
+        downloadGravatarImage()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -79,6 +92,23 @@ private extension StorePickerViewController {
 
     func setupMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
+    }
+
+    func downloadGravatarImage() {
+        guard let targetURL = StoresManager.shared.sessionManager.defaultAccount?.gravatarUrl, let gravatarURL = URL(string: targetURL) else  {
+            return
+        }
+
+        gravatarImageView.downloadImage(from: gravatarURL, placeholderImage: .gravatarPlaceholderImage)
+    }
+
+    func setupAccountDetails() {
+        guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
+            return
+        }
+
+        fullnameLabel.text = defaultAccount.displayName
+        usernameLabel.text = "@" + defaultAccount.username
     }
 }
 

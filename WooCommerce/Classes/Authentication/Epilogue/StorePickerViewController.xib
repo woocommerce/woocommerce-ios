@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="StorePickerViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
-                <outlet property="activityIndicator" destination="h18-yC-h2j" id="P5a-Xd-o3g"/>
-                <outlet property="backgroundView" destination="6Ln-r5-ZV0" id="HoG-zv-DBP"/>
+                <outlet property="buttonBackgroundView" destination="H5J-Qa-DXp" id="AbM-SK-Wdu"/>
                 <outlet property="continueButton" destination="0KD-hY-YaS" id="k8d-re-dNi"/>
                 <outlet property="fullnameLabel" destination="8YX-3n-gWf" id="3nf-1k-mDc"/>
                 <outlet property="gravatarImageView" destination="Whj-W0-IDm" id="XmU-mA-kJE"/>
+                <outlet property="noResultsImageView" destination="Bm8-4s-4Cg" id="5TG-sO-2h6"/>
+                <outlet property="noResultsLabel" destination="1qT-mX-0SF" id="L6b-My-936"/>
                 <outlet property="usernameLabel" destination="Xml-DM-3k0" id="XLT-g0-U2L"/>
                 <outlet property="view" destination="jLk-oK-hVZ" id="tZZ-hi-Qto"/>
             </connections>
@@ -25,11 +27,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Ln-r5-ZV0" userLabel="Background View">
-                    <rect key="frame" x="0.0" y="576.5" width="375" height="90.5"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H5J-Qa-DXp" userLabel="Container View">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H5J-Qa-DXp" userLabel="Button Background View">
                     <rect key="frame" x="0.0" y="577" width="375" height="90"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0KD-hY-YaS" customClass="FancyButton" customModule="WordPressUI">
@@ -74,32 +72,44 @@
                     <color key="textColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="h18-yC-h2j">
-                    <rect key="frame" x="177" y="135" width="20" height="20"/>
-                </activityIndicatorView>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woo-no-store" translatesAutoresizingMaskIntoConstraints="NO" id="Bm8-4s-4Cg">
+                    <rect key="frame" x="0.0" y="195" width="375" height="187.5"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="Bm8-4s-4Cg" secondAttribute="height" multiplier="2:1" id="0tK-4I-r0m"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Unable to find WooCommerce stores connected to this account" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1qT-mX-0SF">
+                    <rect key="frame" x="10" y="404.5" width="355" height="41"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="0.96862745098039216" green="0.96862745098039216" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="H5J-Qa-DXp" firstAttribute="trailing" secondItem="6Ln-r5-ZV0" secondAttribute="trailing" id="1sC-fV-lRd"/>
-                <constraint firstItem="h18-yC-h2j" firstAttribute="top" secondItem="Whj-W0-IDm" secondAttribute="bottom" constant="25" id="3di-vc-etI"/>
+                <constraint firstAttribute="trailing" secondItem="1qT-mX-0SF" secondAttribute="trailing" constant="10" id="28r-Y1-luC"/>
+                <constraint firstItem="Bm8-4s-4Cg" firstAttribute="top" secondItem="Xml-DM-3k0" secondAttribute="bottom" constant="30" id="6rj-YX-w5y"/>
                 <constraint firstItem="8YX-3n-gWf" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" constant="20" id="GeD-nc-jMq"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="Xml-DM-3k0" secondAttribute="trailing" constant="20" id="IXP-ZG-HXb"/>
                 <constraint firstItem="Whj-W0-IDm" firstAttribute="top" secondItem="t7O-Ph-IKW" secondAttribute="top" constant="30" id="KkS-GG-Ocz"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="8YX-3n-gWf" secondAttribute="trailing" constant="20" id="MiD-v1-5ll"/>
-                <constraint firstItem="6Ln-r5-ZV0" firstAttribute="bottom" secondItem="jLk-oK-hVZ" secondAttribute="bottom" id="PhU-pm-reU"/>
-                <constraint firstItem="H5J-Qa-DXp" firstAttribute="leading" secondItem="6Ln-r5-ZV0" secondAttribute="leading" id="VAX-el-1jK"/>
+                <constraint firstItem="1qT-mX-0SF" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" constant="10" id="OAu-kM-52v"/>
                 <constraint firstItem="8YX-3n-gWf" firstAttribute="top" secondItem="Whj-W0-IDm" secondAttribute="bottom" constant="8" id="aAx-Nq-PA5"/>
+                <constraint firstItem="Bm8-4s-4Cg" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" id="exG-7x-7xe"/>
+                <constraint firstItem="Bm8-4s-4Cg" firstAttribute="trailing" secondItem="t7O-Ph-IKW" secondAttribute="trailing" id="fvk-bR-p20"/>
                 <constraint firstItem="H5J-Qa-DXp" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" id="hj7-UB-iIW"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="H5J-Qa-DXp" secondAttribute="trailing" id="iDf-P9-Du1"/>
                 <constraint firstItem="Xml-DM-3k0" firstAttribute="top" secondItem="8YX-3n-gWf" secondAttribute="bottom" constant="8" id="jqP-Pt-Gr6"/>
                 <constraint firstItem="Xml-DM-3k0" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" constant="20" id="nJP-Gp-Soq"/>
-                <constraint firstItem="h18-yC-h2j" firstAttribute="centerX" secondItem="jLk-oK-hVZ" secondAttribute="centerX" id="q1V-Ll-8Ks"/>
-                <constraint firstItem="H5J-Qa-DXp" firstAttribute="top" secondItem="6Ln-r5-ZV0" secondAttribute="top" id="qgu-Fc-gr4"/>
+                <constraint firstItem="1qT-mX-0SF" firstAttribute="top" secondItem="Bm8-4s-4Cg" secondAttribute="bottom" constant="22" id="qa1-Pc-Opa"/>
                 <constraint firstItem="Whj-W0-IDm" firstAttribute="centerX" secondItem="jLk-oK-hVZ" secondAttribute="centerX" id="skA-xW-Bw5"/>
                 <constraint firstItem="H5J-Qa-DXp" firstAttribute="bottom" secondItem="t7O-Ph-IKW" secondAttribute="bottom" id="udx-Gd-qCx"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="t7O-Ph-IKW"/>
-            <point key="canvasLocation" x="-474.5" y="20"/>
+            <point key="canvasLocation" x="-474.5" y="19.5"/>
         </view>
     </objects>
+    <resources>
+        <image name="woo-no-store" width="320" height="180"/>
+    </resources>
 </document>

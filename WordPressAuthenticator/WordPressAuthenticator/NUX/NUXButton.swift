@@ -95,14 +95,14 @@ import WordPressUI
     private func configureBackgrounds() {
         let normalImage: UIImage
         let highlightedImage: UIImage
-        let disabledImage = UIImage.renderBackgroundImage(fill: style.disabledBackgroundColor, border: style.disabledBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
+        let disabledImage = UIImage.renderBackgroundImage(fill: style.disabledBackgroundColor, border: style.disabledBorderColor)
 
         if isPrimary {
-            normalImage = UIImage.renderBackgroundImage(fill: style.primaryNormalBackgroundColor, border: style.primaryNormalBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
-            highlightedImage = UIImage.renderBackgroundImage(fill: style.primaryHighlightBackgroundColor, border: style.primaryHighlightBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
+            normalImage = UIImage.renderBackgroundImage(fill: style.primaryNormalBackgroundColor, border: style.primaryNormalBorderColor)
+            highlightedImage = UIImage.renderBackgroundImage(fill: style.primaryHighlightBackgroundColor, border: style.primaryHighlightBorderColor)
         } else {
-            normalImage = UIImage.renderBackgroundImage(fill: style.secondaryNormalBackgroundColor, border: style.secondaryNormalBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
-            highlightedImage = UIImage.renderBackgroundImage(fill: style.secondaryHighlightBackgroundColor, border: style.secondaryHighlightBorderColor, shadowOffset: Metrics.backgroundShadowOffset)
+            normalImage = UIImage.renderBackgroundImage(fill: style.secondaryNormalBackgroundColor, border: style.secondaryNormalBorderColor)
+            highlightedImage = UIImage.renderBackgroundImage(fill: style.secondaryHighlightBackgroundColor, border: style.secondaryHighlightBorderColor)
         }
 
         setBackgroundImage(normalImage, for: .normal)
@@ -142,7 +142,6 @@ extension NUXButton {
     }
 
     private struct Metrics {
-        static let backgroundShadowOffset = CGSize(width: 0, height: 2)
         static let maxFontSize = CGFloat(22)
     }
 }

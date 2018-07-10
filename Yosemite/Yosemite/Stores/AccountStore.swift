@@ -73,7 +73,7 @@ private extension AccountStore {
     /// Loads the Account associated with the specified userID (if any!).
     ///
     func loadAccount(userID: Int, onCompletion: @escaping (Account?) -> Void) {
-        let account = loadStoredAccount(userId: userID)?.toReadOnly()
+        let account = storageManager.viewStorage.loadAccount(userId: userID)?.toReadOnly()
         onCompletion(account)
     }
 }

@@ -17,7 +17,7 @@ class StoresManager {
 
     /// Active StoresManager State.
     ///
-    private var state: StoresManagerState = DeauthenticatedState() {
+    private var state: StoresManagerState {
         didSet {
             state.didEnter()
         }
@@ -30,11 +30,14 @@ class StoresManager {
     }
 
 
+
     /// Designated Initializer
     ///
     init(sessionManager: SessionManager) {
         self.sessionManager = sessionManager
-        authenticateIfPossible()
+        self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
+
+        restoreSessionAccountIfPossible()
     }
 
 
@@ -44,38 +47,77 @@ class StoresManager {
         state.onAction(action)
     }
 
-
     /// Switches the internal state to Authenticated.
     ///
-    func authenticate(username: String, authToken: String) {
-        let credentials = Credentials(username: username, authToken: authToken)
-
+    @discardableResult
+    func authenticate(credentials: Credentials) -> StoresManager {
         state = AuthenticatedState(credentials: credentials)
-        sessionManager.credentials = credentials
+        sessionManager.defaultCredentials = credentials
+
+        return self
     }
 
+    /// Synchronizes all of the Session's Entities.
+    ///
+    @discardableResult
+    func synchronizeEntities(onCompletion: ((Error?) -> Void)? = nil) -> StoresManager {
+        synchronizeAccount(onCompletion: onCompletion)
+
+        return self
+    }
 
     /// Switches the state to a Deauthenticated one.
     ///
-    func deauthenticate() {
+    @discardableResult
+    func deauthenticate() -> StoresManager {
         state = DeauthenticatedState()
         sessionManager.reset()
+
+        return self
     }
 }
 
 
-// MARK: - StoresManager Private Methods
+// MARK: - Private Methods
 //
 private extension StoresManager {
 
-    /// Switches over to the AuthenticatedState whenever needed / possible!.
+    /// Loads the Default Account into the current Session, if possible.
     ///
-    func authenticateIfPossible() {
-        guard let credentials = sessionManager.credentials else {
+    func restoreSessionAccountIfPossible() {
+        guard let accountID = sessionManager.defaultAccountID else {
             return
         }
 
-        state = AuthenticatedState(credentials: credentials)
+        restoreSessionAccount(with: accountID)
+    }
+
+    /// Loads the specified accountID into the Session, if possible.
+    ///
+    func restoreSessionAccount(with accountID: Int) {
+        let action = AccountAction.loadAccount(userID: accountID) { [weak self] account in
+            guard let `self` = self, let account = account else {
+                return
+            }
+
+            self.sessionManager.defaultAccount = account
+        }
+
+        dispatch(action)
+    }
+
+    /// Synchronizes the WordPress.com Account, associated with the current credentials.
+    ///
+    func synchronizeAccount(onCompletion: ((Error?) -> Void)?) {
+        let action = AccountAction.synchronizeAccount { [weak self] (account, error) in
+            if let `self` = self, let account = account, self.isAuthenticated {
+                self.sessionManager.defaultAccount = account
+            }
+
+            onCompletion?(error)
+        }
+
+        dispatch(action)
     }
 }
 

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="242" id="qMv-Pb-lgn" customClass="EmptyStoresTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="242"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qMv-Pb-lgn" id="gcY-Gg-DvR">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="241.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woo-no-store" translatesAutoresizingMaskIntoConstraints="NO" id="uuh-xp-DA5">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="180"/>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bPV-bJ-GBz">
+                        <rect key="frame" x="26" y="200.5" width="323" height="20.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                <constraints>
+                    <constraint firstItem="bPV-bJ-GBz" firstAttribute="leading" secondItem="gcY-Gg-DvR" secondAttribute="leadingMargin" constant="10" id="02T-fd-amz"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="bPV-bJ-GBz" secondAttribute="trailing" constant="10" id="4v0-dU-uL0"/>
+                    <constraint firstItem="uuh-xp-DA5" firstAttribute="top" secondItem="gcY-Gg-DvR" secondAttribute="top" id="AXH-sZ-i9m"/>
+                    <constraint firstItem="uuh-xp-DA5" firstAttribute="leading" secondItem="gcY-Gg-DvR" secondAttribute="leading" id="QK4-JX-5Z1"/>
+                    <constraint firstItem="bPV-bJ-GBz" firstAttribute="top" relation="greaterThanOrEqual" secondItem="uuh-xp-DA5" secondAttribute="bottom" constant="10" id="YHi-MJ-ZFK"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="bPV-bJ-GBz" secondAttribute="bottom" constant="10" id="Zyf-Uq-D8M"/>
+                    <constraint firstAttribute="trailing" secondItem="uuh-xp-DA5" secondAttribute="trailing" id="egs-Ij-2lL"/>
+                </constraints>
+            </tableViewCellContentView>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <connections>
+                <outlet property="legendLabel" destination="bPV-bJ-GBz" id="sQX-ir-ghQ"/>
+            </connections>
+            <point key="canvasLocation" x="-162.5" y="-12"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="woo-no-store" width="320" height="180"/>
+    </resources>
+</document>

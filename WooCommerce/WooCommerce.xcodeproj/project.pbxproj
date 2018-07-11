@@ -348,6 +348,7 @@
 			isa = PBXGroup;
 			children = (
 				CED6021A20B35FBF0032C639 /* ReusableViews */,
+				CE85FD5120F677460080B73E /* Dashboard */,
 				CE1CCB4920570B05000EE3AC /* Orders */,
 				B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */,
 				B509112D2049E27A007D25DC /* DashboardViewController.swift */,
@@ -469,6 +470,13 @@
 				CE34DA2420A1ECD6005D8523 /* ContactViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		CE85FD5120F677460080B73E /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Dashboard;
 			sourceTree = "<group>";
 		};
 		CED6021A20B35FBF0032C639 /* ReusableViews */ = {

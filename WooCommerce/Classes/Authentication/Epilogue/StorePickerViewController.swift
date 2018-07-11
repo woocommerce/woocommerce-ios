@@ -58,7 +58,7 @@ class StorePickerViewController: UIViewController {
 
 
 
-    // MARK: - Overriden Methods
+    // MARK: - Overridden Methods
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -22,10 +22,28 @@
                     <tabBarItem key="tabBarItem" title="Item" id="EUU-oD-ztb"/>
                     <navigationItem key="navigationItem" title="Dashboard" id="jfr-uS-W7N"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <segue destination="5Fc-gh-JKM" kind="show" identifier="ShowSettingsViewController" id="5OG-7I-yID"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-724" y="1985"/>
+        </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="s9m-Yn-qYL">
+            <objects>
+                <viewController storyboardIdentifier="SettingsViewController" id="5Fc-gh-JKM" customClass="SettingsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="EsH-cO-BoJ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="bn5-Ru-XCm"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FEk-Qx-6OE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="270" y="1987"/>
         </scene>
         <!--Dashboard-->
         <scene sceneID="GIl-fY-LQR">

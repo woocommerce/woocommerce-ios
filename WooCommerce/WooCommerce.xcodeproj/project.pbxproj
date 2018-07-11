@@ -353,8 +353,6 @@
 				CE85FD5120F677460080B73E /* Dashboard */,
 				CE1CCB4920570B05000EE3AC /* Orders */,
 				B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */,
-				B509112D2049E27A007D25DC /* DashboardViewController.swift */,
-				B509112F2049E27A007D25DC /* SettingsViewController.swift */,
 				CE263DE5206ACD220015A693 /* NotificationsViewController.swift */,
 				CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */,
 			);
@@ -478,6 +476,8 @@
 			isa = PBXGroup;
 			children = (
 				CE85FD5220F677770080B73E /* Dashboard.storyboard */,
+				B509112D2049E27A007D25DC /* DashboardViewController.swift */,
+				B509112F2049E27A007D25DC /* SettingsViewController.swift */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";

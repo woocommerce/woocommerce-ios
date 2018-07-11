@@ -7,7 +7,7 @@ import Gridicons
 class MainTabBarController: UITabBarController {
 
     private var tabTitles = [
-        NSLocalizedString("Dashboard", comment: "Dashboard tab title"),
+        NSLocalizedString("My Store", comment: "Dashboard tab title"),
         NSLocalizedString("Orders", comment: "Orders tab title"),
         NSLocalizedString("Notifications", comment: "Notifications tab title")
     ]

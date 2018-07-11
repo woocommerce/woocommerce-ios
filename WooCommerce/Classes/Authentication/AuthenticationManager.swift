@@ -19,10 +19,23 @@ class AuthenticationManager {
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
-                                                                userAgent: UserAgent.defaultUserAgent,
-                                                                supportNotificationIndicatorFeatureFlag: false)
+                                                                userAgent: UserAgent.defaultUserAgent)
 
-        WordPressAuthenticator.initialize(configuration: configuration)
+        let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: StyleManager.buttonPrimaryColor,
+                                                primaryNormalBorderColor: StyleManager.buttonPrimaryHighlightedColor,
+                                                primaryHighlightBackgroundColor: StyleManager.buttonPrimaryHighlightedColor,
+                                                primaryHighlightBorderColor: StyleManager.buttonPrimaryHighlightedColor,
+                                                secondaryNormalBackgroundColor: StyleManager.buttonSecondaryColor,
+                                                secondaryNormalBorderColor: StyleManager.buttonSecondaryHighlightedColor,
+                                                secondaryHighlightBackgroundColor: StyleManager.buttonSecondaryHighlightedColor,
+                                                secondaryHighlightBorderColor: StyleManager.buttonSecondaryHighlightedColor,
+                                                disabledBackgroundColor: StyleManager.buttonDisabledColor,
+                                                disabledBorderColor: StyleManager.buttonDisabledHighlightedColor,
+                                                primaryTitleColor: StyleManager.buttonPrimaryTitleColor,
+                                                secondaryTitleColor: StyleManager.buttonSecondaryTitleColor,
+                                                disabledTitleColor: StyleManager.buttonDisabledTitleColor)
+
+        WordPressAuthenticator.initialize(configuration: configuration, style: style)
         WordPressAuthenticator.shared.delegate = self
     }
 
@@ -58,6 +71,14 @@ class AuthenticationManager {
 // MARK: - WordPressAuthenticator Delegate
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
+    func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
+        // TODO: wire Zendesk
+    }
+
+    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
+        // TODO: wire Zendesk
+    }
+
 
     /// Indicates if the active Authenticator can be dismissed or not.
     ///

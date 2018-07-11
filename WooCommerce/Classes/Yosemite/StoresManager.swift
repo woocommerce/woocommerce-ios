@@ -60,8 +60,22 @@ class StoresManager {
     /// Synchronizes all of the Session's Entities.
     ///
     @discardableResult
-    func synchronizeEntities(onCompletion: ((Error?) -> Void)? = nil) -> StoresManager {
-        synchronizeAccount(onCompletion: onCompletion)
+    func synchronizeEntities(onCompletion: (() -> Void)? = nil) -> StoresManager {
+        let group = DispatchGroup()
+
+        group.enter()
+        synchronizeAccount { _ in
+            group.leave()
+        }
+
+        group.enter()
+        synchronizeSites { _ in
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
+            onCompletion?()
+        }
 
         return self
     }
@@ -114,6 +128,16 @@ private extension StoresManager {
                 self.sessionManager.defaultAccount = account
             }
 
+            onCompletion?(error)
+        }
+
+        dispatch(action)
+    }
+
+    /// Synchronizes the WordPress.com Sites, associated with the current credentials.
+    ///
+    func synchronizeSites(onCompletion: ((Error?) -> Void)?) {
+        let action = AccountAction.synchronizeSites { error in
             onCompletion?(error)
         }
 

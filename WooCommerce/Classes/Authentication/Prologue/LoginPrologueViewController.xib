@@ -38,7 +38,7 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o29-Vv-KDs" userLabel="Container View">
                     <rect key="frame" x="0.0" y="601.66666666666663" width="375" height="176.33333333333337"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6pL-xH-OzE" customClass="FancyButton" customModule="WordPressUI">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6pL-xH-OzE" customClass="NUXButton" customModule="WordPressAuthenticator">
                             <rect key="frame" x="20" y="106.33333333333337" width="335" height="50"/>
                             <color key="backgroundColor" red="0.58823529409999997" green="0.34509803919999998" blue="0.54117647059999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>

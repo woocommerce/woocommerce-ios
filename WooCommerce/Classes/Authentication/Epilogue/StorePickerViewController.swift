@@ -60,7 +60,7 @@ class StorePickerViewController: UIViewController {
     ///
     @IBOutlet private var noResultsLabel: UILabel! {
         didSet {
-            noResultsLabel.font = UIFont.font(forStyle: .subheadline, weight: .regular)
+            noResultsLabel.font = StyleManager.subheadlineFont
             noResultsLabel.textColor = StyleManager.wooGreyTextMin
         }
     }
@@ -79,7 +79,7 @@ class StorePickerViewController: UIViewController {
 
 
 
-    // MARK: - Overriden Methods
+    // MARK: - Overridden Methods
 
     override func viewDidLoad() {
         super.viewDidLoad()

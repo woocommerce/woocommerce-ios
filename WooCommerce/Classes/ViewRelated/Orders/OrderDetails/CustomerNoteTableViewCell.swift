@@ -14,7 +14,6 @@ class CustomerNoteTableViewCell: UITableViewCell {
         }
     }
 
-    static let reuseIdentifier = "CustomerNoteTableViewCell"
 
     var quote: String? {
         get {

@@ -4,7 +4,6 @@ class BillingDetailsTableViewCell: UITableViewCell {
     private var button = UIButton(type: .custom)
     @objc var didTapButton: (() -> Void)?
 
-    static let reuseIdentifier = "BillingDetailsTableViewCell"
 
     override func awakeFromNib() {
         super.awakeFromNib()

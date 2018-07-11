@@ -6,10 +6,6 @@ import UIKit
 ///
 class EmptyStoresTableViewCell: UITableViewCell {
 
-    /// UITableView's Reuse Identifier.
-    ///
-    static let reuseIdentifier = EmptyStoresTableViewCell.classNameWithoutNamespaces
-
     /// LegendLabel: To be displayed below the ImageView.
     ///
     @IBOutlet private var legendLabel: UILabel! {

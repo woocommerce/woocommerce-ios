@@ -12,15 +12,15 @@ extension Order {
     @NSManaged public var parentID: Int64
     @NSManaged public var customerID: Int64
     @NSManaged public var number: String?
-    @NSManaged public var status: String?
+    @NSManaged public var status: String
     @NSManaged public var currency: String?
     @NSManaged public var customerNote: String?
-    @NSManaged public var dateCreated: NSDate?
-    @NSManaged public var dateModified: NSDate?
-    @NSManaged public var datePaid: NSDate?
+    @NSManaged public var dateCreated: Date?
+    @NSManaged public var dateModified: Date?
+    @NSManaged public var datePaid: Date?
     @NSManaged public var discountTotal: String?
     @NSManaged public var discountTax: String?
-    @NSManaged public var shippingTotal: Int16
+    @NSManaged public var shippingTotal: String?
     @NSManaged public var shippingTax: String?
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?

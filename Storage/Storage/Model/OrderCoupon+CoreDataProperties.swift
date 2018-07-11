@@ -12,5 +12,5 @@ extension OrderCoupon {
     @NSManaged public var code: String?
     @NSManaged public var discount: String?
     @NSManaged public var discountTax: String?
-    @NSManaged public var order: Order?
+    @NSManaged public var order: Order
 }

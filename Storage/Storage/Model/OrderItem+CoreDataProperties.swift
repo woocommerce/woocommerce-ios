@@ -19,5 +19,5 @@ extension OrderItem {
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
     @NSManaged public var variationID: Int64
-    @NSManaged public var order: Order?
+    @NSManaged public var order: Order
 }

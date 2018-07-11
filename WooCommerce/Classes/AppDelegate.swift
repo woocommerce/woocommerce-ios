@@ -116,19 +116,18 @@ private extension AppDelegate {
         UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().tintColor = .white
         UIApplication.shared.statusBarStyle = .lightContent
+
+        UIButton.appearance().setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
     }
 
     /// Sets up FancyButton's UIAppearance.
     ///
     func setupFancyButtonAppearance() {
         let appearance = FancyButton.appearance()
-        appearance.titleFont = UIFont.font(forStyle: .headline, weight: .bold)
         appearance.primaryNormalBackgroundColor = StyleManager.buttonPrimaryColor
         appearance.primaryNormalBorderColor = StyleManager.buttonPrimaryHighlightedColor
         appearance.primaryHighlightBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
         appearance.primaryHighlightBorderColor = StyleManager.buttonPrimaryHighlightedColor
-        appearance.disabledBorderColor = StyleManager.buttonPrimaryHighlightedColor
-        appearance.disabledBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
     }
 
     /// Sets up the WordPress Authenticator.

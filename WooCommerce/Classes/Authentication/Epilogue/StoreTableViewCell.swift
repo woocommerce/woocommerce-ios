@@ -1,5 +1,7 @@
 import Foundation
 import UIKit
+import Gridicons
+
 
 
 /// Displays a WooCommerce Store Row
@@ -28,12 +30,30 @@ class StoreTableViewCell: UITableViewCell {
         }
     }
 
+    /// Indicates if the Selected Checkmark should be displayed.
+    ///
+    var displaysCheckmark: Bool = false {
+        didSet {
+            guard oldValue != displaysCheckmark else {
+                return
+            }
 
-    // MARK: - Overriden Methods
+            refreshAccessoryView()
+        }
+    }
+
+
+    // MARK: - Overridden Methods
 
     override func awakeFromNib() {
         super.awakeFromNib()
         textLabel?.textColor = StyleManager.wooSecondary
         detailTextLabel?.textColor = StyleManager.wooSecondary
+    }
+
+    /// Displays a Checkmark (or not) based on the value of `displaysCheckmark)
+    ///
+    private func refreshAccessoryView() {
+        accessoryView = displaysCheckmark ? UIImageView(image: .checkmarkImage) : nil
     }
 }

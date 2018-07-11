@@ -47,6 +47,8 @@
 		B57C744720F55BC800EEFC87 /* UIView+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744620F55BC800EEFC87 /* UIView+Helpers.swift */; };
 		B57C744A20F5649300EEFC87 /* EmptyStoresTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744920F5649300EEFC87 /* EmptyStoresTableViewCell.swift */; };
 		B57C744C20F564B400EEFC87 /* EmptyStoresTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B57C744B20F564B400EEFC87 /* EmptyStoresTableViewCell.xib */; };
+		B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744D20F56E3800EEFC87 /* UITableViewCell+Helpers.swift */; };
+		B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C745020F56EE900EEFC87 /* UITableViewCellHelpersTests.swift */; };
 		B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8532120BDBFAE00FAAB4D /* CircularImageView.swift */; };
 		B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */; };
 		B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8AC20B88D9900D211DE /* LoginPrologueViewController.swift */; };
@@ -179,6 +181,8 @@
 		B57C744620F55BC800EEFC87 /* UIView+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Helpers.swift"; sourceTree = "<group>"; };
 		B57C744920F5649300EEFC87 /* EmptyStoresTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStoresTableViewCell.swift; sourceTree = "<group>"; };
 		B57C744B20F564B400EEFC87 /* EmptyStoresTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmptyStoresTableViewCell.xib; sourceTree = "<group>"; };
+		B57C744D20F56E3800EEFC87 /* UITableViewCell+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+Helpers.swift"; sourceTree = "<group>"; };
+		B57C745020F56EE900EEFC87 /* UITableViewCellHelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableViewCellHelpersTests.swift; sourceTree = "<group>"; };
 		B59F38DF20D40A24008C1829 /* WooCommerce.debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerce.debug.entitlements; sourceTree = "<group>"; };
 		B59F38E020D40A24008C1829 /* WooCommerce.release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerce.release.entitlements; sourceTree = "<group>"; };
 		B5A8532120BDBFAE00FAAB4D /* CircularImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularImageView.swift; sourceTree = "<group>"; };
@@ -356,6 +360,7 @@
 		B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */ = {
 			isa = PBXGroup;
 			children = (
+				B57C744F20F56ED300EEFC87 /* Extensions */,
 				B53B898A20D4606400EDB467 /* System */,
 				B5DBF3C120E1482900B53AED /* Yosemite */,
 				B56DB3E32049BFAA00D4AA8E /* Info.plist */,
@@ -405,6 +410,14 @@
 				B59F38E020D40A24008C1829 /* WooCommerce.release.entitlements */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		B57C744F20F56ED300EEFC87 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B57C745020F56EE900EEFC87 /* UITableViewCellHelpersTests.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		B5A8F8A620B84CF600D211DE /* DerivedSources */ = {
@@ -486,8 +499,9 @@
 				CE1F51262064345B00C6C810 /* UIColor+Helpers.swift */,
 				B5D1AFB920BC515600DB0E8C /* UIColor+Woo.swift */,
 				CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */,
-				CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */,
 				B5D1AFB720BC510200DB0E8C /* UIImage+Woo.swift */,
+				CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */,
+				B57C744D20F56E3800EEFC87 /* UITableViewCell+Helpers.swift */,
 				B57C744620F55BC800EEFC87 /* UIView+Helpers.swift */,
 				B5AA7B3E20ED81C2004DA14F /* UserDefaults+Woo.swift */,
 			);
@@ -873,6 +887,7 @@
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* AddItemTableViewCell.swift in Sources */,
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
+				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
 				7403F7E220EC04070097198F /* OrderStatusViewModel.swift in Sources */,
 				CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */,
 				B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */,
@@ -889,6 +904,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */,
+				B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */,
 				B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

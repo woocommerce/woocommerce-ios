@@ -1,11 +1,70 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14135" systemVersion="17F77" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14135" systemVersion="17G65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="gravatarUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="userID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="username" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Address" representedClassName="Address" syncable="YES">
+        <attribute name="address1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="address2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="city" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="company" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="country" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="postcode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="state" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="billingOrder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="billingAddress" inverseEntity="Order" syncable="YES"/>
+        <relationship name="shippingOrder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="shippingAddress" inverseEntity="Order" syncable="YES"/>
+    </entity>
+    <entity name="Order" representedClassName="Order" syncable="YES">
+        <attribute name="currency" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="customerID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="customerNote" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dateCreated" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dateModified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="datePaid" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="discountTax" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="discountTotal" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="number" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="parentID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="paymentMethodTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingTax" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingTotal" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="total" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="totalTax" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="billingAddress" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Address" inverseName="billingOrder" inverseEntity="Address" syncable="YES"/>
+        <relationship name="coupons" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderCoupon" inverseName="order" inverseEntity="OrderCoupon" syncable="YES"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderItem" inverseName="order" inverseEntity="OrderItem" syncable="YES"/>
+        <relationship name="shippingAddress" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Address" inverseName="shippingOrder" inverseEntity="Address" syncable="YES"/>
+    </entity>
+    <entity name="OrderCoupon" representedClassName="OrderCoupon" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="couponID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="discount" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="discountTax" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="order" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="coupons" inverseEntity="Order" syncable="YES"/>
+    </entity>
+    <entity name="OrderItem" representedClassName="OrderItem" syncable="YES">
+        <attribute name="itemID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="productID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="quantity" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="sku" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="subtotal" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="subtotalTax" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taxClass" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="total" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="totalTax" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="variationID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="order" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="items" inverseEntity="Order" syncable="YES"/>
     </entity>
     <entity name="Site" representedClassName="Site" syncable="YES">
         <attribute name="isWordPressStore" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
@@ -15,7 +74,11 @@
         <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Account" positionX="-63" positionY="-18" width="128" height="120"/>
-        <element name="Site" positionX="-63" positionY="18" width="128" height="120"/>
+        <element name="Account" positionX="-218" positionY="132" width="128" height="120"/>
+        <element name="Site" positionX="-216" positionY="285" width="128" height="120"/>
+        <element name="Order" positionX="-45" positionY="54" width="128" height="358"/>
+        <element name="OrderItem" positionX="216" positionY="72" width="128" height="223"/>
+        <element name="Address" positionX="259" positionY="381" width="128" height="240"/>
+        <element name="OrderCoupon" positionX="18" positionY="234" width="128" height="120"/>
     </elements>
 </model>

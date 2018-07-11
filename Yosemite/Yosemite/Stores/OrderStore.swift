@@ -1,5 +1,6 @@
 import Foundation
 import Networking
+import Storage
 
 
 // MARK: - OrderStore
@@ -32,19 +33,20 @@ public class OrderStore: Store {
 
 // MARK: - Services!
 //
-extension OrderStore  {
+private extension OrderStore  {
 
     /// Retrieves the orders associated with a given Site ID (if any!).
     ///
     func retrieveOrders(siteId: Int, onCompletion: @escaping ([Order]?, Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
-        remote.loadAllOrders(for: siteId) { (orders, error) in
+        remote.loadAllOrders(for: siteId) { [weak self] (orders, error) in
             guard let orders = orders else {
                 onCompletion(nil, error)
                 return
             }
 
+            self?.upsertStoredOrders(readOnlyOrders: orders)
             onCompletion(orders, nil)
         }
     }
@@ -54,13 +56,47 @@ extension OrderStore  {
     func retrieveOrder(siteId: Int, orderId: Int, onCompletion: @escaping (Order?, Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
-        remote.loadOrder(for: siteId, orderID: orderId) { (order, error) in
+        remote.loadOrder(for: siteId, orderID: orderId) { [weak self] (order, error) in
             guard let order = order else {
                 onCompletion(nil, error)
                 return
             }
 
+            self?.upsertStoredOrder(readOnlyOrder: order)
             onCompletion(order, nil)
         }
+    }
+}
+
+
+// MARK: - Persistance
+//
+extension OrderStore {
+
+    /// Updates (OR Inserts) the specified ReadOnly Order Entity into the Storage Layer.
+    ///
+    func upsertStoredOrder(readOnlyOrder: Networking.Order) {
+        assert(Thread.isMainThread)
+
+        let storage = storageManager.viewStorage
+        let storageOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) ?? storage.insertNewObject(ofType: Storage.Order.self)
+
+        storageOrder.update(with: readOnlyOrder)
+        storage.saveIfNeeded()
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly Order Entities into the Storage Layer.
+    ///
+    func upsertStoredOrders(readOnlyOrders: [Networking.Order]) {
+        assert(Thread.isMainThread)
+
+        let storage = storageManager.viewStorage
+
+        for readOnlyOrder in readOnlyOrders {
+            let storageOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) ?? storage.insertNewObject(ofType: Storage.Order.self)
+            storageOrder.update(with: readOnlyOrder)
+        }
+
+        storage.saveIfNeeded()
     }
 }

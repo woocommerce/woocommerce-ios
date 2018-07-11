@@ -36,8 +36,8 @@
         <attribute name="parentID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="paymentMethodTitle" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="shippingTax" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="shippingTotal" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingTotal" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" attributeType="String" syncable="YES"/>
         <attribute name="total" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="totalTax" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="billingAddress" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Address" inverseName="billingOrder" inverseEntity="Address" syncable="YES"/>
@@ -75,10 +75,10 @@
     </entity>
     <elements>
         <element name="Account" positionX="-218" positionY="132" width="128" height="120"/>
-        <element name="Site" positionX="-216" positionY="285" width="128" height="120"/>
-        <element name="Order" positionX="-45" positionY="54" width="128" height="358"/>
-        <element name="OrderItem" positionX="216" positionY="72" width="128" height="223"/>
         <element name="Address" positionX="259" positionY="381" width="128" height="240"/>
+        <element name="Order" positionX="-45" positionY="54" width="128" height="360"/>
         <element name="OrderCoupon" positionX="18" positionY="234" width="128" height="120"/>
+        <element name="OrderItem" positionX="216" positionY="72" width="128" height="223"/>
+        <element name="Site" positionX="-216" positionY="285" width="128" height="120"/>
     </elements>
 </model>

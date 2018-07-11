@@ -18,4 +18,11 @@ public extension StorageType {
         let predicate = NSPredicate(format: "siteID = %ld", siteID)
         return firstObject(ofType: Site.self, matching: predicate)
     }
+
+    /// Retrieves the Stored Order.
+    ///
+    public func loadOrder(orderID: Int) -> Order? {
+        let predicate = NSPredicate(format: "orderID = %ld", orderID)
+        return firstObject(ofType: Order.self, matching: predicate)
+    }
 }

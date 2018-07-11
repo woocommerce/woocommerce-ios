@@ -21,6 +21,7 @@ protocol Style {
     var cellSeparatorColor: UIColor { get }
     var wooGreyMid: UIColor { get }
     var wooGreyTextMin: UIColor { get }
+    var wooSecondary: UIColor { get }
 }
 
 // MARK: - WooCommerce's Default Style
@@ -43,6 +44,7 @@ class DefaultStyle: Style {
     let cellSeparatorColor = UIColor.lightGray
     let wooGreyMid = UIColor(red: 150.0/255.0, green: 150.0/255.0, blue: 150.0/255.0, alpha: 1.0)
     let wooGreyTextMin = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
+    let wooSecondary = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
 }
 
 
@@ -129,5 +131,9 @@ class StyleManager {
 
     static var wooGreyTextMin: UIColor {
         return active.wooGreyTextMin
+    }
+
+    static var wooSecondary: UIColor {
+        return active.wooSecondary
     }
 }

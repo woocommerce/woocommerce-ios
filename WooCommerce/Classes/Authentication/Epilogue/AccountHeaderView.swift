@@ -17,7 +17,11 @@ class AccountHeaderView: UIView {
 
     /// Account's Full Name.
     ///
-    @IBOutlet private var fullnameLabel: UILabel!
+    @IBOutlet private var fullnameLabel: UILabel! {
+        didSet {
+            fullnameLabel.textColor = StyleManager.wooSecondary
+        }
+    }
 
     /// Account's Username.
     ///

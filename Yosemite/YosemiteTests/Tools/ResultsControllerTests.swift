@@ -26,7 +26,7 @@ class ResultsControllerTests: XCTestCase {
     }
 
 
-    // MARK: - Overriden Methods
+    // MARK: - Overridden Methods
 
     override func setUp() {
         super.setUp()

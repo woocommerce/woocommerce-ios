@@ -6,6 +6,12 @@ import UIKit
 ///
 extension UIImage {
 
+    /// Gravatar Placeholder Image
+    ///
+    static var gravatarPlaceholderImage: UIImage {
+        return UIImage(named: "gravatar")!
+    }
+
     /// Jetpack Logo Image
     ///
     static var jetpackLogoImage: UIImage {

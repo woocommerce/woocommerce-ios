@@ -173,7 +173,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
 
         // TODO: Remove the Error? parameter in WordPressAuthenticator, since it's not even used!
-        let wrappedOnCompletion =  {
+        let wrappedOnCompletion = {
             onCompletion(nil)
         }
 

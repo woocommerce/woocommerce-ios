@@ -136,7 +136,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, onDismiss: @escaping () -> Void) {
-        // TODO: Wire Store Picker
+        let pickerViewController = StorePickerViewController()
+        navigationController.pushViewController(pickerViewController, animated: true)
     }
 
     /// Presents the Signup Epilogue, in the specified NavigationController.
@@ -145,11 +146,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         // NO-OP: The current WC version does not support Signup.
     }
 
-    /// Indicates if the Login Epilogue should be presented. This is false only when we're doing a Jetpack Connect, and the new
-    /// WordPress.com account has no sites. Capicci?
+    /// Indicates if the Login Epilogue should be presented.
     ///
     func shouldPresentLoginEpilogue(isJetpackLogin: Bool) -> Bool {
-        return false
+        return true
     }
 
     /// Indicates if the Signup Epilogue should be displayed.

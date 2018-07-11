@@ -220,7 +220,7 @@ extension LoginViewController {
 
         configureStatusLabel(NSLocalizedString("Getting account information", comment: "Alerts the user that wpcom account information is being retrieved."))
 
-        authenticationDelegate.sync(credentials: credentials) { [weak self] _ in
+        authenticationDelegate.sync(credentials: credentials) { [weak self] in
 
             self?.configureStatusLabel("")
             self?.configureViewLoading(false)

@@ -7,7 +7,6 @@ class OrderListCell: UITableViewCell {
     @IBOutlet var paymentStatusLabel: PaddedLabel!
     @IBOutlet var shippingStatusLabel: PaddedLabel!
 
-    static let reuseIdentifier = "OrderListCell"
 
     func configureCell(order: OrderDetailsViewModel) {
         titleLabel.text = order.summaryTitle

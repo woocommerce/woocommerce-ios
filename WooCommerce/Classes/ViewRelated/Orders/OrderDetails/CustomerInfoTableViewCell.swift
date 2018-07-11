@@ -17,7 +17,6 @@ class CustomerInfoTableViewCell: UITableViewCell {
         }
     }
 
-    static let reuseIdentifier = "CustomerInfoTableViewCell"
 
     var title: String? {
         get {

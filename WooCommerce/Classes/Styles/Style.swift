@@ -25,6 +25,7 @@ protocol Style {
     var statusPrimaryBoldColor: UIColor { get }
     var statusSuccessColor: UIColor { get }
     var statusSuccessBoldColor: UIColor { get }
+    var subheadlineFont: UIFont { get }
     var tableViewBackgroundColor: UIColor { get }
     var wooCommerceBrandColor: UIColor { get }
     var wooGreyMid: UIColor { get }
@@ -55,6 +56,7 @@ class DefaultStyle: Style {
     let statusPrimaryBoldColor = UIColor(red: 188.0/255.0, green: 222.0/255.0, blue: 238.0/255.0, alpha: 1.0)
     let statusSuccessColor = UIColor(red: 239.00/255.0, green: 249.0/255.0, blue: 230.0/255.0, alpha: 1.0)
     let statusSuccessBoldColor = UIColor(red: 201.0/255.0, green: 233.0/255.0, blue: 169.0/255.0, alpha: 1.0)
+    let subheadlineFont = UIFont.font(forStyle: .subheadline, weight: .regular)
     let tableViewBackgroundColor = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1.0)
     let wooCommerceBrandColor = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
     let wooGreyMid = UIColor(red: 150.0/255.0, green: 150.0/255.0, blue: 150.0/255.0, alpha: 1.0)
@@ -161,6 +163,10 @@ class StyleManager {
 
     static var sectionTitleColor: UIColor {
         return active.sectionTitleColor
+    }
+
+    static var subheadlineFont: UIFont {
+        return active.subheadlineFont
     }
 
     static var tableViewBackgroundColor: UIColor {

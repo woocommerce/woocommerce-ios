@@ -7,22 +7,18 @@
         <attribute name="userID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="username" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="Address" representedClassName="Address" syncable="YES">
-        <attribute name="address1" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="address2" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="city" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="company" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="country" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="phone" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="postcode" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="state" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="billingOrder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="billingAddress" inverseEntity="Order" syncable="YES"/>
-        <relationship name="shippingOrder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="shippingAddress" inverseEntity="Order" syncable="YES"/>
-    </entity>
     <entity name="Order" representedClassName="Order" syncable="YES">
+        <attribute name="billingAddress1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billingAddress2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billingCity" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billingCompany" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billingCountry" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billingEmail" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billingFirstName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billingLastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billingPhone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billingPostcode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billingState" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="currency" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="customerID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="customerNote" optional="YES" attributeType="String" syncable="YES"/>
@@ -35,15 +31,24 @@
         <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="parentID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="paymentMethodTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingAddress1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingAddress2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingCity" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingCompany" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingCountry" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingEmail" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingFirstName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingLastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingPhone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingPostcode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingState" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="shippingTax" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="shippingTotal" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="status" attributeType="String" syncable="YES"/>
         <attribute name="total" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="totalTax" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="billingAddress" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Address" inverseName="billingOrder" inverseEntity="Address" syncable="YES"/>
         <relationship name="coupons" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderCoupon" inverseName="order" inverseEntity="OrderCoupon" syncable="YES"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderItem" inverseName="order" inverseEntity="OrderItem" syncable="YES"/>
-        <relationship name="shippingAddress" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Address" inverseName="shippingOrder" inverseEntity="Address" syncable="YES"/>
     </entity>
     <entity name="OrderCoupon" representedClassName="OrderCoupon" syncable="YES">
         <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
@@ -75,8 +80,7 @@
     </entity>
     <elements>
         <element name="Account" positionX="-218" positionY="132" width="128" height="120"/>
-        <element name="Address" positionX="259" positionY="381" width="128" height="240"/>
-        <element name="Order" positionX="-45" positionY="54" width="128" height="360"/>
+        <element name="Order" positionX="-45" positionY="54" width="128" height="660"/>
         <element name="OrderCoupon" positionX="18" positionY="234" width="128" height="120"/>
         <element name="OrderItem" positionX="216" positionY="72" width="128" height="223"/>
         <element name="Site" positionX="-216" positionY="285" width="128" height="120"/>

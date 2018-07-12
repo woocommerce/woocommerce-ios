@@ -113,7 +113,7 @@ private extension SignupGoogleViewController {
 
             /// Existing Account: We'll synchronize all the things before proceeding to the next screen.
             ///
-            self?.authenticationDelegate.sync(credentials: credentials) { _ in
+            self?.authenticationDelegate.sync(credentials: credentials) {
                 SVProgressHUD.dismiss()
                 self?.wasLoggedInInstead(with: credentials)
             }

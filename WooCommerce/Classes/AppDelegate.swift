@@ -117,8 +117,7 @@ private extension AppDelegate {
         UINavigationBar.appearance().tintColor = .white
         UIApplication.shared.statusBarStyle = .lightContent
 
-        let buttonAppearance = UIButton.appearance(whenContainedInInstancesOf: [NUXViewController.self, LoginViewController.self])
-        buttonAppearance.setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
+        UIButton.appearance().setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
     }
 
     /// Sets up FancyButton's UIAppearance.

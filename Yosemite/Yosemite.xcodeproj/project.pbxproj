@@ -10,6 +10,8 @@
 		0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */; };
 		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
 		7424B49420EAD37C00CC62F6 /* order.json in Resources */ = {isa = PBXBuildFile; fileRef = 7424B49320EAD37C00CC62F6 /* order.json */; };
+		74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */; };
+		74685D5020F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */; };
 		7499936420EFBC1B00CF01CD /* OrderNoteAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7499936320EFBC1A00CF01CD /* OrderNoteAction.swift */; };
 		7499936620EFBC7200CF01CD /* OrderNoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7499936520EFBC7200CF01CD /* OrderNoteStore.swift */; };
 		7499936820EFC0ED00CF01CD /* OrderNoteStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7499936720EFC0ED00CF01CD /* OrderNoteStoreTests.swift */; };
@@ -61,6 +63,8 @@
 /* Begin PBXFileReference section */
 		7424B49320EAD37C00CC62F6 /* order.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = order.json; sourceTree = "<group>"; };
 		745D21C120D8043A00BBE7C3 /* generic_error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = generic_error.json; sourceTree = "<group>"; };
+		74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderCoupon+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		7499936320EFBC1A00CF01CD /* OrderNoteAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNoteAction.swift; sourceTree = "<group>"; };
 		7499936520EFBC7200CF01CD /* OrderNoteStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNoteStore.swift; sourceTree = "<group>"; };
 		7499936720EFC0ED00CF01CD /* OrderNoteStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteStoreTests.swift; sourceTree = "<group>"; };
@@ -137,6 +141,8 @@
 				B53D89E420E6C22B00F90866 /* Model.swift */,
 				B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */,
 				74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */,
+				74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */,
+				74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */,
 				B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */,
 			);
 			path = Model;
@@ -496,6 +502,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */,
+				74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */,
 				B5DC3CB120D1B8720063AC41 /* AccountAction.swift in Sources */,
 				B5BC736520D1A98500B5B6FA /* AccountStore.swift in Sources */,
 				B56C1EC220EAE2E500D749F9 /* ReadOnlyConvertible.swift in Sources */,
@@ -503,6 +510,7 @@
 				B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */,
 				74A7688C20D45EBA00F9D437 /* OrderStore.swift in Sources */,
 				B53D89E520E6C22B00F90866 /* Model.swift in Sources */,
+				74685D5020F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift in Sources */,
 				74A7689020D45F9300F9D437 /* OrderAction.swift in Sources */,
 				7499936620EFBC7200CF01CD /* OrderNoteStore.swift in Sources */,
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,

@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 
 // MARK: - SettingsViewController
@@ -73,8 +74,9 @@ extension SettingsViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         if cell is LogOutTableViewCell {
             let logoutCell = cell as! LogOutTableViewCell
-            logoutCell.didSelectLogout = { //[weak self] in
-                NSLog("User tapped log out button!")
+            logoutCell.didSelectLogout = { [weak self] in
+                StoresManager.shared.deauthenticate()
+                self?.navigationController?.popToRootViewController(animated: true)
             }
         }
         return cell

@@ -41,6 +41,15 @@
 		B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */; };
 		B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */; };
 		B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */; };
+		B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C743C20F5493300EEFC87 /* AccountHeaderView.swift */; };
+		B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B57C744220F54F1C00EEFC87 /* AccountHeaderView.xib */; };
+		B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744420F55BA600EEFC87 /* NSObject+Helpers.swift */; };
+		B57C744720F55BC800EEFC87 /* UIView+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744620F55BC800EEFC87 /* UIView+Helpers.swift */; };
+		B57C744A20F5649300EEFC87 /* EmptyStoresTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744920F5649300EEFC87 /* EmptyStoresTableViewCell.swift */; };
+		B57C744C20F564B400EEFC87 /* EmptyStoresTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B57C744B20F564B400EEFC87 /* EmptyStoresTableViewCell.xib */; };
+		B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744D20F56E3800EEFC87 /* UITableViewCell+Helpers.swift */; };
+		B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C745020F56EE900EEFC87 /* UITableViewCellHelpersTests.swift */; };
+		B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8532120BDBFAE00FAAB4D /* CircularImageView.swift */; };
 		B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */; };
 		B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8AC20B88D9900D211DE /* LoginPrologueViewController.swift */; };
 		B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5A8F8AE20B88DCC00D211DE /* LoginPrologueViewController.xib */; };
@@ -57,6 +66,8 @@
 		B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFB720BC510200DB0E8C /* UIImage+Woo.swift */; };
 		B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFB920BC515600DB0E8C /* UIColor+Woo.swift */; };
 		B5D1AFC020BC67C200DB0E8C /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
+		B5D1AFC620BC7B7300DB0E8C /* StorePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFC520BC7B7300DB0E8C /* StorePickerViewController.swift */; };
+		B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5D1AFC720BC7B9600DB0E8C /* StorePickerViewController.xib */; };
 		B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3C220E1484400B53AED /* StoresManagerTests.swift */; };
 		B5DBF3C520E148E000B53AED /* DeauthenticatedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3C420E148E000B53AED /* DeauthenticatedState.swift */; };
 		B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3CA20E149CC00B53AED /* AuthenticatedState.swift */; };
@@ -165,8 +176,17 @@
 		B56DB3D82049BFAA00D4AA8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3E32049BFAA00D4AA8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B57C743C20F5493300EEFC87 /* AccountHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountHeaderView.swift; sourceTree = "<group>"; };
+		B57C744220F54F1C00EEFC87 /* AccountHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountHeaderView.xib; sourceTree = "<group>"; };
+		B57C744420F55BA600EEFC87 /* NSObject+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Helpers.swift"; sourceTree = "<group>"; };
+		B57C744620F55BC800EEFC87 /* UIView+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Helpers.swift"; sourceTree = "<group>"; };
+		B57C744920F5649300EEFC87 /* EmptyStoresTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStoresTableViewCell.swift; sourceTree = "<group>"; };
+		B57C744B20F564B400EEFC87 /* EmptyStoresTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmptyStoresTableViewCell.xib; sourceTree = "<group>"; };
+		B57C744D20F56E3800EEFC87 /* UITableViewCell+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+Helpers.swift"; sourceTree = "<group>"; };
+		B57C745020F56EE900EEFC87 /* UITableViewCellHelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableViewCellHelpersTests.swift; sourceTree = "<group>"; };
 		B59F38DF20D40A24008C1829 /* WooCommerce.debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerce.debug.entitlements; sourceTree = "<group>"; };
 		B59F38E020D40A24008C1829 /* WooCommerce.release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerce.release.entitlements; sourceTree = "<group>"; };
+		B5A8532120BDBFAE00FAAB4D /* CircularImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularImageView.swift; sourceTree = "<group>"; };
 		B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ApiCredentials.swift; path = DerivedSources/ApiCredentials.swift; sourceTree = SOURCE_ROOT; };
 		B5A8F8A820B84D3F00D211DE /* InfoPlist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InfoPlist.h; path = DerivedSources/InfoPlist.h; sourceTree = SOURCE_ROOT; };
 		B5A8F8AC20B88D9900D211DE /* LoginPrologueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPrologueViewController.swift; sourceTree = "<group>"; };
@@ -181,6 +201,8 @@
 		B5D1AFB720BC510200DB0E8C /* UIImage+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Woo.swift"; sourceTree = "<group>"; };
 		B5D1AFB920BC515600DB0E8C /* UIColor+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Woo.swift"; sourceTree = "<group>"; };
 		B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooConstants.swift; sourceTree = "<group>"; };
+		B5D1AFC520BC7B7300DB0E8C /* StorePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePickerViewController.swift; sourceTree = "<group>"; };
+		B5D1AFC720BC7B9600DB0E8C /* StorePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StorePickerViewController.xib; sourceTree = "<group>"; };
 		B5DBF3C220E1484400B53AED /* StoresManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoresManagerTests.swift; sourceTree = "<group>"; };
 		B5DBF3C420E148E000B53AED /* DeauthenticatedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeauthenticatedState.swift; sourceTree = "<group>"; };
 		B5DBF3CA20E149CC00B53AED /* AuthenticatedState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedState.swift; sourceTree = "<group>"; };
@@ -297,6 +319,7 @@
 			isa = PBXGroup;
 			children = (
 				B5A8F8AB20B88D8400D211DE /* Prologue */,
+				B5D1AFC420BC7B3000DB0E8C /* Epilogue */,
 				B55D4C0520B6027100D7A50F /* AuthenticationManager.swift */,
 			);
 			path = Authentication;
@@ -339,6 +362,7 @@
 		B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */ = {
 			isa = PBXGroup;
 			children = (
+				B57C744F20F56ED300EEFC87 /* Extensions */,
 				B53B898A20D4606400EDB467 /* System */,
 				B5DBF3C120E1482900B53AED /* Yosemite */,
 				B56DB3E32049BFAA00D4AA8E /* Info.plist */,
@@ -389,6 +413,14 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		B57C744F20F56ED300EEFC87 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B57C745020F56EE900EEFC87 /* UITableViewCellHelpersTests.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		B5A8F8A620B84CF600D211DE /* DerivedSources */ = {
 			isa = PBXGroup;
 			children = (
@@ -415,6 +447,19 @@
 				CECA64B020D9990E005A44C4 /* WooCommerce-Bridging-Header.h */,
 			);
 			path = System;
+			sourceTree = "<group>";
+		};
+		B5D1AFC420BC7B3000DB0E8C /* Epilogue */ = {
+			isa = PBXGroup;
+			children = (
+				B57C743C20F5493300EEFC87 /* AccountHeaderView.swift */,
+				B57C744220F54F1C00EEFC87 /* AccountHeaderView.xib */,
+				B57C744920F5649300EEFC87 /* EmptyStoresTableViewCell.swift */,
+				B57C744B20F564B400EEFC87 /* EmptyStoresTableViewCell.xib */,
+				B5D1AFC520BC7B7300DB0E8C /* StorePickerViewController.swift */,
+				B5D1AFC720BC7B9600DB0E8C /* StorePickerViewController.xib */,
+			);
+			path = Epilogue;
 			sourceTree = "<group>";
 		};
 		B5DBF3C120E1482900B53AED /* Yosemite */ = {
@@ -449,13 +494,16 @@
 			isa = PBXGroup;
 			children = (
 				CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */,
+				CE4DDB7A20DD312400D32EC8 /* Date+Helpers.swift */,
+				B57C744420F55BA600EEFC87 /* NSObject+Helpers.swift */,
 				CE32B11920BF8E32006FBCF4 /* UIButton+Helpers.swift */,
 				CE1F51262064345B00C6C810 /* UIColor+Helpers.swift */,
 				B5D1AFB920BC515600DB0E8C /* UIColor+Woo.swift */,
 				CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */,
-				CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */,
 				B5D1AFB720BC510200DB0E8C /* UIImage+Woo.swift */,
-				CE4DDB7A20DD312400D32EC8 /* Date+Helpers.swift */,
+				CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */,
+				B57C744D20F56E3800EEFC87 /* UITableViewCell+Helpers.swift */,
+				B57C744620F55BC800EEFC87 /* UIView+Helpers.swift */,
 				B5AA7B3E20ED81C2004DA14F /* UserDefaults+Woo.swift */,
 			);
 			path = Extensions;
@@ -485,6 +533,7 @@
 		CED6021A20B35FBF0032C639 /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
+				B5A8532120BDBFAE00FAAB4D /* CircularImageView.swift */,
 				CE1EC8D020B6FE39009762BF /* FootnoteView.swift */,
 				CE1EC8CE20B6FD53009762BF /* FootnoteView.xib */,
 				CE1EC8EA20B8A3FF009762BF /* AddItemTableViewCell.swift */,
@@ -634,6 +683,8 @@
 			files = (
 				B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */,
 				B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */,
+				B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */,
+				B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */,
 				CED6021E20B35FDF0032C639 /* NoResultsTableViewCell.xib in Resources */,
 				B557DA1620979904005962F4 /* CustomerNoteTableViewCell.xib in Resources */,
 				93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */,
@@ -643,6 +694,7 @@
 				B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */,
 				CE1EC8CF20B6FD53009762BF /* FootnoteView.xib in Resources */,
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
+				B57C744C20F564B400EEFC87 /* EmptyStoresTableViewCell.xib in Resources */,
 				CE855367209BA6A700938BDC /* ShowHideSectionFooter.xib in Resources */,
 				CE1EC8F020B8A408009762BF /* OrderNoteTableViewCell.xib in Resources */,
 				B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */,
@@ -805,9 +857,11 @@
 				CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */,
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
 				CE263DE6206ACD220015A693 /* NotificationsViewController.swift in Sources */,
+				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
 				B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */,
 				B54175F220D4C15D0083BB8C /* CoreDataManager+Woo.swift in Sources */,
 				B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */,
+				B5D1AFC620BC7B7300DB0E8C /* StorePickerViewController.swift in Sources */,
 				B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */,
 				B5DBF3C520E148E000B53AED /* DeauthenticatedState.swift in Sources */,
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
@@ -818,14 +872,17 @@
 				CE1EC8F120B8A408009762BF /* OrderNoteTableViewCell.swift in Sources */,
 				CE4DDB7B20DD312400D32EC8 /* Date+Helpers.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
+				B57C744720F55BC800EEFC87 /* UIView+Helpers.swift in Sources */,
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,
 				B5BE368E20BED80B00BE0A8C /* SafariViewController.swift in Sources */,
 				CE855364209BA6A700938BDC /* ShowHideSectionFooter.swift in Sources */,
+				B57C744A20F5649300EEFC87 /* EmptyStoresTableViewCell.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				CE1EC8D120B6FE39009762BF /* FootnoteView.swift in Sources */,
 				B557DA1520979904005962F4 /* CustomerNoteTableViewCell.swift in Sources */,
 				CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */,
+				B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */,
@@ -841,6 +898,8 @@
 				CE32B11520BF8779006FBCF4 /* ProductListTableViewCell.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* AddItemTableViewCell.swift in Sources */,
+				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
+				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
 				7403F7E220EC04070097198F /* OrderStatusViewModel.swift in Sources */,
 				CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */,
 				B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */,
@@ -857,6 +916,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */,
+				B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */,
 				B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

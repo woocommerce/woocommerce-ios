@@ -25,7 +25,6 @@ class OrderNoteTableViewCell: UITableViewCell {
         }
     }
 
-    static let reuseIdentifier = "OrderNoteTableViewCell"
 
     var dateCreated: String? {
         get {

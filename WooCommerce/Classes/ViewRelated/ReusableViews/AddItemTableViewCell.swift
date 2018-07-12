@@ -2,8 +2,6 @@ import UIKit
 
 class AddItemTableViewCell: UITableViewCell {
 
-    static let reuseIdentifier = "AddItemTableViewCell"
-
     override func awakeFromNib() {
         super.awakeFromNib()
         imageView?.tintColor = StyleManager.wooCommerceBrandColor

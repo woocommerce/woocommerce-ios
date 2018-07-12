@@ -71,6 +71,10 @@ class AuthenticationManager {
 // MARK: - WordPressAuthenticator Delegate
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
+    func sync(credentials: WordPressCredentials, onCompletion: @escaping () -> Void) {
+        // TODO: sync credentials
+    }
+
     func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
         // TODO: wire Zendesk
     }

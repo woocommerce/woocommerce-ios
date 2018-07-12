@@ -167,19 +167,15 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Synchronizes the specified WordPress Account.
     ///
-    func sync(credentials: WordPressCredentials, onCompletion: @escaping (Error?) -> Void) {
+    func sync(credentials: WordPressCredentials, onCompletion: @escaping () -> Void) {
         guard case let .wpcom(username, authToken, _, _) = credentials else {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
 
-        // TODO: Remove the Error? parameter in WordPressAuthenticator, since it's not even used!
-        let wrappedOnCompletion = {
-            onCompletion(nil)
-        }
 
         StoresManager.shared
             .authenticate(credentials: .init(username: username, authToken: authToken))
-            .synchronizeEntities(onCompletion: wrappedOnCompletion)
+            .synchronizeEntities(onCompletion: onCompletionWrapper)
     }
 
     /// Tracks a given Analytics Event.

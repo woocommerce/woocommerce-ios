@@ -2,11 +2,11 @@ import Foundation
 import Storage
 
 
-// MARK: - Storage.order: ReadOnlyConvertible
+// MARK: - Storage.Order: ReadOnlyConvertible
 //
 extension Storage.Order: ReadOnlyConvertible {
 
-    /// Updates the Storage.Order with the a ReadOnly.
+    /// Updates the Storage.Order with the ReadOnly.
     ///
     public func update(with order: Yosemite.Order) {
         orderID = Int64(order.orderID)

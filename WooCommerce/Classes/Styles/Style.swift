@@ -16,6 +16,7 @@ protocol Style {
     var buttonDisabledTitleColor: UIColor { get }
     var cellSeparatorColor: UIColor { get }
     var defaultTextColor: UIColor { get }
+    var destructiveActionColor: UIColor { get }
     var sectionTitleColor: UIColor { get }
     var statusDangerColor: UIColor { get }
     var statusDangerBoldColor: UIColor { get }
@@ -47,6 +48,7 @@ class DefaultStyle: Style {
     let buttonDisabledTitleColor = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
     let cellSeparatorColor = UIColor.lightGray
     let defaultTextColor = UIColor.black
+    let destructiveActionColor = UIColor(red: 197.0/255.0, green: 60.0/255.0, blue: 53.0/255.0, alpha: 1.0)
     let sectionTitleColor = UIColor.darkGray
     let statusDangerColor = UIColor(red: 255.0/255.0, green: 230.0/255.0, blue: 229.0/255.0, alpha: 1.0)
     let statusDangerBoldColor = UIColor(red: 255.0/255.0, green: 197.0/255.0, blue: 195.0/255.0, alpha: 1.0)
@@ -127,6 +129,10 @@ class StyleManager {
 
     static var defaultTextColor: UIColor {
         return active.defaultTextColor
+    }
+
+    static var destructiveActionColor: UIColor {
+        return active.destructiveActionColor
     }
 
     static var statusDangerColor: UIColor {

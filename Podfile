@@ -18,7 +18,7 @@ target 'WooCommerce' do
   #
   pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.3'
   pod 'Gridicons', '0.15'
-  pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => 'be1e635'
+  pod 'WordPressAuthenticator', '~> 1.0'
 
 
   # External Libraries

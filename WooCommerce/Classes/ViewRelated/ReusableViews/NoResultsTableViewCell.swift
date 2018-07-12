@@ -12,7 +12,6 @@ class NoResultsTableViewCell: UITableViewCell {
         }
     }
 
-    static let reuseIdentifier = "NoResultsTableViewCell"
 
     override func awakeFromNib() {
         super.awakeFromNib()

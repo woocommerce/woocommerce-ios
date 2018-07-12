@@ -109,6 +109,8 @@
 		CE85FD5320F677770080B73E /* Dashboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE85FD5220F677770080B73E /* Dashboard.storyboard */; };
 		CE85FD5A20F7A7640080B73E /* SettingsFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85FD5920F7A7640080B73E /* SettingsFooterView.swift */; };
 		CE85FD5C20F7A7740080B73E /* SettingsFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE85FD5B20F7A7740080B73E /* SettingsFooterView.xib */; };
+		CE85FD5F20F7BE8D0080B73E /* LogOutTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85FD5D20F7BE8D0080B73E /* LogOutTableViewCell.swift */; };
+		CE85FD6020F7BE8D0080B73E /* LogOutTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE85FD5E20F7BE8D0080B73E /* LogOutTableViewCell.xib */; };
 		CED6021D20B35FDF0032C639 /* NoResultsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED6021B20B35FDF0032C639 /* NoResultsTableViewCell.swift */; };
 		CED6021E20B35FDF0032C639 /* NoResultsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CED6021C20B35FDF0032C639 /* NoResultsTableViewCell.xib */; };
 		CEE005F62076C4040079161F /* Orders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F52076C4040079161F /* Orders.storyboard */; };
@@ -247,6 +249,8 @@
 		CE85FD5220F677770080B73E /* Dashboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Dashboard.storyboard; sourceTree = "<group>"; };
 		CE85FD5920F7A7640080B73E /* SettingsFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFooterView.swift; sourceTree = "<group>"; };
 		CE85FD5B20F7A7740080B73E /* SettingsFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsFooterView.xib; sourceTree = "<group>"; };
+		CE85FD5D20F7BE8D0080B73E /* LogOutTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogOutTableViewCell.swift; sourceTree = "<group>"; };
+		CE85FD5E20F7BE8D0080B73E /* LogOutTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LogOutTableViewCell.xib; sourceTree = "<group>"; };
 		CECA64B020D9990E005A44C4 /* WooCommerce-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WooCommerce-Bridging-Header.h"; sourceTree = "<group>"; };
 		CED6021B20B35FDF0032C639 /* NoResultsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoResultsTableViewCell.swift; sourceTree = "<group>"; };
 		CED6021C20B35FDF0032C639 /* NoResultsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoResultsTableViewCell.xib; sourceTree = "<group>"; };
@@ -537,6 +541,8 @@
 		CE85FD5820F7A59E0080B73E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				CE85FD5D20F7BE8D0080B73E /* LogOutTableViewCell.swift */,
+				CE85FD5E20F7BE8D0080B73E /* LogOutTableViewCell.xib */,
 				B509112F2049E27A007D25DC /* SettingsViewController.swift */,
 				CE85FD5920F7A7640080B73E /* SettingsFooterView.swift */,
 				CE85FD5B20F7A7740080B73E /* SettingsFooterView.xib */,
@@ -696,6 +702,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */,
+				CE85FD6020F7BE8D0080B73E /* LogOutTableViewCell.xib in Resources */,
 				B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */,
 				B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */,
 				B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */,
@@ -870,6 +877,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */,
+				CE85FD5F20F7BE8D0080B73E /* LogOutTableViewCell.swift in Sources */,
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
 				CE263DE6206ACD220015A693 /* NotificationsViewController.swift in Sources */,
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,

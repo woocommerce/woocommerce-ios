@@ -11,8 +11,6 @@
 		7028A41485A08AC748206184 /* Pods_Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */; };
 		7426A04720F68F27002A4E07 /* Order+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426A04320F68F27002A4E07 /* Order+CoreDataClass.swift */; };
 		7426A04820F68F27002A4E07 /* Order+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426A04420F68F27002A4E07 /* Order+CoreDataProperties.swift */; };
-		7426A04C20F697D5002A4E07 /* Address+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426A04A20F697D5002A4E07 /* Address+CoreDataClass.swift */; };
-		7426A04D20F697D5002A4E07 /* Address+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426A04B20F697D5002A4E07 /* Address+CoreDataProperties.swift */; };
 		7426A05020F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426A04E20F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift */; };
 		7426A05120F69D00002A4E07 /* OrderCoupon+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426A04F20F69D00002A4E07 /* OrderCoupon+CoreDataProperties.swift */; };
 		7426A05420F69DA4002A4E07 /* OrderItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426A05220F69DA4002A4E07 /* OrderItem+CoreDataClass.swift */; };
@@ -56,8 +54,6 @@
 		5D12CAE2D0EA6AB66F162FF9 /* Pods-StorageTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7426A04320F68F27002A4E07 /* Order+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+CoreDataClass.swift"; sourceTree = "<group>"; };
 		7426A04420F68F27002A4E07 /* Order+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		7426A04A20F697D5002A4E07 /* Address+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Address+CoreDataClass.swift"; sourceTree = "<group>"; };
-		7426A04B20F697D5002A4E07 /* Address+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Address+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7426A04E20F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCoupon+CoreDataClass.swift"; sourceTree = "<group>"; };
 		7426A04F20F69D00002A4E07 /* OrderCoupon+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCoupon+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7426A05220F69DA4002A4E07 /* OrderItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItem+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -240,8 +236,6 @@
 				B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */,
 				B505F6D920BEEA3200BB1B69 /* Account+CoreDataClass.swift */,
 				B505F6D820BEEA3100BB1B69 /* Account+CoreDataProperties.swift */,
-				7426A04A20F697D5002A4E07 /* Address+CoreDataClass.swift */,
-				7426A04B20F697D5002A4E07 /* Address+CoreDataProperties.swift */,
 				B5B914C320EFF03500F2F832 /* Site+CoreDataClass.swift */,
 				B5B914C420EFF03500F2F832 /* Site+CoreDataProperties.swift */,
 				7426A04320F68F27002A4E07 /* Order+CoreDataClass.swift */,
@@ -439,7 +433,6 @@
 				B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */,
 				7426A04820F68F27002A4E07 /* Order+CoreDataProperties.swift in Sources */,
 				B505F6DB20BEEA3200BB1B69 /* Account+CoreDataClass.swift in Sources */,
-				7426A04D20F697D5002A4E07 /* Address+CoreDataProperties.swift in Sources */,
 				7426A05520F69DA4002A4E07 /* OrderItem+CoreDataProperties.swift in Sources */,
 				7426A04720F68F27002A4E07 /* Order+CoreDataClass.swift in Sources */,
 				B54CA5BD20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift in Sources */,
@@ -447,7 +440,6 @@
 				B52B0F7920AA287C00477698 /* StorageManagerType.swift in Sources */,
 				7426A05420F69DA4002A4E07 /* OrderItem+CoreDataClass.swift in Sources */,
 				B505F6E020BEEA8100BB1B69 /* StorageType.swift in Sources */,
-				7426A04C20F697D5002A4E07 /* Address+CoreDataClass.swift in Sources */,
 				B54CA5C920A4C17800F38CD1 /* NSObject+Storage.swift in Sources */,
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,
 				B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */,

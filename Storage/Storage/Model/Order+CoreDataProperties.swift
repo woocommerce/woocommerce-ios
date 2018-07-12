@@ -8,27 +8,63 @@ extension Order {
         return NSFetchRequest<Order>(entityName: "Order")
     }
 
-    @NSManaged public var orderID: Int64
-    @NSManaged public var parentID: Int64
-    @NSManaged public var customerID: Int64
-    @NSManaged public var number: String?
-    @NSManaged public var status: String
     @NSManaged public var currency: String?
+    @NSManaged public var customerID: Int64
     @NSManaged public var customerNote: String?
     @NSManaged public var dateCreated: Date?
     @NSManaged public var dateModified: Date?
     @NSManaged public var datePaid: Date?
-    @NSManaged public var discountTotal: String?
     @NSManaged public var discountTax: String?
-    @NSManaged public var shippingTotal: String?
+    @NSManaged public var discountTotal: String?
+    @NSManaged public var number: String?
+    @NSManaged public var orderID: Int64
+    @NSManaged public var parentID: Int64
+    @NSManaged public var paymentMethodTitle: String?
     @NSManaged public var shippingTax: String?
+    @NSManaged public var shippingTotal: String?
+    @NSManaged public var status: String
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
-    @NSManaged public var paymentMethodTitle: String?
-    @NSManaged public var items: NSSet?
-    @NSManaged public var billingAddress: Address?
-    @NSManaged public var shippingAddress: Address?
+    @NSManaged public var billingFirstName: String?
+    @NSManaged public var billingLastName: String?
+    @NSManaged public var billingCountry: String?
+    @NSManaged public var billingPostcode: String?
+    @NSManaged public var billingState: String?
+    @NSManaged public var billingCity: String?
+    @NSManaged public var billingAddress2: String?
+    @NSManaged public var billingAddress1: String?
+    @NSManaged public var billingCompany: String?
+    @NSManaged public var billingPhone: String?
+    @NSManaged public var billingEmail: String?
+    @NSManaged public var shippingFirstName: String?
+    @NSManaged public var shippingLastName: String?
+    @NSManaged public var shippingCompany: String?
+    @NSManaged public var shippingAddress1: String?
+    @NSManaged public var shippingAddress2: String?
+    @NSManaged public var shippingCity: String?
+    @NSManaged public var shippingPostcode: String?
+    @NSManaged public var shippingCountry: String?
+    @NSManaged public var shippingPhone: String?
+    @NSManaged public var shippingEmail: String?
+    @NSManaged public var shippingState: String?
     @NSManaged public var coupons: NSSet?
+    @NSManaged public var items: NSSet?
+}
+
+// MARK: Generated accessors for coupons
+extension Order {
+
+    @objc(addCouponsObject:)
+    @NSManaged public func addToCoupons(_ value: OrderCoupon)
+
+    @objc(removeCouponsObject:)
+    @NSManaged public func removeFromCoupons(_ value: OrderCoupon)
+
+    @objc(addCoupons:)
+    @NSManaged public func addToCoupons(_ values: NSSet)
+
+    @objc(removeCoupons:)
+    @NSManaged public func removeFromCoupons(_ values: NSSet)
 
 }
 
@@ -46,22 +82,5 @@ extension Order {
 
     @objc(removeItems:)
     @NSManaged public func removeFromItems(_ values: NSSet)
-
-}
-
-// MARK: Generated accessors for coupons
-extension Order {
-
-    @objc(addCouponsObject:)
-    @NSManaged public func addToCoupons(_ value: OrderCoupon)
-
-    @objc(removeCouponsObject:)
-    @NSManaged public func removeFromCoupons(_ value: OrderCoupon)
-
-    @objc(addCoupons:)
-    @NSManaged public func addToCoupons(_ values: NSSet)
-
-    @objc(removeCoupons:)
-    @NSManaged public func removeFromCoupons(_ values: NSSet)
 
 }

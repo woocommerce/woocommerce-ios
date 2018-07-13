@@ -125,6 +125,38 @@ class OrderNoteStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `upsertStoredOrderNote` does not produce duplicate entries.
+    ///
+    func testUpdateStoredOrderNoteEffectivelyUpdatesPreexistantOrderNote() {
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
+
+        XCTAssertNil(viewStorage.firstObject(ofType: Storage.OrderNote.self, matching: nil))
+        orderNoteStore.upsertStoredOrderNote(readOnlyOrderNote: sampleCustomerNote(), orderID: sampleOrderID)
+        orderNoteStore.upsertStoredOrderNote(readOnlyOrderNote: sampleCustomerNoteMutated(), orderID: sampleOrderID)
+        XCTAssert(viewStorage.countObjects(ofType: Storage.OrderNote.self, matching: nil) == 1)
+
+        let expectedNote = sampleCustomerNoteMutated()
+        let storageOrderNote = viewStorage.loadOrderNote(noteID: expectedNote.noteID)
+        XCTAssertEqual(storageOrderNote?.toReadOnly(), expectedNote)
+    }
+
+    /// Verifies that `upsertStoredOrderNote` effectively inserts a new OrderNote, with the specified payload.
+    ///
+    func testUpdateStoredOrderNoteEffectivelyPersistsNewOrderNote() {
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
+        let remoteOrderNote = sampleCustomerNote()
+
+        XCTAssertNil(viewStorage.loadAccount(userId: remoteOrderNote.noteID))
+        orderNoteStore.upsertStoredOrderNote(readOnlyOrderNote: remoteOrderNote, orderID: sampleOrderID)
+
+        let storageOrderNote = viewStorage.loadOrderNote(noteID: remoteOrderNote.noteID)
+        XCTAssertEqual(storageOrderNote?.toReadOnly(), remoteOrderNote)
+    }
+
     /// Verifies that OrderNoteAction.retrieveOrderNotes returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveOrderNotesReturnsErrorUponReponseError() {
@@ -175,6 +207,13 @@ private extension OrderNoteStoreTests {
                          dateCreated: date(with: "2018-06-23T17:06:55"),
                          note: "I love your products!",
                          isCustomerNote: true)
+    }
+
+    func sampleCustomerNoteMutated() -> Networking.OrderNote {
+        return OrderNote(noteId: 2261,
+                         dateCreated: date(with: "2018-06-23T17:06:55"),
+                         note: "I HATE your products!",
+                         isCustomerNote: false)
     }
 
     func sampleSellerNote() -> Networking.OrderNote {

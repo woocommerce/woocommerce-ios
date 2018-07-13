@@ -80,7 +80,7 @@ class OrderStoreTests: XCTestCase {
 
     /// Verifies that `OrderAction.retrieveOrders` effectively persists all of the order fields correctly across all of the related Order objects (items, coupons, etc).
     ///
-    func testRetrieveOrdersEffectivelyPersistsOrderFields() {
+    func testRetrieveOrdersEffectivelyPersistsOrderFieldsAndRelatedObjects() {
         let expectation = self.expectation(description: "Persist order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
@@ -89,7 +89,9 @@ class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
         let action = OrderAction.retrieveOrders(siteID: 123) { (orders, error) in
+            XCTAssertNotNil(orders)
             XCTAssertNil(error)
+
             let predicate = NSPredicate(format: "orderID = %ld", remoteOrder.orderID)
             let storedOrder = self.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)
             let readOnlyStoredOrder = storedOrder?.toReadOnly()
@@ -163,6 +165,34 @@ class OrderStoreTests: XCTestCase {
                 return
             }
             XCTAssertEqual(order, remoteOrder)
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `OrderAction.retrieveOrder` effectively persists all of the remote order fields correctly across all of the related `Order` objects (items, coupons, etc).
+    ///
+    func testRetrieveSingleOrderEffectivelyPersistsOrderFieldsAndRelatedObjects() {
+        let expectation = self.expectation(description: "Persist order")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteOrder = sampleOrder()
+
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+
+        let action = OrderAction.retrieveOrder(siteID: 123, orderID: 963) { (order, error) in
+            XCTAssertNotNil(order)
+            XCTAssertNil(error)
+
+            let predicate = NSPredicate(format: "orderID = %ld", remoteOrder.orderID)
+            let storedOrder = self.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)
+            let readOnlyStoredOrder = storedOrder?.toReadOnly()
+            XCTAssertNotNil(storedOrder)
+            XCTAssertNotNil(readOnlyStoredOrder)
+            XCTAssertEqual(readOnlyStoredOrder, remoteOrder)
+
             expectation.fulfill()
         }
 

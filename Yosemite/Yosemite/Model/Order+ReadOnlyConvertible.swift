@@ -52,13 +52,14 @@ extension Storage.Order: ReadOnlyConvertible {
         shippingCountry = order.shippingAddress.country
         shippingPhone = order.shippingAddress.phone
         shippingEmail = order.shippingAddress.email
-
-        // TODO: items, coupons
     }
 
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.Order {
+        let orderItems = items?.map { $0.toReadOnly() } ?? [Yosemite.OrderItem]()
+        let orderCoupons = coupons?.map { $0.toReadOnly() } ?? [Yosemite.OrderCouponLine]()
+
         return Order(orderID: Int(orderID),
                      parentID: Int(parentID),
                      customerID: Int(customerID),
@@ -76,12 +77,10 @@ extension Storage.Order: ReadOnlyConvertible {
                      total: total ?? "",
                      totalTax: totalTax ?? "",
                      paymentMethodTitle: paymentMethodTitle ?? "",
-                     items: [],
+                     items: orderItems,
                      billingAddress: createReadOnlyBillingAddress(),
                      shippingAddress: createReadOnlyShippingAddress(),
-                     coupons: [])
-
-        // TODO: ^^^^ items, coupons ^^^^
+                     coupons: orderCoupons)
     }
 
 

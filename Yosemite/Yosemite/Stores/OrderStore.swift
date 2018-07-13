@@ -71,7 +71,7 @@ private extension OrderStore  {
 
 // MARK: - Persistance
 //
-extension OrderStore {
+private extension OrderStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Order Entity into the Storage Layer.
     ///
@@ -80,6 +80,8 @@ extension OrderStore {
 
         let storage = storageManager.viewStorage
         let storageOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) ?? storage.insertNewObject(ofType: Storage.Order.self)
+
+        // TODO: items & coupons
 
         storageOrder.update(with: readOnlyOrder)
         storage.saveIfNeeded()
@@ -91,12 +93,69 @@ extension OrderStore {
         assert(Thread.isMainThread)
 
         let storage = storageManager.viewStorage
-
         for readOnlyOrder in readOnlyOrders {
             let storageOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) ?? storage.insertNewObject(ofType: Storage.Order.self)
             storageOrder.update(with: readOnlyOrder)
+            handleOrderItems(readOnlyOrder, storageOrder, storage)
+            handleOrderCoupons(readOnlyOrder, storageOrder, storage)
         }
 
         storage.saveIfNeeded()
+    }
+
+    /// Updates, inserts, and prunes the provided StorageOrder's items using the provided read-only Order's items
+    ///
+    func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        guard !readOnlyOrder.items.isEmpty else {
+            // No items in the read-only order, so remove all the items in Storage.Order
+            storageOrder.items?.forEach { storageOrder.removeFromItems($0) }
+            return
+        }
+
+        // Upsert the items from the read-only order
+        for readOnlyItem in readOnlyOrder.items {
+            if let existingStorageItem = storage.loadOrderItem(itemID: readOnlyItem.itemID) {
+                existingStorageItem.update(with: readOnlyItem)
+            } else {
+                let newStorageItem = storage.insertNewObject(ofType: Storage.OrderItem.self)
+                newStorageItem.update(with: readOnlyItem)
+                storageOrder.addToItems(newStorageItem)
+            }
+        }
+
+        // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items
+        storageOrder.items?.forEach({ storageItem in
+            if readOnlyOrder.items.first(where: { $0.itemID == storageItem.itemID } ) == nil {
+                storageOrder.removeFromItems(storageItem)
+            }
+        })
+    }
+
+    /// Updates, inserts, and prunes the provided StorageOrder's coupons using the provided read-only Order's coupons
+    ///
+    func handleOrderCoupons(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        guard !readOnlyOrder.coupons.isEmpty else {
+            // No coupons in the read-only order, so remove all the coupons in Storage.Order
+            storageOrder.coupons?.forEach { storageOrder.removeFromCoupons($0) }
+            return
+        }
+
+        // Upsert the coupons from the read-only order
+        for readOnlyCoupon in readOnlyOrder.coupons {
+            if let existingStorageCoupon = storage.loadCouponItem(couponID: readOnlyCoupon.couponID) {
+                existingStorageCoupon.update(with: readOnlyCoupon)
+            } else {
+                let newStorageCoupon = storage.insertNewObject(ofType: Storage.OrderCoupon.self)
+                newStorageCoupon.update(with: readOnlyCoupon)
+                storageOrder.addToCoupons(newStorageCoupon)
+            }
+        }
+
+        // Now, remove any objects that exist in storageOrder.coupons but not in readOnlyOrder.coupons
+        storageOrder.coupons?.forEach({ storageCoupon in
+            if readOnlyOrder.coupons.first(where: { $0.couponID == storageCoupon.couponID } ) == nil {
+                storageOrder.removeFromCoupons(storageCoupon)
+            }
+        })
     }
 }

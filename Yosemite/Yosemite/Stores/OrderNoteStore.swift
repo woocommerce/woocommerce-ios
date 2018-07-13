@@ -52,7 +52,7 @@ private extension OrderNoteStore  {
 
 // MARK: - Persistence
 //
-private extension OrderNoteStore {
+extension OrderNoteStore {
 
     /// Updates (OR Inserts) the specified ReadOnly OrderNote Entity into the Storage Layer.
     ///

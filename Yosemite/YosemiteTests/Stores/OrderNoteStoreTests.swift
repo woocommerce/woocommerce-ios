@@ -26,7 +26,6 @@ class OrderNoteStoreTests: XCTestCase {
         return storageManager.viewStorage
     }
 
-
     /// Dummy Site ID
     ///
     private let sampleSiteID = 123
@@ -68,17 +67,18 @@ class OrderNoteStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `OrderNoteAction.retrieveOrderNotes` effectively persists any retrieved orders.
+    /// Verifies that `OrderNoteAction.retrieveOrderNotes` effectively persists any retrieved order notes.
     ///
-    func testRetrieveOrderNotesEffectivelyPersistsRetrievedOrders() {
+    func testRetrieveOrderNotesEffectivelyPersistsRetrievedOrderNotes() {
         let expectation = self.expectation(description: "Persist order note list")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes/", filename: "order-notes")
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
-
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderNote.self), 0)
         let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { (orderNotes, error) in
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 18)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderNote.self), 18)
             XCTAssertNotNil(orderNotes)
             XCTAssertNil(error)
             expectation.fulfill()
@@ -92,12 +92,14 @@ class OrderNoteStoreTests: XCTestCase {
     ///
     func testRetrieveOrderNotesEffectivelyPersistsOrderNoteFields() {
         let expectation = self.expectation(description: "Persist order note list")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteCustomerNote = sampleCustomerNote()
         let remoteSellerNote = sampleSellerNote()
 
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes/", filename: "order-notes")
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderNote.self), 0)
         let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { (orderNotes, error) in
             XCTAssertNotNil(orderNotes)
             XCTAssertNil(error)
@@ -180,6 +182,44 @@ private extension OrderNoteStoreTests {
                          dateCreated: date(with: "2018-05-26T05:00:24"),
                          note: "Order status changed from Processing to Completed.",
                          isCustomerNote: false)
+    }
+
+    func sampleOrder() -> Networking.Order {
+        return Order(orderID: sampleOrderID,
+                     parentID: 0,
+                     customerID: 11,
+                     number: "963",
+                     status: .processing,
+                     currency: "USD",
+                     customerNote: "",
+                     dateCreated: date(with: "2018-04-03T23:05:12"),
+                     dateModified: date(with: "2018-04-03T23:05:14"),
+                     datePaid: date(with: "2018-04-03T23:05:14"),
+                     discountTotal: "30.00",
+                     discountTax: "1.20",
+                     shippingTotal: "0.00",
+                     shippingTax: "0.00",
+                     total: "31.20",
+                     totalTax: "1.20",
+                     paymentMethodTitle: "Credit Card (Stripe)",
+                     items: [],
+                     billingAddress: sampleAddress(),
+                     shippingAddress: sampleAddress(),
+                     coupons: [])
+    }
+
+    func sampleAddress() -> Networking.Address {
+        return Address(firstName: "Johnny",
+                       lastName: "Appleseed",
+                       company: "",
+                       address1: "234 70th Street",
+                       address2: "",
+                       city: "Niagara Falls",
+                       state: "NY",
+                       postcode: "14304",
+                       country: "US",
+                       phone: "333-333-3333",
+                       email: "scrambled@scrambled.com")
     }
 
     func date(with dateString: String) -> Date {

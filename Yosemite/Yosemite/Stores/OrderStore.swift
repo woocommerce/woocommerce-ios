@@ -71,7 +71,7 @@ private extension OrderStore  {
 
 // MARK: - Persistence
 //
-private extension OrderStore {
+extension OrderStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Order Entity into the Storage Layer.
     ///
@@ -104,7 +104,7 @@ private extension OrderStore {
 
     /// Updates, inserts, or prunes the provided StorageOrder's items using the provided read-only Order's items
     ///
-    func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+    private func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         guard !readOnlyOrder.items.isEmpty else {
             // No items in the read-only order, so remove all the items in Storage.Order
             storageOrder.items?.forEach { storageOrder.removeFromItems($0) }
@@ -132,7 +132,7 @@ private extension OrderStore {
 
     /// Updates, inserts, or prunes the provided StorageOrder's coupons using the provided read-only Order's coupons
     ///
-    func handleOrderCoupons(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+    private func handleOrderCoupons(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         guard !readOnlyOrder.coupons.isEmpty else {
             // No coupons in the read-only order, so remove all the coupons in Storage.Order
             storageOrder.coupons?.forEach { storageOrder.removeFromCoupons($0) }

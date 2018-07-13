@@ -14,6 +14,7 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = NSLocalizedString("Settings", comment: "Settings navigation title")
+        view.backgroundColor = StyleManager.wooGreyMid
         configureTableView()
     }
 

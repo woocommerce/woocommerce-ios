@@ -19,7 +19,8 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5Dc-EQ-9hI">
-                        <rect key="frame" x="137" y="6" width="46" height="30"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                        <inset key="contentEdgeInsets" minX="0.0" minY="16" maxX="0.0" maxY="16"/>
                         <state key="normal" title="Button"/>
                         <connections>
                             <action selector="logoutButtonTappedWithSender:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Jte-2J-lHi"/>
@@ -27,8 +28,12 @@
                     </button>
                 </subviews>
                 <constraints>
+                    <constraint firstAttribute="bottom" secondItem="5Dc-EQ-9hI" secondAttribute="bottom" id="3FL-hg-Bj3"/>
                     <constraint firstItem="5Dc-EQ-9hI" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="3Hs-50-zIq"/>
+                    <constraint firstAttribute="trailing" secondItem="5Dc-EQ-9hI" secondAttribute="trailing" id="8XT-6H-Vx8"/>
+                    <constraint firstItem="5Dc-EQ-9hI" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="MFz-Kt-YY9"/>
                     <constraint firstItem="5Dc-EQ-9hI" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="Vcb-3v-e0x"/>
+                    <constraint firstItem="5Dc-EQ-9hI" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="xWL-d9-DHh"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

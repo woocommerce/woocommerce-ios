@@ -42,7 +42,7 @@ public extension StorageType {
 
     /// Retrieves the Stored Order Note.
     ///
-    public func loadNoteItem(noteID: Int) -> OrderNote? {
+    public func loadOrderNote(noteID: Int) -> OrderNote? {
         let predicate = NSPredicate(format: "noteID = %ld", noteID)
         return firstObject(ofType: OrderNote.self, matching: predicate)
     }

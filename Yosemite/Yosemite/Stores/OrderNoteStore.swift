@@ -1,6 +1,6 @@
 import Foundation
 import Networking
-
+import Storage
 
 // MARK: - OrderNoteStore
 //
@@ -44,5 +44,36 @@ extension OrderNoteStore  {
 
             onCompletion(orderNotes, nil)
         }
+    }
+}
+
+
+// MARK: - Persistance
+//
+private extension OrderNoteStore {
+
+    /// Updates (OR Inserts) the specified ReadOnly OrderNote Entity into the Storage Layer.
+    ///
+    func upsertStoredOrderNote(readOnlyOrderNote: Networking.OrderNote) {
+        assert(Thread.isMainThread)
+
+        let storage = storageManager.viewStorage
+        let storageOrderNote = storage.loadOrderNote(noteID: readOnlyOrderNote.noteID) ?? storage.insertNewObject(ofType: Storage.OrderNote.self)
+        storageOrderNote.update(with: readOnlyOrderNote)
+        storage.saveIfNeeded()
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly OrderNote Entities into the Storage Layer.
+    ///
+    func upsertStoredOrderNotes(readOnlyOrderNotes: [Networking.OrderNote]) {
+        assert(Thread.isMainThread)
+
+        let storage = storageManager.viewStorage
+        for readOnlyOrderNote in readOnlyOrderNotes {
+            let storageOrderNote = storage.loadOrderNote(noteID: readOnlyOrderNote.noteID) ?? storage.insertNewObject(ofType: Storage.OrderNote.self)
+            storageOrderNote.update(with: readOnlyOrderNote)
+        }
+
+        storage.saveIfNeeded()
     }
 }

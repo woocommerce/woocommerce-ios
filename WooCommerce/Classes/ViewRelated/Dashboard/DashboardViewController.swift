@@ -41,14 +41,6 @@ class DashboardViewController: UIViewController {
     @objc func settingsTapped() {
         performSegue(withIdentifier: Constants.settingsSegue, sender: nil)
     }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == Constants.settingsSegue {
-            if let settingsViewController = segue.destination as? SettingsViewController {
-                // TODO: pass in a view model with data for the settings screen
-            }
-        }
-    }
 }
 
 // MARK: - Constants

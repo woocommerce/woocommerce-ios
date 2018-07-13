@@ -25,7 +25,6 @@ extension ProductListTableViewCell {
         }
 
         fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
-        fulfillButton.applyFilledRoundStyle()
 
         verticalStackView.setCustomSpacing(Constants.spacing, after: fulfillButton)
     }

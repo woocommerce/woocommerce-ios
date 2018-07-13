@@ -141,7 +141,7 @@ private extension OrderStore {
 
         // Upsert the coupons from the read-only order
         for readOnlyCoupon in readOnlyOrder.coupons {
-            if let existingStorageCoupon = storage.loadCouponItem(couponID: readOnlyCoupon.couponID) {
+            if let existingStorageCoupon = storage.loadOrderCoupon(couponID: readOnlyCoupon.couponID) {
                 existingStorageCoupon.update(with: readOnlyCoupon)
             } else {
                 let newStorageCoupon = storage.insertNewObject(ofType: Storage.OrderCoupon.self)

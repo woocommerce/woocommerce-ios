@@ -23,9 +23,9 @@ public class OrderStore: Store {
 
         switch action {
         case .retrieveOrders(let siteId, let onCompletion):
-            retrieveOrders(siteId: siteId, onCompletion: onCompletion)
+            retrieveOrders(siteID: siteId, onCompletion: onCompletion)
         case .retrieveOrder(let siteId, let orderId, let onCompletion):
-            retrieveOrder(siteId: siteId, orderId: orderId, onCompletion: onCompletion)
+            retrieveOrder(siteID: siteId, orderId: orderId, onCompletion: onCompletion)
         }
     }
 }
@@ -37,10 +37,10 @@ private extension OrderStore  {
 
     /// Retrieves the orders associated with a given Site ID (if any!).
     ///
-    func retrieveOrders(siteId: Int, onCompletion: @escaping ([Order]?, Error?) -> Void) {
+    func retrieveOrders(siteID: Int, onCompletion: @escaping ([Order]?, Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
-        remote.loadAllOrders(for: siteId) { [weak self] (orders, error) in
+        remote.loadAllOrders(for: siteID) { [weak self] (orders, error) in
             guard let orders = orders else {
                 onCompletion(nil, error)
                 return
@@ -53,10 +53,10 @@ private extension OrderStore  {
 
     /// Retrieves a specific order associated with a given Site ID (if any!).
     ///
-    func retrieveOrder(siteId: Int, orderId: Int, onCompletion: @escaping (Order?, Error?) -> Void) {
+    func retrieveOrder(siteID: Int, orderId: Int, onCompletion: @escaping (Order?, Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
-        remote.loadOrder(for: siteId, orderID: orderId) { [weak self] (order, error) in
+        remote.loadOrder(for: siteID, orderID: orderId) { [weak self] (order, error) in
             guard let order = order else {
                 onCompletion(nil, error)
                 return
@@ -69,7 +69,7 @@ private extension OrderStore  {
 }
 
 
-// MARK: - Persistance
+// MARK: - Persistence
 //
 private extension OrderStore {
 

@@ -80,10 +80,9 @@ private extension OrderStore {
 
         let storage = storageManager.viewStorage
         let storageOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) ?? storage.insertNewObject(ofType: Storage.Order.self)
-
-        // TODO: items & coupons
-
         storageOrder.update(with: readOnlyOrder)
+        handleOrderItems(readOnlyOrder, storageOrder, storage)
+        handleOrderCoupons(readOnlyOrder, storageOrder, storage)
         storage.saveIfNeeded()
     }
 
@@ -103,7 +102,7 @@ private extension OrderStore {
         storage.saveIfNeeded()
     }
 
-    /// Updates, inserts, and prunes the provided StorageOrder's items using the provided read-only Order's items
+    /// Updates, inserts, or prunes the provided StorageOrder's items using the provided read-only Order's items
     ///
     func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         guard !readOnlyOrder.items.isEmpty else {
@@ -131,7 +130,7 @@ private extension OrderStore {
         })
     }
 
-    /// Updates, inserts, and prunes the provided StorageOrder's coupons using the provided read-only Order's coupons
+    /// Updates, inserts, or prunes the provided StorageOrder's coupons using the provided read-only Order's coupons
     ///
     func handleOrderCoupons(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         guard !readOnlyOrder.coupons.isEmpty else {

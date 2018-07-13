@@ -47,8 +47,8 @@ extension Order {
     @NSManaged public var shippingPhone: String?
     @NSManaged public var shippingEmail: String?
     @NSManaged public var shippingState: String?
-    @NSManaged public var coupons: NSSet?
-    @NSManaged public var items: NSSet?
+    @NSManaged public var coupons: Set<OrderCoupon>?
+    @NSManaged public var items: Set<OrderItem>?
 }
 
 // MARK: Generated accessors for coupons

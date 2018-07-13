@@ -78,7 +78,7 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `OrderAction.retrieveOrders` effectively persists all of the order fields correctly.
+    /// Verifies that `OrderAction.retrieveOrders` effectively persists all of the order fields correctly across all of the related Order objects (items, coupons, etc).
     ///
     func testRetrieveOrdersEffectivelyPersistsOrderFields() {
         let expectation = self.expectation(description: "Persist order list")
@@ -95,7 +95,7 @@ class OrderStoreTests: XCTestCase {
             let readOnlyStoredOrder = storedOrder?.toReadOnly()
             XCTAssertNotNil(storedOrder)
             XCTAssertNotNil(readOnlyStoredOrder)
-            //XCTAssertEqual(readOnlyStoredOrder, remoteOrder)
+            XCTAssertEqual(readOnlyStoredOrder, remoteOrder)
 
             expectation.fulfill()
         }

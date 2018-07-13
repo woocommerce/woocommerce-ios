@@ -21,12 +21,15 @@
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="UBp-2C-MWu">
                         <rect key="frame" x="16" y="16" width="299" height="99.5"/>
                     </stackView>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rng-8C-l5l">
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rng-8C-l5l" customClass="NUXButton" customModule="WordPressAuthenticator">
                         <rect key="frame" x="16" y="123.5" width="299" height="48"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="48" id="egT-Dg-qmZ"/>
                         </constraints>
                         <state key="normal" title="Button"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
+                        </userDefinedRuntimeAttributes>
                     </button>
                 </subviews>
                 <constraints>

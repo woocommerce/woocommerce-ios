@@ -8,6 +8,15 @@ public struct OrderCouponLine: Decodable {
     public let code: String
     public let discount: String
     public let discountTax: String
+
+    /// OrderCouponLine struct initializer.
+    ///
+    public init(couponID: Int, code: String, discount: String, discountTax: String) {
+        self.couponID = couponID
+        self.code = code
+        self.discount = discount
+        self.discountTax = discountTax
+    }
 }
 
 

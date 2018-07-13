@@ -7,7 +7,7 @@ final class SubheadlineButton: UIButton {
         super.traitCollectionDidChange(previousTraitCollection)
         if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
             titleLabel?.font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
-            titleLabel?.tintColor = WordPressAuthenticator.shared.style.subheadlineColor
+            setTitleColor(WordPressAuthenticator.shared.style.subheadlineColor, for: .normal)
         }
     }
 }
@@ -163,7 +163,7 @@ extension WPStyleGuide {
         button.titleLabel?.font = font
         button.titleLabel?.numberOfLines = 0
         button.titleLabel?.lineBreakMode = .byWordWrapping
-        button.titleLabel?.tintColor = WordPressAuthenticator.shared.style.subheadlineColor
+        button.setTitleColor(WordPressAuthenticator.shared.style.subheadlineColor, for: .normal) 
 
         // These constraints work around some issues with multiline buttons and
         // vertical layout.  Without them the button's height may not account

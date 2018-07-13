@@ -200,6 +200,34 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `upsertStoredOrder` does not produce duplicate entries.
+    ///
+    func testUpdateStoredOrderEffectivelyUpdatesPreexistantOrder() {
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertNil(viewStorage.firstObject(ofType: Storage.Order.self, matching: nil))
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated())
+        XCTAssert(viewStorage.countObjects(ofType: Storage.Order.self, matching: nil) == 1)
+
+        let expectedOrder = sampleOrderMutated()
+        let storageOrder = viewStorage.loadOrder(orderID: expectedOrder.orderID)
+        XCTAssertEqual(storageOrder?.toReadOnly(), expectedOrder)
+    }
+
+    /// Verifies that `upsertStoredOrder` effectively inserts a new Order, with the specified payload.
+    ///
+    func testUpdateStoredOrderEffectivelyPersistsNewOrder() {
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteOrder = sampleOrder()
+
+        XCTAssertNil(viewStorage.loadOrder(orderID: remoteOrder.orderID))
+        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder)
+
+        let storageOrder = viewStorage.loadOrder(orderID: remoteOrder.orderID)
+        XCTAssertEqual(storageOrder?.toReadOnly(), remoteOrder)
+    }
+
     /// Verifies that OrderAction.retrieveOrder returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveSingleOrderReturnsErrorUponReponseError() {
@@ -261,6 +289,30 @@ private extension OrderStoreTests {
                      shippingTotal: "0.00",
                      shippingTax: "0.00",
                      total: "31.20",
+                     totalTax: "1.20",
+                     paymentMethodTitle: "Credit Card (Stripe)",
+                     items: sampleItems(),
+                     billingAddress: sampleAddress(),
+                     shippingAddress: sampleAddress(),
+                     coupons: sampleCoupons())
+    }
+
+    func sampleOrderMutated() -> Networking.Order {
+        return Order(orderID: 963,
+                     parentID: 0,
+                     customerID: 11,
+                     number: "963",
+                     status: .processing,
+                     currency: "USD",
+                     customerNote: "",
+                     dateCreated: date(with: "2018-04-03T23:05:12"),
+                     dateModified: date(with: "2018-04-03T23:05:14"),
+                     datePaid: date(with: "2018-04-03T23:05:14"),
+                     discountTotal: "40.00",
+                     discountTax: "1.20",
+                     shippingTotal: "0.00",
+                     shippingTax: "0.00",
+                     total: "41.20",
                      totalTax: "1.20",
                      paymentMethodTitle: "Credit Card (Stripe)",
                      items: sampleItems(),

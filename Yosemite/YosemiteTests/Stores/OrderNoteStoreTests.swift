@@ -20,6 +20,13 @@ class OrderNoteStoreTests: XCTestCase {
     ///
     private var network: MockupNetwork!
 
+    /// Convenience Property: Returns the StorageType associated with the main thread.
+    ///
+    private var viewStorage: StorageType {
+        return storageManager.viewStorage
+    }
+
+
     /// Dummy Site ID
     ///
     private let sampleSiteID = 123
@@ -54,6 +61,61 @@ class OrderNoteStoreTests: XCTestCase {
             XCTAssertEqual(orderNotes.count, 18)
             XCTAssertEqual(orderNotes[0], remoteCustomerNote)
             XCTAssertEqual(orderNotes[2], remoteSellerNote)
+            expectation.fulfill()
+        }
+
+        orderNoteStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `OrderNoteAction.retrieveOrderNotes` effectively persists any retrieved orders.
+    ///
+    func testRetrieveOrderNotesEffectivelyPersistsRetrievedOrders() {
+        let expectation = self.expectation(description: "Persist order note list")
+        let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes/", filename: "order-notes")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { (orderNotes, error) in
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 18)
+            XCTAssertNotNil(orderNotes)
+            XCTAssertNil(error)
+            expectation.fulfill()
+        }
+
+        orderNoteStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `OrderNoteAction.retrieveOrderNotes` effectively persists all of the order note fields.
+    ///
+    func testRetrieveOrderNotesEffectivelyPersistsOrderNoteFields() {
+        let expectation = self.expectation(description: "Persist order note list")
+        let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteCustomerNote = sampleCustomerNote()
+        let remoteSellerNote = sampleSellerNote()
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes/", filename: "order-notes")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { (orderNotes, error) in
+            XCTAssertNotNil(orderNotes)
+            XCTAssertNil(error)
+
+            let customerPredicate = NSPredicate(format: "noteID = %ld", remoteCustomerNote.noteID)
+            let storedCustomerNote = self.viewStorage.firstObject(ofType: Storage.OrderNote.self, matching: customerPredicate)
+            let readOnlyStoredCustomerNote = storedCustomerNote?.toReadOnly()
+            XCTAssertNotNil(storedCustomerNote)
+            XCTAssertNotNil(readOnlyStoredCustomerNote)
+            XCTAssertEqual(readOnlyStoredCustomerNote, remoteCustomerNote)
+
+            let sellerPredicate = NSPredicate(format: "noteID = %ld", remoteSellerNote.noteID)
+            let storedSellerNote = self.viewStorage.firstObject(ofType: Storage.OrderNote.self, matching: sellerPredicate)
+            let readOnlyStoredSellerNote = storedSellerNote?.toReadOnly()
+            XCTAssertNotNil(storedSellerNote)
+            XCTAssertNotNil(readOnlyStoredSellerNote)
+            XCTAssertEqual(readOnlyStoredSellerNote, remoteSellerNote)
+
             expectation.fulfill()
         }
 

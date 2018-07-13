@@ -24,7 +24,7 @@ class SettingsViewController: UIViewController {
         // `tableView.tableFooterView` can't handle a footerView that uses
         // autolayout only. Hence the container view with a defined frame.
         let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: Constants.footerHeight))
-        let footerView = SettingsFooterView.makeFromNib() 
+        let footerView = SettingsFooterView.makeFromNib()
         self.tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
 

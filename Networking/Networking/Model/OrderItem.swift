@@ -15,6 +15,22 @@ public struct OrderItem: Decodable {
     public let total: String
     public let totalTax: String
     public let variationID: Int
+
+    /// OrderItem struct initializer.
+    ///
+    public init(itemID: Int, name: String, productID: Int, quantity: Int, sku: String, subtotal: String, subtotalTax: String, taxClass: String, total: String, totalTax: String, variationID: Int) {
+        self.itemID = itemID
+        self.name = name
+        self.productID = productID
+        self.quantity = quantity
+        self.sku = sku
+        self.subtotal = subtotal
+        self.subtotalTax = subtotalTax
+        self.taxClass = taxClass
+        self.total = total
+        self.totalTax = totalTax
+        self.variationID = variationID
+    }
 }
 
 

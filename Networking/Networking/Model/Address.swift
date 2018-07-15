@@ -15,6 +15,22 @@ public struct Address: Decodable {
     public let country: String
     public let phone: String?
     public let email: String?
+
+    /// Designated Initializer.
+    ///
+    public init(firstName: String, lastName: String, company: String?, address1: String, address2: String?, city: String, state: String, postcode: String, country: String, phone: String?, email: String?) {
+        self.firstName = firstName
+        self.lastName = lastName
+        self.company = company
+        self.address1 = address1
+        self.address2 = address2
+        self.city = city
+        self.state = state
+        self.postcode = postcode
+        self.country = country
+        self.phone = phone
+        self.email = email
+    }
 }
 
 

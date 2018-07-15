@@ -9,7 +9,7 @@ public struct OrderNote: Decodable {
     public let note: String
     public let isCustomerNote: Bool
 
-    /// Order struct initializer.
+    /// OrderNote struct initializer.
     ///
     init(noteId: Int, dateCreated: Date, note: String, isCustomerNote: Bool) {
         self.noteId = noteId

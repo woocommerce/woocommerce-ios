@@ -29,6 +29,12 @@ class StoresManager {
         return state is AuthenticatedState
     }
 
+    /// Indicates if we need a Default StoreID, or there's one already set.
+    ///
+    var needsDefaultStore: Bool {
+        return sessionManager.defaultStoreID == nil
+    }
+
 
 
     /// Designated Initializer

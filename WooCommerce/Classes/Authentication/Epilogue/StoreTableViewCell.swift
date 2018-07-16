@@ -8,14 +8,31 @@ import Gridicons
 ///
 class StoreTableViewCell: UITableViewCell {
 
+    /// ContainerView: Checkmark
+    ///
+    @IBOutlet private var checkmarkContainerView: UIView!
+
+    /// ImageView: Checkmark
+    ///
+    @IBOutlet private var checkmarkImageView: UIImageView!
+
+    /// Label: Name
+    ///
+    @IBOutlet private var nameLabel: UILabel!
+
+    /// Label: URL
+    ///
+    @IBOutlet private var urlLabel: UILabel!
+
+
     /// Store's Name
     ///
     var name: String? {
         get {
-            return textLabel?.text
+            return nameLabel?.text
         }
         set {
-            textLabel?.text = newValue
+            nameLabel?.text = newValue
         }
     }
 
@@ -23,10 +40,19 @@ class StoreTableViewCell: UITableViewCell {
     ///
     var url: String? {
         get {
-            return detailTextLabel?.text
+            return urlLabel?.text
         }
         set {
-            detailTextLabel?.text =  newValue
+            urlLabel?.text =  newValue
+        }
+    }
+
+    /// When enabled, the Checkmark ImageView will be displayed, no matter if the actual Checkmark is visible or not.
+    /// This allows us to have a consistent left padding in all of our cells.
+    ///
+    var allowsCheckmark: Bool = false  {
+        didSet {
+            refreshCheckmarkVisibility()
         }
     }
 
@@ -38,7 +64,7 @@ class StoreTableViewCell: UITableViewCell {
                 return
             }
 
-            refreshAccessoryView()
+            refreshCheckmarkImage()
         }
     }
 
@@ -47,13 +73,19 @@ class StoreTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        textLabel?.textColor = StyleManager.wooSecondary
-        detailTextLabel?.textColor = StyleManager.wooSecondary
+        nameLabel.textColor = StyleManager.wooSecondary
+        urlLabel.textColor = StyleManager.wooSecondary
     }
 
-    /// Displays a Checkmark (or not) based on the value of `displaysCheckmark)
+    /// Displays (or hides) the Checkmark ContainerView, based on the `allowsCheckmark` property.
     ///
-    private func refreshAccessoryView() {
-        accessoryView = displaysCheckmark ? UIImageView(image: .checkmarkImage) : nil
+    private func refreshCheckmarkVisibility() {
+        checkmarkContainerView.isHidden = !allowsCheckmark
+    }
+
+    /// Displays a Checkmark (or not) based on the `displaysCheckmark` property.
+    ///
+    private func refreshCheckmarkImage() {
+        checkmarkImageView.image = displaysCheckmark ? .checkmarkImage : nil
     }
 }

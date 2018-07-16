@@ -102,7 +102,7 @@ class StorePickerViewController: UIViewController {
 }
 
 
-// MARK: - Initialization Methods
+// MARK: - Setup Methods
 //
 private extension StorePickerViewController {
 
@@ -140,6 +140,51 @@ private extension StorePickerViewController {
         actionButton.setTitle(state.actionTitle, for: .normal)
         tableView.separatorStyle = state.separatorStyle
         tableView.reloadData()
+    }
+}
+
+
+// MARK: - Convenience Methods
+//
+private extension StorePickerViewController {
+
+    /// Indicates if a Store is set as the Default one.
+    ///
+    func isDefaultStore(site: Yosemite.Site) -> Bool {
+        return site.siteID == StoresManager.shared.sessionManager.defaultStoreID
+    }
+
+    /// Returns the IndexPath for the DefaultStore, if any.
+    ///
+    func indexPathForDefaultStore() -> IndexPath? {
+        guard let defaultStoreID = StoresManager.shared.sessionManager.defaultStoreID else {
+            return nil
+        }
+
+        return state.indexPath(for: defaultStoreID)
+    }
+
+    /// This method will reload both, the [Default Site's Row] and the [Selected Row] after running the specified closure
+    ///
+    func reloadDefaultStoreAndSelectedStoreRows(afterRunning block: () -> Void) {
+        /// Preserve: Selected and Checked Rows
+        ///
+        var rowsToReload = [IndexPath]()
+        if let oldCheckedRow = indexPathForDefaultStore() {
+            rowsToReload.append(oldCheckedRow)
+        }
+
+        if let oldSelectedRow = tableView.indexPathForSelectedRow {
+            rowsToReload.append(oldSelectedRow)
+        }
+
+        /// Update the Default Store
+        ///
+        block()
+
+        /// Refresh: Selected and Checked Rows
+        ///
+        tableView.reloadRows(at: rowsToReload, with: .none)
     }
 }
 
@@ -184,7 +229,7 @@ extension StorePickerViewController: UITableViewDataSource {
         cell.name = site.name
         cell.url = site.url
         cell.allowsCheckmark = state.multipleStoresAvailable
-        cell.displaysCheckmark = true
+        cell.displaysCheckmark = isDefaultStore(site: site)
 
         return cell
     }
@@ -196,6 +241,16 @@ extension StorePickerViewController: UITableViewDataSource {
 extension StorePickerViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let site = state.site(at: indexPath) else {
+            tableView.deselectRow(at: indexPath, animated: true)
+            return
+        }
+
+        reloadDefaultStoreAndSelectedStoreRows {
+            StoresManager.shared.updateDefaultStore(storeID: site.siteID)
+        }
+
+        tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
@@ -306,5 +361,19 @@ private extension StorePickerState {
         case .available(let sites):
             return sites[indexPath.row]
         }
+    }
+
+    /// Returns the IndexPath for the specified Site.
+    ///
+    func indexPath(for siteID: Int) -> IndexPath?  {
+        guard case let .available(sites) = self else {
+            return nil
+        }
+
+        guard let row = sites.index(where: { $0.siteID == siteID }) else {
+            return nil
+        }
+
+        return IndexPath(row: row, section: 0)
     }
 }

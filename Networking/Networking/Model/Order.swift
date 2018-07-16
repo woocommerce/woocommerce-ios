@@ -32,7 +32,7 @@ public struct Order: Decodable {
 
     /// Order struct initializer.
     ///
-    init(orderID: Int, parentID: Int, customerID: Int, number: String, status: OrderStatus, currency: String, customerNote: String?, dateCreated: Date, dateModified: Date, datePaid: Date?, discountTotal: String, discountTax: String, shippingTotal: String, shippingTax: String, total: String, totalTax: String, paymentMethodTitle: String, items: [OrderItem], billingAddress: Address, shippingAddress: Address, coupons: [OrderCouponLine]) {
+    public init(orderID: Int, parentID: Int, customerID: Int, number: String, status: OrderStatus, currency: String, customerNote: String?, dateCreated: Date, dateModified: Date, datePaid: Date?, discountTotal: String, discountTax: String, shippingTotal: String, shippingTax: String, total: String, totalTax: String, paymentMethodTitle: String, items: [OrderItem], billingAddress: Address, shippingAddress: Address, coupons: [OrderCouponLine]) {
 
         self.orderID = orderID
         self.parentID = parentID

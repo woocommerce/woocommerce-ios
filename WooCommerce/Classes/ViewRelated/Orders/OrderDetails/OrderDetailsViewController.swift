@@ -151,7 +151,7 @@ private extension OrderDetailsViewController {
         guard let orderNotes = orderNotes, !orderNotes.isEmpty, orderNotes.indices.contains(orderNoteIndex) else {
             return nil
         }
-        
+
         return orderNotes[orderNoteIndex]
     }
 }

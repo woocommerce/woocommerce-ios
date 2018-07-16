@@ -137,8 +137,8 @@ private extension StorePickerViewController {
     }
 
     func stateWasUpdated() {
-        tableView.separatorStyle = state.separatorStyle
         actionButton.setTitle(state.actionTitle, for: .normal)
+        tableView.separatorStyle = state.separatorStyle
         tableView.reloadData()
     }
 }
@@ -183,6 +183,8 @@ extension StorePickerViewController: UITableViewDataSource {
 
         cell.name = site.name
         cell.url = site.url
+        cell.allowsCheckmark = state.multipleStoresAvailable
+        cell.displaysCheckmark = true
 
         return cell
     }
@@ -259,6 +261,12 @@ private extension StorePickerState {
         default:
             return NSLocalizedString("Connected Store", comment: "Store Picker's Section Title: Displayed when there's a single pre-selected Store.")
         }
+    }
+
+    /// Indicates if there is more than one Store.
+    ///
+    var multipleStoresAvailable: Bool {
+        return numberOfRows > 1
     }
 
     /// Number of TableView Sections

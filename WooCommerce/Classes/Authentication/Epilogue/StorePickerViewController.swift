@@ -150,7 +150,7 @@ extension StorePickerViewController {
 
     /// Proceeds with the Login Flow.
     ///
-    @IBAction func continueWasPressed() {
+    @IBAction func actionWasPressed() {
         dismiss(animated: true, completion: nil)
     }
 }

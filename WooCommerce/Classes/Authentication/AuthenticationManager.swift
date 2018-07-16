@@ -48,6 +48,14 @@ class AuthenticationManager {
         presenter.present(navigationController, animated: true, completion: nil)
     }
 
+    /// Returns a LoginViewController preinitialized for WordPress.com
+    ///
+    func loginForWordPressDotCom() -> UIViewController {
+        let loginViewController = WordPressAuthenticator.signinForWPCom()
+        loginViewController.offerSignupOption = false
+        return loginViewController
+    }
+
     /// Handles an Authentication URL Callback. Returns *true* on success.
     ///
     func handleAuthenticationUrl(_ url: URL, options: [UIApplicationOpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {

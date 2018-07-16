@@ -137,22 +137,8 @@ private extension StorePickerViewController {
     }
 
     func stateWasUpdated() {
-        selectFirstStoreIfPossible()
-        refreshInterface()
-    }
-
-    func selectFirstStoreIfPossible() {
-        guard case let .available(sites) = state, let firstSite = sites.first else {
-            return
-        }
-
-        StoresManager.shared.updateDefaultStore(storeID: firstSite.siteID)
-    }
-
-    func refreshInterface() {
-        actionButton.setTitle(state.actionTitle, for: .normal)
-        tableView.separatorStyle = state.separatorStyle
-        tableView.reloadData()
+        preselectDefaultStoreIfPossible()
+        reloadInterface()
     }
 }
 
@@ -160,6 +146,16 @@ private extension StorePickerViewController {
 // MARK: - Convenience Methods
 //
 private extension StorePickerViewController {
+
+    /// Sets the first available Store as the default one. If possible!
+    ///
+    func preselectDefaultStoreIfPossible() {
+        guard case let .available(sites) = state, let firstSite = sites.first else {
+            return
+        }
+
+        StoresManager.shared.updateDefaultStore(storeID: firstSite.siteID)
+    }
 
     /// Indicates if a Store is set as the Default one.
     ///
@@ -175,6 +171,14 @@ private extension StorePickerViewController {
         }
 
         return state.indexPath(for: defaultStoreID)
+    }
+
+    /// Reloads the UI.
+    ///
+    func reloadInterface() {
+        actionButton.setTitle(state.actionTitle, for: .normal)
+        tableView.separatorStyle = state.separatorStyle
+        tableView.reloadData()
     }
 
     /// This method will reload both, the [Default Site's Row] and the [Selected Row] after running the specified closure

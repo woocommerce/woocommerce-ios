@@ -79,7 +79,7 @@ private extension AccountStore {
 }
 
 
-// MARK: - Persistance
+// MARK: - Persistence
 //
 extension AccountStore {
 

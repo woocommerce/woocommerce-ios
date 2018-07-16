@@ -4,15 +4,15 @@ import Foundation
 /// Represents an Order's Note Entity.
 ///
 public struct OrderNote: Decodable {
-    public let noteId: Int
+    public let noteID: Int
     public let dateCreated: Date
     public let note: String
     public let isCustomerNote: Bool
 
-    /// Order struct initializer.
+    /// OrderNote struct initializer.
     ///
-    init(noteId: Int, dateCreated: Date, note: String, isCustomerNote: Bool) {
-        self.noteId = noteId
+    public init(noteId: Int, dateCreated: Date, note: String, isCustomerNote: Bool) {
+        self.noteID = noteId
         self.dateCreated = dateCreated
         self.note = note
         self.isCustomerNote = isCustomerNote
@@ -49,15 +49,15 @@ private extension OrderNote {
 //
 extension OrderNote: Comparable {
     public static func == (lhs: OrderNote, rhs: OrderNote) -> Bool {
-        return lhs.noteId == rhs.noteId &&
+        return lhs.noteID == rhs.noteID &&
             lhs.dateCreated == rhs.dateCreated &&
             lhs.note == rhs.note &&
             lhs.isCustomerNote == rhs.isCustomerNote
     }
 
     public static func < (lhs: OrderNote, rhs: OrderNote) -> Bool {
-        return lhs.noteId < rhs.noteId ||
-            (lhs.noteId == rhs.noteId && lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.noteId == rhs.noteId && lhs.dateCreated == rhs.dateCreated && lhs.note < rhs.note)
+        return lhs.noteID < rhs.noteID ||
+            (lhs.noteID == rhs.noteID && lhs.dateCreated < rhs.dateCreated) ||
+            (lhs.noteID == rhs.noteID && lhs.dateCreated == rhs.dateCreated && lhs.note < rhs.note)
     }
 }

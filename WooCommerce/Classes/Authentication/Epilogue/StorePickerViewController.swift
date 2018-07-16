@@ -399,7 +399,7 @@ private extension StorePickerState {
 
     /// Returns the IndexPath for the specified Site.
     ///
-    func indexPath(for siteID: Int) -> IndexPath?  {
+    func indexPath(for siteID: Int) -> IndexPath? {
         guard case let .available(sites) = self else {
             return nil
         }

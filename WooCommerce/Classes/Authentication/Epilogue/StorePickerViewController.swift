@@ -137,6 +137,19 @@ private extension StorePickerViewController {
     }
 
     func stateWasUpdated() {
+        selectFirstStoreIfPossible()
+        refreshInterface()
+    }
+
+    func selectFirstStoreIfPossible() {
+        guard case let .available(sites) = state, let firstSite = sites.first else {
+            return
+        }
+
+        StoresManager.shared.updateDefaultStore(storeID: firstSite.siteID)
+    }
+
+    func refreshInterface() {
         actionButton.setTitle(state.actionTitle, for: .normal)
         tableView.separatorStyle = state.separatorStyle
         tableView.reloadData()

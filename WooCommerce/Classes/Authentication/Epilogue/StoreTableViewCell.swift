@@ -50,7 +50,7 @@ class StoreTableViewCell: UITableViewCell {
     /// When enabled, the Checkmark ImageView will be displayed, no matter if the actual Checkmark is visible or not.
     /// This allows us to have a consistent left padding in all of our cells.
     ///
-    var allowsCheckmark: Bool = false  {
+    var allowsCheckmark: Bool = false {
         didSet {
             refreshCheckmarkVisibility()
         }

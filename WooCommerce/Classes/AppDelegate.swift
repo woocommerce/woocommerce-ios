@@ -45,6 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Display the Authentication UI
         displayAuthenticatorIfNeeded()
+        displayStorePickerIfNeeded()
 
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
@@ -184,6 +185,25 @@ extension AppDelegate {
         }
 
         authenticationManager.displayAuthentication(from: rootViewController)
+    }
+
+    /// Whenever the app is authenticated but there is no Default StoreID: Let's display the Store Picker.
+    ///
+    func displayStorePickerIfNeeded() {
+        guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore else {
+            return
+        }
+
+        displayStorePicker()
+    }
+
+    /// Displays the Woo Store Picker.
+    ///
+    func displayStorePicker() {
+        let pickerViewController = StorePickerViewController()
+        let navigationController = UINavigationController(rootViewController: pickerViewController)
+
+        window?.rootViewController?.present(navigationController, animated: true, completion: nil)
     }
 
     /// Whenever we're in an Authenticated state, let's Sync all of the WC-Y entities.

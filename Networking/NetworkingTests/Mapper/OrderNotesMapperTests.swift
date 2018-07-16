@@ -15,7 +15,7 @@ class OrderNotesMapperTests: XCTestCase {
         let firstNote = notes[0]
         let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-06-23T17:06:55")
 
-        XCTAssertEqual(firstNote.noteId, 2261)
+        XCTAssertEqual(firstNote.noteID, 2261)
         XCTAssertEqual(firstNote.dateCreated, dateCreated)
         XCTAssertEqual(firstNote.note, "I love your products!")
         XCTAssertEqual(firstNote.isCustomerNote, true)

@@ -89,6 +89,12 @@ class StoresManager {
 
         return self
     }
+
+    /// Updates the Default Store as specified.
+    ///
+    func updateDefaultStore(storeID: Int) {
+        sessionManager.defaultStoreID = storeID
+    }
 }
 
 

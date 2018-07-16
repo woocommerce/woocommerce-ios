@@ -38,14 +38,17 @@ end
 target 'Yosemite' do
   project 'Yosemite/Yosemite.xcodeproj'
 
+  # External Libraries
+  # ==================
+  #
+  pod 'CocoaLumberjack/Swift', '~> 3.4'
 
   # Unit Tests
   # ==========
   #
   target 'YosemiteTests' do
     inherit! :search_paths
-    pod 'Alamofire', '~> 4.7'
-	pod 'CocoaLumberjack/Swift', '~> 3.4'
+    pod 'Alamofire', '~> 4.7'	
   end
 
 end

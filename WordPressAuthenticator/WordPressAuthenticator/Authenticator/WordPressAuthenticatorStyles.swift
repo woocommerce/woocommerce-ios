@@ -37,9 +37,13 @@ public struct WordPressAuthenticatorStyle {
 
     public let disabledTitleColor: UIColor
 
+    /// Style: Subheadline
+    ///
+    public let subheadlineColor: UIColor
+
     /// Designated initializer
     ///
-    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor) {
+    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, subheadlineColor: UIColor) {
         self.primaryNormalBackgroundColor = primaryNormalBackgroundColor
         self.primaryNormalBorderColor = primaryNormalBorderColor
         self.primaryHighlightBackgroundColor = primaryHighlightBackgroundColor
@@ -53,6 +57,7 @@ public struct WordPressAuthenticatorStyle {
         self.primaryTitleColor = primaryTitleColor
         self.secondaryTitleColor = secondaryTitleColor
         self.disabledTitleColor = disabledTitleColor
+        self.subheadlineColor = subheadlineColor
     }
 }
 
@@ -70,6 +75,7 @@ public extension WordPressAuthenticatorStyle {
                                            disabledBorderColor: WPStyleGuide.greyLighten30(),
                                            primaryTitleColor: UIColor.white,
                                            secondaryTitleColor: WPStyleGuide.darkGrey(),
-                                           disabledTitleColor: WPStyleGuide.greyLighten30())
+                                           disabledTitleColor: WPStyleGuide.greyLighten30(),
+                                           subheadlineColor: WPStyleGuide.wordPressBlue())
     }
 }

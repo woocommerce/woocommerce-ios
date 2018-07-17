@@ -29,7 +29,7 @@ class StorePickerViewController: UIViewController {
     ///
     private let resultsController: ResultsController<Storage.Site> = {
         let viewContext = CoreDataManager.global.viewContext
-        let predicate = NSPredicate(format: "isWordPressStore == YES")
+        let predicate = NSPredicate(format: "isWooCommerceActive == YES")
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
         return ResultsController(viewContext: viewContext, matching: predicate, sortedBy: [descriptor])

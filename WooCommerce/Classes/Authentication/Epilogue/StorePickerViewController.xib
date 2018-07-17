@@ -55,6 +55,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="50" id="Bue-lt-N74"/>
                     </constraints>
+                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                     <state key="normal" title="Continue"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>

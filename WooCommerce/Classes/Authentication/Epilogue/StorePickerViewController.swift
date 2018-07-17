@@ -46,9 +46,10 @@ class StorePickerViewController: UIViewController {
 
     /// Default Action Button.
     ///
-    @IBOutlet private var actionButton: UIButton! {
+    @IBOutlet private var actionButton: FancyButton! {
         didSet {
             actionButton.backgroundColor = .clear
+            actionButton.titleFont = StyleManager.actionButtonTitleFont
         }
     }
 

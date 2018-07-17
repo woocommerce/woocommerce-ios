@@ -21,7 +21,7 @@ public struct Site: Decodable {
     ///
     public let url: String
 
-    ///  Indicates if there's a WooCommerce Store Active.
+    ///  Indicates if there is a WooCommerce Store Active.
     ///
     public let isWooCommerceActive: Bool
 

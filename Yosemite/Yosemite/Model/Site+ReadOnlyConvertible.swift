@@ -13,6 +13,7 @@ extension Storage.Site: ReadOnlyConvertible {
         name = site.name
         tagline = site.description
         url = site.url
+        isWooCommerceActive = NSNumber(booleanLiteral: site.isWooCommerceActive)
         isWordPressStore = NSNumber(booleanLiteral: site.isWordPressStore)
     }
 
@@ -23,6 +24,7 @@ extension Storage.Site: ReadOnlyConvertible {
                     name: name ?? "",
                     description: tagline ?? "",
                     url: url ?? "",
+                    isWooCommerceActive: isWooCommerceActive?.boolValue ?? false,
                     isWordPressStore: isWordPressStore?.boolValue ?? false)
     }
 }

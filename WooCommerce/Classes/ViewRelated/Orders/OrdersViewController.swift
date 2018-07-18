@@ -218,9 +218,15 @@ extension OrdersViewController: UITableViewDataSource {
             cell.configure(text: NSLocalizedString("No results found. Clear the filter to try again.", comment: "Displays message to user when no filter results were found."))
             return cell
         }
-        let order = orderAtIndexPath(indexPath)
-        let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as! OrderListCell
-        cell.configureCell(order: OrderDetailsViewModel(siteID: siteID, order: order))
+
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as? OrderListCell,
+            let viewModel = detailsViewModel(at: indexPath)
+            else {
+                fatalError()
+        }
+
+        cell.configureCell(order: viewModel)
+
         return cell
     }
 

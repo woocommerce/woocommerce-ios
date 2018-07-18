@@ -51,6 +51,10 @@ class OrderDetailsViewModel {
         return order.status == .processing
     }
 
+    let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
+    
+    let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")
+
     let productDetails = NSLocalizedString("Details", comment: "The row label to tap for a detailed product list")
 
     var customerNote: String {

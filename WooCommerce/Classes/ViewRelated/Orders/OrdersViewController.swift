@@ -147,6 +147,10 @@ class OrdersViewController: UIViewController {
 //
 private extension OrdersViewController {
     func syncOrders() {
+        guard let siteID = siteID else {
+            return
+        }
+
         let action = OrderAction.retrieveOrders(siteID: siteID) { [weak self] (orders, error) in
             self?.refreshControl.endRefreshing()
             guard error == nil else {

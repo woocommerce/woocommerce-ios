@@ -11,11 +11,14 @@ class OrderDetailsViewController: UIViewController {
     // MARK: - Properties
 
     @IBOutlet weak var tableView: UITableView!
-    var viewModel: OrderDetailsViewModel!
+    var viewModel: OrderDetailsViewModel! {
+        didSet {
+            reloadData()
+        }
+    }
     var orderNotes: [OrderNoteViewModel]? {
         didSet {
-            configureTableView()
-            tableView.reloadData()
+            reloadData()
         }
     }
 
@@ -62,6 +65,13 @@ private extension OrderDetailsViewController {
     ///
     func configureNavigationItem() {
         title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
+    }
+
+    /// Regenerates the Sections, and refreshes the UI.
+    ///
+    func reloadData() {
+        configureSections()
+        tableView.reloadData()
     }
 
     /// Setup: Sections

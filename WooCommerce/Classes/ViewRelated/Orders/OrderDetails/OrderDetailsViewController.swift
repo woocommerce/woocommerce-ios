@@ -26,8 +26,8 @@ class OrderDetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureNavigation()
         configureTableView()
-        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -38,6 +38,18 @@ class OrderDetailsViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.isNavigationBarHidden = false
+    }
+
+    func configureNavigation() {
+         title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
+
+        // Don't show the Order details title in the next-view's back button
+        let backButton = UIBarButtonItem(title: String(),
+                                         style: .plain,
+                                         target: nil,
+                                         action: nil)
+
+        navigationItem.backBarButtonItem = backButton
     }
 }
 
@@ -57,10 +69,8 @@ private extension OrderDetailsViewController {
     func configureSections() {
         let summarySection = Section(leftTitle: nil, rightTitle: nil, footer: nil, rows: [.summary])
 
-        let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
-        let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")
         let productRows: [Row] = viewModel.isProcessingPayment ? [.productList] : [.productList, .productDetails]
-        let productListSection = Section(leftTitle: productLeftTitle, rightTitle: productRightTitle, footer: nil, rows: productRows)
+        let productListSection = Section(leftTitle: viewModel.productLeftTitle, rightTitle: viewModel.productRightTitle, footer: nil, rows: productRows)
 
         let customerNoteSection = Section(leftTitle: NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title"), rightTitle: nil, footer: nil, rows: [.customerNote])
 

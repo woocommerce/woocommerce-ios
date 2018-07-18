@@ -41,6 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Setup Components
         setupAuthenticationManager()
+        setupCocoaLumberjack()
         setupLogLevel(.verbose)
 
         // Display the Authentication UI
@@ -136,14 +137,18 @@ private extension AppDelegate {
 
     /// Sets up CocoaLumberjack logging.
     ///
-    func setupLogLevel(_ level: DDLogLevel) {
-        DDLog.add(DDOSLogger.sharedInstance) // os_log based, iOS 10+
-
-        let fileLogger: DDFileLogger = DDFileLogger() // File Logger
+    func setupCocoaLumberjack() {
+        let fileLogger: DDFileLogger = DDFileLogger()
         fileLogger.rollingFrequency = TimeInterval(60*60*24)  // 24 hours
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
-        DDLog.add(fileLogger)
 
+        DDLog.add(DDOSLogger.sharedInstance)
+        DDLog.add(fileLogger)
+    }
+
+    /// Sets up the current Log Leve.
+    ///
+    func setupLogLevel(_ level: DDLogLevel) {
         let rawLevel = Int32(level.rawValue)
 
         WPSharedSetLoggingLevel(rawLevel)

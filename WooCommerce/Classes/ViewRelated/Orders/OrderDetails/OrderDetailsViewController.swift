@@ -132,12 +132,12 @@ private extension OrderDetailsViewController {
     private func configure(_ cell: BillingDetailsTableViewCell, for billingRow: Row) {
         if billingRow == .billingPhone {
             cell.configure(text: viewModel.billingViewModel.phoneNumber, image: Gridicon.iconOfType(.ellipsis))
-            cell.didTapButton = { [weak self] in
+            cell.onTouchUp = { [weak self] in
                 self?.phoneButtonAction()
             }
         } else if billingRow == .billingEmail {
             cell.configure(text: viewModel.billingViewModel.email, image: Gridicon.iconOfType(.mail))
-            cell.didTapButton = { [weak self] in
+            cell.onTouchUp = { [weak self] in
                 self?.emailButtonAction()
             }
         } else {

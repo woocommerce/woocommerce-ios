@@ -22,7 +22,11 @@ class OrderDetailsViewController: UIViewController {
         }
     }
 
-    private var billingIsHidden = true
+    private var billingIsHidden = true {
+        didSet {
+            reloadSections()
+        }
+    }
     private var sections = [Section]() {
         didSet {
             guard isViewLoaded else {
@@ -256,7 +260,7 @@ extension OrderDetailsViewController {
         sendEmailIfPossible()
     }
 
-    func setShowHideFooter() {
+    func toggleBillingFooter() {
         billingIsHidden = !billingIsHidden
     }
 }
@@ -320,10 +324,13 @@ extension OrderDetailsViewController: UITableViewDataSource {
         let image = billingIsHidden ? Gridicon.iconOfType(.chevronDown) : Gridicon.iconOfType(.chevronUp)
         cell.configure(text: footerText, image: image)
         cell.didSelectFooter = { [weak self] in
-            self?.setShowHideFooter()
-            self?.configureTableView()
+            guard let `self` = self else {
+                return
+            }
+
             let sections = IndexSet(integer: section)
-            tableView.reloadSections(sections, with: .fade)
+            self.toggleBillingFooter()
+            self.tableView.reloadSections(sections, with: .fade)
         }
 
         return cell

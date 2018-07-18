@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="QmM-AQ-tMl">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="QmM-AQ-tMl">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -29,7 +29,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="240" verticalHuggingPriority="260" text="#00 First Last" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i5N-V7-lzR">
-                                                    <rect key="frame" x="16" y="16" width="228" height="17"/>
+                                                    <rect key="frame" x="16" y="16" width="228" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -44,13 +44,13 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="260" verticalHuggingPriority="240" text="Order Status" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZXl-Nf-ARN" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                                    <rect key="frame" x="16" y="41" width="113.5" height="28.5"/>
+                                                    <rect key="frame" x="16" y="44.5" width="97.5" height="25"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="240" verticalHuggingPriority="240" horizontalCompressionResistancePriority="740" text="Optional Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="udf-hH-ktB" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                                    <rect key="frame" x="137" y="41" width="107" height="28.5"/>
+                                                    <rect key="frame" x="121" y="44.5" width="110.5" height="25"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -135,11 +135,46 @@
                     </view>
                     <connections>
                         <outlet property="tableView" destination="hBh-xf-Cby" id="36b-Gi-HZa"/>
+                        <segue destination="gjo-lx-M5d" kind="show" identifier="ShowProductListViewController" id="wt7-3f-Jje"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Z9o-7H-pWC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2871" y="543"/>
+        </scene>
+        <!--Product List View Controller-->
+        <scene sceneID="tRI-WT-3cp">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="S5R-n9-NaZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController id="gjo-lx-M5d" customClass="ProductListViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="K91-GD-PbX">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="eY7-vI-1cr">
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="gjo-lx-M5d" id="ABK-8R-DTb"/>
+                                    <outlet property="delegate" destination="gjo-lx-M5d" id="wOm-50-abo"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="3jQ-CL-a1D" firstAttribute="bottom" secondItem="eY7-vI-1cr" secondAttribute="bottom" id="5eQ-Bk-PGp"/>
+                            <constraint firstItem="eY7-vI-1cr" firstAttribute="top" secondItem="3jQ-CL-a1D" secondAttribute="top" id="A9r-M9-3hU"/>
+                            <constraint firstItem="eY7-vI-1cr" firstAttribute="leading" secondItem="3jQ-CL-a1D" secondAttribute="leading" id="ReZ-l5-UwN"/>
+                            <constraint firstItem="3jQ-CL-a1D" firstAttribute="trailing" secondItem="eY7-vI-1cr" secondAttribute="trailing" id="oJy-wR-9oq"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="3jQ-CL-a1D"/>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="eY7-vI-1cr" id="acx-d0-6Fq"/>
+                    </connections>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="3689" y="543"/>
         </scene>
         <!--Orders-->
         <scene sceneID="KDy-5N-CLG">

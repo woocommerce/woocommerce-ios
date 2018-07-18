@@ -168,6 +168,24 @@ private extension OrdersViewController {
 }
 
 
+// MARK: - Convenience Methods
+//
+private extension OrdersViewController {
+
+    func orderAtIndexPath(_ indexPath: IndexPath) -> Order {
+        return isUsingFilterAction ? filterResults[indexPath.row] : orders[indexPath.row]
+    }
+
+    func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel? {
+        guard let siteID = siteID else {
+            return nil
+        }
+
+        return OrderDetailsViewModel(siteID: siteID, order: orderAtIndexPath(indexPath))
+    }
+}
+
+
 // MARK: - UITableViewDataSource Conformance
 //
 extension OrdersViewController: UITableViewDataSource {
@@ -200,10 +218,6 @@ extension OrdersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         // FIXME: this is hard-coded data. Will fix when WordPressShared date helpers are available to make fuzzy dates.
         return NSLocalizedString("Today", comment: "Title for header section")
-    }
-
-    func orderAtIndexPath(_ indexPath: IndexPath) -> Order {
-        return isUsingFilterAction ? filterResults[indexPath.row] : orders[indexPath.row]
     }
 }
 

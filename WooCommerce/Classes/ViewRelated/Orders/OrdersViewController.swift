@@ -4,13 +4,16 @@ import Yosemite
 import CocoaLumberjack
 
 
+/// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
+///
 class OrdersViewController: UIViewController {
 
-    // MARK: - Properties
+    // MARK: - IBOutlets
+
+    @IBOutlet private weak var tableView: UITableView!
 
     // MARK: - Properties
 
-    @IBOutlet weak var tableView: UITableView!
     private var orders = [Order]()
     private var filterResults = [Order]()
     private var isUsingFilterAction = false
@@ -20,6 +23,7 @@ class OrdersViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(pullToRefresh(sender:)), for: .valueChanged)
         return refreshControl
     }()
+
 
     // MARK: - Computed Properties
 
@@ -53,6 +57,7 @@ class OrdersViewController: UIViewController {
             syncOrders()
         }
     }
+
 
     // MARK: - User Interface Initialization
 

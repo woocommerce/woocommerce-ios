@@ -47,6 +47,12 @@ class OrderDetailsViewModel {
         return orderStatusViewModel.borderColor
     }
 
+    var isProcessingPayment: Bool {
+        return order.status == .processing
+    }
+
+    let productDetails = NSLocalizedString("Details", comment: "The row label to tap for a detailed product list")
+
     var customerNote: String {
         return order.customerNote ?? String()
     }

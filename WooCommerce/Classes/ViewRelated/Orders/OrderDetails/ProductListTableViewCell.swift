@@ -3,11 +3,15 @@ import UIKit
 class ProductListTableViewCell: UITableViewCell {
     @IBOutlet private var verticalStackView: UIStackView!
     @IBOutlet private var fulfillButton: UIButton!
+    @IBOutlet private var containerView: UIView!
 
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        fulfillButton.wooPrimaryButton()
+    }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        backgroundColor = .white
     }
 }
 
@@ -24,12 +28,10 @@ extension ProductListTableViewCell {
             verticalStackView.insertArrangedSubview(itemView, at: index)
         }
 
-        fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
-
-        verticalStackView.setCustomSpacing(Constants.spacing, after: fulfillButton)
-    }
-
-    struct Constants {
-        static let spacing = CGFloat(8.0)
+        if viewModel.isProcessingPayment {
+            fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
+        } else {
+            containerView.isHidden = true
+        }
     }
 }

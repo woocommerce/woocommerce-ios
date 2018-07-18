@@ -32,7 +32,7 @@ public class OrdersRemote: Remote {
     public func loadOrder(for siteID: Int, orderID: Int, completion: @escaping (Order?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/\(orderID)"
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
-        let mapper = OrderMapper()
+        let mapper = OrderMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -63,7 +63,7 @@ public class OrdersRemote: Remote {
     public func updateOrder(from siteID: Int, orderID: Int, status: String, completion: @escaping (Order?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID)
         let parameters = [ParameterKeys.status: status]
-        let mapper = OrderMapper()
+        let mapper = OrderMapper(siteID: siteID)
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
         enqueue(request, mapper: mapper, completion: completion)

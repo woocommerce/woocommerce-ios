@@ -26,8 +26,11 @@ class OrderDetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureNavigationItem()
         configureTableView()
-        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
+        registerTableViewCells()
+        registerTableViewHeaderFooters()
+
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -45,15 +48,24 @@ class OrderDetailsViewController: UIViewController {
 // MARK: - TableView Configuration
 //
 private extension OrderDetailsViewController {
+
+    /// Setup: TableView
+    ///
     func configureTableView() {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedSectionFooterHeight = Constants.rowHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
-        configureSections()
-        configureNibs()
     }
 
+    /// Setup: NavigationItem
+    ///
+    func configureNavigationItem() {
+        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
+    }
+
+    /// Setup: Sections
+    ///
     func configureSections() {
         let summarySection = Section(leftTitle: nil, rightTitle: nil, footer: nil, rows: [.summary])
 
@@ -81,18 +93,36 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func configureNibs() {
-        for section in sections {
-            for row in section.rows {
-                let nib = UINib(nibName: row.reuseIdentifier, bundle: nil)
-                tableView.register(nib, forCellReuseIdentifier: row.reuseIdentifier)
-            }
-        }
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells() {
+        let cells = [
+            AddItemTableViewCell.self,
+            BillingDetailsTableViewCell.self,
+            CustomerNoteTableViewCell.self,
+            CustomerInfoTableViewCell.self,
+            OrderNoteTableViewCell.self,
+            PaymentTableViewCell.self,
+            ProductListTableViewCell.self,
+            SummaryTableViewCell.self
+        ]
 
-        let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
-        tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
-        let footerNib = UINib(nibName: ShowHideSectionFooter.reuseIdentifier, bundle: nil)
-        tableView.register(footerNib, forHeaderFooterViewReuseIdentifier: ShowHideSectionFooter.reuseIdentifier)
+        for cell in cells {
+            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        }
+    }
+
+    /// Registers all of the available TableViewHeaderFooters
+    ///
+    func registerTableViewHeaderFooters() {
+        let headersAndFooters = [
+            TwoColumnSectionHeaderView.self,
+            ShowHideSectionFooter.self
+        ]
+
+        for kind in headersAndFooters {
+            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
+        }
     }
 }
 

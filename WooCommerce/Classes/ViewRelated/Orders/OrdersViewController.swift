@@ -240,20 +240,20 @@ extension OrdersViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        performSegue(withIdentifier: Constants.orderDetailsSegue, sender: indexPath)
-    }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard displaysNoResults == false else {
             return
         }
 
-        if segue.identifier == Constants.orderDetailsSegue {
-            if let singleOrderViewController = segue.destination as? OrderDetailsViewController {
-                let indexPath = sender as! IndexPath
-                singleOrderViewController.viewModel = OrderDetailsViewModel(siteID: siteID, order: orderAtIndexPath(indexPath))
-            }
+        performSegue(withIdentifier: Constants.orderDetailsSegue, sender: detailsViewModel(at: indexPath))
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let singleOrderViewController = segue.destination as? OrderDetailsViewController, let viewModel = sender as? OrderDetailsViewModel else {
+            return
         }
+
+        singleOrderViewController.viewModel = viewModel
     }
 }
 

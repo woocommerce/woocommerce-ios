@@ -32,6 +32,7 @@ class AccountMapperTests: XCTestCase {
         XCTAssertEqual(first.name, "Testing Blog")
         XCTAssertEqual(first.description, "Testing Tagline")
         XCTAssertEqual(first.url, "https://some-testing-url.testing.blog")
+        XCTAssertEqual(first.isWooCommerceActive, true)
         XCTAssertEqual(first.isWordPressStore, true)
 
         let second = sites!.last!
@@ -39,6 +40,7 @@ class AccountMapperTests: XCTestCase {
         XCTAssertEqual(second.name, "Thoughts")
         XCTAssertEqual(second.description, "Your Favorite Blog")
         XCTAssertEqual(second.url, "https://thoughts.testing.blog")
+        XCTAssertEqual(second.isWooCommerceActive, false)
         XCTAssertEqual(second.isWordPressStore, false)
     }
 }

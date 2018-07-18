@@ -17,7 +17,7 @@ public class OrdersRemote: Remote {
         let parameters = [ParameterKeys.page: String(page),
                           ParameterKeys.perPage: String(Constants.defaultPageSize)]
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: parameters)
-        let mapper = OrderListMapper()
+        let mapper = OrderListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

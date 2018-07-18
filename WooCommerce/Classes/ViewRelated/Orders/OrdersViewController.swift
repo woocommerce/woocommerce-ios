@@ -8,9 +8,7 @@ class OrdersViewController: UIViewController {
 
     // MARK: - Properties
 
-    // FIXME: Need "current" site id
-    let siteID: Int = 131820877
-    ///
+    // MARK: - Properties
 
     @IBOutlet weak var tableView: UITableView!
     private var orders = [Order]()
@@ -28,6 +26,12 @@ class OrdersViewController: UIViewController {
     private var displaysNoResults: Bool {
         return filterResults.isEmpty && isUsingFilterAction
     }
+
+    private var siteID: Int? {
+        return StoresManager.shared.sessionManager.defaultStoreID
+    }
+
+
 
     // MARK: - View Lifecycle
 

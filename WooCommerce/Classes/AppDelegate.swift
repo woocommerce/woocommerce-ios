@@ -149,13 +149,6 @@ private extension AppDelegate {
         WPSharedSetLoggingLevel(rawLevel)
         WPAuthenticatorSetLoggingLevel(rawLevel)
         WPKitSetLoggingLevel(rawLevel)
-
-        // Test print each log level
-        CocoaLumberjack.DDLogVerbose("Verbose")
-        CocoaLumberjack.DDLogDebug("Debug")
-        CocoaLumberjack.DDLogInfo("Info")
-        CocoaLumberjack.DDLogWarn("Warn")
-        CocoaLumberjack.DDLogError("Error")
     }
 }
 

@@ -1,4 +1,5 @@
 import UIKit
+import WordPressUI
 
 
 /// Displays Billing Details: Used for Email / Phone Number Rendering.
@@ -15,7 +16,7 @@ class BillingDetailsTableViewCell: UITableViewCell {
 
     /// Closure to be executed whenever the cell is pressed.
     ///
-    var didTapButton: (() -> Void)?
+    var onTouchUp: (() -> Void)?
 
 
     // MARK: - Overridden Methods
@@ -28,17 +29,17 @@ class BillingDetailsTableViewCell: UITableViewCell {
 
         accessoryView = accessoryImageView
 
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(buttonWasPressed))
+        let gestureRecognizer = UITapGestureRecognizer()
+        gestureRecognizer.on { [weak self] gesture in
+            self?.onTouchUp?()
+        }
+
         contentView.gestureRecognizers = [gestureRecognizer]
     }
 
     func configure(text: String?, image: UIImage) {
         accessoryImageView.image = image
         textLabel?.text = text
-    }
-
-    @objc func buttonWasPressed() {
-        didTapButton?()
     }
 }
 

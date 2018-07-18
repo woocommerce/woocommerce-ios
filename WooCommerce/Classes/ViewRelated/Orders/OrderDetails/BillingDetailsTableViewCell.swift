@@ -43,7 +43,7 @@ class BillingDetailsTableViewCell: UITableViewCell {
 }
 
 
-//  MARK: - Private
+// MARK: - Private
 //
 private extension BillingDetailsTableViewCell {
     struct Constants {

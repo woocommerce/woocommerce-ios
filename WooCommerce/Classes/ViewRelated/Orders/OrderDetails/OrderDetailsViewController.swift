@@ -312,8 +312,15 @@ extension OrderDetailsViewController: UITableViewDelegate {
         if sections[indexPath.section].rows[indexPath.row] == .addOrderNote {
             // TODO: present modal for Add Note screen
         } else if sections[indexPath.section].rows[indexPath.row] == .productDetails {
-            // navigate to the product details view controller
-            NSLog("Details tapped!")
+            performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
+        }
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == Constants.productDetailsSegue {
+            if let productListViewController = segue.destination as? ProductListViewController {
+                productListViewController.viewModel = viewModel
+            }
         }
     }
 }
@@ -377,6 +384,7 @@ private extension OrderDetailsViewController {
     struct Constants {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
+        static let productDetailsSegue = "ShowProductListViewController"
     }
 
     private struct Section {

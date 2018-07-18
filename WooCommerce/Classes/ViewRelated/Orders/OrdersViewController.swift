@@ -154,9 +154,7 @@ private extension OrdersViewController {
         let action = OrderAction.retrieveOrders(siteID: siteID) { [weak self] (orders, error) in
             self?.refreshControl.endRefreshing()
             guard error == nil else {
-                if let error = error {
-                    DDLogError("⛔️ Error synchronizing orders: \(error)")
-                }
+                DDLogError("⛔️ Error synchronizing orders: \(error.debugDescription)")
                 return
             }
             guard let orders = orders else {

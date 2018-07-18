@@ -59,7 +59,8 @@ private extension OrderDetailsViewController {
 
         let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
         let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")
-        let productListSection = Section(leftTitle: productLeftTitle, rightTitle: productRightTitle, footer: nil, rows: [.productList])
+        let productRows: [Row] = viewModel.isProcessingPayment ? [.productList] : [.productList, .productDetails]
+        let productListSection = Section(leftTitle: productLeftTitle, rightTitle: productRightTitle, footer: nil, rows: productRows)
 
         let customerNoteSection = Section(leftTitle: NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title"), rightTitle: nil, footer: nil, rows: [.customerNote])
 
@@ -106,6 +107,8 @@ private extension OrderDetailsViewController {
             cell.configure(with: viewModel)
         case let cell as ProductListTableViewCell:
             cell.configure(with: viewModel)
+        case let cell as DetailsTableViewCell:
+            cell.configure(text: viewModel.productDetails)
         case let cell as CustomerNoteTableViewCell:
             cell.configure(with: viewModel)
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
@@ -298,6 +301,9 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
         if sections[indexPath.section].rows[indexPath.row] == .addOrderNote {
             // TODO: present modal for Add Note screen
+        } else if sections[indexPath.section].rows[indexPath.row] == .productDetails {
+            // navigate to the product details view controller
+            NSLog("Details tapped!")
         }
     }
 }
@@ -373,6 +379,7 @@ private extension OrderDetailsViewController {
     private enum Row {
         case summary
         case productList
+        case productDetails
         case customerNote
         case shippingAddress
         case billingAddress
@@ -388,6 +395,8 @@ private extension OrderDetailsViewController {
                 return SummaryTableViewCell.reuseIdentifier
             case .productList:
                 return ProductListTableViewCell.reuseIdentifier
+            case .productDetails:
+                return DetailsTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:

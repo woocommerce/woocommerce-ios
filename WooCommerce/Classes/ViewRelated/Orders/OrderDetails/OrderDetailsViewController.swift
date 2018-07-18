@@ -13,17 +13,25 @@ class OrderDetailsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     var viewModel: OrderDetailsViewModel! {
         didSet {
-            reloadData()
+            reloadSections()
         }
     }
-    var orderNotes: [OrderNoteViewModel]? {
+    private var orderNotes: [OrderNoteViewModel]? {
         didSet {
-            reloadData()
+            reloadSections()
         }
     }
 
     private var billingIsHidden = true
-    private var sections = [Section]()
+    private var sections = [Section]() {
+        didSet {
+            guard isViewLoaded else {
+                return
+            }
+
+            tableView.reloadData()
+        }
+    }
 
     // MARK: - View Lifecycle
 
@@ -67,16 +75,9 @@ private extension OrderDetailsViewController {
         title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
     }
 
-    /// Regenerates the Sections, and refreshes the UI.
-    ///
-    func reloadData() {
-        configureSections()
-        tableView.reloadData()
-    }
-
     /// Setup: Sections
     ///
-    func configureSections() {
+    func reloadSections() {
         let summarySection = Section(leftTitle: nil, rightTitle: nil, footer: nil, rows: [.summary])
 
         let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")

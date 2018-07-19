@@ -6,6 +6,11 @@ import XCTest
 ///
 class OrderMapperTests: XCTestCase {
 
+    /// Dummy Site ID.
+    ///
+    private let dummySiteID = 424242
+
+
     /// Verifies that all of the Order Fields are parsed correctly.
     ///
     func testOrderFieldsAreProperlyParsed() {
@@ -18,6 +23,7 @@ class OrderMapperTests: XCTestCase {
         let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-05-09T18:15:30")
         let datePaid = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-05-03T19:24:55")
 
+        XCTAssertEqual(order.siteID, dummySiteID)
         XCTAssertEqual(order.orderID, 1467)
         XCTAssertEqual(order.parentID, 0)
         XCTAssertEqual(order.customerID, 100)
@@ -113,7 +119,7 @@ private extension OrderMapperTests {
             return nil
         }
 
-        return try! OrderMapper().map(response: response)
+        return try! OrderMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the OrderMapper output upon receiving `order`

@@ -29,8 +29,6 @@ class CoreDataManagerTests: XCTestCase {
         let manager = CoreDataManager(name: "WooCommerce")
         let container = manager.persistentContainer
 
-        let expectation = self.expectation(description: "Background")
-
         XCTAssertEqual(container.managedObjectModel, manager.managedModel)
         XCTAssertEqual(container.persistentStoreCoordinator.persistentStores.first?.url?.lastPathComponent, "WooCommerce.sqlite")
     }

@@ -160,16 +160,8 @@ private extension OrderDetailsViewController {
 extension OrderDetailsViewController {
 
     @objc func pullToRefresh() {
-        let action = OrderAction.retrieveOrder(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (order, _) in
-            guard let `self` = self, let order = order else {
-                return
-            }
-
-            self.viewModel = OrderDetailsViewModel(siteID: self.viewModel.siteID, order: order)
-            self.refreshControl.endRefreshing()
-        }
-
-        StoresManager.shared.dispatch(action)
+        syncOrder()
+        syncOrderNotes()
     }
 }
 
@@ -237,15 +229,25 @@ private extension OrderDetailsViewController {
 // MARK: - Sync'ing Helpers
 //
 private extension OrderDetailsViewController {
-    func syncOrderNotes() {
-        guard let viewModel = viewModel else {
-            return
+    func syncOrder() {
+        let action = OrderAction.retrieveOrder(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (order, error) in
+            guard let `self` = self, let order = order else {
+                DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
+                return
+            }
+
+            self.viewModel = OrderDetailsViewModel(siteID: self.viewModel.siteID, order: order)
+            self.refreshControl.endRefreshing()
         }
 
+        StoresManager.shared.dispatch(action)
+    }
+
+    func syncOrderNotes() {
         let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
                 if let error = error {
-                    DDLogError("⛔️ Error synchronizing order notes: \(error)")
+                    DDLogError("⛔️ Error synchronizing Order Notes: \(error)")
                 }
                 self?.orderNotes = nil
                 return

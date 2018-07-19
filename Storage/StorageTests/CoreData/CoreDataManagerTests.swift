@@ -27,12 +27,12 @@ class CoreDataManagerTests: XCTestCase {
     ///
     func testPersistentContainerLoadsExpectedDataModelAndSqliteDatabase() {
         let manager = CoreDataManager(name: "WooCommerce")
-
         let container = manager.persistentContainer
-        XCTAssertEqual(container.managedObjectModel, manager.managedModel)
 
-        let expectation = self.expectation(description: "Async Load")
-        container.loadPersistentStores { (_, _) in
+        let expectation = self.expectation(description: "Background")
+
+        container.persistentStoreCoordinator.perform {
+            XCTAssertEqual(container.managedObjectModel, manager.managedModel)
             XCTAssertEqual(container.persistentStoreCoordinator.persistentStores.first?.url?.lastPathComponent, "WooCommerce.sqlite")
             expectation.fulfill()
         }

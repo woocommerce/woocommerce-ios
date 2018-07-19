@@ -32,6 +32,8 @@ class ProductListViewController: UIViewController {
     }
 }
 
+// MARK: - UITableViewDataSource Conformance
+//
 extension ProductListViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -58,10 +60,16 @@ extension ProductListViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - UITableViewDelegate Conformance
+//
 extension ProductListViewController: UITableViewDelegate {
-
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }
 
+// MARK: - Private methods and more
+//
 private extension ProductListViewController {
     struct Constants {
         static let sectionHeight = CGFloat(44)

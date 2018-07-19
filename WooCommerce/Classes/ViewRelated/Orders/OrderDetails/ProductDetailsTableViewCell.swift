@@ -17,6 +17,7 @@ class ProductDetailsTableViewCell: UITableViewCell {
         super.awakeFromNib()
         productImageView.image = Gridicon.iconOfType(.product)
         productImageView.tintColor = StyleManager.wooGreyBorder
+        quantityLabel.applyBodyStyle()
         titleLabel.applyBodyStyle()
         priceLabel.applyFootnoteStyle()
         taxLabel.applyFootnoteStyle()

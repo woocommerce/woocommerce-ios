@@ -44,7 +44,7 @@ extension ProductListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: ProductDetailsTableViewCell.reuseIdentifier, for: indexPath) as! ProductDetailsTableViewCell
-        cell.configure(item: item)
+        cell.configure(item: item, with: viewModel)
         return cell
     }
 

@@ -224,7 +224,8 @@ private extension OrderNoteStoreTests {
     }
 
     func sampleOrder() -> Networking.Order {
-        return Order(orderID: sampleOrderID,
+        return Order(siteID: sampleSiteID,
+                     orderID: sampleOrderID,
                      parentID: 0,
                      customerID: 11,
                      number: "963",

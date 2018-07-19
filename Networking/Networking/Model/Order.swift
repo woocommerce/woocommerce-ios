@@ -4,6 +4,7 @@ import Foundation
 /// Represents an Order Entity.
 ///
 public struct Order: Decodable {
+    public let siteID: Int
     public let orderID: Int
     public let parentID: Int
     public let customerID: Int
@@ -32,8 +33,30 @@ public struct Order: Decodable {
 
     /// Order struct initializer.
     ///
-    public init(orderID: Int, parentID: Int, customerID: Int, number: String, status: OrderStatus, currency: String, customerNote: String?, dateCreated: Date, dateModified: Date, datePaid: Date?, discountTotal: String, discountTax: String, shippingTotal: String, shippingTax: String, total: String, totalTax: String, paymentMethodTitle: String, items: [OrderItem], billingAddress: Address, shippingAddress: Address, coupons: [OrderCouponLine]) {
+    public init(siteID: Int,
+                orderID: Int,
+                parentID: Int,
+                customerID: Int,
+                number: String,
+                status: OrderStatus,
+                currency: String,
+                customerNote: String?,
+                dateCreated: Date,
+                dateModified: Date,
+                datePaid: Date?,
+                discountTotal: String,
+                discountTax: String,
+                shippingTotal: String,
+                shippingTax: String,
+                total: String,
+                totalTax: String,
+                paymentMethodTitle: String,
+                items: [OrderItem],
+                billingAddress: Address,
+                shippingAddress: Address,
+                coupons: [OrderCouponLine]) {
 
+        self.siteID = siteID
         self.orderID = orderID
         self.parentID = parentID
         self.customerID = customerID
@@ -65,7 +88,12 @@ public struct Order: Decodable {
     /// The public initializer for Order.
     ///
     public init(from decoder: Decoder) throws {
+        guard let siteID = decoder.userInfo[.siteID] as? Int else {
+            throw OrderDecodingError.missingSiteID
+        }
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
+
         let orderID = try container.decode(Int.self, forKey: .orderID)
         let parentID = try container.decode(Int.self, forKey: .parentID)
         let customerID = try container.decode(Int.self, forKey: .customerID)
@@ -92,7 +120,7 @@ public struct Order: Decodable {
         let billingAddress = try container.decode(Address.self, forKey: .billingAddress)
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
 
-        self.init(orderID: orderID, parentID: parentID, customerID: customerID, number: number, status: status, currency: currency, customerNote: customerNote, dateCreated: dateCreated, dateModified: dateModified, datePaid: datePaid, discountTotal: discountTotal, discountTax: discountTax, shippingTotal: shippingTotal, shippingTax: shippingTax, total: total, totalTax: totalTax, paymentMethodTitle: paymentMethodTitle, items: items, billingAddress: billingAddress, shippingAddress: shippingAddress, coupons: coupons) // initialize the struct
+        self.init(siteID: siteID, orderID: orderID, parentID: parentID, customerID: customerID, number: number, status: status, currency: currency, customerNote: customerNote, dateCreated: dateCreated, dateModified: dateModified, datePaid: datePaid, discountTotal: discountTotal, discountTax: discountTax, shippingTotal: shippingTotal, shippingTax: shippingTax, total: total, totalTax: totalTax, paymentMethodTitle: paymentMethodTitle, items: items, billingAddress: billingAddress, shippingAddress: shippingAddress, coupons: coupons) // initialize the struct
     }
 }
 
@@ -135,7 +163,8 @@ private extension Order {
 //
 extension Order: Comparable {
     public static func == (lhs: Order, rhs: Order) -> Bool {
-        return lhs.orderID == rhs.orderID &&
+        return lhs.siteID == rhs.siteID &&
+            lhs.orderID == rhs.orderID &&
             lhs.parentID == rhs.parentID &&
             lhs.customerID == rhs.customerID &&
             lhs.number == rhs.number &&
@@ -162,4 +191,11 @@ extension Order: Comparable {
             (lhs.orderID == rhs.orderID && lhs.dateCreated < rhs.dateCreated) ||
             (lhs.orderID == rhs.orderID && lhs.dateCreated == rhs.dateCreated && lhs.dateModified < rhs.dateModified)
     }
+}
+
+
+// MARK: - Decoding Errors
+//
+enum OrderDecodingError: Error {
+    case missingSiteID
 }

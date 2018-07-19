@@ -63,7 +63,7 @@ struct SessionManager {
             return defaults[.defaultStoreID]
         }
         set {
-            defaults[.defaultStoreID] = defaultStoreID
+            defaults[.defaultStoreID] = newValue
         }
     }
 

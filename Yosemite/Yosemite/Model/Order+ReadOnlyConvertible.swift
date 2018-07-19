@@ -9,6 +9,7 @@ extension Storage.Order: ReadOnlyConvertible {
     /// Updates the Storage.Order with the ReadOnly.
     ///
     public func update(with order: Yosemite.Order) {
+        siteID  = Int64(order.siteID)
         orderID = Int64(order.orderID)
         parentID = Int64(order.parentID)
         customerID = Int64(order.customerID)
@@ -60,7 +61,8 @@ extension Storage.Order: ReadOnlyConvertible {
         let orderItems = items?.map { $0.toReadOnly() } ?? [Yosemite.OrderItem]()
         let orderCoupons = coupons?.map { $0.toReadOnly() } ?? [Yosemite.OrderCouponLine]()
 
-        return Order(orderID: Int(orderID),
+        return Order(siteID: Int(siteID),
+                     orderID: Int(orderID),
                      parentID: Int(parentID),
                      customerID: Int(customerID),
                      number: number ?? "",

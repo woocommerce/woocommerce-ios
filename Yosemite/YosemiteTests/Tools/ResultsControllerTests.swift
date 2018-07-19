@@ -201,6 +201,25 @@ class ResultsControllerTests: XCTestCase {
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
+
+
+    /// Verifies that `fetchedObjects` effectively  returns all of the (readOnly) objects that are expected to be available.
+    ///
+    func testFetchedObjectsEffectivelyReturnsAvailableEntities() {
+        let sortDescriptor =  NSSortDescriptor(key: #selector(getter: Storage.Account.userID).description, ascending: true)
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sortDescriptor])
+        try? resultsController.performFetch()
+
+        let first = insertSampleAccount(into: viewContext).toReadOnly()
+        let second = insertSampleAccount(into: viewContext).toReadOnly()
+        let expected = [first.userID: first, second.userID: second]
+
+        viewContext.saveIfNeeded()
+
+        for retrieved in resultsController.fetchedObjects {
+            XCTAssertEqual(retrieved.username, expected[retrieved.userID]?.username)
+        }
+    }
 }
 
 

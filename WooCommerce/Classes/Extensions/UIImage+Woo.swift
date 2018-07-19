@@ -1,10 +1,18 @@
 import Foundation
 import UIKit
+import Gridicons
 
 
 /// WooCommerce UIImage Assets
 ///
 extension UIImage {
+
+    /// WooCommerce Styled Checkmark
+    ///
+    static var checkmarkImage: UIImage {
+        let tintColor = StyleManager.wooCommerceBrandColor
+        return Gridicon.iconOfType(.checkmark).imageWithTintColor(tintColor)!
+    }
 
     /// Gravatar Placeholder Image
     ///

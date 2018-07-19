@@ -44,6 +44,7 @@
         <attribute name="shippingState" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="shippingTax" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="shippingTotal" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="siteID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="status" attributeType="String" syncable="YES"/>
         <attribute name="total" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="totalTax" optional="YES" attributeType="String" syncable="YES"/>
@@ -89,7 +90,7 @@
     </entity>
     <elements>
         <element name="Account" positionX="-198" positionY="132" width="128" height="120"/>
-        <element name="Order" positionX="-20" positionY="27" width="128" height="673"/>
+        <element name="Order" positionX="-20" positionY="27" width="128" height="690"/>
         <element name="OrderCoupon" positionX="-200" positionY="456" width="128" height="120"/>
         <element name="OrderItem" positionX="187" positionY="99" width="128" height="223"/>
         <element name="OrderNote" positionX="214" positionY="539" width="128" height="118"/>

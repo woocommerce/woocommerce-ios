@@ -160,8 +160,21 @@ private extension OrderDetailsViewController {
 extension OrderDetailsViewController {
 
     @objc func pullToRefresh() {
-        syncOrder()
-        syncOrderNotes()
+        let group = DispatchGroup()
+
+        group.enter()
+        syncOrder { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncOrderNotes { _ in
+            group.leave()
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            self?.refreshControl.endRefreshing()
+        }
     }
 }
 
@@ -229,31 +242,32 @@ private extension OrderDetailsViewController {
 // MARK: - Sync'ing Helpers
 //
 private extension OrderDetailsViewController {
-    func syncOrder() {
+    func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
         let action = OrderAction.retrieveOrder(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (order, error) in
             guard let `self` = self, let order = order else {
                 DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
+                onCompletion?(error)
                 return
             }
 
             self.viewModel = OrderDetailsViewModel(siteID: self.viewModel.siteID, order: order)
-            self.refreshControl.endRefreshing()
+            onCompletion?(nil)
         }
 
         StoresManager.shared.dispatch(action)
     }
 
-    func syncOrderNotes() {
+    func syncOrderNotes(onCompletion: ((Error?) -> ())? = nil) {
         let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
-                if let error = error {
-                    DDLogError("⛔️ Error synchronizing Order Notes: \(error)")
-                }
+                DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
                 self?.orderNotes = nil
+                onCompletion?(error)
                 return
             }
 
             self?.orderNotes = orderNotes.map { OrderNoteViewModel(with: $0) }
+            onCompletion?(nil)
         }
 
         StoresManager.shared.dispatch(action)

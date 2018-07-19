@@ -95,6 +95,16 @@ public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
     }
 
 
+    /// Returns an array of all of the (ReadOnly) Fetched Objects.
+    ///
+    public var fetchedObjects: [T.ReadOnlyType] {
+        let readOnlyObjects = controller.fetchedObjects?.compactMap { mutableObject in
+            mutableObject.toReadOnly()
+        }
+
+        return readOnlyObjects ?? []
+    }
+
     /// Returns an array of SectionInfo Entitites.
     ///
     public var sections: [SectionInfo] {

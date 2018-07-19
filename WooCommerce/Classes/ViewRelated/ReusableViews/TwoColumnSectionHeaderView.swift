@@ -4,8 +4,6 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
     @IBOutlet private weak var leftColumn: UILabel!
     @IBOutlet private weak var rightColumn: UILabel!
 
-    static let reuseIdentifier = "TwoColumnSectionHeaderView"
-
     override func awakeFromNib() {
         super.awakeFromNib()
         tintColor = .clear

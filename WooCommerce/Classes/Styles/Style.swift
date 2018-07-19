@@ -4,6 +4,7 @@ import UIKit
 // MARK: - Style defines the basic API of a Woo Skin.
 //
 protocol Style {
+    var actionButtonTitleFont: UIFont { get }
     var alternativeLoginsTitleFont: UIFont { get }
     var buttonPrimaryColor: UIColor { get }
     var buttonPrimaryHighlightedColor: UIColor { get }
@@ -33,11 +34,13 @@ protocol Style {
     var wooGreyMid: UIColor { get }
     var wooGreyTextMin: UIColor { get }
     var wooGreyBorder: UIColor { get }
+    var wooSecondary: UIColor { get }
 }
 
 // MARK: - WooCommerce's Default Style
 //
 class DefaultStyle: Style {
+    let actionButtonTitleFont = UIFont.font(forStyle: .headline, weight: .semibold)
     let alternativeLoginsTitleFont = UIFont.font(forStyle: .subheadline, weight: .semibold)
     let buttonPrimaryColor = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
     let buttonPrimaryHighlightedColor = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
@@ -67,6 +70,7 @@ class DefaultStyle: Style {
     let wooGreyMid = UIColor(red: 150.0/255.0, green: 150.0/255.0, blue: 150.0/255.0, alpha: 1.0)
     let wooGreyTextMin = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
     let wooGreyBorder = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1.0)
+    let wooSecondary = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
 }
 
 
@@ -85,6 +89,10 @@ class StyleManager {
         didSet {
             NotificationCenter.default.post(name: .StyleManagerDidUpdateActive, object: self)
         }
+    }
+
+    static var actionButtonTitleFont: UIFont {
+        return active.actionButtonTitleFont
     }
 
     static var alternativeLoginsTitleFont: UIFont {
@@ -201,5 +209,9 @@ class StyleManager {
 
     static var wooGreyBorder: UIColor {
         return active.wooGreyBorder
+    }
+
+    static var wooSecondary: UIColor {
+        return active.wooSecondary
     }
 }

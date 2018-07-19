@@ -4,15 +4,16 @@ import Yosemite
 import CocoaLumberjack
 
 
+/// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
+///
 class OrdersViewController: UIViewController {
+
+    // MARK: - IBOutlets
+
+    @IBOutlet private weak var tableView: UITableView!
 
     // MARK: - Properties
 
-    // FIXME: Need "current" site id
-    let siteID: Int = 131820877
-    ///
-
-    @IBOutlet weak var tableView: UITableView!
     private var orders = [Order]()
     private var filterResults = [Order]()
     private var isUsingFilterAction = false
@@ -23,11 +24,18 @@ class OrdersViewController: UIViewController {
         return refreshControl
     }()
 
+
     // MARK: - Computed Properties
 
     private var displaysNoResults: Bool {
         return filterResults.isEmpty && isUsingFilterAction
     }
+
+    private var siteID: Int? {
+        return StoresManager.shared.sessionManager.defaultStoreID
+    }
+
+
 
     // MARK: - View Lifecycle
 
@@ -49,6 +57,7 @@ class OrdersViewController: UIViewController {
             syncOrders()
         }
     }
+
 
     // MARK: - User Interface Initialization
 
@@ -138,12 +147,14 @@ class OrdersViewController: UIViewController {
 //
 private extension OrdersViewController {
     func syncOrders() {
+        guard let siteID = siteID else {
+            return
+        }
+
         let action = OrderAction.retrieveOrders(siteID: siteID) { [weak self] (orders, error) in
             self?.refreshControl.endRefreshing()
             guard error == nil else {
-                if let error = error {
-                    DDLogError("⛔️ Error synchronizing orders: \(error)")
-                }
+                DDLogError("⛔️ Error synchronizing orders: \(error.debugDescription)")
                 return
             }
             guard let orders = orders else {
@@ -164,6 +175,24 @@ private extension OrdersViewController {
         orders = []
         isUsingFilterAction = false
         tableView.reloadData()
+    }
+}
+
+
+// MARK: - Convenience Methods
+//
+private extension OrdersViewController {
+
+    func orderAtIndexPath(_ indexPath: IndexPath) -> Order {
+        return isUsingFilterAction ? filterResults[indexPath.row] : orders[indexPath.row]
+    }
+
+    func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel? {
+        guard let siteID = siteID else {
+            return nil
+        }
+
+        return OrderDetailsViewModel(siteID: siteID, order: orderAtIndexPath(indexPath))
     }
 }
 
@@ -191,19 +220,21 @@ extension OrdersViewController: UITableViewDataSource {
             cell.configure(text: NSLocalizedString("No results found. Clear the filter to try again.", comment: "Displays message to user when no filter results were found."))
             return cell
         }
-        let order = orderAtIndexPath(indexPath)
-        let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as! OrderListCell
-        cell.configureCell(order: OrderDetailsViewModel(siteID: siteID, order: order))
+
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as? OrderListCell,
+            let viewModel = detailsViewModel(at: indexPath)
+            else {
+                fatalError()
+        }
+
+        cell.configureCell(order: viewModel)
+
         return cell
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         // FIXME: this is hard-coded data. Will fix when WordPressShared date helpers are available to make fuzzy dates.
         return NSLocalizedString("Today", comment: "Title for header section")
-    }
-
-    func orderAtIndexPath(_ indexPath: IndexPath) -> Order {
-        return isUsingFilterAction ? filterResults[indexPath.row] : orders[indexPath.row]
     }
 }
 
@@ -217,20 +248,20 @@ extension OrdersViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        performSegue(withIdentifier: Constants.orderDetailsSegue, sender: indexPath)
-    }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard displaysNoResults == false else {
             return
         }
 
-        if segue.identifier == Constants.orderDetailsSegue {
-            if let singleOrderViewController = segue.destination as? OrderDetailsViewController {
-                let indexPath = sender as! IndexPath
-                singleOrderViewController.viewModel = OrderDetailsViewModel(siteID: siteID, order: orderAtIndexPath(indexPath))
-            }
+        performSegue(withIdentifier: Constants.orderDetailsSegue, sender: detailsViewModel(at: indexPath))
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let singleOrderViewController = segue.destination as? OrderDetailsViewController, let viewModel = sender as? OrderDetailsViewModel else {
+            return
         }
+
+        singleOrderViewController.viewModel = viewModel
     }
 }
 

@@ -13,8 +13,6 @@ class ShowHideSectionFooter: UITableViewHeaderFooterView {
         didSelectFooter?()
     }
 
-    static let reuseIdentifier = "ShowHideSectionFooter"
-
     override func awakeFromNib() {
         super.awakeFromNib()
         footerLabel.applyFootnoteStyle()

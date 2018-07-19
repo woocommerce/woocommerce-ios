@@ -51,6 +51,7 @@
 		B57C744C20F564B400EEFC87 /* EmptyStoresTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B57C744B20F564B400EEFC87 /* EmptyStoresTableViewCell.xib */; };
 		B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744D20F56E3800EEFC87 /* UITableViewCell+Helpers.swift */; };
 		B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C745020F56EE900EEFC87 /* UITableViewCellHelpersTests.swift */; };
+		B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B582F95820FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift */; };
 		B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8532120BDBFAE00FAAB4D /* CircularImageView.swift */; };
 		B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */; };
 		B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8AC20B88D9900D211DE /* LoginPrologueViewController.swift */; };
@@ -192,6 +193,7 @@
 		B57C744B20F564B400EEFC87 /* EmptyStoresTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmptyStoresTableViewCell.xib; sourceTree = "<group>"; };
 		B57C744D20F56E3800EEFC87 /* UITableViewCell+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+Helpers.swift"; sourceTree = "<group>"; };
 		B57C745020F56EE900EEFC87 /* UITableViewCellHelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableViewCellHelpersTests.swift; sourceTree = "<group>"; };
+		B582F95820FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewHeaderFooterView+Helpers.swift"; sourceTree = "<group>"; };
 		B59F38DF20D40A24008C1829 /* WooCommerce.debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerce.debug.entitlements; sourceTree = "<group>"; };
 		B59F38E020D40A24008C1829 /* WooCommerce.release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerce.release.entitlements; sourceTree = "<group>"; };
 		B5A8532120BDBFAE00FAAB4D /* CircularImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularImageView.swift; sourceTree = "<group>"; };
@@ -516,6 +518,7 @@
 				CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */,
 				B5D1AFB720BC510200DB0E8C /* UIImage+Woo.swift */,
 				CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */,
+				B582F95820FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift */,
 				B57C744D20F56E3800EEFC87 /* UITableViewCell+Helpers.swift */,
 				B57C744620F55BC800EEFC87 /* UIView+Helpers.swift */,
 				B5AA7B3E20ED81C2004DA14F /* UserDefaults+Woo.swift */,
@@ -934,6 +937,7 @@
 				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
 				7403F7E220EC04070097198F /* OrderStatusViewModel.swift in Sources */,
 				CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */,
+				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,
 				B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */,
 				B5AA7B3D20ED5D15004DA14F /* SessionManager.swift in Sources */,

@@ -183,16 +183,12 @@ private extension OrdersViewController {
 //
 private extension OrdersViewController {
 
-    func orderAtIndexPath(_ indexPath: IndexPath) -> Order {
+    func order(at indexPath: IndexPath) -> Order {
         return isUsingFilterAction ? filterResults[indexPath.row] : orders[indexPath.row]
     }
 
-    func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel? {
-        guard let siteID = siteID else {
-            return nil
-        }
-
-        return OrderDetailsViewModel(siteID: siteID, order: orderAtIndexPath(indexPath))
+    func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
+        return OrderDetailsViewModel(order: order(at: indexPath))
     }
 }
 
@@ -221,12 +217,11 @@ extension OrdersViewController: UITableViewDataSource {
             return cell
         }
 
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as? OrderListCell,
-            let viewModel = detailsViewModel(at: indexPath)
-            else {
-                fatalError()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as? OrderListCell else {
+            fatalError()
         }
 
+        let viewModel = detailsViewModel(at: indexPath)
         cell.configureCell(order: viewModel)
 
         return cell

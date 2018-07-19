@@ -6,6 +6,11 @@ import XCTest
 ///
 class OrderListMapperTests: XCTestCase {
 
+    /// Dummy Site ID.
+    ///
+    private let dummySiteID = 242424
+
+
     /// Verifies that all of the Order Fields are parsed correctly.
     ///
     func testOrderFieldsAreProperlyParsed() {
@@ -33,6 +38,14 @@ class OrderListMapperTests: XCTestCase {
         XCTAssertEqual(firstOrder.shippingTax, "0.00")
         XCTAssertEqual(firstOrder.total, "31.20")
         XCTAssertEqual(firstOrder.totalTax, "1.20")
+    }
+
+    /// Verifies that the siteID field is properly set.
+    ///
+    func testSiteIdentifierIsProperlyInjectedIntoEveryOrder() {
+        for order in mapLoadAllOrdersResponse() {
+            XCTAssertEqual(order.siteID, dummySiteID)
+        }
     }
 
     /// Verifies that all of the Order Address fields are parsed correctly.
@@ -108,7 +121,7 @@ private extension OrderListMapperTests {
             return []
         }
 
-        return try! OrderListMapper().map(response: response)
+        return try! OrderListMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the OrderListMapper output upon receiving `orders-load-all`

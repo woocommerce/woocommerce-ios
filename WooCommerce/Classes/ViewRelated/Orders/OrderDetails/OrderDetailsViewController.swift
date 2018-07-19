@@ -160,12 +160,12 @@ private extension OrderDetailsViewController {
 extension OrderDetailsViewController {
 
     @objc func pullToRefresh() {
-        let action = OrderAction.retrieveOrder(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (order, _) in
+        let action = OrderAction.retrieveOrder(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (order, _) in
             guard let `self` = self, let order = order else {
                 return
             }
 
-            self.viewModel = OrderDetailsViewModel(siteID: self.viewModel.siteID, order: order)
+            self.viewModel = OrderDetailsViewModel(order: order)
             self.refreshControl.endRefreshing()
         }
 
@@ -242,7 +242,7 @@ private extension OrderDetailsViewController {
             return
         }
 
-        let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing order notes: \(error)")

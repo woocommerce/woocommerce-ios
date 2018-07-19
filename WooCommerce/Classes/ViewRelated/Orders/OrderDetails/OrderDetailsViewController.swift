@@ -36,7 +36,7 @@ class OrderDetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigationItem()
+        configureNavigation()
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
@@ -50,18 +50,6 @@ class OrderDetailsViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.isNavigationBarHidden = false
-    }
-
-    func configureNavigation() {
-         title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
-
-        // Don't show the Order details title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
-
-        navigationItem.backBarButtonItem = backButton
     }
 }
 
@@ -79,10 +67,18 @@ private extension OrderDetailsViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
     }
 
-    /// Setup: NavigationItem
+    /// Setup: Navigation
     ///
-    func configureNavigationItem() {
+    func configureNavigation() {
         title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
+
+        // Don't show the Order details title in the next-view's back button
+        let backButton = UIBarButtonItem(title: String(),
+                                         style: .plain,
+                                         target: nil,
+                                         action: nil)
+
+        navigationItem.backBarButtonItem = backButton
     }
 
     /// Setup: Sections
@@ -131,6 +127,7 @@ private extension OrderDetailsViewController {
             BillingDetailsTableViewCell.self,
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
+            DetailsTableViewCell.self,
             OrderNoteTableViewCell.self,
             PaymentTableViewCell.self,
             ProductListTableViewCell.self,

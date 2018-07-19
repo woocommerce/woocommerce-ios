@@ -31,13 +31,8 @@ class CoreDataManagerTests: XCTestCase {
 
         let expectation = self.expectation(description: "Background")
 
-        container.persistentStoreCoordinator.perform {
-            XCTAssertEqual(container.managedObjectModel, manager.managedModel)
-            XCTAssertEqual(container.persistentStoreCoordinator.persistentStores.first?.url?.lastPathComponent, "WooCommerce.sqlite")
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssertEqual(container.managedObjectModel, manager.managedModel)
+        XCTAssertEqual(container.persistentStoreCoordinator.persistentStores.first?.url?.lastPathComponent, "WooCommerce.sqlite")
     }
 
     /// Verifies that the ContextManager's viewContext matches the PersistenContainer.viewContext

@@ -14,11 +14,13 @@ class OrderDetailsViewController: UIViewController {
     var viewModel: OrderDetailsViewModel! {
         didSet {
             reloadSections()
+            reloadTableViewIfPossible()
         }
     }
     private var orderNotes: [OrderNoteViewModel]? {
         didSet {
             reloadSections()
+            reloadTableViewIfPossible()
         }
     }
 
@@ -27,15 +29,8 @@ class OrderDetailsViewController: UIViewController {
             reloadSections()
         }
     }
-    private var sections = [Section]() {
-        didSet {
-            guard isViewLoaded else {
-                return
-            }
+    private var sections = [Section]()
 
-            tableView.reloadData()
-        }
-    }
 
     // MARK: - View Lifecycle
 
@@ -106,6 +101,16 @@ private extension OrderDetailsViewController {
         } else {
             sections = [summarySection, productListSection, customerNoteSection, infoSection, paymentSection, orderNotesSection]
         }
+    }
+
+    /// Reloads the tableView, granted that the view has been effectively loaded.
+    ///
+    func reloadTableViewIfPossible() {
+        guard isViewLoaded else {
+            return
+        }
+
+        tableView.reloadData()
     }
 
     /// Registers all of the available TableViewCells

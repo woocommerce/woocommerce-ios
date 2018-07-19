@@ -11,23 +11,36 @@ class OrderDetailsViewController: UIViewController {
     // MARK: - Properties
 
     @IBOutlet weak var tableView: UITableView!
-    var viewModel: OrderDetailsViewModel!
-    var orderNotes: [OrderNoteViewModel]? {
+    var viewModel: OrderDetailsViewModel! {
         didSet {
-            configureTableView()
-            tableView.reloadData()
+            reloadSections()
+            reloadTableViewIfPossible()
+        }
+    }
+    private var orderNotes: [OrderNoteViewModel]? {
+        didSet {
+            reloadSections()
+            reloadTableViewIfPossible()
         }
     }
 
-    private var billingIsHidden = true
+    private var billingIsHidden = true {
+        didSet {
+            reloadSections()
+        }
+    }
     private var sections = [Section]()
+
 
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureNavigationItem()
         configureTableView()
-        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
+        registerTableViewCells()
+        registerTableViewHeaderFooters()
+
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -45,16 +58,25 @@ class OrderDetailsViewController: UIViewController {
 // MARK: - TableView Configuration
 //
 private extension OrderDetailsViewController {
+
+    /// Setup: TableView
+    ///
     func configureTableView() {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedSectionFooterHeight = Constants.rowHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
-        configureSections()
-        configureNibs()
     }
 
-    func configureSections() {
+    /// Setup: NavigationItem
+    ///
+    func configureNavigationItem() {
+        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
+    }
+
+    /// Setup: Sections
+    ///
+    func reloadSections() {
         let summarySection = Section(leftTitle: nil, rightTitle: nil, footer: nil, rows: [.summary])
 
         let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
@@ -81,18 +103,46 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func configureNibs() {
-        for section in sections {
-            for row in section.rows {
-                let nib = UINib(nibName: row.reuseIdentifier, bundle: nil)
-                tableView.register(nib, forCellReuseIdentifier: row.reuseIdentifier)
-            }
+    /// Reloads the tableView, granted that the view has been effectively loaded.
+    ///
+    func reloadTableViewIfPossible() {
+        guard isViewLoaded else {
+            return
         }
 
-        let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
-        tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
-        let footerNib = UINib(nibName: ShowHideSectionFooter.reuseIdentifier, bundle: nil)
-        tableView.register(footerNib, forHeaderFooterViewReuseIdentifier: ShowHideSectionFooter.reuseIdentifier)
+        tableView.reloadData()
+    }
+
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells() {
+        let cells = [
+            AddItemTableViewCell.self,
+            BillingDetailsTableViewCell.self,
+            CustomerNoteTableViewCell.self,
+            CustomerInfoTableViewCell.self,
+            OrderNoteTableViewCell.self,
+            PaymentTableViewCell.self,
+            ProductListTableViewCell.self,
+            SummaryTableViewCell.self
+        ]
+
+        for cell in cells {
+            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        }
+    }
+
+    /// Registers all of the available TableViewHeaderFooters
+    ///
+    func registerTableViewHeaderFooters() {
+        let headersAndFooters = [
+            TwoColumnSectionHeaderView.self,
+            ShowHideSectionFooter.self
+        ]
+
+        for kind in headersAndFooters {
+            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
+        }
     }
 }
 
@@ -215,7 +265,7 @@ extension OrderDetailsViewController {
         sendEmailIfPossible()
     }
 
-    func setShowHideFooter() {
+    func toggleBillingFooter() {
         billingIsHidden = !billingIsHidden
     }
 }
@@ -279,10 +329,13 @@ extension OrderDetailsViewController: UITableViewDataSource {
         let image = billingIsHidden ? Gridicon.iconOfType(.chevronDown) : Gridicon.iconOfType(.chevronUp)
         cell.configure(text: footerText, image: image)
         cell.didSelectFooter = { [weak self] in
-            self?.setShowHideFooter()
-            self?.configureTableView()
+            guard let `self` = self else {
+                return
+            }
+
             let sections = IndexSet(integer: section)
-            tableView.reloadSections(sections, with: .fade)
+            self.toggleBillingFooter()
+            self.tableView.reloadSections(sections, with: .fade)
         }
 
         return cell

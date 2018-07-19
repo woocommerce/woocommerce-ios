@@ -16,6 +16,13 @@ class OrderDetailsViewController: UIViewController {
             reloadSections()
         }
     }
+
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
+        return refreshControl
+    }()
+
     private var orderNotes: [OrderNoteViewModel]? {
         didSet {
             reloadSections()
@@ -71,6 +78,7 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionFooterHeight = Constants.rowHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.refreshControl = refreshControl
     }
 
     /// Setup: NavigationItem
@@ -138,6 +146,25 @@ private extension OrderDetailsViewController {
         for kind in headersAndFooters {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
         }
+    }
+}
+
+
+// MARK: - Action Handlers
+//
+extension OrderDetailsViewController {
+
+    @objc func pullToRefresh() {
+        let action = OrderAction.retrieveOrder(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (order, _) in
+            guard let `self` = self, let order = order else {
+                return
+            }
+
+            self.viewModel = OrderDetailsViewModel(siteID: self.viewModel.siteID, order: order)
+            self.refreshControl.endRefreshing()
+        }
+
+        StoresManager.shared.dispatch(action)
     }
 }
 

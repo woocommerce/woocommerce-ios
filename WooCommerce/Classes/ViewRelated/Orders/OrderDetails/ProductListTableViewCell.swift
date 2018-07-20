@@ -3,11 +3,11 @@ import UIKit
 class ProductListTableViewCell: UITableViewCell {
     @IBOutlet private var verticalStackView: UIStackView!
     @IBOutlet private var fulfillButton: UIButton!
-    @IBOutlet private var containerView: UIView!
+    @IBOutlet private var actionContainerView: UIView!
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        fulfillButton.wooPrimaryButton()
+        fulfillButton.applyPrimaryButtonStyle()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -30,8 +30,9 @@ extension ProductListTableViewCell {
 
         if viewModel.isProcessingPayment {
             fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
+            actionContainerView.isHidden = false
         } else {
-            containerView.isHidden = true
+            actionContainerView.isHidden = true
         }
     }
 }

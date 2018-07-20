@@ -20,7 +20,7 @@ class ProductListViewController: UIViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
 
-        let nib = UINib(nibName: ProductDetailsTableViewCell.reuseIdentifier, bundle: nil)
+        let nib = ProductDetailsTableViewCell.loadNib()
         tableView.register(nib, forCellReuseIdentifier: ProductDetailsTableViewCell.reuseIdentifier)
 
         let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
@@ -45,7 +45,9 @@ extension ProductListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
-        let cell = tableView.dequeueReusableCell(withIdentifier: ProductDetailsTableViewCell.reuseIdentifier, for: indexPath) as! ProductDetailsTableViewCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductDetailsTableViewCell.reuseIdentifier, for: indexPath) as? ProductDetailsTableViewCell else {
+            fatalError()
+        }
         cell.configure(item: item, with: viewModel)
         return cell
     }

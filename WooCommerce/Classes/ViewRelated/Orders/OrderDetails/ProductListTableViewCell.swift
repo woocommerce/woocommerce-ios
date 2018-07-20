@@ -1,9 +1,13 @@
 import UIKit
 
+
+/// Displays the list of Products associated to an Order.
+///
 class ProductListTableViewCell: UITableViewCell {
     @IBOutlet private var verticalStackView: UIStackView!
     @IBOutlet private var fulfillButton: UIButton!
 
+    var onFullfillTouchUp: (() -> Void)?
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -25,8 +29,13 @@ extension ProductListTableViewCell {
         }
 
         fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
+        fulfillButton.addTarget(self, action: #selector(fulfillWasPressed), for: .touchUpInside)
 
         verticalStackView.setCustomSpacing(Constants.spacing, after: fulfillButton)
+    }
+
+    @IBAction func fulfillWasPressed() {
+        onFullfillTouchUp?()
     }
 
     struct Constants {

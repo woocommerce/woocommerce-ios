@@ -21,6 +21,10 @@ public struct Site: Decodable {
     ///
     public let url: String
 
+    ///  Indicates if there is a WooCommerce Store Active.
+    ///
+    public let isWooCommerceActive: Bool
+
     /// Indicates if this site hosts a WordPress Store.
     ///
     public let isWordPressStore: Bool
@@ -38,16 +42,18 @@ public struct Site: Decodable {
 
         let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
         isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
+        isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
     }
 
     /// Designated Initializer.
     ///
-    public init(siteID: Int, name: String, description: String, url: String, isWordPressStore: Bool) {
+    public init(siteID: Int, name: String, description: String, url: String, isWooCommerceActive: Bool, isWordPressStore: Bool) {
         self.siteID = siteID
         self.name = name
         self.description = description
         self.url = url
         self.isWordPressStore = isWordPressStore
+        self.isWooCommerceActive = isWooCommerceActive
     }
 }
 
@@ -66,5 +72,6 @@ private extension Site {
 
     enum OptionKeys: String, CodingKey {
         case isWordPressStore = "is_wpcom_store"
+        case isWooCommerceActive = "woocommerce_is_active"
     }
 }

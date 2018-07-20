@@ -41,10 +41,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Setup Components
         setupAuthenticationManager()
+        setupCocoaLumberjack()
         setupLogLevel(.verbose)
 
         // Display the Authentication UI
         displayAuthenticatorIfNeeded()
+        displayStorePickerIfNeeded()
 
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
@@ -116,8 +118,6 @@ private extension AppDelegate {
         UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().tintColor = .white
         UIApplication.shared.statusBarStyle = .lightContent
-
-        UIButton.appearance().setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
     }
 
     /// Sets up FancyButton's UIAppearance.
@@ -138,26 +138,23 @@ private extension AppDelegate {
 
     /// Sets up CocoaLumberjack logging.
     ///
-    func setupLogLevel(_ level: DDLogLevel) {
-        DDLog.add(DDOSLogger.sharedInstance) // os_log based, iOS 10+
-
-        let fileLogger: DDFileLogger = DDFileLogger() // File Logger
+    func setupCocoaLumberjack() {
+        let fileLogger: DDFileLogger = DDFileLogger()
         fileLogger.rollingFrequency = TimeInterval(60*60*24)  // 24 hours
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
-        DDLog.add(fileLogger)
 
+        DDLog.add(DDOSLogger.sharedInstance)
+        DDLog.add(fileLogger)
+    }
+
+    /// Sets up the current Log Leve.
+    ///
+    func setupLogLevel(_ level: DDLogLevel) {
         let rawLevel = Int32(level.rawValue)
 
         WPSharedSetLoggingLevel(rawLevel)
         WPAuthenticatorSetLoggingLevel(rawLevel)
         WPKitSetLoggingLevel(rawLevel)
-
-        // Test print each log level
-        CocoaLumberjack.DDLogVerbose("Verbose")
-        CocoaLumberjack.DDLogDebug("Debug")
-        CocoaLumberjack.DDLogInfo("Info")
-        CocoaLumberjack.DDLogWarn("Warn")
-        CocoaLumberjack.DDLogError("Error")
     }
 }
 
@@ -184,6 +181,25 @@ extension AppDelegate {
         }
 
         authenticationManager.displayAuthentication(from: rootViewController)
+    }
+
+    /// Whenever the app is authenticated but there is no Default StoreID: Let's display the Store Picker.
+    ///
+    func displayStorePickerIfNeeded() {
+        guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore else {
+            return
+        }
+
+        displayStorePicker()
+    }
+
+    /// Displays the Woo Store Picker.
+    ///
+    func displayStorePicker() {
+        let pickerViewController = StorePickerViewController()
+        let navigationController = UINavigationController(rootViewController: pickerViewController)
+
+        window?.rootViewController?.present(navigationController, animated: true, completion: nil)
     }
 
     /// Whenever we're in an Authenticated state, let's Sync all of the WC-Y entities.

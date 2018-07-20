@@ -33,7 +33,8 @@ class AuthenticationManager {
                                                 disabledBorderColor: StyleManager.buttonDisabledHighlightedColor,
                                                 primaryTitleColor: StyleManager.buttonPrimaryTitleColor,
                                                 secondaryTitleColor: StyleManager.buttonSecondaryTitleColor,
-                                                disabledTitleColor: StyleManager.buttonDisabledTitleColor)
+                                                disabledTitleColor: StyleManager.buttonDisabledTitleColor,
+                                                subheadlineColor: StyleManager.wooCommerceBrandColor)
 
         WordPressAuthenticator.initialize(configuration: configuration, style: style)
         WordPressAuthenticator.shared.delegate = self
@@ -46,6 +47,14 @@ class AuthenticationManager {
         let navigationController = LoginNavigationController(rootViewController: prologueViewController)
 
         presenter.present(navigationController, animated: true, completion: nil)
+    }
+
+    /// Returns a LoginViewController preinitialized for WordPress.com
+    ///
+    func loginForWordPressDotCom() -> UIViewController {
+        let loginViewController = WordPressAuthenticator.signinForWPCom()
+        loginViewController.offerSignupOption = false
+        return loginViewController
     }
 
     /// Handles an Authentication URL Callback. Returns *true* on success.
@@ -137,6 +146,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, onDismiss: @escaping () -> Void) {
         let pickerViewController = StorePickerViewController()
+        pickerViewController.onDismiss = onDismiss
         navigationController.pushViewController(pickerViewController, animated: true)
     }
 
@@ -172,14 +182,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
 
-        // TODO: This is *temporary*. Already gone in a branch!!
-        let onCompletionWrapper = { (_ error: Error?) in
-            onCompletion()
-        }
-
         StoresManager.shared
             .authenticate(credentials: .init(username: username, authToken: authToken))
-            .synchronizeEntities(onCompletion: onCompletionWrapper)
+            .synchronizeEntities(onCompletion: onCompletion)
     }
 
     /// Tracks a given Analytics Event.

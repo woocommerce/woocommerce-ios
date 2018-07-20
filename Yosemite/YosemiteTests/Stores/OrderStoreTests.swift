@@ -26,6 +26,12 @@ class OrderStoreTests: XCTestCase {
         return storageManager.viewStorage
     }
 
+    /// Testing SiteID
+    ///
+    private let sampleSiteID = 123
+
+
+    // MARK: - Overridden Methods
 
     override func setUp() {
         super.setUp()
@@ -44,7 +50,7 @@ class OrderStoreTests: XCTestCase {
         let remoteOrder = sampleOrder()
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders")
-        let action = OrderAction.retrieveOrders(siteID: 123) { (orders, error) in
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
             XCTAssertNil(error)
             guard let orders = orders else {
                 XCTFail()
@@ -68,7 +74,7 @@ class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.retrieveOrders(siteID: 123) { (orders, error) in
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 3)
             XCTAssertNil(error)
             expectation.fulfill()
@@ -88,7 +94,7 @@ class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.retrieveOrders(siteID: 123) { (orders, error) in
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
             XCTAssertNotNil(orders)
             XCTAssertNil(error)
 
@@ -113,7 +119,7 @@ class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "generic_error")
-        let action = OrderAction.retrieveOrders(siteID: 123) { (orders, error) in
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
             XCTAssertNil(orders)
             XCTAssertNotNil(error)
             guard let _ = error else {
@@ -133,7 +139,7 @@ class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve orders empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = OrderAction.retrieveOrders(siteID: 123) { (orders, error) in
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
             XCTAssertNotNil(error)
             XCTAssertNil(orders)
             guard let _ = error else {
@@ -158,7 +164,7 @@ class OrderStoreTests: XCTestCase {
         let remoteOrder = sampleOrder()
 
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
-        let action = OrderAction.retrieveOrder(siteID: 123, orderID: 963) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: 963) { (order, error) in
             XCTAssertNil(error)
             guard let order = order else {
                 XCTFail()
@@ -182,7 +188,7 @@ class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.retrieveOrder(siteID: 123, orderID: 963) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: 963) { (order, error) in
             XCTAssertNotNil(order)
             XCTAssertNil(error)
 
@@ -235,7 +241,7 @@ class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "generic_error")
-        let action = OrderAction.retrieveOrder(siteID: 123, orderID: 963) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: 963) { (order, error) in
             XCTAssertNil(order)
             XCTAssertNotNil(error)
             guard let _ = error else {
@@ -255,7 +261,7 @@ class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve single order empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = OrderAction.retrieveOrder(siteID: 123, orderID: 963) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: 963) { (order, error) in
             XCTAssertNotNil(error)
             XCTAssertNil(order)
             guard let _ = error else {
@@ -274,7 +280,8 @@ class OrderStoreTests: XCTestCase {
 //
 private extension OrderStoreTests {
     func sampleOrder() -> Networking.Order {
-        return Order(orderID: 963,
+        return Order(siteID: sampleSiteID,
+                     orderID: 963,
                      parentID: 0,
                      customerID: 11,
                      number: "963",
@@ -298,7 +305,8 @@ private extension OrderStoreTests {
     }
 
     func sampleOrderMutated() -> Networking.Order {
-        return Order(orderID: 963,
+        return Order(siteID: sampleSiteID,
+                     orderID: 963,
                      parentID: 0,
                      customerID: 11,
                      number: "963",

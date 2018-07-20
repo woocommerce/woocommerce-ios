@@ -127,7 +127,7 @@ private extension OrderDetailsViewController {
             BillingDetailsTableViewCell.self,
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
-            DetailsTableViewCell.self,
+            BasicDisclosureTableViewCell.self,
             OrderNoteTableViewCell.self,
             PaymentTableViewCell.self,
             ProductListTableViewCell.self,
@@ -163,7 +163,7 @@ private extension OrderDetailsViewController {
             cell.configure(with: viewModel)
         case let cell as ProductListTableViewCell:
             cell.configure(with: viewModel)
-        case let cell as DetailsTableViewCell:
+        case let cell as BasicDisclosureTableViewCell:
             cell.configure(text: viewModel.productDetails)
         case let cell as CustomerNoteTableViewCell:
             cell.configure(with: viewModel)
@@ -366,10 +366,8 @@ extension OrderDetailsViewController: UITableViewDelegate {
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == Constants.productDetailsSegue {
-            if let productListViewController = segue.destination as? ProductListViewController {
-                productListViewController.viewModel = viewModel
-            }
+        if let productListViewController = segue.destination as? ProductListViewController {
+            productListViewController.viewModel = viewModel
         }
     }
 }
@@ -463,7 +461,7 @@ private extension OrderDetailsViewController {
             case .productList:
                 return ProductListTableViewCell.reuseIdentifier
             case .productDetails:
-                return DetailsTableViewCell.reuseIdentifier
+                return BasicDisclosureTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:

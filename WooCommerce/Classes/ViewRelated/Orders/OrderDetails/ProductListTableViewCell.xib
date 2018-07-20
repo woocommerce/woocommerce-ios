@@ -60,7 +60,7 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="containerView" destination="l69-YR-SYD" id="byf-DE-EfU"/>
+                <outlet property="actionContainerView" destination="l69-YR-SYD" id="bMG-f7-iEF"/>
                 <outlet property="fulfillButton" destination="Rng-8C-l5l" id="GrA-wO-Ocb"/>
                 <outlet property="verticalStackView" destination="UBp-2C-MWu" id="AUM-Xi-GY1"/>
             </connections>

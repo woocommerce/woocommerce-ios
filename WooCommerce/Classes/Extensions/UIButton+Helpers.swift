@@ -1,7 +1,7 @@
 import UIKit
 
 extension UIButton {
-    func wooPrimaryButton() {
+    func applyPrimaryButtonStyle() {
         layer.borderColor = StyleManager.wooCommerceBrandColor.cgColor
         backgroundColor = StyleManager.wooCommerceBrandColor
         tintColor = .white

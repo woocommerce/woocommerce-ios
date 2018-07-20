@@ -4,13 +4,11 @@ import Gridicons
 import Yosemite
 
 class OrderDetailsViewModel {
-    let siteID: Int
     let order: Order
     let orderStatusViewModel: OrderStatusViewModel
     let couponLines: [OrderCouponLine]?
 
-    init(siteID: Int, order: Order) {
-        self.siteID = siteID
+    init(order: Order) {
         self.order = order
         self.couponLines = order.coupons
         self.orderStatusViewModel = OrderStatusViewModel(orderStatus: order.status)

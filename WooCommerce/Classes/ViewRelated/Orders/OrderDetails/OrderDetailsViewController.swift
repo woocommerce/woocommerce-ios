@@ -243,14 +243,14 @@ private extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
     func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
-        let action = OrderAction.retrieveOrder(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (order, error) in
             guard let `self` = self, let order = order else {
                 DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
                 onCompletion?(error)
                 return
             }
 
-            self.viewModel = OrderDetailsViewModel(siteID: self.viewModel.siteID, order: order)
+            self.viewModel = OrderDetailsViewModel(order: order)
             onCompletion?(nil)
         }
 
@@ -258,7 +258,7 @@ private extension OrderDetailsViewController {
     }
 
     func syncOrderNotes(onCompletion: ((Error?) -> ())? = nil) {
-        let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
                 DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
                 self?.orderNotes = nil

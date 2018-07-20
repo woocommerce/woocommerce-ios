@@ -25,9 +25,14 @@ public class CoreDataManager: StorageManagerType {
     /// Returns the Storage associated with the View Thread.
     ///
     public var viewStorage: StorageType {
-        return persistentContainer.viewContext
+        return viewContext
     }
 
+    /// Returns the NSManagedObjectContext associated with the Main Thread. Convenience helper!!
+    ///
+    public var viewContext: NSManagedObjectContext {
+        return persistentContainer.viewContext
+    }
 
     /// Persistent Container: Holds the full CoreData Stack
     ///

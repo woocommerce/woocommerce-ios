@@ -1,9 +1,25 @@
 import UIKit
+import WordPressUI
 
+
+/// Displays Billing Details: Used for Email / Phone Number Rendering.
+///
 class BillingDetailsTableViewCell: UITableViewCell {
-    private var button = UIButton(type: .custom)
-    @objc var didTapButton: (() -> Void)?
 
+    /// AccessoryView's Image
+    ///
+    private let accessoryImageView: UIImageView = {
+        let imageView = UIImageView(frame: Constants.accessoryFrame)
+        imageView.tintColor = StyleManager.wooCommerceBrandColor
+        return imageView
+    }()
+
+    /// Closure to be executed whenever the cell is pressed.
+    ///
+    var onTouchUp: (() -> Void)?
+
+
+    // MARK: - Overridden Methods
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -11,24 +27,27 @@ class BillingDetailsTableViewCell: UITableViewCell {
         textLabel?.applyBodyStyle()
         textLabel?.adjustsFontSizeToFitWidth = true
 
-        button.frame = Constants.buttonFrame
-        button.tintColor = StyleManager.wooCommerceBrandColor
-        button.addTarget(self, action: #selector(getter: didTapButton), for: .touchUpInside)
+        accessoryView = accessoryImageView
 
-        let iconView = UIView(frame: Constants.viewFrame)
-        iconView.addSubview(button)
-        accessoryView = iconView
+        let gestureRecognizer = UITapGestureRecognizer()
+        gestureRecognizer.on { [weak self] gesture in
+            self?.onTouchUp?()
+        }
+
+        contentView.gestureRecognizers = [gestureRecognizer]
     }
 
     func configure(text: String?, image: UIImage) {
-        button.setImage(image, for: .normal)
+        accessoryImageView.image = image
         textLabel?.text = text
     }
 }
 
+
+// MARK: - Private
+//
 private extension BillingDetailsTableViewCell {
     struct Constants {
-        static let buttonFrame = CGRect(x: 8, y: 0, width: 44, height: 44)
-        static let viewFrame = CGRect(x: 0, y: 0, width: 44, height: 44)
+        static let accessoryFrame = CGRect(x: 0, y: 0, width: 24, height: 24)
     }
 }

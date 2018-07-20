@@ -80,6 +80,7 @@ private extension OrderDetailsViewController {
     ///
     func configureNavigationItem() {
         title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
     /// Setup: Sections

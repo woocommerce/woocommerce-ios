@@ -160,16 +160,21 @@ private extension OrderDetailsViewController {
 extension OrderDetailsViewController {
 
     @objc func pullToRefresh() {
-        let action = OrderAction.retrieveOrder(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (order, _) in
-            guard let `self` = self, let order = order else {
-                return
-            }
+        let group = DispatchGroup()
 
-            self.viewModel = OrderDetailsViewModel(order: order)
-            self.refreshControl.endRefreshing()
+        group.enter()
+        syncOrder { _ in
+            group.leave()
         }
 
-        StoresManager.shared.dispatch(action)
+        group.enter()
+        syncOrderNotes { _ in
+            group.leave()
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            self?.refreshControl.endRefreshing()
+        }
     }
 }
 
@@ -237,21 +242,32 @@ private extension OrderDetailsViewController {
 // MARK: - Sync'ing Helpers
 //
 private extension OrderDetailsViewController {
-    func syncOrderNotes() {
-        guard let viewModel = viewModel else {
-            return
+    func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
+        let action = OrderAction.retrieveOrder(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (order, error) in
+            guard let `self` = self, let order = order else {
+                DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
+                onCompletion?(error)
+                return
+            }
+
+            self.viewModel = OrderDetailsViewModel(order: order)
+            onCompletion?(nil)
         }
 
+        StoresManager.shared.dispatch(action)
+    }
+
+    func syncOrderNotes(onCompletion: ((Error?) -> ())? = nil) {
         let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
-                if let error = error {
-                    DDLogError("⛔️ Error synchronizing order notes: \(error)")
-                }
+                DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
                 self?.orderNotes = nil
+                onCompletion?(error)
                 return
             }
 
             self?.orderNotes = orderNotes.map { OrderNoteViewModel(with: $0) }
+            onCompletion?(nil)
         }
 
         StoresManager.shared.dispatch(action)

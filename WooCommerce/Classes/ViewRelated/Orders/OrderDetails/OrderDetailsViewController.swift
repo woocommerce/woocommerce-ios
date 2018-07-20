@@ -189,6 +189,9 @@ private extension OrderDetailsViewController {
             cell.configure(with: viewModel)
         case let cell as ProductListTableViewCell:
             cell.configure(with: viewModel)
+            cell.onFullfillTouchUp = { [weak self] in
+                self?.fulfillWasPressed()
+            }
         case let cell as CustomerNoteTableViewCell:
             cell.configure(with: viewModel)
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
@@ -311,6 +314,11 @@ extension OrderDetailsViewController {
 
     func toggleBillingFooter() {
         billingIsHidden = !billingIsHidden
+    }
+
+    func fulfillWasPressed() {
+        let fulfillViewController = FulfillViewController(order: viewModel.order)
+        navigationController?.pushViewController(fulfillViewController, animated: true)
     }
 }
 

@@ -1,21 +1,25 @@
 import Foundation
-import WordPressShared
+import AutomatticTracks
 
+enum WCAnalyticsStat {
+    case applicationOpened
+    case applicationClosed
+}
 
-class AnalyticsTracker: NSObject, WPAnalyticsTracker {
+class AnalyticsTracker { //}: NSObject, WPAnalyticsTracker {
     var applicationOpenedTime: Date?
 
-    override init() {
-        super.init()
-        WPAnalytics.register(AnalyticsTracker())
+    init() {
+//        super.init()
+//        WPAnalytics.register(AnalyticsTracker())
     }
 
-    func track(_ stat: WPAnalyticsStat) {
-        WPAnalytics.track(stat)
+    func track(_ stat: WCAnalyticsStat) {
+//        WPAnalytics.track(stat)
     }
 
-    func track(_ stat: WPAnalyticsStat, withProperties properties: [AnyHashable : Any]!) {
-        WPAnalytics.track(stat, withProperties: properties)
+    func track(_ stat: WCAnalyticsStat, withProperties properties: [AnyHashable : Any]?) {
+//        WPAnalytics.track(stat, withProperties: properties)
     }
 
     func trackApplicationOpened() {
@@ -28,7 +32,7 @@ class AnalyticsTracker: NSObject, WPAnalyticsTracker {
         if let openTime = applicationOpenedTime {
             let applicationClosedTime = Date()
             let timeInApp = round(applicationClosedTime.timeIntervalSince(openTime))
-            analyticsProperties[WPAppAnalyticsKeyTimeInApp] = timeInApp
+//            analyticsProperties[WPAppAnalyticsKeyTimeInApp] = timeInApp
         }
     }
 }

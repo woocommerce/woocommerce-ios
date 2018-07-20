@@ -17,6 +17,13 @@ class OrderDetailsViewController: UIViewController {
             reloadTableViewIfPossible()
         }
     }
+
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
+        return refreshControl
+    }()
+
     private var orderNotes: [OrderNoteViewModel]? {
         didSet {
             reloadSections()
@@ -66,6 +73,7 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionFooterHeight = Constants.rowHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.refreshControl = refreshControl
     }
 
     /// Setup: NavigationItem
@@ -147,6 +155,30 @@ private extension OrderDetailsViewController {
 }
 
 
+// MARK: - Action Handlers
+//
+extension OrderDetailsViewController {
+
+    @objc func pullToRefresh() {
+        let group = DispatchGroup()
+
+        group.enter()
+        syncOrder { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncOrderNotes { _ in
+            group.leave()
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            self?.refreshControl.endRefreshing()
+        }
+    }
+}
+
+
 // MARK: - Cell Configuration
 //
 private extension OrderDetailsViewController {
@@ -210,21 +242,32 @@ private extension OrderDetailsViewController {
 // MARK: - Sync'ing Helpers
 //
 private extension OrderDetailsViewController {
-    func syncOrderNotes() {
-        guard let viewModel = viewModel else {
-            return
+    func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
+        let action = OrderAction.retrieveOrder(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (order, error) in
+            guard let `self` = self, let order = order else {
+                DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
+                onCompletion?(error)
+                return
+            }
+
+            self.viewModel = OrderDetailsViewModel(siteID: self.viewModel.siteID, order: order)
+            onCompletion?(nil)
         }
 
+        StoresManager.shared.dispatch(action)
+    }
+
+    func syncOrderNotes(onCompletion: ((Error?) -> ())? = nil) {
         let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
-                if let error = error {
-                    DDLogError("⛔️ Error synchronizing order notes: \(error)")
-                }
+                DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
                 self?.orderNotes = nil
+                onCompletion?(error)
                 return
             }
 
             self?.orderNotes = orderNotes.map { OrderNoteViewModel(with: $0) }
+            onCompletion?(nil)
         }
 
         StoresManager.shared.dispatch(action)

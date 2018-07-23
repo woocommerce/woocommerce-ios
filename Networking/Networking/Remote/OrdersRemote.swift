@@ -79,9 +79,9 @@ public class OrdersRemote: Remote {
     ///     - note: The note to be posted.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func addOrderNote(for siteID: Int, orderID: Int, isCustomerNote: Bool, with note: OrderNote, completion: @escaping ([OrderNote]?, Error?) -> Void) {
+    public func addOrderNote(for siteID: Int, orderID: Int, isCustomerNote: Bool, with note: String, completion: @escaping ([OrderNote]?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.notesPath)"
-        let parameters = [ParameterKeys.note: note.note,
+        let parameters = [ParameterKeys.note: note,
                           ParameterKeys.customerNote: String(isCustomerNote)]
         let mapper = OrderNotesMapper()
 

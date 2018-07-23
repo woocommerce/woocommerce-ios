@@ -49,6 +49,7 @@
 		B5EED1A820F4F3CF00652449 /* Account+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */; };
 		B5F2AE9520EBAD6000FEDC59 /* ResultsControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */; };
 		B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */; };
+		CE21B3E5210678AA00A259D5 /* new-order-note.json in Resources */ = {isa = PBXBuildFile; fileRef = CE21B3E4210678A900A259D5 /* new-order-note.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,6 +113,7 @@
 		B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsControllerTests.swift; sourceTree = "<group>"; };
 		B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchedResultsControllerDelegateWrapper.swift; sourceTree = "<group>"; };
 		C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE21B3E4210678A900A259D5 /* new-order-note.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "new-order-note.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,12 +186,13 @@
 		B5BC736920D1AAE900B5B6FA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B5BC736A20D1AAE900B5B6FA /* me.json */,
-				74A7689120D47F9E00F9D437 /* orders.json */,
-				7424B49320EAD37C00CC62F6 /* order.json */,
-				B5B914C120EFE03200F2F832 /* sites.json */,
-				7499936B20EFC20100CF01CD /* order-notes.json */,
 				745D21C120D8043A00BBE7C3 /* generic_error.json */,
+				B5BC736A20D1AAE900B5B6FA /* me.json */,
+				CE21B3E4210678A900A259D5 /* new-order-note.json */,
+				7424B49320EAD37C00CC62F6 /* order.json */,
+				7499936B20EFC20100CF01CD /* order-notes.json */,
+				74A7689120D47F9E00F9D437 /* orders.json */,
+				B5B914C120EFE03200F2F832 /* sites.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -435,6 +438,7 @@
 				B5B914C220EFE03200F2F832 /* sites.json in Resources */,
 				7499936C20EFC20100CF01CD /* order-notes.json in Resources */,
 				7424B49420EAD37C00CC62F6 /* order.json in Resources */,
+				CE21B3E5210678AA00A259D5 /* new-order-note.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

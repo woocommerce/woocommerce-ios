@@ -43,11 +43,10 @@ class OrderDetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigationItem()
+        configureNavigation()
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
-
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -76,10 +75,12 @@ private extension OrderDetailsViewController {
         tableView.refreshControl = refreshControl
     }
 
-    /// Setup: NavigationItem
+    /// Setup: Navigation
     ///
-    func configureNavigationItem() {
+    func configureNavigation() {
         title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
+
+        // Don't show the Order details title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
@@ -88,9 +89,8 @@ private extension OrderDetailsViewController {
     func reloadSections() {
         let summarySection = Section(leftTitle: nil, rightTitle: nil, footer: nil, rows: [.summary])
 
-        let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
-        let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")
-        let productListSection = Section(leftTitle: productLeftTitle, rightTitle: productRightTitle, footer: nil, rows: [.productList])
+        let productRows: [Row] = viewModel.isProcessingPayment ? [.productList] : [.productList, .productDetails]
+        let productListSection = Section(leftTitle: viewModel.productLeftTitle, rightTitle: viewModel.productRightTitle, footer: nil, rows: productRows)
 
         let customerNoteSection = Section(leftTitle: NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title"), rightTitle: nil, footer: nil, rows: [.customerNote])
 
@@ -130,6 +130,7 @@ private extension OrderDetailsViewController {
             BillingDetailsTableViewCell.self,
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
+            BasicDisclosureTableViewCell.self,
             OrderNoteTableViewCell.self,
             PaymentTableViewCell.self,
             ProductListTableViewCell.self,
@@ -192,6 +193,8 @@ private extension OrderDetailsViewController {
             cell.onFullfillTouchUp = { [weak self] in
                 self?.fulfillWasPressed()
             }
+        case let cell as BasicDisclosureTableViewCell:
+            cell.configure(text: viewModel.productDetails)
         case let cell as CustomerNoteTableViewCell:
             cell.configure(with: viewModel)
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
@@ -247,14 +250,14 @@ private extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
     func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
-        let action = OrderAction.retrieveOrder(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (order, error) in
             guard let `self` = self, let order = order else {
                 DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
                 onCompletion?(error)
                 return
             }
 
-            self.viewModel = OrderDetailsViewModel(siteID: self.viewModel.siteID, order: order)
+            self.viewModel = OrderDetailsViewModel(order: order)
             onCompletion?(nil)
         }
 
@@ -262,7 +265,7 @@ private extension OrderDetailsViewController {
     }
 
     func syncOrderNotes(onCompletion: ((Error?) -> ())? = nil) {
-        let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
                 DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
                 self?.orderNotes = nil
@@ -403,6 +406,14 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
         if sections[indexPath.section].rows[indexPath.row] == .addOrderNote {
             // TODO: present modal for Add Note screen
+        } else if sections[indexPath.section].rows[indexPath.row] == .productDetails {
+            performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
+        }
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let productListViewController = segue.destination as? ProductListViewController {
+            productListViewController.viewModel = viewModel
         }
     }
 }
@@ -466,6 +477,7 @@ private extension OrderDetailsViewController {
     struct Constants {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
+        static let productDetailsSegue = "ShowProductListViewController"
     }
 
     private struct Section {
@@ -478,6 +490,7 @@ private extension OrderDetailsViewController {
     private enum Row {
         case summary
         case productList
+        case productDetails
         case customerNote
         case shippingAddress
         case billingAddress
@@ -493,6 +506,8 @@ private extension OrderDetailsViewController {
                 return SummaryTableViewCell.reuseIdentifier
             case .productList:
                 return ProductListTableViewCell.reuseIdentifier
+            case .productDetails:
+                return BasicDisclosureTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:

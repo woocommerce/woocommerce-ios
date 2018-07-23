@@ -6,12 +6,16 @@ import UIKit
 class ProductListTableViewCell: UITableViewCell {
     @IBOutlet private var verticalStackView: UIStackView!
     @IBOutlet private var fulfillButton: UIButton!
+    @IBOutlet private var actionContainerView: UIView!
 
     var onFullfillTouchUp: (() -> Void)?
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        backgroundColor = .white
+    override func awakeFromNib() {
+        super.awakeFromNib()
+
+        fulfillButton.applyPrimaryButtonStyle()
+        fulfillButton.addTarget(self, action: #selector(fulfillWasPressed), for: .touchUpInside)
+        verticalStackView.setCustomSpacing(Constants.spacing, after: fulfillButton)
     }
 }
 
@@ -29,9 +33,7 @@ extension ProductListTableViewCell {
         }
 
         fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
-        fulfillButton.addTarget(self, action: #selector(fulfillWasPressed), for: .touchUpInside)
-
-        verticalStackView.setCustomSpacing(Constants.spacing, after: fulfillButton)
+        actionContainerView.isHidden = viewModel.isProcessingPayment == false
     }
 
     @IBAction func fulfillWasPressed() {

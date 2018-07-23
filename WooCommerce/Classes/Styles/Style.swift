@@ -33,6 +33,7 @@ protocol Style {
     var wooCommerceBrandColor: UIColor { get }
     var wooGreyMid: UIColor { get }
     var wooGreyTextMin: UIColor { get }
+    var wooGreyBorder: UIColor { get }
     var wooSecondary: UIColor { get }
 }
 
@@ -68,6 +69,7 @@ class DefaultStyle: Style {
     let wooCommerceBrandColor = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
     let wooGreyMid = UIColor(red: 150.0/255.0, green: 150.0/255.0, blue: 150.0/255.0, alpha: 1.0)
     let wooGreyTextMin = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
+    let wooGreyBorder = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1.0)
     let wooSecondary = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
 }
 
@@ -203,6 +205,10 @@ class StyleManager {
 
     static var wooGreyTextMin: UIColor {
         return active.wooGreyTextMin
+    }
+
+    static var wooGreyBorder: UIColor {
+        return active.wooGreyBorder
     }
 
     static var wooSecondary: UIColor {

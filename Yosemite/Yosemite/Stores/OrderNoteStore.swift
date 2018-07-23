@@ -24,6 +24,8 @@ public class OrderNoteStore: Store {
         switch action {
         case .retrieveOrderNotes(let siteId, let orderId, let onCompletion):
             retrieveOrderNotes(siteID: siteId, orderID: orderId, onCompletion: onCompletion)
+        case .addOrderNote(let siteId, let orderId, let isCustomerNote, let note, let onCompletion):
+            addOrderNote(siteID: siteId, orderID: orderId, isCustomerNote: isCustomerNote, note: note, onCompletion: onCompletion)
         }
     }
 }
@@ -38,6 +40,21 @@ private extension OrderNoteStore  {
     func retrieveOrderNotes(siteID: Int, orderID: Int, onCompletion: @escaping ([OrderNote]?, Error?) -> Void) {
         let remote = OrdersRemote(network: network)
         remote.loadOrderNotes(for: siteID, orderID: orderID) { [weak self] (orderNotes, error) in
+            guard let orderNotes = orderNotes else {
+                onCompletion(nil, error)
+                return
+            }
+
+            self?.upsertStoredOrderNotes(readOnlyOrderNotes: orderNotes, orderID: orderID)
+            onCompletion(orderNotes, nil)
+        }
+    }
+
+    /// Adds a single order note and associates it with the provided siteID and orderID.
+    ///
+    func addOrderNote(siteID: Int, orderID: Int, isCustomerNote: Bool, note: OrderNote, onCompletion: @escaping ([OrderNote]?, Error?) -> Void) {
+        let remote = OrdersRemote(network: network)
+        remote.addOrderNote(for: siteID, orderID: orderID, isCustomerNote: isCustomerNote, with: note) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
                 onCompletion(nil, error)
                 return

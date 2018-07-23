@@ -52,16 +52,16 @@ private extension OrderNoteStore  {
 
     /// Adds a single order note and associates it with the provided siteID and orderID.
     ///
-    func addOrderNote(siteID: Int, orderID: Int, isCustomerNote: Bool, note: OrderNote, onCompletion: @escaping ([OrderNote]?, Error?) -> Void) {
+    func addOrderNote(siteID: Int, orderID: Int, isCustomerNote: Bool, note: String, onCompletion: @escaping (OrderNote?, Error?) -> Void) {
         let remote = OrdersRemote(network: network)
         remote.addOrderNote(for: siteID, orderID: orderID, isCustomerNote: isCustomerNote, with: note) { [weak self] (orderNotes, error) in
-            guard let orderNotes = orderNotes else {
+            guard let orderNote = orderNotes?.first else {
                 onCompletion(nil, error)
                 return
             }
 
-            self?.upsertStoredOrderNotes(readOnlyOrderNotes: orderNotes, orderID: orderID)
-            onCompletion(orderNotes, nil)
+            self?.upsertStoredOrderNotes(readOnlyOrderNotes: [orderNote], orderID: orderID)
+            onCompletion(orderNote, nil)
         }
     }
 }

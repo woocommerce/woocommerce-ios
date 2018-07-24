@@ -92,7 +92,7 @@
 		CE1EC8CF20B6FD53009762BF /* FootnoteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8CE20B6FD53009762BF /* FootnoteView.xib */; };
 		CE1EC8D120B6FE39009762BF /* FootnoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8D020B6FE39009762BF /* FootnoteView.swift */; };
 		CE1EC8E920B8A3F5009762BF /* OrderNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8E820B8A3F5009762BF /* OrderNoteViewModel.swift */; };
-		CE1EC8EC20B8A3FF009762BF /* AddItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8EA20B8A3FF009762BF /* AddItemTableViewCell.swift */; };
+		CE1EC8EC20B8A3FF009762BF /* LeftImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8EA20B8A3FF009762BF /* LeftImageTableViewCell.swift */; };
 		CE1EC8F020B8A408009762BF /* OrderNoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8EE20B8A408009762BF /* OrderNoteTableViewCell.xib */; };
 		CE1EC8F120B8A408009762BF /* OrderNoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8EF20B8A408009762BF /* OrderNoteTableViewCell.swift */; };
 		CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */; };
@@ -104,7 +104,7 @@
 		CE21B3DD20FF9BC200A259D5 /* ProductListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21B3DC20FF9BC200A259D5 /* ProductListViewController.swift */; };
 		CE21B3E020FFC59700A259D5 /* ProductDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21B3DE20FFC59700A259D5 /* ProductDetailsTableViewCell.swift */; };
 		CE21B3E120FFC59700A259D5 /* ProductDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE21B3DF20FFC59700A259D5 /* ProductDetailsTableViewCell.xib */; };
-		CE22571B20E16FBC0037F478 /* AddItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8EB20B8A3FF009762BF /* AddItemTableViewCell.xib */; };
+		CE22571B20E16FBC0037F478 /* LeftImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8EB20B8A3FF009762BF /* LeftImageTableViewCell.xib */; };
 		CE263DE6206ACD220015A693 /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE263DE5206ACD220015A693 /* NotificationsViewController.swift */; };
 		CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */; };
 		CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */; };
@@ -246,8 +246,8 @@
 		CE1EC8CE20B6FD53009762BF /* FootnoteView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = FootnoteView.xib; path = Classes/ViewRelated/ReusableViews/FootnoteView.xib; sourceTree = SOURCE_ROOT; };
 		CE1EC8D020B6FE39009762BF /* FootnoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FootnoteView.swift; sourceTree = "<group>"; };
 		CE1EC8E820B8A3F5009762BF /* OrderNoteViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNoteViewModel.swift; sourceTree = "<group>"; };
-		CE1EC8EA20B8A3FF009762BF /* AddItemTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddItemTableViewCell.swift; sourceTree = "<group>"; };
-		CE1EC8EB20B8A3FF009762BF /* AddItemTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AddItemTableViewCell.xib; sourceTree = "<group>"; };
+		CE1EC8EA20B8A3FF009762BF /* LeftImageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftImageTableViewCell.swift; sourceTree = "<group>"; };
+		CE1EC8EB20B8A3FF009762BF /* LeftImageTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LeftImageTableViewCell.xib; sourceTree = "<group>"; };
 		CE1EC8EE20B8A408009762BF /* OrderNoteTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderNoteTableViewCell.xib; sourceTree = "<group>"; };
 		CE1EC8EF20B8A408009762BF /* OrderNoteTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNoteTableViewCell.swift; sourceTree = "<group>"; };
 		CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Helpers.swift"; sourceTree = "<group>"; };
@@ -598,8 +598,8 @@
 		CED6021A20B35FBF0032C639 /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
-				CE1EC8EA20B8A3FF009762BF /* AddItemTableViewCell.swift */,
-				CE1EC8EB20B8A3FF009762BF /* AddItemTableViewCell.xib */,
+				CE1EC8EA20B8A3FF009762BF /* LeftImageTableViewCell.swift */,
+				CE1EC8EB20B8A3FF009762BF /* LeftImageTableViewCell.xib */,
 				B5A8532120BDBFAE00FAAB4D /* CircularImageView.swift */,
 				CE21B3D620FE669A00A259D5 /* BasicDisclosureTableViewCell.xib */,
 				CE21B3D520FE669A00A259D5 /* BasicDisclosureTableViewCell.swift */,
@@ -761,7 +761,7 @@
 				93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
 				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,
-				CE22571B20E16FBC0037F478 /* AddItemTableViewCell.xib in Resources */,
+				CE22571B20E16FBC0037F478 /* LeftImageTableViewCell.xib in Resources */,
 				B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */,
 				CE1EC8CF20B6FD53009762BF /* FootnoteView.xib in Resources */,
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
@@ -983,7 +983,7 @@
 				CE21B3DD20FF9BC200A259D5 /* ProductListViewController.swift in Sources */,
 				CE32B11520BF8779006FBCF4 /* ProductListTableViewCell.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
-				CE1EC8EC20B8A3FF009762BF /* AddItemTableViewCell.swift in Sources */,
+				CE1EC8EC20B8A3FF009762BF /* LeftImageTableViewCell.swift in Sources */,
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
 				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
 				7403F7E220EC04070097198F /* OrderStatusViewModel.swift in Sources */,

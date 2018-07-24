@@ -126,7 +126,7 @@ private extension OrderDetailsViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            AddItemTableViewCell.self,
+            LeftImageTableViewCell.self,
             BillingDetailsTableViewCell.self,
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
@@ -207,7 +207,7 @@ private extension OrderDetailsViewController {
             configure(cell, for: .billingEmail)
         case let cell as PaymentTableViewCell:
             cell.configure(with: viewModel)
-        case let cell as AddItemTableViewCell:
+        case let cell as LeftImageTableViewCell:
             cell.configure(image: viewModel.addNoteIcon, text: viewModel.addNoteText)
         case let cell as OrderNoteTableViewCell where row == .orderNote:
             if let note = orderNote(at: indexPath) {
@@ -519,7 +519,7 @@ private extension OrderDetailsViewController {
             case .billingEmail:
                 return BillingDetailsTableViewCell.reuseIdentifier
             case .addOrderNote:
-                return AddItemTableViewCell.reuseIdentifier
+                return LeftImageTableViewCell.reuseIdentifier
             case .orderNote:
                 return OrderNoteTableViewCell.reuseIdentifier
             case .payment:

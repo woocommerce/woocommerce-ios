@@ -110,6 +110,10 @@
 		CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */; };
 		CE4DDB7B20DD312400D32EC8 /* Date+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DDB7A20DD312400D32EC8 /* Date+Helpers.swift */; };
 		CE583A0421076C0100D73C1C /* AddaNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A0321076C0100D73C1C /* AddaNoteViewController.swift */; };
+		CE583A072107849F00D73C1C /* ToggleEmailCustomerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A052107849F00D73C1C /* ToggleEmailCustomerTableViewCell.swift */; };
+		CE583A082107849F00D73C1C /* ToggleEmailCustomerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE583A062107849F00D73C1C /* ToggleEmailCustomerTableViewCell.xib */; };
+		CE583A0B2107937F00D73C1C /* WriteCustomerNoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A092107937F00D73C1C /* WriteCustomerNoteTableViewCell.swift */; };
+		CE583A0C2107937F00D73C1C /* WriteCustomerNoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE583A0A2107937F00D73C1C /* WriteCustomerNoteTableViewCell.xib */; };
 		CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */; };
 		CE855364209BA6A700938BDC /* ShowHideSectionFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE855360209BA6A700938BDC /* ShowHideSectionFooter.swift */; };
 		CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */; };
@@ -259,6 +263,10 @@
 		CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContact+Helpers.swift"; sourceTree = "<group>"; };
 		CE4DDB7A20DD312400D32EC8 /* Date+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Helpers.swift"; sourceTree = "<group>"; };
 		CE583A0321076C0100D73C1C /* AddaNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddaNoteViewController.swift; sourceTree = "<group>"; };
+		CE583A052107849F00D73C1C /* ToggleEmailCustomerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleEmailCustomerTableViewCell.swift; sourceTree = "<group>"; };
+		CE583A062107849F00D73C1C /* ToggleEmailCustomerTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ToggleEmailCustomerTableViewCell.xib; sourceTree = "<group>"; };
+		CE583A092107937F00D73C1C /* WriteCustomerNoteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteCustomerNoteTableViewCell.swift; sourceTree = "<group>"; };
+		CE583A0A2107937F00D73C1C /* WriteCustomerNoteTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WriteCustomerNoteTableViewCell.xib; sourceTree = "<group>"; };
 		CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewModel.swift; sourceTree = "<group>"; };
 		CE855360209BA6A700938BDC /* ShowHideSectionFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowHideSectionFooter.swift; sourceTree = "<group>"; };
 		CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomerInfoTableViewCell.xib; sourceTree = "<group>"; };
@@ -542,6 +550,10 @@
 			isa = PBXGroup;
 			children = (
 				CE583A0321076C0100D73C1C /* AddaNoteViewController.swift */,
+				CE583A052107849F00D73C1C /* ToggleEmailCustomerTableViewCell.swift */,
+				CE583A062107849F00D73C1C /* ToggleEmailCustomerTableViewCell.xib */,
+				CE583A092107937F00D73C1C /* WriteCustomerNoteTableViewCell.swift */,
+				CE583A0A2107937F00D73C1C /* WriteCustomerNoteTableViewCell.xib */,
 			);
 			path = AddNote;
 			sourceTree = "<group>";
@@ -738,6 +750,7 @@
 			files = (
 				B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */,
 				CE85FD6020F7BE8D0080B73E /* LogOutTableViewCell.xib in Resources */,
+				CE583A0C2107937F00D73C1C /* WriteCustomerNoteTableViewCell.xib in Resources */,
 				B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */,
 				B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */,
 				B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */,
@@ -746,6 +759,7 @@
 				93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
 				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,
+				CE583A082107849F00D73C1C /* ToggleEmailCustomerTableViewCell.xib in Resources */,
 				CE22571B20E16FBC0037F478 /* AddItemTableViewCell.xib in Resources */,
 				B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */,
 				CE1EC8CF20B6FD53009762BF /* FootnoteView.xib in Resources */,
@@ -919,6 +933,7 @@
 				CE85FD5F20F7BE8D0080B73E /* LogOutTableViewCell.swift in Sources */,
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
 				CE263DE6206ACD220015A693 /* NotificationsViewController.swift in Sources */,
+				CE583A0B2107937F00D73C1C /* WriteCustomerNoteTableViewCell.swift in Sources */,
 				B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */,
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
 				B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */,
@@ -953,6 +968,7 @@
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */,
 				CE1EC8E920B8A3F5009762BF /* OrderNoteViewModel.swift in Sources */,
+				CE583A072107849F00D73C1C /* ToggleEmailCustomerTableViewCell.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
 				CE34DA2520A1ECD6005D8523 /* ContactViewModel.swift in Sources */,
 				CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */,

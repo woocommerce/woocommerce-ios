@@ -1,0 +1,28 @@
+import UIKit
+import Gridicons
+
+class WriteCustomerNoteTableViewCell: UITableViewCell {
+
+    @IBOutlet var noteIconButton: UIButton! {
+        didSet {
+            noteIconButton.layer.cornerRadius = noteIconButton.frame.width / 2
+            noteIconButton.tintColor = .white
+        }
+    }
+
+    @IBOutlet var noteTextView: UITextView!
+
+    private var isCustomerNote: Bool = false {
+        didSet {
+            noteIconButton.backgroundColor = isCustomerNote ? StyleManager.statusPrimaryBoldColor : StyleManager.wooGreyMid
+        }
+    }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+    }
+
+    func configure(isNoteToCustomer: Bool) {
+        isCustomerNote = isNoteToCustomer
+    }
+}

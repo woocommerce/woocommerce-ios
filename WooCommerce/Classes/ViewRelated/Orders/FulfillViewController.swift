@@ -11,11 +11,11 @@ class FulfillViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
-    ///
+    /// Sections to be Rendered
     ///
     private let sections: [Section]
 
-    /// The Order that's about to be fulfilled.
+    /// Order to be Fulfilled
     ///
     private let order: Order
 
@@ -117,7 +117,7 @@ extension FulfillViewController: UITableViewDataSource {
 
         let section = sections[section]
         headerView.leftText = section.title.uppercased()
-        headerView.rightText = section.titleRight?.uppercased()
+        headerView.rightText = section.secondaryTitle?.uppercased()
 
         return headerView
     }
@@ -194,27 +194,27 @@ extension FulfillViewController: UITableViewDelegate {
 }
 
 
-//
+// MARK: - Row: Represents a TableView Row
 //
 private enum Row {
 
-    ///
+    /// Represents a Product Row
     ///
     case product(item: OrderItem)
 
-    ///
+    /// Represents a Note Row
     ///
     case note(text: String)
 
-    ///
+    /// Represents an Address Row
     ///
     case address(shipping: Address)
 
-    ///
+    /// Represents an "Add Tracking" Row
     ///
     case trackingAdd
 
-    ///
+    /// Returns the Cell's Reuse Identifier
     ///
     var reuseIdentifier: String {
         return cellType.reuseIdentifier
@@ -237,37 +237,37 @@ private enum Row {
 }
 
 
-//
+// MARK: - Section: Represents a TableView Section
 //
 private struct Section {
 
-    ///
+    /// Section's Title
     ///
     let title: String
 
+    /// Section's Secondary Title
     ///
-    ///
-    let titleRight: String?
+    let secondaryTitle: String?
 
-    ///
+    /// Section's Row(s)
     ///
     let rows: [Row]
 }
 
 
-//
+// MARK: - Section: Public Methods
 //
 private extension Section {
 
-    ///
+    /// Returns all of the Sections that should be rendered, in order to represent a given Order.
     ///
     static func allSections(for order: Order) -> [Section] {
         let products: Section = {
             let title = NSLocalizedString("Product", comment: "")
-            let titleRight = NSLocalizedString("Qty", comment: "")
+            let secondaryTitle = NSLocalizedString("Qty", comment: "")
             let rows = order.items.map { Row.product(item: $0) }
 
-            return Section(title: title, titleRight: titleRight, rows: rows)
+            return Section(title: title, secondaryTitle: secondaryTitle, rows: rows)
         }()
 
         let note: Section? = {
@@ -278,21 +278,21 @@ private extension Section {
             let title = NSLocalizedString("Customer Provided Note", comment: "")
             let row = Row.note(text: note)
 
-            return Section(title: title, titleRight: nil, rows: [row])
+            return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
         let address: Section = {
             let title = NSLocalizedString("Customer Information", comment: "")
             let row = Row.address(shipping: order.shippingAddress)
 
-            return Section(title: title, titleRight: nil, rows: [row])
+            return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
         let tracking: Section = {
             let title = NSLocalizedString("Optional Tracking Information", comment: "")
             let row = Row.trackingAdd
 
-            return Section(title: title, titleRight: nil, rows: [row])
+            return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
         return [products, note, address, tracking].compactMap { $0 }

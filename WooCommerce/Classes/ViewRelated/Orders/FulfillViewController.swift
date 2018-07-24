@@ -13,6 +13,14 @@ class FulfillViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
+    ///
+    ///
+    @IBOutlet private var actionView: UIView!
+
+    ///
+    ///
+    @IBOutlet private var actionButton: UIButton!
+
     /// Sections to be Rendered
     ///
     private let sections: [Section]
@@ -44,6 +52,8 @@ class FulfillViewController: UIViewController {
         super.viewDidLoad()
         setupNavigationItem()
         setupMainView()
+        setupTableView()
+        setupActionButton()
         registerTableViewCells()
         registerTableViewHeaderFooters()
     }
@@ -64,6 +74,21 @@ private extension FulfillViewController {
     ///
     func setupMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
+    }
+
+    ///
+    ///
+    func setupTableView() {
+        tableView.tableFooterView = actionView
+    }
+
+    ///
+    ///
+    func setupActionButton() {
+        let title = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
+        actionButton.setTitle(title, for: .normal)
+        actionButton.applyPrimaryButtonStyle()
+        actionButton.addTarget(self, action: #selector(fulfillWasPressed), for: .touchUpInside)
     }
 
     /// Registers all of the available TableViewCells
@@ -92,6 +117,16 @@ private extension FulfillViewController {
 }
 
 
+// MARK: - Action Handlers
+//
+extension FulfillViewController {
+
+    @IBAction func fulfillWasPressed() {
+
+    }
+}
+
+
 // MARK: - UITableViewDataSource Conformance
 //
 extension FulfillViewController: UITableViewDataSource {
@@ -114,12 +149,17 @@ extension FulfillViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let section = sections[section]
+
+        guard let leftTitle = section.title?.uppercased() else {
+            return nil
+        }
+
         guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
             fatalError()
         }
 
-        let section = sections[section]
-        headerView.leftText = section.title.uppercased()
+        headerView.leftText = leftTitle
         headerView.rightText = section.secondaryTitle?.uppercased()
 
         return headerView
@@ -131,7 +171,7 @@ extension FulfillViewController: UITableViewDataSource {
 //
 private extension FulfillViewController {
 
-    //
+    ///
     ///
     func setup(cell: UITableViewCell, for row: Row) {
         switch row {
@@ -204,6 +244,9 @@ private extension FulfillViewController {
 //
 extension FulfillViewController: UITableViewDelegate {
 
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }
 
 
@@ -226,6 +269,7 @@ private enum Row {
     /// Represents an "Add Tracking" Row
     ///
     case trackingAdd
+
 
     /// Returns the Row's Reuse Identifier
     ///
@@ -256,7 +300,7 @@ private struct Section {
 
     /// Section's Title
     ///
-    let title: String
+    let title: String?
 
     /// Section's Secondary Title
     ///

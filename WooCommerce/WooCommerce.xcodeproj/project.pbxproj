@@ -109,6 +109,7 @@
 		CE34DA2520A1ECD6005D8523 /* ContactViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE34DA2420A1ECD6005D8523 /* ContactViewModel.swift */; };
 		CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */; };
 		CE4DDB7B20DD312400D32EC8 /* Date+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DDB7A20DD312400D32EC8 /* Date+Helpers.swift */; };
+		CE583A0421076C0100D73C1C /* AddaNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A0321076C0100D73C1C /* AddaNoteViewController.swift */; };
 		CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */; };
 		CE855364209BA6A700938BDC /* ShowHideSectionFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE855360209BA6A700938BDC /* ShowHideSectionFooter.swift */; };
 		CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */; };
@@ -257,6 +258,7 @@
 		CE34DA2420A1ECD6005D8523 /* ContactViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactViewModel.swift; sourceTree = "<group>"; };
 		CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContact+Helpers.swift"; sourceTree = "<group>"; };
 		CE4DDB7A20DD312400D32EC8 /* Date+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Helpers.swift"; sourceTree = "<group>"; };
+		CE583A0321076C0100D73C1C /* AddaNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddaNoteViewController.swift; sourceTree = "<group>"; };
 		CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewModel.swift; sourceTree = "<group>"; };
 		CE855360209BA6A700938BDC /* ShowHideSectionFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowHideSectionFooter.swift; sourceTree = "<group>"; };
 		CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomerInfoTableViewCell.xib; sourceTree = "<group>"; };
@@ -536,6 +538,14 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		CE583A0221076BBE00D73C1C /* AddNote */ = {
+			isa = PBXGroup;
+			children = (
+				CE583A0321076C0100D73C1C /* AddaNoteViewController.swift */,
+			);
+			path = AddNote;
+			sourceTree = "<group>";
+		};
 		CE85535B209B5B6A00938BDC /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
@@ -592,6 +602,7 @@
 		CEE006022077D0F80079161F /* OrderDetails */ = {
 			isa = PBXGroup;
 			children = (
+				CE583A0221076BBE00D73C1C /* AddNote */,
 				CE17C2E020ACA06800AFBD20 /* BillingDetailsTableViewCell.swift */,
 				CE17C2E120ACA06800AFBD20 /* BillingDetailsTableViewCell.xib */,
 				CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */,
@@ -923,6 +934,7 @@
 				CE21B3D720FE669A00A259D5 /* BasicDisclosureTableViewCell.swift in Sources */,
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
 				CE1EC8F120B8A408009762BF /* OrderNoteTableViewCell.swift in Sources */,
+				CE583A0421076C0100D73C1C /* AddaNoteViewController.swift in Sources */,
 				CE4DDB7B20DD312400D32EC8 /* Date+Helpers.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
 				B57C744720F55BC800EEFC87 /* UIView+Helpers.swift in Sources */,

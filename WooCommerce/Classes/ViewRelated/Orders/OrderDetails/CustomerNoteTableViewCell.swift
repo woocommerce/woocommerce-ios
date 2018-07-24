@@ -7,13 +7,13 @@ class CustomerNoteTableViewCell: UITableViewCell {
             noteLabel.applyBodyStyle()
         }
     }
+
     @IBOutlet private weak var iconImageView: UIImageView! {
         didSet {
             iconImageView.image = Gridicon.iconOfType(.quote)
             iconImageView.tintColor = .black
         }
     }
-
 
     var quote: String? {
         get {

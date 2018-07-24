@@ -1,6 +1,8 @@
 import Foundation
 import UIKit
 import Yosemite
+import Gridicons
+
 
 
 /// Renders the Order Fulfillment Interface
@@ -68,8 +70,9 @@ private extension FulfillViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            ProductDetailsTableViewCell.self,
-            CustomerInfoTableViewCell.self
+            CustomerInfoTableViewCell.self,
+            LeftImageTableViewCell.self,
+            ProductDetailsTableViewCell.self
         ]
 
         for cell in cells {
@@ -139,7 +142,7 @@ private extension FulfillViewController {
         case .address(let shipping):
             setupAddressCell(cell, with: shipping)
         case .trackingAdd:
-            setupTrackingCell(cell)
+            setupTrackingAddCell(cell)
         }
     }
 
@@ -162,7 +165,12 @@ private extension FulfillViewController {
     ///
     ///
     private func setupNoteCell(_ cell: UITableViewCell, with note: String) {
+        guard let cell = cell as? LeftImageTableViewCell else {
+            fatalError()
+        }
 
+        cell.leftImage = Gridicon.iconOfType(.quote).imageWithTintColor(.black)
+        cell.labelText = note
     }
 
     ///
@@ -181,8 +189,13 @@ private extension FulfillViewController {
 
     ///
     ///
-    func setupTrackingCell(_ cell: UITableViewCell) {
+    func setupTrackingAddCell(_ cell: UITableViewCell) {
+        guard let cell = cell as? LeftImageTableViewCell else {
+            fatalError()
+        }
 
+        cell.leftImage = Gridicon.iconOfType(.addOutline)
+        cell.labelText = NSLocalizedString("Add Tracking", comment: "")
     }
 }
 
@@ -214,24 +227,24 @@ private enum Row {
     ///
     case trackingAdd
 
-    /// Returns the Cell's Reuse Identifier
+    /// Returns the Row's Reuse Identifier
     ///
     var reuseIdentifier: String {
         return cellType.reuseIdentifier
     }
 
-    ///
+    /// Returns the Row's Cell Type
     ///
     var cellType: UITableViewCell.Type {
         switch self {
-        case .product(_):
-            return ProductDetailsTableViewCell.self
-        case .note(_):
-            return ProductDetailsTableViewCell.self
         case .address(_):
             return CustomerInfoTableViewCell.self
-        case .trackingAdd:
+        case .note(_):
+            return LeftImageTableViewCell.self
+        case .product(_):
             return ProductDetailsTableViewCell.self
+        case .trackingAdd:
+            return LeftImageTableViewCell.self
         }
     }
 }
@@ -271,7 +284,7 @@ private extension Section {
         }()
 
         let note: Section? = {
-            guard let note = order.customerNote else {
+            guard let note = order.customerNote, note.isEmpty == false else {
                 return nil
             }
 

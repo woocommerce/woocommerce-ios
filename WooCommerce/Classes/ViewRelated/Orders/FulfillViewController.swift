@@ -281,11 +281,11 @@ private enum Row {
     ///
     var cellType: UITableViewCell.Type {
         switch self {
-        case .address(_):
+        case .address:
             return CustomerInfoTableViewCell.self
-        case .note(_):
+        case .note:
             return LeftImageTableViewCell.self
-        case .product(_):
+        case .product:
             return ProductDetailsTableViewCell.self
         case .trackingAdd:
             return LeftImageTableViewCell.self

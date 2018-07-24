@@ -13,11 +13,11 @@ class FulfillViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
-    ///
+    /// Action Container View: Renders the Action Button.
     ///
     @IBOutlet private var actionView: UIView!
 
-    ///
+    /// Action Button (Fulfill!)
     ///
     @IBOutlet private var actionButton: UIButton!
 
@@ -76,13 +76,13 @@ private extension FulfillViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
-    ///
+    /// Setup: TableView
     ///
     func setupTableView() {
         tableView.tableFooterView = actionView
     }
 
-    ///
+    ///Setup: Action Button!
     ///
     func setupActionButton() {
         let title = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
@@ -122,7 +122,7 @@ private extension FulfillViewController {
 extension FulfillViewController {
 
     @IBAction func fulfillWasPressed() {
-
+// TODO: Fill Me!
     }
 }
 
@@ -171,7 +171,7 @@ extension FulfillViewController: UITableViewDataSource {
 //
 private extension FulfillViewController {
 
-    ///
+    /// Setup a given UITableViewCell instance to actually display the specified Row's Payload.
     ///
     func setup(cell: UITableViewCell, for row: Row) {
         switch row {
@@ -186,7 +186,7 @@ private extension FulfillViewController {
         }
     }
 
-    ///
+    /// Setup: Product Cell
     ///
     private func setupProductCell(_ cell: UITableViewCell, with item: OrderItem) {
         guard let cell = cell as? ProductDetailsTableViewCell else {
@@ -202,7 +202,7 @@ private extension FulfillViewController {
         cell.sku = viewModel.sku
     }
 
-    ///
+    /// Setup: Note Cell
     ///
     private func setupNoteCell(_ cell: UITableViewCell, with note: String) {
         guard let cell = cell as? LeftImageTableViewCell else {
@@ -213,7 +213,7 @@ private extension FulfillViewController {
         cell.labelText = note
     }
 
-    ///
+    /// Setup: Address Cell
     ///
     private func setupAddressCell(_ cell: UITableViewCell, with address: Address) {
         guard let cell = cell as? CustomerInfoTableViewCell else {
@@ -227,7 +227,7 @@ private extension FulfillViewController {
         cell.address = address.formattedPostalAddress
     }
 
-    ///
+    /// Setup: Add Tracking Cell
     ///
     func setupTrackingAddCell(_ cell: UITableViewCell) {
         guard let cell = cell as? LeftImageTableViewCell else {

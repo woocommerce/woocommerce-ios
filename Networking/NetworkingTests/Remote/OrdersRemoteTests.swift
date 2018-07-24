@@ -172,11 +172,11 @@ class OrdersRemoteTests: XCTestCase {
     func testLoadAddOrderNoteProperlyReturnsParsedOrderNote() {
         let remote = OrdersRemote(network: network)
         let expectation = self.expectation(description: "Add Order Note")
-        let note = "This order would be so much better with ketchup."
+        let noteData = "This order would be so much better with ketchup."
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes", filename: "new-order-note")
 
-        remote.addOrderNote(for: sampleSiteID, orderID: sampleOrderID, isCustomerNote: true, with: note) { (orderNote, error) in
+        remote.addOrderNote(for: sampleSiteID, orderID: sampleOrderID, isCustomerNote: true, with: noteData) { (orderNote, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(orderNote)
             expectation.fulfill()

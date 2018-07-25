@@ -14,7 +14,8 @@ public class TracksProvider: AnalyticsProvider {
     ///
     init() {
         self.contextManager = TracksContextManager()
-        self.tracksService  = TracksService.init(contextManager: contextManager)
+        self.tracksService = TracksService.init(contextManager: contextManager)
+        self.tracksService.eventNamePrefix = Constants.eventNamePrefix
     }
 }
 
@@ -23,8 +24,8 @@ public class TracksProvider: AnalyticsProvider {
 //
 public extension TracksProvider {
     func beginSession() {
-        if StoresManager.shared.isAuthenticated, let accountID = StoresManager.shared.sessionManager.defaultAccountID {
-            tracksService.switchToAuthenticatedUser(withUsername: String(accountID), userID: nil, skipAliasEventCreation: true)
+        if StoresManager.shared.isAuthenticated, let account = StoresManager.shared.sessionManager.defaultAccount {
+            tracksService.switchToAuthenticatedUser(withUsername: account.username , userID: String(account.userID), skipAliasEventCreation: true)
         } else {
             tracksService.switchToAnonymousUser(withAnonymousID: StoresManager.shared.sessionManager.anonymousUserID)
         }
@@ -57,5 +58,15 @@ private extension TracksProvider {
         userProperties["is_rtl_language"] = (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
         tracksService.userProperties.removeAllObjects()
         tracksService.userProperties.addEntries(from: userProperties)
+    }
+}
+
+
+// MARK: - Constants!
+//
+private extension TracksProvider {
+
+    enum Constants {
+        static let eventNamePrefix = "woocommerceios"
     }
 }

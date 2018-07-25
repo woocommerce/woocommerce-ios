@@ -72,10 +72,15 @@ private extension OrderStore  {
     /// Updates an Order with the specified Status.
     ///
     func updateOrder(siteID: Int, orderID: Int, status: OrderStatus, onCompletion: @escaping (Order?, Error?) -> Void) {
-        let remote = OrdersRemote(network: network)
+        /// Optimistically update the Status
+        let oldStatus = updateOrderStatus(orderID: orderID, status: status)
 
+        let remote = OrdersRemote(network: network)
         remote.updateOrder(from: siteID, orderID: orderID, status: status.description) { [weak self] (order, error) in
             guard let order = order else {
+
+                /// Revert Optimistic Update
+                self?.updateOrderStatus(orderID: orderID, status: oldStatus)
                 onCompletion(nil, error)
                 return
             }
@@ -90,6 +95,24 @@ private extension OrderStore  {
 // MARK: - Persistence
 //
 extension OrderStore {
+
+    /// Updates the Status of the specified Order, as requested.
+    ///
+    /// - Returns: Status, prior to performing the Update OP.
+    ///
+    @discardableResult
+    func updateOrderStatus(orderID: Int, status: OrderStatus) -> OrderStatus {
+        let storage = storageManager.viewStorage
+        guard let order = storage.loadOrder(orderID: orderID) else {
+            return status
+        }
+
+        let oldStatus = OrderStatus(rawValue: order.status)
+        order.status = status.description
+        storage.saveIfNeeded()
+
+        return oldStatus
+    }
 
     /// Updates (OR Inserts) the specified ReadOnly Order Entity into the Storage Layer.
     ///

@@ -14,7 +14,6 @@ class ProductListTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         fulfillButton.applyPrimaryButtonStyle()
-        fulfillButton.addTarget(self, action: #selector(fulfillWasPressed), for: .touchUpInside)
         verticalStackView.setCustomSpacing(Constants.spacing, after: fulfillButton)
     }
 }

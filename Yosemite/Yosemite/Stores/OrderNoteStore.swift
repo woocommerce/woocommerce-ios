@@ -54,14 +54,14 @@ private extension OrderNoteStore  {
     ///
     func addOrderNote(siteID: Int, orderID: Int, isCustomerNote: Bool, note: String, onCompletion: @escaping (OrderNote?, Error?) -> Void) {
         let remote = OrdersRemote(network: network)
-        remote.addOrderNote(for: siteID, orderID: orderID, isCustomerNote: isCustomerNote, with: note) { [weak self] (orderNotes, error) in
-            guard let orderNote = orderNotes?.first else {
+        remote.addOrderNote(for: siteID, orderID: orderID, isCustomerNote: isCustomerNote, with: note) { [weak self] (orderNote, error) in
+            guard let note = orderNote else {
                 onCompletion(nil, error)
                 return
             }
 
-            self?.upsertStoredOrderNotes(readOnlyOrderNotes: [orderNote], orderID: orderID)
-            onCompletion(orderNote, nil)
+            self?.upsertStoredOrderNotes(readOnlyOrderNotes: [note], orderID: orderID)
+            onCompletion(note, nil)
         }
     }
 }

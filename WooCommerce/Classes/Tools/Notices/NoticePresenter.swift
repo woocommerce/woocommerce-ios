@@ -76,7 +76,7 @@ private extension NoticePresenter {
 
     func presentNoticeInForeground(_ notice: Notice) {
         guard let view = presentingViewController?.view else {
-                return
+            return
         }
 
         generator.prepare()

@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     /// In-App Notifications Presenter
     ///
-    private(set) var noticePresenter = NoticePresenter()
+    let noticePresenter = NoticePresenter()
 
 
 

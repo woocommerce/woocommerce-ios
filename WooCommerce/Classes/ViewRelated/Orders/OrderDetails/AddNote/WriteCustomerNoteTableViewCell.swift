@@ -7,6 +7,7 @@ class WriteCustomerNoteTableViewCell: UITableViewCell {
         didSet {
             noteIconButton.layer.cornerRadius = noteIconButton.frame.width / 2
             noteIconButton.tintColor = .white
+            noteIconButton.setImage(Gridicon.iconOfType(.aside), for: .normal)
         }
     }
 

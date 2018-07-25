@@ -118,6 +118,19 @@ extension AddANoteViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return sections[section].title
     }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section footers.
+        return CGFloat.leastNonzeroMagnitude
+    }
+}
+
+// MARK: - UITableViewDelegate Conformance
+//
+extension AddANoteViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectSelectedRowWithAnimation(true)
+    }
 }
 
 // MARK: - Constants

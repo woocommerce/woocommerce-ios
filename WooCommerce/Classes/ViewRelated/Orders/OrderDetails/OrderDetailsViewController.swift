@@ -81,12 +81,7 @@ private extension OrderDetailsViewController {
         title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
 
         // Don't show the Order details title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
-
-        navigationItem.backBarButtonItem = backButton
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
     /// Setup: Sections
@@ -131,7 +126,7 @@ private extension OrderDetailsViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            AddItemTableViewCell.self,
+            LeftImageTableViewCell.self,
             BillingDetailsTableViewCell.self,
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
@@ -195,6 +190,9 @@ private extension OrderDetailsViewController {
             cell.configure(with: viewModel)
         case let cell as ProductListTableViewCell:
             cell.configure(with: viewModel)
+            cell.onFullfillTouchUp = { [weak self] in
+                self?.fulfillWasPressed()
+            }
         case let cell as BasicDisclosureTableViewCell:
             cell.configure(text: viewModel.productDetails)
         case let cell as CustomerNoteTableViewCell:
@@ -209,7 +207,7 @@ private extension OrderDetailsViewController {
             configure(cell, for: .billingEmail)
         case let cell as PaymentTableViewCell:
             cell.configure(with: viewModel)
-        case let cell as AddItemTableViewCell:
+        case let cell as LeftImageTableViewCell:
             cell.configure(image: viewModel.addNoteIcon, text: viewModel.addNoteText)
         case let cell as OrderNoteTableViewCell where row == .orderNote:
             if let note = orderNote(at: indexPath) {
@@ -319,6 +317,11 @@ extension OrderDetailsViewController {
 
     func toggleBillingFooter() {
         billingIsHidden = !billingIsHidden
+    }
+
+    func fulfillWasPressed() {
+        let fulfillViewController = FulfillViewController(order: viewModel.order)
+        navigationController?.pushViewController(fulfillViewController, animated: true)
     }
 }
 
@@ -520,7 +523,7 @@ private extension OrderDetailsViewController {
             case .billingEmail:
                 return BillingDetailsTableViewCell.reuseIdentifier
             case .addOrderNote:
-                return AddItemTableViewCell.reuseIdentifier
+                return LeftImageTableViewCell.reuseIdentifier
             case .orderNote:
                 return OrderNoteTableViewCell.reuseIdentifier
             case .payment:

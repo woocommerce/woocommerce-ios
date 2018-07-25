@@ -287,6 +287,31 @@ class OrderStoreTests: XCTestCase {
         orderStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that the Optimistic OrderStatus Update OP effectively reverts the (optimistic) change upon failure.
+    ///
+    func testUpdateOrderRevertsOptimisticUpdateUponFailure() {
+        let expectation = self.expectation(description: "Optimistic Update Recovery")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        /// Insert Order [Status == .completed]
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated())
+
+        network.removeAllSimulatedResponses()
+
+        let action = OrderAction.updateOrder(siteID: sampleSiteID, orderID: sampleOrderID, status: .processing) { (order, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(order)
+
+            let storedOrder = self.storageManager.viewStorage.loadOrder(orderID: self.sampleOrderID)
+            XCTAssert(storedOrder?.status == OrderStatus.completed.description)
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 

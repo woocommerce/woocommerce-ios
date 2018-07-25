@@ -12,7 +12,7 @@ public class MockupAnalyticsProvider: AnalyticsProvider {
 //
 public extension MockupAnalyticsProvider {
 
-    func beginSession() {}
+    func refreshUserData() {}
 
     func track(_ eventName: String) {
         track(eventName, withProperties: nil)

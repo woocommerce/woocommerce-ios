@@ -23,7 +23,7 @@ public class TracksProvider: AnalyticsProvider {
 // MARK: - AnalyticsProvider Conformance
 //
 public extension TracksProvider {
-    func beginSession() {
+    func refreshUserData() {
         if StoresManager.shared.isAuthenticated, let account = StoresManager.shared.sessionManager.defaultAccount {
             tracksService.switchToAuthenticatedUser(withUsername: account.username , userID: String(account.userID), skipAliasEventCreation: true)
         } else {

@@ -71,7 +71,7 @@ struct SessionManager {
     ///
     var anonymousUserID: String? {
         get {
-            if let anonID = defaults[.defaultAnonymousID] as? String {
+            if let anonID = defaults[.defaultAnonymousID] as? String, !anonID.isEmpty {
                 return anonID
             } else {
                 let newValue = UUID().uuidString
@@ -80,7 +80,6 @@ struct SessionManager {
             }
         }
     }
-
 
     /// Designated Initializer.
     ///

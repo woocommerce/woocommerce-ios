@@ -56,16 +56,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
 
-
-        // Testing Notice!
-        for i in 1 ..< 5 {
-            let notice = Notice(title: "Foreground #\(i)", message: "FG Notice", feedbackType: .success, actionTitle: "Okay!", actionHandler: {
-                NSLog("### Notice Action Handler!!")
-            })
-
-            noticePresenter.enqueue(notice: notice)
-        }
-
         return true
     }
 

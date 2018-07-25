@@ -59,6 +59,7 @@ class StoresManager {
     func authenticate(credentials: Credentials) -> StoresManager {
         state = AuthenticatedState(credentials: credentials)
         sessionManager.defaultCredentials = credentials
+        WooAnalytics.shared.refreshUserData()
 
         return self
     }
@@ -92,6 +93,7 @@ class StoresManager {
     func deauthenticate() -> StoresManager {
         state = DeauthenticatedState()
         sessionManager.reset()
+        WooAnalytics.shared.refreshUserData()
 
         return self
     }

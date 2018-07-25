@@ -33,21 +33,33 @@ public class WooAnalytics {
 //
 public extension WooAnalytics {
 
-    /// Initialize the analytics
+    /// Initialize the analytics engine
     ///
     func initialize() {
-        self.analyticsProvider.beginSession()
-        self.startObservingNotifications()
+        refreshUserData()
+        startObservingNotifications()
     }
 
-    /// Pass through function to AnalyticsProvider.track(eventName:)
+    /// Refresh the tracking metadata for the currently logged-in or anonymous user.
+    /// It's good to call this function after a user logs in or out of the app.
+    ///
+    func refreshUserData() {
+        analyticsProvider.refreshUserData()
+    }
+
+    /// Track a spcific event without any associated properties
+    ///
+    /// - Parameter stat: the event name
     ///
     func track(_ stat: WooAnalyticsStat) {
         track(stat, withProperties: nil)
     }
 
-
-    /// Pass through function to AnalyticsProvider.track(eventName:withProperties:)
+    /// Track a spcific event with associated properties
+    ///
+    /// - Parameters:
+    ///   - stat: the event name
+    ///   - properties: a collection of properties related to the event
     ///
     func track(_ stat: WooAnalyticsStat, withProperties properties: [AnyHashable : Any]?) {
         if let properties = properties {
@@ -57,8 +69,11 @@ public extension WooAnalytics {
         }
     }
 
-
-    /// Track a spcific event with an associated error (that is translated to properties)
+    /// Track a specific event with an associated error (that is translated to properties)
+    ///
+    /// - Parameters:
+    ///   - stat: the event name
+    ///   - error: the error to track
     ///
     func track(_ stat: WooAnalyticsStat, withError error: Error) {
         let err = error as NSError

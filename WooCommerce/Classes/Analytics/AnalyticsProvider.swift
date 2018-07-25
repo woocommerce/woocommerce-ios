@@ -3,9 +3,9 @@
 ///
 public protocol AnalyticsProvider {
 
-    /// Kick off a new analytics session
+    /// Refresh the tracking metadata for the current user
     ///
-    func beginSession()
+    func refreshUserData()
 
     /// Track a spcific event without any associated properties
     ///

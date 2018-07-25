@@ -22,10 +22,12 @@ public class OrderStore: Store {
         }
 
         switch action {
-        case .retrieveOrders(let siteId, let onCompletion):
-            retrieveOrders(siteID: siteId, onCompletion: onCompletion)
-        case .retrieveOrder(let siteId, let orderId, let onCompletion):
-            retrieveOrder(siteID: siteId, orderId: orderId, onCompletion: onCompletion)
+        case .retrieveOrders(let siteID, let onCompletion):
+            retrieveOrders(siteID: siteID, onCompletion: onCompletion)
+        case .retrieveOrder(let siteID, let orderID, let onCompletion):
+            retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+        case .updateOrder(let siteID, let orderID, let status, let onCompletion):
+            updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: onCompletion)
         }
     }
 }
@@ -53,10 +55,26 @@ private extension OrderStore  {
 
     /// Retrieves a specific order associated with a given Site ID (if any!).
     ///
-    func retrieveOrder(siteID: Int, orderId: Int, onCompletion: @escaping (Order?, Error?) -> Void) {
+    func retrieveOrder(siteID: Int, orderID: Int, onCompletion: @escaping (Order?, Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
-        remote.loadOrder(for: siteID, orderID: orderId) { [weak self] (order, error) in
+        remote.loadOrder(for: siteID, orderID: orderID) { [weak self] (order, error) in
+            guard let order = order else {
+                onCompletion(nil, error)
+                return
+            }
+
+            self?.upsertStoredOrder(readOnlyOrder: order)
+            onCompletion(order, nil)
+        }
+    }
+
+    /// Updates an Order with the specified Status.
+    ///
+    func updateOrder(siteID: Int, orderID: Int, status: OrderStatus, onCompletion: @escaping (Order?, Error?) -> Void) {
+        let remote = OrdersRemote(network: network)
+
+        remote.updateOrder(from: siteID, orderID: orderID, status: status.description) { [weak self] (order, error) in
             guard let order = order else {
                 onCompletion(nil, error)
                 return

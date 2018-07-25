@@ -2,8 +2,8 @@ import Foundation
 
 
 public enum WooAnalyticsStat: String {
-    case applicationOpened = "woocommerceios_application_opened"
-    case applicationClosed = "woocommerceios_application_closed"
+    case applicationOpened = "application_opened"
+    case applicationClosed = "application_closed"
 }
 
 

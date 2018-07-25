@@ -13,7 +13,7 @@ class WriteCustomerNoteTableViewCell: UITableViewCell {
 
     @IBOutlet var noteTextView: UITextView!
 
-    private var isCustomerNote: Bool = false {
+    public var isCustomerNote: Bool! {
         didSet {
             noteIconButton.backgroundColor = isCustomerNote ? StyleManager.statusPrimaryBoldColor : StyleManager.wooGreyMid
         }

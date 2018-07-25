@@ -1,17 +1,20 @@
 import UIKit
 
+
+/// Displays the list of Products associated to an Order.
+///
 class ProductListTableViewCell: UITableViewCell {
     @IBOutlet private var verticalStackView: UIStackView!
     @IBOutlet private var fulfillButton: UIButton!
     @IBOutlet private var actionContainerView: UIView!
 
+    var onFullfillTouchUp: (() -> Void)?
+
     override func awakeFromNib() {
         super.awakeFromNib()
-        fulfillButton.applyPrimaryButtonStyle()
-    }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+        fulfillButton.applyPrimaryButtonStyle()
+        verticalStackView.setCustomSpacing(Constants.spacing, after: fulfillButton)
     }
 }
 
@@ -28,11 +31,15 @@ extension ProductListTableViewCell {
             verticalStackView.insertArrangedSubview(itemView, at: index)
         }
 
-        if viewModel.isProcessingPayment {
-            fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
-            actionContainerView.isHidden = false
-        } else {
-            actionContainerView.isHidden = true
-        }
+        fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
+        actionContainerView.isHidden = viewModel.isProcessingPayment == false
+    }
+
+    @IBAction func fulfillWasPressed() {
+        onFullfillTouchUp?()
+    }
+
+    struct Constants {
+        static let spacing = CGFloat(8.0)
     }
 }

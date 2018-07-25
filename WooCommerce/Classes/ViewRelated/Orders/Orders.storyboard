@@ -176,10 +176,10 @@
             </objects>
             <point key="canvasLocation" x="3686" y="303"/>
         </scene>
-        <!--Adda Note View Controller-->
+        <!--Add A Note View Controller-->
         <scene sceneID="xbB-4Q-1Uq">
             <objects>
-                <viewController storyboardIdentifier="AddaNoteViewController" id="qPs-Ss-Al5" customClass="AddaNoteViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddANoteViewController" id="qPs-Ss-Al5" userLabel="Add A Note View Controller" customClass="AddANoteViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="93f-jo-mSM">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

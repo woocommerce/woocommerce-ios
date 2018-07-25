@@ -29,6 +29,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     let authenticationManager = AuthenticationManager()
 
+    /// In-App Notifications Presenter
+    ///
+    private(set) var noticePresenter = NoticePresenter()
+
 
 
     // MARK: - AppDelegate Methods
@@ -43,6 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupAuthenticationManager()
         setupCocoaLumberjack()
         setupLogLevel(.verbose)
+        setupNoticePresenter()
 
         // Display the Authentication UI
         displayAuthenticatorIfNeeded()
@@ -155,6 +160,12 @@ private extension AppDelegate {
         WPSharedSetLoggingLevel(rawLevel)
         WPAuthenticatorSetLoggingLevel(rawLevel)
         WPKitSetLoggingLevel(rawLevel)
+    }
+
+    /// Setup: Notice Presenter
+    ///
+    func setupNoticePresenter() {
+        noticePresenter.presentingViewController = window?.rootViewController
     }
 }
 

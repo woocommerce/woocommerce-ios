@@ -149,7 +149,7 @@ private extension NoticeView {
         actionBackgroundView.pinSubviewToAllEdgeMargins(actionButton)
 
         actionButton.titleLabel?.font = Fonts.actionButtonFont
-        actionButton.setTitleColor(Appearance.titleColor, for: .normal)
+        actionButton.setTitleColor(Appearance.actionColor, for: .normal)
         actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
         actionButton.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
@@ -210,10 +210,11 @@ private extension NoticeView {
 
     enum Appearance {
         static let actionBackgroundColor = UIColor.white.withAlphaComponent(0.5)
+        static let actionColor = StyleManager.buttonPrimaryColor
         static let shadowColor: UIColor = .black
         static let shadowOpacity: Float = 0.25
         static let shadowRadius: CGFloat = 8.0
         static let shadowOffset = CGSize(width: 0.0, height: 2.0)
-        static let titleColor: UIColor = .gray
+        static let titleColor: UIColor = StyleManager.defaultTextColor
     }
 }

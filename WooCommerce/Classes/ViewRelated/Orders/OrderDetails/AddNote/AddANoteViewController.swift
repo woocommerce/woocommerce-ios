@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import CocoaLumberjack
 
 class AddANoteViewController: UIViewController {
 
@@ -7,7 +8,7 @@ class AddANoteViewController: UIViewController {
 
     @IBOutlet var tableView: UITableView!
 
-    var order: Order!
+    var viewModel: OrderDetailsViewModel!
 
     private var sections = [Section]()
 
@@ -24,7 +25,7 @@ class AddANoteViewController: UIViewController {
     }
 
     func configureNavigation() {
-        title = NSLocalizedString("Order #\(order.number)", comment: "Add a note screen - title. Example: Order #15")
+        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Add a note screen - title. Example: Order #15")
 
         let dismissButtonTitle = NSLocalizedString("Dismiss", comment: "Add a note screen - button title for closing the view")
         let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,
@@ -48,7 +49,25 @@ class AddANoteViewController: UIViewController {
     }
 
     @objc func addButtonTapped() {
-        NSLog("Add button tapped!")
+        let indexPath = IndexPath(row: 0, section: 0)
+        guard let cell = tableView.cellForRow(at: indexPath) as? WriteCustomerNoteTableViewCell else {
+            fatalError()
+        }
+
+        guard let note = cell.noteTextView.text else {
+            return
+        }
+
+        let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, isCustomerNote: isCustomerNote, note: note) { [weak self] (orderNote, error) in
+            guard orderNote != nil else {
+                DDLogError("⛔️ Error adding a note: \(error.debugDescription)")
+                // TODO: should this alert the user that there was an error?
+                return
+            }
+            self?.dismiss(animated: true, completion: nil)
+        }
+
+        StoresManager.shared.dispatch(action)
     }
 }
 

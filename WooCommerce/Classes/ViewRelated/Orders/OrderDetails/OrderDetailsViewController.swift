@@ -403,7 +403,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
         if sections[indexPath.section].rows[indexPath.row] == .addOrderNote {
             let addANoteViewController = self.storyboard!.instantiateViewController(withIdentifier: Constants.noteViewController) as! AddANoteViewController
-            addANoteViewController.order = viewModel.order
+            addANoteViewController.viewModel = viewModel
             let navController = UINavigationController(rootViewController: addANoteViewController)
             present(navController, animated: true, completion: nil)
         } else if sections[indexPath.section].rows[indexPath.row] == .productDetails {

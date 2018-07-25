@@ -8,6 +8,12 @@ class ToggleEmailCustomerTableViewCell: UITableViewCell {
     @IBOutlet var bottomLabel: UILabel!
     @IBOutlet var toggleSwitch: UISwitch!
 
+    @IBAction func toggleSwitchWasPressed() {
+        onToggleSwitchTouchUp?()
+    }
+
+    var onToggleSwitchTouchUp: (() -> Void)?
+
     override func awakeFromNib() {
         super.awakeFromNib()
         topLabel.applyBodyStyle()

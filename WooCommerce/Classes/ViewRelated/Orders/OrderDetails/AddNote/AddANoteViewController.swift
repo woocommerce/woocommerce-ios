@@ -11,6 +11,8 @@ class AddANoteViewController: UIViewController {
 
     private var sections = [Section]()
 
+    private var isCustomerNote = false
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -83,16 +85,39 @@ private extension AddANoteViewController {
         sections = [writeNoteSection, emailCustomerSection]
     }
 
+    /// Switch between a private note and a customer note
+    ///
+    func toggleNoteType() {
+        isCustomerNote = !isCustomerNote
+    }
+
     /// Cell Configuration
     ///
-    private func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
-        switch cell {
-        case let cell as WriteCustomerNoteTableViewCell:
-            cell.configure(isNoteToCustomer: false)
-        case let cell as ToggleEmailCustomerTableViewCell:
-            cell.awakeFromNib()
-        default:
-            fatalError("Unidentified add a note row type")
+    private func setup(cell: UITableViewCell, for row: Row) {
+        switch row {
+        case .writeNote:
+            setupWriteNoteCell(cell)
+        case .emailCustomer:
+            setupEmailCustomerCell(cell)
+        }
+    }
+
+    private func setupWriteNoteCell(_ cell: UITableViewCell) {
+        guard let cell = cell as? WriteCustomerNoteTableViewCell else {
+            fatalError()
+        }
+
+        cell.isCustomerNote = isCustomerNote
+    }
+
+    private func setupEmailCustomerCell(_ cell: UITableViewCell) {
+        guard let cell = cell as? ToggleEmailCustomerTableViewCell else {
+            fatalError()
+        }
+
+        cell.onToggleSwitchTouchUp = { [weak self] in
+            self?.toggleNoteType()
+            self?.tableView.reloadData()
         }
     }
 }
@@ -111,7 +136,7 @@ extension AddANoteViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        configure(cell, for: row, at: indexPath)
+        setup(cell: cell, for: row)
         return cell
     }
 

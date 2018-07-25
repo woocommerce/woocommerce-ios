@@ -9,6 +9,7 @@ extension UserDefaults {
         case defaultAccountID
         case defaultUsername
         case defaultStoreID
+        case defaultAnonymousID
     }
 }
 

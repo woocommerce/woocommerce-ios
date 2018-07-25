@@ -3,6 +3,10 @@
 ///
 public protocol AnalyticsProvider {
 
+    /// Kick off a new analytics session
+    ///
+    func beginSession()
+
     /// Track a spcific event without any associated properties
     ///
     /// - Parameter eventName: the event name

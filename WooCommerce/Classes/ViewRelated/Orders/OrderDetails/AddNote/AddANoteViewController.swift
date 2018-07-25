@@ -1,7 +1,7 @@
 import UIKit
 import Yosemite
 
-class AddaNoteViewController: UIViewController {
+class AddANoteViewController: UIViewController {
 
     // MARK: - Properties
 
@@ -52,7 +52,7 @@ class AddaNoteViewController: UIViewController {
 
 // MARK: - TableView Configuration
 //
-private extension AddaNoteViewController {
+private extension AddANoteViewController {
     /// Setup: TableView
     ///
     private func configureTableView() {
@@ -99,7 +99,7 @@ private extension AddaNoteViewController {
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension AddaNoteViewController: UITableViewDataSource {
+extension AddANoteViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
@@ -122,7 +122,7 @@ extension AddaNoteViewController: UITableViewDataSource {
 
 // MARK: - Constants
 //
-private extension AddaNoteViewController {
+private extension AddANoteViewController {
     struct Constants {
         static let rowHeight = CGFloat(44)
     }

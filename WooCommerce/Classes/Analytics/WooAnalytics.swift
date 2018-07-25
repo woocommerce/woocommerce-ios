@@ -22,12 +22,23 @@ public class WooAnalytics {
     init(analyticsProvider: AnalyticsProvider) {
         self.analyticsProvider = analyticsProvider
     }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
 
-// MARK: - Tracking Functions
+// MARK: - Public Interface
 //
 public extension WooAnalytics {
+
+    /// Initialize the analytics
+    ///
+    func initialize() {
+        self.analyticsProvider.beginSession()
+        self.startObservingNotifications()
+    }
 
     /// Pass through function to AnalyticsProvider.track(eventName:)
     ///
@@ -59,9 +70,29 @@ public extension WooAnalytics {
 }
 
 
+// MARK: - Notifications!
+//
+private extension WooAnalytics {
+
+    func startObservingNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationOpened), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationClosed), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+    }
+
+    @objc func trackApplicationOpened() {
+        track(.applicationOpened)
+    }
+
+    @objc func trackApplicationClosed() {
+        track(.applicationClosed)
+    }
+}
+
+
 // MARK: - Constants!
 //
 private extension WooAnalytics {
+
     enum Constants {
         static let errorKeyCode        = "error_code"
         static let errorKeyDomain      = "error_domain"

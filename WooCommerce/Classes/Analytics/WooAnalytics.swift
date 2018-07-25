@@ -62,7 +62,6 @@ public extension WooAnalytics {
 // MARK: - Constants!
 //
 private extension WooAnalytics {
-
     enum Constants {
         static let errorKeyCode        = "error_code"
         static let errorKeyDomain      = "error_domain"

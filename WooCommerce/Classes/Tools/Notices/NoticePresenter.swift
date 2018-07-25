@@ -20,6 +20,10 @@ class NoticePresenter {
     ///
     private var noticeOnScreen: Notice?
 
+    /// TODO: Background Notifications are disabled, for now.
+    ///
+    private let supportsBackgroundNotifications = false
+
     /// UIViewController to be used as Notice(s) Presenter
     ///
     weak var presentingViewController: UIViewController?
@@ -48,7 +52,7 @@ private extension NoticePresenter {
     }
 
     func present(_ notice: Notice) {
-        if UIApplication.shared.applicationState == .background {
+        if supportsBackgroundNotifications && UIApplication.shared.applicationState == .background {
             presentNoticeInBackground(notice)
         } else {
             presentNoticeInForeground(notice)

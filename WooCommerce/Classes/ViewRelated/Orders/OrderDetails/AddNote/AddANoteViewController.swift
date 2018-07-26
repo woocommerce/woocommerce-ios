@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Gridicons
 import CocoaLumberjack
 
 class AddANoteViewController: UIViewController {
@@ -13,6 +14,8 @@ class AddANoteViewController: UIViewController {
     private var sections = [Section]()
 
     private var isCustomerNote = false
+
+    private var noteText: String = ""
 
     // MARK: - View Lifecycle
 
@@ -42,6 +45,7 @@ class AddANoteViewController: UIViewController {
                                              action: #selector(addButtonTapped))
         rightBarButton.tintColor = .white
         navigationItem.setRightBarButton(rightBarButton, animated: false)
+        navigationItem.rightBarButtonItem?.isEnabled = false
     }
 
     @objc func dismissButtonTapped() {
@@ -49,18 +53,9 @@ class AddANoteViewController: UIViewController {
     }
 
     @objc func addButtonTapped() {
-        let indexPath = IndexPath(row: 0, section: 0)
-        guard let cell = tableView.cellForRow(at: indexPath) as? WriteCustomerNoteTableViewCell else {
-            fatalError()
-        }
-
-        guard let note = cell.noteTextView.text else {
-            return
-        }
-
-        let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, isCustomerNote: isCustomerNote, note: note) { [weak self] (orderNote, error) in
-            guard orderNote != nil else {
-                DDLogError("⛔️ Error adding a note: \(error.debugDescription)")
+        let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, isCustomerNote: isCustomerNote, note: noteText) { [weak self] (orderNote, error) in
+            if let error = error {
+                DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
                 // TODO: should this alert the user that there was an error?
                 return
             }
@@ -85,8 +80,8 @@ private extension AddANoteViewController {
     ///
     private func registerTableViewCells() {
         let cells = [
-            WriteCustomerNoteTableViewCell.self,
-            ToggleEmailCustomerTableViewCell.self
+            TextViewTableViewCell.self,
+            SwitchTableViewCell.self
         ]
 
         for cell in cells {
@@ -122,17 +117,25 @@ private extension AddANoteViewController {
     }
 
     private func setupWriteNoteCell(_ cell: UITableViewCell) {
-        guard let cell = cell as? WriteCustomerNoteTableViewCell else {
+        guard let cell = cell as? TextViewTableViewCell else {
             fatalError()
         }
 
-        cell.isCustomerNote = isCustomerNote
+        cell.iconImage = Gridicon.iconOfType(.aside)
+        cell.iconTint = isCustomerNote ? StyleManager.statusPrimaryBoldColor : StyleManager.wooGreyMid
+        cell.onTextChange = { [weak self] (text) in
+            self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
+            self?.noteText = text
+        }
     }
 
     private func setupEmailCustomerCell(_ cell: UITableViewCell) {
-        guard let cell = cell as? ToggleEmailCustomerTableViewCell else {
+        guard let cell = cell as? SwitchTableViewCell else {
             fatalError()
         }
+
+        cell.topText = NSLocalizedString("Email note to customer", comment: "Label for yes/no switch - emailing the note to customer.")
+        cell.bottomText = NSLocalizedString("If disabled will add the note as private.", comment: "Detail label for yes/no switch.")
 
         cell.onToggleSwitchTouchUp = { [weak self] in
             self?.toggleNoteType()
@@ -145,11 +148,11 @@ private extension AddANoteViewController {
 //
 extension AddANoteViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return sections[section].rows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -196,9 +199,9 @@ private extension AddANoteViewController {
         var reuseIdentifier: String {
             switch self {
             case .writeNote:
-                return WriteCustomerNoteTableViewCell.reuseIdentifier
+                return TextViewTableViewCell.reuseIdentifier
             case .emailCustomer:
-                return ToggleEmailCustomerTableViewCell.reuseIdentifier
+                return SwitchTableViewCell.reuseIdentifier
             }
         }
     }

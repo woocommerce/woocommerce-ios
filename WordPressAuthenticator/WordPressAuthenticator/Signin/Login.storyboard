@@ -545,7 +545,6 @@
                                 </variation>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.95294117649999999" green="0.96470588239999999" blue="0.97254901959999995" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="Ktl-It-Kmo" firstAttribute="top" secondItem="dSZ-FR-Cdo" secondAttribute="bottom" id="1qL-V5-NRd"/>
                             <constraint firstItem="dSZ-FR-Cdo" firstAttribute="leading" secondItem="HTO-Y8-god" secondAttribute="leadingMargin" constant="-20" id="E8T-56-rvq"/>

@@ -20,5 +20,5 @@ public protocol AnalyticsProvider {
     ///   - eventName: the event name
     ///   - properties: a collection of properties
     ///
-    func track(_ eventName: String, withProperties properties: [AnyHashable : Any]?)    
+    func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?)
 }

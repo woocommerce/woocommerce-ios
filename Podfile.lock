@@ -73,6 +73,7 @@ DEPENDENCIES:
   - Gridicons (= 0.15)
   - KeychainAccess (~> 3.1)
   - WordPressAuthenticator (= 1.0.4)
+  - WordPressShared (= 1.0.8)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -132,6 +133,6 @@ SPEC CHECKSUMS:
   WordPressUI: af141587ec444f9af753a00605bd0d3f14d8d8a3
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
 
-PODFILE CHECKSUM: bca741aeec025b018771a1e5d22cbc71dfd15f55
+PODFILE CHECKSUM: c627b723e165dabc83c6716871f3199190464f2c
 
 COCOAPODS: 1.5.3

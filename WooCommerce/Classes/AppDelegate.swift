@@ -30,7 +30,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let authenticationManager = AuthenticationManager()
 
 
-
     // MARK: - AppDelegate Methods
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) -> Bool {
@@ -40,6 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupComponentsAppearance()
 
         // Setup Components
+        setupAnalytics()
         setupAuthenticationManager()
         setupCocoaLumberjack()
         setupLogLevel(.verbose)
@@ -128,6 +128,12 @@ private extension AppDelegate {
         appearance.primaryNormalBorderColor = StyleManager.buttonPrimaryHighlightedColor
         appearance.primaryHighlightBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
         appearance.primaryHighlightBorderColor = StyleManager.buttonPrimaryHighlightedColor
+    }
+
+    /// Sets up the WordPress Authenticator.
+    ///
+    func setupAnalytics() {
+        WooAnalytics.shared.initialize()
     }
 
     /// Sets up the WordPress Authenticator.

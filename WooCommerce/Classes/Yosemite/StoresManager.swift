@@ -92,6 +92,7 @@ class StoresManager {
     func deauthenticate() -> StoresManager {
         state = DeauthenticatedState()
         sessionManager.reset()
+        WooAnalytics.shared.refreshUserData()
 
         return self
     }
@@ -138,6 +139,7 @@ private extension StoresManager {
         let action = AccountAction.synchronizeAccount { [weak self] (account, error) in
             if let `self` = self, let account = account, self.isAuthenticated {
                 self.sessionManager.defaultAccount = account
+                WooAnalytics.shared.refreshUserData()
             }
 
             onCompletion?(error)

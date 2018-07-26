@@ -108,7 +108,7 @@ extension OrderStore {
         }
 
         let oldStatus = OrderStatus(rawValue: order.status)
-        order.status = status.description
+        order.status = status.rawValue
         storage.saveIfNeeded()
 
         return oldStatus

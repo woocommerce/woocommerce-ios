@@ -273,7 +273,7 @@ class OrderStoreTests: XCTestCase {
         /// Insert Order [Status == .completed]
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated())
 
-        // Update: Expected Status is actually coming from `order.json` (Status == .processing actualy!)
+        // Update: Expected Status is actually coming from `order.json` (Status == .processing actually!)
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
         let action = OrderAction.updateOrder(siteID: sampleSiteID, orderID: sampleOrderID, status: .processing) { (order, error) in

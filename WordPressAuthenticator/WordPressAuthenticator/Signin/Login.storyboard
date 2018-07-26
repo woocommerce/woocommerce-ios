@@ -881,7 +881,6 @@
                                 </variation>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.95294117649999999" green="0.96470588239999999" blue="0.97254901959999995" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="hTY-xb-H5h" secondAttribute="trailing" constant="-20" id="23h-QU-eyB"/>
                             <constraint firstItem="hTY-xb-H5h" firstAttribute="centerX" secondItem="cm5-76-st7" secondAttribute="centerX" id="PRb-I7-O07"/>

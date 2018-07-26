@@ -30,6 +30,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        styleBackground()
         localizeControls()
         configureTextFields()
         configureSubmitButton(animating: false)
@@ -82,6 +83,11 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
 
     // MARK: Configuration Methods
 
+    /// Styles the view's background color. Defaults to WPStyleGuide.lightGrey()
+    ///
+    @objc func styleBackground() {
+        view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
+    }
 
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///

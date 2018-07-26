@@ -76,6 +76,7 @@ extension SettingsViewController: UITableViewDataSource {
         if cell is LogOutTableViewCell {
             let logoutCell = cell as! LogOutTableViewCell
             logoutCell.didSelectLogout = { [weak self] in
+                WooAnalytics.shared.track(.logout)
                 StoresManager.shared.deauthenticate()
                 self?.navigationController?.popToRootViewController(animated: true)
             }

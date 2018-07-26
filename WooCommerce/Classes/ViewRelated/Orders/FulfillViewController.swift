@@ -82,6 +82,7 @@ private extension FulfillViewController {
     ///
     func setupTableView() {
         tableView.tableFooterView = actionView
+        tableView.allowsSelection = false
     }
 
     ///Setup: Action Button!

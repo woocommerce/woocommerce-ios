@@ -76,7 +76,7 @@ private extension OrderStore  {
         let oldStatus = updateOrderStatus(orderID: orderID, status: status)
 
         let remote = OrdersRemote(network: network)
-        remote.updateOrder(from: siteID, orderID: orderID, status: status.description) { [weak self] (order, error) in
+        remote.updateOrder(from: siteID, orderID: orderID, status: status.rawValue) { [weak self] (order, error) in
             guard let order = order else {
 
                 /// Revert Optimistic Update

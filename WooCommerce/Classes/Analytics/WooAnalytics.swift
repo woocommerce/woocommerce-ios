@@ -9,6 +9,8 @@ public enum WooAnalyticsStat: String {
 
 public class WooAnalytics {
 
+    // MARK: - Properties
+
     /// Shared Instance
     ///
     static let shared = WooAnalytics(analyticsProvider: TracksProvider())
@@ -16,6 +18,13 @@ public class WooAnalytics {
     /// AnalyticsProvider: Interface to the actual analytics implementation
     ///
     private(set) var analyticsProvider: AnalyticsProvider
+
+    /// Time when app was opened — used for calculating the time-in-app property
+    ///
+    private var applicationOpenedTime: Date?
+
+
+    // MARK: - Initialization
 
     /// Designated Initializer
     ///
@@ -85,7 +94,7 @@ public extension WooAnalytics {
 }
 
 
-// MARK: - Notifications!
+// MARK: - Private Helpers
 //
 private extension WooAnalytics {
 
@@ -96,10 +105,21 @@ private extension WooAnalytics {
 
     @objc func trackApplicationOpened() {
         track(.applicationOpened)
+        applicationOpenedTime = Date()
     }
 
     @objc func trackApplicationClosed() {
-        track(.applicationClosed)
+        track(.applicationClosed, withProperties: applicationClosedProperties())
+        applicationOpenedTime = nil
+    }
+
+    func applicationClosedProperties() -> [String: Any]? {
+        guard let applicationOpenedTime = applicationOpenedTime else {
+            return nil
+        }
+
+        let timeInApp = round(Date().timeIntervalSince(applicationOpenedTime))
+        return [Constants.propertyKeyTimeInApp: timeInApp.description]
     }
 }
 
@@ -109,8 +129,10 @@ private extension WooAnalytics {
 private extension WooAnalytics {
 
     enum Constants {
-        static let errorKeyCode        = "error_code"
-        static let errorKeyDomain      = "error_domain"
-        static let errorKeyDescription = "error_description"
+        static let errorKeyCode         = "error_code"
+        static let errorKeyDomain       = "error_domain"
+        static let errorKeyDescription  = "error_description"
+
+        static let propertyKeyTimeInApp = "time_in_app"
     }
 }

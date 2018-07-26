@@ -319,7 +319,6 @@
                                 </variation>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.95294117649999999" green="0.96470588239999999" blue="0.97254901959999995" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="ozJ-hT-OEw" firstAttribute="top" secondItem="bn3-aC-RIM" secondAttribute="bottom" id="S6n-FZ-9Yc"/>
                             <constraint firstAttribute="trailing" secondItem="ozJ-hT-OEw" secondAttribute="trailing" id="Uuo-bm-Be2"/>

@@ -33,11 +33,11 @@
             <constraints>
                 <constraint firstItem="nAe-82-c1s" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="20" id="0kc-FX-RQ6"/>
                 <constraint firstItem="nAe-82-c1s" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="4Fd-ta-Azy" secondAttribute="trailing" constant="8" id="MHS-dz-djd"/>
-                <constraint firstItem="4Fd-ta-Azy" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="N7Z-zB-jsT"/>
-                <constraint firstAttribute="bottom" secondItem="4Fd-ta-Azy" secondAttribute="bottom" constant="8" id="Oor-MN-PIo"/>
+                <constraint firstItem="4Fd-ta-Azy" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" priority="999" constant="16" id="N7Z-zB-jsT"/>
+                <constraint firstAttribute="bottom" secondItem="4Fd-ta-Azy" secondAttribute="bottom" priority="999" constant="8" id="Oor-MN-PIo"/>
                 <constraint firstAttribute="trailing" secondItem="nAe-82-c1s" secondAttribute="trailing" constant="16" id="TIP-cN-VHO"/>
                 <constraint firstItem="4Fd-ta-Azy" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="20" id="Wk4-94-JdF"/>
-                <constraint firstAttribute="bottom" secondItem="nAe-82-c1s" secondAttribute="bottom" constant="8" id="vuR-9k-8Ku"/>
+                <constraint firstAttribute="bottom" secondItem="nAe-82-c1s" secondAttribute="bottom" priority="999" constant="8" id="vuR-9k-8Ku"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>

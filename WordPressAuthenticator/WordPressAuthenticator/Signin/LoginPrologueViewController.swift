@@ -14,6 +14,11 @@ class LoginPrologueViewController: LoginViewController {
 
     // MARK: - Lifecycle Methods
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        styleBackground()
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configureButtonVC()
@@ -53,6 +58,10 @@ class LoginPrologueViewController: LoginViewController {
             }
             vc.modalPresentationStyle = .custom
         }
+    }
+
+    private func styleBackground() {
+        view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
     }
 
     private func configureButtonVC() {

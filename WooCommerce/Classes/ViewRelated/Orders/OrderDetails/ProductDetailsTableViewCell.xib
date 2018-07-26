@@ -27,20 +27,20 @@
                             <constraint firstAttribute="height" constant="36" id="hcJ-qM-Kx2"/>
                         </constraints>
                     </imageView>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="En5-gn-p39">
-                        <rect key="frame" x="68" y="16" width="236" height="90.5"/>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="En5-gn-p39">
+                        <rect key="frame" x="68" y="16" width="236" height="94"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HX7-V5-bhX">
-                                <rect key="frame" x="0.0" y="0.0" width="236" height="40"/>
+                                <rect key="frame" x="0.0" y="0.0" width="236" height="34"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Title Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="14R-zK-tgC">
-                                        <rect key="frame" x="0.0" y="0.0" width="176" height="40"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="176" height="34"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" text="893" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pPE-SE-pY7">
-                                        <rect key="frame" x="176" y="0.0" width="60" height="40"/>
+                                        <rect key="frame" x="176" y="0.0" width="60" height="34"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="bIk-vq-m2l"/>
                                         </constraints>
@@ -62,19 +62,19 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total price (item price x qty)" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IBM-H2-zE2">
-                                <rect key="frame" x="0.0" y="45" width="236" height="13"/>
+                                <rect key="frame" x="0.0" y="38" width="236" height="16"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tax label" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P8K-6Z-2Hh">
-                                <rect key="frame" x="0.0" y="63" width="236" height="12.5"/>
+                                <rect key="frame" x="0.0" y="58" width="236" height="16"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SKU" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7JH-rt-n9v">
-                                <rect key="frame" x="0.0" y="80.5" width="236" height="10"/>
+                                <rect key="frame" x="0.0" y="78" width="236" height="16"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -85,7 +85,7 @@
                 <constraints>
                     <constraint firstAttribute="trailingMargin" secondItem="En5-gn-p39" secondAttribute="trailing" id="7vI-QZ-4so"/>
                     <constraint firstItem="p6h-Fq-FjW" firstAttribute="firstBaseline" secondItem="En5-gn-p39" secondAttribute="firstBaseline" id="F6u-Vf-Qby"/>
-                    <constraint firstAttribute="bottom" secondItem="En5-gn-p39" secondAttribute="bottom" constant="16" id="Rmx-Nw-E9R"/>
+                    <constraint firstAttribute="bottom" secondItem="En5-gn-p39" secondAttribute="baseline" constant="16" id="Rmx-Nw-E9R"/>
                     <constraint firstItem="En5-gn-p39" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="VsH-Qa-5gp"/>
                     <constraint firstItem="p6h-Fq-FjW" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="WkU-sH-Aqw"/>
                     <constraint firstItem="En5-gn-p39" firstAttribute="leading" secondItem="p6h-Fq-FjW" secondAttribute="trailing" constant="16" id="Yht-tO-bpS"/>

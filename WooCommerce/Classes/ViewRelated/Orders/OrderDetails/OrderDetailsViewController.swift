@@ -3,6 +3,7 @@ import Gridicons
 import Contacts
 import MessageUI
 import Yosemite
+import Storage
 import CocoaLumberjack
 
 
@@ -38,6 +39,16 @@ class OrderDetailsViewController: UIViewController {
     }
     private var sections = [Section]()
 
+    /// TODO: Replace with `ResultController` (OR) `ObjectController` ASAP
+    ///
+    private lazy var resultsController: ResultsController<Storage.Order> = {
+        let viewContext = CoreDataManager.global.viewContext
+        let predicate = NSPredicate(format: "orderID = %ld", self.viewModel.order.orderID)
+        let descriptor = NSSortDescriptor(key: "orderID", ascending: true)
+
+        return ResultsController(viewContext: viewContext, matching: predicate, sortedBy: [descriptor])
+    }()
+
 
     // MARK: - View Lifecycle
 
@@ -45,6 +56,7 @@ class OrderDetailsViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
+        configureResultsController()
         registerTableViewCells()
         registerTableViewHeaderFooters()
     }
@@ -83,6 +95,20 @@ private extension OrderDetailsViewController {
 
         // Don't show the Order details title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+    }
+
+    /// TODO: Replace with `ResultController` (OR) `ObjectController` ASAP
+    ///
+    func configureResultsController() {
+        try? resultsController.performFetch()
+        resultsController.onDidChangeContent = { [weak self] in
+            guard let `self` = self, let order = self.resultsController.fetchedObjects.first else {
+                return
+            }
+
+            self.viewModel = OrderDetailsViewModel(order: order)
+            self.tableView.reloadData()
+        }
     }
 
     /// Setup: Sections

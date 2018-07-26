@@ -1,8 +1,9 @@
 import Foundation
 import UIKit
+import CocoaLumberjack
+
 import Yosemite
 import Gridicons
-import CocoaLumberjack
 
 
 
@@ -380,13 +381,14 @@ private extension Section {
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
-        let tracking: Section = {
-            let title = NSLocalizedString("Optional Tracking Information", comment: "")
-            let row = Row.trackingAdd
+// TODO: Tracking support to be added via #185
+//        let tracking: Section = {
+//            let title = NSLocalizedString("Optional Tracking Information", comment: "")
+//            let row = Row.trackingAdd
+//
+//            return Section(title: title, secondaryTitle: nil, rows: [row])
+//        }()
 
-            return Section(title: title, secondaryTitle: nil, rows: [row])
-        }()
-
-        return [products, note, address, tracking].compactMap { $0 }
+        return [products, note, address].compactMap { $0 }
     }
 }

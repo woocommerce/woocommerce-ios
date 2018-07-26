@@ -141,7 +141,7 @@ extension FulfillViewController {
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
     private func updateOrderAction(siteID: Int, orderID: Int, status: OrderStatus) -> Action {
-        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: { (_, error) in
+        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: { error in
             guard let error = error else {
                 return
             }

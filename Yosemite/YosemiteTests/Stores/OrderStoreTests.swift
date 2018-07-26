@@ -30,6 +30,10 @@ class OrderStoreTests: XCTestCase {
     ///
     private let sampleSiteID = 123
 
+    /// Testing OrderID
+    ///
+    private let sampleOrderID = 963
+
 
     // MARK: - Overridden Methods
 
@@ -122,10 +126,7 @@ class OrderStoreTests: XCTestCase {
         let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
             XCTAssertNil(orders)
             XCTAssertNotNil(error)
-            guard let _ = error else {
-                XCTFail()
-                return
-            }
+
             expectation.fulfill()
         }
 
@@ -142,10 +143,7 @@ class OrderStoreTests: XCTestCase {
         let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
             XCTAssertNotNil(error)
             XCTAssertNil(orders)
-            guard let _ = error else {
-                XCTFail()
-                return
-            }
+
             expectation.fulfill()
         }
 
@@ -164,13 +162,10 @@ class OrderStoreTests: XCTestCase {
         let remoteOrder = sampleOrder()
 
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
-        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: 963) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
             XCTAssertNil(error)
-            guard let order = order else {
-                XCTFail()
-                return
-            }
             XCTAssertEqual(order, remoteOrder)
+
             expectation.fulfill()
         }
 
@@ -188,7 +183,7 @@ class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: 963) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
             XCTAssertNotNil(order)
             XCTAssertNil(error)
 
@@ -241,13 +236,10 @@ class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "generic_error")
-        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: 963) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
             XCTAssertNil(order)
             XCTAssertNotNil(error)
-            guard let _ = error else {
-                XCTFail()
-                return
-            }
+
             expectation.fulfill()
         }
 
@@ -261,13 +253,59 @@ class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve single order empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: 963) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
             XCTAssertNotNil(error)
             XCTAssertNil(order)
-            guard let _ = error else {
-                XCTFail()
-                return
-            }
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that an Order's .status field gets effectively updated during `updateOrder`'s response processing.
+    ///
+    func testUpdateOrderEffectivelyChangesAffectedOrderStatusField() {
+        let expectation = self.expectation(description: "Update Order Status")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        /// Insert Order [Status == .completed]
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated())
+
+        // Update: Expected Status is actually coming from `order.json` (Status == .processing actualy!)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        let action = OrderAction.updateOrder(siteID: sampleSiteID, orderID: sampleOrderID, status: .processing) { (order, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(order)
+            XCTAssert(order!.status == .processing)
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that the Optimistic OrderStatus Update OP effectively reverts the (optimistic) change upon failure.
+    ///
+    func testUpdateOrderRevertsOptimisticUpdateUponFailure() {
+        let expectation = self.expectation(description: "Optimistic Update Recovery")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        /// Insert Order [Status == .completed]
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated())
+
+        network.removeAllSimulatedResponses()
+
+        let action = OrderAction.updateOrder(siteID: sampleSiteID, orderID: sampleOrderID, status: .processing) { (order, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(order)
+
+            let storedOrder = self.storageManager.viewStorage.loadOrder(orderID: self.sampleOrderID)
+            XCTAssert(storedOrder?.status == OrderStatus.completed.description)
+
             expectation.fulfill()
         }
 
@@ -275,6 +313,7 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }
+
 
 // MARK: - Private Methods
 //
@@ -310,7 +349,7 @@ private extension OrderStoreTests {
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     status: .processing,
+                     status: .completed,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),

@@ -141,7 +141,7 @@ extension FulfillViewController {
     ///
     private func updateOrderAction(siteID: Int, orderID: Int, status: OrderStatus) -> Action {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: { (_, error) in
-            guard let error = error.debugDescription else {
+            guard let error = error else {
                 return
             }
 

@@ -37,6 +37,8 @@ public enum WooAnalyticsStat: String {
     case onePasswordFailed                      = "one_password_failed"
     case onePasswordLogin                       = "one_password_login"
     case onePasswordSignup                      = "one_password_signup"
+    case twoFactorCodeRequested                 = "two_factor_code_requested"
+    case twoFactorSentSMS                       = "two_factor_sent_sms"
 }
 
 public extension WooAnalyticsStat {
@@ -114,6 +116,10 @@ public extension WooAnalyticsStat {
             wooEvent = WooAnalyticsStat.onePasswordLogin
         case .onePasswordSignup:
             wooEvent = WooAnalyticsStat.onePasswordSignup
+        case .twoFactorCodeRequested:
+            wooEvent = WooAnalyticsStat.twoFactorCodeRequested
+        case .twoFactorSentSMS:
+            wooEvent = WooAnalyticsStat.twoFactorSentSMS
         default:
             wooEvent = nil
         }

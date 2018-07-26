@@ -11,7 +11,7 @@ public class WooAnalytics {
 
     /// Shared Instance
     ///
-    static var shared = WooAnalytics(analyticsProvider: TracksProvider())
+    static let shared = WooAnalytics(analyticsProvider: TracksProvider())
 
     /// AnalyticsProvider: Interface to the actual analytics implementation
     ///

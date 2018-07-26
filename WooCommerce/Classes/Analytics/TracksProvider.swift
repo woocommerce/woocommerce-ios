@@ -6,15 +6,15 @@ import CocoaLumberjack
 
 public class TracksProvider: AnalyticsProvider {
 
-    private var contextManager: TracksContextManager
-    private var tracksService: TracksService
+    private let contextManager: TracksContextManager
+    private let tracksService: TracksService
 
 
     /// Designated Initializer
     ///
     init() {
         self.contextManager = TracksContextManager()
-        self.tracksService = TracksService.init(contextManager: contextManager)
+        self.tracksService = TracksService(contextManager: contextManager)
         self.tracksService.eventNamePrefix = Constants.eventNamePrefix
     }
 }

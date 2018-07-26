@@ -86,7 +86,7 @@ private extension WooAnalyticsTests {
 
         static let testErrorDomain: String                     = "domain"
         static let testErrorCode: Int                          = 999
-        static let testErrorUserInfo: [String : String]        = ["userinfo-key1": "Here is the value!", "userinfo-key2": "Here is the second value!"]
-        static let testErrorReceivedProperty:[String : String] = ["error_code": "999", "error_description": "Error Domain=domain Code=999 \"(null)\" UserInfo={userinfo-key1=Here is the value!, userinfo-key2=Here is the second value!}", "error_domain": "domain"]
+        static let testErrorUserInfo: [String: String]        = ["userinfo-key1": "Here is the value!", "userinfo-key2": "Here is the second value!"]
+        static let testErrorReceivedProperty: [String: String] = ["error_code": "999", "error_description": "Error Domain=domain Code=999 \"(null)\" UserInfo={userinfo-key1=Here is the value!, userinfo-key2=Here is the second value!}", "error_domain": "domain"]
     }
 }

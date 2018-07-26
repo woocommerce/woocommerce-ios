@@ -4,7 +4,7 @@ import Foundation
 
 public class MockupAnalyticsProvider: AnalyticsProvider {
     var receivedEvents = [String]()
-    var receivedProperties = [[AnyHashable : Any]]()
+    var receivedProperties = [[AnyHashable: Any]]()
 }
 
 
@@ -18,7 +18,7 @@ public extension MockupAnalyticsProvider {
         track(eventName, withProperties: nil)
     }
 
-    func track(_ eventName: String, withProperties properties: [AnyHashable : Any]?) {
+    func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
         receivedEvents.append(eventName)
         if let properties = properties {
             receivedProperties.append(properties)

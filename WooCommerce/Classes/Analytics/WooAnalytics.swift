@@ -61,7 +61,7 @@ public extension WooAnalytics {
     ///   - stat: the event name
     ///   - properties: a collection of properties related to the event
     ///
-    func track(_ stat: WooAnalyticsStat, withProperties properties: [AnyHashable : Any]?) {
+    func track(_ stat: WooAnalyticsStat, withProperties properties: [AnyHashable: Any]?) {
         if let properties = properties {
             analyticsProvider.track(stat.rawValue, withProperties: properties)
         } else {

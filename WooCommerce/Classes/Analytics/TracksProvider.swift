@@ -25,7 +25,7 @@ public class TracksProvider: AnalyticsProvider {
 public extension TracksProvider {
     func refreshUserData() {
         if StoresManager.shared.isAuthenticated, let account = StoresManager.shared.sessionManager.defaultAccount {
-            tracksService.switchToAuthenticatedUser(withUsername: account.username , userID: String(account.userID), skipAliasEventCreation: true)
+            tracksService.switchToAuthenticatedUser(withUsername: account.username, userID: String(account.userID), skipAliasEventCreation: true)
         } else {
             tracksService.switchToAnonymousUser(withAnonymousID: StoresManager.shared.sessionManager.anonymousUserID)
         }
@@ -36,7 +36,7 @@ public extension TracksProvider {
         track(eventName, withProperties: nil)
     }
 
-    func track(_ eventName: String, withProperties properties: [AnyHashable : Any]?) {
+    func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
         if let properties = properties {
             tracksService.trackEventName(eventName, withCustomProperties: properties)
             DDLogInfo("🔵 Tracked \(eventName), properties: \(properties)")
@@ -53,7 +53,7 @@ public extension TracksProvider {
 private extension TracksProvider {
     func refreshMetadata() {
         var userProperties = [String: Any]()
-        userProperties["platform"] = "iOS";
+        userProperties["platform"] = "iOS"
         userProperties["accessibility_voice_over_enabled"] = UIAccessibilityIsVoiceOverRunning()
         userProperties["is_rtl_language"] = (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
         tracksService.userProperties.removeAllObjects()

@@ -1127,7 +1127,6 @@
                                 </variation>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.95294117649999999" green="0.96470588239999999" blue="0.97254901959999995" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="a59-c7-WBk" firstAttribute="centerX" secondItem="CvY-vN-fn9" secondAttribute="centerX" id="R8E-Gd-gVZ"/>
                             <constraint firstItem="a59-c7-WBk" firstAttribute="leading" secondItem="CvY-vN-fn9" secondAttribute="leadingMargin" constant="-20" id="atB-bL-5qa"/>

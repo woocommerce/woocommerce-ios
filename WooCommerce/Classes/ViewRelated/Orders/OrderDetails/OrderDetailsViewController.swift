@@ -430,7 +430,10 @@ extension OrderDetailsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         if sections[indexPath.section].rows[indexPath.row] == .addOrderNote {
-            // TODO: present modal for Add Note screen
+            let addANoteViewController = self.storyboard!.instantiateViewController(withIdentifier: Constants.noteViewController) as! AddANoteViewController
+            addANoteViewController.viewModel = viewModel
+            let navController = UINavigationController(rootViewController: addANoteViewController)
+            present(navController, animated: true, completion: nil)
         } else if sections[indexPath.section].rows[indexPath.row] == .productDetails {
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
         }
@@ -503,6 +506,7 @@ private extension OrderDetailsViewController {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
         static let productDetailsSegue = "ShowProductListViewController"
+        static let noteViewController = "AddANoteViewController"
     }
 
     private struct Section {

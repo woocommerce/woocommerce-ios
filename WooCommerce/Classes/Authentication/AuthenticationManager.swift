@@ -190,18 +190,30 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Tracks a given Analytics Event.
     ///
     func track(event: WPAnalyticsStat) {
-        // TODO: Integrate Tracks
+        guard let wooEvent = WooAnalyticsStat.valueOf(stat: event) else {
+            DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
+            return
+        }
+        WooAnalytics.shared.track(wooEvent)
     }
 
     /// Tracks a given Analytics Event, with the specified properties.
     ///
     func track(event: WPAnalyticsStat, properties: [AnyHashable: Any]) {
-        // TODO: Integrate Tracks
+        guard let wooEvent = WooAnalyticsStat.valueOf(stat: event) else {
+            DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
+            return
+        }
+        WooAnalytics.shared.track(wooEvent, withProperties: properties)
     }
 
     /// Tracks a given Analytics Event, with the specified error.
     ///
     func track(event: WPAnalyticsStat, error: Error) {
-        // TODO: Integrate Tracks
+        guard let wooEvent = WooAnalyticsStat.valueOf(stat: event) else {
+            DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
+            return
+        }
+        WooAnalytics.shared.track(wooEvent, withError: error)
     }
 }

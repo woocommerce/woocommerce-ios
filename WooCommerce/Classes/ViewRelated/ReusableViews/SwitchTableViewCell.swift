@@ -8,9 +8,7 @@ class SwitchTableViewCell: UITableViewCell {
     @IBOutlet private var bottomLabel: UILabel!
     @IBOutlet private var toggleSwitch: UISwitch!
 
-    @IBAction func toggleSwitchWasPressed() {
-        onToggleSwitchTouchUp?()
-    }
+    var onToggleSwitchTouchUp: (() -> Void)?
 
     var topText: String? {
         get {
@@ -30,11 +28,34 @@ class SwitchTableViewCell: UITableViewCell {
         }
     }
 
-    var onToggleSwitchTouchUp: (() -> Void)?
-
     override func awakeFromNib() {
         super.awakeFromNib()
         topLabel.applyBodyStyle()
         bottomLabel.applyFootnoteStyle()
+        setupGestureRecognizers()
+    }
+
+    @IBAction func toggleSwitchWasPressed() {
+        onToggleSwitchTouchUp?()
+    }
+}
+
+
+// MARK: - Private Methods
+//
+private extension SwitchTableViewCell {
+
+    func setupGestureRecognizers() {
+        let gestureRecognizer = UITapGestureRecognizer()
+        gestureRecognizer.on { [weak self] gesture in
+            self?.contentViewWasPressed()
+        }
+
+        addGestureRecognizer(gestureRecognizer)
+    }
+
+    func contentViewWasPressed() {
+        toggleSwitch.isOn = !toggleSwitch.isOn
+        onToggleSwitchTouchUp?()
     }
 }

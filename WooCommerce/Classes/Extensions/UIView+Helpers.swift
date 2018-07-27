@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 
-/// UIView Helper Methods
+/// UIView Class Methods
 ///
 extension UIView {
 
@@ -17,5 +17,25 @@ extension UIView {
     ///
     class func instantiateFromNib<T>() -> T {
         return loadNib().instantiate(withOwner: nil, options: nil).first as! T
+    }
+}
+
+
+/// UIView Extension Methods
+///
+extension UIView {
+
+    /// Returns the first Subview of the specified Type (if any).
+    ///
+    func firstSubview<T: UIView>(ofType type: T.Type) -> T? {
+        for subview in subviews {
+            guard let target = (subview as? T) ?? subview.firstSubview(ofType: type) else {
+                continue
+            }
+
+            return target
+        }
+
+        return nil
     }
 }

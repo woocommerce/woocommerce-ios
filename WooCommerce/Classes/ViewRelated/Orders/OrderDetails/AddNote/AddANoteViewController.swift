@@ -27,6 +27,16 @@ class AddANoteViewController: UIViewController {
         loadSections()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        tableView.firstSubview(ofType: UITextView.self)?.becomeFirstResponder()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        view.endEditing(true)
+    }
+
     func configureNavigation() {
         title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Add a note screen - title. Example: Order #15")
 

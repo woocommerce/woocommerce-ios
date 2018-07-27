@@ -149,9 +149,21 @@ private extension AddANoteViewController {
         cell.bottomText = NSLocalizedString("If disabled will add the note as private.", comment: "Detail label for yes/no switch.")
 
         cell.onToggleSwitchTouchUp = { [weak self] in
-            self?.toggleNoteType()
-            self?.tableView.reloadData()
+            guard let `self` = self else {
+                return
+            }
+
+            self.toggleNoteType()
+            self.refreshTextViewCell()
         }
+    }
+
+    private func refreshTextViewCell() {
+        guard let cell = tableView.firstSubview(ofType: TextViewTableViewCell.self) else {
+            return
+        }
+
+        setupWriteNoteCell(cell)
     }
 }
 

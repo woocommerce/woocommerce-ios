@@ -1,12 +1,6 @@
 import Foundation
 
 
-public enum WooAnalyticsStat: String {
-    case applicationOpened = "application_opened"
-    case applicationClosed = "application_closed"
-}
-
-
 public class WooAnalytics {
 
     // MARK: - Properties

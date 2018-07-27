@@ -4,9 +4,14 @@ import WordPressShared
 /// This enum contains all of the events we track in the app.
 ///
 public enum WooAnalyticsStat: String {
+
+    // Application Events
+    //
     case applicationOpened                      = "application_opened"
     case applicationClosed                      = "application_closed"
 
+    // Authentication Events
+    //
     case signedIn                               = "signed_in"
     case logout                                 = "account_logout"
     case openedLogin                            = "login_accessed"
@@ -18,6 +23,11 @@ public enum WooAnalyticsStat: String {
     case loginEmailFormViewed                   = "login_email_form_viewed"
     case loginMagicLinkOpenEmailClientViewed    = "login_magic_link_open_email_client_viewed"
     case loginMagicLinkRequestFormViewed        = "login_magic_link_request_form_viewed"
+    case loginMagicLinkExited                   = "login_magic_link_exited"
+    case loginMagicLinkFailed                   = "login_magic_link_failed"
+    case loginMagicLinkOpened                   = "login_magic_link_opened"
+    case loginMagicLinkRequested                = "login_magic_link_requested"
+    case loginMagicLinkSucceeded                = "login_magic_link_succeeded"
     case loginPasswordFormViewed                = "login_password_form_viewed"
     case loginURLFormViewed                     = "login_url_form_viewed"
     case loginURLHelpScreenViewed               = "login_url_help_screen_viewed"
@@ -78,6 +88,16 @@ public extension WooAnalyticsStat {
             wooEvent = WooAnalyticsStat.loginMagicLinkOpenEmailClientViewed
         case .loginMagicLinkRequestFormViewed:
             wooEvent = WooAnalyticsStat.loginMagicLinkRequestFormViewed
+        case .loginMagicLinkExited:
+            wooEvent = WooAnalyticsStat.loginMagicLinkExited
+        case .loginMagicLinkFailed:
+            wooEvent = WooAnalyticsStat.loginMagicLinkFailed
+        case .loginMagicLinkOpened:
+            wooEvent = WooAnalyticsStat.loginMagicLinkOpened
+        case .loginMagicLinkRequested:
+            wooEvent = WooAnalyticsStat.loginMagicLinkRequested
+        case .loginMagicLinkSucceeded:
+            wooEvent = WooAnalyticsStat.loginMagicLinkSucceeded
         case .loginPasswordFormViewed:
              wooEvent = WooAnalyticsStat.loginPasswordFormViewed
         case .loginURLFormViewed:

@@ -191,6 +191,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func track(event: WPAnalyticsStat) {
         guard let wooEvent = WooAnalyticsStat.valueOf(stat: event) else {
+            DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
         WooAnalytics.shared.track(wooEvent)
@@ -200,6 +201,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func track(event: WPAnalyticsStat, properties: [AnyHashable: Any]) {
         guard let wooEvent = WooAnalyticsStat.valueOf(stat: event) else {
+            DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
         WooAnalytics.shared.track(wooEvent, withProperties: properties)
@@ -209,6 +211,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func track(event: WPAnalyticsStat, error: Error) {
         guard let wooEvent = WooAnalyticsStat.valueOf(stat: event) else {
+            DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
         WooAnalytics.shared.track(wooEvent, withError: error)

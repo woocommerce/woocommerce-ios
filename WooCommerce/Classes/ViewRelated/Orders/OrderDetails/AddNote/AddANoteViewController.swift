@@ -123,6 +123,7 @@ private extension AddANoteViewController {
 
         cell.iconImage = Gridicon.iconOfType(.aside)
         cell.iconTint = isCustomerNote ? StyleManager.statusPrimaryBoldColor : StyleManager.wooGreyMid
+
         cell.onTextChange = { [weak self] (text) in
             self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
             self?.noteText = text

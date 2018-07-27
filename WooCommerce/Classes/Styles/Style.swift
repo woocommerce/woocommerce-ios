@@ -18,6 +18,7 @@ protocol Style {
     var cellSeparatorColor: UIColor { get }
     var defaultTextColor: UIColor { get }
     var destructiveActionColor: UIColor { get }
+    var navBarImage: UIImage { get }
     var sectionBackgroundColor: UIColor { get }
     var sectionTitleColor: UIColor { get }
     var statusDangerColor: UIColor { get }
@@ -56,6 +57,7 @@ class DefaultStyle: Style {
     let cellSeparatorColor = UIColor.lightGray
     let defaultTextColor = UIColor.black
     let destructiveActionColor = UIColor(red: 197.0/255.0, green: 60.0/255.0, blue: 53.0/255.0, alpha: 1.0)
+    let navBarImage = UIImage(named: "woo-logo")!
     let sectionBackgroundColor = UIColor(red: 239.0/255.0, green: 239.0/255.0, blue: 244.0/255.0, alpha: 1.0)
     let sectionTitleColor = UIColor.darkGray
     let statusDangerColor = UIColor(red: 255.0/255.0, green: 230.0/255.0, blue: 229.0/255.0, alpha: 1.0)
@@ -149,6 +151,10 @@ class StyleManager {
 
     static var destructiveActionColor: UIColor {
         return active.destructiveActionColor
+    }
+
+    static var navBarImage: UIImage {
+        return active.navBarImage
     }
 
     static var sectionBackgroundColor: UIColor {

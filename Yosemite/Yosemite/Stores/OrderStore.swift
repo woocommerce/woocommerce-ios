@@ -71,22 +71,21 @@ private extension OrderStore  {
 
     /// Updates an Order with the specified Status.
     ///
-    func updateOrder(siteID: Int, orderID: Int, status: OrderStatus, onCompletion: @escaping (Order?, Error?) -> Void) {
+    func updateOrder(siteID: Int, orderID: Int, status: OrderStatus, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically update the Status
         let oldStatus = updateOrderStatus(orderID: orderID, status: status)
 
         let remote = OrdersRemote(network: network)
-        remote.updateOrder(from: siteID, orderID: orderID, status: status.description) { [weak self] (order, error) in
-            guard let order = order else {
-
-                /// Revert Optimistic Update
-                self?.updateOrderStatus(orderID: orderID, status: oldStatus)
-                onCompletion(nil, error)
+        remote.updateOrder(from: siteID, orderID: orderID, status: status.rawValue) { [weak self] (order, error) in
+            guard let error = error else {
+                // NOTE: We're *not* actually updating the whole entity here. Reason: Prevent UI inconsistencies!!
+                onCompletion(nil)
                 return
             }
 
-            self?.upsertStoredOrder(readOnlyOrder: order)
-            onCompletion(order, nil)
+            /// Revert Optimistic Update
+            self?.updateOrderStatus(orderID: orderID, status: oldStatus)
+            onCompletion(error)
         }
     }
 }
@@ -108,7 +107,7 @@ extension OrderStore {
         }
 
         let oldStatus = OrderStatus(rawValue: order.status)
-        order.status = status.description
+        order.status = status.rawValue
         storage.saveIfNeeded()
 
         return oldStatus

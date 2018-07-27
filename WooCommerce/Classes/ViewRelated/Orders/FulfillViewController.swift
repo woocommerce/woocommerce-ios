@@ -1,5 +1,7 @@
 import Foundation
 import UIKit
+import CocoaLumberjack
+
 import Yosemite
 import Gridicons
 
@@ -80,6 +82,7 @@ private extension FulfillViewController {
     ///
     func setupTableView() {
         tableView.tableFooterView = actionView
+        tableView.allowsSelection = false
     }
 
     ///Setup: Action Button!
@@ -121,8 +124,42 @@ private extension FulfillViewController {
 //
 extension FulfillViewController {
 
+    /// Whenever the Fulfillment Action is pressed, we'll mark the order as Completed, and pull back to the previous screen.
+    ///
     @IBAction func fulfillWasPressed() {
-// TODO: Fill Me!
+        let done = updateOrderAction(siteID: order.siteID, orderID: order.orderID, status: .completed)
+        let undo = updateOrderAction(siteID: order.siteID, orderID: order.orderID, status: order.status)
+
+        StoresManager.shared.dispatch(done)
+
+        displayOrderCompleteNotice {
+            StoresManager.shared.dispatch(undo)
+        }
+
+        navigationController?.popViewController(animated: true)
+    }
+
+    /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
+    ///
+    private func updateOrderAction(siteID: Int, orderID: Int, status: OrderStatus) -> Action {
+        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: { error in
+            guard let error = error else {
+                return
+            }
+
+            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(status.rawValue)]. Error: \(error)")
+        })
+    }
+
+    /// Displays the `Order Fulfilled` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
+    ///
+    private func displayOrderCompleteNotice(onUndoAction: @escaping () -> Void) {
+        let title = NSLocalizedString("Fulfillment", comment: "Fulfill Notice Title")
+        let message = NSLocalizedString("Order Marked as Complete!", comment: "Fulfill Notice Message")
+        let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
+        let notice = Notice(title: title, message: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -345,13 +382,14 @@ private extension Section {
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
-        let tracking: Section = {
-            let title = NSLocalizedString("Optional Tracking Information", comment: "")
-            let row = Row.trackingAdd
+// TODO: Tracking support to be added via #185
+//        let tracking: Section = {
+//            let title = NSLocalizedString("Optional Tracking Information", comment: "")
+//            let row = Row.trackingAdd
+//
+//            return Section(title: title, secondaryTitle: nil, rows: [row])
+//        }()
 
-            return Section(title: title, secondaryTitle: nil, rows: [row])
-        }()
-
-        return [products, note, address, tracking].compactMap { $0 }
+        return [products, note, address].compactMap { $0 }
     }
 }

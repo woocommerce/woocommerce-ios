@@ -24,6 +24,7 @@ class LoginLinkRequestViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        styleBackground()
         localizeControls()
 
         let email = loginFields.username
@@ -49,6 +50,12 @@ class LoginLinkRequestViewController: LoginViewController {
     }
 
     // MARK: - Configuration
+
+    /// Styles the view's background color. Defaults to WPStyleGuide.lightGrey()
+    ///
+    @objc func styleBackground() {
+        view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
+    }
 
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///

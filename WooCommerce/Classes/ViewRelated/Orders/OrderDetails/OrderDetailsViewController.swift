@@ -106,7 +106,6 @@ private extension OrderDetailsViewController {
             }
 
             self.viewModel = OrderDetailsViewModel(order: order)
-            self.tableView.reloadData()
         }
     }
 

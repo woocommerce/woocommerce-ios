@@ -87,26 +87,28 @@ private extension NoticePresenter {
         let noticeContainerView = NoticeContainerView(noticeView: noticeView)
         addNoticeContainerToPresentingViewController(noticeContainerView)
 
-        let bottomConstraint = makeBottomConstraintForNoticeContainer(noticeContainerView)
-
         NSLayoutConstraint.activate([
             noticeContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             noticeContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            bottomConstraint
+            makeBottomConstraintForNoticeContainer(noticeContainerView)
         ])
 
-        let fromState = {
+        let offScreenState = {
             noticeView.alpha = UIKitConstants.alphaZero
-            bottomConstraint.constant = self.offscreenBottomOffset
+            noticeContainerView.noticeBottomConstraint.constant = self.offscreenBottomOffset
 
-            view.layoutIfNeeded()
+            noticeContainerView.layoutIfNeeded()
         }
 
-        let toState = {
+        let onScreenState = {
             noticeView.alpha = UIKitConstants.alphaFull
-            bottomConstraint.constant = 0
+            noticeContainerView.noticeBottomConstraint.constant = 0
 
-            view.layoutIfNeeded()
+            noticeContainerView.layoutIfNeeded()
+        }
+
+        let hiddenState = {
+            noticeView.alpha = UIKitConstants.alphaZero
         }
 
         let dismiss = {
@@ -114,7 +116,7 @@ private extension NoticePresenter {
                 return
             }
 
-            self.animatePresentation(fromState: {}, toState: fromState, completion: {
+            self.animatePresentation(fromState: {}, toState: hiddenState, completion: {
                 noticeContainerView.removeFromSuperview()
                 self.dismiss()
             })
@@ -126,7 +128,7 @@ private extension NoticePresenter {
             generator.notificationOccurred(feedbackType)
         }
 
-        animatePresentation(fromState: fromState, toState: toState, completion: {
+        animatePresentation(fromState: offScreenState, toState: onScreenState, completion: {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
         })
     }
@@ -194,48 +196,89 @@ private class NoticeContainerView: UIView {
 
     let containerMargin: CGFloat = 16.0
 
+    private let contentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.spacing = 0
+        return stackView
+    }()
+
+    private(set) lazy var noticeBottomConstraint: NSLayoutConstraint = {
+        return stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+    }()
+
     let noticeView: NoticeView
 
+
+    /// Designated Initializer
+    ///
     init(noticeView: NoticeView) {
         self.noticeView = noticeView
 
         super.init(frame: .zero)
 
-        translatesAutoresizingMaskIntoConstraints = false
-
-        layoutMargins = UIEdgeInsets(top: containerMargin, left: containerMargin, bottom: containerMargin, right: containerMargin)
-
-        // Padding views on either side, of equal width to ensure centering
+        /// Padding Setup: Padding views on either side, of equal width to ensure centering
+        ///
         let leftPaddingView = UIView()
         let rightPaddingView = UIView()
         rightPaddingView.translatesAutoresizingMaskIntoConstraints = false
         leftPaddingView.translatesAutoresizingMaskIntoConstraints = false
 
-        let stackView = UIStackView(arrangedSubviews: [leftPaddingView, noticeView, rightPaddingView])
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .horizontal
-        stackView.spacing = 0
+        /// StackView Setup
+        ///
+        stackView.addArrangedSubview(leftPaddingView)
+        stackView.addArrangedSubview(noticeView)
+        stackView.addArrangedSubview(rightPaddingView)
 
+        contentView.addSubview(stackView)
+
+        /// NoticeContainer Setup
+        ///
+        translatesAutoresizingMaskIntoConstraints = false
+        layoutMargins = UIEdgeInsets(top: containerMargin, left: containerMargin, bottom: containerMargin, right: containerMargin)
+        addSubview(contentView)
+
+        /// LayoutContraints: ContentView
+        ///
+        NSLayoutConstraint.activate([
+            contentView.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+            contentView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor)
+        ])
+
+        /// LayoutContraints: StackView
+        ///
+        NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            noticeBottomConstraint
+        ])
+
+        /// LayoutContraints: Padding
+        ///
         let paddingWidthConstraint = leftPaddingView.widthAnchor.constraint(equalToConstant: 0)
         paddingWidthConstraint.priority = .defaultLow
 
-        addSubview(stackView)
-
         NSLayoutConstraint.activate([
             paddingWidthConstraint,
-            leftPaddingView.widthAnchor.constraint(equalTo: rightPaddingView.widthAnchor),
-            stackView.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
-            stackView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
-            stackView.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor)
-            ])
+            leftPaddingView.widthAnchor.constraint(equalTo: rightPaddingView.widthAnchor)
+        ])
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    lazy var noticeWidthConstraint: NSLayoutConstraint = {
+    private lazy var noticeWidthConstraint: NSLayoutConstraint = {
         // At regular width, the notice shouldn't be any wider than 1/2 the app's width
         return noticeView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.5)
     }()

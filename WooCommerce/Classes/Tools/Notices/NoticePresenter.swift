@@ -107,6 +107,9 @@ private extension NoticePresenter {
             bottomConstraint.constant = 0
 
             view.layoutIfNeeded()
+
+        let hiddenState = {
+            noticeView.alpha = UIKitConstants.alphaZero
         }
 
         let dismiss = {
@@ -114,7 +117,7 @@ private extension NoticePresenter {
                 return
             }
 
-            self.animatePresentation(fromState: {}, toState: fromState, completion: {
+            self.animatePresentation(fromState: {}, toState: hiddenState, completion: {
                 noticeContainerView.removeFromSuperview()
                 self.dismiss()
             })

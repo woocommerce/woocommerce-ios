@@ -28,10 +28,15 @@ class TextViewTableViewCell: UITableViewCell {
     }
 
     var onTextChange: ((String) -> Void)?
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        noteTextView.delegate = self
+    }
 }
 
 extension TextViewTableViewCell: UITextViewDelegate {
-    func textViewDidChange() {
+    func textViewDidChange(_ textView: UITextView) {
         onTextChange?(noteTextView.text)
     }
 }

@@ -87,26 +87,25 @@ private extension NoticePresenter {
         let noticeContainerView = NoticeContainerView(noticeView: noticeView)
         addNoticeContainerToPresentingViewController(noticeContainerView)
 
-        let bottomConstraint = makeBottomConstraintForNoticeContainer(noticeContainerView)
-
         NSLayoutConstraint.activate([
             noticeContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             noticeContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            bottomConstraint
+            makeBottomConstraintForNoticeContainer(noticeContainerView)
         ])
 
-        let fromState = {
+        let offScreenState = {
             noticeView.alpha = UIKitConstants.alphaZero
-            bottomConstraint.constant = self.offscreenBottomOffset
+            noticeContainerView.noticeBottomConstraint.constant = self.offscreenBottomOffset
 
-            view.layoutIfNeeded()
+            noticeContainerView.layoutIfNeeded()
         }
 
-        let toState = {
+        let onScreenState = {
             noticeView.alpha = UIKitConstants.alphaFull
-            bottomConstraint.constant = 0
+            noticeContainerView.noticeBottomConstraint.constant = 0
 
-            view.layoutIfNeeded()
+            noticeContainerView.layoutIfNeeded()
+        }
 
         let hiddenState = {
             noticeView.alpha = UIKitConstants.alphaZero
@@ -129,7 +128,7 @@ private extension NoticePresenter {
             generator.notificationOccurred(feedbackType)
         }
 
-        animatePresentation(fromState: fromState, toState: toState, completion: {
+        animatePresentation(fromState: offScreenState, toState: onScreenState, completion: {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
         })
     }

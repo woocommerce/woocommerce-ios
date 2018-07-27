@@ -184,12 +184,12 @@
 		B5BC736920D1AAE900B5B6FA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B5BC736A20D1AAE900B5B6FA /* me.json */,
-				74A7689120D47F9E00F9D437 /* orders.json */,
-				7424B49320EAD37C00CC62F6 /* order.json */,
-				B5B914C120EFE03200F2F832 /* sites.json */,
-				7499936B20EFC20100CF01CD /* order-notes.json */,
 				745D21C120D8043A00BBE7C3 /* generic_error.json */,
+				B5BC736A20D1AAE900B5B6FA /* me.json */,
+				7424B49320EAD37C00CC62F6 /* order.json */,
+				7499936B20EFC20100CF01CD /* order-notes.json */,
+				74A7689120D47F9E00F9D437 /* orders.json */,
+				B5B914C120EFE03200F2F832 /* sites.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";

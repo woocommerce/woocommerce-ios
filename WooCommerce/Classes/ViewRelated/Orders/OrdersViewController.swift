@@ -54,6 +54,7 @@ class OrdersViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if orders.isEmpty {
+            ensureRefreshControlIsVisible()
             syncOrders()
         }
     }
@@ -164,10 +165,6 @@ private extension OrdersViewController {
             self?.tableView.reloadData()
         }
 
-        if refreshControl.isRefreshing {
-            refreshControl.endRefreshing()
-        }
-        refreshControl.beginRefreshing()
         StoresManager.shared.dispatch(action)
     }
 
@@ -175,6 +172,17 @@ private extension OrdersViewController {
         orders = []
         isUsingFilterAction = false
         tableView.reloadData()
+    }
+
+
+    func ensureRefreshControlIsVisible() {
+        guard tableView.contentOffset.y == 0 else {
+            return
+        }
+
+        let point = CGPoint(x: 0, y: -refreshControl.frame.height)
+        tableView.setContentOffset(point, animated: true)
+        refreshControl.beginRefreshing()
     }
 }
 

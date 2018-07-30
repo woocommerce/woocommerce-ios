@@ -63,10 +63,23 @@ struct SessionManager {
             return defaults[.defaultStoreID]
         }
         set {
-            defaults[.defaultStoreID] = defaultStoreID
+            defaults[.defaultStoreID] = newValue
         }
     }
 
+    /// Anonymous UserID.
+    ///
+    var anonymousUserID: String? {
+        get {
+            if let anonID = defaults[.defaultAnonymousID] as? String, !anonID.isEmpty {
+                return anonID
+            } else {
+                let newValue = UUID().uuidString
+                defaults[.defaultAnonymousID] = newValue
+                return newValue
+            }
+        }
+    }
 
     /// Designated Initializer.
     ///

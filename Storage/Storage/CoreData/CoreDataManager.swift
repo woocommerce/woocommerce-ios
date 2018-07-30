@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import CocoaLumberjack
 
 
 /// CoreDataManager: Manages the entire CoreData Stack. Conforms to the StorageManager API.
@@ -25,9 +26,14 @@ public class CoreDataManager: StorageManagerType {
     /// Returns the Storage associated with the View Thread.
     ///
     public var viewStorage: StorageType {
-        return persistentContainer.viewContext
+        return viewContext
     }
 
+    /// Returns the NSManagedObjectContext associated with the Main Thread. Convenience helper!!
+    ///
+    public var viewContext: NSManagedObjectContext {
+        return persistentContainer.viewContext
+    }
 
     /// Persistent Container: Holds the full CoreData Stack
     ///
@@ -35,11 +41,34 @@ public class CoreDataManager: StorageManagerType {
         let container = NSPersistentContainer(name: name, managedObjectModel: managedModel)
         container.persistentStoreDescriptions = [storeDescription]
 
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
-            if let error = error as NSError? {
-                fatalError("CoreData Fatal Error: \(error) [\(error.userInfo)]")
+        container.loadPersistentStores { [weak self] (storeDescription, error) in
+            guard let `self` = self, let error = error else {
+                return
             }
-        })
+
+            DDLogError("⛔️ [CoreDataManager] loadPersistentStore failed. Attempting to recover... \(error)")
+
+            /// Backup the old Store
+            ///
+            do {
+                let sourceURL = self.storeURL
+                let backupURL = sourceURL.appendingPathExtension("~")
+                try FileManager.default.copyItem(at: sourceURL, to: backupURL)
+                try FileManager.default.removeItem(at: sourceURL)
+            } catch {
+                fatalError("☠️ [CoreDataManager] Cannot backup Store: \(error)")
+            }
+
+            /// Retry!
+            ///
+            container.loadPersistentStores { [weak self] (storeDescription, error) in
+                guard let error = error as NSError? else {
+                    return
+                }
+
+                fatalError("☠️ [CoreDataManager] Recovery Failed! \(error) [\(error.userInfo)]")
+            }
+        }
 
         return container
     }()
@@ -72,7 +101,7 @@ extension CoreDataManager {
     ///
     var storeDescription: NSPersistentStoreDescription {
         let description = NSPersistentStoreDescription(url: storeURL)
-        description.shouldAddStoreAsynchronously = true
+        description.shouldAddStoreAsynchronously = false
         description.shouldMigrateStoreAutomatically = true
         return description
     }

@@ -50,6 +50,7 @@
 		B56C1EB620EA757B00D749F9 /* SiteListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C1EB520EA757B00D749F9 /* SiteListMapper.swift */; };
 		B56C1EB820EA76F500D749F9 /* Site.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C1EB720EA76F500D749F9 /* Site.swift */; };
 		B56C1EBA20EA7D2C00D749F9 /* sites.json in Resources */ = {isa = PBXBuildFile; fileRef = B56C1EB920EA7D2C00D749F9 /* sites.json */; };
+		B58E5BEA20FFB3D0003C986E /* CodingUserInfoKey+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58E5BE920FFB3D0003C986E /* CodingUserInfoKey+Woo.swift */; };
 		B5969E1520A47F99005E9DF1 /* RemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5969E1420A47F99005E9DF1 /* RemoteTests.swift */; };
 		B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */; };
 		B5BB1D1020A237FB00112D92 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0F20A237FB00112D92 /* Address.swift */; };
@@ -60,6 +61,8 @@
 		B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6FCD320A373BA00A4F8E4 /* OrderMapper.swift */; };
 		B5C6FCD620A3768900A4F8E4 /* order.json in Resources */ = {isa = PBXBuildFile; fileRef = B5C6FCD520A3768900A4F8E4 /* order.json */; };
 		CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */ = {isa = PBXBuildFile; fileRef = CE20179220E3EFA7005B4C18 /* broken-orders.json */; };
+		CE21B3E72106811000A259D5 /* new-order-note.json in Resources */ = {isa = PBXBuildFile; fileRef = CE21B3E62106811000A259D5 /* new-order-note.json */; };
+		CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -119,6 +122,7 @@
 		B56C1EB520EA757B00D749F9 /* SiteListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteListMapper.swift; sourceTree = "<group>"; };
 		B56C1EB720EA76F500D749F9 /* Site.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Site.swift; sourceTree = "<group>"; };
 		B56C1EB920EA7D2C00D749F9 /* sites.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = sites.json; sourceTree = "<group>"; };
+		B58E5BE920FFB3D0003C986E /* CodingUserInfoKey+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CodingUserInfoKey+Woo.swift"; sourceTree = "<group>"; };
 		B5969E1420A47F99005E9DF1 /* RemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteTests.swift; sourceTree = "<group>"; };
 		B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Woo.swift"; sourceTree = "<group>"; };
 		B5BB1D0F20A237FB00112D92 /* Address.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
@@ -131,6 +135,8 @@
 		BD9439D9B8F2C1ED2EADAA51 /* Pods-NetworkingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C8F9A8CC6F90A8C9B5EF2EE2 /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
 		CE20179220E3EFA7005B4C18 /* broken-orders.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "broken-orders.json"; sourceTree = "<group>"; };
+		CE21B3E62106811000A259D5 /* new-order-note.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "new-order-note.json"; sourceTree = "<group>"; };
+		CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteMapper.swift; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -312,6 +318,7 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				CE21B3E62106811000A259D5 /* new-order-note.json */,
 				B505F6D420BEE4E600BB1B69 /* me.json */,
 				B559EBA920A0B5CD00836CD4 /* orders-load-all.json */,
 				B5C6FCD520A3768900A4F8E4 /* order.json */,
@@ -333,6 +340,7 @@
 				B567AF2A20A0FA4200AB6C62 /* OrderListMapper.swift */,
 				B56C1EB520EA757B00D749F9 /* SiteListMapper.swift */,
 				74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */,
+				CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -341,6 +349,7 @@
 			isa = PBXGroup;
 			children = (
 				B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */,
+				B58E5BE920FFB3D0003C986E /* CodingUserInfoKey+Woo.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -479,6 +488,7 @@
 			files = (
 				74C8F06620EEB76400B6EDC9 /* order-notes.json in Resources */,
 				74C8F06C20EEBD5D00B6EDC9 /* broken-order.json in Resources */,
+				CE21B3E72106811000A259D5 /* new-order-note.json in Resources */,
 				B505F6D520BEE4E700BB1B69 /* me.json in Resources */,
 				B5C6FCD620A3768900A4F8E4 /* order.json in Resources */,
 				B559EBAA20A0B5CD00836CD4 /* orders-load-all.json in Resources */,
@@ -556,6 +566,7 @@
 			files = (
 				B56C1EB620EA757B00D749F9 /* SiteListMapper.swift in Sources */,
 				B557DA1A20979D66005962F4 /* Settings.swift in Sources */,
+				B58E5BEA20FFB3D0003C986E /* CodingUserInfoKey+Woo.swift in Sources */,
 				741B950120EBC8A700DD6E2D /* OrderCouponLine.swift in Sources */,
 				74C8F06420EEB44800B6EDC9 /* OrderNote.swift in Sources */,
 				B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */,
@@ -571,6 +582,7 @@
 				B518662220A097C200037A38 /* Network.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,
 				B557DA1820979D51005962F4 /* Credentials.swift in Sources */,
+				CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */,
 				B5C6FCCF20A3592900A4F8E4 /* OrderItem.swift in Sources */,
 				B505F6EC20BEFDC200BB1B69 /* Loader.swift in Sources */,
 				B5BB1D1220A255EC00112D92 /* OrderStatus.swift in Sources */,

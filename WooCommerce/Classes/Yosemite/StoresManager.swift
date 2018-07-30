@@ -29,6 +29,12 @@ class StoresManager {
         return state is AuthenticatedState
     }
 
+    /// Indicates if we need a Default StoreID, or there's one already set.
+    ///
+    var needsDefaultStore: Bool {
+        return sessionManager.defaultStoreID == nil
+    }
+
 
 
     /// Designated Initializer
@@ -60,8 +66,22 @@ class StoresManager {
     /// Synchronizes all of the Session's Entities.
     ///
     @discardableResult
-    func synchronizeEntities(onCompletion: ((Error?) -> Void)? = nil) -> StoresManager {
-        synchronizeAccount(onCompletion: onCompletion)
+    func synchronizeEntities(onCompletion: (() -> Void)? = nil) -> StoresManager {
+        let group = DispatchGroup()
+
+        group.enter()
+        synchronizeAccount { _ in
+            group.leave()
+        }
+
+        group.enter()
+        synchronizeSites { _ in
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
+            onCompletion?()
+        }
 
         return self
     }
@@ -72,8 +92,15 @@ class StoresManager {
     func deauthenticate() -> StoresManager {
         state = DeauthenticatedState()
         sessionManager.reset()
+        WooAnalytics.shared.refreshUserData()
 
         return self
+    }
+
+    /// Updates the Default Store as specified.
+    ///
+    func updateDefaultStore(storeID: Int) {
+        sessionManager.defaultStoreID = storeID
     }
 }
 
@@ -112,8 +139,19 @@ private extension StoresManager {
         let action = AccountAction.synchronizeAccount { [weak self] (account, error) in
             if let `self` = self, let account = account, self.isAuthenticated {
                 self.sessionManager.defaultAccount = account
+                WooAnalytics.shared.refreshUserData()
             }
 
+            onCompletion?(error)
+        }
+
+        dispatch(action)
+    }
+
+    /// Synchronizes the WordPress.com Sites, associated with the current credentials.
+    ///
+    func synchronizeSites(onCompletion: ((Error?) -> Void)?) {
+        let action = AccountAction.synchronizeSites { error in
             onCompletion?(error)
         }
 

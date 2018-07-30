@@ -14,14 +14,17 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="53"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nAe-82-c1s">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nAe-82-c1s">
                     <rect key="frame" x="317" y="20" width="42" height="25"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Fd-ta-Azy">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Fd-ta-Azy">
                     <rect key="frame" x="16" y="20" width="42" height="25"/>
+                    <constraints>
+                        <constraint firstAttribute="width" priority="250" constant="42" id="w1E-5z-qSD"/>
+                    </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -30,11 +33,11 @@
             <constraints>
                 <constraint firstItem="nAe-82-c1s" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="20" id="0kc-FX-RQ6"/>
                 <constraint firstItem="nAe-82-c1s" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="4Fd-ta-Azy" secondAttribute="trailing" constant="8" id="MHS-dz-djd"/>
-                <constraint firstItem="4Fd-ta-Azy" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="N7Z-zB-jsT"/>
-                <constraint firstAttribute="bottom" secondItem="4Fd-ta-Azy" secondAttribute="bottom" constant="8" id="Oor-MN-PIo"/>
+                <constraint firstItem="4Fd-ta-Azy" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" priority="999" constant="16" id="N7Z-zB-jsT"/>
+                <constraint firstAttribute="bottom" secondItem="4Fd-ta-Azy" secondAttribute="bottom" priority="999" constant="8" id="Oor-MN-PIo"/>
                 <constraint firstAttribute="trailing" secondItem="nAe-82-c1s" secondAttribute="trailing" constant="16" id="TIP-cN-VHO"/>
                 <constraint firstItem="4Fd-ta-Azy" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="20" id="Wk4-94-JdF"/>
-                <constraint firstAttribute="bottom" secondItem="nAe-82-c1s" secondAttribute="bottom" constant="8" id="vuR-9k-8Ku"/>
+                <constraint firstAttribute="bottom" secondItem="nAe-82-c1s" secondAttribute="bottom" priority="999" constant="8" id="vuR-9k-8Ku"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>

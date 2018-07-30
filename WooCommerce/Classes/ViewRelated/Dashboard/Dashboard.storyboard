@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="z1L-hy-XB6">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Dashboard-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController title="Dashboard" id="BYZ-38-t0r" customClass="DashboardViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Item" id="EUU-oD-ztb"/>
+                    <navigationItem key="navigationItem" title="Dashboard" id="jfr-uS-W7N"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <segue destination="5Fc-gh-JKM" kind="show" identifier="ShowSettingsViewController" id="5OG-7I-yID"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-724" y="1985"/>
+        </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="s9m-Yn-qYL">
+            <objects>
+                <viewController storyboardIdentifier="SettingsViewController" id="5Fc-gh-JKM" customClass="SettingsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="EsH-cO-BoJ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="wI4-XX-k2z">
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="5Fc-gh-JKM" id="qWb-BY-q6l"/>
+                                    <outlet property="delegate" destination="5Fc-gh-JKM" id="7Dv-VF-WM7"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="wI4-XX-k2z" firstAttribute="top" secondItem="bn5-Ru-XCm" secondAttribute="top" id="BPH-Mb-QEh"/>
+                            <constraint firstItem="wI4-XX-k2z" firstAttribute="bottom" secondItem="bn5-Ru-XCm" secondAttribute="bottom" id="QMr-P8-3K9"/>
+                            <constraint firstItem="wI4-XX-k2z" firstAttribute="trailing" secondItem="bn5-Ru-XCm" secondAttribute="trailing" id="npm-yA-ZZZ"/>
+                            <constraint firstItem="wI4-XX-k2z" firstAttribute="leading" secondItem="bn5-Ru-XCm" secondAttribute="leading" id="vdH-Cm-MxV"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="bn5-Ru-XCm"/>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="wI4-XX-k2z" id="6bZ-RB-KF9"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FEk-Qx-6OE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="270" y="1987"/>
+        </scene>
+        <!--Dashboard-->
+        <scene sceneID="GIl-fY-LQR">
+            <objects>
+                <navigationController storyboardIdentifier="Dashboard" automaticallyAdjustsScrollViewInsets="NO" id="z1L-hy-XB6" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Dashboard" id="Ilo-uE-q4l"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="tLC-za-gXg">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="obP-aG-yCL"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ktB-5U-hFt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-724.79999999999995" y="1139.7301349325339"/>
+        </scene>
+    </scenes>
+</document>

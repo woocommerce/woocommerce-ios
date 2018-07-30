@@ -54,6 +54,7 @@ class OrdersViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if orders.isEmpty {
+            ensureRefreshControlIsVisible()
             syncOrders()
         }
     }
@@ -153,21 +154,16 @@ private extension OrdersViewController {
 
         let action = OrderAction.retrieveOrders(siteID: siteID) { [weak self] (orders, error) in
             self?.refreshControl.endRefreshing()
-            guard error == nil else {
+
+            guard let orders = orders else {
                 DDLogError("⛔️ Error synchronizing orders: \(error.debugDescription)")
                 return
             }
-            guard let orders = orders else {
-                return
-            }
+
             self?.orders = orders
             self?.tableView.reloadData()
         }
 
-        if refreshControl.isRefreshing {
-            refreshControl.endRefreshing()
-        }
-        refreshControl.beginRefreshing()
         StoresManager.shared.dispatch(action)
     }
 
@@ -175,6 +171,17 @@ private extension OrdersViewController {
         orders = []
         isUsingFilterAction = false
         tableView.reloadData()
+    }
+
+
+    func ensureRefreshControlIsVisible() {
+        guard tableView.contentOffset.y == 0 else {
+            return
+        }
+
+        let point = CGPoint(x: 0, y: -refreshControl.frame.height)
+        tableView.setContentOffset(point, animated: true)
+        refreshControl.beginRefreshing()
     }
 }
 
@@ -229,7 +236,8 @@ extension OrdersViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         // FIXME: this is hard-coded data. Will fix when WordPressShared date helpers are available to make fuzzy dates.
-        return NSLocalizedString("Today", comment: "Title for header section")
+        // return NSLocalizedString("Today", comment: "Title for header section")
+        return nil
     }
 }
 

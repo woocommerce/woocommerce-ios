@@ -12,6 +12,7 @@
 		741B950120EBC8A700DD6E2D /* OrderCouponLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */; };
 		748D4248210F89ED00CF7D1B /* OrderStatsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748D4247210F89ED00CF7D1B /* OrderStatsRemote.swift */; };
 		748D424A210F92EA00CF7D1B /* OrderStatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748D4249210F92EA00CF7D1B /* OrderStatItem.swift */; };
+		748D424C210FA34400CF7D1B /* OrderStatsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */; };
 		74C8F06420EEB44800B6EDC9 /* OrderNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C8F06320EEB44800B6EDC9 /* OrderNote.swift */; };
 		74C8F06620EEB76400B6EDC9 /* order-notes.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C8F06520EEB76400B6EDC9 /* order-notes.json */; };
 		74C8F06820EEB7BD00B6EDC9 /* OrderNotesMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */; };
@@ -82,6 +83,7 @@
 		741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCouponLine.swift; sourceTree = "<group>"; };
 		748D4247210F89ED00CF7D1B /* OrderStatsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsRemote.swift; sourceTree = "<group>"; };
 		748D4249210F92EA00CF7D1B /* OrderStatItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatItem.swift; sourceTree = "<group>"; };
+		748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsMapper.swift; sourceTree = "<group>"; };
 		74C8F06320EEB44800B6EDC9 /* OrderNote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNote.swift; sourceTree = "<group>"; };
 		74C8F06520EEB76400B6EDC9 /* order-notes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-notes.json"; sourceTree = "<group>"; };
 		74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNotesMapper.swift; sourceTree = "<group>"; };
@@ -347,6 +349,7 @@
 				B56C1EB520EA757B00D749F9 /* SiteListMapper.swift */,
 				74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */,
 				CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */,
+				748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -585,6 +588,7 @@
 				B557DA0D20975DB1005962F4 /* WordPressAPIVersion.swift in Sources */,
 				B557DA1D20979E7D005962F4 /* Order.swift in Sources */,
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,
+				748D424C210FA34400CF7D1B /* OrderStatsMapper.swift in Sources */,
 				B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,

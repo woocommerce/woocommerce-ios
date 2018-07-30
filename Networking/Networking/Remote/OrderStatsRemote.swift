@@ -21,10 +21,8 @@ public class OrderStatsRemote: Remote {
                           ParameterKeys.date: latestDateToInclude,
                           ParameterKeys.quantity: quantity]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
-
-        // FIXME: Add OrderStatsMapper
-        //let mapper = OrderStatsMapper()
-        //enqueue(request, mapper: mapper, completion: completion)
+        let mapper = OrderStatsMapper()
+        enqueue(request, mapper: mapper, completion: completion)
     }
 }
 

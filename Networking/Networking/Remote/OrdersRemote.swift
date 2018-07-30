@@ -17,7 +17,7 @@ public class OrdersRemote: Remote {
         let parameters = [ParameterKeys.page: String(page),
                           ParameterKeys.perPage: String(Constants.defaultPageSize)]
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: parameters)
-        let mapper = OrderListMapper()
+        let mapper = OrderListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -32,7 +32,7 @@ public class OrdersRemote: Remote {
     public func loadOrder(for siteID: Int, orderID: Int, completion: @escaping (Order?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/\(orderID)"
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
-        let mapper = OrderMapper()
+        let mapper = OrderMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -63,7 +63,27 @@ public class OrdersRemote: Remote {
     public func updateOrder(from siteID: Int, orderID: Int, status: String, completion: @escaping (Order?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID)
         let parameters = [ParameterKeys.status: status]
-        let mapper = OrderMapper()
+        let mapper = OrderMapper(siteID: siteID)
+
+        let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Adds an order note to a specific Order.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the Order.
+    ///     - orderID: Identifier of the Order to be updated.
+    ///     - isCustomerNote: if true, the note will be shown to customers and they will be notified.
+    ///                       if false, the note will be for admin reference only. Default is false.
+    ///     - note: The note to be posted.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func addOrderNote(for siteID: Int, orderID: Int, isCustomerNote: Bool, with note: String, completion: @escaping (OrderNote?, Error?) -> Void) {
+        let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.notesPath)"
+        let parameters = [ParameterKeys.note: note,
+                          ParameterKeys.customerNote: String(isCustomerNote)]
+        let mapper = OrderNoteMapper()
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
         enqueue(request, mapper: mapper, completion: completion)
@@ -81,8 +101,10 @@ private extension OrdersRemote {
     }
 
     enum ParameterKeys {
-        static let status: String   = "status"
-        static let page: String     = "page"
-        static let perPage: String  = "per_page"
+        static let customerNote: String     = "customer_note"
+        static let note: String             = "note"
+        static let page: String             = "page"
+        static let perPage: String          = "per_page"
+        static let status: String           = "status"
     }
 }

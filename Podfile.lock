@@ -38,7 +38,7 @@ PODS:
   - Reachability (3.2)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (0.5.0)
-  - WordPressAuthenticator (1.0.2):
+  - WordPressAuthenticator (1.0.4):
     - 1PasswordExtension (= 1.8.5)
     - Alamofire (= 4.7.2)
     - CocoaLumberjack (= 3.4.2)
@@ -72,7 +72,8 @@ DEPENDENCIES:
   - Crashlytics (~> 3.10)
   - Gridicons (= 0.15)
   - KeychainAccess (~> 3.1)
-  - WordPressAuthenticator (= 1.0.2)
+  - WordPressAuthenticator (= 1.0.4)
+  - WordPressShared (= 1.0.8)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -126,12 +127,12 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
-  WordPressAuthenticator: 20e8eb9cb61bef82370658037bdf9ca24a54570a
+  WordPressAuthenticator: 2825f0c56f83a17470564dbec427991fa5cac5af
   WordPressKit: a24baaa783c3a221f2d9a51c19318cbb27333373
   WordPressShared: 063e1e8b1a7aaf635abf17f091a2d235a068abdc
   WordPressUI: af141587ec444f9af753a00605bd0d3f14d8d8a3
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
 
-PODFILE CHECKSUM: cf5b7216652672de11a865ab3265c7b0c38117e2
+PODFILE CHECKSUM: c627b723e165dabc83c6716871f3199190464f2c
 
 COCOAPODS: 1.5.3

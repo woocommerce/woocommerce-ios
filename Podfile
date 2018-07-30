@@ -18,7 +18,8 @@ target 'WooCommerce' do
   #
   pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.3'
   pod 'Gridicons', '0.15'
-  pod 'WordPressAuthenticator', '1.0.2'
+  pod 'WordPressAuthenticator', '1.0.4'
+  pod 'WordPressShared', '1.0.8'
 
 
   # External Libraries
@@ -38,14 +39,17 @@ end
 target 'Yosemite' do
   project 'Yosemite/Yosemite.xcodeproj'
 
+  # External Libraries
+  # ==================
+  #
+  pod 'CocoaLumberjack/Swift', '~> 3.4'
 
   # Unit Tests
   # ==========
   #
   target 'YosemiteTests' do
     inherit! :search_paths
-    pod 'Alamofire', '~> 4.7'
-	pod 'CocoaLumberjack/Swift', '~> 3.4'
+    pod 'Alamofire', '~> 4.7'	
   end
 
 end

@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 
-/// EmptyStores: Displayed whenever there are no available WooCommerce Stores associated with the active account.
+/// Empty Stores: Displayed whenever there are no available WooCommerce Stores associated with the active account.
 ///
 class EmptyStoresTableViewCell: UITableViewCell {
 

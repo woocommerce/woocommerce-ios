@@ -3,6 +3,7 @@ import Gridicons
 import Contacts
 import MessageUI
 import Yosemite
+import Storage
 import CocoaLumberjack
 
 
@@ -11,23 +12,53 @@ class OrderDetailsViewController: UIViewController {
     // MARK: - Properties
 
     @IBOutlet weak var tableView: UITableView!
-    var viewModel: OrderDetailsViewModel!
-    var orderNotes: [OrderNoteViewModel]? {
+    var viewModel: OrderDetailsViewModel! {
         didSet {
-            configureTableView()
-            tableView.reloadData()
+            reloadSections()
+            reloadTableViewIfPossible()
         }
     }
 
-    private var billingIsHidden = true
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
+        return refreshControl
+    }()
+
+    private var orderNotes: [OrderNoteViewModel]? {
+        didSet {
+            reloadSections()
+            reloadTableViewIfPossible()
+        }
+    }
+
+    private var billingIsHidden = true {
+        didSet {
+            reloadSections()
+        }
+    }
     private var sections = [Section]()
+
+    /// TODO: Replace with `ResultController` (OR) `ObjectController` ASAP
+    ///
+    private lazy var resultsController: ResultsController<Storage.Order> = {
+        let viewContext = CoreDataManager.global.viewContext
+        let predicate = NSPredicate(format: "orderID = %ld", self.viewModel.order.orderID)
+        let descriptor = NSSortDescriptor(key: "orderID", ascending: true)
+
+        return ResultsController(viewContext: viewContext, matching: predicate, sortedBy: [descriptor])
+    }()
+
 
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureNavigation()
         configureTableView()
-        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
+        configureResultsController()
+        registerTableViewCells()
+        registerTableViewHeaderFooters()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -45,21 +76,46 @@ class OrderDetailsViewController: UIViewController {
 // MARK: - TableView Configuration
 //
 private extension OrderDetailsViewController {
+
+    /// Setup: TableView
+    ///
     func configureTableView() {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedSectionFooterHeight = Constants.rowHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
-        configureSections()
-        configureNibs()
+        tableView.refreshControl = refreshControl
     }
 
-    func configureSections() {
+    /// Setup: Navigation
+    ///
+    func configureNavigation() {
+        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
+
+        // Don't show the Order details title in the next-view's back button
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+    }
+
+    /// TODO: Replace with `ResultController` (OR) `ObjectController` ASAP
+    ///
+    func configureResultsController() {
+        try? resultsController.performFetch()
+        resultsController.onDidChangeContent = { [weak self] in
+            guard let `self` = self, let order = self.resultsController.fetchedObjects.first else {
+                return
+            }
+
+            self.viewModel = OrderDetailsViewModel(order: order)
+        }
+    }
+
+    /// Setup: Sections
+    ///
+    func reloadSections() {
         let summarySection = Section(leftTitle: nil, rightTitle: nil, footer: nil, rows: [.summary])
 
-        let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
-        let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")
-        let productListSection = Section(leftTitle: productLeftTitle, rightTitle: productRightTitle, footer: nil, rows: [.productList])
+        let productRows: [Row] = viewModel.isProcessingPayment ? [.productList] : [.productList, .productDetails]
+        let productListSection = Section(leftTitle: viewModel.productLeftTitle, rightTitle: viewModel.productRightTitle, footer: nil, rows: productRows)
 
         let customerNoteSection = Section(leftTitle: NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title"), rightTitle: nil, footer: nil, rows: [.customerNote])
 
@@ -81,18 +137,71 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func configureNibs() {
-        for section in sections {
-            for row in section.rows {
-                let nib = UINib(nibName: row.reuseIdentifier, bundle: nil)
-                tableView.register(nib, forCellReuseIdentifier: row.reuseIdentifier)
-            }
+    /// Reloads the tableView, granted that the view has been effectively loaded.
+    ///
+    func reloadTableViewIfPossible() {
+        guard isViewLoaded else {
+            return
         }
 
-        let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
-        tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
-        let footerNib = UINib(nibName: ShowHideSectionFooter.reuseIdentifier, bundle: nil)
-        tableView.register(footerNib, forHeaderFooterViewReuseIdentifier: ShowHideSectionFooter.reuseIdentifier)
+        tableView.reloadData()
+    }
+
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells() {
+        let cells = [
+            LeftImageTableViewCell.self,
+            BillingDetailsTableViewCell.self,
+            CustomerNoteTableViewCell.self,
+            CustomerInfoTableViewCell.self,
+            BasicDisclosureTableViewCell.self,
+            OrderNoteTableViewCell.self,
+            PaymentTableViewCell.self,
+            ProductListTableViewCell.self,
+            SummaryTableViewCell.self
+        ]
+
+        for cell in cells {
+            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        }
+    }
+
+    /// Registers all of the available TableViewHeaderFooters
+    ///
+    func registerTableViewHeaderFooters() {
+        let headersAndFooters = [
+            TwoColumnSectionHeaderView.self,
+            ShowHideSectionFooter.self
+        ]
+
+        for kind in headersAndFooters {
+            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
+        }
+    }
+}
+
+
+// MARK: - Action Handlers
+//
+extension OrderDetailsViewController {
+
+    @objc func pullToRefresh() {
+        let group = DispatchGroup()
+
+        group.enter()
+        syncOrder { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncOrderNotes { _ in
+            group.leave()
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            self?.refreshControl.endRefreshing()
+        }
     }
 }
 
@@ -106,6 +215,11 @@ private extension OrderDetailsViewController {
             cell.configure(with: viewModel)
         case let cell as ProductListTableViewCell:
             cell.configure(with: viewModel)
+            cell.onFullfillTouchUp = { [weak self] in
+                self?.fulfillWasPressed()
+            }
+        case let cell as BasicDisclosureTableViewCell:
+            cell.configure(text: viewModel.productDetails)
         case let cell as CustomerNoteTableViewCell:
             cell.configure(with: viewModel)
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
@@ -118,7 +232,7 @@ private extension OrderDetailsViewController {
             configure(cell, for: .billingEmail)
         case let cell as PaymentTableViewCell:
             cell.configure(with: viewModel)
-        case let cell as AddItemTableViewCell:
+        case let cell as LeftImageTableViewCell:
             cell.configure(image: viewModel.addNoteIcon, text: viewModel.addNoteText)
         case let cell as OrderNoteTableViewCell where row == .orderNote:
             if let note = orderNote(at: indexPath) {
@@ -132,12 +246,12 @@ private extension OrderDetailsViewController {
     private func configure(_ cell: BillingDetailsTableViewCell, for billingRow: Row) {
         if billingRow == .billingPhone {
             cell.configure(text: viewModel.billingViewModel.phoneNumber, image: Gridicon.iconOfType(.ellipsis))
-            cell.didTapButton = { [weak self] in
+            cell.onTouchUp = { [weak self] in
                 self?.phoneButtonAction()
             }
         } else if billingRow == .billingEmail {
             cell.configure(text: viewModel.billingViewModel.email, image: Gridicon.iconOfType(.mail))
-            cell.didTapButton = { [weak self] in
+            cell.onTouchUp = { [weak self] in
                 self?.emailButtonAction()
             }
         } else {
@@ -151,7 +265,7 @@ private extension OrderDetailsViewController {
         guard let orderNotes = orderNotes, !orderNotes.isEmpty, orderNotes.indices.contains(orderNoteIndex) else {
             return nil
         }
-        
+
         return orderNotes[orderNoteIndex]
     }
 }
@@ -160,21 +274,32 @@ private extension OrderDetailsViewController {
 // MARK: - Sync'ing Helpers
 //
 private extension OrderDetailsViewController {
-    func syncOrderNotes() {
-        guard let viewModel = viewModel else {
-            return
+    func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
+        let action = OrderAction.retrieveOrder(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (order, error) in
+            guard let `self` = self, let order = order else {
+                DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
+                onCompletion?(error)
+                return
+            }
+
+            self.viewModel = OrderDetailsViewModel(order: order)
+            onCompletion?(nil)
         }
 
-        let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
+        StoresManager.shared.dispatch(action)
+    }
+
+    func syncOrderNotes(onCompletion: ((Error?) -> ())? = nil) {
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
-                if let error = error {
-                    DDLogError("⛔️ Error synchronizing order notes: \(error)")
-                }
+                DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
                 self?.orderNotes = nil
+                onCompletion?(error)
                 return
             }
 
             self?.orderNotes = orderNotes.map { OrderNoteViewModel(with: $0) }
+            onCompletion?(nil)
         }
 
         StoresManager.shared.dispatch(action)
@@ -215,8 +340,13 @@ extension OrderDetailsViewController {
         sendEmailIfPossible()
     }
 
-    func setShowHideFooter() {
+    func toggleBillingFooter() {
         billingIsHidden = !billingIsHidden
+    }
+
+    func fulfillWasPressed() {
+        let fulfillViewController = FulfillViewController(order: viewModel.order)
+        navigationController?.pushViewController(fulfillViewController, animated: true)
     }
 }
 
@@ -279,10 +409,13 @@ extension OrderDetailsViewController: UITableViewDataSource {
         let image = billingIsHidden ? Gridicon.iconOfType(.chevronDown) : Gridicon.iconOfType(.chevronUp)
         cell.configure(text: footerText, image: image)
         cell.didSelectFooter = { [weak self] in
-            self?.setShowHideFooter()
-            self?.configureTableView()
+            guard let `self` = self else {
+                return
+            }
+
             let sections = IndexSet(integer: section)
-            tableView.reloadSections(sections, with: .fade)
+            self.toggleBillingFooter()
+            self.tableView.reloadSections(sections, with: .fade)
         }
 
         return cell
@@ -297,7 +430,18 @@ extension OrderDetailsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         if sections[indexPath.section].rows[indexPath.row] == .addOrderNote {
-            // TODO: present modal for Add Note screen
+            let addANoteViewController = self.storyboard!.instantiateViewController(withIdentifier: Constants.noteViewController) as! AddANoteViewController
+            addANoteViewController.viewModel = viewModel
+            let navController = UINavigationController(rootViewController: addANoteViewController)
+            present(navController, animated: true, completion: nil)
+        } else if sections[indexPath.section].rows[indexPath.row] == .productDetails {
+            performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
+        }
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let productListViewController = segue.destination as? ProductListViewController {
+            productListViewController.viewModel = viewModel
         }
     }
 }
@@ -361,6 +505,8 @@ private extension OrderDetailsViewController {
     struct Constants {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
+        static let productDetailsSegue = "ShowProductListViewController"
+        static let noteViewController = "AddANoteViewController"
     }
 
     private struct Section {
@@ -373,6 +519,7 @@ private extension OrderDetailsViewController {
     private enum Row {
         case summary
         case productList
+        case productDetails
         case customerNote
         case shippingAddress
         case billingAddress
@@ -388,6 +535,8 @@ private extension OrderDetailsViewController {
                 return SummaryTableViewCell.reuseIdentifier
             case .productList:
                 return ProductListTableViewCell.reuseIdentifier
+            case .productDetails:
+                return BasicDisclosureTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:
@@ -399,7 +548,7 @@ private extension OrderDetailsViewController {
             case .billingEmail:
                 return BillingDetailsTableViewCell.reuseIdentifier
             case .addOrderNote:
-                return AddItemTableViewCell.reuseIdentifier
+                return LeftImageTableViewCell.reuseIdentifier
             case .orderNote:
                 return OrderNoteTableViewCell.reuseIdentifier
             case .payment:

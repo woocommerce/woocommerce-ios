@@ -22,10 +22,12 @@ public class OrderStore: Store {
         }
 
         switch action {
-        case .retrieveOrders(let siteId, let onCompletion):
-            retrieveOrders(siteId: siteId, onCompletion: onCompletion)
-        case .retrieveOrder(let siteId, let orderId, let onCompletion):
-            retrieveOrder(siteId: siteId, orderId: orderId, onCompletion: onCompletion)
+        case .retrieveOrders(let siteID, let onCompletion):
+            retrieveOrders(siteID: siteID, onCompletion: onCompletion)
+        case .retrieveOrder(let siteID, let orderID, let onCompletion):
+            retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+        case .updateOrder(let siteID, let orderID, let status, let onCompletion):
+            updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: onCompletion)
         }
     }
 }
@@ -37,10 +39,10 @@ private extension OrderStore  {
 
     /// Retrieves the orders associated with a given Site ID (if any!).
     ///
-    func retrieveOrders(siteId: Int, onCompletion: @escaping ([Order]?, Error?) -> Void) {
+    func retrieveOrders(siteID: Int, onCompletion: @escaping ([Order]?, Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
-        remote.loadAllOrders(for: siteId) { [weak self] (orders, error) in
+        remote.loadAllOrders(for: siteID) { [weak self] (orders, error) in
             guard let orders = orders else {
                 onCompletion(nil, error)
                 return
@@ -53,10 +55,10 @@ private extension OrderStore  {
 
     /// Retrieves a specific order associated with a given Site ID (if any!).
     ///
-    func retrieveOrder(siteId: Int, orderId: Int, onCompletion: @escaping (Order?, Error?) -> Void) {
+    func retrieveOrder(siteID: Int, orderID: Int, onCompletion: @escaping (Order?, Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
-        remote.loadOrder(for: siteId, orderID: orderId) { [weak self] (order, error) in
+        remote.loadOrder(for: siteID, orderID: orderID) { [weak self] (order, error) in
             guard let order = order else {
                 onCompletion(nil, error)
                 return
@@ -66,12 +68,50 @@ private extension OrderStore  {
             onCompletion(order, nil)
         }
     }
+
+    /// Updates an Order with the specified Status.
+    ///
+    func updateOrder(siteID: Int, orderID: Int, status: OrderStatus, onCompletion: @escaping (Error?) -> Void) {
+        /// Optimistically update the Status
+        let oldStatus = updateOrderStatus(orderID: orderID, status: status)
+
+        let remote = OrdersRemote(network: network)
+        remote.updateOrder(from: siteID, orderID: orderID, status: status.rawValue) { [weak self] (order, error) in
+            guard let error = error else {
+                // NOTE: We're *not* actually updating the whole entity here. Reason: Prevent UI inconsistencies!!
+                onCompletion(nil)
+                return
+            }
+
+            /// Revert Optimistic Update
+            self?.updateOrderStatus(orderID: orderID, status: oldStatus)
+            onCompletion(error)
+        }
+    }
 }
 
 
-// MARK: - Persistance
+// MARK: - Persistence
 //
-private extension OrderStore {
+extension OrderStore {
+
+    /// Updates the Status of the specified Order, as requested.
+    ///
+    /// - Returns: Status, prior to performing the Update OP.
+    ///
+    @discardableResult
+    func updateOrderStatus(orderID: Int, status: OrderStatus) -> OrderStatus {
+        let storage = storageManager.viewStorage
+        guard let order = storage.loadOrder(orderID: orderID) else {
+            return status
+        }
+
+        let oldStatus = OrderStatus(rawValue: order.status)
+        order.status = status.rawValue
+        storage.saveIfNeeded()
+
+        return oldStatus
+    }
 
     /// Updates (OR Inserts) the specified ReadOnly Order Entity into the Storage Layer.
     ///
@@ -104,7 +144,7 @@ private extension OrderStore {
 
     /// Updates, inserts, or prunes the provided StorageOrder's items using the provided read-only Order's items
     ///
-    func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+    private func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         guard !readOnlyOrder.items.isEmpty else {
             // No items in the read-only order, so remove all the items in Storage.Order
             storageOrder.items?.forEach { storageOrder.removeFromItems($0) }
@@ -132,7 +172,7 @@ private extension OrderStore {
 
     /// Updates, inserts, or prunes the provided StorageOrder's coupons using the provided read-only Order's coupons
     ///
-    func handleOrderCoupons(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+    private func handleOrderCoupons(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         guard !readOnlyOrder.coupons.isEmpty else {
             // No coupons in the read-only order, so remove all the coupons in Storage.Order
             storageOrder.coupons?.forEach { storageOrder.removeFromCoupons($0) }
@@ -141,7 +181,7 @@ private extension OrderStore {
 
         // Upsert the coupons from the read-only order
         for readOnlyCoupon in readOnlyOrder.coupons {
-            if let existingStorageCoupon = storage.loadCouponItem(couponID: readOnlyCoupon.couponID) {
+            if let existingStorageCoupon = storage.loadOrderCoupon(couponID: readOnlyCoupon.couponID) {
                 existingStorageCoupon.update(with: readOnlyCoupon)
             } else {
                 let newStorageCoupon = storage.insertNewObject(ofType: Storage.OrderCoupon.self)

@@ -154,13 +154,12 @@ private extension OrdersViewController {
 
         let action = OrderAction.retrieveOrders(siteID: siteID) { [weak self] (orders, error) in
             self?.refreshControl.endRefreshing()
-            guard error == nil else {
+
+            guard let orders = orders else {
                 DDLogError("⛔️ Error synchronizing orders: \(error.debugDescription)")
                 return
             }
-            guard let orders = orders else {
-                return
-            }
+
             self?.orders = orders
             self?.tableView.reloadData()
         }

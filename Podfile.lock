@@ -13,7 +13,7 @@ PODS:
     - CocoaLumberjack/Default
   - CocoaLumberjack/Swift (3.4.2):
     - CocoaLumberjack/Default
-  - Crashlytics (3.10.4):
+  - Crashlytics (3.10.5):
     - Fabric (~> 1.7.9)
   - Fabric (1.7.9)
   - FormatterKit/Resources (1.8.2)
@@ -52,7 +52,7 @@ PODS:
     - WordPressShared (~> 1.0)
     - WordPressUI (~> 1.0)
     - wpxmlrpc (~> 0.8)
-  - WordPressKit (1.1):
+  - WordPressKit (1.2):
     - Alamofire (~> 4.7)
     - CocoaLumberjack (= 3.4.2)
     - NSObject-SafeExpectations (= 0.0.3)
@@ -114,7 +114,7 @@ SPEC CHECKSUMS:
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   Automattic-Tracks-iOS: d8c6c6c1351b1905a73e45f431b15598d71963b5
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
-  Crashlytics: 915a7787b84f635fb2a81f92a90e265c2c413f76
+  Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
   Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
   GoogleSignInRepacked: d357702618c555f38923576924661325eb1ef22b
@@ -128,11 +128,11 @@ SPEC CHECKSUMS:
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
   WordPressAuthenticator: 2825f0c56f83a17470564dbec427991fa5cac5af
-  WordPressKit: a24baaa783c3a221f2d9a51c19318cbb27333373
+  WordPressKit: 68eaa8df5ceedeed03ba796afc4b825f0bed4fe2
   WordPressShared: 063e1e8b1a7aaf635abf17f091a2d235a068abdc
   WordPressUI: af141587ec444f9af753a00605bd0d3f14d8d8a3
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
 
-PODFILE CHECKSUM: c627b723e165dabc83c6716871f3199190464f2c
+PODFILE CHECKSUM: d74ce74de818d7610b3ee7a23df5bf7890d6197e
 
 COCOAPODS: 1.5.3

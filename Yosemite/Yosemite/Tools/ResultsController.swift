@@ -80,6 +80,19 @@ public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
         setupEventsForwarding()
     }
 
+    /// Convenience Initializer.
+    ///
+    public convenience init(storageManager: CoreDataManager,
+                            sectionNameKeyPath: String? = nil,
+                            matching predicate: NSPredicate? = nil,
+                            sortedBy descriptors: [NSSortDescriptor]) {
+
+        self.init(viewContext: storageManager.persistentContainer.viewContext,
+                  sectionNameKeyPath: sectionNameKeyPath,
+                  matching: predicate,
+                  sortedBy: descriptors)
+    }
+
 
     /// Executes the fetch request on the store to get objects.
     ///

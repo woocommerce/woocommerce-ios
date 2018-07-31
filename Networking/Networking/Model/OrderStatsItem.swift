@@ -11,7 +11,7 @@ public enum OrderStatGranularity: String {
 
 /// Represents an single order stat during a specific period.
 ///
-public struct OrderStatItem: Decodable {
+public struct OrderStatsItem: Decodable {
     public let period: String
     public let orders: Int
     public let products: Int
@@ -32,7 +32,7 @@ public struct OrderStatItem: Decodable {
     public let avgProductsPerOrder: Int
 
 
-    /// OrderStatItem struct initializer.
+    /// OrderStatsItem struct initializer.
     ///
     public init(period: String, orders: Int, products: Int, coupons: Int, couponDiscount: Int, totalSales: Int, totalTax: Int, totalShipping: Int,
                 totalShippingTax: Int, totalRefund: Int, totalTaxRefund: Int, totalShippingRefund: Int, totalShippingTaxRefund: Int,
@@ -59,9 +59,9 @@ public struct OrderStatItem: Decodable {
 }
 
 
-/// Defines all of the OrderStatItem CodingKeys.
+/// Defines all of the OrderStatsItem CodingKeys.
 ///
-private extension OrderStatItem {
+private extension OrderStatsItem {
 
     enum CodingKeys: String, CodingKey {
         case period = "period"
@@ -88,8 +88,8 @@ private extension OrderStatItem {
 
 // MARK: - Comparable Conformance
 //
-extension OrderStatItem: Comparable {
-    public static func == (lhs: OrderStatItem, rhs: OrderStatItem) -> Bool {
+extension OrderStatsItem: Comparable {
+    public static func == (lhs: OrderStatsItem, rhs: OrderStatsItem) -> Bool {
         return lhs.period == rhs.period &&
             lhs.orders == rhs.orders &&
             lhs.products == rhs.products &&
@@ -110,7 +110,7 @@ extension OrderStatItem: Comparable {
             lhs.avgProductsPerOrder == rhs.avgProductsPerOrder
     }
 
-    public static func < (lhs: OrderStatItem, rhs: OrderStatItem) -> Bool {
+    public static func < (lhs: OrderStatsItem, rhs: OrderStatsItem) -> Bool {
         return lhs.period < rhs.period ||
             (lhs.period == rhs.period && lhs.currency < rhs.currency) ||
             (lhs.period == rhs.period && lhs.currency == rhs.currency && lhs.totalSales < rhs.totalSales)

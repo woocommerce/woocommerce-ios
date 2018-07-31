@@ -5,6 +5,10 @@ import Foundation
 ///
 enum WooConstants {
 
+    /// CoreData Stack Name
+    ///
+    static let databaseStackName = "WooCommerce"
+
     /// Keychain Access's Service Name
     ///
     static let keychainServiceName = "com.automattic.woocommerce"

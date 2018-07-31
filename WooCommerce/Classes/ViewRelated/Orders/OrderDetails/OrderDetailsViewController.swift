@@ -3,7 +3,6 @@ import Gridicons
 import Contacts
 import MessageUI
 import Yosemite
-import Storage
 import CocoaLumberjack
 
 
@@ -41,12 +40,12 @@ class OrderDetailsViewController: UIViewController {
 
     /// TODO: Replace with `ResultController` (OR) `ObjectController` ASAP
     ///
-    private lazy var resultsController: ResultsController<Storage.Order> = {
-        let viewContext = CoreDataManager.global.viewContext
+    private lazy var resultsController: ResultsController<StorageOrder> = {
+        let storageManager = AppDelegate.shared.storageManager
         let predicate = NSPredicate(format: "orderID = %ld", self.viewModel.order.orderID)
         let descriptor = NSSortDescriptor(key: "orderID", ascending: true)
 
-        return ResultsController(viewContext: viewContext, matching: predicate, sortedBy: [descriptor])
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
 

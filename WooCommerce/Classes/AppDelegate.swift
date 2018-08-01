@@ -1,5 +1,6 @@
 import UIKit
 import CoreData
+import Storage
 
 import CocoaLumberjack
 import Crashlytics
@@ -32,6 +33,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /// In-App Notifications Presenter
     ///
     let noticePresenter = NoticePresenter()
+
+    /// CoreData Stack
+    ///
+    let storageManager = CoreDataManager(name: WooConstants.databaseStackName)
+
 
 
     // MARK: - AppDelegate Methods

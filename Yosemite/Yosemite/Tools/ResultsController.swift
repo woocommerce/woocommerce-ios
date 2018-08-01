@@ -4,9 +4,14 @@ import Storage
 
 
 
+// MARK: - MutableType: Storage.framework Type that will be retrieved (and converted into ReadOnly)
+//
+public typealias ResultsControllerMutableType = NSManagedObject & ReadOnlyConvertible
+
+
 // MARK: - ResultsController
 //
-public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
+public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Managed Object Context used to fetch objects.
     ///
@@ -78,6 +83,19 @@ public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
 
         setupResultsController()
         setupEventsForwarding()
+    }
+
+    /// Convenience Initializer.
+    ///
+    public convenience init(storageManager: CoreDataManager,
+                            sectionNameKeyPath: String? = nil,
+                            matching predicate: NSPredicate? = nil,
+                            sortedBy descriptors: [NSSortDescriptor]) {
+
+        self.init(viewContext: storageManager.persistentContainer.viewContext,
+                  sectionNameKeyPath: sectionNameKeyPath,
+                  matching: predicate,
+                  sortedBy: descriptors)
     }
 
 

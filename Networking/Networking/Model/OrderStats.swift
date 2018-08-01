@@ -1,6 +1,16 @@
 import Foundation
 
 
+/// Represents the granularity of a specific `OrderStats`
+///
+public enum OrderStatGranularity: String {
+    case day    = "day"
+    case week   = "week"
+    case month  = "month"
+    case year   = "year"
+}
+
+
 /// Represents order stats over a specific period.
 ///
 public struct OrderStats: Decodable {
@@ -8,7 +18,7 @@ public struct OrderStats: Decodable {
     public let unit: String
     public let quantity: String
     public let fields: [String]
-    public let data: [OrderStatsItem]?
+    public let orderStatsItems: [[AnyCodable]]?
     public let totalGrossSales: Float
     public let totalNetSales: Float
     public let totalOrders: Int
@@ -28,10 +38,8 @@ public struct OrderStats: Decodable {
         let unit = try container.decode(String.self, forKey: .unit)
         let quantity = try container.decode(String.self, forKey: .quantity)
 
-        // FIXME: Decode data into [OrderStatItem]
         let fields = try container.decode([String].self, forKey: .fields)
-        let data: [OrderStatsItem]? = nil
-        ////
+        let orderStatsItems = try container.decode([[AnyCodable]].self, forKey: .orderStatsItems)
 
         let totalGrossSales = try container.decode(Float.self, forKey: .totalGrossSales)
         let totalNetSales = try container.decode(Float.self, forKey: .totalNetSales)
@@ -43,19 +51,18 @@ public struct OrderStats: Decodable {
         let averageOrders = try container.decode(Float.self, forKey: .averageOrders)
         let averageProducts = try container.decode(Float.self, forKey: .averageProducts)
 
-        self.init(date: date, unit: unit, quantity: quantity, fields: fields, data: data, totalGrossSales: totalGrossSales, totalNetSales: totalNetSales, totalOrders: totalOrders, totalProducts: totalProducts, averageGrossSales: averageGrossSales, averageNetSales: averageNetSales, averageOrders: averageOrders, averageProducts: averageProducts)
+        self.init(date: date, unit: unit, quantity: quantity, fields: fields, orderStatsItems: orderStatsItems, totalGrossSales: totalGrossSales, totalNetSales: totalNetSales, totalOrders: totalOrders, totalProducts: totalProducts, averageGrossSales: averageGrossSales, averageNetSales: averageNetSales, averageOrders: averageOrders, averageProducts: averageProducts)
     }
 
 
     /// OrderStats struct initializer.
     ///
-    public init(date: String, unit: String, quantity: String, fields: [String], data: [OrderStatsItem]?, totalGrossSales: Float, totalNetSales: Float,
-                totalOrders: Int, totalProducts: Int, averageGrossSales: Float, averageNetSales: Float, averageOrders: Float, averageProducts: Float) {
+    public init(date: String, unit: String, quantity: String, fields: [String], orderStatsItems: [[AnyCodable]]?, totalGrossSales: Float, totalNetSales: Float, totalOrders: Int, totalProducts: Int, averageGrossSales: Float, averageNetSales: Float, averageOrders: Float, averageProducts: Float) {
         self.date = date
         self.unit = unit
         self.quantity = quantity
         self.fields = fields
-        self.data = data
+        self.orderStatsItems = orderStatsItems
         self.totalGrossSales = totalGrossSales
         self.totalNetSales = totalNetSales
         self.totalOrders = totalOrders
@@ -77,7 +84,7 @@ private extension OrderStats {
         case unit = "unit"
         case quantity = "quantity"
         case fields = "fields"
-        case data = "data"
+        case orderStatsItems = "data"
         case totalGrossSales = "total_gross_sales"
         case totalNetSales = "total_net_sales"
         case totalOrders = "total_orders"
@@ -98,6 +105,7 @@ extension OrderStats: Comparable {
             lhs.unit == rhs.unit &&
             lhs.quantity == rhs.quantity &&
             lhs.fields == rhs.fields &&
+            lhs.orderStatsItems == rhs.orderStatsItems &&
             lhs.totalGrossSales == rhs.totalGrossSales &&
             lhs.totalNetSales == rhs.totalNetSales &&
             lhs.totalOrders == rhs.totalOrders &&

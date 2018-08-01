@@ -28,11 +28,11 @@ class MockupTableView: UITableView {
 
     /// Closure to be executed whenever `deleteSections` is called.
     ///
-    var onDeleteSections: ((IndexSet) -> Void)?
+    var onDeletedSections: ((IndexSet) -> Void)?
 
     /// Closure to be executed whenever `insertSections` is called.
     ///
-    var onInsertSections: ((IndexSet) -> Void)?
+    var onInsertedSections: ((IndexSet) -> Void)?
 
 
 
@@ -59,10 +59,10 @@ class MockupTableView: UITableView {
     }
 
     override func deleteSections(_ sections: IndexSet, with animation: UITableViewRowAnimation) {
-        onDeleteSections?(sections)
+        onDeletedSections?(sections)
     }
 
     override func insertSections(_ sections: IndexSet, with animation: UITableViewRowAnimation) {
-        onInsertSections?(sections)
+        onInsertedSections?(sections)
     }
 }

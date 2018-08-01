@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import WordPressAuthenticator
 import WordPressUI
-import Storage
 import Yosemite
 
 
@@ -27,12 +26,12 @@ class StorePickerViewController: UIViewController {
 
     /// ResultsController: Loads Sites from the Storage Layer.
     ///
-    private let resultsController: ResultsController<Storage.Site> = {
-        let viewContext = CoreDataManager.global.viewContext
+    private let resultsController: ResultsController<StorageSite> = {
+        let storageManager = AppDelegate.shared.storageManager
         let predicate = NSPredicate(format: "isWooCommerceActive == YES")
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
-        return ResultsController(viewContext: viewContext, matching: predicate, sortedBy: [descriptor])
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
     /// White-Background View, to be placed surrounding the bottom area.

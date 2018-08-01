@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import Storage
 import Networking
 
 
@@ -21,7 +20,7 @@ class AuthenticatedState: StoresManagerState {
     /// Designated Initializer
     ///
     init(credentials: Credentials) {
-        let storageManager = CoreDataManager.global
+        let storageManager = AppDelegate.shared.storageManager
         let network = AlamofireNetwork(credentials: credentials)
 
         services = [

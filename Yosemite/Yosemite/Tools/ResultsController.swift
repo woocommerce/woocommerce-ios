@@ -4,9 +4,14 @@ import Storage
 
 
 
+// MARK: - MutableType: Storage.framework Type that will be retrieved (and converted into ReadOnly)
+//
+public typealias ResultsControllerMutableType = NSManagedObject & ReadOnlyConvertible
+
+
 // MARK: - ResultsController
 //
-public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
+public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Managed Object Context used to fetch objects.
     ///

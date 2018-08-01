@@ -14,6 +14,9 @@
 		743FDB9D210FB36900AC737F /* order-stats-year.json in Resources */ = {isa = PBXBuildFile; fileRef = 743FDB9A210FB36900AC737F /* order-stats-year.json */; };
 		743FDB9E210FB36900AC737F /* order-stats-week.json in Resources */ = {isa = PBXBuildFile; fileRef = 743FDB9B210FB36900AC737F /* order-stats-week.json */; };
 		743FDBA0210FB3E500AC737F /* OrderStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743FDB9F210FB3E500AC737F /* OrderStatsMapperTests.swift */; };
+		7452387221124B7700A973CD /* AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7452386F21124B7700A973CD /* AnyEncodable.swift */; };
+		7452387321124B7700A973CD /* AnyCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7452387021124B7700A973CD /* AnyCodable.swift */; };
+		7452387421124B7700A973CD /* AnyDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7452387121124B7700A973CD /* AnyDecodable.swift */; };
 		748D4248210F89ED00CF7D1B /* OrderStatsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748D4247210F89ED00CF7D1B /* OrderStatsRemote.swift */; };
 		748D424A210F92EA00CF7D1B /* OrderStatsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748D4249210F92EA00CF7D1B /* OrderStatsItem.swift */; };
 		748D424C210FA34400CF7D1B /* OrderStatsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */; };
@@ -91,6 +94,9 @@
 		743FDB9A210FB36900AC737F /* order-stats-year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-year.json"; sourceTree = "<group>"; };
 		743FDB9B210FB36900AC737F /* order-stats-week.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-week.json"; sourceTree = "<group>"; };
 		743FDB9F210FB3E500AC737F /* OrderStatsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderStatsMapperTests.swift; sourceTree = "<group>"; };
+		7452386F21124B7700A973CD /* AnyEncodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyEncodable.swift; sourceTree = "<group>"; };
+		7452387021124B7700A973CD /* AnyCodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyCodable.swift; sourceTree = "<group>"; };
+		7452387121124B7700A973CD /* AnyDecodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyDecodable.swift; sourceTree = "<group>"; };
 		748D4247210F89ED00CF7D1B /* OrderStatsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsRemote.swift; sourceTree = "<group>"; };
 		748D4249210F92EA00CF7D1B /* OrderStatsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsItem.swift; sourceTree = "<group>"; };
 		748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsMapper.swift; sourceTree = "<group>"; };
@@ -193,6 +199,9 @@
 			isa = PBXGroup;
 			children = (
 				B518663420A0A2E800037A38 /* Loader.swift */,
+				7452387021124B7700A973CD /* AnyCodable.swift */,
+				7452387121124B7700A973CD /* AnyDecodable.swift */,
+				7452386F21124B7700A973CD /* AnyEncodable.swift */,
 			);
 			name = Tools;
 			path = Network/Tools;
@@ -595,6 +604,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7452387421124B7700A973CD /* AnyDecodable.swift in Sources */,
 				B56C1EB620EA757B00D749F9 /* SiteListMapper.swift in Sources */,
 				B557DA1A20979D66005962F4 /* Settings.swift in Sources */,
 				74A1196C2110F4BB00E1E5F0 /* OrderStats.swift in Sources */,
@@ -605,6 +615,7 @@
 				B567AF2520A0CCA300AB6C62 /* AuthenticatedRequest.swift in Sources */,
 				B505F6EA20BEFC3700BB1B69 /* MockupNetwork.swift in Sources */,
 				748D4248210F89ED00CF7D1B /* OrderStatsRemote.swift in Sources */,
+				7452387221124B7700A973CD /* AnyEncodable.swift in Sources */,
 				B557DA0220975500005962F4 /* JetpackRequest.swift in Sources */,
 				B56C1EB820EA76F500D749F9 /* Site.swift in Sources */,
 				B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */,
@@ -612,6 +623,7 @@
 				B557DA1D20979E7D005962F4 /* Order.swift in Sources */,
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,
 				748D424C210FA34400CF7D1B /* OrderStatsMapper.swift in Sources */,
+				7452387321124B7700A973CD /* AnyCodable.swift in Sources */,
 				B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,

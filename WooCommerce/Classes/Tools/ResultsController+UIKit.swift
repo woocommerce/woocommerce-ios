@@ -35,7 +35,8 @@ struct ResultsTableAnimations {
 //
 extension ResultsController {
 
-    ///
+    /// Forwards Events to the specified UITableView Instance. We'll take care of Inserting / Deleting / Moving and Reloading
+    /// Rows and Sections.
     ///
     func startForwardingEvents(to tableView: UITableView, with animations: ResultsTableAnimations = .standard) {
         startForwardingContentEvents(to: tableView, with: animations)

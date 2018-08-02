@@ -111,8 +111,8 @@ extension OrdersViewController {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
 
-        actionSheet.addCancelActionWithTitle(FilterAlert.cancelText)
-        actionSheet.addDefaultActionWithTitle(FilterAlert.allText) { [weak self] _ in
+        actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
+        actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
             self?.resetOrderFilters()
         }
 
@@ -122,7 +122,7 @@ extension OrdersViewController {
             }
         }
 
-        actionSheet.addDefaultActionWithTitle(FilterAlert.customText) { [weak self] _ in
+        actionSheet.addDefaultActionWithTitle(FilterAction.displayCustom) { [weak self] _ in
             self?.displayOrdersWithUnknownStatus()
         }
 
@@ -272,10 +272,10 @@ extension OrdersViewController: UITableViewDelegate {
 // MARK: - Constants
 //
 private extension OrdersViewController {
-    enum FilterAlert {
-        static let allText = NSLocalizedString("All", comment: "All filter title")
-        static let cancelText = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
-        static let customText = NSLocalizedString("Custom", comment: "Title for button that catches all custom labels and displays them on the order list")
+    enum FilterAction {
+        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
+        static let displayAll = NSLocalizedString("All", comment: "All filter title")
+        static let displayCustom = NSLocalizedString("Custom", comment: "Title for button that catches all custom labels and displays them on the order list")
     }
 
     enum Constants {

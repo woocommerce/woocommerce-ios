@@ -8,59 +8,73 @@ import CocoaLumberjack
 ///
 class OrdersViewController: UIViewController {
 
-    // MARK: - IBOutlets
+    /// Main TableView.
+    ///
+    @IBOutlet private var tableView: UITableView!
 
-    @IBOutlet private weak var tableView: UITableView!
-
-    // MARK: - Properties
-
-    private var orders = [Order]()
-    private var filterResults = [Order]()
-    private var isUsingFilterAction = false
-
+    /// Pull To Refresh Support.
+    ///
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(pullToRefresh(sender:)), for: .valueChanged)
         return refreshControl
     }()
 
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
+    ///
+    private lazy var resultsController: ResultsController<StorageOrder> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
-    // MARK: - Computed Properties
+        return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
+    }()
 
+    /// Indicates if there are any Objects matching the criteria (or not).
+    ///
     private var displaysNoResults: Bool {
-        return filterResults.isEmpty && isUsingFilterAction
+        return resultsController.isEmpty
     }
 
-    private var siteID: Int? {
-        return StoresManager.shared.sessionManager.defaultStoreID
+    /// Indicates if a Filters is in active, or not.
+    ///
+    private var displaysFilteredResults: Bool {
+        return resultsController.predicate != nil
     }
 
 
 
     // MARK: - View Lifecycle
 
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        fatalError()
+    }
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+
         tabBarItem.title = NSLocalizedString("Orders", comment: "Orders title")
         tabBarItem.image = Gridicon.iconOfType(.pages)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         configureNavigation()
         configureTableView()
+        configureResultsController()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if orders.isEmpty {
-            ensureRefreshControlIsVisible()
-            syncOrders()
-        }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        syncOrders()
     }
+}
 
 
-    // MARK: - User Interface Initialization
+// MARK: - User Interface Initialization
+//
+private extension OrdersViewController {
 
     func configureNavigation() {
         title = NSLocalizedString("Orders", comment: "Orders title")
@@ -69,76 +83,67 @@ class OrdersViewController: UIViewController {
                                              target: self,
                                              action: #selector(rightButtonTapped))
         rightBarButton.tintColor = .white
-        navigationItem.setRightBarButton(rightBarButton, animated: false)
+        navigationItem.rightBarButtonItem = rightBarButton
 
         // Don't show the Order title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
-
-        navigationItem.backBarButtonItem = backButton
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
     func configureTableView() {
-        tableView.estimatedRowHeight = Constants.rowHeight
+        tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
-        let nib = UINib(nibName: NoResultsTableViewCell.reuseIdentifier, bundle: nil)
-        tableView.register(nib, forCellReuseIdentifier: NoResultsTableViewCell.reuseIdentifier)
         tableView.refreshControl = refreshControl
+        tableView.register(NoResultsTableViewCell.loadNib(), forCellReuseIdentifier: NoResultsTableViewCell.reuseIdentifier)
     }
 
-    // MARK: - Actions
+    func configureResultsController() {
+        resultsController.startForwardingEvents(to: tableView)
+        try? resultsController.performFetch()
+    }
+}
+
+
+// MARK: - Actions
+//
+extension OrdersViewController {
 
     @objc func rightButtonTapped() {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
-        let dismissAction = UIAlertAction(title: NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"), style: .cancel)
-        actionSheet.addAction(dismissAction)
 
-        let allAction = UIAlertAction(title: NSLocalizedString("All", comment: "All filter title"), style: .default) { [weak self ] action in
-            self?.isUsingFilterAction = false
-            self?.tableView.reloadData()
+        actionSheet.addCancelActionWithTitle(FilterAlert.cancelText)
+        actionSheet.addDefaultActionWithTitle(FilterAlert.allText) { [weak self] _ in
+            self?.resetOrderFilters()
         }
-        actionSheet.addAction(allAction)
 
         for status in OrderStatusViewModel.allOrderStatuses {
-            let action = UIAlertAction(title: status.description, style: .default) { action in
-                self.filterAction(status)
+            actionSheet.addDefaultActionWithTitle(status.description) { [weak self] _ in
+                self?.filterOrders(by: status)
             }
-            actionSheet.addAction(action)
         }
+
         present(actionSheet, animated: true)
     }
 
     @objc func pullToRefresh(sender: UIRefreshControl) {
-        clearOrders()
-        syncOrders()
+        syncOrders { [weak self] in
+            self?.refreshControl.endRefreshing()
+        }
     }
+}
 
-    func filterAction(_ status: OrderStatus) {
-        if case .custom(_) = status {
-            filterByAllCustomStatuses()
-            return
-        }
 
-        filterResults = orders.filter { order in
-            return order.status.description.contains(status.description)
-        }
+// MARK: - Filters
+//
+private extension OrdersViewController {
 
-        isUsingFilterAction = filterResults.count != orders.count
+    func filterOrders(by status: OrderStatus) {
+        resultsController.predicate = NSPredicate(format: "status = %@", status.rawValue)
         tableView.reloadData()
     }
 
-    func filterByAllCustomStatuses() {
-        var customOrders = [Order]()
-        for order in orders {
-            if case .custom(_) = order.status {
-                customOrders.append(order)
-            }
-        }
-        filterResults = customOrders
-        isUsingFilterAction = filterResults.count != orders.count
+    func resetOrderFilters() {
+        resultsController.predicate = nil
         tableView.reloadData()
     }
 }
@@ -147,41 +152,22 @@ class OrdersViewController: UIViewController {
 // MARK: - Sync'ing Helpers
 //
 private extension OrdersViewController {
-    func syncOrders() {
-        guard let siteID = siteID else {
+
+    func syncOrders(onCompletion: (() -> Void)? = nil) {
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            onCompletion?()
             return
         }
 
-        let action = OrderAction.retrieveOrders(siteID: siteID) { [weak self] (orders, error) in
-            self?.refreshControl.endRefreshing()
-
-            guard let orders = orders else {
-                DDLogError("⛔️ Error synchronizing orders: \(error.debugDescription)")
-                return
+        let action = OrderAction.retrieveOrders(siteID: siteID) { error in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing orders: \(error)")
             }
 
-            self?.orders = orders
-            self?.tableView.reloadData()
+            onCompletion?()
         }
 
         StoresManager.shared.dispatch(action)
-    }
-
-    func clearOrders() {
-        orders = []
-        isUsingFilterAction = false
-        tableView.reloadData()
-    }
-
-
-    func ensureRefreshControlIsVisible() {
-        guard tableView.contentOffset.y == 0 else {
-            return
-        }
-
-        let point = CGPoint(x: 0, y: -refreshControl.frame.height)
-        tableView.setContentOffset(point, animated: true)
-        refreshControl.beginRefreshing()
     }
 }
 
@@ -190,12 +176,9 @@ private extension OrdersViewController {
 //
 private extension OrdersViewController {
 
-    func order(at indexPath: IndexPath) -> Order {
-        return isUsingFilterAction ? filterResults[indexPath.row] : orders[indexPath.row]
-    }
-
     func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
-        return OrderDetailsViewModel(order: order(at: indexPath))
+        let order = resultsController.object(at: indexPath)
+        return OrderDetailsViewModel(order: order)
     }
 }
 
@@ -203,26 +186,29 @@ private extension OrdersViewController {
 // MARK: - UITableViewDataSource Conformance
 //
 extension OrdersViewController: UITableViewDataSource {
+
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+//        guard !displaysNoResults else {
+//            return Constants.filterResultsNotFoundSectionCount
+//        }
+
+        return resultsController.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if isUsingFilterAction == true {
-            if filterResults.isEmpty {
-                return Constants.filterResultsNotFoundRowCount
-            }
-            return filterResults.count
-        }
-        return orders.count
+//        guard !displaysNoResults else {
+//            return Constants.filterResultsNotFoundRowCount
+//        }
+
+        return resultsController.sections[section].numberOfObjects
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard !displaysNoResults else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: NoResultsTableViewCell.reuseIdentifier, for: indexPath) as! NoResultsTableViewCell
-            cell.configure(text: NSLocalizedString("No results found. Clear the filter to try again.", comment: "Displays message to user when no filter results were found."))
-            return cell
-        }
+//        guard !displaysNoResults else {
+//            let cell = tableView.dequeueReusableCell(withIdentifier: NoResultsTableViewCell.reuseIdentifier, for: indexPath) as! NoResultsTableViewCell
+//            cell.title = NSLocalizedString("No results found. Clear the filter to try again.", comment: "Displays message to user when no filter results were found.")
+//            return cell
+//        }
 
         guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as? OrderListCell else {
             fatalError()
@@ -245,6 +231,7 @@ extension OrdersViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension OrdersViewController: UITableViewDelegate {
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableViewAutomaticDimension
     }
@@ -272,9 +259,13 @@ extension OrdersViewController: UITableViewDelegate {
 // MARK: - Constants
 //
 private extension OrdersViewController {
-    struct Constants {
-        static let rowHeight = CGFloat(86)
+    enum FilterAlert {
+        static let cancelText = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
+        static let allText = NSLocalizedString("All", comment: "All filter title")
+    }
+
+    enum Constants {
+        static let estimatedRowHeight = CGFloat(86)
         static let orderDetailsSegue = "ShowOrderDetailsViewController"
-        static let filterResultsNotFoundRowCount = 1
     }
 }

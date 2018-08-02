@@ -15,11 +15,11 @@ public class OrderStatsRemote: Remote {
     ///   - quantity: How many `unit`s to fetch
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadOrderStats(for siteID: Int, unit: OrderStatGranularity, latestDateToInclude: String, quantity: String, completion: @escaping (OrderStats?, Error?) -> Void) {
+    public func loadOrderStats(for siteID: Int, unit: OrderStatGranularity, latestDateToInclude: String, quantity: Int, completion: @escaping (OrderStats?, Error?) -> Void) {
         let path = "\(Constants.sitesPath)/\(siteID)/\(Constants.orderStatsPath)/"
         let parameters = [ParameterKeys.unit: unit.rawValue,
                           ParameterKeys.date: latestDateToInclude,
-                          ParameterKeys.quantity: quantity]
+                          ParameterKeys.quantity: String(quantity)]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
         let mapper = OrderStatsMapper()
         enqueue(request, mapper: mapper, completion: completion)

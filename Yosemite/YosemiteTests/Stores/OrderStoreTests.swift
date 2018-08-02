@@ -53,7 +53,7 @@ class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
 
-        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders")
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
             XCTAssertNil(error)
             guard let orders = orders else {
@@ -75,7 +75,7 @@ class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Persist order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders")
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
         let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
@@ -95,7 +95,7 @@ class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
 
-        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders")
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
         let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in

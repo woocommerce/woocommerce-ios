@@ -81,7 +81,7 @@ private extension OrdersViewController {
         let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
                                              style: .plain,
                                              target: self,
-                                             action: #selector(rightButtonTapped))
+                                             action: #selector(displayFiltersAlert))
         rightBarButton.tintColor = .white
         navigationItem.rightBarButtonItem = rightBarButton
 
@@ -107,7 +107,7 @@ private extension OrdersViewController {
 //
 extension OrdersViewController {
 
-    @objc func rightButtonTapped() {
+    @IBAction func displayFiltersAlert() {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
 
@@ -129,9 +129,9 @@ extension OrdersViewController {
         present(actionSheet, animated: true)
     }
 
-    @objc func pullToRefresh(sender: UIRefreshControl) {
-        syncOrders { [weak self] in
-            self?.refreshControl.endRefreshing()
+    @IBAction func pullToRefresh(sender: UIRefreshControl) {
+        syncOrders {
+            sender.endRefreshing()
         }
     }
 }

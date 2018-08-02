@@ -39,17 +39,17 @@ private extension OrderStore  {
 
     /// Retrieves the orders associated with a given Site ID (if any!).
     ///
-    func retrieveOrders(siteID: Int, onCompletion: @escaping ([Order]?, Error?) -> Void) {
+    func retrieveOrders(siteID: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
         remote.loadAllOrders(for: siteID) { [weak self] (orders, error) in
             guard let orders = orders else {
-                onCompletion(nil, error)
+                onCompletion(error)
                 return
             }
 
             self?.upsertStoredOrders(readOnlyOrders: orders)
-            onCompletion(orders, nil)
+            onCompletion(nil)
         }
     }
 

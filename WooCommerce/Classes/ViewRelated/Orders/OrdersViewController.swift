@@ -116,10 +116,14 @@ extension OrdersViewController {
             self?.resetOrderFilters()
         }
 
-        for status in OrderStatusViewModel.allOrderStatuses {
+        for status in OrderStatus.knownStatus {
             actionSheet.addDefaultActionWithTitle(status.description) { [weak self] _ in
-                self?.filterOrders(by: status)
+                self?.displayOrders(with: status)
             }
+        }
+
+        actionSheet.addDefaultActionWithTitle(FilterAlert.customText) { [weak self] _ in
+            self?.displayOrdersWithUnknownStatus()
         }
 
         present(actionSheet, animated: true)
@@ -137,8 +141,14 @@ extension OrdersViewController {
 //
 private extension OrdersViewController {
 
-    func filterOrders(by status: OrderStatus) {
+    func displayOrders(with status: OrderStatus) {
         resultsController.predicate = NSPredicate(format: "status = %@", status.rawValue)
+        tableView.reloadData()
+    }
+
+    func displayOrdersWithUnknownStatus() {
+        let knownStatus = OrderStatus.knownStatus.map { $0.rawValue }
+        resultsController.predicate = NSPredicate(format: "NOT (status in %@)", knownStatus)
         tableView.reloadData()
     }
 
@@ -260,8 +270,9 @@ extension OrdersViewController: UITableViewDelegate {
 //
 private extension OrdersViewController {
     enum FilterAlert {
-        static let cancelText = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
         static let allText = NSLocalizedString("All", comment: "All filter title")
+        static let cancelText = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
+        static let customText = NSLocalizedString("Custom", comment: "Title for button that catches all custom labels and displays them on the order list")
     }
 
     enum Constants {

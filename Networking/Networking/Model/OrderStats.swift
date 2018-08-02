@@ -1,21 +1,11 @@
 import Foundation
 
 
-/// Represents the granularity of a specific `OrderStats`
-///
-public enum OrderStatGranularity: String {
-    case day    = "day"
-    case week   = "week"
-    case month  = "month"
-    case year   = "year"
-}
-
-
 /// Represents order stats over a specific period.
 ///
 public struct OrderStats: Decodable {
     public let date: String
-    public let unit: String
+    public let granularity: OrderStatGranularity
     public let quantity: String
     public let fields: [String]
     public let totalGrossSales: Float
@@ -35,7 +25,7 @@ public struct OrderStats: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let date = try container.decode(String.self, forKey: .date)
-        let unit = try container.decode(String.self, forKey: .unit)
+        let granularity = try container.decode(OrderStatGranularity.self, forKey: .unit)
         let quantity = try container.decode(String.self, forKey: .quantity)
 
         let fields = try container.decode([String].self, forKey: .fields)
@@ -53,15 +43,15 @@ public struct OrderStats: Decodable {
 
         let items = rawData.map({ OrderStatsItem(fieldNames: fields, rawData: $0) })
 
-        self.init(date: date, unit: unit, quantity: quantity, fields: fields, items: items, totalGrossSales: totalGrossSales, totalNetSales: totalNetSales, totalOrders: totalOrders, totalProducts: totalProducts, averageGrossSales: averageGrossSales, averageNetSales: averageNetSales, averageOrders: averageOrders, averageProducts: averageProducts)
+        self.init(date: date, granularity: granularity, quantity: quantity, fields: fields, items: items, totalGrossSales: totalGrossSales, totalNetSales: totalNetSales, totalOrders: totalOrders, totalProducts: totalProducts, averageGrossSales: averageGrossSales, averageNetSales: averageNetSales, averageOrders: averageOrders, averageProducts: averageProducts)
     }
 
 
     /// OrderStats struct initializer.
     ///
-    public init(date: String, unit: String, quantity: String, fields: [String], items: [OrderStatsItem]?, totalGrossSales: Float, totalNetSales: Float, totalOrders: Int, totalProducts: Int, averageGrossSales: Float, averageNetSales: Float, averageOrders: Float, averageProducts: Float) {
+    public init(date: String, granularity: OrderStatGranularity, quantity: String, fields: [String], items: [OrderStatsItem]?, totalGrossSales: Float, totalNetSales: Float, totalOrders: Int, totalProducts: Int, averageGrossSales: Float, averageNetSales: Float, averageOrders: Float, averageProducts: Float) {
         self.date = date
-        self.unit = unit
+        self.granularity = granularity
         self.quantity = quantity
         self.fields = fields
         self.totalGrossSales = totalGrossSales
@@ -104,7 +94,7 @@ private extension OrderStats {
 extension OrderStats: Comparable {
     public static func == (lhs: OrderStats, rhs: OrderStats) -> Bool {
         return lhs.date == rhs.date &&
-            lhs.unit == rhs.unit &&
+            lhs.granularity == rhs.granularity &&
             lhs.quantity == rhs.quantity &&
             lhs.fields == rhs.fields &&
             lhs.totalGrossSales == rhs.totalGrossSales &&
@@ -120,7 +110,6 @@ extension OrderStats: Comparable {
 
     public static func < (lhs: OrderStats, rhs: OrderStats) -> Bool {
         return lhs.date < rhs.date ||
-            (lhs.date == rhs.date && lhs.unit < rhs.unit) ||
-            (lhs.date == rhs.date && lhs.unit == rhs.unit && lhs.quantity < rhs.quantity)
+            (lhs.date == rhs.date && lhs.quantity < rhs.quantity)
     }
 }

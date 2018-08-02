@@ -1176,6 +1176,7 @@
 				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				VALID_ARCHS = "$(inherited)";
 			};
 			name = Debug;
 		};
@@ -1186,6 +1187,7 @@
 				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				VALID_ARCHS = "$(inherited)";
 			};
 			name = Release;
 		};
@@ -1246,7 +1248,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OBJC_BRIDGING_HEADER = "Classes/System/WooCommerce-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				VALID_ARCHS = "arm64 armv7 armv7s x86_64";
+				VALID_ARCHS = "$(inherited)";
 			};
 			name = Debug;
 		};
@@ -1300,7 +1302,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Classes/System/WooCommerce-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "arm64 armv7 armv7s x86_64";
+				VALID_ARCHS = "$(inherited)";
 			};
 			name = Release;
 		};
@@ -1326,7 +1328,7 @@
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
-				VALID_ARCHS = "arm64 armv7s x86_64";
+				VALID_ARCHS = "$(inherited)";
 			};
 			name = Debug;
 		};
@@ -1352,7 +1354,7 @@
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
-				VALID_ARCHS = "arm64 armv7s x86_64";
+				VALID_ARCHS = "$(inherited)";
 			};
 			name = Release;
 		};
@@ -1372,6 +1374,7 @@
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WooCommerce.app/WooCommerce";
+				VALID_ARCHS = "$(inherited)";
 			};
 			name = Debug;
 		};
@@ -1390,6 +1393,7 @@
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WooCommerce.app/WooCommerce";
+				VALID_ARCHS = "$(inherited)";
 			};
 			name = Release;
 		};

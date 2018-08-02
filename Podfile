@@ -98,13 +98,3 @@ target 'Storage' do
     inherit! :search_paths
   end
 end
-
-
-# Workaround: Drop ARMv7 Architecture:
-# ====================================
-#
-post_install do |installer|
-    installer.pods_project.build_configuration_list.build_configurations.each do |configuration|
-        configuration.build_settings['VALID_ARCHS'] = 'arm64 armv7s'
-    end
-end

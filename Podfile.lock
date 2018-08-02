@@ -52,7 +52,7 @@ PODS:
     - WordPressShared (~> 1.0)
     - WordPressUI (~> 1.0)
     - wpxmlrpc (~> 0.8)
-  - WordPressKit (1.2):
+  - WordPressKit (1.2.1):
     - Alamofire (~> 4.7)
     - CocoaLumberjack (= 3.4.2)
     - NSObject-SafeExpectations (= 0.0.3)
@@ -128,11 +128,11 @@ SPEC CHECKSUMS:
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
   WordPressAuthenticator: 2825f0c56f83a17470564dbec427991fa5cac5af
-  WordPressKit: 68eaa8df5ceedeed03ba796afc4b825f0bed4fe2
+  WordPressKit: a4a3849684f631a3abf579f6d3f15a32677cbb30
   WordPressShared: 063e1e8b1a7aaf635abf17f091a2d235a068abdc
   WordPressUI: af141587ec444f9af753a00605bd0d3f14d8d8a3
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
 
-PODFILE CHECKSUM: d74ce74de818d7610b3ee7a23df5bf7890d6197e
+PODFILE CHECKSUM: c627b723e165dabc83c6716871f3199190464f2c
 
 COCOAPODS: 1.5.3

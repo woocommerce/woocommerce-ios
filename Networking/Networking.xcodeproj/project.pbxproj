@@ -22,6 +22,7 @@
 		748D424C210FA34400CF7D1B /* OrderStatsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */; };
 		748D424E210FB1F500CF7D1B /* order-stats-day.json in Resources */ = {isa = PBXBuildFile; fileRef = 748D424D210FB1F500CF7D1B /* order-stats-day.json */; };
 		74A1196C2110F4BB00E1E5F0 /* OrderStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A1196B2110F4BB00E1E5F0 /* OrderStats.swift */; };
+		74AE244D2113704C00CA8C54 /* OrderStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AE244C2113704C00CA8C54 /* OrderStatsRemoteTests.swift */; };
 		74C8F06420EEB44800B6EDC9 /* OrderNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C8F06320EEB44800B6EDC9 /* OrderNote.swift */; };
 		74C8F06620EEB76400B6EDC9 /* order-notes.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C8F06520EEB76400B6EDC9 /* order-notes.json */; };
 		74C8F06820EEB7BD00B6EDC9 /* OrderNotesMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */; };
@@ -103,6 +104,7 @@
 		748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsMapper.swift; sourceTree = "<group>"; };
 		748D424D210FB1F500CF7D1B /* order-stats-day.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-day.json"; sourceTree = "<group>"; };
 		74A1196B2110F4BB00E1E5F0 /* OrderStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStats.swift; sourceTree = "<group>"; };
+		74AE244C2113704C00CA8C54 /* OrderStatsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsRemoteTests.swift; sourceTree = "<group>"; };
 		74C8F06320EEB44800B6EDC9 /* OrderNote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNote.swift; sourceTree = "<group>"; };
 		74C8F06520EEB76400B6EDC9 /* order-notes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-notes.json"; sourceTree = "<group>"; };
 		74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNotesMapper.swift; sourceTree = "<group>"; };
@@ -225,6 +227,7 @@
 				B5969E1420A47F99005E9DF1 /* RemoteTests.swift */,
 				B505F6D620BEE58800BB1B69 /* AccountRemoteTests.swift */,
 				B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */,
+				74AE244C2113704C00CA8C54 /* OrderStatsRemoteTests.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -653,6 +656,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74AE244D2113704C00CA8C54 /* OrderStatsRemoteTests.swift in Sources */,
 				B505F6D320BEE3A500BB1B69 /* AccountMapperTests.swift in Sources */,
 				B5C6FCC820A32E4800A4F8E4 /* DateFormatterWooTests.swift in Sources */,
 				74C8F06A20EEBC8C00B6EDC9 /* OrderMapperTests.swift in Sources */,

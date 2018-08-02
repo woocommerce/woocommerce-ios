@@ -14,7 +14,7 @@ class OrderStatsMapperTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(dayStats.unit, "day")
+        XCTAssertEqual(dayStats.granularity, .day)
         XCTAssertEqual(dayStats.date, "2018-06-08")
         XCTAssertEqual(dayStats.quantity, "31")
         XCTAssertEqual(dayStats.fields.count, 18)
@@ -77,7 +77,7 @@ class OrderStatsMapperTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(weekStats.unit, "week")
+        XCTAssertEqual(weekStats.granularity, .week)
         XCTAssertEqual(weekStats.date, "2018-W30")
         XCTAssertEqual(weekStats.quantity, "31")
         XCTAssertEqual(weekStats.fields.count, 18)
@@ -160,7 +160,7 @@ class OrderStatsMapperTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(monthStats.unit, "month")
+        XCTAssertEqual(monthStats.granularity, .month)
         XCTAssertEqual(monthStats.date, "2018-06")
         XCTAssertEqual(monthStats.quantity, "12")
         XCTAssertEqual(monthStats.fields.count, 18)
@@ -223,7 +223,7 @@ class OrderStatsMapperTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(yearStats.unit, "year")
+        XCTAssertEqual(yearStats.granularity, .year)
         XCTAssertEqual(yearStats.date, "2018")
         XCTAssertEqual(yearStats.quantity, "4")
         XCTAssertEqual(yearStats.fields.count, 18)

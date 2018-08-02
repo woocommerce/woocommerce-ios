@@ -33,7 +33,6 @@
 		B54CA5C320A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54CA5C120A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift */; };
 		B54CA5C720A4BFDC00F38CD1 /* DummyStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54CA5C620A4BFDC00F38CD1 /* DummyStack.swift */; };
 		B54CA5C920A4C17800F38CD1 /* NSObject+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54CA5C820A4C17800F38CD1 /* NSObject+Storage.swift */; };
-		B59E11DA20A9D00C004121A4 /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */; };
 		B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */; };
 		B59E11E020A9F5E6004121A4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DF20A9F5E6004121A4 /* Constants.swift */; };
 		B5B914C520EFF03500F2F832 /* Site+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B914C320EFF03500F2F832 /* Site+CoreDataClass.swift */; };
@@ -442,7 +441,6 @@
 				7426A05520F69DA4002A4E07 /* OrderItem+CoreDataProperties.swift in Sources */,
 				7426A04720F68F27002A4E07 /* Order+CoreDataClass.swift in Sources */,
 				B54CA5BD20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift in Sources */,
-				B59E11DA20A9D00C004121A4 /* WooCommerce.xcdatamodeld in Sources */,
 				74B7D6AD20F90CBB002667AC /* OrderNote+CoreDataClass.swift in Sources */,
 				B52B0F7920AA287C00477698 /* StorageManagerType.swift in Sources */,
 				7426A05420F69DA4002A4E07 /* OrderItem+CoreDataClass.swift in Sources */,

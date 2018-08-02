@@ -9,6 +9,10 @@ enum WordPressAPIVersion: String {
     ///
     case mark1_1 = "rest/v1.1/"
 
+    /// WPcom REST API Endpoint Mark 2
+    ///
+    case wpcomMark2 = "wpcom/v2/"
+
     /// Returns the path for the current API Version
     ///
     var path: String {

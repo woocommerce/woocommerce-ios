@@ -50,7 +50,7 @@ extension ResultsController {
 //
 private extension ResultsController {
 
-    /// Sets up all of the Content Events from the inner FRC over to the specified TableView.
+    /// Sets up all of the Content Events from the inner NSFetchedResultsController (FRC) over to the specified TableView.
     ///
     func startForwardingContentEvents(to tableView: UITableView, with animations: ResultsTableAnimations) {
         onWillChangeContent = { [weak tableView] in

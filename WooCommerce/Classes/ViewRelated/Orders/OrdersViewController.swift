@@ -198,6 +198,7 @@ private extension OrdersViewController {
 extension OrdersViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
+// TODO: Support Loading State + Empty State 
 //        guard !displaysNoResults else {
 //            return Constants.filterResultsNotFoundSectionCount
 //        }
@@ -206,6 +207,7 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+// TODO: Support Loading State + Empty State
 //        guard !displaysNoResults else {
 //            return Constants.filterResultsNotFoundRowCount
 //        }
@@ -214,6 +216,7 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+// TODO: Support Empty State
 //        guard !displaysNoResults else {
 //            let cell = tableView.dequeueReusableCell(withIdentifier: NoResultsTableViewCell.reuseIdentifier, for: indexPath) as! NoResultsTableViewCell
 //            cell.title = NSLocalizedString("No results found. Clear the filter to try again.", comment: "Displays message to user when no filter results were found.")

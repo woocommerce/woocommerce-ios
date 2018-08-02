@@ -232,8 +232,7 @@
 		B58B4AB52108F11C00076FDD /* Notice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notice.swift; sourceTree = "<group>"; };
 		B58B4AB72108F14700076FDD /* NoticeNotificationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeNotificationInfo.swift; sourceTree = "<group>"; };
 		B58B4ABF2108FF6100076FDD /* Array+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Helpers.swift"; sourceTree = "<group>"; };
-		B59F38DF20D40A24008C1829 /* WooCommerce.debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerce.debug.entitlements; sourceTree = "<group>"; };
-		B59F38E020D40A24008C1829 /* WooCommerce.release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerce.release.entitlements; sourceTree = "<group>"; };
+		B59F38E020D40A24008C1829 /* WooCommerce.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerce.entitlements; sourceTree = "<group>"; };
 		B5A82EE121025C450053ADC8 /* FulfillViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FulfillViewController.swift; sourceTree = "<group>"; };
 		B5A82EE421025E550053ADC8 /* FulfillViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FulfillViewController.xib; sourceTree = "<group>"; };
 		B5A82EE6210263460053ADC8 /* UIViewController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Helpers.swift"; sourceTree = "<group>"; };
@@ -496,8 +495,7 @@
 				CE1CCB4620570A6B000EE3AC /* en.lproj */,
 				B56DB3D82049BFAA00D4AA8E /* Info.plist */,
 				B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */,
-				B59F38DF20D40A24008C1829 /* WooCommerce.debug.entitlements */,
-				B59F38E020D40A24008C1829 /* WooCommerce.release.entitlements */,
+				B59F38E020D40A24008C1829 /* WooCommerce.entitlements */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -791,6 +789,9 @@
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Keychain = {
+								enabled = 1;
+							};
+							com.apple.Push = {
 								enabled = 1;
 							};
 						};
@@ -1276,7 +1277,7 @@
 			baseConfigurationReference = 90AC1C0B391E04A837BDC64E /* Pods-WooCommerce.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Resources/WooCommerce.debug.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Resources/WooCommerce.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_BITCODE = NO;
@@ -1285,7 +1286,7 @@
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce Development";
@@ -1302,7 +1303,7 @@
 			baseConfigurationReference = 33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Resources/WooCommerce.release.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Resources/WooCommerce.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;

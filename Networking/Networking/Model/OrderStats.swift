@@ -18,7 +18,6 @@ public struct OrderStats: Decodable {
     public let unit: String
     public let quantity: String
     public let fields: [String]
-    public let orderStatsItems: [[AnyCodable]]?
     public let totalGrossSales: Float
     public let totalNetSales: Float
     public let totalOrders: Int
@@ -27,6 +26,7 @@ public struct OrderStats: Decodable {
     public let averageNetSales: Float
     public let averageOrders: Float
     public let averageProducts: Float
+    public let items: [OrderStatsItem]?
 
 
     /// The public initializer for order stats.
@@ -39,7 +39,7 @@ public struct OrderStats: Decodable {
         let quantity = try container.decode(String.self, forKey: .quantity)
 
         let fields = try container.decode([String].self, forKey: .fields)
-        let orderStatsItems = try container.decode([[AnyCodable]].self, forKey: .orderStatsItems)
+        let rawData: [[AnyCodable]] = try container.decode([[AnyCodable]].self, forKey: .data)
 
         let totalGrossSales = try container.decode(Float.self, forKey: .totalGrossSales)
         let totalNetSales = try container.decode(Float.self, forKey: .totalNetSales)
@@ -51,18 +51,19 @@ public struct OrderStats: Decodable {
         let averageOrders = try container.decode(Float.self, forKey: .averageOrders)
         let averageProducts = try container.decode(Float.self, forKey: .averageProducts)
 
-        self.init(date: date, unit: unit, quantity: quantity, fields: fields, orderStatsItems: orderStatsItems, totalGrossSales: totalGrossSales, totalNetSales: totalNetSales, totalOrders: totalOrders, totalProducts: totalProducts, averageGrossSales: averageGrossSales, averageNetSales: averageNetSales, averageOrders: averageOrders, averageProducts: averageProducts)
+        let items = rawData.map({ OrderStatsItem(fieldNames: fields, rawData: $0) })
+
+        self.init(date: date, unit: unit, quantity: quantity, fields: fields, items: items, totalGrossSales: totalGrossSales, totalNetSales: totalNetSales, totalOrders: totalOrders, totalProducts: totalProducts, averageGrossSales: averageGrossSales, averageNetSales: averageNetSales, averageOrders: averageOrders, averageProducts: averageProducts)
     }
 
 
     /// OrderStats struct initializer.
     ///
-    public init(date: String, unit: String, quantity: String, fields: [String], orderStatsItems: [[AnyCodable]]?, totalGrossSales: Float, totalNetSales: Float, totalOrders: Int, totalProducts: Int, averageGrossSales: Float, averageNetSales: Float, averageOrders: Float, averageProducts: Float) {
+    public init(date: String, unit: String, quantity: String, fields: [String], items: [OrderStatsItem]?, totalGrossSales: Float, totalNetSales: Float, totalOrders: Int, totalProducts: Int, averageGrossSales: Float, averageNetSales: Float, averageOrders: Float, averageProducts: Float) {
         self.date = date
         self.unit = unit
         self.quantity = quantity
         self.fields = fields
-        self.orderStatsItems = orderStatsItems
         self.totalGrossSales = totalGrossSales
         self.totalNetSales = totalNetSales
         self.totalOrders = totalOrders
@@ -71,6 +72,7 @@ public struct OrderStats: Decodable {
         self.averageNetSales = averageNetSales
         self.averageOrders = averageOrders
         self.averageProducts = averageProducts
+        self.items = items
     }
 }
 
@@ -84,7 +86,7 @@ private extension OrderStats {
         case unit = "unit"
         case quantity = "quantity"
         case fields = "fields"
-        case orderStatsItems = "data"
+        case data = "data"
         case totalGrossSales = "total_gross_sales"
         case totalNetSales = "total_net_sales"
         case totalOrders = "total_orders"
@@ -105,7 +107,6 @@ extension OrderStats: Comparable {
             lhs.unit == rhs.unit &&
             lhs.quantity == rhs.quantity &&
             lhs.fields == rhs.fields &&
-            lhs.orderStatsItems == rhs.orderStatsItems &&
             lhs.totalGrossSales == rhs.totalGrossSales &&
             lhs.totalNetSales == rhs.totalNetSales &&
             lhs.totalOrders == rhs.totalOrders &&
@@ -113,7 +114,8 @@ extension OrderStats: Comparable {
             lhs.averageGrossSales == rhs.averageGrossSales &&
             lhs.averageNetSales == rhs.averageNetSales &&
             lhs.averageOrders == rhs.averageOrders &&
-            lhs.averageProducts == rhs.averageProducts
+            lhs.averageProducts == rhs.averageProducts &&
+            lhs.items == rhs.items
     }
 
     public static func < (lhs: OrderStats, rhs: OrderStats) -> Bool {

@@ -9,17 +9,14 @@
 /* Begin PBXBuildFile section */
 		0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */; };
 		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
-		7424B49420EAD37C00CC62F6 /* order.json in Resources */ = {isa = PBXBuildFile; fileRef = 7424B49320EAD37C00CC62F6 /* order.json */; };
 		74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */; };
 		74685D5020F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */; };
 		7499936420EFBC1B00CF01CD /* OrderNoteAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7499936320EFBC1A00CF01CD /* OrderNoteAction.swift */; };
 		7499936620EFBC7200CF01CD /* OrderNoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7499936520EFBC7200CF01CD /* OrderNoteStore.swift */; };
 		7499936820EFC0ED00CF01CD /* OrderNoteStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7499936720EFC0ED00CF01CD /* OrderNoteStoreTests.swift */; };
-		7499936C20EFC20100CF01CD /* order-notes.json in Resources */ = {isa = PBXBuildFile; fileRef = 7499936B20EFC20100CF01CD /* order-notes.json */; };
 		74A7688C20D45EBA00F9D437 /* OrderStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7688B20D45EBA00F9D437 /* OrderStore.swift */; };
 		74A7688E20D45ED400F9D437 /* OrderStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7688D20D45ED400F9D437 /* OrderStoreTests.swift */; };
 		74A7689020D45F9300F9D437 /* OrderAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7688F20D45F9300F9D437 /* OrderAction.swift */; };
-		74A7689220D47F9E00F9D437 /* orders.json in Resources */ = {isa = PBXBuildFile; fileRef = 74A7689120D47F9E00F9D437 /* orders.json */; };
 		74B7D6B020F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B7D6AF20F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift */; };
 		74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */; };
 		B505254C20EE6491008090F5 /* Site+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */; };
@@ -32,10 +29,9 @@
 		B5B19DE020E6A45900899568 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B19DDF20E6A45900899568 /* Storage.framework */; };
 		B5B19DE220E6A45E00899568 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B19DE120E6A45E00899568 /* Networking.framework */; };
 		B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B5C796208E49B600642956 /* Action+Internal.swift */; };
-		B5B914C220EFE03200F2F832 /* sites.json in Resources */ = {isa = PBXBuildFile; fileRef = B5B914C120EFE03200F2F832 /* sites.json */; };
+		B5BC71DD21139EDD005CF5AA /* Responses in Resources */ = {isa = PBXBuildFile; fileRef = B5BC71DA21139CF2005CF5AA /* Responses */; };
 		B5BC736520D1A98500B5B6FA /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BC736420D1A98500B5B6FA /* AccountStore.swift */; };
 		B5BC736820D1AA8F00B5B6FA /* AccountStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BC736720D1AA8F00B5B6FA /* AccountStoreTests.swift */; };
-		B5BC736B20D1AAE900B5B6FA /* me.json in Resources */ = {isa = PBXBuildFile; fileRef = B5BC736A20D1AAE900B5B6FA /* me.json */; };
 		B5BC736E20D1AB3600B5B6FA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BC736D20D1AB3500B5B6FA /* Constants.swift */; };
 		B5C9DDFF2087FEC0006B910A /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C9DDF52087FEC0006B910A /* Yosemite.framework */; };
 		B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE102087FF0E006B910A /* Dispatcher.swift */; };
@@ -63,18 +59,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		7424B49320EAD37C00CC62F6 /* order.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = order.json; sourceTree = "<group>"; };
-		745D21C120D8043A00BBE7C3 /* generic_error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = generic_error.json; sourceTree = "<group>"; };
 		74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderCoupon+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		7499936320EFBC1A00CF01CD /* OrderNoteAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNoteAction.swift; sourceTree = "<group>"; };
 		7499936520EFBC7200CF01CD /* OrderNoteStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNoteStore.swift; sourceTree = "<group>"; };
 		7499936720EFC0ED00CF01CD /* OrderNoteStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteStoreTests.swift; sourceTree = "<group>"; };
-		7499936B20EFC20100CF01CD /* order-notes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-notes.json"; sourceTree = "<group>"; };
 		74A7688B20D45EBA00F9D437 /* OrderStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStore.swift; sourceTree = "<group>"; };
 		74A7688D20D45ED400F9D437 /* OrderStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStoreTests.swift; sourceTree = "<group>"; };
 		74A7688F20D45F9300F9D437 /* OrderAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAction.swift; sourceTree = "<group>"; };
-		74A7689120D47F9E00F9D437 /* orders.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orders.json; sourceTree = "<group>"; };
 		74B7D6AF20F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderNote+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Order+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		79402E7AD394EEB60C39A4B8 /* Pods-YosemiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -92,10 +84,9 @@
 		B5B19DDF20E6A45900899568 /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5B19DE120E6A45E00899568 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5B5C796208E49B600642956 /* Action+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Action+Internal.swift"; sourceTree = "<group>"; };
-		B5B914C120EFE03200F2F832 /* sites.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sites.json; sourceTree = "<group>"; };
+		B5BC71DA21139CF2005CF5AA /* Responses */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Responses; path = ../../Networking/NetworkingTests/Responses; sourceTree = "<group>"; };
 		B5BC736420D1A98500B5B6FA /* AccountStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountStore.swift; sourceTree = "<group>"; };
 		B5BC736720D1AA8F00B5B6FA /* AccountStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountStoreTests.swift; sourceTree = "<group>"; };
-		B5BC736A20D1AAE900B5B6FA /* me.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = me.json; sourceTree = "<group>"; };
 		B5BC736D20D1AB3500B5B6FA /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B5C9DDF52087FEC0006B910A /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C9DDF92087FEC0006B910A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -183,19 +174,6 @@
 			path = Stores;
 			sourceTree = "<group>";
 		};
-		B5BC736920D1AAE900B5B6FA /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				745D21C120D8043A00BBE7C3 /* generic_error.json */,
-				B5BC736A20D1AAE900B5B6FA /* me.json */,
-				7424B49320EAD37C00CC62F6 /* order.json */,
-				7499936B20EFC20100CF01CD /* order-notes.json */,
-				74A7689120D47F9E00F9D437 /* orders.json */,
-				B5B914C120EFE03200F2F832 /* sites.json */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
 		B5BC736C20D1AB3500B5B6FA /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -253,7 +231,7 @@
 		B5C9DE022087FEC0006B910A /* YosemiteTests */ = {
 			isa = PBXGroup;
 			children = (
-				B5BC736920D1AAE900B5B6FA /* Resources */,
+				B5BC71DA21139CF2005CF5AA /* Responses */,
 				B5BC736C20D1AB3500B5B6FA /* Settings */,
 				B5C9DE1D2087FF20006B910A /* Mockups */,
 				B5C9DE192087FF20006B910A /* Base */,
@@ -433,11 +411,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				74A7689220D47F9E00F9D437 /* orders.json in Resources */,
-				B5BC736B20D1AAE900B5B6FA /* me.json in Resources */,
-				B5B914C220EFE03200F2F832 /* sites.json in Resources */,
-				7499936C20EFC20100CF01CD /* order-notes.json in Resources */,
-				7424B49420EAD37C00CC62F6 /* order.json in Resources */,
+				B5BC71DD21139EDD005CF5AA /* Responses in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

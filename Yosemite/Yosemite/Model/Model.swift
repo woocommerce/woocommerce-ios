@@ -22,5 +22,6 @@ public typealias Site = Networking.Site
 
 // MARK: - Exported Storage Symbols
 
+public typealias StorageAccount = Storage.Account
 public typealias StorageSite = Storage.Site
 public typealias StorageOrder = Storage.Order

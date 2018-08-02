@@ -38,6 +38,6 @@ private extension OrderStatsRemote {
     enum ParameterKeys {
         static let unit: String     = "unit"
         static let date: String     = "date"
-        static let quantity: String = "page"
+        static let quantity: String = "quantity"
     }
 }

@@ -23,7 +23,11 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Filtering Predicate to be applied to the Results.
     ///
-    private let predicate: NSPredicate?
+    public var predicate: NSPredicate? {
+        didSet {
+            refreshFetchedObjects(predicate: predicate)
+        }
+    }
 
     /// Results's Sort Descriptor.
     ///
@@ -105,13 +109,17 @@ public class ResultsController<T: ResultsControllerMutableType> {
         try controller.performFetch()
     }
 
-
     /// Returns the fetched object at a given indexPath.
     ///
     public func object(at indexPath: IndexPath) -> T.ReadOnlyType {
         return controller.object(at: indexPath).toReadOnly()
     }
 
+    /// Indicates if there are any Objects matching the specified criteria.
+    ///
+    public var isEmpty: Bool {
+        return controller.fetchedObjects?.isEmpty ?? true
+    }
 
     /// Returns an array of all of the (ReadOnly) Fetched Objects.
     ///
@@ -133,13 +141,18 @@ public class ResultsController<T: ResultsControllerMutableType> {
         return readOnlySections ?? []
     }
 
+    /// Refreshes all of the Fetched Objects, so that the new criteria is met.
+    ///
+    private func refreshFetchedObjects(predicate: NSPredicate?) {
+        controller.fetchRequest.predicate = predicate
+        try? controller.performFetch()
+    }
 
     /// Initializes the FetchedResultsController
     ///
     private func setupResultsController() {
         controller.delegate = internalDelegate
     }
-
 
     /// Initializes FRC's Event Forwarding.
     ///

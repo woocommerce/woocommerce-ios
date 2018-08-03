@@ -83,7 +83,7 @@ class ProductDetailsTableViewCell: UITableViewCell {
             return skuLabel.text
         }
         set {
-            skuLabel.text =  newValue
+            skuLabel.text = newValue
         }
     }
 

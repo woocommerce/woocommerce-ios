@@ -9,7 +9,7 @@ extension Storage.Order: ReadOnlyConvertible {
     /// Updates the Storage.Order with the ReadOnly.
     ///
     public func update(with order: Yosemite.Order) {
-        siteID  = Int64(order.siteID)
+        siteID = Int64(order.siteID)
         orderID = Int64(order.orderID)
         parentID = Int64(order.parentID)
         customerID = Int64(order.customerID)

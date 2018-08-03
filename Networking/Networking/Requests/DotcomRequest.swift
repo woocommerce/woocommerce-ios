@@ -4,7 +4,7 @@ import Alamofire
 
 /// Represents a WordPress.com Request
 ///
-struct DotcomRequest: URLRequestConvertible  {
+struct DotcomRequest: URLRequestConvertible {
 
     /// WordPress.com Base URL
     ///

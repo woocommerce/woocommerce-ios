@@ -51,17 +51,12 @@ class OrderStoreTests: XCTestCase {
     func testRetrieveOrdersReturnsExpectedFields() {
         let expectation = self.expectation(description: "Retrieve order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let remoteOrder = sampleOrder()
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
             XCTAssertNil(error)
-            guard let orders = orders else {
-                XCTFail()
-                return
-            }
-            XCTAssertEqual(orders.count, 3, "Orders count should be 3")
-            XCTAssertTrue(orders.contains(remoteOrder))
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 3)
+
             expectation.fulfill()
         }
 
@@ -78,9 +73,10 @@ class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 3)
             XCTAssertNil(error)
+
             expectation.fulfill()
         }
 
@@ -98,8 +94,7 @@ class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
-            XCTAssertNotNil(orders)
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
             XCTAssertNil(error)
 
             let predicate = NSPredicate(format: "orderID = %ld", remoteOrder.orderID)
@@ -123,8 +118,7 @@ class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "generic_error")
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
-            XCTAssertNil(orders)
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
             XCTAssertNotNil(error)
 
             expectation.fulfill()
@@ -140,9 +134,8 @@ class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve orders empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
             XCTAssertNotNil(error)
-            XCTAssertNil(orders)
 
             expectation.fulfill()
         }

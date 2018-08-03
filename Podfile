@@ -29,6 +29,14 @@ target 'WooCommerce' do
   pod 'Crashlytics', '~> 3.10'
   pod 'KeychainAccess', '~> 3.1'
   pod 'CocoaLumberjack/Swift', '~> 3.4'
+
+  # Unit Tests
+  # ==========
+  #
+  target 'WooCommerceTests' do
+    inherit! :search_paths
+  end
+
 end
 
 
@@ -42,6 +50,7 @@ target 'Yosemite' do
   # External Libraries
   # ==================
   #
+  pod 'Alamofire', '~> 4.7'
   pod 'CocoaLumberjack/Swift', '~> 3.4'
 
   # Unit Tests
@@ -49,7 +58,6 @@ target 'Yosemite' do
   #
   target 'YosemiteTests' do
     inherit! :search_paths
-    pod 'Alamofire', '~> 4.7'	
   end
 
 end

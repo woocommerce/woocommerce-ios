@@ -43,7 +43,7 @@ class StoreTableViewCell: UITableViewCell {
             return urlLabel?.text
         }
         set {
-            urlLabel?.text =  newValue
+            urlLabel?.text = newValue
         }
     }
 

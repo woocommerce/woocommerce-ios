@@ -108,7 +108,7 @@ extension CoreDataManager {
 
     /// Returns the ManagedObjectModel's URL
     ///
-    var modelURL: URL  {
+    var modelURL: URL {
         let bundle = Bundle(for: type(of: self))
         guard let url = bundle.url(forResource: name, withExtension: "momd") else {
             fatalError("Missing Model Resource")

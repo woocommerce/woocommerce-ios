@@ -30,6 +30,7 @@
 		74C8F06C20EEBD5D00B6EDC9 /* broken-order.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C8F06B20EEBD5D00B6EDC9 /* broken-order.json */; };
 		74C8F06E20EEC1E800B6EDC9 /* OrderNotesMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C8F06D20EEC1E700B6EDC9 /* OrderNotesMapperTests.swift */; };
 		74C8F07020EEC3A800B6EDC9 /* broken-notes.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C8F06F20EEC3A800B6EDC9 /* broken-notes.json */; };
+		74D3BD142114FE6900A6E85E /* MIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D3BD132114FE6900A6E85E /* MIContainer.swift */; };
 		74D522B62113607F00042831 /* OrderStatGranularity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D522B52113607F00042831 /* OrderStatGranularity.swift */; };
 		B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */; };
 		B505F6CF20BEE38B00BB1B69 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6CE20BEE38B00BB1B69 /* Account.swift */; };
@@ -114,6 +115,7 @@
 		74C8F06B20EEBD5D00B6EDC9 /* broken-order.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "broken-order.json"; sourceTree = "<group>"; };
 		74C8F06D20EEC1E700B6EDC9 /* OrderNotesMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNotesMapperTests.swift; sourceTree = "<group>"; };
 		74C8F06F20EEC3A800B6EDC9 /* broken-notes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "broken-notes.json"; sourceTree = "<group>"; };
+		74D3BD132114FE6900A6E85E /* MIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIContainer.swift; sourceTree = "<group>"; };
 		74D522B52113607F00042831 /* OrderStatGranularity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderStatGranularity.swift; sourceTree = "<group>"; };
 		753D6504FF01F09F6A33B73E /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
 		B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountMapper.swift; sourceTree = "<group>"; };
@@ -340,6 +342,7 @@
 		B557DA1B20979E6D005962F4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				74D3BD132114FE6900A6E85E /* MIContainer.swift */,
 				B505F6CE20BEE38B00BB1B69 /* Account.swift */,
 				B5BB1D0F20A237FB00112D92 /* Address.swift */,
 				B557DA1C20979E7D005962F4 /* Order.swift */,
@@ -647,6 +650,7 @@
 				B5C6FCCF20A3592900A4F8E4 /* OrderItem.swift in Sources */,
 				748D424A210F92EA00CF7D1B /* OrderStatsItem.swift in Sources */,
 				B505F6EC20BEFDC200BB1B69 /* Loader.swift in Sources */,
+				74D3BD142114FE6900A6E85E /* MIContainer.swift in Sources */,
 				B5BB1D1220A255EC00112D92 /* OrderStatus.swift in Sources */,
 				74C8F06820EEB7BD00B6EDC9 /* OrderNotesMapper.swift in Sources */,
 				B5BB1D1020A237FB00112D92 /* Address.swift in Sources */,

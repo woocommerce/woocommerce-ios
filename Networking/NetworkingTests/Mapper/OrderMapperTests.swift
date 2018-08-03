@@ -19,27 +19,27 @@ class OrderMapperTests: XCTestCase {
             return
         }
 
-        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-01-24T16:21:48")
-        let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-05-09T18:15:30")
-        let datePaid = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-05-03T19:24:55")
+        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:12")
+        let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:14")
+        let datePaid = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:14")
 
         XCTAssertEqual(order.siteID, dummySiteID)
-        XCTAssertEqual(order.orderID, 1467)
+        XCTAssertEqual(order.orderID, 963)
         XCTAssertEqual(order.parentID, 0)
-        XCTAssertEqual(order.customerID, 100)
-        XCTAssertEqual(order.number, "1467")
+        XCTAssertEqual(order.customerID, 11)
+        XCTAssertEqual(order.number, "963")
         XCTAssert(order.status == .processing)
         XCTAssertEqual(order.currency, "USD")
         XCTAssertEqual(order.customerNote, "")
         XCTAssertEqual(order.dateCreated, dateCreated)
         XCTAssertEqual(order.dateModified, dateModified)
         XCTAssertEqual(order.datePaid, datePaid)
-        XCTAssertEqual(order.discountTotal, "0.00")
-        XCTAssertEqual(order.discountTax, "0.00")
+        XCTAssertEqual(order.discountTotal, "30.00")
+        XCTAssertEqual(order.discountTax, "1.20")
         XCTAssertEqual(order.shippingTotal, "0.00")
         XCTAssertEqual(order.shippingTax, "0.00")
-        XCTAssertEqual(order.total, "102.00")
-        XCTAssertEqual(order.totalTax, "2.00")
+        XCTAssertEqual(order.total, "31.20")
+        XCTAssertEqual(order.totalTax, "1.20")
     }
 
     /// Verifies that all of the Order Address fields are parsed correctly.
@@ -53,14 +53,14 @@ class OrderMapperTests: XCTestCase {
         let dummyAddresses = [order.billingAddress, order.shippingAddress]
 
         for address in dummyAddresses {
-            XCTAssertEqual(address.firstName, "Maria")
-            XCTAssertEqual(address.lastName, "Scrambled")
-            XCTAssertEqual(address.company, "Logged Out")
-            XCTAssertEqual(address.address1, "9999 Scrambled")
+            XCTAssertEqual(address.firstName, "Johnny")
+            XCTAssertEqual(address.lastName, "Appleseed")
+            XCTAssertEqual(address.company, "")
+            XCTAssertEqual(address.address1, "234 70th Street")
             XCTAssertEqual(address.address2, "")
-            XCTAssertEqual(address.city, "Omaha")
-            XCTAssertEqual(address.state, "NE")
-            XCTAssertEqual(address.postcode, "68124")
+            XCTAssertEqual(address.city, "Niagara Falls")
+            XCTAssertEqual(address.state, "NY")
+            XCTAssertEqual(address.postcode, "14304")
             XCTAssertEqual(address.country, "US")
         }
     }
@@ -74,16 +74,16 @@ class OrderMapperTests: XCTestCase {
         }
 
         let firstItem = order.items[0]
-        XCTAssertEqual(firstItem.itemID, 3)
-        XCTAssertEqual(firstItem.name, "ARC Reactor")
-        XCTAssertEqual(firstItem.productID, 1450)
+        XCTAssertEqual(firstItem.itemID, 890)
+        XCTAssertEqual(firstItem.name, "Fruits Basket (Mix & Match Product)")
+        XCTAssertEqual(firstItem.productID, 52)
         XCTAssertEqual(firstItem.quantity, 1)
-        XCTAssertEqual(firstItem.sku, "100")
-        XCTAssertEqual(firstItem.subtotal, "100.00")
+        XCTAssertEqual(firstItem.sku, "")
+        XCTAssertEqual(firstItem.subtotal, "50.00")
         XCTAssertEqual(firstItem.subtotalTax, "2.00")
         XCTAssertEqual(firstItem.taxClass, "")
-        XCTAssertEqual(firstItem.total, "100.00")
-        XCTAssertEqual(firstItem.totalTax, "2.00")
+        XCTAssertEqual(firstItem.total, "30.00")
+        XCTAssertEqual(firstItem.totalTax, "1.20")
         XCTAssertEqual(firstItem.variationID, 0)
     }
 

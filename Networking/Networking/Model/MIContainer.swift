@@ -2,7 +2,7 @@ import Foundation
 
 /**
  This is a generic container data container used to hold an (unkeyed) data array
- of which its elements can be multiple tupes. Additionally, the field names
+ of which its elements can be multiple types. Additionally, the field names
  are stored in a separate array where the specific index of a field name element
  corresponds to its matching element in the `data` array.
 

@@ -166,4 +166,21 @@ class OrdersRemoteTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that addOrderNote properly parses the `new-order-note` sample response.
+    ///
+    func testLoadAddOrderNoteProperlyReturnsParsedOrderNote() {
+        let remote = OrdersRemote(network: network)
+        let expectation = self.expectation(description: "Add Order Note")
+        let noteData = "This order would be so much better with ketchup."
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes", filename: "new-order-note")
+
+        remote.addOrderNote(for: sampleSiteID, orderID: sampleOrderID, isCustomerNote: true, with: noteData) { (orderNote, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(orderNote)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }

@@ -41,7 +41,7 @@ extension AccountHeaderView {
     ///
     var username: String? {
         set {
-            usernameLabel.text =  newValue
+            usernameLabel.text = newValue
         }
         get {
             return usernameLabel.text
@@ -52,7 +52,7 @@ extension AccountHeaderView {
     ///
     var fullname: String? {
         set {
-            fullnameLabel.text =  newValue
+            fullnameLabel.text = newValue
         }
         get {
             return fullnameLabel.text

@@ -35,8 +35,8 @@
              "state": "NY",
              "postcode": "14304",
              "country": "US",
-             "email": "amanda.riu+wootester@automattic.com",
-             "phone": "7165551234"
+             "email": "scrambled@scrambled.com",
+             "phone": "333-333-3333"
              },
              "shipping": {
              "first_name": "Johnny",
@@ -47,7 +47,9 @@
              "city": "Niagara Falls",
              "state": "NY",
              "postcode": "14304",
-             "country": "US"
+             "country": "US",
+             "email": "scrambled@scrambled.com",
+             "phone": "333-333-3333"
              },
              "payment_method": "stripe",
              "payment_method_title": "Credit Card (Stripe)",

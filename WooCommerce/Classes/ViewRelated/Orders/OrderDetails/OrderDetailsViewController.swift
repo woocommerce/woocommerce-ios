@@ -3,7 +3,6 @@ import Gridicons
 import Contacts
 import MessageUI
 import Yosemite
-import Storage
 import CocoaLumberjack
 
 
@@ -41,12 +40,12 @@ class OrderDetailsViewController: UIViewController {
 
     /// TODO: Replace with `ResultController` (OR) `ObjectController` ASAP
     ///
-    private lazy var resultsController: ResultsController<Storage.Order> = {
-        let viewContext = CoreDataManager.global.viewContext
+    private lazy var resultsController: ResultsController<StorageOrder> = {
+        let storageManager = AppDelegate.shared.storageManager
         let predicate = NSPredicate(format: "orderID = %ld", self.viewModel.order.orderID)
         let descriptor = NSSortDescriptor(key: "orderID", ascending: true)
 
-        return ResultsController(viewContext: viewContext, matching: predicate, sortedBy: [descriptor])
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
 
@@ -430,7 +429,10 @@ extension OrderDetailsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         if sections[indexPath.section].rows[indexPath.row] == .addOrderNote {
-            // TODO: present modal for Add Note screen
+            let addANoteViewController = self.storyboard!.instantiateViewController(withIdentifier: Constants.noteViewController) as! AddANoteViewController
+            addANoteViewController.viewModel = viewModel
+            let navController = UINavigationController(rootViewController: addANoteViewController)
+            present(navController, animated: true, completion: nil)
         } else if sections[indexPath.section].rows[indexPath.row] == .productDetails {
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
         }
@@ -503,6 +505,7 @@ private extension OrderDetailsViewController {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
         static let productDetailsSegue = "ShowProductListViewController"
+        static let noteViewController = "AddANoteViewController"
     }
 
     private struct Section {

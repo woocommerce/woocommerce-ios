@@ -4,6 +4,16 @@ import KeychainAccess
 
 
 
+// MARK: - SessionManager Notifications
+//
+extension NSNotification.Name {
+
+    /// Posted whenever the Default Account is updated.
+    ///
+    public static let defaultAccountWasUpdated = Foundation.Notification.Name(rawValue: "DefaultAccountWasUpdated")
+}
+
+
 /// SessionManager provides persistent storage for Session-Y Properties.
 ///
 struct SessionManager {
@@ -47,6 +57,7 @@ struct SessionManager {
     var defaultAccount: Yosemite.Account? {
         didSet {
             defaults[.defaultAccountID] = defaultAccount?.userID
+            NotificationCenter.default.post(name: .defaultAccountWasUpdated, object: defaultAccount)
         }
     }
 

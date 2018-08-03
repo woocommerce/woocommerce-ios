@@ -8,14 +8,6 @@ class OrderStatusViewModel {
         self.orderStatus = orderStatus
     }
 
-    static var allOrderStatuses: [OrderStatus] {
-        return [.pending, .processing, .onHold, .failed, .cancelled, .completed, .refunded, .custom(NSLocalizedString("Custom", comment: "Title for button that catches all custom labels and displays them on the order list"))]
-    }
-
-    static var allOrderStatusDescriptions: [String] {
-        return allOrderStatuses.map { $0.description }
-    }
-
     var backgroundColor: UIColor {
         switch orderStatus {
         case .processing:

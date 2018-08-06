@@ -29,7 +29,6 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         localizeControls()
     }
 
@@ -64,7 +63,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
 
     // MARK: Setup and Configuration
 
-    
+
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///
     @objc func localizeControls() {

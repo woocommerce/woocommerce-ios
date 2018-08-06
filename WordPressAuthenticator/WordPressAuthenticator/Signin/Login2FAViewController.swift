@@ -82,6 +82,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
 
     // MARK: Configuration Methods
 
+
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///
     @objc func localizeControls() {

@@ -6,6 +6,17 @@ import Storage
 //
 extension Storage.OrderItem: ReadOnlyConvertible {
 
+    /// Indicates if the receiver is the Storage.Entity, backing up the specified ReadOnly.Entity.
+    ///
+    public func represents(readOnlyEntity: Any) -> Bool {
+        guard let readOnlyItem = readOnlyEntity as? Yosemite.OrderItem else {
+            return false
+        }
+
+// TODO: Add order.orderID + order.siteID Check
+        return readOnlyItem.itemID == Int(itemID)
+    }
+
     /// Updates the Storage.OrderItem with the ReadOnly.
     ///
     public func update(with orderItem: Yosemite.OrderItem) {

@@ -6,7 +6,7 @@ import Alamofire
 ///
 public class OrderStatsRemote: Remote {
 
-    /// Fetch the order stats for a given site up to the current day, month, or year (depending on the given granularity of the `unit` parameter).
+    /// Fetch the order stats for a given site up to the current day, week, month, or year (depending on the given granularity of the `unit` parameter).
     ///
     /// - Parameters:
     ///   - siteID: The site ID

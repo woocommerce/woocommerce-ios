@@ -11,7 +11,6 @@
 		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
 		74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */; };
 		74685D5020F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */; };
-		7495C5262114977600CDD33B /* order-stats.json in Resources */ = {isa = PBXBuildFile; fileRef = 7495C5222114977600CDD33B /* order-stats.json */; };
 		7495C5292114979D00CDD33B /* OrderStatsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7495C5282114979D00CDD33B /* OrderStatsStoreTests.swift */; };
 		7499936420EFBC1B00CF01CD /* OrderNoteAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7499936320EFBC1A00CF01CD /* OrderNoteAction.swift */; };
 		7499936620EFBC7200CF01CD /* OrderNoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7499936520EFBC7200CF01CD /* OrderNoteStore.swift */; };
@@ -27,6 +26,8 @@
 		B53A56A0211245E0000776C9 /* MockupStorage+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569F211245E0000776C9 /* MockupStorage+Sample.swift */; };
 		B53D89E520E6C22B00F90866 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53D89E420E6C22B00F90866 /* Model.swift */; };
 		B546CCF22093636A007CDA5F /* Yosemite.h in Headers */ = {isa = PBXBuildFile; fileRef = B546CCF12093636A007CDA5F /* Yosemite.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B54EAF2121188C470029C35E /* EntityListenerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54EAF2021188C470029C35E /* EntityListenerTests.swift */; };
+		B5631ECD2114DF8C008D3535 /* EntityListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5631ECC2114DF8C008D3535 /* EntityListener.swift */; };
 		B56C1EBE20EABD2B00D749F9 /* ResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C1EBD20EABD2B00D749F9 /* ResultsController.swift */; };
 		B56C1EC220EAE2E500D749F9 /* ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C1EC120EAE2E500D749F9 /* ReadOnlyConvertible.swift */; };
 		B5A01CA120D19C4700E3207E /* MockupStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A01CA020D19C4700E3207E /* MockupStorage.swift */; };
@@ -65,7 +66,6 @@
 /* Begin PBXFileReference section */
 		74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderCoupon+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
-		7495C5222114977600CDD33B /* order-stats.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats.json"; sourceTree = "<group>"; };
 		7495C5282114979D00CDD33B /* OrderStatsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsStoreTests.swift; sourceTree = "<group>"; };
 		7499936320EFBC1A00CF01CD /* OrderNoteAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNoteAction.swift; sourceTree = "<group>"; };
 		7499936520EFBC7200CF01CD /* OrderNoteStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNoteStore.swift; sourceTree = "<group>"; };
@@ -86,6 +86,8 @@
 		B53A569F211245E0000776C9 /* MockupStorage+Sample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockupStorage+Sample.swift"; sourceTree = "<group>"; };
 		B53D89E420E6C22B00F90866 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Model.swift; path = Yosemite/Model/Model.swift; sourceTree = SOURCE_ROOT; };
 		B546CCF12093636A007CDA5F /* Yosemite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Yosemite.h; sourceTree = "<group>"; };
+		B54EAF2021188C470029C35E /* EntityListenerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityListenerTests.swift; sourceTree = "<group>"; };
+		B5631ECC2114DF8C008D3535 /* EntityListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityListener.swift; sourceTree = "<group>"; };
 		B56C1EBD20EABD2B00D749F9 /* ResultsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsController.swift; sourceTree = "<group>"; };
 		B56C1EC120EAE2E500D749F9 /* ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadOnlyConvertible.swift; sourceTree = "<group>"; };
 		B5A01CA020D19C4700E3207E /* MockupStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupStorage.swift; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 				B56C1EBD20EABD2B00D749F9 /* ResultsController.swift */,
 				B56C1EC120EAE2E500D749F9 /* ReadOnlyConvertible.swift */,
 				B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */,
+				B5631ECC2114DF8C008D3535 /* EntityListener.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -305,6 +308,7 @@
 		B5F2AE9320EBAD5200FEDC59 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				B54EAF2021188C470029C35E /* EntityListenerTests.swift */,
 				B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */,
 			);
 			path = Tools;
@@ -495,6 +499,7 @@
 				B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */,
 				74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */,
 				74B7D6B020F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift in Sources */,
+				B5631ECD2114DF8C008D3535 /* EntityListener.swift in Sources */,
 				B5DC3CB120D1B8720063AC41 /* AccountAction.swift in Sources */,
 				B5BC736520D1A98500B5B6FA /* AccountStore.swift in Sources */,
 				B56C1EC220EAE2E500D749F9 /* ReadOnlyConvertible.swift in Sources */,
@@ -529,6 +534,7 @@
 				B5A01CA120D19C4700E3207E /* MockupStorage.swift in Sources */,
 				B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */,
 				B5C9DE252087FF20006B910A /* MockupProcessor.swift in Sources */,
+				B54EAF2121188C470029C35E /* EntityListenerTests.swift in Sources */,
 				B5C9DE282087FF20006B910A /* MockupSite.swift in Sources */,
 				B5BC736820D1AA8F00B5B6FA /* AccountStoreTests.swift in Sources */,
 				B5F2AE9520EBAD6000FEDC59 /* ResultsControllerTests.swift in Sources */,

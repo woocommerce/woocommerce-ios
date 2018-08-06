@@ -35,11 +35,11 @@ class OrderStatsStoreTests: XCTestCase {
     ///
     func testRetrieveOrderStatsReturnsExpectedFields() {
         let expectation = self.expectation(description: "Retrieve order stats")
-        let orderStatsStore = OrderStatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let orderStatsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrderStats = sampleOrderStats()
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/orders/", filename: "order-stats")
-        let action = OrderStatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
+        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
                                                          latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (orderStats, error) in
                                                             XCTAssertNil(error)
                                                             guard let orderStats = orderStats,
@@ -60,10 +60,10 @@ class OrderStatsStoreTests: XCTestCase {
     ///
     func testRetrieveOrderStatsReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve order stats error response")
-        let orderStatsStore = OrderStatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let orderStatsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/orders/", filename: "generic_error")
-        let action = OrderStatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
+        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
                                                          latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (orderStats, error) in
                                                             XCTAssertNil(orderStats)
                                                             XCTAssertNotNil(error)
@@ -82,9 +82,9 @@ class OrderStatsStoreTests: XCTestCase {
     ///
     func testRetrieveOrderNotesReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve order stats empty response")
-        let orderStatsStore = OrderStatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let orderStatsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = OrderStatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
+        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
                                                          latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (orderStats, error) in
             XCTAssertNotNil(error)
             XCTAssertNil(orderStats)

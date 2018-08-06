@@ -5,7 +5,7 @@ import Foundation
 ///
 public struct SiteVisitStats: Decodable {
     public let date: String
-    public let granularity: OrderStatGranularity
+    public let granularity: StatGranularity
     public let fields: [String]
     public let items: [SiteVisitStatsItem]?
 
@@ -15,7 +15,7 @@ public struct SiteVisitStats: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let date = try container.decode(String.self, forKey: .date)
-        let granularity = try container.decode(OrderStatGranularity.self, forKey: .unit)
+        let granularity = try container.decode(StatGranularity.self, forKey: .unit)
 
         let fields = try container.decode([String].self, forKey: .fields)
         let rawData: [[AnyCodable]] = try container.decode([[AnyCodable]].self, forKey: .data)
@@ -28,7 +28,7 @@ public struct SiteVisitStats: Decodable {
 
     /// OrderStats struct initializer.
     ///
-    public init(date: String, granularity: OrderStatGranularity, fields: [String], items: [SiteVisitStatsItem]?) {
+    public init(date: String, granularity: StatGranularity, fields: [String], items: [SiteVisitStatsItem]?) {
         self.date = date
         self.granularity = granularity
         self.fields = fields

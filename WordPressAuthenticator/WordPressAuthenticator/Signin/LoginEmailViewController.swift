@@ -42,7 +42,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     override open func viewDidLoad() {
         super.viewDidLoad()
 
-        styleBackground()
         localizeControls()
         setupOnePasswordButtonIfNeeded()
         addGoogleButton()
@@ -95,13 +94,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     func configureForWPComOnlyIfNeeded() {
         wpcomSignupButton?.isHidden = !offerSignupOption
         selfHostedLoginButton?.isHidden = loginFields.restrictToWPCom
-    }
-
-
-    /// Styles the view's background color. Defaults to WPStyleGuide.lightGrey()
-    ///
-    private func styleBackground() {
-        view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
     }
 
 

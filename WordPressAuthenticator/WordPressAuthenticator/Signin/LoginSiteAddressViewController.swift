@@ -30,7 +30,6 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        styleBackground()
         localizeControls()
     }
 
@@ -65,12 +64,6 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
 
     // MARK: Setup and Configuration
 
-
-    /// Styles the view's background color. Defaults to WPStyleGuide.lightGrey()
-    ///
-    @objc func styleBackground() {
-        view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
-    }
     
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///

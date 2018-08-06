@@ -32,7 +32,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        styleBackground()
         configureHeader()
         localizeControls()
         setupOnePasswordButtonIfNeeded()
@@ -72,12 +71,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
 
 
     // MARK: - Setup and Configuration
-
-    /// Styles the view's background color. Defaults to WPStyleGuide.lightGrey()
-    ///
-    private func styleBackground() {
-        view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
-    }
 
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///

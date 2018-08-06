@@ -32,7 +32,6 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        styleBackground()
         localizeControls()
         setupOnePasswordButtonIfNeeded()
     }
@@ -117,12 +116,6 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
         passwordField?.text = loginFields.password
         passwordField?.contentInsets = WPStyleGuide.edgeInsetForLoginTextFields()
         emailLabel?.text = loginFields.username
-    }
-
-    /// Styles the view's background color. Defaults to WPStyleGuide.lightGrey()
-    ///
-    @objc func styleBackground() {
-        view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
     }
 
     @objc func localizeControls() {

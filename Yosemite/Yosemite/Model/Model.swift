@@ -18,6 +18,8 @@ public typealias OrderStats = Networking.OrderStats
 public typealias OrderStatsItem = Networking.OrderStatsItem
 public typealias OrderStatGranularity = Networking.OrderStatGranularity
 public typealias Site = Networking.Site
+public typealias SiteVisitStats = Networking.SiteVisitStats
+public typealias SiteVisitStatsItem = Networking.SiteVisitStatsItem
 
 
 // MARK: - Exported Storage Symbols

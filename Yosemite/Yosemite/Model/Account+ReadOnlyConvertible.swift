@@ -6,16 +6,6 @@ import Storage
 //
 extension Storage.Account: ReadOnlyConvertible {
 
-    /// Indicates if the receiver is the Storage.Entity, backing up the specified ReadOnly.Entity.
-    ///
-    public func represents(readOnlyEntity: Any) -> Bool {
-        guard let readOnlyAccount = readOnlyEntity as? Yosemite.Account else {
-            return false
-        }
-
-        return readOnlyAccount.userID == Int(userID)
-    }
-
     /// Updates the Storage.Account with the a ReadOnly.
     ///
     public func update(with account: Yosemite.Account) {

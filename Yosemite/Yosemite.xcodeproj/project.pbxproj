@@ -25,6 +25,9 @@
 		B505254C20EE6491008090F5 /* Site+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */; };
 		B52E002B2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */; };
 		B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002D211A3F5500700FDE /* ReadOnlyType.swift */; };
+		B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002F211A439E00700FDE /* Account+ReadOnlyType.swift */; };
+		B52E0032211A440D00700FDE /* Order+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E0031211A440D00700FDE /* Order+ReadOnlyType.swift */; };
+		B52E0034211A449600700FDE /* Site+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E0033211A449600700FDE /* Site+ReadOnlyType.swift */; };
 		B53A56A0211245E0000776C9 /* MockupStorage+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569F211245E0000776C9 /* MockupStorage+Sample.swift */; };
 		B53D89E520E6C22B00F90866 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53D89E420E6C22B00F90866 /* Model.swift */; };
 		B546CCF22093636A007CDA5F /* Yosemite.h in Headers */ = {isa = PBXBuildFile; fileRef = B546CCF12093636A007CDA5F /* Yosemite.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -87,6 +90,9 @@
 		B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Site+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObjectsDidChangeNotification.swift; sourceTree = "<group>"; };
 		B52E002D211A3F5500700FDE /* ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadOnlyType.swift; sourceTree = "<group>"; };
+		B52E002F211A439E00700FDE /* Account+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Account+ReadOnlyType.swift"; sourceTree = "<group>"; };
+		B52E0031211A440D00700FDE /* Order+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+ReadOnlyType.swift"; sourceTree = "<group>"; };
+		B52E0033211A449600700FDE /* Site+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Site+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		B53A569F211245E0000776C9 /* MockupStorage+Sample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockupStorage+Sample.swift"; sourceTree = "<group>"; };
 		B53D89E420E6C22B00F90866 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Model.swift; path = Yosemite/Model/Model.swift; sourceTree = SOURCE_ROOT; };
 		B546CCF12093636A007CDA5F /* Yosemite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Yosemite.h; sourceTree = "<group>"; };
@@ -158,11 +164,14 @@
 			children = (
 				B53D89E420E6C22B00F90866 /* Model.swift */,
 				B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */,
+				B52E002F211A439E00700FDE /* Account+ReadOnlyType.swift */,
 				74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */,
+				B52E0031211A440D00700FDE /* Order+ReadOnlyType.swift */,
 				74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */,
 				74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */,
 				74B7D6AF20F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift */,
 				B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */,
+				B52E0033211A449600700FDE /* Site+ReadOnlyType.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -510,7 +519,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B52E0032211A440D00700FDE /* Order+ReadOnlyType.swift in Sources */,
 				B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */,
+				B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */,
 				74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */,
 				74B7D6B020F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift in Sources */,
 				B5631ECD2114DF8C008D3535 /* EntityListener.swift in Sources */,
@@ -530,6 +541,7 @@
 				74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */,
 				B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */,
 				B5C9DE162087FF0E006B910A /* Store.swift in Sources */,
+				B52E0034211A449600700FDE /* Site+ReadOnlyType.swift in Sources */,
 				B56C1EBE20EABD2B00D749F9 /* ResultsController.swift in Sources */,
 				B5EED1A820F4F3CF00652449 /* Account+ReadOnlyConvertible.swift in Sources */,
 				B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */,

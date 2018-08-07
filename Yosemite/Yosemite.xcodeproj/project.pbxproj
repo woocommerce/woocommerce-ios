@@ -159,19 +159,35 @@
 			path = Internal;
 			sourceTree = "<group>";
 		};
-		B53D89E720E6C7DC00F90866 /* Model */ = {
+		B52E0035211A44F800700FDE /* Storage */ = {
 			isa = PBXGroup;
 			children = (
-				B53D89E420E6C22B00F90866 /* Model.swift */,
 				B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */,
-				B52E002F211A439E00700FDE /* Account+ReadOnlyType.swift */,
 				74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */,
-				B52E0031211A440D00700FDE /* Order+ReadOnlyType.swift */,
 				74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */,
 				74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */,
 				74B7D6AF20F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift */,
 				B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		B52E0036211A44FE00700FDE /* ReadOnly */ = {
+			isa = PBXGroup;
+			children = (
+				B52E002F211A439E00700FDE /* Account+ReadOnlyType.swift */,
+				B52E0031211A440D00700FDE /* Order+ReadOnlyType.swift */,
 				B52E0033211A449600700FDE /* Site+ReadOnlyType.swift */,
+			);
+			path = ReadOnly;
+			sourceTree = "<group>";
+		};
+		B53D89E720E6C7DC00F90866 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B52E0036211A44FE00700FDE /* ReadOnly */,
+				B52E0035211A44F800700FDE /* Storage */,
+				B53D89E420E6C22B00F90866 /* Model.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

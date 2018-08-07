@@ -6,7 +6,7 @@ import Alamofire
 ///
 public class OrderStatsRemote: Remote {
 
-    /// Fetch the order stats for a given site up to the current day, month, or year (depending on the given granularity of the `unit` parameter).
+    /// Fetch the order stats for a given site up to the current day, week, month, or year (depending on the given granularity of the `unit` parameter).
     ///
     /// - Parameters:
     ///   - siteID: The site ID
@@ -15,7 +15,7 @@ public class OrderStatsRemote: Remote {
     ///   - quantity: How many `unit`s to fetch
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadOrderStats(for siteID: Int, unit: OrderStatGranularity, latestDateToInclude: String, quantity: Int, completion: @escaping (OrderStats?, Error?) -> Void) {
+    public func loadOrderStats(for siteID: Int, unit: StatGranularity, latestDateToInclude: String, quantity: Int, completion: @escaping (OrderStats?, Error?) -> Void) {
         let path = "\(Constants.sitesPath)/\(siteID)/\(Constants.orderStatsPath)/"
         let parameters = [ParameterKeys.unit: unit.rawValue,
                           ParameterKeys.date: latestDateToInclude,

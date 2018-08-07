@@ -107,6 +107,31 @@ class StatsStoreTests: XCTestCase {
     // MARK: - StatsAction.retrieveSiteVisitStats
 
 
+    /// Verifies that StatsAction.retrieveSiteVisitStats returns the expected stats.
+    ///
+    func testRetrieveSiteVisitStatsReturnsExpectedFields() {
+        let expectation = self.expectation(description: "Retrieve site visit stats")
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteSiteVisitStats = sampleSiteVisitStats()
+
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits")
+        let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID, granularity: .day,
+                                                        latestDateToInclude: date(with: "2018-08-06T17:06:55"), quantity: 2) { (siteVisitStats, error) in
+                                                        XCTAssertNil(error)
+                                                        guard let siteVisitStats = siteVisitStats,
+                                                            let items = siteVisitStats.items else {
+                                                                XCTFail()
+                                                                return
+                                                        }
+                                                        XCTAssertEqual(items.count, 2)
+                                                        XCTAssertEqual(siteVisitStats, remoteSiteVisitStats)
+                                                        expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that StatsAction.retrieveSiteVisitStats returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveSiteVisitStatsReturnsErrorUponReponseError() {
@@ -114,8 +139,8 @@ class StatsStoreTests: XCTestCase {
         let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "generic_error")
-        let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID, granularity: .day,
-                                                        latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (siteVisitStats, error) in
+        let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID, granularity: .year,
+                                                        latestDateToInclude: date(with: "2015-06-23T17:06:55"), quantity: 2) { (siteVisitStats, error) in
                                                             XCTAssertNil(siteVisitStats)
                                                             XCTAssertNotNil(error)
                                                             guard let _ = error else {
@@ -189,6 +214,27 @@ private extension StatsStoreTests {
                                            "currency", "gross_sales", "net_sales", "avg_order_value", "avg_products_per_order"],
                               rawData: ["2018-06-02", 1, 1, 0, 0, 30.870000000000001, 0.87, 0, 0, 0, 0, 0, 0, "USD", 30.870000000000001, 30, 30.870000000000001, 1])
     }
+
+    //  MARK: - Site Visit Stats Sample
+
+    func sampleSiteVisitStats() -> SiteVisitStats {
+        return SiteVisitStats(date: "2015-08-06",
+                              granularity: .year,
+                              fields: ["period", "views", "visitors", "likes", "reblogs", "comments", "posts"],
+                              items: [sampleSiteVisitStatsItem1(), sampleSiteVisitStatsItem2()])
+    }
+
+
+    func sampleSiteVisitStatsItem1() -> SiteVisitStatsItem {
+        return SiteVisitStatsItem(fieldNames: ["period", "views", "visitors", "likes", "reblogs", "comments", "posts"],
+                                  rawData: ["2014-01-01", 12821, 1135, 1094, 0, 1611, 597])
+    }
+
+    func sampleSiteVisitStatsItem2() -> SiteVisitStatsItem {
+        return SiteVisitStatsItem(fieldNames: ["period", "views", "visitors", "likes", "reblogs", "comments", "posts"],
+                                  rawData: ["2015-01-01", 14808, 1629, 1492, 0, 1268, 571])
+    }
+
 
     //  MARK: - Misc
 

@@ -12,6 +12,7 @@
 		74002D6A2118B26100A63C19 /* SiteVisitStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */; };
 		74002D6C2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */; };
 		741B950120EBC8A700DD6E2D /* OrderCouponLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */; };
+		743BF8BE21191B63008A9D87 /* site-visits.json in Resources */ = {isa = PBXBuildFile; fileRef = 743BF8BD21191B63008A9D87 /* site-visits.json */; };
 		743FDB9C210FB36900AC737F /* order-stats-month.json in Resources */ = {isa = PBXBuildFile; fileRef = 743FDB99210FB36900AC737F /* order-stats-month.json */; };
 		743FDB9D210FB36900AC737F /* order-stats-year.json in Resources */ = {isa = PBXBuildFile; fileRef = 743FDB9A210FB36900AC737F /* order-stats-year.json */; };
 		743FDB9E210FB36900AC737F /* order-stats-week.json in Resources */ = {isa = PBXBuildFile; fileRef = 743FDB9B210FB36900AC737F /* order-stats-week.json */; };
@@ -107,6 +108,7 @@
 		74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsMapperTests.swift; sourceTree = "<group>"; };
 		74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsRemoteTests.swift; sourceTree = "<group>"; };
 		741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCouponLine.swift; sourceTree = "<group>"; };
+		743BF8BD21191B63008A9D87 /* site-visits.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-visits.json"; sourceTree = "<group>"; };
 		743FDB99210FB36900AC737F /* order-stats-month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-month.json"; sourceTree = "<group>"; };
 		743FDB9A210FB36900AC737F /* order-stats-year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-year.json"; sourceTree = "<group>"; };
 		743FDB9B210FB36900AC737F /* order-stats-week.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-week.json"; sourceTree = "<group>"; };
@@ -409,6 +411,7 @@
 				74A1D260211898F000931DFA /* site-visits-week.json */,
 				74A1D261211898F000931DFA /* site-visits-month.json */,
 				74A1D262211898F000931DFA /* site-visits-year.json */,
+				743BF8BD21191B63008A9D87 /* site-visits.json */,
 				B5C6FCD520A3768900A4F8E4 /* order.json */,
 				B559EBA920A0B5CD00836CD4 /* orders-load-all.json */,
 				B56C1EB920EA7D2C00D749F9 /* sites.json */,
@@ -579,6 +582,7 @@
 				B58D10CA2114D22E00107ED4 /* new-order-note.json in Resources */,
 				74C8F06C20EEBD5D00B6EDC9 /* broken-order.json in Resources */,
 				B58D10C82114D21D00107ED4 /* generic_error.json in Resources */,
+				743BF8BE21191B63008A9D87 /* site-visits.json in Resources */,
 				B505F6D520BEE4E700BB1B69 /* me.json in Resources */,
 				B5C6FCD620A3768900A4F8E4 /* order.json in Resources */,
 				74A1D266211898F000931DFA /* site-visits-year.json in Resources */,

@@ -80,7 +80,7 @@ private extension EntityListener {
         /// Scenario: Upsert (Insert + Update + Refresh)
         ///
         if let storageEntity = readOnlyConvertible(from: note.upsertedObjects, representing: readOnlyEntity),
-            let updatedEntity = storageEntity.toTypeErased() as? T
+            let updatedEntity = storageEntity.toTypeErasedReadOnly() as? T
         {
             readOnlyEntity = updatedEntity
             onUpsert?(readOnlyEntity)
@@ -95,9 +95,9 @@ private extension EntityListener {
 
     /// Returns the first NSManagedObject stored in a fiven collection, which represents the specified (ReadOnly) entity.
     ///
-    func readOnlyConvertible(from storageEntities: Set<NSManagedObject>, representing readOnlyEntity: T) -> TypeErasedConvertible? {
-        for case let storageEntity as TypeErasedConvertible in storageEntities {
-            guard storageEntity.represents(entity: readOnlyEntity) else {
+    func readOnlyConvertible(from storageEntities: Set<NSManagedObject>, representing readOnlyEntity: T) -> TypeErasedReadOnlyConvertible? {
+        for case let storageEntity as TypeErasedReadOnlyConvertible in storageEntities {
+            guard storageEntity.represents(readOnlyEntity: readOnlyEntity) else {
                 continue
             }
 

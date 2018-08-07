@@ -23,6 +23,7 @@
 		74B7D6B020F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B7D6AF20F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift */; };
 		74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */; };
 		B505254C20EE6491008090F5 /* Site+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */; };
+		B52E002B2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */; };
 		B53A56A0211245E0000776C9 /* MockupStorage+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569F211245E0000776C9 /* MockupStorage+Sample.swift */; };
 		B53D89E520E6C22B00F90866 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53D89E420E6C22B00F90866 /* Model.swift */; };
 		B546CCF22093636A007CDA5F /* Yosemite.h in Headers */ = {isa = PBXBuildFile; fileRef = B546CCF12093636A007CDA5F /* Yosemite.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -83,6 +84,7 @@
 		991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YosemiteTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABE0D84C5393D9EE2CCF2B7E /* Pods-YosemiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release.xcconfig"; sourceTree = "<group>"; };
 		B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Site+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObjectsDidChangeNotification.swift; sourceTree = "<group>"; };
 		B53A569F211245E0000776C9 /* MockupStorage+Sample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockupStorage+Sample.swift"; sourceTree = "<group>"; };
 		B53D89E420E6C22B00F90866 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Model.swift; path = Yosemite/Model/Model.swift; sourceTree = SOURCE_ROOT; };
 		B546CCF12093636A007CDA5F /* Yosemite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Yosemite.h; sourceTree = "<group>"; };
@@ -140,6 +142,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B52E002C2119E6C000700FDE /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */,
+				B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
 		B53D89E720E6C7DC00F90866 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -157,10 +168,10 @@
 		B56C1EBC20EABD1C00D749F9 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				B52E002C2119E6C000700FDE /* Internal */,
+				B5631ECC2114DF8C008D3535 /* EntityListener.swift */,
 				B56C1EBD20EABD2B00D749F9 /* ResultsController.swift */,
 				B56C1EC120EAE2E500D749F9 /* ReadOnlyConvertible.swift */,
-				B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */,
-				B5631ECC2114DF8C008D3535 /* EntityListener.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -505,6 +516,7 @@
 				B56C1EC220EAE2E500D749F9 /* ReadOnlyConvertible.swift in Sources */,
 				74A18C562113827E00DCF8A8 /* OrderStatsStore.swift in Sources */,
 				B505254C20EE6491008090F5 /* Site+ReadOnlyConvertible.swift in Sources */,
+				B52E002B2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift in Sources */,
 				B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */,
 				74A7688C20D45EBA00F9D437 /* OrderStore.swift in Sources */,
 				B53D89E520E6C22B00F90866 /* Model.swift in Sources */,

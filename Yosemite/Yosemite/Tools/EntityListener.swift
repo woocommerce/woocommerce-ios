@@ -6,7 +6,7 @@ import Storage
 /// EntityListener: Observes changes performed over a specified ReadOnly Entity, and executes the callback Closures, as required.
 /// *Note:* The type T is expected to be a ReadOnly one.
 ///
-public class EntityListener<T> {
+public class EntityListener<T: ReadOnlyTypeErasedConvertible> {
 
     /// NSManagedObjectContext associated to the Main Thread.
     ///
@@ -95,57 +95,15 @@ private extension EntityListener {
 
     /// Returns the first NSManagedObject stored in a fiven collection, which represents the specified (ReadOnly) entity.
     ///
-    func readOnlyConvertible(from entities: Set<NSManagedObject>, representing readOnlyEntity: T) -> ReadOnlyTypeErasedConvertible? {
-        return entities
-            .compactMap { entity in
-                return entity as? ReadOnlyTypeErasedConvertible
+    func readOnlyConvertible(from storageEntities: Set<NSManagedObject>, representing readOnlyEntity: T) -> ReadOnlyTypeErasedConvertible? {
+        for case let storageEntity as ReadOnlyTypeErasedConvertible in storageEntities {
+            guard storageEntity.represents(readOnlyEntity: readOnlyEntity) else {
+                continue
             }
-            .first { readOnlyConvertible in
-                return readOnlyConvertible.represents(readOnlyEntity: readOnlyEntity)
-            }
-    }
-}
 
-
-// MARK: - Represents a NSManagedObjectsDidChangeNotification
-//
-private struct ManagedObjectsDidChangeNotification {
-
-    /// Returns the collection of Inserted Objects.
-    ///
-    let insertedObjects: Set<NSManagedObject>
-
-    /// Returns the collection of Updated Objects.
-    ///
-    let updatedObjects: Set<NSManagedObject>
-
-    /// Returns the collection of Refreshed Objects.
-    ///
-    let refreshedObjects: Set<NSManagedObject>
-
-    /// Returns the collection of Deleted Objects.
-    ///
-    let deletedObjects: Set<NSManagedObject>
-
-    /// Returns the Inserted + Updated + Refreshed Objects
-    ///
-    var upsertedObjects: Set<NSManagedObject> {
-        return insertedObjects
-                .union(updatedObjects)
-                .union(refreshedObjects)
-    }
-
-
-    /// Designated Initializer
-    ///
-    init?(notification: Notification) {
-        guard notification.name == .NSManagedObjectContextObjectsDidChange else {
-            return nil
+            return storageEntity
         }
 
-        insertedObjects = notification.userInfo?[NSInsertedObjectsKey] as? Set<NSManagedObject>     ?? Set()
-        updatedObjects = notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject>       ?? Set()
-        refreshedObjects = notification.userInfo?[NSRefreshedObjectsKey] as? Set<NSManagedObject>   ?? Set()
-        deletedObjects = notification.userInfo?[NSDeletedObjectsKey] as? Set<NSManagedObject>       ?? Set()
+        return nil
     }
 }

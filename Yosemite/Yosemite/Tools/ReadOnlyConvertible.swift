@@ -21,16 +21,16 @@ public protocol ReadOnlyConvertible {
 
 
 
-// MARK: - Type Erased ReadOnlyConvertible protocol, which allows us to work around several issues, triggered by
-//          the `associatedtype` requirements.
+// MARK: - TypeErasedConvertible: Allows us to work around several ReadOnlyConvertible issues caused
+//         by the `associatedtype` requirements.
 //
-public protocol ReadOnlyTypeErasedConvertible {
+public protocol TypeErasedConvertible {
 
     /// Indicates if the receiver represents the Storage version of a given ReadOnly  Type.
     ///
-    func represents(readOnlyEntity: Any) -> Bool
+    func represents(entity: Any) -> Bool
 
     /// Returns a ReadOnly version of the receiver, but with no Type Associated.
     ///
-    func toTypeErasedReadOnly() -> Any?
+    func toTypeErased() -> Any?
 }

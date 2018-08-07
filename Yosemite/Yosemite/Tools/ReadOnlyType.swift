@@ -4,7 +4,7 @@ import Storage
 
 //
 //
-public protocol ReadOnlyRepresentation {
+public protocol ReadOnlyType {
 
     ///
     ///

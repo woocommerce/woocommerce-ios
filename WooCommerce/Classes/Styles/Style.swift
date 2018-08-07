@@ -18,6 +18,7 @@ protocol Style {
     var cellSeparatorColor: UIColor { get }
     var defaultTextColor: UIColor { get }
     var destructiveActionColor: UIColor { get }
+    var navBarImage: UIImage { get }
     var sectionBackgroundColor: UIColor { get }
     var sectionTitleColor: UIColor { get }
     var statusDangerColor: UIColor { get }
@@ -31,6 +32,8 @@ protocol Style {
     var subheadlineFont: UIFont { get }
     var tableViewBackgroundColor: UIColor { get }
     var wooCommerceBrandColor: UIColor { get }
+    var wooAccent: UIColor { get }
+    var wooGreyLight: UIColor { get }
     var wooGreyMid: UIColor { get }
     var wooGreyTextMin: UIColor { get }
     var wooGreyBorder: UIColor { get }
@@ -54,6 +57,7 @@ class DefaultStyle: Style {
     let cellSeparatorColor = UIColor.lightGray
     let defaultTextColor = UIColor.black
     let destructiveActionColor = UIColor(red: 197.0/255.0, green: 60.0/255.0, blue: 53.0/255.0, alpha: 1.0)
+    let navBarImage = UIImage(named: "woo-logo")!
     let sectionBackgroundColor = UIColor(red: 239.0/255.0, green: 239.0/255.0, blue: 244.0/255.0, alpha: 1.0)
     let sectionTitleColor = UIColor.darkGray
     let statusDangerColor = UIColor(red: 255.0/255.0, green: 230.0/255.0, blue: 229.0/255.0, alpha: 1.0)
@@ -67,6 +71,8 @@ class DefaultStyle: Style {
     let subheadlineFont = UIFont.font(forStyle: .subheadline, weight: .regular)
     let tableViewBackgroundColor = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1.0)
     let wooCommerceBrandColor = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
+    let wooAccent = UIColor(red: 113.0/255.0, green: 176.0/255.0, blue: 47.0/255.0, alpha: 1.0)
+    let wooGreyLight = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1.0)
     let wooGreyMid = UIColor(red: 150.0/255.0, green: 150.0/255.0, blue: 150.0/255.0, alpha: 1.0)
     let wooGreyTextMin = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
     let wooGreyBorder = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1.0)
@@ -147,6 +153,10 @@ class StyleManager {
         return active.destructiveActionColor
     }
 
+    static var navBarImage: UIImage {
+        return active.navBarImage
+    }
+
     static var sectionBackgroundColor: UIColor {
         return active.sectionBackgroundColor
     }
@@ -197,6 +207,14 @@ class StyleManager {
 
     static var wooCommerceBrandColor: UIColor {
         return active.wooCommerceBrandColor
+    }
+
+    static var wooAccent: UIColor {
+        return active.wooAccent
+    }
+
+    static var wooGreyLight: UIColor {
+        return active.wooGreyLight
     }
 
     static var wooGreyMid: UIColor {

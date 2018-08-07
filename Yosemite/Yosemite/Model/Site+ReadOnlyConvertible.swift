@@ -6,16 +6,6 @@ import Storage
 //
 extension Storage.Site: ReadOnlyConvertible {
 
-    /// Indicates if the receiver is the Storage.Entity, backing up the specified ReadOnly.Entity.
-    ///
-    public func represents(readOnlyEntity: Any) -> Bool {
-        guard let readOnlySite = readOnlyEntity as? Yosemite.Site else {
-            return false
-        }
-
-        return readOnlySite.siteID == Int(siteID)
-    }
-
     /// Updates the Storage.Site with the a ReadOnly.
     ///
     public func update(with site: Yosemite.Site) {

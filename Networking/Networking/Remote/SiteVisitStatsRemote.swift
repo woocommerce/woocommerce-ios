@@ -20,7 +20,7 @@ public class SiteVisitStatsRemote: Remote {
         let parameters = [ParameterKeys.unit: unit.rawValue,
                           ParameterKeys.date: DateFormatter.Stats.statsDayFormatter.string(from: latestDateToInclude),
                           ParameterKeys.quantity: String(quantity)]
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         let mapper = SiteVisitStatsMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }

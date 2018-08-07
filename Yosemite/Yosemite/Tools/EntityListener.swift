@@ -6,7 +6,7 @@ import Storage
 /// EntityListener: Observes changes performed over a specified ReadOnly Entity, and executes the callback Closures, as required.
 /// *Note:* The type T is expected to be a ReadOnly one.
 ///
-public class EntityListener<T: ReadOnlyTypeErasedConvertible> {
+public class EntityListener<T> {
 
     /// NSManagedObjectContext associated to the Main Thread.
     ///
@@ -80,7 +80,7 @@ private extension EntityListener {
         /// Scenario: Upsert (Insert + Update + Refresh)
         ///
         if let storageEntity = readOnlyConvertible(from: note.upsertedObjects, representing: readOnlyEntity),
-            let updatedEntity = storageEntity.toTypeErasedReadOnly() as? T
+            let updatedEntity = storageEntity.toTypeErased() as? T
         {
             readOnlyEntity = updatedEntity
             onUpsert?(readOnlyEntity)
@@ -95,9 +95,9 @@ private extension EntityListener {
 
     /// Returns the first NSManagedObject stored in a fiven collection, which represents the specified (ReadOnly) entity.
     ///
-    func readOnlyConvertible(from storageEntities: Set<NSManagedObject>, representing readOnlyEntity: T) -> ReadOnlyTypeErasedConvertible? {
-        for case let storageEntity as ReadOnlyTypeErasedConvertible in storageEntities {
-            guard storageEntity.represents(readOnlyEntity: readOnlyEntity) else {
+    func readOnlyConvertible(from storageEntities: Set<NSManagedObject>, representing readOnlyEntity: T) -> TypeErasedConvertible? {
+        for case let storageEntity as TypeErasedConvertible in storageEntities {
+            guard storageEntity.represents(entity: readOnlyEntity) else {
                 continue
             }
 

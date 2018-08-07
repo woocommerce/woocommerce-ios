@@ -4,7 +4,7 @@ import Storage
 
 // MARK: - Represents a Mutable Entity that can be converted into a ReadOnly Type.
 //
-public protocol ReadOnlyConvertible {
+public protocol ReadOnlyConvertible: TypeErasedReadOnlyConvertible {
 
     /// Represents the ReadOnly Type (mirroring the receiver).
     ///
@@ -20,17 +20,24 @@ public protocol ReadOnlyConvertible {
 }
 
 
-
-// MARK: - TypeErasedConvertible: Allows us to work around several ReadOnlyConvertible issues caused
-//         by the `associatedtype` requirements.
+// MARK: - ReadOnlyConvertible TypeErasure Workaround.
+//         This allows us to cast an entity that conforms to ReadOnlyConvertible, without hitting any `associatedtype` issues.
 //
-public protocol TypeErasedConvertible {
+public protocol TypeErasedReadOnlyConvertible {
 
-    /// Indicates if the receiver represents the Storage version of a given ReadOnly  Type.
+    /// Returns a ReadOnly version of the receiver, but with no Type associated.
     ///
-    func represents(entity: Any) -> Bool
+    func toTypeErasedReadOnly() -> Any
+}
 
-    /// Returns a ReadOnly version of the receiver, but with no Type Associated.
+
+// MARK: - ReadOnlyConvertible TypeErased Conformance.
+//
+extension ReadOnlyConvertible {
+
+    /// Returns a ReadOnly version of the receiver, but with no Type associated.
     ///
-    func toTypeErased() -> Any?
+    public func toTypeErasedReadOnly() -> Any {
+        return toReadOnly()
+    }
 }

@@ -6,7 +6,7 @@ import Storage
 /// EntityListener: Observes changes performed over a specified ReadOnly Entity, and executes the callback Closures, as required.
 /// *Note:* The type T is expected to be a ReadOnly one.
 ///
-public class EntityListener<T: ReadOnlyRepresentation> {
+public class EntityListener<T: ReadOnlyType> {
 
     /// NSManagedObjectContext associated to the Main Thread.
     ///

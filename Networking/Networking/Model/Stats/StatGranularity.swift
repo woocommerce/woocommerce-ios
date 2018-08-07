@@ -1,9 +1,9 @@
 import Foundation
 
 
-/// Represents the data granularity for a specific `OrderStats` instance (e.g. day, week, month, year)
+/// Represents data granularity for stats (e.g. day, week, month, year)
 ///
-public enum OrderStatGranularity: String, Decodable {
+public enum StatGranularity: String, Decodable {
     case day
     case week
     case month
@@ -12,9 +12,9 @@ public enum OrderStatGranularity: String, Decodable {
 
 // MARK: - StringConvertible Conformance
 //
-extension OrderStatGranularity: CustomStringConvertible {
+extension StatGranularity: CustomStringConvertible {
 
-    /// Returns a string describing the current OrderStatus Instance
+    /// Returns a user-freindly, localized string describing the stat granularity
     ///
     public var description: String {
         switch self {

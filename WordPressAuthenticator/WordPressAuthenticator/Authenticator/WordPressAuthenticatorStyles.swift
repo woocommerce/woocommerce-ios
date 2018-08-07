@@ -1,4 +1,5 @@
-
+import UIKit
+import Gridicons
 
 // MARK: - WordPress Authenticator Styles
 //
@@ -41,9 +42,17 @@ public struct WordPressAuthenticatorStyle {
     ///
     public let subheadlineColor: UIColor
 
+    /// Style: Login screen background colors
+    ///
+    public let viewControllerBackgroundColor: UIColor
+
+    /// Style: nav bar logo
+    ///
+    public let navBarImage: UIImage
+
     /// Designated initializer
     ///
-    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, subheadlineColor: UIColor) {
+    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, subheadlineColor: UIColor, viewControllerBackgroundColor: UIColor, navBarImage: UIImage) {
         self.primaryNormalBackgroundColor = primaryNormalBackgroundColor
         self.primaryNormalBorderColor = primaryNormalBorderColor
         self.primaryHighlightBackgroundColor = primaryHighlightBackgroundColor
@@ -58,6 +67,8 @@ public struct WordPressAuthenticatorStyle {
         self.secondaryTitleColor = secondaryTitleColor
         self.disabledTitleColor = disabledTitleColor
         self.subheadlineColor = subheadlineColor
+        self.viewControllerBackgroundColor = viewControllerBackgroundColor
+        self.navBarImage = navBarImage
     }
 }
 
@@ -76,6 +87,9 @@ public extension WordPressAuthenticatorStyle {
                                            primaryTitleColor: UIColor.white,
                                            secondaryTitleColor: WPStyleGuide.darkGrey(),
                                            disabledTitleColor: WPStyleGuide.greyLighten30(),
-                                           subheadlineColor: WPStyleGuide.wordPressBlue())
+                                           subheadlineColor: WPStyleGuide.wordPressBlue(),
+                                           viewControllerBackgroundColor: WPStyleGuide.lightGrey(),
+                                           navBarImage: Gridicon.iconOfType(.mySites)
+        )
     }
 }

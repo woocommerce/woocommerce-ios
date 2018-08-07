@@ -144,7 +144,7 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
     /// Adds the WP logo to the nav controller
     ///
     public func addWordPressLogoToNavController() {
-        let image = Gridicon.iconOfType(.mySites)
+        let image = WordPressAuthenticator.shared.style.navBarImage
         let imageView = UIImageView(image: image.imageWithTintColor(UIColor.white))
         navigationItem.titleView = imageView
     }

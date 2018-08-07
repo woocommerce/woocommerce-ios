@@ -38,6 +38,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         super.viewDidLoad()
         displayError(message: "")
         setupNavBarIcon()
+        styleBackground()
         styleInstructions()
 
         if let error = errorToPresent {
@@ -55,6 +56,12 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     ///
     func setupNavBarIcon() {
         addWordPressLogoToNavController()
+    }
+
+    /// Styles the view's background color. Defaults to WPStyleGuide.lightGrey()
+    ///
+    @objc func styleBackground() {
+        view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
     }
 
     /// Configures instruction label font

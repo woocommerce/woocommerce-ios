@@ -257,7 +257,12 @@ private extension FulfillViewController {
             fatalError()
         }
 
-        let address = order.shippingAddress
+        var address: Address
+        if let shippingAddress = order.shippingAddress {
+            address = shippingAddress
+        } else {
+            address = order.billingAddress
+        }
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
         cell.name = address.fullName
@@ -377,7 +382,13 @@ private extension Section {
 
         let address: Section = {
             let title = NSLocalizedString("Customer Information", comment: "")
-            let row = Row.address(shipping: order.shippingAddress)
+            let displayAddress: Address
+            if let shippingAddress = order.shippingAddress {
+                displayAddress = shippingAddress
+            } else {
+                displayAddress = order.billingAddress
+            }
+            let row = Row.address(shipping: displayAddress)
 
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()

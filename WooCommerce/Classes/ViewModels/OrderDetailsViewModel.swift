@@ -60,10 +60,11 @@ class OrderDetailsViewModel {
     }
 
     var shippingViewModel: ContactViewModel {
-        if let shippingAddress = order.shippingAddress {
-            return ContactViewModel(with: shippingAddress, contactType: ContactType.shipping)
+        if order.hasSeparateShippingDetail {
+            return ContactViewModel(with: order.shippingAddress!, contactType: ContactType.shipping)
         }
-        return ContactViewModel(with: order.billingAddress, contactType: ContactType.billing)
+
+        return ContactViewModel(with: order.billingAddress, contactType: ContactType.shipping)
     }
     var shippingAddress: String? {
         return shippingViewModel.formattedAddress

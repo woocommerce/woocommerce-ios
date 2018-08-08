@@ -68,10 +68,17 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertEqual(testingProvider?.receivedEvents.count, 1)
         XCTAssertEqual(testingProvider?.receivedProperties.count, 1)
         XCTAssertEqual(testingProvider?.receivedEvents.first, WooAnalyticsStat.applicationOpened.rawValue)
-        if let receivedProperty1 = testingProvider?.receivedProperties[0] as? [String: String] {
-            XCTAssertEqual(receivedProperty1, Constants.testErrorReceivedProperty)
-        } else {
+
+        guard let receivedProperty1 = testingProvider?.receivedProperties[0] as? [String: String] else {
             XCTFail()
+            return
+        }
+
+        /// Note: iOS 12 is shuffling several dictionaries (especially when it comes to serializing [:] > URL Parameters).
+        /// For that reason, we'll proceed with a bit of a more lengthy but robust check.
+        ///
+        for (key, value) in receivedProperty1 {
+            XCTAssertEqual(value, Constants.testErrorReceivedProperty[key])
         }
     }
 }

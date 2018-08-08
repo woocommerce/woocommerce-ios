@@ -38,15 +38,12 @@ class OrderDetailsViewController: UIViewController {
     }
     private var sections = [Section]()
 
-    /// TODO: Replace with `ResultController` (OR) `ObjectController` ASAP
+    /// EntityListener: Update / Deletion Notifications.
     ///
-    private lazy var resultsController: ResultsController<StorageOrder> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "orderID = %ld", self.viewModel.order.orderID)
-        let descriptor = NSSortDescriptor(key: "orderID", ascending: true)
-
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    private lazy var entityListener: EntityListener<Order> = {
+        return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: viewModel.order)
     }()
+
 
 
     // MARK: - View Lifecycle
@@ -55,7 +52,7 @@ class OrderDetailsViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
-        configureResultsController()
+        configureEntityListener()
         registerTableViewCells()
         registerTableViewHeaderFooters()
     }
@@ -95,16 +92,23 @@ private extension OrderDetailsViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
-    /// TODO: Replace with `ResultController` (OR) `ObjectController` ASAP
+    /// Setup: EntityListener
     ///
-    func configureResultsController() {
-        try? resultsController.performFetch()
-        resultsController.onDidChangeContent = { [weak self] in
-            guard let `self` = self, let order = self.resultsController.fetchedObjects.first else {
+    func configureEntityListener() {
+        entityListener.onUpsert = { [weak self] order in
+            guard let `self` = self else {
+                return
+            }
+            self.viewModel = OrderDetailsViewModel(order: order)
+        }
+
+        entityListener.onDelete = { [weak self] in
+            guard let `self` = self else {
                 return
             }
 
-            self.viewModel = OrderDetailsViewModel(order: order)
+            self.navigationController?.popViewController(animated: true)
+            self.displayOrderDeletedNotice()
         }
     }
 

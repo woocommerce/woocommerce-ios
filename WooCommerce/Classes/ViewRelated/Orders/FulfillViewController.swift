@@ -257,12 +257,7 @@ private extension FulfillViewController {
             fatalError()
         }
 
-        var address: Address
-        if let shippingAddress = order.shippingAddress {
-            address = shippingAddress
-        } else {
-            address = order.billingAddress
-        }
+        let address = order.hasSeparateShippingDetail ? order.shippingAddress! : order.billingAddress
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
         cell.name = address.fullName

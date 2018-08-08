@@ -108,11 +108,22 @@ class OrderListMapperTests: XCTestCase {
         XCTAssertEqual(orderModifiedString, todayCreatedString)
     }
 
+    /// Verifies that `broken-orders-mark-2` gets properly parsed: 6 Orders with 2 items each, and the SKU property should
+    /// always be set to null.
     ///
+    /// Ref. Issue: https://github.com/woocommerce/woocommerce-ios/issues/221
     ///
     func testOrderListWithBreakingFormatIsProperlyParsed() {
-        let output = try? mapLoadBrokenOrdersResponseMarkII()
-        XCTAssertNil(output)
+        let orders = mapLoadBrokenOrdersResponseMarkII()
+        XCTAssertEqual(orders.count, 6)
+
+        for order in orders {
+            XCTAssertEqual(order.items.count, 2)
+
+            for item in order.items {
+                XCTAssertNil(item.sku)
+            }
+        }
     }
 }
 
@@ -123,29 +134,29 @@ private extension OrderListMapperTests {
 
     /// Returns the OrderListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrders(from filename: String) throws -> [Order] {
+    func mapOrders(from filename: String) -> [Order] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try OrderListMapper(siteID: dummySiteID).map(response: response)
+        return try! OrderListMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the OrderListMapper output upon receiving `orders-load-all`
     ///
     func mapLoadAllOrdersResponse() -> [Order] {
-        return try! mapOrders(from: "orders-load-all")
+        return mapOrders(from: "orders-load-all")
     }
 
     /// Returns the OrderListMapper output upon receiving `broken-order`
     ///
     func mapLoadBrokenOrderResponse() -> [Order] {
-        return try! mapOrders(from: "broken-orders")
+        return mapOrders(from: "broken-orders")
     }
 
     /// Returns the OrderListMapper output upon receiving `broken-orders-mark-2`
     ///
-    func mapLoadBrokenOrdersResponseMarkII() throws -> [Order] {
-        return try mapOrders(from: "broken-orders-mark-2")
+    func mapLoadBrokenOrdersResponseMarkII() -> [Order] {
+        return mapOrders(from: "broken-orders-mark-2")
     }
 }

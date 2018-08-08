@@ -7,7 +7,7 @@ class NoticeView: UIView {
     private let contentStackView = UIStackView()
 
     private let backgroundContainerView = UIView()
-    private let backgroundView =  UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+    private let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
     private let actionBackgroundView = UIView()
     private let shadowLayer = CAShapeLayer()
     private let shadowMaskLayer = CAShapeLayer()

@@ -206,7 +206,7 @@ class ResultsControllerTests: XCTestCase {
     /// Verifies that `fetchedObjects` effectively  returns all of the (readOnly) objects that are expected to be available.
     ///
     func testFetchedObjectsEffectivelyReturnsAvailableEntities() {
-        let sortDescriptor =  NSSortDescriptor(key: #selector(getter: Storage.Account.userID).description, ascending: true)
+        let sortDescriptor = NSSortDescriptor(key: #selector(getter: Storage.Account.userID).description, ascending: true)
         let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sortDescriptor])
         try? resultsController.performFetch()
 

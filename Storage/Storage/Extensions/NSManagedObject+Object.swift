@@ -12,6 +12,10 @@ extension NSManagedObject: Object {
     /// Note: entity().name returns nil as per iOS 10, in Unit Testing Targets. Awesome.
     ///
     public class var entityName: String {
-        return entity().name ?? classNameWithoutNamespaces()
+        /// Note: As of iOS 12, spawning multiple CoreData Stack instances in Unit Tests may result in Console Errors
+        /// ("This class is already claimed by another NSEntityDescription"). This error is triggered by the `entity()` method.
+        /// For that reason, we're falling back to `classNameWithoutNamespaces()`, which keeps our console tidy.
+        ///
+        return classNameWithoutNamespaces()
     }
 }

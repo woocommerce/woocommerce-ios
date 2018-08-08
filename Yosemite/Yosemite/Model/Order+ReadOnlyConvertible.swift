@@ -87,14 +87,6 @@ extension Storage.Order: ReadOnlyConvertible {
                      coupons: orderCoupons)
     }
 
-    public func hasSeparateShippingDetails() -> Bool {
-        let order = toReadOnly()
-        if let shipping = order.shippingAddress {
-            return !shipping.country.isEmpty
-        }
-        return false
-    }
-
 
     // MARK: - Private Helpers
 

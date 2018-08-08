@@ -122,13 +122,6 @@ public struct Order: Decodable {
 
         self.init(siteID: siteID, orderID: orderID, parentID: parentID, customerID: customerID, number: number, status: status, currency: currency, customerNote: customerNote, dateCreated: dateCreated, dateModified: dateModified, datePaid: datePaid, discountTotal: discountTotal, discountTax: discountTax, shippingTotal: shippingTotal, shippingTax: shippingTax, total: total, totalTax: totalTax, paymentMethodTitle: paymentMethodTitle, items: items, billingAddress: billingAddress, shippingAddress: shippingAddress, coupons: coupons) // initialize the struct
     }
-
-    func hasSeparateShippingDetails() -> Bool {
-        if let shipping = shippingAddress {
-            return !shipping.country.isEmpty
-        }
-        return false
-    }
 }
 
 

@@ -14,4 +14,13 @@ extension Order {
 
         return NSLocale(localeIdentifier: identifier).currencySymbol
     }
+
+    /// Determines if a shipping address exists.
+    ///
+    var hasSeparateShippingDetail: Bool {
+        if let shipping = self.shippingAddress {
+            return !shipping.country.isEmpty
+        }
+        return false
+    }
 }

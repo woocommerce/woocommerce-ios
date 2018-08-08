@@ -23,9 +23,16 @@
 		74B7D6B020F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B7D6AF20F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift */; };
 		74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */; };
 		B505254C20EE6491008090F5 /* Site+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */; };
+		B52E002B2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */; };
+		B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002D211A3F5500700FDE /* ReadOnlyType.swift */; };
+		B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002F211A439E00700FDE /* Account+ReadOnlyType.swift */; };
+		B52E0032211A440D00700FDE /* Order+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E0031211A440D00700FDE /* Order+ReadOnlyType.swift */; };
+		B52E0034211A449600700FDE /* Site+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E0033211A449600700FDE /* Site+ReadOnlyType.swift */; };
 		B53A56A0211245E0000776C9 /* MockupStorage+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569F211245E0000776C9 /* MockupStorage+Sample.swift */; };
 		B53D89E520E6C22B00F90866 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53D89E420E6C22B00F90866 /* Model.swift */; };
 		B546CCF22093636A007CDA5F /* Yosemite.h in Headers */ = {isa = PBXBuildFile; fileRef = B546CCF12093636A007CDA5F /* Yosemite.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B54EAF2121188C470029C35E /* EntityListenerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54EAF2021188C470029C35E /* EntityListenerTests.swift */; };
+		B5631ECD2114DF8C008D3535 /* EntityListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5631ECC2114DF8C008D3535 /* EntityListener.swift */; };
 		B56C1EBE20EABD2B00D749F9 /* ResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C1EBD20EABD2B00D749F9 /* ResultsController.swift */; };
 		B56C1EC220EAE2E500D749F9 /* ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C1EC120EAE2E500D749F9 /* ReadOnlyConvertible.swift */; };
 		B5A01CA120D19C4700E3207E /* MockupStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A01CA020D19C4700E3207E /* MockupStorage.swift */; };
@@ -81,9 +88,16 @@
 		991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YosemiteTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABE0D84C5393D9EE2CCF2B7E /* Pods-YosemiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release.xcconfig"; sourceTree = "<group>"; };
 		B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Site+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObjectsDidChangeNotification.swift; sourceTree = "<group>"; };
+		B52E002D211A3F5500700FDE /* ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadOnlyType.swift; sourceTree = "<group>"; };
+		B52E002F211A439E00700FDE /* Account+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Account+ReadOnlyType.swift"; sourceTree = "<group>"; };
+		B52E0031211A440D00700FDE /* Order+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+ReadOnlyType.swift"; sourceTree = "<group>"; };
+		B52E0033211A449600700FDE /* Site+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Site+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		B53A569F211245E0000776C9 /* MockupStorage+Sample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockupStorage+Sample.swift"; sourceTree = "<group>"; };
 		B53D89E420E6C22B00F90866 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Model.swift; path = Yosemite/Model/Model.swift; sourceTree = SOURCE_ROOT; };
 		B546CCF12093636A007CDA5F /* Yosemite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Yosemite.h; sourceTree = "<group>"; };
+		B54EAF2021188C470029C35E /* EntityListenerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityListenerTests.swift; sourceTree = "<group>"; };
+		B5631ECC2114DF8C008D3535 /* EntityListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityListener.swift; sourceTree = "<group>"; };
 		B56C1EBD20EABD2B00D749F9 /* ResultsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsController.swift; sourceTree = "<group>"; };
 		B56C1EC120EAE2E500D749F9 /* ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadOnlyConvertible.swift; sourceTree = "<group>"; };
 		B5A01CA020D19C4700E3207E /* MockupStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupStorage.swift; sourceTree = "<group>"; };
@@ -136,10 +150,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		B53D89E720E6C7DC00F90866 /* Model */ = {
+		B52E002C2119E6C000700FDE /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				B53D89E420E6C22B00F90866 /* Model.swift */,
+				B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */,
+				B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
+		B52E0035211A44F800700FDE /* Storage */ = {
+			isa = PBXGroup;
+			children = (
 				B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */,
 				74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */,
 				74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */,
@@ -147,15 +169,37 @@
 				74B7D6AF20F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift */,
 				B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */,
 			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		B52E0036211A44FE00700FDE /* ReadOnly */ = {
+			isa = PBXGroup;
+			children = (
+				B52E002F211A439E00700FDE /* Account+ReadOnlyType.swift */,
+				B52E0031211A440D00700FDE /* Order+ReadOnlyType.swift */,
+				B52E0033211A449600700FDE /* Site+ReadOnlyType.swift */,
+			);
+			path = ReadOnly;
+			sourceTree = "<group>";
+		};
+		B53D89E720E6C7DC00F90866 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B52E0036211A44FE00700FDE /* ReadOnly */,
+				B52E0035211A44F800700FDE /* Storage */,
+				B53D89E420E6C22B00F90866 /* Model.swift */,
+			);
 			path = Model;
 			sourceTree = "<group>";
 		};
 		B56C1EBC20EABD1C00D749F9 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				B52E002C2119E6C000700FDE /* Internal */,
+				B5631ECC2114DF8C008D3535 /* EntityListener.swift */,
 				B56C1EBD20EABD2B00D749F9 /* ResultsController.swift */,
 				B56C1EC120EAE2E500D749F9 /* ReadOnlyConvertible.swift */,
-				B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */,
+				B52E002D211A3F5500700FDE /* ReadOnlyType.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -303,6 +347,7 @@
 		B5F2AE9320EBAD5200FEDC59 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				B54EAF2021188C470029C35E /* EntityListenerTests.swift */,
 				B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */,
 			);
 			path = Tools;
@@ -490,14 +535,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B52E0032211A440D00700FDE /* Order+ReadOnlyType.swift in Sources */,
 				B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */,
+				B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */,
 				74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */,
 				74B7D6B020F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift in Sources */,
+				B5631ECD2114DF8C008D3535 /* EntityListener.swift in Sources */,
 				B5DC3CB120D1B8720063AC41 /* AccountAction.swift in Sources */,
 				B5BC736520D1A98500B5B6FA /* AccountStore.swift in Sources */,
 				B56C1EC220EAE2E500D749F9 /* ReadOnlyConvertible.swift in Sources */,
 				74A18C562113827E00DCF8A8 /* StatsStore.swift in Sources */,
 				B505254C20EE6491008090F5 /* Site+ReadOnlyConvertible.swift in Sources */,
+				B52E002B2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift in Sources */,
 				B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */,
 				74A7688C20D45EBA00F9D437 /* OrderStore.swift in Sources */,
 				B53D89E520E6C22B00F90866 /* Model.swift in Sources */,
@@ -506,7 +555,9 @@
 				7499936620EFBC7200CF01CD /* OrderNoteStore.swift in Sources */,
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,
 				74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */,
+				B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */,
 				B5C9DE162087FF0E006B910A /* Store.swift in Sources */,
+				B52E0034211A449600700FDE /* Site+ReadOnlyType.swift in Sources */,
 				B56C1EBE20EABD2B00D749F9 /* ResultsController.swift in Sources */,
 				B5EED1A820F4F3CF00652449 /* Account+ReadOnlyConvertible.swift in Sources */,
 				B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */,
@@ -527,6 +578,7 @@
 				B5A01CA120D19C4700E3207E /* MockupStorage.swift in Sources */,
 				B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */,
 				B5C9DE252087FF20006B910A /* MockupProcessor.swift in Sources */,
+				B54EAF2121188C470029C35E /* EntityListenerTests.swift in Sources */,
 				B5C9DE282087FF20006B910A /* MockupSite.swift in Sources */,
 				B5BC736820D1AA8F00B5B6FA /* AccountStoreTests.swift in Sources */,
 				B5F2AE9520EBAD6000FEDC59 /* ResultsControllerTests.swift in Sources */,

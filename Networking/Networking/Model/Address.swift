@@ -16,6 +16,13 @@ public struct Address: Decodable {
     public let phone: String?
     public let email: String?
 
+    /// Make Address conform to Error protocol.
+    ///
+    enum AddressParseError: Error {
+        case emptyStringDetected
+    }
+
+
     /// Designated Initializer.
     ///
     public init(firstName: String, lastName: String, company: String?, address1: String, address2: String?, city: String, state: String, postcode: String, country: String, phone: String?, email: String?) {
@@ -30,6 +37,31 @@ public struct Address: Decodable {
         self.country = country
         self.phone = phone
         self.email = email
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let firstName = try container.decode(String.self, forKey: .firstName)
+        let lastName = try container.decode(String.self, forKey: .lastName)
+        let company = try container.decodeIfPresent(String.self, forKey: .company)
+        let address1 = try container.decode(String.self, forKey: .address1)
+        let address2 = try container.decodeIfPresent(String.self, forKey: .address2)
+        let city = try container.decode(String.self, forKey: .city)
+        let state = try container.decode(String.self, forKey: .state)
+        let postcode = try container.decode(String.self, forKey: .postcode)
+        let country = try container.decode(String.self, forKey: .country)
+        let phone = try container.decodeIfPresent(String.self, forKey: .phone)
+        let email = try container.decodeIfPresent(String.self, forKey: .email)
+
+        let parsedItems = [firstName, lastName, company, address1, address2, city, state, country, phone, email]
+        for item in parsedItems {
+            if let parsed = item, parsed.isEmpty {
+                throw AddressParseError.emptyStringDetected
+            }
+        }
+
+        self.init(firstName: firstName, lastName: lastName, company: company, address1: address1, address2: address2, city: city, state: state, postcode: postcode, country: country, phone: phone, email: email)
     }
 }
 

@@ -74,7 +74,7 @@ class WooAnalyticsTests: XCTestCase {
             return
         }
 
-        /// Note: iOS 12 is shuffling several dictionaries (specially when it comes to serializing [:] > URL Parameters).
+        /// Note: iOS 12 is shuffling several dictionaries (especially when it comes to serializing [:] > URL Parameters).
         /// For that reason, we'll proceed with a bit of a more lengthy but robust check.
         ///
         for (key, value) in receivedProperty1 {

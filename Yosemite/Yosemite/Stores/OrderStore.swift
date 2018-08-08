@@ -35,7 +35,7 @@ public class OrderStore: Store {
 
 // MARK: - Services!
 //
-private extension OrderStore  {
+private extension OrderStore {
 
     /// Retrieves the orders associated with a given Site ID (if any!).
     ///

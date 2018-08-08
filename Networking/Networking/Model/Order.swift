@@ -116,7 +116,8 @@ public struct Order: Decodable {
         let paymentMethodTitle = try container.decode(String.self, forKey: .paymentMethodTitle)
 
         let items = try container.decode([OrderItem].self, forKey: .items)
-        let shippingAddress = try container.decodeIfPresent(Address.self, forKey: .shippingAddress)
+        let shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
+
         let billingAddress = try container.decode(Address.self, forKey: .billingAddress)
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
 

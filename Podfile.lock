@@ -64,6 +64,7 @@ PODS:
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
   - WordPressUI (1.0.6)
   - wpxmlrpc (0.8.3)
+  - XLPagerTabStrip (8.0.1)
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
@@ -74,6 +75,7 @@ DEPENDENCIES:
   - KeychainAccess (~> 3.1)
   - WordPressAuthenticator (= 1.0.5)
   - WordPressShared (= 1.0.8)
+  - XLPagerTabStrip (~> 8.0)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -98,6 +100,7 @@ SPEC REPOS:
     - WordPressShared
     - WordPressUI
     - wpxmlrpc
+    - XLPagerTabStrip
 
 EXTERNAL SOURCES:
   Automattic-Tracks-iOS:
@@ -132,7 +135,8 @@ SPEC CHECKSUMS:
   WordPressShared: 063e1e8b1a7aaf635abf17f091a2d235a068abdc
   WordPressUI: af141587ec444f9af753a00605bd0d3f14d8d8a3
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
+  XLPagerTabStrip: c908b17cbf42fcd2598ee1adfc49bae25444d88a
 
-PODFILE CHECKSUM: 9c0f38b4e1f7d6de164e2c4279a5112a7f95f936
+PODFILE CHECKSUM: fad8937db279e4bf9807a4985a2418c4832c9b35
 
 COCOAPODS: 1.5.3

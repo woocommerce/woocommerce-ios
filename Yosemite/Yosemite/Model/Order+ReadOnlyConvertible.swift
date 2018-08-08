@@ -42,17 +42,19 @@ extension Storage.Order: ReadOnlyConvertible {
         billingPhone = order.billingAddress.phone
         billingEmail = order.billingAddress.email
 
-        shippingFirstName = order.shippingAddress.firstName
-        shippingLastName = order.shippingAddress.lastName
-        shippingCompany = order.shippingAddress.company
-        shippingAddress1 = order.shippingAddress.address1
-        shippingAddress2 = order.shippingAddress.address2
-        shippingCity = order.shippingAddress.city
-        shippingState = order.shippingAddress.state
-        shippingPostcode = order.shippingAddress.postcode
-        shippingCountry = order.shippingAddress.country
-        shippingPhone = order.shippingAddress.phone
-        shippingEmail = order.shippingAddress.email
+        if let shippingAddress = order.shippingAddress {
+            shippingFirstName = shippingAddress.firstName
+            shippingLastName = shippingAddress.lastName
+            shippingCompany = shippingAddress.company
+            shippingAddress1 = shippingAddress.address1
+            shippingAddress2 = shippingAddress.address2
+            shippingCity = shippingAddress.city
+            shippingState = shippingAddress.state
+            shippingPostcode = shippingAddress.postcode
+            shippingCountry = shippingAddress.country
+            shippingPhone = shippingAddress.phone
+            shippingEmail = shippingAddress.email
+        }
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -83,6 +85,14 @@ extension Storage.Order: ReadOnlyConvertible {
                      billingAddress: createReadOnlyBillingAddress(),
                      shippingAddress: createReadOnlyShippingAddress(),
                      coupons: orderCoupons)
+    }
+
+    public func hasSeparateShippingDetails() -> Bool {
+        let order = toReadOnly()
+        if let shipping = order.shippingAddress {
+            return !shipping.country.isEmpty
+        }
+        return false
     }
 
 

@@ -29,6 +29,14 @@ target 'WooCommerce' do
   pod 'Crashlytics', '~> 3.10'
   pod 'KeychainAccess', '~> 3.1'
   pod 'CocoaLumberjack/Swift', '~> 3.4'
+
+  # Unit Tests
+  # ==========
+  #
+  target 'WooCommerceTests' do
+    inherit! :search_paths
+  end
+
 end
 
 
@@ -42,6 +50,7 @@ target 'Yosemite' do
   # External Libraries
   # ==================
   #
+  pod 'Alamofire', '~> 4.7'
   pod 'CocoaLumberjack/Swift', '~> 3.4'
 
   # Unit Tests
@@ -49,7 +58,6 @@ target 'Yosemite' do
   #
   target 'YosemiteTests' do
     inherit! :search_paths
-    pod 'Alamofire', '~> 4.7'	
   end
 
 end
@@ -97,14 +105,4 @@ target 'Storage' do
   target 'StorageTests' do
     inherit! :search_paths
   end
-end
-
-
-# Workaround: Drop ARMv7 Architecture:
-# ====================================
-#
-post_install do |installer|
-    installer.pods_project.build_configuration_list.build_configurations.each do |configuration|
-        configuration.build_settings['VALID_ARCHS'] = 'arm64 armv7s'
-    end
 end

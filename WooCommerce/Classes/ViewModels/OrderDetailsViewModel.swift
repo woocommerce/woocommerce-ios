@@ -15,7 +15,7 @@ class OrderDetailsViewModel {
     }
 
     var summaryTitle: String {
-        return "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
+        return "#\(order.number) \(order.billingAddress.firstName) \(order.billingAddress.lastName)"
     }
 
     var summaryDateCreated: String {
@@ -60,7 +60,10 @@ class OrderDetailsViewModel {
     }
 
     var shippingViewModel: ContactViewModel {
-        return ContactViewModel(with: order.shippingAddress, contactType: ContactType.shipping)
+        if let shippingAddress = order.shippingAddress {
+            return ContactViewModel(with: shippingAddress, contactType: ContactType.shipping)
+        }
+        return ContactViewModel(with: order.billingAddress, contactType: ContactType.billing)
     }
     var shippingAddress: String? {
         return shippingViewModel.formattedAddress

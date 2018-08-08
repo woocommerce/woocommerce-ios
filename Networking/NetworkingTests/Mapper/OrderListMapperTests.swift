@@ -107,6 +107,13 @@ class OrderListMapperTests: XCTestCase {
         let orderModifiedString = format.string(from: brokenOrder.dateModified)
         XCTAssertEqual(orderModifiedString, todayCreatedString)
     }
+
+    ///
+    ///
+    func testOrderListWithBreakingFormatIsProperlyParsed() {
+        let output = try? mapLoadBrokenOrdersResponseMarkII()
+        XCTAssertNil(output)
+    }
 }
 
 
@@ -116,23 +123,29 @@ private extension OrderListMapperTests {
 
     /// Returns the OrderListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrders(from filename: String) -> [Order] {
+    func mapOrders(from filename: String) throws -> [Order] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! OrderListMapper(siteID: dummySiteID).map(response: response)
+        return try OrderListMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the OrderListMapper output upon receiving `orders-load-all`
     ///
     func mapLoadAllOrdersResponse() -> [Order] {
-        return mapOrders(from: "orders-load-all")
+        return try! mapOrders(from: "orders-load-all")
     }
 
-    /// Returns the OrderlistMapper output upon receiving `broken-order`
+    /// Returns the OrderListMapper output upon receiving `broken-order`
     ///
     func mapLoadBrokenOrderResponse() -> [Order] {
-        return mapOrders(from: "broken-orders")
+        return try! mapOrders(from: "broken-orders")
+    }
+
+    /// Returns the OrderListMapper output upon receiving `broken-orders-mark-2`
+    ///
+    func mapLoadBrokenOrdersResponseMarkII() throws -> [Order] {
+        return try mapOrders(from: "broken-orders-mark-2")
     }
 }

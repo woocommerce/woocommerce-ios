@@ -494,7 +494,7 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
             guard let email = contactViewModel.email else {
                 return
             }
-            
+
             sendEmail(to: email)
         }
     }

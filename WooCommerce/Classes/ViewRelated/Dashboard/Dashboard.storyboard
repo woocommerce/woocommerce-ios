@@ -20,8 +20,15 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Y7g-5h-02N">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="380"/>
                                 <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PBm-IO-eju">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
+                                        <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="1" id="hCW-AU-C7N"/>
+                                        </constraints>
+                                    </view>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="V2w-p4-txW" customClass="ButtonBarView" customModule="XLPagerTabStrip">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="48"/>
+                                        <rect key="frame" x="0.0" y="1" width="375" height="48"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="48" id="3Mv-YT-dTc"/>
@@ -34,9 +41,23 @@
                                         </collectionViewFlowLayout>
                                         <cells/>
                                     </collectionView>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cMR-ex-E4c">
+                                        <rect key="frame" x="0.0" y="49" width="375" height="1"/>
+                                        <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="1" id="8O6-Qx-Y7L"/>
+                                        </constraints>
+                                    </view>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iZC-Gc-okA">
-                                        <rect key="frame" x="0.0" y="48" width="375" height="332"/>
+                                        <rect key="frame" x="0.0" y="50" width="375" height="329"/>
                                     </scrollView>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kbr-bQ-njj">
+                                        <rect key="frame" x="0.0" y="379" width="375" height="1"/>
+                                        <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="1" id="Co8-ct-oPM"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -50,8 +71,11 @@
                         <viewLayoutGuide key="safeArea" id="h8n-zr-nPZ"/>
                     </view>
                     <connections>
+                        <outlet property="bottomBorder" destination="Kbr-bQ-njj" id="STS-VL-hwE"/>
                         <outlet property="buttonBarView" destination="V2w-p4-txW" id="VTs-KL-ctj"/>
                         <outlet property="containerView" destination="iZC-Gc-okA" id="WQL-We-gId"/>
+                        <outlet property="middleBorder" destination="cMR-ex-E4c" id="kKu-oy-qVs"/>
+                        <outlet property="topBorder" destination="PBm-IO-eju" id="XRw-Fl-mDY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a6b-fg-tHy" userLabel="First Responder" sceneMemberID="firstResponder"/>

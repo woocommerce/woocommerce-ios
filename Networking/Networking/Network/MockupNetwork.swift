@@ -39,7 +39,7 @@ class MockupNetwork: Network {
         requestsForResponseJSON.append(request)
 
         guard let filename = filename(for: request), let response = Loader.jsonObject(for: filename) else {
-            completion(nil, NetworkError.emptyResponse)
+            completion(nil, NetworkError.unknown)
             return
         }
 
@@ -53,7 +53,7 @@ class MockupNetwork: Network {
         requestsForResponseData.append(request)
 
         guard let filename = filename(for: request), let data = Loader.contentsOf(filename) else {
-            completion(nil, NetworkError.emptyResponse)
+            completion(nil, NetworkError.unknown)
             return
         }
 

@@ -34,9 +34,13 @@ public protocol Network {
 
 /// Networking Errors
 ///
-enum NetworkError: Error {
+public enum NetworkError: Error {
 
-    /// Indicates that there's not been an actual response!
+    /// Something went wrong. But we have no idea what it was!
     ///
-    case emptyResponse
+    case unknown
+
+    /// Resource Not Found (statusCode = 404)
+    ///
+    case notFound
 }

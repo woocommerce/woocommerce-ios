@@ -9,10 +9,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--My Store Stats View Controller-->
+        <!--Store Stats View Controller-->
         <scene sceneID="gpf-E1-UPO">
             <objects>
-                <viewController id="zaY-no-5X6" customClass="MyStoreStatsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="zaY-no-5X6" customClass="StoreStatsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="EgO-Cw-kVD">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="400"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

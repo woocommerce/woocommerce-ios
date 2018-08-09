@@ -1,12 +1,23 @@
 import UIKit
 import Gridicons
+import CocoaLumberjack
 
 
 // MARK: - DashboardViewController
 //
 class DashboardViewController: UIViewController {
 
-    // MARK: - View Lifecycle
+    // MARK: Properties
+
+    @IBOutlet private weak var scrollView: UIScrollView!
+    
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
+        return refreshControl
+    }()
+
+    // MARK: View Lifecycle
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -15,11 +26,22 @@ class DashboardViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavigation()
+        configureNavigation()
+        configureView()
+    }
+}
+
+
+// MARK: - Configuration
+//
+extension DashboardViewController {
+
+    func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
+        scrollView.refreshControl = refreshControl
     }
 
-    func setupNavigation() {
+    func configureNavigation() {
         title = NSLocalizedString("My Store", comment: "Dashboard navigation title")
         let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.cog),
                                              style: .plain,
@@ -36,13 +58,24 @@ class DashboardViewController: UIViewController {
 
         navigationItem.backBarButtonItem = backButton
     }
+}
 
-    // MARK: - Actions
+
+// MARK: - Action Handlers
+//
+extension DashboardViewController {
 
     @objc func settingsTapped() {
         performSegue(withIdentifier: Constants.settingsSegue, sender: nil)
     }
+
+    @objc func pullToRefresh() {
+        // TODO: Implement pull-to-refresh
+        self.refreshControl.endRefreshing()
+        DDLogDebug("Pulling to refresh!")
+    }
 }
+
 
 // MARK: - Constants
 //

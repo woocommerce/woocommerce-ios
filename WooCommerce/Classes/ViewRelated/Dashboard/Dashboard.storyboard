@@ -14,11 +14,11 @@
             <objects>
                 <viewController id="zaY-no-5X6" customClass="StoreStatsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="EgO-Cw-kVD">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="400"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="380"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Y7g-5h-02N">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="400"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="380"/>
                                 <subviews>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="V2w-p4-txW" customClass="ButtonBarView" customModule="XLPagerTabStrip">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="48"/>
@@ -35,7 +35,7 @@
                                         <cells/>
                                     </collectionView>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iZC-Gc-okA">
-                                        <rect key="frame" x="0.0" y="48" width="375" height="352"/>
+                                        <rect key="frame" x="0.0" y="48" width="375" height="332"/>
                                     </scrollView>
                                 </subviews>
                             </stackView>
@@ -70,17 +70,17 @@
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="c2q-ri-kSZ">
-                                        <rect key="frame" x="0.0" y="18" width="375" height="400"/>
+                                        <rect key="frame" x="0.0" y="18" width="375" height="380"/>
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bgR-ww-mDR">
-                                                <rect key="frame" x="0.0" y="0.0" width="375" height="400"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="375" height="380"/>
                                                 <connections>
                                                     <segue destination="zaY-no-5X6" kind="embed" id="DIr-Go-f5K"/>
                                                 </connections>
                                             </containerView>
                                         </subviews>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="400" id="uR5-0i-C3S"/>
+                                            <constraint firstAttribute="height" constant="380" id="uR5-0i-C3S"/>
                                         </constraints>
                                     </stackView>
                                 </subviews>
@@ -106,6 +106,7 @@
                     <navigationItem key="navigationItem" title="Dashboard" id="jfr-uS-W7N"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="scrollView" destination="5Cz-cT-K5z" id="AiQ-Nv-JRm"/>
                         <segue destination="5Fc-gh-JKM" kind="show" identifier="ShowSettingsViewController" id="5OG-7I-yID"/>
                     </connections>
                 </viewController>

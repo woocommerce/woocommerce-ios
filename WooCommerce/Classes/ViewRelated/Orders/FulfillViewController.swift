@@ -257,11 +257,13 @@ private extension FulfillViewController {
             fatalError()
         }
 
-        let address = order.hasSeparateShippingDetail ? order.shippingAddress! : order.billingAddress
+        if let billingAddress = order.billingAddress {
+            let address = order.hasSeparateShippingDetail ? order.shippingAddress! : billingAddress
 
-        cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
-        cell.name = address.fullName
-        cell.address = address.formattedPostalAddress
+            cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
+            cell.name = address.fullName
+            cell.address = address.formattedPostalAddress
+        }
     }
 
     /// Setup: Add Tracking Cell
@@ -377,13 +379,21 @@ private extension Section {
 
         let address: Section = {
             let title = NSLocalizedString("Customer Information", comment: "")
-            var displayAddress: Address
+
             if order.hasSeparateShippingDetail {
-                displayAddress = order.shippingAddress!
-            } else {
-                displayAddress = order.billingAddress
+                let row = Row.address(shipping: order.shippingAddress!)
+
+                return Section(title: title, secondaryTitle: nil, rows: [row])
             }
-            let row = Row.address(shipping: displayAddress)
+
+            if let billingAddress = order.billingAddress {
+                let row = Row.address(shipping: billingAddress)
+
+                return Section(title: title, secondaryTitle: nil, rows: [row])
+            }
+
+            let emptyAddress = order.generateEmptyBillingAddress()
+            let row = Row.address(shipping: emptyAddress)
 
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()

@@ -224,7 +224,12 @@ private extension OrderDetailsViewController {
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
             cell.configure(with: viewModel.shippingViewModel)
         case let cell as CustomerInfoTableViewCell where row == .billingAddress:
-            cell.configure(with: viewModel.billingViewModel)
+            if let billingViewModel = viewModel.billingViewModel {
+                cell.configure(with: billingViewModel)
+            } else {
+                let billingViewModel = ContactViewModel(with: viewModel.order.generateEmptyBillingAddress(), contactType: ContactType.billing)
+                cell.configure(with: billingViewModel)
+            }
         case let cell as BillingDetailsTableViewCell where row == .billingPhone:
             configure(cell, for: .billingPhone)
         case let cell as BillingDetailsTableViewCell where row == .billingEmail:
@@ -244,12 +249,12 @@ private extension OrderDetailsViewController {
 
     private func configure(_ cell: BillingDetailsTableViewCell, for billingRow: Row) {
         if billingRow == .billingPhone {
-            cell.configure(text: viewModel.billingViewModel.phoneNumber, image: Gridicon.iconOfType(.ellipsis))
+            cell.configure(text: viewModel.billingViewModel?.phoneNumber, image: Gridicon.iconOfType(.ellipsis))
             cell.onTouchUp = { [weak self] in
                 self?.phoneButtonAction()
             }
         } else if billingRow == .billingEmail {
-            cell.configure(text: viewModel.billingViewModel.email, image: Gridicon.iconOfType(.mail))
+            cell.configure(text: viewModel.billingViewModel?.email, image: Gridicon.iconOfType(.mail))
             cell.onTouchUp = { [weak self] in
                 self?.emailButtonAction()
             }
@@ -450,7 +455,11 @@ extension OrderDetailsViewController: UITableViewDelegate {
 //
 extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
     func sendTextMessageIfPossible() {
-        let contactViewModel = ContactViewModel(with: viewModel.order.billingAddress, contactType: .billing)
+        guard let billingAddress = viewModel.order.billingAddress else {
+            return
+        }
+
+        let contactViewModel = ContactViewModel(with: billingAddress, contactType: .billing)
         guard let phoneNumber = contactViewModel.cleanedPhoneNumber else {
             return
         }
@@ -477,10 +486,15 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
 extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
     func sendEmailIfPossible() {
         if MFMailComposeViewController.canSendMail() {
-            let contactViewModel = ContactViewModel(with: viewModel.order.billingAddress, contactType: .billing)
+            guard let billingAddress = viewModel.order.billingAddress else {
+                return
+            }
+
+            let contactViewModel = ContactViewModel(with: billingAddress, contactType: .billing)
             guard let email = contactViewModel.email else {
                 return
             }
+            
             sendEmail(to: email)
         }
     }

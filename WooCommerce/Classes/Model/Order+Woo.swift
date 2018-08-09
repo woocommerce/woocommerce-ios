@@ -23,4 +23,10 @@ extension Order {
         }
         return false
     }
+
+    /// FIXME: Creates an empty-string value Billing details, until
+    ///
+    func generateEmptyBillingAddress() -> Address {
+        return Address(firstName: "", lastName: "", company: "", address1: "", address2: "", city: "", state: "", postcode: "", country: "", phone: "", email: "")
+    }
 }

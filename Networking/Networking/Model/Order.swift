@@ -27,7 +27,7 @@ public struct Order: Decodable {
     public let paymentMethodTitle: String
 
     public let items: [OrderItem]
-    public let billingAddress: Address
+    public let billingAddress: Address?
     public let shippingAddress: Address?
     public let coupons: [OrderCouponLine]
 
@@ -52,7 +52,7 @@ public struct Order: Decodable {
                 totalTax: String,
                 paymentMethodTitle: String,
                 items: [OrderItem],
-                billingAddress: Address,
+                billingAddress: Address?,
                 shippingAddress: Address?,
                 coupons: [OrderCouponLine]) {
 
@@ -116,12 +116,24 @@ public struct Order: Decodable {
         let paymentMethodTitle = try container.decode(String.self, forKey: .paymentMethodTitle)
 
         let items = try container.decode([OrderItem].self, forKey: .items)
-        let shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
 
-        let billingAddress = try container.decode(Address.self, forKey: .billingAddress)
+        var shippingAddress: Address? = nil
+        do {
+            shippingAddress = try container.decodeIfPresent(Address.self, forKey: .shippingAddress)
+        } catch {
+            // no-op
+        }
+
+        var billingAddress: Address? = nil
+        do {
+            billingAddress = try container.decode(Address.self, forKey: .billingAddress)
+        } catch {
+            billingAddress = Address(firstName: "", lastName: "", company: "", address1: "", address2: "", city: "", state: "", postcode: "", country: "", phone: "", email: "")
+        }
+
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
 
-        self.init(siteID: siteID, orderID: orderID, parentID: parentID, customerID: customerID, number: number, status: status, currency: currency, customerNote: customerNote, dateCreated: dateCreated, dateModified: dateModified, datePaid: datePaid, discountTotal: discountTotal, discountTax: discountTax, shippingTotal: shippingTotal, shippingTax: shippingTax, total: total, totalTax: totalTax, paymentMethodTitle: paymentMethodTitle, items: items, billingAddress: billingAddress, shippingAddress: shippingAddress, coupons: coupons) // initialize the struct
+        self.init(siteID: siteID, orderID: orderID, parentID: parentID, customerID: customerID, number: number, status: status, currency: currency, customerNote: customerNote, dateCreated: dateCreated, dateModified: dateModified, datePaid: datePaid, discountTotal: discountTotal, discountTax: discountTax, shippingTotal: shippingTotal, shippingTax: shippingTax, total: total, totalTax: totalTax, paymentMethodTitle: paymentMethodTitle, items: items, billingAddress: billingAddress, shippingAddress: shippingAddress, coupons: coupons)
     }
 }
 

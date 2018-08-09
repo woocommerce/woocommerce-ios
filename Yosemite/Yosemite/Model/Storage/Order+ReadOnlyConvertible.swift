@@ -30,17 +30,19 @@ extension Storage.Order: ReadOnlyConvertible {
         totalTax = order.totalTax
         paymentMethodTitle = order.paymentMethodTitle
 
-        billingFirstName = order.billingAddress.firstName
-        billingLastName = order.billingAddress.lastName
-        billingCompany = order.billingAddress.company
-        billingAddress1 = order.billingAddress.address1
-        billingAddress2 = order.billingAddress.address2
-        billingCity = order.billingAddress.city
-        billingState = order.billingAddress.state
-        billingPostcode = order.billingAddress.postcode
-        billingCountry = order.billingAddress.country
-        billingPhone = order.billingAddress.phone
-        billingEmail = order.billingAddress.email
+        if let billingAddress = order.billingAddress {
+            billingFirstName = billingAddress.firstName
+            billingLastName = billingAddress.lastName
+            billingCompany = billingAddress.company
+            billingAddress1 = billingAddress.address1
+            billingAddress2 = billingAddress.address2
+            billingCity = billingAddress.city
+            billingState = billingAddress.state
+            billingPostcode = billingAddress.postcode
+            billingCountry = billingAddress.country
+            billingPhone = billingAddress.phone
+            billingEmail = billingAddress.email
+        }
 
         if let shippingAddress = order.shippingAddress {
             shippingFirstName = shippingAddress.firstName

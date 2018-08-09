@@ -29,14 +29,10 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
 
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
 
-        let child_1 = PeriodDataViewController()
-        child_1.tabTitle = TabStrip.titleDay
-        let child_2 = PeriodDataViewController()
-        child_2.tabTitle = TabStrip.titleWeek
-        let child_3 = PeriodDataViewController()
-        child_3.tabTitle = TabStrip.titleMonth
-        let child_4 = PeriodDataViewController()
-        child_4.tabTitle = TabStrip.titleYear
+        let child_1 = PeriodDataViewController(tabTitle: TabStrip.titleDay)
+        let child_2 = PeriodDataViewController(tabTitle: TabStrip.titleWeek)
+        let child_3 = PeriodDataViewController(tabTitle: TabStrip.titleMonth)
+        let child_4 = PeriodDataViewController(tabTitle: TabStrip.titleYear)
 
         return [child_1, child_2, child_3, child_4]
     }

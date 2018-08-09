@@ -1,21 +1,39 @@
 import UIKit
 import Yosemite
 import XLPagerTabStrip
+import CocoaLumberjack
 
 
 class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
-    @IBOutlet weak var visitorsTitle: UILabel!
-    @IBOutlet weak var visitorsData: UILabel!
-    @IBOutlet weak var ordersTitle: UILabel!
-    @IBOutlet weak var ordersData: UILabel!
-    @IBOutlet weak var revenueTitle: UILabel!
-    @IBOutlet weak var revenueData: UILabel!
-    @IBOutlet weak var lastUpdated: UILabel!
-    @IBOutlet weak var chartView: UIView!
-    @IBOutlet weak var borderView: UIView!
+    // MARK: Properties
+
+    @IBOutlet private weak var visitorsTitle: UILabel!
+    @IBOutlet private weak var visitorsData: UILabel!
+    @IBOutlet private weak var ordersTitle: UILabel!
+    @IBOutlet private weak var ordersData: UILabel!
+    @IBOutlet private weak var revenueTitle: UILabel!
+    @IBOutlet private weak var revenueData: UILabel!
+    @IBOutlet private weak var lastUpdated: UILabel!
+    @IBOutlet private weak var chartView: UIView!
+    @IBOutlet private weak var borderView: UIView!
     
-    var tabTitle: String = ""
+    private var tabTitle: String = ""
+
+    /// Designated Initializer
+    ///
+    init(tabTitle: String) {
+        self.tabTitle = tabTitle
+        super.init(nibName: type(of: self).nibName, bundle: nil)
+    }
+
+    /// NSCoder Conformance
+    ///
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) is not supported")
+    }
+
+    // MARK: View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,6 +74,6 @@ private extension PeriodDataViewController {
 
         // Footer
         lastUpdated.font = UIFont.footnote
-        lastUpdated.textColor = StyleManager.wooGreyTextMin
+        lastUpdated.textColor = StyleManager.wooGreyMid
     }
 }

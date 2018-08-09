@@ -17,7 +17,7 @@ class MyStoreStatsViewController: ButtonBarPagerTabStripViewController {
         settings.style.buttonBarBackgroundColor = .white
         settings.style.buttonBarItemBackgroundColor = .white
         settings.style.selectedBarBackgroundColor = StyleManager.wooCommerceBrandColor
-        settings.style.buttonBarItemFont = .body
+        settings.style.buttonBarItemFont = .headline
         settings.style.selectedBarHeight = 2.0
         settings.style.buttonBarMinimumLineSpacing = 0
         settings.style.buttonBarItemTitleColor = StyleManager.wooGreyMid

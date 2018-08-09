@@ -377,9 +377,9 @@ private extension Section {
 
         let address: Section = {
             let title = NSLocalizedString("Customer Information", comment: "")
-            let displayAddress: Address
-            if let shippingAddress = order.shippingAddress {
-                displayAddress = shippingAddress
+            var displayAddress: Address
+            if order.hasSeparateShippingDetail {
+                displayAddress = order.shippingAddress!
             } else {
                 displayAddress = order.billingAddress
             }

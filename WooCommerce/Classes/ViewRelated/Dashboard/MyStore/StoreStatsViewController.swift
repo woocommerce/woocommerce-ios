@@ -6,6 +6,12 @@ import XLPagerTabStrip
 //
 class StoreStatsViewController: ButtonBarPagerTabStripViewController {
 
+    // MARK: Properties
+
+    @IBOutlet weak var topBorder: UIView!
+    @IBOutlet weak var middleBorder: UIView!
+    @IBOutlet weak var bottomBorder: UIView!
+
     // MARK: View Lifecycle
 
     required init?(coder aDecoder: NSCoder) {
@@ -13,10 +19,10 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
     }
 
     override func viewDidLoad() {
-        // This 👇 must be called before super.viewDidLoad()
-        configureTabStrip()
-
+        configureTabStrip() // 👈 must be called before super.viewDidLoad()
         super.viewDidLoad()
+
+        configureView()
     }
 
     // MARK: PagerTabStripDataSource
@@ -44,6 +50,12 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
 // MARK: - User Interface Initialization
 //
 private extension StoreStatsViewController {
+
+    func configureView() {
+        topBorder.backgroundColor = StyleManager.wooGreyBorder
+        middleBorder.backgroundColor = StyleManager.wooGreyBorder
+        bottomBorder.backgroundColor = StyleManager.wooGreyBorder
+    }
 
     func configureTabStrip() {
         settings.style.buttonBarBackgroundColor = .white

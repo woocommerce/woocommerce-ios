@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 import XLPagerTabStrip
 
 
@@ -6,40 +7,38 @@ import XLPagerTabStrip
 //
 class StoreStatsViewController: ButtonBarPagerTabStripViewController {
 
-    // MARK: Properties
+    // MARK: - Properties
 
-    @IBOutlet weak var topBorder: UIView!
-    @IBOutlet weak var middleBorder: UIView!
-    @IBOutlet weak var bottomBorder: UIView!
+    @IBOutlet private weak var topBorder: UIView!
+    @IBOutlet private weak var middleBorder: UIView!
+    @IBOutlet private weak var bottomBorder: UIView!
 
-    // MARK: View Lifecycle
+    private var periodVCs = [PeriodDataViewController]()
+
+    // MARK: - View Lifecycle
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 
     override func viewDidLoad() {
-        configureTabStrip() // 👈 must be called before super.viewDidLoad()
-        super.viewDidLoad()
+        configurePeriodViewControllers()
+        configureTabStrip()
+        // 👆 must be called before super.viewDidLoad()
 
+        super.viewDidLoad()
         configureView()
     }
 
-    // MARK: PagerTabStripDataSource
+    // MARK: - PagerTabStripDataSource
 
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
-
-        let child_1 = PeriodDataViewController(tabTitle: TabStrip.titleDay)
-        let child_2 = PeriodDataViewController(tabTitle: TabStrip.titleWeek)
-        let child_3 = PeriodDataViewController(tabTitle: TabStrip.titleMonth)
-        let child_4 = PeriodDataViewController(tabTitle: TabStrip.titleYear)
-
-        return [child_1, child_2, child_3, child_4]
+        return periodVCs
     }
 }
 
 
-// MARK: - User Interface Initialization
+// MARK: - User Interface Configuration
 //
 private extension StoreStatsViewController {
 
@@ -47,6 +46,18 @@ private extension StoreStatsViewController {
         topBorder.backgroundColor = StyleManager.wooGreyBorder
         middleBorder.backgroundColor = StyleManager.wooGreyBorder
         bottomBorder.backgroundColor = StyleManager.wooGreyBorder
+    }
+
+    func configurePeriodViewControllers() {
+        let child_1 = PeriodDataViewController(granularity: .day)
+        let child_2 = PeriodDataViewController(granularity: .week)
+        let child_3 = PeriodDataViewController(granularity: .month)
+        let child_4 = PeriodDataViewController(granularity: .year)
+
+        periodVCs.append(child_1)
+        periodVCs.append(child_2)
+        periodVCs.append(child_3)
+        periodVCs.append(child_4)
     }
 
     func configureTabStrip() {
@@ -68,15 +79,20 @@ private extension StoreStatsViewController {
 }
 
 
+// MARK: - Private Helpers
+//
+private extension StoreStatsViewController {
+
+    func periodDataVC(for stat: StatGranularity) -> PeriodDataViewController? {
+        return periodVCs.filter({ $0.granularity == stat }).first
+    }
+}
+
+
 // MARK: - Constants!
 //
 private extension StoreStatsViewController {
     enum TabStrip {
-        static let titleDay     = NSLocalizedString("Days", comment: "Title of stats tab for a specific period — plural form of day.")
-        static let titleWeek    = NSLocalizedString("Weeks", comment: "Title of stats tab for a specific period — plural form of week.")
-        static let titleMonth   = NSLocalizedString("Months", comment: "Title of stats tab for a specific period — plural form of month.")
-        static let titleYear    = NSLocalizedString("Years", comment: "Title of stats tab for a specific period — plural form of year.")
-
         static let buttonLeftRightMargin: CGFloat   = 14.0
         static let selectedBarHeight: CGFloat       = 3.0
     }

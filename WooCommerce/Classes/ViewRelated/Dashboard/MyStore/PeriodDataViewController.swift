@@ -6,7 +6,7 @@ import CocoaLumberjack
 
 class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
-    // MARK: Properties
+    // MARK: - Properties
 
     @IBOutlet private weak var visitorsTitle: UILabel!
     @IBOutlet private weak var visitorsData: UILabel!
@@ -17,13 +17,25 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     @IBOutlet private weak var lastUpdated: UILabel!
     @IBOutlet private weak var chartView: UIView!
     @IBOutlet private weak var borderView: UIView!
+
+    public let granularity: StatGranularity
+    public var orderStats: OrderStats? {
+        didSet {
+            reloadOrderFields()
+        }
+    }
+    public var siteStats: SiteVisitStats? {
+        didSet {
+            reloadSiteFields()
+        }
+    }
     
-    private var tabTitle: String = ""
+    // MARK: - Initialization
 
     /// Designated Initializer
     ///
-    init(tabTitle: String) {
-        self.tabTitle = tabTitle
+    init(granularity: StatGranularity) {
+        self.granularity = granularity
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -33,7 +45,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         fatalError("init(coder:) is not supported")
     }
 
-    // MARK: View Lifecycle
+    // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,12 +58,12 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 //
 extension PeriodDataViewController {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: tabTitle)
+        return IndicatorInfo(title: granularity.pluralizedString)
     }
 }
 
 
-// MARK: - User Interface Initialization
+// MARK: - User Interface Configuration
 //
 private extension PeriodDataViewController {
 
@@ -60,9 +72,12 @@ private extension PeriodDataViewController {
         borderView.backgroundColor = StyleManager.wooGreyBorder
 
         // Titles
-        visitorsTitle.applyFootnoteStyle()
-        ordersTitle.applyFootnoteStyle()
-        revenueTitle.applyFootnoteStyle()
+        visitorsTitle.font = UIFont.footnote
+        visitorsTitle.textColor = StyleManager.defaultTextColor
+        ordersTitle.font = UIFont.footnote
+        ordersTitle.textColor = StyleManager.defaultTextColor
+        revenueTitle.font = UIFont.footnote
+        revenueTitle.textColor = StyleManager.defaultTextColor
 
         // Data
         visitorsData.font = StyleManager.statsBigDataFont
@@ -76,4 +91,19 @@ private extension PeriodDataViewController {
         lastUpdated.font = UIFont.footnote
         lastUpdated.textColor = StyleManager.wooGreyMid
     }
+}
+
+
+// MARK: - Private Helpers
+//
+private extension PeriodDataViewController {
+
+    func reloadOrderFields() {
+        // TODO: Refresh order stat fields
+    }
+
+    func reloadSiteFields() {
+        // TODO: Refresh site stat fields
+    }
+
 }

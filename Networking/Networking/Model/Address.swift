@@ -54,11 +54,10 @@ public struct Address: Decodable {
         let phone = try container.decodeIfPresent(String.self, forKey: .phone)
         let email = try container.decodeIfPresent(String.self, forKey: .email)
 
-        let parsedItems = [firstName, lastName, company, address1, address2, city, state, country, phone, email]
-        for item in parsedItems {
-            if let parsed = item, parsed.isEmpty {
-                throw AddressParseError.emptyStringDetected
-            }
+        // Check for an empty country, because on Android that's how
+        // we determine if the shipping address should be considered empty.
+        if country.isEmpty {
+            throw AddressParseError.emptyStringDetected
         }
 
         self.init(firstName: firstName, lastName: lastName, company: company, address1: address1, address2: address2, city: city, state: state, postcode: postcode, country: country, phone: phone, email: email)

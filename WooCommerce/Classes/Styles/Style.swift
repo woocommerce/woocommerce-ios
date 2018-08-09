@@ -21,6 +21,7 @@ protocol Style {
     var navBarImage: UIImage { get }
     var sectionBackgroundColor: UIColor { get }
     var sectionTitleColor: UIColor { get }
+    var statsBigDataFont: UIFont { get }
     var statusDangerColor: UIColor { get }
     var statusDangerBoldColor: UIColor { get }
     var statusNotIdentifiedColor: UIColor { get }
@@ -60,6 +61,7 @@ class DefaultStyle: Style {
     let navBarImage = UIImage(named: "woo-logo")!
     let sectionBackgroundColor = UIColor(red: 239.0/255.0, green: 239.0/255.0, blue: 244.0/255.0, alpha: 1.0)
     let sectionTitleColor = UIColor.darkGray
+    let statsBigDataFont = UIFont.systemFont(ofSize: 32.0, weight: .regular)
     let statusDangerColor = UIColor(red: 255.0/255.0, green: 230.0/255.0, blue: 229.0/255.0, alpha: 1.0)
     let statusDangerBoldColor = UIColor(red: 255.0/255.0, green: 197.0/255.0, blue: 195.0/255.0, alpha: 1.0)
     let statusNotIdentifiedColor = UIColor(red: 235.0/255.0, green: 235.0/255.0, blue: 235.0/255.0, alpha: 1.0)
@@ -163,6 +165,10 @@ class StyleManager {
 
     static var sectionTitleColor: UIColor {
         return active.sectionTitleColor
+    }
+
+    static var statsBigDataFont: UIFont {
+        return active.statsBigDataFont
     }
 
     static var statusDangerColor: UIColor {

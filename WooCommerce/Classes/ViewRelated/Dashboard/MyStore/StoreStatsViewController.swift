@@ -30,16 +30,12 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
 
         let child_1 = PeriodDataViewController()
-        child_1.view.backgroundColor = StyleManager.statusSuccessColor
         child_1.tabTitle = TabStrip.titleDay
         let child_2 = PeriodDataViewController()
-        child_2.view.backgroundColor = StyleManager.statusDangerColor
         child_2.tabTitle = TabStrip.titleWeek
         let child_3 = PeriodDataViewController()
-        child_3.view.backgroundColor = StyleManager.statusNotIdentifiedBoldColor
         child_3.tabTitle = TabStrip.titleMonth
         let child_4 = PeriodDataViewController()
-        child_4.view.backgroundColor = StyleManager.statusPrimaryBoldColor
         child_4.tabTitle = TabStrip.titleYear
 
         return [child_1, child_2, child_3, child_4]

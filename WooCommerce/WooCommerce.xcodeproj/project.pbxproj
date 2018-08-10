@@ -677,6 +677,7 @@
 				B58B4ABF2108FF6100076FDD /* Array+Helpers.swift */,
 				CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */,
 				CE4DDB7A20DD312400D32EC8 /* Date+Helpers.swift */,
+				748C7781211E294000814F2C /* Double+Woo.swift */,
 				B57C744420F55BA600EEFC87 /* NSObject+Helpers.swift */,
 				CE32B11920BF8E32006FBCF4 /* UIButton+Helpers.swift */,
 				CE1F51262064345B00C6C810 /* UIColor+Helpers.swift */,
@@ -689,7 +690,6 @@
 				B57C744620F55BC800EEFC87 /* UIView+Helpers.swift */,
 				B5A82EE6210263460053ADC8 /* UIViewController+Helpers.swift */,
 				B5AA7B3E20ED81C2004DA14F /* UserDefaults+Woo.swift */,
-				748C7781211E294000814F2C /* Double+Woo.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";

@@ -76,11 +76,13 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 }
 
 
-// MARK: - IndicatorInfoProvider Confromance
+// MARK: - Public Interface
 //
 extension PeriodDataViewController {
-    func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: granularity.pluralizedString)
+    func clearAllFields() {
+        orderStats = nil
+        siteStats = nil
+        reloadAllFields()
     }
 }
 
@@ -116,6 +118,15 @@ private extension PeriodDataViewController {
 }
 
 
+// MARK: - IndicatorInfoProvider Confromance
+//
+extension PeriodDataViewController {
+    func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
+        return IndicatorInfo(title: granularity.pluralizedString)
+    }
+}
+
+
 // MARK: - Private Helpers
 //
 private extension PeriodDataViewController {
@@ -130,7 +141,7 @@ private extension PeriodDataViewController {
         // FIXME: This is really just WIP  code which puts data in the fields. Refactor please.
         let totalOrders = orderStats?.totalOrders ?? 0
         let currencySymbol = orderStats?.currencySymbol ?? ""
-        if ordersData != nil { ordersData.text = String(totalOrders) }
+        if ordersData != nil { ordersData.text = Double(totalOrders).friendlyString() }
         let totalRevenue = orderStats?.totalGrossSales ?? Double(0)
         if revenueData != nil { revenueData.text = "\(currencySymbol)\(totalRevenue.friendlyString())" }
     }
@@ -138,7 +149,7 @@ private extension PeriodDataViewController {
     func reloadSiteFields() {
         // FIXME: This is really just WIP  code which puts data in the fields. Refactor please.
         let totalVisitors = siteStats?.totalVisitors ?? 0
-        if visitorsData != nil { visitorsData.text = String(totalVisitors) }
+        if visitorsData != nil { visitorsData.text = Double(totalVisitors).friendlyString() }
     }
 
     func reloadLastUpdatedField() {

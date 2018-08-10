@@ -111,6 +111,28 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `OrderAction.retrieveOrders` can properly process the document `broken-orders-mark-2`.
+    ///
+    /// Ref. Issue: https://github.com/woocommerce/woocommerce-ios/issues/221
+    ///
+    func testRetrieveOrdersWithBreakingDocumentIsProperlyParsedAndInsertedIntoStorage() {
+        let expectation = self.expectation(description: "Persist order list")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "broken-orders-mark-2")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
+            XCTAssertNil(error)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 6)
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that OrderAction.retrieveOrders returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveOrdersReturnsErrorUponReponseError() {

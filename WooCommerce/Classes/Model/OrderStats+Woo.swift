@@ -12,8 +12,7 @@ extension OrderStats {
         guard let currency = items?.filter({ !$0.currency.isEmpty}).first?.currency else {
             return ""
         }
-        guard let identifier = Locale.availableIdentifiers.first(where: { Locale(identifier: $0).currencyCode == currency }) else
-        {
+        guard let identifier = Locale.availableIdentifiers.first(where: { Locale(identifier: $0).currencyCode == currency }) else {
             return currency
         }
 

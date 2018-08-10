@@ -107,6 +107,24 @@ class OrderListMapperTests: XCTestCase {
         let orderModifiedString = format.string(from: brokenOrder.dateModified)
         XCTAssertEqual(orderModifiedString, todayCreatedString)
     }
+
+    /// Verifies that `broken-orders-mark-2` gets properly parsed: 6 Orders with 2 items each, and the SKU property should
+    /// always be set to null.
+    ///
+    /// Ref. Issue: https://github.com/woocommerce/woocommerce-ios/issues/221
+    ///
+    func testOrderListWithBreakingFormatIsProperlyParsed() {
+        let orders = mapLoadBrokenOrdersResponseMarkII()
+        XCTAssertEqual(orders.count, 6)
+
+        for order in orders {
+            XCTAssertEqual(order.items.count, 2)
+
+            for item in order.items {
+                XCTAssertNil(item.sku)
+            }
+        }
+    }
 }
 
 
@@ -130,9 +148,15 @@ private extension OrderListMapperTests {
         return mapOrders(from: "orders-load-all")
     }
 
-    /// Returns the OrderlistMapper output upon receiving `broken-order`
+    /// Returns the OrderListMapper output upon receiving `broken-order`
     ///
     func mapLoadBrokenOrderResponse() -> [Order] {
         return mapOrders(from: "broken-orders")
+    }
+
+    /// Returns the OrderListMapper output upon receiving `broken-orders-mark-2`
+    ///
+    func mapLoadBrokenOrdersResponseMarkII() -> [Order] {
+        return mapOrders(from: "broken-orders-mark-2")
     }
 }

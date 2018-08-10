@@ -257,6 +257,29 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that whenever a `retrieveOrder` action results in a response with statusCode = 404, the local entity
+    /// is obliterated from existance.
+    ///
+    func testRetrieveSingleOrderResultingInStatusCode404CausesTheStoredOrderToGetDeleted() {
+        let expectation = self.expectation(description: "Retrieve single order empty response")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
+
+        network.simulateError(requestUrlSuffix: "orders/963", error: NetworkError.notFound)
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(order)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that an Order's .status field gets effectively updated during `updateOrder`'s response processing.
     ///
     func testUpdateOrderEffectivelyChangesAffectedOrderStatusField() {

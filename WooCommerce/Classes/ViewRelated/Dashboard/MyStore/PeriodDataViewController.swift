@@ -131,8 +131,8 @@ private extension PeriodDataViewController {
         let totalOrders = orderStats?.totalOrders ?? 0
         let currencySymbol = orderStats?.currencySymbol ?? ""
         if ordersData != nil { ordersData.text = String(totalOrders) }
-        let totalRevenue = orderStats?.totalGrossSales ?? 0
-        if revenueData != nil { revenueData.text = "\(currencySymbol)\(totalRevenue)" }
+        let totalRevenue = orderStats?.totalGrossSales ?? Double(0)
+        if revenueData != nil { revenueData.text = "\(currencySymbol)\(totalRevenue.friendlyString())" }
     }
 
     func reloadSiteFields() {

@@ -23,12 +23,14 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     public let granularity: StatGranularity
     public var orderStats: OrderStats? {
         didSet {
+            lastUpdatedDate = Date()
             reloadOrderFields()
             reloadLastUpdatedField()
         }
     }
     public var siteStats: SiteVisitStats? {
         didSet {
+            lastUpdatedDate = Date()
             reloadSiteFields()
             reloadLastUpdatedField()
         }
@@ -69,7 +71,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        reloadLastUpdatedField()
+        reloadAllFields()
     }
 }
 
@@ -118,20 +120,24 @@ private extension PeriodDataViewController {
 //
 private extension PeriodDataViewController {
 
+    func reloadAllFields() {
+        reloadOrderFields()
+        reloadSiteFields()
+        reloadLastUpdatedField()
+    }
+
     func reloadOrderFields() {
         // FIXME: This is really just WIP  code which puts data in the fields. Refactor please.
         let totalOrders = orderStats?.totalOrders ?? 0
         if ordersData != nil { ordersData.text = String(totalOrders) }
         let totalRevenue = orderStats?.totalGrossSales ?? 0
         if revenueData != nil { revenueData.text = "$\(totalRevenue)" }
-        lastUpdatedDate = Date()
     }
 
     func reloadSiteFields() {
         // FIXME: This is really just WIP  code which puts data in the fields. Refactor please.
         let totalVisitors = siteStats?.totalVisitors ?? 0
         if visitorsData != nil { visitorsData.text = String(totalVisitors) }
-        lastUpdatedDate = Date()
     }
 
     func reloadLastUpdatedField() {

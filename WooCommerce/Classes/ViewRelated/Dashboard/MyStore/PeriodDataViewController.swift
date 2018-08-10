@@ -40,7 +40,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
     private var summaryDateUpdated: String {
         if let lastUpdatedDate = lastUpdatedDate {
-            return String.localizedStringWithFormat(NSLocalizedString("Updated %@.",
+            return String.localizedStringWithFormat(NSLocalizedString("Updated %@",
                                                                       comment: "Stats summary date"), lastUpdatedDate.mediumString())
         } else {
             return ""

@@ -57,6 +57,7 @@ extension StoreStatsViewController {
 private extension StoreStatsViewController {
 
     func configureView() {
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
         topBorder.backgroundColor = StyleManager.wooGreyBorder
         middleBorder.backgroundColor = StyleManager.wooGreyBorder
         bottomBorder.backgroundColor = StyleManager.wooGreyBorder

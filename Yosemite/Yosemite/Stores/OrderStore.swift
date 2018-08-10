@@ -60,6 +60,11 @@ private extension OrderStore {
 
         remote.loadOrder(for: siteID, orderID: orderID) { [weak self] (order, error) in
             guard let order = order else {
+                /// TODO: Improve this. Implement a cool ResultType, and turn this entire closure into a single level Switch.
+                ///
+                if (error as? NetworkError) == .notFound {
+                    self?.deleteStoredOrder(orderID: orderID)
+                }
                 onCompletion(nil, error)
                 return
             }
@@ -94,6 +99,18 @@ private extension OrderStore {
 // MARK: - Persistence
 //
 extension OrderStore {
+
+    /// Deletes any Storage.Order with the specified OrderID
+    ///
+    func deleteStoredOrder(orderID: Int) {
+        let storage = storageManager.viewStorage
+        guard let order = storage.loadOrder(orderID: orderID) else {
+            return
+        }
+
+        storage.deleteObject(order)
+        storage.saveIfNeeded()
+    }
 
     /// Updates the Status of the specified Order, as requested.
     ///

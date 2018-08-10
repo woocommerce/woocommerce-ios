@@ -8,7 +8,7 @@ public struct OrderItem: Decodable {
     public let name: String
     public let productID: Int
     public let quantity: Int
-    public let sku: String
+    public let sku: String?
     public let subtotal: String
     public let subtotalTax: String
     public let taxClass: String

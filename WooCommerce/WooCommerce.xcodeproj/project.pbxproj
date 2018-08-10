@@ -28,6 +28,7 @@
 		746791662108D87B007CF1DC /* MockupAnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746791652108D87B007CF1DC /* MockupAnalyticsProvider.swift */; };
 		747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747AA0882107CEC60047A89B /* AnalyticsProvider.swift */; };
 		747AA08B2107CF8D0047A89B /* TracksProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747AA08A2107CF8D0047A89B /* TracksProvider.swift */; };
+		748C7780211E18A600814F2C /* OrderStats+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748C777F211E18A600814F2C /* OrderStats+Woo.swift */; };
 		74AFF2EA211B9B1B0038153A /* StoreStatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AFF2E9211B9B1B0038153A /* StoreStatsViewController.swift */; };
 		74E0F441211C9AE600A79CCE /* PeriodDataViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74E0F440211C9AE600A79CCE /* PeriodDataViewController.xib */; };
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
@@ -203,6 +204,7 @@
 		746791652108D87B007CF1DC /* MockupAnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupAnalyticsProvider.swift; sourceTree = "<group>"; };
 		747AA0882107CEC60047A89B /* AnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
 		747AA08A2107CF8D0047A89B /* TracksProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksProvider.swift; sourceTree = "<group>"; };
+		748C777F211E18A600814F2C /* OrderStats+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderStats+Woo.swift"; sourceTree = "<group>"; };
 		74AFF2E9211B9B1B0038153A /* StoreStatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsViewController.swift; sourceTree = "<group>"; };
 		74E0F440211C9AE600A79CCE /* PeriodDataViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PeriodDataViewController.xib; sourceTree = "<group>"; };
 		8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -558,6 +560,7 @@
 			children = (
 				B57B67892107546E00AF8905 /* Address+Woo.swift */,
 				B57B678B2107638C00AF8905 /* Order+Woo.swift */,
+				748C777F211E18A600814F2C /* OrderStats+Woo.swift */,
 				B5E96B3721137AA100DF68D0 /* OrderStatus+Woo.swift */,
 			);
 			path = Model;
@@ -1125,6 +1128,7 @@
 				CE1EC8F120B8A408009762BF /* OrderNoteTableViewCell.swift in Sources */,
 				CE583A0421076C0100D73C1C /* AddANoteViewController.swift in Sources */,
 				B58B4AC02108FF6100076FDD /* Array+Helpers.swift in Sources */,
+				748C7780211E18A600814F2C /* OrderStats+Woo.swift in Sources */,
 				CE4DDB7B20DD312400D32EC8 /* Date+Helpers.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
 				B5E96B3821137AA100DF68D0 /* OrderStatus+Woo.swift in Sources */,

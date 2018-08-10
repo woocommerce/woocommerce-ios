@@ -45,12 +45,18 @@ class SettingsViewController: UIViewController {
     }
 
     func handleLogout() {
-        let alertController = UIAlertController(title: nil, message: NSLocalizedString("Log out of WooCommerce?", comment: "Alert message to confirm a user meant to log out."), preferredStyle: .alert)
+        var accountName: String = ""
+        if let account = StoresManager.shared.sessionManager.defaultAccount {
+            accountName = account.displayName
+        }
 
-        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Alert button title - cancels a log out attempt"), style: .cancel)
+        let name = String(format: NSLocalizedString("Are you sure you want to log out of the account %@?", comment: "Alert message to confirm a user meant to log out."), accountName)
+        let alertController = UIAlertController(title: "", message: name, preferredStyle: .alert)
+
+        let cancelAction = UIAlertAction(title: NSLocalizedString("Back", comment: "Alert button title - dismisses alert, which cancels the log out attempt"), style: .cancel)
         alertController.addAction(cancelAction)
 
-        let logOutAction = UIAlertAction(title: NSLocalizedString("Log Out", comment: "Alert button title - confirms the user wants to log out"), style: .destructive) { (action) in
+        let logOutAction = UIAlertAction(title: NSLocalizedString("Log Out", comment: "Alert button title - confirms and logs out the user"), style: .default) { (action) in
             self.logOutUser()
         }
         alertController.addAction(logOutAction)

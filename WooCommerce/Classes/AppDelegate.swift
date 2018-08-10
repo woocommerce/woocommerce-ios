@@ -65,6 +65,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
 
+        // Take advantage of a bug in UIAlertController
+        // to style all UIAlertControllers with WC color
+        self.window?.tintColor = StyleManager.wooCommerceBrandColor
+
         return true
     }
 

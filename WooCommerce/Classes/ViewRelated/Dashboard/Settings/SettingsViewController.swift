@@ -43,6 +43,26 @@ class SettingsViewController: UIViewController {
             }
         }
     }
+
+    func handleLogout() {
+        let alertController = UIAlertController(title: NSLocalizedString("Confirm Logout", comment: "Alert title to ensure user wants to log out") , message: NSLocalizedString("Are you sure you want to log out?", comment: "Alert message to confirm a user meant to log out."), preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Alert button title - cancels a log out attempt"), style: .cancel)
+        alertController.addAction(cancelAction)
+
+        let logOutAction = UIAlertAction(title: NSLocalizedString("Log out", comment: "Alert button title - confirms the user wants to log out"), style: .default) { (action) in
+            self.logOutUser()
+        }
+        alertController.addAction(logOutAction)
+
+        present(alertController, animated: true)
+    }
+
+    func logOutUser() {
+        WooAnalytics.shared.track(.logout)
+        StoresManager.shared.deauthenticate()
+        self.navigationController?.popToRootViewController(animated: true)
+    }
 }
 
 // MARK: - UITableViewDataSource Conformance
@@ -76,9 +96,7 @@ extension SettingsViewController: UITableViewDataSource {
         if cell is LogOutTableViewCell {
             let logoutCell = cell as! LogOutTableViewCell
             logoutCell.didSelectLogout = { [weak self] in
-                WooAnalytics.shared.track(.logout)
-                StoresManager.shared.deauthenticate()
-                self?.navigationController?.popToRootViewController(animated: true)
+                self?.handleLogout()
             }
         }
         return cell

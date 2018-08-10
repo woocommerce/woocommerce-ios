@@ -10,6 +10,10 @@ class MockupNetwork: Network {
     ///
     private var responseMap = [String: String]()
 
+    /// Mapping between URL Suffix and Error responses.
+    ///
+    private var errorMap = [String: Error]()
+
     /// Keeps a collection of all of the `responseJSON` requests.
     ///
     var requestsForResponseJSON = [URLRequestConvertible]()
@@ -17,6 +21,7 @@ class MockupNetwork: Network {
     /// Keeps a collection of all of the `responseData` requests.
     ///
     var requestsForResponseData = [URLRequestConvertible]()
+
 
 
 
@@ -38,12 +43,17 @@ class MockupNetwork: Network {
     func responseJSON(for request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
         requestsForResponseJSON.append(request)
 
-        guard let filename = filename(for: request), let response = Loader.jsonObject(for: filename) else {
-            completion(nil, NetworkError.unknown)
+        if let error = error(for: request) {
+            completion(nil, error)
             return
         }
 
-        completion(response, nil)
+        if let filename = filename(for: request), let response = Loader.jsonObject(for: filename) {
+            completion(response, nil)
+            return
+        }
+
+        completion(nil, NetworkError.unknown)
     }
 
     /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the specified response file, loaded as *Data*.
@@ -52,12 +62,17 @@ class MockupNetwork: Network {
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         requestsForResponseData.append(request)
 
-        guard let filename = filename(for: request), let data = Loader.contentsOf(filename) else {
-            completion(nil, NetworkError.unknown)
+        if let error = error(for: request) {
+            completion(nil, error)
             return
         }
 
-        completion(data, nil)
+        if let filename = filename(for: request), let data = Loader.contentsOf(filename) {
+            completion(data, nil)
+            return
+        }
+
+        completion(nil, NetworkError.unknown)
     }
 }
 
@@ -73,10 +88,17 @@ extension MockupNetwork {
         responseMap[requestUrlSuffix] = filename
     }
 
+    /// We'll return the specified Error, whenever a request matches the specified Suffix Criteria!.
+    ///
+    func simulateError(requestUrlSuffix: String, error: Error) {
+        errorMap[requestUrlSuffix] = error
+    }
+
     /// Removes all of the stored Simulated Responses.
     ///
     func removeAllSimulatedResponses() {
         responseMap.removeAll()
+        errorMap.removeAll()
     }
 
     /// Returns the Mockup JSON Filename for a given URLRequestConvertible.
@@ -85,6 +107,17 @@ extension MockupNetwork {
         let searchPath = path(for: request)
         for (pattern, filename) in responseMap where searchPath.hasSuffix(pattern) {
             return filename
+        }
+
+        return nil
+    }
+
+    /// Returns the Mockup Error for a given URLRequestConvertible.
+    ///
+    private func error(for request: URLRequestConvertible) -> Error? {
+        let searchPath = path(for: request)
+        for (pattern, error) in errorMap where searchPath.hasSuffix(pattern) {
+            return error
         }
 
         return nil

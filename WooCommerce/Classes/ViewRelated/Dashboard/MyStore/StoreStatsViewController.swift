@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import CocoaLumberjack
 import XLPagerTabStrip
 
 
@@ -34,6 +35,17 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
 
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
         return periodVCs
+    }
+}
+
+// MARK: - Public Interface
+//
+extension StoreStatsViewController {
+    func syncAllStats() {
+        periodVCs.forEach {
+            syncOrderStats(for: $0.granularity)
+            syncVisitorStats(for: $0.granularity)
+        }
     }
 }
 
@@ -79,12 +91,66 @@ private extension StoreStatsViewController {
 }
 
 
+// MARK: - Sync'ing Helpers
+//
+private extension StoreStatsViewController {
+
+    func syncVisitorStats(for granularity: StatGranularity, onCompletion: ((Error?) -> ())? = nil) {
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            onCompletion?(nil)
+            return
+        }
+
+        let action = StatsAction.retrieveSiteVisitStats(siteID: siteID,
+                                                        granularity: granularity,
+                                                        latestDateToInclude: Date(),
+                                                        quantity: 31) { [weak self] (siteVisitStats, error) in
+            guard let `self` = self, let siteVisitStats = siteVisitStats else {
+                DDLogError("⛔️ Error synchronizing site visit stats: \(error.debugDescription)")
+                onCompletion?(error)
+                return
+            }
+
+            let vc = self.periodDataVC(for: granularity)
+            vc?.siteStats = siteVisitStats
+            onCompletion?(nil)
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
+    func syncOrderStats(for granularity: StatGranularity, onCompletion: ((Error?) -> ())? = nil) {
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            onCompletion?(nil)
+            return
+        }
+
+        let action = StatsAction.retrieveOrderStats(siteID: siteID,
+                                                    granularity: granularity,
+                                                    latestDateToInclude: Date(),
+                                                    quantity: 31) { [weak self] (orderStats, error) in
+            guard let `self` = self, let orderStats = orderStats else {
+                DDLogError("⛔️ Error synchronizing order stats: \(error.debugDescription)")
+                onCompletion?(error)
+                return
+            }
+
+            let vc = self.periodDataVC(for: granularity)
+            vc?.orderStats = orderStats
+            onCompletion?(nil)
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+}
+
+
 // MARK: - Private Helpers
 //
 private extension StoreStatsViewController {
 
-    func periodDataVC(for stat: StatGranularity) -> PeriodDataViewController? {
-        return periodVCs.filter({ $0.granularity == stat }).first
+    func periodDataVC(for granularity: StatGranularity) -> PeriodDataViewController? {
+        return periodVCs.filter({ $0.granularity == granularity }).first
     }
 }
 

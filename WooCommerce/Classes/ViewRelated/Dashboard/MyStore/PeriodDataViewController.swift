@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import XLPagerTabStrip
+import WordPressShared
 import CocoaLumberjack
 
 
@@ -17,16 +18,30 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     @IBOutlet private weak var lastUpdated: UILabel!
     @IBOutlet private weak var chartView: UIView!
     @IBOutlet private weak var borderView: UIView!
+    private var lastUpdatedDate: Date?
 
     public let granularity: StatGranularity
     public var orderStats: OrderStats? {
         didSet {
             reloadOrderFields()
+            reloadLastUpdatedField()
         }
     }
     public var siteStats: SiteVisitStats? {
         didSet {
             reloadSiteFields()
+            reloadLastUpdatedField()
+        }
+    }
+
+    // MARK: - Computed Properties
+
+    private var summaryDateUpdated: String {
+        if let lastUpdatedDate = lastUpdatedDate {
+            return String.localizedStringWithFormat(NSLocalizedString("Updated %@.",
+                                                                      comment: "Stats summary date"), lastUpdatedDate.mediumString())
+        } else {
+            return ""
         }
     }
     
@@ -50,6 +65,11 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        reloadLastUpdatedField()
     }
 }
 
@@ -99,11 +119,22 @@ private extension PeriodDataViewController {
 private extension PeriodDataViewController {
 
     func reloadOrderFields() {
-        // TODO: Refresh order stat fields
+        // FIXME: This is really just WIP  code which puts data in the fields. Refactor please.
+        let totalOrders = orderStats?.totalOrders ?? 0
+        if ordersData != nil { ordersData.text = String(totalOrders) }
+        let totalRevenue = orderStats?.totalGrossSales ?? 0
+        if revenueData != nil { revenueData.text = "$\(totalRevenue)" }
+        lastUpdatedDate = Date()
     }
 
     func reloadSiteFields() {
-        // TODO: Refresh site stat fields
+        // FIXME: This is really just WIP  code which puts data in the fields. Refactor please.
+        let totalVisitors = siteStats?.totalVisitors ?? 0
+        if visitorsData != nil { visitorsData.text = String(totalVisitors) }
+        lastUpdatedDate = Date()
     }
 
+    func reloadLastUpdatedField() {
+        if lastUpdated != nil { lastUpdated.text = summaryDateUpdated }
+    }
 }

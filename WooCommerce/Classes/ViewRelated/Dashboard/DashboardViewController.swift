@@ -29,9 +29,6 @@ class DashboardViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureView()
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
         reloadData()
     }
 

@@ -10,7 +10,8 @@ class DashboardViewController: UIViewController {
     // MARK: Properties
 
     @IBOutlet private weak var scrollView: UIScrollView!
-    
+    private var storeStatsViewController: StoreStatsViewController!
+
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
@@ -29,12 +30,23 @@ class DashboardViewController: UIViewController {
         configureNavigation()
         configureView()
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        reloadData()
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let vc = segue.destination as? StoreStatsViewController, segue.identifier == Constants.storeStatsSegue {
+            self.storeStatsViewController = vc
+        }
+    }
+
 }
 
 
 // MARK: - Configuration
 //
-extension DashboardViewController {
+private extension DashboardViewController {
 
     func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
@@ -63,16 +75,27 @@ extension DashboardViewController {
 
 // MARK: - Action Handlers
 //
-extension DashboardViewController {
+private extension DashboardViewController {
 
     @objc func settingsTapped() {
         performSegue(withIdentifier: Constants.settingsSegue, sender: nil)
     }
 
     @objc func pullToRefresh() {
-        // TODO: Implement pull-to-refresh
-        self.refreshControl.endRefreshing()
-        DDLogDebug("Pulling to refresh!")
+        // FIXME: This code is just a WIP
+        reloadData()
+        refreshControl.endRefreshing()
+        DDLogInfo("Reloading dashboard data.")
+    }
+}
+
+
+// MARK: - Private Helpers
+//
+private extension DashboardViewController {
+    func reloadData() {
+        // FIXME: This code is just a WIP
+        storeStatsViewController.syncAllStats()
     }
 }
 
@@ -81,6 +104,7 @@ extension DashboardViewController {
 //
 private extension DashboardViewController {
     struct Constants {
-        static let settingsSegue = "ShowSettingsViewController"
+        static let settingsSegue    = "ShowSettingsViewController"
+        static let storeStatsSegue  = "StoreStatsEmbedSeque"
     }
 }

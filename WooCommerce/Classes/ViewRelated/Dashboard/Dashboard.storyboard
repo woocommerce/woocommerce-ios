@@ -99,7 +99,7 @@
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bgR-ww-mDR">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="380"/>
                                                 <connections>
-                                                    <segue destination="zaY-no-5X6" kind="embed" id="DIr-Go-f5K"/>
+                                                    <segue destination="zaY-no-5X6" kind="embed" identifier="StoreStatsEmbedSeque" id="DIr-Go-f5K"/>
                                                 </connections>
                                             </containerView>
                                         </subviews>

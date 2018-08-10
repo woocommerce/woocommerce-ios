@@ -34,6 +34,13 @@ public struct SiteVisitStats: Decodable {
         self.fields = fields
         self.items = items
     }
+
+    // MARK: Computed Properties
+
+    public var totalVisitors: Int {
+        //return items?.reduce(0, {$0 + $1.visitors}) ?? 0
+        return items?.compactMap { $0.visitors }.reduce(0, +) ?? 0
+    }
 }
 
 

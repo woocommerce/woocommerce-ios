@@ -46,11 +46,11 @@ class SettingsViewController: UIViewController {
 
     func handleLogout() {
         let alertController = UIAlertController(title: NSLocalizedString("Confirm Logout", comment: "Alert title to ensure user wants to log out") , message: NSLocalizedString("Are you sure you want to log out?", comment: "Alert message to confirm a user meant to log out."), preferredStyle: .alert)
-        
+
         let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Alert button title - cancels a log out attempt"), style: .cancel)
         alertController.addAction(cancelAction)
 
-        let logOutAction = UIAlertAction(title: NSLocalizedString("Log out", comment: "Alert button title - confirms the user wants to log out"), style: .default) { (action) in
+        let logOutAction = UIAlertAction(title: NSLocalizedString("Log out", comment: "Alert button title - confirms the user wants to log out"), style: .destructive) { (action) in
             self.logOutUser()
         }
         alertController.addAction(logOutAction)

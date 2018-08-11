@@ -142,8 +142,8 @@ private extension PeriodDataViewController {
             return
         }
 
-        var totalOrdersText = "-"
-        var totalRevenueText = "-"
+        var totalOrdersText = Constants.placeholderText
+        var totalRevenueText = Constants.placeholderText
         if let orderStats = orderStats {
             totalOrdersText = Double(orderStats.totalOrders).friendlyString()
             let currencySymbol = orderStats.currencySymbol
@@ -159,7 +159,7 @@ private extension PeriodDataViewController {
             return
         }
 
-        var visitorsText = "-"
+        var visitorsText = Constants.placeholderText
         if let siteStats = siteStats {
             visitorsText = Double(siteStats.totalVisitors).friendlyString()
         }
@@ -168,5 +168,14 @@ private extension PeriodDataViewController {
 
     func reloadLastUpdatedField() {
         if lastUpdated != nil { lastUpdated.text = summaryDateUpdated }
+    }
+}
+
+
+// MARK: - Constants!
+//
+private extension PeriodDataViewController {
+    enum Constants {
+        static let placeholderText = "-"
     }
 }

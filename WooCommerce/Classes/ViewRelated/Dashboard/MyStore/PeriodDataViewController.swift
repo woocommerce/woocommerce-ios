@@ -46,7 +46,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
             return ""
         }
     }
-    
+
     // MARK: - Initialization
 
     /// Designated Initializer

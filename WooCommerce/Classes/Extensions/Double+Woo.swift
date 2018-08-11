@@ -3,15 +3,17 @@ import Foundation
 
 extension Double {
 
-    /// Provides a friendly, shorted representation of the current Double value. If the value
-    /// is above 1000, the appropriate abbreviation will be appended to the rounded number (k, m, b, t).
+    /// Provides a short, friendly representation of the current Double value. If the value is
+    /// below 1000, the decimal is stripped and the string returned will look like an Int. If the value
+    /// is above 1000, the value is rounded to the nearest tenth and the appropriate abbreviation
+    /// will be appended (k, m, b, t).
     ///
     /// Examples:
     ///  - 0 becomes "0"
     ///  - 198.44 becomes "198"
     ///  - 999 becomes "999"
     ///  - 1000 becomes "1.0k"
-    ///  - 999999 becomes "1.0k"
+    ///  - 999999 becomes "1.0m"
     ///  - 1000000 becomes "1.0m"
     ///  - 1000000000 becomes "1.0b"
     ///  - 1000000000000 becomes "1.0t"

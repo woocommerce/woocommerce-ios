@@ -138,18 +138,32 @@ private extension PeriodDataViewController {
     }
 
     func reloadOrderFields() {
-        // FIXME: This is really just WIP  code which puts data in the fields. Refactor please.
-        let totalOrders = orderStats?.totalOrders ?? 0
-        let currencySymbol = orderStats?.currencySymbol ?? ""
-        if ordersData != nil { ordersData.text = Double(totalOrders).friendlyString() }
-        let totalRevenue = orderStats?.totalGrossSales ?? Double(0)
-        if revenueData != nil { revenueData.text = "\(currencySymbol)\(totalRevenue.friendlyString())" }
+        guard ordersData != nil, revenueData != nil else {
+            return
+        }
+
+        var totalOrdersText = "-"
+        var totalRevenueText = "-"
+        if let orderStats = orderStats {
+            totalOrdersText = Double(orderStats.totalOrders).friendlyString()
+            let currencySymbol = orderStats.currencySymbol
+            let totalRevenue = orderStats.totalGrossSales.friendlyString()
+            totalRevenueText = "\(currencySymbol)\(totalRevenue)"
+        }
+        ordersData.text = totalOrdersText
+        revenueData.text = totalRevenueText
     }
 
     func reloadSiteFields() {
-        // FIXME: This is really just WIP  code which puts data in the fields. Refactor please.
-        let totalVisitors = siteStats?.totalVisitors ?? 0
-        if visitorsData != nil { visitorsData.text = Double(totalVisitors).friendlyString() }
+        guard visitorsData != nil else {
+            return
+        }
+
+        var visitorsText = "-"
+        if let siteStats = siteStats {
+            visitorsText = Double(siteStats.totalVisitors).friendlyString()
+        }
+        visitorsData.text = visitorsText
     }
 
     func reloadLastUpdatedField() {

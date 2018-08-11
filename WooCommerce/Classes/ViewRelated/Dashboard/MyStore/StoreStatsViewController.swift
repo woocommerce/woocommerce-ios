@@ -99,6 +99,7 @@ private extension StoreStatsViewController {
 private extension StoreStatsViewController {
 
     func syncVisitorStats(for granularity: StatGranularity, onCompletion: ((Error?) -> ())? = nil) {
+        // FIXME: This is really just WIP  code which puts data in the fields. Refactor please.
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
@@ -107,7 +108,7 @@ private extension StoreStatsViewController {
         let action = StatsAction.retrieveSiteVisitStats(siteID: siteID,
                                                         granularity: granularity,
                                                         latestDateToInclude: Date(),
-                                                        quantity: 31) { [weak self] (siteVisitStats, error) in
+                                                        quantity: quantity(for: granularity)) { [weak self] (siteVisitStats, error) in
             guard let `self` = self, let siteVisitStats = siteVisitStats else {
                 DDLogError("⛔️ Error synchronizing site visit stats: \(error.debugDescription)")
                 onCompletion?(error)
@@ -123,6 +124,7 @@ private extension StoreStatsViewController {
     }
 
     func syncOrderStats(for granularity: StatGranularity, onCompletion: ((Error?) -> ())? = nil) {
+        // FIXME: This is really just WIP  code which puts data in the fields. Refactor please.
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
@@ -131,7 +133,7 @@ private extension StoreStatsViewController {
         let action = StatsAction.retrieveOrderStats(siteID: siteID,
                                                     granularity: granularity,
                                                     latestDateToInclude: Date(),
-                                                    quantity: 31) { [weak self] (orderStats, error) in
+                                                    quantity: quantity(for: granularity)) { [weak self] (orderStats, error) in
             guard let `self` = self, let orderStats = orderStats else {
                 DDLogError("⛔️ Error synchronizing order stats: \(error.debugDescription)")
                 onCompletion?(error)
@@ -155,12 +157,32 @@ private extension StoreStatsViewController {
     func periodDataVC(for granularity: StatGranularity) -> PeriodDataViewController? {
         return periodVCs.filter({ $0.granularity == granularity }).first
     }
+
+    func quantity(for granularity: StatGranularity) -> Int {
+        switch granularity {
+        case .day:
+            return Constants.quantityDefaultForDay
+        case .week:
+            return Constants.quantityDefaultForWeek
+        case .month:
+            return Constants.quantityDefaultForMonth
+        case .year:
+            return Constants.quantityDefaultForYear
+        }
+    }
 }
 
 
 // MARK: - Constants!
 //
 private extension StoreStatsViewController {
+    enum Constants {
+        static let quantityDefaultForDay = 30
+        static let quantityDefaultForWeek = 13
+        static let quantityDefaultForMonth = 12
+        static let quantityDefaultForYear = 15
+    }
+
     enum TabStrip {
         static let buttonLeftRightMargin: CGFloat   = 14.0
         static let selectedBarHeight: CGFloat       = 3.0

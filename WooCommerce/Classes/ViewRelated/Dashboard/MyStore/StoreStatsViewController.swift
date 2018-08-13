@@ -64,15 +64,15 @@ private extension StoreStatsViewController {
     }
 
     func configurePeriodViewControllers() {
-        let child_1 = PeriodDataViewController(granularity: .day)
-        let child_2 = PeriodDataViewController(granularity: .week)
-        let child_3 = PeriodDataViewController(granularity: .month)
-        let child_4 = PeriodDataViewController(granularity: .year)
+        let dayVC = PeriodDataViewController(granularity: .day)
+        let weekVC = PeriodDataViewController(granularity: .week)
+        let monthVC = PeriodDataViewController(granularity: .month)
+        let yearVC = PeriodDataViewController(granularity: .year)
 
-        periodVCs.append(child_1)
-        periodVCs.append(child_2)
-        periodVCs.append(child_3)
-        periodVCs.append(child_4)
+        periodVCs.append(dayVC)
+        periodVCs.append(weekVC)
+        periodVCs.append(monthVC)
+        periodVCs.append(yearVC)
     }
 
     func configureTabStrip() {
@@ -99,7 +99,7 @@ private extension StoreStatsViewController {
 private extension StoreStatsViewController {
 
     func syncVisitorStats(for granularity: StatGranularity, onCompletion: ((Error?) -> ())? = nil) {
-        // FIXME: This is really just WIP  code which puts data in the fields. Refactor please.
+        // FIXME: This is really just WIP code which puts data in the fields. Refactor please.
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
@@ -124,7 +124,7 @@ private extension StoreStatsViewController {
     }
 
     func syncOrderStats(for granularity: StatGranularity, onCompletion: ((Error?) -> ())? = nil) {
-        // FIXME: This is really just WIP  code which puts data in the fields. Refactor please.
+        // FIXME: This is really just WIP code which puts data in the fields. Refactor please.
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return

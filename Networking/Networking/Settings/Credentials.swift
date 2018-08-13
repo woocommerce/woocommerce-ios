@@ -17,7 +17,7 @@ public struct Credentials: Equatable {
     /// Designated Initializer
     ///
     public init(username: String, authToken: String) {
-        self.username =  username
+        self.username = username
         self.authToken = authToken
     }
 }

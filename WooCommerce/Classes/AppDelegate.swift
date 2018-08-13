@@ -1,9 +1,8 @@
 import UIKit
 import CoreData
+import Storage
 
 import CocoaLumberjack
-import Crashlytics
-import Fabric
 import WordPressUI
 import WordPressKit
 import WordPressAuthenticator
@@ -29,9 +28,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     let authenticationManager = AuthenticationManager()
 
+    /// Fabric: Crash Reporting
+    ///
+    let fabricManager = FabricManager()
+
     /// In-App Notifications Presenter
     ///
     let noticePresenter = NoticePresenter()
+
+    /// CoreData Stack
+    ///
+    let storageManager = CoreDataManager(name: WooConstants.databaseStackName)
+
 
 
     // MARK: - AppDelegate Methods
@@ -43,6 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupComponentsAppearance()
 
         // Setup Components
+        setupFabric()
         setupAnalytics()
         setupAuthenticationManager()
         setupCocoaLumberjack()
@@ -60,8 +69,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-
-        Fabric.with([Crashlytics.self])
 
         return true
     }
@@ -133,6 +140,13 @@ private extension AppDelegate {
         appearance.primaryNormalBorderColor = StyleManager.buttonPrimaryHighlightedColor
         appearance.primaryHighlightBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
         appearance.primaryHighlightBorderColor = StyleManager.buttonPrimaryHighlightedColor
+    }
+
+    /// Sets up the Fabric SDK.
+    ///
+    func setupFabric() {
+        fabricManager.initialize()
+        fabricManager.startListeningToAuthNotifications()
     }
 
     /// Sets up the WordPress Authenticator.

@@ -4,9 +4,14 @@ import Storage
 
 
 
+// MARK: - MutableType: Storage.framework Type that will be retrieved (and converted into ReadOnly)
+//
+public typealias ResultsControllerMutableType = NSManagedObject & ReadOnlyConvertible
+
+
 // MARK: - ResultsController
 //
-public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
+public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Managed Object Context used to fetch objects.
     ///
@@ -18,7 +23,11 @@ public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
 
     /// Filtering Predicate to be applied to the Results.
     ///
-    private let predicate: NSPredicate?
+    public var predicate: NSPredicate? {
+        didSet {
+            refreshFetchedObjects(predicate: predicate)
+        }
+    }
 
     /// Results's Sort Descriptor.
     ///
@@ -80,6 +89,19 @@ public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
         setupEventsForwarding()
     }
 
+    /// Convenience Initializer.
+    ///
+    public convenience init(storageManager: CoreDataManager,
+                            sectionNameKeyPath: String? = nil,
+                            matching predicate: NSPredicate? = nil,
+                            sortedBy descriptors: [NSSortDescriptor]) {
+
+        self.init(viewContext: storageManager.persistentContainer.viewContext,
+                  sectionNameKeyPath: sectionNameKeyPath,
+                  matching: predicate,
+                  sortedBy: descriptors)
+    }
+
 
     /// Executes the fetch request on the store to get objects.
     ///
@@ -87,13 +109,17 @@ public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
         try controller.performFetch()
     }
 
-
     /// Returns the fetched object at a given indexPath.
     ///
     public func object(at indexPath: IndexPath) -> T.ReadOnlyType {
         return controller.object(at: indexPath).toReadOnly()
     }
 
+    /// Indicates if there are any Objects matching the specified criteria.
+    ///
+    public var isEmpty: Bool {
+        return controller.fetchedObjects?.isEmpty ?? true
+    }
 
     /// Returns an array of all of the (ReadOnly) Fetched Objects.
     ///
@@ -115,13 +141,18 @@ public class ResultsController<T: NSManagedObject & ReadOnlyConvertible> {
         return readOnlySections ?? []
     }
 
+    /// Refreshes all of the Fetched Objects, so that the new criteria is met.
+    ///
+    private func refreshFetchedObjects(predicate: NSPredicate?) {
+        controller.fetchRequest.predicate = predicate
+        try? controller.performFetch()
+    }
 
     /// Initializes the FetchedResultsController
     ///
     private func setupResultsController() {
         controller.delegate = internalDelegate
     }
-
 
     /// Initializes FRC's Event Forwarding.
     ///

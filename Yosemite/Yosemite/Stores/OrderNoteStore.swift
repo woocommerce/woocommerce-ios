@@ -33,7 +33,7 @@ public class OrderNoteStore: Store {
 
 // MARK: - Services!
 //
-private extension OrderNoteStore  {
+private extension OrderNoteStore {
 
     /// Retrieves the order notes associated with the provided Site ID & Order ID (if any!).
     ///

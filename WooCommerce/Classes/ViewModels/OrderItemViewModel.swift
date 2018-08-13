@@ -51,11 +51,11 @@ struct OrderItemViewModel {
     /// Item's SKU
     ///
     var sku: String? {
-        guard item.sku.isEmpty == false else {
+        guard let sku = item.sku, sku.isEmpty == false else {
             return nil
         }
 
         let prefix = NSLocalizedString("SKU:", comment: "SKU label")
-        return prefix + " " + item.sku
+        return prefix + " " + sku
     }
 }

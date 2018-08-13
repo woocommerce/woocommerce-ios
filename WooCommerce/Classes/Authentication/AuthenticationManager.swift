@@ -34,7 +34,9 @@ class AuthenticationManager {
                                                 primaryTitleColor: StyleManager.buttonPrimaryTitleColor,
                                                 secondaryTitleColor: StyleManager.buttonSecondaryTitleColor,
                                                 disabledTitleColor: StyleManager.buttonDisabledTitleColor,
-                                                subheadlineColor: StyleManager.wooCommerceBrandColor)
+                                                subheadlineColor: StyleManager.wooCommerceBrandColor,
+                                                viewControllerBackgroundColor: StyleManager.wooGreyLight,
+                                                navBarImage: StyleManager.navBarImage)
 
         WordPressAuthenticator.initialize(configuration: configuration, style: style)
         WordPressAuthenticator.shared.delegate = self

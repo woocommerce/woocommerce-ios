@@ -51,17 +51,12 @@ class OrderStoreTests: XCTestCase {
     func testRetrieveOrdersReturnsExpectedFields() {
         let expectation = self.expectation(description: "Retrieve order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let remoteOrder = sampleOrder()
 
-        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders")
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
             XCTAssertNil(error)
-            guard let orders = orders else {
-                XCTFail()
-                return
-            }
-            XCTAssertEqual(orders.count, 3, "Orders count should be 3")
-            XCTAssertTrue(orders.contains(remoteOrder))
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 3)
+
             expectation.fulfill()
         }
 
@@ -75,12 +70,13 @@ class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Persist order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders")
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 3)
             XCTAssertNil(error)
+
             expectation.fulfill()
         }
 
@@ -95,11 +91,10 @@ class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
 
-        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders")
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
-            XCTAssertNotNil(orders)
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
             XCTAssertNil(error)
 
             let predicate = NSPredicate(format: "orderID = %ld", remoteOrder.orderID)
@@ -116,6 +111,28 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `OrderAction.retrieveOrders` can properly process the document `broken-orders-mark-2`.
+    ///
+    /// Ref. Issue: https://github.com/woocommerce/woocommerce-ios/issues/221
+    ///
+    func testRetrieveOrdersWithBreakingDocumentIsProperlyParsedAndInsertedIntoStorage() {
+        let expectation = self.expectation(description: "Persist order list")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "broken-orders-mark-2")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
+            XCTAssertNil(error)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 6)
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that OrderAction.retrieveOrders returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveOrdersReturnsErrorUponReponseError() {
@@ -123,8 +140,7 @@ class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "generic_error")
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
-            XCTAssertNil(orders)
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
             XCTAssertNotNil(error)
 
             expectation.fulfill()
@@ -140,9 +156,8 @@ class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve orders empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { (orders, error) in
+        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
             XCTAssertNotNil(error)
-            XCTAssertNil(orders)
 
             expectation.fulfill()
         }

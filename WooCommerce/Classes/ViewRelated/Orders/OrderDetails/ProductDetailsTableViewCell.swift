@@ -83,7 +83,7 @@ class ProductDetailsTableViewCell: UITableViewCell {
             return skuLabel.text
         }
         set {
-            skuLabel.text =  newValue
+            skuLabel.text = newValue
         }
     }
 
@@ -119,7 +119,8 @@ extension ProductDetailsTableViewCell {
         taxLabel.text = taxText
 
         let skuString = NSLocalizedString("SKU:", comment: "SKU label")
-        let skuText = item.sku.isEmpty ? nil : "\(skuString) \(item.sku)"
+        let skuRaw = item.sku ?? String()
+        let skuText = skuRaw.isEmpty ? nil : "\(skuString) \(skuRaw)"
         skuLabel.text = skuText
     }
 }

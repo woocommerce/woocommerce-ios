@@ -17,12 +17,6 @@ public class MockupStorageManager: StorageManagerType {
         return persistentContainer.viewContext
     }
 
-    /// Returns the NSManagedObjectContext associated with the Main Thread. Convenience helper!!
-    ///
-    public var viewContext: NSManagedObjectContext {
-        return persistentContainer.viewContext
-    }
-
     /// Persistent Container: Holds the full CoreData Stack
     ///
     public lazy var persistentContainer: NSPersistentContainer = {
@@ -78,7 +72,7 @@ extension MockupStorageManager {
 
     /// Returns the ManagedObjectModel's URL: Pick this up from the Storage bundle. OKAY?
     ///
-    var modelURL: URL  {
+    var modelURL: URL {
         let bundle = Bundle(for: CoreDataManager.self)
         guard let url = bundle.url(forResource: name, withExtension: "momd") else {
             fatalError("Missing Model Resource")

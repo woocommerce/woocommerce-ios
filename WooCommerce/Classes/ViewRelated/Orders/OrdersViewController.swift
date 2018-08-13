@@ -90,6 +90,8 @@ private extension OrdersViewController {
     }
 
     func configureTableView() {
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.refreshControl = refreshControl

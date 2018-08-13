@@ -61,6 +61,7 @@ class SettingsViewController: UIViewController {
         }
         alertController.addAction(logOutAction)
 
+        alertController.preferredAction = logOutAction
         present(alertController, animated: true)
     }
 

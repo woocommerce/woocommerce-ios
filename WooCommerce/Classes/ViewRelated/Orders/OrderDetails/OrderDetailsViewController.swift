@@ -79,6 +79,8 @@ private extension OrderDetailsViewController {
     /// Setup: TableView
     ///
     func configureTableView() {
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedSectionFooterHeight = Constants.rowHeight
         tableView.estimatedRowHeight = Constants.rowHeight

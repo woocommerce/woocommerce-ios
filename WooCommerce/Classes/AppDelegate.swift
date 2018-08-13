@@ -65,10 +65,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
 
-        // Take advantage of a bug in UIAlertController
-        // to style all UIAlertControllers with WC color
-        self.window?.tintColor = StyleManager.wooCommerceBrandColor
-
         return true
     }
 
@@ -134,6 +130,10 @@ private extension AppDelegate {
         UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().tintColor = .white
         UIApplication.shared.statusBarStyle = .lightContent
+
+        // Take advantage of a bug in UIAlertController
+        // to style all UIAlertControllers with WC color
+        self.window?.tintColor = StyleManager.wooCommerceBrandColor
     }
 
     /// Sets up FancyButton's UIAppearance.

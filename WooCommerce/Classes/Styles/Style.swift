@@ -38,45 +38,59 @@ protocol Style {
     var wooGreyTextMin: UIColor { get }
     var wooGreyBorder: UIColor { get }
     var wooSecondary: UIColor { get }
+    var wooWhite: UIColor { get }
 }
 
 // MARK: - WooCommerce's Default Style
 //
 class DefaultStyle: Style {
-    let actionButtonTitleFont = UIFont.font(forStyle: .headline, weight: .semibold)
-    let alternativeLoginsTitleFont = UIFont.font(forStyle: .subheadline, weight: .semibold)
-    let buttonPrimaryColor = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
-    let buttonPrimaryHighlightedColor = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
-    let buttonPrimaryTitleColor = UIColor.white
-    let buttonSecondaryColor = UIColor.white
+
+    // Fonts!
+    //
+    let actionButtonTitleFont           = UIFont.font(forStyle: .headline, weight: .semibold)
+    let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
+    let subheadlineFont                 = UIFont.font(forStyle: .subheadline, weight: .regular)
+
+    // Misc colors
+    //
+    let buttonPrimaryColor              = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
+    let buttonPrimaryHighlightedColor   = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
+    let buttonPrimaryTitleColor         = UIColor.white
+    let buttonSecondaryColor            = UIColor.white
     let buttonSecondaryHighlightedColor = UIColor.gray
-    let buttonSecondaryTitleColor = UIColor.gray
-    let buttonDisabledColor = UIColor.white
-    let buttonDisabledHighlightedColor = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
-    let buttonDisabledTitleColor = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
-    let cellSeparatorColor = UIColor.lightGray
-    let defaultTextColor = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0) // aka wooSecondary
-    let destructiveActionColor = UIColor(red: 197.0/255.0, green: 60.0/255.0, blue: 53.0/255.0, alpha: 1.0)
-    let navBarImage = UIImage(named: "woo-logo")!
-    let sectionBackgroundColor = UIColor(red: 239.0/255.0, green: 239.0/255.0, blue: 244.0/255.0, alpha: 1.0)
-    let sectionTitleColor = UIColor.darkGray
-    let statusDangerColor = UIColor(red: 255.0/255.0, green: 230.0/255.0, blue: 229.0/255.0, alpha: 1.0)
-    let statusDangerBoldColor = UIColor(red: 255.0/255.0, green: 197.0/255.0, blue: 195.0/255.0, alpha: 1.0)
-    let statusNotIdentifiedColor = UIColor(red: 235.0/255.0, green: 235.0/255.0, blue: 235.0/255.0, alpha: 1.0)
-    let statusNotIdentifiedBoldColor = UIColor(red: 226.0/255.0, green: 226.0/255.0, blue: 226.0/255.0, alpha: 1.0)
-    let statusPrimaryColor = UIColor(red: 244.0/255.0, green: 249.0/255.0, blue: 251.0/255.0, alpha: 1.0)
-    let statusPrimaryBoldColor = UIColor(red: 188.0/255.0, green: 222.0/255.0, blue: 238.0/255.0, alpha: 1.0)
-    let statusSuccessColor = UIColor(red: 239.00/255.0, green: 249.0/255.0, blue: 230.0/255.0, alpha: 1.0)
-    let statusSuccessBoldColor = UIColor(red: 201.0/255.0, green: 233.0/255.0, blue: 169.0/255.0, alpha: 1.0)
-    let subheadlineFont = UIFont.font(forStyle: .subheadline, weight: .regular)
-    let tableViewBackgroundColor = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1.0)
-    let wooCommerceBrandColor = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
-    let wooAccent = UIColor(red: 113.0/255.0, green: 176.0/255.0, blue: 47.0/255.0, alpha: 1.0)
-    let wooGreyLight = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1.0)
-    let wooGreyMid = UIColor(red: 150.0/255.0, green: 150.0/255.0, blue: 150.0/255.0, alpha: 1.0)
-    let wooGreyTextMin = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
-    let wooGreyBorder = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1.0)
-    let wooSecondary = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
+    let buttonSecondaryTitleColor       = UIColor.gray
+    let buttonDisabledColor             = UIColor.white
+    let buttonDisabledHighlightedColor  = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
+    let buttonDisabledTitleColor        = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
+    let cellSeparatorColor              = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1.0)  // wooGreyBorder
+    let defaultTextColor                = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)     // wooSecondary
+    let destructiveActionColor          = UIColor(red: 197.0/255.0, green: 60.0/255.0, blue: 53.0/255.0, alpha: 1.0)
+    let navBarImage                     = UIImage(named: "woo-logo")!
+    let sectionBackgroundColor          = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1.0)  // wooGreyLight
+    let sectionTitleColor               = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)     // wooSecondary
+    let tableViewBackgroundColor        = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1.0)  // wooGreyLight
+
+    // Status Colors
+    //
+    let statusDangerColor               = UIColor(red: 255.0/255.0, green: 230.0/255.0, blue: 229.0/255.0, alpha: 1.0)  // Status Red Dimmed
+    let statusDangerBoldColor           = UIColor(red: 255.0/255.0, green: 197.0/255.0, blue: 195.0/255.0, alpha: 1.0)  // Status Red
+    let statusNotIdentifiedColor        = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1.0)  // wooGreyLight
+    let statusNotIdentifiedBoldColor    = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1.0)  // wooGreyBorder
+    let statusPrimaryColor              = UIColor(red: 244.0/255.0, green: 249.0/255.0, blue: 251.0/255.0, alpha: 1.0)  // Status Blue Dimmed
+    let statusPrimaryBoldColor          = UIColor(red: 188.0/255.0, green: 222.0/255.0, blue: 238.0/255.0, alpha: 1.0)  // Status Blue
+    let statusSuccessColor              = UIColor(red: 239.00/255.0, green: 249.0/255.0, blue: 230.0/255.0, alpha: 1.0) // Status Green Dimmed
+    let statusSuccessBoldColor          = UIColor(red: 201.0/255.0, green: 233.0/255.0, blue: 169.0/255.0, alpha: 1.0)  // Status Green
+
+    // Colors as defined in the Woo Mobile Design Handbook
+    //
+    let wooCommerceBrandColor           = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
+    let wooSecondary                    = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
+    let wooAccent                       = UIColor(red: 113.0/255.0, green: 176.0/255.0, blue: 47.0/255.0, alpha: 1.0)
+    let wooGreyLight                    = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1.0)
+    let wooGreyBorder                   = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1.0)
+    let wooGreyMid                      = UIColor(red: 150.0/255.0, green: 150.0/255.0, blue: 150.0/255.0, alpha: 1.0)
+    let wooGreyTextMin                  = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
+    let wooWhite                        = UIColor.white
 }
 
 
@@ -209,12 +223,20 @@ class StyleManager {
         return active.wooCommerceBrandColor
     }
 
+    static var wooSecondary: UIColor {
+        return active.wooSecondary
+    }
+
     static var wooAccent: UIColor {
         return active.wooAccent
     }
 
     static var wooGreyLight: UIColor {
         return active.wooGreyLight
+    }
+
+    static var wooGreyBorder: UIColor {
+        return active.wooGreyBorder
     }
 
     static var wooGreyMid: UIColor {
@@ -225,11 +247,7 @@ class StyleManager {
         return active.wooGreyTextMin
     }
 
-    static var wooGreyBorder: UIColor {
-        return active.wooGreyBorder
-    }
-
-    static var wooSecondary: UIColor {
-        return active.wooSecondary
+    static var wooWhite: UIColor {
+        return active.wooWhite
     }
 }

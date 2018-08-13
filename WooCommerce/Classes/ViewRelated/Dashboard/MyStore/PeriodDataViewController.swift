@@ -96,20 +96,14 @@ private extension PeriodDataViewController {
         borderView.backgroundColor = StyleManager.wooGreyBorder
 
         // Titles
-        visitorsTitle.font = UIFont.footnote
-        visitorsTitle.textColor = StyleManager.defaultTextColor
-        ordersTitle.font = UIFont.footnote
-        ordersTitle.textColor = StyleManager.defaultTextColor
-        revenueTitle.font = UIFont.footnote
-        revenueTitle.textColor = StyleManager.defaultTextColor
+        visitorsTitle.applyFootnoteStyle()
+        ordersTitle.applyFootnoteStyle()
+        revenueTitle.applyFootnoteStyle()
 
         // Data
-        visitorsData.font = StyleManager.statsBigDataFont
-        visitorsData.textColor = StyleManager.defaultTextColor
-        ordersData.font = StyleManager.statsBigDataFont
-        ordersData.textColor = StyleManager.defaultTextColor
-        revenueData.font = StyleManager.statsBigDataFont
-        revenueData.textColor = StyleManager.defaultTextColor
+        visitorsData.applyLargeTitleStyle()
+        ordersData.applyLargeTitleStyle()
+        revenueData.applyLargeTitleStyle()
 
         // Footer
         lastUpdated.font = UIFont.footnote

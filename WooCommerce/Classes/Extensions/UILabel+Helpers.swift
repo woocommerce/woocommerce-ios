@@ -18,6 +18,11 @@ extension UILabel {
         textColor = StyleManager.defaultTextColor
     }
 
+    func applyLargeTitleStyle() {
+        font = UIFont.largeTitle
+        textColor = StyleManager.defaultTextColor
+    }
+
     func applyStatusStyle(for status: OrderStatus) {
         layer.borderWidth = 1.0
         layer.cornerRadius = 4.0

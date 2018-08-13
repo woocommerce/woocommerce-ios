@@ -55,7 +55,7 @@ class DefaultStyle: Style {
     let buttonDisabledHighlightedColor = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
     let buttonDisabledTitleColor = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
     let cellSeparatorColor = UIColor.lightGray
-    let defaultTextColor = UIColor.black
+    let defaultTextColor = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0) // aka wooSecondary
     let destructiveActionColor = UIColor(red: 197.0/255.0, green: 60.0/255.0, blue: 53.0/255.0, alpha: 1.0)
     let navBarImage = UIImage(named: "woo-logo")!
     let sectionBackgroundColor = UIColor(red: 239.0/255.0, green: 239.0/255.0, blue: 244.0/255.0, alpha: 1.0)

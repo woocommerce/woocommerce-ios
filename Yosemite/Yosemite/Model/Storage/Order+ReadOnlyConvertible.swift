@@ -30,29 +30,33 @@ extension Storage.Order: ReadOnlyConvertible {
         totalTax = order.totalTax
         paymentMethodTitle = order.paymentMethodTitle
 
-        billingFirstName = order.billingAddress.firstName
-        billingLastName = order.billingAddress.lastName
-        billingCompany = order.billingAddress.company
-        billingAddress1 = order.billingAddress.address1
-        billingAddress2 = order.billingAddress.address2
-        billingCity = order.billingAddress.city
-        billingState = order.billingAddress.state
-        billingPostcode = order.billingAddress.postcode
-        billingCountry = order.billingAddress.country
-        billingPhone = order.billingAddress.phone
-        billingEmail = order.billingAddress.email
+        if let billingAddress = order.billingAddress {
+            billingFirstName = billingAddress.firstName
+            billingLastName = billingAddress.lastName
+            billingCompany = billingAddress.company
+            billingAddress1 = billingAddress.address1
+            billingAddress2 = billingAddress.address2
+            billingCity = billingAddress.city
+            billingState = billingAddress.state
+            billingPostcode = billingAddress.postcode
+            billingCountry = billingAddress.country
+            billingPhone = billingAddress.phone
+            billingEmail = billingAddress.email
+        }
 
-        shippingFirstName = order.shippingAddress.firstName
-        shippingLastName = order.shippingAddress.lastName
-        shippingCompany = order.shippingAddress.company
-        shippingAddress1 = order.shippingAddress.address1
-        shippingAddress2 = order.shippingAddress.address2
-        shippingCity = order.shippingAddress.city
-        shippingState = order.shippingAddress.state
-        shippingPostcode = order.shippingAddress.postcode
-        shippingCountry = order.shippingAddress.country
-        shippingPhone = order.shippingAddress.phone
-        shippingEmail = order.shippingAddress.email
+        if let shippingAddress = order.shippingAddress {
+            shippingFirstName = shippingAddress.firstName
+            shippingLastName = shippingAddress.lastName
+            shippingCompany = shippingAddress.company
+            shippingAddress1 = shippingAddress.address1
+            shippingAddress2 = shippingAddress.address2
+            shippingCity = shippingAddress.city
+            shippingState = shippingAddress.state
+            shippingPostcode = shippingAddress.postcode
+            shippingCountry = shippingAddress.country
+            shippingPhone = shippingAddress.phone
+            shippingEmail = shippingAddress.email
+        }
     }
 
     /// Returns a ReadOnly version of the receiver.

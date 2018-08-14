@@ -14,4 +14,16 @@ extension Order {
 
         return NSLocale(localeIdentifier: identifier).currencySymbol
     }
+
+    /// Determines if a shipping address exists.
+    ///
+    var hasSeparateShippingDetail: Bool {
+        return shippingAddress != nil
+    }
+
+    /// FIXME: Creates an empty-string value Billing details, until i6 fix
+    ///
+    func generateEmptyBillingAddress() -> Address {
+        return Address(firstName: "", lastName: "", company: "", address1: "", address2: "", city: "", state: "", postcode: "", country: "", phone: "", email: "")
+    }
 }

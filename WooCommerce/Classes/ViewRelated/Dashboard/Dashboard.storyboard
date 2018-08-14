@@ -50,6 +50,9 @@
                                     </view>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iZC-Gc-okA">
                                         <rect key="frame" x="0.0" y="50" width="375" height="329"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="327" id="eGV-6I-Bmn"/>
+                                        </constraints>
                                     </scrollView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kbr-bQ-njj">
                                         <rect key="frame" x="0.0" y="379" width="375" height="1"/>

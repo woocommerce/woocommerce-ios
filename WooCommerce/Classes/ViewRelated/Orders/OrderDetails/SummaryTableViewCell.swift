@@ -14,7 +14,7 @@ class SummaryTableViewCell: UITableViewCell {
         }
         set {
             titleLabel.text = newValue
-            titleLabel.applyTitleStyle()
+            titleLabel.applyHeadlineStyle()
         }
     }
 

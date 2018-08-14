@@ -18,13 +18,10 @@ extension Order {
     /// Determines if a shipping address exists.
     ///
     var hasSeparateShippingDetail: Bool {
-        if let shipping = shippingAddress {
-            return !shipping.country.isEmpty
-        }
-        return false
+        return shippingAddress != nil
     }
 
-    /// FIXME: Creates an empty-string value Billing details, until
+    /// FIXME: Creates an empty-string value Billing details, until i6 fix
     ///
     func generateEmptyBillingAddress() -> Address {
         return Address(firstName: "", lastName: "", company: "", address1: "", address2: "", city: "", state: "", postcode: "", country: "", phone: "", email: "")

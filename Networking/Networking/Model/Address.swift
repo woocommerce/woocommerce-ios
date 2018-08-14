@@ -19,7 +19,7 @@ public struct Address: Decodable {
     /// Make Address conform to Error protocol.
     ///
     enum AddressParseError: Error {
-        case emptyStringDetected
+        case missingCountry
     }
 
 
@@ -57,7 +57,7 @@ public struct Address: Decodable {
         // Check for an empty country, because on Android that's how
         // we determine if the shipping address should be considered empty.
         if country.isEmpty {
-            throw AddressParseError.emptyStringDetected
+            throw AddressParseError.missingCountry
         }
 
         self.init(firstName: firstName, lastName: lastName, company: company, address1: address1, address2: address2, city: city, state: state, postcode: postcode, country: country, phone: phone, email: email)

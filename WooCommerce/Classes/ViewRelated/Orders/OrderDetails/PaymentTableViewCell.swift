@@ -37,8 +37,8 @@ class PaymentTableViewCell: UITableViewCell {
         shippingValue.applyBodyStyle()
         taxesLabel.applyBodyStyle()
         taxesValue.applyBodyStyle()
-        totalLabel.applyTitleStyle()
-        totalValue.applyTitleStyle()
+        totalLabel.applyHeadlineStyle()
+        totalValue.applyHeadlineStyle()
         footerValue.applyFootnoteStyle()
     }
 }

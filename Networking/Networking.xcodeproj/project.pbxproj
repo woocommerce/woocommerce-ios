@@ -56,6 +56,7 @@
 		B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662320A099BF00037A38 /* AlamofireNetwork.swift */; };
 		B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */; };
 		B518663520A0A2E800037A38 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518663320A0A2E800037A38 /* Constants.swift */; };
+		B556FD69211CE2EC00B5DAE7 /* HTTPStatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B556FD68211CE2EC00B5DAE7 /* HTTPStatusCode.swift */; };
 		B557D9ED209753AA005962F4 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B557D9E3209753AA005962F4 /* Networking.framework */; };
 		B557D9F4209753AA005962F4 /* Networking.h in Headers */ = {isa = PBXBuildFile; fileRef = B557D9E6209753AA005962F4 /* Networking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B557DA0220975500005962F4 /* JetpackRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557D9FF209754FF005962F4 /* JetpackRequest.swift */; };
@@ -154,6 +155,7 @@
 		B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersRemoteTests.swift; sourceTree = "<group>"; };
 		B518663320A0A2E800037A38 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B518663420A0A2E800037A38 /* Loader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Loader.swift; sourceTree = "<group>"; };
+		B556FD68211CE2EC00B5DAE7 /* HTTPStatusCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPStatusCode.swift; sourceTree = "<group>"; };
 		B557D9E3209753AA005962F4 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B557D9E6209753AA005962F4 /* Networking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Networking.h; sourceTree = "<group>"; };
 		B557D9E7209753AA005962F4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -260,6 +262,7 @@
 				B518662120A097C200037A38 /* Network.swift */,
 				B518662320A099BF00037A38 /* AlamofireNetwork.swift */,
 				B518662620A09BCC00037A38 /* MockupNetwork.swift */,
+				B556FD68211CE2EC00B5DAE7 /* HTTPStatusCode.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -686,6 +689,7 @@
 				B557DA0220975500005962F4 /* JetpackRequest.swift in Sources */,
 				B56C1EB820EA76F500D749F9 /* Site.swift in Sources */,
 				B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */,
+				B556FD69211CE2EC00B5DAE7 /* HTTPStatusCode.swift in Sources */,
 				B557DA0D20975DB1005962F4 /* WordPressAPIVersion.swift in Sources */,
 				74A1D26F21189EA100931DFA /* SiteVisitStatsRemote.swift in Sources */,
 				B557DA1D20979E7D005962F4 /* Order.swift in Sources */,

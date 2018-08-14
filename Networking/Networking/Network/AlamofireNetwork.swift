@@ -32,8 +32,8 @@ public class AlamofireNetwork: Network {
         Alamofire.request(authenticated)
             .validate()
             .responseJSON { response in
-                completion(response.result.value, response.result.error)
-        }
+                completion(response.value, response.customizedError)
+            }
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
@@ -51,7 +51,30 @@ public class AlamofireNetwork: Network {
         Alamofire.request(authenticated)
             .validate()
             .responseData { response in
-                completion(response.result.value, response.result.error)
+                completion(response.value, response.customizedError)
+            }
+    }
+}
+
+
+/// MARK: - Alamofire.DataResponse: Private Methods
+///
+private extension Alamofire.DataResponse {
+
+    /// Returns `NetworkError.notFound` whenever the Request failed  with a 404 StatusCode. This may be used by upper layers,
+    /// to determine if an object should be deleted (for instance!).
+    ///
+    /// In any other case, this property will actually return the regular `DataResponse.error` result.
+    ///
+    var customizedError: Error? {
+        guard result.isFailure else {
+            return nil
         }
+
+        guard response?.statusCode == HTTPStatusCode.notFound else {
+            return error
+        }
+
+        return NetworkError.notFound
     }
 }

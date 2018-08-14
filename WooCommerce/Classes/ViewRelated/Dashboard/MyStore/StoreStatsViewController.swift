@@ -76,18 +76,18 @@ private extension StoreStatsViewController {
     }
 
     func configureTabStrip() {
-        settings.style.buttonBarBackgroundColor = .white
-        settings.style.buttonBarItemBackgroundColor = .white
+        settings.style.buttonBarBackgroundColor = StyleManager.wooWhite
+        settings.style.buttonBarItemBackgroundColor = StyleManager.wooWhite
         settings.style.selectedBarBackgroundColor = StyleManager.wooCommerceBrandColor
         settings.style.buttonBarItemFont = StyleManager.subheadlineFont
         settings.style.selectedBarHeight = TabStrip.selectedBarHeight
-        settings.style.buttonBarItemTitleColor = StyleManager.wooGreyTextMin
+        settings.style.buttonBarItemTitleColor = StyleManager.defaultTextColor
         settings.style.buttonBarItemsShouldFillAvailableWidth = false
         settings.style.buttonBarItemLeftRightMargin = TabStrip.buttonLeftRightMargin
 
         changeCurrentIndexProgressive = { (oldCell: ButtonBarViewCell?, newCell: ButtonBarViewCell?, progressPercentage: CGFloat, changeCurrentIndex: Bool, animated: Bool) -> Void in
             guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = StyleManager.wooGreyTextMin
+            oldCell?.label.textColor = StyleManager.defaultTextColor
             newCell?.label.textColor = StyleManager.wooCommerceBrandColor
         }
     }

@@ -11,8 +11,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PeriodDataViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="barChartView" destination="zPE-Y0-ax8" id="3VU-s1-JmV"/>
                 <outlet property="borderView" destination="IHi-Ph-CQQ" id="bgg-u3-bda"/>
-                <outlet property="chartView" destination="zPE-Y0-ax8" id="zfG-E5-6vg"/>
                 <outlet property="lastUpdated" destination="0Wi-nd-Ucs" id="XPO-tH-TLR"/>
                 <outlet property="ordersData" destination="6HA-Qe-PkT" id="zOF-dV-3LN"/>
                 <outlet property="ordersTitle" destination="vlW-do-oXj" id="zdd-DS-zvJ"/>
@@ -158,7 +158,7 @@
                                 </view>
                             </subviews>
                         </stackView>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zPE-Y0-ax8">
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zPE-Y0-ax8" customClass="BarChartView" customModule="Charts">
                             <rect key="frame" x="0.0" y="88.5" width="375" height="508.5"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>

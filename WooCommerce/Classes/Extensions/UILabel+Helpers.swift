@@ -3,7 +3,7 @@ import Yosemite
 
 
 extension UILabel {
-    func applyTitleStyle() {
+    func applyHeadlineStyle() {
         font = .headline
         textColor = StyleManager.defaultTextColor
     }
@@ -14,12 +14,12 @@ extension UILabel {
     }
 
     func applyFootnoteStyle() {
-        font = UIFont.footnote
+        font = .footnote
         textColor = StyleManager.defaultTextColor
     }
 
-    func applyLargeTitleStyle() {
-        font = UIFont.largeTitle
+    func applyTitleStyle() {
+        font = .title1
         textColor = StyleManager.defaultTextColor
     }
 

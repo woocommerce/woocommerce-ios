@@ -101,9 +101,9 @@ private extension PeriodDataViewController {
         revenueTitle.applyFootnoteStyle()
 
         // Data
-        visitorsData.applyLargeTitleStyle()
-        ordersData.applyLargeTitleStyle()
-        revenueData.applyLargeTitleStyle()
+        visitorsData.applyTitleStyle()
+        ordersData.applyTitleStyle()
+        revenueData.applyTitleStyle()
 
         // Footer
         lastUpdated.font = UIFont.footnote

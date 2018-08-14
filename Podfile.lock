@@ -5,6 +5,9 @@ PODS:
     - CocoaLumberjack (~> 3.4.1)
     - Reachability (~> 3.1)
     - UIDeviceIdentifier (~> 0.4)
+  - Charts (3.1.1):
+    - Charts/Core (= 3.1.1)
+  - Charts/Core (3.1.1)
   - CocoaLumberjack (3.4.2):
     - CocoaLumberjack/Default (= 3.4.2)
     - CocoaLumberjack/Extensions (= 3.4.2)
@@ -69,6 +72,7 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 4.7)
   - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.3`)
+  - Charts (~> 3.1)
   - CocoaLumberjack/Swift (~> 3.4)
   - Crashlytics (~> 3.10)
   - Gridicons (= 0.15)
@@ -81,6 +85,7 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - 1PasswordExtension
     - Alamofire
+    - Charts
     - CocoaLumberjack
     - Crashlytics
     - Fabric
@@ -116,6 +121,7 @@ SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   Automattic-Tracks-iOS: d8c6c6c1351b1905a73e45f431b15598d71963b5
+  Charts: 90a4d61da0f6e06684c591e3bcab11940fe61736
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
   Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661
@@ -137,6 +143,6 @@ SPEC CHECKSUMS:
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
   XLPagerTabStrip: c908b17cbf42fcd2598ee1adfc49bae25444d88a
 
-PODFILE CHECKSUM: fad8937db279e4bf9807a4985a2418c4832c9b35
+PODFILE CHECKSUM: a2a2362208b6735d77e2c6358fbcdf29aead6bff
 
 COCOAPODS: 1.5.3

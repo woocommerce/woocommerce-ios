@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Charts
 import XLPagerTabStrip
 import WordPressShared
 import CocoaLumberjack
@@ -15,8 +16,8 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     @IBOutlet private weak var ordersData: UILabel!
     @IBOutlet private weak var revenueTitle: UILabel!
     @IBOutlet private weak var revenueData: UILabel!
+    @IBOutlet private weak var barChartView: BarChartView!
     @IBOutlet private weak var lastUpdated: UILabel!
-    @IBOutlet private weak var chartView: UIView!
     @IBOutlet private weak var borderView: UIView!
     private var lastUpdatedDate: Date?
 
@@ -67,6 +68,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
+        configureBarChart()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -108,6 +110,21 @@ private extension PeriodDataViewController {
         // Footer
         lastUpdated.font = UIFont.footnote
         lastUpdated.textColor = StyleManager.wooGreyMid
+    }
+
+    func configureBarChart() {
+        barChartView.chartDescription?.enabled = false
+
+        barChartView.dragEnabled = true
+        barChartView.setScaleEnabled(true)
+        barChartView.pinchZoomEnabled = false
+
+        // ChartYAxis *leftAxis = chartView.leftAxis;
+
+        let xAxis = barChartView.xAxis
+        xAxis.labelPosition = .bottom
+
+        barChartView.rightAxis.enabled = false
     }
 }
 

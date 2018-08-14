@@ -193,7 +193,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
 
             // because the string was stripped of whitespace, we can't return true and we update the textfield ourselves
             textField.text = cleanedCode
-            handleTextFieldDidChange()
+            handleTextFieldDidChange(textField)
         case .invalid(nonNumbers: true):
             displayError(message: NSLocalizedString("A verification code will only contain numbers.", comment: "Shown when a user types a non-number into the two factor field."))
         default:
@@ -231,7 +231,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         return false
     }
 
-    func handleTextFieldDidChange() {
+    @IBAction func handleTextFieldDidChange(_ sender: UITextField) {
         loginFields.multifactorCode = verificationCodeField.nonNilTrimmedText()
         configureSubmitButton(animating: false)
     }
@@ -283,7 +283,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         case .valid(let cleanedCode):
             displayError(message: "")
             verificationCodeField.text = cleanedCode
-            handleTextFieldDidChange()
+            handleTextFieldDidChange(verificationCodeField)
         default:
             break
         }

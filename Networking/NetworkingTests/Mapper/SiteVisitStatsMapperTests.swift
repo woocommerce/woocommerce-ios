@@ -18,6 +18,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
         XCTAssertEqual(dayStats.date, "2018-08-06")
         XCTAssertEqual(dayStats.fields.count, 7)
         XCTAssertEqual(dayStats.items!.count, 12)
+        XCTAssertEqual(dayStats.totalVisitors, 105)
 
         let sampleItem1 = dayStats.items![0]
         XCTAssertEqual(sampleItem1.period, "2018-07-26")
@@ -50,6 +51,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
         XCTAssertEqual(weekStats.date, "2018-08-06")
         XCTAssertEqual(weekStats.fields.count, 7)
         XCTAssertEqual(weekStats.items!.count, 12)
+        XCTAssertEqual(weekStats.totalVisitors, 123123241)
 
         let sampleItem1 = weekStats.items![0]
         XCTAssertEqual(sampleItem1.period, "2018W05W21")
@@ -83,11 +85,12 @@ class SiteVisitStatsMapperTests: XCTestCase {
         XCTAssertEqual(monthStats.date, "2018-08-06")
         XCTAssertEqual(monthStats.fields.count, 7)
         XCTAssertEqual(monthStats.items!.count, 12)
+        XCTAssertEqual(monthStats.totalVisitors, 292)
 
         let sampleItem1 = monthStats.items![0]
         XCTAssertEqual(sampleItem1.period, "2017-09-01")
         XCTAssertEqual(sampleItem1.views, 36)
-        XCTAssertEqual(sampleItem1.visitors, 24)
+        XCTAssertEqual(sampleItem1.visitors, 224)
         XCTAssertEqual(sampleItem1.likes, 1)
         XCTAssertEqual(sampleItem1.reblogs, 0)
         XCTAssertEqual(sampleItem1.comments, 3)
@@ -115,11 +118,12 @@ class SiteVisitStatsMapperTests: XCTestCase {
         XCTAssertEqual(yearStats.date, "2018-08-06")
         XCTAssertEqual(yearStats.fields.count, 7)
         XCTAssertEqual(yearStats.items!.count, 5)
+        XCTAssertEqual(yearStats.totalVisitors, 3336)
 
         let sampleItem1 = yearStats.items![0]
         XCTAssertEqual(sampleItem1.period, "2014-01-01")
         XCTAssertEqual(sampleItem1.views, 12821)
-        XCTAssertEqual(sampleItem1.visitors, 1135)
+        XCTAssertEqual(sampleItem1.visitors, 1145)
         XCTAssertEqual(sampleItem1.likes, 1094)
         XCTAssertEqual(sampleItem1.reblogs, 0)
         XCTAssertEqual(sampleItem1.comments, 1611)

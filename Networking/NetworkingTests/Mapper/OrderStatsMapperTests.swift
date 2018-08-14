@@ -84,7 +84,7 @@ class OrderStatsMapperTests: XCTestCase {
         XCTAssertEqual(weekStats.totalOrders, 65)
         XCTAssertEqual(weekStats.totalProducts, 87)
         XCTAssertEqual(weekStats.totalGrossSales, 2858.52)
-        XCTAssertEqual(weekStats.totalNetSales, 2833.55)
+        XCTAssertEqual(weekStats.totalNetSales, 2833.5499999999997)
         XCTAssertEqual(weekStats.averageGrossSales, 92.2103)
         XCTAssertEqual(weekStats.averageNetSales, 91.4048)
         XCTAssertEqual(weekStats.averageOrders, 2.0968)

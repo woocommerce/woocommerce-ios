@@ -39,8 +39,8 @@ class TwoColumnLabelView: UIView {
             leftColumn.applyBodyStyle()
             rightColumn.applyBodyStyle()
         case .title:
-            leftColumn.applyTitleStyle()
-            rightColumn.applyTitleStyle()
+            leftColumn.applyHeadlineStyle()
+            rightColumn.applyHeadlineStyle()
         }
     }
 

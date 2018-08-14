@@ -55,7 +55,14 @@ class OrderListMapperTests: XCTestCase {
         XCTAssert(orders.count == 3)
 
         let firstOrder = orders[0]
-        let dummyAddresses = [firstOrder.billingAddress, firstOrder.shippingAddress]
+        var dummyAddresses = [Address]()
+        if let shippingAddress = firstOrder.shippingAddress {
+            dummyAddresses.append(shippingAddress)
+        }
+
+        if let billingAddress = firstOrder.billingAddress {
+            dummyAddresses.append(billingAddress)
+        }
 
         for address in dummyAddresses {
             XCTAssertEqual(address.firstName, "Johnny")

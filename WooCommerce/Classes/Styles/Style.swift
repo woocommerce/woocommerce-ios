@@ -56,11 +56,11 @@ class DefaultStyle: Style {
     //
     let buttonPrimaryColor              = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
     let buttonPrimaryHighlightedColor   = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
-    let buttonPrimaryTitleColor         = UIColor.white
-    let buttonSecondaryColor            = UIColor.white
-    let buttonSecondaryHighlightedColor = UIColor.gray
-    let buttonSecondaryTitleColor       = UIColor.gray
-    let buttonDisabledColor             = UIColor.white
+    let buttonPrimaryTitleColor         = HandbookColors.wooWhite
+    let buttonSecondaryColor            = HandbookColors.wooWhite
+    let buttonSecondaryHighlightedColor = HandbookColors.wooGreyMid
+    let buttonSecondaryTitleColor       = HandbookColors.wooGreyMid
+    let buttonDisabledColor             = HandbookColors.wooWhite
     let buttonDisabledHighlightedColor  = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
     let buttonDisabledTitleColor        = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
     let cellSeparatorColor              = HandbookColors.wooGreyBorder

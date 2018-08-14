@@ -92,7 +92,7 @@ extension PeriodDataViewController {
 private extension PeriodDataViewController {
 
     func configureView() {
-        view.backgroundColor = .white
+        view.backgroundColor = StyleManager.wooWhite
         borderView.backgroundColor = StyleManager.wooGreyBorder
 
         // Titles

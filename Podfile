@@ -29,6 +29,7 @@ target 'WooCommerce' do
   pod 'Crashlytics', '~> 3.10'
   pod 'KeychainAccess', '~> 3.1'
   pod 'CocoaLumberjack/Swift', '~> 3.4'
+  pod 'XLPagerTabStrip', '~> 8.0'
 
   # Unit Tests
   # ==========

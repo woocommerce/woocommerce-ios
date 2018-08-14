@@ -8,14 +8,14 @@ public struct OrderStats: Decodable {
     public let granularity: StatGranularity
     public let quantity: String
     public let fields: [String]
-    public let totalGrossSales: Float
-    public let totalNetSales: Float
+    public let totalGrossSales: Double
+    public let totalNetSales: Double
     public let totalOrders: Int
     public let totalProducts: Int
-    public let averageGrossSales: Float
-    public let averageNetSales: Float
-    public let averageOrders: Float
-    public let averageProducts: Float
+    public let averageGrossSales: Double
+    public let averageNetSales: Double
+    public let averageOrders: Double
+    public let averageProducts: Double
     public let items: [OrderStatsItem]?
 
 
@@ -31,15 +31,15 @@ public struct OrderStats: Decodable {
         let fields = try container.decode([String].self, forKey: .fields)
         let rawData: [[AnyCodable]] = try container.decode([[AnyCodable]].self, forKey: .data)
 
-        let totalGrossSales = try container.decode(Float.self, forKey: .totalGrossSales)
-        let totalNetSales = try container.decode(Float.self, forKey: .totalNetSales)
+        let totalGrossSales = try container.decode(Double.self, forKey: .totalGrossSales)
+        let totalNetSales = try container.decode(Double.self, forKey: .totalNetSales)
         let totalOrders = try container.decode(Int.self, forKey: .totalOrders)
         let totalProducts = try container.decode(Int.self, forKey: .totalProducts)
 
-        let averageGrossSales = try container.decode(Float.self, forKey: .averageGrossSales)
-        let averageNetSales = try container.decode(Float.self, forKey: .averageNetSales)
-        let averageOrders = try container.decode(Float.self, forKey: .averageOrders)
-        let averageProducts = try container.decode(Float.self, forKey: .averageProducts)
+        let averageGrossSales = try container.decode(Double.self, forKey: .averageGrossSales)
+        let averageNetSales = try container.decode(Double.self, forKey: .averageNetSales)
+        let averageOrders = try container.decode(Double.self, forKey: .averageOrders)
+        let averageProducts = try container.decode(Double.self, forKey: .averageProducts)
 
         let items = rawData.map({ OrderStatsItem(fieldNames: fields, rawData: $0) })
 
@@ -49,7 +49,7 @@ public struct OrderStats: Decodable {
 
     /// OrderStats struct initializer.
     ///
-    public init(date: String, granularity: StatGranularity, quantity: String, fields: [String], items: [OrderStatsItem]?, totalGrossSales: Float, totalNetSales: Float, totalOrders: Int, totalProducts: Int, averageGrossSales: Float, averageNetSales: Float, averageOrders: Float, averageProducts: Float) {
+    public init(date: String, granularity: StatGranularity, quantity: String, fields: [String], items: [OrderStatsItem]?, totalGrossSales: Double, totalNetSales: Double, totalOrders: Int, totalProducts: Int, averageGrossSales: Double, averageNetSales: Double, averageOrders: Double, averageProducts: Double) {
         self.date = date
         self.granularity = granularity
         self.quantity = quantity

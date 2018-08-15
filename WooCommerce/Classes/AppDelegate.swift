@@ -133,7 +133,7 @@ private extension AppDelegate {
 
         // Take advantage of a bug in UIAlertController
         // to style all UIAlertControllers with WC color
-        self.window?.tintColor = StyleManager.wooCommerceBrandColor
+        window?.tintColor = StyleManager.wooCommerceBrandColor
     }
 
     /// Sets up FancyButton's UIAppearance.

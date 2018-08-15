@@ -155,19 +155,25 @@ private extension PeriodDataViewController {
         xAxis.labelTextColor = StyleManager.wooSecondary
         xAxis.axisLineColor = StyleManager.wooGreyBorder
         xAxis.gridColor = StyleManager.wooGreyBorder
-        xAxis.drawLabelsEnabled = false
+        xAxis.drawLabelsEnabled = true
         xAxis.drawGridLinesEnabled = false
-        xAxis.drawAxisLineEnabled = true
+        xAxis.drawAxisLineEnabled = false
+        xAxis.granularity = 1.0
+        xAxis.granularityEnabled = true
+        xAxis.setLabelCount(2, force: true)
+        xAxis.valueFormatter = self
 
         let yAxis = barChartView.leftAxis
         yAxis.labelFont = StyleManager.chartLabelFont
         yAxis.labelTextColor = StyleManager.wooSecondary
         yAxis.axisLineColor = StyleManager.wooGreyBorder
         yAxis.gridColor = StyleManager.wooGreyBorder
+        yAxis.zeroLineColor = StyleManager.wooGreyBorder
         yAxis.drawLabelsEnabled = true
         yAxis.drawGridLinesEnabled = true
-        yAxis.drawAxisLineEnabled = true
-        yAxis.drawZeroLineEnabled = false
+        yAxis.drawAxisLineEnabled = false
+        yAxis.drawZeroLineEnabled = true
+        yAxis.axisMinimum = 0
     }
 }
 
@@ -233,6 +239,20 @@ private extension PeriodDataViewController {
 
     func reloadLastUpdatedField() {
         if lastUpdated != nil { lastUpdated.text = summaryDateUpdated }
+    }
+}
+
+
+// MARK: - IAxisValueFormatter Conformance
+//
+extension PeriodDataViewController: IAxisValueFormatter {
+    func stringForValue(_ value: Double, axis: AxisBase?) -> String {
+        guard let item = orderStats?.items?[Int(value)] else {
+            return ""
+        }
+
+        //TODO: This is not right!
+        return String(item.period)
     }
 }
 

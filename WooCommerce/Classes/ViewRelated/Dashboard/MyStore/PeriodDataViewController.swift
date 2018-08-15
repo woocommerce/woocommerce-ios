@@ -158,7 +158,7 @@ private extension PeriodDataViewController {
         if let orderStats = orderStats {
             totalOrdersText = Double(orderStats.totalOrders).friendlyString()
             let currencySymbol = orderStats.currencySymbol
-            let totalRevenue = orderStats.totalGrossSales.friendlyString()
+            let totalRevenue = orderStats.totalSales.friendlyString()
             totalRevenueText = "\(currencySymbol)\(totalRevenue)"
         }
         ordersData.text = totalOrdersText

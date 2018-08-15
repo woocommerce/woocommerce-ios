@@ -56,7 +56,11 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         var dataEntries: [BarChartDataEntry] = []
         var barCount = 0
         for salesItem in totalSalesItems {
-            dataEntries.append(BarChartDataEntry(x: Double(barCount), y: salesItem.value))
+            if salesItem.value > 0.0 {
+                // By only including the values that are greater than zero (but still incrementing barCount),
+                // we will create nice "gaps" in the chart instead of a bunch of zero value bars.
+                dataEntries.append(BarChartDataEntry(x: Double(barCount), y: salesItem.value))
+            }
             barCount += 1
         }
 
@@ -138,7 +142,6 @@ private extension PeriodDataViewController {
         barChartView.pinchZoomEnabled = false
         barChartView.rightAxis.enabled = false
         barChartView.legend.enabled = false
-        barChartView.fitBars = true
         barChartView.isUserInteractionEnabled = false
         barChartView.noDataText = NSLocalizedString("No data available", comment: "Text displayed when no data is available for revenue chart.")
         barChartView.noDataFont = StyleManager.chartLabelFont
@@ -220,6 +223,7 @@ private extension PeriodDataViewController {
             return
         }
         barChartView.data = chartData
+        barChartView.fitBars = true
         barChartView.notifyDataSetChanged()
         barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
     }

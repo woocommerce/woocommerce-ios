@@ -27,18 +27,4 @@ extension OrderStats {
     var totalSales: Double {
         return items?.map({ $0.totalSales }).reduce(0.0, +) ?? 0.0
     }
-
-    /// Returns a dictionary containing all of the `OrderStatsItem` periods and their related total sales values.
-    ///
-    var totalSalesItems: [String: Double]? {
-        guard let items = items, !items.isEmpty else {
-            return nil
-        }
-
-        var returnVal: [String: Double] = [:]
-        for item in items {
-            returnVal[item.period] = item.totalSales
-        }
-        return returnVal
-    }
 }

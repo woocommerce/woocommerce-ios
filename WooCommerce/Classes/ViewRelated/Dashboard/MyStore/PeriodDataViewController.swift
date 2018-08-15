@@ -49,17 +49,18 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     }
 
     private var chartData: BarChartData? {
-        guard let totalSalesItems = orderStats?.totalSalesItems, !totalSalesItems.isEmpty else {
+        guard let statItems = orderStats?.items, !statItems.isEmpty else {
             return nil
         }
 
         var dataEntries: [BarChartDataEntry] = []
         var barCount = 0
-        for salesItem in totalSalesItems {
-            if salesItem.value > 0.0 {
+
+        statItems.forEach { (item) in
+            if item.totalSales > 0.0 {
                 // By only including the values that are greater than zero (but still incrementing barCount),
                 // we will create nice "gaps" in the chart instead of a bunch of zero value bars.
-                dataEntries.append(BarChartDataEntry(x: Double(barCount), y: salesItem.value))
+                dataEntries.append(BarChartDataEntry(x: Double(barCount), y: item.totalSales))
             }
             barCount += 1
         }
@@ -142,6 +143,7 @@ private extension PeriodDataViewController {
         barChartView.pinchZoomEnabled = false
         barChartView.rightAxis.enabled = false
         barChartView.legend.enabled = false
+        barChartView.drawValueAboveBarEnabled = true
         barChartView.isUserInteractionEnabled = false
         barChartView.noDataText = NSLocalizedString("No data available", comment: "Text displayed when no data is available for revenue chart.")
         barChartView.noDataFont = StyleManager.chartLabelFont
@@ -151,20 +153,21 @@ private extension PeriodDataViewController {
         xAxis.labelPosition = .bottom
         xAxis.labelFont = StyleManager.chartLabelFont
         xAxis.labelTextColor = StyleManager.wooSecondary
-        xAxis.axisLineColor = StyleManager.wooSecondary
+        xAxis.axisLineColor = StyleManager.wooGreyBorder
         xAxis.gridColor = StyleManager.wooGreyBorder
-        xAxis.drawLabelsEnabled = true
+        xAxis.drawLabelsEnabled = false
         xAxis.drawGridLinesEnabled = false
         xAxis.drawAxisLineEnabled = true
 
         let yAxis = barChartView.leftAxis
         yAxis.labelFont = StyleManager.chartLabelFont
         yAxis.labelTextColor = StyleManager.wooSecondary
-        yAxis.axisLineColor = StyleManager.wooSecondary
+        yAxis.axisLineColor = StyleManager.wooGreyBorder
         yAxis.gridColor = StyleManager.wooGreyBorder
         yAxis.drawLabelsEnabled = true
         yAxis.drawGridLinesEnabled = true
         yAxis.drawAxisLineEnabled = true
+        yAxis.drawZeroLineEnabled = false
     }
 }
 

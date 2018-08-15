@@ -61,7 +61,7 @@ public class AlamofireNetwork: Network {
 ///
 private extension Alamofire.DataResponse {
 
-    /// Returns `NetworkError.notFound` whenever the Request failed  with a 404 StatusCode. This may be used by upper layers,
+    /// Returns `NetworkError.notFound` whenever the Request failed with a 404 StatusCode. This may be used by upper layers,
     /// to determine if an object should be deleted (for instance!).
     ///
     /// In any other case, this property will actually return the regular `DataResponse.error` result.

@@ -88,7 +88,7 @@ extension MockupNetwork {
         responseMap[requestUrlSuffix] = filename
     }
 
-    /// We'll return the specified Error, whenever a request matches the specified Suffix Criteria!.
+    /// We'll return the specified Error, whenever a request matches the specified Suffix Criteria!
     ///
     func simulateError(requestUrlSuffix: String, error: Error) {
         errorMap[requestUrlSuffix] = error

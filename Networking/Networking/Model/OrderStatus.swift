@@ -64,6 +64,7 @@ extension OrderStatus: RawRepresentable {
 extension OrderStatus: CustomStringConvertible {
 
     /// Returns a string describing the current OrderStatus Instance
+    /// Custom doesn't return a localized string because the payload arrives at runtime, not buildtime.
     ///
     public var description: String {
         switch self {
@@ -74,8 +75,22 @@ extension OrderStatus: CustomStringConvertible {
         case .cancelled:            return NSLocalizedString("Canceled", comment: "Cancelled Order Status")
         case .completed:            return NSLocalizedString("Completed", comment: "Completed Order Status")
         case .refunded:             return NSLocalizedString("Refunded", comment: "Refunded Order Status")
-        case .custom(let payload):  return NSLocalizedString("\(payload)", comment: "Custom Order Status")
+        case .custom(let payload):  return formattedCustomStatus(from: payload)
         }
+    }
+
+    /// Returns a reading-friendly payment label for custom payment statuses
+    ///
+    public func formattedCustomStatus(from payload: String) -> String {
+        let wordList = payload.components(separatedBy: "-")
+
+        var formatWordList = [String]()
+        for word in wordList {
+            formatWordList.append(word.capitalized)
+        }
+        let formattedStatus = formatWordList.joined(separator: " ")
+
+        return formattedStatus
     }
 }
 

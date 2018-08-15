@@ -2,7 +2,6 @@ import UIKit
 import Yosemite
 import Charts
 import XLPagerTabStrip
-import WordPressShared
 import CocoaLumberjack
 
 
@@ -26,6 +25,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         didSet {
             lastUpdatedDate = Date()
             reloadOrderFields()
+            reloadChart()
             reloadLastUpdatedField()
         }
     }
@@ -46,6 +46,22 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         } else {
             return ""
         }
+    }
+
+    private var chartData: BarChartData? {
+        guard let totalSalesItems = orderStats?.totalSalesItems, !totalSalesItems.isEmpty else {
+            return nil
+        }
+
+        var dataEntries: [BarChartDataEntry] = []
+        var barCount = 0
+        for salesItem in totalSalesItems {
+            dataEntries.append(BarChartDataEntry(x: Double(barCount), y: salesItem.value))
+            barCount += 1
+        }
+
+        let dataSet =  BarChartDataSet(values: dataEntries, label: "Data")
+        return BarChartData(dataSet: dataSet)
     }
 
     // MARK: - Initialization
@@ -82,6 +98,9 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 //
 extension PeriodDataViewController {
     func clearAllFields() {
+        if barChartView != nil {
+            barChartView.clear()
+        }
         orderStats = nil
         siteStats = nil
         reloadAllFields()
@@ -114,17 +133,35 @@ private extension PeriodDataViewController {
 
     func configureBarChart() {
         barChartView.chartDescription?.enabled = false
-
-        barChartView.dragEnabled = true
-        barChartView.setScaleEnabled(true)
+        barChartView.dragEnabled = false
+        barChartView.setScaleEnabled(false)
         barChartView.pinchZoomEnabled = false
-
-        // ChartYAxis *leftAxis = chartView.leftAxis;
+        barChartView.rightAxis.enabled = false
+        barChartView.legend.enabled = false
+        barChartView.fitBars = true
+        barChartView.isUserInteractionEnabled = false
+        barChartView.noDataText = NSLocalizedString("No data available", comment: "Text displayed when no data is available for revenue chart.")
+        barChartView.noDataFont = StyleManager.chartLabelFont
+        barChartView.noDataTextColor = StyleManager.wooSecondary
 
         let xAxis = barChartView.xAxis
         xAxis.labelPosition = .bottom
+        xAxis.labelFont = StyleManager.chartLabelFont
+        xAxis.labelTextColor = StyleManager.wooSecondary
+        xAxis.axisLineColor = StyleManager.wooSecondary
+        xAxis.gridColor = StyleManager.wooGreyBorder
+        xAxis.drawLabelsEnabled = true
+        xAxis.drawGridLinesEnabled = false
+        xAxis.drawAxisLineEnabled = true
 
-        barChartView.rightAxis.enabled = false
+        let yAxis = barChartView.leftAxis
+        yAxis.labelFont = StyleManager.chartLabelFont
+        yAxis.labelTextColor = StyleManager.wooSecondary
+        yAxis.axisLineColor = StyleManager.wooSecondary
+        yAxis.gridColor = StyleManager.wooGreyBorder
+        yAxis.drawLabelsEnabled = true
+        yAxis.drawGridLinesEnabled = true
+        yAxis.drawAxisLineEnabled = true
     }
 }
 
@@ -145,6 +182,7 @@ private extension PeriodDataViewController {
     func reloadAllFields() {
         reloadOrderFields()
         reloadSiteFields()
+        reloadChart()
         reloadLastUpdatedField()
     }
 
@@ -177,6 +215,15 @@ private extension PeriodDataViewController {
         visitorsData.text = visitorsText
     }
 
+    func reloadChart() {
+        guard barChartView != nil else {
+            return
+        }
+        barChartView.data = chartData
+        barChartView.notifyDataSetChanged()
+        barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
+    }
+
     func reloadLastUpdatedField() {
         if lastUpdated != nil { lastUpdated.text = summaryDateUpdated }
     }
@@ -188,5 +235,6 @@ private extension PeriodDataViewController {
 private extension PeriodDataViewController {
     enum Constants {
         static let placeholderText = "-"
+        static let chartAnimationDuration = 0.75
     }
 }

@@ -280,7 +280,7 @@ class OrderStoreTests: XCTestCase {
     }
 
     /// Verifies that whenever a `retrieveOrder` action results in a response with statusCode = 404, the local entity
-    /// is obliterated from existance.
+    /// is obliterated from existence.
     ///
     func testRetrieveSingleOrderResultingInStatusCode404CausesTheStoredOrderToGetDeleted() {
         let expectation = self.expectation(description: "Retrieve single order empty response")

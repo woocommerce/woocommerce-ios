@@ -92,7 +92,11 @@ extension Storage.Order: ReadOnlyConvertible {
 
     // MARK: - Private Helpers
 
-    private func createReadOnlyBillingAddress() -> Yosemite.Address {
+    private func createReadOnlyBillingAddress() -> Yosemite.Address? {
+        if billingCountry == nil {
+            return nil
+        }
+        
         return Address(firstName: billingFirstName ?? "",
                        lastName: billingLastName ?? "",
                        company: billingCompany ?? "",
@@ -106,7 +110,10 @@ extension Storage.Order: ReadOnlyConvertible {
                        email: billingEmail ?? "")
     }
 
-    private func createReadOnlyShippingAddress() -> Yosemite.Address {
+    private func createReadOnlyShippingAddress() -> Yosemite.Address? {
+        if shippingCountry == nil {
+            return nil
+        }
         return Address(firstName: shippingFirstName ?? "",
                        lastName: shippingLastName ?? "",
                        company: shippingCompany ?? "",

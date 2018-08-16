@@ -235,6 +235,7 @@ for the iOS platform (and our specific requirements):
         D.  [Yosemite]  Upon completion, SomeStore *may* (or may not) run the Action's callback (if any).
     
     2.  Observing a Collection of Entities
+
                                 ResultsController >> Observer
 
         A.  [Main App]  An observer (typically a ViewController) initializes a ResultsController, and subscribes to it's callbacks

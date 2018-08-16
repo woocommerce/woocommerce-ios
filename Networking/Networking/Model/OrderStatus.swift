@@ -75,22 +75,11 @@ extension OrderStatus: CustomStringConvertible {
         case .cancelled:            return NSLocalizedString("Canceled", comment: "Cancelled Order Status")
         case .completed:            return NSLocalizedString("Completed", comment: "Completed Order Status")
         case .refunded:             return NSLocalizedString("Refunded", comment: "Refunded Order Status")
-        case .custom(let payload):  return formattedCustomStatus(from: payload)
+        case .custom(let payload):
+            return payload
+                .replacingOccurrences(of: "-", with: " ")
+                .capitalized
         }
-    }
-
-    /// Returns a reading-friendly payment label for custom payment statuses
-    ///
-    public func formattedCustomStatus(from payload: String) -> String {
-        let wordList = payload.components(separatedBy: "-")
-
-        var formatWordList = [String]()
-        for word in wordList {
-            formatWordList.append(word.capitalized)
-        }
-        let formattedStatus = formatWordList.joined(separator: " ")
-
-        return formattedStatus
     }
 }
 

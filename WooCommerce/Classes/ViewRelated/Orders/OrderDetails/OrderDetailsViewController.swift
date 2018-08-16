@@ -125,7 +125,14 @@ private extension OrderDetailsViewController {
         let customerNoteSection = Section(leftTitle: NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title"), rightTitle: nil, footer: nil, rows: [.customerNote])
 
         let infoFooter = billingIsHidden ? NSLocalizedString("Show billing", comment: "Footer text to show the billing cell") : NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
-        let infoRows: [Row] = billingIsHidden ? [.shippingAddress] : [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
+        var infoRows: [Row] = [Row]()
+        if billingIsHidden {
+            infoRows = [.shippingAddress]
+        } else if viewModel.order.billingAddress == nil {
+            infoRows = [.shippingAddress, .billingAddress]
+        } else {
+            infoRows = [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
+        }
         let infoSection = Section(leftTitle: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), rightTitle: nil, footer: infoFooter, rows: infoRows)
         let paymentSection = Section(leftTitle: NSLocalizedString("PAYMENT", comment: "Payment section title"), rightTitle: nil, footer: nil, rows: [.payment])
 
@@ -243,13 +250,24 @@ private extension OrderDetailsViewController {
         case let cell as CustomerNoteTableViewCell:
             cell.configure(with: viewModel)
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
-            cell.configure(with: viewModel.shippingViewModel)
+            if let shippingViewModel = viewModel.shippingViewModel {
+                cell.title = shippingViewModel.title
+                cell.name = shippingViewModel.fullName
+                cell.address = shippingViewModel.formattedAddress
+            } else {
+                cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
+                cell.name = nil
+                cell.address = NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
+            }
         case let cell as CustomerInfoTableViewCell where row == .billingAddress:
             if let billingViewModel = viewModel.billingViewModel {
-                cell.configure(with: billingViewModel)
+                cell.title = billingViewModel.title
+                cell.name = billingViewModel.fullName
+                cell.address = billingViewModel.formattedAddress
             } else {
-                let billingViewModel = ContactViewModel(with: viewModel.order.generateEmptyBillingAddress(), contactType: ContactType.billing)
-                cell.configure(with: billingViewModel)
+                cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
+                cell.name = nil
+                cell.address = NSLocalizedString("No address specified.", comment: "Order details > customer info > billing details. This is where the address would normally display.")
             }
         case let cell as BillingDetailsTableViewCell where row == .billingPhone:
             configure(cell, for: .billingPhone)

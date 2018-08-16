@@ -18,7 +18,7 @@ class CustomerInfoTableViewCell: UITableViewCell {
     }
 
 
-    var title: String? {
+    public var title: String? {
         get {
             return titleLabel.text
         }
@@ -27,7 +27,7 @@ class CustomerInfoTableViewCell: UITableViewCell {
         }
     }
 
-    var name: String? {
+    public var name: String? {
         get {
             return nameLabel.text
         }
@@ -36,20 +36,12 @@ class CustomerInfoTableViewCell: UITableViewCell {
         }
     }
 
-    var address: String? {
+    public var address: String? {
         get {
             return addressLabel.text
         }
         set {
             addressLabel.text = newValue
         }
-    }
-}
-
-extension CustomerInfoTableViewCell {
-    func configure(with viewModel: ContactViewModel) {
-        title = viewModel.title
-        name = viewModel.fullName
-        address = viewModel.formattedAddress
     }
 }

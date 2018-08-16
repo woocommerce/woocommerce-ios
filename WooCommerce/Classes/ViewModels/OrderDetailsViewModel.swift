@@ -74,7 +74,7 @@ class OrderDetailsViewModel {
         if let billingAddress = order.billingAddress {
             return ContactViewModel(with: billingAddress, contactType: ContactType.billing)
         }
-        
+
         return nil
     }
 

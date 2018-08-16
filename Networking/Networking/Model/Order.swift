@@ -117,19 +117,8 @@ public struct Order: Decodable {
 
         let items = try container.decode([OrderItem].self, forKey: .items)
 
-        var shippingAddress: Address? = nil
-        do {
-            shippingAddress = try container.decodeIfPresent(Address.self, forKey: .shippingAddress)
-        } catch {
-            // no-op
-        }
-
-        var billingAddress: Address? = nil
-        do {
-            billingAddress = try container.decode(Address.self, forKey: .billingAddress)
-        } catch {
-            billingAddress = Address(firstName: "", lastName: "", company: "", address1: "", address2: "", city: "", state: "", postcode: "", country: "", phone: "", email: "")
-        }
+        let shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
+        let billingAddress = try? container.decode(Address.self, forKey: .billingAddress)
 
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
 

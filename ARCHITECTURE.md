@@ -240,13 +240,13 @@ for the iOS platform (and our specific requirements):
         A.  [Main App]  An observer (typically a ViewController) initializes a ResultsController, and subscribes to it's callbacks
         B.  [Yosemite]  ResultsController listens to Storage Layer changes that match the target criteria (Entity / Predicate)
         C.  [Yosemite]  Whenever there are changes, the observer gets notified
-        D.  [Yosemite]  ResultsController *grants ReadOnly Access* to the stored entityes
+        D.  [Yosemite]  ResultsController *grants ReadOnly Access* to the stored entities
         
     3.  Observing a Single Entity
     
                                 EntityListener >> Observer
         
-        A.  [Main App]  An observer initializes an EntityListener instance with a especific ReadOnly Entity.
+        A.  [Main App]  An observer initializes an EntityListener instance with a specific ReadOnly Entity.
         B.  [Yosemite]  EntityListener hooks up to the Storage Layer, and listens to changes matching it's criteria.
         C.  [Yosemite]  Whenever an Update / Deletion OP is performed on the target entity, the Observer is notified.
                                 

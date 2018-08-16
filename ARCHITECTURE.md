@@ -69,28 +69,33 @@ Throughout the entire architecture design process, we've priorized several key c
 CoreData interactions are contained within the Storage framework. A set of protocols has been defined, which would, in theory, allow us to
 replace CoreData with any other database. Key notes:
 
-    1.  CoreDataManager
+
+1.  **CoreDataManager**
+
         In charge of bootstrapping the entire CoreData stack: contains a NSPersistentContainer instance, and 
         is responsible for loading both, the Data Model and the actual `.sqlite` file.
 
-    2.  StorageManagerType
+2.  **StorageManagerType**
+
         Defines the public API that's expected to be conformed by any actual implementation that intends to contain
         and grant access to StorageType instances. 
         
         **Conformed by CoreDatManager.**
 
-    2.  StorageType
+3.  **StorageType**
+
         Defines a set of framework-agnostic API's for CRUD operations over collections of Objects.
         Every instance of this type is expected to be associated with a particular GCD Queue (Thread). 
         
         **Conformed by NSManagedObjectContext**
         
-    3.  Object
+4.  **Object**
+
         Defines required methods / properties, to be implemented by Stored Objects. 
         
         **Conformed by NSManagedObject.**
     
-    4.  StorageType+Extensions
+5.  **StorageType+Extensions**
 
         The extension `StorageType+Extensions` defines a set of convenience methods, aimed at easing out WC specific
         tasks (such as: `loadOrder(orderID:)`).
@@ -134,13 +139,13 @@ Since our Model entities conform to `Decodable`, this results in small-footprint
 
 The networking layer is **entirely decoupled** from third party frameworks. We rely upon component injection to actually perform network requests:
 
-    1.  NetworkType
+1.  **NetworkType**
         Defines a set of API's, to be implemented by any class that offers actual Network Access.
         
-    2.  AlamofireNetwork
+2.  **AlamofireNetwork**
         Thin wrapper around the Alamofire library.
         
-    3.  MockupNetwork
+3.  **MockupNetwork**
         As the name implies, the Mockup Network is extensively used in Unit Tests. Allows us to simulate backend
         responses without requiring third party tools. No more NSURLSession swizzling!
 
@@ -151,15 +156,15 @@ The networking layer is **entirely decoupled** from third party frameworks. We r
 Rather than building URL instances in multiple spots, we've opted for implementing three core tools, that, once fully initialized, are capable
 of performing this task for us:
 
-    1.  DotcomRequest
+1.  **DotcomRequest**
         Represents a WordPress.com request. Set the proper API Version, method, path and parameters, and this structure
         will generate a URLRequest for you.
 
-    2.  JetpackRequest
+2.  **JetpackRequest**
         Analog to DotcomRequest, this structure represents a Jetpack Endpoint request. Capable of building a ready-to-use
         URLRequest for a "Jetpack Tunneled" endpoint.
 
-    3.  AuthenticatedRequest
+3.  **AuthenticatedRequest**
         Injects a set of Credentials into anything that conforms to the URLConvertible protocol. Usually wraps up
         a DotcomRequest (OR) JetpackRequest.
 
@@ -188,13 +193,16 @@ Storage layers.
 We've borrowed several concepts from  the [WordPress's FluxC library](https://github.com/wordpress-mobile/WordPress-FluxC-Android), and tailored them down
 for the iOS platform (and our specific requirements):
 
-    1.  Actions
+
+1.  **Actions**
+
         Lightweight entities expected to contain anything required to perform a specific task.
         Usually implemented by means of Swift enums, but can be literally any type that conforms to the Action protocol.
 
         *Allowed* to have a Closure Callback to indicate Success / Failure scenarios.
         
-    2.  Stores
+2.  **Stores**
+
         Stores offer sets of related API's that allow you to perform related tasks. Typically each Model Entity will have an 
         associated Store.
         
@@ -204,7 +212,8 @@ for the iOS platform (and our specific requirements):
         Differing from our Android counterpart, Yosemite.Stores are *only expected process Actions*, and do not expose
         Public API's to retrieve / observe objects. The name has been kept *for historic reasons*.
         
-    3.  Dispatcher
+3.  **Dispatcher**
+
         Binds together Actions and ActionProcessors (Stores), with key differences from FluxC:
 
         -   ActionProcessors must register themselves to handle a specific ActionType.
@@ -212,12 +221,14 @@ for the iOS platform (and our specific requirements):
         -   Since each ActionType may be only handled by a single ActionProcessor, a Yosemite.Action is *allowed* to have
             a Callback Closure.
 
-    4.  ResultsController
+4.  **ResultsController**
+
         Associated with a Stored.Entity, allows you to query the Storage layer, but grants you access to the *ReadOnly* version
         of the Observed Entities.
         Internally, implemented as a thin wrapper around NSFetchedResultsController.
         
-    5.  EntityListener
+5.  **EntityListener**
+
         Allows you to observe changes performed over DataModel Entities. Whenever the observed entity is Updated / Deleted,
         callbacks will be executed.
 
@@ -257,19 +268,21 @@ for the iOS platform (and our specific requirements):
 
 It's important to note that in the proposed architecture Model Entities must be defined in two spots:
 
-    A.  Storage.framework
+A.      **Storage.framework**
+
         New entities are defined in the CoreData Model, and it's code is generated thru the Model Editor.
         
-    B.  Networking.framework
+B.      **Networking.framework**
+
         Entities are typically implemented as `structs` with readonly properties, and Decodable conformance.
 
-In order to avoid code duplication we've taken a shortcut:
+In order to avoid code duplication we've taken a few shortcuts:
     
-    1.  All of the 'Networking Entities' are typealiased as 'Yosemite Entities', and exposed publicly (Model.swift). 
+*       All of the 'Networking Entities' are typealiased as 'Yosemite Entities', and exposed publicly (Model.swift). 
         This allows us to avoid the need for importing `Networking` in the main app, and also lets us avoid reimplementing, yet again,
         the same entities that have been defined twice.
 
-    2.  Since ResultsController uses internally a FRC, the Storage.Model *TYPE* is required for it's initialization.
+*       Since ResultsController uses internally a FRC, the Storage.Model *TYPE* is required for it's initialization.
         We may revisit and fix this shortcoming in upcoming iterations. 
 
         As a workaround to prevent the need for `import Storage` statements, all of the Storage.Entities that are used in 
@@ -283,12 +296,14 @@ It's important to note that the Main App is only expected to interact with ReadO
 into a ReadOnly instance:
 
 
-    1.  ReadOnlyConvertible
+*  **ReadOnlyConvertible**
+
         Protocol conformed by all of the Storage.Entities, allows us to obtain a ReadOnly Type matching the Receiver's Payload.
         Additionally, this protocol define an API to update the receiver's fields, given a ReadOnly instance (potentially a Backend
         response we've received from the Networking layer)
     
-    2.  ReadOnlyType
+*  **ReadOnlyType**
+
         Protocol conformed by *STRONG* Storage.Entities. Allows us to determine if a ReadOnly type represents a given Mutable instance.
         Few notes that led us to this approach:
 

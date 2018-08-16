@@ -140,12 +140,15 @@ Since our Model entities conform to `Decodable`, this results in small-footprint
 The networking layer is **entirely decoupled** from third party frameworks. We rely upon component injection to actually perform network requests:
 
 1.  **NetworkType**
+
         Defines a set of API's, to be implemented by any class that offers actual Network Access.
         
 2.  **AlamofireNetwork**
+
         Thin wrapper around the Alamofire library.
         
 3.  **MockupNetwork**
+
         As the name implies, the Mockup Network is extensively used in Unit Tests. Allows us to simulate backend
         responses without requiring third party tools. No more NSURLSession swizzling!
 
@@ -157,14 +160,17 @@ Rather than building URL instances in multiple spots, we've opted for implementi
 of performing this task for us:
 
 1.  **DotcomRequest**
+
         Represents a WordPress.com request. Set the proper API Version, method, path and parameters, and this structure
         will generate a URLRequest for you.
 
 2.  **JetpackRequest**
+
         Analog to DotcomRequest, this structure represents a Jetpack Endpoint request. Capable of building a ready-to-use
         URLRequest for a "Jetpack Tunneled" endpoint.
 
 3.  **AuthenticatedRequest**
+
         Injects a set of Credentials into anything that conforms to the URLConvertible protocol. Usually wraps up
         a DotcomRequest (OR) JetpackRequest.
 
@@ -268,25 +274,25 @@ for the iOS platform (and our specific requirements):
 
 It's important to note that in the proposed architecture Model Entities must be defined in two spots:
 
-A.      **Storage.framework**
+A.  **Storage.framework**
 
         New entities are defined in the CoreData Model, and it's code is generated thru the Model Editor.
         
-B.      **Networking.framework**
+B.  **Networking.framework**
 
         Entities are typically implemented as `structs` with readonly properties, and Decodable conformance.
 
 In order to avoid code duplication we've taken a few shortcuts:
     
-*       All of the 'Networking Entities' are typealiased as 'Yosemite Entities', and exposed publicly (Model.swift). 
-        This allows us to avoid the need for importing `Networking` in the main app, and also lets us avoid reimplementing, yet again,
-        the same entities that have been defined twice.
+*   All of the 'Networking Entities' are typealiased as 'Yosemite Entities', and exposed publicly (Model.swift). 
+    This allows us to avoid the need for importing `Networking` in the main app, and also lets us avoid reimplementing, yet again,
+    the same entities that have been defined twice.
 
-*       Since ResultsController uses internally a FRC, the Storage.Model *TYPE* is required for it's initialization.
-        We may revisit and fix this shortcoming in upcoming iterations. 
+*   Since ResultsController uses internally a FRC, the Storage.Model *TYPE* is required for it's initialization.
+    We may revisit and fix this shortcoming in upcoming iterations. 
 
-        As a workaround to prevent the need for `import Storage` statements, all of the Storage.Entities that are used in 
-        ResultsController instances through the main app have been re-exported by means of a typealias.
+    As a workaround to prevent the need for `import Storage` statements, all of the Storage.Entities that are used in 
+    ResultsController instances through the main app have been re-exported by means of a typealias.
         
         
 

@@ -38,7 +38,7 @@ PODS:
   - Reachability (3.2)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (0.5.0)
-  - WordPressAuthenticator (1.0.5):
+  - WordPressAuthenticator (1.0.6):
     - 1PasswordExtension (= 1.8.5)
     - Alamofire (= 4.7.2)
     - CocoaLumberjack (= 3.4.2)
@@ -73,7 +73,7 @@ DEPENDENCIES:
   - Crashlytics (~> 3.10)
   - Gridicons (= 0.15)
   - KeychainAccess (~> 3.1)
-  - WordPressAuthenticator (= 1.0.5)
+  - WordPressAuthenticator (= 1.0.6)
   - WordPressShared (= 1.0.8)
   - XLPagerTabStrip (~> 8.0)
 
@@ -130,13 +130,13 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
-  WordPressAuthenticator: e6e1c80aff95f1b2ad11e4477fcfe9f61aa8c49a
+  WordPressAuthenticator: 56538a229185640b41912c10c3f1891c2cc9bbb9
   WordPressKit: a4a3849684f631a3abf579f6d3f15a32677cbb30
   WordPressShared: 063e1e8b1a7aaf635abf17f091a2d235a068abdc
   WordPressUI: af141587ec444f9af753a00605bd0d3f14d8d8a3
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
   XLPagerTabStrip: c908b17cbf42fcd2598ee1adfc49bae25444d88a
 
-PODFILE CHECKSUM: fad8937db279e4bf9807a4985a2418c4832c9b35
+PODFILE CHECKSUM: f61f936dde41c2e27f9fe80a0da46c2def730421
 
 COCOAPODS: 1.5.3

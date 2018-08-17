@@ -1,6 +1,13 @@
 import Foundation
 
 
+// MARK: - StorageManagerType Notifications
+//
+public extension NSNotification.Name {
+    public static let StorageManagerDidResetStorage = NSNotification.Name(rawValue: "StorageManagerDidResetStorage")
+}
+
+
 /// Defines the methods and properties implemented by any concrete StorageManager implementation.
 ///
 public protocol StorageManagerType {

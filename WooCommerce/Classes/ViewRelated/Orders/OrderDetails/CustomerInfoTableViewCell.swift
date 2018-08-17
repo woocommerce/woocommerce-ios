@@ -18,7 +18,7 @@ class CustomerInfoTableViewCell: UITableViewCell {
     }
 
 
-    public var title: String? {
+    var title: String? {
         get {
             return titleLabel.text
         }
@@ -27,7 +27,7 @@ class CustomerInfoTableViewCell: UITableViewCell {
         }
     }
 
-    public var name: String? {
+    var name: String? {
         get {
             return nameLabel.text
         }
@@ -36,7 +36,7 @@ class CustomerInfoTableViewCell: UITableViewCell {
         }
     }
 
-    public var address: String? {
+    var address: String? {
         get {
             return addressLabel.text
         }

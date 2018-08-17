@@ -74,6 +74,35 @@ public class CoreDataManager: StorageManagerType {
             closure(context as StorageType)
         }
     }
+
+    /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
+    ///
+    public func reset() {
+        let storeCoordinator = persistentContainer.persistentStoreCoordinator
+        let storeDescriptor = self.storeDescription
+        let viewContext = persistentContainer.viewContext
+
+        viewContext.performAndWait {
+            do {
+                try storeCoordinator.destroyPersistentStore(at: self.storeURL, ofType: storeDescriptor.type, options: storeDescriptor.options)
+            } catch {
+                fatalError("☠️ [CoreDataManager] Cannot Destroy persistentStore! \(error)")
+            }
+
+            storeCoordinator.addPersistentStore(with: storeDescriptor) { (_, error) in
+                guard let error = error else {
+                    return
+                }
+
+                fatalError("☠️ [CoreDataManager] Unable to regenerate Persistent Store! \(error)")
+            }
+
+            NSLog("💣 [CoreDataManager] Stack Destroyed!")
+            viewContext.reset()
+
+            NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+        }
+    }
 }
 
 

@@ -92,7 +92,11 @@ extension Storage.Order: ReadOnlyConvertible {
 
     // MARK: - Private Helpers
 
-    private func createReadOnlyBillingAddress() -> Yosemite.Address {
+    private func createReadOnlyBillingAddress() -> Yosemite.Address? {
+        guard let billingCountry = billingCountry else {
+            return nil
+        }
+        
         return Address(firstName: billingFirstName ?? "",
                        lastName: billingLastName ?? "",
                        company: billingCompany ?? "",
@@ -101,12 +105,16 @@ extension Storage.Order: ReadOnlyConvertible {
                        city: billingCity ?? "",
                        state: billingState ?? "",
                        postcode: billingPostcode ?? "",
-                       country: billingCountry ?? "",
+                       country: billingCountry,
                        phone: billingPhone ?? "",
                        email: billingEmail ?? "")
     }
 
-    private func createReadOnlyShippingAddress() -> Yosemite.Address {
+    private func createReadOnlyShippingAddress() -> Yosemite.Address? {
+        guard let shippingCountry = shippingCountry else {
+            return nil
+        }
+
         return Address(firstName: shippingFirstName ?? "",
                        lastName: shippingLastName ?? "",
                        company: shippingCompany ?? "",
@@ -115,7 +123,7 @@ extension Storage.Order: ReadOnlyConvertible {
                        city: shippingCity ?? "",
                        state: shippingState ?? "",
                        postcode: shippingPostcode ?? "",
-                       country: shippingCountry ?? "",
+                       country: shippingCountry,
                        phone: shippingPhone ?? "",
                        email: shippingEmail ?? "")
     }

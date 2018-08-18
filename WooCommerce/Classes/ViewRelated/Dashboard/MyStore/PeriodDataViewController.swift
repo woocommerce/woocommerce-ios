@@ -169,6 +169,7 @@ private extension PeriodDataViewController {
         yAxis.axisLineColor = StyleManager.wooGreyBorder
         yAxis.gridColor = StyleManager.wooGreyBorder
         yAxis.zeroLineColor = StyleManager.wooGreyBorder
+        yAxis.valueFormatter = self
         yAxis.drawLabelsEnabled = true
         yAxis.drawGridLinesEnabled = true
         yAxis.drawAxisLineEnabled = false
@@ -247,12 +248,20 @@ private extension PeriodDataViewController {
 //
 extension PeriodDataViewController: IAxisValueFormatter {
     func stringForValue(_ value: Double, axis: AxisBase?) -> String {
-        guard let item = orderStats?.items?[Int(value)] else {
+        guard let axis = axis, let orderStats = orderStats else {
             return ""
         }
 
-        //TODO: This is not right!
-        return String(item.period)
+        if axis is XAxis {
+            if let item = orderStats.items?[Int(value)] {
+                //TODO: This is not right!
+                return String(item.period)
+            } else {
+                return ""
+            }
+        } else {
+            return orderStats.currencySymbol + value.friendlyString()
+        }
     }
 }
 

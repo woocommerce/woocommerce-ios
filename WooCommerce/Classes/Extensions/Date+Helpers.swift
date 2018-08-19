@@ -29,7 +29,7 @@ extension DateFormatter {
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "en_US_POSIX")
             formatter.timeZone = TimeZone(identifier: "GMT")
-            formatter.dateFormat = "MMM dd"
+            formatter.dateFormat = "MMM d"
             return formatter
         }()
 
@@ -39,7 +39,7 @@ extension DateFormatter {
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "en_US_POSIX")
             formatter.timeZone = TimeZone(identifier: "GMT")
-            formatter.dateFormat = "MMM yyyy"
+            formatter.dateFormat = "MMM d"
             return formatter
         }()
 
@@ -49,7 +49,7 @@ extension DateFormatter {
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "en_US_POSIX")
             formatter.timeZone = TimeZone(identifier: "GMT")
-            formatter.dateFormat = "MMM yyyy"
+            formatter.dateFormat = "MMM"
             return formatter
         }()
 

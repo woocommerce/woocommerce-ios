@@ -45,11 +45,3 @@ class CustomerInfoTableViewCell: UITableViewCell {
         }
     }
 }
-
-extension CustomerInfoTableViewCell {
-    func configure(with viewModel: ContactViewModel) {
-        title = viewModel.title
-        name = viewModel.fullName
-        address = viewModel.formattedAddress
-    }
-}

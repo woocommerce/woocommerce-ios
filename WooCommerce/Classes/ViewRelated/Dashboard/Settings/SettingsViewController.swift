@@ -68,7 +68,7 @@ class SettingsViewController: UIViewController {
     func logOutUser() {
         WooAnalytics.shared.track(.logout)
         StoresManager.shared.deauthenticate()
-        self.navigationController?.popToRootViewController(animated: true)
+        navigationController?.popToRootViewController(animated: true)
     }
 }
 
@@ -100,12 +100,12 @@ extension SettingsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        if cell is LogOutTableViewCell {
-            let logoutCell = cell as! LogOutTableViewCell
+        if let logoutCell = cell as? LogOutTableViewCell {
             logoutCell.didSelectLogout = { [weak self] in
                 self?.handleLogout()
             }
         }
+
         return cell
     }
 

@@ -127,6 +127,7 @@ private extension PeriodDataViewController {
         barChartView.noDataFont = StyleManager.chartLabelFont
         barChartView.noDataTextColor = StyleManager.wooSecondary
         barChartView.extraRightOffset = Constants.chartExtraRightOffset
+        barChartView.delegate = self
 
         let xAxis = barChartView.xAxis
         xAxis.labelPosition = .bottom
@@ -160,7 +161,7 @@ private extension PeriodDataViewController {
 }
 
 
-// MARK: - IndicatorInfoProvider Conformance
+// MARK: - IndicatorInfoProvider Conformance (Tab Bar)
 //
 extension PeriodDataViewController {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
@@ -169,7 +170,28 @@ extension PeriodDataViewController {
 }
 
 
-// MARK: - IAxisValueFormatter Conformance
+// MARK: - ChartViewDelegate Conformance (Charts)
+//
+extension PeriodDataViewController: ChartViewDelegate {
+    func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
+        guard entry.y != 0.0 else {
+            // Do not display the marker if the Y-value is zero
+            chartView.highlightValue(nil, callDelegate: false)
+            return
+        }
+
+        let marker: ChartMarker = ChartMarker(color: StyleManager.wooSecondary,
+                                              font: StyleManager.chartLabelFont,
+                                              textColor: StyleManager.wooWhite,
+                                              insets: Constants.chartMarkerInsets)
+        marker.minimumSize = Constants.chartMarkerMinimumSize
+        marker.arrowSize = Constants.chartMarkerArrowSize
+        chartView.marker = marker
+    }
+}
+
+
+// MARK: - IAxisValueFormatter Conformance (Charts)
 //
 extension PeriodDataViewController: IAxisValueFormatter {
     func stringForValue(_ value: Double, axis: AxisBase?) -> String {
@@ -206,7 +228,7 @@ extension PeriodDataViewController: IAxisValueFormatter {
             }
         } else {
             if value == 0.0 {
-                // Do not show the 0 label on the Y axis
+                // Do not show the "0" label on the Y axis
                 return ""
             } else {
                 return value.friendlyString()
@@ -271,20 +293,24 @@ private extension PeriodDataViewController {
     }
 
     func generateBarDataSet() -> BarChartData? {
-        guard let statItems = orderStats?.items, !statItems.isEmpty else {
+        guard let orderStats = orderStats, let statItems = orderStats.items, !statItems.isEmpty else {
             return nil
         }
 
         var barCount = 0
         var dataEntries: [BarChartDataEntry] = []
         statItems.forEach { (item) in
-            dataEntries.append(BarChartDataEntry(x: Double(barCount), y: item.totalSales))
+            let entry = BarChartDataEntry(x: Double(barCount), y: item.totalSales)
+            entry.accessibilityValue = "\(item.period): \(orderStats.currencySymbol)\(item.totalSales.friendlyString())"
+            dataEntries.append(entry)
             barCount += 1
         }
 
         let dataSet =  BarChartDataSet(values: dataEntries, label: "Data")
         dataSet.setColor(StyleManager.wooCommerceBrandColor)
-        dataSet.highlightEnabled = false
+        dataSet.highlightEnabled = true
+        dataSet.highlightColor = StyleManager.wooAccent
+        dataSet.highlightAlpha = Constants.chartHighlightAlpha
         dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
         return BarChartData(dataSet: dataSet)
     }
@@ -298,7 +324,12 @@ private extension PeriodDataViewController {
         static let placeholderText                      = "-"
 
         static let chartAnimationDuration: TimeInterval = 0.75
-        static let chartExtraRightOffset: CGFloat       = 20.0
+        static let chartExtraRightOffset: CGFloat       = 25.0
+        static let chartHighlightAlpha: CGFloat         = 1.0
+
+        static let chartMarkerInsets: UIEdgeInsets      = UIEdgeInsets(top: 5.0, left: 2.0, bottom: 5.0, right: 2.0)
+        static let chartMarkerMinimumSize: CGSize       = CGSize(width: 50.0, height: 30.0)
+        static let chartMarkerArrowSize: CGSize         = CGSize(width: 8, height: 6)
 
         static let chartXAxisDashLengths: [CGFloat]     = [5.0, 5.0]
         static let chartXAxisDashPhase: CGFloat         = 0.0

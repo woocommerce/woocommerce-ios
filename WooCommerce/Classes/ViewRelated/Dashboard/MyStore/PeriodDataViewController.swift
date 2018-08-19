@@ -48,28 +48,6 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         }
     }
 
-    private var chartData: BarChartData? {
-        guard let statItems = orderStats?.items, !statItems.isEmpty else {
-            return nil
-        }
-
-        var dataEntries: [BarChartDataEntry] = []
-        var barCount = 0
-
-        statItems.forEach { (item) in
-            if item.totalSales > 0.0 {
-                // By only including the values that are greater than zero (but still incrementing barCount),
-                // we will create nice "gaps" in the chart instead of a bunch of zero value bars.
-                dataEntries.append(BarChartDataEntry(x: Double(barCount), y: item.totalSales))
-            }
-            barCount += 1
-        }
-
-        let dataSet =  BarChartDataSet(values: dataEntries, label: "Data")
-        dataSet.setColor(StyleManager.wooCommerceBrandColor)
-        return BarChartData(dataSet: dataSet)
-    }
-
     // MARK: - Initialization
 
     /// Designated Initializer
@@ -145,7 +123,6 @@ private extension PeriodDataViewController {
         barChartView.rightAxis.enabled = false
         barChartView.legend.enabled = false
         barChartView.drawValueAboveBarEnabled = true
-        barChartView.isUserInteractionEnabled = false
         barChartView.noDataText = NSLocalizedString("No data available", comment: "Text displayed when no data is available for revenue chart.")
         barChartView.noDataFont = StyleManager.chartLabelFont
         barChartView.noDataTextColor = StyleManager.wooSecondary
@@ -183,11 +160,58 @@ private extension PeriodDataViewController {
 }
 
 
-// MARK: - IndicatorInfoProvider Confromance
+// MARK: - IndicatorInfoProvider Conformance
 //
 extension PeriodDataViewController {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         return IndicatorInfo(title: granularity.pluralizedString)
+    }
+}
+
+
+// MARK: - IAxisValueFormatter Conformance
+//
+extension PeriodDataViewController: IAxisValueFormatter {
+    func stringForValue(_ value: Double, axis: AxisBase?) -> String {
+        guard let axis = axis, let orderStats = orderStats else {
+            return ""
+        }
+
+        if axis is XAxis {
+            if let item = orderStats.items?[Int(value)] {
+                // FIXME: This logic could prolly be pushed into a model extension
+                var dateString = ""
+                switch orderStats.granularity {
+                case .day:
+                    if let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: item.period) {
+                        dateString = DateFormatter.Charts.chartsDayFormatter.string(from: periodDate)
+                    }
+                case .week:
+                    if let periodDate = DateFormatter.Stats.statsWeekFormatter.date(from: item.period) {
+                        dateString = DateFormatter.Charts.chartsWeekFormatter.string(from: periodDate)
+                    }
+                case .month:
+                    if let periodDate = DateFormatter.Stats.statsMonthFormatter.date(from: item.period) {
+                        dateString = DateFormatter.Charts.chartsMonthFormatter.string(from: periodDate)
+                    }
+                case .year:
+                    if let periodDate = DateFormatter.Stats.statsYearFormatter.date(from: item.period) {
+                        dateString = DateFormatter.Charts.chartsYearFormatter.string(from: periodDate)
+                    }
+                }
+
+                return dateString
+            } else {
+                return ""
+            }
+        } else {
+            if value == 0.0 {
+                // Do not show the 0 label on the Y axis
+                return ""
+            } else {
+                return value.friendlyString()
+            }
+        }
     }
 }
 
@@ -236,7 +260,7 @@ private extension PeriodDataViewController {
         guard barChartView != nil else {
             return
         }
-        barChartView.data = chartData
+        barChartView.data = generateBarDataSet()
         barChartView.fitBars = true
         barChartView.notifyDataSetChanged()
         barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
@@ -245,52 +269,24 @@ private extension PeriodDataViewController {
     func reloadLastUpdatedField() {
         if lastUpdated != nil { lastUpdated.text = summaryDateUpdated }
     }
-}
 
-
-// MARK: - IAxisValueFormatter Conformance
-//
-extension PeriodDataViewController: IAxisValueFormatter {
-    func stringForValue(_ value: Double, axis: AxisBase?) -> String {
-        guard let axis = axis, let orderStats = orderStats else {
-            return ""
+    func generateBarDataSet() -> BarChartData? {
+        guard let statItems = orderStats?.items, !statItems.isEmpty else {
+            return nil
         }
 
-        if axis is XAxis {
-            if let item = orderStats.items?[Int(value)] {
-                // FIXME: This logic could prolly be pushed into a model extension
-                var dateString = ""
-                switch orderStats.granularity {
-                case .day:
-                    if let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: item.period) {
-                        dateString = DateFormatter.Charts.chartsDayFormatter.string(from: periodDate)
-                    }
-                case .week:
-                    if let periodDate = DateFormatter.Stats.statsWeekFormatter.date(from: item.period) {
-                        dateString = DateFormatter.Charts.chartsWeekFormatter.string(from: periodDate)
-                    }
-                case .month:
-                    if let periodDate = DateFormatter.Stats.statsMonthFormatter.date(from: item.period) {
-                        dateString = DateFormatter.Charts.chartsMonthFormatter.string(from: periodDate)
-                    }
-                case .year:
-                    if let periodDate = DateFormatter.Stats.statsYearFormatter.date(from: item.period) {
-                        dateString = DateFormatter.Charts.chartsYearFormatter.string(from: periodDate)
-                    }
-                }
-
-                return dateString
-            } else {
-                return ""
-            }
-        } else {
-            if value == 0.0 {
-                // Do not show the 0 label on the Y axis
-                return ""
-            } else {
-                return value.friendlyString()
-            }
+        var barCount = 0
+        var dataEntries: [BarChartDataEntry] = []
+        statItems.forEach { (item) in
+            dataEntries.append(BarChartDataEntry(x: Double(barCount), y: item.totalSales))
+            barCount += 1
         }
+
+        let dataSet =  BarChartDataSet(values: dataEntries, label: "Data")
+        dataSet.setColor(StyleManager.wooCommerceBrandColor)
+        dataSet.highlightEnabled = false
+        dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
+        return BarChartData(dataSet: dataSet)
     }
 }
 

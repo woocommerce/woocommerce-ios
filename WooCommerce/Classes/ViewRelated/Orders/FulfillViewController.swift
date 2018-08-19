@@ -252,12 +252,14 @@ private extension FulfillViewController {
 
     /// Setup: Address Cell
     ///
-    private func setupAddressCell(_ cell: UITableViewCell, with address: Address) {
+    private func setupAddressCell(_ cell: UITableViewCell, with address: Address?) {
         guard let cell = cell as? CustomerInfoTableViewCell else {
             fatalError()
         }
 
         guard let address = order.shippingAddress ?? order.billingAddress else {
+            cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
+            cell.address = NSLocalizedString("No address specified.", comment: "Fulfill order > customer info > where the address would normally display.")
             return
         }
 
@@ -303,7 +305,7 @@ private enum Row {
 
     /// Represents an Address Row
     ///
-    case address(shipping: Address)
+    case address(shipping: Address?)
 
     /// Represents an "Add Tracking" Row
     ///
@@ -385,14 +387,7 @@ private extension Section {
                 return Section(title: title, secondaryTitle: nil, rows: [row])
             }
 
-            if let billingAddress = order.billingAddress {
-                let row = Row.address(shipping: billingAddress)
-
-                return Section(title: title, secondaryTitle: nil, rows: [row])
-            }
-
-            let emptyAddress = order.generateEmptyBillingAddress()
-            let row = Row.address(shipping: emptyAddress)
+            let row = Row.address(shipping: order.billingAddress)
 
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()

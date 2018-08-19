@@ -180,7 +180,7 @@ private extension StoreStatsViewController {
         static let quantityDefaultForDay = 30
         static let quantityDefaultForWeek = 13
         static let quantityDefaultForMonth = 12
-        static let quantityDefaultForYear = 15
+        static let quantityDefaultForYear = 10
     }
 
     enum TabStrip {

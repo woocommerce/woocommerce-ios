@@ -66,6 +66,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         }
 
         let dataSet =  BarChartDataSet(values: dataEntries, label: "Data")
+        dataSet.setColor(StyleManager.wooCommerceBrandColor)
         return BarChartData(dataSet: dataSet)
     }
 
@@ -148,9 +149,11 @@ private extension PeriodDataViewController {
         barChartView.noDataText = NSLocalizedString("No data available", comment: "Text displayed when no data is available for revenue chart.")
         barChartView.noDataFont = StyleManager.chartLabelFont
         barChartView.noDataTextColor = StyleManager.wooSecondary
+        barChartView.extraRightOffset = Constants.chartExtraRightOffset
 
         let xAxis = barChartView.xAxis
         xAxis.labelPosition = .bottom
+        xAxis.setLabelCount(2, force: true)
         xAxis.labelFont = StyleManager.chartLabelFont
         xAxis.labelTextColor = StyleManager.wooSecondary
         xAxis.axisLineColor = StyleManager.wooGreyBorder
@@ -158,9 +161,8 @@ private extension PeriodDataViewController {
         xAxis.drawLabelsEnabled = true
         xAxis.drawGridLinesEnabled = false
         xAxis.drawAxisLineEnabled = false
-        xAxis.granularity = 1.0
+        xAxis.granularity = Constants.chartXAxisGranularity
         xAxis.granularityEnabled = true
-        xAxis.setLabelCount(2, force: true)
         xAxis.valueFormatter = self
 
         let yAxis = barChartView.leftAxis
@@ -168,13 +170,15 @@ private extension PeriodDataViewController {
         yAxis.labelTextColor = StyleManager.wooSecondary
         yAxis.axisLineColor = StyleManager.wooGreyBorder
         yAxis.gridColor = StyleManager.wooGreyBorder
+        yAxis.gridLineDashLengths = Constants.chartXAxisDashLengths
+        yAxis.axisLineDashPhase = Constants.chartXAxisDashPhase
         yAxis.zeroLineColor = StyleManager.wooGreyBorder
-        yAxis.valueFormatter = self
         yAxis.drawLabelsEnabled = true
         yAxis.drawGridLinesEnabled = true
         yAxis.drawAxisLineEnabled = false
         yAxis.drawZeroLineEnabled = true
-        yAxis.axisMinimum = 0
+        yAxis.axisMinimum = Constants.chartYAxisMinimum
+        yAxis.valueFormatter = self
     }
 }
 
@@ -280,7 +284,12 @@ extension PeriodDataViewController: IAxisValueFormatter {
                 return ""
             }
         } else {
-            return value.friendlyString()
+            if value == 0.0 {
+                // Do not show the 0 label on the Y axis
+                return ""
+            } else {
+                return value.friendlyString()
+            }
         }
     }
 }
@@ -290,7 +299,14 @@ extension PeriodDataViewController: IAxisValueFormatter {
 //
 private extension PeriodDataViewController {
     enum Constants {
-        static let placeholderText = "-"
-        static let chartAnimationDuration = 0.75
+        static let placeholderText                      = "-"
+
+        static let chartAnimationDuration: TimeInterval = 0.75
+        static let chartExtraRightOffset: CGFloat       = 20.0
+
+        static let chartXAxisDashLengths: [CGFloat]     = [5.0, 5.0]
+        static let chartXAxisDashPhase: CGFloat         = 0.0
+        static let chartXAxisGranularity: Double        = 1.0
+        static let chartYAxisMinimum: Double            = 0.0
     }
 }

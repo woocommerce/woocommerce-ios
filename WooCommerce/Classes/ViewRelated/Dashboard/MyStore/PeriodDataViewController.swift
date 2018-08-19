@@ -254,13 +254,33 @@ extension PeriodDataViewController: IAxisValueFormatter {
 
         if axis is XAxis {
             if let item = orderStats.items?[Int(value)] {
-                //TODO: This is not right!
-                return String(item.period)
+                // FIXME: This logic could prolly be pushed into a model extension
+                var dateString = ""
+                switch orderStats.granularity {
+                case .day:
+                    if let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: item.period) {
+                        dateString = DateFormatter.Charts.chartsDayFormatter.string(from: periodDate)
+                    }
+                case .week:
+                    if let periodDate = DateFormatter.Stats.statsWeekFormatter.date(from: item.period) {
+                        dateString = DateFormatter.Charts.chartsWeekFormatter.string(from: periodDate)
+                    }
+                case .month:
+                    if let periodDate = DateFormatter.Stats.statsMonthFormatter.date(from: item.period) {
+                        dateString = DateFormatter.Charts.chartsMonthFormatter.string(from: periodDate)
+                    }
+                case .year:
+                    if let periodDate = DateFormatter.Stats.statsYearFormatter.date(from: item.period) {
+                        dateString = DateFormatter.Charts.chartsYearFormatter.string(from: periodDate)
+                    }
+                }
+
+                return dateString
             } else {
                 return ""
             }
         } else {
-            return orderStats.currencySymbol + value.friendlyString()
+            return value.friendlyString()
         }
     }
 }

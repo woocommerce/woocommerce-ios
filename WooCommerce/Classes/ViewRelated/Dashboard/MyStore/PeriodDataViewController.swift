@@ -179,7 +179,6 @@ extension PeriodDataViewController: IAxisValueFormatter {
 
         if axis is XAxis {
             if let item = orderStats.items?[Int(value)] {
-                // FIXME: This logic could prolly be pushed into a model extension
                 var dateString = ""
                 switch orderStats.granularity {
                 case .day:
@@ -188,7 +187,8 @@ extension PeriodDataViewController: IAxisValueFormatter {
                     }
                 case .week:
                     if let periodDate = DateFormatter.Stats.statsWeekFormatter.date(from: item.period) {
-                        dateString = DateFormatter.Charts.chartsWeekFormatter.string(from: periodDate)
+                        let firstMonday = Calendar.current.date(byAdding: .day, value: 1, to: periodDate) ?? periodDate
+                        dateString = DateFormatter.Charts.chartsWeekFormatter.string(from: firstMonday)
                     }
                 case .month:
                     if let periodDate = DateFormatter.Stats.statsMonthFormatter.date(from: item.period) {

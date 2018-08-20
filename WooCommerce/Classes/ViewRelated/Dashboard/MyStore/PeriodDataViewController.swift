@@ -75,6 +75,11 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         super.viewDidAppear(animated)
         reloadAllFields()
     }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        clearChartMarkers()
+    }
 }
 
 
@@ -176,7 +181,7 @@ extension PeriodDataViewController: ChartViewDelegate {
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         guard entry.y != 0.0 else {
             // Do not display the marker if the Y-value is zero
-            chartView.highlightValue(nil, callDelegate: false)
+            clearChartMarkers()
             return
         }
 
@@ -209,8 +214,7 @@ extension PeriodDataViewController: IAxisValueFormatter {
                     }
                 case .week:
                     if let periodDate = DateFormatter.Stats.statsWeekFormatter.date(from: item.period) {
-                        let firstMonday = Calendar.current.date(byAdding: .day, value: 1, to: periodDate) ?? periodDate
-                        dateString = DateFormatter.Charts.chartsWeekFormatter.string(from: firstMonday)
+                        dateString = DateFormatter.Charts.chartsWeekFormatter.string(from: periodDate)
                     }
                 case .month:
                     if let periodDate = DateFormatter.Stats.statsMonthFormatter.date(from: item.period) {
@@ -290,6 +294,10 @@ private extension PeriodDataViewController {
 
     func reloadLastUpdatedField() {
         if lastUpdated != nil { lastUpdated.text = summaryDateUpdated }
+    }
+
+    func clearChartMarkers() {
+        barChartView.highlightValue(nil, callDelegate: false)
     }
 
     func generateBarDataSet() -> BarChartData? {

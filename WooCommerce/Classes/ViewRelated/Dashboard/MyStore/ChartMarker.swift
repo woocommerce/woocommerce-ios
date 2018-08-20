@@ -1,8 +1,8 @@
 import Foundation
 import Charts
 
-/// This class is a custom view which is displayed over a chart element (e.g. a Bar) when it is highlighted. It
-/// basically is a duplicate of the `BalloonMarker` class found in the Charts demo project.
+
+/// This class is a custom view which is displayed over a chart element (e.g. a Bar) when it is highlighted.
 ///
 /// See: https://github.com/danielgindi/Charts/blob/master/ChartsDemo-iOS/Swift/Components/BalloonMarker.swift
 ///

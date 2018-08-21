@@ -24,8 +24,9 @@ class OrdersViewController: UIViewController {
     ///
     private lazy var resultsController: ResultsController<StorageOrder> = {
         let storageManager = AppDelegate.shared.storageManager
-        let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
+        let descriptor = NSSortDescriptor(keyPath: StorageOrder.sectionIdentifier(), ascending: false)
 
+//        let sectionNameKeyPath = \StorageOrder.sectionIdentifier()
         return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
     }()
 
@@ -236,9 +237,7 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        // FIXME: this is hard-coded data. Will fix when WordPressShared date helpers are available to make fuzzy dates.
-        // return NSLocalizedString("Today", comment: "Title for header section")
-        return nil
+        return resultsController.sections[section].name
     }
 }
 

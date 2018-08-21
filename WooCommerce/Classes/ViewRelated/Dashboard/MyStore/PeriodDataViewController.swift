@@ -183,10 +183,11 @@ extension PeriodDataViewController: ChartViewDelegate {
             return
         }
 
-        let marker = ChartMarker(color: StyleManager.wooSecondary,
-                                              font: StyleManager.chartLabelFont,
-                                              textColor: StyleManager.wooWhite,
-                                              insets: Constants.chartMarkerInsets)
+        let marker = ChartMarker(chartView: chartView,
+                                 color: StyleManager.wooSecondary,
+                                 font: StyleManager.chartLabelFont,
+                                 textColor: StyleManager.wooWhite,
+                                 insets: Constants.chartMarkerInsets)
         marker.minimumSize = Constants.chartMarkerMinimumSize
         marker.arrowSize = Constants.chartMarkerArrowSize
         chartView.marker = marker

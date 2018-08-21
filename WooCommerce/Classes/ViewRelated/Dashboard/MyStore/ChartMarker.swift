@@ -8,7 +8,7 @@ import Charts
 ///
 class ChartMarker: MarkerImage {
     @objc open var color: UIColor
-    @objc open var arrowSize = CGSize(width: 15, height: 11)
+    @objc open var arrowSize = Constants.arrowSize
     @objc open var font: UIFont
     @objc open var textColor: UIColor
     @objc open var insets: UIEdgeInsets
@@ -19,7 +19,7 @@ class ChartMarker: MarkerImage {
     private var _paragraphStyle: NSMutableParagraphStyle?
     private var _drawAttributes = [NSAttributedStringKey: AnyObject]()
 
-    @objc public init(color: UIColor, font: UIFont, textColor: UIColor, insets: UIEdgeInsets) {
+    @objc public init(chartView: ChartViewBase?, color: UIColor, font: UIFont, textColor: UIColor, insets: UIEdgeInsets) {
         self.color = color
         self.font = font
         self.textColor = textColor
@@ -28,6 +28,7 @@ class ChartMarker: MarkerImage {
         _paragraphStyle = NSParagraphStyle.default.mutableCopy() as? NSMutableParagraphStyle
         _paragraphStyle?.alignment = .center
         super.init()
+        self.chartView = chartView
     }
 
     open override func offsetForDrawing(atPoint point: CGPoint) -> CGPoint {
@@ -44,25 +45,25 @@ class ChartMarker: MarkerImage {
 
         let width = size.width
         let height = size.height
-        let padding: CGFloat = 8.0
+        let padding = Constants.offsetPadding
 
         var origin = point
         origin.x -= width / 2
         origin.y -= height
 
-        if origin.x + offset.x < 0.0 {
+        if (origin.x + offset.x) < 0.0 {
             offset.x = -origin.x + padding
-        } else if let chart = chartView, origin.x + width + offset.x > chart.bounds.size.width {
+        } else if let chart = chartView, (origin.x + width + offset.x) > chart.bounds.size.width {
             offset.x = chart.bounds.size.width - origin.x - width - padding
         }
 
-        if origin.y + offset.y < 0 {
+        if (origin.y + offset.y) < 0 {
             offset.y = height + padding
-        } else if let chart = chartView, origin.y + height + offset.y > chart.bounds.size.height {
+        } else if let chart = chartView, (origin.y + height + offset.y) > chart.bounds.size.height {
             offset.y = chart.bounds.size.height - origin.y - height - padding
         }
 
-        return offset
+        return CGPoint(x: round(offset.x), y: round(offset.y))
     }
 
     open override func draw(context: CGContext, point: CGPoint) {
@@ -80,6 +81,7 @@ class ChartMarker: MarkerImage {
             size: size)
         rect.origin.x -= size.width / 2.0
         rect.origin.y -= size.height
+        rect = rect.integral
 
         context.saveGState()
         context.setFillColor(color.cgColor)
@@ -92,7 +94,8 @@ class ChartMarker: MarkerImage {
             context.addLine(to: CGPoint(
                 x: rect.origin.x + (rect.size.width - arrowSize.width) / 2.0,
                 y: rect.origin.y + arrowSize.height))
-            //arrow vertex
+
+            // Arrow vertex
             context.addLine(to: CGPoint(
                 x: point.x,
                 y: point.y))
@@ -126,7 +129,8 @@ class ChartMarker: MarkerImage {
             context.addLine(to: CGPoint(
                 x: rect.origin.x + (rect.size.width + arrowSize.width) / 2.0,
                 y: rect.origin.y + rect.size.height - arrowSize.height))
-            //arrow vertex
+
+            //Arrow vertex
             context.addLine(to: CGPoint(
                 x: point.x,
                 y: point.y))
@@ -148,6 +152,7 @@ class ChartMarker: MarkerImage {
             rect.origin.y += self.insets.top
         }
         rect.size.height -= self.insets.top + self.insets.bottom
+        rect = rect.integral
         UIGraphicsPushContext(context)
         label.draw(in: rect, withAttributes: _drawAttributes)
         UIGraphicsPopContext()
@@ -174,5 +179,15 @@ class ChartMarker: MarkerImage {
         size.width = max(minimumSize.width, size.width)
         size.height = max(minimumSize.height, size.height)
         self.size = size
+    }
+}
+
+
+// MARK: -  Constants!
+//
+private extension ChartMarker {
+    enum Constants {
+        static let arrowSize                = CGSize(width: 20, height: 14)
+        static let offsetPadding: CGFloat   = 4.0
     }
 }

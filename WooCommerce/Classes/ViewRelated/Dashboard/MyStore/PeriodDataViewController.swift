@@ -87,9 +87,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 //
 extension PeriodDataViewController {
     func clearAllFields() {
-        if barChartView != nil {
-            barChartView.clear()
-        }
+        barChartView?.clear()
         orderStats = nil
         siteStats = nil
         reloadAllFields()
@@ -185,7 +183,7 @@ extension PeriodDataViewController: ChartViewDelegate {
             return
         }
 
-        let marker: ChartMarker = ChartMarker(color: StyleManager.wooSecondary,
+        let marker = ChartMarker(color: StyleManager.wooSecondary,
                                               font: StyleManager.chartLabelFont,
                                               textColor: StyleManager.wooWhite,
                                               insets: Constants.chartMarkerInsets)

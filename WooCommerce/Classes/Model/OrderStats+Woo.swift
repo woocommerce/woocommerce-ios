@@ -21,7 +21,7 @@ extension OrderStats {
 
     /// Returns the sum of total sales this stats period. This value is typically used in the dashboard for revenue reporting.
     ///
-    /// *Note:* The value returned here is an aggrigation of all the `OrderStatsItem.totalSales` values and
+    /// *Note:* The value returned here is an aggregation of all the `OrderStatsItem.totalSales` values and
     /// _not_ `OrderStats.totalGrossSales` or `OrderStats.totalNetSales`.
     ///
     var totalSales: Double {

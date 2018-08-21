@@ -82,6 +82,8 @@ private extension AddANoteViewController {
     /// Setup: TableView
     ///
     private func configureTableView() {
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
     }

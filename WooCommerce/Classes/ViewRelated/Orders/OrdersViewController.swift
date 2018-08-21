@@ -24,10 +24,9 @@ class OrdersViewController: UIViewController {
     ///
     private lazy var resultsController: ResultsController<StorageOrder> = {
         let storageManager = AppDelegate.shared.storageManager
-        let descriptor = NSSortDescriptor(keyPath: StorageOrder.sectionIdentifier(), ascending: false)
+        let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
-//        let sectionNameKeyPath = \StorageOrder.sectionIdentifier()
-        return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
+        return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "sectionIdentifier", sortedBy: [descriptor])
     }()
 
     /// Indicates if there are any Objects matching the criteria (or not).

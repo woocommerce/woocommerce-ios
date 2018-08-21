@@ -7,7 +7,7 @@ public class Order: NSManagedObject {
     /// Returns a Section Identifier that can be sorted. Note that this string is not human readable, and
     /// you should use the *descriptionForSectionIdentifier* method as well!.
     ///
-    func sectionIdentifier() -> String {
+    @objc public func sectionIdentifier() -> String {
         // Normalize Dates: Time must not be considered. Just the raw dates
         let fromDate = dateCreated?.normalizedDate()
         let toDate = Date().normalizedDate()
@@ -38,7 +38,7 @@ public class Order: NSManagedObject {
 
     /// Translates a Section Identifier into a Human-Readable String.
     ///
-    func descriptionForSectionIdentifier(_ identifier: String) -> String {
+    @objc public class func descriptionForSectionIdentifier(_ identifier: String) -> String {
         guard let section = Sections(rawValue: identifier) else {
             return String()
         }

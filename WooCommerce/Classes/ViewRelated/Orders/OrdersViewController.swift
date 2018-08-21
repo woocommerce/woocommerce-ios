@@ -236,7 +236,7 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return resultsController.sections[section].name
+        return Order.descriptionForSectionIdentifier(resultsController.sections[section].name)
     }
 }
 

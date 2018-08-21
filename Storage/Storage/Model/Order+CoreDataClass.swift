@@ -4,7 +4,7 @@ import CoreData
 
 @objc(Order)
 public class Order: NSManagedObject {
-    
+
     /// Returns a Section Identifier that can be sorted. Note that this string is not human readable, and
     /// you should use the *descriptionForSectionIdentifier* method as well!.
     ///
@@ -36,17 +36,6 @@ public class Order: NSManagedObject {
 
         return identifier.rawValue
     }
-
-    /// Translates a Section Identifier into a Human-Readable String.
-    ///
-    @objc class func descriptionForSectionIdentifier(_ identifier: String) -> String {
-        guard let section = Sections(rawValue: identifier) else {
-            return String()
-        }
-
-        return section.description
-    }
-
 
     // MARK: - Private Helpers
     fileprivate enum Sections: String {

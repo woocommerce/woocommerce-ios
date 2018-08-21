@@ -34,12 +34,12 @@ class ChartMarker: MarkerImage {
         var offset = self.offset
         var size = self.size
 
-        if size.width == 0.0 && image != nil {
-            size.width = image!.size.width
+        if let image = image, size.width == 0.0 {
+            size.width = image.size.width
         }
 
-        if size.height == 0.0 && image != nil {
-            size.height = image!.size.height
+        if let image = image, size.height == 0.0 {
+            size.height = image.size.height
         }
 
         let width = size.width

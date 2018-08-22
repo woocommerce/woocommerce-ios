@@ -76,6 +76,7 @@ private extension FulfillViewController {
     ///
     func setupMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Setup: TableView

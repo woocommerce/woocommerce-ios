@@ -31,6 +31,7 @@
 		748C7780211E18A600814F2C /* OrderStats+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748C777F211E18A600814F2C /* OrderStats+Woo.swift */; };
 		748C7782211E294000814F2C /* Double+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748C7781211E294000814F2C /* Double+Woo.swift */; };
 		748C7784211E2D8400814F2C /* DoubleWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748C7783211E2D8400814F2C /* DoubleWooTests.swift */; };
+		74A93A40212DC60B00C13E04 /* NewOrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A93A3F212DC60B00C13E04 /* NewOrdersViewController.swift */; };
 		74AAF6A5212A04A900C612B0 /* ChartMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AAF6A4212A04A900C612B0 /* ChartMarker.swift */; };
 		74AFF2EA211B9B1B0038153A /* StoreStatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AFF2E9211B9B1B0038153A /* StoreStatsViewController.swift */; };
 		74E0F441211C9AE600A79CCE /* PeriodDataViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74E0F440211C9AE600A79CCE /* PeriodDataViewController.xib */; };
@@ -210,6 +211,7 @@
 		748C777F211E18A600814F2C /* OrderStats+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderStats+Woo.swift"; sourceTree = "<group>"; };
 		748C7781211E294000814F2C /* Double+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Woo.swift"; sourceTree = "<group>"; };
 		748C7783211E2D8400814F2C /* DoubleWooTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoubleWooTests.swift; sourceTree = "<group>"; };
+		74A93A3F212DC60B00C13E04 /* NewOrdersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrdersViewController.swift; sourceTree = "<group>"; };
 		74AAF6A4212A04A900C612B0 /* ChartMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartMarker.swift; sourceTree = "<group>"; };
 		74AFF2E9211B9B1B0038153A /* StoreStatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsViewController.swift; sourceTree = "<group>"; };
 		74E0F440211C9AE600A79CCE /* PeriodDataViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PeriodDataViewController.xib; sourceTree = "<group>"; };
@@ -378,6 +380,7 @@
 			isa = PBXGroup;
 			children = (
 				74AAF6A4212A04A900C612B0 /* ChartMarker.swift */,
+				74A93A3F212DC60B00C13E04 /* NewOrdersViewController.swift */,
 				74036CBF211B882100E462C2 /* PeriodDataViewController.swift */,
 				74E0F440211C9AE600A79CCE /* PeriodDataViewController.xib */,
 				74AFF2E9211B9B1B0038153A /* StoreStatsViewController.swift */,
@@ -1181,6 +1184,7 @@
 				CE32B11520BF8779006FBCF4 /* ProductListTableViewCell.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* LeftImageTableViewCell.swift in Sources */,
+				74A93A40212DC60B00C13E04 /* NewOrdersViewController.swift in Sources */,
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
 				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
 				74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */,

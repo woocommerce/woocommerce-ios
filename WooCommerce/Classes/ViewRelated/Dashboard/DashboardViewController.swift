@@ -11,6 +11,7 @@ class DashboardViewController: UIViewController {
 
     @IBOutlet private weak var scrollView: UIScrollView!
     private var storeStatsViewController: StoreStatsViewController!
+    private var newOrdersViewController: NewOrdersViewController!
 
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
@@ -36,8 +37,10 @@ class DashboardViewController: UIViewController {
         if let vc = segue.destination as? StoreStatsViewController, segue.identifier == Constants.storeStatsSegue {
             self.storeStatsViewController = vc
         }
+        if let vc = segue.destination as? NewOrdersViewController, segue.identifier == Constants.newOrdersSegue {
+            self.newOrdersViewController = vc
+        }
     }
-
 }
 
 
@@ -102,6 +105,7 @@ private extension DashboardViewController {
 private extension DashboardViewController {
     struct Constants {
         static let settingsSegue    = "ShowSettingsViewController"
-        static let storeStatsSegue  = "StoreStatsEmbedSeque"
+        static let storeStatsSegue  = "StoreStatsEmbedSegue"
+        static let newOrdersSegue   = "NewOrdersEmbedSegue"
     }
 }

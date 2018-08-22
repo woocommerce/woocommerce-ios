@@ -10,6 +10,8 @@ class DashboardViewController: UIViewController {
     // MARK: Properties
 
     @IBOutlet private weak var scrollView: UIScrollView!
+    @IBOutlet private weak var newOrdersContainerView: UIView!
+
     private var storeStatsViewController: StoreStatsViewController!
     private var newOrdersViewController: NewOrdersViewController!
 
@@ -35,10 +37,11 @@ class DashboardViewController: UIViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let vc = segue.destination as? StoreStatsViewController, segue.identifier == Constants.storeStatsSegue {
-            self.storeStatsViewController = vc
+            storeStatsViewController = vc
         }
         if let vc = segue.destination as? NewOrdersViewController, segue.identifier == Constants.newOrdersSegue {
-            self.newOrdersViewController = vc
+            newOrdersViewController = vc
+            newOrdersViewController.delegate = self
         }
     }
 }
@@ -51,6 +54,7 @@ private extension DashboardViewController {
     func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         scrollView.refreshControl = refreshControl
+        hideNewOrders()
     }
 
     func configureNavigation() {
@@ -82,10 +86,21 @@ private extension DashboardViewController {
     }
 
     @objc func pullToRefresh() {
-        // FIXME: This code is just a WIP
+        hideNewOrders()
         reloadData()
-        refreshControl.endRefreshing()
-        DDLogInfo("Reloading dashboard data.")
+    }
+}
+
+
+// MARK: - NewOrdersDelegate Conformance
+//
+extension DashboardViewController: NewOrdersDelegate {
+    func didUpdateNewOrdersData(hasNewOrders: Bool) {
+        if hasNewOrders {
+            applyUnhideAnimation(for: newOrdersContainerView)
+        } else {
+            applyHideAnimation(for: newOrdersContainerView)
+        }
     }
 }
 
@@ -94,8 +109,26 @@ private extension DashboardViewController {
 //
 private extension DashboardViewController {
     func reloadData() {
-        // FIXME: This code is just a WIP
+        DDLogInfo("♻️ Requesting dashboard data be reloaded...")
         storeStatsViewController.syncAllStats()
+        newOrdersViewController.syncNewOrders()
+        refreshControl.endRefreshing()
+    }
+
+    func hideNewOrders() {
+        newOrdersContainerView.isHidden = true
+    }
+
+    func applyUnhideAnimation(for view: UIView) {
+        UIView.animate(withDuration: Constants.animationDuration) {
+            view.isHidden = false
+        }
+    }
+
+    func applyHideAnimation(for view: UIView) {
+        UIView.animate(withDuration: Constants.animationDuration) {
+            view.isHidden = true
+        }
     }
 }
 
@@ -107,5 +140,7 @@ private extension DashboardViewController {
         static let settingsSegue    = "ShowSettingsViewController"
         static let storeStatsSegue  = "StoreStatsEmbedSegue"
         static let newOrdersSegue   = "NewOrdersEmbedSegue"
+
+        static let animationDuration: TimeInterval = 0.50
     }
 }

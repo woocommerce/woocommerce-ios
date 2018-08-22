@@ -2,14 +2,21 @@ import UIKit
 import Yosemite
 import CocoaLumberjack
 
+protocol NewOrdersDelegate {
+    func didUpdateNewOrdersData(hasNewOrders: Bool)
+}
 
 class NewOrdersViewController: UIViewController {
 
-    // MARK: - Properties
+    // MARK: - Private Properties
 
     @IBOutlet private weak var topBorder: UIView!
     @IBOutlet private weak var bottomBorder: UIView!
-    
+
+    // MARK: - Public Properties
+
+    public var delegate: NewOrdersDelegate?
+
     // MARK: - View Lifecycle
 
     required init?(coder aDecoder: NSCoder) {
@@ -28,7 +35,12 @@ class NewOrdersViewController: UIViewController {
 extension NewOrdersViewController {
 
     func syncNewOrders() {
-        // TODO: grab data here!
+        // TODO: grab actual data here and remove this fake code! 🤡
+        if let delegate = delegate {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                delegate.didUpdateNewOrdersData(hasNewOrders: true)
+            }
+        }
     }
 }
 

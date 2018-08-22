@@ -97,7 +97,7 @@
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="c2q-ri-kSZ">
-                                        <rect key="frame" x="0.0" y="18" width="375" height="486"/>
+                                        <rect key="frame" x="0.0" y="18" width="375" height="506"/>
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bgR-ww-mDR">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="380"/>
@@ -109,13 +109,13 @@
                                                 </connections>
                                             </containerView>
                                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C0r-mX-o7t">
-                                                <rect key="frame" x="0.0" y="380" width="375" height="16"/>
+                                                <rect key="frame" x="0.0" y="380" width="375" height="18"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="16" id="nnZ-bG-12v"/>
+                                                    <constraint firstAttribute="height" constant="18" id="nnZ-bG-12v"/>
                                                 </constraints>
                                             </view>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NG7-v2-HCV">
-                                                <rect key="frame" x="0.0" y="396" width="375" height="90"/>
+                                                <rect key="frame" x="0.0" y="398" width="375" height="90"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="90" id="zqf-iK-TiH"/>
                                                 </constraints>
@@ -123,6 +123,12 @@
                                                     <segue destination="lX1-IT-Jsn" kind="embed" identifier="NewOrdersEmbedSegue" id="eBk-2G-rWy"/>
                                                 </connections>
                                             </containerView>
+                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GNX-8x-jG2">
+                                                <rect key="frame" x="0.0" y="488" width="375" height="18"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="18" id="keP-js-csr"/>
+                                                </constraints>
+                                            </view>
                                         </subviews>
                                     </stackView>
                                 </subviews>

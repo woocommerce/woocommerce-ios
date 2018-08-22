@@ -16,6 +16,7 @@ protocol Style {
     var buttonDisabledHighlightedColor: UIColor { get }
     var buttonDisabledTitleColor: UIColor { get }
     var cellSeparatorColor: UIColor { get }
+    var chartLabelFont: UIFont { get }
     var defaultTextColor: UIColor { get }
     var destructiveActionColor: UIColor { get }
     var navBarImage: UIImage { get }
@@ -51,6 +52,7 @@ class DefaultStyle: Style {
     let actionButtonTitleFont           = UIFont.font(forStyle: .headline, weight: .semibold)
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
     let subheadlineFont                 = UIFont.font(forStyle: .subheadline, weight: .regular)
+    let chartLabelFont                  = UIFont.font(forStyle: .caption2, weight: .ultraLight)
 
     // Colors!
     //
@@ -180,6 +182,10 @@ class StyleManager {
 
     static var cellSeparatorColor: UIColor {
         return active.cellSeparatorColor
+    }
+
+    static var chartLabelFont: UIFont {
+        return active.chartLabelFont
     }
 
     static var defaultTextColor: UIColor {

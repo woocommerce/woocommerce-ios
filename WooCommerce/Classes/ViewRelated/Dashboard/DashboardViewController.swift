@@ -54,7 +54,7 @@ private extension DashboardViewController {
     func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         scrollView.refreshControl = refreshControl
-        hideNewOrders()
+        newOrdersContainerView.isHidden = true // Hide the new orders vc by default
     }
 
     func configureNavigation() {
@@ -86,7 +86,7 @@ private extension DashboardViewController {
     }
 
     @objc func pullToRefresh() {
-        hideNewOrders()
+        applyHideAnimation(for: newOrdersContainerView)
         reloadData()
     }
 }
@@ -115,18 +115,14 @@ private extension DashboardViewController {
         refreshControl.endRefreshing()
     }
 
-    func hideNewOrders() {
-        newOrdersContainerView.isHidden = true
-    }
-
     func applyUnhideAnimation(for view: UIView) {
-        UIView.animate(withDuration: Constants.animationDuration) {
+        UIView.animate(withDuration: Constants.showAnimationDuration) {
             view.isHidden = false
         }
     }
 
     func applyHideAnimation(for view: UIView) {
-        UIView.animate(withDuration: Constants.animationDuration) {
+        UIView.animate(withDuration: Constants.hideAnimationDuration) {
             view.isHidden = true
         }
     }
@@ -141,6 +137,7 @@ private extension DashboardViewController {
         static let storeStatsSegue  = "StoreStatsEmbedSegue"
         static let newOrdersSegue   = "NewOrdersEmbedSegue"
 
-        static let animationDuration: TimeInterval = 0.50
+        static let hideAnimationDuration: TimeInterval = 0.25
+        static let showAnimationDuration: TimeInterval = 0.50
     }
 }

@@ -6,10 +6,10 @@ extension StorageOrder {
     /// Returns a Section Identifier that can be sorted. Note that this string is not human readable, and
     /// you should use the *descriptionForSectionIdentifier* method as well!.
     ///
-    @objc func normalizedAgeAsString() -> String {
+    @objc func normalizedAgeAsString() -> Int {
         // Normalize Dates: Time must not be considered. Just the raw dates
         guard let fromDate = dateCreated?.normalizedDate() else {
-            return ""
+            return 0
         }
 
         let toDate = Date().normalizedDate()
@@ -39,12 +39,12 @@ extension StorageOrder {
     }
 
     // MARK: - Private Helpers
-    private enum Age: String {
-        case months     = "0"
-        case weeks      = "2"
-        case days       = "4"
-        case yesterday  = "5"
-        case today      = "6"
+    private enum Age: Int, CustomStringConvertible {
+        case months     = 0
+        case weeks      = 2
+        case days       = 4
+        case yesterday  = 5
+        case today      = 6
 
         var description: String {
             switch self {

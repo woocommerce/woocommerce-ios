@@ -15,6 +15,7 @@ class NewOrdersViewController: UIViewController {
     @IBOutlet private weak var titleLabel: PaddedLabel!
     @IBOutlet private weak var descriptionLabel: PaddedLabel!
     @IBOutlet private weak var chevronImageView: UIImageView!
+    @IBOutlet private weak var actionButton: UIButton!
 
     // MARK: - Public Properties
 
@@ -29,6 +30,10 @@ class NewOrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
+    }
+
+    @IBAction func buttonWasPressed(_ sender: Any) {
+        DDLogDebug("🎉 Button pressed! ")
     }
 }
 

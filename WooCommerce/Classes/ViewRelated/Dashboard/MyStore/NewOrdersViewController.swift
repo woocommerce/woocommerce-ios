@@ -12,6 +12,9 @@ class NewOrdersViewController: UIViewController {
 
     @IBOutlet private weak var topBorder: UIView!
     @IBOutlet private weak var bottomBorder: UIView!
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var descriptionLabel: UILabel!
+    @IBOutlet private weak var chevronImageView: UIImageView!
 
     // MARK: - Public Properties
 
@@ -53,5 +56,7 @@ private extension NewOrdersViewController {
         view.backgroundColor = StyleManager.wooWhite
         topBorder.backgroundColor = StyleManager.wooGreyBorder
         bottomBorder.backgroundColor = StyleManager.wooGreyBorder
+        titleLabel.applyHeadlineStyle()
+        descriptionLabel.applyBodyStyle()
     }
 }

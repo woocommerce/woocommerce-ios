@@ -26,7 +26,7 @@ class OrdersViewController: UIViewController {
         let storageManager = AppDelegate.shared.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
-        return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "sectionIdentifier", sortedBy: [descriptor])
+        return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
     /// Indicates if there are any Objects matching the criteria (or not).

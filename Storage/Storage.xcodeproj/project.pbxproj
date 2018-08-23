@@ -38,7 +38,6 @@
 		B5B914C520EFF03500F2F832 /* Site+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B914C320EFF03500F2F832 /* Site+CoreDataClass.swift */; };
 		B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B914C420EFF03500F2F832 /* Site+CoreDataProperties.swift */; };
 		B5DC3CAA20D1B2FE0063AC41 /* WooCommerce.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */; };
-		CE645D63212CA7E700FB677C /* NSDate+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE645D62212CA7E700FB677C /* NSDate+Helpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,7 +88,6 @@
 		B5B914C320EFF03500F2F832 /* Site+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Site+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B5B914C420EFF03500F2F832 /* Site+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Site+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		BB0EDB0E92A719168B18DAFE /* Pods-StorageTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.release.xcconfig"; sourceTree = "<group>"; };
-		CE645D62212CA7E700FB677C /* NSDate+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSDate+Helpers.swift"; sourceTree = "<group>"; };
 		DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -222,7 +220,6 @@
 				B54CA5C820A4C17800F38CD1 /* NSObject+Storage.swift */,
 				B54CA5BA20A4BD2800F38CD1 /* NSManagedObject+Object.swift */,
 				B54CA5BC20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift */,
-				CE645D62212CA7E700FB677C /* NSDate+Helpers.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -437,7 +434,6 @@
 			files = (
 				B5B914C520EFF03500F2F832 /* Site+CoreDataClass.swift in Sources */,
 				B54CA5BB20A4BD2800F38CD1 /* NSManagedObject+Object.swift in Sources */,
-				CE645D63212CA7E700FB677C /* NSDate+Helpers.swift in Sources */,
 				7426A05120F69D00002A4E07 /* OrderCoupon+CoreDataProperties.swift in Sources */,
 				B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */,
 				7426A04820F68F27002A4E07 /* Order+CoreDataProperties.swift in Sources */,

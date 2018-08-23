@@ -33,7 +33,11 @@ class NewOrdersViewController: UIViewController {
     }
 
     @IBAction func buttonWasPressed(_ sender: Any) {
-        DDLogDebug("🎉 Button pressed! ")
+        guard let button = sender as? UIButton else {
+            return
+        }
+
+        button.fadeInOut()
     }
 }
 
@@ -47,7 +51,7 @@ extension NewOrdersViewController {
         titleLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %@ orders to fulfill",
                                                                              comment: "Title text used on the UI element displayed when a user has multiple pending orders to process."), "50+")
         if let delegate = delegate {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                 delegate.didUpdateNewOrdersData(hasNewOrders: true)
             }
         }
@@ -70,6 +74,24 @@ private extension NewOrdersViewController {
         descriptionLabel.text = NSLocalizedString("Review, prepare, and ship these pending orders",
                                                   comment: "Description text used on the UI element displayed when a user has pending orders to process.")
         chevronImageView.image = UIImage.chevronImage
+    }
+}
+
+
+// MARK: - Private UIButton extension
+//
+private extension UIButton {
+
+    /// Animates the bg color in and out when called
+    ///
+    func fadeInOut() {
+        UIView.animate(withDuration: 0.3, animations: { [weak self] in
+            self?.backgroundColor = StyleManager.wooGreyMid.withAlphaComponent(0.4)
+        }) { _ in
+            UIView.animate(withDuration: 0.3) { [weak self] in
+                self?.backgroundColor = .clear
+            }
+        }
     }
 }
 

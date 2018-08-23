@@ -116,14 +116,21 @@ private extension DashboardViewController {
     }
 
     func applyUnhideAnimation(for view: UIView) {
-        UIView.animate(withDuration: Constants.showAnimationDuration) {
-            view.isHidden = false
-        }
+        UIView.animate(withDuration: Constants.showAnimationDuration,
+                       delay: 0,
+                       usingSpringWithDamping: Constants.showSpringDamping,
+                       initialSpringVelocity: Constants.showSpringVelocity,
+                       options: .curveEaseOut,
+                       animations: {
+                        view.isHidden = false
+                        view.alpha = 1.0
+        })
     }
 
     func applyHideAnimation(for view: UIView) {
         UIView.animate(withDuration: Constants.hideAnimationDuration) {
             view.isHidden = true
+            view.alpha = 0.0
         }
     }
 }
@@ -139,5 +146,7 @@ private extension DashboardViewController {
 
         static let hideAnimationDuration: TimeInterval = 0.25
         static let showAnimationDuration: TimeInterval = 0.50
+        static let showSpringDamping: CGFloat = 0.7
+        static let showSpringVelocity: CGFloat = 0.0
     }
 }

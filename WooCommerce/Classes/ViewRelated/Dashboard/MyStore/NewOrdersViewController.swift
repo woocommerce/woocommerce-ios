@@ -12,8 +12,8 @@ class NewOrdersViewController: UIViewController {
 
     @IBOutlet private weak var topBorder: UIView!
     @IBOutlet private weak var bottomBorder: UIView!
-    @IBOutlet private weak var titleLabel: UILabel!
-    @IBOutlet private weak var descriptionLabel: UILabel!
+    @IBOutlet private weak var titleLabel: PaddedLabel!
+    @IBOutlet private weak var descriptionLabel: PaddedLabel!
     @IBOutlet private weak var chevronImageView: UIImageView!
 
     // MARK: - Public Properties
@@ -57,7 +57,19 @@ private extension NewOrdersViewController {
         topBorder.backgroundColor = StyleManager.wooGreyBorder
         bottomBorder.backgroundColor = StyleManager.wooGreyBorder
         titleLabel.applyHeadlineStyle()
+        titleLabel.textInsets = Constants.newOrdersTitleLabelInsets
         descriptionLabel.applyBodyStyle()
+        descriptionLabel.textInsets = Constants.newOrdersDescriptionLabelInsets
         chevronImageView.image = UIImage.chevronImage
+    }
+}
+
+
+// MARK: - Constants!
+//
+private extension NewOrdersViewController {
+    enum Constants {
+        static let newOrdersTitleLabelInsets = UIEdgeInsets(top: 14, left: 14, bottom: 0, right: 4)
+        static let newOrdersDescriptionLabelInsets = UIEdgeInsets(top: 4, left: 14, bottom: 4, right: 4)
     }
 }

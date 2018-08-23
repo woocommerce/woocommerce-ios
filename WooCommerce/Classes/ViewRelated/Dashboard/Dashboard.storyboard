@@ -239,24 +239,17 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kqf-GE-eZ1">
                                         <rect key="frame" x="0.0" y="1" width="375" height="108"/>
                                         <subviews>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aV5-44-9jg">
-                                                <rect key="frame" x="0.0" y="0.0" width="14" height="108"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="14" id="WE0-7M-gi4"/>
-                                                </constraints>
-                                            </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4WL-4h-7Za">
-                                                <rect key="frame" x="14" y="0.0" width="317" height="108"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="347" height="108"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="750" text="You have 10 orders to fulfill" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XgA-ra-emd">
-                                                        <rect key="frame" x="0.0" y="8" width="317" height="20.5"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="750" text="You have 10 orders to fulfill" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XgA-ra-emd" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="0.0" width="347" height="20.5"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Review, prepare, and ship these pending orders" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3ad-g9-Y4v">
-                                                        <rect key="frame" x="0.0" y="30.5" width="317" height="77.5"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Review, prepare, and ship these pending orders" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3ad-g9-Y4v" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="20.5" width="347" height="87.5"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -265,25 +258,25 @@
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="bottom" secondItem="3ad-g9-Y4v" secondAttribute="bottom" id="Plf-SO-Ahp"/>
-                                                    <constraint firstItem="XgA-ra-emd" firstAttribute="top" secondItem="4WL-4h-7Za" secondAttribute="top" constant="8" id="Zzh-mG-Qzz"/>
+                                                    <constraint firstItem="XgA-ra-emd" firstAttribute="top" secondItem="4WL-4h-7Za" secondAttribute="top" id="Zzh-mG-Qzz"/>
                                                     <constraint firstItem="3ad-g9-Y4v" firstAttribute="leading" secondItem="4WL-4h-7Za" secondAttribute="leading" id="huZ-G2-7YY"/>
                                                     <constraint firstAttribute="trailing" secondItem="XgA-ra-emd" secondAttribute="trailing" id="rz7-pS-zpH"/>
-                                                    <constraint firstItem="3ad-g9-Y4v" firstAttribute="top" secondItem="XgA-ra-emd" secondAttribute="bottom" constant="2" id="vaT-7D-i38"/>
+                                                    <constraint firstItem="3ad-g9-Y4v" firstAttribute="top" secondItem="XgA-ra-emd" secondAttribute="bottom" id="vaT-7D-i38"/>
                                                     <constraint firstAttribute="trailing" secondItem="3ad-g9-Y4v" secondAttribute="trailing" id="vji-5F-RT1"/>
                                                     <constraint firstItem="XgA-ra-emd" firstAttribute="leading" secondItem="4WL-4h-7Za" secondAttribute="leading" id="xBw-l4-s7G"/>
                                                 </constraints>
                                             </view>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="r52-GN-xeA">
-                                                <rect key="frame" x="331" y="0.0" width="30" height="108"/>
+                                                <rect key="frame" x="347" y="0.0" width="20" height="108"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="30" id="IWb-N8-kSs"/>
+                                                    <constraint firstAttribute="width" constant="20" id="IWb-N8-kSs"/>
                                                 </constraints>
                                             </imageView>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lxe-Ko-pTf">
-                                                <rect key="frame" x="361" y="0.0" width="14" height="108"/>
+                                                <rect key="frame" x="367" y="0.0" width="8" height="108"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="14" id="rBo-RP-FLv"/>
+                                                    <constraint firstAttribute="width" constant="8" id="rBo-RP-FLv"/>
                                                 </constraints>
                                             </view>
                                         </subviews>

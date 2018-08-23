@@ -44,6 +44,7 @@ class StoresManager {
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
 
         restoreSessionAccountIfPossible()
+        restoreSessionSiteIfPossible()
     }
 
 
@@ -153,6 +154,30 @@ private extension StoresManager {
     func synchronizeSites(onCompletion: ((Error?) -> Void)?) {
         let action = AccountAction.synchronizeSites { error in
             onCompletion?(error)
+        }
+
+        dispatch(action)
+    }
+
+    /// Loads the Default Site into the current Session, if possible.
+    ///
+    func restoreSessionSiteIfPossible() {
+        guard let siteID = sessionManager.defaultStoreID else {
+            return
+        }
+
+        restoreSessionSite(with: siteID)
+    }
+
+    /// Loads the specified siteID into the Session, if possible.
+    ///
+    func restoreSessionSite(with siteID: Int) {
+        let action = AccountAction.loadSite(siteID: siteID) { [weak self] site in
+            guard let `self` = self, let site = site else {
+                return
+            }
+
+            self.sessionManager.defaultSite = site
         }
 
         dispatch(action)

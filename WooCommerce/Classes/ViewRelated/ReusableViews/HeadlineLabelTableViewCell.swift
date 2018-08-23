@@ -3,18 +3,18 @@ import UIKit
 
 /// Represents a cell with a Title Label and Body Label
 ///
-class TitleLabelTableViewCell: UITableViewCell {
-    @IBOutlet private weak var titleLabel: UILabel?
+class HeadlineLabelTableViewCell: UITableViewCell {
+    @IBOutlet private weak var headlineLabel: UILabel?
     @IBOutlet private weak var bodyLabel: UILabel?
 
-    /// Title label text
+    /// Headline label text
     ///
-    var title: String? {
+    var headline: String? {
         get {
-            return titleLabel?.text
+            return headlineLabel?.text
         }
         set {
-            titleLabel?.text = newValue
+            headlineLabel?.text = newValue
         }
     }
 
@@ -32,7 +32,7 @@ class TitleLabelTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        titleLabel?.applyTitleStyle()
+        headlineLabel?.applyHeadlineStyle()
         bodyLabel?.applyBodyStyle()
     }
 }

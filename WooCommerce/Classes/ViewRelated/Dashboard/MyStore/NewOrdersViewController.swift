@@ -58,5 +58,6 @@ private extension NewOrdersViewController {
         bottomBorder.backgroundColor = StyleManager.wooGreyBorder
         titleLabel.applyHeadlineStyle()
         descriptionLabel.applyBodyStyle()
+        chevronImageView.image = UIImage.chevronImage
     }
 }

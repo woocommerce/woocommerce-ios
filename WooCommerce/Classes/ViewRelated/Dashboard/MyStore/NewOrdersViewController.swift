@@ -39,6 +39,8 @@ extension NewOrdersViewController {
 
     func syncNewOrders() {
         // TODO: grab actual data here and remove this fake code! 🤡
+        titleLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %@ orders to fulfill",
+                                                                             comment: "Title text used on the UI element displayed when a user has multiple pending orders to process."), "50+")
         if let delegate = delegate {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 delegate.didUpdateNewOrdersData(hasNewOrders: true)
@@ -60,6 +62,8 @@ private extension NewOrdersViewController {
         titleLabel.textInsets = Constants.newOrdersTitleLabelInsets
         descriptionLabel.applyBodyStyle()
         descriptionLabel.textInsets = Constants.newOrdersDescriptionLabelInsets
+        descriptionLabel.text = NSLocalizedString("Review, prepare, and ship these pending orders",
+                                                  comment: "Description text used on the UI element displayed when a user has pending orders to process.")
         chevronImageView.image = UIImage.chevronImage
     }
 }
@@ -70,6 +74,6 @@ private extension NewOrdersViewController {
 private extension NewOrdersViewController {
     enum Constants {
         static let newOrdersTitleLabelInsets = UIEdgeInsets(top: 14, left: 14, bottom: 0, right: 4)
-        static let newOrdersDescriptionLabelInsets = UIEdgeInsets(top: 4, left: 14, bottom: 4, right: 4)
+        static let newOrdersDescriptionLabelInsets = UIEdgeInsets(top: 4, left: 14, bottom: 0, right: 4)
     }
 }

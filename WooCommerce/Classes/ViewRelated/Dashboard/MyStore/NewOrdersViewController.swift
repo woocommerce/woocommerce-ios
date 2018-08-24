@@ -160,12 +160,7 @@ private extension NewOrdersViewController {
         let currentCount = resultsController.fetchedObjects.count
         titleLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %ld orders to fulfill",
                                                                              comment: "Title text used on the UI element displayed when a user has multiple pending orders to process."), currentCount)
-        if currentCount > 0 {
-            delegate?.didUpdateNewOrdersData(hasNewOrders: true)
-        } else {
-            delegate?.didUpdateNewOrdersData(hasNewOrders: false)
-        }
-
+        delegate?.didUpdateNewOrdersData(hasNewOrders: currentCount > 0)
     }
 }
 

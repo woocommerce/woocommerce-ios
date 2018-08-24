@@ -89,24 +89,34 @@ private extension NewOrdersViewController {
 }
 
 
-// MARK: - Private UIButton extension
+// MARK: - Private UIButton extension for use with NewOrdersViewController only
 //
 private extension UIButton {
 
     /// Animates the button's bg color to a selected state
     ///
     func fadeInSelectedBackground() {
-        UIView.animate(withDuration: 0.3) { [weak self] in
-            self?.backgroundColor = StyleManager.wooGreyMid.withAlphaComponent(0.4)
+        UIView.animate(withDuration: AnimationConstants.duration) { [weak self] in
+            self?.backgroundColor = AnimationConstants.selectedBgColor
         }
     }
 
     /// Animates the button's bg color to an unselected state
     ///
     func fadeOutSelectedBackground() {
-        UIView.animate(withDuration: 0.3) { [weak self] in
-            self?.backgroundColor = .clear
-        }
+        // Adding a "pinch" of delay here to make room for the fade-in animation to complete
+        UIView.animate(withDuration: AnimationConstants.duration,
+                       delay: AnimationConstants.fadeOutDelay,
+                       options: .curveEaseInOut,
+                       animations: { [weak self] in
+                            self?.backgroundColor = .clear
+        }, completion: nil)
+    }
+
+    private enum AnimationConstants {
+        static let duration: TimeInterval     = 0.3
+        static let fadeOutDelay: TimeInterval = 0.2
+        static let selectedBgColor            = StyleManager.wooGreyMid.withAlphaComponent(0.4)
     }
 }
 

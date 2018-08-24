@@ -75,9 +75,9 @@ private extension NewOrdersViewController {
 private extension NewOrdersViewController {
 
     @IBAction func buttonTouchUpInside(_ sender: UIButton) {
-        // FIXME: Just temp code
-        self.tabBarController?.selectedIndex = 1
-        sender.fadeOutSelectedBackground()
+        sender.fadeOutSelectedBackground {
+            MainTabBarController.switchToOrdersTab()
+        }
     }
 
     @IBAction func buttonTouchUpOutside(_ sender: UIButton) {
@@ -99,7 +99,7 @@ private extension UIButton {
     func fadeInSelectedBackground(onCompletion: (() -> Void)? = nil) {
         UIView.animate(withDuration: AnimationConstants.duration,
                        delay: 0.0,
-                       options: .curveEaseInOut,
+                       options: [],
                        animations: { [weak self] in
                         self?.backgroundColor = AnimationConstants.selectedBgColor
             }, completion: { _ in
@@ -113,7 +113,7 @@ private extension UIButton {
         // Adding a "pinch" of delay here to make room for the fade-in animation to complete
         UIView.animate(withDuration: AnimationConstants.duration,
                        delay: AnimationConstants.fadeOutDelay,
-                       options: .curveEaseInOut,
+                       options: [],
                        animations: { [weak self] in
                             self?.backgroundColor = .clear
             }, completion: { _ in
@@ -122,8 +122,8 @@ private extension UIButton {
     }
 
     private enum AnimationConstants {
-        static let duration: TimeInterval     = 0.3
-        static let fadeOutDelay: TimeInterval = 0.2
+        static let duration: TimeInterval     = 0.1
+        static let fadeOutDelay: TimeInterval = 0.1
         static let selectedBgColor            = StyleManager.wooGreyMid.withAlphaComponent(0.4)
     }
 }

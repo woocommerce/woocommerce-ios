@@ -124,14 +124,20 @@ private extension DashboardViewController {
                        animations: {
                         view.isHidden = false
                         view.alpha = 1.0
-        })
+        }) { success in
+            view.isHidden = false
+            view.alpha = 1.0
+        }
     }
 
     func applyHideAnimation(for view: UIView) {
-        UIView.animate(withDuration: Constants.hideAnimationDuration) {
+        UIView.animate(withDuration: Constants.hideAnimationDuration, animations: {
             view.isHidden = true
             view.alpha = 0.0
-        }
+        }, completion: { success in
+            view.isHidden = true
+            view.alpha = 0.0
+        })
     }
 }
 

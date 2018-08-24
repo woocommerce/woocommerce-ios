@@ -31,14 +31,6 @@ class NewOrdersViewController: UIViewController {
         super.viewDidLoad()
         configureView()
     }
-
-    @IBAction func buttonWasPressed(_ sender: Any) {
-        guard let button = sender as? UIButton else {
-            return
-        }
-
-        button.fadeInOut()
-    }
 }
 
 
@@ -78,19 +70,42 @@ private extension NewOrdersViewController {
 }
 
 
+// MARK: - Actions!
+//
+private extension NewOrdersViewController {
+
+    @IBAction func buttonTouchUpInside(_ sender: UIButton) {
+        DDLogDebug("Hi there!!!!")
+        sender.fadeOutSelectedBackground()
+    }
+
+    @IBAction func buttonTouchUpOutside(_ sender: UIButton) {
+        sender.fadeOutSelectedBackground()
+    }
+
+    @IBAction func buttonTouchDown(_ sender: UIButton) {
+        sender.fadeInSelectedBackground()
+    }
+}
+
+
 // MARK: - Private UIButton extension
 //
 private extension UIButton {
 
-    /// Animates the bg color in and out when called
+    /// Animates the button's bg color to a selected state
     ///
-    func fadeInOut() {
-        UIView.animate(withDuration: 0.3, animations: { [weak self] in
+    func fadeInSelectedBackground() {
+        UIView.animate(withDuration: 0.3) { [weak self] in
             self?.backgroundColor = StyleManager.wooGreyMid.withAlphaComponent(0.4)
-        }) { _ in
-            UIView.animate(withDuration: 0.3) { [weak self] in
-                self?.backgroundColor = .clear
-            }
+        }
+    }
+
+    /// Animates the button's bg color to an unselected state
+    ///
+    func fadeOutSelectedBackground() {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.backgroundColor = .clear
         }
     }
 }

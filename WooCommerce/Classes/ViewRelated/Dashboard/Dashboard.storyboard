@@ -83,7 +83,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a6b-fg-tHy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1506" y="1680"/>
+            <point key="canvasLocation" x="-1506" y="1794"/>
         </scene>
         <!--Dashboard-->
         <scene sceneID="tne-QT-ifu">
@@ -294,7 +294,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s9n-KV-6jV">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="110"/>
                                 <connections>
-                                    <action selector="buttonWasPressed:" destination="lX1-IT-Jsn" eventType="touchUpInside" id="1eJ-wo-w1f"/>
+                                    <action selector="buttonTouchDown:" destination="lX1-IT-Jsn" eventType="touchDown" id="rIo-QZ-BRU"/>
+                                    <action selector="buttonTouchUpInside:" destination="lX1-IT-Jsn" eventType="touchUpInside" id="NEG-x8-QQd"/>
+                                    <action selector="buttonTouchUpOutside:" destination="lX1-IT-Jsn" eventType="touchUpOutside" id="9hJ-cP-u5h"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -322,7 +324,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0t9-47-pnO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1506.4000000000001" y="2012.2938530734634"/>
+            <point key="canvasLocation" x="-1506" y="2109"/>
         </scene>
     </scenes>
 </document>

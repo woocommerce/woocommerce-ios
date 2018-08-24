@@ -75,7 +75,8 @@ private extension NewOrdersViewController {
 private extension NewOrdersViewController {
 
     @IBAction func buttonTouchUpInside(_ sender: UIButton) {
-        DDLogDebug("Hi there!!!!")
+        // FIXME: Just temp code
+        self.tabBarController?.selectedIndex = 1
         sender.fadeOutSelectedBackground()
     }
 
@@ -95,22 +96,29 @@ private extension UIButton {
 
     /// Animates the button's bg color to a selected state
     ///
-    func fadeInSelectedBackground() {
-        UIView.animate(withDuration: AnimationConstants.duration) { [weak self] in
-            self?.backgroundColor = AnimationConstants.selectedBgColor
-        }
+    func fadeInSelectedBackground(onCompletion: (() -> Void)? = nil) {
+        UIView.animate(withDuration: AnimationConstants.duration,
+                       delay: 0.0,
+                       options: .curveEaseInOut,
+                       animations: { [weak self] in
+                        self?.backgroundColor = AnimationConstants.selectedBgColor
+            }, completion: { _ in
+                onCompletion?()
+        })
     }
 
     /// Animates the button's bg color to an unselected state
     ///
-    func fadeOutSelectedBackground() {
+    func fadeOutSelectedBackground(onCompletion: (() -> Void)? = nil) {
         // Adding a "pinch" of delay here to make room for the fade-in animation to complete
         UIView.animate(withDuration: AnimationConstants.duration,
                        delay: AnimationConstants.fadeOutDelay,
                        options: .curveEaseInOut,
                        animations: { [weak self] in
                             self?.backgroundColor = .clear
-        }, completion: nil)
+            }, completion: { _ in
+                onCompletion?()
+        })
     }
 
     private enum AnimationConstants {

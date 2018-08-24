@@ -295,8 +295,9 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="110"/>
                                 <connections>
                                     <action selector="buttonTouchDown:" destination="lX1-IT-Jsn" eventType="touchDown" id="rIo-QZ-BRU"/>
+                                    <action selector="buttonTouchDragOutside:" destination="lX1-IT-Jsn" eventType="touchDragOutside" id="iJa-hU-1Ko"/>
                                     <action selector="buttonTouchUpInside:" destination="lX1-IT-Jsn" eventType="touchUpInside" id="NEG-x8-QQd"/>
-                                    <action selector="buttonTouchUpOutside:" destination="lX1-IT-Jsn" eventType="touchUpOutside" id="9hJ-cP-u5h"/>
+                                    <action selector="buttonTouchUpOutside:" destination="lX1-IT-Jsn" eventType="touchUpOutside" id="Yxy-W2-UcJ"/>
                                 </connections>
                             </button>
                         </subviews>

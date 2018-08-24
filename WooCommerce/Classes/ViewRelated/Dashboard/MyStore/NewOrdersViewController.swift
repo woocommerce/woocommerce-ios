@@ -84,6 +84,10 @@ private extension NewOrdersViewController {
         sender.fadeOutSelectedBackground()
     }
 
+    @IBAction func buttonTouchDragOutside(_ sender: UIButton) {
+        sender.fadeOutSelectedBackground()
+    }
+
     @IBAction func buttonTouchDown(_ sender: UIButton) {
         sender.fadeInSelectedBackground()
     }
@@ -123,7 +127,7 @@ private extension UIButton {
 
     private enum AnimationConstants {
         static let duration: TimeInterval     = 0.1
-        static let fadeOutDelay: TimeInterval = 0.1
+        static let fadeOutDelay: TimeInterval = 0.06
         static let selectedBgColor            = StyleManager.wooGreyMid.withAlphaComponent(0.4)
     }
 }

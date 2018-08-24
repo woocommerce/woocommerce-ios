@@ -17,6 +17,15 @@ class NewOrdersViewController: UIViewController {
     @IBOutlet private weak var chevronImageView: UIImageView!
     @IBOutlet private weak var actionButton: UIButton!
 
+    /// ResultsController: Loads Orders with status `Processing` from the Storage Layer
+    ///
+    private lazy var resultsController: ResultsController<StorageOrder> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "status = %@", OrderStatus.processing.rawValue)
+        let descriptor = NSSortDescriptor(key: "orderID", ascending: true)
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     // MARK: - Public Properties
 
     public var delegate: NewOrdersDelegate?
@@ -30,6 +39,7 @@ class NewOrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
+        configureResultsController()
     }
 }
 
@@ -39,19 +49,22 @@ class NewOrdersViewController: UIViewController {
 extension NewOrdersViewController {
 
     func syncNewOrders() {
-        // TODO: grab actual data here and remove this fake code! 🤡
-        titleLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %@ orders to fulfill",
-                                                                             comment: "Title text used on the UI element displayed when a user has multiple pending orders to process."), "50+")
-        if let delegate = delegate {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                delegate.didUpdateNewOrdersData(hasNewOrders: true)
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let action = OrderAction.retrieveOrders(siteID: siteID) { error in
+            if let error = error {
+                DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing orders: \(error)")
             }
         }
+
+        StoresManager.shared.dispatch(action)
     }
 }
 
 
-// MARK: - User Interface Configuration
+// MARK: - Configuration
 //
 private extension NewOrdersViewController {
 
@@ -66,6 +79,13 @@ private extension NewOrdersViewController {
         descriptionLabel.text = NSLocalizedString("Review, prepare, and ship these pending orders",
                                                   comment: "Description text used on the UI element displayed when a user has pending orders to process.")
         chevronImageView.image = UIImage.chevronImage
+    }
+
+    func configureResultsController() {
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.updateNewOrdersIfNeeded()
+        }
+        try? resultsController.performFetch()
     }
 }
 
@@ -129,6 +149,23 @@ private extension UIButton {
         static let duration: TimeInterval     = 0.1
         static let fadeOutDelay: TimeInterval = 0.06
         static let selectedBgColor            = StyleManager.wooGreyMid.withAlphaComponent(0.4)
+    }
+}
+
+
+// MARK: - Private Helpers
+//
+private extension NewOrdersViewController {
+    func updateNewOrdersIfNeeded() {
+        let currentCount = resultsController.fetchedObjects.count
+        titleLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %ld orders to fulfill",
+                                                                             comment: "Title text used on the UI element displayed when a user has multiple pending orders to process."), currentCount)
+        if currentCount > 0 {
+            delegate?.didUpdateNewOrdersData(hasNewOrders: true)
+        } else {
+            delegate?.didUpdateNewOrdersData(hasNewOrders: false)
+        }
+
     }
 }
 

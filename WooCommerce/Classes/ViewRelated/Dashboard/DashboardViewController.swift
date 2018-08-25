@@ -124,7 +124,7 @@ private extension DashboardViewController {
                        animations: {
                         view.isHidden = false
                         view.alpha = 1.0
-        }) { success in
+        }) { _ in
             view.isHidden = false
             view.alpha = 1.0
         }
@@ -134,7 +134,7 @@ private extension DashboardViewController {
         UIView.animate(withDuration: Constants.hideAnimationDuration, animations: {
             view.isHidden = true
             view.alpha = 0.0
-        }, completion: { success in
+        }, completion: { _ in
             view.isHidden = true
             view.alpha = 0.0
         })

@@ -40,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     let storageManager = CoreDataManager(name: WooConstants.databaseStackName)
 
-    /// Main Window
+    /// Tab Bar Controller
     ///
     var tabBarController: MainTabBarController? {
         guard let window = window,

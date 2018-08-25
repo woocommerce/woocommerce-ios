@@ -158,9 +158,21 @@ private extension UIButton {
 private extension NewOrdersViewController {
     func updateNewOrdersIfNeeded() {
         let currentCount = resultsController.fetchedObjects.count
-        titleLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %ld orders to fulfill",
-                                                                             comment: "Title text used on the UI element displayed when a user has multiple pending orders to process."), currentCount)
+        titleLabel.text = pluralize(currentCount,
+                                    singular: NSLocalizedString("You have 1 order to fulfill", comment: "Title text used on the My Store UI when a user has a _single_ pending order to process."),
+                                    plural: NSLocalizedString("You have %ld orders to fulfill", comment: "Title text used on the My Store UI when a user has _multiple_ pending orders to process."))
         delegate?.didUpdateNewOrdersData(hasNewOrders: currentCount > 0)
+    }
+
+    /// Helper method to provide the singular or plural (formatted) version of a
+    /// string based on a count.
+    ///
+    func pluralize(_ count: Int, singular: String, plural: String) -> String {
+        if count == 1 {
+            return singular
+        } else {
+            return String.localizedStringWithFormat(plural, count)
+        }
     }
 }
 

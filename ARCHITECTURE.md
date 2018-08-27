@@ -5,7 +5,7 @@ WooCommerce iOS's architecture is the result of a **massive team effort** which 
 coding rounds, and most of all: the sum of past experiences on the platform.
 
 The goal of the current document is to discuss several principles that strongly influenced our current architecture approach, along with providing
-details on how each one of the layer works internally.
+details on how each one of the layers work internally.
 
 
 
@@ -17,7 +17,7 @@ Throughout the entire architecture design process, we've priorized several key c
 
 1.  **Do NOT Reinvent the Wheel**
 
-        Our main goal is to exploit as much as possible all of the things the platform already offers thru it's SDK, 
+        Our main goal is to exploit as much as possible all of the things the platform already offers through its SDK, 
         for obvious reasons.
 
         The -non extensive- list of tools we've built upon include: [CoreData, NotificationCenter, KVO]
@@ -42,8 +42,8 @@ Throughout the entire architecture design process, we've priorized several key c
 
 3.  **Immutability**
 
-        For a wide variety of reasons, we've opted for exposing Mutable Entities **ONLY** to our Service Layer. 
-        The main app's ViewControllers can access to [Remote, Cached] Entities only through ReadOnly instances.
+        For a wide variety of reasons, we've opted for exposing Mutable Entities **ONLY** to our Service Layer (Yosemite.framework). 
+        The main app's ViewControllers can gain access to [Remote, Cached] Entities only through ReadOnly instances.
 
         (A) Thread Safe: We're shielded from known CoreData Threading nightmares
         (B) A valid object will always remain valid. This is not entirely true with plain NSManagedObjects!
@@ -73,14 +73,14 @@ replace CoreData with any other database. Key notes:
 1.  **CoreDataManager**
 
         In charge of bootstrapping the entire CoreData stack: contains a NSPersistentContainer instance, and 
-        is responsible for loading both, the Data Model and the actual `.sqlite` file.
+        is responsible for loading both the Data Model and the actual `.sqlite` file.
 
 2.  **StorageManagerType**
 
         Defines the public API that's expected to be conformed by any actual implementation that intends to contain
         and grant access to StorageType instances. 
         
-        **Conformed by CoreDatManager.**
+        **Conformed by CoreDataManager.**
 
 3.  **StorageType**
 
@@ -181,7 +181,7 @@ of performing this task for us:
 Related Endpoints are expected to be accessible by means of a concrete `Remote` implementation. The `Remote` base class offers few
 convenience methods for enqueuing requests and parsing responses in a standard and cohesive way `(Mappers)`.
 
-`Remote(s)` receive a Network concrete instance via it's initializer. This allows us to Unit Test it's behavior, by means of the `MockupNetwork`
+`Remote(s)` receive a Network concrete instance via its initializer. This allows us to Unit Test it's behavior, by means of the `MockupNetwork`
 tool, which was designed to simulate Backend Responses.
 
 
@@ -196,7 +196,7 @@ Storage layers.
 
 ### Main Concepts
 
-We've borrowed several concepts from  the [WordPress's FluxC library](https://github.com/wordpress-mobile/WordPress-FluxC-Android), and tailored them down
+We've borrowed several concepts from  the [WordPress FluxC library](https://github.com/wordpress-mobile/WordPress-FluxC-Android), and tailored them down
 for the iOS platform (and our specific requirements):
 
 
@@ -206,6 +206,9 @@ for the iOS platform (and our specific requirements):
         Usually implemented by means of Swift enums, but can be literally any type that conforms to the Action protocol.
 
         *Allowed* to have a Closure Callback to indicate Success / Failure scenarios.
+        
+        **NOTE:** Success callbacks can return data, but the "preferred" mechanism is via the EntityListener or 
+        ResultsController tools.
         
 2.  **Stores**
 
@@ -247,7 +250,7 @@ for the iOS platform (and our specific requirements):
                                 SomeAction >> Dispatcher >> SomeStore
                 
         A.  [Main App]  SomeAction is built and enqueued in the main dispatcher
-        B.  [Yosemite]  The dispatcher looks up for processors that support SomeAction.Type
+        B.  [Yosemite]  The dispatcher looks up for the processor that support SomeAction.Type, and relays the Action.
         C.  [Yosemite]  SomeStore receives the action, and performs a task
         D.  [Yosemite]  Upon completion, SomeStore *may* (or may not) run the Action's callback (if any).
     
@@ -255,7 +258,7 @@ for the iOS platform (and our specific requirements):
 
                                 ResultsController >> Observer
 
-        A.  [Main App]  An observer (typically a ViewController) initializes a ResultsController, and subscribes to it's callbacks
+        A.  [Main App]  An observer (typically a ViewController) initializes a ResultsController, and subscribes to its callbacks
         B.  [Yosemite]  ResultsController listens to Storage Layer changes that match the target criteria (Entity / Predicate)
         C.  [Yosemite]  Whenever there are changes, the observer gets notified
         D.  [Yosemite]  ResultsController *grants ReadOnly Access* to the stored entities
@@ -276,7 +279,7 @@ It's important to note that in the proposed architecture Model Entities must be 
 
 A.  **Storage.framework**
 
-        New entities are defined in the CoreData Model, and it's code is generated thru the Model Editor.
+        New entities are defined in the CoreData Model, and its code is generated thru the Model Editor.
         
 B.  **Networking.framework**
 
@@ -288,7 +291,7 @@ In order to avoid code duplication we've taken a few shortcuts:
     This allows us to avoid the need for importing `Networking` in the main app, and also lets us avoid reimplementing, yet again,
     the same entities that have been defined twice.
 
-*   Since ResultsController uses internally a FRC, the Storage.Model *TYPE* is required for it's initialization.
+*   Since ResultsController uses internally a FRC, the Storage.Model *TYPE* is required for its initialization.
     We may revisit and fix this shortcoming in upcoming iterations. 
 
     As a workaround to prevent the need for `import Storage` statements, all of the Storage.Entities that are used in 
@@ -304,13 +307,13 @@ into a ReadOnly instance:
 
 *  **ReadOnlyConvertible**
 
-        Protocol conformed by all of the Storage.Entities, allows us to obtain a ReadOnly Type matching the Receiver's Payload.
-        Additionally, this protocol define an API to update the receiver's fields, given a ReadOnly instance (potentially a Backend
+        Protocol implemented by all of the Storage.Entities, allows us to obtain a ReadOnly Type matching the Receiver's Payload.
+        Additionally, this protocol defines an API to update the receiver's fields, given a ReadOnly instance (potentially a Backend
         response we've received from the Networking layer)
     
 *  **ReadOnlyType**
 
-        Protocol conformed by *STRONG* Storage.Entities. Allows us to determine if a ReadOnly type represents a given Mutable instance.
+        Protocol implemented by *STRONG* Storage.Entities. Allows us to determine if a ReadOnly type represents a given Mutable instance.
         Few notes that led us to this approach:
 
         A.      Why is it only supported by *Strong* stored types?: because in order to determine if A represents B, a 

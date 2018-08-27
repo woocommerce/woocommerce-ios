@@ -73,19 +73,19 @@ extension MainTabBarController {
     /// Switches to the My Store tab and pops to the root view controller
     ///
     static func switchToMyStoreTab() {
-        navigateTo(WooTab.myStore)
+        navigateTo(.myStore)
     }
 
     /// Switches to the Orders tab and pops to the root view controller
     ///
     static func switchToOrdersTab() {
-        navigateTo(WooTab.orders)
+        navigateTo(.orders)
     }
 
     /// Switches to the Notifications tab and pops to the root view controller
     ///
     static func switchToNotificationsTab() {
-        navigateTo(WooTab.notifications)
+        navigateTo(.notifications)
     }
 
     private static func navigateTo(_ tab: WooTab) {

@@ -1,30 +1,22 @@
 import UIKit
 
 class OrderNoteTableViewCell: UITableViewCell {
+    override func awakeFromNib() {
+        super.awakeFromNib()
 
-    @IBOutlet private var iconButton: UIButton! {
-        didSet {
-            iconButton.layer.cornerRadius = iconButton.frame.width / 2
-            iconButton.tintColor = .white
-        }
-    }
-    @IBOutlet private var dateLabel: UILabel! {
-        didSet {
-            dateLabel.applyBodyStyle()
-        }
-    }
-    @IBOutlet private var statusLabel: UILabel! {
-        didSet {
-            statusLabel.applyBodyStyle()
-            statusLabel.textColor = StyleManager.wooGreyMid
-        }
-    }
-    @IBOutlet private var noteLabel: UILabel! {
-        didSet {
-            noteLabel.applyBodyStyle()
-        }
+        dateLabel.applyBodyStyle()
+        statusLabel.applyBodyStyle()
+        noteLabel.applyBodyStyle()
+
+        statusLabel.textColor = StyleManager.wooGreyMid
+        iconButton.layer.cornerRadius = iconButton.frame.width / 2
+        iconButton.tintColor = .white
     }
 
+    @IBOutlet private var iconButton: UIButton!    
+    @IBOutlet private var dateLabel: UILabel!
+    @IBOutlet private var statusLabel: UILabel!
+    @IBOutlet private var noteLabel: UILabel!
 
     var dateCreated: String? {
         get {

@@ -18,7 +18,7 @@ target 'WooCommerce' do
   #
   pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.3'
   pod 'Gridicons', '0.15'
-  pod 'WordPressAuthenticator', '1.0.5'
+  pod 'WordPressAuthenticator', '1.0.6'
   pod 'WordPressShared', '1.0.8'
 
 
@@ -29,6 +29,8 @@ target 'WooCommerce' do
   pod 'Crashlytics', '~> 3.10'
   pod 'KeychainAccess', '~> 3.1'
   pod 'CocoaLumberjack/Swift', '~> 3.4'
+  pod 'XLPagerTabStrip', '~> 8.0'
+  pod 'Charts', '~> 3.1'
 
   # Unit Tests
   # ==========

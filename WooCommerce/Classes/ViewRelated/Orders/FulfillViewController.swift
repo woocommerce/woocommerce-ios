@@ -76,6 +76,7 @@ private extension FulfillViewController {
     ///
     func setupMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Setup: TableView
@@ -252,12 +253,16 @@ private extension FulfillViewController {
 
     /// Setup: Address Cell
     ///
-    private func setupAddressCell(_ cell: UITableViewCell, with address: Address) {
+    private func setupAddressCell(_ cell: UITableViewCell, with address: Address?) {
         guard let cell = cell as? CustomerInfoTableViewCell else {
             fatalError()
         }
 
-        let address = order.shippingAddress
+        guard let address = order.shippingAddress ?? order.billingAddress else {
+            cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
+            cell.address = NSLocalizedString("No address specified.", comment: "Fulfill order > customer info > where the address would normally display.")
+            return
+        }
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
         cell.name = address.fullName
@@ -301,7 +306,7 @@ private enum Row {
 
     /// Represents an Address Row
     ///
-    case address(shipping: Address)
+    case address(shipping: Address?)
 
     /// Represents an "Add Tracking" Row
     ///
@@ -377,7 +382,13 @@ private extension Section {
 
         let address: Section = {
             let title = NSLocalizedString("Customer Information", comment: "")
-            let row = Row.address(shipping: order.shippingAddress)
+            if let shippingAddress = order.shippingAddress {
+                let row = Row.address(shipping: shippingAddress)
+
+                return Section(title: title, secondaryTitle: nil, rows: [row])
+            }
+
+            let row = Row.address(shipping: order.billingAddress)
 
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()

@@ -14,8 +14,11 @@ class OrderDetailsViewModel {
         self.orderStatusViewModel = OrderStatusViewModel(orderStatus: order.status)
     }
 
-    var summaryTitle: String {
-        return "#\(order.number) \(order.shippingAddress.firstName) \(order.shippingAddress.lastName)"
+    var summaryTitle: String? {
+        if let billingAddress = order.billingAddress {
+            return "#\(order.number) \(billingAddress.firstName) \(billingAddress.lastName)"
+        }
+        return "#\(order.number)"
     }
 
     var summaryDateCreated: String {
@@ -59,15 +62,21 @@ class OrderDetailsViewModel {
         return order.customerNote ?? String()
     }
 
-    var shippingViewModel: ContactViewModel {
-        return ContactViewModel(with: order.shippingAddress, contactType: ContactType.shipping)
-    }
-    var shippingAddress: String? {
-        return shippingViewModel.formattedAddress
+    var shippingViewModel: ContactViewModel? {
+        if let shippingAddress = order.shippingAddress {
+            return ContactViewModel(with: shippingAddress, contactType: ContactType.shipping)
+        }
+
+        return nil
     }
 
-    private(set) lazy var billingViewModel = ContactViewModel(with: order.billingAddress, contactType: ContactType.billing)
-    private(set) lazy var billingAddress = billingViewModel.formattedAddress
+    var billingViewModel: ContactViewModel? {
+        if let billingAddress = order.billingAddress {
+            return ContactViewModel(with: billingAddress, contactType: ContactType.billing)
+        }
+
+        return nil
+    }
 
     let subtotalLabel = NSLocalizedString("Subtotal", comment: "Subtotal label for payment view")
 

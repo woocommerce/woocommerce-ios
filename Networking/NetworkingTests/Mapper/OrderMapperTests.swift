@@ -50,7 +50,8 @@ class OrderMapperTests: XCTestCase {
             return
         }
 
-        let dummyAddresses = [order.billingAddress, order.shippingAddress]
+        let dummyAddresses = [order.shippingAddress, order.billingAddress].compactMap({ $0 })
+        XCTAssertEqual(dummyAddresses.count, 2)
 
         for address in dummyAddresses {
             XCTAssertEqual(address.firstName, "Johnny")

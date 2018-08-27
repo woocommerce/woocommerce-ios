@@ -3,7 +3,7 @@ import UIKit
 class CustomerInfoTableViewCell: UITableViewCell {
     @IBOutlet private weak var titleLabel: UILabel! {
         didSet {
-            titleLabel.applyTitleStyle()
+            titleLabel.applyHeadlineStyle()
         }
     }
     @IBOutlet private weak var nameLabel: UILabel! {
@@ -43,13 +43,5 @@ class CustomerInfoTableViewCell: UITableViewCell {
         set {
             addressLabel.text = newValue
         }
-    }
-}
-
-extension CustomerInfoTableViewCell {
-    func configure(with viewModel: ContactViewModel) {
-        title = viewModel.title
-        name = viewModel.fullName
-        address = viewModel.formattedAddress
     }
 }

@@ -38,15 +38,12 @@ class OrderDetailsViewController: UIViewController {
     }
     private var sections = [Section]()
 
-    /// TODO: Replace with `ResultController` (OR) `ObjectController` ASAP
+    /// EntityListener: Update / Deletion Notifications.
     ///
-    private lazy var resultsController: ResultsController<StorageOrder> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "orderID = %ld", self.viewModel.order.orderID)
-        let descriptor = NSSortDescriptor(key: "orderID", ascending: true)
-
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    private lazy var entityListener: EntityListener<Order> = {
+        return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: viewModel.order)
     }()
+
 
 
     // MARK: - View Lifecycle
@@ -55,7 +52,7 @@ class OrderDetailsViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
-        configureResultsController()
+        configureEntityListener()
         registerTableViewCells()
         registerTableViewHeaderFooters()
     }
@@ -97,16 +94,23 @@ private extension OrderDetailsViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
-    /// TODO: Replace with `ResultController` (OR) `ObjectController` ASAP
+    /// Setup: EntityListener
     ///
-    func configureResultsController() {
-        try? resultsController.performFetch()
-        resultsController.onDidChangeContent = { [weak self] in
-            guard let `self` = self, let order = self.resultsController.fetchedObjects.first else {
+    func configureEntityListener() {
+        entityListener.onUpsert = { [weak self] order in
+            guard let `self` = self else {
+                return
+            }
+            self.viewModel = OrderDetailsViewModel(order: order)
+        }
+
+        entityListener.onDelete = { [weak self] in
+            guard let `self` = self else {
                 return
             }
 
-            self.viewModel = OrderDetailsViewModel(order: order)
+            self.navigationController?.popViewController(animated: true)
+            self.displayOrderDeletedNotice()
         }
     }
 
@@ -121,7 +125,14 @@ private extension OrderDetailsViewController {
         let customerNoteSection = Section(leftTitle: NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title"), rightTitle: nil, footer: nil, rows: [.customerNote])
 
         let infoFooter = billingIsHidden ? NSLocalizedString("Show billing", comment: "Footer text to show the billing cell") : NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
-        let infoRows: [Row] = billingIsHidden ? [.shippingAddress] : [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
+        var infoRows: [Row] = [Row]()
+        if billingIsHidden {
+            infoRows = [.shippingAddress]
+        } else if viewModel.order.billingAddress == nil {
+            infoRows = [.shippingAddress, .billingAddress]
+        } else {
+            infoRows = [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
+        }
         let infoSection = Section(leftTitle: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), rightTitle: nil, footer: infoFooter, rows: infoRows)
         let paymentSection = Section(leftTitle: NSLocalizedString("PAYMENT", comment: "Payment section title"), rightTitle: nil, footer: nil, rows: [.payment])
 
@@ -182,6 +193,21 @@ private extension OrderDetailsViewController {
     }
 }
 
+// MARK: - Notices
+//
+private extension OrderDetailsViewController {
+
+    /// Displays a Notice onscreen, indicating that the current Order has been deleted from the Store.
+    ///
+    func displayOrderDeletedNotice() {
+        let title = NSLocalizedString("Deleted: Order #\(viewModel.order.number)", comment: "Order Notice")
+        let message = NSLocalizedString("The order has been deleted from your Store!",
+                                        comment: "Displayed whenever the Details for an Order that just got deleted was onscreen.")
+
+        let notice = Notice(title: title, message: message, feedbackType: .error)
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+}
 
 // MARK: - Action Handlers
 //
@@ -224,9 +250,25 @@ private extension OrderDetailsViewController {
         case let cell as CustomerNoteTableViewCell:
             cell.configure(with: viewModel)
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
-            cell.configure(with: viewModel.shippingViewModel)
+            if let shippingViewModel = viewModel.shippingViewModel {
+                cell.title = shippingViewModel.title
+                cell.name = shippingViewModel.fullName
+                cell.address = shippingViewModel.formattedAddress
+            } else {
+                cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
+                cell.name = nil
+                cell.address = NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
+            }
         case let cell as CustomerInfoTableViewCell where row == .billingAddress:
-            cell.configure(with: viewModel.billingViewModel)
+            if let billingViewModel = viewModel.billingViewModel {
+                cell.title = billingViewModel.title
+                cell.name = billingViewModel.fullName
+                cell.address = billingViewModel.formattedAddress
+            } else {
+                cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
+                cell.name = nil
+                cell.address = NSLocalizedString("No address specified.", comment: "Order details > customer info > billing details. This is where the address would normally display.")
+            }
         case let cell as BillingDetailsTableViewCell where row == .billingPhone:
             configure(cell, for: .billingPhone)
         case let cell as BillingDetailsTableViewCell where row == .billingEmail:
@@ -246,12 +288,12 @@ private extension OrderDetailsViewController {
 
     private func configure(_ cell: BillingDetailsTableViewCell, for billingRow: Row) {
         if billingRow == .billingPhone {
-            cell.configure(text: viewModel.billingViewModel.phoneNumber, image: Gridicon.iconOfType(.ellipsis))
+            cell.configure(text: viewModel.billingViewModel?.phoneNumber, image: Gridicon.iconOfType(.ellipsis))
             cell.onTouchUp = { [weak self] in
                 self?.phoneButtonAction()
             }
         } else if billingRow == .billingEmail {
-            cell.configure(text: viewModel.billingViewModel.email, image: Gridicon.iconOfType(.mail))
+            cell.configure(text: viewModel.billingViewModel?.email, image: Gridicon.iconOfType(.mail))
             cell.onTouchUp = { [weak self] in
                 self?.emailButtonAction()
             }
@@ -452,7 +494,11 @@ extension OrderDetailsViewController: UITableViewDelegate {
 //
 extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
     func sendTextMessageIfPossible() {
-        let contactViewModel = ContactViewModel(with: viewModel.order.billingAddress, contactType: .billing)
+        guard let billingAddress = viewModel.order.billingAddress else {
+            return
+        }
+
+        let contactViewModel = ContactViewModel(with: billingAddress, contactType: .billing)
         guard let phoneNumber = contactViewModel.cleanedPhoneNumber else {
             return
         }
@@ -479,10 +525,15 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
 extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
     func sendEmailIfPossible() {
         if MFMailComposeViewController.canSendMail() {
-            let contactViewModel = ContactViewModel(with: viewModel.order.billingAddress, contactType: .billing)
+            guard let billingAddress = viewModel.order.billingAddress else {
+                return
+            }
+
+            let contactViewModel = ContactViewModel(with: billingAddress, contactType: .billing)
             guard let email = contactViewModel.email else {
                 return
             }
+
             sendEmail(to: email)
         }
     }

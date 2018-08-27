@@ -43,6 +43,33 @@ class SettingsViewController: UIViewController {
             }
         }
     }
+
+    func handleLogout() {
+        var accountName: String = ""
+        if let account = StoresManager.shared.sessionManager.defaultAccount {
+            accountName = account.displayName
+        }
+
+        let name = String(format: NSLocalizedString("Are you sure you want to log out of the account %@?", comment: "Alert message to confirm a user meant to log out."), accountName)
+        let alertController = UIAlertController(title: "", message: name, preferredStyle: .alert)
+
+        let cancelAction = UIAlertAction(title: NSLocalizedString("Back", comment: "Alert button title - dismisses alert, which cancels the log out attempt"), style: .cancel)
+        alertController.addAction(cancelAction)
+
+        let logOutAction = UIAlertAction(title: NSLocalizedString("Log Out", comment: "Alert button title - confirms and logs out the user"), style: .default) { (action) in
+            self.logOutUser()
+        }
+        alertController.addAction(logOutAction)
+
+        alertController.preferredAction = logOutAction
+        present(alertController, animated: true)
+    }
+
+    func logOutUser() {
+        WooAnalytics.shared.track(.logout)
+        StoresManager.shared.deauthenticate()
+        navigationController?.popToRootViewController(animated: true)
+    }
 }
 
 // MARK: - UITableViewDataSource Conformance
@@ -73,14 +100,12 @@ extension SettingsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        if cell is LogOutTableViewCell {
-            let logoutCell = cell as! LogOutTableViewCell
+        if let logoutCell = cell as? LogOutTableViewCell {
             logoutCell.didSelectLogout = { [weak self] in
-                WooAnalytics.shared.track(.logout)
-                StoresManager.shared.deauthenticate()
-                self?.navigationController?.popToRootViewController(animated: true)
+                self?.handleLogout()
             }
         }
+
         return cell
     }
 

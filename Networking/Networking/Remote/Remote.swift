@@ -31,7 +31,7 @@ public class Remote {
     func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
         network.responseJSON(for: request) { (payload, error) in
             guard let payload = payload else {
-                completion(nil, error ?? NetworkError.emptyResponse)
+                completion(nil, error)
                 return
             }
 
@@ -53,7 +53,7 @@ public class Remote {
     func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M, completion: @escaping (M.Output?, Error?) -> Void) {
         network.responseData(for: request) { (data, error) in
             guard let data = data else {
-                completion(nil, error ?? NetworkError.emptyResponse)
+                completion(nil, error)
                 return
             }
 

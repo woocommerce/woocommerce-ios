@@ -7,6 +7,6 @@ extension UIButton {
         tintColor = .white
         layer.cornerRadius = 8.0
         contentEdgeInsets = UIEdgeInsetsMake(16.0, 16.0, 16.0, 16.0)
-        titleLabel?.applyTitleStyle()
+        titleLabel?.applyHeadlineStyle()
     }
 }

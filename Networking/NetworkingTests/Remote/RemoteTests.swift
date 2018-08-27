@@ -21,7 +21,7 @@ class RemoteTests: XCTestCase {
 
         remote.enqueue(request) { (payload, error) in
             XCTAssertNil(payload)
-            XCTAssertEqual(error as! NetworkError, NetworkError.emptyResponse)
+            XCTAssertEqual(error as! NetworkError, NetworkError.unknown)
 
             XCTAssert(network.requestsForResponseData.isEmpty)
             XCTAssert(network.requestsForResponseJSON.count == 1)
@@ -46,7 +46,7 @@ class RemoteTests: XCTestCase {
 
         remote.enqueue(request, mapper: mapper) { (payload, error) in
             XCTAssertNil(payload)
-            XCTAssertEqual(error as! NetworkError, NetworkError.emptyResponse)
+            XCTAssertEqual(error as! NetworkError, NetworkError.unknown)
 
             XCTAssert(network.requestsForResponseJSON.isEmpty)
             XCTAssert(network.requestsForResponseData.count == 1)

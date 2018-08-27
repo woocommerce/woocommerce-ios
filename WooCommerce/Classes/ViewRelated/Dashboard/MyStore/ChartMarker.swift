@@ -183,7 +183,7 @@ class ChartMarker: MarkerImage {
 }
 
 
-// MARK: -  Constants!
+// MARK: - Constants!
 //
 private extension ChartMarker {
     enum Constants {

@@ -13,7 +13,7 @@ class OrderNoteTableViewCell: UITableViewCell {
         iconButton.tintColor = .white
     }
 
-    @IBOutlet private var iconButton: UIButton!    
+    @IBOutlet private var iconButton: UIButton!
     @IBOutlet private var dateLabel: UILabel!
     @IBOutlet private var statusLabel: UILabel!
     @IBOutlet private var noteLabel: UILabel!

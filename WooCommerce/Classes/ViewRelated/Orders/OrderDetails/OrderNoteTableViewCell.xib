@@ -20,6 +20,10 @@
                 <subviews>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YMK-WG-vE9">
                         <rect key="frame" x="16" y="16" width="26" height="26"/>
+                        <accessibility key="accessibilityConfiguration">
+                            <accessibilityTraits key="traits" notEnabled="YES"/>
+                            <bool key="isElement" value="NO"/>
+                        </accessibility>
                         <constraints>
                             <constraint firstAttribute="width" constant="26" id="Kkn-yx-i7N"/>
                             <constraint firstAttribute="height" constant="26" id="zbP-g2-nLx"/>

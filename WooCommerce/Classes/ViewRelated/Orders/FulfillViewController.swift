@@ -249,6 +249,9 @@ private extension FulfillViewController {
 
         cell.leftImage = Gridicon.iconOfType(.quote).imageWithTintColor(.black)
         cell.labelText = note
+        cell.accessibilityTraits = UIAccessibilityTraitButton
+        cell.accessibilityLabel = note
+        cell.accessibilityHint = NSLocalizedString("Adds a note to the order.", comment: "VoiceOver accessibility hint, informing the user the button can be used to add an order note.")
     }
 
     /// Setup: Address Cell
@@ -362,8 +365,8 @@ private extension Section {
     ///
     static func allSections(for order: Order) -> [Section] {
         let products: Section = {
-            let title = NSLocalizedString("Product", comment: "")
-            let secondaryTitle = NSLocalizedString("Qty", comment: "")
+            let title = NSLocalizedString("Product", comment: "Section header title for the product")
+            let secondaryTitle = NSLocalizedString("Qty", comment: "Section header title - abbreviation for quantity")
             let rows = order.items.map { Row.product(item: $0) }
 
             return Section(title: title, secondaryTitle: secondaryTitle, rows: rows)

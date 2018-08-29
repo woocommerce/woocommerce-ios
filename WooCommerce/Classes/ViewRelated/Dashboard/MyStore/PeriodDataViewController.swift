@@ -18,6 +18,8 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     @IBOutlet private weak var barChartView: BarChartView!
     @IBOutlet private weak var lastUpdated: UILabel!
     @IBOutlet private weak var borderView: UIView!
+    @IBOutlet private weak var yAxisAccessibilityLabel: UILabel!
+    @IBOutlet private weak var xAxisAccessibilityLabel: UILabel!
     private var lastUpdatedDate: Date?
 
     public let granularity: StatGranularity
@@ -116,6 +118,15 @@ private extension PeriodDataViewController {
         // Footer
         lastUpdated.font = UIFont.footnote
         lastUpdated.textColor = StyleManager.wooGreyMid
+
+        // Accessibility elements
+        xAxisAccessibilityLabel.isAccessibilityElement = true
+        xAxisAccessibilityLabel.accessibilityTraits = UIAccessibilityTraitStaticText
+        xAxisAccessibilityLabel.accessibilityLabel = NSLocalizedString("This is the X axis", comment: "VoiceOver accessibility label, informs the user about the X-axis on the dashboard chart.")
+
+        yAxisAccessibilityLabel.isAccessibilityElement = true
+        yAxisAccessibilityLabel.accessibilityTraits = UIAccessibilityTraitStaticText
+        yAxisAccessibilityLabel.accessibilityLabel = NSLocalizedString("This is the Y axis", comment: "VoiceOver accessibility label, informs the user about the Y-axis on the dashboard chart.")
     }
 
     func configureBarChart() {

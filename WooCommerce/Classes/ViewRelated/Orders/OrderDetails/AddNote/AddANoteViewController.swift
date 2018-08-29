@@ -150,6 +150,9 @@ private extension AddANoteViewController {
 
         cell.topText = NSLocalizedString("Email note to customer", comment: "Label for yes/no switch - emailing the note to customer.")
         cell.bottomText = NSLocalizedString("If disabled will add the note as private.", comment: "Detail label for yes/no switch.")
+        cell.accessibilityTraits = UIAccessibilityTraitButton
+        cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email note to customer %@", comment: ""), isCustomerNote ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off."))
+        cell.accessibilityHint = NSLocalizedString("Double tap to toggle setting.", comment: "VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on.")
 
         cell.onToggleSwitchTouchUp = { [weak self] in
             guard let `self` = self else {
@@ -158,6 +161,8 @@ private extension AddANoteViewController {
 
             self.toggleNoteType()
             self.refreshTextViewCell()
+            cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email note to customer %@", comment: ""), self.isCustomerNote ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off."))
+            cell.accessibilityHint = NSLocalizedString("Double tap to toggle setting.", comment: "VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on.")
         }
     }
 

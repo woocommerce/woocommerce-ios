@@ -20,7 +20,12 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     @IBOutlet private weak var borderView: UIView!
     @IBOutlet private weak var yAxisAccessibilityLabel: UILabel!
     @IBOutlet private weak var xAxisAccessibilityLabel: UILabel!
+
     private var lastUpdatedDate: Date?
+    private var yAxisMinimum: String = Constants.chartYAxisMinimum.friendlyString()
+    private var yAxisMaximum: String = ""
+    private var xAxisMinimum: String = ""
+    private var xAxisMaximum: String = ""
 
     public let granularity: StatGranularity
     public var orderStats: OrderStats? {
@@ -122,11 +127,9 @@ private extension PeriodDataViewController {
         // Accessibility elements
         xAxisAccessibilityLabel.isAccessibilityElement = true
         xAxisAccessibilityLabel.accessibilityTraits = UIAccessibilityTraitStaticText
-        xAxisAccessibilityLabel.accessibilityLabel = NSLocalizedString("This is the X axis", comment: "VoiceOver accessibility label, informs the user about the X-axis on the dashboard chart.")
-
         yAxisAccessibilityLabel.isAccessibilityElement = true
         yAxisAccessibilityLabel.accessibilityTraits = UIAccessibilityTraitStaticText
-        yAxisAccessibilityLabel.accessibilityLabel = NSLocalizedString("This is the Y axis", comment: "VoiceOver accessibility label, informs the user about the Y-axis on the dashboard chart.")
+
     }
 
     func configureBarChart() {
@@ -236,6 +239,7 @@ extension PeriodDataViewController: IAxisValueFormatter {
                     }
                 }
 
+                // TODO: Fill in max and min values
                 return dateString
             } else {
                 return ""
@@ -245,7 +249,8 @@ extension PeriodDataViewController: IAxisValueFormatter {
                 // Do not show the "0" label on the Y axis
                 return ""
             } else {
-                return value.friendlyString()
+                yAxisMaximum = value.friendlyString()
+                return yAxisMaximum
             }
         }
     }
@@ -300,6 +305,7 @@ private extension PeriodDataViewController {
         barChartView.fitBars = true
         barChartView.notifyDataSetChanged()
         barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
+        updateAxisAccessibility()
     }
 
     func reloadLastUpdatedField() {
@@ -308,6 +314,16 @@ private extension PeriodDataViewController {
 
     func clearChartMarkers() {
         barChartView.highlightValue(nil, callDelegate: false)
+    }
+
+    func updateAxisAccessibility() {
+        let yAxisAccessibilityString = String.localizedStringWithFormat(NSLocalizedString("Y axis. Minimum value %@, maximum value %@.",
+                                                                                     comment: "VoiceOver accessibility label, informs the user about the Y-axis. It reads: Y axis. Minimum value {value}, maximum value {value}."), yAxisMinimum, yAxisMaximum)
+
+        let xAxisAccessibilityString = String.localizedStringWithFormat(NSLocalizedString("X axis. Starting date %@, ending date %@.",
+                                                                                     comment: "VoiceOver accessibility label, informs the user about the X-axis. It reads: X axis. Starting date {date}, ending date {date}."), xAxisMinimum, xAxisMaximum)
+        xAxisAccessibilityLabel.accessibilityLabel = xAxisAccessibilityString
+        yAxisAccessibilityLabel.accessibilityLabel = yAxisAccessibilityString
     }
 
     func generateBarDataSet() -> BarChartData? {

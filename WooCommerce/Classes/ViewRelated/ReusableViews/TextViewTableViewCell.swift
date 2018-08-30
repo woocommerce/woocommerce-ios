@@ -32,6 +32,7 @@ class TextViewTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         noteTextView.delegate = self
+        noteIconButton.accessibilityTraits = UIAccessibilityTraitImage
     }
 }
 

@@ -127,9 +127,10 @@ private extension PeriodDataViewController {
         // Accessibility elements
         xAxisAccessibilityLabel.isAccessibilityElement = true
         xAxisAccessibilityLabel.accessibilityTraits = UIAccessibilityTraitStaticText
+        xAxisAccessibilityLabel.accessibilityLabel = NSLocalizedString("X Axis", comment: "VoiceOver accessibility label for the X-axis.")
         yAxisAccessibilityLabel.isAccessibilityElement = true
         yAxisAccessibilityLabel.accessibilityTraits = UIAccessibilityTraitStaticText
-
+        yAxisAccessibilityLabel.accessibilityLabel = NSLocalizedString("Y Axis", comment: "VoiceOver accessibility label for the Y-axis.")
     }
 
     func configureBarChart() {
@@ -317,13 +318,11 @@ private extension PeriodDataViewController {
     }
 
     func updateAxisAccessibility() {
-        let yAxisAccessibilityString = String.localizedStringWithFormat(NSLocalizedString("Y axis. Minimum value %@, maximum value %@.",
-                                                                                     comment: "VoiceOver accessibility label, informs the user about the Y-axis. It reads: Y axis. Minimum value {value}, maximum value {value}."), yAxisMinimum, yAxisMaximum)
+        yAxisAccessibilityLabel.accessibilityValue = String.localizedStringWithFormat(NSLocalizedString("Minimum value %@, maximum value %@.",
+                                                                                     comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}."), yAxisMinimum, yAxisMaximum)
 
-        let xAxisAccessibilityString = String.localizedStringWithFormat(NSLocalizedString("X axis. Starting date %@, ending date %@.",
-                                                                                     comment: "VoiceOver accessibility label, informs the user about the X-axis. It reads: X axis. Starting date {date}, ending date {date}."), xAxisMinimum, xAxisMaximum)
-        xAxisAccessibilityLabel.accessibilityLabel = xAxisAccessibilityString
-        yAxisAccessibilityLabel.accessibilityLabel = yAxisAccessibilityString
+        xAxisAccessibilityLabel.accessibilityValue = String.localizedStringWithFormat(NSLocalizedString("Starting date %@, ending date %@.",
+                                                                                     comment: "VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}."), xAxisMinimum, xAxisMaximum)
     }
 
     func generateBarDataSet() -> BarChartData? {

@@ -57,6 +57,9 @@ private extension DashboardViewController {
                                              target: self,
                                              action: #selector(settingsTapped))
         rightBarButton.tintColor = .white
+        rightBarButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
+        rightBarButton.accessibilityTraits = UIAccessibilityTraitButton
+        rightBarButton.accessibilityHint = NSLocalizedString("Navigates to Settings.", comment: "VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen.")
         navigationItem.setRightBarButton(rightBarButton, animated: false)
 
         // Don't show the Dashboard title in the next-view's back button

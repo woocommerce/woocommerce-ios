@@ -262,6 +262,7 @@ private extension PeriodDataViewController {
         reloadSiteFields()
         reloadChart()
         reloadLastUpdatedField()
+        view.accessibilityElements = [visitorsTitle, visitorsData, ordersTitle, ordersData, revenueTitle, revenueData, lastUpdated]
     }
 
     func reloadOrderFields() {

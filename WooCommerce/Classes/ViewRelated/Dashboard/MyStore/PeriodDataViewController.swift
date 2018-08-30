@@ -262,7 +262,7 @@ private extension PeriodDataViewController {
         reloadSiteFields()
         reloadChart()
         reloadLastUpdatedField()
-        view.accessibilityElements = [visitorsTitle, visitorsData, ordersTitle, ordersData, revenueTitle, revenueData, lastUpdated]
+        view.accessibilityElements = [visitorsTitle, visitorsData, ordersTitle, ordersData, revenueTitle, revenueData, lastUpdated, yAxisAccessibilityView, xAxisAccessibilityView, chartAccessibilityView]
     }
 
     func reloadOrderFields() {
@@ -302,7 +302,7 @@ private extension PeriodDataViewController {
         barChartView.fitBars = true
         barChartView.notifyDataSetChanged()
         barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
-        updateAccessibilityValues()
+        updateChartAccessibilityValues()
     }
 
     func reloadLastUpdatedField() {
@@ -313,7 +313,7 @@ private extension PeriodDataViewController {
         barChartView.highlightValue(nil, callDelegate: false)
     }
 
-    func updateAccessibilityValues() {
+    func updateChartAccessibilityValues() {
         yAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(NSLocalizedString("Minimum value %@, maximum value %@",
                                                                                      comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}."), yAxisMinimum, yAxisMaximum)
 
@@ -328,7 +328,7 @@ private extension PeriodDataViewController {
                 }
 
                 let entrySummaryString = (entry.accessibilityValue ?? String(entry.y))
-                chartSummaryString += String.localizedStringWithFormat(NSLocalizedString("Bar number %i %@, ",
+                chartSummaryString += String.localizedStringWithFormat(NSLocalizedString("Bar number %i, %@, ",
                                                                    comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}."), i+1, entrySummaryString)
             }
         } else {

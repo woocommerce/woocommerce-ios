@@ -24,8 +24,6 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     private var lastUpdatedDate: Date?
     private var yAxisMinimum: String = Constants.chartYAxisMinimum.friendlyString()
     private var yAxisMaximum: String = ""
-    private var xAxisMinimum: String = ""
-    private var xAxisMaximum: String = ""
 
     public let granularity: StatGranularity
     public var orderStats: OrderStats? {
@@ -53,6 +51,20 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         } else {
             return ""
         }
+    }
+
+    private var xAxisMinimum: String {
+        guard let item = orderStats?.items?.first else {
+            return ""
+        }
+        return formattedPeriodString(for: item)
+    }
+
+    private var xAxisMaximum: String {
+        guard let item = orderStats?.items?.last else {
+            return ""
+        }
+        return formattedPeriodString(for: item)
     }
 
     // MARK: - Initialization
@@ -220,28 +232,7 @@ extension PeriodDataViewController: IAxisValueFormatter {
 
         if axis is XAxis {
             if let item = orderStats.items?[Int(value)] {
-                var dateString = ""
-                switch orderStats.granularity {
-                case .day:
-                    if let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: item.period) {
-                        dateString = DateFormatter.Charts.chartsDayFormatter.string(from: periodDate)
-                    }
-                case .week:
-                    if let periodDate = DateFormatter.Stats.statsWeekFormatter.date(from: item.period) {
-                        dateString = DateFormatter.Charts.chartsWeekFormatter.string(from: periodDate)
-                    }
-                case .month:
-                    if let periodDate = DateFormatter.Stats.statsMonthFormatter.date(from: item.period) {
-                        dateString = DateFormatter.Charts.chartsMonthFormatter.string(from: periodDate)
-                    }
-                case .year:
-                    if let periodDate = DateFormatter.Stats.statsYearFormatter.date(from: item.period) {
-                        dateString = DateFormatter.Charts.chartsYearFormatter.string(from: periodDate)
-                    }
-                }
-
-                // TODO: Fill in max and min values
-                return dateString
+                return formattedPeriodString(for: item)
             } else {
                 return ""
             }
@@ -346,6 +337,29 @@ private extension PeriodDataViewController {
         dataSet.highlightAlpha = Constants.chartHighlightAlpha
         dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
         return BarChartData(dataSet: dataSet)
+    }
+
+    func formattedPeriodString(for item: OrderStatsItem) -> String {
+        var dateString = ""
+        switch granularity {
+        case .day:
+            if let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: item.period) {
+                dateString = DateFormatter.Charts.chartsDayFormatter.string(from: periodDate)
+            }
+        case .week:
+            if let periodDate = DateFormatter.Stats.statsWeekFormatter.date(from: item.period) {
+                dateString = DateFormatter.Charts.chartsWeekFormatter.string(from: periodDate)
+            }
+        case .month:
+            if let periodDate = DateFormatter.Stats.statsMonthFormatter.date(from: item.period) {
+                dateString = DateFormatter.Charts.chartsMonthFormatter.string(from: periodDate)
+            }
+        case .year:
+            if let periodDate = DateFormatter.Stats.statsYearFormatter.date(from: item.period) {
+                dateString = DateFormatter.Charts.chartsYearFormatter.string(from: periodDate)
+            }
+        }
+        return dateString
     }
 }
 

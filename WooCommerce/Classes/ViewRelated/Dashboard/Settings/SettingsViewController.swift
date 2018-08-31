@@ -29,14 +29,8 @@ class SettingsViewController: UIViewController {
             accountName = account.displayName
         }
 
-        if let site = StoresManager.shared.sessionManager.defaultSite {
-            let baseString = site.url
-            let baseUrl = NSURL(string: baseString)
-            if let scheme = baseUrl?.scheme {
-                // remove `https://` or `http://` from the site url
-                let host = scheme + "://"
-                siteUrl = baseString.replacingOccurrences(of: host, with: "")
-            }
+        if let site = StoresManager.shared.sessionManager.defaultSite, let urlString = (site.url as NSString).hostname() {
+            siteUrl = urlString
         }
     }
 

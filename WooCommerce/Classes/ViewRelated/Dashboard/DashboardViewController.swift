@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import CocoaLumberjack
+import WordPressUI
 
 
 // MARK: - DashboardViewController
@@ -126,20 +127,20 @@ private extension DashboardViewController {
                        options: .curveEaseOut,
                        animations: {
                         view.isHidden = false
-                        view.alpha = 1.0
+                        view.alpha = UIKitConstants.alphaFull
         }) { _ in
             view.isHidden = false
-            view.alpha = 1.0
+            view.alpha = UIKitConstants.alphaFull
         }
     }
 
     func applyHideAnimation(for view: UIView) {
         UIView.animate(withDuration: Constants.hideAnimationDuration, animations: {
             view.isHidden = true
-            view.alpha = 0.0
+            view.alpha = UIKitConstants.alphaZero
         }, completion: { _ in
             view.isHidden = true
-            view.alpha = 0.0
+            view.alpha = UIKitConstants.alphaZero
         })
     }
 }

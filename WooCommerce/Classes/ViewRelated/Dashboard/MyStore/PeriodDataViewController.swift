@@ -18,7 +18,13 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     @IBOutlet private weak var barChartView: BarChartView!
     @IBOutlet private weak var lastUpdated: UILabel!
     @IBOutlet private weak var borderView: UIView!
+    @IBOutlet private weak var yAxisAccessibilityView: UIView!
+    @IBOutlet private weak var xAxisAccessibilityView: UIView!
+    @IBOutlet private weak var chartAccessibilityView: UIView!
+
     private var lastUpdatedDate: Date?
+    private var yAxisMinimum: String = Constants.chartYAxisMinimum.friendlyString()
+    private var yAxisMaximum: String = ""
 
     public let granularity: StatGranularity
     public var orderStats: OrderStats? {
@@ -46,6 +52,20 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         } else {
             return ""
         }
+    }
+
+    private var xAxisMinimum: String {
+        guard let item = orderStats?.items?.first else {
+            return ""
+        }
+        return formattedPeriodString(for: item)
+    }
+
+    private var xAxisMaximum: String {
+        guard let item = orderStats?.items?.last else {
+            return ""
+        }
+        return formattedPeriodString(for: item)
     }
 
     // MARK: - Initialization
@@ -116,6 +136,19 @@ private extension PeriodDataViewController {
         // Footer
         lastUpdated.font = UIFont.footnote
         lastUpdated.textColor = StyleManager.wooGreyMid
+
+        // Accessibility elements
+        xAxisAccessibilityView.isAccessibilityElement = true
+        xAxisAccessibilityView.accessibilityTraits = UIAccessibilityTraitStaticText
+        xAxisAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart: X Axis", comment: "VoiceOver accessibility label for the store revenue chart's X-axis.")
+        yAxisAccessibilityView.isAccessibilityElement = true
+        yAxisAccessibilityView.accessibilityTraits = UIAccessibilityTraitStaticText
+        yAxisAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart: Y Axis", comment: "VoiceOver accessibility label for the store revenue chart's Y-axis.")
+        chartAccessibilityView.isAccessibilityElement = true
+        chartAccessibilityView.accessibilityTraits = UIAccessibilityTraitImage
+        chartAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart", comment: "VoiceOver accessibility label for the store revenue chart.")
+        chartAccessibilityView.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Store revenue chart %@",
+                                                                                                       comment: "VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}."), granularity.pluralizedString)
     }
 
     func configureBarChart() {
@@ -205,27 +238,7 @@ extension PeriodDataViewController: IAxisValueFormatter {
 
         if axis is XAxis {
             if let item = orderStats.items?[Int(value)] {
-                var dateString = ""
-                switch orderStats.granularity {
-                case .day:
-                    if let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: item.period) {
-                        dateString = DateFormatter.Charts.chartsDayFormatter.string(from: periodDate)
-                    }
-                case .week:
-                    if let periodDate = DateFormatter.Stats.statsWeekFormatter.date(from: item.period) {
-                        dateString = DateFormatter.Charts.chartsWeekFormatter.string(from: periodDate)
-                    }
-                case .month:
-                    if let periodDate = DateFormatter.Stats.statsMonthFormatter.date(from: item.period) {
-                        dateString = DateFormatter.Charts.chartsMonthFormatter.string(from: periodDate)
-                    }
-                case .year:
-                    if let periodDate = DateFormatter.Stats.statsYearFormatter.date(from: item.period) {
-                        dateString = DateFormatter.Charts.chartsYearFormatter.string(from: periodDate)
-                    }
-                }
-
-                return dateString
+                return formattedPeriodString(for: item)
             } else {
                 return ""
             }
@@ -234,9 +247,44 @@ extension PeriodDataViewController: IAxisValueFormatter {
                 // Do not show the "0" label on the Y axis
                 return ""
             } else {
-                return value.friendlyString()
+                yAxisMaximum = value.friendlyString()
+                return yAxisMaximum
             }
         }
+    }
+}
+
+
+// MARK: - Accessibility Helpers
+//
+private extension PeriodDataViewController {
+
+    func updateChartAccessibilityValues() {
+        yAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(NSLocalizedString("Minimum value %@, maximum value %@",
+                                                                                                       comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}."), yAxisMinimum, yAxisMaximum)
+        xAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(NSLocalizedString("Starting period %@, ending period %@",
+                                                                                                       comment: "VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}."), xAxisMinimum, xAxisMaximum)
+        chartAccessibilityView.accessibilityValue = chartSummaryString()
+    }
+
+
+    func chartSummaryString() -> String {
+        guard let dataSet = barChartView.barData?.dataSets.first as? BarChartDataSet, dataSet.entryCount > 0 else {
+            return barChartView.noDataText
+        }
+
+        var chartSummaryString = ""
+        for i in 0..<dataSet.entryCount {
+            // We are not including zero value bars here to keep things shorter
+            guard let entry = dataSet.entryForIndex(i), entry.y != 0.0 else {
+                continue
+            }
+
+            let entrySummaryString = (entry.accessibilityValue ?? String(entry.y))
+            chartSummaryString += String.localizedStringWithFormat(NSLocalizedString("Bar number %i, %@, ",
+                                                                                     comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}."), i+1, entrySummaryString)
+        }
+        return chartSummaryString
     }
 }
 
@@ -250,7 +298,7 @@ private extension PeriodDataViewController {
         reloadSiteFields()
         reloadChart()
         reloadLastUpdatedField()
-        view.accessibilityElements = [visitorsTitle, visitorsData, ordersTitle, ordersData, revenueTitle, revenueData, lastUpdated]
+        view.accessibilityElements = [visitorsTitle, visitorsData, ordersTitle, ordersData, revenueTitle, revenueData, lastUpdated, yAxisAccessibilityView, xAxisAccessibilityView, chartAccessibilityView]
     }
 
     func reloadOrderFields() {
@@ -290,6 +338,7 @@ private extension PeriodDataViewController {
         barChartView.fitBars = true
         barChartView.notifyDataSetChanged()
         barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
+        updateChartAccessibilityValues()
     }
 
     func reloadLastUpdatedField() {
@@ -321,6 +370,29 @@ private extension PeriodDataViewController {
         dataSet.highlightAlpha = Constants.chartHighlightAlpha
         dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
         return BarChartData(dataSet: dataSet)
+    }
+
+    func formattedPeriodString(for item: OrderStatsItem) -> String {
+        var dateString = ""
+        switch granularity {
+        case .day:
+            if let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: item.period) {
+                dateString = DateFormatter.Charts.chartsDayFormatter.string(from: periodDate)
+            }
+        case .week:
+            if let periodDate = DateFormatter.Stats.statsWeekFormatter.date(from: item.period) {
+                dateString = DateFormatter.Charts.chartsWeekFormatter.string(from: periodDate)
+            }
+        case .month:
+            if let periodDate = DateFormatter.Stats.statsMonthFormatter.date(from: item.period) {
+                dateString = DateFormatter.Charts.chartsMonthFormatter.string(from: periodDate)
+            }
+        case .year:
+            if let periodDate = DateFormatter.Stats.statsYearFormatter.date(from: item.period) {
+                dateString = DateFormatter.Charts.chartsYearFormatter.string(from: periodDate)
+            }
+        }
+        return dateString
     }
 }
 

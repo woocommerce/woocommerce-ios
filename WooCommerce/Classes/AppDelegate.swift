@@ -43,14 +43,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /// Tab Bar Controller
     ///
     var tabBarController: MainTabBarController? {
-        guard let window = window,
-            let tabBar = window.rootViewController as? MainTabBarController else {
-                return nil
-        }
-
-        return tabBar
+        return window?.rootViewController as? MainTabBarController
     }
-
 
 
     // MARK: - AppDelegate Methods

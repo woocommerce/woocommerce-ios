@@ -102,6 +102,7 @@ class StoresManager {
     ///
     func updateDefaultStore(storeID: Int) {
         sessionManager.defaultStoreID = storeID
+        restoreSessionSiteIfPossible()
     }
 }
 

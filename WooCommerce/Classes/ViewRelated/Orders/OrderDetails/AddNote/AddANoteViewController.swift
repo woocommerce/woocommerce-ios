@@ -135,6 +135,7 @@ private extension AddANoteViewController {
 
         cell.iconImage = Gridicon.iconOfType(.aside)
         cell.iconTint = isCustomerNote ? StyleManager.statusPrimaryBoldColor : StyleManager.wooGreyMid
+        cell.iconImage?.accessibilityLabel = isCustomerNote ? NSLocalizedString("Note to customer", comment: "Spoken accessibility label for an icon image that indicates it's a note to the customer.") :  NSLocalizedString("Private note", comment: "Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer.")
 
         cell.onTextChange = { [weak self] (text) in
             self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
@@ -149,6 +150,9 @@ private extension AddANoteViewController {
 
         cell.topText = NSLocalizedString("Email note to customer", comment: "Label for yes/no switch - emailing the note to customer.")
         cell.bottomText = NSLocalizedString("If disabled will add the note as private.", comment: "Detail label for yes/no switch.")
+        cell.accessibilityTraits = UIAccessibilityTraitButton
+        cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email note to customer %@", comment: ""), isCustomerNote ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off."))
+        cell.accessibilityHint = NSLocalizedString("Double tap to toggle setting.", comment: "VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on.")
 
         cell.onToggleSwitchTouchUp = { [weak self] in
             guard let `self` = self else {
@@ -157,6 +161,8 @@ private extension AddANoteViewController {
 
             self.toggleNoteType()
             self.refreshTextViewCell()
+            cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email note to customer %@", comment: ""), self.isCustomerNote ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off."))
+            cell.accessibilityHint = NSLocalizedString("Double tap to toggle setting.", comment: "VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on.")
         }
     }
 

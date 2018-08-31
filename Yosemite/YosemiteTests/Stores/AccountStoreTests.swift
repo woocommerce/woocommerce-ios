@@ -210,7 +210,7 @@ class AccountStoreTests: XCTestCase {
 
     // MARK: - AccountAction.loadSite
 
-    func testLoadSiteActionReturnsExpectedAccount() {
+    func testLoadSiteActionReturnsExpectedSite() {
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Load Site Action Success")
 

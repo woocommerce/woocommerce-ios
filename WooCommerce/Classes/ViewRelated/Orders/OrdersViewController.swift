@@ -83,6 +83,9 @@ private extension OrdersViewController {
                                              target: self,
                                              action: #selector(displayFiltersAlert))
         rightBarButton.tintColor = .white
+        rightBarButton.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
+        rightBarButton.accessibilityTraits = UIAccessibilityTraitButton
+        rightBarButton.accessibilityHint = NSLocalizedString("Filters the order list by payment status.", comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list.")
         navigationItem.rightBarButtonItem = rightBarButton
 
         // Don't show the Order title in the next-view's back button

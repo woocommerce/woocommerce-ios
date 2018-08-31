@@ -64,5 +64,7 @@ extension PaymentTableViewCell {
 
         separatorLine.backgroundColor = StyleManager.cellSeparatorColor
         footerValue.text = detailsViewModel.paymentSummary
+
+        accessibilityElements = [subtotalLabel, subtotalValue, discountLabel, discountValue, shippingLabel, shippingValue, taxesLabel, taxesValue, totalLabel, totalValue, footerValue]
     }
 }

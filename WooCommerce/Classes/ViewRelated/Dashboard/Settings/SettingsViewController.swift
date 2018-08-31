@@ -10,13 +10,28 @@ class SettingsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
 
     private var sections = [Section]()
+    private var accountName: String = ""
+    private var siteUrl: String = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         title = NSLocalizedString("Settings", comment: "Settings navigation title")
-        view.backgroundColor = StyleManager.sectionBackgroundColor
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+
+        configureAccount()
         configureTableView()
+    }
+
+    func configureAccount() {
+        if let account = StoresManager.shared.sessionManager.defaultAccount {
+            accountName = account.displayName
+        }
+
+        if let site = StoresManager.shared.sessionManager.defaultSite, let urlString = (site.url as NSString).hostname() {
+            siteUrl = urlString
+        }
     }
 
     func configureTableView() {
@@ -30,8 +45,9 @@ class SettingsViewController: UIViewController {
         self.tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
 
+        let primaryStoreSection = Section(title: NSLocalizedString("PRIMARY STORE", comment: "My Store > Settings > Primary Store information section"), rows: [.primaryStore])
         let logoutSection = Section(title: nil, rows: [.logout])
-        sections = [logoutSection]
+        sections = [primaryStoreSection, logoutSection]
 
         configureNibs()
     }
@@ -46,11 +62,6 @@ class SettingsViewController: UIViewController {
     }
 
     func handleLogout() {
-        var accountName: String = ""
-        if let account = StoresManager.shared.sessionManager.defaultAccount {
-            accountName = account.displayName
-        }
-
         let name = String(format: NSLocalizedString("Are you sure you want to log out of the account %@?", comment: "Alert message to confirm a user meant to log out."), accountName)
         let alertController = UIAlertController(title: "", message: name, preferredStyle: .alert)
 
@@ -85,27 +96,18 @@ extension SettingsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if sections[section].title == nil {
-            // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
-            return CGFloat.leastNonzeroMagnitude
-        }
-
         return UITableViewAutomaticDimension
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section footers.
+        // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
         return CGFloat.leastNonzeroMagnitude
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        if let logoutCell = cell as? LogOutTableViewCell {
-            logoutCell.didSelectLogout = { [weak self] in
-                self?.handleLogout()
-            }
-        }
+        configure(cell, for: row, at: indexPath)
 
         return cell
     }
@@ -123,9 +125,25 @@ extension SettingsViewController: UITableViewDelegate {
     }
 }
 
-// MARK: - Constants
+// MARK: - Cell Configuration
 //
-private extension SettingsViewController {
+extension SettingsViewController {
+    private func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as HeadlineLabelTableViewCell:
+            cell.headline = siteUrl
+            cell.body = accountName
+        case let cell as LogOutTableViewCell:
+            cell.didSelectLogout = { [weak self] in
+                self?.handleLogout()
+            }
+        default:
+            fatalError("Unidentified Settings row type")
+        }
+    }
+
+    // MARK: - Constants
+    //
     struct Constants {
         static let rowHeight = CGFloat(44)
         static let footerHeight = 90
@@ -137,10 +155,13 @@ private extension SettingsViewController {
     }
 
     private enum Row {
+        case primaryStore
         case logout
 
         var reuseIdentifier: String {
             switch self {
+            case .primaryStore:
+                return HeadlineLabelTableViewCell.reuseIdentifier
             case .logout:
                 return LogOutTableViewCell.reuseIdentifier
             }

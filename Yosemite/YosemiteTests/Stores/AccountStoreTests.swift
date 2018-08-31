@@ -35,6 +35,7 @@ class AccountStoreTests: XCTestCase {
         network = MockupNetwork()
     }
 
+    // MARK: - AccountAction.synchronizeAccount
 
     /// Verifies that AccountAction.synchronizeAccount returns an error, whenever there is not backend response.
     ///
@@ -98,6 +99,7 @@ class AccountStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    // MARK: - AccountStore + Account + Storage
 
     /// Verifies that `updateStoredAccount` does not produce duplicate entries.
     ///
@@ -129,6 +131,8 @@ class AccountStoreTests: XCTestCase {
         compare(storageAccount: storageAccount, remoteAccount: remoteAccount)
     }
 
+    // MARK: - AccountAction.synchronizeSites
+
     /// Verifies that `synchronizeSites` returns an error, whenever there is no backend reply.
     ///
     func testSynchronizeSitesReturnsErrorOnEmptyResponse() {
@@ -157,6 +161,84 @@ class AccountStoreTests: XCTestCase {
         let action = AccountAction.synchronizeSites { error in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 2)
             XCTAssertNil(error)
+            expectation.fulfill()
+        }
+
+        accountStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - AccountAction.loadAccount
+
+    func testLoadAccountActionReturnsExpectedAccount() {
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectation = self.expectation(description: "Load Account Action Success")
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 0)
+        accountStore.upsertStoredAccount(readOnlyAccount: sampleAccountPristine())
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 1)
+
+        let action = AccountAction.loadAccount(userID: 1234) { account in
+            XCTAssertNotNil(account)
+            XCTAssertEqual(account!, self.sampleAccountPristine())
+            expectation.fulfill()
+        }
+
+        accountStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func testLoadAccountActionReturnsNilForUnknownAccount() {
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectation = self.expectation(description: "Load Account Action Error")
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 0)
+        accountStore.upsertStoredAccount(readOnlyAccount: sampleAccountPristine())
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 1)
+
+        let action = AccountAction.loadAccount(userID: 9999) { account in
+            XCTAssertNil(account)
+            expectation.fulfill()
+        }
+
+        accountStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - AccountAction.loadSite
+
+    func testLoadSiteActionReturnsExpectedAccount() {
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectation = self.expectation(description: "Load Site Action Success")
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 0)
+        accountStore.upsertStoredSites(readOnlySites: [sampleSitePristine()])
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
+
+        let action = AccountAction.loadSite(siteID: 999) { site in
+            XCTAssertNotNil(site)
+            XCTAssertEqual(site!, self.sampleSitePristine())
+            expectation.fulfill()
+        }
+
+        accountStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func testLoadSiteActionReturnsNilForUnknownSite() {
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectation = self.expectation(description: "Load Site Action Error")
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 0)
+        accountStore.upsertStoredSites(readOnlySites: [sampleSitePristine()])
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
+
+        let action = AccountAction.loadSite(siteID: 9999) { site in
+            XCTAssertNil(site)
             expectation.fulfill()
         }
 
@@ -199,5 +281,16 @@ private extension AccountStoreTests {
                        email: "yosemite@yosemite.com",
                        username: "YOLO",
                        gravatarUrl: "https://automattic.com/yosemite.png")
+    }
+
+    /// Sample Site
+    ///
+    func sampleSitePristine() -> Networking.Site {
+        return Site(siteID: 999,
+                    name: "Awesome Test Site",
+                    description: "Best description ever!",
+                    url: "automattic.com",
+                    isWooCommerceActive: true,
+                    isWordPressStore: false)
     }
 }

@@ -4,8 +4,6 @@ import CocoaLumberjack
 import XLPagerTabStrip
 
 
-// MARK: - MyStoreStatsViewController
-//
 class StoreStatsViewController: ButtonBarPagerTabStripViewController {
 
     // MARK: - Properties

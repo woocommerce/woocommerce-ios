@@ -147,6 +147,8 @@ private extension PeriodDataViewController {
         chartAccessibilityView.isAccessibilityElement = true
         chartAccessibilityView.accessibilityTraits = UIAccessibilityTraitImage
         chartAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart", comment: "VoiceOver accessibility label for the store revenue chart.")
+        chartAccessibilityView.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Store revenue chart %@",
+                                                                                                       comment: "VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}."), granularity.pluralizedString)
     }
 
     func configureBarChart() {
@@ -253,6 +255,40 @@ extension PeriodDataViewController: IAxisValueFormatter {
 }
 
 
+// MARK: - Accessibility Helpers
+//
+private extension PeriodDataViewController {
+
+    func updateChartAccessibilityValues() {
+        yAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(NSLocalizedString("Minimum value %@, maximum value %@",
+                                                                                                       comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}."), yAxisMinimum, yAxisMaximum)
+        xAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(NSLocalizedString("Starting period %@, ending period %@",
+                                                                                                       comment: "VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}."), xAxisMinimum, xAxisMaximum)
+        chartAccessibilityView.accessibilityValue = chartSummaryString()
+    }
+
+
+    func chartSummaryString() -> String {
+        guard let dataSet = barChartView.barData?.dataSets.first as? BarChartDataSet, dataSet.entryCount > 0 else {
+            return barChartView.noDataText
+        }
+
+        var chartSummaryString = ""
+        for i in 0..<dataSet.entryCount {
+            // We are not including zero value bars here to keep things shorter
+            guard let entry = dataSet.entryForIndex(i), entry.y != 0.0 else {
+                continue
+            }
+
+            let entrySummaryString = (entry.accessibilityValue ?? String(entry.y))
+            chartSummaryString += String.localizedStringWithFormat(NSLocalizedString("Bar number %i, %@, ",
+                                                                                     comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}."), i+1, entrySummaryString)
+        }
+        return chartSummaryString
+    }
+}
+
+
 // MARK: - Private Helpers
 //
 private extension PeriodDataViewController {
@@ -311,30 +347,6 @@ private extension PeriodDataViewController {
 
     func clearChartMarkers() {
         barChartView.highlightValue(nil, callDelegate: false)
-    }
-
-    func updateChartAccessibilityValues() {
-        yAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(NSLocalizedString("Minimum value %@, maximum value %@",
-                                                                                     comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}."), yAxisMinimum, yAxisMaximum)
-
-        xAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(NSLocalizedString("Starting period %@, ending period %@",
-                                                                                     comment: "VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}."), xAxisMinimum, xAxisMaximum)
-        var chartSummaryString = ""
-        if let dataSet = barChartView.barData?.dataSets.first as? BarChartDataSet, dataSet.entryCount > 0 {
-            for i in 0..<dataSet.entryCount {
-                // We are not including zero value bars here to keep things shorter
-                guard let entry = dataSet.entryForIndex(i), entry.y != 0.0 else {
-                    continue
-                }
-
-                let entrySummaryString = (entry.accessibilityValue ?? String(entry.y))
-                chartSummaryString += String.localizedStringWithFormat(NSLocalizedString("Bar number %i, %@, ",
-                                                                   comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}."), i+1, entrySummaryString)
-            }
-        } else {
-            chartSummaryString = barChartView.noDataText
-        }
-        chartAccessibilityView.accessibilityValue = chartSummaryString
     }
 
     func generateBarDataSet() -> BarChartData? {

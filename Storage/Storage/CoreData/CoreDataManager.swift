@@ -84,6 +84,7 @@ public class CoreDataManager: StorageManagerType {
 
         viewContext.performAndWait {
             do {
+                viewContext.reset()
                 try storeCoordinator.destroyPersistentStore(at: self.storeURL, ofType: storeDescriptor.type, options: storeDescriptor.options)
             } catch {
                 fatalError("☠️ [CoreDataManager] Cannot Destroy persistentStore! \(error)")
@@ -98,8 +99,6 @@ public class CoreDataManager: StorageManagerType {
             }
 
             NSLog("💣 [CoreDataManager] Stack Destroyed!")
-            viewContext.reset()
-
             NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
         }
     }

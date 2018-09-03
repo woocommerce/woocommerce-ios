@@ -79,7 +79,7 @@ DEPENDENCIES:
   - KeychainAccess (~> 3.1)
   - WordPressAuthenticator (= 1.0.6)
   - WordPressShared (= 1.0.8)
-  - WordPressUI (from `https://github.com/wordpress-mobile/WordPressUI-iOS.git`, commit `4b05cbd`)
+  - WordPressUI (from `https://github.com/wordpress-mobile/WordPressUI-iOS.git`, commit `71a5b19`)
   - XLPagerTabStrip (~> 8.0)
 
 SPEC REPOS:
@@ -112,7 +112,7 @@ EXTERNAL SOURCES:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
     :tag: 0.2.3
   WordPressUI:
-    :commit: 4b05cbd
+    :commit: 71a5b19
     :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
 
 CHECKOUT OPTIONS:
@@ -120,7 +120,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
     :tag: 0.2.3
   WordPressUI:
-    :commit: 4b05cbd
+    :commit: 71a5b19
     :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
 
 SPEC CHECKSUMS:
@@ -149,6 +149,6 @@ SPEC CHECKSUMS:
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
   XLPagerTabStrip: c908b17cbf42fcd2598ee1adfc49bae25444d88a
 
-PODFILE CHECKSUM: bfb792ab267919a5df04faf800f0b494a9fa0b78
+PODFILE CHECKSUM: fed6a5fce687624b8f8f54fb0b2b05c335671b86
 
 COCOAPODS: 1.5.3

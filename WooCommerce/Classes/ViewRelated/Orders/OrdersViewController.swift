@@ -203,7 +203,7 @@ private extension OrdersViewController {
 extension OrdersViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-// TODO: Support Loading State + Empty State 
+// TODO: Support Empty State
 //        guard !displaysNoResults else {
 //            return Constants.filterResultsNotFoundSectionCount
 //        }
@@ -212,7 +212,7 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-// TODO: Support Loading State + Empty State
+// TODO: Support Empty State
 //        guard !displaysNoResults else {
 //            return Constants.filterResultsNotFoundRowCount
 //        }

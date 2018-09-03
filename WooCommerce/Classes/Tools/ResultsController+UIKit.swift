@@ -42,6 +42,7 @@ extension ResultsController {
         startForwardingContentEvents(to: tableView, with: animations)
         startForwardingObjectEvents(to: tableView, with: animations)
         startForwardingSectionEvents(to: tableView, with: animations)
+        startForwardingResetEvents(to: tableView)
     }
 }
 
@@ -124,6 +125,14 @@ private extension ResultsController {
             default:
                 DDLogError("## ResultsController: Unsupported Section Event: \(type)")
             }
+        }
+    }
+
+    /// Sets up all of the Reset Events from the inner FRC over to the specified TableView.
+    ///
+    func startForwardingResetEvents(to tableView: UITableView) {
+        onDidResetContent = { [weak tableView] in
+            tableView?.reloadData()
         }
     }
 }

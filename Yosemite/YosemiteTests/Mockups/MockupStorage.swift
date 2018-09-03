@@ -51,7 +51,9 @@ public class MockupStorageManager: StorageManagerType {
         viewContext.performAndWait {
             do {
                 viewContext.reset()
-                try storeCoordinator.destroyPersistentStore(at: self.storeURL, ofType: storeDescriptor.type, options: storeDescriptor.options)
+                for store in storeCoordinator.persistentStores {
+                    try storeCoordinator.remove(store)
+                }
             } catch {
                 fatalError("☠️ [CoreDataManager] Cannot Destroy persistentStore! \(error)")
             }

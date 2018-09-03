@@ -43,6 +43,15 @@ extension ResultsController {
         startForwardingObjectEvents(to: tableView, with: animations)
         startForwardingSectionEvents(to: tableView, with: animations)
     }
+
+    /// Stops forwarding Events: Effectively neutralizes all of the callbacks.
+    ///
+    func stopForwardingEvents() {
+        onWillChangeContent = nil
+        onDidChangeContent = nil
+        onDidChangeObject = nil
+        onDidChangeSection = nil
+    }
 }
 
 

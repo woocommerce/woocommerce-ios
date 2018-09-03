@@ -20,4 +20,9 @@ public protocol StorageManagerType {
     /// Note that you must NEVER use the viewStorage within the backgroundClosure.
     ///
     func performBackgroundTask(_ closure: @escaping (StorageType) -> Void)
+
+    /// This method is expected to destroy all persisted data. A notification of type `StorageManagerDidResetStorage` should get
+    /// posted.
+    ///
+    func reset()
 }

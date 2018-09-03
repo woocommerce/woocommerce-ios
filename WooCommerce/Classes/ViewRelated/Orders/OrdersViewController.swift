@@ -26,7 +26,7 @@ class OrdersViewController: UIViewController {
         let storageManager = AppDelegate.shared.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
-        return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
+        return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
     /// Indicates if there are any Objects matching the criteria (or not).
@@ -83,6 +83,9 @@ private extension OrdersViewController {
                                              target: self,
                                              action: #selector(displayFiltersAlert))
         rightBarButton.tintColor = .white
+        rightBarButton.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
+        rightBarButton.accessibilityTraits = UIAccessibilityTraitButton
+        rightBarButton.accessibilityHint = NSLocalizedString("Filters the order list by payment status.", comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list.")
         navigationItem.rightBarButtonItem = rightBarButton
 
         // Don't show the Order title in the next-view's back button
@@ -236,9 +239,7 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        // FIXME: this is hard-coded data. Will fix when WordPressShared date helpers are available to make fuzzy dates.
-        // return NSLocalizedString("Today", comment: "Title for header section")
-        return nil
+        return Order.descriptionForSectionIdentifier(resultsController.sections[section].name)
     }
 }
 

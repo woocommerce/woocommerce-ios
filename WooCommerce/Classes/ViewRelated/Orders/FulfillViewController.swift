@@ -76,6 +76,7 @@ private extension FulfillViewController {
     ///
     func setupMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Setup: TableView
@@ -248,6 +249,11 @@ private extension FulfillViewController {
 
         cell.leftImage = Gridicon.iconOfType(.quote).imageWithTintColor(.black)
         cell.labelText = note
+
+        cell.isAccessibilityElement = true
+        cell.accessibilityHint = NSLocalizedString("Adds a note to an order", comment: "VoiceOver accessibility hint, informing the user that the button can be used to add an order note.")
+        cell.accessibilityLabel = note
+        cell.accessibilityTraits = UIAccessibilityTraitButton
     }
 
     /// Setup: Address Cell
@@ -276,7 +282,7 @@ private extension FulfillViewController {
         }
 
         cell.leftImage = Gridicon.iconOfType(.addOutline)
-        cell.labelText = NSLocalizedString("Add Tracking", comment: "")
+        cell.labelText = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
     }
 }
 
@@ -361,8 +367,8 @@ private extension Section {
     ///
     static func allSections(for order: Order) -> [Section] {
         let products: Section = {
-            let title = NSLocalizedString("Product", comment: "")
-            let secondaryTitle = NSLocalizedString("Qty", comment: "")
+            let title = NSLocalizedString("Product", comment: "Section header title for the product")
+            let secondaryTitle = NSLocalizedString("Qty", comment: "Section header title - abbreviation for quantity")
             let rows = order.items.map { Row.product(item: $0) }
 
             return Section(title: title, secondaryTitle: secondaryTitle, rows: rows)
@@ -373,14 +379,14 @@ private extension Section {
                 return nil
             }
 
-            let title = NSLocalizedString("Customer Provided Note", comment: "")
+            let title = NSLocalizedString("Customer Provided Note", comment: "Section title for a note from the customer")
             let row = Row.note(text: note)
 
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
         let address: Section = {
-            let title = NSLocalizedString("Customer Information", comment: "")
+            let title = NSLocalizedString("Customer Information", comment: "Section title for the customer's billing and shipping address")
             if let shippingAddress = order.shippingAddress {
                 let row = Row.address(shipping: shippingAddress)
 

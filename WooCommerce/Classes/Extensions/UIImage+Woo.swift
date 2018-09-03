@@ -14,6 +14,13 @@ extension UIImage {
         return Gridicon.iconOfType(.checkmark).imageWithTintColor(tintColor)!
     }
 
+    /// Chevron pointing right
+    ///
+    static var chevronImage: UIImage {
+        let tintColor = StyleManager.wooGreyMid
+        return Gridicon.iconOfType(.chevronRight).imageWithTintColor(tintColor)!
+    }
+
     /// Gravatar Placeholder Image
     ///
     static var gravatarPlaceholderImage: UIImage {

@@ -25,6 +25,8 @@ public class AccountStore: Store {
         switch action {
         case .loadAccount(let userID, let onCompletion):
             loadAccount(userID: userID, onCompletion: onCompletion)
+        case .loadSite(let siteID, let onCompletion):
+            loadSite(siteID: siteID, onCompletion: onCompletion)
         case .synchronizeAccount(let onCompletion):
             synchronizeAccount(onCompletion: onCompletion)
         case .synchronizeSites(let onCompletion):
@@ -75,6 +77,13 @@ private extension AccountStore {
     func loadAccount(userID: Int, onCompletion: @escaping (Account?) -> Void) {
         let account = storageManager.viewStorage.loadAccount(userId: userID)?.toReadOnly()
         onCompletion(account)
+    }
+
+    /// Loads the Site associated with the specified siteID (if any!)
+    ///
+    func loadSite(siteID: Int, onCompletion: @escaping (Site?) -> Void) {
+        let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly()
+        onCompletion(site)
     }
 }
 

@@ -22,13 +22,13 @@
                         <constraint firstAttribute="width" constant="60" id="cwR-2d-T4e"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="252" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="Full Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xHF-gJ-reo">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="750" text="Full Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xHF-gJ-reo">
                     <rect key="frame" x="10" y="97" width="355" height="20.5"/>
                     <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="253" verticalCompressionResistancePriority="1000" text="@username" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LiJ-G2-nZS">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="@username" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LiJ-G2-nZS">
                     <rect key="frame" x="10" y="121.5" width="355" height="18"/>
                     <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                     <color key="textColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
@@ -41,7 +41,6 @@
                 <constraint firstItem="xHF-gJ-reo" firstAttribute="top" secondItem="vOQ-CP-fZ1" secondAttribute="bottom" constant="8" id="BTx-oz-REg"/>
                 <constraint firstItem="DAy-rN-ump" firstAttribute="trailing" secondItem="xHF-gJ-reo" secondAttribute="trailing" constant="10" id="JKO-gN-oNe"/>
                 <constraint firstItem="vOQ-CP-fZ1" firstAttribute="centerX" secondItem="wsJ-iY-FyE" secondAttribute="centerX" id="NgM-Yn-gMx"/>
-                <constraint firstItem="DAy-rN-ump" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="LiJ-G2-nZS" secondAttribute="bottom" constant="4" id="Ved-ir-LoS"/>
                 <constraint firstItem="xHF-gJ-reo" firstAttribute="leading" secondItem="DAy-rN-ump" secondAttribute="leading" constant="10" id="bvI-bc-8La"/>
                 <constraint firstItem="LiJ-G2-nZS" firstAttribute="top" secondItem="xHF-gJ-reo" secondAttribute="bottom" constant="4" id="gOl-k9-naS"/>
                 <constraint firstItem="DAy-rN-ump" firstAttribute="trailing" secondItem="LiJ-G2-nZS" secondAttribute="trailing" constant="10" id="je2-Uv-FAR"/>

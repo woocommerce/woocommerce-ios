@@ -94,6 +94,7 @@ class StoresManager {
         state = DeauthenticatedState()
         sessionManager.reset()
         WooAnalytics.shared.refreshUserData()
+        AppDelegate.shared.storageManager.reset()
 
         return self
     }

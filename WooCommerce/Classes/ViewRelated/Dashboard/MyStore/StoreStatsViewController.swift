@@ -4,8 +4,6 @@ import CocoaLumberjack
 import XLPagerTabStrip
 
 
-// MARK: - MyStoreStatsViewController
-//
 class StoreStatsViewController: ButtonBarPagerTabStripViewController {
 
     // MARK: - Properties
@@ -180,7 +178,7 @@ private extension StoreStatsViewController {
         static let quantityDefaultForDay = 30
         static let quantityDefaultForWeek = 13
         static let quantityDefaultForMonth = 12
-        static let quantityDefaultForYear = 15
+        static let quantityDefaultForYear = 5
     }
 
     enum TabStrip {

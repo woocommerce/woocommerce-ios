@@ -22,6 +22,13 @@ class ShowHideSectionFooter: UITableViewHeaderFooterView {
 
     func configure(text: String, image: UIImage) {
         footerLabel.text = text
+        footerLabel.isAccessibilityElement = false
+
+        footerButton.isAccessibilityElement = true
+        footerButton.accessibilityTraits = UIAccessibilityTraitButton
+        footerButton.accessibilityLabel = text
+
         footerArrow.image = image
+        footerArrow.isAccessibilityElement = false
     }
 }

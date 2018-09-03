@@ -20,6 +20,7 @@ target 'WooCommerce' do
   pod 'Gridicons', '0.15'
   pod 'WordPressAuthenticator', '1.0.6'
   pod 'WordPressShared', '1.0.8'
+  pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :commit => '4b05cbd'
 
 
   # External Libraries

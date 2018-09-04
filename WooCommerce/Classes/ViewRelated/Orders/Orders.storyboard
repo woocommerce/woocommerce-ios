@@ -41,13 +41,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="260" verticalHuggingPriority="240" text="Order Status" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZXl-Nf-ARN" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                                    <rect key="frame" x="16" y="41" width="113.5" height="28.5"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="240" verticalHuggingPriority="240" horizontalCompressionResistancePriority="740" text="Optional Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="udf-hH-ktB" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                                    <rect key="frame" x="137" y="41" width="107" height="28.5"/>
+                                                    <rect key="frame" x="16" y="44.5" width="97.5" height="25"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -55,15 +49,12 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="i5N-V7-lzR" firstAttribute="top" secondItem="khy-EP-SIe" secondAttribute="top" constant="16" id="1oa-Cx-cFj"/>
-                                                <constraint firstAttribute="bottom" secondItem="udf-hH-ktB" secondAttribute="bottom" constant="16" id="7PC-ed-Rr6"/>
-                                                <constraint firstItem="udf-hH-ktB" firstAttribute="top" secondItem="i5N-V7-lzR" secondAttribute="bottom" constant="8" id="FHi-Jh-qpq"/>
                                                 <constraint firstItem="j0k-E1-R6e" firstAttribute="leading" secondItem="i5N-V7-lzR" secondAttribute="trailing" constant="8" id="Fnw-Ft-eVN"/>
                                                 <constraint firstItem="j0k-E1-R6e" firstAttribute="centerY" secondItem="khy-EP-SIe" secondAttribute="centerY" id="GjQ-oi-WS3"/>
+                                                <constraint firstItem="j0k-E1-R6e" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZXl-Nf-ARN" secondAttribute="trailing" id="R4D-SX-9VA"/>
                                                 <constraint firstAttribute="trailing" secondItem="j0k-E1-R6e" secondAttribute="trailing" id="VfJ-Dc-cU3"/>
-                                                <constraint firstItem="j0k-E1-R6e" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="udf-hH-ktB" secondAttribute="trailing" constant="8" id="c6T-NE-e4I"/>
                                                 <constraint firstItem="ZXl-Nf-ARN" firstAttribute="top" secondItem="i5N-V7-lzR" secondAttribute="bottom" constant="8" id="eRm-dC-Q9N"/>
                                                 <constraint firstItem="ZXl-Nf-ARN" firstAttribute="leading" secondItem="khy-EP-SIe" secondAttribute="leading" constant="16" id="lyI-kN-j2s"/>
-                                                <constraint firstItem="udf-hH-ktB" firstAttribute="leading" secondItem="ZXl-Nf-ARN" secondAttribute="trailing" constant="8" id="nAB-KJ-P8p"/>
                                                 <constraint firstItem="i5N-V7-lzR" firstAttribute="leading" secondItem="khy-EP-SIe" secondAttribute="leading" constant="16" id="ybx-Qf-Mzv"/>
                                                 <constraint firstAttribute="bottom" secondItem="ZXl-Nf-ARN" secondAttribute="bottom" constant="16" id="z3w-z3-u0v"/>
                                             </constraints>
@@ -71,7 +62,6 @@
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         <connections>
                                             <outlet property="paymentStatusLabel" destination="ZXl-Nf-ARN" id="eLB-Cy-OkW"/>
-                                            <outlet property="shippingStatusLabel" destination="udf-hH-ktB" id="cQ2-SA-wj3"/>
                                             <outlet property="titleLabel" destination="i5N-V7-lzR" id="dHc-LE-wF9"/>
                                             <outlet property="totalLabel" destination="j0k-E1-R6e" id="65V-3F-QnQ"/>
                                         </connections>

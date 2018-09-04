@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import Yosemite
+import WordPressUI
 import CocoaLumberjack
 
 
@@ -35,12 +36,6 @@ class OrdersViewController: UIViewController {
         return resultsController.isEmpty
     }
 
-    /// Indicates if a Filters is in active, or not.
-    ///
-    private var displaysFilteredResults: Bool {
-        return resultsController.predicate != nil
-    }
-
 
 
     // MARK: - View Lifecycle
@@ -67,7 +62,7 @@ class OrdersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        syncOrders()
+        displayPlaceholderOrdersAndSync()
     }
 }
 
@@ -168,6 +163,18 @@ private extension OrdersViewController {
 //
 private extension OrdersViewController {
 
+    /// Displays Placeholder Orders (when / if needed) and proceeds to Sync'ing all of the orders.
+    ///
+    func displayPlaceholderOrdersAndSync() {
+        ensurePlaceholderOrdersAreOnScreen()
+
+        syncOrders { [weak self] in
+            self?.ensurePlaceholderOrdersAreRemoved()
+        }
+    }
+
+    /// Synchronizes the Orders for the Default Store (if any).
+    ///
     func syncOrders(onCompletion: (() -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             onCompletion?()
@@ -183,6 +190,37 @@ private extension OrdersViewController {
         }
 
         StoresManager.shared.dispatch(action)
+    }
+}
+
+
+// MARK: - Placeholders
+//
+private extension OrdersViewController {
+
+    /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
+    /// Note: This is only done when there are no results onscreen.
+    ///
+    func ensurePlaceholderOrdersAreOnScreen() {
+        guard displaysNoResults else {
+            return
+        }
+
+        let settings = GhostSettings(reuseIdentifier: OrderListCell.reuseIdentifier, rowsPerSection: Placeholder.rowsPerSection)
+        tableView.displayGhostContent(using: settings)
+
+        resultsController.stopForwardingEvents()
+    }
+
+    /// Removes the Placeholder Orders (and restores the ResultsController <> UITableView link).
+    ///
+    func ensurePlaceholderOrdersAreRemoved() {
+        guard tableView.isDisplayingGhostContent else {
+            return
+        }
+
+        tableView.removeGhostContent()
+        resultsController.startForwardingEvents(to: self.tableView)
     }
 }
 
@@ -203,7 +241,7 @@ private extension OrdersViewController {
 extension OrdersViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-// TODO: Support Loading State + Empty State 
+// TODO: Support Empty State
 //        guard !displaysNoResults else {
 //            return Constants.filterResultsNotFoundSectionCount
 //        }
@@ -212,7 +250,7 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-// TODO: Support Loading State + Empty State
+// TODO: Support Empty State
 //        guard !displaysNoResults else {
 //            return Constants.filterResultsNotFoundRowCount
 //        }
@@ -284,5 +322,9 @@ private extension OrdersViewController {
     enum Constants {
         static let estimatedRowHeight = CGFloat(86)
         static let orderDetailsSegue = "ShowOrderDetailsViewController"
+    }
+
+    enum Placeholder {
+        static let rowsPerSection = [3]
     }
 }

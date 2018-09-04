@@ -37,6 +37,10 @@
 		74ABA1C9213F19FE00FFAD30 /* top-performers-month.json in Resources */ = {isa = PBXBuildFile; fileRef = 74ABA1C6213F19FD00FFAD30 /* top-performers-month.json */; };
 		74ABA1CA213F19FE00FFAD30 /* top-performers-year.json in Resources */ = {isa = PBXBuildFile; fileRef = 74ABA1C7213F19FE00FFAD30 /* top-performers-year.json */; };
 		74ABA1CB213F19FE00FFAD30 /* top-performers-week.json in Resources */ = {isa = PBXBuildFile; fileRef = 74ABA1C8213F19FE00FFAD30 /* top-performers-week.json */; };
+		74ABA1CD213F1B6B00FFAD30 /* TopEarnerStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74ABA1CC213F1B6B00FFAD30 /* TopEarnerStats.swift */; };
+		74ABA1CF213F1D1600FFAD30 /* TopEarnerStatsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74ABA1CE213F1D1600FFAD30 /* TopEarnerStatsItem.swift */; };
+		74ABA1D1213F22CA00FFAD30 /* TopEarnersStatsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74ABA1D0213F22CA00FFAD30 /* TopEarnersStatsRemote.swift */; };
+		74ABA1D3213F25AE00FFAD30 /* TopEarnerStatsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74ABA1D2213F25AE00FFAD30 /* TopEarnerStatsMapper.swift */; };
 		74AE244D2113704C00CA8C54 /* OrderStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AE244C2113704C00CA8C54 /* OrderStatsRemoteTests.swift */; };
 		74C8F06420EEB44800B6EDC9 /* OrderNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C8F06320EEB44800B6EDC9 /* OrderNote.swift */; };
 		74C8F06620EEB76400B6EDC9 /* order-notes.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C8F06520EEB76400B6EDC9 /* order-notes.json */; };
@@ -139,6 +143,10 @@
 		74ABA1C6213F19FD00FFAD30 /* top-performers-month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "top-performers-month.json"; sourceTree = "<group>"; };
 		74ABA1C7213F19FE00FFAD30 /* top-performers-year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "top-performers-year.json"; sourceTree = "<group>"; };
 		74ABA1C8213F19FE00FFAD30 /* top-performers-week.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "top-performers-week.json"; sourceTree = "<group>"; };
+		74ABA1CC213F1B6B00FFAD30 /* TopEarnerStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopEarnerStats.swift; sourceTree = "<group>"; };
+		74ABA1CE213F1D1600FFAD30 /* TopEarnerStatsItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopEarnerStatsItem.swift; sourceTree = "<group>"; };
+		74ABA1D0213F22CA00FFAD30 /* TopEarnersStatsRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopEarnersStatsRemote.swift; sourceTree = "<group>"; };
+		74ABA1D2213F25AE00FFAD30 /* TopEarnerStatsMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopEarnerStatsMapper.swift; sourceTree = "<group>"; };
 		74AE244C2113704C00CA8C54 /* OrderStatsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsRemoteTests.swift; sourceTree = "<group>"; };
 		74C8F06320EEB44800B6EDC9 /* OrderNote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNote.swift; sourceTree = "<group>"; };
 		74C8F06520EEB76400B6EDC9 /* order-notes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-notes.json"; sourceTree = "<group>"; };
@@ -248,6 +256,8 @@
 				748D4249210F92EA00CF7D1B /* OrderStatsItem.swift */,
 				74A1D26721189A7000931DFA /* SiteVisitStats.swift */,
 				74A1D26A21189B8100931DFA /* SiteVisitStatsItem.swift */,
+				74ABA1CC213F1B6B00FFAD30 /* TopEarnerStats.swift */,
+				74ABA1CE213F1D1600FFAD30 /* TopEarnerStatsItem.swift */,
 			);
 			path = Stats;
 			sourceTree = "<group>";
@@ -364,6 +374,7 @@
 				B557DA0120975500005962F4 /* OrdersRemote.swift */,
 				748D4247210F89ED00CF7D1B /* OrderStatsRemote.swift */,
 				74A1D26E21189EA000931DFA /* SiteVisitStatsRemote.swift */,
+				74ABA1D0213F22CA00FFAD30 /* TopEarnersStatsRemote.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -449,6 +460,7 @@
 				CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */,
 				748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */,
 				74A1D26C21189DFE00931DFA /* SiteVisitStatsMapper.swift */,
+				74ABA1D2213F25AE00FFAD30 /* TopEarnerStatsMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -690,18 +702,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74ABA1CF213F1D1600FFAD30 /* TopEarnerStatsItem.swift in Sources */,
 				7452387421124B7700A973CD /* AnyDecodable.swift in Sources */,
 				B56C1EB620EA757B00D749F9 /* SiteListMapper.swift in Sources */,
 				B557DA1A20979D66005962F4 /* Settings.swift in Sources */,
+				74ABA1D1213F22CA00FFAD30 /* TopEarnersStatsRemote.swift in Sources */,
 				74A1196C2110F4BB00E1E5F0 /* OrderStats.swift in Sources */,
 				B58E5BEA20FFB3D0003C986E /* CodingUserInfoKey+Woo.swift in Sources */,
 				741B950120EBC8A700DD6E2D /* OrderCouponLine.swift in Sources */,
 				74C8F06420EEB44800B6EDC9 /* OrderNote.swift in Sources */,
+				74ABA1D3213F25AE00FFAD30 /* TopEarnerStatsMapper.swift in Sources */,
 				B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */,
 				B567AF2520A0CCA300AB6C62 /* AuthenticatedRequest.swift in Sources */,
 				B505F6EA20BEFC3700BB1B69 /* MockupNetwork.swift in Sources */,
 				748D4248210F89ED00CF7D1B /* OrderStatsRemote.swift in Sources */,
 				7452387221124B7700A973CD /* AnyEncodable.swift in Sources */,
+				74ABA1CD213F1B6B00FFAD30 /* TopEarnerStats.swift in Sources */,
 				B557DA0220975500005962F4 /* JetpackRequest.swift in Sources */,
 				B56C1EB820EA76F500D749F9 /* Site.swift in Sources */,
 				B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */,

@@ -19,11 +19,11 @@ public struct TopEarnerStatsItem: Decodable {
 
     /// Average price of item
     ///
-    public let price: String
+    public let price: Double
 
     /// Total revenue from product
     ///
-    public let total: String
+    public let total: Double
 
     /// Currency
     ///
@@ -36,7 +36,7 @@ public struct TopEarnerStatsItem: Decodable {
 
     /// Designated Initializer.
     ///
-    public init(productID: Int, pruductName: String, quantity: Int, price: String, total: String, currency: String, imageUrl: String?) {
+    public init(productID: Int, pruductName: String, quantity: Int, price: Double, total: Double, currency: String, imageUrl: String?) {
         self.productID = productID
         self.pruductName = pruductName
         self.quantity = quantity

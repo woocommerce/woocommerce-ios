@@ -18,7 +18,7 @@ public struct TopEarnerStats: Decodable {
         let date = try container.decode(String.self, forKey: .date)
         let granularity = try container.decode(StatGranularity.self, forKey: .unit)
         let limit = try container.decode(String.self, forKey: .limit)
-        let items = try container.decode([TopEarnerStatsItem].self, forKey: .data)
+        let items = try container.decode([TopEarnerStatsItem].self, forKey: .items)
 
         self.init(date: date, granularity: granularity, limit: limit, items: items)
     }
@@ -42,7 +42,7 @@ private extension TopEarnerStats {
         case date = "date"
         case unit = "unit"
         case limit = "limit"
-        case data = "data"
+        case items = "data"
     }
 }
 

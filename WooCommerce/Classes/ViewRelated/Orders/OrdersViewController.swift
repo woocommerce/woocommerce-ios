@@ -93,7 +93,6 @@ private extension OrdersViewController {
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.refreshControl = refreshControl
-        tableView.register(NoResultsTableViewCell.loadNib(), forCellReuseIdentifier: NoResultsTableViewCell.reuseIdentifier)
     }
 
     func configureResultsController() {

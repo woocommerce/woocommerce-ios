@@ -439,19 +439,21 @@ private extension OrdersViewController {
         case emptyFiltered
         case error
 
-        ///
+        /// Should be called before Sync'ing. Transitions to either `results` or `placeholder` state, depending on whether if
+        /// we've got cached results, or not.
         ///
         mutating func transitionToSyncingState(isEmpty: Bool) {
             self = isEmpty ? .placeholder : .results
         }
 
-        ///
+        /// Transitions to the Error State.
         ///
         mutating func transitionToErrorState() {
             self = .error
         }
 
-        ///
+        /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
+        /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
         ///
         mutating func transitionToResultsUpdatedState(isEmpty: Bool, isFiltered: Bool)  {
             if isEmpty == false  {

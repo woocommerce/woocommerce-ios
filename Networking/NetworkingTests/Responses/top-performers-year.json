@@ -15,9 +15,9 @@
     {
       "ID": 373,
       "name": "Black Dress (H&M)",
-      "total": 585,
-      "quantity": 23,
-      "price": 30,
+      "total": 585234234.00,
+      "quantity": 1231323,
+      "price": -1234.23424,
       "image": "https:\/\/jamosova3.mystagingwebsite.com\/wp-content\/uploads\/2017\/07\/hm-black.jpg?w=640",
       "currency": "USD"
     },
@@ -28,15 +28,6 @@
       "quantity": 9,
       "price": 80,
       "image": "https:\/\/jamosova3.mystagingwebsite.com\/wp-content\/uploads\/2018\/04\/smile.gif?w=480",
-      "currency": "USD"
-    },
-    {
-      "ID": 371,
-      "name": "Blue Dress (Zara)",
-      "total": 480,
-      "quantity": 8,
-      "price": 60,
-      "image": "https:\/\/jamosova3.mystagingwebsite.com\/wp-content\/uploads\/2017\/07\/blue-zara.jpg?w=395",
       "currency": "USD"
     },
     {

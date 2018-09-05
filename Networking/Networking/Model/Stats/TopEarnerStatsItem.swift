@@ -11,7 +11,7 @@ public struct TopEarnerStatsItem: Decodable {
 
     /// Product name
     ///
-    public let pruductName: String
+    public let productName: String
 
     /// Quantity sold
     ///
@@ -36,9 +36,9 @@ public struct TopEarnerStatsItem: Decodable {
 
     /// Designated Initializer.
     ///
-    public init(productID: Int, pruductName: String, quantity: Int, price: Double, total: Double, currency: String, imageUrl: String?) {
+    public init(productID: Int, productName: String, quantity: Int, price: Double, total: Double, currency: String, imageUrl: String?) {
         self.productID = productID
-        self.pruductName = pruductName
+        self.productName = productName
         self.quantity = quantity
         self.price = price
         self.total = total
@@ -53,7 +53,7 @@ public struct TopEarnerStatsItem: Decodable {
 private extension TopEarnerStatsItem {
     enum CodingKeys: String, CodingKey {
         case productID = "ID"
-        case pruductName = "name"
+        case productName = "name"
         case total = "total"
         case quantity = "quantity"
         case price = "price"
@@ -68,7 +68,7 @@ private extension TopEarnerStatsItem {
 extension TopEarnerStatsItem: Comparable {
     public static func == (lhs: TopEarnerStatsItem, rhs: TopEarnerStatsItem) -> Bool {
         return lhs.productID == rhs.productID &&
-            lhs.pruductName == rhs.pruductName &&
+            lhs.productName == rhs.productName &&
             lhs.quantity == rhs.quantity &&
             lhs.price == rhs.price &&
             lhs.total == rhs.total &&
@@ -78,6 +78,6 @@ extension TopEarnerStatsItem: Comparable {
 
     public static func < (lhs: TopEarnerStatsItem, rhs: TopEarnerStatsItem) -> Bool {
         return lhs.quantity < rhs.quantity ||
-            (lhs.quantity == rhs.quantity && lhs.pruductName < rhs.pruductName)
+            (lhs.quantity == rhs.quantity && lhs.productName < rhs.productName)
     }
 }

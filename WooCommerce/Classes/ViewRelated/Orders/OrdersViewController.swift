@@ -292,21 +292,35 @@ extension OrdersViewController: UITableViewDelegate {
 }
 
 
-// MARK: - Constants
+// MARK: - FSM Management
 //
 private extension OrdersViewController {
+}
+
+
+// MARK: - Nested Types
+//
+private extension OrdersViewController {
+
     enum FilterAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
         static let displayAll = NSLocalizedString("All", comment: "All filter title")
         static let displayCustom = NSLocalizedString("Custom", comment: "Title for button that catches all custom labels and displays them on the order list")
     }
 
-    enum Constants {
+    enum Settings {
         static let estimatedRowHeight = CGFloat(86)
-        static let orderDetailsSegue = "ShowOrderDetailsViewController"
+        static let placeholderRowsPerSection = [3]
     }
 
-    enum Placeholder {
-        static let rowsPerSection = [3]
+    enum Segues {
+        static let orderDetails = "ShowOrderDetailsViewController"
+    }
+
+    enum State {
+        case empty
+        case error
+        case placeholder
+        case results
     }
 }

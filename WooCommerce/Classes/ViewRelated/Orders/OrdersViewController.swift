@@ -246,8 +246,8 @@ private extension OrdersViewController {
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("Waiting for Customers", comment: "Empty State Message")
         overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
-        overlayView.onAction = {
-            self.state = .results
+        overlayView.onAction = { [weak self] in
+            self?.displayDefaultSite()
         }
 
         overlayView.attach(to: view)
@@ -259,6 +259,18 @@ private extension OrdersViewController {
         for subview in view.subviews where subview is OverlayMessageView {
             subview.removeFromSuperview()
         }
+    }
+
+    /// Displays the Default Site in a WebView.
+    ///
+    func displayDefaultSite() {
+        guard let urlAsString = StoresManager.shared.sessionManager.defaultSite?.url, let siteURL = URL(string: urlAsString) else {
+            return
+        }
+
+        let safariViewController = SafariViewController(url: siteURL)
+        safariViewController.modalPresentationStyle = .pageSheet
+        present(safariViewController, animated: true, completion: nil)
     }
 }
 

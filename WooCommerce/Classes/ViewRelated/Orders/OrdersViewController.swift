@@ -30,6 +30,12 @@ class OrdersViewController: UIViewController {
         return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
+    /// Indicates if there are orders to be displayed, or not.
+    ///
+    private var isEmpty: Bool {
+        return resultsController.isEmpty
+    }
+
     /// UI Active State
     ///
     private var state: State = .results {
@@ -68,7 +74,7 @@ class OrdersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        displayPlaceholderOrdersAndSync()
+        syncOrders()
     }
 }
 
@@ -168,28 +174,28 @@ private extension OrdersViewController {
 //
 private extension OrdersViewController {
 
-    /// Displays Placeholder Orders (when / if needed) and proceeds to Sync'ing all of the orders.
-    ///
-    func displayPlaceholderOrdersAndSync() {
-
-        syncOrders { [weak self] in
-        }
-    }
-
     /// Synchronizes the Orders for the Default Store (if any).
     ///
-    func syncOrders(onCompletion: @escaping () -> Void) {
+    func syncOrders(onCompletion: (() -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            onCompletion()
+            onCompletion?()
             return
         }
 
-        let action = OrderAction.retrieveOrders(siteID: siteID) { error in
+        state = State.stateForSyncBegins(isEmpty: isEmpty)
+
+        let action = OrderAction.retrieveOrders(siteID: siteID) { [weak self] error in
+            guard let `self` = self else {
+                return
+            }
+
             if let error = error {
                 DDLogError("⛔️ Error synchronizing orders: \(error)")
             }
 
-            onCompletion()
+            self.state = State.stateForSyncFinished(isEmpty: self.isEmpty, error: error)
+
+            onCompletion?()
         }
 
         StoresManager.shared.dispatch(action)
@@ -215,6 +221,44 @@ private extension OrdersViewController {
     func removePlaceholderOrders() {
         tableView.removeGhostContent()
         resultsController.startForwardingEvents(to: self.tableView)
+    }
+
+    /// Displays the Error State Overlay.
+    ///
+    func displayErrorOverlay() {
+        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
+        overlayView.translatesAutoresizingMaskIntoConstraints = false
+        overlayView.messageImage = .errorStateImage
+        overlayView.messageText = NSLocalizedString("Unable to load the orders list", comment: "Order List Loading Error")
+        overlayView.actionText = NSLocalizedString("Retry", comment: "Retry Action")
+        overlayView.onAction = { [weak self] in
+            self?.syncOrders()
+        }
+
+        overlayView.attach(to: view)
+    }
+
+    /// Displays the Empty State Overlay.
+    ///
+    func displayEmptyOverlay() {
+        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
+        overlayView.translatesAutoresizingMaskIntoConstraints = false
+        overlayView.messageImage = .waitingForCustomersImage
+        overlayView.messageText = NSLocalizedString("Waiting for Customers", comment: "Empty State Message")
+        overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
+        overlayView.onAction = {
+            self.state = .results
+        }
+
+        overlayView.attach(to: view)
+    }
+
+    /// Removes all of the the OverlayMessageView instances in the view hierarchy.
+    ///
+    func removeAllOverlays() {
+        for subview in view.subviews where subview is OverlayMessageView {
+            subview.removeFromSuperview()
+        }
     }
 }
 
@@ -339,9 +383,29 @@ private extension OrdersViewController {
     }
 
     enum State {
-        case empty
-        case error
         case placeholder
         case results
+        case empty
+        case error
+
+        /// Returns the Sync Initial State.
+        ///
+        static func stateForSyncBegins(isEmpty: Bool) -> State  {
+            return isEmpty ? .placeholder : .results
+        }
+
+        /// Returns the Sync Finished State.
+        ///
+        static func stateForSyncFinished(isEmpty: Bool, error: Error? = nil) -> State {
+            guard error == nil else {
+                return .error
+            }
+
+            guard isEmpty else {
+                return .results
+            }
+
+            return .empty
+        }
     }
 }

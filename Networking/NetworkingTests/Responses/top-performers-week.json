@@ -1,0 +1,34 @@
+{
+  "date": "2018-W12",
+  "unit": "week",
+  "limit": "5",
+  "data": [
+    {
+      "ID": 296,
+      "name": "Funky Hoodie",
+      "total": 0,
+      "quantity": 1,
+      "price": 40,
+      "image": "https:\/\/jamosova3.mystagingwebsite.com\/wp-content\/uploads\/2017\/05\/hoodie-with-logo.jpg?w=801",
+      "currency": "USD"
+    },
+    {
+      "ID": 373,
+      "name": "Black Dress (H&M)",
+      "total": 120,
+      "quantity": 4,
+      "price": 30,
+      "image": "https:\/\/jamosova3.mystagingwebsite.com\/wp-content\/uploads\/2017\/07\/hm-black.jpg?w=640",
+      "currency": "USD"
+    },
+    {
+      "ID": 1033,
+      "name": "Smile T-Shirt",
+      "total": 160,
+      "quantity": 2,
+      "price": 80,
+      "image": "https:\/\/jamosova3.mystagingwebsite.com\/wp-content\/uploads\/2018\/04\/smile.gif?w=480",
+      "currency": "USD"
+    }
+  ]
+}

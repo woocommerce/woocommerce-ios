@@ -30,10 +30,16 @@ class OrdersViewController: UIViewController {
         return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
-    /// Indicates if there are any Objects matching the criteria (or not).
+    /// UI Active State
     ///
-    private var displaysNoResults: Bool {
-        return resultsController.isEmpty
+    private var state: State = .results {
+        didSet {
+            guard oldValue != state else {
+                return
+            }
+            didLeave(state: oldValue)
+            didEnter(state: state)
+        }
     }
 
 
@@ -295,6 +301,32 @@ extension OrdersViewController: UITableViewDelegate {
 // MARK: - FSM Management
 //
 private extension OrdersViewController {
+
+    func didEnter(state: State) {
+        switch state {
+        case .empty:
+            displayEmptyOverlay()
+        case .error:
+            displayErrorOverlay()
+        case .placeholder:
+            displayPlaceholderOrders()
+        case .results:
+            break
+        }
+    }
+
+    func didLeave(state: State) {
+        switch state {
+        case .empty:
+            removeAllOverlays()
+        case .error:
+            removeAllOverlays()
+        case .placeholder:
+            removePlaceholderOrders()
+        case .results:
+            break
+        }
+    }
 }
 
 

@@ -178,9 +178,9 @@ private extension OrdersViewController {
 
     /// Synchronizes the Orders for the Default Store (if any).
     ///
-    func syncOrders(onCompletion: (() -> Void)? = nil) {
+    func syncOrders(onCompletion: @escaping () -> Void) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            onCompletion?()
+            onCompletion()
             return
         }
 
@@ -189,7 +189,7 @@ private extension OrdersViewController {
                 DDLogError("⛔️ Error synchronizing orders: \(error)")
             }
 
-            onCompletion?()
+            onCompletion()
         }
 
         StoresManager.shared.dispatch(action)

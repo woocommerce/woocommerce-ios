@@ -30,10 +30,16 @@ class OrdersViewController: UIViewController {
         return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
-    /// Indicates if there are orders to be displayed, or not.
+    /// Indicates if there are no results onscreen.
     ///
     private var isEmpty: Bool {
         return resultsController.isEmpty
+    }
+
+    /// Indicates if there's a filter being applied.
+    ///
+    private var isFiltered: Bool {
+        return resultsController.predicate != nil
     }
 
     /// UI Active State
@@ -43,6 +49,7 @@ class OrdersViewController: UIViewController {
             guard oldValue != state else {
                 return
             }
+
             didLeave(state: oldValue)
             didEnter(state: state)
         }
@@ -153,18 +160,26 @@ extension OrdersViewController {
 private extension OrdersViewController {
 
     func displayOrders(with status: OrderStatus) {
-        resultsController.predicate = NSPredicate(format: "status = %@", status.rawValue)
-        tableView.reloadData()
+        let predicate = NSPredicate(format: "status = %@", status.rawValue)
+
+        updateResultsController(predicate: predicate)
     }
 
     func displayOrdersWithUnknownStatus() {
         let knownStatus = OrderStatus.knownStatus.map { $0.rawValue }
-        resultsController.predicate = NSPredicate(format: "NOT (status in %@)", knownStatus)
-        tableView.reloadData()
+        let predicate = NSPredicate(format: "NOT (status in %@)", knownStatus)
+
+        updateResultsController(predicate: predicate)
     }
 
     func resetOrderFilters() {
-        resultsController.predicate = nil
+        updateResultsController(predicate: nil)
+    }
+
+    private func updateResultsController(predicate: NSPredicate?)  {
+        resultsController.predicate = predicate
+        state.transitionToResultsUpdatedState(isEmpty: isEmpty, isFiltered: isFiltered)
+
         tableView.reloadData()
     }
 }
@@ -182,20 +197,24 @@ private extension OrdersViewController {
             return
         }
 
-        state = State.stateForSyncBegins(isEmpty: isEmpty)
+        state.transitionToSyncingState(isEmpty: isEmpty)
 
         let action = OrderAction.retrieveOrders(siteID: siteID) { [weak self] error in
             guard let `self` = self else {
                 return
             }
 
-            if let error = error {
-                DDLogError("⛔️ Error synchronizing orders: \(error)")
+            defer {
+                onCompletion?()
             }
 
-            self.state = State.stateForSyncFinished(isEmpty: self.isEmpty, error: error)
+            guard let error = error else {
+                self.state.transitionToResultsUpdatedState(isEmpty: self.isEmpty, isFiltered: self.isFiltered)
+                return
+            }
 
-            onCompletion?()
+            DDLogError("⛔️ Error synchronizing orders: \(error)")
+            self.state.transitionToErrorState()
         }
 
         StoresManager.shared.dispatch(action)
@@ -240,14 +259,29 @@ private extension OrdersViewController {
 
     /// Displays the Empty State Overlay.
     ///
-    func displayEmptyOverlay() {
+    func displayEmptyUnfilteredOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.translatesAutoresizingMaskIntoConstraints = false
         overlayView.messageImage = .waitingForCustomersImage
-        overlayView.messageText = NSLocalizedString("Waiting for Customers", comment: "Empty State Message")
+        overlayView.messageText = NSLocalizedString("Waiting for Customers", comment: "Orders List (Empty State / No Filters)")
         overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
         overlayView.onAction = { [weak self] in
             self?.displayDefaultSite()
+        }
+
+        overlayView.attach(to: view)
+    }
+
+    /// Displays the Empty State (with filters applied!) Overlay.
+    ///
+    func displayEmptyFilteredOverlay() {
+        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
+        overlayView.translatesAutoresizingMaskIntoConstraints = false
+        overlayView.messageImage = .waitingForCustomersImage
+        overlayView.messageText = NSLocalizedString("No results for selected criteria", comment: "Orders List (Empty State + Filters)")
+        overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: Opens the Store in a browser")
+        overlayView.onAction = { [weak self] in
+            self?.resetOrderFilters()
         }
 
         overlayView.attach(to: view)
@@ -349,8 +383,10 @@ private extension OrdersViewController {
 
     func didEnter(state: State) {
         switch state {
-        case .empty:
-            displayEmptyOverlay()
+        case .emptyUnfiltered:
+            displayEmptyUnfilteredOverlay()
+        case .emptyFiltered:
+            displayEmptyFilteredOverlay()
         case .error:
             displayErrorOverlay()
         case .placeholder:
@@ -362,7 +398,9 @@ private extension OrdersViewController {
 
     func didLeave(state: State) {
         switch state {
-        case .empty:
+        case .emptyFiltered:
+            removeAllOverlays()
+        case .emptyUnfiltered:
             removeAllOverlays()
         case .error:
             removeAllOverlays()
@@ -397,27 +435,36 @@ private extension OrdersViewController {
     enum State {
         case placeholder
         case results
-        case empty
+        case emptyUnfiltered
+        case emptyFiltered
         case error
 
-        /// Returns the Sync Initial State.
         ///
-        static func stateForSyncBegins(isEmpty: Bool) -> State  {
-            return isEmpty ? .placeholder : .results
+        ///
+        mutating func transitionToSyncingState(isEmpty: Bool) {
+            self = isEmpty ? .placeholder : .results
         }
 
-        /// Returns the Sync Finished State.
         ///
-        static func stateForSyncFinished(isEmpty: Bool, error: Error? = nil) -> State {
-            guard error == nil else {
-                return .error
+        ///
+        mutating func transitionToErrorState() {
+            self = .error
+        }
+
+        ///
+        ///
+        mutating func transitionToResultsUpdatedState(isEmpty: Bool, isFiltered: Bool)  {
+            if isEmpty == false  {
+                self = .results
+                return
             }
 
-            guard isEmpty else {
-                return .results
+            if isFiltered {
+                self = .emptyFiltered
+                return
             }
 
-            return .empty
+            self = .emptyUnfiltered
         }
     }
 }

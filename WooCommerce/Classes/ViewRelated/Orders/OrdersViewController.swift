@@ -455,7 +455,7 @@ private extension OrdersViewController {
         /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
         /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
         ///
-        mutating func transitionToResultsUpdatedState(isEmpty: Bool, isFiltered: Bool)  {
+        mutating func transitionToResultsUpdatedState(isEmpty: Bool, isFiltered: Bool) {
             if isEmpty == false  {
                 self = .results
                 return

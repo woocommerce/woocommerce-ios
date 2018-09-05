@@ -96,7 +96,7 @@ private extension OrdersViewController {
     func configureTableView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.estimatedRowHeight = Constants.estimatedRowHeight
+        tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.refreshControl = refreshControl
     }
@@ -281,11 +281,11 @@ extension OrdersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        guard displaysNoResults == false else {
+        guard state == .results else {
             return
         }
 
-        performSegue(withIdentifier: Constants.orderDetailsSegue, sender: detailsViewModel(at: indexPath))
+        performSegue(withIdentifier: Segues.orderDetails, sender: detailsViewModel(at: indexPath))
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

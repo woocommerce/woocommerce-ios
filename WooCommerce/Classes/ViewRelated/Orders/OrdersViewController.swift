@@ -410,14 +410,14 @@ private extension OrdersViewController {
         ///
         static func stateForSyncFinished(isEmpty: Bool, error: Error? = nil) -> State {
 //            guard error == nil else {
-//                return .error
+                return .error
 //            }
 
 //            guard isEmpty else {
 //                return .results
 //            }
 //
-            return .empty
+//            return .empty
         }
     }
 }

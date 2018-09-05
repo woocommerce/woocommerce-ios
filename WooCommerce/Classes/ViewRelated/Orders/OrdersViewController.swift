@@ -278,7 +278,7 @@ private extension OrdersViewController {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.translatesAutoresizingMaskIntoConstraints = false
         overlayView.messageImage = .waitingForCustomersImage
-        overlayView.messageText = NSLocalizedString("No results for selected criteria", comment: "Orders List (Empty State + Filters)")
+        overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Orders List (Empty State + Filters)")
         overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: Opens the Store in a browser")
         overlayView.onAction = { [weak self] in
             self?.resetOrderFilters()

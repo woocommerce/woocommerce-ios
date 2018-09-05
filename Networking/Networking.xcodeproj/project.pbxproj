@@ -50,6 +50,7 @@
 		74C8F06C20EEBD5D00B6EDC9 /* broken-order.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C8F06B20EEBD5D00B6EDC9 /* broken-order.json */; };
 		74C8F06E20EEC1E800B6EDC9 /* OrderNotesMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C8F06D20EEC1E700B6EDC9 /* OrderNotesMapperTests.swift */; };
 		74C8F07020EEC3A800B6EDC9 /* broken-notes.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C8F06F20EEC3A800B6EDC9 /* broken-notes.json */; };
+		74CF5E8421402C04000CED0A /* TopEarnerStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74CF5E8321402C04000CED0A /* TopEarnerStatsRemoteTests.swift */; };
 		74D3BD142114FE6900A6E85E /* MIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D3BD132114FE6900A6E85E /* MIContainer.swift */; };
 		74D522B62113607F00042831 /* StatGranularity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D522B52113607F00042831 /* StatGranularity.swift */; };
 		B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */; };
@@ -157,6 +158,7 @@
 		74C8F06B20EEBD5D00B6EDC9 /* broken-order.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "broken-order.json"; sourceTree = "<group>"; };
 		74C8F06D20EEC1E700B6EDC9 /* OrderNotesMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNotesMapperTests.swift; sourceTree = "<group>"; };
 		74C8F06F20EEC3A800B6EDC9 /* broken-notes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "broken-notes.json"; sourceTree = "<group>"; };
+		74CF5E8321402C04000CED0A /* TopEarnerStatsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopEarnerStatsRemoteTests.swift; sourceTree = "<group>"; };
 		74D3BD132114FE6900A6E85E /* MIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIContainer.swift; sourceTree = "<group>"; };
 		74D522B52113607F00042831 /* StatGranularity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatGranularity.swift; sourceTree = "<group>"; };
 		753D6504FF01F09F6A33B73E /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
@@ -295,6 +297,7 @@
 				B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */,
 				74AE244C2113704C00CA8C54 /* OrderStatsRemoteTests.swift */,
 				74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */,
+				74CF5E8321402C04000CED0A /* TopEarnerStatsRemoteTests.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -761,6 +764,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74CF5E8421402C04000CED0A /* TopEarnerStatsRemoteTests.swift in Sources */,
 				74AE244D2113704C00CA8C54 /* OrderStatsRemoteTests.swift in Sources */,
 				B505F6D320BEE3A500BB1B69 /* AccountMapperTests.swift in Sources */,
 				B5C6FCC820A32E4800A4F8E4 /* DateFormatterWooTests.swift in Sources */,

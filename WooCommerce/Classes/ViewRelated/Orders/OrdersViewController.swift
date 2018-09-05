@@ -171,10 +171,8 @@ private extension OrdersViewController {
     /// Displays Placeholder Orders (when / if needed) and proceeds to Sync'ing all of the orders.
     ///
     func displayPlaceholderOrdersAndSync() {
-        ensurePlaceholderOrdersAreOnScreen()
 
         syncOrders { [weak self] in
-            self?.ensurePlaceholderOrdersAreRemoved()
         }
     }
 
@@ -204,14 +202,9 @@ private extension OrdersViewController {
 private extension OrdersViewController {
 
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
-    /// Note: This is only done when there are no results onscreen.
     ///
-    func ensurePlaceholderOrdersAreOnScreen() {
-        guard displaysNoResults else {
-            return
-        }
-
-        let settings = GhostSettings(reuseIdentifier: OrderListCell.reuseIdentifier, rowsPerSection: Placeholder.rowsPerSection)
+    func displayPlaceholderOrders() {
+        let settings = GhostSettings(reuseIdentifier: OrderListCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(using: settings)
 
         resultsController.stopForwardingEvents()
@@ -219,11 +212,7 @@ private extension OrdersViewController {
 
     /// Removes the Placeholder Orders (and restores the ResultsController <> UITableView link).
     ///
-    func ensurePlaceholderOrdersAreRemoved() {
-        guard tableView.isDisplayingGhostContent else {
-            return
-        }
-
+    func removePlaceholderOrders() {
         tableView.removeGhostContent()
         resultsController.startForwardingEvents(to: self.tableView)
     }

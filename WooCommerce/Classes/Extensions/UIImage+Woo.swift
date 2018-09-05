@@ -32,4 +32,16 @@ extension UIImage {
     static var jetpackLogoImage: UIImage {
         return UIImage(named: "icon-jetpack-gray")!
     }
+
+    /// Error State Image
+    ///
+    static var errorStateImage: UIImage {
+        return UIImage(named: "woo-error-state")!
+    }
+
+    /// Waiting for Customers Image
+    ///
+    static var waitingForCustomersImage: UIImage {
+        return UIImage(named: "woo-waiting-customers")!
+    }
 }

@@ -1,6 +1,7 @@
 import XCTest
 @testable import Yosemite
 @testable import Networking
+@testable import Storage
 
 
 /// StatsStoreTests Unit Tests
@@ -18,6 +19,12 @@ class StatsStoreTests: XCTestCase {
     /// Mockup Storage: InMemory
     ///
     private var storageManager: MockupStorageManager!
+
+    /// Convenience Property: Returns the StorageType associated with the main thread.
+    ///
+    private var viewStorage: StorageType {
+        return storageManager.viewStorage
+    }
 
     /// Dummy Site ID
     ///
@@ -174,6 +181,33 @@ class StatsStoreTests: XCTestCase {
         statsStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+
+    // MARK: - StatsAction.retrieveTopEarnerStats
+
+
+    /// Verifies that `StatsAction.retrieveTopEarnerStats` effectively persists any retrieved TopEarnerStats.
+    ///
+    func testRetrieveTopEarnersStatsEffectivelyPersistsRetrievedStats() {
+        let expectation = self.expectation(description: "Persist top earner stats")
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners/", filename: "top-performers-week")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 0)
+
+        let action = StatsAction.retrieveTopEarnerStats(siteID: sampleSiteID, granularity: .week, latestDateToInclude: Date()) { error in
+            XCTAssertNil(error)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 3)
+            let readOnlyTopEarnerStats = self.viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
+            XCTAssertEqual(readOnlyTopEarnerStats, self.sampleTopEarnerStats())
+
+            expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 
@@ -235,8 +269,46 @@ private extension StatsStoreTests {
                                   rawData: ["2015-01-01", 14808, 1629, 1492, 0, 1268, 571])
     }
 
+    // MARK: - Top Earner Stats Sample
 
-    //  MARK: - Misc
+    func sampleTopEarnerStats() -> Networking.TopEarnerStats {
+        return TopEarnerStats(period: "2018-W12",
+                              granularity: .week,
+                              limit: "5",
+                              items: [sampleTopEarnerStatsItem1(), sampleTopEarnerStatsItem2(), sampleTopEarnerStatsItem3()])
+    }
+
+    func sampleTopEarnerStatsItem1() -> Networking.TopEarnerStatsItem {
+        return TopEarnerStatsItem(productID: 296,
+                                  productName: "Funky Hoodie",
+                                  quantity: 1,
+                                  price: 40,
+                                  total: 0,
+                                  currency: "USD",
+                                  imageUrl: "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2017/05/hoodie-with-logo.jpg?w=801")
+    }
+
+    func sampleTopEarnerStatsItem2() -> Networking.TopEarnerStatsItem {
+        return TopEarnerStatsItem(productID: 373,
+                                  productName: "Black Dress (H&M)",
+                                  quantity: 4,
+                                  price: 30,
+                                  total: 120,
+                                  currency: "USD",
+                                  imageUrl: "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2017/07/hm-black.jpg?w=640")
+    }
+
+    func sampleTopEarnerStatsItem3() -> Networking.TopEarnerStatsItem {
+        return TopEarnerStatsItem(productID: 1033,
+                                  productName: "Smile T-Shirt",
+                                  quantity: 2,
+                                  price: 80,
+                                  total: 160,
+                                  currency: "USD",
+                                  imageUrl: "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2018/04/smile.gif?w=480")
+    }
+
+    // MARK: - Misc
 
     func date(with dateString: String) -> Date {
         guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {

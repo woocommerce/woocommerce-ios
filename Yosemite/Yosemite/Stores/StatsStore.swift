@@ -1,5 +1,7 @@
 import Foundation
 import Networking
+import Storage
+
 
 // MARK: - StatsStore
 //
@@ -24,6 +26,8 @@ public class StatsStore: Store {
             retrieveOrderStats(siteID: siteID, granularity: granularity, latestDateToInclude: latestDateToInclude,  quantity: quantity, onCompletion: onCompletion)
         case .retrieveSiteVisitStats(let siteID, let granularity, let latestDateToInclude, let quantity, let onCompletion):
             retrieveSiteVisitStats(siteID: siteID, granularity: granularity, latestDateToInclude: latestDateToInclude,  quantity: quantity, onCompletion: onCompletion)
+        case .retrieveTopEarnerStats(let siteID, let granularity, let latestDateToInclude, let onCompletion):
+            retrieveTopEarnerStats(siteID: siteID, granularity: granularity, latestDateToInclude: latestDateToInclude, onCompletion: onCompletion)
         }
     }
 }
@@ -66,6 +70,24 @@ private extension StatsStore  {
         }
     }
 
+    /// Retrieves the top earner stats associated with the provided Site ID (if any!).
+    ///
+    func retrieveTopEarnerStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, onCompletion: @escaping (Error?) -> Void) {
+
+        let remote = TopEarnersStatsRemote(network: network)
+        let formattedDateString = buildDateString(from: latestDateToInclude, with: granularity)
+
+        remote.loadTopEarnersStats(for: siteID, unit: granularity, latestDateToInclude: formattedDateString, limit: 5) { [weak self] (topEarnerStats, error) in
+            guard let topEarnerStats = topEarnerStats else {
+                onCompletion(error)
+                return
+            }
+
+            self?.upsertStoredTopEarnerStats(readOnlyStats: topEarnerStats)
+            onCompletion(nil)
+        }
+    }
+
     /// Converts a Date into the appropriatly formatted string based on the `OrderStatGranularity`
     ///
     func buildDateString(from date: Date, with granularity: StatGranularity) -> String {
@@ -79,5 +101,40 @@ private extension StatsStore  {
         case .year:
             return DateFormatter.Stats.statsYearFormatter.string(from: date)
         }
+    }
+}
+
+
+// MARK: - Persistence
+//
+extension StatsStore {
+
+    /// Updates (OR Inserts) the specified ReadOnly TopEarnerStats Entity into the Storage Layer.
+    ///
+    func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats) {
+        assert(Thread.isMainThread)
+
+        let storage = storageManager.viewStorage
+        let storageTopEarnerStats = storage.loadTopEarnerStats(period: readOnlyStats.period,
+                                                               granularity: readOnlyStats.granularity.rawValue,
+                                                               limit: readOnlyStats.limit) ?? storage.insertNewObject(ofType: Storage.TopEarnerStats.self)
+        storageTopEarnerStats.update(with: readOnlyStats)
+        handleTopEarnerStatsItems(readOnlyStats, storageTopEarnerStats, storage)
+        storage.saveIfNeeded()
+    }
+
+    /// Updates the provided StorageTopEarnerStats' items using the provided read-only TopEarnerStats' items
+    ///
+    private func handleTopEarnerStatsItems(_ readOnlyStats: Networking.TopEarnerStats, _ storageTopEarnerStats: Storage.TopEarnerStats, _ storage: StorageType) {
+
+        // Since we are treating the items in core data like a dumb cache, start by nuking all of the existing stored items
+        storageTopEarnerStats.items?.forEach { storageTopEarnerStats.removeFromItems($0) }
+
+        // Insert the items from the read-only stats
+        readOnlyStats.items?.forEach({ readOnlyItem in
+            let newStorageItem = storage.insertNewObject(ofType: Storage.TopEarnerStatsItem.self)
+            newStorageItem.update(with: readOnlyItem)
+            storageTopEarnerStats.addToItems(newStorageItem)
+        })
     }
 }

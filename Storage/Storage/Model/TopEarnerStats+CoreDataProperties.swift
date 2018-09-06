@@ -11,7 +11,6 @@ extension TopEarnerStats {
     @NSManaged public var period: String?
     @NSManaged public var granularity: String?
     @NSManaged public var limit: String?
-    @NSManaged public var lastUpdated: Date?
     @NSManaged public var items: Set<TopEarnerStatsItem>?
 }
 

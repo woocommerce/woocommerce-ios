@@ -90,7 +90,6 @@
     </entity>
     <entity name="TopEarnerStats" representedClassName="TopEarnerStats" syncable="YES">
         <attribute name="granularity" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="lastUpdated" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="limit" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="period" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TopEarnerStatsItem" inverseName="stats" inverseEntity="TopEarnerStatsItem" syncable="YES"/>
@@ -112,7 +111,7 @@
         <element name="OrderItem" positionX="187" positionY="99" width="128" height="223"/>
         <element name="OrderNote" positionX="214" positionY="539" width="128" height="118"/>
         <element name="Site" positionX="-200" positionY="279" width="128" height="135"/>
-        <element name="TopEarnerStats" positionX="9" positionY="180" width="128" height="120"/>
+        <element name="TopEarnerStats" positionX="9" positionY="180" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="18" positionY="189" width="128" height="165"/>
     </elements>
 </model>

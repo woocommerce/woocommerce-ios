@@ -89,9 +89,9 @@
         <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="TopEarnerStats" representedClassName="TopEarnerStats" syncable="YES">
-        <attribute name="granularity" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="limit" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="period" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="granularity" attributeType="String" syncable="YES"/>
+        <attribute name="limit" attributeType="String" syncable="YES"/>
+        <attribute name="period" attributeType="String" syncable="YES"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TopEarnerStatsItem" inverseName="stats" inverseEntity="TopEarnerStatsItem" syncable="YES"/>
     </entity>
     <entity name="TopEarnerStatsItem" representedClassName="TopEarnerStatsItem" syncable="YES">

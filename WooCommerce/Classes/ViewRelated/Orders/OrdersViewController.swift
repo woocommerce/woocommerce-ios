@@ -246,7 +246,6 @@ private extension OrdersViewController {
     ///
     func displayErrorOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.translatesAutoresizingMaskIntoConstraints = false
         overlayView.messageImage = .errorStateImage
         overlayView.messageText = NSLocalizedString("Unable to load the orders list", comment: "Order List Loading Error")
         overlayView.actionText = NSLocalizedString("Retry", comment: "Retry Action")
@@ -261,7 +260,6 @@ private extension OrdersViewController {
     ///
     func displayEmptyUnfilteredOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.translatesAutoresizingMaskIntoConstraints = false
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("Waiting for Customers", comment: "Orders List (Empty State / No Filters)")
         overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
@@ -276,7 +274,6 @@ private extension OrdersViewController {
     ///
     func displayEmptyFilteredOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.translatesAutoresizingMaskIntoConstraints = false
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Orders List (Empty State + Filters)")
         overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: Opens the Store in a browser")

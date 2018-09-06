@@ -74,6 +74,7 @@ class OverlayMessageView: UIView {
     /// Displays the receiver in a given superview. The Overlay will be attached to all edges.
     ///
     func attach(to superview: UIView) {
+        translatesAutoresizingMaskIntoConstraints = false
         superview.addSubview(self)
         superview.pinSubviewToAllEdges(self)
     }

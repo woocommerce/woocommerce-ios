@@ -266,7 +266,7 @@ class StatsStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `upsertStoredTopEarnerStats` effectively inserts a new Order, with the specified payload.
+    /// Verifies that `upsertStoredTopEarnerStats` effectively inserts a new TopEarnerStats, with the specified payload.
     ///
     func testUpsertStoredTopEarnersStatsEffectivelyPersistsNewTopEarnersStats() {
         let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

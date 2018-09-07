@@ -176,7 +176,7 @@ private extension OrdersViewController {
         updateResultsController(predicate: nil)
     }
 
-    private func updateResultsController(predicate: NSPredicate?)  {
+    private func updateResultsController(predicate: NSPredicate?) {
         resultsController.predicate = predicate
         state.transitionToResultsUpdatedState(isEmpty: isEmpty, isFiltered: isFiltered)
 
@@ -453,7 +453,7 @@ private extension OrdersViewController {
         /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
         ///
         mutating func transitionToResultsUpdatedState(isEmpty: Bool, isFiltered: Bool) {
-            if isEmpty == false  {
+            if isEmpty == false {
                 self = .results
                 return
             }

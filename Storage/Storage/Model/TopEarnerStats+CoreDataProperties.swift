@@ -10,7 +10,7 @@ extension TopEarnerStats {
 
     @NSManaged public var granularity: String
     @NSManaged public var limit: String
-    @NSManaged public var period: String
+    @NSManaged public var date: String
     @NSManaged public var items: Set<TopEarnerStatsItem>?
 }
 

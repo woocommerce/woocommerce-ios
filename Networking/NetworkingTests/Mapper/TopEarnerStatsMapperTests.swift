@@ -15,7 +15,7 @@ class TopEarnerStatsMapperTests: XCTestCase {
         }
 
         XCTAssertEqual(dayStats.granularity, .day)
-        XCTAssertEqual(dayStats.period, "2018-06-08")
+        XCTAssertEqual(dayStats.date, "2018-06-08")
         XCTAssertEqual(dayStats.limit, "5")
         XCTAssertEqual(dayStats.items!.count, 1)
 
@@ -38,7 +38,7 @@ class TopEarnerStatsMapperTests: XCTestCase {
         }
 
         XCTAssertEqual(weekStats.granularity, .week)
-        XCTAssertEqual(weekStats.period, "2018-W12")
+        XCTAssertEqual(weekStats.date, "2018-W12")
         XCTAssertEqual(weekStats.limit, "5")
         XCTAssertEqual(weekStats.items!.count, 3)
 
@@ -70,7 +70,7 @@ class TopEarnerStatsMapperTests: XCTestCase {
         }
 
         XCTAssertEqual(monthStats.granularity, .month)
-        XCTAssertEqual(monthStats.period, "2018-08")
+        XCTAssertEqual(monthStats.date, "2018-08")
         XCTAssertEqual(monthStats.limit, "5")
         XCTAssertEqual(monthStats.items!.count, 5)
 
@@ -102,7 +102,7 @@ class TopEarnerStatsMapperTests: XCTestCase {
         }
 
         XCTAssertEqual(yearStats.granularity, .year)
-        XCTAssertEqual(yearStats.period, "2018")
+        XCTAssertEqual(yearStats.date, "2018")
         XCTAssertEqual(yearStats.limit, "5")
         XCTAssertEqual(yearStats.items!.count, 4)
 

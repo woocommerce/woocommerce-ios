@@ -20,6 +20,8 @@ public typealias StatGranularity = Networking.StatGranularity
 public typealias Site = Networking.Site
 public typealias SiteVisitStats = Networking.SiteVisitStats
 public typealias SiteVisitStatsItem = Networking.SiteVisitStatsItem
+public typealias TopEarnerStats = Networking.TopEarnerStats
+public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
 
 
 // MARK: - Exported Storage Symbols
@@ -27,3 +29,5 @@ public typealias SiteVisitStatsItem = Networking.SiteVisitStatsItem
 public typealias StorageAccount = Storage.Account
 public typealias StorageSite = Storage.Site
 public typealias StorageOrder = Storage.Order
+public typealias StorageTopEarnerStats = Storage.TopEarnerStats
+public typealias StorageTopEarnerStatsItem = Storage.TopEarnerStatsItem

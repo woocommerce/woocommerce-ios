@@ -1,0 +1,25 @@
+{
+    "date": "2018-W12",
+    "unit": "week",
+    "limit": "4",
+    "data": [
+             {
+             "ID": 996,
+             "name": "Funky Hoodie 2",
+             "total": 2,
+             "quantity": 444,
+             "price": 40,
+             "image": "https:\/\/jamosova3.mystagingwebsite.com\/wp-content\/uploads\/2017\/05\/hoodie-with-logo.jpg",
+             "currency": "USD"
+             },
+             {
+             "ID": 933,
+             "name": "Smile T-Shirt 2",
+             "total": 161.00,
+             "quantity": 555,
+             "price": 55.44,
+             "image": "https:\/\/jamosova3.mystagingwebsite.com\/wp-content\/uploads\/2018\/04\/smile.gif",
+             "currency": "USD"
+             }
+             ]
+}

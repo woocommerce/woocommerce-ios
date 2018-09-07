@@ -208,6 +208,32 @@ class StatsStoreTests: XCTestCase {
         statsStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that `StatsAction.retrieveTopEarnerStats` effectively persists any updated TopEarnerStatsItems.
+    ///
+    func testRetrieveTopEarnersStatsEffectivelyPersistsUpdatedItems() {
+        let expectation = self.expectation(description: "Persist updated top earner stats items")
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 0)
+        statsStore.upsertStoredTopEarnerStats(readOnlyStats: sampleTopEarnerStats())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 3)
+
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners/", filename: "top-performers-week-alt")
+        let action = StatsAction.retrieveTopEarnerStats(siteID: sampleSiteID, granularity: .week, latestDateToInclude: Date()) { error in
+            XCTAssertNil(error)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
+            //XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
+            let readOnlyTopEarnerStats = self.viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
+            XCTAssertEqual(readOnlyTopEarnerStats, self.sampleTopEarnerStatsMutated())
+
+            expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 
@@ -306,6 +332,33 @@ private extension StatsStoreTests {
                                   total: 160,
                                   currency: "USD",
                                   imageUrl: "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2018/04/smile.gif?w=480")
+    }
+
+    func sampleTopEarnerStatsMutated() -> Networking.TopEarnerStats {
+        return TopEarnerStats(period: "2018-W12",
+                              granularity: .week,
+                              limit: "4",
+                              items: [sampleTopEarnerStatsMutatedItem1(), sampleTopEarnerStatsMutatedItem2()])
+    }
+
+    func sampleTopEarnerStatsMutatedItem1() -> Networking.TopEarnerStatsItem {
+        return TopEarnerStatsItem(productID: 996,
+                                  productName: "Funky Hoodie 2",
+                                  quantity: 444,
+                                  price: 40,
+                                  total: 2,
+                                  currency: "USD",
+                                  imageUrl: "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2017/05/hoodie-with-logo.jpg")
+    }
+
+    func sampleTopEarnerStatsMutatedItem2() -> Networking.TopEarnerStatsItem {
+        return TopEarnerStatsItem(productID: 933,
+                                  productName: "Smile T-Shirt 2",
+                                  quantity: 555,
+                                  price: 55.44,
+                                  total: 161.00,
+                                  currency: "USD",
+                                  imageUrl: "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2018/04/smile.gif")
     }
 
     // MARK: - Misc

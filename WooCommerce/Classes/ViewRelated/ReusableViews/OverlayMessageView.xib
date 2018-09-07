@@ -16,14 +16,14 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" alignment="center" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="2w1-dg-Nr4">
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="2w1-dg-Nr4">
                     <rect key="frame" x="0.0" y="213.5" width="375" height="240.5"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3Ng-em-fRz">
                             <rect key="frame" x="0.0" y="0.0" width="375" height="140"/>
                         </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w9L-0o-W8W">
-                            <rect key="frame" x="166.5" y="165" width="42" height="20.5"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w9L-0o-W8W">
+                            <rect key="frame" x="20" y="165" width="335" height="20.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -36,7 +36,9 @@
                         </button>
                     </subviews>
                     <constraints>
+                        <constraint firstItem="w9L-0o-W8W" firstAttribute="leading" secondItem="2w1-dg-Nr4" secondAttribute="leading" constant="20" id="HPA-Dl-PzX"/>
                         <constraint firstAttribute="trailing" secondItem="3Ng-em-fRz" secondAttribute="trailing" id="Tav-gc-Sxc"/>
+                        <constraint firstAttribute="trailing" secondItem="w9L-0o-W8W" secondAttribute="trailing" constant="20" id="fqi-J2-lSY"/>
                         <constraint firstItem="3Ng-em-fRz" firstAttribute="leading" secondItem="2w1-dg-Nr4" secondAttribute="leading" id="gOX-fo-bFg"/>
                     </constraints>
                 </stackView>

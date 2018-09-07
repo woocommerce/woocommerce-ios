@@ -49,8 +49,8 @@ public extension StorageType {
 
     /// Retrieves the Stored TopEarnerStats.
     ///
-    public func loadTopEarnerStats(period: String, granularity: String, limit: String) -> TopEarnerStats? {
-        let predicate = NSPredicate(format: "period == %@ AND granularity == %@ AND limit == %@", period, granularity, limit)
+    public func loadTopEarnerStats(period: String, granularity: String) -> TopEarnerStats? {
+        let predicate = NSPredicate(format: "period == %@ AND granularity == %@", period, granularity)
         return firstObject(ofType: TopEarnerStats.self, matching: predicate)
     }
 

@@ -115,7 +115,7 @@ extension StatsStore {
         assert(Thread.isMainThread)
 
         let storage = storageManager.viewStorage
-        let storageTopEarnerStats = storage.loadTopEarnerStats(period: readOnlyStats.period,
+        let storageTopEarnerStats = storage.loadTopEarnerStats(date: readOnlyStats.date,
                                                                granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.TopEarnerStats.self)
         storageTopEarnerStats.update(with: readOnlyStats)
         handleTopEarnerStatsItems(readOnlyStats, storageTopEarnerStats, storage)
@@ -126,8 +126,11 @@ extension StatsStore {
     ///
     private func handleTopEarnerStatsItems(_ readOnlyStats: Networking.TopEarnerStats, _ storageTopEarnerStats: Storage.TopEarnerStats, _ storage: StorageType) {
 
-        // Since we are treating the items in core data like a dumb cache, start by nuking all of the existing stored items
-        storageTopEarnerStats.items?.forEach { storageTopEarnerStats.removeFromItems($0) }
+        // Since we are treating the items in core data like a dumb cache, start by nuking all of the existing stored TopEarnerStatsItems
+        storageTopEarnerStats.items?.forEach {
+            storageTopEarnerStats.removeFromItems($0)
+            storage.deleteObject($0)
+        }
 
         // Insert the items from the read-only stats
         readOnlyStats.items?.forEach({ readOnlyItem in

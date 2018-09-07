@@ -13,6 +13,6 @@ extension Yosemite.TopEarnerStats: ReadOnlyType {
             return false
         }
 
-        return storageTopEarnerStats.granularity == granularity.rawValue && storageTopEarnerStats.period == period && storageTopEarnerStats.limit == limit
+        return storageTopEarnerStats.granularity == granularity.rawValue && storageTopEarnerStats.date == date
     }
 }

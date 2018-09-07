@@ -224,7 +224,7 @@ class StatsStoreTests: XCTestCase {
         let action = StatsAction.retrieveTopEarnerStats(siteID: sampleSiteID, granularity: .week, latestDateToInclude: Date()) { error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
-            //XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
             let readOnlyTopEarnerStats = self.viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
             XCTAssertEqual(readOnlyTopEarnerStats, self.sampleTopEarnerStatsMutated())
 
@@ -233,6 +233,68 @@ class StatsStoreTests: XCTestCase {
 
         statsStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that OrderAction.retrieveOrder returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveTopEarnersStatsReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve top earner stats error response")
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners/", filename: "generic_error")
+        let action = StatsAction.retrieveTopEarnerStats(siteID: sampleSiteID, granularity: .week, latestDateToInclude: Date()) { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `StatsAction.retrieveTopEarnerStats` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveTopEarnersStatsReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve top earner stats empty response")
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = StatsAction.retrieveTopEarnerStats(siteID: sampleSiteID, granularity: .week, latestDateToInclude: Date()) { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `upsertStoredTopEarnerStats` effectively inserts a new Order, with the specified payload.
+    ///
+    func testUpsertStoredTopEarnersStatsEffectivelyPersistsNewTopEarnersStats() {
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteTopEarnersStats = sampleTopEarnerStats()
+
+        XCTAssertNil(viewStorage.loadTopEarnerStats(date: "2018-W12", granularity: StatGranularity.week.rawValue))
+        statsStore.upsertStoredTopEarnerStats(readOnlyStats: remoteTopEarnersStats)
+
+        let storageTopEarnersStats = viewStorage.loadTopEarnerStats(date: "2018-W12", granularity: StatGranularity.week.rawValue)
+        XCTAssertEqual(storageTopEarnersStats?.toReadOnly(), remoteTopEarnersStats)
+    }
+
+    /// Verifies that `upsertStoredTopEarnerStats` does not produce duplicate entries.
+    ///
+    func testUpdateStoredTopEarnersStatsEffectivelyUpdatesPreexistantTopEarnersStats() {
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertNil(viewStorage.loadTopEarnerStats(date: "2018-W12", granularity: StatGranularity.week.rawValue))
+        statsStore.upsertStoredTopEarnerStats(readOnlyStats: sampleTopEarnerStats())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 3)
+        statsStore.upsertStoredTopEarnerStats(readOnlyStats: sampleTopEarnerStatsMutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
+
+        let expectedTopEarnerStats = sampleTopEarnerStatsMutated()
+        let storageTopEarnerStats = viewStorage.loadTopEarnerStats(date: "2018-W12", granularity: StatGranularity.week.rawValue)
+        XCTAssertEqual(storageTopEarnerStats?.toReadOnly(), expectedTopEarnerStats)
     }
 }
 
@@ -298,7 +360,7 @@ private extension StatsStoreTests {
     // MARK: - Top Earner Stats Sample
 
     func sampleTopEarnerStats() -> Networking.TopEarnerStats {
-        return TopEarnerStats(period: "2018-W12",
+        return TopEarnerStats(date: "2018-W12",
                               granularity: .week,
                               limit: "5",
                               items: [sampleTopEarnerStatsItem1(), sampleTopEarnerStatsItem2(), sampleTopEarnerStatsItem3()])
@@ -335,7 +397,7 @@ private extension StatsStoreTests {
     }
 
     func sampleTopEarnerStatsMutated() -> Networking.TopEarnerStats {
-        return TopEarnerStats(period: "2018-W12",
+        return TopEarnerStats(date: "2018-W12",
                               granularity: .week,
                               limit: "4",
                               items: [sampleTopEarnerStatsMutatedItem1(), sampleTopEarnerStatsMutatedItem2()])

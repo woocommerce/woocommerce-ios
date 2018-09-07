@@ -9,7 +9,7 @@ extension Storage.TopEarnerStats: ReadOnlyConvertible {
     /// Updates the Storage.Order with the ReadOnly.
     ///
     public func update(with stats: Yosemite.TopEarnerStats) {
-        period = stats.period
+        date = stats.date
         granularity = stats.granularity.rawValue
         limit = stats.limit
     }
@@ -19,7 +19,7 @@ extension Storage.TopEarnerStats: ReadOnlyConvertible {
     public func toReadOnly() -> Yosemite.TopEarnerStats {
         let statItems = items?.map { $0.toReadOnly() } ?? [Yosemite.TopEarnerStatsItem]()
 
-        return TopEarnerStats(period: period,
+        return TopEarnerStats(date: date,
                               granularity: StatGranularity(rawValue: granularity) ?? .day,
                               limit: limit,
                               items: statItems)

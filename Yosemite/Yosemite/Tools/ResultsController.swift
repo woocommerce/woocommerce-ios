@@ -132,6 +132,24 @@ public class ResultsController<T: ResultsControllerMutableType> {
         return controller.object(at: indexPath).toReadOnly()
     }
 
+    /// Returns the Plain ObjectIndex corresponding to a given IndexPath. You can use this index to map the
+    /// `fetchedObject[index]` collection.
+    ///
+    /// This is *required* for calculations involving Page / Scrolling.
+    ///
+    public func objectIndex(from indexPath: IndexPath) -> Int {
+        guard let sections = controller.sections else {
+            return indexPath.row
+        }
+
+        var output = indexPath.row
+        for (index, section) in sections.enumerated() where index < indexPath.section {
+            output += section.numberOfObjects
+        }
+
+        return output
+    }
+
     /// Indicates if there are any Objects matching the specified criteria.
     ///
     public var isEmpty: Bool {

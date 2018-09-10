@@ -21,6 +21,10 @@ class OrdersViewController: UIViewController {
         return refreshControl
     }()
 
+    /// Footer "Loading More" Spinner.
+    ///
+    private lazy var footerSpinnerView = FooterSpinnerView()
+
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
     ///
     private lazy var resultsController: ResultsController<StorageOrder> = {
@@ -112,6 +116,7 @@ private extension OrdersViewController {
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.refreshControl = refreshControl
+        tableView.tableFooterView = footerSpinnerView
     }
 
     func configureResultsController() {

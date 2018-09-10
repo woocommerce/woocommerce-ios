@@ -256,4 +256,44 @@ class ResultsControllerTests: XCTestCase {
 
         XCTAssertEqual(resultsController.numberOfObjects, 0)
     }
+
+
+    /// Verifies that `objectIndex(from indexPath:)` returns a plain Integer that can be used to retrive the target Object
+    /// from the `fetchedObjects` collection.
+    ///
+    func testObjectIndexFromIndexPathReturnsAPlainIndexThatLetsYouMapTheProperObject() {
+        let sectionNameKeyPath = "displayName"
+        let sortDescriptor = NSSortDescriptor(key: #selector(getter: Storage.Account.username).description, ascending: true)
+
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sectionNameKeyPath: sectionNameKeyPath, sortedBy: [sortDescriptor])
+        try? resultsController.performFetch()
+
+        let numberOfSections = 100
+        let numberOfObjectsPerSection = 2
+
+        for section in 0..<numberOfSections {
+            for row in 0..<numberOfObjectsPerSection {
+                let account = storage.insertSampleAccount()
+
+                // We're sorting by Username (and grouping by  displayName
+                let plainIndex = section * numberOfObjectsPerSection + row
+                account.username = "\(plainIndex)"
+                account.displayName = "\(section)"
+            }
+        }
+
+        viewContext.saveIfNeeded()
+
+        for (sectionNumber, sectionObject) in resultsController.sections.enumerated() {
+            for (row, object) in sectionObject.objects.enumerated() {
+                let indexPath = IndexPath(row: row, section: sectionNumber)
+                let objectIndex = resultsController.objectIndex(from: indexPath)
+                let expected = resultsController.object(at: indexPath)
+                let retrieved = resultsController.fetchedObjects[objectIndex]
+
+                XCTAssertEqual(retrieved.userID, Int(expected.userID))
+                XCTAssertEqual(object.userID, Int(expected.userID))
+            }
+        }
+    }
 }

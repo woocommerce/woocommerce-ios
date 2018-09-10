@@ -245,4 +245,15 @@ class ResultsControllerTests: XCTestCase {
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
+
+
+    /// Verifies that `numberOfObjects` returns zero, when the collection is empty.
+    ///
+    func testEmptyStorageReturnsZeroNumberOfObjects() {
+        let sortDescriptor = NSSortDescriptor(key: #selector(getter: Storage.Account.userID).description, ascending: true)
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sortDescriptor])
+        try? resultsController.performFetch()
+
+        XCTAssertEqual(resultsController.numberOfObjects, 0)
+    }
 }

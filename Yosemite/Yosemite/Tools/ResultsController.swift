@@ -138,6 +138,12 @@ public class ResultsController<T: ResultsControllerMutableType> {
         return controller.fetchedObjects?.isEmpty ?? true
     }
 
+    /// Returns the number of fetched objects.
+    ///
+    public var numberOfObjects: Int {
+        return controller.fetchedObjects?.count ?? 0
+    }
+
     /// Returns an array of all of the (ReadOnly) Fetched Objects.
     ///
     public var fetchedObjects: [T.ReadOnlyType] {

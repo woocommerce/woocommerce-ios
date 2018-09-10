@@ -99,6 +99,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         clearChartMarkers()
+        barChartView?.clear()
     }
 }
 

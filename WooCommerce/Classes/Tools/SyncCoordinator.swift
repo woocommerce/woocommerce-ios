@@ -5,7 +5,11 @@ import Foundation
 /// SyncingCoordinatorDelegate: Delegate that's expected to provide Sync'ing Services per Page.
 ///
 protocol SyncingCoordinatorDelegate: class {
-    func sync(pageNumber: Int, onCompletion: (() -> Void)?)
+
+    /// The receiver is expected to synchronize the pageNumber. On completion, it should indicate if the sync was
+    /// successful or not.
+    ///
+    func sync(pageNumber: Int, onCompletion: ((Bool) -> Void)?)
 }
 
 
@@ -75,9 +79,11 @@ private extension SyncingCoordinator {
 
         markAsBeingSynced(pageNumber: pageNumber)
 
-        delegate.sync(pageNumber: pageNumber) {
-// TODO: Handle Errors
-            self.markAsUpdated(pageNumber: pageNumber)
+        delegate.sync(pageNumber: pageNumber) { success in
+            if success {
+                self.markAsUpdated(pageNumber: pageNumber)
+            }
+
             self.unmarkAsBeingSynced(pageNumber: pageNumber)
         }
     }

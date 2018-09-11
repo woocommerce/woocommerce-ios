@@ -90,7 +90,7 @@ class OrdersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        syncOrders()
+        sync()
     }
 }
 
@@ -162,7 +162,7 @@ extension OrdersViewController {
     }
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        syncOrders {
+        sync {
             sender.endRefreshing()
         }
     }
@@ -201,25 +201,25 @@ private extension OrdersViewController {
 
 // MARK: - Sync'ing Helpers
 //
-private extension OrdersViewController {
+extension OrdersViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Orders for the Default Store (if any).
     ///
-    func syncOrders(onCompletion: (() -> Void)? = nil) {
+    func sync(pageNumber: Int = 1, onCompletion: ((Bool) -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            onCompletion?()
+            onCompletion?(false)
             return
         }
 
         state.transitionToSyncingState(isEmpty: isEmpty)
-
-        let action = OrderAction.retrieveOrders(siteID: siteID) { [weak self] error in
+        let action = OrderAction.synchronizeOrders(siteID: siteID, pageNumber: pageNumber, pageSize: Settings.syncPageSize) { [weak self] error in
             guard let `self` = self else {
                 return
             }
 
             defer {
-                onCompletion?()
+                let success = error == nil
+                onCompletion?(success)
             }
 
             guard let error = error else {
@@ -264,7 +264,7 @@ private extension OrdersViewController {
         overlayView.messageText = NSLocalizedString("Unable to load the orders list", comment: "Order List Loading Error")
         overlayView.actionText = NSLocalizedString("Retry", comment: "Retry Action")
         overlayView.onAction = { [weak self] in
-            self?.syncOrders()
+            self?.sync()
         }
 
         overlayView.attach(to: view)

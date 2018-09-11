@@ -36,7 +36,7 @@ class OrdersViewController: UIViewController {
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
-    private let syncingCoordinator = SyncingCoordinator(pageSize: Settings.syncPageSize, pageTTLInSeconds: Settings.syncPageTTL)
+    private let syncingCoordinator = SyncingCoordinator(pageSize: Syncing.pageSize, pageTTLInSeconds: Syncing.pageTTLInSeconds)
 
     /// Indicates if there are no results onscreen.
     ///
@@ -212,14 +212,14 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
         }
 
         state.transitionToSyncingState(isEmpty: isEmpty)
-        let action = OrderAction.synchronizeOrders(siteID: siteID, pageNumber: pageNumber, pageSize: Settings.syncPageSize) { [weak self] error in
+
+        let action = OrderAction.synchronizeOrders(siteID: siteID, pageNumber: pageNumber, pageSize: Syncing.pageSize) { [weak self] error in
             guard let `self` = self else {
                 return
             }
 
             defer {
-                let success = error == nil
-                onCompletion?(success)
+                onCompletion?(error == nil)
             }
 
             guard let error = error else {
@@ -232,6 +232,32 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
         }
 
         StoresManager.shared.dispatch(action)
+    }
+
+    /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
+    ///
+    private func ensureFooterSpinnerIsStarted() {
+        guard mustStartFooterSpinner() else {
+            return
+        }
+
+        footerSpinnerView.startAnimating()
+    }
+
+    /// Whenever we're sync'ing an Orders Page that's beyond what we're currently displaying, this method will return *true*.
+    ///
+    private func mustStartFooterSpinner() -> Bool {
+        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
+            return false
+        }
+
+        return highestPageBeingSynced * Syncing.pageSize > resultsController.numberOfObjects
+    }
+
+    /// Stops animating the Footer Spinner.
+    ///
+    private func ensureFooterSpinnerIsStopped() {
+        footerSpinnerView.stopAnimating()
     }
 }
 
@@ -413,6 +439,8 @@ private extension OrdersViewController {
             displayErrorOverlay()
         case .placeholder:
             displayPlaceholderOrders()
+        case .syncing:
+            ensureFooterSpinnerIsStarted()
         case .results:
             break
         }
@@ -428,6 +456,8 @@ private extension OrdersViewController {
             removeAllOverlays()
         case .placeholder:
             removePlaceholderOrders()
+        case .syncing:
+            ensureFooterSpinnerIsStopped()
         case .results:
             break
         }
@@ -448,8 +478,11 @@ private extension OrdersViewController {
     enum Settings {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
-        static let syncPageSize = 2
-        static let syncPageTTL = TimeInterval(3 * 60)
+    }
+
+    enum Syncing {
+        static let pageSize = 2
+        static let pageTTLInSeconds = TimeInterval(3 * 60)
     }
 
     enum Segues {
@@ -458,6 +491,7 @@ private extension OrdersViewController {
 
     enum State {
         case placeholder
+        case syncing
         case results
         case emptyUnfiltered
         case emptyFiltered
@@ -467,7 +501,7 @@ private extension OrdersViewController {
         /// we've got cached results, or not.
         ///
         mutating func transitionToSyncingState(isEmpty: Bool) {
-            self = isEmpty ? .placeholder : .results
+            self = isEmpty ? .placeholder : .syncing
         }
 
         /// Transitions to the Error State.

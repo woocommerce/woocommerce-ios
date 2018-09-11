@@ -51,7 +51,7 @@ class SyncingCoordinator {
     ///     2.  Verify if the (NEXT) page isn't being sync'ed (OR) if its cache has expired
     ///     3.  Proceed sync'ing the next page, if possible / needed
     ///
-    func ensureResultsAreSynchronized(lastVisibleIndex: Int) {
+    func ensureNextPageIsSynchronized(lastVisibleIndex: Int) {
         guard isLastElementInPage(elementIndex: lastVisibleIndex) else {
             return
         }

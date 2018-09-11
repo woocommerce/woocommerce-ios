@@ -162,7 +162,7 @@ extension OrdersViewController {
     }
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        sync {
+        sync { _ in
             sender.endRefreshing()
         }
     }
@@ -380,7 +380,7 @@ extension OrdersViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let orderIndex = resultsController.objectIndex(from: indexPath)
-        syncingCoordinator.ensureResultsAreSynchronized(lastVisibleIndex: orderIndex)
+        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
     }
 }
 

@@ -303,7 +303,8 @@
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GNX-8x-jG2">
                                         <rect key="frame" x="0.0" y="110" width="375" height="18"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="18" id="keP-js-csr"/>
+                                            <constraint firstAttribute="height" priority="999" constant="18" id="OSr-3q-Szr"/>
+                                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="18" id="keP-js-csr"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -320,13 +321,13 @@
                         </subviews>
                         <constraints>
                             <constraint firstItem="s9n-KV-6jV" firstAttribute="leading" secondItem="3HX-fV-pCj" secondAttribute="leading" id="0bi-M6-rQY"/>
-                            <constraint firstItem="3HX-fV-pCj" firstAttribute="bottom" secondItem="8K9-4b-JO7" secondAttribute="bottom" id="3bt-Ve-saE"/>
-                            <constraint firstItem="3HX-fV-pCj" firstAttribute="trailing" secondItem="8K9-4b-JO7" secondAttribute="trailing" id="8uT-2L-deL"/>
-                            <constraint firstItem="3HX-fV-pCj" firstAttribute="trailing" secondItem="s9n-KV-6jV" secondAttribute="trailing" id="B0f-od-5mS"/>
+                            <constraint firstItem="8K9-4b-JO7" firstAttribute="trailing" secondItem="3HX-fV-pCj" secondAttribute="trailing" id="8uT-2L-deL"/>
+                            <constraint firstItem="s9n-KV-6jV" firstAttribute="trailing" secondItem="3HX-fV-pCj" secondAttribute="trailing" id="B0f-od-5mS"/>
                             <constraint firstItem="8K9-4b-JO7" firstAttribute="top" secondItem="3HX-fV-pCj" secondAttribute="top" id="JsB-DA-r8z"/>
                             <constraint firstItem="8K9-4b-JO7" firstAttribute="leading" secondItem="3HX-fV-pCj" secondAttribute="leading" id="UI1-Lu-Lue"/>
                             <constraint firstItem="s9n-KV-6jV" firstAttribute="bottom" secondItem="GNX-8x-jG2" secondAttribute="top" id="md4-mZ-gvI"/>
                             <constraint firstItem="s9n-KV-6jV" firstAttribute="top" secondItem="3HX-fV-pCj" secondAttribute="top" id="uOu-EC-soB"/>
+                            <constraint firstItem="8K9-4b-JO7" firstAttribute="bottom" secondItem="3HX-fV-pCj" secondAttribute="bottom" id="v7f-3V-PQS"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="3HX-fV-pCj"/>
                     </view>

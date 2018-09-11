@@ -10,9 +10,9 @@ struct OrderItemViewModel {
     ///
     let item: OrderItem
 
-    /// Order's Currency Symbol!
+    /// Order's Currency Formatter
     ///
-    let currencySymbol: String
+    let currencyFormatter: NumberFormatter
 
 
     /// Item's Name
@@ -30,11 +30,14 @@ struct OrderItemViewModel {
     /// Item's Price
     ///
     var price: String {
+        let itemTotal = currencyFormatter.string(for: item.total) ?? ""
         guard item.quantity > 1 else {
-            return currencySymbol + " " + item.total
+            return itemTotal
         }
 
-        return currencySymbol + " "  + item.total + " (" + currencySymbol + item.subtotal + " × " + quantity + ")"
+        let itemSubtotal = currencyFormatter.string(for: item.subtotal) ?? ""
+
+        return itemTotal + " (" + itemSubtotal + " × " + quantity + ")"
     }
 
     /// Item's Tax
@@ -43,9 +46,10 @@ struct OrderItemViewModel {
         guard item.totalTax.isEmpty == false else {
             return nil
         }
+        let totalTax = currencyFormatter.string(for: item.totalTax) ?? ""
 
         let prefix = NSLocalizedString("Tax:", comment: "Tax label for total taxes line")
-        return prefix + " " + currencySymbol + " " + item.totalTax
+        return prefix + " " + totalTax
     }
 
     /// Item's SKU

@@ -89,8 +89,8 @@ class OrderDetailsViewModel {
         return String(format: "%.2f", subtotal)
     }
 
-    var subtotalValue: String {
-        return currencySymbol + subtotal
+    var subtotalValue: String? {
+        return currencyFormatter.string(for: subtotal)
     }
 
     var discountLabel: String? {
@@ -98,13 +98,21 @@ class OrderDetailsViewModel {
     }
 
     var discountValue: String? {
-        return Double(order.discountTotal) != 0 ? "−" + currencySymbol + order.discountTotal : nil
+        if Double(order.discountTotal) == 0 {
+            return nil
+        }
+
+        guard let discountTotal = currencyFormatter.string(for: order.discountTotal) else {
+            return nil
+        }
+
+        return "−" + discountTotal
     }
 
     let shippingLabel = NSLocalizedString("Shipping", comment: "Shipping label for payment view")
 
-    var shippingValue: String {
-        return currencySymbol + order.shippingTotal
+    var shippingValue: String? {
+        return currencyFormatter.string(for: order.shippingTotal)
     }
 
     var taxesLabel: String? {
@@ -112,22 +120,27 @@ class OrderDetailsViewModel {
     }
 
     var taxesValue: String? {
-        return Double(order.totalTax) != 0 ? currencySymbol + order.totalTax : nil
+        return Double(order.totalTax) != 0 ? currencyFormatter.string(for: order.totalTax) : nil
     }
 
     let totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
 
-    var totalValue: String {
-        return currencySymbol + order.total
+    var totalValue: String? {
+        let totalDouble = Double(order.total)
+        if let double = totalDouble {
+            let total = NSNumber(value: double)
+            return currencyFormatter.string(from: total)
+        }
+        return nil
     }
 
     var paymentSummary: String {
-        return NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
+        let total = totalValue ?? ""
+        return NSLocalizedString("Payment of \(total) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
     }
 
-    var currencySymbol: String {
-        let locale = NSLocale(localeIdentifier: order.currency)
-        return locale.displayName(forKey: .currencySymbol, value: order.currency) ?? String()
+    var currencyFormatter: NumberFormatter {
+        return order.currencyFormatter
     }
 
     let addNoteIcon = Gridicon.iconOfType(.addOutline)

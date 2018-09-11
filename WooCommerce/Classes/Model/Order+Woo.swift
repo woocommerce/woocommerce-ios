@@ -6,13 +6,15 @@ import Yosemite
 //
 extension Order {
 
-    /// Returns the Currency Symbol associated with the current order.
+    /// Returns a number formatter that can handle the current order's currency
     ///
-    var currencySymbol: String {
-        let components = [NSLocale.Key.currencyCode.rawValue: currency]
-        let identifier = NSLocale.localeIdentifier(fromComponents: components)
+    var currencyFormatter: NumberFormatter {
+        let currencyFormatter = NumberFormatter()
+        currencyFormatter.usesGroupingSeparator = true
+        currencyFormatter.numberStyle = .currency
+        currencyFormatter.currencyCode = currency
 
-        return NSLocale(localeIdentifier: identifier).currencySymbol
+        return currencyFormatter
     }
 
     /// Translates a Section Identifier into a Human-Readable String.

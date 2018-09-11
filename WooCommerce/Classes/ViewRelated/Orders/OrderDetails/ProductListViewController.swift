@@ -47,10 +47,11 @@ extension ProductListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
+        let itemViewModel = OrderItemViewModel(item: item, currencyFormatter: viewModel.order.currencyFormatter)
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductDetailsTableViewCell.reuseIdentifier, for: indexPath) as? ProductDetailsTableViewCell else {
             fatalError()
         }
-        cell.configure(item: item, with: viewModel)
+        cell.configure(item: itemViewModel, with: viewModel)
         return cell
     }
 

@@ -69,7 +69,6 @@ extension NewOrdersViewController {
 private extension NewOrdersViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.wooWhite
         topBorder.backgroundColor = StyleManager.wooGreyBorder
         bottomBorder.backgroundColor = StyleManager.wooGreyBorder
         titleLabel.applyHeadlineStyle()

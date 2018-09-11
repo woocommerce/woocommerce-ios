@@ -40,6 +40,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     let storageManager = CoreDataManager(name: WooConstants.databaseStackName)
 
+    /// Tab Bar Controller
+    ///
+    var tabBarController: MainTabBarController? {
+        return window?.rootViewController as? MainTabBarController
+    }
 
 
     // MARK: - AppDelegate Methods

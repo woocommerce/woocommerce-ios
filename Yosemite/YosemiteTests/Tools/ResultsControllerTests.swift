@@ -220,4 +220,29 @@ class ResultsControllerTests: XCTestCase {
             XCTAssertEqual(retrieved.username, expected[retrieved.userID]?.username)
         }
     }
+
+
+    /// Verifies that `fetchedObjects` effectively  returns all of the (readOnly) objects that are expected to be available.
+    ///
+    func testResettingStorageIsMappedIntoOnResetClosure() {
+        let sortDescriptor = NSSortDescriptor(key: #selector(getter: Storage.Account.userID).description, ascending: true)
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sortedBy: [sortDescriptor])
+        try? resultsController.performFetch()
+
+        storage.insertSampleAccount()
+        storage.insertSampleAccount()
+
+        viewContext.saveIfNeeded()
+        XCTAssertEqual(resultsController.fetchedObjects.count, 2)
+
+        let expectation = self.expectation(description: "OnDidReset")
+        resultsController.onDidResetContent = {
+            expectation.fulfill()
+        }
+
+        storage.reset()
+        XCTAssertTrue(resultsController.isEmpty)
+
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
 }

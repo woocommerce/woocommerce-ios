@@ -183,7 +183,8 @@ extension Order: Comparable {
             lhs.paymentMethodTitle == rhs.paymentMethodTitle &&
             lhs.billingAddress == rhs.billingAddress &&
             lhs.shippingAddress == rhs.shippingAddress &&
-            lhs.coupons == rhs.coupons &&
+            lhs.coupons.count == rhs.coupons.count &&
+            lhs.coupons.sorted() == rhs.coupons.sorted() &&
             lhs.items.count == rhs.items.count &&
             lhs.items.sorted() == rhs.items.sorted()
     }

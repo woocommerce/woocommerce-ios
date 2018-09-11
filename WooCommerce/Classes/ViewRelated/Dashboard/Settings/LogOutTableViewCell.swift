@@ -13,6 +13,7 @@ class LogOutTableViewCell: UITableViewCell {
         super.awakeFromNib()
         logoutButton.setTitle(NSLocalizedString("Logout account", comment: "Log out button title"), for: .normal)
         logoutButton.tintColor = StyleManager.destructiveActionColor
+        logoutButton.titleLabel?.applyBodyStyle()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

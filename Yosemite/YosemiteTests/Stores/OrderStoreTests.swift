@@ -221,14 +221,27 @@ class OrderStoreTests: XCTestCase {
     func testUpdateStoredOrderEffectivelyUpdatesPreexistantOrder() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        XCTAssertNil(viewStorage.firstObject(ofType: Storage.Order.self, matching: nil))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
-        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated())
-        XCTAssert(viewStorage.countObjects(ofType: Storage.Order.self, matching: nil) == 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
 
-        let expectedOrder = sampleOrderMutated()
-        let storageOrder = viewStorage.loadOrder(orderID: expectedOrder.orderID)
-        XCTAssertEqual(storageOrder?.toReadOnly(), expectedOrder)
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated())
+        let storageOrder1 = viewStorage.loadOrder(orderID: sampleOrderMutated().orderID)
+        XCTAssertEqual(storageOrder1?.toReadOnly(), sampleOrderMutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 3)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 2)
+        
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2())
+        let storageOrder2 = viewStorage.loadOrder(orderID: sampleOrderMutated2().orderID)
+        XCTAssertEqual(storageOrder2?.toReadOnly(), sampleOrderMutated2())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
     }
 
     /// Verifies that `upsertStoredOrder` effectively inserts a new Order, with the specified payload.
@@ -400,10 +413,35 @@ private extension OrderStoreTests {
                      total: "41.20",
                      totalTax: "1.20",
                      paymentMethodTitle: "Credit Card (Stripe)",
-                     items: sampleItems(),
+                     items: sampleItemsMutated(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     coupons: sampleCoupons())
+                     coupons: sampleCouponsMutated())
+    }
+
+    func sampleOrderMutated2() -> Networking.Order {
+        return Order(siteID: sampleSiteID,
+                     orderID: 963,
+                     parentID: 0,
+                     customerID: 11,
+                     number: "963",
+                     status: .completed,
+                     currency: "USD",
+                     customerNote: "",
+                     dateCreated: date(with: "2018-04-03T23:05:12"),
+                     dateModified: date(with: "2018-04-03T23:05:14"),
+                     datePaid: date(with: "2018-04-03T23:05:14"),
+                     discountTotal: "40.00",
+                     discountTax: "1.20",
+                     shippingTotal: "0.00",
+                     shippingTax: "0.00",
+                     total: "41.20",
+                     totalTax: "1.20",
+                     paymentMethodTitle: "Credit Card (Stripe)",
+                     items: sampleItemsMutated2(),
+                     billingAddress: sampleAddress(),
+                     shippingAddress: sampleAddress(),
+                     coupons: [])
     }
 
     func sampleAddress() -> Networking.Address {
@@ -426,6 +464,18 @@ private extension OrderStoreTests {
                                       discount: "30",
                                       discountTax: "1.2")
         return [coupon1]
+    }
+
+    func sampleCouponsMutated() -> [Networking.OrderCouponLine] {
+        let coupon1 = OrderCouponLine(couponID: 894,
+                                      code: "30$off",
+                                      discount: "20",
+                                      discountTax: "12.2")
+        let coupon2 = OrderCouponLine(couponID: 12,
+                                      code: "hithere!",
+                                      discount: "50",
+                                      discountTax: "0.66")
+        return [coupon1, coupon2]
     }
 
     func sampleItems() -> [Networking.OrderItem] {
@@ -452,6 +502,58 @@ private extension OrderStoreTests {
                               totalTax: "0.00",
                               variationID: 0)
         return [item1, item2]
+    }
+
+    func sampleItemsMutated() -> [Networking.OrderItem] {
+        let item1 = OrderItem(itemID: 890,
+                              name: "Fruits Basket (Mix & Match Product) 2",
+                              productID: 52,
+                              quantity: 10,
+                              sku: "",
+                              subtotal: "60.00",
+                              subtotalTax: "4.00",
+                              taxClass: "",
+                              total: "64.00",
+                              totalTax: "4.00",
+                              variationID: 0)
+        let item2 = OrderItem(itemID: 891,
+                              name: "Fruits Bundle 2",
+                              productID: 234,
+                              quantity: 3,
+                              sku: "5555-A",
+                              subtotal: "30.00",
+                              subtotalTax: "0.40",
+                              taxClass: "",
+                              total: "30.40",
+                              totalTax: "0.40",
+                              variationID: 0)
+        let item3 = OrderItem(itemID: 23,
+                              name: "Some new product",
+                              productID: 12,
+                              quantity: 1,
+                              sku: "QWE123",
+                              subtotal: "130.00",
+                              subtotalTax: "10.40",
+                              taxClass: "",
+                              total: "140.40",
+                              totalTax: "10.40",
+                              variationID: 0)
+        return [item1, item2, item3]
+    }
+
+    func sampleItemsMutated2() -> [Networking.OrderItem] {
+        let item1 = OrderItem(itemID: 890,
+                              name: "Fruits Basket (Mix & Match Product) 2",
+                              productID: 52,
+                              quantity: 10,
+                              sku: "",
+                              subtotal: "60.00",
+                              subtotalTax: "4.00",
+                              taxClass: "",
+                              total: "64.00",
+                              totalTax: "4.00",
+                              variationID: 0)
+        return [item1]
     }
 
     func date(with dateString: String) -> Date {

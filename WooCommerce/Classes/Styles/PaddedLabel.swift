@@ -3,11 +3,11 @@ import UIKit
 
 // MARK: - PaddedLabel: UILabel subclass that allows for Text Insets.
 //
-@IBDesignable class PaddedLabel: UILabel {
+class PaddedLabel: UILabel {
 
     /// Insets to be applied over the Label's Text.
     ///
-    @IBInspectable var textInsets = Constants.defaultInsets
+    var textInsets = Constants.defaultInsets
 
 
     // MARK: - Overridden Methods

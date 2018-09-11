@@ -11,6 +11,7 @@ class TopPerformersViewController: ButtonBarPagerTabStripViewController {
     @IBOutlet private weak var topBorder: UIView!
     @IBOutlet private weak var middleBorder: UIView!
     @IBOutlet private weak var bottomBorder: UIView!
+    @IBOutlet private weak var headingLabel: PaddedLabel!
 
     private var dataVCs = [TopPerformerDataViewController]()
 
@@ -58,6 +59,10 @@ private extension TopPerformersViewController {
         topBorder.backgroundColor = StyleManager.wooGreyBorder
         middleBorder.backgroundColor = StyleManager.wooGreyBorder
         bottomBorder.backgroundColor = StyleManager.wooGreyBorder
+        headingLabel.applyFootnoteStyle()
+        headingLabel.textColor = StyleManager.sectionTitleColor
+        headingLabel.textInsets = Constants.headerLabelInsets
+        headingLabel.text =  NSLocalizedString("Top Performers", comment: "Header label for Top Performers section of My Store tab.").uppercased()
     }
 
     func configureDataViewControllers() {
@@ -115,6 +120,10 @@ private extension TopPerformersViewController {
 // MARK: - Constants!
 //
 private extension TopPerformersViewController {
+    enum Constants {
+        static let headerLabelInsets = UIEdgeInsets(top: 0, left: 14, bottom: 6, right: 14)
+    }
+
     enum TabStrip {
         static let buttonLeftRightMargin: CGFloat   = 14.0
         static let selectedBarHeight: CGFloat       = 3.0

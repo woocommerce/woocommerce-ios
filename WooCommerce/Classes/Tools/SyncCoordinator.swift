@@ -96,9 +96,9 @@ private extension SyncingCoordinator {
 }
 
 
-// MARK: - Private Methods
+// MARK: - Analyzer Methods: For unit testing purposes, marking them as `Internal`
 //
-private extension SyncingCoordinator {
+extension SyncingCoordinator {
 
     /// Maps an ObjectIndex to a PageNumber: [1, ...)
     ///
@@ -127,6 +127,12 @@ private extension SyncingCoordinator {
     func isPageBeingSynced(pageNumber: Int) -> Bool {
         return pagesBeingSynced.contains(pageNumber)
     }
+}
+
+
+// MARK: - Private Methods
+//
+private extension SyncingCoordinator {
 
     /// Marks the specified PageNumber as just Updated
     ///

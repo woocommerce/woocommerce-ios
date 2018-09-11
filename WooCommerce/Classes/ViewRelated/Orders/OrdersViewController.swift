@@ -34,6 +34,10 @@ class OrdersViewController: UIViewController {
         return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
+    /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
+    ///
+    private let syncingCoordinator = SyncingCoordinator(pageSize: Settings.syncPageSize, pageTTLInSeconds: Settings.syncPageTTL)
+
     /// Indicates if there are no results onscreen.
     ///
     private var isEmpty: Bool {
@@ -77,6 +81,7 @@ class OrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureSyncingCoordinator()
         configureNavigation()
         configureTableView()
         configureResultsController()
@@ -122,6 +127,10 @@ private extension OrdersViewController {
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
         try? resultsController.performFetch()
+    }
+
+    func configureSyncingCoordinator() {
+        syncingCoordinator.delegate = self
     }
 }
 
@@ -369,6 +378,17 @@ extension OrdersViewController: UITableViewDelegate {
         performSegue(withIdentifier: Segues.orderDetails, sender: detailsViewModel(at: indexPath))
     }
 
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let orderIndex = resultsController.objectIndex(from: indexPath)
+        syncingCoordinator.ensureResultsAreSynchronized(lastVisibleIndex: orderIndex)
+    }
+}
+
+
+// MARK: - Segues
+//
+extension OrdersViewController {
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let singleOrderViewController = segue.destination as? OrderDetailsViewController, let viewModel = sender as? OrderDetailsViewModel else {
             return
@@ -428,6 +448,8 @@ private extension OrdersViewController {
     enum Settings {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
+        static let syncPageSize = 2
+        static let syncPageTTL = TimeInterval(3 * 60)
     }
 
     enum Segues {

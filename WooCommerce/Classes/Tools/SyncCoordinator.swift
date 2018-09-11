@@ -107,7 +107,7 @@ private extension SyncingCoordinator {
             return true
         }
 
-        return elapsedTime > pageTTLInSeconds
+        return abs(elapsedTime) > pageTTLInSeconds
     }
 
     /// Indicates if a given Element is the last one in the page

@@ -104,6 +104,7 @@
 		B5D1AFC020BC67C200DB0E8C /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
 		B5D1AFC620BC7B7300DB0E8C /* StorePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFC520BC7B7300DB0E8C /* StorePickerViewController.swift */; };
 		B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5D1AFC720BC7B9600DB0E8C /* StorePickerViewController.xib */; };
+		B5D6DC54214802740003E48A /* SyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D6DC53214802740003E48A /* SyncCoordinator.swift */; };
 		B5DB01B52114AB2D00A4F797 /* FabricManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DB01B42114AB2D00A4F797 /* FabricManager.swift */; };
 		B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3C220E1484400B53AED /* StoresManagerTests.swift */; };
 		B5DBF3C520E148E000B53AED /* DeauthenticatedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3C420E148E000B53AED /* DeauthenticatedState.swift */; };
@@ -295,6 +296,7 @@
 		B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooConstants.swift; sourceTree = "<group>"; };
 		B5D1AFC520BC7B7300DB0E8C /* StorePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePickerViewController.swift; sourceTree = "<group>"; };
 		B5D1AFC720BC7B9600DB0E8C /* StorePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StorePickerViewController.xib; sourceTree = "<group>"; };
+		B5D6DC53214802740003E48A /* SyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinator.swift; sourceTree = "<group>"; };
 		B5DB01B42114AB2D00A4F797 /* FabricManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FabricManager.swift; sourceTree = "<group>"; };
 		B5DBF3C220E1484400B53AED /* StoresManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoresManagerTests.swift; sourceTree = "<group>"; };
 		B5DBF3C420E148E000B53AED /* DeauthenticatedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeauthenticatedState.swift; sourceTree = "<group>"; };
@@ -485,6 +487,7 @@
 				B55D4C2620B717C000D7A50F /* UserAgent.swift */,
 				B5BE368D20BED80B00BE0A8C /* SafariViewController.swift */,
 				B54FBE542111F70700390F57 /* ResultsController+UIKit.swift */,
+				B5D6DC53214802740003E48A /* SyncCoordinator.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1170,6 +1173,7 @@
 				B5A82EE7210263460053ADC8 /* UIViewController+Helpers.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				7421344A210A323C00C13890 /* WooAnalyticsStat.swift in Sources */,
+				B5D6DC54214802740003E48A /* SyncCoordinator.swift in Sources */,
 				B58B4AB82108F14700076FDD /* NoticeNotificationInfo.swift in Sources */,
 				CE24BCD8212F25D4001CD12E /* StorageOrder+Woo.swift in Sources */,
 				B557DA1520979904005962F4 /* CustomerNoteTableViewCell.swift in Sources */,

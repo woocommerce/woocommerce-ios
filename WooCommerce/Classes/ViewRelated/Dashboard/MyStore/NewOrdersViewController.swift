@@ -176,6 +176,6 @@ private extension NewOrdersViewController {
 
     enum Syncing {
         static let pageNumber = 1
-        static let pageSize = 75
+        static let pageSize = 40
     }
 }

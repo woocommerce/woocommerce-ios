@@ -15,6 +15,21 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
     @IBOutlet private weak var descriptionLabel: PaddedLabel!
     @IBOutlet private weak var borderView: UIView!
 
+    // MARK: - Computed Properties
+
+    private var tabDescription: String {
+        switch granularity {
+        case .day:
+            return NSLocalizedString("Today", comment: "Top Performers section title - today")
+        case .week:
+            return NSLocalizedString("This Week", comment: "Top Performers section title - this week")
+        case .month:
+            return NSLocalizedString("This Month", comment: "Top Performers section title - this month")
+        case .year:
+            return NSLocalizedString("This Year", comment: "Top Performers section title - this year")
+        }
+    }
+
     // MARK: - Initialization
 
     /// Designated Initializer
@@ -62,7 +77,7 @@ private extension TopPerformerDataViewController {
 //
 extension TopPerformerDataViewController {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: granularity.pluralizedString)
+        return IndicatorInfo(title: tabDescription)
     }
 }
 
@@ -82,6 +97,7 @@ private extension TopPerformerDataViewController {
 private extension TopPerformerDataViewController {
     enum Constants {
         static let descriptionLabelInsets = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
+        static let noActivityText = NSLocalizedString("No activity this period", comment: "Default text for Top Performers section when no data exists for a given period.")
     }
 }
 

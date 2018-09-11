@@ -22,8 +22,8 @@ public class OrderStore: Store {
         }
 
         switch action {
-        case .retrieveOrders(let siteID, let onCompletion):
-            retrieveOrders(siteID: siteID, onCompletion: onCompletion)
+        case .synchronizeOrders(let siteID, let pageNumber, let pageSize, let onCompletion):
+            synchronizeOrders(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .retrieveOrder(let siteID, let orderID, let onCompletion):
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .updateOrder(let siteID, let orderID, let status, let onCompletion):
@@ -39,10 +39,10 @@ private extension OrderStore {
 
     /// Retrieves the orders associated with a given Site ID (if any!).
     ///
-    func retrieveOrders(siteID: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeOrders(siteID: Int, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
-        remote.loadAllOrders(for: siteID) { [weak self] (orders, error) in
+        remote.loadAllOrders(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (orders, error) in
             guard let orders = orders else {
                 onCompletion(error)
                 return

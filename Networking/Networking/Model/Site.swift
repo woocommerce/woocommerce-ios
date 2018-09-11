@@ -58,6 +58,26 @@ public struct Site: Decodable {
 }
 
 
+// MARK: - Comparable Conformance
+//
+extension Site: Comparable {
+    public static func == (lhs: Site, rhs: Site) -> Bool {
+        return lhs.siteID == rhs.siteID &&
+            lhs.name == rhs.name &&
+            lhs.description == rhs.description &&
+            lhs.url == rhs.url &&
+            lhs.isWooCommerceActive == rhs.isWooCommerceActive &&
+            lhs.isWordPressStore == rhs.isWordPressStore
+    }
+
+    public static func < (lhs: Site, rhs: Site) -> Bool {
+        return lhs.siteID < rhs.siteID ||
+            (lhs.siteID == rhs.siteID && lhs.name < rhs.name) ||
+            (lhs.siteID == rhs.siteID && lhs.name == rhs.name && lhs.description < rhs.description)
+    }
+}
+
+
 /// Defines all of the Site CodingKeys.
 ///
 private extension Site {

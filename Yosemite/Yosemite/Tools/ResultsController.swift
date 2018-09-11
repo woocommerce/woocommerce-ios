@@ -1,6 +1,7 @@
 import Foundation
-import CoreData
 import Storage
+import CoreData
+import CocoaLumberjack
 
 
 
@@ -55,6 +56,10 @@ public class ResultsController<T: ResultsControllerMutableType> {
     ///
     private let internalDelegate = FetchedResultsControllerDelegateWrapper()
 
+    /// NotificationCenter ObserverBlock Token
+    ///
+    private var notificationCenterToken: Any?
+
     /// Closure to be executed before the results are changed.
     ///
     public var onWillChangeContent: (() -> Void)?
@@ -71,6 +76,10 @@ public class ResultsController<T: ResultsControllerMutableType> {
     ///
     public var onDidChangeSection: ((_ sectionInfo: SectionInfo, _ sectionIndex: Int, _ type: ChangeType) -> Void)?
 
+    /// Closure to be executed whenever the (entire) content was reset. This happens whenever a `StorageManagerDidResetStorage` notification is
+    /// caught
+    ///
+    public var onDidResetContent: (() -> Void)?
 
 
     /// Designated Initializer.
@@ -87,6 +96,7 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
         setupResultsController()
         setupEventsForwarding()
+        startListeningForStorageManagerNotifications()
     }
 
     /// Convenience Initializer.
@@ -101,6 +111,13 @@ public class ResultsController<T: ResultsControllerMutableType> {
                   matching: predicate,
                   sortedBy: descriptors)
     }
+
+    /// Deinit!
+    ///
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
 
 
     /// Executes the fetch request on the store to get objects.
@@ -182,6 +199,21 @@ public class ResultsController<T: ResultsControllerMutableType> {
             let readOnlySection = SectionInfo(mutableSection: mutableSection)
             self.onDidChangeSection?(readOnlySection, sectionIndex, type)
         }
+    }
+
+    /// Listens for `StorageManagerDidResetStorage` Notifications
+    ///
+    private func startListeningForStorageManagerNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(storageWasReset), name: .StorageManagerDidResetStorage, object: nil)
+    }
+
+    /// Whenever the storage was reset, this method will refetch all of the contents, and call the `onDidResetContent` closure.
+    ///
+    @objc func storageWasReset() {
+        DDLogInfo("<> ResultsController: Re-Fetching")
+
+        try? self.controller.performFetch()
+        self.onDidResetContent?()
     }
 }
 

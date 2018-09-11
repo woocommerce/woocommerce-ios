@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import Yosemite
+import WordPressUI
 import CocoaLumberjack
 
 
@@ -29,16 +30,29 @@ class OrdersViewController: UIViewController {
         return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
-    /// Indicates if there are any Objects matching the criteria (or not).
+    /// Indicates if there are no results onscreen.
     ///
-    private var displaysNoResults: Bool {
+    private var isEmpty: Bool {
         return resultsController.isEmpty
     }
 
-    /// Indicates if a Filters is in active, or not.
+    /// Indicates if there's a filter being applied.
     ///
-    private var displaysFilteredResults: Bool {
+    private var isFiltered: Bool {
         return resultsController.predicate != nil
+    }
+
+    /// UI Active State
+    ///
+    private var state: State = .results {
+        didSet {
+            guard oldValue != state else {
+                return
+            }
+
+            didLeave(state: oldValue)
+            didEnter(state: state)
+        }
     }
 
 
@@ -83,6 +97,9 @@ private extension OrdersViewController {
                                              target: self,
                                              action: #selector(displayFiltersAlert))
         rightBarButton.tintColor = .white
+        rightBarButton.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
+        rightBarButton.accessibilityTraits = UIAccessibilityTraitButton
+        rightBarButton.accessibilityHint = NSLocalizedString("Filters the order list by payment status.", comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list.")
         navigationItem.rightBarButtonItem = rightBarButton
 
         // Don't show the Order title in the next-view's back button
@@ -92,10 +109,9 @@ private extension OrdersViewController {
     func configureTableView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.estimatedRowHeight = Constants.estimatedRowHeight
+        tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.refreshControl = refreshControl
-        tableView.register(NoResultsTableViewCell.loadNib(), forCellReuseIdentifier: NoResultsTableViewCell.reuseIdentifier)
     }
 
     func configureResultsController() {
@@ -144,18 +160,26 @@ extension OrdersViewController {
 private extension OrdersViewController {
 
     func displayOrders(with status: OrderStatus) {
-        resultsController.predicate = NSPredicate(format: "status = %@", status.rawValue)
-        tableView.reloadData()
+        let predicate = NSPredicate(format: "status = %@", status.rawValue)
+
+        updateResultsController(predicate: predicate)
     }
 
     func displayOrdersWithUnknownStatus() {
         let knownStatus = OrderStatus.knownStatus.map { $0.rawValue }
-        resultsController.predicate = NSPredicate(format: "NOT (status in %@)", knownStatus)
-        tableView.reloadData()
+        let predicate = NSPredicate(format: "NOT (status in %@)", knownStatus)
+
+        updateResultsController(predicate: predicate)
     }
 
     func resetOrderFilters() {
-        resultsController.predicate = nil
+        updateResultsController(predicate: nil)
+    }
+
+    private func updateResultsController(predicate: NSPredicate?) {
+        resultsController.predicate = predicate
+        state.transitionToResultsUpdatedState(isEmpty: isEmpty, isFiltered: isFiltered)
+
         tableView.reloadData()
     }
 }
@@ -165,21 +189,119 @@ private extension OrdersViewController {
 //
 private extension OrdersViewController {
 
+    /// Synchronizes the Orders for the Default Store (if any).
+    ///
     func syncOrders(onCompletion: (() -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             onCompletion?()
             return
         }
 
-        let action = OrderAction.retrieveOrders(siteID: siteID) { error in
-            if let error = error {
-                DDLogError("⛔️ Error synchronizing orders: \(error)")
+        state.transitionToSyncingState(isEmpty: isEmpty)
+
+        let action = OrderAction.retrieveOrders(siteID: siteID) { [weak self] error in
+            guard let `self` = self else {
+                return
             }
 
-            onCompletion?()
+            defer {
+                onCompletion?()
+            }
+
+            guard let error = error else {
+                self.state.transitionToResultsUpdatedState(isEmpty: self.isEmpty, isFiltered: self.isFiltered)
+                return
+            }
+
+            DDLogError("⛔️ Error synchronizing orders: \(error)")
+            self.state.transitionToErrorState()
         }
 
         StoresManager.shared.dispatch(action)
+    }
+}
+
+
+// MARK: - Placeholders
+//
+private extension OrdersViewController {
+
+    /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
+    ///
+    func displayPlaceholderOrders() {
+        let settings = GhostSettings(reuseIdentifier: OrderListCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
+        tableView.displayGhostContent(using: settings)
+
+        resultsController.stopForwardingEvents()
+    }
+
+    /// Removes the Placeholder Orders (and restores the ResultsController <> UITableView link).
+    ///
+    func removePlaceholderOrders() {
+        tableView.removeGhostContent()
+        resultsController.startForwardingEvents(to: self.tableView)
+    }
+
+    /// Displays the Error State Overlay.
+    ///
+    func displayErrorOverlay() {
+        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
+        overlayView.messageImage = .errorStateImage
+        overlayView.messageText = NSLocalizedString("Unable to load the orders list", comment: "Order List Loading Error")
+        overlayView.actionText = NSLocalizedString("Retry", comment: "Retry Action")
+        overlayView.onAction = { [weak self] in
+            self?.syncOrders()
+        }
+
+        overlayView.attach(to: view)
+    }
+
+    /// Displays the Empty State Overlay.
+    ///
+    func displayEmptyUnfilteredOverlay() {
+        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
+        overlayView.messageImage = .waitingForCustomersImage
+        overlayView.messageText = NSLocalizedString("Waiting for Customers", comment: "Orders List (Empty State / No Filters)")
+        overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
+        overlayView.onAction = { [weak self] in
+            self?.displayDefaultSite()
+        }
+
+        overlayView.attach(to: view)
+    }
+
+    /// Displays the Empty State (with filters applied!) Overlay.
+    ///
+    func displayEmptyFilteredOverlay() {
+        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
+        overlayView.messageImage = .waitingForCustomersImage
+        overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Orders List (Empty State + Filters)")
+        overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: Opens the Store in a browser")
+        overlayView.onAction = { [weak self] in
+            self?.resetOrderFilters()
+        }
+
+        overlayView.attach(to: view)
+    }
+
+    /// Removes all of the the OverlayMessageView instances in the view hierarchy.
+    ///
+    func removeAllOverlays() {
+        for subview in view.subviews where subview is OverlayMessageView {
+            subview.removeFromSuperview()
+        }
+    }
+
+    /// Displays the Default Site in a WebView.
+    ///
+    func displayDefaultSite() {
+        guard let urlAsString = StoresManager.shared.sessionManager.defaultSite?.url, let siteURL = URL(string: urlAsString) else {
+            return
+        }
+
+        let safariViewController = SafariViewController(url: siteURL)
+        safariViewController.modalPresentationStyle = .pageSheet
+        present(safariViewController, animated: true, completion: nil)
     }
 }
 
@@ -200,31 +322,14 @@ private extension OrdersViewController {
 extension OrdersViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-// TODO: Support Loading State + Empty State 
-//        guard !displaysNoResults else {
-//            return Constants.filterResultsNotFoundSectionCount
-//        }
-
         return resultsController.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-// TODO: Support Loading State + Empty State
-//        guard !displaysNoResults else {
-//            return Constants.filterResultsNotFoundRowCount
-//        }
-
         return resultsController.sections[section].numberOfObjects
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-// TODO: Support Empty State
-//        guard !displaysNoResults else {
-//            let cell = tableView.dequeueReusableCell(withIdentifier: NoResultsTableViewCell.reuseIdentifier, for: indexPath) as! NoResultsTableViewCell
-//            cell.title = NSLocalizedString("No results found. Clear the filter to try again.", comment: "Displays message to user when no filter results were found.")
-//            return cell
-//        }
-
         guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as? OrderListCell else {
             fatalError()
         }
@@ -252,11 +357,11 @@ extension OrdersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        guard displaysNoResults == false else {
+        guard state == .results else {
             return
         }
 
-        performSegue(withIdentifier: Constants.orderDetailsSegue, sender: detailsViewModel(at: indexPath))
+        performSegue(withIdentifier: Segues.orderDetails, sender: detailsViewModel(at: indexPath))
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -269,17 +374,96 @@ extension OrdersViewController: UITableViewDelegate {
 }
 
 
-// MARK: - Constants
+// MARK: - FSM Management
 //
 private extension OrdersViewController {
+
+    func didEnter(state: State) {
+        switch state {
+        case .emptyUnfiltered:
+            displayEmptyUnfilteredOverlay()
+        case .emptyFiltered:
+            displayEmptyFilteredOverlay()
+        case .error:
+            displayErrorOverlay()
+        case .placeholder:
+            displayPlaceholderOrders()
+        case .results:
+            break
+        }
+    }
+
+    func didLeave(state: State) {
+        switch state {
+        case .emptyFiltered:
+            removeAllOverlays()
+        case .emptyUnfiltered:
+            removeAllOverlays()
+        case .error:
+            removeAllOverlays()
+        case .placeholder:
+            removePlaceholderOrders()
+        case .results:
+            break
+        }
+    }
+}
+
+
+// MARK: - Nested Types
+//
+private extension OrdersViewController {
+
     enum FilterAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
         static let displayAll = NSLocalizedString("All", comment: "All filter title")
         static let displayCustom = NSLocalizedString("Custom", comment: "Title for button that catches all custom labels and displays them on the order list")
     }
 
-    enum Constants {
+    enum Settings {
         static let estimatedRowHeight = CGFloat(86)
-        static let orderDetailsSegue = "ShowOrderDetailsViewController"
+        static let placeholderRowsPerSection = [3]
+    }
+
+    enum Segues {
+        static let orderDetails = "ShowOrderDetailsViewController"
+    }
+
+    enum State {
+        case placeholder
+        case results
+        case emptyUnfiltered
+        case emptyFiltered
+        case error
+
+        /// Should be called before Sync'ing. Transitions to either `results` or `placeholder` state, depending on whether if
+        /// we've got cached results, or not.
+        ///
+        mutating func transitionToSyncingState(isEmpty: Bool) {
+            self = isEmpty ? .placeholder : .results
+        }
+
+        /// Transitions to the Error State.
+        ///
+        mutating func transitionToErrorState() {
+            self = .error
+        }
+
+        /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
+        /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
+        ///
+        mutating func transitionToResultsUpdatedState(isEmpty: Bool, isFiltered: Bool) {
+            if isEmpty == false {
+                self = .results
+                return
+            }
+
+            if isFiltered {
+                self = .emptyFiltered
+                return
+            }
+
+            self = .emptyUnfiltered
+        }
     }
 }

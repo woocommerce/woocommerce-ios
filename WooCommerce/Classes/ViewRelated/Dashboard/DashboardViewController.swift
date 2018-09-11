@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import CocoaLumberjack
+import WordPressUI
 
 
 // MARK: - DashboardViewController
@@ -10,7 +11,10 @@ class DashboardViewController: UIViewController {
     // MARK: Properties
 
     @IBOutlet private weak var scrollView: UIScrollView!
+    @IBOutlet private weak var newOrdersContainerView: UIView!
+
     private var storeStatsViewController: StoreStatsViewController!
+    private var newOrdersViewController: NewOrdersViewController!
 
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
@@ -34,10 +38,13 @@ class DashboardViewController: UIViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let vc = segue.destination as? StoreStatsViewController, segue.identifier == Constants.storeStatsSegue {
-            self.storeStatsViewController = vc
+            storeStatsViewController = vc
+        }
+        if let vc = segue.destination as? NewOrdersViewController, segue.identifier == Constants.newOrdersSegue {
+            newOrdersViewController = vc
+            newOrdersViewController.delegate = self
         }
     }
-
 }
 
 
@@ -48,6 +55,7 @@ private extension DashboardViewController {
     func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         scrollView.refreshControl = refreshControl
+        newOrdersContainerView.isHidden = true // Hide the new orders vc by default
     }
 
     func configureNavigation() {
@@ -57,6 +65,9 @@ private extension DashboardViewController {
                                              target: self,
                                              action: #selector(settingsTapped))
         rightBarButton.tintColor = .white
+        rightBarButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
+        rightBarButton.accessibilityTraits = UIAccessibilityTraitButton
+        rightBarButton.accessibilityHint = NSLocalizedString("Navigates to Settings.", comment: "VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen.")
         navigationItem.setRightBarButton(rightBarButton, animated: false)
 
         // Don't show the Dashboard title in the next-view's back button
@@ -79,10 +90,21 @@ private extension DashboardViewController {
     }
 
     @objc func pullToRefresh() {
-        // FIXME: This code is just a WIP
+        applyHideAnimation(for: newOrdersContainerView)
         reloadData()
-        refreshControl.endRefreshing()
-        DDLogInfo("Reloading dashboard data.")
+    }
+}
+
+
+// MARK: - NewOrdersDelegate Conformance
+//
+extension DashboardViewController: NewOrdersDelegate {
+    func didUpdateNewOrdersData(hasNewOrders: Bool) {
+        if hasNewOrders {
+            applyUnhideAnimation(for: newOrdersContainerView)
+        } else {
+            applyHideAnimation(for: newOrdersContainerView)
+        }
     }
 }
 
@@ -91,8 +113,35 @@ private extension DashboardViewController {
 //
 private extension DashboardViewController {
     func reloadData() {
-        // FIXME: This code is just a WIP
+        DDLogInfo("♻️ Requesting dashboard data be reloaded...")
         storeStatsViewController.syncAllStats()
+        newOrdersViewController.syncNewOrders()
+        refreshControl.endRefreshing()
+    }
+
+    func applyUnhideAnimation(for view: UIView) {
+        UIView.animate(withDuration: Constants.showAnimationDuration,
+                       delay: 0,
+                       usingSpringWithDamping: Constants.showSpringDamping,
+                       initialSpringVelocity: Constants.showSpringVelocity,
+                       options: .curveEaseOut,
+                       animations: {
+                        view.isHidden = false
+                        view.alpha = UIKitConstants.alphaFull
+        }) { _ in
+            view.isHidden = false
+            view.alpha = UIKitConstants.alphaFull
+        }
+    }
+
+    func applyHideAnimation(for view: UIView) {
+        UIView.animate(withDuration: Constants.hideAnimationDuration, animations: {
+            view.isHidden = true
+            view.alpha = UIKitConstants.alphaZero
+        }, completion: { _ in
+            view.isHidden = true
+            view.alpha = UIKitConstants.alphaZero
+        })
     }
 }
 
@@ -102,6 +151,12 @@ private extension DashboardViewController {
 private extension DashboardViewController {
     struct Constants {
         static let settingsSegue    = "ShowSettingsViewController"
-        static let storeStatsSegue  = "StoreStatsEmbedSeque"
+        static let storeStatsSegue  = "StoreStatsEmbedSegue"
+        static let newOrdersSegue   = "NewOrdersEmbedSegue"
+
+        static let hideAnimationDuration: TimeInterval = 0.25
+        static let showAnimationDuration: TimeInterval = 0.50
+        static let showSpringDamping: CGFloat = 0.7
+        static let showSpringVelocity: CGFloat = 0.0
     }
 }

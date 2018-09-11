@@ -164,7 +164,10 @@ extension OrderStore {
     private func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         guard !readOnlyOrder.items.isEmpty else {
             // No items in the read-only order, so remove all the items in Storage.Order
-            storageOrder.items?.forEach { storageOrder.removeFromItems($0) }
+            storageOrder.items?.forEach {
+                storageOrder.removeFromItems($0)
+                storage.deleteObject($0)
+            }
             return
         }
 
@@ -183,6 +186,7 @@ extension OrderStore {
         storageOrder.items?.forEach({ storageItem in
             if readOnlyOrder.items.first(where: { $0.itemID == storageItem.itemID } ) == nil {
                 storageOrder.removeFromItems(storageItem)
+                storage.deleteObject(storageItem)
             }
         })
     }
@@ -192,7 +196,10 @@ extension OrderStore {
     private func handleOrderCoupons(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         guard !readOnlyOrder.coupons.isEmpty else {
             // No coupons in the read-only order, so remove all the coupons in Storage.Order
-            storageOrder.coupons?.forEach { storageOrder.removeFromCoupons($0) }
+            storageOrder.coupons?.forEach {
+                storageOrder.removeFromCoupons($0)
+                storage.deleteObject($0)
+            }
             return
         }
 
@@ -211,6 +218,7 @@ extension OrderStore {
         storageOrder.coupons?.forEach({ storageCoupon in
             if readOnlyOrder.coupons.first(where: { $0.couponID == storageCoupon.couponID } ) == nil {
                 storageOrder.removeFromCoupons(storageCoupon)
+                storage.deleteObject(storageCoupon)
             }
         })
     }

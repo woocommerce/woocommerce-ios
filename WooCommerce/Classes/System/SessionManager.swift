@@ -92,6 +92,10 @@ struct SessionManager {
         }
     }
 
+    /// Default Store Website
+    ///
+    var defaultSite: Yosemite.Site?
+
     /// Designated Initializer.
     ///
     init(defaults: UserDefaults, keychainServiceName: String) {

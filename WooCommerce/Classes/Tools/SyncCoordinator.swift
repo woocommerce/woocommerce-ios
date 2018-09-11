@@ -33,6 +33,12 @@ class SyncingCoordinator {
     ///
     let pageTTLInSeconds: TimeInterval
 
+    /// Returns the Highest Page being currenty synced (if any)
+    ///
+    var highestPageBeingSynced: Int? {
+        return pagesBeingSynced.max()
+    }
+
     /// Sync'ing Delegate
     ///
     weak var delegate: SyncingCoordinatorDelegate?

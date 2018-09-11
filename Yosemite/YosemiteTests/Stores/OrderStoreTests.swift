@@ -34,6 +34,15 @@ class OrderStoreTests: XCTestCase {
     ///
     private let sampleOrderID = 963
 
+    /// Testing Page Number
+    ///
+    private let defaultPageNumber = 1
+
+    /// Testing Page Size
+    ///
+    private let defaultPageSize = 75
+
+
 
     // MARK: - Overridden Methods
 
@@ -53,7 +62,7 @@ class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 3)
 
@@ -73,7 +82,7 @@ class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 3)
             XCTAssertNil(error)
 
@@ -94,7 +103,7 @@ class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertNil(error)
 
             let predicate = NSPredicate(format: "orderID = %ld", remoteOrder.orderID)
@@ -122,7 +131,7 @@ class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "broken-orders-mark-2")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 6)
 
@@ -140,7 +149,7 @@ class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "generic_error")
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertNotNil(error)
 
             expectation.fulfill()
@@ -156,7 +165,7 @@ class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve orders empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = OrderAction.retrieveOrders(siteID: sampleSiteID) { error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertNotNil(error)
 
             expectation.fulfill()

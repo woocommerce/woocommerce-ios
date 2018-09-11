@@ -53,7 +53,7 @@ extension NewOrdersViewController {
             return
         }
 
-        let action = OrderAction.retrieveOrders(siteID: siteID) { error in
+        let action = OrderAction.synchronizeOrders(siteID: siteID, pageNumber: Sync.pageNumber, pageSize: Sync.pageSize) { error in
             if let error = error {
                 DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing orders: \(error)")
             }
@@ -172,5 +172,9 @@ private extension NewOrdersViewController {
     enum Constants {
         static let newOrdersTitleLabelInsets = UIEdgeInsets(top: 14, left: 14, bottom: 0, right: 4)
         static let newOrdersDescriptionLabelInsets = UIEdgeInsets(top: 4, left: 14, bottom: 0, right: 4)
+    }
+    enum Sync {
+        static let pageNumber = 1
+        static let pageSize = 75
     }
 }

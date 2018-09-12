@@ -116,10 +116,10 @@ extension SyncingCoordinator {
         return abs(elapsedTime) > pageTTLInSeconds
     }
 
-    /// Indicates if a given Element is the last one in the page
+    /// Indicates if a given Element is the last one in the page. Note that `elementIndex` is expected to be in the [0, N) range.
     ///
     func isLastElementInPage(elementIndex: Int) -> Bool {
-        return (elementIndex % pageSize) == 1
+        return (elementIndex % pageSize) == (pageSize - 1)
     }
 
     /// Indicates if a given PageNumber is currently being synced

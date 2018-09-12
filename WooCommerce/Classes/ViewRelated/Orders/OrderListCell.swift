@@ -14,7 +14,6 @@ class OrderListCell: UITableViewCell {
         totalLabel.applyBodyStyle()
         paymentStatusLabel.text = viewModel.paymentStatus
         paymentStatusLabel.applyStatusStyle(for: viewModel.orderStatusViewModel.orderStatus)
-        shippingStatusLabel.text = ""
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

@@ -21,6 +21,10 @@ class OrdersViewController: UIViewController {
         return refreshControl
     }()
 
+    /// Footer "Loading More" Spinner.
+    ///
+    private lazy var footerSpinnerView = FooterSpinnerView()
+
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
     ///
     private lazy var resultsController: ResultsController<StorageOrder> = {
@@ -29,6 +33,10 @@ class OrdersViewController: UIViewController {
 
         return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
+
+    /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
+    ///
+    private let syncingCoordinator = SyncingCoordinator(pageSize: Syncing.pageSize, pageTTLInSeconds: Syncing.pageTTLInSeconds)
 
     /// Indicates if there are no results onscreen.
     ///
@@ -73,6 +81,7 @@ class OrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureSyncingCoordinator()
         configureNavigation()
         configureTableView()
         configureResultsController()
@@ -81,7 +90,7 @@ class OrdersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        syncOrders()
+        sync()
     }
 }
 
@@ -112,11 +121,16 @@ private extension OrdersViewController {
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.refreshControl = refreshControl
+        tableView.tableFooterView = footerSpinnerView
     }
 
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
         try? resultsController.performFetch()
+    }
+
+    func configureSyncingCoordinator() {
+        syncingCoordinator.delegate = self
     }
 }
 
@@ -148,7 +162,7 @@ extension OrdersViewController {
     }
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        syncOrders {
+        sync { _ in
             sender.endRefreshing()
         }
     }
@@ -187,25 +201,25 @@ private extension OrdersViewController {
 
 // MARK: - Sync'ing Helpers
 //
-private extension OrdersViewController {
+extension OrdersViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Orders for the Default Store (if any).
     ///
-    func syncOrders(onCompletion: (() -> Void)? = nil) {
+    func sync(pageNumber: Int = 1, onCompletion: ((Bool) -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            onCompletion?()
+            onCompletion?(false)
             return
         }
 
         state.transitionToSyncingState(isEmpty: isEmpty)
 
-        let action = OrderAction.retrieveOrders(siteID: siteID) { [weak self] error in
+        let action = OrderAction.synchronizeOrders(siteID: siteID, pageNumber: pageNumber, pageSize: Syncing.pageSize) { [weak self] error in
             guard let `self` = self else {
                 return
             }
 
             defer {
-                onCompletion?()
+                onCompletion?(error == nil)
             }
 
             guard let error = error else {
@@ -218,6 +232,32 @@ private extension OrdersViewController {
         }
 
         StoresManager.shared.dispatch(action)
+    }
+
+    /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
+    ///
+    private func ensureFooterSpinnerIsStarted() {
+        guard mustStartFooterSpinner() else {
+            return
+        }
+
+        footerSpinnerView.startAnimating()
+    }
+
+    /// Whenever we're sync'ing an Orders Page that's beyond what we're currently displaying, this method will return *true*.
+    ///
+    private func mustStartFooterSpinner() -> Bool {
+        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
+            return false
+        }
+
+        return highestPageBeingSynced * Syncing.pageSize > resultsController.numberOfObjects
+    }
+
+    /// Stops animating the Footer Spinner.
+    ///
+    private func ensureFooterSpinnerIsStopped() {
+        footerSpinnerView.stopAnimating()
     }
 }
 
@@ -250,7 +290,7 @@ private extension OrdersViewController {
         overlayView.messageText = NSLocalizedString("Unable to load the orders list", comment: "Order List Loading Error")
         overlayView.actionText = NSLocalizedString("Retry", comment: "Retry Action")
         overlayView.onAction = { [weak self] in
-            self?.syncOrders()
+            self?.sync()
         }
 
         overlayView.attach(to: view)
@@ -364,6 +404,17 @@ extension OrdersViewController: UITableViewDelegate {
         performSegue(withIdentifier: Segues.orderDetails, sender: detailsViewModel(at: indexPath))
     }
 
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let orderIndex = resultsController.objectIndex(from: indexPath)
+        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
+    }
+}
+
+
+// MARK: - Segues
+//
+extension OrdersViewController {
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let singleOrderViewController = segue.destination as? OrderDetailsViewController, let viewModel = sender as? OrderDetailsViewModel else {
             return
@@ -388,6 +439,8 @@ private extension OrdersViewController {
             displayErrorOverlay()
         case .placeholder:
             displayPlaceholderOrders()
+        case .syncing:
+            ensureFooterSpinnerIsStarted()
         case .results:
             break
         }
@@ -403,6 +456,8 @@ private extension OrdersViewController {
             removeAllOverlays()
         case .placeholder:
             removePlaceholderOrders()
+        case .syncing:
+            ensureFooterSpinnerIsStopped()
         case .results:
             break
         }
@@ -425,12 +480,18 @@ private extension OrdersViewController {
         static let placeholderRowsPerSection = [3]
     }
 
+    enum Syncing {
+        static let pageSize = 25
+        static let pageTTLInSeconds = TimeInterval(3 * 60)
+    }
+
     enum Segues {
         static let orderDetails = "ShowOrderDetailsViewController"
     }
 
     enum State {
         case placeholder
+        case syncing
         case results
         case emptyUnfiltered
         case emptyFiltered
@@ -440,7 +501,7 @@ private extension OrdersViewController {
         /// we've got cached results, or not.
         ///
         mutating func transitionToSyncingState(isEmpty: Bool) {
-            self = isEmpty ? .placeholder : .results
+            self = isEmpty ? .placeholder : .syncing
         }
 
         /// Transitions to the Error State.

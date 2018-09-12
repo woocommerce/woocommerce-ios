@@ -10,12 +10,18 @@ public class OrdersRemote: Remote {
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote orders.
+    ///     - pageNumber: Number of page that should be retrieved.
+    ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadAllOrders(for siteID: Int, page: Int = 1, completion: @escaping ([Order]?, Error?) -> Void) {
+    public func loadAllOrders(for siteID: Int,
+                              pageNumber: Int = Defaults.pageNumber,
+                              pageSize: Int = Defaults.pageSize,
+                              completion: @escaping ([Order]?, Error?) -> Void)
+    {
         let path = Constants.ordersPath
-        let parameters = [ParameterKeys.page: String(page),
-                          ParameterKeys.perPage: String(Constants.defaultPageSize)]
+        let parameters = [ParameterKeys.page: String(pageNumber),
+                          ParameterKeys.perPage: String(pageSize)]
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = OrderListMapper(siteID: siteID)
 
@@ -93,14 +99,18 @@ public class OrdersRemote: Remote {
 
 // MARK: - Constants!
 //
-private extension OrdersRemote {
-    enum Constants {
-        static let defaultPageSize: Int     = 75
+public extension OrdersRemote {
+    public enum Defaults {
+        public static let pageSize: Int     = 75
+        public static let pageNumber: Int   = 1
+    }
+
+    private enum Constants {
         static let ordersPath: String       = "orders"
         static let notesPath: String        = "notes"
     }
 
-    enum ParameterKeys {
+    private enum ParameterKeys {
         static let customerNote: String     = "customer_note"
         static let note: String             = "note"
         static let page: String             = "page"

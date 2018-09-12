@@ -24,6 +24,7 @@
 		748D424A210F92EA00CF7D1B /* OrderStatsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748D4249210F92EA00CF7D1B /* OrderStatsItem.swift */; };
 		748D424C210FA34400CF7D1B /* OrderStatsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */; };
 		748D424E210FB1F500CF7D1B /* order-stats-day.json in Resources */ = {isa = PBXBuildFile; fileRef = 748D424D210FB1F500CF7D1B /* order-stats-day.json */; };
+		7497376A2141F2BE0008C490 /* top-performers-week-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = 749737692141F2BE0008C490 /* top-performers-week-alt.json */; };
 		74A1196C2110F4BB00E1E5F0 /* OrderStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A1196B2110F4BB00E1E5F0 /* OrderStats.swift */; };
 		74A1D263211898F000931DFA /* site-visits-day.json in Resources */ = {isa = PBXBuildFile; fileRef = 74A1D25F211898F000931DFA /* site-visits-day.json */; };
 		74A1D264211898F000931DFA /* site-visits-week.json in Resources */ = {isa = PBXBuildFile; fileRef = 74A1D260211898F000931DFA /* site-visits-week.json */; };
@@ -132,6 +133,7 @@
 		748D4249210F92EA00CF7D1B /* OrderStatsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsItem.swift; sourceTree = "<group>"; };
 		748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsMapper.swift; sourceTree = "<group>"; };
 		748D424D210FB1F500CF7D1B /* order-stats-day.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-day.json"; sourceTree = "<group>"; };
+		749737692141F2BE0008C490 /* top-performers-week-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "top-performers-week-alt.json"; sourceTree = "<group>"; };
 		74A1196B2110F4BB00E1E5F0 /* OrderStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStats.swift; sourceTree = "<group>"; };
 		74A1D25F211898F000931DFA /* site-visits-day.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-visits-day.json"; sourceTree = "<group>"; };
 		74A1D260211898F000931DFA /* site-visits-week.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-visits-week.json"; sourceTree = "<group>"; };
@@ -447,6 +449,7 @@
 				743BF8BD21191B63008A9D87 /* site-visits.json */,
 				74ABA1C4213F17AA00FFAD30 /* top-performers-day.json */,
 				74ABA1C8213F19FE00FFAD30 /* top-performers-week.json */,
+				749737692141F2BE0008C490 /* top-performers-week-alt.json */,
 				74ABA1C6213F19FD00FFAD30 /* top-performers-month.json */,
 				74ABA1C7213F19FE00FFAD30 /* top-performers-year.json */,
 			);
@@ -620,6 +623,7 @@
 				74ABA1C9213F19FE00FFAD30 /* top-performers-month.json in Resources */,
 				B58D10C82114D21D00107ED4 /* generic_error.json in Resources */,
 				B5147876211B9227007562E5 /* broken-orders-mark-2.json in Resources */,
+				7497376A2141F2BE0008C490 /* top-performers-week-alt.json in Resources */,
 				743BF8BE21191B63008A9D87 /* site-visits.json in Resources */,
 				B505F6D520BEE4E700BB1B69 /* me.json in Resources */,
 				B5C6FCD620A3768900A4F8E4 /* order.json in Resources */,

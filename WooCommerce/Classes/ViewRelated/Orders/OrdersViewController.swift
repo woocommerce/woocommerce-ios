@@ -472,7 +472,7 @@ private extension OrdersViewController {
     }
 
     enum Syncing {
-        static let pageSize = 40
+        static let pageSize = 25
         static let pageTTLInSeconds = TimeInterval(3 * 60)
     }
 

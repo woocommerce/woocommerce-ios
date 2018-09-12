@@ -218,10 +218,10 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
                 return
             }
 
-            if let error = error {
-                DDLogError("⛔️ Error synchronizing orders: \(error)")
+//            if let error = error {
+//                DDLogError("⛔️ Error synchronizing orders: \(error)")
                 self.displaySyncingErrorNotice(retryPageNumber: pageNumber)
-            }
+//            }
 
             self.state.transitionToResultsUpdatedState(isEmpty: self.isEmpty, isFiltered: self.isFiltered)
             onCompletion?(error == nil)
@@ -498,15 +498,15 @@ private extension OrdersViewController {
         /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
         ///
         mutating func transitionToResultsUpdatedState(isEmpty: Bool, isFiltered: Bool) {
-//            if isEmpty == false {
-//                self = .results
-//                return
-//            }
-//
-//            if isFiltered {
-//                self = .emptyFiltered
-//                return
-//            }
+            if isEmpty == false {
+                self = .results
+                return
+            }
+
+            if isFiltered {
+                self = .emptyFiltered
+                return
+            }
 
             self = .emptyUnfiltered
         }

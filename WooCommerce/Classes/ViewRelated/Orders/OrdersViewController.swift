@@ -498,15 +498,15 @@ private extension OrdersViewController {
         /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
         ///
         mutating func transitionToResultsUpdatedState(isEmpty: Bool, isFiltered: Bool) {
-            if isEmpty == false {
-                self = .results
-                return
-            }
-
-            if isFiltered {
-                self = .emptyFiltered
-                return
-            }
+//            if isEmpty == false {
+//                self = .results
+//                return
+//            }
+//
+//            if isFiltered {
+//                self = .emptyFiltered
+//                return
+//            }
 
             self = .emptyUnfiltered
         }

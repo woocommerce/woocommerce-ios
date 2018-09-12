@@ -15,6 +15,10 @@ protocol SyncingCoordinatorDelegate: class {
 
 /// SyncingCoordinator: Encapsulates all of the "Last Refreshed / Should Refresh" Paging Logic.
 ///
+/// Note:
+/// Sync'ing of first page isn't really handled. Reason is: the first page of each collection must always be fresh,
+/// and the Sync OP is (usually) explicitly made in `viewWillAppear`. This may change in a future update, though!
+///
 class SyncingCoordinator {
 
     /// Maps Page Numbers > Refresh Dates

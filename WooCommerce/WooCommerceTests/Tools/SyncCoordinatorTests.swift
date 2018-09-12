@@ -56,6 +56,25 @@ class SyncCoordinatorTests: XCTestCase {
     }
 
 
+    /// Verifies that `isLastElementInPage` returns true only when the elementIndex is effectively last one in it's page.
+    ///
+    func testIsLastElementInPageReturnsTrueWheneverTheReceivedElementIsEffectivelyTheLastOneInThePage() {
+        for testPageSize in 10...100 {
+            let testCollectionSize = testPageSize * 2
+            coordinator = SyncingCoordinator(pageSize: testPageSize, pageTTLInSeconds: pageTTLInSeconds)
+
+            for elementIndex in 0..<testCollectionSize {
+                /// Note: YES this can be vastly improved. But the goal is to compare the output with an algorithm that's
+                /// not exactly the same one implemented in `isLastElementInPage`, so we're verifying against known cases.
+                ///
+                let expectedOutput = elementIndex == (testPageSize - 1) || elementIndex == (testPageSize * 2 - 1)
+                let isLastElement = coordinator.isLastElementInPage(elementIndex: elementIndex)
+
+                XCTAssertEqual(isLastElement, expectedOutput)
+            }
+        }
+    }
+
     /// Verifies that `ensureNextPageIsSynchronized` attempts to synchronize the second page, whenever the first page's last
     /// element is displayed.
     ///

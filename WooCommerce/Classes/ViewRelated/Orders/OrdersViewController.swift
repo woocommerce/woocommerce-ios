@@ -218,10 +218,10 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
                 return
             }
 
-//            if let error = error {
-//                DDLogError("⛔️ Error synchronizing orders: \(error)")
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing orders: \(error)")
                 self.displaySyncingErrorNotice(retryPageNumber: pageNumber)
-//            }
+            }
 
             self.state.transitionToResultsUpdatedState(isEmpty: self.isEmpty, isFiltered: self.isFiltered)
             onCompletion?(error == nil)

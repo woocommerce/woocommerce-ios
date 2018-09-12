@@ -54,7 +54,8 @@ extension TopEarnerStats: Comparable {
         return lhs.date == rhs.date &&
             lhs.granularity == rhs.granularity &&
             lhs.limit == rhs.limit &&
-            lhs.items == rhs.items
+            lhs.items?.count == rhs.items?.count &&
+            lhs.items?.sorted() == rhs.items?.sorted()
     }
 
     public static func < (lhs: TopEarnerStats, rhs: TopEarnerStats) -> Bool {

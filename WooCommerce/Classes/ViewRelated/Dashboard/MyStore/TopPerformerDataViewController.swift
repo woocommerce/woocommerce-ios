@@ -12,8 +12,6 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
     public let granularity: StatGranularity
 
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet private weak var descriptionLabel: PaddedLabel!
-    @IBOutlet private weak var borderView: UIView!
 
     // MARK: - Computed Properties
 
@@ -50,11 +48,9 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        reloadAllFields()
+        configureTableView()
+        registerTableViewCells()
+        registerTableViewHeaderFooters()
     }
 }
 
@@ -64,11 +60,31 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
 private extension TopPerformerDataViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.wooWhite
-        borderView.backgroundColor = StyleManager.wooGreyBorder
-        descriptionLabel.applyBodyStyle()
-        descriptionLabel.textInsets = Constants.descriptionLabelInsets
-        descriptionLabel.text =  NSLocalizedString("Gain insights into how products are performing on your store", comment: "Description for Top Performers section of My Store tab.")
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
+    }
+
+    func configureTableView() {
+        tableView.backgroundColor = StyleManager.wooWhite
+        tableView.allowsSelection = false
+        tableView.estimatedRowHeight = Settings.estimatedRowHeight
+        tableView.estimatedSectionHeaderHeight = Settings.estimatedSectionHeight
+        tableView.rowHeight = UITableViewAutomaticDimension
+    }
+
+    func registerTableViewCells() {
+        let cells = [LeftImageTableViewCell.self]
+
+        for cell in cells {
+            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        }
+    }
+
+    func registerTableViewHeaderFooters() {
+        let headersAndFooters = [TopPerformersHeaderView.self]
+
+        for kind in headersAndFooters {
+            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
+        }
     }
 }
 
@@ -82,12 +98,51 @@ extension TopPerformerDataViewController {
 }
 
 
-// MARK: - Private Helpers
+// MARK: - UITableViewDataSource Conformance
 //
-private extension TopPerformerDataViewController {
+extension TopPerformerDataViewController: UITableViewDataSource {
 
-    func reloadAllFields() {
-        // TODO: fill this in!
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+        // FIXME: Make this work!
+        //return resultsController.sections.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 0
+        // FIXME: Make this work!
+        //return resultsController.sections[section].numberOfObjects
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: TopPerformersHeaderView.reuseIdentifier) as? TopPerformersHeaderView else {
+            fatalError()
+        }
+
+        cell.configure(descriptionText: Text.sectionDescription,
+                       leftText: Text.sectionLeftColumn.uppercased(),
+                       rightText: Text.sectionRightColumn.uppercased())
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: LeftImageTableViewCell.reuseIdentifier, for: indexPath) as? LeftImageTableViewCell else {
+            fatalError()
+        }
+
+        return cell
+
+        // FIXME: Make this work!
+    }
+}
+
+
+// MARK: - UITableViewDelegate Conformance
+//
+extension TopPerformerDataViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableViewAutomaticDimension
     }
 }
 
@@ -95,9 +150,16 @@ private extension TopPerformerDataViewController {
 // MARK: - Constants!
 //
 private extension TopPerformerDataViewController {
-    enum Constants {
-        static let descriptionLabelInsets = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
-        static let noActivityText = NSLocalizedString("No activity this period", comment: "Default text for Top Performers section when no data exists for a given period.")
+    enum Text {
+        static let noActivity = NSLocalizedString("No activity this period", comment: "Default text for Top Performers section when no data exists for a given period.")
+        static let sectionDescription = NSLocalizedString("Gain insights into how products are performing on your store", comment: "Description for Top Performers section of My Store tab.")
+        static let sectionLeftColumn = NSLocalizedString("Product", comment: "Description for Top Performers left column header")
+        static let sectionRightColumn = NSLocalizedString("Total Spend", comment: "Description for Top Performers right column header")
+    }
+
+    enum Settings {
+        static let estimatedRowHeight = CGFloat(64)
+        static let estimatedSectionHeight = CGFloat(125)
     }
 }
 

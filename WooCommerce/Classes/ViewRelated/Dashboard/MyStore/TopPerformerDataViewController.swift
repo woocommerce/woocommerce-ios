@@ -65,10 +65,12 @@ private extension TopPerformerDataViewController {
 
     func configureTableView() {
         tableView.backgroundColor = StyleManager.wooWhite
+        tableView.separatorColor = StyleManager.wooGreyBorder
         tableView.allowsSelection = false
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.estimatedSectionHeaderHeight = Settings.estimatedSectionHeight
         tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.tableFooterView = UIView(frame: .zero)
     }
 
     func registerTableViewCells() {

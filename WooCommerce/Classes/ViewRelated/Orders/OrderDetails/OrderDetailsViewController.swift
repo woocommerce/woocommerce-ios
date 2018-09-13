@@ -258,25 +258,9 @@ private extension OrderDetailsViewController {
         case let cell as CustomerNoteTableViewCell:
             cell.configure(with: viewModel)
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
-            if let shippingViewModel = viewModel.shippingViewModel {
-                cell.title = shippingViewModel.title
-                cell.name = shippingViewModel.fullName
-                cell.address = shippingViewModel.formattedAddress
-            } else {
-                cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
-                cell.name = nil
-                cell.address = NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
-            }
+            configureShippingAddress(cell: cell)
         case let cell as CustomerInfoTableViewCell where row == .billingAddress:
-            if let billingViewModel = viewModel.billingViewModel {
-                cell.title = billingViewModel.title
-                cell.name = billingViewModel.fullName
-                cell.address = billingViewModel.formattedAddress
-            } else {
-                cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
-                cell.name = nil
-                cell.address = NSLocalizedString("No address specified.", comment: "Order details > customer info > billing details. This is where the address would normally display.")
-            }
+            configureBillingAddress(cell: cell)
         case let cell as BillingDetailsTableViewCell where row == .billingPhone:
             configureBillingPhone(cell: cell)
         case let cell as BillingDetailsTableViewCell where row == .billingEmail:
@@ -284,10 +268,7 @@ private extension OrderDetailsViewController {
         case let cell as PaymentTableViewCell:
             cell.configure(with: viewModel)
         case let cell as LeftImageTableViewCell:
-            cell.configure(image: viewModel.addNoteIcon, text: viewModel.addNoteText)
-            cell.accessibilityTraits = UIAccessibilityTraitButton
-            cell.accessibilityLabel = NSLocalizedString("Add a note button", comment: "Accessibility label for the 'Add a note' button")
-            cell.accessibilityHint = NSLocalizedString("Composes a new order note.", comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note.")
+            configureNewNote(cell: cell)
         case let cell as OrderNoteTableViewCell where row == .orderNote:
             if let note = orderNote(at: indexPath) {
                 cell.configure(with: note)
@@ -295,6 +276,22 @@ private extension OrderDetailsViewController {
         default:
             fatalError("Unidentified customer info row type")
         }
+    }
+
+    private func configureShippingAddress(cell: CustomerInfoTableViewCell) {
+        let shippingViewModel = viewModel.shippingViewModel
+
+        cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
+        cell.name = shippingViewModel?.fullName
+        cell.address = shippingViewModel?.formattedAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
+    }
+
+    private func configureBillingAddress(cell: CustomerInfoTableViewCell) {
+        let billingViewModel = viewModel.billingViewModel
+
+        cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
+        cell.name = billingViewModel?.fullName
+        cell.address = billingViewModel?.formattedAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > billing details. This is where the address would normally display.")
     }
 
     private func configureBillingPhone(cell: BillingDetailsTableViewCell) {
@@ -323,14 +320,23 @@ private extension OrderDetailsViewController {
         cell.accessibilityHint = NSLocalizedString("Composes a new email message to the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear.")
     }
 
+    private func configureNewNote(cell: LeftImageTableViewCell) {
+        cell.leftImage = viewModel.addNoteIcon
+        cell.labelText = viewModel.addNoteText
+
+        cell.accessibilityTraits = UIAccessibilityTraitButton
+        cell.accessibilityLabel = NSLocalizedString("Add a note button", comment: "Accessibility label for the 'Add a note' button")
+        cell.accessibilityHint = NSLocalizedString("Composes a new order note.", comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note.")
+    }
+
     func orderNote(at indexPath: IndexPath) -> OrderNoteViewModel? {
         // We need to subract 1 here because the first order note row is the "Add Order" cell
-        let orderNoteIndex = indexPath.row - 1
-        guard !orderNotes.isEmpty, orderNotes.indices.contains(orderNoteIndex) else {
+        let noteIndex = indexPath.row - 1
+        guard orderNotes.indices.contains(noteIndex) else {
             return nil
         }
 
-        return orderNotes[orderNoteIndex]
+        return orderNotes[noteIndex]
     }
 }
 

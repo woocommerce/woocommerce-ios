@@ -397,7 +397,7 @@ extension OrdersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        guard state == .results else {
+        guard state != .placeholder else {
             return
         }
 

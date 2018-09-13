@@ -428,7 +428,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if sections[section].leftTitle == nil {
+        if sections[section].title == nil {
             // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
             return CGFloat.leastNonzeroMagnitude
         }
@@ -437,7 +437,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let leftText = sections[section].leftTitle else {
+        guard let leftText = sections[section].title else {
             return nil
         }
 
@@ -577,10 +577,21 @@ private extension OrderDetailsViewController {
     }
 
     private struct Section {
-        let leftTitle: String?
+        let title: String?
         let rightTitle: String?
         let footer: String?
         let rows: [Row]
+
+        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, rows: [Row]) {
+            self.title = title
+            self.rightTitle = rightTitle
+            self.footer = footer
+            self.rows = rows
+        }
+
+        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, row: Row) {
+            self.init(title: title, rightTitle: rightTitle, footer: footer, rows: [row])
+        }
     }
 
     private enum Row {

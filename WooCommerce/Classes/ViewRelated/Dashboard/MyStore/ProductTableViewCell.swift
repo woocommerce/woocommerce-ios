@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Gridicons
 
 class ProductTableViewCell: UITableViewCell {
 
@@ -42,6 +43,7 @@ class ProductTableViewCell: UITableViewCell {
         nameLabel.applyBodyStyle()
         priceLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()
+        productImage.image = UIImage.productPlaceholderImage
     }
 }
 
@@ -50,7 +52,7 @@ class ProductTableViewCell: UITableViewCell {
 extension ProductTableViewCell {
     func configure(_ statsItem: TopEarnerStatsItem?) {
         nameText = statsItem?.productName
-        detailText = String(statsItem?.quantity ?? 0)
+        detailText = String.localizedStringWithFormat( NSLocalizedString("Total Product Order: %ld", comment: "Top performers — label for the total number of products ordered"), statsItem?.quantity ?? 0)
         priceText = statsItem?.total.friendlyString()
     }
 }

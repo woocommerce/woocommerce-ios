@@ -96,7 +96,7 @@ private extension TopPerformerDataViewController {
     }
 
     func configureTableView() {
-        tableView.backgroundColor = StyleManager.wooWhite
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.separatorColor = StyleManager.wooGreyBorder
         tableView.allowsSelection = false
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
@@ -217,7 +217,7 @@ private extension TopPerformerDataViewController {
     }
 
     enum Settings {
-        static let estimatedRowHeight = CGFloat(64)
+        static let estimatedRowHeight = CGFloat(80)
         static let estimatedSectionHeight = CGFloat(125)
     }
 }

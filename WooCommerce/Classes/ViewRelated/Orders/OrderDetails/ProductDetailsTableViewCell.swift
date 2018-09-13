@@ -87,8 +87,6 @@ class ProductDetailsTableViewCell: UITableViewCell {
         }
     }
 
-
-
     // MARK: - Overridden Methods
 
     override func awakeFromNib() {
@@ -107,20 +105,11 @@ class ProductDetailsTableViewCell: UITableViewCell {
 // MARK: - Public Methods
 //
 extension ProductDetailsTableViewCell {
-    func configure(item: OrderItem, with details: OrderDetailsViewModel) {
+    func configure(item: OrderItemViewModel, with details: OrderDetailsViewModel) {
         nameLabel.text = item.name
-        quantityLabel.text = "\(item.quantity)"
-
-        let priceText = item.quantity > 1 ? "\(item.total) (\(details.currencySymbol)\(item.subtotal) × \(item.quantity))" : "\(item.total)"
-        priceLabel.text = "\(details.currencySymbol)\(priceText)"
-
-        let taxString = NSLocalizedString("Tax:", comment: "Tax label for total taxes line")
-        let taxText = item.totalTax.isEmpty ? nil : "\(taxString) \(details.currencySymbol)\(item.totalTax)"
-        taxLabel.text = taxText
-
-        let skuString = NSLocalizedString("SKU:", comment: "SKU label")
-        let skuRaw = item.sku ?? String()
-        let skuText = skuRaw.isEmpty ? nil : "\(skuString) \(skuRaw)"
-        skuLabel.text = skuText
+        quantityLabel.text = item.quantity
+        priceLabel.text = item.price
+        taxLabel.text = item.tax
+        skuLabel.text = item.sku
     }
 }

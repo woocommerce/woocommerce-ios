@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 class ProductTableViewCell: UITableViewCell {
 
@@ -41,5 +42,15 @@ class ProductTableViewCell: UITableViewCell {
         nameLabel.applyBodyStyle()
         priceLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()
+    }
+}
+
+// MARK: - Public Methods
+//
+extension ProductTableViewCell {
+    func configure(_ statsItem: TopEarnerStatsItem?) {
+        nameText = statsItem?.productName
+        detailText = String(statsItem?.quantity ?? 0)
+        priceText = statsItem?.total.friendlyString()
     }
 }

@@ -33,6 +33,27 @@ public class StatsStore: Store {
 }
 
 
+// MARK: - Public Helpers
+//
+public extension StatsStore  {
+
+    /// Converts a Date into the appropriatly formatted string based on the `OrderStatGranularity`
+    ///
+    static func buildDateString(from date: Date, with granularity: StatGranularity) -> String {
+        switch granularity {
+        case .day:
+            return DateFormatter.Stats.statsDayFormatter.string(from: date)
+        case .week:
+            return DateFormatter.Stats.statsWeekFormatter.string(from: date)
+        case .month:
+            return DateFormatter.Stats.statsMonthFormatter.string(from: date)
+        case .year:
+            return DateFormatter.Stats.statsYearFormatter.string(from: date)
+        }
+    }
+}
+
+
 // MARK: - Services!
 //
 private extension StatsStore  {
@@ -42,7 +63,7 @@ private extension StatsStore  {
     func retrieveOrderStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (OrderStats?, Error?) -> Void) {
 
         let remote = OrderStatsRemote(network: network)
-        let formattedDateString = buildDateString(from: latestDateToInclude, with: granularity)
+        let formattedDateString = StatsStore.buildDateString(from: latestDateToInclude, with: granularity)
 
         remote.loadOrderStats(for: siteID, unit: granularity, latestDateToInclude: formattedDateString, quantity: quantity) { (orderStats, error) in
             guard let orderStats = orderStats else {
@@ -75,9 +96,9 @@ private extension StatsStore  {
     func retrieveTopEarnerStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, onCompletion: @escaping (Error?) -> Void) {
 
         let remote = TopEarnersStatsRemote(network: network)
-        let formattedDateString = buildDateString(from: latestDateToInclude, with: granularity)
+        let formattedDateString = StatsStore.buildDateString(from: latestDateToInclude, with: granularity)
 
-        remote.loadTopEarnersStats(for: siteID, unit: granularity, latestDateToInclude: formattedDateString, limit: 5) { [weak self] (topEarnerStats, error) in
+        remote.loadTopEarnersStats(for: siteID, unit: granularity, latestDateToInclude: formattedDateString, limit: Constants.defaultTopEarnerStatsLimit) { [weak self] (topEarnerStats, error) in
             guard let topEarnerStats = topEarnerStats else {
                 onCompletion(error)
                 return
@@ -85,21 +106,6 @@ private extension StatsStore  {
 
             self?.upsertStoredTopEarnerStats(readOnlyStats: topEarnerStats)
             onCompletion(nil)
-        }
-    }
-
-    /// Converts a Date into the appropriatly formatted string based on the `OrderStatGranularity`
-    ///
-    func buildDateString(from date: Date, with granularity: StatGranularity) -> String {
-        switch granularity {
-        case .day:
-            return DateFormatter.Stats.statsDayFormatter.string(from: date)
-        case .week:
-            return DateFormatter.Stats.statsWeekFormatter.string(from: date)
-        case .month:
-            return DateFormatter.Stats.statsMonthFormatter.string(from: date)
-        case .year:
-            return DateFormatter.Stats.statsYearFormatter.string(from: date)
         }
     }
 }
@@ -138,5 +144,18 @@ extension StatsStore {
             newStorageItem.update(with: readOnlyItem)
             storageTopEarnerStats.addToItems(newStorageItem)
         })
+    }
+}
+
+
+// MARK: - Constants!
+//
+extension StatsStore {
+
+    enum Constants {
+
+        /// Default limit value for TopEarnerStats
+        ///
+        static let defaultTopEarnerStatsLimit: Int = 5
     }
 }

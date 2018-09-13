@@ -44,7 +44,7 @@ extension TopPerformersViewController {
 
     func syncTopPerformers() {
         dataVCs.forEach { (vc) in
-            syncTopPerformers(for: vc.granularity)
+            vc.syncTopPerformers()
         }
     }
 }
@@ -92,27 +92,6 @@ private extension TopPerformersViewController {
             oldCell?.label.textColor = StyleManager.defaultTextColor
             newCell?.label.textColor = StyleManager.wooCommerceBrandColor
         }
-    }
-}
-
-
-// MARK: - Sync'ing Helpers
-//
-private extension TopPerformersViewController {
-
-    func syncTopPerformers(for granularity: StatGranularity, onCompletion: ((Error?) -> ())? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            onCompletion?(nil)
-            return
-        }
-
-        let action = StatsAction.retrieveTopEarnerStats(siteID: siteID, granularity: granularity, latestDateToInclude: Date()) { (error) in
-            if let error = error {
-                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
-            }
-        }
-
-        StoresManager.shared.dispatch(action)
     }
 }
 

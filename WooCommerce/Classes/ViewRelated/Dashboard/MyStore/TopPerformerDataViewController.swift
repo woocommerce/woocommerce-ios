@@ -13,6 +13,17 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
 
     @IBOutlet private weak var tableView: UITableView!
 
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) TopEarnerStats in sync.
+    ///
+    private lazy var resultsController: ResultsController<StorageTopEarnerStats> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let formattedDateString = StatsStore.buildDateString(from: Date(), with: granularity)
+        let predicate = NSPredicate(format: "granularity = %@ AND date = %@", granularity.rawValue, formattedDateString)
+        let descriptor = NSSortDescriptor(key: "date", ascending: true)
+
+        return ResultsController<StorageTopEarnerStats>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     // MARK: - Computed Properties
 
     private var tabDescription: String {
@@ -51,6 +62,27 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
+        configureResultsController()
+    }
+}
+
+
+// MARK: - Public Interface
+//
+extension TopPerformerDataViewController {
+
+    func syncTopPerformers(onCompletion: ((Error?) -> ())? = nil) {
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            onCompletion?(nil)
+            return
+        }
+
+        let action = StatsAction.retrieveTopEarnerStats(siteID: siteID, granularity: granularity, latestDateToInclude: Date()) { (error) in
+            if let error = error {
+                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
+            }
+        }
+        StoresManager.shared.dispatch(action)
     }
 }
 
@@ -71,6 +103,11 @@ private extension TopPerformerDataViewController {
         tableView.estimatedSectionHeaderHeight = Settings.estimatedSectionHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.tableFooterView = UIView(frame: .zero)
+    }
+
+    func configureResultsController() {
+        resultsController.startForwardingEvents(to: tableView)
+        try? resultsController.performFetch()
     }
 
     func registerTableViewCells() {
@@ -105,15 +142,11 @@ extension TopPerformerDataViewController {
 extension TopPerformerDataViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-        // FIXME: Make this work!
-        //return resultsController.sections.count
+        return resultsController.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
-        // FIXME: Make this work!
-        //return resultsController.sections[section].numberOfObjects
+        return numberOfRows()
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -133,7 +166,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
             fatalError()
         }
 
-        // FIXME: Configure the cell
+        cell.configure(statsItem(at: indexPath))
         return cell
     }
 }
@@ -145,6 +178,30 @@ extension TopPerformerDataViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableViewAutomaticDimension
+    }
+}
+
+
+// MARK: - Convenience Methods
+//
+private extension TopPerformerDataViewController {
+
+    func statsItem(at indexPath: IndexPath) -> TopEarnerStatsItem? {
+        guard let topEarnerStats = resultsController.fetchedObjects.first,
+            let topEarnerStatsItem = topEarnerStats.items?[safe: indexPath.row] else {
+            return nil
+        }
+
+        return topEarnerStatsItem
+    }
+
+    func numberOfRows() -> Int {
+        guard !resultsController.isEmpty else {
+            return 0
+        }
+
+        let topEarnerStats = resultsController.fetchedObjects.first
+        return topEarnerStats?.items?.count ?? 0
     }
 }
 

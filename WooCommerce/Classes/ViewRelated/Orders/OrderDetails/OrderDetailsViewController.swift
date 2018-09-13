@@ -117,36 +117,44 @@ private extension OrderDetailsViewController {
     /// Setup: Sections
     ///
     func reloadSections() {
-        let summarySection = Section(leftTitle: nil, rightTitle: nil, footer: nil, rows: [.summary])
+        let summary = Section(row: .summary)
 
-        let productRows: [Row] = viewModel.isProcessingPayment ? [.productList] : [.productList, .productDetails]
-        let productListSection = Section(leftTitle: viewModel.productLeftTitle, rightTitle: viewModel.productRightTitle, footer: nil, rows: productRows)
+        let products: Section = {
+            let rows: [Row] = viewModel.isProcessingPayment ? [.productList] : [.productList, .productDetails]
+            return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
+        }()
 
-        let customerNoteSection = Section(leftTitle: NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title"), rightTitle: nil, footer: nil, rows: [.customerNote])
+        let customerNote: Section? = {
+            guard viewModel.customerNote.isEmpty == false else {
+                return nil
+            }
 
-        let infoFooter = billingIsHidden ? NSLocalizedString("Show billing", comment: "Footer text to show the billing cell") : NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
-        var infoRows: [Row] = [Row]()
-        if billingIsHidden {
-            infoRows = [.shippingAddress]
-        } else if viewModel.order.billingAddress == nil {
-            infoRows = [.shippingAddress, .billingAddress]
-        } else {
-            infoRows = [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
-        }
-        let infoSection = Section(leftTitle: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), rightTitle: nil, footer: infoFooter, rows: infoRows)
-        let paymentSection = Section(leftTitle: NSLocalizedString("PAYMENT", comment: "Payment section title"), rightTitle: nil, footer: nil, rows: [.payment])
+            return Section(title: Title.customerNote, row: .customerNote)
+        }()
 
-        var orderNoteRows: [Row] = [.addOrderNote]
-        orderNotes?.forEach({ _ in
-            orderNoteRows.append(.orderNote)
-        })
-        let orderNotesSection = Section(leftTitle: NSLocalizedString("ORDER NOTES", comment: "Order notes section title"), rightTitle: nil, footer: nil, rows: orderNoteRows)
+        let info: Section = {
+            let footer = billingIsHidden ? NSLocalizedString("Show billing", comment: "Footer text to show the billing cell") : NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
+            let rows: [Row]
 
-        if viewModel.customerNote.isEmpty {
-            sections = [summarySection, productListSection, infoSection, paymentSection, orderNotesSection]
-        } else {
-            sections = [summarySection, productListSection, customerNoteSection, infoSection, paymentSection, orderNotesSection]
-        }
+            if billingIsHidden {
+                rows = [.shippingAddress]
+            } else if viewModel.order.billingAddress == nil {
+                rows = [.shippingAddress, .billingAddress]
+            } else {
+                rows = [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
+            }
+
+            return Section(title: Title.information, footer: footer, rows: rows)
+        }()
+
+        let payment = Section(title: Title.payment, row: .payment)
+
+        let notes: Section = {
+            let rows = [.addOrderNote] + Array(repeating: Row.orderNote, count: orderNotes.count)
+            return Section(title: Title.notes, rows: rows)
+        }()
+
+        sections = [summary, products, customerNote, info, payment, notes].compactMap { $0 }
     }
 
     /// Reloads the tableView, granted that the view has been effectively loaded.

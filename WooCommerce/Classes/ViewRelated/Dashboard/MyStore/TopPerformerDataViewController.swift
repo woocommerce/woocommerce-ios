@@ -74,7 +74,7 @@ private extension TopPerformerDataViewController {
     }
 
     func registerTableViewCells() {
-        let cells = [LeftImageTableViewCell.self]
+        let cells = [ProductTableViewCell.self]
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
@@ -128,13 +128,13 @@ extension TopPerformerDataViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: LeftImageTableViewCell.reuseIdentifier, for: indexPath) as? LeftImageTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductTableViewCell.reuseIdentifier,
+                                                       for: indexPath) as? ProductTableViewCell else {
             fatalError()
         }
 
+        // FIXME: Configure the cell
         return cell
-
-        // FIXME: Make this work!
     }
 }
 

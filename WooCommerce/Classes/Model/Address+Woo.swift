@@ -15,7 +15,7 @@ extension Address {
 
     /// Returns the Postal Address, formated and ready for display.
     ///
-    var formattedPostalAddress: String {
+    var formattedPostalAddress: String? {
         return postalAddress.formatted(as: .mailingAddress)
     }
 

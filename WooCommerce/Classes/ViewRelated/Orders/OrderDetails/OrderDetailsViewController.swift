@@ -520,13 +520,16 @@ extension OrderDetailsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        if sections[indexPath.section].rows[indexPath.row] == .addOrderNote {
+        switch sections[indexPath.section].rows[indexPath.row] {
+        case .addOrderNote:
             let addANoteViewController = self.storyboard!.instantiateViewController(withIdentifier: Constants.noteViewController) as! AddANoteViewController
             addANoteViewController.viewModel = viewModel
             let navController = UINavigationController(rootViewController: addANoteViewController)
             present(navController, animated: true, completion: nil)
-        } else if sections[indexPath.section].rows[indexPath.row] == .productDetails {
+        case .productDetails:
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
+        default:
+            break
         }
     }
 

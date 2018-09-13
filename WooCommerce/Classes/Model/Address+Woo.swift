@@ -19,6 +19,12 @@ extension Address {
         return postalAddress.formatted(as: .mailingAddress)
     }
 
+    /// Returns the (clean) Phone number: contains only decimal digits
+    ///
+    var cleanedPhoneNumber: String? {
+        return phone?.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+    }
+
     /// Indicates if there is a Phone Number set (and it's not empty).
     ///
     var hasPhoneNumber: Bool {

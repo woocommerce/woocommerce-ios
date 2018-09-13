@@ -314,30 +314,36 @@ private extension OrderDetailsViewController {
     }
 
     private func configureBillingPhone(cell: BillingDetailsTableViewCell) {
-        cell.configure(text: viewModel.billingViewModel?.phoneNumber, image: Gridicon.iconOfType(.ellipsis))
+        guard let phoneNumber = viewModel.order.billingAddress?.phone else {
+            // TODO: This should actually be an assert. To be revisited!
+            return
+        }
+
+        cell.configure(text: phoneNumber, image: Gridicon.iconOfType(.ellipsis))
         cell.onTouchUp = { [weak self] in
             self?.phoneButtonAction()
         }
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = UIAccessibilityTraitButton
-        if let phoneNumber = viewModel.billingViewModel?.phoneNumber {
-            cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Phone number: %@", comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."), phoneNumber)
-        }
+        cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Phone number: %@", comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."), phoneNumber)
         cell.accessibilityHint = NSLocalizedString("Prompts with the option to call or message the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer.")
     }
 
     private func configureBillingEmail(cell: BillingDetailsTableViewCell) {
-        cell.configure(text: viewModel.billingViewModel?.email, image: Gridicon.iconOfType(.mail))
+        guard let email = viewModel.order.billingAddress?.email else {
+            // TODO: This should actually be an assert. To be revisited!
+            return
+        }
+
+        cell.configure(text: email, image: Gridicon.iconOfType(.mail))
         cell.onTouchUp = { [weak self] in
             self?.emailButtonAction()
         }
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = UIAccessibilityTraitButton
-        if let email = viewModel.billingViewModel?.email {
-            cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email: %@", comment: "Accessibility label that lets the user know the billing customer's email address"), email)
-        }
+        cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email: %@", comment: "Accessibility label that lets the user know the billing customer's email address"), email)
         cell.accessibilityHint = NSLocalizedString("Composes a new email message to the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear.")
     }
 
@@ -408,8 +414,7 @@ extension OrderDetailsViewController {
         actionSheet.addAction(dismissAction)
 
         let callAction = UIAlertAction(title: NSLocalizedString("Call", comment: "Call phone number button title"), style: .default) { [weak self] action in
-            let contactViewModel = ContactViewModel(with: (self?.viewModel.order.billingAddress)!)
-            guard let phone = contactViewModel.cleanedPhoneNumber else {
+            guard let phone = self?.viewModel.order.billingAddress?.cleanedPhoneNumber else {
                 return
             }
             if let url = URL(string: "telprompt://" + phone),
@@ -545,14 +550,10 @@ extension OrderDetailsViewController: UITableViewDelegate {
 //
 extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
     func sendTextMessageIfPossible() {
-        guard let billingAddress = viewModel.order.billingAddress else {
+        guard let phoneNumber = viewModel.order.billingAddress?.cleanedPhoneNumber else {
             return
         }
 
-        let contactViewModel = ContactViewModel(with: billingAddress)
-        guard let phoneNumber = contactViewModel.cleanedPhoneNumber else {
-            return
-        }
         if MFMessageComposeViewController.canSendText() {
             sendTextMessage(to: phoneNumber)
         }
@@ -576,12 +577,7 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
 extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
     func sendEmailIfPossible() {
         if MFMailComposeViewController.canSendMail() {
-            guard let billingAddress = viewModel.order.billingAddress else {
-                return
-            }
-
-            let contactViewModel = ContactViewModel(with: billingAddress)
-            guard let email = contactViewModel.email else {
+            guard let email = viewModel.order.billingAddress?.email else {
                 return
             }
 

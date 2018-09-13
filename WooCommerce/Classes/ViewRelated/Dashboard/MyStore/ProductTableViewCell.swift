@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import WordPressUI
 import Gridicons
 
 class ProductTableViewCell: UITableViewCell {
@@ -43,7 +44,7 @@ class ProductTableViewCell: UITableViewCell {
         nameLabel.applyBodyStyle()
         priceLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()
-        productImage.image = UIImage.productPlaceholderImage
+        productImage.contentMode = .scaleAspectFit
     }
 }
 
@@ -54,5 +55,11 @@ extension ProductTableViewCell {
         nameText = statsItem?.productName
         detailText = String.localizedStringWithFormat( NSLocalizedString("Total Product Order: %ld", comment: "Top performers — label for the total number of products ordered"), statsItem?.quantity ?? 0)
         priceText = statsItem?.total.friendlyString()
+
+        if let productURLString = statsItem?.imageUrl {
+            productImage.downloadImage(from: URL(string: productURLString), placeholderImage: UIImage.productPlaceholderImage)
+        } else {
+            productImage.image = UIImage.productPlaceholderImage
+        }
     }
 }

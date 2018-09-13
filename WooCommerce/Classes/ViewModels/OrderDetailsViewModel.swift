@@ -80,13 +80,13 @@ class OrderDetailsViewModel {
 
     let subtotalLabel = NSLocalizedString("Subtotal", comment: "Subtotal label for payment view")
 
-    var subtotal: String {
+    var subtotal: Double {
         let subtotal = order.items.reduce(0.0) { (output, item) in
-            let itemSubtotal = Double(item.subtotal) ?? 0.0
+            let itemSubtotal = Double(item.subtotal) ?? 0.00
             return output + itemSubtotal
         }
 
-        return String(format: "%.2f", subtotal)
+       return subtotal
     }
 
     var subtotalValue: String? {
@@ -112,7 +112,11 @@ class OrderDetailsViewModel {
     let shippingLabel = NSLocalizedString("Shipping", comment: "Shipping label for payment view")
 
     var shippingValue: String? {
-        return currencyFormatter.string(for: order.shippingTotal)
+        let shippingTotal = Double(order.shippingTotal)
+        if shippingTotal != 0 {
+            return currencyFormatter.string(for: shippingTotal)
+        }
+        return currencyFormatter.string(for: 0.00)
     }
 
     var taxesLabel: String? {

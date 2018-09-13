@@ -278,9 +278,9 @@ private extension OrderDetailsViewController {
                 cell.address = NSLocalizedString("No address specified.", comment: "Order details > customer info > billing details. This is where the address would normally display.")
             }
         case let cell as BillingDetailsTableViewCell where row == .billingPhone:
-            configure(cell, for: .billingPhone)
+            configureBillingPhone(cell: cell)
         case let cell as BillingDetailsTableViewCell where row == .billingEmail:
-            configure(cell, for: .billingEmail)
+            configureBillingEmail(cell: cell)
         case let cell as PaymentTableViewCell:
             cell.configure(with: viewModel)
         case let cell as LeftImageTableViewCell:
@@ -297,32 +297,30 @@ private extension OrderDetailsViewController {
         }
     }
 
-    private func configure(_ cell: BillingDetailsTableViewCell, for billingRow: Row) {
-        if billingRow == .billingPhone {
-            cell.configure(text: viewModel.billingViewModel?.phoneNumber, image: Gridicon.iconOfType(.ellipsis))
-            cell.onTouchUp = { [weak self] in
-                self?.phoneButtonAction()
-            }
-            cell.isAccessibilityElement = true
-            cell.accessibilityTraits = UIAccessibilityTraitButton
-            if let phoneNumber = viewModel.billingViewModel?.phoneNumber {
-                cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Phone number: %@", comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."), phoneNumber)
-            }
-            cell.accessibilityHint = NSLocalizedString("Prompts with the option to call or message the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer.")
-        } else if billingRow == .billingEmail {
-            cell.configure(text: viewModel.billingViewModel?.email, image: Gridicon.iconOfType(.mail))
-            cell.onTouchUp = { [weak self] in
-                self?.emailButtonAction()
-            }
-            cell.isAccessibilityElement = true
-            cell.accessibilityTraits = UIAccessibilityTraitButton
-            if let email = viewModel.billingViewModel?.email {
-                cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email: %@", comment: "Accessibility label that lets the user know the billing customer's email address"), email)
-            }
-            cell.accessibilityHint = NSLocalizedString("Composes a new email message to the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear.")
-        } else {
-            fatalError("Unidentified billing detail row")
+    private func configureBillingPhone(cell: BillingDetailsTableViewCell) {
+        cell.configure(text: viewModel.billingViewModel?.phoneNumber, image: Gridicon.iconOfType(.ellipsis))
+        cell.onTouchUp = { [weak self] in
+            self?.phoneButtonAction()
         }
+        cell.isAccessibilityElement = true
+        cell.accessibilityTraits = UIAccessibilityTraitButton
+        if let phoneNumber = viewModel.billingViewModel?.phoneNumber {
+            cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Phone number: %@", comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."), phoneNumber)
+        }
+        cell.accessibilityHint = NSLocalizedString("Prompts with the option to call or message the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer.")
+    }
+
+    private func configureBillingEmail(cell: BillingDetailsTableViewCell) {
+        cell.configure(text: viewModel.billingViewModel?.email, image: Gridicon.iconOfType(.mail))
+        cell.onTouchUp = { [weak self] in
+            self?.emailButtonAction()
+        }
+        cell.isAccessibilityElement = true
+        cell.accessibilityTraits = UIAccessibilityTraitButton
+        if let email = viewModel.billingViewModel?.email {
+            cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email: %@", comment: "Accessibility label that lets the user know the billing customer's email address"), email)
+        }
+        cell.accessibilityHint = NSLocalizedString("Composes a new email message to the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear.")
     }
 
     func orderNote(at indexPath: IndexPath) -> OrderNoteViewModel? {

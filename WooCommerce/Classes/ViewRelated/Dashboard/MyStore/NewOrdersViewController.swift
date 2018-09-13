@@ -84,6 +84,9 @@ private extension NewOrdersViewController {
         resultsController.onDidChangeContent = { [weak self] in
             self?.updateNewOrdersIfNeeded()
         }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.updateNewOrdersIfNeeded()
+        }
         try? resultsController.performFetch()
     }
 }

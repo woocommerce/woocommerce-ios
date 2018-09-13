@@ -13,7 +13,7 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
 
     @IBOutlet private weak var tableView: UITableView!
 
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) TopEarnerStats in sync.
+    /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///
     private lazy var resultsController: ResultsController<StorageTopEarnerStats> = {
         let storageManager = AppDelegate.shared.storageManager
@@ -60,9 +60,9 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
         super.viewDidLoad()
         configureView()
         configureTableView()
+        configureResultsController()
         registerTableViewCells()
         registerTableViewHeaderFooters()
-        configureResultsController()
     }
 }
 
@@ -87,7 +87,7 @@ extension TopPerformerDataViewController {
 }
 
 
-// MARK: - User Interface Configuration
+// MARK: - Configuration
 //
 private extension TopPerformerDataViewController {
 
@@ -106,7 +106,9 @@ private extension TopPerformerDataViewController {
     }
 
     func configureResultsController() {
-        resultsController.startForwardingEvents(to: tableView)
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.tableView.reloadData()
+        }
         try? resultsController.performFetch()
     }
 
@@ -182,13 +184,13 @@ extension TopPerformerDataViewController: UITableViewDelegate {
 }
 
 
-// MARK: - Convenience Methods
+// MARK: - Private Helpers
 //
 private extension TopPerformerDataViewController {
 
     func statsItem(at indexPath: IndexPath) -> TopEarnerStatsItem? {
         guard let topEarnerStats = resultsController.fetchedObjects.first,
-            let topEarnerStatsItem = topEarnerStats.items?[safe: indexPath.row] else {
+            let topEarnerStatsItem = topEarnerStats.items?.sorted(by: >)[safe: indexPath.row] else {
             return nil
         }
 

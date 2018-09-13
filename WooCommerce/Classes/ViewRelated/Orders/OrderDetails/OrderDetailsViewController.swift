@@ -59,7 +59,7 @@ class OrderDetailsViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        syncOrderNotes()
+        syncNotes()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -197,7 +197,6 @@ private extension OrderDetailsViewController {
             }
 
             var rows: [Row] = [.shippingAddress, .billingAddress]
-
             if address.hasPhoneNumber {
                 rows.append(.billingPhone)
             }
@@ -250,7 +249,7 @@ extension OrderDetailsViewController {
         }
 
         group.enter()
-        syncOrderNotes { _ in
+        syncNotes { _ in
             group.leave()
         }
 
@@ -381,7 +380,7 @@ private extension OrderDetailsViewController {
         StoresManager.shared.dispatch(action)
     }
 
-    func syncOrderNotes(onCompletion: ((Error?) -> ())? = nil) {
+    func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
         let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
                 DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")

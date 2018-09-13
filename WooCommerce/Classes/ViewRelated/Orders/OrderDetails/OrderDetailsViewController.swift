@@ -298,19 +298,20 @@ private extension OrderDetailsViewController {
     }
 
     private func configureShippingAddress(cell: CustomerInfoTableViewCell) {
-        let shippingViewModel = viewModel.shippingViewModel
+        let shippingAddress = viewModel.order.shippingAddress
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
-        cell.name = shippingViewModel?.fullName
-        cell.address = shippingViewModel?.formattedAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
+        cell.name = shippingAddress?.fullName
+        cell.address = shippingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
+
     }
 
     private func configureBillingAddress(cell: CustomerInfoTableViewCell) {
-        let billingViewModel = viewModel.billingViewModel
+        let billingAddress = viewModel.order.billingAddress
 
         cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
-        cell.name = billingViewModel?.fullName
-        cell.address = billingViewModel?.formattedAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > billing details. This is where the address would normally display.")
+        cell.name = billingAddress?.fullName
+        cell.address = billingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > billing details. This is where the address would normally display.")
     }
 
     private func configureBillingPhone(cell: BillingDetailsTableViewCell) {

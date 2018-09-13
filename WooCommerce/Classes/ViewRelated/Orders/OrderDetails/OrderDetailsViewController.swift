@@ -24,7 +24,7 @@ class OrderDetailsViewController: UIViewController {
         return refreshControl
     }()
 
-    private var orderNotes: [OrderNoteViewModel]? {
+    private var orderNotes: [OrderNoteViewModel] = [] {
         didSet {
             reloadSections()
             reloadTableViewIfPossible()
@@ -320,7 +320,7 @@ private extension OrderDetailsViewController {
     func orderNote(at indexPath: IndexPath) -> OrderNoteViewModel? {
         // We need to subract 1 here because the first order note row is the "Add Order" cell
         let orderNoteIndex = indexPath.row - 1
-        guard let orderNotes = orderNotes, !orderNotes.isEmpty, orderNotes.indices.contains(orderNoteIndex) else {
+        guard !orderNotes.isEmpty, orderNotes.indices.contains(orderNoteIndex) else {
             return nil
         }
 
@@ -351,7 +351,7 @@ private extension OrderDetailsViewController {
         let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
                 DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
-                self?.orderNotes = nil
+                self?.orderNotes = []
                 onCompletion?(error)
                 return
             }

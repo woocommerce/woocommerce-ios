@@ -288,8 +288,8 @@ private extension OrderDetailsViewController {
             cell.configure(with: viewModel)
         case let cell as LeftImageTableViewCell:
             configureNewNote(cell: cell)
-        case let cell as OrderNoteTableViewCell where row == .orderNote:
-            if let note = orderNote(at: indexPath) {
+        case let cell as OrderNoteTableViewCell:
+            if let note = note(at: indexPath) {
                 cell.configure(with: note)
             }
         default:
@@ -350,7 +350,7 @@ private extension OrderDetailsViewController {
         cell.accessibilityHint = NSLocalizedString("Composes a new order note.", comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note.")
     }
 
-    func orderNote(at indexPath: IndexPath) -> OrderNoteViewModel? {
+    func note(at indexPath: IndexPath) -> OrderNoteViewModel? {
         // We need to subract 1 here because the first order note row is the "Add Order" cell
         let noteIndex = indexPath.row - 1
         guard orderNotes.indices.contains(noteIndex) else {

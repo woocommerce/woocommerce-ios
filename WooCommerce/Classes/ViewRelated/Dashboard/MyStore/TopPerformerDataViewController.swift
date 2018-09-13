@@ -26,6 +26,10 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
 
     // MARK: - Computed Properties
 
+    private var topEarnerStats: TopEarnerStats? {
+        return resultsController.fetchedObjects.first
+    }
+
     private var tabDescription: String {
         switch granularity {
         case .day:
@@ -189,8 +193,7 @@ extension TopPerformerDataViewController: UITableViewDelegate {
 private extension TopPerformerDataViewController {
 
     func statsItem(at indexPath: IndexPath) -> TopEarnerStatsItem? {
-        guard let topEarnerStats = resultsController.fetchedObjects.first,
-            let topEarnerStatsItem = topEarnerStats.items?.sorted(by: >)[safe: indexPath.row] else {
+        guard let topEarnerStatsItem = topEarnerStats?.items?.sorted(by: >)[safe: indexPath.row] else {
             return nil
         }
 
@@ -198,11 +201,6 @@ private extension TopPerformerDataViewController {
     }
 
     func numberOfRows() -> Int {
-        guard !resultsController.isEmpty else {
-            return 0
-        }
-
-        let topEarnerStats = resultsController.fetchedObjects.first
         return topEarnerStats?.items?.count ?? 0
     }
 }

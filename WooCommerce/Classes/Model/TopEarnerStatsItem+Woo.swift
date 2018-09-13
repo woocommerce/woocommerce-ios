@@ -19,9 +19,9 @@ extension TopEarnerStatsItem {
         return Locale(identifier: identifier).currencySymbol ?? currency
     }
 
-    /// Returns the a friendly-formatted price string including the currency symbol
+    /// Returns the a friendly-formatted total string including the currency symbol
     ///
-    var formattedPriceString: String {
-        return currencySymbol + price.friendlyString()
+    var formattedTotalString: String {
+        return currencySymbol + total.friendlyString()
     }
 }

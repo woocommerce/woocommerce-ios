@@ -113,6 +113,9 @@ private extension TopPerformerDataViewController {
         resultsController.onDidChangeContent = { [weak self] in
             self?.tableView.reloadData()
         }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.tableView.reloadData()
+        }
         try? resultsController.performFetch()
     }
 

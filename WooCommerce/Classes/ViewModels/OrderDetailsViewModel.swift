@@ -64,7 +64,7 @@ class OrderDetailsViewModel {
 
     var shippingViewModel: ContactViewModel? {
         if let shippingAddress = order.shippingAddress {
-            return ContactViewModel(with: shippingAddress, contactType: ContactType.shipping)
+            return ContactViewModel(with: shippingAddress)
         }
 
         return nil
@@ -72,7 +72,7 @@ class OrderDetailsViewModel {
 
     var billingViewModel: ContactViewModel? {
         if let billingAddress = order.billingAddress {
-            return ContactViewModel(with: billingAddress, contactType: ContactType.billing)
+            return ContactViewModel(with: billingAddress)
         }
 
         return nil

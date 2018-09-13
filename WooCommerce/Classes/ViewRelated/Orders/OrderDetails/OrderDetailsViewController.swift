@@ -381,7 +381,7 @@ extension OrderDetailsViewController {
         actionSheet.addAction(dismissAction)
 
         let callAction = UIAlertAction(title: NSLocalizedString("Call", comment: "Call phone number button title"), style: .default) { [weak self] action in
-            let contactViewModel = ContactViewModel(with: (self?.viewModel.order.billingAddress)!, contactType: .billing)
+            let contactViewModel = ContactViewModel(with: (self?.viewModel.order.billingAddress)!)
             guard let phone = contactViewModel.cleanedPhoneNumber else {
                 return
             }
@@ -519,7 +519,7 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
             return
         }
 
-        let contactViewModel = ContactViewModel(with: billingAddress, contactType: .billing)
+        let contactViewModel = ContactViewModel(with: billingAddress)
         guard let phoneNumber = contactViewModel.cleanedPhoneNumber else {
             return
         }
@@ -550,7 +550,7 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
                 return
             }
 
-            let contactViewModel = ContactViewModel(with: billingAddress, contactType: .billing)
+            let contactViewModel = ContactViewModel(with: billingAddress)
             guard let email = contactViewModel.email else {
                 return
             }

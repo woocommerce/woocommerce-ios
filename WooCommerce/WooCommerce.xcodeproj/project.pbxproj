@@ -145,7 +145,6 @@
 		CE32B11520BF8779006FBCF4 /* ProductListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11320BF8779006FBCF4 /* ProductListTableViewCell.swift */; };
 		CE32B11620BF8779006FBCF4 /* ProductListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B11420BF8779006FBCF4 /* ProductListTableViewCell.xib */; };
 		CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11920BF8E32006FBCF4 /* UIButton+Helpers.swift */; };
-		CE34DA2520A1ECD6005D8523 /* ContactViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE34DA2420A1ECD6005D8523 /* ContactViewModel.swift */; };
 		CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */; };
 		CE4DDB7B20DD312400D32EC8 /* Date+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DDB7A20DD312400D32EC8 /* Date+Helpers.swift */; };
 		CE583A0421076C0100D73C1C /* AddANoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A0321076C0100D73C1C /* AddANoteViewController.swift */; };
@@ -338,7 +337,6 @@
 		CE32B11320BF8779006FBCF4 /* ProductListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListTableViewCell.swift; sourceTree = "<group>"; };
 		CE32B11420BF8779006FBCF4 /* ProductListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductListTableViewCell.xib; sourceTree = "<group>"; };
 		CE32B11920BF8E32006FBCF4 /* UIButton+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Helpers.swift"; sourceTree = "<group>"; };
-		CE34DA2420A1ECD6005D8523 /* ContactViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactViewModel.swift; sourceTree = "<group>"; };
 		CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContact+Helpers.swift"; sourceTree = "<group>"; };
 		CE4DDB7A20DD312400D32EC8 /* Date+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Helpers.swift"; sourceTree = "<group>"; };
 		CE583A0321076C0100D73C1C /* AddANoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddANoteViewController.swift; sourceTree = "<group>"; };
@@ -731,7 +729,6 @@
 				B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */,
 				CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */,
 				7403F7E120EC04070097198F /* OrderStatusViewModel.swift */,
-				CE34DA2420A1ECD6005D8523 /* ContactViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -1189,7 +1186,6 @@
 				CE1EC8E920B8A3F5009762BF /* OrderNoteViewModel.swift in Sources */,
 				CE583A072107849F00D73C1C /* SwitchTableViewCell.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
-				CE34DA2520A1ECD6005D8523 /* ContactViewModel.swift in Sources */,
 				B58B4AB62108F11C00076FDD /* Notice.swift in Sources */,
 				CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */,
 				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,

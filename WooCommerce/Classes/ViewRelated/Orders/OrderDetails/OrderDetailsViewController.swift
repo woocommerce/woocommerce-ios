@@ -31,7 +31,7 @@ class OrderDetailsViewController: UIViewController {
         }
     }
 
-    private var billingIsHidden = true {
+    private var displaysBillingDetails = false {
         didSet {
             reloadSections()
         }
@@ -114,49 +114,6 @@ private extension OrderDetailsViewController {
         }
     }
 
-    /// Setup: Sections
-    ///
-    func reloadSections() {
-        let summary = Section(row: .summary)
-
-        let products: Section = {
-            let rows: [Row] = viewModel.isProcessingPayment ? [.productList] : [.productList, .productDetails]
-            return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
-        }()
-
-        let customerNote: Section? = {
-            guard viewModel.customerNote.isEmpty == false else {
-                return nil
-            }
-
-            return Section(title: Title.customerNote, row: .customerNote)
-        }()
-
-        let info: Section = {
-            let footer = billingIsHidden ? NSLocalizedString("Show billing", comment: "Footer text to show the billing cell") : NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
-            let rows: [Row]
-
-            if billingIsHidden {
-                rows = [.shippingAddress]
-            } else if viewModel.order.billingAddress == nil {
-                rows = [.shippingAddress, .billingAddress]
-            } else {
-                rows = [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
-            }
-
-            return Section(title: Title.information, footer: footer, rows: rows)
-        }()
-
-        let payment = Section(title: Title.payment, row: .payment)
-
-        let notes: Section = {
-            let rows = [.addOrderNote] + Array(repeating: Row.orderNote, count: orderNotes.count)
-            return Section(title: Title.notes, rows: rows)
-        }()
-
-        sections = [summary, products, customerNote, info, payment, notes].compactMap { $0 }
-    }
-
     /// Reloads the tableView, granted that the view has been effectively loaded.
     ///
     func reloadTableViewIfPossible() {
@@ -200,6 +157,69 @@ private extension OrderDetailsViewController {
         }
     }
 }
+
+
+// MARK: - Sections
+//
+private extension OrderDetailsViewController {
+
+    /// Setup: Sections
+    ///
+    /// CustomerInformation Behavior:
+    ///     When: Shipping == nil && Billing == nil     >>>     Display: Shipping = "No address specified" / Remove the rest
+    ///     When: Shipping != nil && Billing == nil     >>>     Display: Shipping / Remove the rest
+    ///     When: Shipping == nil && Billing != nil     >>>     Display: Shipping = "No address specified" / Billing / Footer
+    ///     When: Shipping != nil && Billing != nil     >>>     Display: Shipping / Billing / Footer
+    ///
+    func reloadSections() {
+        let summary = Section(row: .summary)
+
+        let products: Section = {
+            let rows: [Row] = viewModel.isProcessingPayment ? [.productList] : [.productList, .productDetails]
+            return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
+        }()
+
+        let customerNote: Section? = {
+            guard viewModel.customerNote.isEmpty == false else {
+                return nil
+            }
+            
+            return Section(title: Title.customerNote, row: .customerNote)
+        }()
+
+        let customerInformation: Section = {
+            guard let address = viewModel.order.billingAddress else {
+                return Section(title: Title.information, row: .shippingAddress)
+            }
+
+            guard displaysBillingDetails else {
+                return Section(title: Title.information, footer: Footer.showBilling, row: .shippingAddress)
+            }
+
+            var rows: [Row] = [.shippingAddress, .billingAddress]
+
+            if address.hasPhoneNumber {
+                rows.append(.billingPhone)
+            }
+
+            if address.hasEmailAddress {
+                rows.append(.billingEmail)
+            }
+
+            return Section(title: Title.information, footer: Footer.hideBilling, rows: rows)
+        }()
+
+        let payment = Section(title: Title.payment, row: .payment)
+
+        let notes: Section = {
+            let rows = [.addOrderNote] + Array(repeating: Row.orderNote, count: orderNotes.count)
+            return Section(title: Title.notes, rows: rows)
+        }()
+
+        sections = [summary, products, customerNote, customerInformation, payment, notes].compactMap { $0 }
+    }
+}
+
 
 // MARK: - Notices
 //
@@ -299,6 +319,7 @@ private extension OrderDetailsViewController {
         cell.onTouchUp = { [weak self] in
             self?.phoneButtonAction()
         }
+
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = UIAccessibilityTraitButton
         if let phoneNumber = viewModel.billingViewModel?.phoneNumber {
@@ -312,6 +333,7 @@ private extension OrderDetailsViewController {
         cell.onTouchUp = { [weak self] in
             self?.emailButtonAction()
         }
+
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = UIAccessibilityTraitButton
         if let email = viewModel.billingViewModel?.email {
@@ -411,7 +433,7 @@ extension OrderDetailsViewController {
     }
 
     func toggleBillingFooter() {
-        billingIsHidden = !billingIsHidden
+        displaysBillingDetails = !displaysBillingDetails
     }
 
     func fulfillWasPressed() {
@@ -476,7 +498,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
         }
 
         let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideSectionFooter.reuseIdentifier) as! ShowHideSectionFooter
-        let image = billingIsHidden ? Gridicon.iconOfType(.chevronDown) : Gridicon.iconOfType(.chevronUp)
+        let image = displaysBillingDetails ? Gridicon.iconOfType(.chevronUp) : Gridicon.iconOfType(.chevronDown)
         cell.configure(text: footerText, image: image)
         cell.didSelectFooter = { [weak self] in
             guard let `self` = self else {
@@ -595,6 +617,11 @@ private extension OrderDetailsViewController {
         static let information = NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title")
         static let payment = NSLocalizedString("PAYMENT", comment: "Payment section title")
         static let notes = NSLocalizedString("ORDER NOTES", comment: "Order notes section title")
+    }
+
+    enum Footer {
+        static let hideBilling = NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
+        static let showBilling = NSLocalizedString("Show billing", comment: "Footer text to show the billing cell")
     }
 
     struct Section {

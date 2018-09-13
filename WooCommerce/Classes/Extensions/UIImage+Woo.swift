@@ -21,6 +21,13 @@ extension UIImage {
         return Gridicon.iconOfType(.chevronRight).imageWithTintColor(tintColor)!
     }
 
+    /// Product Placeholder Image
+    ///
+    static var productPlaceholderImage: UIImage {
+        let tintColor = StyleManager.wooGreyLight
+        return Gridicon.iconOfType(.product).imageWithTintColor(tintColor)!
+    }
+
     /// Gravatar Placeholder Image
     ///
     static var gravatarPlaceholderImage: UIImage {

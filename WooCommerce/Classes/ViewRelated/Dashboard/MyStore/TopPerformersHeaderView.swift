@@ -58,7 +58,6 @@ class TopPerformersHeaderView: UITableViewHeaderFooterView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        backgroundColor = StyleManager.wooWhite
         descriptionLabel.applyBodyStyle()
         leftColumn.applyFootnoteStyle()
         rightColumn.applyFootnoteStyle()

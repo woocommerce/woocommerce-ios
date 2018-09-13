@@ -156,6 +156,6 @@ extension StatsStore {
 
         /// Default limit value for TopEarnerStats
         ///
-        static let defaultTopEarnerStatsLimit: Int = 5
+        static let defaultTopEarnerStatsLimit: Int = 3
     }
 }

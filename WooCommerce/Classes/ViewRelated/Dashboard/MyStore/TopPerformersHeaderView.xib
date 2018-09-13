@@ -14,6 +14,10 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="125"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jik-ZA-0VA">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="125"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nAe-82-c1s">
                     <rect key="frame" x="328" y="102" width="33" height="16"/>
                     <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
@@ -42,6 +46,8 @@
             </subviews>
             <constraints>
                 <constraint firstItem="ToX-kS-0Y9" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="BdI-nM-I6n"/>
+                <constraint firstItem="Jik-ZA-0VA" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="CP0-Ux-32j"/>
+                <constraint firstAttribute="trailing" secondItem="Jik-ZA-0VA" secondAttribute="trailing" id="DhF-hQ-ZQ8"/>
                 <constraint firstItem="758-MF-eBg" firstAttribute="bottom" relation="lessThanOrEqual" secondItem="4Fd-ta-Azy" secondAttribute="top" priority="999" constant="-14" id="HqA-v1-qdn"/>
                 <constraint firstItem="758-MF-eBg" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="14" id="NJC-FN-Vix"/>
                 <constraint firstItem="4Fd-ta-Azy" firstAttribute="bottom" secondItem="ToX-kS-0Y9" secondAttribute="top" constant="-6" id="Oor-MN-PIo"/>
@@ -49,7 +55,9 @@
                 <constraint firstItem="nAe-82-c1s" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" constant="-14" id="TIP-cN-VHO"/>
                 <constraint firstAttribute="trailing" secondItem="ToX-kS-0Y9" secondAttribute="trailing" id="TYf-3P-Nqy"/>
                 <constraint firstAttribute="bottom" secondItem="ToX-kS-0Y9" secondAttribute="bottom" id="fq7-4u-mZe"/>
+                <constraint firstAttribute="bottom" secondItem="Jik-ZA-0VA" secondAttribute="bottom" id="kVz-Fk-W8s"/>
                 <constraint firstItem="758-MF-eBg" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" constant="-14" id="peu-Ey-Ny6"/>
+                <constraint firstItem="Jik-ZA-0VA" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="tJW-6O-qJM"/>
                 <constraint firstItem="758-MF-eBg" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="16" id="u4Y-6f-DTr"/>
                 <constraint firstItem="nAe-82-c1s" firstAttribute="bottom" secondItem="ToX-kS-0Y9" secondAttribute="top" constant="-6" id="vuR-9k-8Ku"/>
             </constraints>
@@ -60,7 +68,7 @@
                 <outlet property="leftColumn" destination="4Fd-ta-Azy" id="fGI-y3-Kg2"/>
                 <outlet property="rightColumn" destination="nAe-82-c1s" id="NCu-h0-VHt"/>
             </connections>
-            <point key="canvasLocation" x="34.5" y="81"/>
+            <point key="canvasLocation" x="34.5" y="80.5"/>
         </view>
     </objects>
 </document>

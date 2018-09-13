@@ -10,7 +10,6 @@ class TopPerformersViewController: ButtonBarPagerTabStripViewController {
 
     @IBOutlet private weak var topBorder: UIView!
     @IBOutlet private weak var middleBorder: UIView!
-    @IBOutlet private weak var bottomBorder: UIView!
     @IBOutlet private weak var headingLabel: PaddedLabel!
 
     private var dataVCs = [TopPerformerDataViewController]()
@@ -58,7 +57,6 @@ private extension TopPerformersViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         topBorder.backgroundColor = StyleManager.wooGreyBorder
         middleBorder.backgroundColor = StyleManager.wooGreyBorder
-        bottomBorder.backgroundColor = StyleManager.wooGreyBorder
         headingLabel.applyFootnoteStyle()
         headingLabel.textColor = StyleManager.sectionTitleColor
         headingLabel.textInsets = Constants.headerLabelInsets

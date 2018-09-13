@@ -303,7 +303,6 @@ private extension OrderDetailsViewController {
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
         cell.name = shippingAddress?.fullName
         cell.address = shippingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
-
     }
 
     private func configureBillingAddress(cell: CustomerInfoTableViewCell) {

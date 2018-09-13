@@ -569,14 +569,23 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
 // MARK: - Constants
 //
 private extension OrderDetailsViewController {
-    struct Constants {
+    enum Constants {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
         static let productDetailsSegue = "ShowProductListViewController"
         static let noteViewController = "AddANoteViewController"
     }
 
-    private struct Section {
+    enum Title {
+        static let product = NSLocalizedString("PRODUCT", comment: "Product section title")
+        static let quantity = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")
+        static let customerNote = NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title")
+        static let information = NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title")
+        static let payment = NSLocalizedString("PAYMENT", comment: "Payment section title")
+        static let notes = NSLocalizedString("ORDER NOTES", comment: "Order notes section title")
+    }
+
+    struct Section {
         let title: String?
         let rightTitle: String?
         let footer: String?
@@ -594,7 +603,7 @@ private extension OrderDetailsViewController {
         }
     }
 
-    private enum Row {
+    enum Row {
         case summary
         case productList
         case productDetails

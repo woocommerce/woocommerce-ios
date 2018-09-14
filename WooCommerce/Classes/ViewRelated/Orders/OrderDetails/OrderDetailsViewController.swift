@@ -97,21 +97,21 @@ private extension OrderDetailsViewController {
     /// Setup: EntityListener
     ///
     func configureEntityListener() {
-        entityListener.onUpsert = { [weak self] order in
-            guard let `self` = self else {
-                return
-            }
-            self.viewModel = OrderDetailsViewModel(order: order)
-        }
-
-        entityListener.onDelete = { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-
-            self.navigationController?.popViewController(animated: true)
-            self.displayOrderDeletedNotice()
-        }
+//        entityListener.onUpsert = { [weak self] order in
+//            guard let `self` = self else {
+//                return
+//            }
+//            self.viewModel = OrderDetailsViewModel(order: order)
+//        }
+//
+//        entityListener.onDelete = { [weak self] in
+//            guard let `self` = self else {
+//                return
+//            }
+//
+//            self.navigationController?.popViewController(animated: true)
+//            self.displayOrderDeletedNotice()
+//        }
     }
 
     /// Reloads the tableView, granted that the view has been effectively loaded.

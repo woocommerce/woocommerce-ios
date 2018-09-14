@@ -27,8 +27,8 @@ public struct Order: Decodable {
     public let paymentMethodTitle: String
 
     public let items: [OrderItem]
-    public let billingAddress: Address?
-    public let shippingAddress: Address?
+    public var billingAddress: Address?
+    public var shippingAddress: Address?
     public let coupons: [OrderCouponLine]
 
     /// Order struct initializer.

@@ -44,6 +44,8 @@
 		74AFF2EA211B9B1B0038153A /* StoreStatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AFF2E9211B9B1B0038153A /* StoreStatsViewController.swift */; };
 		74D0A5302139CF1300E2919F /* String+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D0A52F2139CF1300E2919F /* String+Helpers.swift */; };
 		74E0F441211C9AE600A79CCE /* PeriodDataViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74E0F440211C9AE600A79CCE /* PeriodDataViewController.xib */; };
+		74F9E9CD214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */; };
+		74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */; };
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
 		93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */; };
 		B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112D2049E27A007D25DC /* DashboardViewController.swift */; };
@@ -237,6 +239,8 @@
 		74AFF2E9211B9B1B0038153A /* StoreStatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsViewController.swift; sourceTree = "<group>"; };
 		74D0A52F2139CF1300E2919F /* String+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Helpers.swift"; sourceTree = "<group>"; };
 		74E0F440211C9AE600A79CCE /* PeriodDataViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PeriodDataViewController.xib; sourceTree = "<group>"; };
+		74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoPeriodDataTableViewCell.xib; sourceTree = "<group>"; };
+		74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoPeriodDataTableViewCell.swift; sourceTree = "<group>"; };
 		8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release.xcconfig"; sourceTree = "<group>"; };
 		90AC1C0B391E04A837BDC64E /* Pods-WooCommerce.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.debug.xcconfig"; sourceTree = "<group>"; };
 		93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bash_secrets.tpl; sourceTree = "<group>"; };
@@ -406,18 +410,15 @@
 		74036CBE211B87FD00E462C2 /* MyStore */ = {
 			isa = PBXGroup;
 			children = (
+				74F9E9CA214C034A00A3F2D2 /* Cells */,
 				74AAF6A4212A04A900C612B0 /* ChartMarker.swift */,
 				74A93A3F212DC60B00C13E04 /* NewOrdersViewController.swift */,
 				74036CBF211B882100E462C2 /* PeriodDataViewController.swift */,
 				74E0F440211C9AE600A79CCE /* PeriodDataViewController.xib */,
-				74334F34214AB12F006D6AC5 /* ProductTableViewCell.swift */,
-				74334F35214AB12F006D6AC5 /* ProductTableViewCell.xib */,
 				74AFF2E9211B9B1B0038153A /* StoreStatsViewController.swift */,
 				748D34DD214828DC00E21A2F /* TopPerformersViewController.swift */,
 				748D34E02148291E00E21A2F /* TopPerformerDataViewController.swift */,
 				748D34DC214828DC00E21A2F /* TopPerformerDataViewController.xib */,
-				7493BB8C2149852A003071A9 /* TopPerformersHeaderView.swift */,
-				7493BB8D2149852A003071A9 /* TopPerformersHeaderView.xib */,
 			);
 			path = MyStore;
 			sourceTree = "<group>";
@@ -442,6 +443,19 @@
 				747AA08A2107CF8D0047A89B /* TracksProvider.swift */,
 			);
 			path = Analytics;
+			sourceTree = "<group>";
+		};
+		74F9E9CA214C034A00A3F2D2 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */,
+				74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */,
+				74334F34214AB12F006D6AC5 /* ProductTableViewCell.swift */,
+				74334F35214AB12F006D6AC5 /* ProductTableViewCell.xib */,
+				7493BB8C2149852A003071A9 /* TopPerformersHeaderView.swift */,
+				7493BB8D2149852A003071A9 /* TopPerformersHeaderView.xib */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
@@ -991,6 +1005,7 @@
 				74334F37214AB130006D6AC5 /* ProductTableViewCell.xib in Resources */,
 				CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */,
 				CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */,
+				74F9E9CD214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1213,6 +1228,7 @@
 				B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,
 				B54FBE552111F70700390F57 /* ResultsController+UIKit.swift in Sources */,
+				74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */,
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */,
 				CE1EC8E920B8A3F5009762BF /* OrderNoteViewModel.swift in Sources */,

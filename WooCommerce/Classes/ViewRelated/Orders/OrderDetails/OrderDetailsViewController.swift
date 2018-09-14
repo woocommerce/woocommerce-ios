@@ -183,7 +183,7 @@ private extension OrderDetailsViewController {
             guard viewModel.customerNote.isEmpty == false else {
                 return nil
             }
-            
+
             return Section(title: Title.customerNote, row: .customerNote)
         }()
 

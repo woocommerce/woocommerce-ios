@@ -31,7 +31,7 @@ class OrdersViewController: UIViewController {
         let storageManager = AppDelegate.shared.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
-        return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: nil, sortedBy: [descriptor])
+        return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
@@ -377,13 +377,6 @@ extension OrdersViewController: UITableViewDataSource {
         let viewModel = detailsViewModel(at: indexPath)
         cell.configureCell(order: viewModel)
 
-/// Testing Code. Revert!  >>>>>>>>>>
-        if indexPath.row <= TestScenario.scenario6.rawValue {
-            cell.titleLabel.text = "Scenario #\(indexPath.row + 1)"
-        } else {
-            cell.titleLabel.text = "------ Do not test"
-        }
-/// Testing Code. Revert!  >>>>>>>>>>
         return cell
     }
 
@@ -391,73 +384,6 @@ extension OrdersViewController: UITableViewDataSource {
         return Order.descriptionForSectionIdentifier(resultsController.sections[section].name)
     }
 }
-
-
-/// Testing Code. Revert!  >>>>>>>>>>
-enum TestScenario: Int {
-    case scenario1  // Shipping: Nil    Billing: Nil
-    case scenario2  // Shipping: Ok     Billing: Nil
-    case scenario3  // Shipping: Nil    Billing: Ok
-    case scenario4  // Shipping: Ok     Billing: Ok
-    case scenario5  // Shipping: Ok     Billing: Ok (Minus Phone)
-    case scenario6  // Shipping: Ok     Billing: Ok (Minus Email)
-
-    var billingAddress: Address? {
-        switch self {
-        case .scenario1:
-            return nil
-        case .scenario2:
-            return nil
-        case .scenario3:
-            return sampleAddress()
-        case .scenario4:
-            return sampleAddress()
-        case .scenario5:
-            var address = sampleAddress()
-            address.phone = nil
-            return address
-        case .scenario6:
-            var address = sampleAddress()
-            address.email = nil
-            return address
-        }
-    }
-
-    var shippingAddress: Address? {
-        switch self {
-        case .scenario1:
-            return nil
-        case .scenario2:
-            return sampleAddress()
-        case .scenario3:
-            return nil
-        case .scenario4:
-            return sampleAddress()
-        case .scenario5:
-            return sampleAddress()
-        case .scenario6:
-            return sampleAddress()
-        }
-    }
-}
-
-extension TestScenario {
-    func sampleAddress() -> Address {
-        return Address(firstName: "Johnny",
-                       lastName: "Appleseed",
-                       company: "",
-                       address1: "234 70th Street",
-                       address2: "",
-                       city: "Niagara Falls",
-                       state: "NY",
-                       postcode: "14304",
-                       country: "US",
-                       phone: "333-333-3333",
-                       email: "scrambled@scrambled.com")
-    }
-}
-/// Testing Code. Revert!  <<<<<<<<<<
-
 
 
 // MARK: - UITableViewDelegate Conformance
@@ -475,18 +401,7 @@ extension OrdersViewController: UITableViewDelegate {
             return
         }
 
-        /// Testing Code. Revert!
-        guard let scenario = TestScenario(rawValue: indexPath.row) else {
-            return
-        }
-
-        var order = resultsController.object(at: indexPath)
-        order.billingAddress = scenario.billingAddress
-        order.shippingAddress = scenario.shippingAddress
-
-        let viewModel = OrderDetailsViewModel(order: order)
-        performSegue(withIdentifier: Segues.orderDetails, sender: viewModel)
-        /// Testing Code. Revert!
+        performSegue(withIdentifier: Segues.orderDetails, sender: detailsViewModel(at: indexPath))
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

@@ -30,6 +30,10 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
         return resultsController.fetchedObjects.first
     }
 
+    private var hasTopEarnerStatsItems: Bool {
+        return (topEarnerStats?.items?.count ?? 0) > 0
+    }
+
     private var tabDescription: String {
         switch granularity {
         case .day:
@@ -103,10 +107,10 @@ private extension TopPerformerDataViewController {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.separatorColor = StyleManager.cellSeparatorColor
         tableView.allowsSelection = false
-        tableView.estimatedRowHeight = Settings.estimatedRowHeight
-        tableView.estimatedSectionHeaderHeight = Settings.estimatedSectionHeight
+        tableView.estimatedRowHeight = Constants.estimatedRowHeight
+        tableView.estimatedSectionHeaderHeight = Constants.estimatedSectionHeight
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.tableFooterView = UIView(frame: .zero)
+        tableView.tableFooterView = Constants.emptyView
     }
 
     func configureResultsController() {
@@ -120,7 +124,7 @@ private extension TopPerformerDataViewController {
     }
 
     func registerTableViewCells() {
-        let cells = [ProductTableViewCell.self]
+        let cells = [ProductTableViewCell.self, NoPeriodDataTableViewCell.self]
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
@@ -151,7 +155,7 @@ extension TopPerformerDataViewController {
 extension TopPerformerDataViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return resultsController.sections.count
+        return Constants.numberOfSections
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -159,6 +163,10 @@ extension TopPerformerDataViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard hasTopEarnerStatsItems else {
+            return Constants.emptyView
+        }
+
         guard let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: TopPerformersHeaderView.reuseIdentifier) as? TopPerformersHeaderView else {
             fatalError()
         }
@@ -170,12 +178,16 @@ extension TopPerformerDataViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let statsItem = statsItem(at: indexPath) else {
+            return tableView.dequeueReusableCell(withIdentifier: NoPeriodDataTableViewCell.reuseIdentifier, for: indexPath)
+        }
+
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductTableViewCell.reuseIdentifier,
                                                        for: indexPath) as? ProductTableViewCell else {
             fatalError()
         }
 
-        cell.configure(statsItem(at: indexPath))
+        cell.configure(statsItem)
         return cell
     }
 }
@@ -186,7 +198,15 @@ extension TopPerformerDataViewController: UITableViewDataSource {
 extension TopPerformerDataViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        guard hasTopEarnerStatsItems else {
+            return CGFloat.leastNonzeroMagnitude
+        }
         return UITableViewAutomaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
+        return CGFloat.leastNonzeroMagnitude
     }
 }
 
@@ -204,7 +224,10 @@ private extension TopPerformerDataViewController {
     }
 
     func numberOfRows() -> Int {
-        return topEarnerStats?.items?.count ?? 0
+        guard hasTopEarnerStatsItems, let itemCount = topEarnerStats?.items?.count else {
+            return Constants.emptyStateRowCount
+        }
+        return itemCount
     }
 }
 
@@ -213,15 +236,17 @@ private extension TopPerformerDataViewController {
 //
 private extension TopPerformerDataViewController {
     enum Text {
-        static let noActivity = NSLocalizedString("No activity this period", comment: "Default text for Top Performers section when no data exists for a given period.")
         static let sectionDescription = NSLocalizedString("Gain insights into how products are performing on your store", comment: "Description for Top Performers section of My Store tab.")
         static let sectionLeftColumn = NSLocalizedString("Product", comment: "Description for Top Performers left column header")
         static let sectionRightColumn = NSLocalizedString("Total Spend", comment: "Description for Top Performers right column header")
     }
 
-    enum Settings {
-        static let estimatedRowHeight = CGFloat(80)
-        static let estimatedSectionHeight = CGFloat(125)
+    enum Constants {
+        static let estimatedRowHeight       = CGFloat(80)
+        static let estimatedSectionHeight   = CGFloat(125)
+        static let numberOfSections         = 1
+        static let emptyStateRowCount       = 1
+        static let emptyView                = UIView(frame: .zero)
     }
 }
 

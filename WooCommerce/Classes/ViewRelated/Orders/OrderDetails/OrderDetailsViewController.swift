@@ -81,7 +81,7 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedSectionFooterHeight = Constants.rowHeight
         tableView.estimatedRowHeight = Constants.rowHeight
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
     }
 
@@ -277,7 +277,7 @@ private extension OrderDetailsViewController {
             cell.configure(with: viewModel)
         case let cell as LeftImageTableViewCell:
             cell.configure(image: viewModel.addNoteIcon, text: viewModel.addNoteText)
-            cell.accessibilityTraits = UIAccessibilityTraitButton
+            cell.accessibilityTraits = .button
             cell.accessibilityLabel = NSLocalizedString("Add a note button", comment: "Accessibility label for the 'Add a note' button")
             cell.accessibilityHint = NSLocalizedString("Composes a new order note.", comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note.")
         case let cell as OrderNoteTableViewCell where row == .orderNote:
@@ -296,7 +296,7 @@ private extension OrderDetailsViewController {
                 self?.phoneButtonAction()
             }
             cell.isAccessibilityElement = true
-            cell.accessibilityTraits = UIAccessibilityTraitButton
+            cell.accessibilityTraits = .button
             if let phoneNumber = viewModel.billingViewModel?.phoneNumber {
                 cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Phone number: %@", comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."), phoneNumber)
             }
@@ -307,7 +307,7 @@ private extension OrderDetailsViewController {
                 self?.emailButtonAction()
             }
             cell.isAccessibilityElement = true
-            cell.accessibilityTraits = UIAccessibilityTraitButton
+            cell.accessibilityTraits = .button
             if let email = viewModel.billingViewModel?.email {
                 cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email: %@", comment: "Accessibility label that lets the user know the billing customer's email address"), email)
             }
@@ -433,7 +433,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
             return CGFloat.leastNonzeroMagnitude
         }
 
-        return UITableViewAutomaticDimension
+        return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -455,7 +455,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
             return CGFloat.leastNonzeroMagnitude
         }
 
-        return UITableViewAutomaticDimension
+        return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {

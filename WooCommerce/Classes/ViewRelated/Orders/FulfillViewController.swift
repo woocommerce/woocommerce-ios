@@ -253,7 +253,7 @@ private extension FulfillViewController {
         cell.isAccessibilityElement = true
         cell.accessibilityHint = NSLocalizedString("Adds a note to an order", comment: "VoiceOver accessibility hint, informing the user that the button can be used to add an order note.")
         cell.accessibilityLabel = note
-        cell.accessibilityTraits = UIAccessibilityTraitButton
+        cell.accessibilityTraits = .button
     }
 
     /// Setup: Address Cell

@@ -13,8 +13,8 @@ public struct Address: Decodable {
     public let state: String
     public let postcode: String
     public let country: String
-    public let phone: String?
-    public let email: String?
+    public var phone: String?
+    public var email: String?
 
     /// Make Address conform to Error protocol.
     ///

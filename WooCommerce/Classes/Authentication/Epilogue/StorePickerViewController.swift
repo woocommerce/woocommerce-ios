@@ -377,7 +377,7 @@ private extension StorePickerState {
 
     /// Results Table's Separator Style
     ///
-    var separatorStyle: UITableViewCellSeparatorStyle {
+    var separatorStyle: UITableViewCell.SeparatorStyle {
         switch self {
         case .empty:
             return .none

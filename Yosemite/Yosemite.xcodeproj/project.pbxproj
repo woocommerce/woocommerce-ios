@@ -438,9 +438,11 @@
 				TargetAttributes = {
 					B5C9DDF42087FEC0006B910A = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 1000;
 					};
 					B5C9DDFD2087FEC0006B910A = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 1000;
 					};
 				};
 			};
@@ -752,7 +754,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.Yosemite;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};
@@ -780,7 +782,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.Yosemite;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};
@@ -800,7 +802,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.YosemiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};
@@ -820,7 +822,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.YosemiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};

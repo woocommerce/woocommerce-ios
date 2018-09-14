@@ -75,7 +75,7 @@ private extension NoticeView {
         shadowLayer.shadowOffset = Appearance.shadowOffset
         layer.insertSublayer(shadowLayer, at: 0)
 
-        shadowMaskLayer.fillRule = kCAFillRuleEvenOdd
+        shadowMaskLayer.fillRule = .evenOdd
         shadowLayer.mask = shadowMaskLayer
 
         updateShadowPath()

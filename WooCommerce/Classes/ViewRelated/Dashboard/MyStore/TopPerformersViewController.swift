@@ -106,4 +106,3 @@ private extension TopPerformersViewController {
         static let selectedBarHeight: CGFloat       = 3.0
     }
 }
-

@@ -249,4 +249,3 @@ private extension TopPerformerDataViewController {
         static let emptyView                = UIView(frame: .zero)
     }
 }
-

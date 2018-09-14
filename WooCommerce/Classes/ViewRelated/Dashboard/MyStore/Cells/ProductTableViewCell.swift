@@ -59,7 +59,7 @@ extension ProductTableViewCell {
         if let productURLString = statsItem?.imageUrl {
             productImage.downloadImage(from: URL(string: productURLString), placeholderImage: UIImage.productPlaceholderImage)
         } else {
-            productImage.image = UIImage.productPlaceholderImage
+            productImage.image = .productPlaceholderImage
         }
     }
 }

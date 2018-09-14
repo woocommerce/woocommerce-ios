@@ -109,3 +109,19 @@ target 'Storage' do
     inherit! :search_paths
   end
 end
+
+
+# Workaround: Set SWIFT_VERSION = 4.0 in dependencies that do not have an explicit setting.
+# Xcode is bumping them up to 4.2, and the project just won't build.
+#
+# TODO: Remove as soon as the dependencies get updated!
+#
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+      if ['Charts', 'XLPagerTabStrip', 'WordPressShared'].include? target.name
+          target.build_configurations.each do |config|
+              config.build_settings['SWIFT_VERSION'] = '4.0'
+          end
+      end
+  end
+end

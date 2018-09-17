@@ -29,6 +29,10 @@ class SyncingCoordinator {
     ///
     private var pagesBeingSynced = IndexSet()
 
+    /// First Page Index
+    ///
+    let firstPageIndex = 1
+
     /// Number of elements retrieved per request.
     ///
     let pageSize: Int
@@ -80,6 +84,12 @@ class SyncingCoordinator {
         pagesBeingSynced.removeAll()
         refreshDatePerPage.removeAll()
     }
+
+    /// Synchronizes the First Page in the collection.
+    ///
+    func synchronizeFirstPage(onCompletion: (() -> Void)? = nil) {
+        synchronize(pageNumber: firstPageIndex, onCompletion: onCompletion)
+    }
 }
 
 
@@ -89,7 +99,7 @@ private extension SyncingCoordinator {
 
     /// Synchronizes a given Page Number
     ///
-    func synchronize(pageNumber: Int) {
+    func synchronize(pageNumber: Int, onCompletion: (() -> Void)? = nil) {
         guard let delegate = delegate else {
             fatalError()
         }
@@ -102,6 +112,7 @@ private extension SyncingCoordinator {
             }
 
             self.unmarkAsBeingSynced(pageNumber: pageNumber)
+            onCompletion?()
         }
     }
 }

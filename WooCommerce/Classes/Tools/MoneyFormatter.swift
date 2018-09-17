@@ -5,7 +5,7 @@ public struct MoneyFormatter {
     private var currencyFormatter: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.usesGroupingSeparator = true
-        formatter.numberStyle = .currencyISOCode
+        formatter.numberStyle = .currency
 
         return formatter
     }
@@ -15,7 +15,7 @@ public struct MoneyFormatter {
     func format(value: String, currencyCode: String, locale: Locale = Locale.current) -> String {
         currencyFormatter.locale = locale
         currencyFormatter.currencyCode = currencyCode
-        let decimalValue = Decimal(string: value) ?? Decimal(string: "0.0")
+        let decimalValue = Decimal(string: value)
 
         guard let decimal = decimalValue else {
             fatalError("A default localized currency value should be returned, e.g.: $0.00")

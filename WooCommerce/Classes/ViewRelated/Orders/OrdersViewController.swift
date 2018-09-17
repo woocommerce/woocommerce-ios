@@ -182,9 +182,10 @@ private extension OrdersViewController {
         resultsController.predicate = newFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
         tableView.reloadData()
 
-        // Reset the Coordinator: Prevent OOS Scenarios
-        syncingCoordinator.reset()
-        syncingCoordinator.synchronizeFirstPage()
+        resetStoredOrders { [weak self] in
+            // Resynchronize: Reset Coordinator internals and resync the first page
+            self?.syncingCoordinator.resynchronize()
+        }
     }
 }
 
@@ -192,6 +193,16 @@ private extension OrdersViewController {
 // MARK: - Sync'ing Helpers
 //
 extension OrdersViewController: SyncingCoordinatorDelegate {
+
+    /// Nukes all of the Stored Orders
+    ///
+    func resetStoredOrders(onCompletion: @escaping () -> Void) {
+        let action = OrderAction.resetStoredOrders {
+            onCompletion()
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
 
     /// Synchronizes the Orders for the Default Store (if any).
     ///

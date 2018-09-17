@@ -19,7 +19,7 @@ extension TopEarnerStatsItem {
         return Locale(identifier: identifier).currencySymbol ?? currency
     }
 
-    /// Returns the a friendly-formatted total string including the currency symbol
+    /// Returns a friendly-formatted total string including the currency symbol
     ///
     var formattedTotalString: String {
         return currencySymbol + total.friendlyString()

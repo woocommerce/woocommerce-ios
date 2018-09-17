@@ -154,10 +154,6 @@ extension OrdersViewController {
             }
         }
 
-        actionSheet.addDefaultActionWithTitle(FilterAction.displayCustom) { [weak self] _ in
-            self?.displayOrdersWithUnknownStatus()
-        }
-
         present(actionSheet, animated: true)
     }
 
@@ -175,13 +171,6 @@ private extension OrdersViewController {
 
     func displayOrders(with status: OrderStatus) {
         let predicate = NSPredicate(format: "status = %@", status.rawValue)
-
-        updateResultsController(predicate: predicate)
-    }
-
-    func displayOrdersWithUnknownStatus() {
-        let knownStatus = OrderStatus.knownStatus.map { $0.rawValue }
-        let predicate = NSPredicate(format: "NOT (status in %@)", knownStatus)
 
         updateResultsController(predicate: predicate)
     }
@@ -463,7 +452,6 @@ private extension OrdersViewController {
     enum FilterAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
         static let displayAll = NSLocalizedString("All", comment: "All filter title")
-        static let displayCustom = NSLocalizedString("Custom", comment: "Title for button that catches all custom labels and displays them on the order list")
     }
 
     enum Settings {

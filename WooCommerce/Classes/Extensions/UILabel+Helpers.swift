@@ -9,6 +9,12 @@ extension UILabel {
         textColor = StyleManager.defaultTextColor
     }
 
+    func applySubheadlineStyle() {
+        adjustsFontForContentSizeCategory = true
+        font = .subheadline
+        textColor = StyleManager.defaultTextColor
+    }
+
     func applyBodyStyle() {
         adjustsFontForContentSizeCategory = true
         font = .body

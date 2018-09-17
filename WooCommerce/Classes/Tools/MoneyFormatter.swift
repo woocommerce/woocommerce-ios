@@ -1,6 +1,6 @@
 import Foundation
 
-public struct MoneyFormatter {
+public class MoneyFormatter {
 
     private lazy var currencyFormatter: NumberFormatter = {
         let formatter = NumberFormatter()

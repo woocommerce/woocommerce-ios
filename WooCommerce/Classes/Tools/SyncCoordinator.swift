@@ -73,6 +73,13 @@ class SyncingCoordinator {
 
         synchronize(pageNumber: nextPage)
     }
+
+    /// Resets all of the internal tracking structures.
+    ///
+    func reset() {
+        pagesBeingSynced.removeAll()
+        refreshDatePerPage.removeAll()
+    }
 }
 
 

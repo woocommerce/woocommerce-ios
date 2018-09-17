@@ -24,6 +24,8 @@ public class OrderStore: Store {
         switch action {
         case .synchronizeOrders(let siteID, let status, let pageNumber, let pageSize, let onCompletion):
             synchronizeOrders(siteID: siteID, status: status, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .resetStoredOrders(let onCompletion):
+            resetStoredOrders(onCompletion: onCompletion)
         case .retrieveOrder(let siteID, let orderID, let onCompletion):
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .updateOrder(let siteID, let orderID, let status, let onCompletion):
@@ -36,6 +38,16 @@ public class OrderStore: Store {
 // MARK: - Services!
 //
 private extension OrderStore {
+
+    /// Nukes all of the Stored Orders.
+    ///
+    func resetStoredOrders(onCompletion: () -> Void) {
+        let storage = storageManager.viewStorage
+        storage.deleteAllObjects(ofType: Storage.Order.self)
+        storage.saveIfNeeded()
+
+        onCompletion()
+    }
 
     /// Retrieves the orders associated with a given Site ID (if any!).
     ///

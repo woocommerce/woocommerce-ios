@@ -37,7 +37,7 @@ class MoneyFormatterTests: XCTestCase {
 
     /// Testing French-Canadian locale
     ///
-    private let frLocale = Locale(identifier: "fr_FR")
+    private let frLocale = Locale(identifier: "fr_CA")
 
     /// Test zero string values yield properly formatted dollar strings
     ///
@@ -94,7 +94,9 @@ class MoneyFormatterTests: XCTestCase {
         let formattedString = MoneyFormatter().format(value: nonZeroString,
                                                       currencyCode: currencyCodeEUR,
                                                       locale: frLocale)
-        XCTAssertEqual(formattedString, "618,72 €")
+        // Fun fact: the currency formatter grouping separator is a unicode non-breaking space character.
+        // https://stackoverflow.com/a/39954700/4150507
+        XCTAssertEqual(formattedString, "618,72\u{00a0}€")
     }
 
     /// Test non-zero decimal values yield properly formatted yen strings
@@ -107,7 +109,7 @@ class MoneyFormatterTests: XCTestCase {
         let formattedString = MoneyFormatter().format(value: decimalValue,
                                                       currencyCode: currencyCodeEUR,
                                                       locale: frLocale)
-        XCTAssertEqual(formattedString, "618,72 €")
+        XCTAssertEqual(formattedString, "618,72\u{00a0}€")
     }
 
     /// Test zero decimal values return nil
@@ -133,7 +135,7 @@ class MoneyFormatterTests: XCTestCase {
         let formattedString = MoneyFormatter().formatIfNonZero(value: nonZeroString,
                                                                currencyCode: currencyCodeEUR,
                                                                locale: frLocale)
-        XCTAssertEqual(formattedString, "618,72 €")
+        XCTAssertEqual(formattedString, "618,72\u{00a0}€")
     }
 
     func testDecimalValueIsNonZeroAndReturnsFormattedNonZeroYenForFRLocale() {
@@ -144,6 +146,9 @@ class MoneyFormatterTests: XCTestCase {
         let formattedDecimal = MoneyFormatter().formatIfNonZero(value: decimalValue,
                                                                 currencyCode: currencyCodeJPY,
                                                                 locale: frLocale)
-        XCTAssertEqual(formattedDecimal, "618.72 ¥")
+
+        // Fun fact: A Japanese Yen is the lowest value possible in Japanese currency.
+        // Therefore, there are no decimal values for this currency.
+        XCTAssertEqual(formattedDecimal, "619\u{00a0}¥")
     }
 }

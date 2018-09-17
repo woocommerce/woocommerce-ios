@@ -11,7 +11,7 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
 
     public let granularity: StatGranularity
 
-    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: IntrinsicTableView!
 
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///

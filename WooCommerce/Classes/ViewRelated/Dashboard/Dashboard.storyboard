@@ -397,9 +397,6 @@
                                     </view>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r3q-NT-5cw">
                                         <rect key="frame" x="0.0" y="86" width="375" height="379"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="365" id="yPd-rF-9Hg"/>
-                                        </constraints>
                                     </scrollView>
                                 </subviews>
                             </stackView>

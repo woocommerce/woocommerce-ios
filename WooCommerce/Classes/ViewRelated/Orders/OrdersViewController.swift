@@ -98,7 +98,7 @@ class OrdersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        sync()
+        syncingCoordinator.synchronizeFirstPage()
     }
 }
 
@@ -166,7 +166,7 @@ extension OrdersViewController {
     }
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        sync { _ in
+        syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
     }
@@ -184,7 +184,7 @@ private extension OrdersViewController {
 
         // Reset the Coordinator: Prevent OOS Scenarios
         syncingCoordinator.reset()
-        sync()
+        syncingCoordinator.synchronizeFirstPage()
     }
 }
 
@@ -195,7 +195,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Orders for the Default Store (if any).
     ///
-    func sync(pageNumber: Int = 1, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, onCompletion: ((Bool) -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             onCompletion?(false)
             return

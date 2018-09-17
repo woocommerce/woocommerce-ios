@@ -36,7 +36,7 @@ class OrdersRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
-        remote.loadAllOrders(for: sampleSiteID) { orders, error in
+        remote.loadAllOrders(for: sampleSiteID, status: nil) { orders, error in
             XCTAssertNil(error)
             XCTAssertNotNil(orders)
             XCTAssert(orders!.count == 3)
@@ -52,7 +52,7 @@ class OrdersRemoteTests: XCTestCase {
         let remote = OrdersRemote(network: network)
         let expectation = self.expectation(description: "Load All Orders")
 
-        remote.loadAllOrders(for: sampleSiteID) { orders, error in
+        remote.loadAllOrders(for: sampleSiteID, status: nil) { orders, error in
             XCTAssertNil(orders)
             XCTAssertNotNil(error)
             expectation.fulfill()

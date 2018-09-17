@@ -372,6 +372,29 @@ class OrderStoreTests: XCTestCase {
         orderStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that `resetStoredOrders` nukes the Orders Cache.
+    ///
+    func testResetStoredOrdersEffectivelyNukesTheOrdersCache() {
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
+
+        let expectation = self.expectation(description: "Stored Orders Reset")
+        let action = OrderAction.resetStoredOrders {
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderItem.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 

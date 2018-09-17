@@ -2,13 +2,13 @@ import Foundation
 
 public struct MoneyFormatter {
 
-    private var currencyFormatter: NumberFormatter {
+    private lazy var currencyFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.usesGroupingSeparator = true
         formatter.numberStyle = .currency
 
         return formatter
-    }
+    }()
 
     /// Returns a localized and formatted currency string, including zero values.
     ///

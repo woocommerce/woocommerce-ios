@@ -178,12 +178,13 @@ extension OrdersViewController {
 private extension OrdersViewController {
 
     private func didChangeFilter(newFilter: OrderStatus?) {
-        let predicate = newFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
-        resultsController.predicate = predicate
-
-        state.transitionToResultsUpdatedState(isEmpty: isEmpty, isFiltered: isFiltered)
-
+        // Filter right away the cached orders
+        resultsController.predicate = newFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
         tableView.reloadData()
+
+        // Reset the Coordinator: Prevent OOS Scenarios
+        syncingCoordinator.reset()
+        sync()
     }
 }
 
@@ -202,7 +203,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
         state.transitionToSyncingState(isEmpty: isEmpty)
 
-        let action = OrderAction.synchronizeOrders(siteID: siteID, status: nil, pageNumber: pageNumber, pageSize: Syncing.pageSize) { [weak self] error in
+        let action = OrderAction.synchronizeOrders(siteID: siteID, status: statusFilter, pageNumber: pageNumber, pageSize: Syncing.pageSize) { [weak self] error in
             guard let `self` = self else {
                 return
             }
@@ -218,6 +219,12 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
         StoresManager.shared.dispatch(action)
     }
+}
+
+
+// MARK: - Spinner Helpers
+//
+extension OrdersViewController {
 
     /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
     ///

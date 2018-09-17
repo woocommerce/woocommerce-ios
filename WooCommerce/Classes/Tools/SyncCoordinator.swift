@@ -78,11 +78,11 @@ class SyncingCoordinator {
         synchronize(pageNumber: nextPage)
     }
 
-    /// Resets all of the internal tracking structures.
+    /// Resets Internal State + (RE)synchronizes the first page in the collection.
     ///
-    func reset() {
-        pagesBeingSynced.removeAll()
-        refreshDatePerPage.removeAll()
+    func resynchronize() {
+        resetInternalState()
+        synchronizeFirstPage()
     }
 
     /// Synchronizes the First Page in the collection.
@@ -121,6 +121,13 @@ private extension SyncingCoordinator {
 // MARK: - Analyzer Methods: For unit testing purposes, marking them as `Internal`
 //
 extension SyncingCoordinator {
+
+    /// Resets all of the internal structures
+    ///
+    func resetInternalState() {
+        pagesBeingSynced.removeAll()
+        refreshDatePerPage.removeAll()
+    }
 
     /// Maps an ObjectIndex to a PageNumber: [1, ...)
     ///

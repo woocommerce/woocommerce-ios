@@ -38,6 +38,14 @@ class OrdersViewController: UIViewController {
     ///
     private let syncingCoordinator = SyncingCoordinator(pageSize: Syncing.pageSize, pageTTLInSeconds: Syncing.pageTTLInSeconds)
 
+    /// OrderStatus that must be matched by retrieved orders.
+    ///
+    private var statusFilter: OrderStatus? {
+        didSet {
+            didChangeFilter(newFilter: statusFilter)
+        }
+    }
+
     /// Indicates if there are no results onscreen.
     ///
     private var isEmpty: Bool {
@@ -47,7 +55,7 @@ class OrdersViewController: UIViewController {
     /// Indicates if there's a filter being applied.
     ///
     private var isFiltered: Bool {
-        return resultsController.predicate != nil
+        return statusFilter != nil
     }
 
     /// UI Active State
@@ -145,12 +153,12 @@ extension OrdersViewController {
 
         actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
         actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
-            self?.resetOrderFilters()
+            self?.statusFilter = nil
         }
 
         for status in OrderStatus.knownStatus {
             actionSheet.addDefaultActionWithTitle(status.description) { [weak self] _ in
-                self?.displayOrders(with: status)
+                self?.statusFilter = status
             }
         }
 
@@ -169,18 +177,10 @@ extension OrdersViewController {
 //
 private extension OrdersViewController {
 
-    func displayOrders(with status: OrderStatus) {
-        let predicate = NSPredicate(format: "status = %@", status.rawValue)
-
-        updateResultsController(predicate: predicate)
-    }
-
-    func resetOrderFilters() {
-        updateResultsController(predicate: nil)
-    }
-
-    private func updateResultsController(predicate: NSPredicate?) {
+    private func didChangeFilter(newFilter: OrderStatus?) {
+        let predicate = newFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
         resultsController.predicate = predicate
+
         state.transitionToResultsUpdatedState(isEmpty: isEmpty, isFiltered: isFiltered)
 
         tableView.reloadData()
@@ -302,7 +302,7 @@ private extension OrdersViewController {
         overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Orders List (Empty State + Filters)")
         overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: Opens the Store in a browser")
         overlayView.onAction = { [weak self] in
-            self?.resetOrderFilters()
+            self?.statusFilter = nil
         }
 
         overlayView.attach(to: view)

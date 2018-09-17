@@ -97,7 +97,7 @@
                                 <rect key="frame" x="0.0" y="64" width="375" height="1007"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="c2q-ri-kSZ">
-                                        <rect key="frame" x="0.0" y="18" width="375" height="1026"/>
+                                        <rect key="frame" x="0.0" y="18" width="375" height="991"/>
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bgR-ww-mDR">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="380"/>
@@ -125,10 +125,10 @@
                                                 </connections>
                                             </containerView>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5mn-wP-ueH">
-                                                <rect key="frame" x="0.0" y="526" width="375" height="500"/>
+                                                <rect key="frame" x="0.0" y="526" width="375" height="465"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" priority="999" constant="500" id="GhH-0R-SZx"/>
-                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="500" id="SIr-zN-m3B"/>
+                                                    <constraint firstAttribute="height" priority="900" constant="465" id="GhH-0R-SZx"/>
+                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="465" id="SIr-zN-m3B"/>
                                                 </constraints>
                                                 <connections>
                                                     <segue destination="Djg-dC-a51" kind="embed" identifier="TopPerformersEmbedSegue" id="1gd-ia-ZTz"/>
@@ -344,11 +344,11 @@
             <objects>
                 <viewController id="Djg-dC-a51" customClass="TopPerformersViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1eR-hd-IG4">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="500"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="465"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="jSh-li-XP9">
-                                <rect key="frame" x="0.0" y="20" width="375" height="480"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="465"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0FA-ly-Gnf">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="36"/>
@@ -396,7 +396,7 @@
                                         </constraints>
                                     </view>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r3q-NT-5cw">
-                                        <rect key="frame" x="0.0" y="86" width="375" height="394"/>
+                                        <rect key="frame" x="0.0" y="86" width="375" height="379"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="365" id="yPd-rF-9Hg"/>
                                         </constraints>

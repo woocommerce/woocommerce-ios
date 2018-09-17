@@ -163,10 +163,6 @@ extension TopPerformerDataViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard hasTopEarnerStatsItems else {
-            return Constants.emptyView
-        }
-
         guard let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: TopPerformersHeaderView.reuseIdentifier) as? TopPerformersHeaderView else {
             fatalError()
         }
@@ -198,9 +194,6 @@ extension TopPerformerDataViewController: UITableViewDataSource {
 extension TopPerformerDataViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        guard hasTopEarnerStatsItems else {
-            return CGFloat.leastNonzeroMagnitude
-        }
         return UITableViewAutomaticDimension
     }
 

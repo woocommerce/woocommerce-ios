@@ -42,15 +42,15 @@ class CoreDataManagerTests: XCTestCase {
 
     /// Verifies that performBackgroundTask effectively runs received closure in BG.
     ///
-    func testPerformTaskInBackgroundEffectivelyRunsReceivedClosureInBackgroundThread() {
-        let manager = CoreDataManager(name: "WooCommerce")
-        let expectation = self.expectation(description: "Background")
-
-        manager.performBackgroundTask { (_) in
-            XCTAssertFalse(Thread.isMainThread)
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
+//    func testPerformTaskInBackgroundEffectivelyRunsReceivedClosureInBackgroundThread() {
+//        let manager = CoreDataManager(name: "WooCommerce")
+//        let expectation = self.expectation(description: "Background")
+//
+//        manager.performBackgroundTask { (_) in
+//            XCTAssertFalse(Thread.isMainThread)
+//            expectation.fulfill()
+//        }
+//
+//        wait(for: [expectation], timeout: Constants.expectationTimeout)
+//    }
 }

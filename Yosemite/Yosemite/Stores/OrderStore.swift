@@ -39,10 +39,10 @@ private extension OrderStore {
 
     /// Retrieves the orders associated with a given Site ID (if any!).
     ///
-    func synchronizeOrders(siteID: Int, status: OrderStatus, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeOrders(siteID: Int, status: OrderStatus?, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
-        remote.loadAllOrders(for: siteID, status: status.rawValue, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (orders, error) in
+        remote.loadAllOrders(for: siteID, status: status?.rawValue, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (orders, error) in
             guard let orders = orders else {
                 onCompletion(error)
                 return

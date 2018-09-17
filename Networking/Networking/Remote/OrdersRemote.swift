@@ -16,7 +16,7 @@ public class OrdersRemote: Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllOrders(for siteID: Int,
-                              status: String,
+                              status: String?,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
                               completion: @escaping ([Order]?, Error?) -> Void)
@@ -24,7 +24,7 @@ public class OrdersRemote: Remote {
         let parameters = [
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
-            ParameterKeys.status: status
+            ParameterKeys.status: status ?? Defaults.statusAny
         ]
 
         let path = Constants.ordersPath
@@ -109,6 +109,7 @@ public extension OrdersRemote {
     public enum Defaults {
         public static let pageSize: Int     = 75
         public static let pageNumber: Int   = 1
+        public static let statusAny: String = "any"
     }
 
     private enum Constants {

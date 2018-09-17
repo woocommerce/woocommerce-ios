@@ -202,7 +202,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
         state.transitionToSyncingState(isEmpty: isEmpty)
 
-        let action = OrderAction.synchronizeOrders(siteID: siteID, pageNumber: pageNumber, pageSize: Syncing.pageSize) { [weak self] error in
+        let action = OrderAction.synchronizeOrders(siteID: siteID, status: nil, pageNumber: pageNumber, pageSize: Syncing.pageSize) { [weak self] error in
             guard let `self` = self else {
                 return
             }

@@ -53,7 +53,7 @@ extension NewOrdersViewController {
             return
         }
 
-        let action = OrderAction.synchronizeOrders(siteID: siteID, pageNumber: Syncing.pageNumber, pageSize: Syncing.pageSize) { error in
+        let action = OrderAction.synchronizeOrders(siteID: siteID, status: nil, pageNumber: Syncing.pageNumber, pageSize: Syncing.pageSize) { error in
             if let error = error {
                 DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing orders: \(error)")
             }

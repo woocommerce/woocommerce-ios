@@ -13,7 +13,7 @@ class PaddedLabel: UILabel {
     // MARK: - Overridden Methods
 
     override func drawText(in rect: CGRect) {
-        super.drawText(in: UIEdgeInsetsInsetRect(rect, textInsets))
+        super.drawText(in: rect.inset(by: textInsets))
     }
 
     override var intrinsicContentSize: CGSize {

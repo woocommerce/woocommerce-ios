@@ -29,7 +29,7 @@ target 'WooCommerce' do
   pod 'Alamofire', '~> 4.7'
   pod 'Crashlytics', '~> 3.10'
   pod 'KeychainAccess', '~> 3.1'
-  pod 'CocoaLumberjack/Swift', '~> 3.4'
+  pod 'CocoaLumberjack', '~> 3.4'
   pod 'XLPagerTabStrip', '~> 8.0'
   pod 'Charts', '~> 3.1'
 
@@ -54,7 +54,7 @@ target 'Yosemite' do
   # ==================
   #
   pod 'Alamofire', '~> 4.7'
-  pod 'CocoaLumberjack/Swift', '~> 3.4'
+  pod 'CocoaLumberjack', '~> 3.4'
 
   # Unit Tests
   # ==========
@@ -78,7 +78,7 @@ target 'Networking' do
   # ==================
   #
   pod 'Alamofire', '~> 4.7'
-  pod 'CocoaLumberjack/Swift', '~> 3.4'
+  pod 'CocoaLumberjack', '~> 3.4'
 
 
   # Unit Tests
@@ -99,7 +99,7 @@ target 'Storage' do
   # External Libraries
   # ==================
   #
-  pod 'CocoaLumberjack/Swift', '~> 3.4'
+  pod 'CocoaLumberjack', '~> 3.4'
 
 
   # Unit Tests
@@ -107,5 +107,21 @@ target 'Storage' do
   #
   target 'StorageTests' do
     inherit! :search_paths
+  end
+end
+
+
+# Workaround: Set SWIFT_VERSION = 4.0 in dependencies that do not have an explicit setting.
+# Xcode is bumping them up to 4.2, and the project just won't build.
+#
+# TODO: Remove as soon as the dependencies get updated!
+#
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+      if ['Charts', 'XLPagerTabStrip', 'WordPressShared'].include? target.name
+          target.build_configurations.each do |config|
+              config.build_settings['SWIFT_VERSION'] = '4.0'
+          end
+      end
   end
 end

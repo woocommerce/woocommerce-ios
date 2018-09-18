@@ -107,7 +107,7 @@ private extension OrdersViewController {
                                              action: #selector(displayFiltersAlert))
         rightBarButton.tintColor = .white
         rightBarButton.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
-        rightBarButton.accessibilityTraits = UIAccessibilityTraitButton
+        rightBarButton.accessibilityTraits = .button
         rightBarButton.accessibilityHint = NSLocalizedString("Filters the order list by payment status.", comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list.")
         navigationItem.rightBarButtonItem = rightBarButton
 
@@ -119,7 +119,7 @@ private extension OrdersViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
     }
@@ -218,17 +218,13 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
                 return
             }
 
-            defer {
-                onCompletion?(error == nil)
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing orders: \(error)")
+                self.displaySyncingErrorNotice(retryPageNumber: pageNumber)
             }
 
-            guard let error = error else {
-                self.state.transitionToResultsUpdatedState(isEmpty: self.isEmpty, isFiltered: self.isFiltered)
-                return
-            }
-
-            DDLogError("⛔️ Error synchronizing orders: \(error)")
-            self.state.transitionToErrorState()
+            self.state.transitionToResultsUpdatedState(isEmpty: self.isEmpty, isFiltered: self.isFiltered)
+            onCompletion?(error == nil)
         }
 
         StoresManager.shared.dispatch(action)
@@ -282,18 +278,17 @@ private extension OrdersViewController {
         resultsController.startForwardingEvents(to: self.tableView)
     }
 
-    /// Displays the Error State Overlay.
+    /// Displays the Error Notice.
     ///
-    func displayErrorOverlay() {
-        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = .errorStateImage
-        overlayView.messageText = NSLocalizedString("Unable to load the orders list", comment: "Order List Loading Error")
-        overlayView.actionText = NSLocalizedString("Retry", comment: "Retry Action")
-        overlayView.onAction = { [weak self] in
-            self?.sync()
+    func displaySyncingErrorNotice(retryPageNumber: Int) {
+        let title = NSLocalizedString("Orders", comment: "Orders Notice Title")
+        let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.sync(pageNumber: retryPageNumber)
         }
 
-        overlayView.attach(to: view)
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays the Empty State Overlay.
@@ -391,13 +386,13 @@ extension OrdersViewController: UITableViewDataSource {
 extension OrdersViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableViewAutomaticDimension
+        return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        guard state == .results else {
+        guard state != .placeholder else {
             return
         }
 
@@ -435,8 +430,6 @@ private extension OrdersViewController {
             displayEmptyUnfilteredOverlay()
         case .emptyFiltered:
             displayEmptyFilteredOverlay()
-        case .error:
-            displayErrorOverlay()
         case .placeholder:
             displayPlaceholderOrders()
         case .syncing:
@@ -451,8 +444,6 @@ private extension OrdersViewController {
         case .emptyFiltered:
             removeAllOverlays()
         case .emptyUnfiltered:
-            removeAllOverlays()
-        case .error:
             removeAllOverlays()
         case .placeholder:
             removePlaceholderOrders()
@@ -495,19 +486,12 @@ private extension OrdersViewController {
         case results
         case emptyUnfiltered
         case emptyFiltered
-        case error
 
         /// Should be called before Sync'ing. Transitions to either `results` or `placeholder` state, depending on whether if
         /// we've got cached results, or not.
         ///
         mutating func transitionToSyncingState(isEmpty: Bool) {
             self = isEmpty ? .placeholder : .syncing
-        }
-
-        /// Transitions to the Error State.
-        ///
-        mutating func transitionToErrorState() {
-            self = .error
         }
 
         /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).

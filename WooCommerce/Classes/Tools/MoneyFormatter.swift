@@ -1,0 +1,77 @@
+import Foundation
+
+public class MoneyFormatter {
+
+    private lazy var currencyFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.usesGroupingSeparator = true
+        formatter.numberStyle = .currency
+
+        return formatter
+    }()
+
+    /// Returns a localized and formatted currency string, including zero values.
+    ///
+    func format(value: String, currencyCode: String, locale: Locale = .current) -> String {
+        currencyFormatter.locale = locale
+        currencyFormatter.currencyCode = currencyCode
+        let decimalValue = Decimal(string: value)
+
+        guard let decimal = decimalValue else {
+            // Since the value can come directly from the server, return a non-fatal error.
+            return String()
+        }
+
+        let decimalNumber = NSDecimalNumber(decimal: decimal)
+        guard let numberValue = currencyFormatter.string(from: decimalNumber) else {
+            // same here
+            return String()
+        }
+
+        return numberValue
+    }
+
+    /// Returns a localized and formatted currency string, including zero values.
+    ///
+    func format(value: Decimal, currencyCode: String, locale: Locale = .current) -> String {
+        currencyFormatter.locale = locale
+        currencyFormatter.currencyCode = currencyCode
+        let decimalNumber = NSDecimalNumber(decimal: value)
+        guard let numberValue = currencyFormatter.string(from: decimalNumber) else {
+            return String()
+        }
+
+        return numberValue
+    }
+
+    /// Returns a localized and formatted currency string, or nil if empty or zero.
+    ///
+    func formatIfNonZero(value: String, currencyCode: String, locale: Locale = .current) -> String? {
+        currencyFormatter.locale = locale
+        currencyFormatter.currencyCode = currencyCode
+        guard value.isEmpty == false else {
+            return nil
+        }
+        currencyFormatter.currencyCode = currencyCode
+
+        let decimalNumber = NSDecimalNumber(string: value)
+        if decimalNumber.decimalValue.isZero {
+            return nil
+        }
+
+        return currencyFormatter.string(from: decimalNumber)
+    }
+
+    /// Returns a localized and formatted currency string, or nil if value is zero.
+    ///
+    func formatIfNonZero(value: Decimal, currencyCode: String, locale: Locale = .current) -> String? {
+        currencyFormatter.locale = locale
+        currencyFormatter.currencyCode = currencyCode
+        let decimalNumber = NSDecimalNumber(decimal: value)
+        if decimalNumber.decimalValue.isZero {
+            return nil
+        }
+
+        return currencyFormatter.string(from: decimalNumber)
+    }
+}

@@ -63,8 +63,8 @@ class SyncingCoordinator {
     ///
     init(pageFirstIndex: Int = Defaults.pageFirstIndex,
          pageSize: Int = Defaults.pageSize,
-         pageTTLInSeconds: TimeInterval = Defaults.pageTTLInSeconds)
-    {
+         pageTTLInSeconds: TimeInterval = Defaults.pageTTLInSeconds) {
+
         self.pageFirstIndex = pageFirstIndex
         self.pageSize = pageSize
         self.pageTTLInSeconds = pageTTLInSeconds

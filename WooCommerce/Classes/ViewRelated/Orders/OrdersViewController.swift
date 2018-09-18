@@ -36,7 +36,7 @@ class OrdersViewController: UIViewController {
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
-    private let syncingCoordinator = SyncingCoordinator(pageSize: Syncing.pageSize, pageTTLInSeconds: Syncing.pageTTLInSeconds)
+    private let syncingCoordinator = SyncingCoordinator()
 
     /// OrderStatus that must be matched by retrieved orders.
     ///
@@ -206,7 +206,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Orders for the Default Store (if any).
     ///
-    func sync(pageNumber: Int, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             onCompletion?(false)
             return
@@ -214,14 +214,14 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
         state.transitionToSyncingState(isEmpty: isEmpty)
 
-        let action = OrderAction.synchronizeOrders(siteID: siteID, status: statusFilter, pageNumber: pageNumber, pageSize: Syncing.pageSize) { [weak self] error in
+        let action = OrderAction.synchronizeOrders(siteID: siteID, status: statusFilter, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
             guard let `self` = self else {
                 return
             }
 
             if let error = error {
                 DDLogError("⛔️ Error synchronizing orders: \(error)")
-                self.displaySyncingErrorNotice(retryPageNumber: pageNumber)
+                self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
             }
 
             self.state.transitionToResultsUpdatedState(isEmpty: self.isEmpty, isFiltered: self.isFiltered)
@@ -254,7 +254,7 @@ extension OrdersViewController {
             return false
         }
 
-        return highestPageBeingSynced * Syncing.pageSize > resultsController.numberOfObjects
+        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > resultsController.numberOfObjects
     }
 
     /// Stops animating the Footer Spinner.
@@ -287,12 +287,12 @@ private extension OrdersViewController {
 
     /// Displays the Error Notice.
     ///
-    func displaySyncingErrorNotice(retryPageNumber: Int) {
+    func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int) {
         let title = NSLocalizedString("Orders", comment: "Orders Notice Title")
         let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.sync(pageNumber: retryPageNumber)
+            self?.sync(pageNumber: pageNumber, pageSize: pageSize)
         }
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
@@ -475,11 +475,6 @@ private extension OrdersViewController {
     enum Settings {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
-    }
-
-    enum Syncing {
-        static let pageSize = 25
-        static let pageTTLInSeconds = TimeInterval(3 * 60)
     }
 
     enum Segues {

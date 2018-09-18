@@ -9,7 +9,7 @@ protocol SyncingCoordinatorDelegate: class {
     /// The receiver is expected to synchronize the pageNumber. On completion, it should indicate if the sync was
     /// successful or not.
     ///
-    func sync(pageNumber: Int, onCompletion: ((Bool) -> Void)?)
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?)
 }
 
 
@@ -21,6 +21,14 @@ protocol SyncingCoordinatorDelegate: class {
 ///
 class SyncingCoordinator {
 
+    /// Default Settings
+    ///
+    enum Defaults {
+        static let pageFirstIndex = 1
+        static let pageSize = 25
+        static let pageTTLInSeconds = TimeInterval(3 * 60)
+    }
+
     /// Maps Page Numbers > Refresh Dates
     ///
     private var refreshDatePerPage = [Int: Date]()
@@ -31,7 +39,7 @@ class SyncingCoordinator {
 
     /// First Page Index
     ///
-    let firstPageIndex = 1
+    let pageFirstIndex: Int
 
     /// Number of elements retrieved per request.
     ///
@@ -53,7 +61,11 @@ class SyncingCoordinator {
 
     /// Designated Initializer
     ///
-    init(pageSize: Int, pageTTLInSeconds: TimeInterval) {
+    init(pageFirstIndex: Int = Defaults.pageFirstIndex,
+         pageSize: Int = Defaults.pageSize,
+         pageTTLInSeconds: TimeInterval = Defaults.pageTTLInSeconds)
+    {
+        self.pageFirstIndex = pageFirstIndex
         self.pageSize = pageSize
         self.pageTTLInSeconds = pageTTLInSeconds
     }
@@ -88,7 +100,7 @@ class SyncingCoordinator {
     /// Synchronizes the First Page in the collection.
     ///
     func synchronizeFirstPage(onCompletion: (() -> Void)? = nil) {
-        synchronize(pageNumber: firstPageIndex, onCompletion: onCompletion)
+        synchronize(pageNumber: pageFirstIndex, onCompletion: onCompletion)
     }
 }
 
@@ -106,7 +118,7 @@ private extension SyncingCoordinator {
 
         markAsBeingSynced(pageNumber: pageNumber)
 
-        delegate.sync(pageNumber: pageNumber) { success in
+        delegate.sync(pageNumber: pageNumber, pageSize: pageSize) { success in
             if success {
                 self.markAsUpdated(pageNumber: pageNumber)
             }

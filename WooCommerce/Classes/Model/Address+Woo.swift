@@ -13,10 +13,28 @@ extension Address {
         return firstName + " " + lastName
     }
 
-    /// returns the Postal Address, formated and ready for display.
+    /// Returns the Postal Address, formated and ready for display.
     ///
-    var formattedPostalAddress: String {
+    var formattedPostalAddress: String? {
         return postalAddress.formatted(as: .mailingAddress)
+    }
+
+    /// Returns the (clean) Phone number: contains only decimal digits
+    ///
+    var cleanedPhoneNumber: String? {
+        return phone?.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+    }
+
+    /// Indicates if there is a Phone Number set (and it's not empty).
+    ///
+    var hasPhoneNumber: Bool {
+        return phone?.isEmpty == false
+    }
+
+    /// Indicates if there is an Email Address set (and it's not empty).
+    ///
+    var hasEmailAddress: Bool {
+        return email?.isEmpty == false
     }
 }
 

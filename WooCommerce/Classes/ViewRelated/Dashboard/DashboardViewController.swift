@@ -15,6 +15,7 @@ class DashboardViewController: UIViewController {
 
     private var storeStatsViewController: StoreStatsViewController!
     private var newOrdersViewController: NewOrdersViewController!
+    private var topPerformersViewController: TopPerformersViewController!
 
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
@@ -37,12 +38,15 @@ class DashboardViewController: UIViewController {
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let vc = segue.destination as? StoreStatsViewController, segue.identifier == Constants.storeStatsSegue {
+        if let vc = segue.destination as? StoreStatsViewController, segue.identifier == Segues.storeStatsSegue {
             storeStatsViewController = vc
         }
-        if let vc = segue.destination as? NewOrdersViewController, segue.identifier == Constants.newOrdersSegue {
+        if let vc = segue.destination as? NewOrdersViewController, segue.identifier == Segues.newOrdersSegue {
             newOrdersViewController = vc
             newOrdersViewController.delegate = self
+        }
+        if let vc = segue.destination as? TopPerformersViewController, segue.identifier == Segues.topPerformersSegue {
+            topPerformersViewController = vc
         }
     }
 }
@@ -86,7 +90,7 @@ private extension DashboardViewController {
 private extension DashboardViewController {
 
     @objc func settingsTapped() {
-        performSegue(withIdentifier: Constants.settingsSegue, sender: nil)
+        performSegue(withIdentifier: Segues.settingsSegue, sender: nil)
     }
 
     @objc func pullToRefresh() {
@@ -116,6 +120,7 @@ private extension DashboardViewController {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
         storeStatsViewController.syncAllStats()
         newOrdersViewController.syncNewOrders()
+        topPerformersViewController.syncTopPerformers()
         refreshControl.endRefreshing()
     }
 
@@ -149,14 +154,18 @@ private extension DashboardViewController {
 // MARK: - Constants
 //
 private extension DashboardViewController {
-    struct Constants {
-        static let settingsSegue    = "ShowSettingsViewController"
-        static let storeStatsSegue  = "StoreStatsEmbedSegue"
-        static let newOrdersSegue   = "NewOrdersEmbedSegue"
 
-        static let hideAnimationDuration: TimeInterval = 0.25
-        static let showAnimationDuration: TimeInterval = 0.50
-        static let showSpringDamping: CGFloat = 0.7
-        static let showSpringVelocity: CGFloat = 0.0
+    struct Segues {
+        static let settingsSegue        = "ShowSettingsViewController"
+        static let storeStatsSegue      = "StoreStatsEmbedSegue"
+        static let newOrdersSegue       = "NewOrdersEmbedSegue"
+        static let topPerformersSegue   = "TopPerformersEmbedSegue"
+    }
+
+    struct Constants {
+        static let hideAnimationDuration: TimeInterval  = 0.25
+        static let showAnimationDuration: TimeInterval  = 0.50
+        static let showSpringDamping: CGFloat           = 0.7
+        static let showSpringVelocity: CGFloat          = 0.0
     }
 }

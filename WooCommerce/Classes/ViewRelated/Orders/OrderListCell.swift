@@ -7,13 +7,13 @@ class OrderListCell: UITableViewCell {
     @IBOutlet var paymentStatusLabel: PaddedLabel!
 
 
-    func configureCell(order: OrderDetailsViewModel) {
-        titleLabel.text = order.summaryTitle
+    func configureCell(viewModel: OrderDetailsViewModel) {
+        titleLabel.text = viewModel.summaryTitle
         titleLabel.applyHeadlineStyle()
-        totalLabel.text = order.totalValue
+        totalLabel.text = viewModel.totalValue
         totalLabel.applyBodyStyle()
-        paymentStatusLabel.text = order.paymentStatus
-        paymentStatusLabel.applyStatusStyle(for: order.orderStatusViewModel.orderStatus)
+        paymentStatusLabel.text = viewModel.paymentStatus
+        paymentStatusLabel.applyStatusStyle(for: viewModel.orderStatusViewModel.orderStatus)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

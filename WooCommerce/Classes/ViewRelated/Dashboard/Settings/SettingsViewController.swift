@@ -36,7 +36,7 @@ class SettingsViewController: UIViewController {
 
     func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
 
         // `tableView.tableFooterView` can't handle a footerView that uses
         // autolayout only. Hence the container view with a defined frame.
@@ -96,7 +96,7 @@ extension SettingsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableViewAutomaticDimension
+        return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

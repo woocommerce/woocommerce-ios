@@ -8,7 +8,7 @@ class FooterSpinnerView: UIView {
 
     /// Activity Spinner!
     ///
-    private let activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+    private let activityIndicatorView = UIActivityIndicatorView(style: .gray)
 
     /// Designated Initializer
     ///

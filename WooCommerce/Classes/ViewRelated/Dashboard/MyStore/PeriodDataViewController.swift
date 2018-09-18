@@ -140,13 +140,13 @@ private extension PeriodDataViewController {
 
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
-        xAxisAccessibilityView.accessibilityTraits = UIAccessibilityTraitStaticText
+        xAxisAccessibilityView.accessibilityTraits = .staticText
         xAxisAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart: X Axis", comment: "VoiceOver accessibility label for the store revenue chart's X-axis.")
         yAxisAccessibilityView.isAccessibilityElement = true
-        yAxisAccessibilityView.accessibilityTraits = UIAccessibilityTraitStaticText
+        yAxisAccessibilityView.accessibilityTraits = .staticText
         yAxisAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart: Y Axis", comment: "VoiceOver accessibility label for the store revenue chart's Y-axis.")
         chartAccessibilityView.isAccessibilityElement = true
-        chartAccessibilityView.accessibilityTraits = UIAccessibilityTraitImage
+        chartAccessibilityView.accessibilityTraits = .image
         chartAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart", comment: "VoiceOver accessibility label for the store revenue chart.")
         chartAccessibilityView.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Store revenue chart %@",
                                                                                                        comment: "VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}."), granularity.pluralizedString)

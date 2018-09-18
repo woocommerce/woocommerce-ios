@@ -62,22 +62,6 @@ class OrderDetailsViewModel {
         return order.customerNote ?? String()
     }
 
-    var shippingViewModel: ContactViewModel? {
-        if let shippingAddress = order.shippingAddress {
-            return ContactViewModel(with: shippingAddress, contactType: ContactType.shipping)
-        }
-
-        return nil
-    }
-
-    var billingViewModel: ContactViewModel? {
-        if let billingAddress = order.billingAddress {
-            return ContactViewModel(with: billingAddress, contactType: ContactType.billing)
-        }
-
-        return nil
-    }
-
     let subtotalLabel = NSLocalizedString("Subtotal", comment: "Subtotal label for payment view")
 
     var subtotal: String {

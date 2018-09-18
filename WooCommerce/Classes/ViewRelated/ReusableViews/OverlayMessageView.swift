@@ -40,6 +40,17 @@ class OverlayMessageView: UIView {
         }
     }
 
+    /// Action Button's visibility.
+    ///
+    var actionVisible: Bool {
+        get {
+            return actionButton.isHidden == false
+        }
+        set {
+            actionButton.isHidden = !newValue
+        }
+    }
+
     /// Action Button's Text.
     ///
     var actionText: String? {

@@ -135,6 +135,7 @@ private extension AppDelegate {
         UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().tintColor = .white
         UIApplication.shared.statusBarStyle = .lightContent
+        UILabel.appearance(whenContainedInInstancesOf: [UITableViewHeaderFooterView.self]).textColor = StyleManager.sectionTitleColor
 
         // Take advantage of a bug in UIAlertController
         // to style all UIAlertControllers with WC color

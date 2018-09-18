@@ -212,7 +212,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
             return
         }
 
-        state.transitionToSyncingState(isEmpty: isEmpty)
+        transitionToSyncingState()
 
         let action = OrderAction.synchronizeOrders(siteID: siteID, status: statusFilter, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
             guard let `self` = self else {
@@ -224,7 +224,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
                 self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
             }
 
-            self.state.transitionToResultsUpdatedState(isEmpty: self.isEmpty, isFiltered: self.isFiltered)
+            self.transitionToResultsUpdatedState()
             onCompletion?(error == nil)
         }
 
@@ -460,6 +460,31 @@ private extension OrdersViewController {
             break
         }
     }
+
+    /// Should be called before Sync'ing. Transitions to either `results` or `placeholder` state, depending on whether if
+    /// we've got cached results, or not.
+    ///
+    func transitionToSyncingState() {
+        state = isEmpty ? .placeholder : .syncing
+    }
+
+    /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
+    /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
+    ///
+    func transitionToResultsUpdatedState() {
+        if isEmpty == false {
+            state = .results
+            return
+        }
+
+        if isFiltered {
+            state = .emptyFiltered
+            return
+        }
+
+        state = .emptyUnfiltered
+    }
+
 }
 
 
@@ -487,29 +512,5 @@ private extension OrdersViewController {
         case results
         case emptyUnfiltered
         case emptyFiltered
-
-        /// Should be called before Sync'ing. Transitions to either `results` or `placeholder` state, depending on whether if
-        /// we've got cached results, or not.
-        ///
-        mutating func transitionToSyncingState(isEmpty: Bool) {
-            self = isEmpty ? .placeholder : .syncing
-        }
-
-        /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
-        /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
-        ///
-        mutating func transitionToResultsUpdatedState(isEmpty: Bool, isFiltered: Bool) {
-            if isEmpty == false {
-                self = .results
-                return
-            }
-
-            if isFiltered {
-                self = .emptyFiltered
-                return
-            }
-
-            self = .emptyUnfiltered
-        }
     }
 }

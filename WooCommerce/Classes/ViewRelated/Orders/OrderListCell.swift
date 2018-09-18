@@ -28,6 +28,11 @@ class OrderListCell: UITableViewCell {
         }
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        paymentStatusLabel.layer.borderColor = UIColor.clear.cgColor
+    }
+
     func preserveLabelColors(action: () -> Void) {
         let paymentColor = paymentStatusLabel.backgroundColor
 

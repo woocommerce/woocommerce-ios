@@ -14,8 +14,6 @@ PODS:
   - CocoaLumberjack/Default (3.4.2)
   - CocoaLumberjack/Extensions (3.4.2):
     - CocoaLumberjack/Default
-  - CocoaLumberjack/Swift (3.4.2):
-    - CocoaLumberjack/Default
   - Crashlytics (3.10.7):
     - Fabric (~> 1.7.11)
   - Fabric (1.7.11)
@@ -55,7 +53,7 @@ PODS:
     - WordPressShared (~> 1.0)
     - WordPressUI (~> 1.0)
     - wpxmlrpc (~> 0.8)
-  - WordPressKit (1.3.0):
+  - WordPressKit (1.4.0):
     - Alamofire (~> 4.7)
     - CocoaLumberjack (= 3.4.2)
     - NSObject-SafeExpectations (= 0.0.3)
@@ -73,7 +71,7 @@ DEPENDENCIES:
   - Alamofire (~> 4.7)
   - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.3`)
   - Charts (~> 3.1)
-  - CocoaLumberjack/Swift (~> 3.4)
+  - CocoaLumberjack (~> 3.4)
   - Crashlytics (~> 3.10)
   - Gridicons (= 0.15)
   - KeychainAccess (~> 3.1)
@@ -138,12 +136,12 @@ SPEC CHECKSUMS:
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
   WordPressAuthenticator: 56538a229185640b41912c10c3f1891c2cc9bbb9
-  WordPressKit: b464bb489ee65609371ca4d414c7776801b86592
+  WordPressKit: 5d4b9840aed4329d61b3efbe40714c9dce719309
   WordPressShared: 063e1e8b1a7aaf635abf17f091a2d235a068abdc
   WordPressUI: cfcac4a2a033e3ed5def6504bb8e28447c54423b
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
   XLPagerTabStrip: c908b17cbf42fcd2598ee1adfc49bae25444d88a
 
-PODFILE CHECKSUM: 4a4cce281d403e847d55dd30fad270674ffdceb5
+PODFILE CHECKSUM: be80e5be4b1bc58b9474d58a7533a6d2e2498ce6
 
 COCOAPODS: 1.5.3

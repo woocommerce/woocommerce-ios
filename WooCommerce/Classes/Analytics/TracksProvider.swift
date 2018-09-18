@@ -54,7 +54,7 @@ private extension TracksProvider {
     func refreshMetadata() {
         var userProperties = [String: Any]()
         userProperties["platform"] = "iOS"
-        userProperties["accessibility_voice_over_enabled"] = UIAccessibilityIsVoiceOverRunning()
+        userProperties["accessibility_voice_over_enabled"] = UIAccessibility.isVoiceOverRunning
         userProperties["is_rtl_language"] = (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
         tracksService.userProperties.removeAllObjects()
         tracksService.userProperties.addEntries(from: userProperties)

@@ -109,7 +109,7 @@ private extension TopPerformerDataViewController {
         tableView.allowsSelection = false
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.estimatedSectionHeaderHeight = Constants.estimatedSectionHeight
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.tableFooterView = Constants.emptyView
     }
 
@@ -194,7 +194,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
 extension TopPerformerDataViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableViewAutomaticDimension
+        return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

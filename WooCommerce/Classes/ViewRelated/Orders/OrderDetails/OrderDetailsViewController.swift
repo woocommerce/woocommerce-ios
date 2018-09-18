@@ -81,7 +81,7 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedSectionFooterHeight = Constants.rowHeight
         tableView.estimatedRowHeight = Constants.rowHeight
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
     }
 
@@ -325,7 +325,7 @@ private extension OrderDetailsViewController {
         }
 
         cell.isAccessibilityElement = true
-        cell.accessibilityTraits = UIAccessibilityTraitButton
+        cell.accessibilityTraits = .button
         cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Phone number: %@", comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."), phoneNumber)
         cell.accessibilityHint = NSLocalizedString("Prompts with the option to call or message the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer.")
     }
@@ -342,7 +342,7 @@ private extension OrderDetailsViewController {
         }
 
         cell.isAccessibilityElement = true
-        cell.accessibilityTraits = UIAccessibilityTraitButton
+        cell.accessibilityTraits = .button
         cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email: %@", comment: "Accessibility label that lets the user know the billing customer's email address"), email)
         cell.accessibilityHint = NSLocalizedString("Composes a new email message to the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear.")
     }
@@ -351,7 +351,7 @@ private extension OrderDetailsViewController {
         cell.leftImage = viewModel.addNoteIcon
         cell.labelText = viewModel.addNoteText
 
-        cell.accessibilityTraits = UIAccessibilityTraitButton
+        cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString("Add a note button", comment: "Accessibility label for the 'Add a note' button")
         cell.accessibilityHint = NSLocalizedString("Composes a new order note.", comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note.")
     }
@@ -471,7 +471,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
             return CGFloat.leastNonzeroMagnitude
         }
 
-        return UITableViewAutomaticDimension
+        return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -493,7 +493,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
             return CGFloat.leastNonzeroMagnitude
         }
 
-        return UITableViewAutomaticDimension
+        return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {

@@ -50,8 +50,8 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
 
         let nc = NotificationCenter.default
-        nc.addObserver(self, selector: #selector(applicationBecameInactive), name: .UIApplicationWillResignActive, object: nil)
-        nc.addObserver(self, selector: #selector(applicationBecameActive), name: .UIApplicationDidBecomeActive, object: nil)
+        nc.addObserver(self, selector: #selector(applicationBecameInactive), name: UIApplication.willResignActiveNotification, object: nil)
+        nc.addObserver(self, selector: #selector(applicationBecameActive), name: UIApplication.didBecomeActiveNotification, object: nil)
 
         WordPressAuthenticator.track(.loginTwoFactorFormViewed)
     }
@@ -91,7 +91,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         verificationCodeField.placeholder = NSLocalizedString("Verification code", comment: "two factor code placeholder")
 
         let submitButtonTitle = NSLocalizedString("Next", comment: "Title of a button.").localizedCapitalized
-        submitButton?.setTitle(submitButtonTitle, for: UIControlState())
+        submitButton?.setTitle(submitButtonTitle, for: .normal)
         submitButton?.setTitle(submitButtonTitle, for: .highlighted)
 
         sendCodeButton.setTitle(NSLocalizedString("Text me a code instead", comment: "Button title"),

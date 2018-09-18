@@ -41,7 +41,7 @@ class LoginProloguePageViewController: UIPageViewController {
 
 
         newControl.numberOfPages = pages.count
-        newControl.addTarget(self, action: #selector(handlePageControlValueChanged(sender:)), for: UIControlEvents.valueChanged)
+        newControl.addTarget(self, action: #selector(handlePageControlValueChanged(sender:)), for: .valueChanged)
         pageControl = newControl
     }
 
@@ -51,7 +51,7 @@ class LoginProloguePageViewController: UIPageViewController {
             return
         }
 
-        let direction: UIPageViewControllerNavigationDirection = sender.currentPage > currentIndex ? .forward : .reverse
+        let direction: UIPageViewController.NavigationDirection = sender.currentPage > currentIndex ? .forward : .reverse
         setViewControllers([pages[sender.currentPage]], direction: direction, animated: true)
         WordPressAuthenticator.track(.loginProloguePaged)
     }

@@ -30,7 +30,7 @@ open class WPHelpIndicatorView: UIView {
     }
 
     override open func draw(_ rect: CGRect) {
-        super.draw(UIEdgeInsetsInsetRect(rect, insets))
+        super.draw(rect.inset(by: insets))
     }
 
 }

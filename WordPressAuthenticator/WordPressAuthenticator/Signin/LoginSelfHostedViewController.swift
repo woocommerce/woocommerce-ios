@@ -80,11 +80,11 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         passwordField.placeholder = NSLocalizedString("Password", comment: "Password placeholder")
 
         let submitButtonTitle = NSLocalizedString("Next", comment: "Title of a button. The text should be capitalized.").localizedCapitalized
-        submitButton?.setTitle(submitButtonTitle, for: UIControlState())
+        submitButton?.setTitle(submitButtonTitle, for: .normal)
         submitButton?.setTitle(submitButtonTitle, for: .highlighted)
 
         let forgotPasswordTitle = NSLocalizedString("Lost your password?", comment: "Title of a button. ")
-        forgotPasswordButton.setTitle(forgotPasswordTitle, for: UIControlState())
+        forgotPasswordButton.setTitle(forgotPasswordTitle, for: .normal)
         forgotPasswordButton.setTitle(forgotPasswordTitle, for: .highlighted)
         forgotPasswordButton.titleLabel?.numberOfLines = 0
     }

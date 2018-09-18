@@ -72,12 +72,12 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         siteURLField.placeholder = NSLocalizedString("example.wordpress.com", comment: "Site Address placeholder")
 
         let submitButtonTitle = NSLocalizedString("Next", comment: "Title of a button. The text should be capitalized.").localizedCapitalized
-        submitButton?.setTitle(submitButtonTitle, for: UIControlState())
+        submitButton?.setTitle(submitButtonTitle, for: .normal)
         submitButton?.setTitle(submitButtonTitle, for: .highlighted)
         submitButton?.accessibilityIdentifier = "Next Button"
 
         let siteAddressHelpTitle = NSLocalizedString("Need help finding your site address?", comment: "A button title.")
-        siteAddressHelpButton.setTitle(siteAddressHelpTitle, for: UIControlState())
+        siteAddressHelpButton.setTitle(siteAddressHelpTitle, for: .normal)
         siteAddressHelpButton.setTitle(siteAddressHelpTitle, for: .highlighted)
         siteAddressHelpButton.titleLabel?.numberOfLines = 0
     }

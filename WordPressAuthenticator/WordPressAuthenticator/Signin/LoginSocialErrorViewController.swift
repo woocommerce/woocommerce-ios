@@ -90,7 +90,7 @@ class LoginSocialErrorViewController: NUXTableViewController {
 extension LoginSocialErrorViewController {
     private struct RowHeightConstants {
         static let estimate: CGFloat = 45.0
-        static let automatic: CGFloat = UITableViewAutomaticDimension
+        static let automatic: CGFloat = UITableView.automaticDimension
     }
 
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {

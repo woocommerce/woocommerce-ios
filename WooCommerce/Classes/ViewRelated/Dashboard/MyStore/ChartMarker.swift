@@ -17,7 +17,7 @@ class ChartMarker: MarkerImage {
     private  var label: String?
     private var _labelSize: CGSize = CGSize()
     private var _paragraphStyle: NSMutableParagraphStyle?
-    private var _drawAttributes = [NSAttributedStringKey: AnyObject]()
+    private var _drawAttributes = [NSAttributedString.Key: AnyObject]()
 
     @objc public init(chartView: ChartViewBase?, color: UIColor, font: UIFont, textColor: UIColor, insets: UIEdgeInsets) {
         self.color = color

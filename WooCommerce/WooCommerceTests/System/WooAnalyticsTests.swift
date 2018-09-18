@@ -77,8 +77,16 @@ class WooAnalyticsTests: XCTestCase {
         /// Note: iOS 12 is shuffling several dictionaries (especially when it comes to serializing [:] > URL Parameters).
         /// For that reason, we'll proceed with a bit of a more lengthy but robust check.
         ///
-        for (key, value) in receivedProperty1 {
-            XCTAssertEqual(value, Constants.testErrorReceivedProperty[key])
+        for (key, value) in Constants.testErrorReceivedProperty {
+            XCTAssertEqual(value, receivedProperty1[key])
+        }
+
+        /// Second note: the error's userInfo, as a string, is getting swizzled. We'll ensure the expected payload is there,
+        /// but the exact position isn't guarranteed!
+        ///
+        let descriptionIncludingUserInfo = receivedProperty1[Constants.testErrorDescriptionKey]
+        for (_, descriptionSubstring) in Constants.testErrorUserInfo {
+            XCTAssert(descriptionIncludingUserInfo?.contains(descriptionSubstring) == true)
         }
     }
 }
@@ -88,12 +96,13 @@ class WooAnalyticsTests: XCTestCase {
 //
 private extension WooAnalyticsTests {
     enum Constants {
-        static let testProperty1                               = ["prop-key1": "prop-value1"]
-        static let testProperty2                               = ["prop-key2": "prop-value2"]
+        static let testProperty1                                = ["prop-key1": "prop-value1"]
+        static let testProperty2                                = ["prop-key2": "prop-value2"]
 
-        static let testErrorDomain: String                     = "domain"
-        static let testErrorCode: Int                          = 999
-        static let testErrorUserInfo: [String: String]        = ["userinfo-key1": "Here is the value!", "userinfo-key2": "Here is the second value!"]
-        static let testErrorReceivedProperty: [String: String] = ["error_code": "999", "error_description": "Error Domain=domain Code=999 \"(null)\" UserInfo={userinfo-key1=Here is the value!, userinfo-key2=Here is the second value!}", "error_domain": "domain"]
+        static let testErrorDomain: String                      = "domain"
+        static let testErrorCode: Int                           = 999
+        static let testErrorDescriptionKey                      = "error_description"
+        static let testErrorUserInfo: [String: String]          = ["userinfo-key1": "Here is the value!", "userinfo-key2": "Here is the second value!"]
+        static let testErrorReceivedProperty: [String: String]  = ["error_code": "999", "error_domain": "domain"]
     }
 }

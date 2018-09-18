@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 
 public class WooAnalytics {
@@ -93,8 +94,8 @@ public extension WooAnalytics {
 private extension WooAnalytics {
 
     func startObservingNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationOpened), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationClosed), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationOpened), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationClosed), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
 
     @objc func trackApplicationOpened() {

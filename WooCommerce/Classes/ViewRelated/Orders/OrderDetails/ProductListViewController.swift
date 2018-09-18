@@ -18,9 +18,9 @@ class ProductListViewController: UIViewController {
 
     func configureTableView() {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
-        tableView.sectionHeaderHeight = UITableViewAutomaticDimension
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = Constants.rowHeight
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
 
         let nib = ProductDetailsTableViewCell.loadNib()
         tableView.register(nib, forCellReuseIdentifier: ProductDetailsTableViewCell.reuseIdentifier)

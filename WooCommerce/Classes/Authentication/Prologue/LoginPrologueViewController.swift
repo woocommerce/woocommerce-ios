@@ -83,9 +83,9 @@ private extension LoginPrologueViewController {
         disclaimerTextView.attributedText = disclaimerAttributedText
         disclaimerTextView.textContainerInset = .zero
         disclaimerTextView.linkTextAttributes = [
-            NSAttributedStringKey.foregroundColor.rawValue: StyleManager.wooCommerceBrandColor,
-            NSAttributedStringKey.underlineColor.rawValue: StyleManager.wooCommerceBrandColor,
-            NSAttributedStringKey.underlineStyle.rawValue: NSUnderlineStyle.styleSingle.rawValue
+            .foregroundColor: StyleManager.wooCommerceBrandColor,
+            .underlineColor: StyleManager.wooCommerceBrandColor,
+            .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
     }
 
@@ -139,13 +139,13 @@ private extension LoginPrologueViewController {
     ///
     var disclaimerAttributedText: NSAttributedString {
         let disclaimerText = NSLocalizedString("This app requires Jetpack to be able to connect to your WooCommerce Store.\nRead the ", comment: "Login Disclaimer Text and Jetpack config instructions")
-        let disclaimerAttributes: [NSAttributedStringKey: Any] = [
+        let disclaimerAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.font(forStyle: .caption1, weight: .thin),
             .foregroundColor: UIColor.black
         ]
 
         let readText = NSLocalizedString("configuration instructions", comment: "Login Disclaimer Linked Text")
-        let readAttributes: [NSAttributedStringKey: Any] = [
+        let readAttributes: [NSAttributedString.Key: Any] = [
             .link: URL(string: WooConstants.jetpackSetupUrl) as Any,
             .font: UIFont.font(forStyle: .caption1, weight: .thin)
         ]

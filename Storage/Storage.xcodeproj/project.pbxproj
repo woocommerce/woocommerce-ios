@@ -39,6 +39,7 @@
 		B54CA5C920A4C17800F38CD1 /* NSObject+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54CA5C820A4C17800F38CD1 /* NSObject+Storage.swift */; };
 		B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */; };
 		B59E11E020A9F5E6004121A4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DF20A9F5E6004121A4 /* Constants.swift */; };
+		B5A036A4214C0F6C00774E2C /* CocoaLumberjack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A036A3214C0F6C00774E2C /* CocoaLumberjack.swift */; };
 		B5B914C520EFF03500F2F832 /* Site+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B914C320EFF03500F2F832 /* Site+CoreDataClass.swift */; };
 		B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B914C420EFF03500F2F832 /* Site+CoreDataProperties.swift */; };
 		B5DC3CAA20D1B2FE0063AC41 /* WooCommerce.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */; };
@@ -95,6 +96,7 @@
 		B59E11D920A9D00C004121A4 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManagerTests.swift; sourceTree = "<group>"; };
 		B59E11DF20A9F5E6004121A4 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		B5A036A3214C0F6C00774E2C /* CocoaLumberjack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaLumberjack.swift; path = ../../WooCommerce/Classes/Tools/Logging/CocoaLumberjack.swift; sourceTree = "<group>"; };
 		B5B914C320EFF03500F2F832 /* Site+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Site+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B5B914C420EFF03500F2F832 /* Site+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Site+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		BB0EDB0E92A719168B18DAFE /* Pods-StorageTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 		B54CA59B20A4BBA500F38CD1 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
+				B5A036A2214C0F6500774E2C /* Internal */,
 				B52B0F7C20AA2D9900477698 /* Protocols */,
 				B54CA5BE20A4BD9A00F38CD1 /* Extensions */,
 				B59E11D720A9CFF3004121A4 /* Model */,
@@ -276,6 +279,14 @@
 			path = CoreData;
 			sourceTree = "<group>";
 		};
+		B5A036A2214C0F6500774E2C /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				B5A036A3214C0F6C00774E2C /* CocoaLumberjack.swift */,
+			);
+			name = Internal;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -341,11 +352,11 @@
 				TargetAttributes = {
 					B54CA59820A4BBA500F38CD1 = {
 						CreatedOnToolsVersion = 9.3;
-						LastSwiftMigration = 0930;
+						LastSwiftMigration = 1000;
 					};
 					B54CA5A120A4BBA600F38CD1 = {
 						CreatedOnToolsVersion = 9.3;
-						LastSwiftMigration = 0930;
+						LastSwiftMigration = 1000;
 					};
 				};
 			};
@@ -411,7 +422,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack-Default-Swift/CocoaLumberjack.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -449,6 +460,7 @@
 			files = (
 				B5B914C520EFF03500F2F832 /* Site+CoreDataClass.swift in Sources */,
 				B54CA5BB20A4BD2800F38CD1 /* NSManagedObject+Object.swift in Sources */,
+				B5A036A4214C0F6C00774E2C /* CocoaLumberjack.swift in Sources */,
 				7426A05120F69D00002A4E07 /* OrderCoupon+CoreDataProperties.swift in Sources */,
 				B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */,
 				7426A04820F68F27002A4E07 /* Order+CoreDataProperties.swift in Sources */,
@@ -641,7 +653,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};
@@ -670,7 +682,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Storage;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};
@@ -695,7 +707,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.StorageTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};
@@ -719,7 +731,7 @@
 				MACH_O_TYPE = mh_dylib;
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.StorageTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};

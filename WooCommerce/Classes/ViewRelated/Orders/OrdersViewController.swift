@@ -184,6 +184,7 @@ private extension OrdersViewController {
     private func didChangeFilter(newFilter: OrderStatus?) {
         // Filter right away the cached orders
         resultsController.predicate = newFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
+        tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
 
         // Drop Cache (If Needed) + Re-Sync First Page

@@ -357,7 +357,7 @@ private extension OrderDetailsViewController {
     }
 
     func note(at indexPath: IndexPath) -> OrderNoteViewModel? {
-        // We need to subract 1 here because the first order note row is the "Add Order" cell
+        // We need to subtract 1 here because the first order note row is the "Add Order" cell
         let noteIndex = indexPath.row - 1
         guard orderNotes.indices.contains(noteIndex) else {
             return nil

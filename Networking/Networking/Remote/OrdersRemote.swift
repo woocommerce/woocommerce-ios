@@ -10,13 +10,13 @@ public class OrdersRemote: Remote {
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote orders.
-    ///     - status: Status of the retrieved orders.
+    ///     - status: Filters the Orders by the specified Status, if any.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllOrders(for siteID: Int,
-                              status: String?,
+                              status: String? = nil,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
                               completion: @escaping ([Order]?, Error?) -> Void)
@@ -107,7 +107,7 @@ public class OrdersRemote: Remote {
 //
 public extension OrdersRemote {
     public enum Defaults {
-        public static let pageSize: Int     = 75
+        public static let pageSize: Int     = 25
         public static let pageNumber: Int   = 1
         public static let statusAny: String = "any"
     }

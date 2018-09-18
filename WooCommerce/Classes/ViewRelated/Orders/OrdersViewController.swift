@@ -42,6 +42,10 @@ class OrdersViewController: UIViewController {
     ///
     private var statusFilter: OrderStatus? {
         didSet {
+            guard oldValue?.rawValue != statusFilter?.rawValue else {
+                return
+            }
+
             didChangeFilter(newFilter: statusFilter)
         }
     }
@@ -182,10 +186,24 @@ private extension OrdersViewController {
         resultsController.predicate = newFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
         tableView.reloadData()
 
-        resetStoredOrders { [weak self] in
-            // Resynchronize: Reset Coordinator internals and resync the first page
+        // Drop Cache (If Needed) + Re-Sync First Page
+        ensureStoredOrdersAreReset { [weak self] in
             self?.syncingCoordinator.resynchronize()
         }
+    }
+
+    /// Nukes all of the Stored Orders:
+    /// We're dropping the entire Orders Cache whenever a filter was just removed. This is performed to avoid
+    /// "interleaved Sync'ed Objects", which results in an awful UX while scrolling down
+    ///
+    func ensureStoredOrdersAreReset(onCompletion: @escaping () -> Void) {
+        guard isFiltered == false else {
+            onCompletion()
+            return
+        }
+
+        let action = OrderAction.resetStoredOrders(onCompletion: onCompletion)
+        StoresManager.shared.dispatch(action)
     }
 }
 
@@ -193,16 +211,6 @@ private extension OrdersViewController {
 // MARK: - Sync'ing Helpers
 //
 extension OrdersViewController: SyncingCoordinatorDelegate {
-
-    /// Nukes all of the Stored Orders
-    ///
-    func resetStoredOrders(onCompletion: @escaping () -> Void) {
-        let action = OrderAction.resetStoredOrders {
-            onCompletion()
-        }
-
-        StoresManager.shared.dispatch(action)
-    }
 
     /// Synchronizes the Orders for the Default Store (if any).
     ///

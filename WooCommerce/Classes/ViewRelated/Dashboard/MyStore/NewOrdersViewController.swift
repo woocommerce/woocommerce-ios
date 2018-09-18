@@ -69,7 +69,6 @@ extension NewOrdersViewController {
 private extension NewOrdersViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.wooWhite
         topBorder.backgroundColor = StyleManager.wooGreyBorder
         bottomBorder.backgroundColor = StyleManager.wooGreyBorder
         titleLabel.applyHeadlineStyle()
@@ -83,6 +82,9 @@ private extension NewOrdersViewController {
 
     func configureResultsController() {
         resultsController.onDidChangeContent = { [weak self] in
+            self?.updateNewOrdersIfNeeded()
+        }
+        resultsController.onDidResetContent = { [weak self] in
             self?.updateNewOrdersIfNeeded()
         }
         try? resultsController.performFetch()

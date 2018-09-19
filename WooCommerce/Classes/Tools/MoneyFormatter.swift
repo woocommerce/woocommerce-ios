@@ -63,4 +63,13 @@ public class MoneyFormatter {
 
         return currencyFormatter.string(from: decimalNumber)
     }
+
+    /// Returns the symbol only, no formatting applied.
+    ///
+    func currencySymbol(currencyCode: String, locale: Locale = .current) -> String? {
+        currencyFormatter.locale = locale
+        currencyFormatter.currencyCode = currencyCode
+
+        return currencyFormatter.currencySymbol
+    }
 }

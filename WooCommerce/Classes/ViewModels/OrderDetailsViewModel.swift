@@ -80,7 +80,11 @@ class OrderDetailsViewModel {
     }
 
     var subtotalValue: String {
-        return money.format(value: subtotal, currencyCode: order.currency)
+        guard let formattedSubtotal = money.format(value: subtotal, currencyCode: order.currency) else {
+            return String()
+        }
+
+        return formattedSubtotal
     }
 
     /// Discounts
@@ -91,11 +95,15 @@ class OrderDetailsViewModel {
     }
 
     var discountValue: String? {
-        if let discount = Decimal(string: order.discountTotal) {
-            return "-" + money.format(value: discount, currencyCode: order.currency)
+        guard let discount = Decimal(string: order.discountTotal) else {
+            return nil
         }
 
-        return nil
+        guard let formattedDiscount = money.format(value: discount, currencyCode: order.currency) else {
+            return nil
+        }
+
+        return "-" + formattedDiscount
     }
 
     /// Shipping
@@ -105,10 +113,14 @@ class OrderDetailsViewModel {
 
     var shippingValue: String {
         if let shippingTotal = Decimal(string: order.shippingTotal) {
-            return money.format(value: shippingTotal, currencyCode: order.currency)
+            return money.format(value: shippingTotal, currencyCode: order.currency) ?? String()
         }
 
-        return money.format(value: "0.00", currencyCode: order.currency)
+        if let zeroTotal = money.format(value: "0.00", currencyCode: order.currency) {
+            return zeroTotal
+        }
+
+        return String()
     }
 
     /// Taxes
@@ -136,7 +148,12 @@ class OrderDetailsViewModel {
     let totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
 
     var totalValue: String {
-        return money.format(value: order.total, currencyCode: order.currency)
+        return money.format(value: order.total, currencyCode: order.currency) ?? String()
+    }
+
+    var totalFriendlyString: String? {
+        let totalDouble = Double(totalValue)
+        return totalDouble?.friendlyString()
     }
 
     /// Payment Summary

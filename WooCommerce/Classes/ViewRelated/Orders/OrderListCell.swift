@@ -10,8 +10,10 @@ class OrderListCell: UITableViewCell {
     func configureCell(viewModel: OrderDetailsViewModel) {
         titleLabel.text = viewModel.summaryTitle
         titleLabel.applyHeadlineStyle()
+
         totalLabel.text = viewModel.totalValue
         totalLabel.applyBodyStyle()
+        
         paymentStatusLabel.text = viewModel.paymentStatus
         paymentStatusLabel.applyStatusStyle(for: viewModel.orderStatusViewModel.orderStatus)
     }

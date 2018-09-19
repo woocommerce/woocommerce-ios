@@ -5,11 +5,14 @@ import Yosemite
 
 class OrderDetailsViewModel {
     let order: Order
-    let orderStatusViewModel: OrderStatusViewModel
+    var money: MoneyFormatter
     let couponLines: [OrderCouponLine]?
+    
+    let orderStatusViewModel: OrderStatusViewModel
 
     init(order: Order) {
         self.order = order
+        self.money = MoneyFormatter()
         self.couponLines = order.coupons
         self.orderStatusViewModel = OrderStatusViewModel(orderStatus: order.status)
     }
@@ -62,58 +65,90 @@ class OrderDetailsViewModel {
         return order.customerNote ?? String()
     }
 
+    /// Subtotal
+    /// - returns: 'Subtotal' label and calculated subtotal for all items
+    ///
     let subtotalLabel = NSLocalizedString("Subtotal", comment: "Subtotal label for payment view")
 
-    var subtotal: String {
-        let subtotal = order.items.reduce(0.0) { (output, item) in
-            let itemSubtotal = Double(item.subtotal) ?? 0.0
+    var subtotal: Decimal {
+        let subtotal = order.items.reduce(Decimal(0)) { (output, item) in
+            let itemSubtotal = Decimal(string: item.subtotal) ?? Decimal(0)
             return output + itemSubtotal
         }
 
-        return String(format: "%.2f", subtotal)
+        return subtotal
     }
 
     var subtotalValue: String {
-        return currencySymbol + subtotal
+        return money.format(value: subtotal, currencyCode: order.currency)
     }
 
+    /// Discounts
+    /// - returns: 'Discount' label and a list of discount codes, or nil if nonexistent.
+    ///
     var discountLabel: String? {
         return summarizeCoupons(from: couponLines)
     }
 
     var discountValue: String? {
-        return Double(order.discountTotal) != 0 ? "−" + currencySymbol + order.discountTotal : nil
+        if let discount = Decimal(string: order.discountTotal) {
+            return "-" + money.format(value: discount, currencyCode: order.currency)
+        }
+
+        return nil
     }
 
+    /// Shipping
+    /// - returns 'Shipping' label and amount, including zero amounts.
+    ///
     let shippingLabel = NSLocalizedString("Shipping", comment: "Shipping label for payment view")
 
     var shippingValue: String {
-        return currencySymbol + order.shippingTotal
+        if let shippingTotal = Decimal(string: order.shippingTotal) {
+            return money.format(value: shippingTotal, currencyCode: order.currency)
+        }
+
+        return money.format(value: "0.00", currencyCode: order.currency)
     }
 
+    /// Taxes
+    /// - returns: 'Taxes' label and total taxes, or nil if nonexistent.
+    ///
     var taxesLabel: String? {
-        return Double(order.totalTax) != 0 ? NSLocalizedString("Taxes", comment: "Taxes label for payment view") : nil
+        if Decimal(string: order.totalTax) != nil {
+            return NSLocalizedString("Taxes", comment: "Taxes label for payment view")
+        }
+
+        return nil
     }
 
     var taxesValue: String? {
-        return Double(order.totalTax) != 0 ? currencySymbol + order.totalTax : nil
+        if let totalTax = Decimal(string: order.totalTax) {
+            return money.formatIfNonZero(value: totalTax, currencyCode: order.currency)
+        }
+
+        return nil
     }
 
+    /// Total
+    /// - returns: 'Total' label and total amount, including zero amounts.
+    ///
     let totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
 
     var totalValue: String {
-        return currencySymbol + order.total
+        return money.format(value: order.total, currencyCode: order.currency)
     }
 
+    /// Payment Summary
+    /// - returns: A full sentence summary of how much was paid and using what method.
+    ///
     var paymentSummary: String {
         return NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
     }
 
-    var currencySymbol: String {
-        let locale = NSLocale(localeIdentifier: order.currency)
-        return locale.displayName(forKey: .currencySymbol, value: order.currency) ?? String()
-    }
-
+    /// Order Notes Button
+    /// - icon and text
+    ///
     let addNoteIcon = Gridicon.iconOfType(.addOutline)
 
     let addNoteText = NSLocalizedString("Add a note", comment: "Button text for adding a new order note")

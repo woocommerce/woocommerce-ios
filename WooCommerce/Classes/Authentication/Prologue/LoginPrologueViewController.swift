@@ -61,30 +61,29 @@ class LoginPrologueViewController: UIViewController {
 private extension LoginPrologueViewController {
 
     func setupMainView() {
-        view.backgroundColor = StyleManager.wooCommerceBrandColor
+        view.backgroundColor = .white
     }
 
     func setupBackgroundView() {
-        backgroundView.layer.masksToBounds = false
-        backgroundView.layer.shadowOpacity = 0.2
+        backgroundView.backgroundColor = StyleManager.wooCommerceBrandColor
     }
 
     func setupUpperLabel() {
-        upperLabel.text = NSLocalizedString("Your WooCommerce store on the go. Check your sales, fulfill your orders, and get notifications of new sales.", comment: "Login Prologue Legend")
+        upperLabel.text = NSLocalizedString("Manage orders, track sales and monitor store activity with real-time alerts.", comment: "Login Prologue Legend")
         upperLabel.font = UIFont.font(forStyle: .subheadline, weight: .bold)
-        upperLabel.textColor = .white
+        upperLabel.textColor = StyleManager.wooCommerceBrandColor
     }
 
     func setupJetpackImage() {
-        jetpackImageView.image = UIImage.jetpackLogoImage.imageWithTintColor(.jetpackGreen)
+        jetpackImageView.image = UIImage.jetpackLogoImage.imageWithTintColor(.white)
     }
 
     func setupDisclaimerLabel() {
         disclaimerTextView.attributedText = disclaimerAttributedText
         disclaimerTextView.textContainerInset = .zero
         disclaimerTextView.linkTextAttributes = [
-            .foregroundColor: StyleManager.wooCommerceBrandColor,
-            .underlineColor: StyleManager.wooCommerceBrandColor,
+            .foregroundColor: UIColor.white,
+            .underlineColor: UIColor.white,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
     }
@@ -92,7 +91,10 @@ private extension LoginPrologueViewController {
     func setupLoginButton() {
         let title = NSLocalizedString("Log in with Jetpack", comment: "Authentication Login Button")
         loginButton.setTitle(title, for: .normal)
-        loginButton.backgroundColor = .clear
+        loginButton.setTitleColor(StyleManager.wooSecondary, for: .normal)
+        loginButton.titleLabel?.font = UIFont.font(forStyle: .headline, weight: .semibold)
+        loginButton.backgroundColor = .white
+        loginButton.layer.cornerRadius = Settings.buttonCornerRadius
     }
 }
 
@@ -138,10 +140,10 @@ private extension LoginPrologueViewController {
     /// Returns the Disclaimer Attributed Text (which contains a link to the Jetpack Setup URL).
     ///
     var disclaimerAttributedText: NSAttributedString {
-        let disclaimerText = NSLocalizedString("This app requires Jetpack to be able to connect to your WooCommerce Store.\nRead the ", comment: "Login Disclaimer Text and Jetpack config instructions")
+        let disclaimerText = NSLocalizedString("This app requires Jetpack to connect to your Store.\nRead the ", comment: "Login Disclaimer Text and Jetpack config instructions")
         let disclaimerAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.font(forStyle: .caption1, weight: .thin),
-            .foregroundColor: UIColor.black
+            .foregroundColor: UIColor.white
         ]
 
         let readText = NSLocalizedString("configuration instructions", comment: "Login Disclaimer Linked Text")
@@ -149,6 +151,7 @@ private extension LoginPrologueViewController {
             .link: URL(string: WooConstants.jetpackSetupUrl) as Any,
             .font: UIFont.font(forStyle: .caption1, weight: .thin)
         ]
+
         let readAttrText = NSMutableAttributedString(string: readText, attributes: readAttributes)
 
         let endSentenceText = "."
@@ -160,4 +163,14 @@ private extension LoginPrologueViewController {
 
         return disclaimerAttrText
     }
+}
+
+
+// MARK: - (Private) Constants!
+//
+private enum Settings {
+
+    /// Login Button's Corner Radius
+    ///
+    static let buttonCornerRadius = CGFloat(8.0)
 }

@@ -144,13 +144,17 @@ private extension SettingsViewController {
         navigationController?.popToRootViewController(animated: true)
     }
 
-    func displaySupport() {
-        guard MFMailComposeViewController.canSendMail() else {
+    func supportWasPressed() {
+        guard shouldDisplayEmailComposer() else {
             displayContactUsAlert()
             return
         }
 
         displaySupportEmailComposer()
+    }
+
+    func shouldDisplayEmailComposer() -> Bool {
+        return MFMailComposeViewController.canSendMail()
     }
 
     func displayContactUsAlert() {
@@ -165,13 +169,20 @@ private extension SettingsViewController {
     }
 
     func displaySupportEmailComposer() {
-        let titleUnformatted = NSLocalizedString("WooCommerce iOS %@ support", comment: "Support Email's Title")
+        // Subject + Composer
+        let subjectUnformatted = NSLocalizedString("WooCommerce iOS %@ support", comment: "Support Email's Title")
+        let subjectFormatted = String(format: subjectUnformatted, Bundle.main.detailedVersionNumber())
 
         let controller = MFMailComposeViewController()
-        controller.title = String(format: titleUnformatted, Bundle.main.detailedVersionNumber())
+        controller.setSubject(subjectFormatted)
         controller.setToRecipients([WooConstants.supportMail])
         controller.mailComposeDelegate = self
 
+        // Workaround: MFMailCompose isn't *FULLY* picking up UINavigationBar's WC's appearance. Title / Buttons look awful.
+        // We're falling back to iOS's default appearence
+        UINavigationBar.applyDefaultAppearance()
+
+        // Display the Mail Composer
         present(controller, animated: true, completion: nil)
     }
 }
@@ -183,6 +194,9 @@ extension SettingsViewController: MFMailComposeViewControllerDelegate {
 
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         controller.dismiss(animated: true, completion: nil)
+
+        // Workaround: Restore WC's navBar appearance
+        UINavigationBar.applyWooAppearance()
     }
 }
 
@@ -273,3 +287,4 @@ private enum Row: CaseIterable {
         return type.reuseIdentifier
     }
 }
+

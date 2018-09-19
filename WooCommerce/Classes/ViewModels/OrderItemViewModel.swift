@@ -35,11 +35,11 @@ struct OrderItemViewModel {
     ///
     var price: String {
         guard item.quantity > 1 else {
-            return money.format(value: item.total, currencyCode: currency)
+            return money.format(value: item.total, currencyCode: currency) ?? String()
         }
 
-        let itemTotal = money.format(value: item.total, currencyCode: currency)
-        let itemSubtotal = money.format(value: item.subtotal, currencyCode: currency)
+        let itemTotal = money.format(value: item.total, currencyCode: currency) ?? String()
+        let itemSubtotal = money.format(value: item.subtotal, currencyCode: currency) ?? String()
 
         return itemTotal + " (" + itemSubtotal + " × " + quantity + ")"
     }
@@ -53,7 +53,7 @@ struct OrderItemViewModel {
         }
 
         let prefix = NSLocalizedString("Tax:", comment: "Tax label for total taxes line")
-        let totalTax = money.format(value: item.totalTax, currencyCode: currency)
+        let totalTax = money.format(value: item.totalTax, currencyCode: currency) ?? String()
         return prefix + " " + totalTax
     }
 

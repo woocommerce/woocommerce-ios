@@ -231,7 +231,7 @@ private extension FulfillViewController {
             fatalError()
         }
 
-        let viewModel = OrderItemViewModel(item: item, currencySymbol: order.currencySymbol)
+        let viewModel = OrderItemViewModel(item: item, currency: order.currency)
 
         cell.name = viewModel.name
         cell.quantity = viewModel.quantity

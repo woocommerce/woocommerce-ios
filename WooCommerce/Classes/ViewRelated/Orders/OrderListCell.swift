@@ -11,7 +11,7 @@ class OrderListCell: UITableViewCell {
         titleLabel.text = viewModel.summaryTitle
         titleLabel.applyHeadlineStyle()
 
-        totalLabel.text = viewModel.totalValue
+        totalLabel.text = viewModel.totalFriendlyString
         totalLabel.applyBodyStyle()
         
         paymentStatusLabel.text = viewModel.paymentStatus

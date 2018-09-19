@@ -26,22 +26,23 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1" image="prologue-slanted-rectangle" translatesAutoresizingMaskIntoConstraints="NO" id="Rhn-8s-tRs" userLabel="Slanted ImageView">
-                    <rect key="frame" x="0.0" y="518.5" width="414" height="307"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                </imageView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3vu-Xh-Yk9" userLabel="Bottom View">
+                    <rect key="frame" x="0.0" y="862" width="414" height="34"/>
+                    <color key="backgroundColor" red="0.55453354120254517" green="0.35826593637466431" blue="0.52943503856658936" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <viewLayoutGuide key="safeArea" id="tzS-rk-lug"/>
+                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o29-Vv-KDs" userLabel="Container View">
-                    <rect key="frame" x="0.0" y="695.5" width="414" height="166.5"/>
+                    <rect key="frame" x="0.0" y="685.5" width="414" height="176.5"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-jetpack-gray" translatesAutoresizingMaskIntoConstraints="NO" id="ua7-QM-6C0">
-                            <rect key="frame" x="20" y="10" width="20" height="20"/>
+                            <rect key="frame" x="20" y="20" width="20" height="20"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="20" id="1sl-aL-ruy"/>
                                 <constraint firstAttribute="width" constant="20" id="nqC-Mn-V1d"/>
                             </constraints>
                         </imageView>
                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="1000" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="scrollableAxes" bouncesZoom="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="vue-fy-kfo">
-                            <rect key="frame" x="50" y="10" width="344" height="66.5"/>
+                            <rect key="frame" x="50" y="20" width="344" height="66.5"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <string key="text">L1
 L2
@@ -54,7 +55,7 @@ L3</string>
                             </connections>
                         </textView>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6pL-xH-OzE">
-                            <rect key="frame" x="20" y="96.5" width="374" height="50"/>
+                            <rect key="frame" x="20" y="106.5" width="374" height="50"/>
                             <color key="backgroundColor" red="0.58823529409999997" green="0.34509803919999998" blue="0.54117647059999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="50" id="Np7-w5-zh4"/>
@@ -72,12 +73,28 @@ L3</string>
                         <constraint firstItem="6pL-xH-OzE" firstAttribute="leading" secondItem="o29-Vv-KDs" secondAttribute="leading" constant="20" id="LDE-r7-1zp"/>
                         <constraint firstAttribute="trailing" secondItem="6pL-xH-OzE" secondAttribute="trailing" constant="20" id="Px3-by-aP4"/>
                         <constraint firstAttribute="trailing" secondItem="vue-fy-kfo" secondAttribute="trailing" constant="20" id="R7H-B6-HbM"/>
-                        <constraint firstItem="ua7-QM-6C0" firstAttribute="top" secondItem="o29-Vv-KDs" secondAttribute="top" constant="10" id="VZk-aL-Jh7"/>
+                        <constraint firstItem="ua7-QM-6C0" firstAttribute="top" secondItem="o29-Vv-KDs" secondAttribute="top" constant="20" id="VZk-aL-Jh7"/>
                         <constraint firstItem="6pL-xH-OzE" firstAttribute="top" secondItem="vue-fy-kfo" secondAttribute="bottom" constant="20" id="XB1-jj-rMu"/>
                         <constraint firstItem="vue-fy-kfo" firstAttribute="top" secondItem="ua7-QM-6C0" secondAttribute="top" id="hro-Pt-llj"/>
                         <constraint firstItem="ua7-QM-6C0" firstAttribute="leading" secondItem="o29-Vv-KDs" secondAttribute="leading" constant="20" id="wt3-Fc-eK8"/>
                     </constraints>
                 </view>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1" image="prologue-slanted-rectangle" translatesAutoresizingMaskIntoConstraints="NO" id="Rhn-8s-tRs" userLabel="Slanted ImageView">
+                    <rect key="frame" x="0.0" y="525.5" width="414" height="160"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </imageView>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="200" image="prologue-bubbles" translatesAutoresizingMaskIntoConstraints="NO" id="pzF-Fz-byr" userLabel="Bubbles View">
+                    <rect key="frame" x="266" y="360.5" width="108" height="175"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="pzF-Fz-byr" secondAttribute="height" multiplier="108:175" id="Rsb-pu-GHs"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1" verticalHuggingPriority="1" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="Manage orders, track sales, and monitor store activity with real-time alerts." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n36-ix-D75" userLabel="Legend Label">
+                    <rect key="frame" x="30" y="168" width="354" height="41"/>
+                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                    <color key="textColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    <nil key="highlightedColor"/>
+                </label>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="1" verticalHuggingPriority="1" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" image="prologue-logo" translatesAutoresizingMaskIntoConstraints="NO" id="bNB-4i-gz9" userLabel="Top Logo">
                     <rect key="frame" x="76" y="94" width="262" height="54"/>
                     <constraints>
@@ -85,23 +102,6 @@ L3</string>
                         <constraint firstAttribute="height" constant="54" id="gWf-lm-a4c"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1" verticalHuggingPriority="1" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="Manage orders, track sales, and monitor store activity with real-time alerts." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n36-ix-D75" userLabel="Legend Label">
-                    <rect key="frame" x="20" y="168" width="374" height="41"/>
-                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
-                    <color key="textColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="200" image="prologue-bubbles" translatesAutoresizingMaskIntoConstraints="NO" id="pzF-Fz-byr" userLabel="Bubbles View">
-                    <rect key="frame" x="266" y="360.5" width="108" height="175"/>
-                    <constraints>
-                        <constraint firstAttribute="width" secondItem="pzF-Fz-byr" secondAttribute="height" multiplier="108:175" id="Rsb-pu-GHs"/>
-                    </constraints>
-                </imageView>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3vu-Xh-Yk9" userLabel="Bottom View">
-                    <rect key="frame" x="0.0" y="862" width="414" height="34"/>
-                    <color key="backgroundColor" red="0.55453354120254517" green="0.35826593637466431" blue="0.52943503856658936" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                    <viewLayoutGuide key="safeArea" id="tzS-rk-lug"/>
-                </view>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
@@ -109,15 +109,16 @@ L3</string>
                 <constraint firstAttribute="bottom" secondItem="3vu-Xh-Yk9" secondAttribute="bottom" id="DQs-9H-0q1"/>
                 <constraint firstItem="o29-Vv-KDs" firstAttribute="leading" secondItem="3oc-0l-uZX" secondAttribute="leading" id="EIM-fi-cgJ"/>
                 <constraint firstItem="3oc-0l-uZX" firstAttribute="trailing" secondItem="o29-Vv-KDs" secondAttribute="trailing" id="LER-Vg-1a4"/>
-                <constraint firstItem="n36-ix-D75" firstAttribute="leading" secondItem="3oc-0l-uZX" secondAttribute="leading" constant="20" id="MMp-M0-NrU"/>
+                <constraint firstItem="n36-ix-D75" firstAttribute="leading" secondItem="3oc-0l-uZX" secondAttribute="leading" constant="30" id="MMp-M0-NrU"/>
+                <constraint firstItem="Rhn-8s-tRs" firstAttribute="top" relation="greaterThanOrEqual" secondItem="n36-ix-D75" secondAttribute="bottom" constant="30" id="OoR-Fz-ECE"/>
                 <constraint firstItem="bNB-4i-gz9" firstAttribute="centerX" secondItem="V2X-Xj-JeZ" secondAttribute="centerX" id="TZH-Bm-5FK"/>
-                <constraint firstItem="o29-Vv-KDs" firstAttribute="top" secondItem="Rhn-8s-tRs" secondAttribute="bottom" constant="-130" id="W3A-aP-sbP"/>
+                <constraint firstItem="o29-Vv-KDs" firstAttribute="top" secondItem="Rhn-8s-tRs" secondAttribute="bottom" id="W3A-aP-sbP"/>
                 <constraint firstItem="bNB-4i-gz9" firstAttribute="top" secondItem="3oc-0l-uZX" secondAttribute="top" constant="50" id="ZQ9-CO-BVL"/>
                 <constraint firstItem="o29-Vv-KDs" firstAttribute="top" relation="greaterThanOrEqual" secondItem="pzF-Fz-byr" secondAttribute="bottom" id="ZyR-OD-bh4"/>
                 <constraint firstItem="Rhn-8s-tRs" firstAttribute="top" relation="greaterThanOrEqual" secondItem="n36-ix-D75" secondAttribute="bottom" id="cTv-I1-UNU"/>
                 <constraint firstItem="3vu-Xh-Yk9" firstAttribute="top" secondItem="o29-Vv-KDs" secondAttribute="bottom" id="fcK-hC-jRy"/>
                 <constraint firstItem="pzF-Fz-byr" firstAttribute="top" relation="greaterThanOrEqual" secondItem="n36-ix-D75" secondAttribute="bottom" constant="20" id="fzX-A3-VVN"/>
-                <constraint firstItem="3oc-0l-uZX" firstAttribute="trailing" secondItem="n36-ix-D75" secondAttribute="trailing" constant="20" id="hsc-B1-wwU"/>
+                <constraint firstItem="3oc-0l-uZX" firstAttribute="trailing" secondItem="n36-ix-D75" secondAttribute="trailing" constant="30" id="hsc-B1-wwU"/>
                 <constraint firstItem="3vu-Xh-Yk9" firstAttribute="leading" secondItem="V2X-Xj-JeZ" secondAttribute="leading" id="osl-zf-VHk"/>
                 <constraint firstItem="3oc-0l-uZX" firstAttribute="trailing" secondItem="pzF-Fz-byr" secondAttribute="trailing" constant="40" id="r4J-Dw-tQc"/>
                 <constraint firstItem="Rhn-8s-tRs" firstAttribute="trailing" secondItem="3oc-0l-uZX" secondAttribute="trailing" id="sli-mX-npW"/>
@@ -139,6 +140,6 @@ L3</string>
         <image name="icon-jetpack-gray" width="72" height="72"/>
         <image name="prologue-bubbles" width="108" height="175"/>
         <image name="prologue-logo" width="262" height="54"/>
-        <image name="prologue-slanted-rectangle" width="375" height="307"/>
+        <image name="prologue-slanted-rectangle" width="375" height="160"/>
     </resources>
 </document>

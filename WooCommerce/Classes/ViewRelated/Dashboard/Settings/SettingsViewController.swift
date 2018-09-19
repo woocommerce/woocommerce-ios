@@ -122,7 +122,7 @@ private extension SettingsViewController {
 //
 private extension SettingsViewController {
 
-    func displayLogoutAlert() {
+    func logoutWasPressed() {
         let messageUnformatted = NSLocalizedString("Are you sure you want to log out of the account %@?", comment: "Alert message to confirm a user meant to log out.")
         let messageFormatted = String(format: messageUnformatted, accountName)
         let alertController = UIAlertController(title: "", message: messageFormatted, preferredStyle: .alert)
@@ -138,12 +138,6 @@ private extension SettingsViewController {
         present(alertController, animated: true)
     }
 
-    func logOutUser() {
-        WooAnalytics.shared.track(.logout)
-        StoresManager.shared.deauthenticate()
-        navigationController?.popToRootViewController(animated: true)
-    }
-
     func supportWasPressed() {
         guard shouldDisplayEmailComposer() else {
             displayContactUsAlert()
@@ -151,6 +145,12 @@ private extension SettingsViewController {
         }
 
         displaySupportEmailComposer()
+    }
+
+    func logOutUser() {
+        WooAnalytics.shared.track(.logout)
+        StoresManager.shared.deauthenticate()
+        navigationController?.popToRootViewController(animated: true)
     }
 
     func shouldDisplayEmailComposer() -> Bool {
@@ -169,6 +169,10 @@ private extension SettingsViewController {
     }
 
     func displaySupportEmailComposer() {
+        // Workaround: MFMailCompose isn't *FULLY* picking up UINavigationBar's WC's appearance. Title / Buttons look awful.
+        // We're falling back to iOS's default appearence
+        UINavigationBar.applyDefaultAppearance()
+
         // Subject + Composer
         let subjectUnformatted = NSLocalizedString("WooCommerce iOS %@ support", comment: "Support Email's Title")
         let subjectFormatted = String(format: subjectUnformatted, Bundle.main.detailedVersionNumber())
@@ -177,10 +181,6 @@ private extension SettingsViewController {
         controller.setSubject(subjectFormatted)
         controller.setToRecipients([WooConstants.supportMail])
         controller.mailComposeDelegate = self
-
-        // Workaround: MFMailCompose isn't *FULLY* picking up UINavigationBar's WC's appearance. Title / Buttons look awful.
-        // We're falling back to iOS's default appearence
-        UINavigationBar.applyDefaultAppearance()
 
         // Display the Mail Composer
         present(controller, animated: true, completion: nil)
@@ -245,9 +245,9 @@ extension SettingsViewController: UITableViewDelegate {
 
         switch rowAtIndexPath(indexPath) {
         case .logout:
-            displayLogoutAlert()
+            logoutWasPressed()
         case .support:
-            displaySupport()
+            supportWasPressed()
         default:
             break
         }

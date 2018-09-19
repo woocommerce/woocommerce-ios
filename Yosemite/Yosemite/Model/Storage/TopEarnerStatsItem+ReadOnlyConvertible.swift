@@ -11,7 +11,7 @@ extension Storage.TopEarnerStatsItem: ReadOnlyConvertible {
     public func update(with statsItem: Yosemite.TopEarnerStatsItem) {
         productID = Int64(statsItem.productID)
         productName = statsItem.productName
-        quantity = Int16(statsItem.quantity)
+        quantity = Int64(statsItem.quantity)
         price = statsItem.price
         total = statsItem.total
         currency = statsItem.currency

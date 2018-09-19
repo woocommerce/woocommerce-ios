@@ -132,7 +132,7 @@ private extension OrderDetailsViewController {
             BillingDetailsTableViewCell.self,
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
-            BasicDisclosureTableViewCell.self,
+            BasicTableViewCell.self,
             OrderNoteTableViewCell.self,
             PaymentTableViewCell.self,
             ProductListTableViewCell.self,
@@ -263,7 +263,7 @@ extension OrderDetailsViewController {
 // MARK: - Cell Configuration
 //
 private extension OrderDetailsViewController {
-    private func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as SummaryTableViewCell:
             cell.configure(with: viewModel)
@@ -272,8 +272,8 @@ private extension OrderDetailsViewController {
             cell.onFullfillTouchUp = { [weak self] in
                 self?.fulfillWasPressed()
             }
-        case let cell as BasicDisclosureTableViewCell:
-            cell.configure(text: viewModel.productDetails)
+        case let cell as BasicTableViewCell:
+            configureProductDetails(cell: cell)
         case let cell as CustomerNoteTableViewCell:
             cell.configure(with: viewModel)
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
@@ -297,7 +297,12 @@ private extension OrderDetailsViewController {
         }
     }
 
-    private func configureShippingAddress(cell: CustomerInfoTableViewCell) {
+    func configureProductDetails(cell: BasicTableViewCell) {
+        cell.configure(text: viewModel.productDetails)
+        cell.accessoryType = .disclosureIndicator
+    }
+
+    func configureShippingAddress(cell: CustomerInfoTableViewCell) {
         let shippingAddress = viewModel.order.shippingAddress
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
@@ -305,7 +310,7 @@ private extension OrderDetailsViewController {
         cell.address = shippingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
     }
 
-    private func configureBillingAddress(cell: CustomerInfoTableViewCell) {
+    func configureBillingAddress(cell: CustomerInfoTableViewCell) {
         let billingAddress = viewModel.order.billingAddress
 
         cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
@@ -313,7 +318,7 @@ private extension OrderDetailsViewController {
         cell.address = billingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > billing details. This is where the address would normally display.")
     }
 
-    private func configureBillingPhone(cell: BillingDetailsTableViewCell) {
+    func configureBillingPhone(cell: BillingDetailsTableViewCell) {
         guard let phoneNumber = viewModel.order.billingAddress?.phone else {
             // TODO: This should actually be an assert. To be revisited!
             return
@@ -330,7 +335,7 @@ private extension OrderDetailsViewController {
         cell.accessibilityHint = NSLocalizedString("Prompts with the option to call or message the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer.")
     }
 
-    private func configureBillingEmail(cell: BillingDetailsTableViewCell) {
+    func configureBillingEmail(cell: BillingDetailsTableViewCell) {
         guard let email = viewModel.order.billingAddress?.email else {
             // TODO: This should actually be an assert. To be revisited!
             return
@@ -347,7 +352,7 @@ private extension OrderDetailsViewController {
         cell.accessibilityHint = NSLocalizedString("Composes a new email message to the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear.")
     }
 
-    private func configureNewNote(cell: LeftImageTableViewCell) {
+    func configureNewNote(cell: LeftImageTableViewCell) {
         cell.leftImage = viewModel.addNoteIcon
         cell.labelText = viewModel.addNoteText
 
@@ -660,7 +665,7 @@ private extension OrderDetailsViewController {
             case .productList:
                 return ProductListTableViewCell.reuseIdentifier
             case .productDetails:
-                return BasicDisclosureTableViewCell.reuseIdentifier
+                return BasicTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:

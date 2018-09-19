@@ -151,9 +151,17 @@ class OrderDetailsViewModel {
         return money.format(value: order.total, currencyCode: order.currency) ?? String()
     }
 
+    /// Anything above 999.99 or below -999.99 should display a truncated amount
+    ///
     var totalFriendlyString: String? {
-        let totalDouble = Double(totalValue)
-        return totalDouble?.friendlyString()
+        let totalString = NSString(string: order.total)
+        let totalDouble = totalString.doubleValue
+        if totalDouble >= 1000.0 || totalDouble <= -1000.0 {
+            let totalRounded = totalDouble.friendlyString()
+            return money.format(value: totalRounded, currencyCode: order.currency)
+        }
+
+        return totalValue
     }
 
     /// Payment Summary

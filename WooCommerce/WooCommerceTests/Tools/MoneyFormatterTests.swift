@@ -226,14 +226,14 @@ class MoneyFormatterTests: XCTestCase {
 
     // MARK: - Test bad data string received returns empty string
 
-    /// Test bad data string returns empty string
+    /// Test bad data string returns nil
     ///
     func testBadDataStringValueReturnsEmptyString() {
         let formattedString = MoneyFormatter().format(value: badDataString,
                                                       currencyCode: currencyCodeUSD,
                                                       locale: usLocale)
 
-        XCTAssertEqual(formattedString, String())
+        XCTAssertNil(formattedString)
     }
 
     // MARK: - Test IfNonZero methods

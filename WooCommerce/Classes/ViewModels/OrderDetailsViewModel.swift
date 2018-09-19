@@ -99,6 +99,10 @@ class OrderDetailsViewModel {
             return nil
         }
 
+        if discount.isZero {
+            return nil
+        }
+
         guard let formattedDiscount = money.format(value: discount, currencyCode: order.currency) else {
             return nil
         }

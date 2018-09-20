@@ -2,6 +2,7 @@ import UIKit
 import Gridicons
 import CocoaLumberjack
 import WordPressUI
+import Yosemite
 
 
 // MARK: - DashboardViewController
@@ -27,7 +28,12 @@ class DashboardViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        startListeningToNotifications()
         tabBarItem.image = Gridicon.iconOfType(.statsAlt)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     override func viewDidLoad() {
@@ -82,6 +88,10 @@ private extension DashboardViewController {
 
         navigationItem.backBarButtonItem = backButton
     }
+
+    func startListeningToNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
+    }
 }
 
 
@@ -116,6 +126,14 @@ extension DashboardViewController: NewOrdersDelegate {
 // MARK: - Private Helpers
 //
 private extension DashboardViewController {
+
+    @objc func defaultAccountWasUpdated(sender: Notification) {
+        guard storeStatsViewController != nil, StoresManager.shared.isAuthenticated == false else {
+            return
+        }
+        storeStatsViewController.clearAllFields()
+    }
+
     func reloadData() {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
         storeStatsViewController.syncAllStats()

@@ -130,16 +130,14 @@ private extension AppDelegate {
     /// Sets up WooCommerce's UIAppearance.
     ///
     func setupWooAppearance() {
-        UINavigationBar.appearance().barTintColor = StyleManager.wooCommerceBrandColor
-        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
-        UINavigationBar.appearance().isTranslucent = false
-        UINavigationBar.appearance().tintColor = .white
-        UIApplication.shared.statusBarStyle = .lightContent
-        UILabel.appearance(whenContainedInInstancesOf: [UITableViewHeaderFooterView.self]).textColor = StyleManager.sectionTitleColor
+        UINavigationBar.applyWooAppearance()
+        UILabel.applyWooAppearance()
 
-        // Take advantage of a bug in UIAlertController
-        // to style all UIAlertControllers with WC color
+        // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
         window?.tintColor = StyleManager.wooCommerceBrandColor
+
+        // TODO: Nuke This
+        UIApplication.shared.statusBarStyle = .lightContent
     }
 
     /// Sets up FancyButton's UIAppearance.

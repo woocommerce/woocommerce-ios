@@ -10,7 +10,7 @@ extension OrderItem {
 
     @NSManaged public var itemID: Int64
     @NSManaged public var name: String?
-    @NSManaged public var quantity: Int16
+    @NSManaged public var quantity: Int64
     @NSManaged public var productID: Int64
     @NSManaged public var sku: String?
     @NSManaged public var subtotal: String?

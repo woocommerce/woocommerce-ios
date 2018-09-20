@@ -29,7 +29,11 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     public let granularity: StatGranularity
     public var orderStats: OrderStats? {
         didSet {
-            lastUpdatedDate = Date()
+            if orderStats != nil {
+                lastUpdatedDate = Date()
+            } else {
+                lastUpdatedDate = nil
+            }
             reloadOrderFields()
             reloadChart()
             reloadLastUpdatedField()
@@ -37,7 +41,11 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     }
     public var siteStats: SiteVisitStats? {
         didSet {
-            lastUpdatedDate = Date()
+            if siteStats != nil {
+                lastUpdatedDate = Date()
+            } else {
+                lastUpdatedDate = nil
+            }
             reloadSiteFields()
             reloadLastUpdatedField()
         }

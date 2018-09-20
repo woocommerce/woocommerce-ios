@@ -11,7 +11,7 @@ private class SyncingDelegateWrapper: SyncingCoordinatorDelegate {
 
     var onSync: OnSyncClosure?
 
-    func sync(pageNumber: Int, onCompletion: ((Bool) -> Void)?) {
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
         onSync?(pageNumber, onCompletion)
     }
 }
@@ -21,21 +21,13 @@ private class SyncingDelegateWrapper: SyncingCoordinatorDelegate {
 ///
 class SyncCoordinatorTests: XCTestCase {
 
-    /// Testing Page Size
-    ///
-    private let pageSize = 2
-
-    /// Testing Page TTL
-    ///
-    private let pageTTLInSeconds = TimeInterval(2)
-
     /// Quite self explanatory!
     ///
-    private let secondPageNumber =  2
+    private let secondPageNumber = SyncingCoordinator.Defaults.pageFirstIndex + 1
 
     /// Last element in the first page: Expected to trigger a Sync event
     ///
-    private let lastElementInFirstPage = 1
+    private let lastElementInFirstPage = SyncingCoordinator.Defaults.pageSize -  1
 
     /// Testing Delegate Wrapper
     ///
@@ -51,7 +43,7 @@ class SyncCoordinatorTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        coordinator = SyncingCoordinator(pageSize: pageSize, pageTTLInSeconds: pageTTLInSeconds)
+        coordinator = SyncingCoordinator()
         coordinator.delegate = delegate
     }
 
@@ -61,7 +53,7 @@ class SyncCoordinatorTests: XCTestCase {
     func testIsLastElementInPageReturnsTrueWheneverTheReceivedElementIsEffectivelyTheLastOneInThePage() {
         for testPageSize in 10...100 {
             let testCollectionSize = testPageSize * 2
-            coordinator = SyncingCoordinator(pageSize: testPageSize, pageTTLInSeconds: pageTTLInSeconds)
+            coordinator = SyncingCoordinator(pageSize: testPageSize)
 
             for elementIndex in 0..<testCollectionSize {
                 /// Note: YES this can be vastly improved. But the goal is to compare the output with an algorithm that's

@@ -36,7 +36,19 @@ class OrdersViewController: UIViewController {
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
-    private let syncingCoordinator = SyncingCoordinator(pageSize: Syncing.pageSize, pageTTLInSeconds: Syncing.pageTTLInSeconds)
+    private let syncingCoordinator = SyncingCoordinator()
+
+    /// OrderStatus that must be matched by retrieved orders.
+    ///
+    private var statusFilter: OrderStatus? {
+        didSet {
+            guard oldValue?.rawValue != statusFilter?.rawValue else {
+                return
+            }
+
+            didChangeFilter(newFilter: statusFilter)
+        }
+    }
 
     /// Indicates if there are no results onscreen.
     ///
@@ -47,7 +59,7 @@ class OrdersViewController: UIViewController {
     /// Indicates if there's a filter being applied.
     ///
     private var isFiltered: Bool {
-        return resultsController.predicate != nil
+        return statusFilter != nil
     }
 
     /// UI Active State
@@ -90,7 +102,7 @@ class OrdersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        sync()
+        syncingCoordinator.synchronizeFirstPage()
     }
 }
 
@@ -145,24 +157,20 @@ extension OrdersViewController {
 
         actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
         actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
-            self?.resetOrderFilters()
+            self?.statusFilter = nil
         }
 
         for status in OrderStatus.knownStatus {
             actionSheet.addDefaultActionWithTitle(status.description) { [weak self] _ in
-                self?.displayOrders(with: status)
+                self?.statusFilter = status
             }
-        }
-
-        actionSheet.addDefaultActionWithTitle(FilterAction.displayCustom) { [weak self] _ in
-            self?.displayOrdersWithUnknownStatus()
         }
 
         present(actionSheet, animated: true)
     }
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        sync { _ in
+        syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
     }
@@ -173,28 +181,30 @@ extension OrdersViewController {
 //
 private extension OrdersViewController {
 
-    func displayOrders(with status: OrderStatus) {
-        let predicate = NSPredicate(format: "status = %@", status.rawValue)
-
-        updateResultsController(predicate: predicate)
-    }
-
-    func displayOrdersWithUnknownStatus() {
-        let knownStatus = OrderStatus.knownStatus.map { $0.rawValue }
-        let predicate = NSPredicate(format: "NOT (status in %@)", knownStatus)
-
-        updateResultsController(predicate: predicate)
-    }
-
-    func resetOrderFilters() {
-        updateResultsController(predicate: nil)
-    }
-
-    private func updateResultsController(predicate: NSPredicate?) {
-        resultsController.predicate = predicate
-        state.transitionToResultsUpdatedState(isEmpty: isEmpty, isFiltered: isFiltered)
-
+    private func didChangeFilter(newFilter: OrderStatus?) {
+        // Filter right away the cached orders
+        resultsController.predicate = newFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
+        tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
+
+        // Drop Cache (If Needed) + Re-Sync First Page
+        ensureStoredOrdersAreReset { [weak self] in
+            self?.syncingCoordinator.resynchronize()
+        }
+    }
+
+    /// Nukes all of the Stored Orders:
+    /// We're dropping the entire Orders Cache whenever a filter was just removed. This is performed to avoid
+    /// "interleaved Sync'ed Objects", which results in an awful UX while scrolling down
+    ///
+    func ensureStoredOrdersAreReset(onCompletion: @escaping () -> Void) {
+        guard isFiltered == false else {
+            onCompletion()
+            return
+        }
+
+        let action = OrderAction.resetStoredOrders(onCompletion: onCompletion)
+        StoresManager.shared.dispatch(action)
     }
 }
 
@@ -205,30 +215,36 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Orders for the Default Store (if any).
     ///
-    func sync(pageNumber: Int = 1, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             onCompletion?(false)
             return
         }
 
-        state.transitionToSyncingState(isEmpty: isEmpty)
+        transitionToSyncingState()
 
-        let action = OrderAction.synchronizeOrders(siteID: siteID, pageNumber: pageNumber, pageSize: Syncing.pageSize) { [weak self] error in
+        let action = OrderAction.synchronizeOrders(siteID: siteID, status: statusFilter, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
             guard let `self` = self else {
                 return
             }
 
             if let error = error {
                 DDLogError("⛔️ Error synchronizing orders: \(error)")
-                self.displaySyncingErrorNotice(retryPageNumber: pageNumber)
+                self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
             }
 
-            self.state.transitionToResultsUpdatedState(isEmpty: self.isEmpty, isFiltered: self.isFiltered)
+            self.transitionToResultsUpdatedState()
             onCompletion?(error == nil)
         }
 
         StoresManager.shared.dispatch(action)
     }
+}
+
+
+// MARK: - Spinner Helpers
+//
+extension OrdersViewController {
 
     /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
     ///
@@ -247,7 +263,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
             return false
         }
 
-        return highestPageBeingSynced * Syncing.pageSize > resultsController.numberOfObjects
+        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > resultsController.numberOfObjects
     }
 
     /// Stops animating the Footer Spinner.
@@ -280,12 +296,12 @@ private extension OrdersViewController {
 
     /// Displays the Error Notice.
     ///
-    func displaySyncingErrorNotice(retryPageNumber: Int) {
+    func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int) {
         let title = NSLocalizedString("Orders", comment: "Orders Notice Title")
         let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.sync(pageNumber: retryPageNumber)
+            self?.sync(pageNumber: pageNumber, pageSize: pageSize)
         }
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
@@ -313,7 +329,7 @@ private extension OrdersViewController {
         overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Orders List (Empty State + Filters)")
         overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: Opens the Store in a browser")
         overlayView.onAction = { [weak self] in
-            self?.resetOrderFilters()
+            self?.statusFilter = nil
         }
 
         overlayView.attach(to: view)
@@ -453,6 +469,31 @@ private extension OrdersViewController {
             break
         }
     }
+
+    /// Should be called before Sync'ing. Transitions to either `results` or `placeholder` state, depending on whether if
+    /// we've got cached results, or not.
+    ///
+    func transitionToSyncingState() {
+        state = isEmpty ? .placeholder : .syncing
+    }
+
+    /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
+    /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
+    ///
+    func transitionToResultsUpdatedState() {
+        if isEmpty == false {
+            state = .results
+            return
+        }
+
+        if isFiltered {
+            state = .emptyFiltered
+            return
+        }
+
+        state = .emptyUnfiltered
+    }
+
 }
 
 
@@ -463,17 +504,11 @@ private extension OrdersViewController {
     enum FilterAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
         static let displayAll = NSLocalizedString("All", comment: "All filter title")
-        static let displayCustom = NSLocalizedString("Custom", comment: "Title for button that catches all custom labels and displays them on the order list")
     }
 
     enum Settings {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
-    }
-
-    enum Syncing {
-        static let pageSize = 25
-        static let pageTTLInSeconds = TimeInterval(3 * 60)
     }
 
     enum Segues {
@@ -486,29 +521,5 @@ private extension OrdersViewController {
         case results
         case emptyUnfiltered
         case emptyFiltered
-
-        /// Should be called before Sync'ing. Transitions to either `results` or `placeholder` state, depending on whether if
-        /// we've got cached results, or not.
-        ///
-        mutating func transitionToSyncingState(isEmpty: Bool) {
-            self = isEmpty ? .placeholder : .syncing
-        }
-
-        /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
-        /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
-        ///
-        mutating func transitionToResultsUpdatedState(isEmpty: Bool, isFiltered: Bool) {
-            if isEmpty == false {
-                self = .results
-                return
-            }
-
-            if isFiltered {
-                self = .emptyFiltered
-                return
-            }
-
-            self = .emptyUnfiltered
-        }
     }
 }

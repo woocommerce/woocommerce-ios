@@ -9,7 +9,7 @@ protocol SyncingCoordinatorDelegate: class {
     /// The receiver is expected to synchronize the pageNumber. On completion, it should indicate if the sync was
     /// successful or not.
     ///
-    func sync(pageNumber: Int, onCompletion: ((Bool) -> Void)?)
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?)
 }
 
 
@@ -21,6 +21,14 @@ protocol SyncingCoordinatorDelegate: class {
 ///
 class SyncingCoordinator {
 
+    /// Default Settings
+    ///
+    enum Defaults {
+        static let pageFirstIndex = 1
+        static let pageSize = 25
+        static let pageTTLInSeconds = TimeInterval(3 * 60)
+    }
+
     /// Maps Page Numbers > Refresh Dates
     ///
     private var refreshDatePerPage = [Int: Date]()
@@ -28,6 +36,10 @@ class SyncingCoordinator {
     /// Indexes of the pages being currently Sync'ed
     ///
     private var pagesBeingSynced = IndexSet()
+
+    /// First Page Index
+    ///
+    let pageFirstIndex: Int
 
     /// Number of elements retrieved per request.
     ///
@@ -49,7 +61,11 @@ class SyncingCoordinator {
 
     /// Designated Initializer
     ///
-    init(pageSize: Int, pageTTLInSeconds: TimeInterval) {
+    init(pageFirstIndex: Int = Defaults.pageFirstIndex,
+         pageSize: Int = Defaults.pageSize,
+         pageTTLInSeconds: TimeInterval = Defaults.pageTTLInSeconds) {
+
+        self.pageFirstIndex = pageFirstIndex
         self.pageSize = pageSize
         self.pageTTLInSeconds = pageTTLInSeconds
     }
@@ -73,6 +89,19 @@ class SyncingCoordinator {
 
         synchronize(pageNumber: nextPage)
     }
+
+    /// Resets Internal State + (RE)synchronizes the first page in the collection.
+    ///
+    func resynchronize() {
+        resetInternalState()
+        synchronizeFirstPage()
+    }
+
+    /// Synchronizes the First Page in the collection.
+    ///
+    func synchronizeFirstPage(onCompletion: (() -> Void)? = nil) {
+        synchronize(pageNumber: pageFirstIndex, onCompletion: onCompletion)
+    }
 }
 
 
@@ -82,19 +111,20 @@ private extension SyncingCoordinator {
 
     /// Synchronizes a given Page Number
     ///
-    func synchronize(pageNumber: Int) {
+    func synchronize(pageNumber: Int, onCompletion: (() -> Void)? = nil) {
         guard let delegate = delegate else {
             fatalError()
         }
 
         markAsBeingSynced(pageNumber: pageNumber)
 
-        delegate.sync(pageNumber: pageNumber) { success in
+        delegate.sync(pageNumber: pageNumber, pageSize: pageSize) { success in
             if success {
                 self.markAsUpdated(pageNumber: pageNumber)
             }
 
             self.unmarkAsBeingSynced(pageNumber: pageNumber)
+            onCompletion?()
         }
     }
 }
@@ -103,6 +133,13 @@ private extension SyncingCoordinator {
 // MARK: - Analyzer Methods: For unit testing purposes, marking them as `Internal`
 //
 extension SyncingCoordinator {
+
+    /// Resets all of the internal structures
+    ///
+    func resetInternalState() {
+        pagesBeingSynced.removeAll()
+        refreshDatePerPage.removeAll()
+    }
 
     /// Maps an ObjectIndex to a PageNumber: [1, ...)
     ///

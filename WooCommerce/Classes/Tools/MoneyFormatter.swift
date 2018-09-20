@@ -26,11 +26,8 @@ public class MoneyFormatter {
         currencyFormatter.locale = locale
         currencyFormatter.currencyCode = currencyCode
         let decimalNumber = NSDecimalNumber(decimal: value)
-        guard let numberValue = currencyFormatter.string(from: decimalNumber) else {
-            return nil
-        }
 
-        return numberValue
+        return currencyFormatter.string(from: decimalNumber)
     }
 
     /// Returns a localized and formatted currency string, or nil if empty or zero.

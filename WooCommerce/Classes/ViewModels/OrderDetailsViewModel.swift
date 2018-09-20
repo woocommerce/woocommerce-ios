@@ -5,14 +5,14 @@ import Yosemite
 
 class OrderDetailsViewModel {
     let order: Order
-    var money: MoneyFormatter
+    let moneyFormatter: MoneyFormatter
     let couponLines: [OrderCouponLine]?
     
     let orderStatusViewModel: OrderStatusViewModel
 
     init(order: Order) {
         self.order = order
-        self.money = MoneyFormatter()
+        self.moneyFormatter = MoneyFormatter()
         self.couponLines = order.coupons
         self.orderStatusViewModel = OrderStatusViewModel(orderStatus: order.status)
     }
@@ -80,11 +80,7 @@ class OrderDetailsViewModel {
     }
 
     var subtotalValue: String {
-        guard let formattedSubtotal = money.format(value: subtotal, currencyCode: order.currency) else {
-            return String()
-        }
-
-        return formattedSubtotal
+        return moneyFormatter.format(value: subtotal, currencyCode: order.currency) ?? String()
     }
 
     /// Discounts
@@ -103,7 +99,7 @@ class OrderDetailsViewModel {
             return nil
         }
 
-        guard let formattedDiscount = money.format(value: discount, currencyCode: order.currency) else {
+        guard let formattedDiscount = moneyFormatter.format(value: discount, currencyCode: order.currency) else {
             return nil
         }
 
@@ -117,14 +113,10 @@ class OrderDetailsViewModel {
 
     var shippingValue: String {
         if let shippingTotal = Decimal(string: order.shippingTotal) {
-            return money.format(value: shippingTotal, currencyCode: order.currency) ?? String()
+            return moneyFormatter.format(value: shippingTotal, currencyCode: order.currency) ?? String()
         }
 
-        if let zeroTotal = money.format(value: "0.00", currencyCode: order.currency) {
-            return zeroTotal
-        }
-
-        return String()
+        return moneyFormatter.format(value: "0.00", currencyCode: order.currency) ?? String()
     }
 
     /// Taxes
@@ -140,7 +132,7 @@ class OrderDetailsViewModel {
 
     var taxesValue: String? {
         if let totalTax = Decimal(string: order.totalTax) {
-            return money.formatIfNonZero(value: totalTax, currencyCode: order.currency)
+            return moneyFormatter.formatIfNonZero(value: totalTax, currencyCode: order.currency)
         }
 
         return nil
@@ -152,7 +144,7 @@ class OrderDetailsViewModel {
     let totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
 
     var totalValue: String {
-        return money.format(value: order.total, currencyCode: order.currency) ?? String()
+        return moneyFormatter.format(value: order.total, currencyCode: order.currency) ?? String()
     }
 
     // FIXME: This is not correctly formatted currency.
@@ -163,7 +155,7 @@ class OrderDetailsViewModel {
         let totalDouble = totalString.doubleValue
         if totalDouble >= 1000.0 || totalDouble <= -1000.0 {
             let totalRounded = totalDouble.friendlyString()
-            let symbol = money.currencySymbol(currencyCode: order.currency) ?? String()
+            let symbol = moneyFormatter.currencySymbol(currencyCode: order.currency) ?? String()
             return symbol + totalRounded
         }
 

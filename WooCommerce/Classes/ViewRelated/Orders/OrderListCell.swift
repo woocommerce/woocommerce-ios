@@ -13,7 +13,7 @@ class OrderListCell: UITableViewCell {
 
         totalLabel.text = viewModel.totalFriendlyString
         totalLabel.applyBodyStyle()
-        
+
         paymentStatusLabel.text = viewModel.paymentStatus
         paymentStatusLabel.applyStatusStyle(for: viewModel.orderStatusViewModel.orderStatus)
     }

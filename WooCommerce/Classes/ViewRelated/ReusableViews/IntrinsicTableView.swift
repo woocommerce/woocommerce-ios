@@ -3,7 +3,7 @@ import UIKit
 
 class IntrinsicTableView: UITableView {
 
-    override var contentSize:CGSize {
+    override var contentSize: CGSize {
         didSet {
             invalidateIntrinsicContentSize()
         }

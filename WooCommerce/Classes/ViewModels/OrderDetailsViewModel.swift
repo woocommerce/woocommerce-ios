@@ -7,7 +7,7 @@ class OrderDetailsViewModel {
     let order: Order
     let moneyFormatter: MoneyFormatter
     let couponLines: [OrderCouponLine]?
-    
+
     let orderStatusViewModel: OrderStatusViewModel
 
     init(order: Order) {

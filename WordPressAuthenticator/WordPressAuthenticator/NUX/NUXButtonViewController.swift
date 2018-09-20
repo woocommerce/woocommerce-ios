@@ -61,7 +61,7 @@ open class NUXButtonViewController: UIViewController {
 
     private func configure(button: NUXButton?, withConfig buttonConfig: NUXButtonConfig?) {
         if let buttonConfig = buttonConfig, let button = button {
-            button.setTitle(buttonConfig.title, for: UIControlState())
+            button.setTitle(buttonConfig.title, for: .normal)
             button.accessibilityIdentifier = buttonConfig.accessibilityIdentifier ?? accessibilityIdentifier(for: buttonConfig.title)
             button.isPrimary = buttonConfig.isPrimary
             button.isHidden = false
@@ -161,9 +161,9 @@ extension NUXButtonViewController {
         containerView.addSubview(view)
         containerView.pinSubviewToAllEdges(view)
 
-        willMove(toParentViewController: parentViewController)
-        parentViewController.addChildViewController(self)
-        didMove(toParentViewController: parentViewController)
+        willMove(toParent: parentViewController)
+        parentViewController.addChild(self)
+        didMove(toParent: parentViewController)
     }
 
     /// Returns a new NUXButtonViewController Instance

@@ -126,7 +126,7 @@ import WordPressUI
 
         let storyboard = UIStoryboard(name: "Login", bundle: bundle)
         if let controller = storyboard.instantiateInitialViewController() {
-            if let childController = controller.childViewControllers.first as? LoginPrologueViewController {
+            if let childController = controller.children.first as? LoginPrologueViewController {
                 childController.loginFields.restrictToWPCom = restrictToWPCom
                 childController.showCancel = showCancel
             }

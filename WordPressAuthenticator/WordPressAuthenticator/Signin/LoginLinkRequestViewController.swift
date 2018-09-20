@@ -59,11 +59,11 @@ class LoginLinkRequestViewController: LoginViewController {
         label?.adjustsFontForContentSizeCategory = true
 
         let sendLinkButtonTitle = NSLocalizedString("Send Link", comment: "Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user.")
-        sendLinkButton?.setTitle(sendLinkButtonTitle, for: UIControlState())
+        sendLinkButton?.setTitle(sendLinkButtonTitle, for: .normal)
         sendLinkButton?.setTitle(sendLinkButtonTitle, for: .highlighted)
 
         let usePasswordTitle = NSLocalizedString("Enter your password instead.", comment: "Title of a button. ")
-        usePasswordButton?.setTitle(usePasswordTitle, for: UIControlState())
+        usePasswordButton?.setTitle(usePasswordTitle, for: .normal)
         usePasswordButton?.setTitle(usePasswordTitle, for: .highlighted)
         usePasswordButton?.titleLabel?.numberOfLines = 0
         usePasswordButton?.titleLabel?.textAlignment = .center

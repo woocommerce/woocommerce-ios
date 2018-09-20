@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="QmM-AQ-tMl">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="QmM-AQ-tMl">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -35,7 +36,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="1000" text="$75,894.63" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j0k-E1-R6e">
-                                                    <rect key="frame" x="253" y="33" width="89" height="20.5"/>
+                                                    <rect key="frame" x="253" y="32.5" width="89" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -114,8 +115,8 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="hBh-xf-Cby" firstAttribute="top" secondItem="wvX-aq-v2S" secondAttribute="top" id="336-TT-5Dd"/>
-                            <constraint firstItem="wvX-aq-v2S" firstAttribute="bottom" secondItem="hBh-xf-Cby" secondAttribute="bottom" id="5Wo-6G-ztx"/>
-                            <constraint firstAttribute="trailing" secondItem="hBh-xf-Cby" secondAttribute="trailing" id="nw8-bc-grv"/>
+                            <constraint firstItem="wvX-aq-v2S" firstAttribute="trailing" secondItem="hBh-xf-Cby" secondAttribute="trailing" id="FQp-iN-6oS"/>
+                            <constraint firstItem="wvX-aq-v2S" firstAttribute="bottom" secondItem="hBh-xf-Cby" secondAttribute="bottom" id="MGb-D6-I2u"/>
                             <constraint firstItem="hBh-xf-Cby" firstAttribute="leading" secondItem="wvX-aq-v2S" secondAttribute="leading" id="zxy-1j-4Gg"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="wvX-aq-v2S"/>

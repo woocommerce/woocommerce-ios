@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="QmM-AQ-tMl">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="QmM-AQ-tMl">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -29,34 +30,34 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="240" verticalHuggingPriority="260" text="#00 First Last" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i5N-V7-lzR">
-                                                    <rect key="frame" x="16" y="16" width="229" height="20.5"/>
+                                                    <rect key="frame" x="15" y="16" width="230" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="1000" text="$75,894.63" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j0k-E1-R6e">
-                                                    <rect key="frame" x="253" y="33" width="89" height="20.5"/>
+                                                    <rect key="frame" x="253" y="32.5" width="89" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="260" verticalHuggingPriority="240" text="Order Status" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZXl-Nf-ARN" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                                    <rect key="frame" x="16" y="44.5" width="97.5" height="25"/>
+                                                    <rect key="frame" x="15" y="40.5" width="97.5" height="29.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="i5N-V7-lzR" firstAttribute="top" secondItem="khy-EP-SIe" secondAttribute="top" constant="16" id="1oa-Cx-cFj"/>
+                                                <constraint firstItem="i5N-V7-lzR" firstAttribute="leading" secondItem="khy-EP-SIe" secondAttribute="leadingMargin" id="0JY-ow-KwW"/>
+                                                <constraint firstItem="ZXl-Nf-ARN" firstAttribute="leading" secondItem="khy-EP-SIe" secondAttribute="leadingMargin" id="Eqr-GO-b8G"/>
                                                 <constraint firstItem="j0k-E1-R6e" firstAttribute="leading" secondItem="i5N-V7-lzR" secondAttribute="trailing" constant="8" id="Fnw-Ft-eVN"/>
                                                 <constraint firstItem="j0k-E1-R6e" firstAttribute="centerY" secondItem="khy-EP-SIe" secondAttribute="centerY" id="GjQ-oi-WS3"/>
                                                 <constraint firstItem="j0k-E1-R6e" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZXl-Nf-ARN" secondAttribute="trailing" id="R4D-SX-9VA"/>
+                                                <constraint firstItem="i5N-V7-lzR" firstAttribute="top" secondItem="khy-EP-SIe" secondAttribute="topMargin" constant="5" id="UjD-rM-Lrs"/>
                                                 <constraint firstAttribute="trailing" secondItem="j0k-E1-R6e" secondAttribute="trailing" id="VfJ-Dc-cU3"/>
-                                                <constraint firstItem="ZXl-Nf-ARN" firstAttribute="top" secondItem="i5N-V7-lzR" secondAttribute="bottom" constant="8" id="eRm-dC-Q9N"/>
-                                                <constraint firstItem="ZXl-Nf-ARN" firstAttribute="leading" secondItem="khy-EP-SIe" secondAttribute="leading" constant="16" id="lyI-kN-j2s"/>
-                                                <constraint firstItem="i5N-V7-lzR" firstAttribute="leading" secondItem="khy-EP-SIe" secondAttribute="leading" constant="16" id="ybx-Qf-Mzv"/>
-                                                <constraint firstAttribute="bottom" secondItem="ZXl-Nf-ARN" secondAttribute="bottom" constant="16" id="z3w-z3-u0v"/>
+                                                <constraint firstItem="ZXl-Nf-ARN" firstAttribute="top" secondItem="i5N-V7-lzR" secondAttribute="bottom" constant="4" id="eRm-dC-Q9N"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="ZXl-Nf-ARN" secondAttribute="bottom" constant="5" id="klW-BC-DaA"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>

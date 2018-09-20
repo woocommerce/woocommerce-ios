@@ -386,7 +386,7 @@ extension OrdersViewController: UITableViewDataSource {
         }
 
         let viewModel = detailsViewModel(at: indexPath)
-        cell.configureCell(order: viewModel)
+        cell.configureCell(viewModel: viewModel)
 
         return cell
     }

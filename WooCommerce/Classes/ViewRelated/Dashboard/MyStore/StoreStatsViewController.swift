@@ -13,7 +13,7 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
     @IBOutlet private weak var bottomBorder: UIView!
 
     private var periodVCs = [PeriodDataViewController]()
-    
+
     public var isDataMissing: Bool {
         return (periodVCs.contains { $0.orderStats == nil }) ||
             (periodVCs.contains { $0.siteStats == nil })
@@ -50,7 +50,7 @@ extension StoreStatsViewController {
             vc.clearAllFields()
         }
     }
-    
+
     func syncAllStats() {
         clearAllFields()
         periodVCs.forEach { (vc) in

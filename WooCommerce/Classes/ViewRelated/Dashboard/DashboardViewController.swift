@@ -31,7 +31,7 @@ class DashboardViewController: UIViewController {
         startListeningToNotifications()
         tabBarItem.image = Gridicon.iconOfType(.statsAlt)
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -41,7 +41,7 @@ class DashboardViewController: UIViewController {
         configureNavigation()
         configureView()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if storeStatsViewController.isDataMissing {

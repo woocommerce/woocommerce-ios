@@ -40,9 +40,15 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
 // MARK: - Public Interface
 //
 extension StoreStatsViewController {
-    func syncAllStats() {
+    func clearAllFields() {
         periodVCs.forEach { (vc) in
             vc.clearAllFields()
+        }
+    }
+    
+    func syncAllStats() {
+        clearAllFields()
+        periodVCs.forEach { (vc) in
             syncOrderStats(for: vc.granularity)
             syncVisitorStats(for: vc.granularity)
         }

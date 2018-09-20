@@ -22,7 +22,7 @@ struct OrderItemViewModel {
 
     /// Money Formatter
     ///
-    var money: MoneyFormatter
+    let moneyFormatter: MoneyFormatter
 
     /// Item's Quantity
     ///
@@ -35,11 +35,11 @@ struct OrderItemViewModel {
     ///
     var price: String {
         guard item.quantity > 1 else {
-            return money.format(value: item.total, currencyCode: currency) ?? String()
+            return moneyFormatter.format(value: item.total, currencyCode: currency) ?? String()
         }
 
-        let itemTotal = money.format(value: item.total, currencyCode: currency) ?? String()
-        let itemSubtotal = money.format(value: item.subtotal, currencyCode: currency) ?? String()
+        let itemTotal = moneyFormatter.format(value: item.total, currencyCode: currency) ?? String()
+        let itemSubtotal = moneyFormatter.format(value: item.subtotal, currencyCode: currency) ?? String()
 
         return itemTotal + " (" + itemSubtotal + " × " + quantity + ")"
     }
@@ -53,7 +53,7 @@ struct OrderItemViewModel {
         }
 
         let prefix = NSLocalizedString("Tax:", comment: "Tax label for total taxes line")
-        let totalTax = money.format(value: item.totalTax, currencyCode: currency) ?? String()
+        let totalTax = moneyFormatter.format(value: item.totalTax, currencyCode: currency) ?? String()
         return prefix + " " + totalTax
     }
 
@@ -71,6 +71,6 @@ struct OrderItemViewModel {
     init(item: OrderItem, currency: String, money: MoneyFormatter = MoneyFormatter()) {
         self.item = item
         self.currency = currency
-        self.money = money
+        self.moneyFormatter = money
     }
 }

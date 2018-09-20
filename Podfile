@@ -17,9 +17,9 @@ target 'WooCommerce' do
   # ====================
   #
   pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.3'
-  pod 'Gridicons', '0.15'
-  pod 'WordPressAuthenticator', '1.0.6'
-  pod 'WordPressShared', '1.0.8'
+  pod 'Gridicons', '0.16'
+  pod 'WordPressAuthenticator', '1.1.0-beta.1'
+  pod 'WordPressShared', '1.1.1-beta.2'
   pod 'WordPressUI', '~> 1.0'
 
 
@@ -31,7 +31,7 @@ target 'WooCommerce' do
   pod 'KeychainAccess', '~> 3.1'
   pod 'CocoaLumberjack', '~> 3.4'
   pod 'XLPagerTabStrip', '~> 8.0'
-  pod 'Charts', '~> 3.1'
+  pod 'Charts', '~> 3.2'
 
   # Unit Tests
   # ==========
@@ -118,7 +118,7 @@ end
 #
 post_install do |installer|
   installer.pods_project.targets.each do |target|
-      if ['Charts', 'XLPagerTabStrip', 'WordPressShared'].include? target.name
+      if ['XLPagerTabStrip'].include? target.name
           target.build_configurations.each do |config|
               config.build_settings['SWIFT_VERSION'] = '4.0'
           end

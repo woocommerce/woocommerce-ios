@@ -20,4 +20,8 @@ enum WooConstants {
     /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
     ///
     static let termsOfServiceUrl = "https://wordpress.com/tos/"
+
+    /// Support Email
+    ///
+    static let supportMail = "mobile-support@woocommerce.com"
 }

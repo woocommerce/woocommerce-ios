@@ -115,8 +115,8 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="hBh-xf-Cby" firstAttribute="top" secondItem="wvX-aq-v2S" secondAttribute="top" id="336-TT-5Dd"/>
-                            <constraint firstItem="wvX-aq-v2S" firstAttribute="bottom" secondItem="hBh-xf-Cby" secondAttribute="bottom" id="5Wo-6G-ztx"/>
-                            <constraint firstAttribute="trailing" secondItem="hBh-xf-Cby" secondAttribute="trailing" id="nw8-bc-grv"/>
+                            <constraint firstItem="wvX-aq-v2S" firstAttribute="trailing" secondItem="hBh-xf-Cby" secondAttribute="trailing" id="FQp-iN-6oS"/>
+                            <constraint firstItem="wvX-aq-v2S" firstAttribute="bottom" secondItem="hBh-xf-Cby" secondAttribute="bottom" id="MGb-D6-I2u"/>
                             <constraint firstItem="hBh-xf-Cby" firstAttribute="leading" secondItem="wvX-aq-v2S" secondAttribute="leading" id="zxy-1j-4Gg"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="wvX-aq-v2S"/>

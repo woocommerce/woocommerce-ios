@@ -53,6 +53,13 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
     // MARK: - Computed Properties
 
+    private var currencySymbol: String {
+        guard let code = orderStats?.currencySymbol else {
+            return String()
+        }
+        return MoneyFormatter().currencySymbol(currencyCode: code) ?? String()
+    }
+
     private var summaryDateUpdated: String {
         if let lastUpdatedDate = lastUpdatedDate {
             return String.localizedStringWithFormat(NSLocalizedString("Updated %@",
@@ -190,11 +197,10 @@ private extension PeriodDataViewController {
 
         let yAxis = barChartView.leftAxis
         yAxis.labelFont = StyleManager.chartLabelFont
+        xAxis.setLabelCount(3, force: true)
         yAxis.labelTextColor = StyleManager.wooSecondary
         yAxis.axisLineColor = StyleManager.wooGreyBorder
         yAxis.gridColor = StyleManager.wooGreyBorder
-        yAxis.gridLineDashLengths = Constants.chartXAxisDashLengths
-        yAxis.axisLineDashPhase = Constants.chartXAxisDashPhase
         yAxis.zeroLineColor = StyleManager.wooGreyBorder
         yAxis.drawLabelsEnabled = true
         yAxis.drawGridLinesEnabled = true
@@ -202,6 +208,7 @@ private extension PeriodDataViewController {
         yAxis.drawZeroLineEnabled = true
         yAxis.axisMinimum = Constants.chartYAxisMinimum
         yAxis.valueFormatter = self
+        yAxis.setLabelCount(3, force: true)
     }
 }
 
@@ -257,7 +264,7 @@ extension PeriodDataViewController: IAxisValueFormatter {
                 return ""
             } else {
                 yAxisMaximum = value.friendlyString()
-                return yAxisMaximum
+                return currencySymbol + yAxisMaximum
             }
         }
     }
@@ -420,8 +427,6 @@ private extension PeriodDataViewController {
         static let chartMarkerMinimumSize: CGSize       = CGSize(width: 50.0, height: 30.0)
         static let chartMarkerArrowSize: CGSize         = CGSize(width: 8, height: 6)
 
-        static let chartXAxisDashLengths: [CGFloat]     = [5.0, 5.0]
-        static let chartXAxisDashPhase: CGFloat         = 0.0
         static let chartXAxisGranularity: Double        = 1.0
         static let chartYAxisMinimum: Double            = 0.0
     }

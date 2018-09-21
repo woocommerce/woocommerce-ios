@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -19,16 +20,16 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Ath-1M-eR6">
-                        <rect key="frame" x="56" y="8" width="248" height="150"/>
+                        <rect key="frame" x="56" y="13.5" width="248" height="145"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="150" id="0oa-fJ-Z0a"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="145" id="0oa-fJ-Z0a"/>
                         </constraints>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textView>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WYv-eb-Aor">
-                        <rect key="frame" x="16" y="16" width="24" height="24"/>
+                        <rect key="frame" x="16" y="16.5" width="24" height="24"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="24" id="Cf8-HO-VjA"/>
                             <constraint firstAttribute="width" constant="24" id="jl5-OT-sho"/>
@@ -37,12 +38,12 @@
                     </button>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="Ath-1M-eR6" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="2.5" id="4vV-bo-cyA"/>
+                    <constraint firstItem="WYv-eb-Aor" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="7wf-vV-EAH"/>
                     <constraint firstItem="Ath-1M-eR6" firstAttribute="leading" secondItem="WYv-eb-Aor" secondAttribute="trailing" constant="16" id="B4Q-vS-iOG"/>
-                    <constraint firstItem="WYv-eb-Aor" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="Rz3-6C-5eQ"/>
-                    <constraint firstItem="Ath-1M-eR6" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="dgo-Pv-bc1"/>
-                    <constraint firstItem="WYv-eb-Aor" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="gb5-31-Jav"/>
-                    <constraint firstAttribute="trailing" secondItem="Ath-1M-eR6" secondAttribute="trailing" constant="16" id="mov-WT-I9U"/>
-                    <constraint firstAttribute="bottom" secondItem="Ath-1M-eR6" secondAttribute="bottom" constant="16" id="tBV-Lm-gdT"/>
+                    <constraint firstItem="WYv-eb-Aor" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="5.5" id="eNQ-BL-NSi"/>
+                    <constraint firstItem="Ath-1M-eR6" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="uAF-E1-L8T"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="Ath-1M-eR6" secondAttribute="bottom" constant="4.5" id="yYC-k4-ejo"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

@@ -56,12 +56,13 @@ extension ProductListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
             fatalError()
         }
-        cell.configure(leftText: viewModel.productLeftTitle, rightText: viewModel.productRightTitle)
+        headerView.leftText = viewModel.productLeftTitle
+        headerView.rightText = viewModel.productRightTitle
 
-        return cell
+        return headerView
     }
 }
 

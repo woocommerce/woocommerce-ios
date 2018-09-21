@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -19,7 +20,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="wbD-Qx-IG5">
-                        <rect key="frame" x="16" y="16" width="223" height="42.5"/>
+                        <rect key="frame" x="16" y="16" width="223" height="43"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B98-58-fIv">
                                 <rect key="frame" x="0.0" y="0.0" width="223" height="20.5"/>
@@ -28,7 +29,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hrx-8V-5Ga">
-                                <rect key="frame" x="0.0" y="20.5" width="223" height="22"/>
+                                <rect key="frame" x="0.0" y="20.5" width="223" height="22.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -48,19 +49,19 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="eQm-bW-led" firstAttribute="centerY" secondItem="SdQ-xn-v14" secondAttribute="centerY" id="5eK-cD-Y34"/>
-                            <constraint firstAttribute="trailing" secondItem="eQm-bW-led" secondAttribute="trailing" constant="16" id="BTO-jW-Poh"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="eQm-bW-led" secondAttribute="trailing" constant="8" id="JHu-WR-UIl"/>
                             <constraint firstAttribute="width" constant="81" id="qba-K1-uAZ"/>
                         </constraints>
                     </view>
                 </subviews>
                 <constraints>
                     <constraint firstItem="SdQ-xn-v14" firstAttribute="leading" secondItem="wbD-Qx-IG5" secondAttribute="trailing" id="NmY-BC-rSb"/>
+                    <constraint firstItem="wbD-Qx-IG5" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="5" id="Wz9-XC-sH4"/>
                     <constraint firstAttribute="trailing" secondItem="SdQ-xn-v14" secondAttribute="trailing" id="Xtw-n7-vXM"/>
                     <constraint firstItem="SdQ-xn-v14" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="ZFX-sQ-V5W"/>
-                    <constraint firstItem="wbD-Qx-IG5" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="bF1-7F-LxL"/>
-                    <constraint firstItem="wbD-Qx-IG5" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="f5s-p0-foq"/>
-                    <constraint firstAttribute="bottom" secondItem="wbD-Qx-IG5" secondAttribute="bottom" constant="16" id="jvx-HL-9Sc"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="wbD-Qx-IG5" secondAttribute="bottom" constant="5" id="c3q-Gf-seA"/>
                     <constraint firstAttribute="bottom" secondItem="SdQ-xn-v14" secondAttribute="bottom" id="oyi-zQ-f4g"/>
+                    <constraint firstItem="wbD-Qx-IG5" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="qQd-GP-Nj1"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

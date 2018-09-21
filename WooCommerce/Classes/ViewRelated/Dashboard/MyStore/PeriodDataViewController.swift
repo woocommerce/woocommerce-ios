@@ -54,7 +54,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     // MARK: - Computed Properties
 
     private var currencySymbol: String {
-        guard let code = orderStats?.currencySymbol else {
+        guard let code = orderStats?.currencyCode else {
             return String()
         }
         return MoneyFormatter().currencySymbol(currencyCode: code) ?? String()
@@ -325,9 +325,8 @@ private extension PeriodDataViewController {
         var totalRevenueText = Constants.placeholderText
         if let orderStats = orderStats {
             totalOrdersText = Double(orderStats.totalOrders).friendlyString()
-            let currencySymbol = orderStats.currencySymbol
             let totalRevenue = orderStats.totalSales.friendlyString()
-            totalRevenueText = "\(currencySymbol)\(totalRevenue)"
+            totalRevenueText = currencySymbol + totalRevenue
         }
         ordersData.text = totalOrdersText
         revenueData.text = totalRevenueText
@@ -373,7 +372,7 @@ private extension PeriodDataViewController {
         var dataEntries: [BarChartDataEntry] = []
         statItems.forEach { (item) in
             let entry = BarChartDataEntry(x: Double(barCount), y: item.totalSales)
-            entry.accessibilityValue = "\(item.period): \(orderStats.currencySymbol)\(item.totalSales.friendlyString())"
+            entry.accessibilityValue = "\(item.period): \(currencySymbol)\(item.totalSales.friendlyString())"
             dataEntries.append(entry)
             barCount += 1
         }

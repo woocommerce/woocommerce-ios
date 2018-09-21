@@ -98,7 +98,7 @@ private extension NewOrdersViewController {
 
     @IBAction func buttonTouchUpInside(_ sender: UIButton) {
         sender.fadeOutSelectedBackground {
-            MainTabBarController.switchToOrdersTab()
+            MainTabBarController.switchToOrdersTab(filter: .processing)
         }
     }
 

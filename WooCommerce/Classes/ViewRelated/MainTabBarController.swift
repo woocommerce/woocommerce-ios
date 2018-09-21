@@ -1,5 +1,7 @@
 import UIKit
 import Gridicons
+import Yosemite
+
 
 /// Enum representing the individual tabs
 ///
@@ -78,8 +80,14 @@ extension MainTabBarController {
 
     /// Switches to the Orders tab and pops to the root view controller
     ///
-    static func switchToOrdersTab() {
+    static func switchToOrdersTab(filter: OrderStatus? = nil) {
         navigateTo(.orders)
+
+        guard let ordersViewController: OrdersViewController = childViewController() else {
+            return
+        }
+
+        ordersViewController.statusFilter = filter
     }
 
     /// Switches to the Notifications tab and pops to the root view controller
@@ -88,6 +96,8 @@ extension MainTabBarController {
         navigateTo(.notifications)
     }
 
+    /// Switches the TabBarcController to the specified Tab
+    ///
     private static func navigateTo(_ tab: WooTab) {
         guard let tabBar = AppDelegate.shared.tabBarController else {
             return
@@ -97,5 +107,16 @@ extension MainTabBarController {
         if let navController = tabBar.selectedViewController as? UINavigationController {
             navController.popToRootViewController(animated: false)
         }
+    }
+
+    /// Returns the "Top Visible Child" of the specified type
+    ///
+    private static func childViewController<T: UIViewController>() -> T? {
+        let selectedViewController = AppDelegate.shared.tabBarController?.selectedViewController
+        guard let navController = selectedViewController as? UINavigationController else {
+            return selectedViewController as? T
+        }
+
+        return navController.topViewController as? T
     }
 }

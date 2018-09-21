@@ -42,6 +42,10 @@ class OrdersViewController: UIViewController {
     ///
     var statusFilter: OrderStatus? {
         didSet {
+            guard isViewLoaded else {
+                return
+            }
+
             guard oldValue?.rawValue != statusFilter?.rawValue else {
                 return
             }
@@ -93,8 +97,11 @@ class OrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        refreshTitle()
+        refreshResultsPredicate()
         configureSyncingCoordinator()
         configureNavigation()
+        configureTabBarItem()
         configureTableView()
         configureResultsController()
     }
@@ -111,8 +118,22 @@ class OrdersViewController: UIViewController {
 //
 private extension OrdersViewController {
 
+    func refreshTitle() {
+        guard let filter = statusFilter?.rawValue.capitalized else {
+            navigationItem.title = NSLocalizedString("Orders", comment: "Orders Title")
+            return
+        }
+
+        navigationItem.title = NSLocalizedString("Orders: \(filter)", comment: "Orders Title")
+    }
+
+    func refreshResultsPredicate() {
+        resultsController.predicate = statusFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
+        tableView.setContentOffset(.zero, animated: false)
+        tableView.reloadData()
+    }
+
     func configureNavigation() {
-        title = NSLocalizedString("Orders", comment: "Orders title")
         let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
                                              style: .plain,
                                              target: self,
@@ -125,6 +146,10 @@ private extension OrdersViewController {
 
         // Don't show the Order title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+    }
+
+    func configureTabBarItem() {
+        tabBarItem.title = NSLocalizedString("Orders", comment: "Orders title")
     }
 
     func configureTableView() {
@@ -181,11 +206,12 @@ extension OrdersViewController {
 //
 private extension OrdersViewController {
 
-    private func didChangeFilter(newFilter: OrderStatus?) {
+    func didChangeFilter(newFilter: OrderStatus?) {
+        // Display the Filter in the Title
+        refreshTitle()
+
         // Filter right away the cached orders
-        resultsController.predicate = newFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
-        tableView.setContentOffset(.zero, animated: false)
-        tableView.reloadData()
+        refreshResultsPredicate()
 
         // Drop Cache (If Needed) + Re-Sync First Page
         ensureStoredOrdersAreReset { [weak self] in

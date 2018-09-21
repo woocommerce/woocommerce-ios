@@ -20,7 +20,7 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
             return leftColumn.text
         }
         set {
-            leftColumn.text = newValue
+            leftColumn.text = newValue?.uppercased()
         }
     }
 
@@ -31,7 +31,7 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
             return rightColumn.text
         }
         set {
-            rightColumn.text = newValue
+            rightColumn.text = newValue?.uppercased()
         }
     }
 
@@ -39,20 +39,13 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+
         tintColor = .clear
+
         leftColumn.applyFootnoteStyle()
         rightColumn.applyFootnoteStyle()
+
         leftColumn.textColor = StyleManager.sectionTitleColor
         rightColumn.textColor = StyleManager.sectionTitleColor
-    }
-}
-
-
-// MARK: - Public Methods
-//
-extension TwoColumnSectionHeaderView {
-    func configure(leftText: String?, rightText: String?) {
-        leftColumn.text = leftText
-        rightColumn.text = rightText
     }
 }

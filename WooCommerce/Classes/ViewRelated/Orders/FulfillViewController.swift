@@ -189,7 +189,7 @@ extension FulfillViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let section = sections[section]
 
-        guard let leftTitle = section.title?.uppercased() else {
+        guard let leftTitle = section.title else {
             return nil
         }
 
@@ -198,7 +198,7 @@ extension FulfillViewController: UITableViewDataSource {
         }
 
         headerView.leftText = leftTitle
-        headerView.rightText = section.secondaryTitle?.uppercased()
+        headerView.rightText = section.secondaryTitle
 
         return headerView
     }

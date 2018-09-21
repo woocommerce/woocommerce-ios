@@ -40,7 +40,7 @@ class OrdersViewController: UIViewController {
 
     /// OrderStatus that must be matched by retrieved orders.
     ///
-    private var statusFilter: OrderStatus? {
+    var statusFilter: OrderStatus? {
         didSet {
             guard oldValue?.rawValue != statusFilter?.rawValue else {
                 return

@@ -174,7 +174,11 @@ private extension OrderDetailsViewController {
     func reloadSections() {
         let summary = Section(row: .summary)
 
-        let products: Section = {
+        let products: Section? = {
+            guard viewModel.items.isEmpty == false else {
+                return nil
+            }
+
             let rows: [Row] = viewModel.isProcessingPayment ? [.productList] : [.productList, .productDetails]
             return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
         }()

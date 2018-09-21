@@ -197,7 +197,6 @@ private extension PeriodDataViewController {
 
         let yAxis = barChartView.leftAxis
         yAxis.labelFont = StyleManager.chartLabelFont
-        xAxis.setLabelCount(3, force: true)
         yAxis.labelTextColor = StyleManager.wooSecondary
         yAxis.axisLineColor = StyleManager.wooGreyBorder
         yAxis.gridColor = StyleManager.wooGreyBorder

@@ -484,12 +484,14 @@ extension OrderDetailsViewController: UITableViewDataSource {
             return nil
         }
 
-        guard let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
             fatalError()
         }
-        cell.configure(leftText: leftText, rightText: sections[section].rightTitle)
 
-        return cell
+        headerView.leftText = leftText
+        headerView.rightText = sections[section].rightTitle
+
+        return headerView
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -614,12 +616,12 @@ private extension OrderDetailsViewController {
     }
 
     enum Title {
-        static let product = NSLocalizedString("PRODUCT", comment: "Product section title")
-        static let quantity = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")
-        static let customerNote = NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title")
-        static let information = NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title")
-        static let payment = NSLocalizedString("PAYMENT", comment: "Payment section title")
-        static let notes = NSLocalizedString("ORDER NOTES", comment: "Order notes section title")
+        static let product = NSLocalizedString("Product", comment: "Product section title")
+        static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
+        static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
+        static let information = NSLocalizedString("Customer Information", comment: "Customer info section title")
+        static let payment = NSLocalizedString("Payment", comment: "Payment section title")
+        static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
     }
 
     enum Footer {

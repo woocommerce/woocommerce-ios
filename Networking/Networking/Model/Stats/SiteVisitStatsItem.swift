@@ -19,28 +19,8 @@ public struct SiteVisitStatsItem {
         return payload.fetchStringValue(for: FieldNames.period)
     }
 
-    public var views: Int {
-        return payload.fetchIntValue(for: FieldNames.views)
-    }
-
     public var visitors: Int {
         return payload.fetchIntValue(for: FieldNames.visitors)
-    }
-
-    public var likes: Int {
-        return payload.fetchIntValue(for: FieldNames.likes)
-    }
-
-    public var reblogs: Int {
-        return payload.fetchIntValue(for: FieldNames.reblogs)
-    }
-
-    public var comments: Int {
-        return payload.fetchIntValue(for: FieldNames.comments)
-    }
-
-    public var posts: Int {
-        return payload.fetchIntValue(for: FieldNames.posts)
     }
 }
 
@@ -50,18 +30,12 @@ public struct SiteVisitStatsItem {
 extension SiteVisitStatsItem: Comparable {
     public static func == (lhs: SiteVisitStatsItem, rhs: SiteVisitStatsItem) -> Bool {
         return lhs.period == rhs.period &&
-            lhs.views == rhs.views &&
-            lhs.visitors == rhs.visitors &&
-            lhs.likes == rhs.likes &&
-            lhs.reblogs == rhs.reblogs &&
-            lhs.comments == rhs.comments &&
-            lhs.posts == rhs.posts
+            lhs.visitors == rhs.visitors
     }
 
     public static func < (lhs: SiteVisitStatsItem, rhs: SiteVisitStatsItem) -> Bool {
         return lhs.period < rhs.period ||
-            (lhs.period == rhs.period && lhs.views < rhs.views) ||
-            (lhs.period == rhs.period && lhs.views == rhs.views && lhs.likes < rhs.likes)
+            (lhs.period == rhs.period && lhs.visitors < rhs.visitors)
     }
 }
 
@@ -73,11 +47,6 @@ private extension SiteVisitStatsItem {
     ///
     enum FieldNames: String {
         case period = "period"
-        case views = "views"
         case visitors = "visitors"
-        case likes = "likes"
-        case reblogs = "reblogs"
-        case comments = "comments"
-        case posts = "posts"
     }
 }

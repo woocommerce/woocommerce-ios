@@ -179,6 +179,7 @@ private extension PeriodDataViewController {
         barChartView.noDataFont = StyleManager.chartLabelFont
         barChartView.noDataTextColor = StyleManager.wooSecondary
         barChartView.extraRightOffset = Constants.chartExtraRightOffset
+        barChartView.extraTopOffset = Constants.chartExtraTopOffset
         barChartView.delegate = self
 
         let xAxis = barChartView.xAxis
@@ -419,6 +420,7 @@ private extension PeriodDataViewController {
 
         static let chartAnimationDuration: TimeInterval = 0.75
         static let chartExtraRightOffset: CGFloat       = 25.0
+        static let chartExtraTopOffset: CGFloat         = 20.0
         static let chartHighlightAlpha: CGFloat         = 1.0
 
         static let chartMarkerInsets: UIEdgeInsets      = UIEdgeInsets(top: 5.0, left: 2.0, bottom: 5.0, right: 2.0)

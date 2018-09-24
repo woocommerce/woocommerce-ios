@@ -370,16 +370,18 @@ private extension PeriodDataViewController {
         }
 
         var barCount = 0
+        var barColors: [UIColor] = []
         var dataEntries: [BarChartDataEntry] = []
         statItems.forEach { (item) in
             let entry = BarChartDataEntry(x: Double(barCount), y: item.totalSales)
             entry.accessibilityValue = "\(item.period): \(currencySymbol)\(item.totalSales.friendlyString())"
+            barColors.append(barColor(for: item.period))
             dataEntries.append(entry)
             barCount += 1
         }
 
         let dataSet =  BarChartDataSet(values: dataEntries, label: "Data")
-        dataSet.setColor(StyleManager.wooCommerceBrandColor)
+        dataSet.colors = barColors
         dataSet.highlightEnabled = true
         dataSet.highlightColor = StyleManager.wooAccent
         dataSet.highlightAlpha = Constants.chartHighlightAlpha
@@ -408,6 +410,16 @@ private extension PeriodDataViewController {
             }
         }
         return dateString
+    }
+
+    func barColor(for period: String) -> UIColor {
+        guard granularity == .day,
+            let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: period),
+            Calendar.current.isDateInWeekend(periodDate) else {
+                return StyleManager.wooCommerceBrandColor
+        }
+
+        return StyleManager.wooGreyMid
     }
 }
 

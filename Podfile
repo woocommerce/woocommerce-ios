@@ -111,17 +111,29 @@ target 'Storage' do
 end
 
 
-# Workaround: Set SWIFT_VERSION = 4.0 in dependencies that do not have an explicit setting.
-# Xcode is bumping them up to 4.2, and the project just won't build.
-#
-# TODO: Remove as soon as the dependencies get updated!
+
+# Workarounds:
+# ============
 #
 post_install do |installer|
+
+  # Workaround: SWIFT_VERSION = 4.0 in dependencies that need it
+  # ============================================================
+  #
+  # TODO: Remove as soon as the dependencies get updated!
+  #
   installer.pods_project.targets.each do |target|
       if ['XLPagerTabStrip'].include? target.name
           target.build_configurations.each do |config|
               config.build_settings['SWIFT_VERSION'] = '4.0'
           end
       end
+  end
+
+  # Workaround: Drop 32 Bit Architectures
+  # =====================================
+  #
+  installer.pods_project.build_configuration_list.build_configurations.each do |configuration|
+    configuration.build_settings['VALID_ARCHS'] = '$(ARCHS_STANDARD_64_BIT)'
   end
 end

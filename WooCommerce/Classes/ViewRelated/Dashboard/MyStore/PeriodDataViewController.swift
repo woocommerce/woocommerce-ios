@@ -53,6 +53,13 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
     // MARK: - Computed Properties
 
+    private var currencySymbol: String {
+        guard let code = orderStats?.currencyCode else {
+            return String()
+        }
+        return MoneyFormatter().currencySymbol(currencyCode: code) ?? String()
+    }
+
     private var summaryDateUpdated: String {
         if let lastUpdatedDate = lastUpdatedDate {
             return String.localizedStringWithFormat(NSLocalizedString("Updated %@",
@@ -172,6 +179,7 @@ private extension PeriodDataViewController {
         barChartView.noDataFont = StyleManager.chartLabelFont
         barChartView.noDataTextColor = StyleManager.wooSecondary
         barChartView.extraRightOffset = Constants.chartExtraRightOffset
+        barChartView.extraTopOffset = Constants.chartExtraTopOffset
         barChartView.delegate = self
 
         let xAxis = barChartView.xAxis
@@ -193,8 +201,6 @@ private extension PeriodDataViewController {
         yAxis.labelTextColor = StyleManager.wooSecondary
         yAxis.axisLineColor = StyleManager.wooGreyBorder
         yAxis.gridColor = StyleManager.wooGreyBorder
-        yAxis.gridLineDashLengths = Constants.chartXAxisDashLengths
-        yAxis.axisLineDashPhase = Constants.chartXAxisDashPhase
         yAxis.zeroLineColor = StyleManager.wooGreyBorder
         yAxis.drawLabelsEnabled = true
         yAxis.drawGridLinesEnabled = true
@@ -202,6 +208,7 @@ private extension PeriodDataViewController {
         yAxis.drawZeroLineEnabled = true
         yAxis.axisMinimum = Constants.chartYAxisMinimum
         yAxis.valueFormatter = self
+        yAxis.setLabelCount(3, force: true)
     }
 }
 
@@ -257,7 +264,7 @@ extension PeriodDataViewController: IAxisValueFormatter {
                 return ""
             } else {
                 yAxisMaximum = value.friendlyString()
-                return yAxisMaximum
+                return currencySymbol + yAxisMaximum
             }
         }
     }
@@ -319,9 +326,8 @@ private extension PeriodDataViewController {
         var totalRevenueText = Constants.placeholderText
         if let orderStats = orderStats {
             totalOrdersText = Double(orderStats.totalOrders).friendlyString()
-            let currencySymbol = orderStats.currencySymbol
             let totalRevenue = orderStats.totalSales.friendlyString()
-            totalRevenueText = "\(currencySymbol)\(totalRevenue)"
+            totalRevenueText = currencySymbol + totalRevenue
         }
         ordersData.text = totalOrdersText
         revenueData.text = totalRevenueText
@@ -364,16 +370,18 @@ private extension PeriodDataViewController {
         }
 
         var barCount = 0
+        var barColors: [UIColor] = []
         var dataEntries: [BarChartDataEntry] = []
         statItems.forEach { (item) in
             let entry = BarChartDataEntry(x: Double(barCount), y: item.totalSales)
-            entry.accessibilityValue = "\(item.period): \(orderStats.currencySymbol)\(item.totalSales.friendlyString())"
+            entry.accessibilityValue = "\(item.period): \(currencySymbol)\(item.totalSales.friendlyString())"
+            barColors.append(barColor(for: item.period))
             dataEntries.append(entry)
             barCount += 1
         }
 
         let dataSet =  BarChartDataSet(values: dataEntries, label: "Data")
-        dataSet.setColor(StyleManager.wooCommerceBrandColor)
+        dataSet.colors = barColors
         dataSet.highlightEnabled = true
         dataSet.highlightColor = StyleManager.wooAccent
         dataSet.highlightAlpha = Constants.chartHighlightAlpha
@@ -403,6 +411,16 @@ private extension PeriodDataViewController {
         }
         return dateString
     }
+
+    func barColor(for period: String) -> UIColor {
+        guard granularity == .day,
+            let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: period),
+            Calendar.current.isDateInWeekend(periodDate) else {
+                return StyleManager.wooCommerceBrandColor
+        }
+
+        return StyleManager.wooGreyMid
+    }
 }
 
 
@@ -414,14 +432,13 @@ private extension PeriodDataViewController {
 
         static let chartAnimationDuration: TimeInterval = 0.75
         static let chartExtraRightOffset: CGFloat       = 25.0
+        static let chartExtraTopOffset: CGFloat         = 20.0
         static let chartHighlightAlpha: CGFloat         = 1.0
 
         static let chartMarkerInsets: UIEdgeInsets      = UIEdgeInsets(top: 5.0, left: 2.0, bottom: 5.0, right: 2.0)
         static let chartMarkerMinimumSize: CGSize       = CGSize(width: 50.0, height: 30.0)
         static let chartMarkerArrowSize: CGSize         = CGSize(width: 8, height: 6)
 
-        static let chartXAxisDashLengths: [CGFloat]     = [5.0, 5.0]
-        static let chartXAxisDashPhase: CGFloat         = 0.0
         static let chartXAxisGranularity: Double        = 1.0
         static let chartYAxisMinimum: Double            = 0.0
     }

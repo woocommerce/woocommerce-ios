@@ -135,9 +135,6 @@ private extension AppDelegate {
 
         // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
         window?.tintColor = StyleManager.wooCommerceBrandColor
-
-        // TODO: Nuke This
-        UIApplication.shared.statusBarStyle = .lightContent
     }
 
     /// Sets up FancyButton's UIAppearance.

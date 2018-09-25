@@ -106,6 +106,7 @@ private extension DashboardViewController {
 private extension DashboardViewController {
 
     @objc func settingsTapped() {
+        WooAnalytics.shared.track(.settingsTapped)
         performSegue(withIdentifier: Segues.settingsSegue, sender: nil)
     }
 

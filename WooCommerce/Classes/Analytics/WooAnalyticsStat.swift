@@ -9,12 +9,6 @@ public enum WooAnalyticsStat: String {
     //
     case applicationOpened                      = "application_opened"
     case applicationClosed                      = "application_closed"
-    case dashboardSelected                      = "main_tab_dashboard_selected"
-    case dashboardReselected                    = "main_tab_dashboard_reselected"
-    case notificationsSelected                  = "main_tab_notifications_selected"
-    case notificationsReselected                = "main_tab_notifications_reselected"
-    case ordersSelected                         = "main_tab_orders_selected"
-    case ordersReselected                       = "main_tab_orders_reselected"
 
     // Authentication Events
     //
@@ -55,6 +49,28 @@ public enum WooAnalyticsStat: String {
     case onePasswordSignup                      = "one_password_signup"
     case twoFactorCodeRequested                 = "two_factor_code_requested"
     case twoFactorSentSMS                       = "two_factor_sent_sms"
+
+    // Dashboard Events
+    //
+    case dashboardSelected                      = "main_tab_dashboard_selected"
+    case dashboardReselected                    = "main_tab_dashboard_reselected"
+
+    // Settings Events
+    //
+    case settingsTapped                         = "main_menu_settings_tapped"
+    case settingsContactSupportTapped           = "main_menu_contact_support_tapped"
+    case settingsLogoutTapped                   = "settings_logout_button_tapped"
+    case settingsLogoutConfirmation             = "settings_logout_confirmation_dialog_result"
+
+    // Order Events
+    //
+    case ordersSelected                         = "main_tab_orders_selected"
+    case ordersReselected                       = "main_tab_orders_reselected"
+
+    // Notification Events
+    //
+    case notificationsSelected                  = "main_tab_notifications_selected"
+    case notificationsReselected                = "main_tab_notifications_reselected"
 }
 
 public extension WooAnalyticsStat {

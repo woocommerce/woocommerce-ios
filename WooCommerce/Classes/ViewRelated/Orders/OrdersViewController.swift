@@ -195,6 +195,7 @@ extension OrdersViewController {
     }
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
+        WooAnalytics.shared.track(.ordersListPulledToRefresh)
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }

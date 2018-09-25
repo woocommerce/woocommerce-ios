@@ -60,6 +60,7 @@ public enum WooAnalyticsStat: String {
     //
     case dashboardSelected                      = "main_tab_dashboard_selected"
     case dashboardReselected                    = "main_tab_dashboard_reselected"
+    case dashboardPulledToRefresh               = "dashboard_pulled_to_refresh"
 
     // Settings Events
     //
@@ -72,6 +73,11 @@ public enum WooAnalyticsStat: String {
     //
     case ordersSelected                         = "main_tab_orders_selected"
     case ordersReselected                       = "main_tab_orders_reselected"
+    case ordersListPulledToRefresh              = "orders_list_pulled_to_refresh"
+    case orderDetailAddNoteButtonTapped         = "order_detail_add_note_button_tapped"
+    case orderDetailPulledToRefresh             = "order_detail_pulled_to_refresh"
+    case orderNoteAddButtonTapped               = "add_order_note_add_button_tapped"
+    case orderNoteEmailCustomerToggled          = "add_order_note_email_note_to_customer_toggled"
 
     // Notification Events
     //

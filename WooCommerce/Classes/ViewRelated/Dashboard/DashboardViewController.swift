@@ -111,6 +111,7 @@ private extension DashboardViewController {
     }
 
     @objc func pullToRefresh() {
+        WooAnalytics.shared.track(.dashboardPulledToRefresh)
         applyHideAnimation(for: newOrdersContainerView)
         reloadData()
     }

@@ -245,6 +245,7 @@ private extension OrderDetailsViewController {
 extension OrderDetailsViewController {
 
     @objc func pullToRefresh() {
+        WooAnalytics.shared.track(.orderDetailPulledToRefresh)
         let group = DispatchGroup()
 
         group.enter()
@@ -538,6 +539,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
         switch sections[indexPath.section].rows[indexPath.row] {
         case .addOrderNote:
+            WooAnalytics.shared.track(.orderDetailAddNoteButtonTapped)
             let addANoteViewController = self.storyboard!.instantiateViewController(withIdentifier: Constants.noteViewController) as! AddANoteViewController
             addANoteViewController.viewModel = viewModel
             let navController = UINavigationController(rootViewController: addANoteViewController)

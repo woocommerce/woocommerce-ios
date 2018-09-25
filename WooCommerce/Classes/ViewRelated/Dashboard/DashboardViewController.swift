@@ -44,6 +44,7 @@ class DashboardViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        WooAnalytics.shared.track(.dashboardSelected)
         if storeStatsViewController.isDataMissing {
             reloadData()
         }

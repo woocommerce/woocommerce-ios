@@ -133,6 +133,7 @@ private extension StorePickerViewController {
 
     func refreshResults() {
         try? resultsController.performFetch()
+        WooAnalytics.shared.track(.loginEpilogueStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
         state = StorePickerState(sites: resultsController.fetchedObjects)
     }
 
@@ -229,6 +230,8 @@ extension StorePickerViewController {
         case .empty:
             restartAuthentication()
         default:
+            WooAnalytics.shared.track(.loginEpilogueContinueTapped,
+                                      withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? ""])
             dismiss(animated: true, completion: nil)
         }
     }

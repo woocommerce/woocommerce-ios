@@ -52,10 +52,16 @@ public extension TracksProvider {
 //
 private extension TracksProvider {
     func refreshMetadata() {
+        DDLogInfo("♻️ Refreshing tracks metadata...")
         var userProperties = [String: Any]()
-        userProperties["platform"] = "iOS"
-        userProperties["accessibility_voice_over_enabled"] = UIAccessibility.isVoiceOverRunning
-        userProperties["is_rtl_language"] = (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
+        userProperties[UserProperties.platformKey] = "iOS"
+        userProperties[UserProperties.voiceOverKey] = UIAccessibility.isVoiceOverRunning
+        userProperties[UserProperties.rtlKey] = (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
+        if StoresManager.shared.isAuthenticated {
+            let site = StoresManager.shared.sessionManager.defaultSite
+            userProperties[UserProperties.blogIDKey] = site?.siteID
+            userProperties[UserProperties.wpcomStoreKey] = site?.isWordPressStore
+        }
         tracksService.userProperties.removeAllObjects()
         tracksService.userProperties.addEntries(from: userProperties)
     }
@@ -68,5 +74,13 @@ private extension TracksProvider {
 
     enum Constants {
         static let eventNamePrefix = "woocommerceios"
+    }
+
+    enum UserProperties {
+        static let platformKey          = "platform"
+        static let voiceOverKey         = "accessibility_voice_over_enabled"
+        static let rtlKey               = "is_rtl_language"
+        static let blogIDKey            = "user_info_blog_id"
+        static let wpcomStoreKey        = "user_info_is_wpcom_store"
     }
 }

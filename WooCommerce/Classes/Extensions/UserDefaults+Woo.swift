@@ -10,6 +10,7 @@ extension UserDefaults {
         case defaultUsername
         case defaultStoreID
         case defaultAnonymousID
+        case versionOfLastRun
     }
 }
 

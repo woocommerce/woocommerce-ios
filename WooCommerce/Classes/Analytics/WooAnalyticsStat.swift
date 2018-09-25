@@ -7,6 +7,8 @@ public enum WooAnalyticsStat: String {
 
     // Application Events
     //
+    case applicationInstalled                   = "application_installed"
+    case applicationUpgraded                    = "application_upgraded"
     case applicationOpened                      = "application_opened"
     case applicationClosed                      = "application_closed"
 

@@ -19,13 +19,13 @@ class UserAgent {
 
     /// Returns the WebKit User Agent
     ///
-    private static var webkitUserAgent: String {
+    static var webkitUserAgent: String {
         return UIWebView().stringByEvaluatingJavaScript(from: Constants.loadUserAgentScript) ?? String()
     }
 
     /// Returns the Bundle Version ID
     ///
-    private static var bundleShortVersion: String {
+    static var bundleShortVersion: String {
         let version = Bundle.main.object(forInfoDictionaryKey: Constants.shortVersionKey) as? String
         return version ?? String()
     }

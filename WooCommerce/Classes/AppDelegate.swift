@@ -70,6 +70,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
 
+        // Upgrade check...
+        checkForUpgrades()
+
         return true
     }
 
@@ -194,6 +197,24 @@ private extension AppDelegate {
     ///
     func setupNoticePresenter() {
         noticePresenter.presentingViewController = window?.rootViewController
+    }
+}
+
+
+private extension AppDelegate {
+
+    func checkForUpgrades() {
+        let currentVersion = UserAgent.bundleShortVersion
+        let versionOfLastRun = UserDefaults.standard[.versionOfLastRun] as? String
+        if versionOfLastRun == nil {
+            // First run after a fresh install
+            WooAnalytics.shared.track(.applicationInstalled)
+        } else if versionOfLastRun != currentVersion {
+            // App was upgraded
+            WooAnalytics.shared.track(.applicationInstalled, withProperties: ["previous_version": versionOfLastRun ?? String()])
+        }
+
+        UserDefaults.standard[.versionOfLastRun] = currentVersion
     }
 }
 

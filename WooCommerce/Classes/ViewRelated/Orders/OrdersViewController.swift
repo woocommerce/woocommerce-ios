@@ -111,6 +111,11 @@ class OrdersViewController: UIViewController {
 
         syncingCoordinator.synchronizeFirstPage()
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        WooAnalytics.shared.track(.ordersSelected)
+    }
 }
 
 

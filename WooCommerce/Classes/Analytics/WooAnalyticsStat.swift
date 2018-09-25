@@ -9,6 +9,12 @@ public enum WooAnalyticsStat: String {
     //
     case applicationOpened                      = "application_opened"
     case applicationClosed                      = "application_closed"
+    case dashboardSelected                      = "main_tab_dashboard_selected"
+    case dashboardReselected                    = "main_tab_dashboard_reselected"
+    case notificationsSelected                  = "main_tab_notifications_selected"
+    case notificationsReselected                = "main_tab_notifications_reselected"
+    case ordersSelected                         = "main_tab_orders_selected"
+    case ordersReselected                       = "main_tab_orders_reselected"
 
     // Authentication Events
     //

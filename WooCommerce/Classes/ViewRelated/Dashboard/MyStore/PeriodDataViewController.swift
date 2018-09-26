@@ -317,7 +317,7 @@ private extension PeriodDataViewController {
             isInitialLoad = false
             return
         }
-        WooAnalytics.shared.track(.dashboardRevenueChartTabTapped, withProperties: ["selected_tab": granularity.rawValue])
+        WooAnalytics.shared.track(.dashboardMainStatsDate, withProperties: ["range": granularity.rawValue])
         isInitialLoad = false
     }
 

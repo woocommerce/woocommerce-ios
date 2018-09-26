@@ -424,6 +424,7 @@ extension OrderDetailsViewController {
         actionSheet.addAction(dismissAction)
 
         let callAction = UIAlertAction(title: NSLocalizedString("Call", comment: "Call phone number button title"), style: .default) { [weak self] action in
+            WooAnalytics.shared.track(.orderDetailCustomerPhoneOptionTapped)
             guard let phone = self?.viewModel.order.billingAddress?.cleanedPhoneNumber else {
                 return
             }
@@ -435,22 +436,31 @@ extension OrderDetailsViewController {
         actionSheet.addAction(callAction)
 
         let messageAction = UIAlertAction(title: NSLocalizedString("Message", comment: "Message phone number button title"), style: .default) { [weak self] action in
+            WooAnalytics.shared.track(.orderDetailCustomerSMSOptionTapped)
             self?.sendTextMessageIfPossible()
         }
-        actionSheet.addAction(messageAction)
 
+        actionSheet.addAction(messageAction)
+        WooAnalytics.shared.track(.orderDetailCustomerPhoneMenuTapped)
         present(actionSheet, animated: true)
     }
 
     @objc func emailButtonAction() {
+        WooAnalytics.shared.track(.orderDetailCustomerEmailTapped)
         sendEmailIfPossible()
     }
 
     func toggleBillingFooter() {
         displaysBillingDetails = !displaysBillingDetails
+        if displaysBillingDetails {
+            WooAnalytics.shared.track(.orderDetailShowBillingTapped)
+        } else {
+            WooAnalytics.shared.track(.orderDetailHideBillingTapped)
+        }
     }
 
     func fulfillWasPressed() {
+        WooAnalytics.shared.track(.orderDetailFulfillButtonTapped)
         let fulfillViewController = FulfillViewController(order: viewModel.order)
         navigationController?.pushViewController(fulfillViewController, animated: true)
     }

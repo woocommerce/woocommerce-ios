@@ -63,6 +63,8 @@ public enum WooAnalyticsStat: String {
     case dashboardReselected                    = "main_tab_dashboard_reselected"
     case dashboardPulledToRefresh               = "dashboard_pulled_to_refresh"
     case dashboardNewOrdersButtonTapped         = "dashboard_unfulfilled_orders_button_tapped"
+    case dashboardRevenueChartTabTapped         = "dashboard_revenue_chart_tab_tapped"
+    case dashboardTopPerformerTabTapped         = "dashboard_top_performer_tab_tapped"
 
     // Settings View Events
     //

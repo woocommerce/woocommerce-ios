@@ -80,7 +80,7 @@ private extension TracksProvider {
         static let platformKey          = "platform"
         static let voiceOverKey         = "accessibility_voice_over_enabled"
         static let rtlKey               = "is_rtl_language"
-        static let blogIDKey            = "user_info_blog_id"
-        static let wpcomStoreKey        = "user_info_is_wpcom_store"
+        static let blogIDKey            = "blog_id"
+        static let wpcomStoreKey        = "is_wpcom_store"
     }
 }

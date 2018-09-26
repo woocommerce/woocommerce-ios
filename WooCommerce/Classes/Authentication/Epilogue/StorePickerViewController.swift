@@ -234,7 +234,7 @@ extension StorePickerViewController {
             // their default store and tracks should to know about it.
             WooAnalytics.shared.refreshUserData()
             WooAnalytics.shared.track(.loginEpilogueContinueTapped,
-                                      withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? ""])
+                                      withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? String()])
             dismiss(animated: true, completion: nil)
         }
     }

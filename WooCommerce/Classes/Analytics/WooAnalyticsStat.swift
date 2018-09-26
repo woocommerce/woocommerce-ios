@@ -56,21 +56,21 @@ public enum WooAnalyticsStat: String {
     case twoFactorCodeRequested                 = "two_factor_code_requested"
     case twoFactorSentSMS                       = "two_factor_sent_sms"
 
-    // Dashboard Events
+    // Dashboard View Events
     //
     case dashboardSelected                      = "main_tab_dashboard_selected"
     case dashboardReselected                    = "main_tab_dashboard_reselected"
     case dashboardPulledToRefresh               = "dashboard_pulled_to_refresh"
     case dashboardNewOrdersButtonTapped         = "dashboard_unfulfilled_orders_button_tapped"
 
-    // Settings Events
+    // Settings View Events
     //
     case settingsTapped                         = "main_menu_settings_tapped"
     case settingsContactSupportTapped           = "main_menu_contact_support_tapped"
     case settingsLogoutTapped                   = "settings_logout_button_tapped"
     case settingsLogoutConfirmation             = "settings_logout_confirmation_dialog_result"
 
-    // Order Events
+    // Order View Events
     //
     case ordersSelected                         = "main_tab_orders_selected"
     case ordersReselected                       = "main_tab_orders_reselected"
@@ -91,6 +91,13 @@ public enum WooAnalyticsStat: String {
     case orderDetailProductDetailTapped         = "order_detail_product_detail_button_tapped"
     case orderFulfillmentCompleteButtonTapped   = "order_fulfillment_mark_order_complete_button_tapped"
     case orderMarkedCompleteUndoButtonTapped    = "snack_order_marked_complete_undo_button_tapped"
+
+    // Order Data/Action Events
+    //
+    case orderOpen                              = "order_open"
+    case orderNotesLoaded                       = "order_notes_loaded"
+    case orderNoteAddSuccess                    = "order_note_add_success"
+    case orderNoteAddFailed                     = "order_note_add_failed"
 
     // Notification Events
     //

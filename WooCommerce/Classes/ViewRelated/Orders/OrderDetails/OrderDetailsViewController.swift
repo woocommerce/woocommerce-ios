@@ -402,10 +402,12 @@ private extension OrderDetailsViewController {
                 DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
                 self?.orderNotes = []
                 onCompletion?(error)
+
                 return
             }
 
             self?.orderNotes = orderNotes.map { OrderNoteViewModel(with: $0) }
+            WooAnalytics.shared.track(.orderNotesLoaded, withProperties: ["id": self?.viewModel.order.orderID ?? 0])
             onCompletion?(nil)
         }
 

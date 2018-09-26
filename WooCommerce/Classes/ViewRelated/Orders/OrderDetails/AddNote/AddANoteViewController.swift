@@ -67,9 +67,11 @@ class AddANoteViewController: UIViewController {
         let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, isCustomerNote: isCustomerNote, note: noteText) { [weak self] (orderNote, error) in
             if let error = error {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
+                WooAnalytics.shared.track(.orderNoteAddFailed, withError: error)
                 // TODO: should this alert the user that there was an error?
                 return
             }
+            WooAnalytics.shared.track(.orderNoteAddSuccess)
             self?.dismiss(animated: true, completion: nil)
         }
 

@@ -210,7 +210,7 @@ private extension OrdersViewController {
 
     func didChangeFilter(newFilter: OrderStatus?) {
         WooAnalytics.shared.track(.filterOrdersOptionSelected,
-                                  withProperties: ["status": newFilter?.description ?? String()])
+                                  withProperties: ["status": newFilter?.rawValue ?? String()])
         // Display the Filter in the Title
         refreshTitle()
 
@@ -462,7 +462,7 @@ extension OrdersViewController {
         }
 
         WooAnalytics.shared.track(.orderOpen, withProperties: ["id": viewModel.order.orderID,
-                                                               "status": viewModel.order.status.description])
+                                                               "status": viewModel.order.status.rawValue])
         singleOrderViewController.viewModel = viewModel
     }
 }

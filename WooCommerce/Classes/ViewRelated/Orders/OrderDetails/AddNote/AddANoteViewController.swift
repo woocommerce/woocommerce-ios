@@ -64,6 +64,10 @@ class AddANoteViewController: UIViewController {
 
     @objc func addButtonTapped() {
         WooAnalytics.shared.track(.orderNoteAddButtonTapped)
+        WooAnalytics.shared.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
+                                                                  "status": viewModel.order.status.rawValue,
+                                                                  "type": isCustomerNote ? "customer" : "private"])
+
         let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, isCustomerNote: isCustomerNote, note: noteText) { [weak self] (orderNote, error) in
             if let error = error {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")

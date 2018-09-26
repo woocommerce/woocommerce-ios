@@ -211,6 +211,9 @@ private extension OrdersViewController {
     func didChangeFilter(newFilter: OrderStatus?) {
         WooAnalytics.shared.track(.filterOrdersOptionSelected,
                                   withProperties: ["status": newFilter?.rawValue ?? String()])
+        WooAnalytics.shared.track(.ordersListFilterOrSearch,
+                                  withProperties: ["filter": newFilter?.rawValue ?? String(),
+                                                   "search": ""])
         // Display the Filter in the Title
         refreshTitle()
 
@@ -261,6 +264,8 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
             if let error = error {
                 DDLogError("⛔️ Error synchronizing orders: \(error)")
                 self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
+            } else {
+                WooAnalytics.shared.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.rawValue ?? String()])
             }
 
             self.transitionToResultsUpdatedState()

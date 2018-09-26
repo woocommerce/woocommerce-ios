@@ -170,7 +170,7 @@ private extension SettingsViewController {
 
     func displaySupportEmailComposer() {
         // Workaround: MFMailCompose isn't *FULLY* picking up UINavigationBar's WC's appearance. Title / Buttons look awful.
-        // We're falling back to iOS's default appearence
+        // We're falling back to iOS's default appearance
         UINavigationBar.applyDefaultAppearance()
 
         // Subject + Composer

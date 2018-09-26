@@ -1,7 +1,8 @@
 import WordPressShared
 
 
-/// This enum contains all of the events we track in the app.
+/// This enum contains all of the events we track in the app. Please reference the "Woo Mobile Events Draft i2"
+/// spreadsheet for more details.
 ///
 public enum WooAnalyticsStat: String {
 

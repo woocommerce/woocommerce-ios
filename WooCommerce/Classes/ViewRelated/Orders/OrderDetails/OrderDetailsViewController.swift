@@ -555,6 +555,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
             let navController = UINavigationController(rootViewController: addANoteViewController)
             present(navController, animated: true, completion: nil)
         case .productDetails:
+            WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
         default:
             break

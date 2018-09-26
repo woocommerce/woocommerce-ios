@@ -88,6 +88,7 @@ public enum WooAnalyticsStat: String {
     case orderDetailCustomerPhoneMenuTapped     = "order_detail_customer_info_phone_menu_tapped"
     case orderDetailCustomerPhoneOptionTapped   = "order_detail_customer_info_phone_menu_phone_tapped"
     case orderDetailCustomerSMSOptionTapped     = "order_detail_customer_info_phone_menu_sms_tapped"
+    case orderDetailProductDetailTapped         = "order_detail_product_detail_button_tapped"
 
     // Notification Events
     //

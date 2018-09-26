@@ -98,6 +98,7 @@ private extension NewOrdersViewController {
 
     @IBAction func buttonTouchUpInside(_ sender: UIButton) {
         sender.fadeOutSelectedBackground {
+            WooAnalytics.shared.track(.dashboardNewOrdersButtonTapped)
             MainTabBarController.switchToOrdersTab(filter: .processing)
         }
     }

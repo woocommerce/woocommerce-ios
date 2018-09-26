@@ -177,6 +177,7 @@ private extension OrdersViewController {
 extension OrdersViewController {
 
     @IBAction func displayFiltersAlert() {
+        WooAnalytics.shared.track(.ordersListFilterTapped)
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
 
@@ -208,6 +209,8 @@ extension OrdersViewController {
 private extension OrdersViewController {
 
     func didChangeFilter(newFilter: OrderStatus?) {
+        WooAnalytics.shared.track(.filterOrdersOptionSelected,
+                                  withProperties: ["status": newFilter?.description ?? String()])
         // Display the Filter in the Title
         refreshTitle()
 

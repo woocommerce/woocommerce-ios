@@ -15,18 +15,24 @@ class SafariViewController: SFSafariViewController {
     var statusBarStyle: UIStatusBarStyle = .default
 
 
-    // MARK: - Overridden Methods
+    // MARK: - Overridden Properties and Methods
+
+    /// Sets the status bar style to default (black)
+    ///
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return statusBarStyle
+    }
 
     override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         previousStatusBarStyle = UIApplication.shared.statusBarStyle
-        UIApplication.shared.statusBarStyle = statusBarStyle
+        setNeedsStatusBarAppearanceUpdate()
     }
 
     override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        UIApplication.shared.statusBarStyle = previousStatusBarStyle ?? .lightContent
+        setNeedsStatusBarAppearanceUpdate()
     }
 }

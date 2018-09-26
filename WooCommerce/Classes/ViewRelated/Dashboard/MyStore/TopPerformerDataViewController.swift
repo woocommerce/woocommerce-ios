@@ -92,9 +92,11 @@ extension TopPerformerDataViewController {
             return
         }
 
-        let action = StatsAction.retrieveTopEarnerStats(siteID: siteID, granularity: granularity, latestDateToInclude: Date()) { (error) in
+        let action = StatsAction.retrieveTopEarnerStats(siteID: siteID, granularity: granularity, latestDateToInclude: Date()) { [weak self] (error) in
             if let error = error {
                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
+            } else {
+                WooAnalytics.shared.track(.dashboardTopPerformersLoaded, withProperties: ["granularity": self?.granularity.rawValue ?? String()])
             }
         }
         StoresManager.shared.dispatch(action)
@@ -221,7 +223,7 @@ private extension TopPerformerDataViewController {
             isInitialLoad = false
             return
         }
-        WooAnalytics.shared.track(.dashboardTopPerformerTabTapped, withProperties: ["selected_tab": granularity.rawValue])
+        WooAnalytics.shared.track(.dashboardTopPerformersDate, withProperties: ["range": granularity.rawValue])
         isInitialLoad = false
     }
 

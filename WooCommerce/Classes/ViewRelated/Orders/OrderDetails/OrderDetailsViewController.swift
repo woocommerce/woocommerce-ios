@@ -433,6 +433,9 @@ extension OrderDetailsViewController {
             if let url = URL(string: "telprompt://" + phone),
                 UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": self?.viewModel.order.orderID ?? 0,
+                                                                                "status": self?.viewModel.order.status.rawValue ?? String(),
+                                                                                "type": "call"])
             }
         }
         actionSheet.addAction(callAction)
@@ -582,6 +585,9 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
 
         if MFMessageComposeViewController.canSendText() {
             sendTextMessage(to: phoneNumber)
+            WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
+                                                                            "status": viewModel.order.status.rawValue,
+                                                                            "type": "sms"])
         }
     }
 
@@ -608,6 +614,9 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
             }
 
             sendEmail(to: email)
+            WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
+                                                                            "status": viewModel.order.status.rawValue,
+                                                                            "type": "email"])
         }
     }
 

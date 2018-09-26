@@ -63,8 +63,14 @@ public enum WooAnalyticsStat: String {
     case dashboardReselected                    = "main_tab_dashboard_reselected"
     case dashboardPulledToRefresh               = "dashboard_pulled_to_refresh"
     case dashboardNewOrdersButtonTapped         = "dashboard_unfulfilled_orders_button_tapped"
-    case dashboardRevenueChartTabTapped         = "dashboard_revenue_chart_tab_tapped"
-    case dashboardTopPerformerTabTapped         = "dashboard_top_performer_tab_tapped"
+
+    // Dashboard Data/Action Events
+    //
+    case dashboardMainStatsDate                 = "dashboard_main_stats_date"
+    case dashboardMainStatsLoaded               = "dashboard_main_stats_loaded"
+    case dashboardTopPerformersDate             = "dashboard_top_performers_date"
+    case dashboardTopPerformersLoaded           = "dashboard_top_performers_loaded"
+    case dashboardUnfulfilledOrdersLoaded       = "dashboard_unfulfilled_orders_loaded"
 
     // Settings View Events
     //
@@ -102,6 +108,7 @@ public enum WooAnalyticsStat: String {
     case orderNoteAdd                           = "order_note_add"
     case orderNoteAddSuccess                    = "order_note_add_success"
     case orderNoteAddFailed                     = "order_note_add_failed"
+    case orderContactAction                     = "order_contact_action"
 
     // Notification Events
     //

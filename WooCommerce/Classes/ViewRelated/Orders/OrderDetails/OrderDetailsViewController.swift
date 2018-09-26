@@ -587,16 +587,19 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
 //
 extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
     func sendEmailIfPossible() {
-        if MFMailComposeViewController.canSendMail() {
-            guard let email = viewModel.order.billingAddress?.email else {
-                return
-            }
-
-            sendEmail(to: email)
+        guard let email = viewModel.order.billingAddress?.email, MFMailComposeViewController.canSendMail() else {
+            return
         }
+
+        sendEmail(to: email)
     }
 
     private func sendEmail(to email: String) {
+        // Workaround: MFMailCompose isn't *FULLY* picking up UINavigationBar's WC's appearance. Title / Buttons look awful.
+        // We're falling back to iOS's default appearance
+        UINavigationBar.applyDefaultAppearance()
+
+        // Composer
         let controller = MFMailComposeViewController()
         controller.setToRecipients([email])
         controller.mailComposeDelegate = self
@@ -605,6 +608,9 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
 
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         controller.dismiss(animated: true, completion: nil)
+
+        // Workaround: Restore WC's navBar appearance
+        UINavigationBar.applyWooAppearance()
     }
 }
 

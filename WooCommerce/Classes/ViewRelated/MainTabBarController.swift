@@ -48,6 +48,7 @@ enum WooTab: Int, CustomStringConvertible {
 class MainTabBarController: UITabBarController {
 
     /// For picking up the child view controller's status bar styling
+    /// - returns: nil to let the tab bar control styling or `children.first` for VC control.
     ///
     open override var childForStatusBarStyle: UIViewController? {
         return nil

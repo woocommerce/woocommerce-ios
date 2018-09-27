@@ -123,15 +123,19 @@ private extension SettingsViewController {
 private extension SettingsViewController {
 
     func logoutWasPressed() {
+        WooAnalytics.shared.track(.settingsLogoutTapped)
         let messageUnformatted = NSLocalizedString("Are you sure you want to log out of the account %@?", comment: "Alert message to confirm a user meant to log out.")
         let messageFormatted = String(format: messageUnformatted, accountName)
         let alertController = UIAlertController(title: "", message: messageFormatted, preferredStyle: .alert)
 
         let cancelText = NSLocalizedString("Back", comment: "Alert button title - dismisses alert, which cancels the log out attempt")
-        alertController.addActionWithTitle(cancelText, style: .cancel)
+        alertController.addActionWithTitle(cancelText, style: .cancel) { _ in
+            WooAnalytics.shared.track(.settingsLogoutConfirmation, withProperties: ["result": "negative"])
+        }
 
         let logoutText = NSLocalizedString("Log Out", comment: "Alert button title - confirms and logs out the user")
         alertController.addDefaultActionWithTitle(logoutText) { _ in
+            WooAnalytics.shared.track(.settingsLogoutConfirmation, withProperties: ["result": "positive"])
             self.logOutUser()
         }
 
@@ -139,6 +143,7 @@ private extension SettingsViewController {
     }
 
     func supportWasPressed() {
+        WooAnalytics.shared.track(.settingsContactSupportTapped)
         guard shouldDisplayEmailComposer() else {
             displayContactUsAlert()
             return
@@ -148,7 +153,6 @@ private extension SettingsViewController {
     }
 
     func logOutUser() {
-        WooAnalytics.shared.track(.logout)
         StoresManager.shared.deauthenticate()
         navigationController?.popToRootViewController(animated: true)
     }

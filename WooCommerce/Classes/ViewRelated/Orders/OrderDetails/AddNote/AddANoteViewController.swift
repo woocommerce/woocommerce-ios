@@ -63,12 +63,19 @@ class AddANoteViewController: UIViewController {
     }
 
     @objc func addButtonTapped() {
+        WooAnalytics.shared.track(.orderNoteAddButtonTapped)
+        WooAnalytics.shared.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
+                                                                  "status": viewModel.order.status.rawValue,
+                                                                  "type": isCustomerNote ? "customer" : "private"])
+
         let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, isCustomerNote: isCustomerNote, note: noteText) { [weak self] (orderNote, error) in
             if let error = error {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
+                WooAnalytics.shared.track(.orderNoteAddFailed, withError: error)
                 // TODO: should this alert the user that there was an error?
                 return
             }
+            WooAnalytics.shared.track(.orderNoteAddSuccess)
             self?.dismiss(animated: true, completion: nil)
         }
 
@@ -163,6 +170,8 @@ private extension AddANoteViewController {
             self.refreshTextViewCell()
             cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email note to customer %@", comment: ""), self.isCustomerNote ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off."))
             cell.accessibilityHint = NSLocalizedString("Double tap to toggle setting.", comment: "VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on.")
+            let stateValue = self.isCustomerNote ? "on" : "off"
+            WooAnalytics.shared.track(.orderNoteEmailCustomerToggled, withProperties: ["state": stateValue])
         }
     }
 

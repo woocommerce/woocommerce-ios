@@ -3,6 +3,7 @@ import Gridicons
 import Yosemite
 import WordPressUI
 import CocoaLumberjack
+import SafariServices
 
 
 /// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
@@ -376,7 +377,7 @@ private extension OrdersViewController {
             return
         }
 
-        let safariViewController = SafariViewController(url: siteURL)
+        let safariViewController = SFSafariViewController(url: siteURL)
         safariViewController.modalPresentationStyle = .pageSheet
         present(safariViewController, animated: true, completion: nil)
     }

@@ -149,6 +149,7 @@
 		CE21B3E020FFC59700A259D5 /* ProductDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21B3DE20FFC59700A259D5 /* ProductDetailsTableViewCell.swift */; };
 		CE21B3E120FFC59700A259D5 /* ProductDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE21B3DF20FFC59700A259D5 /* ProductDetailsTableViewCell.xib */; };
 		CE22571B20E16FBC0037F478 /* LeftImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8EB20B8A3FF009762BF /* LeftImageTableViewCell.xib */; };
+		CE2409F1215D12D30091F887 /* WooNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2409F0215D12D30091F887 /* WooNavigationController.swift */; };
 		CE24BCCF212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE24BCCD212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift */; };
 		CE24BCD0212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE24BCCE212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib */; };
 		CE24BCD8212F25D4001CD12E /* StorageOrder+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE24BCD7212F25D4001CD12E /* StorageOrder+Woo.swift */; };
@@ -355,6 +356,7 @@
 		CE21B3DC20FF9BC200A259D5 /* ProductListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListViewController.swift; sourceTree = "<group>"; };
 		CE21B3DE20FFC59700A259D5 /* ProductDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		CE21B3DF20FFC59700A259D5 /* ProductDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductDetailsTableViewCell.xib; sourceTree = "<group>"; };
+		CE2409F0215D12D30091F887 /* WooNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooNavigationController.swift; sourceTree = "<group>"; };
 		CE24BCCD212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadlineLabelTableViewCell.swift; sourceTree = "<group>"; };
 		CE24BCCE212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HeadlineLabelTableViewCell.xib; sourceTree = "<group>"; };
 		CE24BCD7212F25D4001CD12E /* StorageOrder+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageOrder+Woo.swift"; sourceTree = "<group>"; };
@@ -689,6 +691,7 @@
 				B5AA7B3C20ED5D15004DA14F /* SessionManager.swift */,
 				B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */,
 				CECA64B020D9990E005A44C4 /* WooCommerce-Bridging-Header.h */,
+				CE2409F0215D12D30091F887 /* WooNavigationController.swift */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -1247,6 +1250,7 @@
 				B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,
 				B54FBE552111F70700390F57 /* ResultsController+UIKit.swift in Sources */,
+				CE2409F1215D12D30091F887 /* WooNavigationController.swift in Sources */,
 				74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */,
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */,

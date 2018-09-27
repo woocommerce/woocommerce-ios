@@ -25,6 +25,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     private var lastUpdatedDate: Date?
     private var yAxisMinimum: String = Constants.chartYAxisMinimum.friendlyString()
     private var yAxisMaximum: String = ""
+    private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
     public let granularity: StatGranularity
     public var orderStats: OrderStats? {
@@ -109,6 +110,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         reloadAllFields()
+        trackChangedTabIfNeeded()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -308,6 +310,16 @@ private extension PeriodDataViewController {
 // MARK: - Private Helpers
 //
 private extension PeriodDataViewController {
+
+    func trackChangedTabIfNeeded() {
+        // This is a little bit of a workaround to prevent the "tab tapped" tracks event from firing when launching the app.
+        if granularity == .day && isInitialLoad {
+            isInitialLoad = false
+            return
+        }
+        WooAnalytics.shared.track(.dashboardMainStatsDate, withProperties: ["range": granularity.rawValue])
+        isInitialLoad = false
+    }
 
     func reloadAllFields() {
         reloadOrderFields()

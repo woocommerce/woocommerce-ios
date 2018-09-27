@@ -245,6 +245,7 @@ private extension OrderDetailsViewController {
 extension OrderDetailsViewController {
 
     @objc func pullToRefresh() {
+        WooAnalytics.shared.track(.orderDetailPulledToRefresh)
         let group = DispatchGroup()
 
         group.enter()
@@ -401,10 +402,12 @@ private extension OrderDetailsViewController {
                 DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
                 self?.orderNotes = []
                 onCompletion?(error)
+
                 return
             }
 
             self?.orderNotes = orderNotes.map { OrderNoteViewModel(with: $0) }
+            WooAnalytics.shared.track(.orderNotesLoaded, withProperties: ["id": self?.viewModel.order.orderID ?? 0])
             onCompletion?(nil)
         }
 
@@ -423,33 +426,46 @@ extension OrderDetailsViewController {
         actionSheet.addAction(dismissAction)
 
         let callAction = UIAlertAction(title: NSLocalizedString("Call", comment: "Call phone number button title"), style: .default) { [weak self] action in
+            WooAnalytics.shared.track(.orderDetailCustomerPhoneOptionTapped)
             guard let phone = self?.viewModel.order.billingAddress?.cleanedPhoneNumber else {
                 return
             }
             if let url = URL(string: "telprompt://" + phone),
                 UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": self?.viewModel.order.orderID ?? 0,
+                                                                                "status": self?.viewModel.order.status.rawValue ?? String(),
+                                                                                "type": "call"])
             }
         }
         actionSheet.addAction(callAction)
 
         let messageAction = UIAlertAction(title: NSLocalizedString("Message", comment: "Message phone number button title"), style: .default) { [weak self] action in
+            WooAnalytics.shared.track(.orderDetailCustomerSMSOptionTapped)
             self?.sendTextMessageIfPossible()
         }
-        actionSheet.addAction(messageAction)
 
+        actionSheet.addAction(messageAction)
+        WooAnalytics.shared.track(.orderDetailCustomerPhoneMenuTapped)
         present(actionSheet, animated: true)
     }
 
     @objc func emailButtonAction() {
+        WooAnalytics.shared.track(.orderDetailCustomerEmailTapped)
         sendEmailIfPossible()
     }
 
     func toggleBillingFooter() {
         displaysBillingDetails = !displaysBillingDetails
+        if displaysBillingDetails {
+            WooAnalytics.shared.track(.orderDetailShowBillingTapped)
+        } else {
+            WooAnalytics.shared.track(.orderDetailHideBillingTapped)
+        }
     }
 
     func fulfillWasPressed() {
+        WooAnalytics.shared.track(.orderDetailFulfillButtonTapped)
         let fulfillViewController = FulfillViewController(order: viewModel.order)
         navigationController?.pushViewController(fulfillViewController, animated: true)
     }
@@ -538,11 +554,13 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
         switch sections[indexPath.section].rows[indexPath.row] {
         case .addOrderNote:
+            WooAnalytics.shared.track(.orderDetailAddNoteButtonTapped)
             let addANoteViewController = self.storyboard!.instantiateViewController(withIdentifier: Constants.noteViewController) as! AddANoteViewController
             addANoteViewController.viewModel = viewModel
             let navController = UINavigationController(rootViewController: addANoteViewController)
             present(navController, animated: true, completion: nil)
         case .productDetails:
+            WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
         default:
             break
@@ -567,6 +585,9 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
 
         if MFMessageComposeViewController.canSendText() {
             sendTextMessage(to: phoneNumber)
+            WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
+                                                                            "status": viewModel.order.status.rawValue,
+                                                                            "type": "sms"])
         }
     }
 
@@ -592,6 +613,9 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
         }
 
         sendEmail(to: email)
+        WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
+                                                                        "status": viewModel.order.status.rawValue,
+                                                                        "type": "email"])
     }
 
     private func sendEmail(to email: String) {

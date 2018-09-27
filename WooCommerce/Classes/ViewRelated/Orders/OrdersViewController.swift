@@ -177,6 +177,7 @@ private extension OrdersViewController {
 extension OrdersViewController {
 
     @IBAction func displayFiltersAlert() {
+        WooAnalytics.shared.track(.ordersListFilterTapped)
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
 
@@ -195,6 +196,7 @@ extension OrdersViewController {
     }
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
+        WooAnalytics.shared.track(.ordersListPulledToRefresh)
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
@@ -207,6 +209,11 @@ extension OrdersViewController {
 private extension OrdersViewController {
 
     func didChangeFilter(newFilter: OrderStatus?) {
+        WooAnalytics.shared.track(.filterOrdersOptionSelected,
+                                  withProperties: ["status": newFilter?.rawValue ?? String()])
+        WooAnalytics.shared.track(.ordersListFilterOrSearch,
+                                  withProperties: ["filter": newFilter?.rawValue ?? String(),
+                                                   "search": ""])
         // Display the Filter in the Title
         refreshTitle()
 
@@ -257,6 +264,8 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
             if let error = error {
                 DDLogError("⛔️ Error synchronizing orders: \(error)")
                 self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
+            } else {
+                WooAnalytics.shared.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.rawValue ?? String()])
             }
 
             self.transitionToResultsUpdatedState()
@@ -457,6 +466,8 @@ extension OrdersViewController {
             return
         }
 
+        WooAnalytics.shared.track(.orderOpen, withProperties: ["id": viewModel.order.orderID,
+                                                               "status": viewModel.order.status.rawValue])
         singleOrderViewController.viewModel = viewModel
     }
 }

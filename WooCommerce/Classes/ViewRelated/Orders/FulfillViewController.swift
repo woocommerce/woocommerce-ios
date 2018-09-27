@@ -132,8 +132,9 @@ extension FulfillViewController {
         let undo = updateOrderAction(siteID: order.siteID, orderID: order.orderID, status: order.status)
 
         StoresManager.shared.dispatch(done)
-
+        WooAnalytics.shared.track(.orderFulfillmentCompleteButtonTapped)
         displayOrderCompleteNotice {
+            WooAnalytics.shared.track(.orderMarkedCompleteUndoButtonTapped)
             StoresManager.shared.dispatch(undo)
         }
 

@@ -540,7 +540,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
         case .addOrderNote:
             let addANoteViewController = self.storyboard!.instantiateViewController(withIdentifier: Constants.noteViewController) as! AddANoteViewController
             addANoteViewController.viewModel = viewModel
-            let navController = UINavigationController(rootViewController: addANoteViewController)
+            let navController = WooNavigationController(rootViewController: addANoteViewController)
             present(navController, animated: true, completion: nil)
         case .productDetails:
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)

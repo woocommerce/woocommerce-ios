@@ -56,7 +56,7 @@ class MainTabBarController: UITabBarController {
     /// Used for overriding the status bar style for all child view controllers
     ///
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
+        return StyleManager.statusBarLight
     }
 
     override func viewDidLoad() {

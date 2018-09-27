@@ -8,6 +8,6 @@ class WooNavigationController: UINavigationController {
     /// Sets the status bar of the pushed view to white.
     ///
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
+        return StyleManager.statusBarLight
     }
 }

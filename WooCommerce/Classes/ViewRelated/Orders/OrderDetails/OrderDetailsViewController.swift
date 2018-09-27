@@ -613,10 +613,9 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
         }
 
         sendEmail(to: email)
-            WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
-                                                                            "status": viewModel.order.status.rawValue,
-                                                                            "type": "email"])
-        }
+        WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
+                                                                        "status": viewModel.order.status.rawValue,
+                                                                        "type": "email"])
     }
 
     private func sendEmail(to email: String) {

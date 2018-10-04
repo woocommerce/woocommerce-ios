@@ -151,6 +151,7 @@ private extension StoreStatsViewController {
 
             let vc = self.periodDataVC(for: granularity)
             vc?.orderStats = orderStats
+            WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
             onCompletion?(nil)
         }
 

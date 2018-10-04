@@ -79,6 +79,35 @@ class MainTabBarController: UITabBarController {
             item.image = tab.tabIcon
         }
     }
+
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        guard let currentlySelectedTab = WooTab(rawValue: selectedIndex),
+            let userSelectedIndex = tabBar.items?.index(of: item),
+            let userSelectedTab = WooTab(rawValue: userSelectedIndex) else {
+                return
+        }
+
+        // Did we reselect the already-selected tab?
+        if currentlySelectedTab == userSelectedTab {
+            switch userSelectedTab {
+            case .myStore:
+                WooAnalytics.shared.track(.dashboardReselected)
+            case .orders:
+                WooAnalytics.shared.track(.ordersReselected)
+            case .notifications:
+                WooAnalytics.shared.track(.notificationsReselected)
+            }
+        } else {
+            switch userSelectedTab {
+            case .myStore:
+                WooAnalytics.shared.track(.dashboardSelected)
+            case .orders:
+                WooAnalytics.shared.track(.ordersSelected)
+            case .notifications:
+                WooAnalytics.shared.track(.notificationsSelected)
+            }
+        }
+    }
 }
 
 

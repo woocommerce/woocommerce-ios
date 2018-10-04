@@ -53,7 +53,7 @@ extension NewOrdersViewController {
             return
         }
 
-        let action = OrderAction.retrieveOrders(siteID: siteID) { error in
+        let action = OrderAction.synchronizeOrders(siteID: siteID, status: nil, pageNumber: Syncing.pageNumber, pageSize: Syncing.pageSize) { error in
             if let error = error {
                 DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing orders: \(error)")
             }
@@ -69,7 +69,6 @@ extension NewOrdersViewController {
 private extension NewOrdersViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.wooWhite
         topBorder.backgroundColor = StyleManager.wooGreyBorder
         bottomBorder.backgroundColor = StyleManager.wooGreyBorder
         titleLabel.applyHeadlineStyle()
@@ -85,6 +84,9 @@ private extension NewOrdersViewController {
         resultsController.onDidChangeContent = { [weak self] in
             self?.updateNewOrdersIfNeeded()
         }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.updateNewOrdersIfNeeded()
+        }
         try? resultsController.performFetch()
     }
 }
@@ -96,7 +98,8 @@ private extension NewOrdersViewController {
 
     @IBAction func buttonTouchUpInside(_ sender: UIButton) {
         sender.fadeOutSelectedBackground {
-            MainTabBarController.switchToOrdersTab()
+            WooAnalytics.shared.track(.dashboardNewOrdersButtonTapped)
+            MainTabBarController.switchToOrdersTab(filter: .processing)
         }
     }
 
@@ -172,5 +175,10 @@ private extension NewOrdersViewController {
     enum Constants {
         static let newOrdersTitleLabelInsets = UIEdgeInsets(top: 14, left: 14, bottom: 0, right: 4)
         static let newOrdersDescriptionLabelInsets = UIEdgeInsets(top: 4, left: 14, bottom: 0, right: 4)
+    }
+
+    enum Syncing {
+        static let pageNumber = 1
+        static let pageSize = 25
     }
 }

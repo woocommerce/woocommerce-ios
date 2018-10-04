@@ -132,8 +132,9 @@ extension FulfillViewController {
         let undo = updateOrderAction(siteID: order.siteID, orderID: order.orderID, status: order.status)
 
         StoresManager.shared.dispatch(done)
-
+        WooAnalytics.shared.track(.orderFulfillmentCompleteButtonTapped)
         displayOrderCompleteNotice {
+            WooAnalytics.shared.track(.orderMarkedCompleteUndoButtonTapped)
             StoresManager.shared.dispatch(undo)
         }
 
@@ -189,7 +190,7 @@ extension FulfillViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let section = sections[section]
 
-        guard let leftTitle = section.title?.uppercased() else {
+        guard let leftTitle = section.title else {
             return nil
         }
 
@@ -198,7 +199,7 @@ extension FulfillViewController: UITableViewDataSource {
         }
 
         headerView.leftText = leftTitle
-        headerView.rightText = section.secondaryTitle?.uppercased()
+        headerView.rightText = section.secondaryTitle
 
         return headerView
     }
@@ -231,7 +232,7 @@ private extension FulfillViewController {
             fatalError()
         }
 
-        let viewModel = OrderItemViewModel(item: item, currencySymbol: order.currencySymbol)
+        let viewModel = OrderItemViewModel(item: item, currency: order.currency)
 
         cell.name = viewModel.name
         cell.quantity = viewModel.quantity
@@ -253,7 +254,7 @@ private extension FulfillViewController {
         cell.isAccessibilityElement = true
         cell.accessibilityHint = NSLocalizedString("Adds a note to an order", comment: "VoiceOver accessibility hint, informing the user that the button can be used to add an order note.")
         cell.accessibilityLabel = note
-        cell.accessibilityTraits = UIAccessibilityTraitButton
+        cell.accessibilityTraits = .button
     }
 
     /// Setup: Address Cell

@@ -31,7 +31,6 @@ public extension DateFormatter {
         public static let statsDayFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(identifier: "GMT")
             formatter.dateFormat = "yyyy'-'MM'-'dd"
             return formatter
         }()
@@ -42,7 +41,6 @@ public extension DateFormatter {
         public static let statsWeekFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(identifier: "GMT")
             formatter.dateFormat = "yyyy'-W'ww"
             return formatter
         }()
@@ -53,7 +51,6 @@ public extension DateFormatter {
         public static let statsMonthFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(identifier: "GMT")
             formatter.dateFormat = "yyyy'-'MM"
             return formatter
         }()
@@ -64,7 +61,6 @@ public extension DateFormatter {
         public static let statsYearFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(identifier: "GMT")
             formatter.dateFormat = "yyyy"
             return formatter
         }()

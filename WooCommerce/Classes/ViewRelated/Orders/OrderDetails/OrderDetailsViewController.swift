@@ -24,14 +24,14 @@ class OrderDetailsViewController: UIViewController {
         return refreshControl
     }()
 
-    private var orderNotes: [OrderNoteViewModel]? {
+    private var orderNotes: [OrderNoteViewModel] = [] {
         didSet {
             reloadSections()
             reloadTableViewIfPossible()
         }
     }
 
-    private var billingIsHidden = true {
+    private var displaysBillingDetails = false {
         didSet {
             reloadSections()
         }
@@ -59,7 +59,7 @@ class OrderDetailsViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        syncOrderNotes()
+        syncNotes()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -81,7 +81,7 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedSectionFooterHeight = Constants.rowHeight
         tableView.estimatedRowHeight = Constants.rowHeight
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
     }
 
@@ -114,41 +114,6 @@ private extension OrderDetailsViewController {
         }
     }
 
-    /// Setup: Sections
-    ///
-    func reloadSections() {
-        let summarySection = Section(leftTitle: nil, rightTitle: nil, footer: nil, rows: [.summary])
-
-        let productRows: [Row] = viewModel.isProcessingPayment ? [.productList] : [.productList, .productDetails]
-        let productListSection = Section(leftTitle: viewModel.productLeftTitle, rightTitle: viewModel.productRightTitle, footer: nil, rows: productRows)
-
-        let customerNoteSection = Section(leftTitle: NSLocalizedString("CUSTOMER PROVIDED NOTE", comment: "Customer note section title"), rightTitle: nil, footer: nil, rows: [.customerNote])
-
-        let infoFooter = billingIsHidden ? NSLocalizedString("Show billing", comment: "Footer text to show the billing cell") : NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
-        var infoRows: [Row] = [Row]()
-        if billingIsHidden {
-            infoRows = [.shippingAddress]
-        } else if viewModel.order.billingAddress == nil {
-            infoRows = [.shippingAddress, .billingAddress]
-        } else {
-            infoRows = [.shippingAddress, .billingAddress, .billingPhone, .billingEmail]
-        }
-        let infoSection = Section(leftTitle: NSLocalizedString("CUSTOMER INFORMATION", comment: "Customer info section title"), rightTitle: nil, footer: infoFooter, rows: infoRows)
-        let paymentSection = Section(leftTitle: NSLocalizedString("PAYMENT", comment: "Payment section title"), rightTitle: nil, footer: nil, rows: [.payment])
-
-        var orderNoteRows: [Row] = [.addOrderNote]
-        orderNotes?.forEach({ _ in
-            orderNoteRows.append(.orderNote)
-        })
-        let orderNotesSection = Section(leftTitle: NSLocalizedString("ORDER NOTES", comment: "Order notes section title"), rightTitle: nil, footer: nil, rows: orderNoteRows)
-
-        if viewModel.customerNote.isEmpty {
-            sections = [summarySection, productListSection, infoSection, paymentSection, orderNotesSection]
-        } else {
-            sections = [summarySection, productListSection, customerNoteSection, infoSection, paymentSection, orderNotesSection]
-        }
-    }
-
     /// Reloads the tableView, granted that the view has been effectively loaded.
     ///
     func reloadTableViewIfPossible() {
@@ -167,7 +132,7 @@ private extension OrderDetailsViewController {
             BillingDetailsTableViewCell.self,
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
-            BasicDisclosureTableViewCell.self,
+            BasicTableViewCell.self,
             OrderNoteTableViewCell.self,
             PaymentTableViewCell.self,
             ProductListTableViewCell.self,
@@ -193,6 +158,72 @@ private extension OrderDetailsViewController {
     }
 }
 
+
+// MARK: - Sections
+//
+private extension OrderDetailsViewController {
+
+    /// Setup: Sections
+    ///
+    /// CustomerInformation Behavior:
+    ///     When: Shipping == nil && Billing == nil     >>>     Display: Shipping = "No address specified" / Remove the rest
+    ///     When: Shipping != nil && Billing == nil     >>>     Display: Shipping / Remove the rest
+    ///     When: Shipping == nil && Billing != nil     >>>     Display: Shipping = "No address specified" / Billing / Footer
+    ///     When: Shipping != nil && Billing != nil     >>>     Display: Shipping / Billing / Footer
+    ///
+    func reloadSections() {
+        let summary = Section(row: .summary)
+
+        let products: Section? = {
+            guard viewModel.items.isEmpty == false else {
+                return nil
+            }
+
+            let rows: [Row] = viewModel.isProcessingPayment ? [.productList] : [.productList, .productDetails]
+            return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
+        }()
+
+        let customerNote: Section? = {
+            guard viewModel.customerNote.isEmpty == false else {
+                return nil
+            }
+
+            return Section(title: Title.customerNote, row: .customerNote)
+        }()
+
+        let customerInformation: Section = {
+            guard let address = viewModel.order.billingAddress else {
+                return Section(title: Title.information, row: .shippingAddress)
+            }
+
+            guard displaysBillingDetails else {
+                return Section(title: Title.information, footer: Footer.showBilling, row: .shippingAddress)
+            }
+
+            var rows: [Row] = [.shippingAddress, .billingAddress]
+            if address.hasPhoneNumber {
+                rows.append(.billingPhone)
+            }
+
+            if address.hasEmailAddress {
+                rows.append(.billingEmail)
+            }
+
+            return Section(title: Title.information, footer: Footer.hideBilling, rows: rows)
+        }()
+
+        let payment = Section(title: Title.payment, row: .payment)
+
+        let notes: Section = {
+            let rows = [.addOrderNote] + Array(repeating: Row.orderNote, count: orderNotes.count)
+            return Section(title: Title.notes, rows: rows)
+        }()
+
+        sections = [summary, products, customerNote, customerInformation, payment, notes].compactMap { $0 }
+    }
+}
+
+
 // MARK: - Notices
 //
 private extension OrderDetailsViewController {
@@ -214,6 +245,7 @@ private extension OrderDetailsViewController {
 extension OrderDetailsViewController {
 
     @objc func pullToRefresh() {
+        WooAnalytics.shared.track(.orderDetailPulledToRefresh)
         let group = DispatchGroup()
 
         group.enter()
@@ -222,7 +254,7 @@ extension OrderDetailsViewController {
         }
 
         group.enter()
-        syncOrderNotes { _ in
+        syncNotes { _ in
             group.leave()
         }
 
@@ -236,7 +268,7 @@ extension OrderDetailsViewController {
 // MARK: - Cell Configuration
 //
 private extension OrderDetailsViewController {
-    private func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as SummaryTableViewCell:
             cell.configure(with: viewModel)
@@ -245,43 +277,24 @@ private extension OrderDetailsViewController {
             cell.onFullfillTouchUp = { [weak self] in
                 self?.fulfillWasPressed()
             }
-        case let cell as BasicDisclosureTableViewCell:
-            cell.configure(text: viewModel.productDetails)
+        case let cell as BasicTableViewCell:
+            configureProductDetails(cell: cell)
         case let cell as CustomerNoteTableViewCell:
             cell.configure(with: viewModel)
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
-            if let shippingViewModel = viewModel.shippingViewModel {
-                cell.title = shippingViewModel.title
-                cell.name = shippingViewModel.fullName
-                cell.address = shippingViewModel.formattedAddress
-            } else {
-                cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
-                cell.name = nil
-                cell.address = NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
-            }
+            configureShippingAddress(cell: cell)
         case let cell as CustomerInfoTableViewCell where row == .billingAddress:
-            if let billingViewModel = viewModel.billingViewModel {
-                cell.title = billingViewModel.title
-                cell.name = billingViewModel.fullName
-                cell.address = billingViewModel.formattedAddress
-            } else {
-                cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
-                cell.name = nil
-                cell.address = NSLocalizedString("No address specified.", comment: "Order details > customer info > billing details. This is where the address would normally display.")
-            }
+            configureBillingAddress(cell: cell)
         case let cell as BillingDetailsTableViewCell where row == .billingPhone:
-            configure(cell, for: .billingPhone)
+            configureBillingPhone(cell: cell)
         case let cell as BillingDetailsTableViewCell where row == .billingEmail:
-            configure(cell, for: .billingEmail)
+            configureBillingEmail(cell: cell)
         case let cell as PaymentTableViewCell:
             cell.configure(with: viewModel)
         case let cell as LeftImageTableViewCell:
-            cell.configure(image: viewModel.addNoteIcon, text: viewModel.addNoteText)
-            cell.accessibilityTraits = UIAccessibilityTraitButton
-            cell.accessibilityLabel = NSLocalizedString("Add a note button", comment: "Accessibility label for the 'Add a note' button")
-            cell.accessibilityHint = NSLocalizedString("Composes a new order note.", comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note.")
-        case let cell as OrderNoteTableViewCell where row == .orderNote:
-            if let note = orderNote(at: indexPath) {
+            configureNewNote(cell: cell)
+        case let cell as OrderNoteTableViewCell:
+            if let note = note(at: indexPath) {
                 cell.configure(with: note)
             }
         default:
@@ -289,42 +302,78 @@ private extension OrderDetailsViewController {
         }
     }
 
-    private func configure(_ cell: BillingDetailsTableViewCell, for billingRow: Row) {
-        if billingRow == .billingPhone {
-            cell.configure(text: viewModel.billingViewModel?.phoneNumber, image: Gridicon.iconOfType(.ellipsis))
-            cell.onTouchUp = { [weak self] in
-                self?.phoneButtonAction()
-            }
-            cell.isAccessibilityElement = true
-            cell.accessibilityTraits = UIAccessibilityTraitButton
-            if let phoneNumber = viewModel.billingViewModel?.phoneNumber {
-                cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Phone number: %@", comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."), phoneNumber)
-            }
-            cell.accessibilityHint = NSLocalizedString("Prompts with the option to call or message the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer.")
-        } else if billingRow == .billingEmail {
-            cell.configure(text: viewModel.billingViewModel?.email, image: Gridicon.iconOfType(.mail))
-            cell.onTouchUp = { [weak self] in
-                self?.emailButtonAction()
-            }
-            cell.isAccessibilityElement = true
-            cell.accessibilityTraits = UIAccessibilityTraitButton
-            if let email = viewModel.billingViewModel?.email {
-                cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email: %@", comment: "Accessibility label that lets the user know the billing customer's email address"), email)
-            }
-            cell.accessibilityHint = NSLocalizedString("Composes a new email message to the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear.")
-        } else {
-            fatalError("Unidentified billing detail row")
-        }
+    func configureProductDetails(cell: BasicTableViewCell) {
+        cell.configure(text: viewModel.productDetails)
+        cell.accessoryType = .disclosureIndicator
     }
 
-    func orderNote(at indexPath: IndexPath) -> OrderNoteViewModel? {
-        // We need to subract 1 here because the first order note row is the "Add Order" cell
-        let orderNoteIndex = indexPath.row - 1
-        guard let orderNotes = orderNotes, !orderNotes.isEmpty, orderNotes.indices.contains(orderNoteIndex) else {
+    func configureShippingAddress(cell: CustomerInfoTableViewCell) {
+        let shippingAddress = viewModel.order.shippingAddress
+
+        cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
+        cell.name = shippingAddress?.fullName
+        cell.address = shippingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
+    }
+
+    func configureBillingAddress(cell: CustomerInfoTableViewCell) {
+        let billingAddress = viewModel.order.billingAddress
+
+        cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
+        cell.name = billingAddress?.fullName
+        cell.address = billingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > billing details. This is where the address would normally display.")
+    }
+
+    func configureBillingPhone(cell: BillingDetailsTableViewCell) {
+        guard let phoneNumber = viewModel.order.billingAddress?.phone else {
+            // TODO: This should actually be an assert. To be revisited!
+            return
+        }
+
+        cell.configure(text: phoneNumber, image: Gridicon.iconOfType(.ellipsis))
+        cell.onTouchUp = { [weak self] in
+            self?.phoneButtonAction()
+        }
+
+        cell.isAccessibilityElement = true
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Phone number: %@", comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."), phoneNumber)
+        cell.accessibilityHint = NSLocalizedString("Prompts with the option to call or message the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer.")
+    }
+
+    func configureBillingEmail(cell: BillingDetailsTableViewCell) {
+        guard let email = viewModel.order.billingAddress?.email else {
+            // TODO: This should actually be an assert. To be revisited!
+            return
+        }
+
+        cell.configure(text: email, image: Gridicon.iconOfType(.mail))
+        cell.onTouchUp = { [weak self] in
+            self?.emailButtonAction()
+        }
+
+        cell.isAccessibilityElement = true
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email: %@", comment: "Accessibility label that lets the user know the billing customer's email address"), email)
+        cell.accessibilityHint = NSLocalizedString("Composes a new email message to the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear.")
+    }
+
+    func configureNewNote(cell: LeftImageTableViewCell) {
+        cell.leftImage = viewModel.addNoteIcon
+        cell.labelText = viewModel.addNoteText
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString("Add a note button", comment: "Accessibility label for the 'Add a note' button")
+        cell.accessibilityHint = NSLocalizedString("Composes a new order note.", comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note.")
+    }
+
+    func note(at indexPath: IndexPath) -> OrderNoteViewModel? {
+        // We need to subtract 1 here because the first order note row is the "Add Order" cell
+        let noteIndex = indexPath.row - 1
+        guard orderNotes.indices.contains(noteIndex) else {
             return nil
         }
 
-        return orderNotes[orderNoteIndex]
+        return orderNotes[noteIndex]
     }
 }
 
@@ -347,16 +396,18 @@ private extension OrderDetailsViewController {
         StoresManager.shared.dispatch(action)
     }
 
-    func syncOrderNotes(onCompletion: ((Error?) -> ())? = nil) {
+    func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
         let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
                 DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
-                self?.orderNotes = nil
+                self?.orderNotes = []
                 onCompletion?(error)
+
                 return
             }
 
             self?.orderNotes = orderNotes.map { OrderNoteViewModel(with: $0) }
+            WooAnalytics.shared.track(.orderNotesLoaded, withProperties: ["id": self?.viewModel.order.orderID ?? 0])
             onCompletion?(nil)
         }
 
@@ -375,34 +426,46 @@ extension OrderDetailsViewController {
         actionSheet.addAction(dismissAction)
 
         let callAction = UIAlertAction(title: NSLocalizedString("Call", comment: "Call phone number button title"), style: .default) { [weak self] action in
-            let contactViewModel = ContactViewModel(with: (self?.viewModel.order.billingAddress)!, contactType: .billing)
-            guard let phone = contactViewModel.cleanedPhoneNumber else {
+            WooAnalytics.shared.track(.orderDetailCustomerPhoneOptionTapped)
+            guard let phone = self?.viewModel.order.billingAddress?.cleanedPhoneNumber else {
                 return
             }
             if let url = URL(string: "telprompt://" + phone),
                 UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": self?.viewModel.order.orderID ?? 0,
+                                                                                "status": self?.viewModel.order.status.rawValue ?? String(),
+                                                                                "type": "call"])
             }
         }
         actionSheet.addAction(callAction)
 
         let messageAction = UIAlertAction(title: NSLocalizedString("Message", comment: "Message phone number button title"), style: .default) { [weak self] action in
+            WooAnalytics.shared.track(.orderDetailCustomerSMSOptionTapped)
             self?.sendTextMessageIfPossible()
         }
-        actionSheet.addAction(messageAction)
 
+        actionSheet.addAction(messageAction)
+        WooAnalytics.shared.track(.orderDetailCustomerPhoneMenuTapped)
         present(actionSheet, animated: true)
     }
 
     @objc func emailButtonAction() {
+        WooAnalytics.shared.track(.orderDetailCustomerEmailTapped)
         sendEmailIfPossible()
     }
 
     func toggleBillingFooter() {
-        billingIsHidden = !billingIsHidden
+        displaysBillingDetails = !displaysBillingDetails
+        if displaysBillingDetails {
+            WooAnalytics.shared.track(.orderDetailShowBillingTapped)
+        } else {
+            WooAnalytics.shared.track(.orderDetailHideBillingTapped)
+        }
     }
 
     func fulfillWasPressed() {
+        WooAnalytics.shared.track(.orderDetailFulfillButtonTapped)
         let fulfillViewController = FulfillViewController(order: viewModel.order)
         navigationController?.pushViewController(fulfillViewController, animated: true)
     }
@@ -428,25 +491,27 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if sections[section].leftTitle == nil {
+        if sections[section].title == nil {
             // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
             return CGFloat.leastNonzeroMagnitude
         }
 
-        return UITableViewAutomaticDimension
+        return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let leftText = sections[section].leftTitle else {
+        guard let leftText = sections[section].title else {
             return nil
         }
 
-        guard let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
             fatalError()
         }
-        cell.configure(leftText: leftText, rightText: sections[section].rightTitle)
 
-        return cell
+        headerView.leftText = leftText
+        headerView.rightText = sections[section].rightTitle
+
+        return headerView
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -455,7 +520,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
             return CGFloat.leastNonzeroMagnitude
         }
 
-        return UITableViewAutomaticDimension
+        return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -464,7 +529,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
         }
 
         let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideSectionFooter.reuseIdentifier) as! ShowHideSectionFooter
-        let image = billingIsHidden ? Gridicon.iconOfType(.chevronDown) : Gridicon.iconOfType(.chevronUp)
+        let image = displaysBillingDetails ? Gridicon.iconOfType(.chevronUp) : Gridicon.iconOfType(.chevronDown)
         cell.configure(text: footerText, image: image)
         cell.didSelectFooter = { [weak self] in
             guard let `self` = self else {
@@ -487,13 +552,18 @@ extension OrderDetailsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        if sections[indexPath.section].rows[indexPath.row] == .addOrderNote {
+        switch sections[indexPath.section].rows[indexPath.row] {
+        case .addOrderNote:
+            WooAnalytics.shared.track(.orderDetailAddNoteButtonTapped)
             let addANoteViewController = self.storyboard!.instantiateViewController(withIdentifier: Constants.noteViewController) as! AddANoteViewController
             addANoteViewController.viewModel = viewModel
             let navController = UINavigationController(rootViewController: addANoteViewController)
             present(navController, animated: true, completion: nil)
-        } else if sections[indexPath.section].rows[indexPath.row] == .productDetails {
+        case .productDetails:
+            WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
+        default:
+            break
         }
     }
 
@@ -509,16 +579,15 @@ extension OrderDetailsViewController: UITableViewDelegate {
 //
 extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
     func sendTextMessageIfPossible() {
-        guard let billingAddress = viewModel.order.billingAddress else {
+        guard let phoneNumber = viewModel.order.billingAddress?.cleanedPhoneNumber else {
             return
         }
 
-        let contactViewModel = ContactViewModel(with: billingAddress, contactType: .billing)
-        guard let phoneNumber = contactViewModel.cleanedPhoneNumber else {
-            return
-        }
         if MFMessageComposeViewController.canSendText() {
             sendTextMessage(to: phoneNumber)
+            WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
+                                                                            "status": viewModel.order.status.rawValue,
+                                                                            "type": "sms"])
         }
     }
 
@@ -539,21 +608,22 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
 //
 extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
     func sendEmailIfPossible() {
-        if MFMailComposeViewController.canSendMail() {
-            guard let billingAddress = viewModel.order.billingAddress else {
-                return
-            }
-
-            let contactViewModel = ContactViewModel(with: billingAddress, contactType: .billing)
-            guard let email = contactViewModel.email else {
-                return
-            }
-
-            sendEmail(to: email)
+        guard let email = viewModel.order.billingAddress?.email, MFMailComposeViewController.canSendMail() else {
+            return
         }
+
+        sendEmail(to: email)
+        WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
+                                                                        "status": viewModel.order.status.rawValue,
+                                                                        "type": "email"])
     }
 
     private func sendEmail(to email: String) {
+        // Workaround: MFMailCompose isn't *FULLY* picking up UINavigationBar's WC's appearance. Title / Buttons look awful.
+        // We're falling back to iOS's default appearance
+        UINavigationBar.applyDefaultAppearance()
+
+        // Composer
         let controller = MFMailComposeViewController()
         controller.setToRecipients([email])
         controller.mailComposeDelegate = self
@@ -562,6 +632,9 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
 
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         controller.dismiss(animated: true, completion: nil)
+
+        // Workaround: Restore WC's navBar appearance
+        UINavigationBar.applyWooAppearance()
     }
 }
 
@@ -569,21 +642,46 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
 // MARK: - Constants
 //
 private extension OrderDetailsViewController {
-    struct Constants {
+    enum Constants {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
         static let productDetailsSegue = "ShowProductListViewController"
         static let noteViewController = "AddANoteViewController"
     }
 
-    private struct Section {
-        let leftTitle: String?
+    enum Title {
+        static let product = NSLocalizedString("Product", comment: "Product section title")
+        static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
+        static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
+        static let information = NSLocalizedString("Customer Information", comment: "Customer info section title")
+        static let payment = NSLocalizedString("Payment", comment: "Payment section title")
+        static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
+    }
+
+    enum Footer {
+        static let hideBilling = NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
+        static let showBilling = NSLocalizedString("Show billing", comment: "Footer text to show the billing cell")
+    }
+
+    struct Section {
+        let title: String?
         let rightTitle: String?
         let footer: String?
         let rows: [Row]
+
+        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, rows: [Row]) {
+            self.title = title
+            self.rightTitle = rightTitle
+            self.footer = footer
+            self.rows = rows
+        }
+
+        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, row: Row) {
+            self.init(title: title, rightTitle: rightTitle, footer: footer, rows: [row])
+        }
     }
 
-    private enum Row {
+    enum Row {
         case summary
         case productList
         case productDetails
@@ -603,7 +701,7 @@ private extension OrderDetailsViewController {
             case .productList:
                 return ProductListTableViewCell.reuseIdentifier
             case .productDetails:
-                return BasicDisclosureTableViewCell.reuseIdentifier
+                return BasicTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:

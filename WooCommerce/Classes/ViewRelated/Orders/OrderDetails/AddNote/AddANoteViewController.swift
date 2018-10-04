@@ -63,12 +63,19 @@ class AddANoteViewController: UIViewController {
     }
 
     @objc func addButtonTapped() {
+        WooAnalytics.shared.track(.orderNoteAddButtonTapped)
+        WooAnalytics.shared.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
+                                                                  "status": viewModel.order.status.rawValue,
+                                                                  "type": isCustomerNote ? "customer" : "private"])
+
         let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, isCustomerNote: isCustomerNote, note: noteText) { [weak self] (orderNote, error) in
             if let error = error {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
+                WooAnalytics.shared.track(.orderNoteAddFailed, withError: error)
                 // TODO: should this alert the user that there was an error?
                 return
             }
+            WooAnalytics.shared.track(.orderNoteAddSuccess)
             self?.dismiss(animated: true, completion: nil)
         }
 
@@ -85,7 +92,7 @@ private extension AddANoteViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedRowHeight = Constants.rowHeight
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
     }
 
     /// Registers all of the available TableViewCells
@@ -150,7 +157,7 @@ private extension AddANoteViewController {
 
         cell.topText = NSLocalizedString("Email note to customer", comment: "Label for yes/no switch - emailing the note to customer.")
         cell.bottomText = NSLocalizedString("If disabled will add the note as private.", comment: "Detail label for yes/no switch.")
-        cell.accessibilityTraits = UIAccessibilityTraitButton
+        cell.accessibilityTraits = .button
         cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email note to customer %@", comment: ""), isCustomerNote ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off."))
         cell.accessibilityHint = NSLocalizedString("Double tap to toggle setting.", comment: "VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on.")
 
@@ -163,6 +170,8 @@ private extension AddANoteViewController {
             self.refreshTextViewCell()
             cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email note to customer %@", comment: ""), self.isCustomerNote ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off."))
             cell.accessibilityHint = NSLocalizedString("Double tap to toggle setting.", comment: "VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on.")
+            let stateValue = self.isCustomerNote ? "on" : "off"
+            WooAnalytics.shared.track(.orderNoteEmailCustomerToggled, withProperties: ["state": stateValue])
         }
     }
 

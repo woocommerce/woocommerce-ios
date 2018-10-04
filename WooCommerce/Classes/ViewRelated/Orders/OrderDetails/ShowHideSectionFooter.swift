@@ -25,7 +25,7 @@ class ShowHideSectionFooter: UITableViewHeaderFooterView {
         footerLabel.isAccessibilityElement = false
 
         footerButton.isAccessibilityElement = true
-        footerButton.accessibilityTraits = UIAccessibilityTraitButton
+        footerButton.accessibilityTraits = .button
         footerButton.accessibilityLabel = text
 
         footerArrow.image = image

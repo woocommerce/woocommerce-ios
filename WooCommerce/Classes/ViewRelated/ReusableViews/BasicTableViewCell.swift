@@ -1,6 +1,6 @@
 import UIKit
 
-class BasicDisclosureTableViewCell: UITableViewCell {
+class BasicTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()

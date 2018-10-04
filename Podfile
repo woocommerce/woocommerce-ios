@@ -17,9 +17,9 @@ target 'WooCommerce' do
   # ====================
   #
   pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.3'
-  pod 'Gridicons', '0.15'
-  pod 'WordPressAuthenticator', '1.0.6'
-  pod 'WordPressShared', '1.0.8'
+  pod 'Gridicons', '0.16'
+  pod 'WordPressAuthenticator', '1.1.0-beta.1'
+  pod 'WordPressShared', '1.1.1-beta.2'
   pod 'WordPressUI', '~> 1.0'
 
 
@@ -29,9 +29,9 @@ target 'WooCommerce' do
   pod 'Alamofire', '~> 4.7'
   pod 'Crashlytics', '~> 3.10'
   pod 'KeychainAccess', '~> 3.1'
-  pod 'CocoaLumberjack/Swift', '~> 3.4'
+  pod 'CocoaLumberjack', '~> 3.4'
   pod 'XLPagerTabStrip', '~> 8.0'
-  pod 'Charts', '~> 3.1'
+  pod 'Charts', '~> 3.2'
 
   # Unit Tests
   # ==========
@@ -54,7 +54,7 @@ target 'Yosemite' do
   # ==================
   #
   pod 'Alamofire', '~> 4.7'
-  pod 'CocoaLumberjack/Swift', '~> 3.4'
+  pod 'CocoaLumberjack', '~> 3.4'
 
   # Unit Tests
   # ==========
@@ -78,7 +78,7 @@ target 'Networking' do
   # ==================
   #
   pod 'Alamofire', '~> 4.7'
-  pod 'CocoaLumberjack/Swift', '~> 3.4'
+  pod 'CocoaLumberjack', '~> 3.4'
 
 
   # Unit Tests
@@ -99,7 +99,7 @@ target 'Storage' do
   # External Libraries
   # ==================
   #
-  pod 'CocoaLumberjack/Swift', '~> 3.4'
+  pod 'CocoaLumberjack', '~> 3.4'
 
 
   # Unit Tests
@@ -107,5 +107,33 @@ target 'Storage' do
   #
   target 'StorageTests' do
     inherit! :search_paths
+  end
+end
+
+
+
+# Workarounds:
+# ============
+#
+post_install do |installer|
+
+  # Workaround: SWIFT_VERSION = 4.0 in dependencies that need it
+  # ============================================================
+  #
+  # TODO: Remove as soon as the dependencies get updated!
+  #
+  installer.pods_project.targets.each do |target|
+      if ['XLPagerTabStrip'].include? target.name
+          target.build_configurations.each do |config|
+              config.build_settings['SWIFT_VERSION'] = '4.0'
+          end
+      end
+  end
+
+  # Workaround: Drop 32 Bit Architectures
+  # =====================================
+  #
+  installer.pods_project.build_configuration_list.build_configurations.each do |configuration|
+    configuration.build_settings['VALID_ARCHS'] = '$(ARCHS_STANDARD_64_BIT)'
   end
 end

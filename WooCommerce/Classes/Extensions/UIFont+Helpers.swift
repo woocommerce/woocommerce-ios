@@ -56,14 +56,14 @@ extension UIFont {
 
     /// Returns a UIFont instance for the specified Style + Weight.
     ///
-    class func font(forStyle style: UIFontTextStyle, weight: UIFont.Weight) -> UIFont {
+    class func font(forStyle style: UIFont.TextStyle, weight: UIFont.Weight) -> UIFont {
         let targetSize = pointSize(for: style)
         return UIFont.systemFont(ofSize: targetSize, weight: weight)
     }
 
     /// Returns the System's Point Size for the specified Style.
     ///
-    private class func pointSize(for style: UIFontTextStyle) -> CGFloat {
+    private class func pointSize(for style: UIFont.TextStyle) -> CGFloat {
         let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: style)
         let initialFont = UIFont(descriptor: descriptor, size: CGFloat(0.0))
         let scaledFont = UIFontMetrics(forTextStyle: style).scaledFont(for: initialFont)

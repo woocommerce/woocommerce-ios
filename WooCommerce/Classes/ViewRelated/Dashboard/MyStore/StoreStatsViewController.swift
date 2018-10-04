@@ -14,6 +14,11 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
 
     private var periodVCs = [PeriodDataViewController]()
 
+    public var isDataMissing: Bool {
+        return (periodVCs.contains { $0.orderStats == nil }) ||
+            (periodVCs.contains { $0.siteStats == nil })
+    }
+
     // MARK: - View Lifecycle
 
     required init?(coder aDecoder: NSCoder) {
@@ -40,9 +45,15 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
 // MARK: - Public Interface
 //
 extension StoreStatsViewController {
-    func syncAllStats() {
+    func clearAllFields() {
         periodVCs.forEach { (vc) in
             vc.clearAllFields()
+        }
+    }
+
+    func syncAllStats() {
+        clearAllFields()
+        periodVCs.forEach { (vc) in
             syncOrderStats(for: vc.granularity)
             syncVisitorStats(for: vc.granularity)
         }
@@ -140,6 +151,7 @@ private extension StoreStatsViewController {
 
             let vc = self.periodDataVC(for: granularity)
             vc?.orderStats = orderStats
+            WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
             onCompletion?(nil)
         }
 

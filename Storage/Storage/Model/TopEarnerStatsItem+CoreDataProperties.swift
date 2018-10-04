@@ -10,7 +10,7 @@ extension TopEarnerStatsItem {
 
     @NSManaged public var productID: Int64
     @NSManaged public var productName: String?
-    @NSManaged public var quantity: Int16
+    @NSManaged public var quantity: Int64
     @NSManaged public var price: Double
     @NSManaged public var total: Double
     @NSManaged public var currency: String?

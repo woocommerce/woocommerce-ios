@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -31,7 +32,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="740" text="Processing" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uIV-Sn-Yeh" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                        <rect key="frame" x="16" y="73" width="84.5" height="20"/>
+                        <rect key="frame" x="16" y="73" width="84.5" height="19"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -39,15 +40,15 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="Kz9-1h-fRY" firstAttribute="leading" secondItem="VuR-wG-Bbc" secondAttribute="leading" id="0iO-Eg-LvT"/>
-                    <constraint firstItem="VuR-wG-Bbc" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="2ol-cE-Z5p"/>
-                    <constraint firstItem="Kz9-1h-fRY" firstAttribute="top" secondItem="VuR-wG-Bbc" secondAttribute="bottom" constant="8" id="9VD-dP-EyZ"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="uIV-Sn-Yeh" secondAttribute="bottom" constant="5" id="3OU-Nl-wcg"/>
+                    <constraint firstItem="Kz9-1h-fRY" firstAttribute="top" secondItem="VuR-wG-Bbc" secondAttribute="bottom" constant="8" id="4yW-xe-vMw"/>
+                    <constraint firstItem="VuR-wG-Bbc" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="ALe-dT-Iae"/>
                     <constraint firstItem="uIV-Sn-Yeh" firstAttribute="top" secondItem="Kz9-1h-fRY" secondAttribute="bottom" constant="8" id="B6Q-cI-ASJ"/>
                     <constraint firstItem="Kz9-1h-fRY" firstAttribute="trailing" secondItem="VuR-wG-Bbc" secondAttribute="trailing" id="H8X-uc-vIl"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="uIV-Sn-Yeh" secondAttribute="trailing" constant="16" id="Iv2-nI-HgU"/>
-                    <constraint firstItem="VuR-wG-Bbc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="Z7l-xd-MEf"/>
-                    <constraint firstAttribute="bottom" secondItem="uIV-Sn-Yeh" secondAttribute="bottom" constant="14.5" id="a6L-gt-Mao"/>
                     <constraint firstItem="uIV-Sn-Yeh" firstAttribute="leading" secondItem="VuR-wG-Bbc" secondAttribute="leading" id="h9K-qI-gKu"/>
-                    <constraint firstAttribute="trailing" secondItem="VuR-wG-Bbc" secondAttribute="trailing" constant="16" id="ogr-wb-ERI"/>
+                    <constraint firstItem="VuR-wG-Bbc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="mSL-pS-fig"/>
+                    <constraint firstItem="VuR-wG-Bbc" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="5" id="oDH-pY-Emj"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

@@ -1,5 +1,7 @@
 import UIKit
 import Gridicons
+import Yosemite
+
 
 /// Enum representing the individual tabs
 ///
@@ -63,6 +65,35 @@ class MainTabBarController: UITabBarController {
             item.image = tab.tabIcon
         }
     }
+
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        guard let currentlySelectedTab = WooTab(rawValue: selectedIndex),
+            let userSelectedIndex = tabBar.items?.index(of: item),
+            let userSelectedTab = WooTab(rawValue: userSelectedIndex) else {
+                return
+        }
+
+        // Did we reselect the already-selected tab?
+        if currentlySelectedTab == userSelectedTab {
+            switch userSelectedTab {
+            case .myStore:
+                WooAnalytics.shared.track(.dashboardReselected)
+            case .orders:
+                WooAnalytics.shared.track(.ordersReselected)
+            case .notifications:
+                WooAnalytics.shared.track(.notificationsReselected)
+            }
+        } else {
+            switch userSelectedTab {
+            case .myStore:
+                WooAnalytics.shared.track(.dashboardSelected)
+            case .orders:
+                WooAnalytics.shared.track(.ordersSelected)
+            case .notifications:
+                WooAnalytics.shared.track(.notificationsSelected)
+            }
+        }
+    }
 }
 
 
@@ -78,8 +109,14 @@ extension MainTabBarController {
 
     /// Switches to the Orders tab and pops to the root view controller
     ///
-    static func switchToOrdersTab() {
+    static func switchToOrdersTab(filter: OrderStatus? = nil) {
         navigateTo(.orders)
+
+        guard let ordersViewController: OrdersViewController = childViewController() else {
+            return
+        }
+
+        ordersViewController.statusFilter = filter
     }
 
     /// Switches to the Notifications tab and pops to the root view controller
@@ -88,6 +125,8 @@ extension MainTabBarController {
         navigateTo(.notifications)
     }
 
+    /// Switches the TabBarcController to the specified Tab
+    ///
     private static func navigateTo(_ tab: WooTab) {
         guard let tabBar = AppDelegate.shared.tabBarController else {
             return
@@ -97,5 +136,16 @@ extension MainTabBarController {
         if let navController = tabBar.selectedViewController as? UINavigationController {
             navController.popToRootViewController(animated: false)
         }
+    }
+
+    /// Returns the "Top Visible Child" of the specified type
+    ///
+    private static func childViewController<T: UIViewController>() -> T? {
+        let selectedViewController = AppDelegate.shared.tabBarController?.selectedViewController
+        guard let navController = selectedViewController as? UINavigationController else {
+            return selectedViewController as? T
+        }
+
+        return navController.topViewController as? T
     }
 }

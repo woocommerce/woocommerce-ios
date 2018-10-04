@@ -49,7 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: - AppDelegate Methods
 
-    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) -> Bool {
+    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
 
         // Setup the Interface!
         setupMainWindow()
@@ -70,15 +70,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
 
-        return true
-    }
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        // Upgrade check...
+        checkForUpgrades()
 
         return true
     }
 
-    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        return true
+    }
+
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         guard let rootViewController = window?.rootViewController else {
             fatalError()
         }
@@ -130,15 +133,14 @@ private extension AppDelegate {
     /// Sets up WooCommerce's UIAppearance.
     ///
     func setupWooAppearance() {
-        UINavigationBar.appearance().barTintColor = StyleManager.wooCommerceBrandColor
-        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
-        UINavigationBar.appearance().isTranslucent = false
-        UINavigationBar.appearance().tintColor = .white
-        UIApplication.shared.statusBarStyle = .lightContent
+        UINavigationBar.applyWooAppearance()
+        UILabel.applyWooAppearance()
 
-        // Take advantage of a bug in UIAlertController
-        // to style all UIAlertControllers with WC color
+        // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
         window?.tintColor = StyleManager.wooCommerceBrandColor
+
+        // TODO: Nuke This
+        UIApplication.shared.statusBarStyle = .lightContent
     }
 
     /// Sets up FancyButton's UIAppearance.
@@ -195,6 +197,24 @@ private extension AppDelegate {
     ///
     func setupNoticePresenter() {
         noticePresenter.presentingViewController = window?.rootViewController
+    }
+}
+
+
+private extension AppDelegate {
+
+    func checkForUpgrades() {
+        let currentVersion = UserAgent.bundleShortVersion
+        let versionOfLastRun = UserDefaults.standard[.versionOfLastRun] as? String
+        if versionOfLastRun == nil {
+            // First run after a fresh install
+            WooAnalytics.shared.track(.applicationInstalled)
+        } else if versionOfLastRun != currentVersion {
+            // App was upgraded
+            WooAnalytics.shared.track(.applicationInstalled, withProperties: ["previous_version": versionOfLastRun ?? String()])
+        }
+
+        UserDefaults.standard[.versionOfLastRun] = currentVersion
     }
 }
 

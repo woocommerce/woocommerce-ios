@@ -18,9 +18,9 @@ class ProductListViewController: UIViewController {
 
     func configureTableView() {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
-        tableView.sectionHeaderHeight = UITableViewAutomaticDimension
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = Constants.rowHeight
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
 
         let nib = ProductDetailsTableViewCell.loadNib()
         tableView.register(nib, forCellReuseIdentifier: ProductDetailsTableViewCell.reuseIdentifier)
@@ -47,20 +47,22 @@ extension ProductListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
+        let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency)
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductDetailsTableViewCell.reuseIdentifier, for: indexPath) as? ProductDetailsTableViewCell else {
             fatalError()
         }
-        cell.configure(item: item, with: viewModel)
+        cell.configure(item: itemViewModel, with: viewModel)
         return cell
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
             fatalError()
         }
-        cell.configure(leftText: viewModel.productLeftTitle, rightText: viewModel.productRightTitle)
+        headerView.leftText = viewModel.productLeftTitle
+        headerView.rightText = viewModel.productRightTitle
 
-        return cell
+        return headerView
     }
 }
 

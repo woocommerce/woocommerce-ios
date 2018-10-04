@@ -7,13 +7,15 @@ class OrderListCell: UITableViewCell {
     @IBOutlet var paymentStatusLabel: PaddedLabel!
 
 
-    func configureCell(order: OrderDetailsViewModel) {
-        titleLabel.text = order.summaryTitle
+    func configureCell(viewModel: OrderDetailsViewModel) {
+        titleLabel.text = viewModel.summaryTitle
         titleLabel.applyHeadlineStyle()
-        totalLabel.text = order.totalValue
+
+        totalLabel.text = viewModel.totalFriendlyString
         totalLabel.applyBodyStyle()
-        paymentStatusLabel.text = order.paymentStatus
-        paymentStatusLabel.applyStatusStyle(for: order.orderStatusViewModel.orderStatus)
+
+        paymentStatusLabel.text = viewModel.paymentStatus
+        paymentStatusLabel.applyStatusStyle(for: viewModel.orderStatusViewModel.orderStatus)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -26,6 +28,11 @@ class OrderListCell: UITableViewCell {
         preserveLabelColors {
             super.setHighlighted(highlighted, animated: animated)
         }
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        paymentStatusLabel.layer.borderColor = UIColor.clear.cgColor
     }
 
     func preserveLabelColors(action: () -> Void) {

@@ -19,7 +19,8 @@ public class SiteVisitStatsRemote: Remote {
         let path = "\(Constants.sitesPath)/\(siteID)/\(Constants.siteVisitStatsPath)/"
         let parameters = [ParameterKeys.unit: unit.rawValue,
                           ParameterKeys.date: DateFormatter.Stats.statsDayFormatter.string(from: latestDateToInclude),
-                          ParameterKeys.quantity: String(quantity)]
+                          ParameterKeys.quantity: String(quantity),
+                          ParameterKeys.statFields: Constants.visitorStatFieldValue]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         let mapper = SiteVisitStatsMapper()
         enqueue(request, mapper: mapper, completion: completion)
@@ -31,13 +32,15 @@ public class SiteVisitStatsRemote: Remote {
 //
 private extension SiteVisitStatsRemote {
     enum Constants {
-        static let sitesPath: String            = "sites"
-        static let siteVisitStatsPath: String   = "stats/visits"
+        static let sitesPath: String             = "sites"
+        static let siteVisitStatsPath: String    = "stats/visits"
+        static let visitorStatFieldValue: String = "visitors"
     }
 
     enum ParameterKeys {
-        static let unit: String     = "unit"
-        static let date: String     = "date"
-        static let quantity: String = "quantity"
+        static let unit: String       = "unit"
+        static let date: String       = "date"
+        static let quantity: String   = "quantity"
+        static let statFields: String = "stat_fields"
     }
 }

@@ -14,6 +14,10 @@ class NotificationsViewController: UIViewController {
         displayPlaceholder()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+    }
+
     /// Displays the Empty State Overlay.
     ///
     func displayPlaceholder() {

@@ -24,6 +24,8 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
         return ResultsController<StorageTopEarnerStats>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
+
     // MARK: - Computed Properties
 
     private var topEarnerStats: TopEarnerStats? {
@@ -72,6 +74,11 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
         registerTableViewCells()
         registerTableViewHeaderFooters()
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        trackChangedTabIfNeeded()
+    }
 }
 
 
@@ -85,9 +92,11 @@ extension TopPerformerDataViewController {
             return
         }
 
-        let action = StatsAction.retrieveTopEarnerStats(siteID: siteID, granularity: granularity, latestDateToInclude: Date()) { (error) in
+        let action = StatsAction.retrieveTopEarnerStats(siteID: siteID, granularity: granularity, latestDateToInclude: Date()) { [weak self] (error) in
             if let error = error {
                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
+            } else {
+                WooAnalytics.shared.track(.dashboardTopPerformersLoaded, withProperties: ["granularity": self?.granularity.rawValue ?? String()])
             }
         }
         StoresManager.shared.dispatch(action)
@@ -207,6 +216,16 @@ extension TopPerformerDataViewController: UITableViewDelegate {
 // MARK: - Private Helpers
 //
 private extension TopPerformerDataViewController {
+
+    func trackChangedTabIfNeeded() {
+        // This is a little bit of a workaround to prevent the "tab tapped" tracks event from firing when launching the app.
+        if granularity == .day && isInitialLoad {
+            isInitialLoad = false
+            return
+        }
+        WooAnalytics.shared.track(.dashboardTopPerformersDate, withProperties: ["range": granularity.rawValue])
+        isInitialLoad = false
+    }
 
     func statsItem(at indexPath: IndexPath) -> TopEarnerStatsItem? {
         guard let topEarnerStatsItem = topEarnerStats?.items?.sorted(by: >)[safe: indexPath.row] else {

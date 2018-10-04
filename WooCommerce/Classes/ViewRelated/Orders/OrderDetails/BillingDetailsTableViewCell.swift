@@ -34,7 +34,7 @@ class BillingDetailsTableViewCell: UITableViewCell {
             self?.onTouchUp?()
         }
 
-        contentView.gestureRecognizers = [gestureRecognizer]
+        addGestureRecognizer(gestureRecognizer)
     }
 
     func configure(text: String?, image: UIImage) {

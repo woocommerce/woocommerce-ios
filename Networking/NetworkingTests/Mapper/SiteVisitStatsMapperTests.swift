@@ -16,7 +16,6 @@ class SiteVisitStatsMapperTests: XCTestCase {
 
         XCTAssertEqual(dayStats.granularity, .day)
         XCTAssertEqual(dayStats.date, "2018-08-06")
-        XCTAssertEqual(dayStats.fields.count, 2)
         XCTAssertEqual(dayStats.items!.count, 12)
         XCTAssertEqual(dayStats.totalVisitors, 105)
 
@@ -39,7 +38,6 @@ class SiteVisitStatsMapperTests: XCTestCase {
 
         XCTAssertEqual(weekStats.granularity, .week)
         XCTAssertEqual(weekStats.date, "2018-08-06")
-        XCTAssertEqual(weekStats.fields.count, 2)
         XCTAssertEqual(weekStats.items!.count, 12)
         XCTAssertEqual(weekStats.totalVisitors, 123123241)
 
@@ -62,7 +60,6 @@ class SiteVisitStatsMapperTests: XCTestCase {
 
         XCTAssertEqual(monthStats.granularity, .month)
         XCTAssertEqual(monthStats.date, "2018-08-06")
-        XCTAssertEqual(monthStats.fields.count, 2)
         XCTAssertEqual(monthStats.items!.count, 12)
         XCTAssertEqual(monthStats.totalVisitors, 292)
 
@@ -85,7 +82,6 @@ class SiteVisitStatsMapperTests: XCTestCase {
 
         XCTAssertEqual(yearStats.granularity, .year)
         XCTAssertEqual(yearStats.date, "2018-08-06")
-        XCTAssertEqual(yearStats.fields.count, 2)
         XCTAssertEqual(yearStats.items!.count, 5)
         XCTAssertEqual(yearStats.totalVisitors, 3336)
 

@@ -342,19 +342,16 @@ private extension StatsStoreTests {
     func sampleSiteVisitStats() -> Networking.SiteVisitStats {
         return SiteVisitStats(date: "2015-08-06",
                               granularity: .year,
-                              fields: ["period", "views", "visitors", "likes", "reblogs", "comments", "posts"],
                               items: [sampleSiteVisitStatsItem1(), sampleSiteVisitStatsItem2()])
     }
 
 
     func sampleSiteVisitStatsItem1() -> Networking.SiteVisitStatsItem {
-        return SiteVisitStatsItem(fieldNames: ["period", "views", "visitors", "likes", "reblogs", "comments", "posts"],
-                                  rawData: ["2014-01-01", 12821, 1135, 1094, 0, 1611, 597])
+        return SiteVisitStatsItem(period: "2014-01-01", visitors: 1135)
     }
 
     func sampleSiteVisitStatsItem2() -> Networking.SiteVisitStatsItem {
-        return SiteVisitStatsItem(fieldNames: ["period", "views", "visitors", "likes", "reblogs", "comments", "posts"],
-                                  rawData: ["2015-01-01", 14808, 1629, 1492, 0, 1268, 571])
+        return SiteVisitStatsItem(period: "2015-01-01", visitors: 1629)
     }
 
     // MARK: - Top Earner Stats Sample

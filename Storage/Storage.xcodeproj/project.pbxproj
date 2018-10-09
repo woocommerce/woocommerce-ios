@@ -19,6 +19,10 @@
 		746A9D22214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746A9D1E214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift */; };
 		746A9D23214078080013F6FF /* TopEarnerStatsItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746A9D1F214078080013F6FF /* TopEarnerStatsItem+CoreDataClass.swift */; };
 		746A9D24214078080013F6FF /* TopEarnerStatsItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746A9D20214078080013F6FF /* TopEarnerStatsItem+CoreDataProperties.swift */; };
+		7471A514216CF0FE00219F7E /* SiteVisitStats+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471A510216CF0FD00219F7E /* SiteVisitStats+CoreDataClass.swift */; };
+		7471A515216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471A511216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataProperties.swift */; };
+		7471A516216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471A512216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataClass.swift */; };
+		7471A517216CF0FE00219F7E /* SiteVisitStats+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471A513216CF0FE00219F7E /* SiteVisitStats+CoreDataProperties.swift */; };
 		74B7D6AD20F90CBB002667AC /* OrderNote+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B7D6AB20F90CBB002667AC /* OrderNote+CoreDataClass.swift */; };
 		74B7D6AE20F90CBB002667AC /* OrderNote+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B7D6AC20F90CBB002667AC /* OrderNote+CoreDataProperties.swift */; };
 		B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505255320EE6914008090F5 /* StorageType+Extensions.swift */; };
@@ -70,6 +74,11 @@
 		746A9D1E214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TopEarnerStats+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		746A9D1F214078080013F6FF /* TopEarnerStatsItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TopEarnerStatsItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		746A9D20214078080013F6FF /* TopEarnerStatsItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TopEarnerStatsItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		7471A50F216CEEA900219F7E /* Model 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 4.xcdatamodel"; sourceTree = "<group>"; };
+		7471A510216CF0FD00219F7E /* SiteVisitStats+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SiteVisitStats+CoreDataClass.swift"; path = "/Users/bummytime/Projects/woocommerce-ios/Storage/Storage/Model/SiteVisitStats+CoreDataClass.swift"; sourceTree = "<absolute>"; };
+		7471A511216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SiteVisitStatsItem+CoreDataProperties.swift"; path = "/Users/bummytime/Projects/woocommerce-ios/Storage/Storage/Model/SiteVisitStatsItem+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
+		7471A512216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SiteVisitStatsItem+CoreDataClass.swift"; path = "/Users/bummytime/Projects/woocommerce-ios/Storage/Storage/Model/SiteVisitStatsItem+CoreDataClass.swift"; sourceTree = "<absolute>"; };
+		7471A513216CF0FE00219F7E /* SiteVisitStats+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SiteVisitStats+CoreDataProperties.swift"; path = "/Users/bummytime/Projects/woocommerce-ios/Storage/Storage/Model/SiteVisitStats+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		74B053702153090F0068EB85 /* Model 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 3.xcdatamodel"; sourceTree = "<group>"; };
 		74B7D6AB20F90CBB002667AC /* OrderNote+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderNote+CoreDataClass.swift"; sourceTree = "<group>"; };
 		74B7D6AC20F90CBB002667AC /* OrderNote+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderNote+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -135,6 +144,21 @@
 				BB0EDB0E92A719168B18DAFE /* Pods-StorageTests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		7471A518216CF12900219F7E /* Stats */ = {
+			isa = PBXGroup;
+			children = (
+				7471A510216CF0FD00219F7E /* SiteVisitStats+CoreDataClass.swift */,
+				7471A513216CF0FE00219F7E /* SiteVisitStats+CoreDataProperties.swift */,
+				7471A512216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataClass.swift */,
+				7471A511216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataProperties.swift */,
+				746A9D1D214078080013F6FF /* TopEarnerStats+CoreDataClass.swift */,
+				746A9D1E214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift */,
+				746A9D1F214078080013F6FF /* TopEarnerStatsItem+CoreDataClass.swift */,
+				746A9D20214078080013F6FF /* TopEarnerStatsItem+CoreDataProperties.swift */,
+			);
+			name = Stats;
 			sourceTree = "<group>";
 		};
 		B505255520EE694F008090F5 /* Tools */ = {
@@ -264,10 +288,7 @@
 				7426A05320F69DA4002A4E07 /* OrderItem+CoreDataProperties.swift */,
 				74B7D6AB20F90CBB002667AC /* OrderNote+CoreDataClass.swift */,
 				74B7D6AC20F90CBB002667AC /* OrderNote+CoreDataProperties.swift */,
-				746A9D1D214078080013F6FF /* TopEarnerStats+CoreDataClass.swift */,
-				746A9D1E214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift */,
-				746A9D1F214078080013F6FF /* TopEarnerStatsItem+CoreDataClass.swift */,
-				746A9D20214078080013F6FF /* TopEarnerStatsItem+CoreDataProperties.swift */,
+				7471A518216CF12900219F7E /* Stats */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -461,6 +482,7 @@
 			files = (
 				B5B914C520EFF03500F2F832 /* Site+CoreDataClass.swift in Sources */,
 				B54CA5BB20A4BD2800F38CD1 /* NSManagedObject+Object.swift in Sources */,
+				7471A514216CF0FE00219F7E /* SiteVisitStats+CoreDataClass.swift in Sources */,
 				B5A036A4214C0F6C00774E2C /* CocoaLumberjack.swift in Sources */,
 				7426A05120F69D00002A4E07 /* OrderCoupon+CoreDataProperties.swift in Sources */,
 				B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */,
@@ -468,14 +490,17 @@
 				B505F6DB20BEEA3200BB1B69 /* Account+CoreDataClass.swift in Sources */,
 				7426A05520F69DA4002A4E07 /* OrderItem+CoreDataProperties.swift in Sources */,
 				7426A04720F68F27002A4E07 /* Order+CoreDataClass.swift in Sources */,
+				7471A515216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataProperties.swift in Sources */,
 				B54CA5BD20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift in Sources */,
 				746A9D21214078080013F6FF /* TopEarnerStats+CoreDataClass.swift in Sources */,
 				74B7D6AD20F90CBB002667AC /* OrderNote+CoreDataClass.swift in Sources */,
 				B52B0F7920AA287C00477698 /* StorageManagerType.swift in Sources */,
+				7471A517216CF0FE00219F7E /* SiteVisitStats+CoreDataProperties.swift in Sources */,
 				7426A05420F69DA4002A4E07 /* OrderItem+CoreDataClass.swift in Sources */,
 				B505F6E020BEEA8100BB1B69 /* StorageType.swift in Sources */,
 				746A9D22214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift in Sources */,
 				B54CA5C920A4C17800F38CD1 /* NSObject+Storage.swift in Sources */,
+				7471A516216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataClass.swift in Sources */,
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,
 				74B7D6AE20F90CBB002667AC /* OrderNote+CoreDataProperties.swift in Sources */,
 				B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */,
@@ -776,11 +801,12 @@
 		B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				7471A50F216CEEA900219F7E /* Model 4.xcdatamodel */,
 				74B053702153090F0068EB85 /* Model 3.xcdatamodel */,
 				746A9D14214071F90013F6FF /* Model 2.xcdatamodel */,
 				B59E11D920A9D00C004121A4 /* Model.xcdatamodel */,
 			);
-			currentVersion = 74B053702153090F0068EB85 /* Model 3.xcdatamodel */;
+			currentVersion = 7471A50F216CEEA900219F7E /* Model 4.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

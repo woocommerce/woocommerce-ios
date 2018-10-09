@@ -339,7 +339,7 @@ private extension StatsStoreTests {
 
     //  MARK: - Site Visit Stats Sample
 
-    func sampleSiteVisitStats() -> SiteVisitStats {
+    func sampleSiteVisitStats() -> Networking.SiteVisitStats {
         return SiteVisitStats(date: "2015-08-06",
                               granularity: .year,
                               fields: ["period", "views", "visitors", "likes", "reblogs", "comments", "posts"],
@@ -347,12 +347,12 @@ private extension StatsStoreTests {
     }
 
 
-    func sampleSiteVisitStatsItem1() -> SiteVisitStatsItem {
+    func sampleSiteVisitStatsItem1() -> Networking.SiteVisitStatsItem {
         return SiteVisitStatsItem(fieldNames: ["period", "views", "visitors", "likes", "reblogs", "comments", "posts"],
                                   rawData: ["2014-01-01", 12821, 1135, 1094, 0, 1611, 597])
     }
 
-    func sampleSiteVisitStatsItem2() -> SiteVisitStatsItem {
+    func sampleSiteVisitStatsItem2() -> Networking.SiteVisitStatsItem {
         return SiteVisitStatsItem(fieldNames: ["period", "views", "visitors", "likes", "reblogs", "comments", "posts"],
                                   rawData: ["2015-01-01", 14808, 1629, 1492, 0, 1268, 571])
     }

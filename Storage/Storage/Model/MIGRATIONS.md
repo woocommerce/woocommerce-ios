@@ -4,8 +4,6 @@ This file documents changes in the extensions data model. Please explain any cha
 
 ## Model 4
 - @bummytime 2018-10-09
-- Added new entity: `OrderStats`, to encapsulate all of the order stats for a given site & granularity
-- Added new entity: `OrderStatsItem`, to encapsulate all the order stats for a specific period
 - Added new entity: `SiteVisitStats`, to encapsulate all of the visitor stats for a given site & granularity
 - Added new entity: `SiteVisitStatsItem`, to encapsulate all the visitor stats for a specific period
 

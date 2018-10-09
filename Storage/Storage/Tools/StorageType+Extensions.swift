@@ -60,4 +60,11 @@ public extension StorageType {
         let predicate = NSPredicate(format: "productID = %ld", productID)
         return firstObject(ofType: TopEarnerStatsItem.self, matching: predicate)
     }
+
+    /// Retrieves the Stored SiteVisitStats.
+    ///
+    public func loadSiteVisitStats(date: String, granularity: String) -> SiteVisitStats? {
+        let predicate = NSPredicate(format: "date ==[c] %@ AND granularity ==[c] %@", date, granularity)
+        return firstObject(ofType: SiteVisitStats.self, matching: predicate)
+    }
 }

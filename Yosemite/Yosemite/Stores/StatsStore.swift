@@ -77,17 +77,19 @@ private extension StatsStore  {
 
     /// Retrieves the site visit stats associated with the provided Site ID (if any!).
     ///
-    func retrieveSiteVisitStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (SiteVisitStats?, Error?) -> Void) {
+    func retrieveSiteVisitStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (Error?) -> Void) {
 
         let remote = SiteVisitStatsRemote(network: network)
 
-        remote.loadSiteVisitorStats(for: siteID, unit: granularity, latestDateToInclude: latestDateToInclude, quantity: quantity) { (siteVisitStats, error) in
+        remote.loadSiteVisitorStats(for: siteID, unit: granularity, latestDateToInclude: latestDateToInclude, quantity: quantity) { [weak self] (siteVisitStats, error) in
             guard let siteVisitStats = siteVisitStats else {
-                onCompletion(nil, error)
+                onCompletion(error)
                 return
             }
 
-            onCompletion(siteVisitStats, nil)
+
+            self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats)
+            onCompletion(nil)
         }
     }
 
@@ -141,6 +143,36 @@ extension StatsStore {
         // Insert the items from the read-only stats
         readOnlyStats.items?.forEach({ readOnlyItem in
             let newStorageItem = storage.insertNewObject(ofType: Storage.TopEarnerStatsItem.self)
+            newStorageItem.update(with: readOnlyItem)
+            storageTopEarnerStats.addToItems(newStorageItem)
+        })
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly SiteVisitStats Entity into the Storage Layer.
+    ///
+    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats) {
+        assert(Thread.isMainThread)
+
+        let storage = storageManager.viewStorage
+        let storageSiteVisitStats = storage.loadSiteVisitStats(granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
+        storageSiteVisitStats.update(with: readOnlyStats)
+        handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
+        storage.saveIfNeeded()
+    }
+
+    /// Updates the provided StorageSiteVisitStats' items using the provided read-only TopEarnerStats' items
+    ///
+    private func handleSiteVisitStatsItems(_ readOnlyStats: Networking.SiteVisitStats, _ storageTopEarnerStats: Storage.SiteVisitStats, _ storage: StorageType) {
+
+        // Since we are treating the items in core data like a dumb cache, start by nuking all of the existing stored SiteVisitStatsItems
+        storageTopEarnerStats.items?.forEach {
+            storageTopEarnerStats.removeFromItems($0)
+            storage.deleteObject($0)
+        }
+
+        // Insert the items from the read-only stats
+        readOnlyStats.items?.forEach({ readOnlyItem in
+            let newStorageItem = storage.insertNewObject(ofType: Storage.SiteVisitStatsItem.self)
             newStorageItem.update(with: readOnlyItem)
             storageTopEarnerStats.addToItems(newStorageItem)
         })

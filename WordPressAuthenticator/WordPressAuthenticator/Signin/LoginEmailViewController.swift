@@ -111,7 +111,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         alternativeLoginLabel?.text = NSLocalizedString("Alternatively:", comment: "String displayed before offering alternative login methods")
 
         let submitButtonTitle = NSLocalizedString("Next", comment: "Title of a button. The text should be capitalized.").localizedCapitalized
-        submitButton?.setTitle(submitButtonTitle, for: UIControlState())
+        submitButton?.setTitle(submitButtonTitle, for: .normal)
         submitButton?.setTitle(submitButtonTitle, for: .highlighted)
         submitButton?.accessibilityIdentifier = "Next Button"
     }

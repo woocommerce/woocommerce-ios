@@ -129,12 +129,12 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
         passwordField?.accessibilityIdentifier = "Password"
 
         let submitButtonTitle = NSLocalizedString("Next", comment: "Title of a button. The text should be capitalized.").localizedCapitalized
-        submitButton?.setTitle(submitButtonTitle, for: UIControlState())
+        submitButton?.setTitle(submitButtonTitle, for: .normal)
         submitButton?.setTitle(submitButtonTitle, for: .highlighted)
         submitButton?.accessibilityIdentifier = "Log In Button"
 
         let forgotPasswordTitle = NSLocalizedString("Lost your password?", comment: "Title of a button. ")
-        forgotPasswordButton?.setTitle(forgotPasswordTitle, for: UIControlState())
+        forgotPasswordButton?.setTitle(forgotPasswordTitle, for: .normal)
         forgotPasswordButton?.setTitle(forgotPasswordTitle, for: .highlighted)
         forgotPasswordButton?.titleLabel?.numberOfLines = 0
     }

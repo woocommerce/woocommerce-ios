@@ -16,7 +16,7 @@ extension String {
         let underlineForegroundColor = underlineColor ?? foregroundColor
 
         let underlinedString = NSMutableAttributedString(string: firstPart, attributes: [.foregroundColor: foregroundColor])
-        underlinedString.append(NSAttributedString(string: underlinePart, attributes: [.underlineStyle: NSUnderlineStyle.styleSingle.rawValue, .foregroundColor: underlineForegroundColor]))
+        underlinedString.append(NSAttributedString(string: underlinePart, attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue, .foregroundColor: underlineForegroundColor]))
         underlinedString.append(NSAttributedString(string: lastPart, attributes: [.foregroundColor: foregroundColor]))
 
         return underlinedString

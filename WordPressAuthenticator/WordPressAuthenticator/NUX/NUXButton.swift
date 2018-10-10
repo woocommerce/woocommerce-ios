@@ -9,7 +9,7 @@ import WordPressUI
     }
 
     @objc let activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(activityIndicatorStyle: .white)
+        let indicator = UIActivityIndicatorView(style: .white)
         indicator.hidesWhenStopped = true
         return indicator
     }()
@@ -68,7 +68,7 @@ import WordPressUI
     open override func awakeFromNib() {
         super.awakeFromNib()
         configureAppearance()
-        activityIndicator.activityIndicatorViewStyle = .gray
+        activityIndicator.style = .gray
     }
 
     /// Setup: shorter reference for style

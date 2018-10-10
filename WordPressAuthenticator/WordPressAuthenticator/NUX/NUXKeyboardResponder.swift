@@ -30,16 +30,16 @@ public extension NUXKeyboardResponder where Self: NUXViewController {
     ///     - keyboardWillHideAction: A Selector to use for the UIKeyboardWillHideNotification observer.
     ///
     func registerForKeyboardEvents(keyboardWillShowAction: Selector, keyboardWillHideAction: Selector) {
-        NotificationCenter.default.addObserver(self, selector: keyboardWillShowAction, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: keyboardWillHideAction, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: keyboardWillShowAction, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: keyboardWillHideAction, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
 
     /// Unregisters the receiver from keyboard events.
     ///
     func unregisterForKeyboardEvents() {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
 
@@ -130,8 +130,8 @@ public extension NUXKeyboardResponder where Self: NUXViewController {
     func keyboardFrameAndDurationFromNotification(_ notification: Foundation.Notification) -> (keyboardFrame: CGRect, animationDuration: Double)? {
 
         guard let userInfo = notification.userInfo,
-            let frame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
-            let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue
+            let frame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+            let duration = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue
             else {
                 return nil
         }

@@ -2,18 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/bummytime/Projects/woocommerce-ios/Storage/Storage/Model/SiteVisitStatsItem+CoreDataClass.swift">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/bummytime/Projects/woocommerce-ios/Storage/Storage/Model/SiteVisitStatsItem+CoreDataProperties.swift">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/bummytime/Projects/woocommerce-ios/Storage/Storage/Model/SiteVisitStats+CoreDataClass.swift">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/bummytime/Projects/woocommerce-ios/Storage/Storage/Model/SiteVisitStats+CoreDataProperties.swift">
-   </FileRef>
-   <FileRef
       location = "group:WooCommerce/WooCommerce.xcodeproj">
    </FileRef>
    <FileRef

@@ -27,7 +27,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     private var yAxisMaximum: String = ""
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
-    /// ResultsController: Loads Orders with status `Processing` from the Storage Layer
+    /// ResultsController: Loads site visit stats from the Storage Layer
     ///
     private lazy var resultsController: ResultsController<StorageSiteVisitStats> = {
         let storageManager = AppDelegate.shared.storageManager

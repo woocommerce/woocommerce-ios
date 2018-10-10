@@ -61,7 +61,8 @@ extension SiteVisitStats: Comparable {
     public static func == (lhs: SiteVisitStats, rhs: SiteVisitStats) -> Bool {
         return lhs.date == rhs.date &&
             lhs.granularity == rhs.granularity &&
-            lhs.items == rhs.items
+            lhs.items?.count == rhs.items?.count &&
+            lhs.items?.sorted() == rhs.items?.sorted()
     }
 
     public static func < (lhs: SiteVisitStats, rhs: SiteVisitStats) -> Bool {

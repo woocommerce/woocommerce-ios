@@ -367,7 +367,27 @@ private extension OrderDetailsViewController {
     }
 
     func configurePayment(cell: PaymentTableViewCell) {
-        cell.configure(with: viewModel)
+        cell.subtotalLabel.text = viewModel.subtotalLabel
+        cell.subtotalValue.text = viewModel.subtotalValue
+
+        cell.discountLabel.text = viewModel.discountLabel
+        cell.discountValue.text = viewModel.discountValue
+        cell.discountView.isHidden = viewModel.discountValue == nil
+
+        cell.shippingLabel.text = viewModel.shippingLabel
+        cell.shippingValue.text = viewModel.shippingValue
+
+        cell.taxesLabel.text = viewModel.taxesLabel
+        cell.taxesValue.text = viewModel.taxesValue
+        cell.taxesView.isHidden = viewModel.taxesValue == nil
+
+        cell.totalLabel.text = viewModel.totalLabel
+        cell.totalValue.text = viewModel.totalValue
+
+        cell.separatorLine.backgroundColor = StyleManager.cellSeparatorColor
+        cell.footerValue.text = viewModel.paymentSummary
+
+        cell.accessibilityElements = [cell.subtotalLabel, cell.subtotalValue, cell.discountLabel, cell.discountValue, cell.shippingLabel, cell.shippingValue, cell.taxesLabel, cell.taxesValue, cell.totalLabel, cell.totalValue, cell.footerValue]
     }
 
     func configureProductDetails(cell: BasicTableViewCell) {

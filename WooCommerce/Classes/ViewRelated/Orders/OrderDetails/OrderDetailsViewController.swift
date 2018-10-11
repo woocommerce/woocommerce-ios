@@ -281,22 +281,17 @@ private extension OrderDetailsViewController {
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
             configureShippingAddress(cell: cell)
         case let cell as CustomerNoteTableViewCell:
-            cell.configure(with: viewModel)
+            configureCustomerNote(cell: cell)
         case let cell as LeftImageTableViewCell:
             configureNewNote(cell: cell)
         case let cell as OrderNoteTableViewCell:
-            if let note = note(at: indexPath) {
-                cell.configure(with: note)
-            }
+            configureOrderNote(cell: cell, at: indexPath)
         case let cell as PaymentTableViewCell:
-            cell.configure(with: viewModel)
+            configurePayment(cell: cell)
         case let cell as ProductListTableViewCell:
-            cell.configure(with: viewModel)
-            cell.onFullfillTouchUp = { [weak self] in
-                self?.fulfillWasPressed()
-            }
+            configureProductList(cell: cell)
         case let cell as SummaryTableViewCell:
-            configureSummaryTableView(cell: cell)
+            configureSummary(cell: cell)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -346,6 +341,10 @@ private extension OrderDetailsViewController {
         cell.accessibilityHint = NSLocalizedString("Prompts with the option to call or message the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer.")
     }
 
+    func configureCustomerNote(cell: CustomerNoteTableViewCell) {
+        cell.configure(with: viewModel)
+    }
+
     func configureNewNote(cell: LeftImageTableViewCell) {
         cell.leftImage = viewModel.addNoteIcon
         cell.labelText = viewModel.addNoteText
@@ -355,9 +354,26 @@ private extension OrderDetailsViewController {
         cell.accessibilityHint = NSLocalizedString("Composes a new order note.", comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note.")
     }
 
+    func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
+        if let note = note(at: indexPath) {
+            cell.configure(with: note)
+        }
+    }
+
+    func configurePayment(cell: PaymentTableViewCell) {
+        cell.configure(with: viewModel)
+    }
+
     func configureProductDetails(cell: BasicTableViewCell) {
         cell.configure(text: viewModel.productDetails)
         cell.accessoryType = .disclosureIndicator
+    }
+
+    func configureProductList(cell: ProductListTableViewCell) {
+        cell.configure(with: viewModel)
+        cell.onFullfillTouchUp = { [weak self] in
+            self?.fulfillWasPressed()
+        }
     }
 
     func configureShippingAddress(cell: CustomerInfoTableViewCell) {
@@ -368,7 +384,7 @@ private extension OrderDetailsViewController {
         cell.address = shippingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
     }
 
-    func configureSummaryTableView(cell: SummaryTableViewCell) {
+    func configureSummary(cell: SummaryTableViewCell) {
         cell.configure(with: viewModel)
     }
 

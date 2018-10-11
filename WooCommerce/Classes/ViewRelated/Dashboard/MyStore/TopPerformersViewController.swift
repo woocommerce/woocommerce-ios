@@ -41,9 +41,19 @@ class TopPerformersViewController: ButtonBarPagerTabStripViewController {
 //
 extension TopPerformersViewController {
 
-    func syncTopPerformers() {
+    func syncTopPerformers(onCompletion: (() -> Void)? = nil) {
+        let group = DispatchGroup()
+
+
         dataVCs.forEach { (vc) in
-            vc.syncTopPerformers()
+            group.enter()
+            vc.syncTopPerformers { _ in
+                group.leave()
+            }
+        }
+
+        group.notify(queue: .main) {
+            onCompletion?()
         }
     }
 }

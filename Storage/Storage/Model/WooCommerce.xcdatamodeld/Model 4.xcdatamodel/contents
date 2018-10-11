@@ -92,7 +92,7 @@
         <attribute name="totalNetSales" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="totalOrders" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="totalProducts" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderStatsItem" inverseName="stats" inverseEntity="OrderStatsItem" syncable="YES"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="OrderStatsItem" inverseName="stats" inverseEntity="OrderStatsItem" syncable="YES"/>
     </entity>
     <entity name="OrderStatsItem" representedClassName="OrderStatsItem" syncable="YES">
         <attribute name="avgOrderValue" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
@@ -155,7 +155,7 @@
         <element name="OrderCoupon" positionX="-206.01953125" positionY="379.74609375" width="128" height="120"/>
         <element name="OrderItem" positionX="-364.890625" positionY="379.453125" width="128" height="225"/>
         <element name="OrderNote" positionX="-365.16796875" positionY="630.2109375" width="128" height="118"/>
-        <element name="OrderStats" positionX="137.859375" positionY="388.33203125" width="128" height="223"/>
+        <element name="OrderStats" positionX="137.859375" positionY="388.33203125" width="128" height="225"/>
         <element name="OrderStatsItem" positionX="321.74609375" positionY="425.51171875" width="128" height="330"/>
         <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="135"/>
         <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="90"/>

@@ -313,7 +313,8 @@ private extension OrderDetailsViewController {
             return
         }
 
-        cell.configure(text: email, image: Gridicon.iconOfType(.mail))
+        cell.textLabel?.text = email
+        cell.accessoryImageView.image = Gridicon.iconOfType(.mail)
         cell.onTouchUp = { [weak self] in
             self?.emailButtonAction()
         }
@@ -330,7 +331,8 @@ private extension OrderDetailsViewController {
             return
         }
 
-        cell.configure(text: phoneNumber, image: Gridicon.iconOfType(.ellipsis))
+        cell.textLabel?.text = phoneNumber
+        cell.accessoryImageView.image = Gridicon.iconOfType(.ellipsis)
         cell.onTouchUp = { [weak self] in
             self?.phoneButtonAction()
         }

@@ -365,7 +365,7 @@ private extension OrderDetailsViewController {
     }
 
     func configureProductDetails(cell: BasicTableViewCell) {
-        cell.configure(text: viewModel.productDetails)
+        cell.textLabel?.text = viewModel.productDetails
         cell.accessoryType = .disclosureIndicator
     }
 

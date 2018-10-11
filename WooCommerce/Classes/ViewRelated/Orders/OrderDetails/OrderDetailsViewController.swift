@@ -396,7 +396,20 @@ private extension OrderDetailsViewController {
     }
 
     func configureProductList(cell: ProductListTableViewCell) {
-        cell.configure(with: viewModel)
+        for subView in cell.verticalStackView.arrangedSubviews {
+            subView.removeFromSuperview()
+        }
+
+        for (index, item) in viewModel.items.enumerated() {
+            let itemView = TwoColumnLabelView.makeFromNib()
+            itemView.leftText = item.name
+            itemView.rightText = item.quantity.description
+            cell.verticalStackView.insertArrangedSubview(itemView, at: index)
+        }
+
+        cell.fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
+        cell.actionContainerView.isHidden = viewModel.isProcessingPayment == false
+
         cell.onFullfillTouchUp = { [weak self] in
             self?.fulfillWasPressed()
         }

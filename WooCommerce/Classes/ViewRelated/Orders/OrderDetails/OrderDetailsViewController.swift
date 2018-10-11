@@ -344,7 +344,7 @@ private extension OrderDetailsViewController {
     }
 
     func configureCustomerNote(cell: CustomerNoteTableViewCell) {
-        cell.configure(with: viewModel)
+        cell.quote = viewModel.customerNote
     }
 
     func configureNewNote(cell: LeftImageTableViewCell) {

@@ -107,28 +107,19 @@ private extension StoreStatsViewController {
 //
 private extension StoreStatsViewController {
 
-    func syncVisitorStats(for granularity: StatGranularity, onCompletion: ((Error?) -> ())? = nil) {
-        // FIXME: This is really just WIP code which puts data in the fields. Refactor please.
+    func syncVisitorStats(for granularity: StatGranularity) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            onCompletion?(nil)
             return
         }
 
         let action = StatsAction.retrieveSiteVisitStats(siteID: siteID,
                                                         granularity: granularity,
                                                         latestDateToInclude: Date(),
-                                                        quantity: quantity(for: granularity)) { [weak self] (siteVisitStats, error) in
-            guard let `self` = self, let siteVisitStats = siteVisitStats else {
-                DDLogError("⛔️ Error synchronizing site visit stats: \(error.debugDescription)")
-                onCompletion?(error)
-                return
+                                                        quantity: quantity(for: granularity)) { (error) in
+            if let error = error {
+                DDLogError("⛔️ Dashboard (Site Stats) — Error synchronizing site visit stats: \(error)")
             }
-
-            let vc = self.periodDataVC(for: granularity)
-            vc?.siteStats = siteVisitStats
-            onCompletion?(nil)
         }
-
         StoresManager.shared.dispatch(action)
     }
 

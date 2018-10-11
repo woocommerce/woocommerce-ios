@@ -27,6 +27,15 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     private var yAxisMaximum: String = ""
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
+    /// ResultsController: Loads site visit stats from the Storage Layer
+    ///
+    private lazy var resultsController: ResultsController<StorageSiteVisitStats> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "granularity ==[c] %@", granularity.rawValue)
+        let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     public let granularity: StatGranularity
     public var orderStats: OrderStats? {
         didSet {
@@ -41,15 +50,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         }
     }
     public var siteStats: SiteVisitStats? {
-        didSet {
-            if siteStats != nil {
-                lastUpdatedDate = Date()
-            } else {
-                lastUpdatedDate = nil
-            }
-            reloadSiteFields()
-            reloadLastUpdatedField()
-        }
+        return resultsController.fetchedObjects.first
     }
 
     // MARK: - Computed Properties
@@ -104,6 +105,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
+        configureResultsController()
         configureBarChart()
     }
 
@@ -127,15 +129,24 @@ extension PeriodDataViewController {
     func clearAllFields() {
         barChartView?.clear()
         orderStats = nil
-        siteStats = nil
         reloadAllFields()
     }
 }
 
 
-// MARK: - User Interface Configuration
+// MARK: - Configuration
 //
 private extension PeriodDataViewController {
+
+    func configureResultsController() {
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.updateSiteVisitDataIfNeeded()
+        }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.updateSiteVisitDataIfNeeded()
+        }
+        try? resultsController.performFetch()
+    }
 
     func configureView() {
         view.backgroundColor = StyleManager.wooWhite
@@ -310,6 +321,16 @@ private extension PeriodDataViewController {
 // MARK: - Private Helpers
 //
 private extension PeriodDataViewController {
+
+    func updateSiteVisitDataIfNeeded() {
+        if siteStats != nil {
+            lastUpdatedDate = Date()
+        } else {
+            lastUpdatedDate = nil
+        }
+        reloadSiteFields()
+        reloadLastUpdatedField()
+    }
 
     func trackChangedTabIfNeeded() {
         // This is a little bit of a workaround to prevent the "tab tapped" tracks event from firing when launching the app.

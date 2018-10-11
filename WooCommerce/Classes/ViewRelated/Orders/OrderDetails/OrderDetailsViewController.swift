@@ -424,7 +424,11 @@ private extension OrderDetailsViewController {
     }
 
     func configureSummary(cell: SummaryTableViewCell) {
-        cell.configure(with: viewModel)
+        cell.title = viewModel.summaryTitle
+        cell.dateCreated = viewModel.summaryDateCreated
+        cell.paymentStatus = viewModel.paymentStatus
+        cell.paymentBackgroundColor = viewModel.paymentBackgroundColor
+        cell.paymentBorderColor = viewModel.paymentBorderColor
     }
 
     // MARK: - Get order note

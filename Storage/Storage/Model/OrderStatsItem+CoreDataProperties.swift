@@ -20,6 +20,7 @@ extension OrderStatsItem {
     @NSManaged public var totalRefund: Double
     @NSManaged public var totalTaxRefund: Double
     @NSManaged public var totalShippingRefund: Double
+    @NSManaged public var totalShippingTaxRefund: Double
     @NSManaged public var currency: String?
     @NSManaged public var grossSales: Double
     @NSManaged public var netSales: Double

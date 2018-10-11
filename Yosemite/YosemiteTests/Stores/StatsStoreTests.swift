@@ -348,13 +348,10 @@ private extension StatsStoreTests {
 
     //  MARK: - Order Stats Sample
 
-    func sampleOrderStats() -> OrderStats {
+    func sampleOrderStats() -> Networking.OrderStats {
         return OrderStats(date: "2018-06-02",
                           granularity: .day,
                           quantity: "2",
-                          fields: ["period", "orders", "products", "coupons", "coupon_discount", "total_sales", "total_tax", "total_shipping",
-                                   "total_shipping_tax", "total_refund", "total_tax_refund", "total_shipping_refund", "total_shipping_tax_refund",
-                                   "currency", "gross_sales", "net_sales", "avg_order_value", "avg_products_per_order"],
                           items: [sampleOrderStatsItem1(), sampleOrderStatsItem2()],
                           totalGrossSales: 439.23,
                           totalNetSales: 438.24,
@@ -366,18 +363,46 @@ private extension StatsStoreTests {
                           averageProducts: 0.4194)
     }
 
-    func sampleOrderStatsItem1() -> OrderStatsItem {
-        return OrderStatsItem(fieldNames: ["period", "orders", "products", "coupons", "coupon_discount", "total_sales", "total_tax", "total_shipping",
-                                           "total_shipping_tax", "total_refund", "total_tax_refund", "total_shipping_refund", "total_shipping_tax_refund",
-                                           "currency", "gross_sales", "net_sales", "avg_order_value", "avg_products_per_order"],
-                              rawData: ["2018-06-01", 2, 2, 0, 0, 14.24, 0.12, 9.9800000000000004, 0.28000000000000003, 0, 0, 0, 0, "USD", 14.24, 14.120000000000001, 7.1200000000000001, 1])
+    func sampleOrderStatsItem1() -> Networking.OrderStatsItem {
+        return OrderStatsItem(period: "2018-06-01",
+                              orders: 2,
+                              products: 2,
+                              coupons: 0,
+                              couponDiscount: 0,
+                              totalSales: 14.24,
+                              totalTax: 0.12,
+                              totalShipping: 9.9800000000000004,
+                              totalShippingTax: 0.28000000000000003,
+                              totalRefund: 0,
+                              totalTaxRefund: 0,
+                              totalShippingRefund: 0,
+                              totalShippingTaxRefund: 0,
+                              currency: "USD",
+                              grossSales: 14.24,
+                              netSales: 14.120000000000001,
+                              avgOrderValue: 7.1200000000000001,
+                              avgProductsPerOrder: 1)
     }
 
-    func sampleOrderStatsItem2() -> OrderStatsItem {
-        return OrderStatsItem(fieldNames: ["period", "orders", "products", "coupons", "coupon_discount", "total_sales", "total_tax", "total_shipping",
-                                           "total_shipping_tax", "total_refund", "total_tax_refund", "total_shipping_refund", "total_shipping_tax_refund",
-                                           "currency", "gross_sales", "net_sales", "avg_order_value", "avg_products_per_order"],
-                              rawData: ["2018-06-02", 1, 1, 0, 0, 30.870000000000001, 0.87, 0, 0, 0, 0, 0, 0, "USD", 30.870000000000001, 30, 30.870000000000001, 1])
+    func sampleOrderStatsItem2() -> Networking.OrderStatsItem {
+        return OrderStatsItem(period: "2018-06-02",
+                              orders: 1,
+                              products: 1,
+                              coupons: 0,
+                              couponDiscount: 0,
+                              totalSales: 30.870000000000001,
+                              totalTax: 0.87,
+                              totalShipping: 0,
+                              totalShippingTax: 0,
+                              totalRefund: 0,
+                              totalTaxRefund: 0,
+                              totalShippingRefund: 0,
+                              totalShippingTaxRefund: 0,
+                              currency: "USD",
+                              grossSales: 30.870000000000001,
+                              netSales: 30,
+                              avgOrderValue: 30.870000000000001,
+                              avgProductsPerOrder: 1)
     }
 
     //  MARK: - Site Visit Stats Sample

@@ -358,7 +358,11 @@ private extension OrderDetailsViewController {
 
     func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
         if let note = note(at: indexPath) {
-            cell.configure(with: note)
+            cell.iconButton.setImage(note.iconImage, for: .normal)
+            cell.iconButton.backgroundColor = note.iconColor
+            cell.dateCreated = note.formattedDateCreated
+            cell.statusText = note.statusText
+            cell.contents = note.contents
         }
     }
 

@@ -52,7 +52,6 @@ extension StoreStatsViewController {
     }
 
     func syncAllStats() {
-        clearAllFields()
         periodVCs.forEach { (vc) in
             syncOrderStats(for: vc.granularity)
             syncVisitorStats(for: vc.granularity)
@@ -109,6 +108,7 @@ private extension StoreStatsViewController {
 
     func syncVisitorStats(for granularity: StatGranularity) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            DDLogWarn("⚠️ Tried to sync order stats without a current defaultStoreID")
             return
         }
 
@@ -123,29 +123,21 @@ private extension StoreStatsViewController {
         StoresManager.shared.dispatch(action)
     }
 
-    func syncOrderStats(for granularity: StatGranularity, onCompletion: ((Error?) -> ())? = nil) {
-        // FIXME: This is really just WIP code which puts data in the fields. Refactor please.
+    func syncOrderStats(for granularity: StatGranularity) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            onCompletion?(nil)
+            DDLogWarn("⚠️ Tried to sync order stats without a current defaultStoreID")
             return
         }
 
         let action = StatsAction.retrieveOrderStats(siteID: siteID,
                                                     granularity: granularity,
                                                     latestDateToInclude: Date(),
-                                                    quantity: quantity(for: granularity)) { [weak self] (orderStats, error) in
-            guard let `self` = self, let orderStats = orderStats else {
-                DDLogError("⛔️ Error synchronizing order stats: \(error.debugDescription)")
-                onCompletion?(error)
-                return
+                                                    quantity: quantity(for: granularity)) { (error) in
+            if let error = error {
+                DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats: \(error)")
             }
-
-            let vc = self.periodDataVC(for: granularity)
-            vc?.orderStats = orderStats
             WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
-            onCompletion?(nil)
         }
-
         StoresManager.shared.dispatch(action)
     }
 }

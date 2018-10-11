@@ -6,7 +6,6 @@ import Foundation
 public struct SiteVisitStats: Decodable {
     public let date: String
     public let granularity: StatGranularity
-    public let fields: [String]
     public let items: [SiteVisitStatsItem]?
 
     /// The public initializer for order stats.
@@ -17,21 +16,21 @@ public struct SiteVisitStats: Decodable {
         let date = try container.decode(String.self, forKey: .date)
         let granularity = try container.decode(StatGranularity.self, forKey: .unit)
 
-        let fields = try container.decode([String].self, forKey: .fields)
+        let fieldNames = try container.decode([String].self, forKey: .fields)
         let rawData: [[AnyCodable]] = try container.decode([[AnyCodable]].self, forKey: .data)
+        let rawDataContainers = rawData.map({ MIContainer(data: $0.map({ $0.value }), fieldNames: fieldNames) })
+        let items = rawDataContainers.map({ SiteVisitStatsItem(period: $0.fetchStringValue(for: ItemFieldNames.period),
+                                                               visitors: $0.fetchIntValue(for: ItemFieldNames.visitors)) })
 
-        let items = rawData.map({ SiteVisitStatsItem(fieldNames: fields, rawData: $0) })
-
-        self.init(date: date, granularity: granularity, fields: fields, items: items)
+        self.init(date: date, granularity: granularity, items: items)
     }
 
 
     /// OrderStats struct initializer.
     ///
-    public init(date: String, granularity: StatGranularity, fields: [String], items: [SiteVisitStatsItem]?) {
+    public init(date: String, granularity: StatGranularity, items: [SiteVisitStatsItem]?) {
         self.date = date
         self.granularity = granularity
-        self.fields = fields
         self.items = items
     }
 
@@ -62,11 +61,24 @@ extension SiteVisitStats: Comparable {
     public static func == (lhs: SiteVisitStats, rhs: SiteVisitStats) -> Bool {
         return lhs.date == rhs.date &&
             lhs.granularity == rhs.granularity &&
-            lhs.fields == rhs.fields &&
-            lhs.items == rhs.items
+            lhs.items?.count == rhs.items?.count &&
+            lhs.items?.sorted() == rhs.items?.sorted()
     }
 
     public static func < (lhs: SiteVisitStats, rhs: SiteVisitStats) -> Bool {
         return lhs.date < rhs.date
+    }
+}
+
+
+// MARK: - Constants!
+//
+private extension SiteVisitStats {
+
+    /// Defines all of the possbile fields for a SiteVisitStatsItem.
+    ///
+    enum ItemFieldNames: String {
+        case period = "period"
+        case visitors = "visitors"
     }
 }

@@ -29,5 +29,7 @@ public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
 public typealias StorageAccount = Storage.Account
 public typealias StorageSite = Storage.Site
 public typealias StorageOrder = Storage.Order
+public typealias StorageSiteVisitStats = Storage.SiteVisitStats
+public typealias StorageSiteVisitStatsItem = Storage.SiteVisitStatsItem
 public typealias StorageTopEarnerStats = Storage.TopEarnerStats
 public typealias StorageTopEarnerStatsItem = Storage.TopEarnerStatsItem

@@ -13,12 +13,13 @@ class OrderNoteTableViewCell: UITableViewCell {
         iconButton.tintColor = .white
     }
 
-    @IBOutlet private var iconButton: UIButton!
+    @IBOutlet public var iconButton: UIButton!
+
     @IBOutlet private var dateLabel: UILabel!
     @IBOutlet private var statusLabel: UILabel!
     @IBOutlet private var noteLabel: UILabel!
 
-    var dateCreated: String? {
+    public var dateCreated: String? {
         get {
             return dateLabel.text
         }
@@ -27,7 +28,7 @@ class OrderNoteTableViewCell: UITableViewCell {
         }
     }
 
-    var statusText: String? {
+    public var statusText: String? {
         get {
             return statusLabel.text
         }
@@ -36,22 +37,12 @@ class OrderNoteTableViewCell: UITableViewCell {
         }
     }
 
-    var contents: String? {
+    public var contents: String? {
         get {
             return noteLabel.text
         }
         set {
             noteLabel.text = newValue
         }
-    }
-}
-
-extension OrderNoteTableViewCell {
-    func configure(with viewModel: OrderNoteViewModel) {
-        iconButton.setImage(viewModel.iconImage, for: .normal)
-        iconButton.backgroundColor = viewModel.iconColor
-        dateCreated = viewModel.formattedDateCreated
-        statusText = viewModel.statusText
-        contents = viewModel.contents
     }
 }

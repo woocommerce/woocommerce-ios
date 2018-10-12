@@ -48,8 +48,9 @@ class NewOrdersViewController: UIViewController {
 //
 extension NewOrdersViewController {
 
-    func syncNewOrders() {
+    func syncNewOrders(onCompletion: (() -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            onCompletion?()
             return
         }
 
@@ -57,6 +58,7 @@ extension NewOrdersViewController {
             if let error = error {
                 DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing orders: \(error)")
             }
+            onCompletion?()
         }
 
         StoresManager.shared.dispatch(action)

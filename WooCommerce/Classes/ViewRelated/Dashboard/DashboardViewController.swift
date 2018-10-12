@@ -146,10 +146,26 @@ private extension DashboardViewController {
 
     func reloadData() {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        storeStatsViewController.syncAllStats()
-        newOrdersViewController.syncNewOrders()
-        topPerformersViewController.syncTopPerformers()
-        refreshControl.endRefreshing()
+        let group = DispatchGroup()
+
+        group.enter()
+        storeStatsViewController.syncAllStats() {
+            group.leave()
+        }
+
+        group.enter()
+        newOrdersViewController.syncNewOrders() {
+            group.leave()
+        }
+
+        group.enter()
+        topPerformersViewController.syncTopPerformers() {
+            group.leave()
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            self?.refreshControl.endRefreshing()
+        }
     }
 
     func applyUnhideAnimation(for view: UIView) {

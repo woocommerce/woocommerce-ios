@@ -51,10 +51,24 @@ extension StoreStatsViewController {
         }
     }
 
-    func syncAllStats() {
+    func syncAllStats(onCompletion: (() -> Void)? = nil) {
+        let group = DispatchGroup()
+
         periodVCs.forEach { (vc) in
-            syncOrderStats(for: vc.granularity)
-            syncVisitorStats(for: vc.granularity)
+            group.enter()
+            syncOrderStats(for: vc.granularity) { _ in
+                WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": vc.granularity.rawValue])
+                group.leave()
+            }
+
+            group.enter()
+            syncVisitorStats(for: vc.granularity) { _ in
+                group.leave()
+            }
+        }
+
+        group.notify(queue: .main) {
+            onCompletion?()
         }
     }
 }
@@ -106,9 +120,10 @@ private extension StoreStatsViewController {
 //
 private extension StoreStatsViewController {
 
-    func syncVisitorStats(for granularity: StatGranularity) {
+    func syncVisitorStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             DDLogWarn("⚠️ Tried to sync order stats without a current defaultStoreID")
+            onCompletion?(nil)
             return
         }
 
@@ -119,13 +134,15 @@ private extension StoreStatsViewController {
             if let error = error {
                 DDLogError("⛔️ Dashboard (Site Stats) — Error synchronizing site visit stats: \(error)")
             }
+            onCompletion?(error)
         }
         StoresManager.shared.dispatch(action)
     }
 
-    func syncOrderStats(for granularity: StatGranularity) {
+    func syncOrderStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             DDLogWarn("⚠️ Tried to sync order stats without a current defaultStoreID")
+            onCompletion?(nil)
             return
         }
 
@@ -136,7 +153,7 @@ private extension StoreStatsViewController {
             if let error = error {
                 DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats: \(error)")
             }
-            WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
+            onCompletion?(error)
         }
         StoresManager.shared.dispatch(action)
     }

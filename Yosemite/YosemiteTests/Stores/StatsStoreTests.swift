@@ -93,49 +93,69 @@ class StatsStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `StatsAction.retrieveOrderStats` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveOrderStatsReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve order stats error response")
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-//    /// Verifies that StatsAction.retrieveOrderStats returns an error whenever there is an error response from the backend.
-//    ///
-//    func testRetrieveOrderStatsReturnsErrorUponReponseError() {
-//        let expectation = self.expectation(description: "Retrieve order stats error response")
-//        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-//
-//        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/orders/", filename: "generic_error")
-//        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
-//                                                         latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (orderStats, error) in
-//                                                            XCTAssertNil(orderStats)
-//                                                            XCTAssertNotNil(error)
-//                                                            guard let _ = error else {
-//                                                                XCTFail()
-//                                                                return
-//                                                            }
-//                                                            expectation.fulfill()
-//        }
-//
-//        statsStore.onAction(action)
-//        wait(for: [expectation], timeout: Constants.expectationTimeout)
-//    }
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/orders/", filename: "generic_error")
+        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
+                                                    latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (error) in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
 
-//    /// Verifies that StatsAction.retrieveOrderStats returns an error whenever there is no backend response.
-//    ///
-//    func testRetrieveOrderStatsReturnsErrorUponEmptyResponse() {
-//        let expectation = self.expectation(description: "Retrieve order stats empty response")
-//        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-//
-//        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
-//                                                         latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (orderStats, error) in
-//            XCTAssertNotNil(error)
-//            XCTAssertNil(orderStats)
-//            guard let _ = error else {
-//                XCTFail()
-//                return
-//            }
-//            expectation.fulfill()
-//        }
-//
-//        statsStore.onAction(action)
-//        wait(for: [expectation], timeout: Constants.expectationTimeout)
-//    }
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `StatsAction.retrieveOrderStats` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveOrderStatsReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve site visit stats empty response")
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
+                                                    latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (error) in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `upsertStoredOrderStats` effectively inserts a new OrderStats, with the specified payload.
+    ///
+    func testUpsertStoredOrderStatsEffectivelyPersistsNewOrderStats() {
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteOrderStats = sampleOrderStats()
+
+        XCTAssertNil(viewStorage.loadOrderStats(granularity: StatGranularity.year.rawValue))
+        statsStore.upsertStoredOrderStats(readOnlyStats: remoteOrderStats)
+
+        let storageOrderStats = viewStorage.loadOrderStats(granularity: StatGranularity.day.rawValue)
+        XCTAssertEqual(storageOrderStats?.toReadOnly(), remoteOrderStats)
+    }
+
+    /// Verifies that `upsertStoredOrderStats` does not produce duplicate entries.
+    ///
+    func testUpdateStoredOrderStatsEffectivelyUpdatesPreexistantOrderStats() {
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertNil(viewStorage.loadOrderStats(granularity: StatGranularity.day.rawValue))
+        statsStore.upsertStoredOrderStats(readOnlyStats: sampleOrderStats())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStats.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsItem.self), 2)
+        statsStore.upsertStoredOrderStats(readOnlyStats: sampleOrderStatsMutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStats.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsItem.self), 2)
+
+        let expectedOrderStats = sampleOrderStatsMutated()
+        let storageOrderStats = viewStorage.loadOrderStats(granularity: StatGranularity.day.rawValue)
+        XCTAssertEqual(storageOrderStats?.toReadOnly(), expectedOrderStats)
+    }
 
 
     // MARK: - StatsAction.retrieveSiteVisitStats
@@ -221,9 +241,9 @@ class StatsStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `upsertStoredSiteVisitStats` effectively inserts a new TopEarnerStats, with the specified payload.
+    /// Verifies that `upsertStoredSiteVisitStats` effectively inserts a new SiteVisitStats, with the specified payload.
     ///
-    func testUpsertStoredSiteVisitStatsEffectivelyPersistsNewTopEarnersStats() {
+    func testUpsertStoredSiteVisitStatsEffectivelyPersistsNewSiteVisitStats() {
         let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteSiteVisitStats = sampleSiteVisitStats()
 
@@ -242,10 +262,10 @@ class StatsStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue))
         statsStore.upsertStoredSiteVisitStats(readOnlyStats: sampleSiteVisitStats())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 1)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
         statsStore.upsertStoredSiteVisitStats(readOnlyStats: sampleSiteVisitStatsMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 1)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
 
         let expectedSiteVisitStats = sampleSiteVisitStatsMutated()
         let storageSiteVisitStats = viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue)

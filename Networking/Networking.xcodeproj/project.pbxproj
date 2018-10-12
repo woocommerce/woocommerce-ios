@@ -11,6 +11,7 @@
 		6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */; };
 		74002D6A2118B26100A63C19 /* SiteVisitStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */; };
 		74002D6C2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */; };
+		7412A51121702E9700994370 /* order-stats-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = 7412A51021702E9700994370 /* order-stats-alt.json */; };
 		741B950120EBC8A700DD6E2D /* OrderCouponLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */; };
 		743BF8BE21191B63008A9D87 /* site-visits.json in Resources */ = {isa = PBXBuildFile; fileRef = 743BF8BD21191B63008A9D87 /* site-visits.json */; };
 		743FDB9C210FB36900AC737F /* order-stats-month.json in Resources */ = {isa = PBXBuildFile; fileRef = 743FDB99210FB36900AC737F /* order-stats-month.json */; };
@@ -122,6 +123,7 @@
 		69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsMapperTests.swift; sourceTree = "<group>"; };
 		74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsRemoteTests.swift; sourceTree = "<group>"; };
+		7412A51021702E9700994370 /* order-stats-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-alt.json"; sourceTree = "<group>"; };
 		741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCouponLine.swift; sourceTree = "<group>"; };
 		743BF8BD21191B63008A9D87 /* site-visits.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-visits.json"; sourceTree = "<group>"; };
 		743FDB99210FB36900AC737F /* order-stats-month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-month.json"; sourceTree = "<group>"; };
@@ -446,6 +448,7 @@
 				743FDB99210FB36900AC737F /* order-stats-month.json */,
 				743FDB9A210FB36900AC737F /* order-stats-year.json */,
 				B58D10C52114D1F100107ED4 /* order-stats.json */,
+				7412A51021702E9700994370 /* order-stats-alt.json */,
 				B56C1EB920EA7D2C00D749F9 /* sites.json */,
 				74A1D25F211898F000931DFA /* site-visits-day.json */,
 				74A1D260211898F000931DFA /* site-visits-week.json */,
@@ -654,6 +657,7 @@
 				B56C1EBA20EA7D2C00D749F9 /* sites.json in Resources */,
 				CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */,
 				74ABA1CA213F19FE00FFAD30 /* top-performers-year.json in Resources */,
+				7412A51121702E9700994370 /* order-stats-alt.json in Resources */,
 				74A1D265211898F000931DFA /* site-visits-month.json in Resources */,
 				B58D10C62114D1F200107ED4 /* order-stats.json in Resources */,
 				74ABA1C5213F17AA00FFAD30 /* top-performers-day.json in Resources */,

@@ -7,7 +7,17 @@ import CocoaLumberjack
 
 class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
-    // MARK: - Properties
+    // MARK: - Public Properties
+
+    public let granularity: StatGranularity
+    public var orderStats: OrderStats? {
+        return orderStatsResultsController.fetchedObjects.first
+    }
+    public var siteStats: SiteVisitStats? {
+        return siteStatsResultsController.fetchedObjects.first
+    }
+
+    // MARK: - Private Properties
 
     @IBOutlet private weak var visitorsTitle: UILabel!
     @IBOutlet private weak var visitorsData: UILabel!
@@ -27,31 +37,23 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     private var yAxisMaximum: String = ""
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
-    /// ResultsController: Loads site visit stats from the Storage Layer
+    /// SiteVisitStats ResultsController: Loads site visit stats from the Storage Layer
     ///
-    private lazy var resultsController: ResultsController<StorageSiteVisitStats> = {
+    private lazy var siteStatsResultsController: ResultsController<StorageSiteVisitStats> = {
         let storageManager = AppDelegate.shared.storageManager
         let predicate = NSPredicate(format: "granularity ==[c] %@", granularity.rawValue)
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-    public let granularity: StatGranularity
-    public var orderStats: OrderStats? {
-        didSet {
-            if orderStats != nil {
-                lastUpdatedDate = Date()
-            } else {
-                lastUpdatedDate = nil
-            }
-            reloadOrderFields()
-            reloadChart()
-            reloadLastUpdatedField()
-        }
-    }
-    public var siteStats: SiteVisitStats? {
-        return resultsController.fetchedObjects.first
-    }
+    /// OrderStats ResultsController: Loads order stats from the Storage Layer
+    ///
+    private lazy var orderStatsResultsController: ResultsController<StorageOrderStats> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "granularity ==[c] %@", granularity.rawValue)
+        let descriptor = NSSortDescriptor(keyPath: \StorageOrderStats.date, ascending: false)
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
 
     // MARK: - Computed Properties
 
@@ -105,7 +107,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-        configureResultsController()
+        configureResultsControllers()
         configureBarChart()
     }
 
@@ -128,7 +130,6 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 extension PeriodDataViewController {
     func clearAllFields() {
         barChartView?.clear()
-        orderStats = nil
         reloadAllFields()
     }
 }
@@ -138,14 +139,24 @@ extension PeriodDataViewController {
 //
 private extension PeriodDataViewController {
 
-    func configureResultsController() {
-        resultsController.onDidChangeContent = { [weak self] in
+    func configureResultsControllers() {
+        // Site Visitor Stats
+        siteStatsResultsController.onDidChangeContent = { [weak self] in
             self?.updateSiteVisitDataIfNeeded()
         }
-        resultsController.onDidResetContent = { [weak self] in
+        siteStatsResultsController.onDidResetContent = { [weak self] in
             self?.updateSiteVisitDataIfNeeded()
         }
-        try? resultsController.performFetch()
+        try? siteStatsResultsController.performFetch()
+
+        // Order Stats
+        orderStatsResultsController.onDidChangeContent = { [weak self] in
+            self?.updateOrderDataIfNeeded()
+        }
+        orderStatsResultsController.onDidResetContent = { [weak self] in
+            self?.updateOrderDataIfNeeded()
+        }
+        try? orderStatsResultsController.performFetch()
     }
 
     func configureView() {
@@ -329,6 +340,17 @@ private extension PeriodDataViewController {
             lastUpdatedDate = nil
         }
         reloadSiteFields()
+        reloadLastUpdatedField()
+    }
+
+    func updateOrderDataIfNeeded() {
+        if orderStats != nil {
+            lastUpdatedDate = Date()
+        } else {
+            lastUpdatedDate = nil
+        }
+        reloadOrderFields()
+        reloadChart()
         reloadLastUpdatedField()
     }
 

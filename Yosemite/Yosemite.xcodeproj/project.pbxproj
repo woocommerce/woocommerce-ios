@@ -28,6 +28,9 @@
 		74A7689020D45F9300F9D437 /* OrderAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7688F20D45F9300F9D437 /* OrderAction.swift */; };
 		74B7D6B020F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B7D6AF20F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift */; };
 		74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */; };
+		74FD596B216FB65900A5AE83 /* OrderStats+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FD596A216FB65900A5AE83 /* OrderStats+ReadOnlyType.swift */; };
+		74FD596E216FB6ED00A5AE83 /* OrderStats+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FD596C216FB6ED00A5AE83 /* OrderStats+ReadOnlyConvertible.swift */; };
+		74FD596F216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FD596D216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift */; };
 		B505254C20EE6491008090F5 /* Site+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */; };
 		B52E002B2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */; };
 		B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002D211A3F5500700FDE /* ReadOnlyType.swift */; };
@@ -95,6 +98,9 @@
 		74A7688F20D45F9300F9D437 /* OrderAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAction.swift; sourceTree = "<group>"; };
 		74B7D6AF20F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderNote+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Order+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		74FD596A216FB65900A5AE83 /* OrderStats+ReadOnlyType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderStats+ReadOnlyType.swift"; sourceTree = "<group>"; };
+		74FD596C216FB6ED00A5AE83 /* OrderStats+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderStats+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		74FD596D216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderStatsItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		79402E7AD394EEB60C39A4B8 /* Pods-YosemiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7F47E19203B04CF6BB5EA659 /* Pods-Yosemite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.debug.xcconfig"; sourceTree = "<group>"; };
 		93D120F57D5D14A10B3AFFFD /* Pods-Yosemite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release.xcconfig"; sourceTree = "<group>"; };
@@ -181,6 +187,8 @@
 				74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */,
 				74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */,
 				74B7D6AF20F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift */,
+				74FD596C216FB6ED00A5AE83 /* OrderStats+ReadOnlyConvertible.swift */,
+				74FD596D216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift */,
 				B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */,
 				744A3216216D55F80051439B /* SiteVisitStats+ReadOnlyConvertible.swift */,
 				744A3217216D55F80051439B /* SiteVisitStatsItem+ReadOnlyConvertible.swift */,
@@ -195,6 +203,7 @@
 			children = (
 				B52E002F211A439E00700FDE /* Account+ReadOnlyType.swift */,
 				B52E0031211A440D00700FDE /* Order+ReadOnlyType.swift */,
+				74FD596A216FB65900A5AE83 /* OrderStats+ReadOnlyType.swift */,
 				B52E0033211A449600700FDE /* Site+ReadOnlyType.swift */,
 				744A321A216D57D30051439B /* SiteVisitStats+ReadOnlyType.swift */,
 				749737662141CC8B0008C490 /* TopEarnerStats+ReadOnlyType.swift */,
@@ -563,6 +572,7 @@
 				B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */,
 				744A3218216D55F80051439B /* SiteVisitStats+ReadOnlyConvertible.swift in Sources */,
 				74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */,
+				74FD596F216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift in Sources */,
 				74B7D6B020F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift in Sources */,
 				B5631ECD2114DF8C008D3535 /* EntityListener.swift in Sources */,
 				B5DC3CB120D1B8720063AC41 /* AccountAction.swift in Sources */,
@@ -578,6 +588,7 @@
 				B53D89E520E6C22B00F90866 /* Model.swift in Sources */,
 				74685D5020F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift in Sources */,
 				74A7689020D45F9300F9D437 /* OrderAction.swift in Sources */,
+				74FD596E216FB6ED00A5AE83 /* OrderStats+ReadOnlyConvertible.swift in Sources */,
 				7499936620EFBC7200CF01CD /* OrderNoteStore.swift in Sources */,
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,
 				74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */,
@@ -588,6 +599,7 @@
 				7455D4672141B57600FA8C1F /* TopEarnerStats+ReadOnlyConvertible.swift in Sources */,
 				B56C1EBE20EABD2B00D749F9 /* ResultsController.swift in Sources */,
 				B5EED1A820F4F3CF00652449 /* Account+ReadOnlyConvertible.swift in Sources */,
+				74FD596B216FB65900A5AE83 /* OrderStats+ReadOnlyType.swift in Sources */,
 				B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */,
 				749737672141CC8C0008C490 /* TopEarnerStats+ReadOnlyType.swift in Sources */,
 				74A18C58211382A000DCF8A8 /* StatsAction.swift in Sources */,

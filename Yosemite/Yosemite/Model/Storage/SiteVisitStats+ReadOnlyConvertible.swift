@@ -6,7 +6,7 @@ import Storage
 //
 extension Storage.SiteVisitStats: ReadOnlyConvertible {
 
-    /// Updates the Storage.Order with the ReadOnly.
+    /// Updates the Storage.SiteVisitStats with the ReadOnly.
     ///
     public func update(with stats: Yosemite.SiteVisitStats) {
         date = stats.date

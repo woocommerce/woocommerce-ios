@@ -6,7 +6,7 @@ import Storage
 //
 extension Storage.SiteVisitStatsItem: ReadOnlyConvertible {
 
-    /// Updates the Storage.TopEarnerStatsItem with the ReadOnly.
+    /// Updates the Storage.SiteVisitStatsItem with the ReadOnly.
     ///
     public func update(with statsItem: Yosemite.SiteVisitStatsItem) {
         period = statsItem.period

@@ -297,8 +297,6 @@ private extension OrderDetailsViewController {
         }
     }
 
-    /// Cell configuration methods
-    ///
     func configureBillingAddress(cell: CustomerInfoTableViewCell) {
         let billingAddress = viewModel.order.billingAddress
 

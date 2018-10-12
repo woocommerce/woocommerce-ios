@@ -217,11 +217,18 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="tLZ-3e-cJY" id="uum-dx-Yau"/>
+                                    <outlet property="delegate" destination="tLZ-3e-cJY" id="Ig0-wR-2Ms"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="e4p-U3-YVf"/>
                     </view>
+                    <connections>
+                        <outlet property="tableView" destination="hwi-He-cKY" id="dz2-gV-Lqe"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8Ut-YJ-O7J" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

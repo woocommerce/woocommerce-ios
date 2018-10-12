@@ -133,9 +133,8 @@ private extension StoreStatsViewController {
                                                         quantity: quantity(for: granularity)) { (error) in
             if let error = error {
                 DDLogError("⛔️ Dashboard (Site Stats) — Error synchronizing site visit stats: \(error)")
-                onCompletion?(error)
             }
-            onCompletion?(nil)
+            onCompletion?(error)
         }
         StoresManager.shared.dispatch(action)
     }
@@ -153,9 +152,8 @@ private extension StoreStatsViewController {
                                                     quantity: quantity(for: granularity)) { (error) in
             if let error = error {
                 DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats: \(error)")
-                onCompletion?(error)
             }
-            onCompletion?(nil)
+            onCompletion?(error)
         }
         StoresManager.shared.dispatch(action)
     }

@@ -26,7 +26,7 @@ public struct SiteVisitStats: Decodable {
     }
 
 
-    /// OrderStats struct initializer.
+    /// SiteVisitStats struct initializer.
     ///
     public init(date: String, granularity: StatGranularity, items: [SiteVisitStatsItem]?) {
         self.date = date

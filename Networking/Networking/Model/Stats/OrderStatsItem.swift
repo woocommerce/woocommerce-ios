@@ -4,87 +4,49 @@ import Foundation
 /// Represents an single order stat for a specific period.
 ///
 public struct OrderStatsItem {
-    public let payload: MIContainer
+    public let period: String
+    public let orders: Int
+    public let products: Int
+    public let coupons: Int
+    public let couponDiscount: Double
+    public let totalSales: Double
+    public let totalTax: Double
+    public let totalShipping: Double
+    public let totalShippingTax: Double
+    public let totalRefund: Double
+    public let totalTaxRefund: Double
+    public let totalShippingRefund: Double
+    public let totalShippingTaxRefund: Double
+    public let currency: String
+    public let grossSales: Double
+    public let netSales: Double
+    public let avgOrderValue: Double
+    public let avgProductsPerOrder: Double
 
     /// OrderStatsItem struct initializer.
     ///
-    public init(fieldNames: [String], rawData: [AnyCodable]) {
-        self.payload = MIContainer(data: rawData.map({ $0.value }),
-                                   fieldNames: fieldNames)
-    }
-
-    // MARK: Computed Properties
-
-    public var period: String {
-        return payload.fetchStringValue(for: FieldNames.period)
-    }
-
-    public var orders: Int {
-        return payload.fetchIntValue(for: FieldNames.orders)
-    }
-
-    public var products: Int {
-        return payload.fetchIntValue(for: FieldNames.products)
-    }
-
-    public var coupons: Int {
-        return payload.fetchIntValue(for: FieldNames.coupons)
-    }
-
-    public var couponDiscount: Double {
-        return payload.fetchDoubleValue(for: FieldNames.couponDiscount)
-    }
-
-    public var totalSales: Double {
-        return payload.fetchDoubleValue(for: FieldNames.totalSales)
-    }
-
-    public var totalTax: Double {
-        return payload.fetchDoubleValue(for: FieldNames.totalTax)
-    }
-
-    public var totalShipping: Double {
-        return payload.fetchDoubleValue(for: FieldNames.totalShipping)
-    }
-
-    public var totalShippingTax: Double {
-        return payload.fetchDoubleValue(for: FieldNames.totalShippingTax)
-    }
-
-    public var totalRefund: Double {
-        return payload.fetchDoubleValue(for: FieldNames.totalRefund)
-    }
-
-    public var totalTaxRefund: Double {
-        return payload.fetchDoubleValue(for: FieldNames.totalTaxRefund)
-    }
-
-    public var totalShippingRefund: Double {
-        return payload.fetchDoubleValue(for: FieldNames.totalShippingRefund)
-    }
-
-    public var totalShippingTaxRefund: Double {
-        return payload.fetchDoubleValue(for: FieldNames.totalShippingTaxRefund)
-    }
-
-    public var currency: String {
-        return payload.fetchStringValue(for: FieldNames.currency)
-    }
-
-    public var grossSales: Double {
-        return payload.fetchDoubleValue(for: FieldNames.grossSales)
-    }
-
-    public var netSales: Double {
-        return payload.fetchDoubleValue(for: FieldNames.netSales)
-    }
-
-    public var avgOrderValue: Double {
-        return payload.fetchDoubleValue(for: FieldNames.avgOrderValue)
-    }
-
-    public var avgProductsPerOrder: Double {
-        return payload.fetchDoubleValue(for: FieldNames.avgProductsPerOrder)
+    public init(period: String, orders: Int, products: Int, coupons: Int, couponDiscount: Double,
+                totalSales: Double, totalTax: Double, totalShipping: Double, totalShippingTax: Double,
+                totalRefund: Double, totalTaxRefund: Double, totalShippingRefund: Double, totalShippingTaxRefund: Double,
+                currency: String, grossSales: Double, netSales: Double, avgOrderValue: Double, avgProductsPerOrder: Double) {
+        self.period = period
+        self.orders = orders
+        self.products = products
+        self.coupons = coupons
+        self.couponDiscount = couponDiscount
+        self.totalSales = totalSales
+        self.totalTax = totalTax
+        self.totalShipping = totalShipping
+        self.totalShippingTax = totalShippingTax
+        self.totalRefund = totalRefund
+        self.totalTaxRefund = totalTaxRefund
+        self.totalShippingRefund = totalShippingRefund
+        self.totalShippingTaxRefund = totalShippingTaxRefund
+        self.currency = currency
+        self.grossSales = grossSales
+        self.netSales = netSales
+        self.avgOrderValue = avgOrderValue
+        self.avgProductsPerOrder = avgProductsPerOrder
     }
 }
 
@@ -118,32 +80,10 @@ extension OrderStatsItem: Comparable {
             (lhs.period == rhs.period && lhs.totalSales < rhs.totalSales) ||
             (lhs.period == rhs.period && lhs.totalSales == rhs.totalSales && lhs.orders < rhs.orders)
     }
-}
 
-// MARK: - Constants!
-//
-private extension OrderStatsItem {
-
-    /// Defines all of the possbile fields for an OrderStatsItem.
-    ///
-    enum FieldNames: String {
-        case period = "period"
-        case orders = "orders"
-        case products = "products"
-        case coupons = "coupons"
-        case couponDiscount = "coupon_discount"
-        case totalSales = "total_sales"
-        case totalTax = "total_tax"
-        case totalShipping = "total_shipping"
-        case totalShippingTax = "total_shipping_tax"
-        case totalRefund = "total_refund"
-        case totalTaxRefund = "total_tax_refund"
-        case totalShippingRefund = "total_shipping_refund"
-        case totalShippingTaxRefund = "total_shipping_tax_refund"
-        case currency = "currency"
-        case grossSales = "gross_sales"
-        case netSales = "net_sales"
-        case avgOrderValue = "avg_order_value"
-        case avgProductsPerOrder = "avg_products_per_order"
+    public static func > (lhs: OrderStatsItem, rhs: OrderStatsItem) -> Bool {
+        return lhs.period > rhs.period ||
+            (lhs.period == rhs.period && lhs.totalSales > rhs.totalSales) ||
+            (lhs.period == rhs.period && lhs.totalSales == rhs.totalSales && lhs.orders > rhs.orders)
     }
 }

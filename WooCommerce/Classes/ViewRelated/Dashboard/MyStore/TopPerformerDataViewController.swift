@@ -126,8 +126,8 @@ private extension TopPerformerDataViewController {
         /// Workaround: This method may get called before the view is actually loaded
         loadViewIfNeeded()
 
-        let settings = GhostSettings(reuseIdentifier: ProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(using: settings)
+        let options = GhostOptions(reuseIdentifier: ProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
+        tableView.displayGhostContent(options: options)
     }
 
     /// Removes the Placeholder Content.

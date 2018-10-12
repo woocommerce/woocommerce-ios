@@ -357,13 +357,15 @@ private extension OrderDetailsViewController {
     }
 
     func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
-        if let note = note(at: indexPath) {
-            cell.iconButton.setImage(note.iconImage, for: .normal)
-            cell.iconButton.backgroundColor = note.iconColor
-            cell.dateCreated = note.formattedDateCreated
-            cell.statusText = note.statusText
-            cell.contents = note.contents
+        guard let note = note(at: indexPath) else {
+            return
         }
+
+        cell.iconButton.setImage(note.iconImage, for: .normal)
+        cell.iconButton.backgroundColor = note.iconColor
+        cell.dateCreated = note.formattedDateCreated
+        cell.statusText = note.statusText
+        cell.contents = note.contents
     }
 
     func configurePayment(cell: PaymentTableViewCell) {

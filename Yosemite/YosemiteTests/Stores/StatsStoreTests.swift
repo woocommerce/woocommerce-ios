@@ -42,7 +42,7 @@ class StatsStoreTests: XCTestCase {
     // MARK: - StatsAction.retrieveOrderStats
 
 
-    /// Verifies that `StatsAction.retrieveOrderStats` effectively persists any retrieved TopEarnerStats.
+    /// Verifies that `StatsAction.retrieveOrderStats` effectively persists any retrieved OrderStats.
     ///
     func testRetrieveOrderStatsEffectivelyPersistsRetrievedStats() {
         let expectation = self.expectation(description: "Persist order stats")
@@ -58,6 +58,33 @@ class StatsStoreTests: XCTestCase {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatsItem.self), 2)
             let readOnlyOrderStats = self.viewStorage.firstObject(ofType: Storage.OrderStats.self)?.toReadOnly()
             XCTAssertEqual(readOnlyOrderStats, self.sampleOrderStats())
+
+            expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `StatsAction.retrieveOrderStats` effectively persists any updated OrderStatsItems.
+    ///
+    func testRetrieveOrderStatsEffectivelyPersistsUpdatedItems() {
+        let expectation = self.expectation(description: "Persist updated order stats items")
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStats.self), 0)
+        statsStore.upsertStoredOrderStats(readOnlyStats: sampleOrderStats())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStats.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatsItem.self), 2)
+
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/orders/", filename: "order-stats-alt")
+        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
+                                                    latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (error) in
+            XCTAssertNil(error)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStats.self), 1)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatsItem.self), 2)
+            let readOnlyOrderStats = self.viewStorage.firstObject(ofType: Storage.OrderStats.self)?.toReadOnly()
+            XCTAssertEqual(readOnlyOrderStats, self.sampleOrderStatsMutated())
 
             expectation.fulfill()
         }
@@ -114,7 +141,7 @@ class StatsStoreTests: XCTestCase {
     // MARK: - StatsAction.retrieveSiteVisitStats
 
 
-    /// Verifies that `StatsAction.retrieveSiteVisitStats` effectively persists any retrieved TopEarnerStats.
+    /// Verifies that `StatsAction.retrieveSiteVisitStats` effectively persists any retrieved SiteVisitStats.
     ///
     func testRetrieveSiteVisitStatsEffectivelyPersistsRetrievedStats() {
         let expectation = self.expectation(description: "Persist site visit stats")
@@ -137,7 +164,7 @@ class StatsStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `StatsAction.retrieveSiteVisitStats` effectively persists any updated TopEarnerStatsItems.
+    /// Verifies that `StatsAction.retrieveSiteVisitStats` effectively persists any updated SiteVisitStatsItems.
     ///
     func testRetrieveSiteVisitStatsEffectivelyPersistsUpdatedItems() {
         let expectation = self.expectation(description: "Persist updated site visit stats items")
@@ -403,6 +430,63 @@ private extension StatsStoreTests {
                               netSales: 30,
                               avgOrderValue: 30.870000000000001,
                               avgProductsPerOrder: 1)
+    }
+
+    func sampleOrderStatsMutated() -> Networking.OrderStats {
+        return OrderStats(date: "2018-06-02",
+                          granularity: .day,
+                          quantity: "2",
+                          items: [sampleOrderStatsItem1Mutated(), sampleOrderStatsItem2Mutated()],
+                          totalGrossSales: 539.23,
+                          totalNetSales: 538.24,
+                          totalOrders: 19,
+                          totalProducts: 23,
+                          averageGrossSales: 24.1687,
+                          averageNetSales: 24.1368,
+                          averageOrders: 1.2903,
+                          averageProducts: 1.4194)
+    }
+
+    func sampleOrderStatsItem1Mutated() -> Networking.OrderStatsItem {
+        return OrderStatsItem(period: "2018-06-01",
+                              orders: 5,
+                              products: 5,
+                              coupons: 0,
+                              couponDiscount: 0,
+                              totalSales: 24.24,
+                              totalTax: 1.12,
+                              totalShipping: 19.98,
+                              totalShippingTax: 1.28,
+                              totalRefund: 0,
+                              totalTaxRefund: 0,
+                              totalShippingRefund: 0,
+                              totalShippingTaxRefund: 0,
+                              currency: "USD",
+                              grossSales: 24.24,
+                              netSales: 24.120000000000001,
+                              avgOrderValue: 17.12,
+                              avgProductsPerOrder: 11)
+    }
+
+    func sampleOrderStatsItem2Mutated() -> Networking.OrderStatsItem {
+        return OrderStatsItem(period: "2018-06-02",
+                              orders: 11,
+                              products: 11,
+                              coupons: 1,
+                              couponDiscount: 1,
+                              totalSales: 40.87,
+                              totalTax: 1.87,
+                              totalShipping: 0,
+                              totalShippingTax: 0,
+                              totalRefund: 0,
+                              totalTaxRefund: 0,
+                              totalShippingRefund: 0,
+                              totalShippingTaxRefund: 0,
+                              currency: "USD",
+                              grossSales: 40.87,
+                              netSales: 40,
+                              avgOrderValue: 40.87,
+                              avgProductsPerOrder: 10)
     }
 
     //  MARK: - Site Visit Stats Sample

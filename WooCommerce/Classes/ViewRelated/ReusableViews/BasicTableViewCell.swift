@@ -7,8 +7,4 @@ class BasicTableViewCell: UITableViewCell {
 
         textLabel?.applyBodyStyle()
     }
-
-    func configure(text: String?) {
-        textLabel?.text = text
-    }
 }

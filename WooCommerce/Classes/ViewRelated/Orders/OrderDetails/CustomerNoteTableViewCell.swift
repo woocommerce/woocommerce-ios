@@ -15,18 +15,12 @@ class CustomerNoteTableViewCell: UITableViewCell {
         }
     }
 
-    var quote: String? {
+    public var quote: String? {
         get {
             return noteLabel.text
         }
         set {
             noteLabel.text = newValue
         }
-    }
-}
-
-extension CustomerNoteTableViewCell {
-    func configure(with viewModel: OrderDetailsViewModel) {
-        quote = viewModel.customerNote
     }
 }

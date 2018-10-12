@@ -270,49 +270,31 @@ extension OrderDetailsViewController {
 private extension OrderDetailsViewController {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as SummaryTableViewCell:
-            cell.configure(with: viewModel)
-        case let cell as ProductListTableViewCell:
-            cell.configure(with: viewModel)
-            cell.onFullfillTouchUp = { [weak self] in
-                self?.fulfillWasPressed()
-            }
         case let cell as BasicTableViewCell:
             configureProductDetails(cell: cell)
-        case let cell as CustomerNoteTableViewCell:
-            cell.configure(with: viewModel)
-        case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
-            configureShippingAddress(cell: cell)
-        case let cell as CustomerInfoTableViewCell where row == .billingAddress:
-            configureBillingAddress(cell: cell)
-        case let cell as BillingDetailsTableViewCell where row == .billingPhone:
-            configureBillingPhone(cell: cell)
         case let cell as BillingDetailsTableViewCell where row == .billingEmail:
             configureBillingEmail(cell: cell)
-        case let cell as PaymentTableViewCell:
-            cell.configure(with: viewModel)
+        case let cell as BillingDetailsTableViewCell where row == .billingPhone:
+            configureBillingPhone(cell: cell)
+        case let cell as CustomerInfoTableViewCell where row == .billingAddress:
+            configureBillingAddress(cell: cell)
+        case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
+            configureShippingAddress(cell: cell)
+        case let cell as CustomerNoteTableViewCell:
+            configureCustomerNote(cell: cell)
         case let cell as LeftImageTableViewCell:
             configureNewNote(cell: cell)
         case let cell as OrderNoteTableViewCell:
-            if let note = note(at: indexPath) {
-                cell.configure(with: note)
-            }
+            configureOrderNote(cell: cell, at: indexPath)
+        case let cell as PaymentTableViewCell:
+            configurePayment(cell: cell)
+        case let cell as ProductListTableViewCell:
+            configureProductList(cell: cell)
+        case let cell as SummaryTableViewCell:
+            configureSummary(cell: cell)
         default:
             fatalError("Unidentified customer info row type")
         }
-    }
-
-    func configureProductDetails(cell: BasicTableViewCell) {
-        cell.configure(text: viewModel.productDetails)
-        cell.accessoryType = .disclosureIndicator
-    }
-
-    func configureShippingAddress(cell: CustomerInfoTableViewCell) {
-        let shippingAddress = viewModel.order.shippingAddress
-
-        cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
-        cell.name = shippingAddress?.fullName
-        cell.address = shippingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
     }
 
     func configureBillingAddress(cell: CustomerInfoTableViewCell) {
@@ -323,13 +305,32 @@ private extension OrderDetailsViewController {
         cell.address = billingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > billing details. This is where the address would normally display.")
     }
 
+    func configureBillingEmail(cell: BillingDetailsTableViewCell) {
+        guard let email = viewModel.order.billingAddress?.email else {
+            // TODO: This should actually be an assert. To be revisited!
+            return
+        }
+
+        cell.textLabel?.text = email
+        cell.accessoryImageView.image = Gridicon.iconOfType(.mail)
+        cell.onTouchUp = { [weak self] in
+            self?.emailButtonAction()
+        }
+
+        cell.isAccessibilityElement = true
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email: %@", comment: "Accessibility label that lets the user know the billing customer's email address"), email)
+        cell.accessibilityHint = NSLocalizedString("Composes a new email message to the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear.")
+    }
+
     func configureBillingPhone(cell: BillingDetailsTableViewCell) {
         guard let phoneNumber = viewModel.order.billingAddress?.phone else {
             // TODO: This should actually be an assert. To be revisited!
             return
         }
 
-        cell.configure(text: phoneNumber, image: Gridicon.iconOfType(.ellipsis))
+        cell.textLabel?.text = phoneNumber
+        cell.accessoryImageView.image = Gridicon.iconOfType(.ellipsis)
         cell.onTouchUp = { [weak self] in
             self?.phoneButtonAction()
         }
@@ -340,21 +341,8 @@ private extension OrderDetailsViewController {
         cell.accessibilityHint = NSLocalizedString("Prompts with the option to call or message the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer.")
     }
 
-    func configureBillingEmail(cell: BillingDetailsTableViewCell) {
-        guard let email = viewModel.order.billingAddress?.email else {
-            // TODO: This should actually be an assert. To be revisited!
-            return
-        }
-
-        cell.configure(text: email, image: Gridicon.iconOfType(.mail))
-        cell.onTouchUp = { [weak self] in
-            self?.emailButtonAction()
-        }
-
-        cell.isAccessibilityElement = true
-        cell.accessibilityTraits = .button
-        cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email: %@", comment: "Accessibility label that lets the user know the billing customer's email address"), email)
-        cell.accessibilityHint = NSLocalizedString("Composes a new email message to the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear.")
+    func configureCustomerNote(cell: CustomerNoteTableViewCell) {
+        cell.quote = viewModel.customerNote
     }
 
     func configureNewNote(cell: LeftImageTableViewCell) {
@@ -366,6 +354,85 @@ private extension OrderDetailsViewController {
         cell.accessibilityHint = NSLocalizedString("Composes a new order note.", comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note.")
     }
 
+    func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
+        guard let note = note(at: indexPath) else {
+            return
+        }
+
+        cell.iconButton.setImage(note.iconImage, for: .normal)
+        cell.iconButton.backgroundColor = note.iconColor
+        cell.dateCreated = note.formattedDateCreated
+        cell.statusText = note.statusText
+        cell.contents = note.contents
+    }
+
+    func configurePayment(cell: PaymentTableViewCell) {
+        cell.subtotalLabel.text = viewModel.subtotalLabel
+        cell.subtotalValue.text = viewModel.subtotalValue
+
+        cell.discountLabel.text = viewModel.discountLabel
+        cell.discountValue.text = viewModel.discountValue
+        cell.discountView.isHidden = viewModel.discountValue == nil
+
+        cell.shippingLabel.text = viewModel.shippingLabel
+        cell.shippingValue.text = viewModel.shippingValue
+
+        cell.taxesLabel.text = viewModel.taxesLabel
+        cell.taxesValue.text = viewModel.taxesValue
+        cell.taxesView.isHidden = viewModel.taxesValue == nil
+
+        cell.totalLabel.text = viewModel.totalLabel
+        cell.totalValue.text = viewModel.totalValue
+
+        cell.separatorLine.backgroundColor = StyleManager.cellSeparatorColor
+        cell.footerValue.text = viewModel.paymentSummary
+
+        cell.accessibilityElements = [cell.subtotalLabel, cell.subtotalValue, cell.discountLabel, cell.discountValue, cell.shippingLabel, cell.shippingValue, cell.taxesLabel, cell.taxesValue, cell.totalLabel, cell.totalValue, cell.footerValue]
+    }
+
+    func configureProductDetails(cell: BasicTableViewCell) {
+        cell.textLabel?.text = viewModel.productDetails
+        cell.accessoryType = .disclosureIndicator
+    }
+
+    func configureProductList(cell: ProductListTableViewCell) {
+        for subView in cell.verticalStackView.arrangedSubviews {
+            subView.removeFromSuperview()
+        }
+
+        for (index, item) in viewModel.items.enumerated() {
+            let itemView = TwoColumnLabelView.makeFromNib()
+            itemView.leftText = item.name
+            itemView.rightText = item.quantity.description
+            cell.verticalStackView.insertArrangedSubview(itemView, at: index)
+        }
+
+        cell.fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
+        cell.actionContainerView.isHidden = viewModel.isProcessingPayment == false
+
+        cell.onFullfillTouchUp = { [weak self] in
+            self?.fulfillWasPressed()
+        }
+    }
+
+    func configureShippingAddress(cell: CustomerInfoTableViewCell) {
+        let shippingAddress = viewModel.order.shippingAddress
+
+        cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
+        cell.name = shippingAddress?.fullName
+        cell.address = shippingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
+    }
+
+    func configureSummary(cell: SummaryTableViewCell) {
+        cell.title = viewModel.summaryTitle
+        cell.dateCreated = viewModel.summaryDateCreated
+        cell.paymentStatus = viewModel.paymentStatus
+        cell.paymentBackgroundColor = viewModel.paymentBackgroundColor
+        cell.paymentBorderColor = viewModel.paymentBorderColor
+    }
+
+    // MARK: - Get order note
+    //
     func note(at indexPath: IndexPath) -> OrderNoteViewModel? {
         // We need to subtract 1 here because the first order note row is the "Add Order" cell
         let noteIndex = indexPath.row - 1

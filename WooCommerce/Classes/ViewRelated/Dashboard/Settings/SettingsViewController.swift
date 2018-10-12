@@ -34,7 +34,7 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavigationItem()
+        configureNavigation()
         configureMainView()
         configureSections()
         configureTableView()
@@ -48,8 +48,15 @@ class SettingsViewController: UIViewController {
 //
 private extension SettingsViewController {
 
-    func configureNavigationItem() {
+    func configureNavigation() {
         title = NSLocalizedString("Settings", comment: "Settings navigation title")
+        // Don't show the Settings title in the next-view's back button
+        let backButton = UIBarButtonItem(title: String(),
+                                         style: .plain,
+                                         target: nil,
+                                         action: nil)
+
+        navigationItem.backBarButtonItem = backButton
     }
 
     func configureMainView() {
@@ -74,11 +81,13 @@ private extension SettingsViewController {
 
     func configureSections() {
         let primaryStoreTitle = NSLocalizedString("PRIMARY STORE", comment: "My Store > Settings > Primary Store information section")
+        let privacySettingsTitle = NSLocalizedString("HELP IMPROVE THE APP", comment: "My Store > Settings > Privacy settings section")
 
         sections = [
             Section(title: primaryStoreTitle, rows: [.primaryStore]),
             Section(title: nil, rows: [.support]),
-            Section(title: nil, rows: [.logout])
+            Section(title: privacySettingsTitle, rows: [.privacy]),
+            Section(title: nil, rows: [.logout]),
         ]
     }
 
@@ -101,6 +110,10 @@ private extension SettingsViewController {
             cell.accessoryType = .disclosureIndicator
             cell.selectionStyle = .default
             cell.textLabel?.text = NSLocalizedString("Help & Support", comment: "Contact Support Action")
+        case let cell as BasicTableViewCell where row == .privacy:
+            cell.accessoryType = .disclosureIndicator
+            cell.selectionStyle = .default
+            cell.textLabel?.text = NSLocalizedString("Privacy Settings", comment: "Navigates to Privacy Settings screen")
         default:
             fatalError()
         }
@@ -150,6 +163,11 @@ private extension SettingsViewController {
         }
 
         displaySupportEmailComposer()
+    }
+
+    func privacyWasPressed() {
+        WooAnalytics.shared.track(.settingsPrivacySettingsTapped)
+        performSegue(withIdentifier: Segues.privacySegue, sender: nil)
     }
 
     func logOutUser() {
@@ -252,6 +270,8 @@ extension SettingsViewController: UITableViewDelegate {
             logoutWasPressed()
         case .support:
             supportWasPressed()
+        case .privacy:
+            privacyWasPressed()
         default:
             break
         }
@@ -261,6 +281,7 @@ extension SettingsViewController: UITableViewDelegate {
 
 // MARK: - Private Types
 //
+
 private struct Constants {
     static let rowHeight = CGFloat(44)
     static let footerHeight = 90
@@ -275,6 +296,7 @@ private enum Row: CaseIterable {
     case primaryStore
     case support
     case logout
+    case privacy
 
     var type: UITableViewCell.Type {
         switch self {
@@ -284,10 +306,16 @@ private enum Row: CaseIterable {
             return BasicTableViewCell.self
         case .logout:
             return BasicTableViewCell.self
+        case .privacy:
+            return BasicTableViewCell.self
         }
     }
 
     var reuseIdentifier: String {
         return type.reuseIdentifier
     }
+}
+
+private struct Segues {
+    static let privacySegue = "ShowPrivacySettingsViewController"
 }

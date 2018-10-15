@@ -79,11 +79,11 @@ private extension PrivacySettingsViewController {
             collectInfoSwitch.setOn(true, animated: false)
             // add to accessory view
             cell.accessoryView?.addSubview(collectInfoSwitch)
-        case let cell as BasicTableViewCell where row == .shareInfo:
-            cell.imageView?.image = Gridicon.iconOfType(.infoOutline)
-            cell.imageView?.tintColor = StyleManager.defaultTextColor
-            cell.textLabel?.numberOfLines = 0
-            cell.textLabel?.text = NSLocalizedString("Share information with our analytics tool about your use of services while logged in to your WordPress.com account", comment: "Explains what the 'collect information' toggle is collecting")
+        case let cell as TopLeftImageTableViewCell where row == .shareInfo:
+            cell.leftImageView?.image = Gridicon.iconOfType(.infoOutline)
+            cell.leftImageView?.tintColor = StyleManager.defaultTextColor
+
+            cell.label?.text = NSLocalizedString("Share information with our analytics tool about your use of services while logged in to your WordPress.com account.", comment: "Explains what the 'collect information' toggle is collecting")
         case let cell as BasicTableViewCell where row == .cookiePolicy:
             // To align the 'Learn more' cell to the others, add an invisible image.
             cell.imageView?.image = Gridicon.iconOfType(.image)
@@ -127,6 +127,7 @@ extension PrivacySettingsViewController: UITableViewDataSource {
 //
 private struct Constants {
     static let rowHeight = CGFloat(44)
+    static let separatorInset = CGFloat(16)
 }
 
 private struct Section {
@@ -155,7 +156,7 @@ private enum Row: CaseIterable {
         case .privacyPolicy:
             return BasicTableViewCell.self
         case .shareInfo:
-            return BasicTableViewCell.self
+            return TopLeftImageTableViewCell.self
         }
     }
 

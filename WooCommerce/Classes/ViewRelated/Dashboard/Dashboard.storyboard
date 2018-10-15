@@ -213,9 +213,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hwi-He-cKY">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hwi-He-cKY">
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>
                                     <outlet property="dataSource" destination="tLZ-3e-cJY" id="uum-dx-Yau"/>
@@ -224,6 +223,12 @@
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="bottomMargin" secondItem="hwi-He-cKY" secondAttribute="bottom" id="UPd-Rr-5ev"/>
+                            <constraint firstItem="hwi-He-cKY" firstAttribute="trailing" secondItem="e4p-U3-YVf" secondAttribute="trailing" id="mcB-Fh-FAx"/>
+                            <constraint firstItem="hwi-He-cKY" firstAttribute="top" secondItem="eDL-oC-fDz" secondAttribute="topMargin" id="sVu-Pi-CPd"/>
+                            <constraint firstItem="hwi-He-cKY" firstAttribute="leading" secondItem="e4p-U3-YVf" secondAttribute="leading" id="tE5-ir-eJR"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="e4p-U3-YVf"/>
                     </view>
                     <connections>

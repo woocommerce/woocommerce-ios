@@ -70,30 +70,27 @@ private extension PrivacySettingsViewController {
             cell.imageView?.image = Gridicon.iconOfType(.stats)
             cell.imageView?.tintColor = StyleManager.defaultTextColor
             cell.textLabel?.text = NSLocalizedString("Collect information", comment: "Label for collecting analytics information toggle")
-
-            // create a switch
-            let collectInfoSwitch = UISwitch()
-            //TODO: pull current tracking settings
-
-            // set switch to on / off
-            collectInfoSwitch.setOn(true, animated: false)
-            // add to accessory view
-            cell.accessoryView?.addSubview(collectInfoSwitch)
+            let toggleSwitch = UISwitch()
+            toggleSwitch.setOn(true, animated: true)
+            toggleSwitch.onTintColor = StyleManager.wooCommerceBrandColor
+            cell.accessoryView = toggleSwitch
         case let cell as TopLeftImageTableViewCell where row == .shareInfo:
             cell.leftImageView?.image = Gridicon.iconOfType(.infoOutline)
             cell.leftImageView?.tintColor = StyleManager.defaultTextColor
-
             cell.label?.text = NSLocalizedString("Share information with our analytics tool about your use of services while logged in to your WordPress.com account.", comment: "Explains what the 'collect information' toggle is collecting")
         case let cell as BasicTableViewCell where row == .cookiePolicy:
-            // To align the 'Learn more' cell to the others, add an invisible image.
+            // To align the 'Learn more' cell to the others, add an "invisible" image.
             cell.imageView?.image = Gridicon.iconOfType(.image)
             cell.imageView?.tintColor = .white
-
             cell.textLabel?.text = NSLocalizedString("Learn more", comment: "Learn more text link")
             cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
         default:
             fatalError()
         }
+    }
+
+    func toggleCollectInfo() {
+        // TODO: change the switch, change the variable, send the API request.
     }
 }
 

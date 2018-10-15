@@ -155,8 +155,8 @@ private extension AddANoteViewController {
             fatalError()
         }
 
-        cell.topText = NSLocalizedString("Email note to customer", comment: "Label for yes/no switch - emailing the note to customer.")
-        cell.bottomText = NSLocalizedString("If disabled will add the note as private.", comment: "Detail label for yes/no switch.")
+        cell.topLabel.text = NSLocalizedString("Email note to customer", comment: "Label for yes/no switch - emailing the note to customer.")
+        cell.bottomLabel.text = NSLocalizedString("If disabled will add the note as private.", comment: "Detail label for yes/no switch.")
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email note to customer %@", comment: ""), isCustomerNote ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off."))
         cell.accessibilityHint = NSLocalizedString("Double tap to toggle setting.", comment: "VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on.")

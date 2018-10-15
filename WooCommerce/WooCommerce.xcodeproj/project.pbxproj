@@ -786,8 +786,6 @@
 			isa = PBXGroup;
 			children = (
 				CE22E3F62170E23C005A6BEF /* PrivacySettingsViewController.swift */,
-				CE22E3F921714776005A6BEF /* TopLeftImageTableViewCell.swift */,
-				CE22E3FA21714776005A6BEF /* TopLeftImageTableViewCell.xib */,
 			);
 			path = Privacy;
 			sourceTree = "<group>";
@@ -847,6 +845,8 @@
 				CE583A062107849F00D73C1C /* SwitchTableViewCell.xib */,
 				CE583A092107937F00D73C1C /* TextViewTableViewCell.swift */,
 				CE583A0A2107937F00D73C1C /* TextViewTableViewCell.xib */,
+				CE22E3F921714776005A6BEF /* TopLeftImageTableViewCell.swift */,
+				CE22E3FA21714776005A6BEF /* TopLeftImageTableViewCell.xib */,
 				CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */,
 				CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */,
 				CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */,

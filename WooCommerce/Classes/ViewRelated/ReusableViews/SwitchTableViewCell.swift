@@ -4,34 +4,18 @@ class SwitchTableViewCell: UITableViewCell {
 
     // MARK: - Properties
     //
-    @IBOutlet private var topLabel: UILabel!
-    @IBOutlet private var bottomLabel: UILabel!
-    @IBOutlet private var toggleSwitch: UISwitch!
+    @IBOutlet public var topLabel: UILabel!
+    @IBOutlet public var bottomLabel: UILabel!
+    @IBOutlet public var toggleSwitch: UISwitch!
 
     var onToggleSwitchTouchUp: (() -> Void)?
 
-    var topText: String? {
-        get {
-            return topLabel.text
-        }
-        set {
-            topLabel.text = newValue
-        }
-    }
-
-    var bottomText: String? {
-        get {
-            return bottomLabel.text
-        }
-        set {
-            bottomLabel.text = newValue
-        }
-    }
-
     override func awakeFromNib() {
         super.awakeFromNib()
+
         topLabel.applyBodyStyle()
         bottomLabel.applyFootnoteStyle()
+        toggleSwitch.onTintColor = StyleManager.wooCommerceBrandColor
         setupGestureRecognizers()
     }
 

@@ -144,6 +144,7 @@ extension FulfillViewController {
 
         displayOrderCompleteNotice {
             WooAnalytics.shared.track(.orderMarkedCompleteUndoButtonTapped)
+            WooAnalytics.shared.track(.orderStatusChangeUndo, withProperties: ["id": orderID])
             WooAnalytics.shared.track(.orderStatusChange, withProperties: ["id": orderID,
                                                                            "from": doneStatus.rawValue,
                                                                            "to": undoStatus.rawValue])

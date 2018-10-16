@@ -64,31 +64,48 @@ private extension PrivacySettingsViewController {
         }
     }
 
+    /// Cells currently configured in the order they appear on screen.
+    ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as BasicTableViewCell where row == .collectInfo:
-            cell.imageView?.image = Gridicon.iconOfType(.stats)
-            cell.imageView?.tintColor = StyleManager.defaultTextColor
-            cell.textLabel?.text = NSLocalizedString("Collect information", comment: "Label for collecting analytics information toggle")
-            let toggleSwitch = UISwitch()
-            toggleSwitch.setOn(true, animated: true)
-            toggleSwitch.onTintColor = StyleManager.wooCommerceBrandColor
-            cell.accessoryView = toggleSwitch
+            configureCollectInfo(cell: cell)
         case let cell as TopLeftImageTableViewCell where row == .shareInfo:
-            cell.leftImageView?.image = Gridicon.iconOfType(.infoOutline)
-            cell.leftImageView?.tintColor = StyleManager.defaultTextColor
-            cell.label?.text = NSLocalizedString("Share information with our analytics tool about your use of services while logged in to your WordPress.com account.", comment: "Explains what the 'collect information' toggle is collecting")
+            configureShareInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .cookiePolicy:
-            // To align the 'Learn more' cell to the others, add an "invisible" image.
-            cell.imageView?.image = Gridicon.iconOfType(.image)
-            cell.imageView?.tintColor = .white
-            cell.textLabel?.text = NSLocalizedString("Learn more", comment: "Learn more text link")
-            cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
+            configureCookiePolicy(cell: cell)
         default:
             fatalError()
         }
     }
 
+    func configureCollectInfo(cell: BasicTableViewCell) {
+        cell.imageView?.image = Gridicon.iconOfType(.stats)
+        cell.imageView?.tintColor = StyleManager.defaultTextColor
+        cell.textLabel?.text = NSLocalizedString("Collect information", comment: "Label for collecting analytics information toggle")
+        let toggleSwitch = UISwitch()
+        toggleSwitch.setOn(true, animated: true)
+        toggleSwitch.onTintColor = StyleManager.wooCommerceBrandColor
+        cell.accessoryView = toggleSwitch
+    }
+
+    func configureShareInfo(cell: TopLeftImageTableViewCell) {
+        cell.leftImageView?.image = Gridicon.iconOfType(.infoOutline)
+        cell.leftImageView?.tintColor = StyleManager.defaultTextColor
+        cell.label?.text = NSLocalizedString("Share information with our analytics tool about your use of services while logged in to your WordPress.com account.", comment: "Explains what the 'collect information' toggle is collecting")
+    }
+
+    func configureCookiePolicy(cell: BasicTableViewCell) {
+        // To align the 'Learn more' cell to the others, add an "invisible" image.
+        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.tintColor = .white
+        cell.textLabel?.text = NSLocalizedString("Learn more", comment: "Learn more text link")
+        cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
+    }
+
+
+    // MARK: Actions
+    //
     func toggleCollectInfo() {
         // TODO: change the switch, change the variable, send the API request.
     }

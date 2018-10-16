@@ -58,7 +58,6 @@ extension NewOrdersViewController {
             if let error = error {
                 DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing orders: \(error)")
             }
-
             onCompletion?()
         }
 

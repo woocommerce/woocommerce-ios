@@ -8,7 +8,7 @@ class BillingDetailsTableViewCell: UITableViewCell {
 
     /// AccessoryView's Image
     ///
-    private let accessoryImageView: UIImageView = {
+    public let accessoryImageView: UIImageView = {
         let imageView = UIImageView(frame: Constants.accessoryFrame)
         imageView.tintColor = StyleManager.wooCommerceBrandColor
         return imageView
@@ -35,11 +35,6 @@ class BillingDetailsTableViewCell: UITableViewCell {
         }
 
         addGestureRecognizer(gestureRecognizer)
-    }
-
-    func configure(text: String?, image: UIImage) {
-        accessoryImageView.image = image
-        textLabel?.text = text
     }
 }
 

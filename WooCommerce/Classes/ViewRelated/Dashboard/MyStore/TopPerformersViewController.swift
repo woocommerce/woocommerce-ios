@@ -44,10 +44,9 @@ extension TopPerformersViewController {
     func syncTopPerformers(onCompletion: (() -> Void)? = nil) {
         let group = DispatchGroup()
 
-
         dataVCs.forEach { (vc) in
             group.enter()
-            vc.syncTopPerformers { _ in
+            vc.syncTopPerformers() {
                 group.leave()
             }
         }

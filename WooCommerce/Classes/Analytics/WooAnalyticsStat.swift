@@ -111,6 +111,10 @@ public enum WooAnalyticsStat: String {
     case orderContactAction                     = "order_contact_action"
     case ordersListFilterOrSearch               = "orders_list_filter"
     case ordersListLoaded                       = "orders_list_loaded"
+    case orderStatusChange                      = "order_status_change"
+    case orderStatusChangeSuccess               = "order_status_change_success"
+    case orderStatusChangeFailed                = "order_status_change_failed"
+    case orderStatusChangeUndo                  = "order_status_change_undo"
 
     // Notification Events
     //

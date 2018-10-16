@@ -54,17 +54,17 @@ public extension StorageType {
         return firstObject(ofType: TopEarnerStats.self, matching: predicate)
     }
 
-    /// Retrieves the Stored TopEarnerStats Item.
-    ///
-    public func loadTopEarnerStatsItem(productID: Int) -> TopEarnerStatsItem? {
-        let predicate = NSPredicate(format: "productID = %ld", productID)
-        return firstObject(ofType: TopEarnerStatsItem.self, matching: predicate)
-    }
-
     /// Retrieves the Stored SiteVisitStats.
     ///
     public func loadSiteVisitStats(granularity: String) -> SiteVisitStats? {
         let predicate = NSPredicate(format: "granularity ==[c] %@", granularity)
         return firstObject(ofType: SiteVisitStats.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored OrderStats.
+    ///
+    public func loadOrderStats(granularity: String) -> OrderStats? {
+        let predicate = NSPredicate(format: "granularity ==[c] %@", granularity)
+        return firstObject(ofType: OrderStats.self, matching: predicate)
     }
 }

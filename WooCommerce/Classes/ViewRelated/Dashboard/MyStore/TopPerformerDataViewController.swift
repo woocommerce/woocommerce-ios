@@ -101,8 +101,6 @@ extension TopPerformerDataViewController {
                 return
             }
 
-            self.removeGhostContent()
-
             if let error = error {
                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
             } else {
@@ -111,27 +109,21 @@ extension TopPerformerDataViewController {
             onCompletion?()
         }
 
-        displayGhostContent()
         StoresManager.shared.dispatch(action)
     }
-}
 
-
-// MARK: - Placeholers
-//
-private extension TopPerformerDataViewController {
-
-    /// Renders the Placeholder Content.
+    /// Renders Placeholder Content.
+    /// Why is this public? Because the `syncTopPerformers` method is actually called from TopPerformersViewController.
+    /// We coordinate multiple placeholder animations from that spot!
     ///
     func displayGhostContent() {
-        /// Workaround: This method may get called before the view is actually loaded
-        loadViewIfNeeded()
-
         let options = GhostOptions(reuseIdentifier: ProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
     }
 
     /// Removes the Placeholder Content.
+    /// Why is this public? Because the `syncTopPerformers` method is actually called from TopPerformersViewController.
+    /// We coordinate multiple placeholder animations from that spot!
     ///
     func removeGhostContent() {
         tableView.removeGhostContent()

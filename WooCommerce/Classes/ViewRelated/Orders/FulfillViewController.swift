@@ -128,7 +128,7 @@ extension FulfillViewController {
     /// Whenever the Fulfillment Action is pressed, we'll mark the order as Completed, and pull back to the previous screen.
     ///
     @IBAction func fulfillWasPressed() {
-        // Capture these value for the undo closure
+        // Capture these values for the undo closure
         let orderID = order.orderID
         let doneStatus = OrderStatus.completed
         let undoStatus = order.status

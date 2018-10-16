@@ -51,11 +51,24 @@ extension StoreStatsViewController {
         }
     }
 
-    func syncAllStats() {
-        clearAllFields()
+    func syncAllStats(onCompletion: (() -> Void)? = nil) {
+        let group = DispatchGroup()
+
         periodVCs.forEach { (vc) in
-            syncOrderStats(for: vc.granularity)
-            syncVisitorStats(for: vc.granularity)
+            group.enter()
+            syncOrderStats(for: vc.granularity) { _ in
+                WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": vc.granularity.rawValue])
+                group.leave()
+            }
+
+            group.enter()
+            syncVisitorStats(for: vc.granularity) { _ in
+                group.leave()
+            }
+        }
+
+        group.notify(queue: .main) {
+            onCompletion?()
         }
     }
 }
@@ -107,8 +120,10 @@ private extension StoreStatsViewController {
 //
 private extension StoreStatsViewController {
 
-    func syncVisitorStats(for granularity: StatGranularity) {
+    func syncVisitorStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            DDLogWarn("⚠️ Tried to sync order stats without a current defaultStoreID")
+            onCompletion?(nil)
             return
         }
 
@@ -119,13 +134,14 @@ private extension StoreStatsViewController {
             if let error = error {
                 DDLogError("⛔️ Dashboard (Site Stats) — Error synchronizing site visit stats: \(error)")
             }
+            onCompletion?(error)
         }
         StoresManager.shared.dispatch(action)
     }
 
-    func syncOrderStats(for granularity: StatGranularity, onCompletion: ((Error?) -> ())? = nil) {
-        // FIXME: This is really just WIP code which puts data in the fields. Refactor please.
+    func syncOrderStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            DDLogWarn("⚠️ Tried to sync order stats without a current defaultStoreID")
             onCompletion?(nil)
             return
         }
@@ -133,19 +149,12 @@ private extension StoreStatsViewController {
         let action = StatsAction.retrieveOrderStats(siteID: siteID,
                                                     granularity: granularity,
                                                     latestDateToInclude: Date(),
-                                                    quantity: quantity(for: granularity)) { [weak self] (orderStats, error) in
-            guard let `self` = self, let orderStats = orderStats else {
-                DDLogError("⛔️ Error synchronizing order stats: \(error.debugDescription)")
-                onCompletion?(error)
-                return
+                                                    quantity: quantity(for: granularity)) { (error) in
+            if let error = error {
+                DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats: \(error)")
             }
-
-            let vc = self.periodDataVC(for: granularity)
-            vc?.orderStats = orderStats
-            WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
-            onCompletion?(nil)
+            onCompletion?(error)
         }
-
         StoresManager.shared.dispatch(action)
     }
 }

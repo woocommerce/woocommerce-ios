@@ -31,6 +31,7 @@ private extension PrivacySettingsViewController {
 
     func configureNavigation() {
         title = NSLocalizedString("Privacy settings", comment: "Privacy settings screen title")
+
         // Don't show the Settings title in the next-view's back button
         let backButton = UIBarButtonItem(title: String(),
                                          style: .plain,
@@ -54,7 +55,7 @@ private extension PrivacySettingsViewController {
         sections = [
             Section(title: nil, rows: [.collectInfo, .shareInfo, .cookiePolicy]),
             Section(title: nil, rows: [.privacyInfo, .privacyPolicy]),
-//            Section(title: nil, rows: [.cookieInfo, .cookiePolicy]),
+            Section(title: nil, rows: [.cookieInfo, .cookiePolicy]),
         ]
     }
 
@@ -78,6 +79,8 @@ private extension PrivacySettingsViewController {
             configurePrivacyInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .privacyPolicy:
             configurePrivacyPolicy(cell: cell)
+        case let cell as TopLeftImageTableViewCell where row == .cookieInfo:
+            configureCookieInfo(cell: cell)
         default:
             fatalError()
         }
@@ -103,7 +106,7 @@ private extension PrivacySettingsViewController {
         // To align the 'Learn more' cell to the others, add an "invisible" image.
         cell.imageView?.image = Gridicon.iconOfType(.image)
         cell.imageView?.tintColor = .white
-        cell.textLabel?.text = NSLocalizedString("Learn more", comment: "Settings > Privacy Settings > collect info section. A text link to the cookie policy.")
+        cell.textLabel?.text = NSLocalizedString("Learn more", comment: "Settings > Privacy Settings. A text link to the cookie policy.")
         cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
     }
 
@@ -119,6 +122,12 @@ private extension PrivacySettingsViewController {
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString("Read privacy policy", comment: "Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy.")
         cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
+    }
+
+    func configureCookieInfo(cell: TopLeftImageTableViewCell) {
+        cell.leftImageView?.image = Gridicon.iconOfType(.briefcase)
+        cell.leftImageView?.tintColor = StyleManager.defaultTextColor
+        cell.label?.text = NSLocalizedString("We use other tracking tools, including some from third parties. Read about these and how to control them.", comment: "Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect.")
     }
 
 
@@ -184,7 +193,7 @@ private enum Row: CaseIterable {
         case .collectInfo:
             return BasicTableViewCell.self
         case .cookieInfo:
-            return BasicTableViewCell.self
+            return TopLeftImageTableViewCell.self
         case .cookiePolicy:
             return BasicTableViewCell.self
         case .privacyInfo:

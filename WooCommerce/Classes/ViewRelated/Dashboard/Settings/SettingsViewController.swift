@@ -97,26 +97,44 @@ private extension SettingsViewController {
         }
     }
 
+    /// Cells currently configured in the order they appear on screen
+    ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as HeadlineLabelTableViewCell where row == .primaryStore:
-            cell.headline = siteUrl
-            cell.body = accountName
-        case let cell as BasicTableViewCell where row == .logout:
-            cell.textLabel?.textAlignment = .center
-            cell.textLabel?.text = NSLocalizedString("Logout account", comment: "Logout Action")
-            cell.textLabel?.textColor = StyleManager.destructiveActionColor
+            configurePrimaryStore(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
-            cell.accessoryType = .disclosureIndicator
-            cell.selectionStyle = .default
-            cell.textLabel?.text = NSLocalizedString("Help & Support", comment: "Contact Support Action")
+            configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
-            cell.accessoryType = .disclosureIndicator
-            cell.selectionStyle = .default
-            cell.textLabel?.text = NSLocalizedString("Privacy Settings", comment: "Navigates to Privacy Settings screen")
+            configurePrivacy(cell: cell)
+        case let cell as BasicTableViewCell where row == .logout:
+            configureLogout(cell: cell)
         default:
             fatalError()
         }
+    }
+
+    func configurePrimaryStore(cell: HeadlineLabelTableViewCell) {
+        cell.headline = siteUrl
+        cell.body = accountName
+    }
+
+    func configureSupport(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Help & Support", comment: "Contact Support Action")
+    }
+
+    func configurePrivacy(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Privacy Settings", comment: "Navigates to Privacy Settings screen")
+    }
+
+    func configureLogout(cell: BasicTableViewCell) {
+        cell.textLabel?.textAlignment = .center
+        cell.textLabel?.textColor = StyleManager.destructiveActionColor
+        cell.textLabel?.text = NSLocalizedString("Logout account", comment: "Logout Action")
     }
 }
 

@@ -46,6 +46,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+
     /// OrderStats ResultsController: Loads order stats from the Storage Layer
     ///
     private lazy var orderStatsResultsController: ResultsController<StorageOrderStats> = {
@@ -54,6 +55,11 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         let descriptor = NSSortDescriptor(keyPath: \StorageOrderStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
+
+    /// Placeholder: Mockup Charts View
+    ///
+    private lazy var placehoderChartsView: ChartPlaceholderView = ChartPlaceholderView.instantiateFromNib()
+
 
     // MARK: - Computed Properties
 
@@ -134,6 +140,42 @@ extension PeriodDataViewController {
     }
 }
 
+
+// MARK: - Ghosts API
+
+extension PeriodDataViewController {
+
+    /// Displays the Placeholder Period Graph + Starts the Animation.
+    /// Why is this public? Because the actual Sync OP is handled by StoreStatsViewController. We coordinate multiple
+    /// placeholder animations from that spot!
+    ///
+    func displayGhostContent() {
+        ensurePlaceholderIsVisible()
+        placehoderChartsView.startGhostAnimation()
+    }
+
+    /// Removes the Placeholder Content.
+    /// Why is this public? Because the actual Sync OP is handled by StoreStatsViewController. We coordinate multiple
+    /// placeholder animations from that spot!
+    ///
+    func removeGhostContent() {
+        placehoderChartsView.stopGhostAnimation()
+        placehoderChartsView.removeFromSuperview()
+    }
+
+    /// Ensures the Placeholder Charts UI is onscreen.
+    ///
+    private func ensurePlaceholderIsVisible() {
+        guard placehoderChartsView.superview == nil else {
+            return
+        }
+
+        placehoderChartsView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(placehoderChartsView)
+        view.pinSubviewToAllEdgeMargins(placehoderChartsView)
+    }
+
+}
 
 // MARK: - Configuration
 //

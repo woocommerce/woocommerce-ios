@@ -53,7 +53,7 @@ private extension PrivacySettingsViewController {
     func configureSections() {
         sections = [
             Section(title: nil, rows: [.collectInfo, .shareInfo, .cookiePolicy]),
-//            Section(title: nil, rows: [.privacyInfo, .privacyPolicy]),
+            Section(title: nil, rows: [.privacyInfo, .privacyPolicy]),
 //            Section(title: nil, rows: [.cookieInfo, .cookiePolicy]),
         ]
     }
@@ -74,6 +74,10 @@ private extension PrivacySettingsViewController {
             configureShareInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .cookiePolicy:
             configureCookiePolicy(cell: cell)
+        case let cell as TopLeftImageTableViewCell where row == .privacyInfo:
+            configurePrivacyInfo(cell: cell)
+        case let cell as BasicTableViewCell where row == .privacyPolicy:
+            configurePrivacyPolicy(cell: cell)
         default:
             fatalError()
         }
@@ -82,7 +86,7 @@ private extension PrivacySettingsViewController {
     func configureCollectInfo(cell: BasicTableViewCell) {
         cell.imageView?.image = Gridicon.iconOfType(.stats)
         cell.imageView?.tintColor = StyleManager.defaultTextColor
-        cell.textLabel?.text = NSLocalizedString("Collect information", comment: "Label for collecting analytics information toggle")
+        cell.textLabel?.text = NSLocalizedString("Collect information", comment: "Settings > Privacy Settings > collect info section. Label the `Collect information` toggle.")
         let toggleSwitch = UISwitch()
         toggleSwitch.setOn(true, animated: true)
         toggleSwitch.onTintColor = StyleManager.wooCommerceBrandColor
@@ -92,14 +96,28 @@ private extension PrivacySettingsViewController {
     func configureShareInfo(cell: TopLeftImageTableViewCell) {
         cell.leftImageView?.image = Gridicon.iconOfType(.infoOutline)
         cell.leftImageView?.tintColor = StyleManager.defaultTextColor
-        cell.label?.text = NSLocalizedString("Share information with our analytics tool about your use of services while logged in to your WordPress.com account.", comment: "Explains what the 'collect information' toggle is collecting")
+        cell.label?.text = NSLocalizedString("Share information with our analytics tool about your use of services while logged in to your WordPress.com account.", comment: "Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting")
     }
 
     func configureCookiePolicy(cell: BasicTableViewCell) {
         // To align the 'Learn more' cell to the others, add an "invisible" image.
         cell.imageView?.image = Gridicon.iconOfType(.image)
         cell.imageView?.tintColor = .white
-        cell.textLabel?.text = NSLocalizedString("Learn more", comment: "Learn more text link")
+        cell.textLabel?.text = NSLocalizedString("Learn more", comment: "Settings > Privacy Settings > collect info section. A text link to the cookie policy.")
+        cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
+    }
+
+    func configurePrivacyInfo(cell: TopLeftImageTableViewCell) {
+        cell.leftImageView?.image = Gridicon.iconOfType(.userCircle)
+        cell.leftImageView?.tintColor = StyleManager.defaultTextColor
+        cell.label?.text = NSLocalizedString("This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.", comment: "Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect.")
+    }
+
+    func configurePrivacyPolicy(cell: BasicTableViewCell) {
+        // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
+        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.tintColor = .white
+        cell.textLabel?.text = NSLocalizedString("Read privacy policy", comment: "Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy.")
         cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
     }
 
@@ -123,6 +141,10 @@ private extension PrivacySettingsViewController {
 // MARK: - UITableViewDataSource Conformance
 //
 extension PrivacySettingsViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return sections[section].rows.count
     }
@@ -166,7 +188,7 @@ private enum Row: CaseIterable {
         case .cookiePolicy:
             return BasicTableViewCell.self
         case .privacyInfo:
-            return BasicTableViewCell.self
+            return TopLeftImageTableViewCell.self
         case .privacyPolicy:
             return BasicTableViewCell.self
         case .shareInfo:

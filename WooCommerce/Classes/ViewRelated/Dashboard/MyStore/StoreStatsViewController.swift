@@ -19,6 +19,9 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
     public var isDataMissing: Bool {
         return periodVCs.contains { $0.orderStats == nil || $0.siteStats == nil }
     }
+
+    private var visibleChildViewController: PeriodDataViewController {
+        return periodVCs[currentIndex]
     }
 
     // MARK: - View Lifecycle
@@ -41,6 +44,12 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
         return periodVCs
     }
+
+    override func configureCell(_ cell: ButtonBarViewCell, indicatorInfo: IndicatorInfo) {
+        /// Hide the ImageView:
+        /// We don't use it, and if / when "Ghostified" produces a quite awful placeholder UI!
+        cell.imageView.isHidden = true
+    }
 }
 
 
@@ -56,8 +65,11 @@ extension StoreStatsViewController {
     func syncAllStats(onCompletion: (() -> Void)? = nil) {
         let group = DispatchGroup()
 
+        displayGhostContent()
+
         periodVCs.forEach { (vc) in
             group.enter()
+
             syncOrderStats(for: vc.granularity) { _ in
                 WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": vc.granularity.rawValue])
                 group.leave()
@@ -69,9 +81,32 @@ extension StoreStatsViewController {
             }
         }
 
-        group.notify(queue: .main) {
+        group.notify(queue: .main) { [weak self] in
+            self?.removeGhostContent()
             onCompletion?()
         }
+    }
+}
+
+
+// MARK: - Placeholders
+//
+private extension StoreStatsViewController {
+
+    /// Locks UI Interaction and displays Ghost Placeholder animations.
+    ///
+    private func displayGhostContent() {
+        view.isUserInteractionEnabled = false
+        buttonBarView.startGhostAnimation()
+        visibleChildViewController.displayGhostContent()
+    }
+
+    /// Unlocks the and removes the Placeholder Content
+    ///
+    private func removeGhostContent() {
+        view.isUserInteractionEnabled = true
+        buttonBarView.stopGhostAnimation()
+        visibleChildViewController.removeGhostContent()
     }
 }
 

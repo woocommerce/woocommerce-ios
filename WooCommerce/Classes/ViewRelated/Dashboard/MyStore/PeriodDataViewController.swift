@@ -130,7 +130,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 extension PeriodDataViewController {
     func clearAllFields() {
         barChartView?.clear()
-        reloadAllFields()
+        reloadAllFields(animateChart: false)
     }
 }
 
@@ -350,7 +350,10 @@ private extension PeriodDataViewController {
             lastUpdatedDate = nil
         }
         reloadOrderFields()
-        reloadChart()
+
+        // Don't animate the chart here - this helps avoid a "double animation" effect if a
+        // small number of values change (the chart WILL be updated correctly however)
+        reloadChart(animateChart: false)
         reloadLastUpdatedField()
     }
 
@@ -364,10 +367,10 @@ private extension PeriodDataViewController {
         isInitialLoad = false
     }
 
-    func reloadAllFields() {
+    func reloadAllFields(animateChart: Bool = true) {
         reloadOrderFields()
         reloadSiteFields()
-        reloadChart()
+        reloadChart(animateChart: animateChart)
         reloadLastUpdatedField()
         view.accessibilityElements = [visitorsTitle, visitorsData, ordersTitle, ordersData, revenueTitle, revenueData, lastUpdated, yAxisAccessibilityView, xAxisAccessibilityView, chartAccessibilityView]
     }
@@ -400,14 +403,16 @@ private extension PeriodDataViewController {
         visitorsData.text = visitorsText
     }
 
-    func reloadChart() {
+    func reloadChart(animateChart: Bool = true) {
         guard barChartView != nil else {
             return
         }
         barChartView.data = generateBarDataSet()
         barChartView.fitBars = true
         barChartView.notifyDataSetChanged()
-        barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
+        if animateChart {
+            barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
+        }
         updateChartAccessibilityValues()
     }
 

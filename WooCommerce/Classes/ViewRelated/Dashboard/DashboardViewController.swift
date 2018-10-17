@@ -44,9 +44,7 @@ class DashboardViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if storeStatsViewController.isDataMissing {
-            reloadData()
-        }
+        reloadData()
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

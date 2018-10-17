@@ -14,11 +14,6 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
 
     private var periodVCs = [PeriodDataViewController]()
 
-    public var isDataMissing: Bool {
-        return (periodVCs.contains { $0.orderStats == nil }) ||
-            (periodVCs.contains { $0.siteStats == nil })
-    }
-
     // MARK: - View Lifecycle
 
     required init?(coder aDecoder: NSCoder) {

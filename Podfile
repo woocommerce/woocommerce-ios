@@ -30,7 +30,7 @@ target 'WooCommerce' do
   pod 'Crashlytics', '~> 3.10'
   pod 'KeychainAccess', '~> 3.1'
   pod 'CocoaLumberjack', '~> 3.4'
-  pod 'XLPagerTabStrip', '~> 8.0'
+  pod 'XLPagerTabStrip', '~> 8.1'
   pod 'Charts', '~> 3.2'
 
   # Unit Tests
@@ -116,19 +116,6 @@ end
 # ============
 #
 post_install do |installer|
-
-  # Workaround: SWIFT_VERSION = 4.0 in dependencies that need it
-  # ============================================================
-  #
-  # TODO: Remove as soon as the dependencies get updated!
-  #
-  installer.pods_project.targets.each do |target|
-      if ['XLPagerTabStrip'].include? target.name
-          target.build_configurations.each do |config|
-              config.build_settings['SWIFT_VERSION'] = '4.0'
-          end
-      end
-  end
 
   # Workaround: Drop 32 Bit Architectures
   # =====================================

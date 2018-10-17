@@ -67,4 +67,11 @@ public extension StorageType {
         let predicate = NSPredicate(format: "granularity ==[c] %@", granularity)
         return firstObject(ofType: OrderStats.self, matching: predicate)
     }
+
+    /// Retrieves the Stored OrderStatsItem.
+    ///
+    public func loadOrderStatsItem(period: String) -> OrderStatsItem? {
+        let predicate = NSPredicate(format: "period ==[c] %@", period)
+        return firstObject(ofType: OrderStatsItem.self, matching: predicate)
+    }
 }

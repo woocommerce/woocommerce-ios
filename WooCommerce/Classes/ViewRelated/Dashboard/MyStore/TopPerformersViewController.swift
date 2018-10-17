@@ -72,7 +72,7 @@ extension TopPerformersViewController {
         }
 
         group.notify(queue: .main) { [weak self] in
-            self?.removeGhostContent()
+//            self?.removeGhostContent()
             onCompletion?()
         }
     }

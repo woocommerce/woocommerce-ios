@@ -17,8 +17,8 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
 
     // MARK: - Calculated Properties
 
-    public var isDataMissing: Bool {
-        return periodVCs.contains { $0.orderStats == nil || $0.siteStats == nil }
+    private var visibleChildViewController: PeriodDataViewController {
+        return periodVCs[currentIndex]
     }
 
 

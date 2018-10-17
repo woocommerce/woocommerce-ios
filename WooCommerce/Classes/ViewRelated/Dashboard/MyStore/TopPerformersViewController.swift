@@ -35,6 +35,12 @@ class TopPerformersViewController: ButtonBarPagerTabStripViewController {
         configureView()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        ensureGhostContentIsAnimated()
+    }
+
+
     // MARK: - PagerTabStripDataSource
 
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
@@ -79,18 +85,24 @@ private extension TopPerformersViewController {
 
     /// Locks UI Interaction and displays Ghost Placeholder animations.
     ///
-    private func displayGhostContent() {
+    func displayGhostContent() {
         view.isUserInteractionEnabled = false
         buttonBarView.startGhostAnimation()
         visibleChildViewController.displayGhostContent()
     }
 
-    /// Unlocks the and removes the Placeholder Content
+    /// Unlocks the and removes the Placeholder Content.
     ///
-    private func removeGhostContent() {
+    func removeGhostContent() {
         view.isUserInteractionEnabled = true
         buttonBarView.stopGhostAnimation()
         visibleChildViewController.removeGhostContent()
+    }
+
+    /// If the Ghost Content was previously onscreen, this method will restart the animations.
+    ///
+    func ensureGhostContentIsAnimated() {
+        view.restartGhostAnimation()
     }
 }
 

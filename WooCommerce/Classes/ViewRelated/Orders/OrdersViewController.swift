@@ -317,8 +317,8 @@ private extension OrdersViewController {
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderOrders() {
-        let settings = GhostSettings(reuseIdentifier: OrderListCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(using: settings)
+        let options = GhostOptions(reuseIdentifier: OrderListCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
+        tableView.displayGhostContent(options: options)
 
         resultsController.stopForwardingEvents()
     }

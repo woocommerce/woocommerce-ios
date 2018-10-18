@@ -12,7 +12,7 @@ public class WooAnalytics {
 
     /// AnalyticsProvider: Interface to the actual analytics implementation
     ///
-    private(set) var analyticsProvider: AnalyticsProvider
+    private(set) var analyticsProvider: AnalyticsProvider?
 
     /// Time when app was opened — used for calculating the time-in-app property
     ///
@@ -24,7 +24,11 @@ public class WooAnalytics {
     /// Designated Initializer
     ///
     init(analyticsProvider: AnalyticsProvider) {
-        self.analyticsProvider = analyticsProvider
+        initializeOptOutTracking()
+
+        if !userHasOptedOut() {
+            self.analyticsProvider = analyticsProvider
+        }
     }
 
     deinit {
@@ -48,7 +52,7 @@ public extension WooAnalytics {
     /// It's good to call this function after a user logs in or out of the app.
     ///
     func refreshUserData() {
-        analyticsProvider.refreshUserData()
+        analyticsProvider?.refreshUserData()
     }
 
     /// Track a spcific event without any associated properties
@@ -67,9 +71,9 @@ public extension WooAnalytics {
     ///
     func track(_ stat: WooAnalyticsStat, withProperties properties: [AnyHashable: Any]?) {
         if let properties = properties {
-            analyticsProvider.track(stat.rawValue, withProperties: properties)
+            analyticsProvider?.track(stat.rawValue, withProperties: properties)
         } else {
-            analyticsProvider.track(stat.rawValue)
+            analyticsProvider?.track(stat.rawValue)
         }
     }
 
@@ -84,7 +88,62 @@ public extension WooAnalytics {
         let errorDictionary = [Constants.errorKeyCode: "\(err.code)",
                                Constants.errorKeyDomain: err.domain,
                                Constants.errorKeyDescription: err.description]
-        analyticsProvider.track(stat.rawValue, withProperties: errorDictionary)
+        analyticsProvider?.track(stat.rawValue, withProperties: errorDictionary)
+    }
+}
+
+
+// MARK: - Opt Out
+//
+extension WooAnalytics {
+    /// Initialize the opt-out tracking
+    ///
+    func initializeOptOutTracking() {
+        if userHasOptedOutIsSet() {
+            // We've already configured the opt out setting
+            return
+        }
+
+        // set the default to no, user has not opted out yet
+        setUserHasOptedOutValue(false)
+    }
+
+    func userHasOptedOutIsSet() -> Bool {
+        return UserDefaults.standard.object(forKey: UserDefaults.Key.userOptedOutOfAnalytics) != nil
+    }
+
+    /// This method just sets the user defaults value for UserOptedOut and doesn't
+    /// do any additional configuration of sessions or trackers.
+    func setUserHasOptedOutValue(_ optedOut: Bool) {
+        UserDefaults.standard.set(optedOut, forKey: UserDefaults.Key.userOptedOutOfAnalytics)
+    }
+
+    func userHasOptedOut() -> Bool {
+        return UserDefaults.standard.bool(forKey: UserDefaults.Key.userOptedOutOfAnalytics.rawValue)
+    }
+
+    func setUserHasOptedOut(_ optedOut: Bool) {
+        if userHasOptedOutIsSet() {
+            let currentValue = userHasOptedOut()
+            if currentValue == optedOut {
+                return
+            }
+        }
+
+        // store the preference
+        setUserHasOptedOutValue(optedOut)
+
+        // now take action on the preference
+        if (optedOut) {
+            stopObservingNotifications()
+            analyticsProvider?.clearTracksEvents()
+            analyticsProvider = nil
+        } else {
+            if analyticsProvider == nil {
+                analyticsProvider = TracksProvider()
+                startObservingNotifications()
+            }
+        }
     }
 }
 
@@ -96,6 +155,11 @@ private extension WooAnalytics {
     func startObservingNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationOpened), name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationClosed), name: UIApplication.didEnterBackgroundNotification, object: nil)
+    }
+
+    func stopObservingNotifications() {
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
 
     @objc func trackApplicationOpened() {

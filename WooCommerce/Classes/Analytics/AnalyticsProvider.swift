@@ -21,4 +21,8 @@ public protocol AnalyticsProvider {
     ///   - properties: a collection of properties
     ///
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?)
+
+    /// Clear queued track events
+    ///
+    func clearTracksEvents()
 }

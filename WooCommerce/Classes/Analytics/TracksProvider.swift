@@ -45,6 +45,10 @@ public extension TracksProvider {
             DDLogInfo("🔵 Tracked \(eventName)")
         }
     }
+
+    func clearTracksEvents() {
+        tracksService.clearQueuedEvents()
+    }
 }
 
 

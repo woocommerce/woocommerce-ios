@@ -12,6 +12,10 @@ class PrivacySettingsViewController: UIViewController {
     ///
     private var sections = [Section]()
 
+    /// Collect tracking info
+    ///
+    private var collectInfo: Bool = true
+
     // MARK: - Overridden Methods
     //
     override func viewDidLoad() {
@@ -21,7 +25,9 @@ class PrivacySettingsViewController: UIViewController {
         configureMainView()
         configureTableView()
         configureSections()
+
         registerTableViewCells()
+        getUserPreferences()
     }
 }
 
@@ -66,6 +72,10 @@ private extension PrivacySettingsViewController {
         }
     }
 
+    func getUserPreferences() {
+        collectInfo = !WooAnalytics.shared.userHasOptedOut()
+    }
+
     /// Cells currently configured in the order they appear on screen.
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
@@ -97,7 +107,7 @@ private extension PrivacySettingsViewController {
 
         // switch
         let toggleSwitch = UISwitch()
-        toggleSwitch.setOn(true, animated: true)
+        toggleSwitch.setOn(collectInfo, animated: true)
         toggleSwitch.onTintColor = StyleManager.wooCommerceBrandColor
         toggleSwitch.on(.touchUpInside) { (toggleSwitch) in
             self.toggleCollectInfo()
@@ -107,8 +117,12 @@ private extension PrivacySettingsViewController {
         // action
         let gestureRecognizer = UITapGestureRecognizer()
         gestureRecognizer.on { [weak self] gesture in
-            toggleSwitch.setOn(false, animated: true)
-            self?.toggleCollectInfo()
+            guard let self = self else {
+                return
+            }
+
+            self.toggleCollectInfo()
+            toggleSwitch.setOn(self.collectInfo, animated: true)
         }
 
         cell.addGestureRecognizer(gestureRecognizer)
@@ -152,7 +166,15 @@ private extension PrivacySettingsViewController {
     // MARK: Actions
     //
     func toggleCollectInfo() {
-        // TODO: change the switch, change the variable, send the API request.
+        // set the user's new preference
+        collectInfo = !collectInfo
+
+        // create the opt out bool
+        let optOut = !collectInfo
+
+        // save the user's preference
+        WooAnalytics.shared.setUserHasOptedOut(optOut)
+        AppDelegate.shared.fabricManager.setUserHasOptedOutValue(optOut)
     }
 }
 

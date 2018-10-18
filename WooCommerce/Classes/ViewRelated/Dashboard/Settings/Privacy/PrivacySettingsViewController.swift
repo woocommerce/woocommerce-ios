@@ -1,5 +1,6 @@
 import UIKit
 import Gridicons
+import SafariServices
 
 class PrivacySettingsViewController: UIViewController {
 
@@ -87,19 +88,36 @@ private extension PrivacySettingsViewController {
     }
 
     func configureCollectInfo(cell: BasicTableViewCell) {
+        // image
         cell.imageView?.image = Gridicon.iconOfType(.stats)
         cell.imageView?.tintColor = StyleManager.defaultTextColor
+
+        // text
         cell.textLabel?.text = NSLocalizedString("Collect information", comment: "Settings > Privacy Settings > collect info section. Label the `Collect information` toggle.")
+
+        // switch
         let toggleSwitch = UISwitch()
         toggleSwitch.setOn(true, animated: true)
         toggleSwitch.onTintColor = StyleManager.wooCommerceBrandColor
+        toggleSwitch.on(.touchUpInside) { (toggleSwitch) in
+            self.toggleCollectInfo()
+        }
         cell.accessoryView = toggleSwitch
+
+        // action
+        let gestureRecognizer = UITapGestureRecognizer()
+        gestureRecognizer.on { [weak self] gesture in
+            toggleSwitch.setOn(false, animated: true)
+            self?.toggleCollectInfo()
+        }
+
+        cell.addGestureRecognizer(gestureRecognizer)
     }
 
     func configureShareInfo(cell: TopLeftImageTableViewCell) {
-        cell.leftImageView?.image = Gridicon.iconOfType(.infoOutline)
-        cell.leftImageView?.tintColor = StyleManager.defaultTextColor
-        cell.label?.text = NSLocalizedString("Share information with our analytics tool about your use of services while logged in to your WordPress.com account.", comment: "Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting")
+        cell.imageView?.image = Gridicon.iconOfType(.infoOutline)
+        cell.imageView?.tintColor = StyleManager.defaultTextColor
+        cell.textLabel?.text = NSLocalizedString("Share information with our analytics tool about your use of services while logged in to your WordPress.com account.", comment: "Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting")
     }
 
     func configureCookiePolicy(cell: BasicTableViewCell) {
@@ -111,9 +129,9 @@ private extension PrivacySettingsViewController {
     }
 
     func configurePrivacyInfo(cell: TopLeftImageTableViewCell) {
-        cell.leftImageView?.image = Gridicon.iconOfType(.userCircle)
-        cell.leftImageView?.tintColor = StyleManager.defaultTextColor
-        cell.label?.text = NSLocalizedString("This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.", comment: "Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect.")
+        cell.imageView?.image = Gridicon.iconOfType(.userCircle)
+        cell.imageView?.tintColor = StyleManager.defaultTextColor
+        cell.textLabel?.text = NSLocalizedString("This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.", comment: "Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect.")
     }
 
     func configurePrivacyPolicy(cell: BasicTableViewCell) {
@@ -125,9 +143,9 @@ private extension PrivacySettingsViewController {
     }
 
     func configureCookieInfo(cell: TopLeftImageTableViewCell) {
-        cell.leftImageView?.image = Gridicon.iconOfType(.briefcase)
-        cell.leftImageView?.tintColor = StyleManager.defaultTextColor
-        cell.label?.text = NSLocalizedString("We use other tracking tools, including some from third parties. Read about these and how to control them.", comment: "Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect.")
+        cell.imageView?.image = Gridicon.iconOfType(.briefcase)
+        cell.imageView?.tintColor = StyleManager.defaultTextColor
+        cell.textLabel?.text = NSLocalizedString("We use other tracking tools, including some from third parties. Read about these and how to control them.", comment: "Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect.")
     }
 
 
@@ -158,6 +176,20 @@ extension PrivacySettingsViewController: UITableViewDataSource {
         return sections[section].rows.count
     }
 
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        // The first section header always returns taller (32.0), but the design wants it the same height as the others.
+        if section == 0 {
+            return Constants.sectionHeight
+        }
+
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section footers.
+        return CGFloat.leastNonzeroMagnitude
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = rowAtIndexPath(indexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
@@ -168,11 +200,44 @@ extension PrivacySettingsViewController: UITableViewDataSource {
 }
 
 
+// MARK: - UITableViewDelegate Conformance
+//
+extension PrivacySettingsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        switch sections[indexPath.section].rows[indexPath.row] {
+        case .cookiePolicy:
+            guard let cookieURL = Constants.cookieURL else {
+                return
+            }
+
+            let safariViewController = SFSafariViewController(url: cookieURL)
+            safariViewController.modalPresentationStyle = .pageSheet
+            present(safariViewController, animated: true, completion: nil)
+        case .privacyPolicy:
+            guard let privacyURL = Constants.privacyURL else {
+                return
+            }
+
+            let safariViewController = SFSafariViewController(url: privacyURL)
+            safariViewController.modalPresentationStyle = .pageSheet
+            present(safariViewController, animated: true, completion: nil)
+        default:
+            break
+        }
+    }
+}
+
+
 // MARK: - Private Types
 //
 private struct Constants {
     static let rowHeight = CGFloat(44)
     static let separatorInset = CGFloat(16)
+    static let sectionHeight = CGFloat(18)
+    static let cookieURL = URL(string:"https://automattic.com/cookies/")
+    static let privacyURL = URL(string: "https://automattic.com/privacy/")
 }
 
 private struct Section {

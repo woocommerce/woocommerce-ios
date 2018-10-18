@@ -18,8 +18,8 @@ target 'WooCommerce' do
   #
   pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.3'
   pod 'Gridicons', '0.16'
-  pod 'WordPressAuthenticator', '1.1.0-beta.1'
-  pod 'WordPressShared', '1.1.1-beta.2'
+  pod 'WordPressAuthenticator', '~> 1.1'
+  pod 'WordPressShared', '~> 1.1'
   pod 'WordPressUI', '~> 1.0'
 
 

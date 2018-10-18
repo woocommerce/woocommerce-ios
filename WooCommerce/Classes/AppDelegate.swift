@@ -154,7 +154,6 @@ private extension AppDelegate {
     ///
     func setupFabric() {
         fabricManager.initialize()
-        fabricManager.startListeningToAuthNotifications()
     }
 
     /// Sets up the WordPress Authenticator.

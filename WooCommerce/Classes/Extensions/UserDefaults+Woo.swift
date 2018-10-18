@@ -11,6 +11,7 @@ extension UserDefaults {
         case defaultStoreID
         case defaultAnonymousID
         case userOptedOutOfAnalytics
+        case userOptedOutOfCrashlytics
         case versionOfLastRun
     }
 }

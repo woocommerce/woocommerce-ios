@@ -39,7 +39,7 @@ PODS:
   - Reachability (3.2)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (0.5.0)
-  - WordPressAuthenticator (1.1.0-beta.1):
+  - WordPressAuthenticator (1.1.1):
     - 1PasswordExtension (= 1.8.5)
     - Alamofire (= 4.7.3)
     - CocoaLumberjack (= 3.4.2)
@@ -49,18 +49,18 @@ PODS:
     - "NSURL+IDN (= 0.3)"
     - SVProgressHUD (= 2.2.5)
     - UIDeviceIdentifier (~> 0.4)
-    - WordPressKit (= 1.4.1-beta.2)
-    - WordPressShared (= 1.1.1-beta.2)
+    - WordPressKit (~> 1.4.1-beta.2)
+    - WordPressShared (~> 1.1.1-beta.4)
     - WordPressUI (~> 1.0)
     - wpxmlrpc (~> 0.8)
-  - WordPressKit (1.4.1-beta.2):
+  - WordPressKit (1.4.2-beta.2):
     - Alamofire (~> 4.7.3)
     - CocoaLumberjack (= 3.4.2)
     - NSObject-SafeExpectations (= 0.0.3)
     - UIDeviceIdentifier (~> 0.4)
-    - WordPressShared (= 1.1.1-beta.2)
+    - WordPressShared (~> 1.1.1-beta.4)
     - wpxmlrpc (= 0.8.3)
-  - WordPressShared (1.1.1-beta.2):
+  - WordPressShared (1.1.1):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
   - WordPressUI (1.0.9)
@@ -75,8 +75,8 @@ DEPENDENCIES:
   - Crashlytics (~> 3.10)
   - Gridicons (= 0.16)
   - KeychainAccess (~> 3.1)
-  - WordPressAuthenticator (= 1.1.0-beta.1)
-  - WordPressShared (= 1.1.1-beta.2)
+  - WordPressAuthenticator (~> 1.1)
+  - WordPressShared (~> 1.1)
   - WordPressUI (~> 1.0)
   - XLPagerTabStrip (~> 8.1)
 
@@ -135,13 +135,13 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
-  WordPressAuthenticator: 904e24e2bcaff4b9d91b34514e87ac55bee470fa
-  WordPressKit: a4ccc4bbbc6f8e194becf18b47af212f367fe3ab
-  WordPressShared: c4d4356a06fc73bde9b782f26768d42e62a330ef
+  WordPressAuthenticator: 6e9cdd8f492ec771f9cb352e62a94059166f15c1
+  WordPressKit: a60ac809261ca23ac35e1c39e0249d9e05ab3ec0
+  WordPressShared: d2d652c40b3b68904c88d59df428c00c4e7dd180
   WordPressUI: 79fd5d190870fa95655c188cd0b7acf3999a4c4f
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
   XLPagerTabStrip: 22d4c58200d7c105e0e407ab6bfd01a5d85014be
 
-PODFILE CHECKSUM: 7b743e34a694c562ebbc18dd87495d82a7781ad7
+PODFILE CHECKSUM: 33d27a6bf777c4b98278f8e1332561a74ff47478
 
 COCOAPODS: 1.5.3

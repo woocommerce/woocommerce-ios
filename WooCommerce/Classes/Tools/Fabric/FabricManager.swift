@@ -120,8 +120,10 @@ extension FabricManager {
         if (optedOut) {
             clearCrashlyticsParameters()
             stopListeningToAuthNotifications()
+            DDLogInfo("🔴 Crashlytics opt-out complete.")
         } else {
             startCrashlyticsIfNeeded()
+            DDLogInfo("🔵 Crashlytics reporting restored.")
         }
     }
 }

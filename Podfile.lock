@@ -63,7 +63,7 @@ PODS:
   - WordPressShared (1.1.1-beta.2):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
-  - WordPressUI (1.0.8)
+  - WordPressUI (1.0.9)
   - wpxmlrpc (0.8.3)
   - XLPagerTabStrip (8.1.0)
 
@@ -138,7 +138,7 @@ SPEC CHECKSUMS:
   WordPressAuthenticator: 904e24e2bcaff4b9d91b34514e87ac55bee470fa
   WordPressKit: a4ccc4bbbc6f8e194becf18b47af212f367fe3ab
   WordPressShared: c4d4356a06fc73bde9b782f26768d42e62a330ef
-  WordPressUI: e50965adee24b4f10da398f6cdbdd3a822274158
+  WordPressUI: 79fd5d190870fa95655c188cd0b7acf3999a4c4f
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
   XLPagerTabStrip: 22d4c58200d7c105e0e407ab6bfd01a5d85014be
 

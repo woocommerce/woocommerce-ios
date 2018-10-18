@@ -4,8 +4,8 @@ import WordPressShared
 /// This enum contains all of the events we track in the app. Please reference the "Woo Mobile Events Draft i2"
 /// spreadsheet for more details.
 ///
-/// Note: if you would like to exclude site properties (e.g. `blog_id`) for a given event, please
-/// add the event to the `shouldSendSiteProperties` var.
+/// Note: If you would like to exclude site properties (e.g. `blog_id`) for a given event, please
+/// add the event to the `WooAnalyticsStat.shouldSendSiteProperties` var.
 ///
 public enum WooAnalyticsStat: String {
 

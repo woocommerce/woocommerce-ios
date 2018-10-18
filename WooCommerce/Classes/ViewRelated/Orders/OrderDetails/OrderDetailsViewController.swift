@@ -313,8 +313,9 @@ private extension OrderDetailsViewController {
 
         cell.textLabel?.text = email
         cell.accessoryImageView.image = Gridicon.iconOfType(.mail)
-        cell.onTouchUp = { [weak self] in
-            self?.emailButtonAction()
+        cell.onTouchUp = { [weak self] _ in
+            WooAnalytics.shared.track(.orderDetailCustomerEmailTapped)
+            self?.displayEmailComposerIfPossible()
         }
 
         cell.isAccessibilityElement = true
@@ -674,18 +675,18 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
 // MARK: - MFMailComposeViewControllerDelegate Conformance
 //
 extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
-    func sendEmailIfPossible() {
+    func displayEmailComposerIfPossible() {
         guard let email = viewModel.order.billingAddress?.email, MFMailComposeViewController.canSendMail() else {
             return
         }
 
-        sendEmail(to: email)
+        displayEmailComposer(for: email)
         WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
                                                                         "status": viewModel.order.status.rawValue,
                                                                         "type": "email"])
     }
 
-    private func sendEmail(to email: String) {
+    private func displayEmailComposer(for email: String) {
         // Workaround: MFMailCompose isn't *FULLY* picking up UINavigationBar's WC's appearance. Title / Buttons look awful.
         // We're falling back to iOS's default appearance
         UINavigationBar.applyDefaultAppearance()

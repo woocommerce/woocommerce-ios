@@ -138,10 +138,12 @@ extension WooAnalytics {
             stopObservingNotifications()
             analyticsProvider?.clearTracksEvents()
             analyticsProvider = nil
+            DDLogInfo("🔴 Tracking opt-out complete.")
         } else {
             if analyticsProvider == nil {
                 analyticsProvider = TracksProvider()
                 startObservingNotifications()
+                DDLogInfo("🔵 Tracking restored.")
             }
         }
     }

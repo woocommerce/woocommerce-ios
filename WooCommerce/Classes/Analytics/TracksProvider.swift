@@ -61,11 +61,6 @@ private extension TracksProvider {
         userProperties[UserProperties.platformKey] = "iOS"
         userProperties[UserProperties.voiceOverKey] = UIAccessibility.isVoiceOverRunning
         userProperties[UserProperties.rtlKey] = (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
-        if StoresManager.shared.isAuthenticated {
-            let site = StoresManager.shared.sessionManager.defaultSite
-            userProperties[UserProperties.blogIDKey] = site?.siteID
-            userProperties[UserProperties.wpcomStoreKey] = site?.isWordPressStore
-        }
         tracksService.userProperties.removeAllObjects()
         tracksService.userProperties.addEntries(from: userProperties)
     }
@@ -84,7 +79,5 @@ private extension TracksProvider {
         static let platformKey          = "platform"
         static let voiceOverKey         = "accessibility_voice_over_enabled"
         static let rtlKey               = "is_rtl_language"
-        static let blogIDKey            = "blog_id"
-        static let wpcomStoreKey        = "is_wpcom_store"
     }
 }

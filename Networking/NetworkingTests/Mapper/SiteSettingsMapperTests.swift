@@ -41,9 +41,9 @@ class SiteSettingsMapperTests: XCTestCase {
         XCTAssertEqual(decimalSetting.value, "2")
     }
 
-    /// Verifies that a SiteSetting in a broken state does [gets default values] | [gets skipped while parsing]
+    /// Verifies that a SiteSetting in a broken state gets default values
     ///
-    func testNoteHasDefaultDateCreatedWhenNullDateReceived() {
+    func testSiteSettingsAreProperlyParsedWhenNullsReceived() {
         let settings = mapLoadBrokenSiteSettingsResponse()
         XCTAssertEqual(settings.count, 1)
 

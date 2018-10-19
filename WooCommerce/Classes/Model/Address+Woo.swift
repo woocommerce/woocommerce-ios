@@ -19,10 +19,20 @@ extension Address {
         return postalAddress.formatted(as: .mailingAddress)
     }
 
-    /// Returns the (clean) Phone number: contains only decimal digits
+    /// Returns the (clean) Phone number: contains only decimal digits.
     ///
     var cleanedPhoneNumber: String? {
         return phone?.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+    }
+
+    /// Returns the (Clean) Phone Number, as an iOS Actionable URL.
+    ///
+    var cleanedPhoneNumberAsActionableURL: URL? {
+        guard let phone = cleanedPhoneNumber else {
+            return nil
+        }
+
+        return URL(string: "telprompt://" + phone)
     }
 
     /// Indicates if there is a Phone Number set (and it's not empty).

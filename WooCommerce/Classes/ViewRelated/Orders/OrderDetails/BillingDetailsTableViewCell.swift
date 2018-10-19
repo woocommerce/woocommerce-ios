@@ -16,7 +16,7 @@ class BillingDetailsTableViewCell: UITableViewCell {
 
     /// Closure to be executed whenever the cell is pressed.
     ///
-    var onTouchUp: (() -> Void)?
+    var onTouchUp: ((UIView) -> Void)?
 
 
     // MARK: - Overridden Methods
@@ -31,7 +31,11 @@ class BillingDetailsTableViewCell: UITableViewCell {
 
         let gestureRecognizer = UITapGestureRecognizer()
         gestureRecognizer.on { [weak self] gesture in
-            self?.onTouchUp?()
+            guard let `self` = self else {
+                return
+            }
+
+            self.onTouchUp?(self)
         }
 
         addGestureRecognizer(gestureRecognizer)

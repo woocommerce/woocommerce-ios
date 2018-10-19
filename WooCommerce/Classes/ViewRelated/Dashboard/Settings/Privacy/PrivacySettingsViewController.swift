@@ -60,9 +60,9 @@ private extension PrivacySettingsViewController {
 
     func configureSections() {
         sections = [
-            Section(title: nil, rows: [.collectInfo, .shareInfo, .cookiePolicy]),
+            Section(title: nil, rows: [.collectInfo, .shareInfo, .shareInfoPolicy]),
             Section(title: nil, rows: [.privacyInfo, .privacyPolicy]),
-            Section(title: nil, rows: [.cookieInfo, .cookiePolicy]),
+            Section(title: nil, rows: [.thirdPartyInfo, .thirdPartyPolicy]),
         ]
     }
 
@@ -84,14 +84,16 @@ private extension PrivacySettingsViewController {
             configureCollectInfo(cell: cell)
         case let cell as TopLeftImageTableViewCell where row == .shareInfo:
             configureShareInfo(cell: cell)
-        case let cell as BasicTableViewCell where row == .cookiePolicy:
+        case let cell as BasicTableViewCell where row == .shareInfoPolicy:
             configureCookiePolicy(cell: cell)
         case let cell as TopLeftImageTableViewCell where row == .privacyInfo:
             configurePrivacyInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .privacyPolicy:
             configurePrivacyPolicy(cell: cell)
-        case let cell as TopLeftImageTableViewCell where row == .cookieInfo:
+        case let cell as TopLeftImageTableViewCell where row == .thirdPartyInfo:
             configureCookieInfo(cell: cell)
+        case let cell as BasicTableViewCell where row == .thirdPartyPolicy:
+            configureCookiePolicy(cell: cell)
         default:
             fatalError()
         }
@@ -175,6 +177,34 @@ private extension PrivacySettingsViewController {
         // save the user's preference
         WooAnalytics.shared.setUserHasOptedOut(optOut)
         AppDelegate.shared.fabricManager.setUserHasOptedOutValue(optOut)
+
+        // this event will only report if the user has turned tracking back on
+        WooAnalytics.shared.track(.settingsCollectInfoToggled)
+    }
+
+
+    /// Display Automattic's Cookie Policy web page
+    ///
+    func presentCookiePolicyWebView() {
+        guard let cookieURL = Constants.cookieURL else {
+            return
+        }
+
+        let safariViewController = SFSafariViewController(url: cookieURL)
+        safariViewController.modalPresentationStyle = .pageSheet
+        present(safariViewController, animated: true, completion: nil)
+    }
+
+    /// Display Automattic's Privacy Policy web page
+    ///
+    func presentPrivacyPolicyWebView() {
+        guard let privacyURL = Constants.privacyURL else {
+            return
+        }
+
+        let safariViewController = SFSafariViewController(url: privacyURL)
+        safariViewController.modalPresentationStyle = .pageSheet
+        present(safariViewController, animated: true, completion: nil)
     }
 }
 
@@ -229,22 +259,15 @@ extension PrivacySettingsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch sections[indexPath.section].rows[indexPath.row] {
-        case .cookiePolicy:
-            guard let cookieURL = Constants.cookieURL else {
-                return
-            }
-
-            let safariViewController = SFSafariViewController(url: cookieURL)
-            safariViewController.modalPresentationStyle = .pageSheet
-            present(safariViewController, animated: true, completion: nil)
+        case .shareInfoPolicy:
+            WooAnalytics.shared.track(.settingsShareInfoLearnMoreTapped)
+            presentCookiePolicyWebView()
+        case .thirdPartyPolicy:
+            WooAnalytics.shared.track(.settingsThirdPartyLearnMoreTapped)
+            presentCookiePolicyWebView()
         case .privacyPolicy:
-            guard let privacyURL = Constants.privacyURL else {
-                return
-            }
-
-            let safariViewController = SFSafariViewController(url: privacyURL)
-            safariViewController.modalPresentationStyle = .pageSheet
-            present(safariViewController, animated: true, completion: nil)
+            WooAnalytics.shared.track(.settingsPrivacyPolicyTapped)
+            presentPrivacyPolicyWebView()
         default:
             break
         }
@@ -269,19 +292,16 @@ private struct Section {
 
 private enum Row: CaseIterable {
     case collectInfo
-    case cookieInfo
-    case cookiePolicy
     case privacyInfo
     case privacyPolicy
     case shareInfo
+    case shareInfoPolicy
+    case thirdPartyInfo
+    case thirdPartyPolicy
 
     var type: UITableViewCell.Type {
         switch self {
         case .collectInfo:
-            return BasicTableViewCell.self
-        case .cookieInfo:
-            return TopLeftImageTableViewCell.self
-        case .cookiePolicy:
             return BasicTableViewCell.self
         case .privacyInfo:
             return TopLeftImageTableViewCell.self
@@ -289,6 +309,12 @@ private enum Row: CaseIterable {
             return BasicTableViewCell.self
         case .shareInfo:
             return TopLeftImageTableViewCell.self
+        case .shareInfoPolicy:
+            return BasicTableViewCell.self
+        case .thirdPartyInfo:
+            return TopLeftImageTableViewCell.self
+        case .thirdPartyPolicy:
+            return BasicTableViewCell.self
         }
     }
 

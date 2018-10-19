@@ -89,6 +89,13 @@ class WooAnalyticsTests: XCTestCase {
             XCTAssert(descriptionIncludingUserInfo?.contains(descriptionSubstring) == true)
         }
     }
+
+    /// Test clear all events
+    ///
+    func testClearAllEvents() {
+        testingProvider?.clearTracksEvents()
+        XCTAssertEqual(testingProvider?.receivedEvents.count, 0)
+    }
 }
 
 

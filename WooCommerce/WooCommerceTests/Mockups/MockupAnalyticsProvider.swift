@@ -24,4 +24,8 @@ public extension MockupAnalyticsProvider {
             receivedProperties.append(properties)
         }
     }
+
+    func clearTracksEvents() {
+        receivedEvents.removeAll()
+    }
 }

@@ -1,0 +1,15 @@
+{
+	"data": [
+		{
+			"id": "woocommerce_currency",
+			"label": null,
+			"description": null,
+			"type": null,
+			"default": null,
+			"options": null,
+			"tip": null,
+			"value": null,
+			"_links": null
+		}
+	]
+}

@@ -4,6 +4,9 @@ import WordPressShared
 /// This enum contains all of the events we track in the app. Please reference the "Woo Mobile Events Draft i2"
 /// spreadsheet for more details.
 ///
+/// Note: If you would like to exclude site properties (e.g. `blog_id`) for a given event, please
+/// add the event to the `WooAnalyticsStat.shouldSendSiteProperties` var.
+///
 public enum WooAnalyticsStat: String {
 
     // Application Events
@@ -112,6 +115,10 @@ public enum WooAnalyticsStat: String {
     case orderContactAction                     = "order_contact_action"
     case ordersListFilterOrSearch               = "orders_list_filter"
     case ordersListLoaded                       = "orders_list_loaded"
+    case orderStatusChange                      = "order_status_change"
+    case orderStatusChangeSuccess               = "order_status_change_success"
+    case orderStatusChangeFailed                = "order_status_change_failed"
+    case orderStatusChangeUndo                  = "order_status_change_undo"
 
     // Notification Events
     //
@@ -120,6 +127,35 @@ public enum WooAnalyticsStat: String {
 }
 
 public extension WooAnalyticsStat {
+
+
+    /// Indicates if site information should be included with this event when it's sent to the tracks server.
+    /// Returns `true` if it should be included, `false` otherwise.
+    ///
+    /// Note: Currently all application-level and authentication events will return false. If you wish
+    /// to include additional no-site-info events, please add them here.
+    ///
+    var shouldSendSiteProperties: Bool {
+        switch self {
+        // Application events
+        case .applicationClosed, .applicationOpened, .applicationUpgraded, .applicationInstalled:
+            return false
+        // Authentication Events
+        case .signedIn, .logout, .openedLogin, .loginFailed,
+             .loginAutoFillCredentialsFilled, .loginAutoFillCredentialsUpdated, .loginEmailFormViewed, .loginMagicLinkOpenEmailClientViewed,
+             .loginMagicLinkRequestFormViewed, .loginMagicLinkExited, .loginMagicLinkFailed, .loginMagicLinkOpened,
+             .loginMagicLinkRequested, .loginMagicLinkSucceeded, .loginPasswordFormViewed, .loginURLFormViewed,
+             .loginURLHelpScreenViewed, .loginUsernamePasswordFormViewed, .loginTwoFactorFormViewed, .loginEpilogueViewed,
+             .loginEpilogueStoresShown, .loginEpilogueContinueTapped, .loginProloguePaged, .loginPrologueViewed,
+             .loginPrologueContinueTapped, .loginPrologueJetpackInstructions, .loginForgotPasswordClicked, .loginSocialButtonClick,
+             .loginSocialButtonFailure, .loginSocialConnectSuccess, .loginSocialConnectFailure, .loginSocialSuccess,
+             .loginSocialFailure, .loginSocial2faNeeded, .loginSocialAccountsNeedConnecting, .loginSocialErrorUnknownUser,
+             .onePasswordFailed, .onePasswordLogin, .onePasswordSignup, .twoFactorCodeRequested, .twoFactorSentSMS:
+            return false
+        default:
+            return true
+        }
+    }
 
     /// Converts the provided WPAnalyticsStat into a WooAnalyticsStat.
     /// This whole process kinda stinks, but we need this for the `WordPressAuthenticatorDelegate`

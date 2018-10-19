@@ -70,8 +70,8 @@ public extension WooAnalytics {
     ///   - properties: a collection of properties related to the event
     ///
     func track(_ stat: WooAnalyticsStat, withProperties properties: [AnyHashable: Any]?) {
-        if let properties = properties {
-            analyticsProvider?.track(stat.rawValue, withProperties: properties)
+        if let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: properties) {
+            analyticsProvider?.track(stat.rawValue, withProperties: updatedProperties)
         } else {
             analyticsProvider?.track(stat.rawValue)
         }
@@ -88,7 +88,8 @@ public extension WooAnalytics {
         let errorDictionary = [Constants.errorKeyCode: "\(err.code)",
                                Constants.errorKeyDomain: err.domain,
                                Constants.errorKeyDescription: err.description]
-        analyticsProvider?.track(stat.rawValue, withProperties: errorDictionary)
+        let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: errorDictionary)
+        analyticsProvider?.track(stat.rawValue, withProperties: updatedProperties)
     }
 }
 
@@ -180,7 +181,21 @@ private extension WooAnalytics {
         }
 
         let timeInApp = round(Date().timeIntervalSince(applicationOpenedTime))
-        return [Constants.propertyKeyTimeInApp: timeInApp.description]
+        return [PropertyKeys.propertyKeyTimeInApp: timeInApp.description]
+    }
+
+    /// This function appends any additional properties to the provided properties dict if needed.
+    ///
+    func updatePropertiesIfNeeded(for stat: WooAnalyticsStat, properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
+        guard stat.shouldSendSiteProperties, StoresManager.shared.isAuthenticated else {
+            return properties
+        }
+
+        var updatedProperties = properties ?? [:]
+        let site = StoresManager.shared.sessionManager.defaultSite
+        updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
+        updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressStore
+        return updatedProperties
     }
 }
 
@@ -193,7 +208,11 @@ private extension WooAnalytics {
         static let errorKeyCode         = "error_code"
         static let errorKeyDomain       = "error_domain"
         static let errorKeyDescription  = "error_description"
+    }
 
+    enum PropertyKeys {
         static let propertyKeyTimeInApp = "time_in_app"
+        static let blogIDKey            = "blog_id"
+        static let wpcomStoreKey        = "is_wpcom_store"
     }
 }

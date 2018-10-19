@@ -14,6 +14,12 @@ class TopPerformersViewController: ButtonBarPagerTabStripViewController {
 
     private var dataVCs = [TopPerformerDataViewController]()
 
+    // MARK: - Calculated Properties
+
+    private var visibleChildViewController: TopPerformerDataViewController {
+        return dataVCs[currentIndex]
+    }
+
     // MARK: - View Lifecycle
 
     required init?(coder aDecoder: NSCoder) {
@@ -29,10 +35,22 @@ class TopPerformersViewController: ButtonBarPagerTabStripViewController {
         configureView()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        ensureGhostContentIsAnimated()
+    }
+
+
     // MARK: - PagerTabStripDataSource
 
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
         return dataVCs
+    }
+
+    override func configureCell(_ cell: ButtonBarViewCell, indicatorInfo: IndicatorInfo) {
+        /// Hide the ImageView:
+        /// We don't use it, and if / when "Ghostified" produces a quite awful placeholder UI!
+        cell.imageView.isHidden = true
     }
 }
 
@@ -44,16 +62,47 @@ extension TopPerformersViewController {
     func syncTopPerformers(onCompletion: (() -> Void)? = nil) {
         let group = DispatchGroup()
 
-        dataVCs.forEach { (vc) in
+        displayGhostContent()
+
+        dataVCs.forEach { vc in
             group.enter()
             vc.syncTopPerformers() {
                 group.leave()
             }
         }
 
-        group.notify(queue: .main) {
+        group.notify(queue: .main) { [weak self] in
+            self?.removeGhostContent()
             onCompletion?()
         }
+    }
+}
+
+
+// MARK: - Placeholders
+//
+private extension TopPerformersViewController {
+
+    /// Locks UI Interaction and displays Ghost Placeholder animations.
+    ///
+    func displayGhostContent() {
+        view.isUserInteractionEnabled = false
+        buttonBarView.startGhostAnimation()
+        visibleChildViewController.displayGhostContent()
+    }
+
+    /// Unlocks the and removes the Placeholder Content.
+    ///
+    func removeGhostContent() {
+        view.isUserInteractionEnabled = true
+        buttonBarView.stopGhostAnimation()
+        visibleChildViewController.removeGhostContent()
+    }
+
+    /// If the Ghost Content was previously onscreen, this method will restart the animations.
+    ///
+    func ensureGhostContentIsAnimated() {
+        view.restartGhostAnimation()
     }
 }
 

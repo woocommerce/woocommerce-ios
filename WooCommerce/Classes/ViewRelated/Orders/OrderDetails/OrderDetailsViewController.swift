@@ -313,8 +313,9 @@ private extension OrderDetailsViewController {
 
         cell.textLabel?.text = email
         cell.accessoryImageView.image = Gridicon.iconOfType(.mail)
-        cell.onTouchUp = { [weak self] in
-            self?.emailButtonAction()
+        cell.onTouchUp = { [weak self] _ in
+            WooAnalytics.shared.track(.orderDetailCustomerEmailTapped)
+            self?.displayEmailComposerIfPossible()
         }
 
         cell.isAccessibilityElement = true
@@ -331,8 +332,8 @@ private extension OrderDetailsViewController {
 
         cell.textLabel?.text = phoneNumber
         cell.accessoryImageView.image = Gridicon.iconOfType(.ellipsis)
-        cell.onTouchUp = { [weak self] in
-            self?.phoneButtonAction()
+        cell.onTouchUp = { [weak self] sender in
+            self?.displayContactCustomerAlert(from: sender)
         }
 
         cell.isAccessibilityElement = true
@@ -485,42 +486,7 @@ private extension OrderDetailsViewController {
 
 // MARK: - Actions
 //
-extension OrderDetailsViewController {
-    @objc func phoneButtonAction() {
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
-        let dismissAction = UIAlertAction(title: NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"), style: .cancel)
-        actionSheet.addAction(dismissAction)
-
-        let callAction = UIAlertAction(title: NSLocalizedString("Call", comment: "Call phone number button title"), style: .default) { [weak self] action in
-            WooAnalytics.shared.track(.orderDetailCustomerPhoneOptionTapped)
-            guard let phone = self?.viewModel.order.billingAddress?.cleanedPhoneNumber else {
-                return
-            }
-            if let url = URL(string: "telprompt://" + phone),
-                UIApplication.shared.canOpenURL(url) {
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": self?.viewModel.order.orderID ?? 0,
-                                                                                "status": self?.viewModel.order.status.rawValue ?? String(),
-                                                                                "type": "call"])
-            }
-        }
-        actionSheet.addAction(callAction)
-
-        let messageAction = UIAlertAction(title: NSLocalizedString("Message", comment: "Message phone number button title"), style: .default) { [weak self] action in
-            WooAnalytics.shared.track(.orderDetailCustomerSMSOptionTapped)
-            self?.sendTextMessageIfPossible()
-        }
-
-        actionSheet.addAction(messageAction)
-        WooAnalytics.shared.track(.orderDetailCustomerPhoneMenuTapped)
-        present(actionSheet, animated: true)
-    }
-
-    @objc func emailButtonAction() {
-        WooAnalytics.shared.track(.orderDetailCustomerEmailTapped)
-        sendEmailIfPossible()
-    }
+private extension OrderDetailsViewController {
 
     func toggleBillingFooter() {
         displaysBillingDetails = !displaysBillingDetails
@@ -642,23 +608,73 @@ extension OrderDetailsViewController: UITableViewDelegate {
 }
 
 
-// MARK: - MFMessageComposeViewControllerDelegate Conformance
+// MARK: - Contact Alert
 //
-extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
-    func sendTextMessageIfPossible() {
-        guard let phoneNumber = viewModel.order.billingAddress?.cleanedPhoneNumber else {
+private extension OrderDetailsViewController {
+
+    /// Displays an alert that offers several contact methods to reach the customer: [Phone / Message]
+    ///
+    func displayContactCustomerAlert(from sourceView: UIView) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+
+        actionSheet.addCancelActionWithTitle(ContactAction.dismiss)
+        actionSheet.addDefaultActionWithTitle(ContactAction.call) { [weak self] _ in
+            guard let phoneURL = self?.viewModel.order.billingAddress?.cleanedPhoneNumberAsActionableURL else {
+                return
+            }
+
+            WooAnalytics.shared.track(.orderDetailCustomerPhoneOptionTapped)
+            self?.callCustomerIfPossible(at: phoneURL)
+        }
+
+        actionSheet.addDefaultActionWithTitle(ContactAction.message) { [weak self] _ in
+            WooAnalytics.shared.track(.orderDetailCustomerSMSOptionTapped)
+            self?.displayMessageComposerIfPossible()
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = sourceView
+        popoverController?.sourceRect = sourceView.bounds
+
+        present(actionSheet, animated: true)
+
+        WooAnalytics.shared.track(.orderDetailCustomerPhoneMenuTapped)
+    }
+
+    /// Attempts to perform a phone call at the specified URL
+    ///
+    func callCustomerIfPossible(at phoneURL: URL) {
+        guard UIApplication.shared.canOpenURL(phoneURL) else {
             return
         }
 
-        if MFMessageComposeViewController.canSendText() {
-            sendTextMessage(to: phoneNumber)
-            WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
-                                                                            "status": viewModel.order.status.rawValue,
-                                                                            "type": "sms"])
+        UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
+        WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": self.viewModel.order.orderID,
+                                                                        "status": self.viewModel.order.status.rawValue,
+                                                                        "type": "call"])
+
+    }
+}
+
+
+// MARK: - MFMessageComposeViewControllerDelegate Conformance
+//
+extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
+    func displayMessageComposerIfPossible() {
+        guard let phoneNumber = viewModel.order.billingAddress?.cleanedPhoneNumber,
+            MFMessageComposeViewController.canSendText()
+            else {
+                return
         }
+
+        displayMessageComposer(for: phoneNumber)
+        WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
+                                                                        "status": viewModel.order.status.rawValue,
+                                                                        "type": "sms"])
     }
 
-    private func sendTextMessage(to phoneNumber: String) {
+    private func displayMessageComposer(for phoneNumber: String) {
         let controller = MFMessageComposeViewController()
         controller.recipients = [phoneNumber]
         controller.messageComposeDelegate = self
@@ -674,18 +690,18 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
 // MARK: - MFMailComposeViewControllerDelegate Conformance
 //
 extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
-    func sendEmailIfPossible() {
+    func displayEmailComposerIfPossible() {
         guard let email = viewModel.order.billingAddress?.email, MFMailComposeViewController.canSendMail() else {
             return
         }
 
-        sendEmail(to: email)
+        displayEmailComposer(for: email)
         WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
                                                                         "status": viewModel.order.status.rawValue,
                                                                         "type": "email"])
     }
 
-    private func sendEmail(to email: String) {
+    private func displayEmailComposer(for email: String) {
         // Workaround: MFMailCompose isn't *FULLY* picking up UINavigationBar's WC's appearance. Title / Buttons look awful.
         // We're falling back to iOS's default appearance
         UINavigationBar.applyDefaultAppearance()
@@ -709,6 +725,13 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
 // MARK: - Constants
 //
 private extension OrderDetailsViewController {
+
+    enum ContactAction {
+        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
+        static let call = NSLocalizedString("Call", comment: "Call phone number button title")
+        static let message = NSLocalizedString("Message", comment: "Message phone number button title")
+    }
+
     enum Constants {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)

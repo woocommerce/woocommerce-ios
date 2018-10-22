@@ -38,6 +38,8 @@ public struct SiteSetting: Decodable {
         var value = ""
         if let stringValue = try? container.decode(String.self, forKey: .value) {
             value = stringValue
+        } else {
+            DDLogWarn("⚠️ Could not successfully decode SiteSetting value for \(settingID)")
         }
 
         self.init(siteID: siteID, settingID: settingID, label: label, description: settingDescription, value: value) // initialize the struct

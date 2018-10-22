@@ -6,7 +6,7 @@ import Alamofire
 ///
 public class SiteSettingsRemote: Remote {
 
-    /// Retrieves all of the gneral `SiteSetting`s for a given site.
+    /// Retrieves all of the general `SiteSetting`s for a given site.
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the general settings.

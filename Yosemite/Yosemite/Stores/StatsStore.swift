@@ -60,34 +60,37 @@ private extension StatsStore  {
 
     /// Retrieves the order stats associated with the provided Site ID (if any!).
     ///
-    func retrieveOrderStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (OrderStats?, Error?) -> Void) {
+    func retrieveOrderStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (Error?) -> Void) {
 
         let remote = OrderStatsRemote(network: network)
         let formattedDateString = StatsStore.buildDateString(from: latestDateToInclude, with: granularity)
 
-        remote.loadOrderStats(for: siteID, unit: granularity, latestDateToInclude: formattedDateString, quantity: quantity) { (orderStats, error) in
+        remote.loadOrderStats(for: siteID, unit: granularity, latestDateToInclude: formattedDateString, quantity: quantity) { [weak self] (orderStats, error) in
             guard let orderStats = orderStats else {
-                onCompletion(nil, error)
+                onCompletion(error)
                 return
             }
 
-            onCompletion(orderStats, nil)
+            self?.upsertStoredOrderStats(readOnlyStats: orderStats)
+            onCompletion(nil)
         }
     }
 
     /// Retrieves the site visit stats associated with the provided Site ID (if any!).
     ///
-    func retrieveSiteVisitStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (SiteVisitStats?, Error?) -> Void) {
+    func retrieveSiteVisitStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (Error?) -> Void) {
 
         let remote = SiteVisitStatsRemote(network: network)
 
-        remote.loadSiteVisitorStats(for: siteID, unit: granularity, latestDateToInclude: latestDateToInclude, quantity: quantity) { (siteVisitStats, error) in
+        remote.loadSiteVisitorStats(for: siteID, unit: granularity, latestDateToInclude: latestDateToInclude, quantity: quantity) { [weak self] (siteVisitStats, error) in
             guard let siteVisitStats = siteVisitStats else {
-                onCompletion(nil, error)
+                onCompletion(error)
                 return
             }
 
-            onCompletion(siteVisitStats, nil)
+
+            self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats)
+            onCompletion(nil)
         }
     }
 
@@ -128,7 +131,7 @@ extension StatsStore {
         storage.saveIfNeeded()
     }
 
-    /// Updates the provided StorageTopEarnerStats' items using the provided read-only TopEarnerStats' items
+    /// Updates the provided StorageTopEarnerStats items using the provided read-only TopEarnerStats items
     ///
     private func handleTopEarnerStatsItems(_ readOnlyStats: Networking.TopEarnerStats, _ storageTopEarnerStats: Storage.TopEarnerStats, _ storage: StorageType) {
 
@@ -143,6 +146,81 @@ extension StatsStore {
             let newStorageItem = storage.insertNewObject(ofType: Storage.TopEarnerStatsItem.self)
             newStorageItem.update(with: readOnlyItem)
             storageTopEarnerStats.addToItems(newStorageItem)
+        })
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly SiteVisitStats Entity into the Storage Layer.
+    ///
+    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats) {
+        assert(Thread.isMainThread)
+
+        let storage = storageManager.viewStorage
+        let storageSiteVisitStats = storage.loadSiteVisitStats(granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
+        storageSiteVisitStats.update(with: readOnlyStats)
+        handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
+        storage.saveIfNeeded()
+    }
+
+    /// Updates the provided StorageSiteVisitStats items using the provided read-only SiteVisitStats items
+    ///
+    private func handleSiteVisitStatsItems(_ readOnlyStats: Networking.SiteVisitStats, _ storageSiteVisitStats: Storage.SiteVisitStats, _ storage: StorageType) {
+
+        // Since we are treating the items in core data like a dumb cache, start by nuking all of the existing stored SiteVisitStatsItems
+        storageSiteVisitStats.items?.forEach {
+            storageSiteVisitStats.removeFromItems($0)
+            storage.deleteObject($0)
+        }
+
+        // Insert the items from the read-only stats
+        readOnlyStats.items?.forEach({ readOnlyItem in
+            let newStorageItem = storage.insertNewObject(ofType: Storage.SiteVisitStatsItem.self)
+            newStorageItem.update(with: readOnlyItem)
+            storageSiteVisitStats.addToItems(newStorageItem)
+        })
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly OrderStats Entity into the Storage Layer.
+    ///
+    func upsertStoredOrderStats(readOnlyStats: Networking.OrderStats) {
+        assert(Thread.isMainThread)
+
+        let storage = storageManager.viewStorage
+        let storageOrderStats = storage.loadOrderStats(granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.OrderStats.self)
+        storageOrderStats.update(with: readOnlyStats)
+        handleOrderStatsItems(readOnlyStats, storageOrderStats, storage)
+        storage.saveIfNeeded()
+    }
+
+    /// Updates the provided StorageOrderStats items using the provided read-only OrderStats items
+    ///
+    private func handleOrderStatsItems(_ readOnlyStats: Networking.OrderStats, _ storageStats: Storage.OrderStats, _ storage: StorageType) {
+
+        guard let readOnlyItems = readOnlyStats.items, !readOnlyItems.isEmpty else {
+            // No items in the read-only order stats, so remove all the items in Storage.OrderStats
+            storageStats.items?.forEach {
+                storageStats.removeFromItems($0)
+                storage.deleteObject($0)
+            }
+            return
+        }
+
+        // Upsert the items from the read-only order stats item
+        for readOnlyItem in readOnlyItems {
+            if let existingStorageItem = storage.loadOrderStatsItem(period: readOnlyItem.period) {
+                existingStorageItem.update(with: readOnlyItem)
+            } else {
+                let newStorageItem = storage.insertNewObject(ofType: Storage.OrderStatsItem.self)
+                newStorageItem.update(with: readOnlyItem)
+                storageStats.addToItems(newStorageItem)
+            }
+        }
+
+        // Now, remove any objects that exist in storageStats.items but not in readOnlyStats.items
+        storageStats.items?.forEach({ storageItem in
+            if readOnlyItems.first(where: { $0.period == storageItem.period } ) == nil {
+                storageStats.removeFromItems(storageItem)
+                storage.deleteObject(storageItem)
+            }
         })
     }
 }

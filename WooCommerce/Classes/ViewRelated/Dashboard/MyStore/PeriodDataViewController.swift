@@ -7,7 +7,17 @@ import CocoaLumberjack
 
 class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
-    // MARK: - Properties
+    // MARK: - Public Properties
+
+    public let granularity: StatGranularity
+    public var orderStats: OrderStats? {
+        return orderStatsResultsController.fetchedObjects.first
+    }
+    public var siteStats: SiteVisitStats? {
+        return siteStatsResultsController.fetchedObjects.first
+    }
+
+    // MARK: - Private Properties
 
     @IBOutlet private weak var visitorsTitle: UILabel!
     @IBOutlet private weak var visitorsData: UILabel!
@@ -27,30 +37,29 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     private var yAxisMaximum: String = ""
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
-    public let granularity: StatGranularity
-    public var orderStats: OrderStats? {
-        didSet {
-            if orderStats != nil {
-                lastUpdatedDate = Date()
-            } else {
-                lastUpdatedDate = nil
-            }
-            reloadOrderFields()
-            reloadChart()
-            reloadLastUpdatedField()
-        }
-    }
-    public var siteStats: SiteVisitStats? {
-        didSet {
-            if siteStats != nil {
-                lastUpdatedDate = Date()
-            } else {
-                lastUpdatedDate = nil
-            }
-            reloadSiteFields()
-            reloadLastUpdatedField()
-        }
-    }
+    /// SiteVisitStats ResultsController: Loads site visit stats from the Storage Layer
+    ///
+    private lazy var siteStatsResultsController: ResultsController<StorageSiteVisitStats> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "granularity ==[c] %@", granularity.rawValue)
+        let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+
+    /// OrderStats ResultsController: Loads order stats from the Storage Layer
+    ///
+    private lazy var orderStatsResultsController: ResultsController<StorageOrderStats> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "granularity ==[c] %@", granularity.rawValue)
+        let descriptor = NSSortDescriptor(keyPath: \StorageOrderStats.date, ascending: false)
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    /// Placeholder: Mockup Charts View
+    ///
+    private lazy var placehoderChartsView: ChartPlaceholderView = ChartPlaceholderView.instantiateFromNib()
+
 
     // MARK: - Computed Properties
 
@@ -104,6 +113,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
+        configureResultsControllers()
         configureBarChart()
     }
 
@@ -126,16 +136,70 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 extension PeriodDataViewController {
     func clearAllFields() {
         barChartView?.clear()
-        orderStats = nil
-        siteStats = nil
-        reloadAllFields()
+        reloadAllFields(animateChart: false)
     }
 }
 
 
-// MARK: - User Interface Configuration
+// MARK: - Ghosts API
+
+extension PeriodDataViewController {
+
+    /// Displays the Placeholder Period Graph + Starts the Animation.
+    /// Why is this public? Because the actual Sync OP is handled by StoreStatsViewController. We coordinate multiple
+    /// placeholder animations from that spot!
+    ///
+    func displayGhostContent() {
+        ensurePlaceholderIsVisible()
+        placehoderChartsView.startGhostAnimation()
+    }
+
+    /// Removes the Placeholder Content.
+    /// Why is this public? Because the actual Sync OP is handled by StoreStatsViewController. We coordinate multiple
+    /// placeholder animations from that spot!
+    ///
+    func removeGhostContent() {
+        placehoderChartsView.stopGhostAnimation()
+        placehoderChartsView.removeFromSuperview()
+    }
+
+    /// Ensures the Placeholder Charts UI is onscreen.
+    ///
+    private func ensurePlaceholderIsVisible() {
+        guard placehoderChartsView.superview == nil else {
+            return
+        }
+
+        placehoderChartsView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(placehoderChartsView)
+        view.pinSubviewToAllEdgeMargins(placehoderChartsView)
+    }
+
+}
+
+// MARK: - Configuration
 //
 private extension PeriodDataViewController {
+
+    func configureResultsControllers() {
+        // Site Visitor Stats
+        siteStatsResultsController.onDidChangeContent = { [weak self] in
+            self?.updateSiteVisitDataIfNeeded()
+        }
+        siteStatsResultsController.onDidResetContent = { [weak self] in
+            self?.updateSiteVisitDataIfNeeded()
+        }
+        try? siteStatsResultsController.performFetch()
+
+        // Order Stats
+        orderStatsResultsController.onDidChangeContent = { [weak self] in
+            self?.updateOrderDataIfNeeded()
+        }
+        orderStatsResultsController.onDidResetContent = { [weak self] in
+            self?.updateOrderDataIfNeeded()
+        }
+        try? orderStatsResultsController.performFetch()
+    }
 
     func configureView() {
         view.backgroundColor = StyleManager.wooWhite
@@ -311,6 +375,30 @@ private extension PeriodDataViewController {
 //
 private extension PeriodDataViewController {
 
+    func updateSiteVisitDataIfNeeded() {
+        if siteStats != nil {
+            lastUpdatedDate = Date()
+        } else {
+            lastUpdatedDate = nil
+        }
+        reloadSiteFields()
+        reloadLastUpdatedField()
+    }
+
+    func updateOrderDataIfNeeded() {
+        if orderStats != nil {
+            lastUpdatedDate = Date()
+        } else {
+            lastUpdatedDate = nil
+        }
+        reloadOrderFields()
+
+        // Don't animate the chart here - this helps avoid a "double animation" effect if a
+        // small number of values change (the chart WILL be updated correctly however)
+        reloadChart(animateChart: false)
+        reloadLastUpdatedField()
+    }
+
     func trackChangedTabIfNeeded() {
         // This is a little bit of a workaround to prevent the "tab tapped" tracks event from firing when launching the app.
         if granularity == .day && isInitialLoad {
@@ -321,10 +409,10 @@ private extension PeriodDataViewController {
         isInitialLoad = false
     }
 
-    func reloadAllFields() {
+    func reloadAllFields(animateChart: Bool = true) {
         reloadOrderFields()
         reloadSiteFields()
-        reloadChart()
+        reloadChart(animateChart: animateChart)
         reloadLastUpdatedField()
         view.accessibilityElements = [visitorsTitle, visitorsData, ordersTitle, ordersData, revenueTitle, revenueData, lastUpdated, yAxisAccessibilityView, xAxisAccessibilityView, chartAccessibilityView]
     }
@@ -357,14 +445,16 @@ private extension PeriodDataViewController {
         visitorsData.text = visitorsText
     }
 
-    func reloadChart() {
+    func reloadChart(animateChart: Bool = true) {
         guard barChartView != nil else {
             return
         }
         barChartView.data = generateBarDataSet()
         barChartView.fitBars = true
         barChartView.notifyDataSetChanged()
-        barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
+        if animateChart {
+            barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
+        }
         updateChartAccessibilityValues()
     }
 

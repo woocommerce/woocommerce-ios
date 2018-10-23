@@ -47,9 +47,23 @@ enum WooTab: Int, CustomStringConvertible {
 //
 class MainTabBarController: UITabBarController {
 
+    /// For picking up the child view controller's status bar styling
+    /// - returns: nil to let the tab bar control styling or `children.first` for VC control.
+    ///
+    open override var childForStatusBarStyle: UIViewController? {
+        return nil
+    }
+
+    /// Used for overriding the status bar style for all child view controllers
+    ///
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return StyleManager.statusBarLight
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
+        setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
     }
 
     private func setupTabBar() {

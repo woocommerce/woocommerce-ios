@@ -128,13 +128,26 @@ extension FulfillViewController {
     /// Whenever the Fulfillment Action is pressed, we'll mark the order as Completed, and pull back to the previous screen.
     ///
     @IBAction func fulfillWasPressed() {
-        let done = updateOrderAction(siteID: order.siteID, orderID: order.orderID, status: .completed)
-        let undo = updateOrderAction(siteID: order.siteID, orderID: order.orderID, status: order.status)
+        // Capture these values for the undo closure
+        let orderID = order.orderID
+        let doneStatus = OrderStatus.completed
+        let undoStatus = order.status
 
-        StoresManager.shared.dispatch(done)
+        let done = updateOrderAction(siteID: order.siteID, orderID: orderID, status: doneStatus)
+        let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, status: undoStatus)
+
         WooAnalytics.shared.track(.orderFulfillmentCompleteButtonTapped)
+        WooAnalytics.shared.track(.orderStatusChange, withProperties: ["id": order.orderID,
+                                                                       "from": order.status.rawValue,
+                                                                       "to": OrderStatus.completed.rawValue])
+        StoresManager.shared.dispatch(done)
+
         displayOrderCompleteNotice {
             WooAnalytics.shared.track(.orderMarkedCompleteUndoButtonTapped)
+            WooAnalytics.shared.track(.orderStatusChangeUndo, withProperties: ["id": orderID])
+            WooAnalytics.shared.track(.orderStatusChange, withProperties: ["id": orderID,
+                                                                           "from": doneStatus.rawValue,
+                                                                           "to": undoStatus.rawValue])
             StoresManager.shared.dispatch(undo)
         }
 
@@ -146,9 +159,11 @@ extension FulfillViewController {
     private func updateOrderAction(siteID: Int, orderID: Int, status: OrderStatus) -> Action {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: { error in
             guard let error = error else {
+                WooAnalytics.shared.track(.orderStatusChangeSuccess)
                 return
             }
 
+            WooAnalytics.shared.track(.orderStatusChangeFailed, withError: error)
             DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(status.rawValue)]. Error: \(error)")
         })
     }

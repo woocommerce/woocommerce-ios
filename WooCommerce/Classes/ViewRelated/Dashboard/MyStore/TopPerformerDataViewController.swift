@@ -3,6 +3,7 @@ import Yosemite
 import Charts
 import XLPagerTabStrip
 import CocoaLumberjack
+import WordPressUI
 
 
 class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
@@ -86,20 +87,46 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
 //
 extension TopPerformerDataViewController {
 
-    func syncTopPerformers(onCompletion: ((Error?) -> ())? = nil) {
+    func syncTopPerformers(onCompletion: (() -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            onCompletion?(nil)
+            onCompletion?()
             return
         }
 
-        let action = StatsAction.retrieveTopEarnerStats(siteID: siteID, granularity: granularity, latestDateToInclude: Date()) { [weak self] (error) in
+        let action = StatsAction.retrieveTopEarnerStats(siteID: siteID,
+                                                        granularity: granularity,
+                                                        latestDateToInclude: Date()) { [weak self] error in
+
+            guard let `self` = self else {
+                return
+            }
+
             if let error = error {
                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
             } else {
-                WooAnalytics.shared.track(.dashboardTopPerformersLoaded, withProperties: ["granularity": self?.granularity.rawValue ?? String()])
+                WooAnalytics.shared.track(.dashboardTopPerformersLoaded, withProperties: ["granularity": self.granularity.rawValue])
             }
+            onCompletion?()
         }
+
         StoresManager.shared.dispatch(action)
+    }
+
+    /// Renders Placeholder Content.
+    /// Why is this public? Because the `syncTopPerformers` method is actually called from TopPerformersViewController.
+    /// We coordinate multiple placeholder animations from that spot!
+    ///
+    func displayGhostContent() {
+        let options = GhostOptions(reuseIdentifier: ProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
+        tableView.displayGhostContent(options: options)
+    }
+
+    /// Removes the Placeholder Content.
+    /// Why is this public? Because the `syncTopPerformers` method is actually called from TopPerformersViewController.
+    /// We coordinate multiple placeholder animations from that spot!
+    ///
+    func removeGhostContent() {
+        tableView.removeGhostContent()
     }
 }
 
@@ -208,7 +235,7 @@ extension TopPerformerDataViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
-        return CGFloat.leastNonzeroMagnitude
+        return .leastNonzeroMagnitude
     }
 }
 
@@ -254,10 +281,11 @@ private extension TopPerformerDataViewController {
     }
 
     enum Constants {
-        static let estimatedRowHeight       = CGFloat(80)
-        static let estimatedSectionHeight   = CGFloat(125)
-        static let numberOfSections         = 1
-        static let emptyStateRowCount       = 1
-        static let emptyView                = UIView(frame: .zero)
+        static let estimatedRowHeight           = CGFloat(80)
+        static let estimatedSectionHeight       = CGFloat(125)
+        static let numberOfSections             = 1
+        static let emptyStateRowCount           = 1
+        static let emptyView                    = UIView(frame: .zero)
+        static let placeholderRowsPerSection    = [3]
     }
 }

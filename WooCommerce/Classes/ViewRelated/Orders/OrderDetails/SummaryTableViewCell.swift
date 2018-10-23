@@ -5,10 +5,10 @@ class SummaryTableViewCell: UITableViewCell {
     @IBOutlet private weak var createdLabel: UILabel!
     @IBOutlet private weak var paymentStatusLabel: PaddedLabel!
 
-    var paymentBackgroundColor: UIColor = .clear
+    public var paymentBackgroundColor: UIColor = .clear
 
 
-    var title: String? {
+    public var title: String? {
         get {
             return titleLabel.text
         }
@@ -18,7 +18,7 @@ class SummaryTableViewCell: UITableViewCell {
         }
     }
 
-    var dateCreated: String? {
+    public var dateCreated: String? {
         get {
             return createdLabel.text
         }
@@ -28,7 +28,7 @@ class SummaryTableViewCell: UITableViewCell {
         }
     }
 
-    var paymentStatus: String? {
+    public var paymentStatus: String? {
         get {
             return paymentStatusLabel.text
         }
@@ -39,7 +39,7 @@ class SummaryTableViewCell: UITableViewCell {
         }
     }
 
-    var paymentBorderColor: CGColor? {
+    public var paymentBorderColor: CGColor? {
         get {
             return paymentStatusLabel.layer.borderColor
         }
@@ -63,15 +63,5 @@ class SummaryTableViewCell: UITableViewCell {
     func preserveLabelColors(action: () -> Void) {
         action()
         paymentStatusLabel.backgroundColor = paymentBackgroundColor
-    }
-}
-
-extension SummaryTableViewCell {
-    func configure(with viewModel: OrderDetailsViewModel) {
-        title = viewModel.summaryTitle
-        dateCreated = viewModel.summaryDateCreated
-        paymentStatus = viewModel.paymentStatus
-        paymentBackgroundColor = viewModel.paymentBackgroundColor
-        paymentBorderColor = viewModel.paymentBorderColor
     }
 }

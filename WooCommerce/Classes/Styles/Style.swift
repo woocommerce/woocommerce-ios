@@ -22,6 +22,8 @@ protocol Style {
     var navBarImage: UIImage { get }
     var sectionBackgroundColor: UIColor { get }
     var sectionTitleColor: UIColor { get }
+    var statusBarDark: UIStatusBarStyle { get }
+    var statusBarLight: UIStatusBarStyle { get }
     var statusDangerColor: UIColor { get }
     var statusDangerBoldColor: UIColor { get }
     var statusNotIdentifiedColor: UIColor { get }
@@ -72,6 +74,9 @@ class DefaultStyle: Style {
     let sectionBackgroundColor          = HandbookColors.wooGreyLight
     let sectionTitleColor               = HandbookColors.wooSecondary
     let tableViewBackgroundColor        = HandbookColors.wooGreyLight
+
+    let statusBarDark                   = UIStatusBarStyle.default
+    let statusBarLight                  = UIStatusBarStyle.lightContent
 
     let statusDangerColor               = HandbookColors.statusRedDimmed
     let statusDangerBoldColor           = HandbookColors.statusRed
@@ -198,6 +203,14 @@ class StyleManager {
 
     static var navBarImage: UIImage {
         return active.navBarImage
+    }
+
+    static var statusBarDark: UIStatusBarStyle {
+        return active.statusBarDark
+    }
+
+    static var statusBarLight: UIStatusBarStyle {
+        return active.statusBarLight
     }
 
     static var sectionBackgroundColor: UIColor {

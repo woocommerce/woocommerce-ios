@@ -6,7 +6,7 @@ import Storage
 //
 extension Storage.TopEarnerStats: ReadOnlyConvertible {
 
-    /// Updates the Storage.Order with the ReadOnly.
+    /// Updates the Storage.TopEarnerStats with the ReadOnly.
     ///
     public func update(with stats: Yosemite.TopEarnerStats) {
         date = stats.date

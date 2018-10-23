@@ -8,7 +8,7 @@ class BillingDetailsTableViewCell: UITableViewCell {
 
     /// AccessoryView's Image
     ///
-    private let accessoryImageView: UIImageView = {
+    public let accessoryImageView: UIImageView = {
         let imageView = UIImageView(frame: Constants.accessoryFrame)
         imageView.tintColor = StyleManager.wooCommerceBrandColor
         return imageView
@@ -16,7 +16,7 @@ class BillingDetailsTableViewCell: UITableViewCell {
 
     /// Closure to be executed whenever the cell is pressed.
     ///
-    var onTouchUp: (() -> Void)?
+    var onTouchUp: ((UIView) -> Void)?
 
 
     // MARK: - Overridden Methods
@@ -31,15 +31,14 @@ class BillingDetailsTableViewCell: UITableViewCell {
 
         let gestureRecognizer = UITapGestureRecognizer()
         gestureRecognizer.on { [weak self] gesture in
-            self?.onTouchUp?()
+            guard let `self` = self else {
+                return
+            }
+
+            self.onTouchUp?(self)
         }
 
         addGestureRecognizer(gestureRecognizer)
-    }
-
-    func configure(text: String?, image: UIImage) {
-        accessoryImageView.image = image
-        textLabel?.text = text
     }
 }
 

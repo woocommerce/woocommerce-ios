@@ -164,6 +164,22 @@ class SettingStoreTests: XCTestCase {
         let storageSiteSetting2 = viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: sampleSiteSetting2Mutated().settingID)
         XCTAssertEqual(storageSiteSetting2?.toReadOnly(), expectedSiteSetting2)
     }
+
+    /// Verifies that `upsertStoredSiteSettings` removes previously stored SiteSettings correctly.
+    ///
+    func testUpdateStoredSiteSettingsEffectivelyRemovesInvalidSiteSettings() {
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
+        settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()])
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
+        settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting2Mutated()])
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 1)
+
+        let expectedSiteSetting = sampleSiteSetting2Mutated()
+        let storageSiteSetting = viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: sampleSiteSetting2Mutated().settingID)
+        XCTAssertEqual(storageSiteSetting?.toReadOnly(), expectedSiteSetting)
+    }
 }
 
 

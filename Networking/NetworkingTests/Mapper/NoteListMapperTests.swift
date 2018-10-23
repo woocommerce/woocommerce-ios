@@ -24,7 +24,7 @@ class NoteListMapperTests: XCTestCase {
     /// Verifies that all of the Sample Notifications are properly parsed.
     ///
     func testSampleNotificationsAreProperlyDecoded() {
-        XCTAssertEqual(sampleNotes.count, 99)
+        XCTAssertEqual(sampleNotes.count, 40)
     }
 
     /// Verifies that the Broken Notification documents are properly parsed.

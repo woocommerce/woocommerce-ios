@@ -37,7 +37,7 @@ public class NotificationsRemote: Remote {
 }
 
 
-// MARK: -
+// MARK: - Private Methods
 //
 private extension NotificationsRemote {
 

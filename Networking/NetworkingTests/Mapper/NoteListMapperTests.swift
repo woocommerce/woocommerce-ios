@@ -242,22 +242,22 @@ class NoteListMapperTests: XCTestCase {
 ///
 private extension NoteListMapperTests {
 
-    /// Returns the OrderListMapper output upon receiving `filename` (Data Encoded)
+    /// Returns the NoteListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrders(from filename: String) throws -> [Note] {
+    func mapNotes(from filename: String) throws -> [Note] {
         let response = Loader.contentsOf(filename)!
         return try NoteListMapper().map(response: response)
     }
 
-    /// Returns the OrderListMapper output upon receiving `orders-load-all`
+    /// Returns the NoteListMapper output upon receiving `notifications` endpoint's response.
     ///
     func mapLoadAllNotificationsResponse() throws -> [Note] {
-        return try mapOrders(from: "notifications-load-all")
+        return try mapNotes(from: "notifications-load-all")
     }
 
-    /// Returns the OrderListMapper output upon receiving `orders-load-all`
+    /// Returns the NoteListMapper output upon receiving `notifications` endpoint's response.
     ///
     func mapLoadBrokenNotificationsResponse() throws -> [Note] {
-        return try mapOrders(from: "broken-notifications")
+        return try mapNotes(from: "broken-notifications")
     }
 }

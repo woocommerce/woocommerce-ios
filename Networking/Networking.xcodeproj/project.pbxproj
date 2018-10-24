@@ -77,6 +77,7 @@
 		B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662320A099BF00037A38 /* AlamofireNetwork.swift */; };
 		B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */; };
 		B518663520A0A2E800037A38 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518663320A0A2E800037A38 /* Constants.swift */; };
+		B53EF5322180F21C003E146F /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EF5312180F21C003E146F /* Dictionary+Woo.swift */; };
 		B554FA8B2180B1D500C54DFF /* NotificationsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554FA8A2180B1D500C54DFF /* NotificationsRemoteTests.swift */; };
 		B554FA8D2180B59700C54DFF /* notifications-load-hashes.json in Resources */ = {isa = PBXBuildFile; fileRef = B554FA8C2180B59700C54DFF /* notifications-load-hashes.json */; };
 		B554FA8F2180BC7000C54DFF /* NoteHashListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554FA8E2180BC7000C54DFF /* NoteHashListMapper.swift */; };
@@ -214,6 +215,7 @@
 		B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersRemoteTests.swift; sourceTree = "<group>"; };
 		B518663320A0A2E800037A38 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B518663420A0A2E800037A38 /* Loader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Loader.swift; sourceTree = "<group>"; };
+		B53EF5312180F21C003E146F /* Dictionary+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Woo.swift"; sourceTree = "<group>"; };
 		B554FA8A2180B1D500C54DFF /* NotificationsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsRemoteTests.swift; sourceTree = "<group>"; };
 		B554FA8C2180B59700C54DFF /* notifications-load-hashes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "notifications-load-hashes.json"; sourceTree = "<group>"; };
 		B554FA8E2180BC7000C54DFF /* NoteHashListMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteHashListMapper.swift; sourceTree = "<group>"; };
@@ -564,6 +566,7 @@
 				B58E5BE920FFB3D0003C986E /* CodingUserInfoKey+Woo.swift */,
 				B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */,
 				B5C151BA217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift */,
+				B53EF5312180F21C003E146F /* Dictionary+Woo.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -847,6 +850,7 @@
 				7452387321124B7700A973CD /* AnyCodable.swift in Sources */,
 				B5A036A1214C0F5400774E2C /* CocoaLumberjack.swift in Sources */,
 				B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */,
+				B53EF5322180F21C003E146F /* Dictionary+Woo.swift in Sources */,
 				74A1D26D21189DFF00931DFA /* SiteVisitStatsMapper.swift in Sources */,
 				74D522B62113607F00042831 /* StatGranularity.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,

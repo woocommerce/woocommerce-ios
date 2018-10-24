@@ -34,6 +34,44 @@ public class NotificationsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+
+    /// Updates a Notification's Read Status as specified.
+    ///
+    /// - Parameters:
+    ///     - notificationID: The ID of the Notification to be updated.
+    ///     - read: The new Read Status to be set.
+    ///     - completion: Closure to be executed on completion, indicating whether the OP was successful or not.
+    ///
+    public func updateReadStatus(_ notificationID: String, read: Bool, completion: @escaping (Error?) -> Void) {
+        // Note: Isn't the API wonderful?
+        let booleanFromPlanetMars = read ? Constants.readAsInteger : Constants.unreadAsInteger
+        let payload = [notificationID: booleanFromPlanetMars]
+
+        var parameters = [String: String]()
+        if let encoded = payload.toJSONEncoded() {
+            parameters[ParameterKeys.counts] = encoded
+        }
+
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.read, parameters: parameters)
+        enqueue(request, completion: completion)
+    }
+
+
+    /// Updates the Last Seen Notification's Timestamp.
+    ///
+    /// - Parameters:
+    ///     - timestamp: Timestamp of the last seen notification.
+    ///     - completion: Closure to be executed on completion, indicating whether the OP was successful or not.
+    ///
+    public func updateLastSeen(_ timestamp: String, completion: @escaping (Error?) -> Void) {
+        let parameters = [
+            ParameterKeys.time: timestamp
+        ]
+
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.seen, parameters: parameters)
+        enqueue(request, completion: completion)
+    }
 }
 
 
@@ -73,6 +111,11 @@ private extension NotificationsRemote {
 //
 private extension NotificationsRemote {
 
+    enum Constants {
+        static let readAsInteger = 9999
+        static let unreadAsInteger = -9999
+    }
+
     enum Fields: String {
         case all = "id,note_hash,type,unread,body,subject,timestamp,meta"
         case hashes = "id,note_hash"
@@ -80,11 +123,15 @@ private extension NotificationsRemote {
 
     enum Paths {
         static let notes = "notifications"
+        static let read = "notifications/read"
+        static let seen = "notifications/seen"
     }
 
     enum ParameterKeys {
-        static let number = "number"
-        static let identifiers = "ids"
+        static let counts = "counts"
         static let fields = "fields"
+        static let identifiers = "ids"
+        static let number = "number"
+        static let time = "time"
     }
 }

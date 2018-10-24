@@ -12,7 +12,7 @@ public class WooAnalytics {
 
     /// AnalyticsProvider: Interface to the actual analytics implementation
     ///
-    private(set) var analyticsProvider: AnalyticsProvider?
+    private(set) var analyticsProvider: AnalyticsProvider
 
     /// Time when app was opened — used for calculating the time-in-app property
     ///
@@ -25,10 +25,7 @@ public class WooAnalytics {
     ///
     init(analyticsProvider: AnalyticsProvider) {
         initializeOptOutTracking()
-
-        if !userHasOptedOut() {
-            self.analyticsProvider = analyticsProvider
-        }
+        self.analyticsProvider = analyticsProvider
     }
 
     deinit {
@@ -52,7 +49,7 @@ public extension WooAnalytics {
     /// It's good to call this function after a user logs in or out of the app.
     ///
     func refreshUserData() {
-        analyticsProvider?.refreshUserData()
+        analyticsProvider.refreshUserData()
     }
 
     /// Track a spcific event without any associated properties
@@ -71,9 +68,9 @@ public extension WooAnalytics {
     ///
     func track(_ stat: WooAnalyticsStat, withProperties properties: [AnyHashable: Any]?) {
         if let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: properties) {
-            analyticsProvider?.track(stat.rawValue, withProperties: updatedProperties)
+            analyticsProvider.track(stat.rawValue, withProperties: updatedProperties)
         } else {
-            analyticsProvider?.track(stat.rawValue)
+            analyticsProvider.track(stat.rawValue)
         }
     }
 
@@ -89,7 +86,7 @@ public extension WooAnalytics {
                                Constants.errorKeyDomain: err.domain,
                                Constants.errorKeyDescription: err.description]
         let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: errorDictionary)
-        analyticsProvider?.track(stat.rawValue, withProperties: updatedProperties)
+        analyticsProvider.track(stat.rawValue, withProperties: updatedProperties)
     }
 }
 
@@ -137,15 +134,12 @@ extension WooAnalytics {
         // now take action on the preference
         if (optedOut) {
             stopObservingNotifications()
-            analyticsProvider?.clearTracksEvents()
-            analyticsProvider = nil
+            analyticsProvider.clearTracksEvents()
             DDLogInfo("🔴 Tracking opt-out complete.")
         } else {
-            if analyticsProvider == nil {
-                analyticsProvider = TracksProvider()
-                startObservingNotifications()
-                DDLogInfo("🔵 Tracking restored.")
-            }
+            refreshUserData()
+            startObservingNotifications()
+            DDLogInfo("🔵 Tracking restored.")
         }
     }
 }

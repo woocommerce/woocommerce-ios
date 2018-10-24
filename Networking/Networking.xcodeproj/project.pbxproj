@@ -478,13 +478,13 @@
 				B59325CF217E4206000B0E8E /* NoteMedia.swift */,
 				B59325D1217E4206000B0E8E /* NoteRange.swift */,
 				B554FA902180BCFC00C54DFF /* NoteHash.swift */,
-				74046E1C217A6989007DD7BF /* SiteSetting.swift */,
 				B557DA1C20979E7D005962F4 /* Order.swift */,
 				741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */,
 				B5C6FCCE20A3592900A4F8E4 /* OrderItem.swift */,
 				74C8F06320EEB44800B6EDC9 /* OrderNote.swift */,
 				B5BB1D1120A255EC00112D92 /* OrderStatus.swift */,
 				B56C1EB720EA76F500D749F9 /* Site.swift */,
+				74046E1C217A6989007DD7BF /* SiteSetting.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

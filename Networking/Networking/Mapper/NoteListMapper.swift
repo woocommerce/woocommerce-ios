@@ -5,7 +5,7 @@ import Foundation
 ///
 struct NoteListMapper: Mapper {
 
-    /// (Attempts) to convert a dictionary into [Order].
+    /// (Attempts) to convert an instance of Data into an array of Note Entities.
     ///
     func map(response: Data) throws -> [Note] {
         let decoder = JSONDecoder()

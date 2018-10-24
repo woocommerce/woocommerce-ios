@@ -143,7 +143,7 @@ class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredSiteSettings` does not produce duplicate entries.
     ///
-    func testUpdateStoredSiteSettingsEffectivelyUpdatesPreexistantSiteSettings() {
+    func testUpsertStoredSiteSettingsEffectivelyUpdatesPreexistantSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
@@ -167,7 +167,7 @@ class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredSiteSettings` removes previously stored SiteSettings correctly.
     ///
-    func testUpdateStoredSiteSettingsEffectivelyRemovesInvalidSiteSettings() {
+    func testUpsertStoredSiteSettingsEffectivelyRemovesInvalidSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
@@ -179,6 +179,18 @@ class SettingStoreTests: XCTestCase {
         let expectedSiteSetting = sampleSiteSetting2Mutated()
         let storageSiteSetting = viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: sampleSiteSetting2Mutated().settingID)
         XCTAssertEqual(storageSiteSetting?.toReadOnly(), expectedSiteSetting)
+    }
+
+    /// Verifies that `upsertStoredSiteSettings` removes previously stored SiteSettings correctly if an empty read-only array is passed in.
+    ///
+    func testUpsertStoredSiteSettingsEffectivelyRemovesSiteSettings() {
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
+        settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()])
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
+        settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [])
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
     }
 }
 

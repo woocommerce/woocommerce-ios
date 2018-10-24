@@ -61,16 +61,6 @@ extension SettingStore {
         assert(Thread.isMainThread)
         let storage = storageManager.viewStorage
 
-        guard !readOnlySiteSettings.isEmpty else {
-            // No items in the read-only settings, so remove all the items in Storage.SiteSettings (if any exist!)
-            if let storageSiteSettings = storage.loadSiteSettings(siteID: siteID) {
-                storageSiteSettings.forEach {
-                    storage.deleteObject($0)
-                }
-            }
-            return
-        }
-
         // Upsert the settings from the read-only site settings
         for readOnlyItem in readOnlySiteSettings {
             if let existingStorageItem = storage.loadSiteSetting(siteID: siteID, settingID: readOnlyItem.settingID) {

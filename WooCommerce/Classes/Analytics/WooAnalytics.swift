@@ -125,7 +125,7 @@ extension WooAnalytics {
     func setUserHasOptedIn(_ optedIn: Bool) {
         userHasOptedIn = optedIn
 
-        if (optedIn) {
+        if optedIn {
             refreshUserData()
             startObservingNotifications()
             DDLogInfo("🔵 Tracking started.")
@@ -146,7 +146,7 @@ private extension WooAnalytics {
         guard userHasOptedIn == true else {
             return
         }
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationOpened), name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationClosed), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }

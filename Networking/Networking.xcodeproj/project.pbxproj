@@ -78,6 +78,9 @@
 		B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */; };
 		B518663520A0A2E800037A38 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518663320A0A2E800037A38 /* Constants.swift */; };
 		B53EF5322180F21C003E146F /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EF5312180F21C003E146F /* Dictionary+Woo.swift */; };
+		B53EF5342180F646003E146F /* DotcomValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EF5332180F646003E146F /* DotcomValidator.swift */; };
+		B53EF53621813681003E146F /* generic_success.json in Resources */ = {isa = PBXBuildFile; fileRef = B53EF53521813681003E146F /* generic_success.json */; };
+		B53EF53821813806003E146F /* DotcomError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EF53721813806003E146F /* DotcomError.swift */; };
 		B554FA8B2180B1D500C54DFF /* NotificationsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554FA8A2180B1D500C54DFF /* NotificationsRemoteTests.swift */; };
 		B554FA8D2180B59700C54DFF /* notifications-load-hashes.json in Resources */ = {isa = PBXBuildFile; fileRef = B554FA8C2180B59700C54DFF /* notifications-load-hashes.json */; };
 		B554FA8F2180BC7000C54DFF /* NoteHashListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554FA8E2180BC7000C54DFF /* NoteHashListMapper.swift */; };
@@ -216,6 +219,9 @@
 		B518663320A0A2E800037A38 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B518663420A0A2E800037A38 /* Loader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Loader.swift; sourceTree = "<group>"; };
 		B53EF5312180F21C003E146F /* Dictionary+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Woo.swift"; sourceTree = "<group>"; };
+		B53EF5332180F646003E146F /* DotcomValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomValidator.swift; sourceTree = "<group>"; };
+		B53EF53521813681003E146F /* generic_success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = generic_success.json; sourceTree = "<group>"; };
+		B53EF53721813806003E146F /* DotcomError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomError.swift; sourceTree = "<group>"; };
 		B554FA8A2180B1D500C54DFF /* NotificationsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsRemoteTests.swift; sourceTree = "<group>"; };
 		B554FA8C2180B59700C54DFF /* notifications-load-hashes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "notifications-load-hashes.json"; sourceTree = "<group>"; };
 		B554FA8E2180BC7000C54DFF /* NoteHashListMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteHashListMapper.swift; sourceTree = "<group>"; };
@@ -380,6 +386,14 @@
 			path = Requests;
 			sourceTree = "<group>";
 		};
+		B53EF539218138EB003E146F /* Validators */ = {
+			isa = PBXGroup;
+			children = (
+				B53EF5332180F646003E146F /* DotcomValidator.swift */,
+			);
+			path = Validators;
+			sourceTree = "<group>";
+		};
 		B557D9D9209753AA005962F4 = {
 			isa = PBXGroup;
 			children = (
@@ -412,6 +426,7 @@
 				B557DA0520975507005962F4 /* Remote */,
 				B557DA1020975F60005962F4 /* Settings */,
 				B505F6EB20BEFD9100BB1B69 /* Tools */,
+				B53EF539218138EB003E146F /* Validators */,
 				B557D9E6209753AA005962F4 /* Networking.h */,
 				B557D9E7209753AA005962F4 /* Info.plist */,
 			);
@@ -474,6 +489,7 @@
 				74A1D26921189AC100931DFA /* Stats */,
 				B505F6CE20BEE38B00BB1B69 /* Account.swift */,
 				B5BB1D0F20A237FB00112D92 /* Address.swift */,
+				B53EF53721813806003E146F /* DotcomError.swift */,
 				B5A2417C217F9ECC00595DEF /* MetaContainer.swift */,
 				B59325C6217E22FC000B0E8E /* Note.swift */,
 				B59325D0217E4206000B0E8E /* NoteBlock.swift */,
@@ -501,6 +517,7 @@
 				B5147875211B9227007562E5 /* broken-orders-mark-2.json */,
 				74A7B4BD217A841400E85A8B /* broken-settings-general.json */,
 				B58D10C72114D21C00107ED4 /* generic_error.json */,
+				B53EF53521813681003E146F /* generic_success.json */,
 				B505F6D420BEE4E600BB1B69 /* me.json */,
 				B58D10C92114D22E00107ED4 /* new-order-note.json */,
 				B5A24178217F98F600595DEF /* notifications-load-all.json */,
@@ -735,6 +752,7 @@
 				B56C1EBA20EA7D2C00D749F9 /* sites.json in Resources */,
 				74A1D263211898F000931DFA /* site-visits-day.json in Resources */,
 				74A1D264211898F000931DFA /* site-visits-week.json in Resources */,
+				B53EF53621813681003E146F /* generic_success.json in Resources */,
 				74A1D265211898F000931DFA /* site-visits-month.json in Resources */,
 				74A1D266211898F000931DFA /* site-visits-year.json in Resources */,
 				743BF8BE21191B63008A9D87 /* site-visits.json in Resources */,
@@ -835,6 +853,7 @@
 				74046E1F217A6B70007DD7BF /* SiteSettingsMapper.swift in Sources */,
 				B56C1EB820EA76F500D749F9 /* Site.swift in Sources */,
 				B5A2417D217F9ECC00595DEF /* MetaContainer.swift in Sources */,
+				B53EF53821813806003E146F /* DotcomError.swift in Sources */,
 				B5C151BB217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift in Sources */,
 				B59325CC217E2B4C000B0E8E /* NoteListMapper.swift in Sources */,
 				B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */,
@@ -866,6 +885,7 @@
 				B5BB1D1220A255EC00112D92 /* OrderStatus.swift in Sources */,
 				B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */,
 				74C8F06820EEB7BD00B6EDC9 /* OrderNotesMapper.swift in Sources */,
+				B53EF5342180F646003E146F /* DotcomValidator.swift in Sources */,
 				74046E1D217A6989007DD7BF /* SiteSetting.swift in Sources */,
 				B5BB1D1020A237FB00112D92 /* Address.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,

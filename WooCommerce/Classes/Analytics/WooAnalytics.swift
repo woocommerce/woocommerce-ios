@@ -18,13 +18,24 @@ public class WooAnalytics {
     ///
     private var applicationOpenedTime: Date?
 
+    /// Check user opt-in for analytics
+    ///
+    var userHasOptedIn: Bool? {
+        get {
+            let optedIn: Bool? = UserDefaults.standard.object(forKey: .userOptedInAnalytics)
+            return optedIn ?? false
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: .userOptedInAnalytics)
+        }
+    }
+
 
     // MARK: - Initialization
 
     /// Designated Initializer
     ///
     init(analyticsProvider: AnalyticsProvider) {
-        initializeOptOutTracking()
         self.analyticsProvider = analyticsProvider
     }
 
@@ -49,6 +60,10 @@ public extension WooAnalytics {
     /// It's good to call this function after a user logs in or out of the app.
     ///
     func refreshUserData() {
+        guard userHasOptedIn == true else {
+            return
+        }
+
         analyticsProvider.refreshUserData()
     }
 
@@ -57,6 +72,10 @@ public extension WooAnalytics {
     /// - Parameter stat: the event name
     ///
     func track(_ stat: WooAnalyticsStat) {
+        guard userHasOptedIn == true else {
+            return
+        }
+
         track(stat, withProperties: nil)
     }
 
@@ -67,6 +86,10 @@ public extension WooAnalytics {
     ///   - properties: a collection of properties related to the event
     ///
     func track(_ stat: WooAnalyticsStat, withProperties properties: [AnyHashable: Any]?) {
+        guard userHasOptedIn == true else {
+            return
+        }
+
         if let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: properties) {
             analyticsProvider.track(stat.rawValue, withProperties: updatedProperties)
         } else {
@@ -81,6 +104,10 @@ public extension WooAnalytics {
     ///   - error: the error to track
     ///
     func track(_ stat: WooAnalyticsStat, withError error: Error) {
+        guard userHasOptedIn == true else {
+            return
+        }
+
         let err = error as NSError
         let errorDictionary = [Constants.errorKeyCode: "\(err.code)",
                                Constants.errorKeyDomain: err.domain,
@@ -94,52 +121,18 @@ public extension WooAnalytics {
 // MARK: - Opt Out
 //
 extension WooAnalytics {
-    /// Initialize the opt-out tracking
-    ///
-    func initializeOptOutTracking() {
-        if userHasOptedOutIsSet() {
-            // We've already configured the opt out setting
-            return
-        }
 
-        // set the default to no, user has not opted out yet
-        setUserHasOptedOutValue(false)
-    }
+    func setUserHasOptedIn(_ optedIn: Bool) {
+        userHasOptedIn = optedIn
 
-    func userHasOptedOutIsSet() -> Bool {
-        return UserDefaults.standard.object(forKey: UserDefaults.Key.userOptedOutOfAnalytics) != nil
-    }
-
-    /// This method just sets the user defaults value for UserOptedOut and doesn't
-    /// do any additional configuration of sessions or trackers.
-    func setUserHasOptedOutValue(_ optedOut: Bool) {
-        UserDefaults.standard.set(optedOut, forKey: UserDefaults.Key.userOptedOutOfAnalytics)
-    }
-
-    func userHasOptedOut() -> Bool {
-        return UserDefaults.standard.bool(forKey: UserDefaults.Key.userOptedOutOfAnalytics.rawValue)
-    }
-
-    func setUserHasOptedOut(_ optedOut: Bool) {
-        if userHasOptedOutIsSet() {
-            let currentValue = userHasOptedOut()
-            if currentValue == optedOut {
-                return
-            }
-        }
-
-        // store the preference
-        setUserHasOptedOutValue(optedOut)
-
-        // now take action on the preference
-        if (optedOut) {
+        if (optedIn) {
+            refreshUserData()
+            startObservingNotifications()
+            DDLogInfo("🔵 Tracking started.")
+        } else {
             stopObservingNotifications()
             analyticsProvider.clearTracksEvents()
             DDLogInfo("🔴 Tracking opt-out complete.")
-        } else {
-            refreshUserData()
-            startObservingNotifications()
-            DDLogInfo("🔵 Tracking restored.")
         }
     }
 }
@@ -150,6 +143,10 @@ extension WooAnalytics {
 private extension WooAnalytics {
 
     func startObservingNotifications() {
+        guard userHasOptedIn == true else {
+            return
+        }
+        
         NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationOpened), name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationClosed), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }

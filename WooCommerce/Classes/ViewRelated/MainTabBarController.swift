@@ -22,7 +22,7 @@ enum WooTab: Int, CustomStringConvertible {
     var description: String {
         switch self {
         case .myStore:
-            return NSLocalizedString("My Store", comment: "Dashboard tab title")
+            return NSLocalizedString("My store", comment: "My store tab title")
         case .orders:
             return NSLocalizedString("Orders", comment: "Orders tab title")
         case .notifications:

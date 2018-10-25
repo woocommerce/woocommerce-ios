@@ -24,11 +24,7 @@ public class TracksProvider: AnalyticsProvider {
 //
 public extension TracksProvider {
     func refreshUserData() {
-        if StoresManager.shared.isAuthenticated, let account = StoresManager.shared.sessionManager.defaultAccount {
-            tracksService.switchToAuthenticatedUser(withUsername: account.username, userID: String(account.userID), skipAliasEventCreation: true)
-        } else {
-            tracksService.switchToAnonymousUser(withAnonymousID: StoresManager.shared.sessionManager.anonymousUserID)
-        }
+        switchTracksUsersIfNeeded()
         refreshMetadata()
     }
 
@@ -55,6 +51,27 @@ public extension TracksProvider {
 // MARK: - Private Helpers
 //
 private extension TracksProvider {
+    func switchTracksUsersIfNeeded() {
+        let currentAnalyticsUsername = UserDefaults.standard[.analyticsUsername] as? String ?? ""
+        if StoresManager.shared.isAuthenticated, let account = StoresManager.shared.sessionManager.defaultAccount {
+            if currentAnalyticsUsername.isEmpty {
+                // No previous username logged
+                UserDefaults.standard[.analyticsUsername] = account.username
+                tracksService.switchToAuthenticatedUser(withUsername: account.username, userID: String(account.userID), skipAliasEventCreation: false)
+            } else if currentAnalyticsUsername == account.username {
+                // Username did not change - just make sure Tracks client has it
+                tracksService.switchToAuthenticatedUser(withUsername: account.username, userID: String(account.userID), skipAliasEventCreation: true)
+            } else {
+                // Username changed for some reason - switch back to anonymous first
+                tracksService.switchToAnonymousUser(withAnonymousID: StoresManager.shared.sessionManager.anonymousUserID)
+                tracksService.switchToAuthenticatedUser(withUsername: account.username, userID: String(account.userID), skipAliasEventCreation: false)
+            }
+        } else {
+            UserDefaults.standard[.analyticsUsername] = nil
+            tracksService.switchToAnonymousUser(withAnonymousID: StoresManager.shared.sessionManager.anonymousUserID)
+        }
+    }
+
     func refreshMetadata() {
         DDLogInfo("♻️ Refreshing tracks metadata...")
         var userProperties = [String: Any]()

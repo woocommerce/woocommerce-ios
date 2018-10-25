@@ -13,6 +13,7 @@ extension UserDefaults {
         case userOptedInAnalytics
         case userOptedInCrashlytics
         case versionOfLastRun
+        case analyticsUsername
     }
 }
 

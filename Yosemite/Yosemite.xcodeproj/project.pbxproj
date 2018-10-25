@@ -16,6 +16,11 @@
 		7455D4692141B59E00FA8C1F /* TopEarnerStatsItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7455D4682141B59E00FA8C1F /* TopEarnerStatsItem+ReadOnlyConvertible.swift */; };
 		74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */; };
 		74685D5020F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */; };
+		7492FAD9217FAD1000ED2C69 /* SiteSetting+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7492FAD8217FAD1000ED2C69 /* SiteSetting+ReadOnlyConvertible.swift */; };
+		7492FADB217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7492FADA217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift */; };
+		7492FADD217FAF5C00ED2C69 /* SettingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7492FADC217FAF5C00ED2C69 /* SettingStore.swift */; };
+		7492FADF217FB11D00ED2C69 /* SettingAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7492FADE217FB11D00ED2C69 /* SettingAction.swift */; };
+		7492FAE1217FB87100ED2C69 /* SettingStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7492FAE0217FB87100ED2C69 /* SettingStoreTests.swift */; };
 		7495C5292114979D00CDD33B /* StatsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7495C5282114979D00CDD33B /* StatsStoreTests.swift */; };
 		749737672141CC8C0008C490 /* TopEarnerStats+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749737662141CC8B0008C490 /* TopEarnerStats+ReadOnlyType.swift */; };
 		7499936420EFBC1B00CF01CD /* OrderNoteAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7499936320EFBC1A00CF01CD /* OrderNoteAction.swift */; };
@@ -86,6 +91,11 @@
 		7455D4682141B59E00FA8C1F /* TopEarnerStatsItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TopEarnerStatsItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderCoupon+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		7492FAD8217FAD1000ED2C69 /* SiteSetting+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SiteSetting+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		7492FADA217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SiteSetting+ReadOnlyType.swift"; sourceTree = "<group>"; };
+		7492FADC217FAF5C00ED2C69 /* SettingStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingStore.swift; sourceTree = "<group>"; };
+		7492FADE217FB11D00ED2C69 /* SettingAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingAction.swift; sourceTree = "<group>"; };
+		7492FAE0217FB87100ED2C69 /* SettingStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingStoreTests.swift; sourceTree = "<group>"; };
 		7495C5282114979D00CDD33B /* StatsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsStoreTests.swift; sourceTree = "<group>"; };
 		749737662141CC8B0008C490 /* TopEarnerStats+ReadOnlyType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TopEarnerStats+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		7499936320EFBC1A00CF01CD /* OrderNoteAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNoteAction.swift; sourceTree = "<group>"; };
@@ -190,6 +200,7 @@
 				74FD596C216FB6ED00A5AE83 /* OrderStats+ReadOnlyConvertible.swift */,
 				74FD596D216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift */,
 				B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */,
+				7492FAD8217FAD1000ED2C69 /* SiteSetting+ReadOnlyConvertible.swift */,
 				744A3216216D55F80051439B /* SiteVisitStats+ReadOnlyConvertible.swift */,
 				744A3217216D55F80051439B /* SiteVisitStatsItem+ReadOnlyConvertible.swift */,
 				7455D4662141B57600FA8C1F /* TopEarnerStats+ReadOnlyConvertible.swift */,
@@ -205,6 +216,7 @@
 				B52E0031211A440D00700FDE /* Order+ReadOnlyType.swift */,
 				74FD596A216FB65900A5AE83 /* OrderStats+ReadOnlyType.swift */,
 				B52E0033211A449600700FDE /* Site+ReadOnlyType.swift */,
+				7492FADA217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift */,
 				744A321A216D57D30051439B /* SiteVisitStats+ReadOnlyType.swift */,
 				749737662141CC8B0008C490 /* TopEarnerStats+ReadOnlyType.swift */,
 			);
@@ -239,6 +251,7 @@
 				B5BC736420D1A98500B5B6FA /* AccountStore.swift */,
 				74A7688B20D45EBA00F9D437 /* OrderStore.swift */,
 				7499936520EFBC7200CF01CD /* OrderNoteStore.swift */,
+				7492FADC217FAF5C00ED2C69 /* SettingStore.swift */,
 				74A18C552113827E00DCF8A8 /* StatsStore.swift */,
 			);
 			path = Stores;
@@ -250,6 +263,7 @@
 				B5BC736720D1AA8F00B5B6FA /* AccountStoreTests.swift */,
 				74A7688D20D45ED400F9D437 /* OrderStoreTests.swift */,
 				7499936720EFC0ED00CF01CD /* OrderNoteStoreTests.swift */,
+				7492FAE0217FB87100ED2C69 /* SettingStoreTests.swift */,
 				7495C5282114979D00CDD33B /* StatsStoreTests.swift */,
 			);
 			path = Stores;
@@ -369,6 +383,7 @@
 				B5DC3CB020D1B8720063AC41 /* AccountAction.swift */,
 				74A7688F20D45F9300F9D437 /* OrderAction.swift */,
 				7499936320EFBC1A00CF01CD /* OrderNoteAction.swift */,
+				7492FADE217FB11D00ED2C69 /* SettingAction.swift */,
 				74A18C57211382A000DCF8A8 /* StatsAction.swift */,
 			);
 			path = Actions;
@@ -567,6 +582,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7492FADD217FAF5C00ED2C69 /* SettingStore.swift in Sources */,
 				B52E0032211A440D00700FDE /* Order+ReadOnlyType.swift in Sources */,
 				B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */,
 				B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */,
@@ -577,6 +593,7 @@
 				B5631ECD2114DF8C008D3535 /* EntityListener.swift in Sources */,
 				B5DC3CB120D1B8720063AC41 /* AccountAction.swift in Sources */,
 				B5BC736520D1A98500B5B6FA /* AccountStore.swift in Sources */,
+				7492FAD9217FAD1000ED2C69 /* SiteSetting+ReadOnlyConvertible.swift in Sources */,
 				744A3219216D55F80051439B /* SiteVisitStatsItem+ReadOnlyConvertible.swift in Sources */,
 				B56C1EC220EAE2E500D749F9 /* ReadOnlyConvertible.swift in Sources */,
 				74A18C562113827E00DCF8A8 /* StatsStore.swift in Sources */,
@@ -601,10 +618,12 @@
 				B5EED1A820F4F3CF00652449 /* Account+ReadOnlyConvertible.swift in Sources */,
 				74FD596B216FB65900A5AE83 /* OrderStats+ReadOnlyType.swift in Sources */,
 				B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */,
+				7492FADF217FB11D00ED2C69 /* SettingAction.swift in Sources */,
 				749737672141CC8C0008C490 /* TopEarnerStats+ReadOnlyType.swift in Sources */,
 				74A18C58211382A000DCF8A8 /* StatsAction.swift in Sources */,
 				7499936420EFBC1B00CF01CD /* OrderNoteAction.swift in Sources */,
 				7455D4692141B59E00FA8C1F /* TopEarnerStatsItem+ReadOnlyConvertible.swift in Sources */,
+				7492FADB217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -615,6 +634,7 @@
 				7495C5292114979D00CDD33B /* StatsStoreTests.swift in Sources */,
 				74A7688E20D45ED400F9D437 /* OrderStoreTests.swift in Sources */,
 				B5C9DE272087FF20006B910A /* MockupAcount.swift in Sources */,
+				7492FAE1217FB87100ED2C69 /* SettingStoreTests.swift in Sources */,
 				B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */,
 				B53A56A0211245E0000776C9 /* MockupStorage+Sample.swift in Sources */,
 				B5A01CA120D19C4700E3207E /* MockupStorage.swift in Sources */,

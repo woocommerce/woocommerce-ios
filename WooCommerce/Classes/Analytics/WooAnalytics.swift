@@ -20,10 +20,10 @@ public class WooAnalytics {
 
     /// Check user opt-in for analytics
     ///
-    var userHasOptedIn: Bool? {
+    var userHasOptedIn: Bool {
         get {
             let optedIn: Bool? = UserDefaults.standard.object(forKey: .userOptedInAnalytics)
-            return optedIn ?? false
+            return optedIn ?? true // analytics tracking on by default
         }
         set {
             UserDefaults.standard.set(newValue, forKey: .userOptedInAnalytics)

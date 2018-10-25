@@ -81,6 +81,7 @@
 		B53EF5342180F646003E146F /* DotcomValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EF5332180F646003E146F /* DotcomValidator.swift */; };
 		B53EF53621813681003E146F /* generic_success.json in Resources */ = {isa = PBXBuildFile; fileRef = B53EF53521813681003E146F /* generic_success.json */; };
 		B53EF53821813806003E146F /* DotcomError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EF53721813806003E146F /* DotcomError.swift */; };
+		B53EF53C21814900003E146F /* SuccessResultMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EF53B21814900003E146F /* SuccessResultMapper.swift */; };
 		B554FA8B2180B1D500C54DFF /* NotificationsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554FA8A2180B1D500C54DFF /* NotificationsRemoteTests.swift */; };
 		B554FA8D2180B59700C54DFF /* notifications-load-hashes.json in Resources */ = {isa = PBXBuildFile; fileRef = B554FA8C2180B59700C54DFF /* notifications-load-hashes.json */; };
 		B554FA8F2180BC7000C54DFF /* NoteHashListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554FA8E2180BC7000C54DFF /* NoteHashListMapper.swift */; };
@@ -222,6 +223,7 @@
 		B53EF5332180F646003E146F /* DotcomValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomValidator.swift; sourceTree = "<group>"; };
 		B53EF53521813681003E146F /* generic_success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = generic_success.json; sourceTree = "<group>"; };
 		B53EF53721813806003E146F /* DotcomError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomError.swift; sourceTree = "<group>"; };
+		B53EF53B21814900003E146F /* SuccessResultMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessResultMapper.swift; sourceTree = "<group>"; };
 		B554FA8A2180B1D500C54DFF /* NotificationsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsRemoteTests.swift; sourceTree = "<group>"; };
 		B554FA8C2180B59700C54DFF /* notifications-load-hashes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "notifications-load-hashes.json"; sourceTree = "<group>"; };
 		B554FA8E2180BC7000C54DFF /* NoteHashListMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteHashListMapper.swift; sourceTree = "<group>"; };
@@ -564,6 +566,7 @@
 				B56C1EB520EA757B00D749F9 /* SiteListMapper.swift */,
 				74046E1E217A6B70007DD7BF /* SiteSettingsMapper.swift */,
 				74A1D26C21189DFE00931DFA /* SiteVisitStatsMapper.swift */,
+				B53EF53B21814900003E146F /* SuccessResultMapper.swift */,
 				74ABA1D2213F25AE00FFAD30 /* TopEarnerStatsMapper.swift */,
 			);
 			path = Mapper;
@@ -865,6 +868,7 @@
 				74A1D26821189A7100931DFA /* SiteVisitStats.swift in Sources */,
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,
 				748D424C210FA34400CF7D1B /* OrderStatsMapper.swift in Sources */,
+				B53EF53C21814900003E146F /* SuccessResultMapper.swift in Sources */,
 				B554FA912180BCFC00C54DFF /* NoteHash.swift in Sources */,
 				7452387321124B7700A973CD /* AnyCodable.swift in Sources */,
 				B5A036A1214C0F5400774E2C /* CocoaLumberjack.swift in Sources */,

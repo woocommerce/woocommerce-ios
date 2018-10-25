@@ -186,7 +186,7 @@ private extension PrivacySettingsViewController {
     /// Display Automattic's Cookie Policy web page
     ///
     func presentCookiePolicyWebView() {
-        guard let cookieURL = Constants.cookieURL else {
+        guard let cookieURL = WooConstants.cookieURL else {
             return
         }
 
@@ -198,7 +198,7 @@ private extension PrivacySettingsViewController {
     /// Display Automattic's Privacy Policy web page
     ///
     func presentPrivacyPolicyWebView() {
-        guard let privacyURL = Constants.privacyURL else {
+        guard let privacyURL = WooConstants.privacyURL else {
             return
         }
 
@@ -281,8 +281,6 @@ private struct Constants {
     static let rowHeight = CGFloat(44)
     static let separatorInset = CGFloat(16)
     static let sectionHeight = CGFloat(18)
-    static let cookieURL = URL(string:"https://automattic.com/cookies/")
-    static let privacyURL = URL(string: "https://automattic.com/privacy/")
 }
 
 private struct Section {

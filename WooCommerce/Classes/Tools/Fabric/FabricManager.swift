@@ -88,7 +88,7 @@ class FabricManager {
 }
 
 
-// Mark: - Tracking Opt Out
+// MARK: - Tracking Opt Out
 //
 extension FabricManager {
 

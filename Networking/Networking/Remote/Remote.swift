@@ -57,6 +57,11 @@ public class Remote {
                 return
             }
 
+            if let error = DotcomValidator.error(from: data) {
+                completion(nil, error)
+                return
+            }
+
             do {
                 let parsed = try mapper.map(response: data)
                 completion(parsed, nil)

@@ -25,4 +25,8 @@ public protocol AnalyticsProvider {
     /// Clear queued track events
     ///
     func clearTracksEvents()
+
+    /// Switch between an authed user and anon user
+    ///
+    func clearTracksUsers()
 }

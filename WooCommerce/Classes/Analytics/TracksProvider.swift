@@ -45,6 +45,20 @@ public extension TracksProvider {
     func clearTracksEvents() {
         tracksService.clearQueuedEvents()
     }
+
+    /// When a user opts-out, wipe data
+    ///
+    func clearTracksUsers() {
+        guard WooAnalytics.shared.userHasOptedIn else {
+            // To be safe, nil out the anonymousUserID guid so a fresh one is regenerated
+            UserDefaults.standard[.defaultAnonymousID] = nil
+            UserDefaults.standard[.analyticsUsername] = nil
+            tracksService.switchToAnonymousUser(withAnonymousID: StoresManager.shared.sessionManager.anonymousUserID)
+            return
+        }
+
+        switchTracksUsersIfNeeded()
+    }
 }
 
 

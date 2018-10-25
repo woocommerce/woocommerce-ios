@@ -21,3 +21,15 @@ public struct DotcomError: Error, Decodable {
         case message
     }
 }
+
+
+/// Known Dotcom Errors
+///
+extension DotcomError {
+
+    /// Something went wrong. We just don't know what!
+    ///
+    static var unknown: DotcomError {
+        return DotcomError(code: "unknown", message: nil)
+    }
+}

@@ -14,7 +14,7 @@ class PrivacySettingsViewController: UIViewController {
 
     /// Collect tracking info
     ///
-    private var collectInfo: Bool = true
+    private var collectInfo: Bool = true // tracking turned on by default
 
     // MARK: - Overridden Methods
     //
@@ -73,7 +73,7 @@ private extension PrivacySettingsViewController {
     }
 
     func getUserPreferences() {
-        collectInfo = !WooAnalytics.shared.userHasOptedOut()
+        collectInfo = WooAnalytics.shared.userHasOptedIn
     }
 
     /// Cells currently configured in the order they appear on screen.
@@ -171,12 +171,9 @@ private extension PrivacySettingsViewController {
         // set the user's new preference
         collectInfo = !collectInfo
 
-        // create the opt out bool
-        let optOut = !collectInfo
-
         // save the user's preference
-        WooAnalytics.shared.setUserHasOptedOut(optOut)
-        AppDelegate.shared.fabricManager.setUserHasOptedOutValue(optOut)
+        WooAnalytics.shared.setUserHasOptedIn(collectInfo)
+        AppDelegate.shared.fabricManager.setUserHasOptedOutValue(collectInfo)
 
         // this event will only report if the user has turned tracking back on
         WooAnalytics.shared.track(.settingsCollectInfoToggled)

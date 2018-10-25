@@ -237,6 +237,12 @@ extension PrivacySettingsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        // Give some breathing room to the table.
+        let lastSection = sections.count - 1
+        if section == lastSection {
+            return UITableView.automaticDimension
+        }
+
         // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section footers.
         return CGFloat.leastNonzeroMagnitude
     }

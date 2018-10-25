@@ -12,6 +12,18 @@ import Yosemite
 ///
 class FabricManager {
 
+    /// Check user opt-in for Crash Reporting
+    ///
+    var userHasOptedIn: Bool {
+        get {
+            let optedIn: Bool? = UserDefaults.standard.object(forKey: .userOptedInCrashlytics)
+            return optedIn ?? true // crash reports turned on by default
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: .userOptedInCrashlytics)
+        }
+    }
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -25,12 +37,12 @@ class FabricManager {
     /// Starts Crashlytics
     ///
     func startCrashlyticsIfNeeded() {
-        initializeOptOutTracking()
-
-        if !userHasOptedOut() {
-            Fabric.with([Crashlytics.self])
-            startListeningToAuthNotifications()
+        guard userHasOptedIn else {
+            return
         }
+
+        Fabric.with([Crashlytics.self])
+        startListeningToAuthNotifications()
     }
 
     /// Starts listening to Authentication Notifications: Fabric's metadata will be refreshed accordingly.
@@ -79,51 +91,17 @@ class FabricManager {
 // Mark: - Tracking Opt Out
 //
 extension FabricManager {
-    /// Initialize the opt-out tracking
-    ///
-    func initializeOptOutTracking() {
-        if userHasOptedOutIsSet() {
-            // We've already configured the opt out setting
-            return
-        }
 
-        // set the default to no, user has not opted out yet
-        setUserHasOptedOutValue(false)
-    }
+    func setUserHasOptedIn(_ optedIn: Bool) {
+        userHasOptedIn = optedIn
 
-    func userHasOptedOutIsSet() -> Bool {
-        return UserDefaults.standard.object(forKey: UserDefaults.Key.userOptedOutOfCrashlytics) != nil
-    }
-
-    /// This method just sets the user defaults value for UserOptedOut and doesn't
-    /// do any additional configuration of sessions or trackers.
-    func setUserHasOptedOutValue(_ optedOut: Bool) {
-        UserDefaults.standard.set(optedOut, forKey: UserDefaults.Key.userOptedOutOfCrashlytics)
-    }
-
-    func userHasOptedOut() -> Bool {
-        return UserDefaults.standard.bool(forKey: UserDefaults.Key.userOptedOutOfCrashlytics.rawValue)
-    }
-
-    func setUserHasOptedOut(_ optedOut: Bool) {
-        if userHasOptedOutIsSet() {
-            let currentValue = userHasOptedOut()
-            if currentValue == optedOut {
-                return
-            }
-        }
-
-        // store the preference
-        setUserHasOptedOutValue(optedOut)
-
-        // now take action on the preference
-        if (optedOut) {
+        if optedIn {
+            startCrashlyticsIfNeeded()
+            DDLogInfo("🔵 Crashlytics reporting restored.")
+        } else {
             clearCrashlyticsParameters()
             stopListeningToAuthNotifications()
             DDLogInfo("🔴 Crashlytics opt-out complete.")
-        } else {
-            startCrashlyticsIfNeeded()
-            DDLogInfo("🔵 Crashlytics reporting restored.")
         }
     }
 }

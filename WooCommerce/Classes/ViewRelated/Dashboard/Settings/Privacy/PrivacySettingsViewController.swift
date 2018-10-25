@@ -173,7 +173,9 @@ private extension PrivacySettingsViewController {
 
         // save the user's preference
         WooAnalytics.shared.setUserHasOptedIn(collectInfo)
-        AppDelegate.shared.fabricManager.setUserHasOptedOutValue(collectInfo)
+
+        // Note that Crash Reporting opt-in is dependent on the Collect info setting.
+        AppDelegate.shared.fabricManager.setUserHasOptedIn(collectInfo)
 
         // this event will only report if the user has turned tracking back on
         WooAnalytics.shared.track(.settingsCollectInfoToggled)

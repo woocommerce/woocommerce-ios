@@ -14,7 +14,7 @@ public protocol AnalyticsProvider {
     func track(_ eventName: String)
 
 
-    /// Track a spcific event with associated properties
+    /// Track a specific event with associated properties
     ///
     /// - Parameters:
     ///   - eventName: the event name

@@ -129,9 +129,6 @@ private extension JetpackRequest {
             return nil
         }
 
-        let encoder = JSONEncoder()
-        let encoded = try! encoder.encode(parameters)
-
-        return String(data: encoded, encoding: .utf8)
+        return parameters.toJSONEncoded()
     }
 }

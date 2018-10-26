@@ -89,4 +89,11 @@ public extension StorageType {
         let predicate = NSPredicate(format: "siteID = %ld AND settingID ==[c] %@", siteID, settingID)
         return firstObject(ofType: SiteSetting.self, matching: predicate)
     }
+
+    /// Retrieves the Notification.
+    ///
+    public func loadNotification(noteID: Int, noteHash: Int) -> Note? {
+        let predicate = NSPredicate(format: "noteID = %ld AND noteHash = %ld", noteID, noteHash)
+        return firstObject(ofType: Note.self, matching: predicate)
+    }
 }

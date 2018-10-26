@@ -7,6 +7,21 @@
         <attribute name="userID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="username" attributeType="String" syncable="YES"/>
     </entity>
+    <entity name="Note" representedClassName="Note" syncable="YES">
+        <attribute name="body" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="header" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="icon" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="meta" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="noteHash" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="noteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="noticon" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="read" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="subject" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="timestamp" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="Order" representedClassName="Order" syncable="YES">
         <attribute name="billingAddress1" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="billingAddress2" optional="YES" attributeType="String" syncable="YES"/>
@@ -165,10 +180,11 @@
         <element name="OrderStats" positionX="137.859375" positionY="388.33203125" width="128" height="225"/>
         <element name="OrderStatsItem" positionX="321.74609375" positionY="425.51171875" width="128" height="330"/>
         <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="135"/>
+        <element name="SiteSetting" positionX="-362.54296875" positionY="217.9921875" width="128" height="120"/>
         <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="90"/>
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="SiteSetting" positionX="-362.54296875" positionY="217.9921875" width="128" height="120"/>
+        <element name="Note" positionX="-162" positionY="180" width="128" height="240"/>
     </elements>
 </model>

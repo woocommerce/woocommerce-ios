@@ -1,26 +1,63 @@
 import UIKit
 
+
+/// UITableViewCell (Subtitle Style) with a UISwitch on its right hand side.
+///
 class SwitchTableViewCell: UITableViewCell {
 
-    // MARK: - Properties
-    //
-    @IBOutlet public var topLabel: UILabel!
-    @IBOutlet public var bottomLabel: UILabel!
-    @IBOutlet public var toggleSwitch: UISwitch!
+    /// Toggle Switch
+    ///
+    private let toggleSwitch = UISwitch()
 
-    var onToggleSwitchTouchUp: (() -> Void)?
+    /// Closure to be executed whenever the Switch is flipped
+    ///
+    var onChange: ((Bool) -> Void)?
+
+    /// Text: Title
+    ///
+    var title: String? {
+        get {
+            return textLabel?.text
+        }
+        set {
+            textLabel?.text = newValue
+        }
+    }
+
+    /// Text: Subtitle
+    ///
+    var subtitle: String? {
+        get {
+            return detailTextLabel?.text
+        }
+        set {
+            detailTextLabel?.text = newValue
+        }
+    }
+
+    /// Boolean indicating if the Switch is On or Off.
+    ///
+    var isOn: Bool {
+        get {
+            return toggleSwitch.isOn
+        }
+        set {
+            toggleSwitch.isOn = newValue
+        }
+    }
+
+    // MARK: - Overridden Methods
 
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        topLabel.applyBodyStyle()
-        bottomLabel.applyFootnoteStyle()
-        toggleSwitch.onTintColor = StyleManager.wooCommerceBrandColor
+        setupTextLabels()
+        setupSwitch()
         setupGestureRecognizers()
     }
 
     @IBAction func toggleSwitchWasPressed() {
-        onToggleSwitchTouchUp?()
+        onChange?(toggleSwitch.isOn)
     }
 }
 
@@ -28,6 +65,20 @@ class SwitchTableViewCell: UITableViewCell {
 // MARK: - Private Methods
 //
 private extension SwitchTableViewCell {
+
+    func setupTextLabels() {
+        textLabel?.text = String()
+        textLabel?.applyBodyStyle()
+
+        detailTextLabel?.text = String()
+        detailTextLabel?.applyFootnoteStyle()
+    }
+
+    func setupSwitch() {
+        toggleSwitch.onTintColor = StyleManager.wooCommerceBrandColor
+        toggleSwitch.addTarget(self, action: #selector(toggleSwitchWasPressed), for: .touchUpInside)
+        accessoryView = toggleSwitch
+    }
 
     func setupGestureRecognizers() {
         let gestureRecognizer = UITapGestureRecognizer()
@@ -39,7 +90,8 @@ private extension SwitchTableViewCell {
     }
 
     func contentViewWasPressed() {
-        toggleSwitch.isOn = !toggleSwitch.isOn
-        onToggleSwitchTouchUp?()
+        let newValue = !toggleSwitch.isOn
+        toggleSwitch.setOn(newValue, animated: true)
+        onChange?(newValue)
     }
 }

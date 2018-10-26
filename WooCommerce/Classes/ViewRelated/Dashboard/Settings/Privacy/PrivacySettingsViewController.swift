@@ -14,7 +14,11 @@ class PrivacySettingsViewController: UIViewController {
 
     /// Collect tracking info
     ///
-    private var collectInfo: Bool = true // tracking turned on by default
+    private var collectInfo: Bool = WooAnalytics.shared.userHasOptedIn {
+        didSet {
+            collectInfoWasUpdated(newValue: collectInfo)
+        }
+    }
 
     // MARK: - Overridden Methods
     //
@@ -27,7 +31,6 @@ class PrivacySettingsViewController: UIViewController {
         configureSections()
 
         registerTableViewCells()
-        getUserPreferences()
     }
 }
 
@@ -72,15 +75,11 @@ private extension PrivacySettingsViewController {
         }
     }
 
-    func getUserPreferences() {
-        collectInfo = WooAnalytics.shared.userHasOptedIn
-    }
-
     /// Cells currently configured in the order they appear on screen.
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as BasicTableViewCell where row == .collectInfo:
+        case let cell as SwitchTableViewCell where row == .collectInfo:
             configureCollectInfo(cell: cell)
         case let cell as TopLeftImageTableViewCell where row == .shareInfo:
             configureShareInfo(cell: cell)
@@ -99,35 +98,19 @@ private extension PrivacySettingsViewController {
         }
     }
 
-    func configureCollectInfo(cell: BasicTableViewCell) {
+    func configureCollectInfo(cell: SwitchTableViewCell) {
         // image
         cell.imageView?.image = Gridicon.iconOfType(.stats)
         cell.imageView?.tintColor = StyleManager.defaultTextColor
 
         // text
-        cell.textLabel?.text = NSLocalizedString("Collect information", comment: "Settings > Privacy Settings > collect info section. Label the `Collect information` toggle.")
+        cell.title = NSLocalizedString("Collect information", comment: "Settings > Privacy Settings > collect info section. Label the `Collect information` toggle.")
 
         // switch
-        let toggleSwitch = UISwitch()
-        toggleSwitch.setOn(collectInfo, animated: true)
-        toggleSwitch.onTintColor = StyleManager.wooCommerceBrandColor
-        toggleSwitch.on(.touchUpInside) { (toggleSwitch) in
-            self.toggleCollectInfo()
+        cell.isOn = collectInfo
+        cell.onChange = { newValue in
+            self.collectInfo = newValue
         }
-        cell.accessoryView = toggleSwitch
-
-        // action
-        let gestureRecognizer = UITapGestureRecognizer()
-        gestureRecognizer.on { [weak self] gesture in
-            guard let self = self else {
-                return
-            }
-
-            self.toggleCollectInfo()
-            toggleSwitch.setOn(self.collectInfo, animated: true)
-        }
-
-        cell.addGestureRecognizer(gestureRecognizer)
     }
 
     func configureShareInfo(cell: TopLeftImageTableViewCell) {
@@ -167,15 +150,12 @@ private extension PrivacySettingsViewController {
 
     // MARK: Actions
     //
-    func toggleCollectInfo() {
-        // set the user's new preference
-        collectInfo = !collectInfo
-
+    func collectInfoWasUpdated(newValue: Bool) {
         // save the user's preference
-        WooAnalytics.shared.setUserHasOptedIn(collectInfo)
+        WooAnalytics.shared.setUserHasOptedIn(newValue)
 
         // Note that Crash Reporting opt-in is dependent on the Collect info setting.
-        AppDelegate.shared.fabricManager.setUserHasOptedIn(collectInfo)
+        AppDelegate.shared.fabricManager.setUserHasOptedIn(newValue)
 
         // this event will only report if the user has turned tracking back on
         WooAnalytics.shared.track(.settingsCollectInfoToggled)
@@ -305,7 +285,7 @@ private enum Row: CaseIterable {
     var type: UITableViewCell.Type {
         switch self {
         case .collectInfo:
-            return BasicTableViewCell.self
+            return SwitchTableViewCell.self
         case .privacyInfo:
             return TopLeftImageTableViewCell.self
         case .privacyPolicy:

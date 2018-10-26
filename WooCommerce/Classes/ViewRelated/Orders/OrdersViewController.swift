@@ -193,6 +193,10 @@ extension OrdersViewController {
             }
         }
 
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = navigationItem.rightBarButtonItem
+        popoverController?.sourceView = self.view
+
         present(actionSheet, animated: true)
     }
 

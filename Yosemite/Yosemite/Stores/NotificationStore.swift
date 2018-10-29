@@ -79,12 +79,10 @@ private extension NotificationStore {
             derivedStorage.deleteObject(orphan)
         }
 
-        // TODO: storageManager.saveDerivedContext
-//        storageManager.saveDerivedContext(derivedStorage) {
-//            DispatchQueue.main.async {
-//                completion()
-//            }
-//        }
+        derivedStorage.saveIfNeeded()
+        DispatchQueue.main.async {
+            completion()
+        }
     }
 }
 
@@ -118,4 +116,3 @@ extension NotificationStore {
         static let maximumPageSize: Int = 100
     }
 }
-

@@ -548,6 +548,12 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        // Give the table some breathing room
+        let lastSection = sections.count - 1
+        if section == lastSection {
+            return UITableView.automaticDimension
+        }
+
         guard let _ = sections[section].footer else {
             // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section footers.
             return CGFloat.leastNonzeroMagnitude

@@ -18,6 +18,18 @@ public class WooAnalytics {
     ///
     private var applicationOpenedTime: Date?
 
+    /// Check user opt-in for analytics
+    ///
+    var userHasOptedIn: Bool {
+        get {
+            let optedIn: Bool? = UserDefaults.standard.object(forKey: .userOptedInAnalytics)
+            return optedIn ?? true // analytics tracking on by default
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: .userOptedInAnalytics)
+        }
+    }
+
 
     // MARK: - Initialization
 
@@ -48,6 +60,10 @@ public extension WooAnalytics {
     /// It's good to call this function after a user logs in or out of the app.
     ///
     func refreshUserData() {
+        guard userHasOptedIn == true else {
+            return
+        }
+
         analyticsProvider.refreshUserData()
     }
 
@@ -56,6 +72,10 @@ public extension WooAnalytics {
     /// - Parameter stat: the event name
     ///
     func track(_ stat: WooAnalyticsStat) {
+        guard userHasOptedIn == true else {
+            return
+        }
+
         track(stat, withProperties: nil)
     }
 
@@ -66,6 +86,10 @@ public extension WooAnalytics {
     ///   - properties: a collection of properties related to the event
     ///
     func track(_ stat: WooAnalyticsStat, withProperties properties: [AnyHashable: Any]?) {
+        guard userHasOptedIn == true else {
+            return
+        }
+
         if let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: properties) {
             analyticsProvider.track(stat.rawValue, withProperties: updatedProperties)
         } else {
@@ -80,6 +104,10 @@ public extension WooAnalytics {
     ///   - error: the error to track
     ///
     func track(_ stat: WooAnalyticsStat, withError error: Error) {
+        guard userHasOptedIn == true else {
+            return
+        }
+
         let err = error as NSError
         let errorDictionary = [Constants.errorKeyCode: "\(err.code)",
                                Constants.errorKeyDomain: err.domain,
@@ -90,13 +118,43 @@ public extension WooAnalytics {
 }
 
 
+// MARK: - Opt Out
+//
+extension WooAnalytics {
+
+    func setUserHasOptedIn(_ optedIn: Bool) {
+        userHasOptedIn = optedIn
+
+        if optedIn {
+            refreshUserData()
+            startObservingNotifications()
+            DDLogInfo("🔵 Tracking started.")
+        } else {
+            stopObservingNotifications()
+            analyticsProvider.clearEvents()
+            analyticsProvider.clearUsers()
+            DDLogInfo("🔴 Tracking opt-out complete.")
+        }
+    }
+}
+
+
 // MARK: - Private Helpers
 //
 private extension WooAnalytics {
 
     func startObservingNotifications() {
+        guard userHasOptedIn == true else {
+            return
+        }
+
         NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationOpened), name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationClosed), name: UIApplication.didEnterBackgroundNotification, object: nil)
+    }
+
+    func stopObservingNotifications() {
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
 
     @objc func trackApplicationOpened() {

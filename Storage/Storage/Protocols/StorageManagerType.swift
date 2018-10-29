@@ -21,6 +21,12 @@ public protocol StorageManagerType {
     ///
     func performBackgroundTask(_ closure: @escaping (StorageType) -> Void)
 
+
+    /// Returns a new derived StorageType instance which is a child of `viewStorage`. Useful for performing multiple
+    /// operations within the same context.
+    ///
+    func newDerivedStorage() -> StorageType
+
     /// This method is expected to destroy all persisted data. A notification of type `StorageManagerDidResetStorage` should get
     /// posted.
     ///

@@ -131,8 +131,8 @@ extension WooAnalytics {
             DDLogInfo("🔵 Tracking started.")
         } else {
             stopObservingNotifications()
-            analyticsProvider.clearTracksEvents()
-            analyticsProvider.clearTracksUsers()
+            analyticsProvider.clearEvents()
+            analyticsProvider.clearUsers()
             DDLogInfo("🔴 Tracking opt-out complete.")
         }
     }

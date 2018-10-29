@@ -29,11 +29,11 @@ public extension MockupAnalyticsProvider {
         }
     }
 
-    func clearTracksEvents() {
+    func clearEvents() {
         receivedEvents.removeAll()
     }
 
-    func clearTracksUsers() {
+    func clearUsers() {
         userOptedIn = false
         userID = nil
     }

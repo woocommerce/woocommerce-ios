@@ -22,11 +22,11 @@ public protocol AnalyticsProvider {
     ///
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?)
 
-    /// Clear queued track events
+    /// Clear queued events
     ///
-    func clearTracksEvents()
+    func clearEvents()
 
     /// Switch between an authed user and anon user
     ///
-    func clearTracksUsers()
+    func clearUsers()
 }

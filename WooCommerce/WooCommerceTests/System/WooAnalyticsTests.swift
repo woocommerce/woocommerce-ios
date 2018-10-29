@@ -93,7 +93,7 @@ class WooAnalyticsTests: XCTestCase {
     /// Test user opted out
     ///
     func testUserOptedOut() {
-        testingProvider?.clearTracksUsers()
+        testingProvider?.clearUsers()
         XCTAssertTrue(testingProvider?.userID == nil)
         XCTAssertTrue(testingProvider?.userOptedIn == false)
     }
@@ -101,7 +101,7 @@ class WooAnalyticsTests: XCTestCase {
     /// Test clear all events
     ///
     func testClearAllEvents() {
-        testingProvider?.clearTracksEvents()
+        testingProvider?.clearEvents()
         XCTAssertEqual(testingProvider?.receivedEvents.count, 0)
     }
 }

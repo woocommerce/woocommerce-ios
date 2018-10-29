@@ -16,6 +16,8 @@
 		7455D4692141B59E00FA8C1F /* TopEarnerStatsItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7455D4682141B59E00FA8C1F /* TopEarnerStatsItem+ReadOnlyConvertible.swift */; };
 		74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */; };
 		74685D5020F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */; };
+		7471401121877668009A11CC /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471401021877668009A11CC /* NotificationAction.swift */; };
+		7471401321877A8B009A11CC /* NotificationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471401221877A8B009A11CC /* NotificationStore.swift */; };
 		7492FAD9217FAD1000ED2C69 /* SiteSetting+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7492FAD8217FAD1000ED2C69 /* SiteSetting+ReadOnlyConvertible.swift */; };
 		7492FADB217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7492FADA217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift */; };
 		7492FADD217FAF5C00ED2C69 /* SettingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7492FADC217FAF5C00ED2C69 /* SettingStore.swift */; };
@@ -91,6 +93,8 @@
 		7455D4682141B59E00FA8C1F /* TopEarnerStatsItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TopEarnerStatsItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderCoupon+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		7471401021877668009A11CC /* NotificationAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAction.swift; sourceTree = "<group>"; };
+		7471401221877A8B009A11CC /* NotificationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationStore.swift; sourceTree = "<group>"; };
 		7492FAD8217FAD1000ED2C69 /* SiteSetting+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SiteSetting+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		7492FADA217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SiteSetting+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		7492FADC217FAF5C00ED2C69 /* SettingStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingStore.swift; sourceTree = "<group>"; };
@@ -249,6 +253,7 @@
 			isa = PBXGroup;
 			children = (
 				B5BC736420D1A98500B5B6FA /* AccountStore.swift */,
+				7471401221877A8B009A11CC /* NotificationStore.swift */,
 				74A7688B20D45EBA00F9D437 /* OrderStore.swift */,
 				7499936520EFBC7200CF01CD /* OrderNoteStore.swift */,
 				7492FADC217FAF5C00ED2C69 /* SettingStore.swift */,
@@ -385,6 +390,7 @@
 				7499936320EFBC1A00CF01CD /* OrderNoteAction.swift */,
 				7492FADE217FB11D00ED2C69 /* SettingAction.swift */,
 				74A18C57211382A000DCF8A8 /* StatsAction.swift */,
+				7471401021877668009A11CC /* NotificationAction.swift */,
 			);
 			path = Actions;
 			sourceTree = "<group>";
@@ -588,9 +594,11 @@
 				B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */,
 				744A3218216D55F80051439B /* SiteVisitStats+ReadOnlyConvertible.swift in Sources */,
 				74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */,
+				7471401121877668009A11CC /* NotificationAction.swift in Sources */,
 				74FD596F216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift in Sources */,
 				74B7D6B020F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift in Sources */,
 				B5631ECD2114DF8C008D3535 /* EntityListener.swift in Sources */,
+				7471401321877A8B009A11CC /* NotificationStore.swift in Sources */,
 				B5DC3CB120D1B8720063AC41 /* AccountAction.swift in Sources */,
 				B5BC736520D1A98500B5B6FA /* AccountStore.swift in Sources */,
 				7492FAD9217FAD1000ED2C69 /* SiteSetting+ReadOnlyConvertible.swift in Sources */,

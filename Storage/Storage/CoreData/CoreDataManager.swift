@@ -75,6 +75,15 @@ public class CoreDataManager: StorageManagerType {
         }
     }
 
+    /// Creates a new child MOC (with a private dispatch queue) whose parent is `viewStorage`.
+    ///
+    public func newDerivedStorage() -> StorageType {
+        let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        childManagedObjectContext.parent = persistentContainer.viewContext
+        childManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        return childManagedObjectContext
+    }
+
     /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
     ///
     public func reset() {

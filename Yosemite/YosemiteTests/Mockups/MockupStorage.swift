@@ -32,6 +32,13 @@ public class MockupStorageManager: StorageManagerType {
         return container
     }()
 
+    public func newDerivedStorage() -> StorageType {
+        let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        childManagedObjectContext.parent = persistentContainer.viewContext
+        childManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        return childManagedObjectContext
+    }
+
     /// Performs the received closure in Background. Note that you should use the received Storage instance (BG friendly!).
     ///
     public func performBackgroundTask(_ closure: @escaping (StorageType) -> Void) {

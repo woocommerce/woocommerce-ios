@@ -17,6 +17,8 @@ from re import compile
 from copy import copy
 import os
 
+STRINGS_FILE = 'Localizable.strings'
+
 re_translation = compile(r'^"(.+)" = "(.+)";$')
 re_comment_single = compile(r'^/(/.*|\*.*\*/)$')
 re_comment_start = compile(r'^/\*.*$')
@@ -46,7 +48,7 @@ class LocalizedFile():
     def read_from_file(self, fname=None):
         fname = self.fname if fname == None else fname
         try:
-            f = open(fname, encoding='utf_16', mode='r')
+            f = open(fname, encoding='utf_8', mode='r')
         except:
             print 'File %s does not exist.' % fname
             exit(-1)
@@ -82,7 +84,7 @@ class LocalizedFile():
     def save_to_file(self, fname=None):
         fname = self.fname if fname == None else fname
         try:
-            f = open(fname, encoding='utf_16', mode='w')
+            f = open(fname, encoding='utf_8', mode='w')
         except:
             print 'Couldn\'t open file %s.' % fname
             exit(-1)
@@ -118,7 +120,15 @@ def merge(merged_fname, old_fname, new_fname):
 
     merged.save_to_file(merged_fname)
 
-STRINGS_FILE = 'Localizable.strings'
+def convert_file_encoding(input_file, input_encoding, output_encoding):
+    tmp_file = input_file + '.' + output_encoding
+    os.system('iconv -f %s -t %s "%s" > "%s"' % (input_encoding, output_encoding, input_file, tmp_file))
+    os.rename(tmp_file, input_file)
+
+def gen_strings(output_dir, input_files):
+    os.system('genstrings -q -o "%s" %s' % (output_dir, input_files))
+    # genstrings always produces output in UTF-16LE so we must explictly convert to UTF-8
+    convert_file_encoding(output_dir + os.path.sep + STRINGS_FILE, 'UTF-16LE', 'UTF-8')
 
 def localize(paths, language):
     # Failsafe
@@ -141,13 +151,13 @@ def localize(paths, language):
 
     if os.path.isfile(original):
         os.rename(original, old)
-        os.system('genstrings -q -o "%s" %s' % (language, filelist))
+        gen_strings(language, filelist)
         os.rename(original, new)
         merge(merged, old, new)
         os.remove(new)
         os.remove(old)
     else:
-        os.system('genstrings -q -o "%s" %s' % (language, filelist))
+        gen_strings(language, filelist)
 
 ## Main
 ##

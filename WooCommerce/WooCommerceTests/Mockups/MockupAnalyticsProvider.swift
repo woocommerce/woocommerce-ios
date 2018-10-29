@@ -5,6 +5,8 @@ import Foundation
 public class MockupAnalyticsProvider: AnalyticsProvider {
     var receivedEvents = [String]()
     var receivedProperties = [[AnyHashable: Any]]()
+    var userID: String?
+    var userOptedIn = true
 }
 
 
@@ -12,7 +14,9 @@ public class MockupAnalyticsProvider: AnalyticsProvider {
 //
 public extension MockupAnalyticsProvider {
 
-    func refreshUserData() {}
+    func refreshUserData() {
+        userID = "aGeneratedUserGUID"
+    }
 
     func track(_ eventName: String) {
         track(eventName, withProperties: nil)
@@ -23,5 +27,14 @@ public extension MockupAnalyticsProvider {
         if let properties = properties {
             receivedProperties.append(properties)
         }
+    }
+
+    func clearEvents() {
+        receivedEvents.removeAll()
+    }
+
+    func clearUsers() {
+        userOptedIn = false
+        userID = nil
     }
 }

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="z1L-hy-XB6">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="z1L-hy-XB6">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -197,11 +198,46 @@
                     </view>
                     <connections>
                         <outlet property="tableView" destination="wI4-XX-k2z" id="6bZ-RB-KF9"/>
+                        <segue destination="tLZ-3e-cJY" kind="show" identifier="ShowPrivacySettingsViewController" id="26d-pC-r7k"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FEk-Qx-6OE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="270" y="1987"/>
+        </scene>
+        <!--Privacy Settings View Controller-->
+        <scene sceneID="g1b-rK-cDR">
+            <objects>
+                <viewController storyboardIdentifier="PrivacySettingsViewController" id="tLZ-3e-cJY" customClass="PrivacySettingsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="eDL-oC-fDz">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="hwi-He-cKY">
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="tLZ-3e-cJY" id="uum-dx-Yau"/>
+                                    <outlet property="delegate" destination="tLZ-3e-cJY" id="Ig0-wR-2Ms"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="bottomMargin" secondItem="hwi-He-cKY" secondAttribute="bottom" id="UPd-Rr-5ev"/>
+                            <constraint firstItem="hwi-He-cKY" firstAttribute="trailing" secondItem="e4p-U3-YVf" secondAttribute="trailing" id="mcB-Fh-FAx"/>
+                            <constraint firstItem="hwi-He-cKY" firstAttribute="top" secondItem="eDL-oC-fDz" secondAttribute="topMargin" id="sVu-Pi-CPd"/>
+                            <constraint firstItem="hwi-He-cKY" firstAttribute="leading" secondItem="e4p-U3-YVf" secondAttribute="leading" id="tE5-ir-eJR"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="e4p-U3-YVf"/>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="hwi-He-cKY" id="dz2-gV-Lqe"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8Ut-YJ-O7J" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1388" y="2331.1844077961023"/>
         </scene>
         <!--Dashboard-->
         <scene sceneID="GIl-fY-LQR">

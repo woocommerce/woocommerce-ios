@@ -118,12 +118,6 @@ private extension AddANoteViewController {
         sections = [writeNoteSection, emailCustomerSection]
     }
 
-    /// Switch between a private note and a customer note
-    ///
-    func toggleNoteType() {
-        isCustomerNote = !isCustomerNote
-    }
-
     /// Cell Configuration
     ///
     private func setup(cell: UITableViewCell, for row: Row) {
@@ -155,22 +149,23 @@ private extension AddANoteViewController {
             fatalError()
         }
 
-        cell.topText = NSLocalizedString("Email note to customer", comment: "Label for yes/no switch - emailing the note to customer.")
-        cell.bottomText = NSLocalizedString("If disabled will add the note as private.", comment: "Detail label for yes/no switch.")
+        cell.title = NSLocalizedString("Email note to customer", comment: "Label for yes/no switch - emailing the note to customer.")
+        cell.subtitle = NSLocalizedString("If disabled will add the note as private.", comment: "Detail label for yes/no switch.")
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email note to customer %@", comment: ""), isCustomerNote ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off."))
         cell.accessibilityHint = NSLocalizedString("Double tap to toggle setting.", comment: "VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on.")
 
-        cell.onToggleSwitchTouchUp = { [weak self] in
+        cell.onChange = { [weak self] newValue in
             guard let `self` = self else {
                 return
             }
 
-            self.toggleNoteType()
+            self.isCustomerNote = newValue
             self.refreshTextViewCell()
-            cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email note to customer %@", comment: ""), self.isCustomerNote ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off."))
-            cell.accessibilityHint = NSLocalizedString("Double tap to toggle setting.", comment: "VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on.")
-            let stateValue = self.isCustomerNote ? "on" : "off"
+
+            cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email note to customer %@", comment: ""), newValue ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off."))
+
+            let stateValue = newValue ? "on" : "off"
             WooAnalytics.shared.track(.orderNoteEmailCustomerToggled, withProperties: ["state": stateValue])
         }
     }

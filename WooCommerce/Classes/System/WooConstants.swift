@@ -24,4 +24,12 @@ enum WooConstants {
     /// Support Email
     ///
     static let supportMail = "mobile-support@woocommerce.com"
+
+    /// Cookie policy URL
+    ///
+    static let cookieURL = URL(string:"https://automattic.com/cookies/")
+
+    /// Privacy policy URL
+    ///
+    static let privacyURL = URL(string: "https://automattic.com/privacy/")
 }

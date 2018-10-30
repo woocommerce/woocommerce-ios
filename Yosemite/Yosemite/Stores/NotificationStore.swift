@@ -54,6 +54,7 @@ private extension NotificationStore {
                 // Step 2: Determine what noteIDs need updates
                 self.determineUpdatedNotes(with: remoteHashes) { outdatedNoteIds in
                     guard outdatedNoteIds.isEmpty == false else {
+                        NotificationStore.resetSharedDerivedStorage()
                         onCompletion(nil)
                         return
                     }
@@ -61,14 +62,16 @@ private extension NotificationStore {
                     // Step 3: Call the remote to fetch the notes that need updates (from Step 2's noteIDs)
                     remote.loadNotes(noteIds: outdatedNoteIds) { (remoteNotes, error) in
                         guard let remoteNotes = remoteNotes else {
+                            NotificationStore.resetSharedDerivedStorage()
                             onCompletion(error)
                             return
                         }
 
                         // Step 4: Update the storage notes from the fetched notes
                         self.updateLocalNotes(with: remoteNotes) {
-                            onCompletion(nil)
                             self.storageManager.viewStorage.saveIfNeeded()
+                            NotificationStore.resetSharedDerivedStorage()
+                            onCompletion(nil)
                         }
                     }
                 }
@@ -171,9 +174,9 @@ extension NotificationStore {
         return privateStorage
     }
 
-    /// Nukes the private Shared Derived Context instance. For unit testing purposes.
+    /// Nukes the private Shared Derived Storage instance.
     ///
-    static func resetSharedDerivedContext() {
+    static func resetSharedDerivedStorage() {
         privateStorage = nil
     }
 }

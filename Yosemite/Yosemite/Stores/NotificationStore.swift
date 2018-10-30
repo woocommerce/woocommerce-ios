@@ -68,6 +68,7 @@ private extension NotificationStore {
                         // Step 4: Update the storage notes from the fetched notes
                         self.updateLocalNotes(with: remoteNotes) {
                             onCompletion(nil)
+                            self.storageManager.viewStorage.saveIfNeeded()
                         }
                     }
                 }
@@ -77,7 +78,7 @@ private extension NotificationStore {
 }
 
 
-// MARK: - Private Helpers
+// MARK: - Persistence
 //
 private extension NotificationStore {
 
@@ -95,9 +96,10 @@ private extension NotificationStore {
             derivedStorage.deleteObject(orphan)
         }
 
-        derivedStorage.saveIfNeeded()
-        DispatchQueue.main.async {
-            completion()
+        storageManager.saveDerivedType(derivedStorageType: derivedStorage) {
+            DispatchQueue.main.async {
+                completion()
+            }
         }
     }
 
@@ -131,11 +133,10 @@ private extension NotificationStore {
         }
     }
 
-    /// Given a collection of remoteNotes, this method will insert missing local ones, and update the ones
-    /// that can be found.
+    /// Given a collection of Notes, this method will insert missing local ones, and update the others that can be found.
     ///
     /// - Parameters:
-    ///     - remoteNotes: Collection of Remote Notes
+    ///     - remoteNotes: Collection of Notes
     ///     - completion: Callback to be executed on completion
     ///
     func updateLocalNotes(with remoteNotes: [Note], completion: (() -> Void)? = nil) {
@@ -145,12 +146,13 @@ private extension NotificationStore {
             let predicate = NSPredicate(format: "(noteID == %ld)", remoteNote.noteId)
             let localNote = derivedStorage.firstObject(ofType: Storage.Note.self, matching: predicate) ?? derivedStorage.insertNewObject(ofType: Storage.Note.self)
 
-            //TODO: localNote.update(with: remoteNote)
+            localNote.update(with: remoteNote)
         }
 
-        derivedStorage.saveIfNeeded()
-        DispatchQueue.main.async {
-            completion?()
+        storageManager.saveDerivedType(derivedStorageType: derivedStorage) {
+            DispatchQueue.main.async {
+                completion?()
+            }
         }
     }
 }

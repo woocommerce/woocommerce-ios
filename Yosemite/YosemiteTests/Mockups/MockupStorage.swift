@@ -39,6 +39,22 @@ public class MockupStorageManager: StorageManagerType {
         return childManagedObjectContext
     }
 
+    public func saveDerivedType(derivedStorageType: StorageType, _ closure: @escaping () -> Void) {
+        guard let childManagedObjectContext = derivedStorageType as? NSManagedObjectContext else {
+            closure()
+            return
+        }
+
+        childManagedObjectContext.perform {
+            do {
+                try childManagedObjectContext.save()
+            } catch let error as NSError {
+                fatalError("☠️ [CoreDataManager] Cannot save the derivedStorageType: \(error)")
+            }
+            closure()
+        }
+    }
+
     /// Performs the received closure in Background. Note that you should use the received Storage instance (BG friendly!).
     ///
     public func performBackgroundTask(_ closure: @escaping (StorageType) -> Void) {

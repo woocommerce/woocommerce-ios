@@ -42,19 +42,35 @@ private extension NotificationStore {
     func synchronizeNotifications(onCompletion: @escaping (Error?) -> Void) {
         let remote = NotificationsRemote(network: network)
 
-        remote.loadHashes(pageSize: Constants.maximumPageSize) { [weak self] (hashes, error) in
-            guard let hashes = hashes else {
+        remote.loadHashes(pageSize: Constants.maximumPageSize) { [weak self] (remoteHashes, error) in
+            guard let `self` = self, let remoteHashes = remoteHashes else {
                 onCompletion(error)
                 return
             }
 
             // Step 1: Delete local missing notes
-            self?.deleteLocalMissingNotes(from: hashes) {
+            self.deleteLocalMissingNotes(from: remoteHashes) {
 
-                // TODO: Step 2: Determine what notes need updates
-                // TODO: Step 3: Call the remote to fetch the notes that need updates (from step 2)
-                // TODO: Step 4: Update the storage notes the the notes from step 3
-                onCompletion(nil)
+                // Step 2: Determine what noteIDs need updates
+                self.determineUpdatedNotes(with: remoteHashes) { outdatedNoteIds in
+                    guard outdatedNoteIds.isEmpty == false else {
+                        onCompletion(nil)
+                        return
+                    }
+
+                    // Step 3: Call the remote to fetch the notes that need updates (from Step 2's noteIDs)
+                    remote.loadNotes(noteIds: outdatedNoteIds) { (remoteNotes, error) in
+                        guard let remoteNotes = remoteNotes else {
+                            onCompletion(error)
+                            return
+                        }
+
+                        // Step 4: Update the storage notes from the fetched notes
+                        self.updateLocalNotes(with: remoteNotes) {
+                            onCompletion(nil)
+                        }
+                    }
+                }
             }
         }
     }
@@ -82,6 +98,59 @@ private extension NotificationStore {
         derivedStorage.saveIfNeeded()
         DispatchQueue.main.async {
             completion()
+        }
+    }
+
+    /// Given a collection of NoteHashes, this method will determine the NotificationID's
+    /// that are either missing in our database, or have been remotely updated.
+    ///
+    /// - Parameters:
+    ///     - remoteHashes: Collection of NoteHash
+    ///     - completion: Callback to be executed on completion (returns an array of noteIDs that need updating)
+    ///
+    func determineUpdatedNotes(with remoteHashes: [NoteHash], completion: @escaping (([String]) -> Void)) {
+        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
+        let remoteIds = remoteHashes.map { $0.noteID }
+        let predicate = NSPredicate(format: "(noteID IN %@)", remoteIds)
+        var localHashes = [String: String]()
+
+        for note in derivedStorage.allObjects(ofType: Storage.Note.self, matching: predicate, sortedBy: nil) {
+            localHashes[String(note.noteID)] = String(note.noteHash)
+        }
+
+        let filtered = remoteHashes.filter { remote in
+            let localHash = localHashes[String(remote.noteID)]
+            return localHash == nil || localHash != String(remote.noteID)
+        }
+
+        // TODO: Do we need a reset here? e.g. derivedStorage.reset()
+
+        let outdatedIds = filtered.map { String($0.noteID) }
+        DispatchQueue.main.async {
+            completion(outdatedIds)
+        }
+    }
+
+    /// Given a collection of remoteNotes, this method will insert missing local ones, and update the ones
+    /// that can be found.
+    ///
+    /// - Parameters:
+    ///     - remoteNotes: Collection of Remote Notes
+    ///     - completion: Callback to be executed on completion
+    ///
+    func updateLocalNotes(with remoteNotes: [Note], completion: (() -> Void)? = nil) {
+        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
+
+        for remoteNote in remoteNotes {
+            let predicate = NSPredicate(format: "(noteID == %ld)", remoteNote.noteId)
+            let localNote = derivedStorage.firstObject(ofType: Storage.Note.self, matching: predicate) ?? derivedStorage.insertNewObject(ofType: Storage.Note.self)
+
+            //TODO: localNote.update(with: remoteNote)
+        }
+
+        derivedStorage.saveIfNeeded()
+        DispatchQueue.main.async {
+            completion?()
         }
     }
 }

@@ -84,6 +84,22 @@ public class CoreDataManager: StorageManagerType {
         return childManagedObjectContext
     }
 
+    public func saveDerivedType(derivedStorageType: StorageType, _ closure: @escaping () -> Void) {
+        guard let childManagedObjectContext = derivedStorageType as? NSManagedObjectContext else {
+            closure()
+            return
+        }
+
+        childManagedObjectContext.perform {
+            do {
+                try childManagedObjectContext.save()
+            } catch let error as NSError {
+                fatalError("☠️ [CoreDataManager] Cannot save the derivedStorageType: \(error)")
+            }
+            closure()
+        }
+    }
+
     /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
     ///
     public func reset() {

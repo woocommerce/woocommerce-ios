@@ -919,6 +919,7 @@
 				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
 				20B459508F75052BDBC0902F /* [CP] Copy Pods Resources */,
 				93BCF01B20DC21EF00EBF7A1 /* Fabric / Crashlytics */,
+				CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1201,6 +1202,24 @@
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Zendesk Strip Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Per Zendesk documentation (https://developer.zendesk.com/embeddables/docs/ios_support_sdk/sdk_add#adding-the-sdk-with-cocoapods):\n# This script should be the last step in your projects \"Build Phases\".\n# This step is required to work around an App store submission bug when archiving universal binaries.\n\nbash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZendeskCoreSDK.framework/strip-frameworks.sh\"\n";
+		};
 		E8FC62641D61F33F705BC760 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1393,7 +1412,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SECRETS_PATH = "$HOME/.woo_app_credentials.json";
+				SECRETS_PATH = $HOME/.woo_app_credentials.json;
 				VALID_ARCHS = "$(inherited)";
 			};
 			name = Debug;
@@ -1404,7 +1423,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SECRETS_PATH = "$HOME/.woo_app_credentials.json";
+				SECRETS_PATH = $HOME/.woo_app_credentials.json;
 				VALID_ARCHS = "$(inherited)";
 			};
 			name = Release;
@@ -1542,7 +1561,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce Development";
-				SECRETS_PATH = "$HOME/.woo_app_credentials.json";
+				SECRETS_PATH = $HOME/.woo_app_credentials.json;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -1567,7 +1586,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce App Store";
-				SECRETS_PATH = "$HOME/.woo_app_credentials.json";
+				SECRETS_PATH = $HOME/.woo_app_credentials.json;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";

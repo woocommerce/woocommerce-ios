@@ -43,7 +43,7 @@ class NotificationStoreTests: XCTestCase {
         let notificationStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // FIXME: Need a way to "stack" responses to the same endpoint
-        //network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-hashes")
+        network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-hashes", shouldUseOnce: true)
         network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
         let action = NotificationAction.synchronizeNotifications() { (error) in

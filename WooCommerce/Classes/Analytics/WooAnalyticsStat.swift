@@ -75,6 +75,22 @@ public enum WooAnalyticsStat: String {
     case dashboardTopPerformersLoaded           = "dashboard_top_performers_loaded"
     case dashboardUnfulfilledOrdersLoaded       = "dashboard_unfulfilled_orders_loaded"
 
+    // Help & Support Events
+    //
+    case supportBrowseOurFaqTapped              = "support_browse_our_faq_tapped"
+    case supportNewRequestViewed                = "support_new_request_viewed"
+    case supportNewRequestCreated               = "support_new_request_created"
+    case supportNewRequestFailed                = "support_new_request_failed"
+    case supportNewRequestFileAttached          = "support_new_request_file_attached"
+    case supportNewRequestFileAttachmentFailed  = "support_new_request_file_attachment_failed"
+    case supportTicketUserReplied               = "support_ticket_user_replied"
+    case supportTicketUserReplyFailed           = "support_ticket_user_reply_failed"
+    case supportTicketListViewed                = "support_ticket_list_viewed"
+    case supportTicketListViewFailed            = "support_ticket_list_view_failed"
+    case supportTicketUserViewed                = "support_ticket_user_viewed"
+    case supportTicketViewFailed                = "support_ticket_view_failed"
+    case supportHelpCenterUserSearched          = "support_help_center_user_searched"
+
     // Settings View Events
     //
     case settingsTapped                     = "main_menu_settings_tapped"

@@ -106,7 +106,7 @@ import Yosemite
             }
 
             self.sourceTag = sourceTag
-            WPAnalytics.track(.supportNewRequestViewed)
+            WooAnalytics.shared.track(.supportNewRequestViewed)
 
             let newRequestConfig = self.createRequest()
             let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
@@ -126,7 +126,7 @@ import Yosemite
             }
 
             self.sourceTag = sourceTag
-            WPAnalytics.track(.supportTicketListViewed)
+            WooAnalytics.shared.track(.supportTicketListViewed)
 
             let requestListController = RequestUi.buildRequestList()
             ZendeskManager.showZendeskView(requestListController)
@@ -616,25 +616,25 @@ private extension ZendeskManager {
     @objc static func zendeskNotification(_ notification: Foundation.Notification) {
         switch notification.name.rawValue {
         case ZDKAPI_RequestSubmissionSuccess:
-            WPAnalytics.track(.supportNewRequestCreated)
+            WooAnalytics.shared.track(.supportNewRequestCreated)
         case ZDKAPI_RequestSubmissionError:
-            WPAnalytics.track(.supportNewRequestFailed)
+            WooAnalytics.shared.track(.supportNewRequestFailed)
         case ZDKAPI_UploadAttachmentSuccess:
-            WPAnalytics.track(.supportNewRequestFileAttached)
+            WooAnalytics.shared.track(.supportNewRequestFileAttached)
         case ZDKAPI_UploadAttachmentError:
-            WPAnalytics.track(.supportNewRequestFileAttachmentFailed)
+            WooAnalytics.shared.track(.supportNewRequestFileAttachmentFailed)
         case ZDKAPI_CommentSubmissionSuccess:
-            WPAnalytics.track(.supportTicketUserReplied)
+            WooAnalytics.shared.track(.supportTicketUserReplied)
         case ZDKAPI_CommentSubmissionError:
-            WPAnalytics.track(.supportTicketUserReplyFailed)
+            WooAnalytics.shared.track(.supportTicketUserReplyFailed)
         case ZDKAPI_RequestsError:
-            WPAnalytics.track(.supportTicketListViewFailed)
+            WooAnalytics.shared.track(.supportTicketListViewFailed)
         case ZDKAPI_CommentListSuccess:
-            WPAnalytics.track(.supportTicketUserViewed)
+            WooAnalytics.shared.track(.supportTicketUserViewed)
         case ZDKAPI_CommentListError:
-            WPAnalytics.track(.supportTicketViewFailed)
+            WooAnalytics.shared.track(.supportTicketViewFailed)
         case ZD_HC_SearchSuccess:
-            WPAnalytics.track(.supportHelpCenterUserSearched)
+            WooAnalytics.shared.track(.supportHelpCenterUserSearched)
         default:
             break
         }

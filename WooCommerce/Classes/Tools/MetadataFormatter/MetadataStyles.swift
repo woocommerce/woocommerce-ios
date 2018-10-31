@@ -23,9 +23,9 @@ let bodyNoticonColor = UIColor.black
 let footerTextColor = UIColor.black
 
 
-/// BlockFormatterStyles: Defines a collection of Styles to be applied over a Block.
+/// DescriptorFormatterStyles: Defines a collection of Styles to be applied over a Block.
 ///
-struct BlockFormatterStyles {
+struct MetadataStyles {
 
     /// Attributed String's Style (convenience) Alias.
     ///
@@ -71,72 +71,58 @@ struct BlockFormatterStyles {
         self.noticon = noticon
         self.linkColor = linkColor
     }
-
-    /// Returns the target Style for a given NoteRange.Kind
-    ///
-    func attributes(for kind: NoteRange.Kind) -> Style? {
-        switch kind {
-        case .blockquote:   return blockquote
-        case .comment:      return italics
-        case .match:        return match
-        case .noticon:      return noticon
-        case .post:         return italics
-        case .user:         return bold
-        default:            return nil
-        }
-    }
 }
 
 
 // MARK: - Default Styles
 //
-extension BlockFormatterStyles {
+extension MetadataStyles {
 
     /// Subject: Notifications List / Subject Block
     ///
-    static let subject: BlockFormatterStyles = {
+    static let subject: MetadataStyles = {
         let regular: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline, .foregroundColor: subjectTextColor]
         let bold: Style         = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.bold]
         let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.italics, .foregroundColor: subjectBlockquotedColor]
         let italics: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.italics]
         let noticon: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: bodyNoticonFont, .foregroundColor: subjectNoticonColor]
 
-        return BlockFormatterStyles(regular: regular, bold: bold, blockquote: blockquote, italics: italics, match: nil, noticon: noticon)
+        return MetadataStyles(regular: regular, bold: bold, blockquote: blockquote, italics: italics, match: nil, noticon: noticon)
     }()
 
 
     /// Subject: Notifications List / Snippet Block
     ///
-    static let snippet: BlockFormatterStyles = {
+    static let snippet: MetadataStyles = {
         let regular: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline, .foregroundColor: snippetColor]
 
-        return BlockFormatterStyles(regular: regular)
+        return MetadataStyles(regular: regular)
     }()
 
 
     /// Subject: Notification Defailts / Header Block
     ///
-    static let header: BlockFormatterStyles = {
+    static let header: MetadataStyles = {
         let regular: Style      = [.font: UIFont.body, .foregroundColor: bodyTextColor]
         let bold: Style         = [.font: UIFont.body.bold, .foregroundColor: bodyTextColor]
         let italics: Style      = [.font: UIFont.body.italics, .foregroundColor: headerItalicsColor]
 
-        return BlockFormatterStyles(regular: regular, bold: bold, italics: italics)
+        return MetadataStyles(regular: regular, bold: bold, italics: italics)
     }()
 
 
     /// Subject: Notification Defailts / Footer Block
     ///
-    static let footer: BlockFormatterStyles = {
+    static let footer: MetadataStyles = {
         let regular: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: footerTextColor]
 
-        return BlockFormatterStyles(regular: regular, noticon: body.noticon)
+        return MetadataStyles(regular: regular, noticon: body.noticon)
     }()
 
 
     /// Subject: Notification Defailts / Body Blocks
     ///
-    static let body: BlockFormatterStyles = {
+    static let body: MetadataStyles = {
         let regular: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: bodyTextColor]
         let bold: Style         = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold, .foregroundColor: bodyTextColor]
         let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics, .foregroundColor: bodyBlockquotedColor]
@@ -144,15 +130,15 @@ extension BlockFormatterStyles {
         let noticon: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: bodyNoticonFont, .foregroundColor: bodyNoticonColor]
         let italic: Style       = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics, .foregroundColor: bodyTextColor]
 
-        return BlockFormatterStyles(regular: regular, bold: bold, blockquote: blockquote, match: match, noticon: noticon, linkColor: bodyLinkColor)
+        return MetadataStyles(regular: regular, bold: bold, blockquote: blockquote, match: match, noticon: noticon, linkColor: bodyLinkColor)
     }()
 
 
     /// Subject: Notification Defailts / Badge Blocks
     ///
-    static let badge: BlockFormatterStyles = {
+    static let badge: MetadataStyles = {
         let regular: Style      = [.font: UIFont.body, .foregroundColor: bodyTextColor, .paragraphStyle: NSParagraphStyle.badge]
 
-        return BlockFormatterStyles(regular: regular, bold: body.bold, blockquote: body.blockquote, italics: body.italics, linkColor: body.linkColor)
+        return MetadataStyles(regular: regular, bold: body.bold, blockquote: body.blockquote, italics: body.italics, linkColor: body.linkColor)
     }()
 }

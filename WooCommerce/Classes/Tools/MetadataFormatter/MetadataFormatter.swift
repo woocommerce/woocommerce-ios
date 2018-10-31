@@ -2,17 +2,57 @@ import Foundation
 import Networking
 
 
-/// BlockFormatter: Returns an AttributedString with all of the Block's Ranges metadata formatted with the specified Styles.
-///
-struct BlockFormatter {
 
-    /// Returns An AttributedString representation of the received Block, with a specific collection of Styles applied.
+///
+///
+extension NoteRange: MetadataDescriptor {
+
     ///
-    func format(block: NoteBlock, with styles: BlockFormatterStyles) -> NSAttributedString {
+    ///
+    func attributes(from styles: MetadataStyles) -> [NSAttributedString.Key: Any]? {
+        switch kind {
+        case .blockquote:   return styles.blockquote
+        case .comment:      return styles.italics
+        case .match:        return styles.match
+        case .noticon:      return styles.noticon
+        case .post:         return styles.italics
+        case .user:         return styles.bold
+        default:            return nil
+        }
+    }
+
+    ///
+    ///
+    var replacesValueInRange: Bool {
+        return kind == .noticon
+    }
+}
+
+
+///
+///
+extension MetadataFormatter {
+
+    ///
+    ///
+    func format(block: NoteBlock, with styles: MetadataStyles) -> NSAttributedString {
         guard let text = block.text else {
             return NSAttributedString()
         }
 
+        return format(text: text, with: styles, using: block.ranges as [MetadataDescriptor])
+    }
+
+}
+
+
+/// BlockFormatter: Returns an AttributedString with all of the Block's Ranges metadata formatted with the specified Styles.
+///
+struct MetadataFormatter {
+
+    /// Returns An AttributedString representation of the received Block, with a specific collection of Styles applied.
+    ///
+    func format(text: String, with styles: MetadataStyles, using descriptors: [MetadataDescriptor]) -> NSAttributedString {
         let tightenedText = replaceCommonWhitespaceIssues(in: text)
         let output = NSMutableAttributedString(string: tightenedText, attributes: styles.regular)
 
@@ -23,22 +63,22 @@ struct BlockFormatter {
         // Apply the Ranges
         var lengthShift = 0
 
-        for range in block.ranges {
-            var shiftedRange        = range.range
+        for descriptor in descriptors {
+            var shiftedRange        = descriptor.range
             shiftedRange.location   += lengthShift
 
-            if range.kind == .noticon {
-                let noticon         = (range.value ?? String()) + " "
+            if descriptor.replacesValueInRange {
+                let noticon         = (descriptor.value ?? String()) + " "
                 output.replaceCharacters(in: shiftedRange, with: noticon)
                 lengthShift         += noticon.count
                 shiftedRange.length += noticon.count
             }
 
-            if let rangeStyle = styles.attributes(for: range.kind) {
+            if let rangeStyle = descriptor.attributes(from: styles) {
                 output.addAttributes(rangeStyle, range: shiftedRange)
             }
 
-            if let rangeURL = range.url, let linksColor = styles.linkColor {
+            if let rangeURL = descriptor.url, let linksColor = styles.linkColor {
                 output.addAttribute(.link, value: rangeURL, range: shiftedRange)
                 output.addAttribute(.foregroundColor, value: linksColor, range: shiftedRange)
             }

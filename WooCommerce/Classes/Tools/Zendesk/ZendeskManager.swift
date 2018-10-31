@@ -4,15 +4,6 @@ import ZendeskCoreSDK
 import CoreTelephony
 import Yosemite
 
-extension NSNotification.Name {
-    static let ZendeskPushNotificationReceivedNotification = NSNotification.Name(rawValue: "ZendeskPushNotificationReceivedNotification")
-    static let ZendeskPushNotificationClearedNotification = NSNotification.Name(rawValue: "ZendeskPushNotificationClearedNotification")
-}
-
-@objc extension NSNotification {
-    public static let ZendeskPushNotificationReceivedNotification = NSNotification.Name.ZendeskPushNotificationReceivedNotification
-    public static let ZendeskPushNotificationClearedNotification = NSNotification.Name.ZendeskPushNotificationClearedNotification
-}
 
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
 /// as well as displaying views for the Help Center, new tickets, and ticket list.
@@ -78,18 +69,6 @@ extension NSNotification.Name {
 
         ZendeskManager.sharedInstance.haveUserIdentity = getUserProfile()
         toggleZendesk(enabled: true)
-
-        // User has accessed a single ticket view, typically via the Zendesk Push Notification alert.
-        // In this case, we'll clear the Push Notification indicators.
-        NotificationCenter.default.addObserver(self, selector: #selector(ticketViewed(_:)), name: NSNotification.Name(rawValue: ZDKAPI_CommentListStarting), object: nil)
-
-        // Get unread notification count from User Defaults.
-        unreadNotificationsCount = UserDefaults.standard.integer(forKey: Constants.userDefaultsZendeskUnreadNotifications)
-
-        //If there are any, post NSNotification so the unread indicators are displayed.
-        if unreadNotificationsCount > 0 {
-            postNotificationReceived()
-        }
 
         observeZendeskNotifications()
     }
@@ -171,66 +150,6 @@ extension NSNotification.Name {
         }
     }
 
-    // MARK: - Device Registration
-
-    /// Sets the device ID to be registered with Zendesk for push notifications.
-    /// Actual registration is done when a user selects one of the Zendesk views.
-    ///
-    static func setNeedToRegisterDevice(_ identifier: String) {
-        ZendeskManager.sharedInstance.deviceID = identifier
-    }
-
-    /// Unregisters the device ID from Zendesk for push notifications.
-    ///
-    static func unregisterDevice() {
-        guard let zendeskInstance = Zendesk.instance else {
-            DDLogInfo("No Zendesk instance. Unable to unregister device.")
-            return
-        }
-
-        ZDKPushProvider(zendesk: zendeskInstance).unregisterForPush()
-        DDLogInfo("Zendesk successfully unregistered stored device.")
-    }
-
-    // MARK: - Push Notifications
-
-    /// This handles in-app Zendesk push notifications.
-    /// If the updated ticket or the ticket list is being displayed,
-    /// the view will be refreshed.
-    ///
-    static func handlePushNotification(_ userInfo: NSDictionary) {
-        WPAnalytics.track(.supportReceivedResponseFromSupport)
-        guard zendeskEnabled == true,
-            let payload = userInfo as? [AnyHashable: Any],
-            let requestId = payload["zendesk_sdk_request_id"] as? String else {
-                DDLogInfo("Zendesk push notification payload invalid.")
-                return
-        }
-
-        let _ = Support.instance?.refreshRequest(requestId: requestId)
-    }
-
-    /// This handles all Zendesk push notifications. (The in-app flow goes through here as well.)
-    /// When a notification is received, an NSNotification is posted to allow
-    /// the various indicators to be displayed.
-    ///
-    static func pushNotificationReceived() {
-        unreadNotificationsCount += 1
-        saveUnreadCount()
-        postNotificationReceived()
-    }
-
-    /// When a user views the Ticket List, this is called to:
-    /// - clear the notification count
-    /// - update the application badge count
-    /// - post an NSNotification so the various indicators can be cleared.
-    ///
-    static func pushNotificationRead() {
-        UIApplication.shared.applicationIconBadgeNumber -= unreadNotificationsCount
-        unreadNotificationsCount = 0
-        saveUnreadCount()
-        postNotificationRead()
-    }
 
     // MARK: - Helpers
 
@@ -354,23 +273,6 @@ private extension ZendeskManager {
         completion(true)
     }
 
-    static func registerDeviceIfNeeded() {
-
-        guard let deviceID = ZendeskManager.sharedInstance.deviceID,
-            let zendeskInstance = Zendesk.instance else {
-                return
-        }
-
-        ZDKPushProvider(zendesk: zendeskInstance).register(deviceIdentifier: deviceID, locale: appLanguage) { (pushResponse, error) in
-            if let error = error {
-                DDLogInfo("Zendesk couldn't register device: \(deviceID). Error: \(error)")
-            } else {
-                ZendeskManager.sharedInstance.deviceID = nil
-                DDLogDebug("Zendesk successfully registered device: \(deviceID)")
-            }
-        }
-    }
-
     func createRequest() -> RequestUiConfiguration {
 
         let requestConfig = RequestUiConfiguration()
@@ -407,7 +309,7 @@ private extension ZendeskManager {
         }
 
         // If the controller is a UIViewController, set the modal display for iPad.
-        if !presentInController.isKind(of: UINavigationController.self) && WPDeviceIdentification.isiPad() {
+        if !presentInController.isKind(of: UINavigationController.self) && UIDevice.current.userInterfaceIdiom == .pad {
             let navController = UINavigationController(rootViewController: zendeskView)
             navController.modalPresentationStyle = .fullScreen
             navController.modalTransitionStyle = .crossDissolve
@@ -442,10 +344,6 @@ private extension ZendeskManager {
         return true
     }
 
-    static func saveUnreadCount() {
-        UserDefaults.standard.set(unreadNotificationsCount, forKey: Constants.userDefaultsZendeskUnreadNotifications)
-        UserDefaults.standard.synchronize()
-    }
 
     // MARK: - Data Helpers
 
@@ -572,25 +470,6 @@ private extension ZendeskManager {
         return networkInformation.joined(separator: "\n")
     }
 
-    // MARK: - Push Notification Helpers
-
-    static func postNotificationReceived() {
-        // Updating unread indicators should trigger UI updates, so send notification in main thread.
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .ZendeskPushNotificationReceivedNotification, object: nil)
-        }
-    }
-
-    static func postNotificationRead() {
-        // Updating unread indicators should trigger UI updates, so send notification in main thread.
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .ZendeskPushNotificationClearedNotification, object: nil)
-        }
-    }
-
-    @objc static func ticketViewed(_ notification: Foundation.Notification) {
-        pushNotificationRead()
-    }
 
     // MARK: - User Information Prompt
 
@@ -601,7 +480,7 @@ private extension ZendeskManager {
                                                 preferredStyle: .alert)
 
         let alertMessage = withName ? LocalizedText.alertMessageWithName : LocalizedText.alertMessage
-        alertController.setValue(NSAttributedString(string: alertMessage, attributes: [.font: WPStyleGuide.subtitleFont()]),
+        alertController.setValue(NSAttributedString(string: alertMessage, attributes: [.font: UIFont.caption1]),
                                  forKey: "attributedMessage")
 
         // Cancel Action
@@ -789,7 +668,6 @@ private extension ZendeskManager {
         static let zendeskProfileUDKey = "wp_zendesk_profile"
         static let profileEmailKey = "email"
         static let profileNameKey = "name"
-        static let userDefaultsZendeskUnreadNotifications = "wp_zendesk_unread_notifications"
         static let nameFieldCharacterLimit = 50
         static let sourcePlatform = "mobile_-_ios"
     }

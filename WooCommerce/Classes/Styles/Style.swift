@@ -4,8 +4,16 @@ import UIKit
 // MARK: - Style defines the basic API of a Woo Skin.
 //
 protocol Style {
+
+    /// Fonts
+    ///
     var actionButtonTitleFont: UIFont { get }
     var alternativeLoginsTitleFont: UIFont { get }
+    var chartLabelFont: UIFont { get }
+    var subheadlineFont: UIFont { get }
+
+    /// Colors
+    ///
     var buttonPrimaryColor: UIColor { get }
     var buttonPrimaryHighlightedColor: UIColor { get }
     var buttonPrimaryTitleColor: UIColor { get }
@@ -16,14 +24,10 @@ protocol Style {
     var buttonDisabledHighlightedColor: UIColor { get }
     var buttonDisabledTitleColor: UIColor { get }
     var cellSeparatorColor: UIColor { get }
-    var chartLabelFont: UIFont { get }
     var defaultTextColor: UIColor { get }
     var destructiveActionColor: UIColor { get }
-    var navBarImage: UIImage { get }
     var sectionBackgroundColor: UIColor { get }
     var sectionTitleColor: UIColor { get }
-    var statusBarDark: UIStatusBarStyle { get }
-    var statusBarLight: UIStatusBarStyle { get }
     var statusDangerColor: UIColor { get }
     var statusDangerBoldColor: UIColor { get }
     var statusNotIdentifiedColor: UIColor { get }
@@ -32,7 +36,6 @@ protocol Style {
     var statusPrimaryBoldColor: UIColor { get }
     var statusSuccessColor: UIColor { get }
     var statusSuccessBoldColor: UIColor { get }
-    var subheadlineFont: UIFont { get }
     var tableViewBackgroundColor: UIColor { get }
     var wooCommerceBrandColor: UIColor { get }
     var wooAccent: UIColor { get }
@@ -42,6 +45,15 @@ protocol Style {
     var wooGreyBorder: UIColor { get }
     var wooSecondary: UIColor { get }
     var wooWhite: UIColor { get }
+
+    /// NavBar
+    ///
+    var navBarImage: UIImage { get }
+
+    /// StatusBar
+    ///
+    var statusBarDark: UIStatusBarStyle { get }
+    var statusBarLight: UIStatusBarStyle { get }
 }
 
 
@@ -49,15 +61,15 @@ protocol Style {
 //
 class DefaultStyle: Style {
 
-    // Fonts!
-    //
+    /// Fonts!
+    ///
     let actionButtonTitleFont           = UIFont.font(forStyle: .headline, weight: .semibold)
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
     let subheadlineFont                 = UIFont.font(forStyle: .subheadline, weight: .regular)
     let chartLabelFont                  = UIFont.font(forStyle: .caption2, weight: .ultraLight)
 
-    // Colors!
-    //
+    /// Colors!
+    ///
     let buttonPrimaryColor              = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
     let buttonPrimaryHighlightedColor   = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
     let buttonPrimaryTitleColor         = HandbookColors.wooWhite
@@ -70,13 +82,9 @@ class DefaultStyle: Style {
     let cellSeparatorColor              = HandbookColors.wooGreyBorder
     let defaultTextColor                = HandbookColors.wooSecondary
     let destructiveActionColor          = UIColor(red: 197.0/255.0, green: 60.0/255.0, blue: 53.0/255.0, alpha: 1.0)
-    let navBarImage                     = UIImage(named: "woo-logo")!
     let sectionBackgroundColor          = HandbookColors.wooGreyLight
     let sectionTitleColor               = HandbookColors.wooSecondary
     let tableViewBackgroundColor        = HandbookColors.wooGreyLight
-
-    let statusBarDark                   = UIStatusBarStyle.default
-    let statusBarLight                  = UIStatusBarStyle.lightContent
 
     let statusDangerColor               = HandbookColors.statusRedDimmed
     let statusDangerBoldColor           = HandbookColors.statusRed
@@ -95,6 +103,15 @@ class DefaultStyle: Style {
     let wooGreyMid                      = HandbookColors.wooGreyMid
     let wooGreyTextMin                  = HandbookColors.wooGreyTextMin
     let wooWhite                        = HandbookColors.wooWhite
+
+    /// NavBar
+    ///
+    let navBarImage                     = UIImage(named: "woo-logo")!
+
+    /// StatusBar
+    ///
+    let statusBarDark                   = UIStatusBarStyle.default
+    let statusBarLight                  = UIStatusBarStyle.lightContent
 }
 
 
@@ -141,6 +158,8 @@ class StyleManager {
         }
     }
 
+    // MARK: - Fonts
+
     static var actionButtonTitleFont: UIFont {
         return active.actionButtonTitleFont
     }
@@ -148,6 +167,16 @@ class StyleManager {
     static var alternativeLoginsTitleFont: UIFont {
         return active.alternativeLoginsTitleFont
     }
+
+    static var chartLabelFont: UIFont {
+        return active.chartLabelFont
+    }
+
+    static var subheadlineFont: UIFont {
+        return active.subheadlineFont
+    }
+
+    // MARK: - Colors
 
     static var buttonPrimaryColor: UIColor {
         return active.buttonPrimaryColor
@@ -189,28 +218,12 @@ class StyleManager {
         return active.cellSeparatorColor
     }
 
-    static var chartLabelFont: UIFont {
-        return active.chartLabelFont
-    }
-
     static var defaultTextColor: UIColor {
         return active.defaultTextColor
     }
 
     static var destructiveActionColor: UIColor {
         return active.destructiveActionColor
-    }
-
-    static var navBarImage: UIImage {
-        return active.navBarImage
-    }
-
-    static var statusBarDark: UIStatusBarStyle {
-        return active.statusBarDark
-    }
-
-    static var statusBarLight: UIStatusBarStyle {
-        return active.statusBarLight
     }
 
     static var sectionBackgroundColor: UIColor {
@@ -253,10 +266,6 @@ class StyleManager {
         return active.statusSuccessBoldColor
     }
 
-    static var subheadlineFont: UIFont {
-        return active.subheadlineFont
-    }
-
     static var tableViewBackgroundColor: UIColor {
         return active.tableViewBackgroundColor
     }
@@ -291,5 +300,21 @@ class StyleManager {
 
     static var wooWhite: UIColor {
         return active.wooWhite
+    }
+
+    // MARK: - NavBar
+
+    static var navBarImage: UIImage {
+        return active.navBarImage
+    }
+
+    // MARK: - StatusBar
+
+    static var statusBarDark: UIStatusBarStyle {
+        return active.statusBarDark
+    }
+
+    static var statusBarLight: UIStatusBarStyle {
+        return active.statusBarLight
     }
 }

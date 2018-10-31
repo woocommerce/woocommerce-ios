@@ -14,11 +14,19 @@ public protocol AnalyticsProvider {
     func track(_ eventName: String)
 
 
-    /// Track a spcific event with associated properties
+    /// Track a specific event with associated properties
     ///
     /// - Parameters:
     ///   - eventName: the event name
     ///   - properties: a collection of properties
     ///
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?)
+
+    /// Clear queued events
+    ///
+    func clearEvents()
+
+    /// Switch between an authed user and anon user
+    ///
+    func clearUsers()
 }

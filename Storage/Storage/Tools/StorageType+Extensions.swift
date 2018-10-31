@@ -74,4 +74,26 @@ public extension StorageType {
         let predicate = NSPredicate(format: "period ==[c] %@", period)
         return firstObject(ofType: OrderStatsItem.self, matching: predicate)
     }
+
+    /// Retrieves all of the Stored SiteSettings for the provided siteID.
+    ///
+    public func loadSiteSettings(siteID: Int) -> [SiteSetting]? {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        let descriptor = NSSortDescriptor(keyPath: \SiteSetting.settingID, ascending: false)
+        return allObjects(ofType: SiteSetting.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Retrieves the Stored SiteSetting.
+    ///
+    public func loadSiteSetting(siteID: Int, settingID: String) -> SiteSetting? {
+        let predicate = NSPredicate(format: "siteID = %ld AND settingID ==[c] %@", siteID, settingID)
+        return firstObject(ofType: SiteSetting.self, matching: predicate)
+    }
+
+    /// Retrieves the Notification.
+    ///
+    public func loadNotification(noteID: Int, noteHash: Int) -> Note? {
+        let predicate = NSPredicate(format: "noteID = %ld AND noteHash = %ld", noteID, noteHash)
+        return firstObject(ofType: Note.self, matching: predicate)
+    }
 }

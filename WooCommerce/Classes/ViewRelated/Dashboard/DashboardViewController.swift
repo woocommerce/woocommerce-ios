@@ -73,7 +73,7 @@ private extension DashboardViewController {
     }
 
     func configureNavigation() {
-        title = NSLocalizedString("My Store", comment: "Dashboard navigation title")
+        title = NSLocalizedString("My store", comment: "Dashboard navigation title")
         let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.cog),
                                              style: .plain,
                                              target: self,

@@ -89,6 +89,21 @@ class WooAnalyticsTests: XCTestCase {
             XCTAssert(descriptionIncludingUserInfo?.contains(descriptionSubstring) == true)
         }
     }
+
+    /// Test user opted out
+    ///
+    func testUserOptedOut() {
+        testingProvider?.clearUsers()
+        XCTAssertTrue(testingProvider?.userID == nil)
+        XCTAssertTrue(testingProvider?.userOptedIn == false)
+    }
+
+    /// Test clear all events
+    ///
+    func testClearAllEvents() {
+        testingProvider?.clearEvents()
+        XCTAssertEqual(testingProvider?.receivedEvents.count, 0)
+    }
 }
 
 

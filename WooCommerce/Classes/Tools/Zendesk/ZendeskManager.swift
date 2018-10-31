@@ -2,6 +2,7 @@ import Foundation
 import ZendeskSDK
 import ZendeskCoreSDK
 import CoreTelephony
+import SafariServices
 import Yosemite
 
 
@@ -75,30 +76,22 @@ import Yosemite
 
     // MARK: - Show Zendesk Views
 
-    /// Displays the Zendesk Help Center from the given controller, filtered by the mobile category and articles labelled as iOS.
+    // -TODO: in the future this should show the Zendesk Help Center.
+    /// Link to the online FAQ
     ///
-    func showHelpCenterIfPossible(from controller: UIViewController, with sourceTag: WordPressSupportSourceTag? = nil) {
+    func showHelpCenterIfPossible(from controller: UIViewController) {
 
         ZendeskManager.presentInController = controller
 
-        // Since user information is not needed to display the Help Center,
-        // if a user identity has not been created, create an empty identity.
-        if !ZendeskManager.sharedInstance.haveUserIdentity {
-            let zendeskIdentity = Identity.createAnonymous()
-            Zendesk.instance?.setIdentity(zendeskIdentity)
+        WooAnalytics.shared.track(.supportBrowseOurFaqTapped)
+
+        guard let faqURL = WooConstants.faqURL else {
+            return
         }
 
-        self.sourceTag = sourceTag
-        WPAnalytics.track(.supportHelpCenterViewed)
-
-        let helpCenterConfig = HelpCenterUiConfiguration()
-        helpCenterConfig.groupType = .category
-        helpCenterConfig.groupIds = [Constants.mobileCategoryID as NSNumber]
-        helpCenterConfig.labels = [Constants.articleLabel]
-
-        let helpCenterController = HelpCenterUi.buildHelpCenterOverview(withConfigs: [helpCenterConfig])
-        helpCenterController.uiDelegate = self
-        ZendeskManager.showZendeskView(helpCenterController)
+        let safariViewController = SFSafariViewController(url: faqURL)
+        safariViewController.modalPresentationStyle = .pageSheet
+        ZendeskManager.presentInController.present(safariViewController, animated: true, completion: nil)
     }
 
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
@@ -269,7 +262,6 @@ private extension ZendeskManager {
         let zendeskIdentity = Identity.createAnonymous(name: ZendeskManager.sharedInstance.userName, email: userEmail)
         Zendesk.instance?.setIdentity(zendeskIdentity)
         DDLogDebug("Zendesk identity created with email '\(userEmail)' and name '\(ZendeskManager.sharedInstance.userName ?? "")'.")
-        registerDeviceIfNeeded()
         completion(true)
     }
 

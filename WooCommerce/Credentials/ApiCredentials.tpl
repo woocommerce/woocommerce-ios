@@ -29,4 +29,16 @@ struct ApiCredentials {
     /// Tracks Prefix
     ///
     static let tracksPrefix = "%{tracks_prefix}"
+
+    /// Zendesk App ID
+    ///
+    static let zendeskAppId = "%{zendesk_app_id}"
+
+    /// Zendesk URL
+    ///
+    static let zendeskUrl = "%{zendesk_url}"
+
+    /// Zendesk Client ID
+    ///
+    static let zendeskClientId = "%{zendesk_client_id}"
 }

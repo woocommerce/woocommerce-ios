@@ -8,7 +8,7 @@ class MockupNetwork: Network {
 
     /// Mapping between URL Suffix and JSON Mockup responses.
     ///
-    private var responseMap = [String: String]()
+    private var responseMap = [MockResponse]()
 
     /// Mapping between URL Suffix and Error responses.
     ///
@@ -84,8 +84,8 @@ extension MockupNetwork {
     /// Whenever a request is enqueued, we'll return the specified JSON Encoded file, whenever the Request's URL suffix matches with
     /// the specified one.
     ///
-    func simulateResponse(requestUrlSuffix: String, filename: String) {
-        responseMap[requestUrlSuffix] = filename
+    func simulateResponse(requestUrlSuffix: String, filename: String, shouldUseOnce: Bool = false) {
+        responseMap.append(MockResponse(requestUrlSuffix: requestUrlSuffix, fileName: filename, shouldUseOnce: shouldUseOnce))
     }
 
     /// We'll return the specified Error, whenever a request matches the specified Suffix Criteria!
@@ -105,11 +105,14 @@ extension MockupNetwork {
     ///
     private func filename(for request: URLRequestConvertible) -> String? {
         let searchPath = path(for: request)
-        for (pattern, filename) in responseMap where searchPath.hasSuffix(pattern) {
-            return filename
+        guard let mock = responseMap.filter({ searchPath.hasSuffix($0.requestUrlSuffix) }).first else {
+            return nil
         }
 
-        return nil
+        if mock.shouldUseOnce {
+            // TODO: remove the mock from the array here!
+        }
+        return mock.fileName
     }
 
     /// Returns the Mockup Error for a given URLRequestConvertible.
@@ -138,4 +141,13 @@ extension MockupNetwork {
             return targetURL ?? ""
         }
     }
+}
+
+
+// MARK: - Private Types
+//
+private struct MockResponse {
+    let requestUrlSuffix: String
+    let fileName: String
+    let shouldUseOnce: Bool
 }

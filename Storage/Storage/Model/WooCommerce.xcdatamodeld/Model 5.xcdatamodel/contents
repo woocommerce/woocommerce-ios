@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14315.18" systemVersion="18A391" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="18B75" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
@@ -8,15 +8,15 @@
         <attribute name="username" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Note" representedClassName="Note" syncable="YES">
-        <attribute name="body" optional="YES" attributeType="Transformable" syncable="YES"/>
-        <attribute name="header" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="body" attributeType="Binary" syncable="YES"/>
+        <attribute name="header" attributeType="Binary" syncable="YES"/>
         <attribute name="icon" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="meta" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="meta" attributeType="Binary" syncable="YES"/>
         <attribute name="noteHash" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="noteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="noticon" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="read" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="subject" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="subject" attributeType="Binary" syncable="YES"/>
         <attribute name="timestamp" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
@@ -173,6 +173,7 @@
     </entity>
     <elements>
         <element name="Account" positionX="-200.9765625" positionY="63.5625" width="128" height="120"/>
+        <element name="Note" positionX="-162" positionY="180" width="128" height="240"/>
         <element name="Order" positionX="-20" positionY="27" width="128" height="690"/>
         <element name="OrderCoupon" positionX="-206.01953125" positionY="379.74609375" width="128" height="120"/>
         <element name="OrderItem" positionX="-364.890625" positionY="379.453125" width="128" height="225"/>
@@ -185,6 +186,5 @@
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="Note" positionX="-162" positionY="180" width="128" height="240"/>
     </elements>
 </model>

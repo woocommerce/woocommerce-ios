@@ -16,17 +16,15 @@ extension Storage.Note: ReadOnlyConvertible {
         timestamp = note.timestamp
         url = note.url
         title = note.title
-        // TODO: Implement this 👇
-//        subject = note.subject
-//        header = note.header
-//        body = note.body
-//        meta = note.meta
+        subject = note.subjectAsData
+        header = note.headerAsData
+        body = note.bodyAsData
+        meta = note.metaAsData
     }
 
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.Note {
-        // TODO: Implement this 👇 fully
         return Note(noteId: noteID,
                     hash: noteHash,
                     read: read,
@@ -36,9 +34,9 @@ extension Storage.Note: ReadOnlyConvertible {
                     type: type ?? "",
                     url: url,
                     title: title,
-                    subject: [],
-                    header: [],
-                    body: [],
-                    meta: [:])
+                    subject: subject,
+                    header: header,
+                    body: body,
+                    meta: meta)
     }
 }

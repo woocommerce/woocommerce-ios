@@ -2,7 +2,7 @@ import Foundation
 import ZendeskSDK
 import ZendeskCoreSDK
 import CoreTelephony
-import WordPressAuthenticator
+import Yosemite
 
 extension NSNotification.Name {
     static let ZendeskPushNotificationReceivedNotification = NSNotification.Name(rawValue: "ZendeskPushNotificationReceivedNotification")
@@ -305,71 +305,35 @@ private extension ZendeskManager {
     }
 
     static func getUserInformationAndShowPrompt(withName: Bool, completion: @escaping (Bool) -> Void) {
-        ZendeskManager.getUserInformationIfAvailable {
-            ZendeskManager.promptUserForInformation(withName: withName) { success in
+        ZendeskManager.getUserInformationIfAvailable()
+        ZendeskManager.promptUserForInformation(withName: withName) { success in
+            guard success else {
+                DDLogInfo("No user information to create Zendesk identity with.")
+                completion(false)
+                return
+            }
+
+            ZendeskManager.createZendeskIdentity { success in
                 guard success else {
-                    DDLogInfo("No user information to create Zendesk identity with.")
+                    DDLogInfo("Creating Zendesk identity failed.")
                     completion(false)
                     return
                 }
-
-                ZendeskManager.createZendeskIdentity { success in
-                    guard success else {
-                        DDLogInfo("Creating Zendesk identity failed.")
-                        completion(false)
-                        return
-                    }
-                    DDLogDebug("Using information from prompt for Zendesk identity.")
-                    ZendeskManager.sharedInstance.haveUserIdentity = true
-                    completion(true)
-                    return
-                }
+                DDLogDebug("Using information from prompt for Zendesk identity.")
+                ZendeskManager.sharedInstance.haveUserIdentity = true
+                completion(true)
+                return
             }
         }
     }
 
-    static func getUserInformationIfAvailable(completion: @escaping () -> ()) {
+    static func getUserInformationIfAvailable() {
+        ZendeskManager.sharedInstance.userEmail = StoresManager.shared.sessionManager.defaultAccount?.email
+        ZendeskManager.sharedInstance.userName = StoresManager.shared.sessionManager.defaultAccount?.username
 
-        /*
-         Steps to selecting which account to use:
-         1. If there is a WordPress.com account, use that.
-         2. If not, use selected site.
-         */
-
-        let context = ContextManager.sharedInstance().mainContext
-
-        // 1. Check for WP account
-        let accountService = AccountService(managedObjectContext: context)
-        if let defaultAccount = accountService.defaultWordPressComAccount() {
-            DDLogDebug("Zendesk - Using defaultAccount for suggested identity.")
-            getUserInformationFrom(wpAccount: defaultAccount)
-            completion()
-            return
-        }
-
-        // 2. Use information from selected site.
-        let blogService = BlogService(managedObjectContext: context)
-
-        guard let blog = blogService.lastUsedBlog() else {
-            // We have no user information.
-            completion()
-            return
-        }
-
-        // 2a. Jetpack site
-        if let jetpackState = blog.jetpack, jetpackState.isConnected {
-            DDLogDebug("Zendesk - Using Jetpack site for suggested identity.")
-            getUserInformationFrom(jetpackState: jetpackState)
-            completion()
-            return
-
-        }
-
-        // 2b. self-hosted site
-        ZendeskManager.getUserInformationFrom(blog: blog) {
-            DDLogDebug("Zendesk - Using self-hosted for suggested identity.")
-            completion()
-            return
+        if let displayName = StoresManager.shared.sessionManager.defaultAccount?.displayName,
+            !displayName.isEmpty {
+            ZendeskManager.sharedInstance.userName = displayName
         }
     }
 
@@ -456,55 +420,6 @@ private extension ZendeskManager {
         }
     }
 
-    // MARK: - Get User Information
-
-    static func getUserInformationFrom(jetpackState: JetpackState) {
-        ZendeskManager.sharedInstance.userName = jetpackState.connectedUsername
-        ZendeskManager.sharedInstance.userEmail = jetpackState.connectedEmail
-    }
-
-    static func getUserInformationFrom(blog: Blog, completion: @escaping () -> ()) {
-
-        ZendeskManager.sharedInstance.userName = blog.username
-
-        // Get email address from remote profile
-        guard let username = blog.username,
-            let password = blog.password,
-            let xmlrpc = blog.xmlrpc,
-            let service = UsersService(username: username, password: password, xmlrpc: xmlrpc) else {
-                return
-        }
-
-        service.fetchProfile { userProfile in
-            guard let userProfile = userProfile else {
-                completion()
-                return
-            }
-            ZendeskManager.sharedInstance.userEmail = userProfile.email
-            completion()
-        }
-    }
-
-    static func getUserInformationFrom(wpAccount: WPAccount) {
-
-        guard let api = wpAccount.wordPressComRestApi else {
-            DDLogInfo("Zendesk: No wordPressComRestApi.")
-            return
-        }
-
-        let service = AccountSettingsService(userID: wpAccount.userID.intValue, api: api)
-
-        guard let accountSettings = service.settings else {
-            DDLogInfo("Zendesk: No accountSettings.")
-            return
-        }
-
-        ZendeskManager.sharedInstance.userEmail = wpAccount.email
-        ZendeskManager.sharedInstance.userName = wpAccount.username
-        if accountSettings.firstName.count > 0 || accountSettings.lastName.count > 0 {
-            ZendeskManager.sharedInstance.userName = (accountSettings.firstName + " " + accountSettings.lastName).trim()
-        }
-    }
 
     // MARK: - User Defaults
 

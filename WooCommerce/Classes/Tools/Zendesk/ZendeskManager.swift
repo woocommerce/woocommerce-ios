@@ -2,6 +2,7 @@ import Foundation
 import ZendeskSDK
 import ZendeskCoreSDK
 import CoreTelephony
+import WordPressAuthenticator
 import SafariServices
 import Yosemite
 
@@ -91,7 +92,10 @@ import Yosemite
 
         let safariViewController = SFSafariViewController(url: faqURL)
         safariViewController.modalPresentationStyle = .pageSheet
-        ZendeskManager.presentInController.present(safariViewController, animated: true, completion: nil)
+        guard let vc = ZendeskManager.presentInController else {
+            return
+        }
+        vc.present(safariViewController, animated: true, completion: nil)
     }
 
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
@@ -400,28 +404,7 @@ private extension ZendeskManager {
 
     static func getTags() -> [String] {
 
-        let context = ContextManager.sharedInstance().mainContext
-        let blogService = BlogService(managedObjectContext: context)
-
-        // If there are no sites, then the user has an empty WP account.
-        guard let allBlogs = blogService.blogsForAllAccounts() as? [Blog], allBlogs.count > 0 else {
-            return [Constants.wpComTag]
-        }
-
-        // Get all unique site plans
-        var tags = allBlogs.compactMap { $0.planTitle }.unique
-
-        // If any of the sites have jetpack installed, add jetpack tag.
-        let jetpackBlog = allBlogs.first { $0.jetpack?.isInstalled == true }
-        if let _ = jetpackBlog {
-            tags.append(Constants.jetpackTag)
-        }
-
-        // If there is a WP account, add wpcom tag.
-        let accountService = AccountService(managedObjectContext: context)
-        if let _ = accountService.defaultWordPressComAccount() {
-            tags.append(Constants.wpComTag)
-        }
+        var tags: [String]
 
         // Add sourceTag
         if let sourceTagOrigin = ZendeskManager.sharedInstance.sourceTag?.origin {
@@ -648,7 +631,7 @@ private extension ZendeskManager {
         static let mobileCategoryID: UInt64 = 360000041586
         static let articleLabel = "iOS"
         static let platformTag = "iOS"
-        static let ticketSubject = NSLocalizedString("WordPress for iOS Support", comment: "Subject of new Zendesk ticket.")
+        static let ticketSubject = NSLocalizedString("WooCommerce for iOS Support", comment: "Subject of new Zendesk ticket.")
         static let blogSeperator = "\n----------\n"
         static let jetpackTag = "jetpack"
         static let wpComTag = "wpcom"
@@ -657,7 +640,7 @@ private extension ZendeskManager {
         static let networkTypeLabel = "Network Type:"
         static let networkCarrierLabel = "Carrier:"
         static let networkCountryCodeLabel = "Country Code:"
-        static let zendeskProfileUDKey = "wp_zendesk_profile"
+        static let zendeskProfileUDKey = "wc_zendesk_profile"
         static let profileEmailKey = "email"
         static let profileNameKey = "name"
         static let nameFieldCharacterLimit = 50

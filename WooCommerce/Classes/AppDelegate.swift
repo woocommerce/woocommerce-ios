@@ -67,6 +67,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         displayAuthenticatorIfNeeded()
         displayStorePickerIfNeeded()
 
+        // Components that require prior Auth
+        setupZendesk()
+
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
 
@@ -154,6 +157,12 @@ private extension AppDelegate {
     ///
     func setupFabric() {
         fabricManager.initialize()
+    }
+
+    /// Sets up the Zendesk SDK.
+    ///
+    func setupZendesk() {
+        ZendeskManager.setup()
     }
 
     /// Sets up the WordPress Authenticator.

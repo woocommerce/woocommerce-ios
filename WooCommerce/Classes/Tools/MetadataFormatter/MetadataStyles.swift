@@ -1,9 +1,9 @@
 import Foundation
 import UIKit
-import Networking
+
 
 // TODO:
-// - Nuke Networking Dependency (BlockFormatterStyles / BlockFormatter)
+// - Rename
 // - Nukes Color Dependencies
 // - Unit Tests
 
@@ -23,7 +23,7 @@ let bodyNoticonColor = UIColor.black
 let footerTextColor = UIColor.black
 
 
-/// DescriptorFormatterStyles: Defines a collection of Styles to be applied over a Block.
+/// MetadataStyles: Defines a collection of Text Attributes
 ///
 struct MetadataStyles {
 
@@ -35,7 +35,7 @@ struct MetadataStyles {
     ///
     let regular: Style
 
-    /// Bold: Ranges = [user]
+    /// Bold: Ranges = [.user]
     ///
     let bold: Style?
 
@@ -55,21 +55,21 @@ struct MetadataStyles {
     ///
     let noticon: Style?
 
-    /// Link Color!
+    /// Links
     ///
-    let linkColor: UIColor?
+    let link: Style?
 
 
     /// Designated Initializer.
     ///
-    init(regular: Style, bold: Style? = nil, blockquote: Style? = nil, italics: Style? = nil, match: Style? = nil, noticon: Style? = nil, linkColor: UIColor? = nil) {
+    init(regular: Style, bold: Style? = nil, blockquote: Style? = nil, italics: Style? = nil, match: Style? = nil, noticon: Style? = nil, link: Style? = nil) {
         self.regular = regular
         self.bold = bold
         self.blockquote = blockquote
         self.italics = italics
         self.match = match
         self.noticon = noticon
-        self.linkColor = linkColor
+        self.link = link
     }
 }
 
@@ -78,7 +78,7 @@ struct MetadataStyles {
 //
 extension MetadataStyles {
 
-    /// Subject: Notifications List / Subject Block
+    /// Styles: Notifications List / Subject Block
     ///
     static let subject: MetadataStyles = {
         let regular: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline, .foregroundColor: subjectTextColor]
@@ -91,7 +91,7 @@ extension MetadataStyles {
     }()
 
 
-    /// Subject: Notifications List / Snippet Block
+    /// Styles: Notifications List / Snippet Block
     ///
     static let snippet: MetadataStyles = {
         let regular: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline, .foregroundColor: snippetColor]
@@ -100,7 +100,7 @@ extension MetadataStyles {
     }()
 
 
-    /// Subject: Notification Defailts / Header Block
+    /// Styles: Notification Defailts / Header Block
     ///
     static let header: MetadataStyles = {
         let regular: Style      = [.font: UIFont.body, .foregroundColor: bodyTextColor]
@@ -111,7 +111,7 @@ extension MetadataStyles {
     }()
 
 
-    /// Subject: Notification Defailts / Footer Block
+    /// Styles: Notification Defailts / Footer Block
     ///
     static let footer: MetadataStyles = {
         let regular: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: footerTextColor]
@@ -120,7 +120,7 @@ extension MetadataStyles {
     }()
 
 
-    /// Subject: Notification Defailts / Body Blocks
+    /// Styles: Notification Defailts / Body Blocks
     ///
     static let body: MetadataStyles = {
         let regular: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: bodyTextColor]
@@ -129,16 +129,17 @@ extension MetadataStyles {
         let match: Style        = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold, .foregroundColor: bodyLinkColor]
         let noticon: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: bodyNoticonFont, .foregroundColor: bodyNoticonColor]
         let italic: Style       = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics, .foregroundColor: bodyTextColor]
+        let link: Style         = [.foregroundColor: bodyLinkColor]
 
-        return MetadataStyles(regular: regular, bold: bold, blockquote: blockquote, match: match, noticon: noticon, linkColor: bodyLinkColor)
+        return MetadataStyles(regular: regular, bold: bold, blockquote: blockquote, match: match, noticon: noticon, link: link)
     }()
 
 
-    /// Subject: Notification Defailts / Badge Blocks
+    /// Styles: Notification Defailts / Badge Blocks
     ///
     static let badge: MetadataStyles = {
         let regular: Style      = [.font: UIFont.body, .foregroundColor: bodyTextColor, .paragraphStyle: NSParagraphStyle.badge]
 
-        return MetadataStyles(regular: regular, bold: body.bold, blockquote: body.blockquote, italics: body.italics, linkColor: body.linkColor)
+        return MetadataStyles(regular: regular, bold: body.bold, blockquote: body.blockquote, italics: body.italics, link: body.link)
     }()
 }

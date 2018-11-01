@@ -53,8 +53,8 @@
 		B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112E2049E27A007D25DC /* OrdersViewController.swift */; };
 		B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112F2049E27A007D25DC /* SettingsViewController.swift */; };
 		B50BB4162141828F00AF0F3C /* FooterSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50BB4152141828F00AF0F3C /* FooterSpinnerView.swift */; };
-		B511ED27218A660E005787DC /* MetadataDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B511ED26218A660E005787DC /* MetadataDescriptor.swift */; };
-		B517EA18218B232700730EC4 /* MetadataFormatter+Notes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B517EA17218B232700730EC4 /* MetadataFormatter+Notes.swift */; };
+		B511ED27218A660E005787DC /* StringDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B511ED26218A660E005787DC /* StringDescriptor.swift */; };
+		B517EA18218B232700730EC4 /* StringFormatter+Notes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B517EA17218B232700730EC4 /* StringFormatter+Notes.swift */; };
 		B53A569721123D3B000776C9 /* ResultsControllerUIKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569621123D3B000776C9 /* ResultsControllerUIKitTests.swift */; };
 		B53A569B21123E8E000776C9 /* MockupTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569A21123E8E000776C9 /* MockupTableView.swift */; };
 		B53A569D21123EEB000776C9 /* MockupStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569C21123EEB000776C9 /* MockupStorage.swift */; };
@@ -65,8 +65,8 @@
 		B541B2132189E7FD008FE7C1 /* ScannerWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541B2122189E7FD008FE7C1 /* ScannerWooTests.swift */; };
 		B541B2152189EEA1008FE7C1 /* Scanner+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541B2142189EEA1008FE7C1 /* Scanner+Helpers.swift */; };
 		B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541B2162189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift */; };
-		B541B21A2189F3A2008FE7C1 /* MetadataFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541B2192189F3A2008FE7C1 /* MetadataFormatter.swift */; };
-		B541B21C2189F3D8008FE7C1 /* MetadataStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541B21B2189F3D8008FE7C1 /* MetadataStyles.swift */; };
+		B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541B2192189F3A2008FE7C1 /* StringFormatter.swift */; };
+		B541B21C2189F3D8008FE7C1 /* StringStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541B21B2189F3D8008FE7C1 /* StringStyles.swift */; };
 		B541B220218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541B21F218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift */; };
 		B541B223218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541B222218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift */; };
 		B541B226218A412C008FE7C1 /* UIFont+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541B225218A412C008FE7C1 /* UIFont+Woo.swift */; };
@@ -271,8 +271,8 @@
 		B509112E2049E27A007D25DC /* OrdersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrdersViewController.swift; sourceTree = "<group>"; };
 		B509112F2049E27A007D25DC /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B50BB4152141828F00AF0F3C /* FooterSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterSpinnerView.swift; sourceTree = "<group>"; };
-		B511ED26218A660E005787DC /* MetadataDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataDescriptor.swift; sourceTree = "<group>"; };
-		B517EA17218B232700730EC4 /* MetadataFormatter+Notes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MetadataFormatter+Notes.swift"; sourceTree = "<group>"; };
+		B511ED26218A660E005787DC /* StringDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringDescriptor.swift; sourceTree = "<group>"; };
+		B517EA17218B232700730EC4 /* StringFormatter+Notes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringFormatter+Notes.swift"; sourceTree = "<group>"; };
 		B53A569621123D3B000776C9 /* ResultsControllerUIKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsControllerUIKitTests.swift; sourceTree = "<group>"; };
 		B53A569A21123E8E000776C9 /* MockupTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupTableView.swift; sourceTree = "<group>"; };
 		B53A569C21123EEB000776C9 /* MockupStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockupStorage.swift; path = ../../../Yosemite/YosemiteTests/Mockups/MockupStorage.swift; sourceTree = "<group>"; };
@@ -283,8 +283,8 @@
 		B541B2122189E7FD008FE7C1 /* ScannerWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerWooTests.swift; sourceTree = "<group>"; };
 		B541B2142189EEA1008FE7C1 /* Scanner+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Scanner+Helpers.swift"; sourceTree = "<group>"; };
 		B541B2162189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+Helpers.swift"; sourceTree = "<group>"; };
-		B541B2192189F3A2008FE7C1 /* MetadataFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataFormatter.swift; sourceTree = "<group>"; };
-		B541B21B2189F3D8008FE7C1 /* MetadataStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataStyles.swift; sourceTree = "<group>"; };
+		B541B2192189F3A2008FE7C1 /* StringFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringFormatter.swift; sourceTree = "<group>"; };
+		B541B21B2189F3D8008FE7C1 /* StringStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringStyles.swift; sourceTree = "<group>"; };
 		B541B21F218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableParagraphStyle+Helpers.swift"; sourceTree = "<group>"; };
 		B541B222218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSParagraphStyle+Woo.swift"; sourceTree = "<group>"; };
 		B541B225218A412C008FE7C1 /* UIFont+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Woo.swift"; sourceTree = "<group>"; };
@@ -543,15 +543,15 @@
 			path = Yosemite;
 			sourceTree = "<group>";
 		};
-		B541B2182189F387008FE7C1 /* MetadataFormatter */ = {
+		B541B2182189F387008FE7C1 /* StringFormatter */ = {
 			isa = PBXGroup;
 			children = (
-				B511ED26218A660E005787DC /* MetadataDescriptor.swift */,
-				B541B2192189F3A2008FE7C1 /* MetadataFormatter.swift */,
-				B517EA17218B232700730EC4 /* MetadataFormatter+Notes.swift */,
-				B541B21B2189F3D8008FE7C1 /* MetadataStyles.swift */,
+				B511ED26218A660E005787DC /* StringDescriptor.swift */,
+				B541B2192189F3A2008FE7C1 /* StringFormatter.swift */,
+				B517EA17218B232700730EC4 /* StringFormatter+Notes.swift */,
+				B541B21B2189F3D8008FE7C1 /* StringStyles.swift */,
 			);
-			path = MetadataFormatter;
+			path = StringFormatter;
 			sourceTree = "<group>";
 		};
 		B55D4BF920B5CDE600D7A50F /* Credentials */ = {
@@ -578,7 +578,7 @@
 		B55D4C2220B716CE00D7A50F /* Tools */ = {
 			isa = PBXGroup;
 			children = (
-				B541B2182189F387008FE7C1 /* MetadataFormatter */,
+				B541B2182189F387008FE7C1 /* StringFormatter */,
 				B5A03699214C0E7000774E2C /* Logging */,
 				B5DB01B32114AB2D00A4F797 /* Fabric */,
 				B58B4ABC2108F7F800076FDD /* Notices */,
@@ -1290,7 +1290,7 @@
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
 				B58B4AB22108F01700076FDD /* NoticeView.swift in Sources */,
 				CE17C2E220ACA06800AFBD20 /* BillingDetailsTableViewCell.swift in Sources */,
-				B511ED27218A660E005787DC /* MetadataDescriptor.swift in Sources */,
+				B511ED27218A660E005787DC /* StringDescriptor.swift in Sources */,
 				B55D4C2720B717C000D7A50F /* UserAgent.swift in Sources */,
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
 				CE22E3F72170E23C005A6BEF /* PrivacySettingsViewController.swift in Sources */,
@@ -1326,7 +1326,7 @@
 				B5D6DC54214802740003E48A /* SyncCoordinator.swift in Sources */,
 				CE22E3FB21714776005A6BEF /* TopLeftImageTableViewCell.swift in Sources */,
 				B554E17B2152F27200F31188 /* UILabel+Appearance.swift in Sources */,
-				B541B21C2189F3D8008FE7C1 /* MetadataStyles.swift in Sources */,
+				B541B21C2189F3D8008FE7C1 /* StringStyles.swift in Sources */,
 				B58B4AB82108F14700076FDD /* NoticeNotificationInfo.swift in Sources */,
 				CE24BCD8212F25D4001CD12E /* StorageOrder+Woo.swift in Sources */,
 				B557DA1520979904005962F4 /* CustomerNoteTableViewCell.swift in Sources */,
@@ -1340,7 +1340,7 @@
 				74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */,
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */,
-				B517EA18218B232700730EC4 /* MetadataFormatter+Notes.swift in Sources */,
+				B517EA18218B232700730EC4 /* StringFormatter+Notes.swift in Sources */,
 				CE1EC8E920B8A3F5009762BF /* OrderNoteViewModel.swift in Sources */,
 				CE583A072107849F00D73C1C /* SwitchTableViewCell.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
@@ -1382,7 +1382,7 @@
 				B53B898D20D462A000EDB467 /* StoresManager.swift in Sources */,
 				B5D1AFC020BC67C200DB0E8C /* WooConstants.swift in Sources */,
 				CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */,
-				B541B21A2189F3A2008FE7C1 /* MetadataFormatter.swift in Sources */,
+				B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */,
 				CE1F512920697F0100C6C810 /* UIFont+Helpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

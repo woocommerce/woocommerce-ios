@@ -3,7 +3,7 @@ import Foundation
 
 /// Describes the kind of data contained within a specific Text Range.
 ///
-protocol MetadataDescriptor {
+protocol StringDescriptor {
 
     /// Text Range associated.
     ///
@@ -19,5 +19,5 @@ protocol MetadataDescriptor {
 
     /// Returns the `Text Style` that should be applied over the associated range.
     ///
-    func attributes(from styles: MetadataStyles) -> [NSAttributedString.Key: Any]?
+    func attributes(from styles: StringStyles) -> [NSAttributedString.Key: Any]?
 }

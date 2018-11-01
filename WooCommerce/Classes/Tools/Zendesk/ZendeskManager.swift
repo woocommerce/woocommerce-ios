@@ -372,9 +372,7 @@ private extension ZendeskManager {
 
     static func getLogFile() -> String {
 
-        guard let appDelegate = UIApplication.shared.delegate as? WordPressAppDelegate,
-            let fileLogger = appDelegate.logger.fileLogger,
-            let logFileInformation = fileLogger.logFileManager.sortedLogFileInfos.first,
+        guard let logFileInformation = AppDelegate.shared.fileLogger.logFileManager.sortedLogFileInfos.first,
             let logData = try? Data(contentsOf: URL(fileURLWithPath: logFileInformation.filePath)),
             let logText = String(data: logData, encoding: .utf8) else {
                 return ""

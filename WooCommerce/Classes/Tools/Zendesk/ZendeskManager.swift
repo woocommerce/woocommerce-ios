@@ -381,38 +381,27 @@ private extension ZendeskManager {
     }
 
     static func getCurrentSiteDescription() -> String {
-        let blogService = BlogService(managedObjectContext: ContextManager.sharedInstance().mainContext)
-
-        guard let blog = blogService.lastUsedBlog() else {
-            return Constants.noValue
+        guard let site = StoresManager.shared.sessionManager.defaultSite else {
+            return String()
         }
 
-        let url = blog.url ?? Constants.unknownValue
-        return "\(url) (\(blog.stateDescription()))"
-    }
-
-    static func getBlogInformation() -> String {
-
-        let blogService = BlogService(managedObjectContext: ContextManager.sharedInstance().mainContext)
-
-        guard let allBlogs = blogService.blogsForAllAccounts() as? [Blog], allBlogs.count > 0 else {
-            return Constants.noValue
-        }
-
-        return (allBlogs.map { $0.supportDescription() }).joined(separator: Constants.blogSeperator)
+        let url = site.url ?? Constants.unknownValue
+        return "\(url) (\(site.description()))"
     }
 
     static func getTags() -> [String] {
 
-        var tags: [String]
+        // Future tags tk:
+        //Constants.wpComTag,    // wp.com
+        //Constants.jetpackTag,  // jetpack
+        //site.planTitle         // site plan
+        var tags = [ Constants.wooMobileTag,// woo-ios
+                     Constants.platformTag] // iOS
 
         // Add sourceTag
         if let sourceTagOrigin = ZendeskManager.sharedInstance.sourceTag?.origin {
             tags.append(sourceTagOrigin)
         }
-
-        // Add platformTag
-        tags.append(Constants.platformTag)
 
         return tags
     }
@@ -635,6 +624,7 @@ private extension ZendeskManager {
         static let blogSeperator = "\n----------\n"
         static let jetpackTag = "jetpack"
         static let wpComTag = "wpcom"
+        static let wooMobileTag = "woo_-_ios"
         static let networkWiFi = "WiFi"
         static let networkWWAN = "Mobile"
         static let networkTypeLabel = "Network Type:"

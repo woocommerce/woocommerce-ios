@@ -2,29 +2,29 @@ import Foundation
 import Networking
 
 
-/// MetadataFormatter: Notifications Convenience Methods
+/// StringFormatter: Notifications Convenience Methods
 ///
-extension MetadataFormatter {
+extension StringFormatter {
 
     /// Returns an AttributedString representation of a given NoteBlock, with the specified Styles applied to it.
     ///
-    func format(block: NoteBlock, with styles: MetadataStyles) -> NSAttributedString {
+    func format(block: NoteBlock, with styles: StringStyles) -> NSAttributedString {
         guard let text = block.text else {
             return NSAttributedString()
         }
 
-        return format(text: text, with: styles, using: block.ranges as [MetadataDescriptor])
+        return format(text: text, with: styles, using: block.ranges as [StringDescriptor])
     }
 }
 
 
-/// NoteRange: MetadataDescriptor Conformance
+/// NoteRange: StringDescriptor Conformance
 ///
-extension NoteRange: MetadataDescriptor {
+extension NoteRange: StringDescriptor {
 
     /// Returns the TextStyles that should be applied over the receiver instance.
     ///
-    func attributes(from styles: MetadataStyles) -> [NSAttributedString.Key: Any]? {
+    func attributes(from styles: StringStyles) -> [NSAttributedString.Key: Any]? {
         switch kind {
         case .blockquote:   return styles.blockquote
         case .comment:      return styles.italics

@@ -1,14 +1,14 @@
 import Foundation
 
 
-/// MetadataFormatter: Helper tool that allows us to format an Input String, based on the associated Descriptors.
+/// StringFormatter: Helper tool that allows us to format an Input String, based on the associated Descriptors.
 ///
-struct MetadataFormatter {
+struct StringFormatter {
 
     /// Returns An AttributedString representation of the received String, with a specific collection of Styles applied,
     /// according to a given collection of Descriptors.
     ///
-    func format(text: String, with styles: MetadataStyles, using descriptors: [MetadataDescriptor]) -> NSAttributedString {
+    func format(text: String, with styles: StringStyles, using descriptors: [StringDescriptor]) -> NSAttributedString {
         let tightenedText = replaceCommonWhitespaceIssues(in: text)
         let output = NSMutableAttributedString(string: tightenedText, attributes: styles.regular)
 

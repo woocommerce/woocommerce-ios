@@ -1,86 +1,46 @@
 import Foundation
-import Networking
 
 
-
-///
-///
-extension NoteRange: MetadataDescriptor {
-
-    ///
-    ///
-    func attributes(from styles: MetadataStyles) -> [NSAttributedString.Key: Any]? {
-        switch kind {
-        case .blockquote:   return styles.blockquote
-        case .comment:      return styles.italics
-        case .match:        return styles.match
-        case .noticon:      return styles.noticon
-        case .post:         return styles.italics
-        case .user:         return styles.bold
-        default:            return nil
-        }
-    }
-
-    ///
-    ///
-    var replacesValueInRange: Bool {
-        return kind == .noticon
-    }
-}
-
-
-///
-///
-extension MetadataFormatter {
-
-    ///
-    ///
-    func format(block: NoteBlock, with styles: MetadataStyles) -> NSAttributedString {
-        guard let text = block.text else {
-            return NSAttributedString()
-        }
-
-        return format(text: text, with: styles, using: block.ranges as [MetadataDescriptor])
-    }
-
-}
-
-
-/// BlockFormatter: Returns an AttributedString with all of the Block's Ranges metadata formatted with the specified Styles.
+/// MetadataFormatter: Helper tool that allows us to format an Input String, based on the associated Descriptors.
 ///
 struct MetadataFormatter {
 
-    /// Returns An AttributedString representation of the received Block, with a specific collection of Styles applied.
+    /// Returns An AttributedString representation of the received String, with a specific collection of Styles applied,
+    /// according to a given collection of Descriptors.
     ///
     func format(text: String, with styles: MetadataStyles, using descriptors: [MetadataDescriptor]) -> NSAttributedString {
         let tightenedText = replaceCommonWhitespaceIssues(in: text)
         let output = NSMutableAttributedString(string: tightenedText, attributes: styles.regular)
 
+        // Style: Quotes
         if let quoteStyle = styles.italics ?? styles.bold {
             output.applyAttributesToQuotedText(attributes: quoteStyle)
         }
 
-        // Apply the Ranges
+        // Style: [Descriptors]
         var lengthShift = 0
 
         for descriptor in descriptors {
             var shiftedRange        = descriptor.range
             shiftedRange.location   += lengthShift
 
-            if descriptor.replacesValueInRange {
-                let noticon         = (descriptor.value ?? String()) + " "
-                output.replaceCharacters(in: shiftedRange, with: noticon)
-                lengthShift         += noticon.count
-                shiftedRange.length += noticon.count
+            // Apply Values
+            if let rangeValue = descriptor.value {
+                let replacement     = rangeValue + " "
+                output.replaceCharacters(in: shiftedRange, with: replacement)
+                lengthShift         += replacement.count
+                shiftedRange.length += replacement.count
             }
 
+            // Apply Attributes
             if let rangeStyle = descriptor.attributes(from: styles) {
                 output.addAttributes(rangeStyle, range: shiftedRange)
             }
 
-            if let rangeURL = descriptor.url, let linksColor = styles.linkColor {
+            // Apply Links
+            if let rangeURL = descriptor.url, let linkStyle = styles.link {
                 output.addAttribute(.link, value: rangeURL, range: shiftedRange)
-                output.addAttribute(.foregroundColor, value: linksColor, range: shiftedRange)
+                output.addAttributes(linkStyle, range: shiftedRange)
             }
         }
 

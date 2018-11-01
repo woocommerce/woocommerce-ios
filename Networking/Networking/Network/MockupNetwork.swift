@@ -167,7 +167,7 @@ private extension MockupNetwork {
         return queue.dequeue()
     }
 
-    /// Returns the Mockup JSON Filename for a given URLRequestConvertible from the FIFO response queue
+    /// Returns the Mockup JSON Filename for a given URLRequestConvertible from the responseMap (array)
     ///
     private func filenameFromMap(for request: URLRequestConvertible) -> String? {
         let searchPath = path(for: request)

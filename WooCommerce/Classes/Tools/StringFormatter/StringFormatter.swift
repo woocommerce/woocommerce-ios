@@ -46,6 +46,12 @@ struct StringFormatter {
 
         return output
     }
+}
+
+
+// MARK: - Private
+//
+private extension StringFormatter  {
 
     /// Replaces some common extra whitespace with hairline spaces so that comments display better
     ///
@@ -53,17 +59,17 @@ struct StringFormatter {
     /// - Returns: string of same length
     /// - Note: the length must be maintained or the formatting will break
     ///
-    private func replaceCommonWhitespaceIssues(in baseString: String) -> String {
+    func replaceCommonWhitespaceIssues(in baseString: String) -> String {
         /// \u{200A} = hairline space (very skinny space).
         /// we use these so that the ranges are still in the right position, but the extra space basically disappears
         ///
         let output = baseString
-            .replacingOccurrences(of: "\t ", with: "\u{200A}\u{200A}") // tabs before a space
-            .replacingOccurrences(of: " \t", with: " \u{200A}") // tabs after a space
-            .replacingOccurrences(of: "\t@", with: "\u{200A}@") // tabs before @mentions
-            .replacingOccurrences(of: "\t.", with: "\u{200A}.") // tabs before a space
-            .replacingOccurrences(of: "\t,", with: "\u{200A},") // tabs cefore a comman
-            .replacingOccurrences(of: "\n\t\n\t", with: "\u{200A}\u{200A}\n\t") // extra newline-with-tab before a newline-with-tab
+            .replacingOccurrences(of: "\t ", with: String.hairSpace + String.hairSpace) // tabs before a space
+            .replacingOccurrences(of: " \t", with: String.space + String.hairSpace) // tabs after a space
+            .replacingOccurrences(of: "\t@", with: String.hairSpace + "@") // tabs before @mentions
+            .replacingOccurrences(of: "\t.", with: String.hairSpace + ".") // tabs before a space
+            .replacingOccurrences(of: "\t,", with: String.hairSpace + ",") // tabs cefore a comman
+            .replacingOccurrences(of: "\n\t\n\t", with: String.hairSpace + String.hairSpace + "\n\t") // extra newline-with-tab before a newline-with-tab
 
         // if the length of the string changes the range-based formatting will break
         guard output.count == baseString.count else {

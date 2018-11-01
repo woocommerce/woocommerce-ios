@@ -40,6 +40,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     let storageManager = CoreDataManager(name: WooConstants.databaseStackName)
 
+    /// Cocoalumberjack DDLog
+    ///
+    let fileLogger: DDFileLogger = DDFileLogger()
+
     /// Tab Bar Controller
     ///
     var tabBarController: MainTabBarController? {
@@ -180,7 +184,6 @@ private extension AppDelegate {
     /// Sets up CocoaLumberjack logging.
     ///
     func setupCocoaLumberjack() {
-        let fileLogger: DDFileLogger = DDFileLogger()
         fileLogger.rollingFrequency = TimeInterval(60*60*24)  // 24 hours
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
 

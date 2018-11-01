@@ -279,7 +279,10 @@ private extension ZendeskManager {
         // Set form field values
         var ticketFields = [ZDKCustomField]()
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.appVersion as NSNumber, andValue: ZendeskManager.appVersion))
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.allBlogs as NSNumber, andValue: ZendeskManager.getBlogInformation()))
+
+        // -TODO: append the sites list
+        // ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.allBlogs as NSNumber, andValue: ZendeskManager.getBlogInformation()))
+
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.deviceFreeSpace as NSNumber, andValue: ZendeskManager.getDeviceFreeSpace()))
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.networkInformation as NSNumber, andValue: ZendeskManager.getNetworkInformation()))
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.logs as NSNumber, andValue: ZendeskManager.getLogFile()))
@@ -385,8 +388,8 @@ private extension ZendeskManager {
             return String()
         }
 
-        let url = site.url ?? Constants.unknownValue
-        return "\(url) (\(site.description()))"
+        let url = site.url
+        return "\(url) (\(site.description))"
     }
 
     static func getTags() -> [String] {

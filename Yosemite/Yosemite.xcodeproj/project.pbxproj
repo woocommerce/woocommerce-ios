@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */; };
 		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
+		743057B3218B69D100441A76 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743057B2218B69D100441A76 /* Queue.swift */; };
 		744A3218216D55F80051439B /* SiteVisitStats+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744A3216216D55F80051439B /* SiteVisitStats+ReadOnlyConvertible.swift */; };
 		744A3219216D55F80051439B /* SiteVisitStatsItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744A3217216D55F80051439B /* SiteVisitStatsItem+ReadOnlyConvertible.swift */; };
 		744A321B216D57D40051439B /* SiteVisitStats+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744A321A216D57D30051439B /* SiteVisitStats+ReadOnlyType.swift */; };
@@ -89,6 +90,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		743057B2218B69D100441A76 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		744A3216216D55F80051439B /* SiteVisitStats+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SiteVisitStats+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		744A3217216D55F80051439B /* SiteVisitStatsItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SiteVisitStatsItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		744A321A216D57D30051439B /* SiteVisitStats+ReadOnlyType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SiteVisitStats+ReadOnlyType.swift"; sourceTree = "<group>"; };
@@ -366,6 +368,7 @@
 				B5C9DE142087FF0E006B910A /* Assert.swift */,
 				B5B5C796208E49B600642956 /* Action+Internal.swift */,
 				B5A0369D214C0F0900774E2C /* CocoaLumberjack.swift */,
+				743057B2218B69D100441A76 /* Queue.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -642,6 +645,7 @@
 				74A18C58211382A000DCF8A8 /* StatsAction.swift in Sources */,
 				7499936420EFBC1B00CF01CD /* OrderNoteAction.swift in Sources */,
 				7455D4692141B59E00FA8C1F /* TopEarnerStatsItem+ReadOnlyConvertible.swift in Sources */,
+				743057B3218B69D100441A76 /* Queue.swift in Sources */,
 				7492FADB217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

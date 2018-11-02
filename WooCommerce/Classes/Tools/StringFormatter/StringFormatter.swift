@@ -64,14 +64,14 @@ private extension StringFormatter  {
         /// we use these so that the ranges are still in the right position, but the extra space basically disappears
         ///
         let output = baseString
-            .replacingOccurrences(of: "\t ", with: String.hairSpace + String.hairSpace) // tabs before a space
-            .replacingOccurrences(of: " \t", with: String.space + String.hairSpace) // tabs after a space
-            .replacingOccurrences(of: "\t@", with: String.hairSpace + "@") // tabs before @mentions
-            .replacingOccurrences(of: "\t.", with: String.hairSpace + ".") // tabs before a space
-            .replacingOccurrences(of: "\t,", with: String.hairSpace + ",") // tabs cefore a comman
-            .replacingOccurrences(of: "\n\t\n\t", with: String.hairSpace + String.hairSpace + "\n\t") // extra newline-with-tab before a newline-with-tab
+            .replacingOccurrences(of: "\t ", with: String.hairSpace + String.hairSpace)
+            .replacingOccurrences(of: " \t", with: String.space + String.hairSpace)
+            .replacingOccurrences(of: "\t@", with: String.hairSpace + "@")
+            .replacingOccurrences(of: "\t.", with: String.hairSpace + ".")
+            .replacingOccurrences(of: "\t,", with: String.hairSpace + ",")
+            .replacingOccurrences(of: "\n\t\n\t", with: String.hairSpace + String.hairSpace + "\n\t")
 
-        // if the length of the string changes the range-based formatting will break
+        // Failsafe: If the length of the string changes the range-based formatting will break
         guard output.count == baseString.count else {
             return baseString
         }

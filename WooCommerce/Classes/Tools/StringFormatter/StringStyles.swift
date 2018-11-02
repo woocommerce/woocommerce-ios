@@ -114,7 +114,7 @@ extension StringStyles {
     }()
 
 
-    /// Styles: Notification Defailts / Badge Blocks
+    /// Styles: Notification Defaults / Badge Blocks
     ///
     static let badge: StringStyles = {
         let regular: Style      = [.font: UIFont.body, .foregroundColor: NukeMe.bodyTextColor, .paragraphStyle: NSParagraphStyle.badge]

@@ -63,14 +63,8 @@ class MockupNetwork: Network {
             return
         }
 
-        var filename: String?
-        if useResponseQueue {
-            filename = filenameFromQueue(for: request)
-        } else {
-            filename = filenameFromMap(for: request)
-        }
-
-        if let filename = filename, let response = Loader.jsonObject(for: filename) {
+        let name = filename(for: request)
+        if let name = name, let response = Loader.jsonObject(for: name) {
             completion(response, nil)
             return
         }
@@ -89,14 +83,8 @@ class MockupNetwork: Network {
             return
         }
 
-        var filename: String?
-        if useResponseQueue {
-            filename = filenameFromQueue(for: request)
-        } else {
-            filename = filenameFromMap(for: request)
-        }
-
-        if let filename = filename, let data = Loader.contentsOf(filename) {
+        let name = filename(for: request)
+        if let name = name, let data = Loader.contentsOf(name) {
             completion(data, nil)
             return
         }
@@ -155,27 +143,24 @@ private extension MockupNetwork {
         responseMap[requestUrlSuffix] = filename
     }
 
-    /// Returns the Mockup JSON Filename for a given URLRequestConvertible from the FIFO response queue.
-    /// Note: the response is removed from the queue and cannot be reused for subsequent calls.
+    /// Returns the Mockup JSON Filename for a given URLRequestConvertible from either:
     ///
-    private func filenameFromQueue(for request: URLRequestConvertible) -> String? {
+    ///   * the FIFO response queue (where the response is removed from the queue when this func returns)
+    ///   * the responseMap (array)
+    ///
+    func filename(for request: URLRequestConvertible) -> String? {
         let searchPath = path(for: request)
-        guard var queue = responseQueue.filter({ searchPath.hasSuffix($0.key) }).first?.value else {
-            return nil
+        if useResponseQueue {
+            if var queue = responseQueue.filter({ searchPath.hasSuffix($0.key) }).first?.value {
+                return queue.dequeue()
+            }
+        } else {
+            if let filename = responseMap.filter({ searchPath.hasSuffix($0.key) }).first?.value {
+                return filename
+            }
         }
 
-        return queue.dequeue()
-    }
-
-    /// Returns the Mockup JSON Filename for a given URLRequestConvertible from the responseMap (array)
-    ///
-    private func filenameFromMap(for request: URLRequestConvertible) -> String? {
-        let searchPath = path(for: request)
-        guard let filename = responseMap.filter({ searchPath.hasSuffix($0.key) }).first?.value else {
-            return nil
-        }
-
-        return filename
+        return nil
     }
 
     /// Returns the Mockup Error for a given URLRequestConvertible.

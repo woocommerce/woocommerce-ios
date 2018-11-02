@@ -8,15 +8,15 @@
         <attribute name="username" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Note" representedClassName="Note" syncable="YES">
-        <attribute name="body" attributeType="Binary" syncable="YES"/>
-        <attribute name="header" attributeType="Binary" syncable="YES"/>
+        <attribute name="body" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="header" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="icon" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="meta" attributeType="Binary" syncable="YES"/>
+        <attribute name="meta" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="noteHash" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="noteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="noticon" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="read" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="subject" attributeType="Binary" syncable="YES"/>
+        <attribute name="subject" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="timestamp" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>

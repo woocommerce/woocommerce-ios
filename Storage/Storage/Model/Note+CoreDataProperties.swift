@@ -17,8 +17,8 @@ extension Note {
     @NSManaged public var type: String?
     @NSManaged public var url: String?
     @NSManaged public var title: String?
-    @NSManaged public var subject: Data
-    @NSManaged public var header: Data
-    @NSManaged public var body: Data
-    @NSManaged public var meta: Data
+    @NSManaged public var subject: Data?
+    @NSManaged public var header: Data?
+    @NSManaged public var body: Data?
+    @NSManaged public var meta: Data?
 }

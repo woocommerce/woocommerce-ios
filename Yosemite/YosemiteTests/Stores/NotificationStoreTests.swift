@@ -56,8 +56,8 @@ class NotificationStoreTests: XCTestCase {
                 XCTAssertEqual(note.icon,"https://s.wp.com/wp-content/mu-plugins/achievements/likeable-blog-5-2x.png")
                 XCTAssertEqual(note.noticon, "\u{f806}")
                 XCTAssertEqual(note.timestamp, "2018-10-10T01:52:46+00:00")
-                XCTAssertEqual(note.type, "comment_like")
-                XCTAssertEqual(note.kind, .commentLike)
+                XCTAssertEqual(note.type, "like_milestone_achievement")
+                XCTAssertEqual(note.kind, .unknown)
                 XCTAssertEqual(note.url, "http://someurl.sometld")
                 XCTAssertEqual(note.title, "5 Likes")
 
@@ -68,8 +68,13 @@ class NotificationStoreTests: XCTestCase {
 
                 // Meta
                 XCTAssertEqual(note.meta.identifier(forKey: .site), 123456)
-                XCTAssertEqual(note.meta.identifier(forKey: .post), 12536)
                 XCTAssertEqual(note.meta.link(forKey: .site), "https://public-someurl.sometld")
+                XCTAssertEqual(note.meta.identifier(forKey: .post), 12536)
+                XCTAssertEqual(note.meta.link(forKey: .post), "https://public-someurl2.sometld")
+                XCTAssertEqual(note.meta.identifier(forKey: .comment), 5168)
+                XCTAssertEqual(note.meta.link(forKey: .comment), "https://public-someurl3.sometld")
+                XCTAssertEqual(note.meta.identifier(forKey: .user), 1234567)
+                XCTAssertEqual(note.meta.link(forKey: .user), "https://public-someurl4.sometld")
             } else {
                 XCTFail()
             }

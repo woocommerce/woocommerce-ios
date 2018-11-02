@@ -16,6 +16,7 @@ extension Storage.Note: ReadOnlyConvertible {
         timestamp = note.timestamp
         url = note.url
         title = note.title
+        type = note.type
         subject = note.subjectAsData
         header = note.headerAsData
         body = note.bodyAsData

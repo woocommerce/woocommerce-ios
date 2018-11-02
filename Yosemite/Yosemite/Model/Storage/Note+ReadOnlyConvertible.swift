@@ -35,9 +35,9 @@ extension Storage.Note: ReadOnlyConvertible {
                     type: type ?? "",
                     url: url,
                     title: title,
-                    subject: subject,
-                    header: header,
-                    body: body,
-                    meta: meta)
+                    subject: subject ?? Data(),
+                    header: header ?? Data(),
+                    body: body ?? Data(),
+                    meta: meta ?? Data())
     }
 }

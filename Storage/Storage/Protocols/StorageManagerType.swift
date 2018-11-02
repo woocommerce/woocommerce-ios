@@ -33,7 +33,7 @@ public protocol StorageManagerType {
     ///   - derivedStorageType: a derived StorageType constructed with `newDerivedStorage`
     ///   - closure: Callback to be executed on completion
     ///
-    func saveDerivedType(derivedStorageType: StorageType, _ closure: @escaping () -> Void)
+    func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void)
 
     /// This method is expected to destroy all persisted data. A notification of type `StorageManagerDidResetStorage` should get
     /// posted.

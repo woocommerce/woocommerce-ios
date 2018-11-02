@@ -84,19 +84,16 @@ public class CoreDataManager: StorageManagerType {
         return childManagedObjectContext
     }
 
-    public func saveDerivedType(derivedStorageType: StorageType, _ closure: @escaping () -> Void) {
-        guard let childManagedObjectContext = derivedStorageType as? NSManagedObjectContext else {
-            closure()
-            return
-        }
+    /// Saves the derived storage. Note: the closure may be called on a different thread
+    ///
+    public func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void) {
+        derivedStorage.perform {
+            derivedStorage.saveIfNeeded()
 
-        childManagedObjectContext.perform {
-            do {
-                try childManagedObjectContext.save()
-            } catch let error as NSError {
-                fatalError("☠️ [CoreDataManager] Cannot save the derivedStorageType: \(error)")
+            self.viewStorage.perform {
+                self.viewStorage.saveIfNeeded()
+                closure()
             }
-            closure()
         }
     }
 

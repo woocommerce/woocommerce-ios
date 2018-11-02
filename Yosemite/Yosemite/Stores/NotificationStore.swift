@@ -54,8 +54,6 @@ private extension NotificationStore {
 
                 // Step 2: Update the storage notes from the fetched notes
                 self.updateLocalNotes(with: remoteNotes) {
-                    self.storageManager.viewStorage.saveIfNeeded()
-                    NotificationStore.resetSharedDerivedStorage()
                     onCompletion(nil)
                 }
             }
@@ -84,7 +82,7 @@ private extension NotificationStore {
             }
         }
 
-        storageManager.saveDerivedType(derivedStorageType: derivedStorage) {
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async {
                 completion()
             }
@@ -109,7 +107,7 @@ private extension NotificationStore {
             }
         }
 
-        storageManager.saveDerivedType(derivedStorageType: derivedStorage) {
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async {
                 completion?()
             }
@@ -129,12 +127,6 @@ extension NotificationStore {
             privateStorage = manager.newDerivedStorage()
         }
         return privateStorage
-    }
-
-    /// Nukes the private Shared Derived Storage instance.
-    ///
-    static func resetSharedDerivedStorage() {
-        privateStorage = nil
     }
 }
 

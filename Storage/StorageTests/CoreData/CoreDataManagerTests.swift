@@ -53,4 +53,17 @@ class CoreDataManagerTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that derived context is instantiated correctly.
+    ///
+    func testDerivedStorageIsInstantiatedCorrectly() {
+        let manager = CoreDataManager(name: "WooCommerce")
+        let viewContext = (manager.viewStorage as? NSManagedObjectContext)
+        let derivedContext = (manager.newDerivedStorage() as? NSManagedObjectContext)
+
+        XCTAssertNotNil(viewContext)
+        XCTAssertNotNil(derivedContext)
+        XCTAssertNotEqual(derivedContext, viewContext)
+        XCTAssertEqual(derivedContext?.parent, viewContext)
+    }
 }

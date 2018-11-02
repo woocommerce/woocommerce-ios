@@ -45,4 +45,8 @@ public protocol StorageType {
     /// Persists unsaved changes, if needed.
     ///
     func saveIfNeeded()
+
+    /// Asynchronously performs a given block on the StorageType's queue.
+    ///
+    func perform(_ closure: @escaping () -> Void)
 }

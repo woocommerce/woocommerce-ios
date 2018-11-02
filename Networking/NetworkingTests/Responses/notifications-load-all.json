@@ -4811,6 +4811,26 @@
                 "id": 123456
             }]
         }],
+        "header": [{
+            "text": "Jorge",
+            "ranges": [{
+                "type": "user",
+                "indices": [0, 5],
+                "url": "http:\/\/www.lantean.co",
+                "site_id": 123456,
+                "email": "someone@somewhere.tld",
+                "id": 123456
+            }],
+            "media": [{
+                "type": "image",
+                "indices": [0, 0],
+                "height": "256",
+                "width": "256",
+                "url": "https:\/\/gravatar.tld/some-hash"
+            }]
+        }, {
+            "text": "Although we already spoke elsewhere\u2026 i\u2019m NOT leaving this post without sending you a *HUGE \u2026"
+        }],
         "body": [{
             "text": "5 Likes",
             "media": [{
@@ -4831,12 +4851,18 @@
         }],
         "meta": {
             "ids": {
+                "user": 123456,
+                "comment": 5168,
+                "post": 12536,
                 "site": 123456
             },
             "links": {
+                "user": "https:\/\/public-someurl.sometld",
+                "comment": "https:\/\/public-someurl.sometld",
+                "post": "https:\/\/public-someurl.sometld",
                 "site": "https:\/\/public-someurl.sometld"
             }
-        },
+        },        
         "title": "5 Likes"
     }, {
         "id": 123456,

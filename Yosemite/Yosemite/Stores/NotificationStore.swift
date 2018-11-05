@@ -58,6 +58,7 @@ private extension NotificationStore {
 
                 // Step 2: Update the storage notes from the fetched notes
                 self.updateLocalNotes(with: remoteNotes) {
+                    type(of: self).resetSharedDerivedStorage()
                     onCompletion(nil)
                 }
             }
@@ -82,10 +83,10 @@ private extension NotificationStore {
                 onCompletion(error)
                 return
             }
-            
-            self.updateReadStatus(noteID: noteID, read: read, onCompletion: { (error) in
-                onCompletion(error)
-            })
+
+            self.updateLocalNoteReadStatus(for: noteID, read: read) {
+                onCompletion(nil)
+            }
         }
     }
 }
@@ -144,7 +145,7 @@ extension NotificationStore {
     /// Updates the read status for the given noteID in the Storage layer. If the local note to update cannot be found,
     /// nothing is updated/created in storage.
     ///
-    func updateReadStatus(for noteID: Int64, read: Bool, completion: (() -> Void)? = nil) {
+    func updateLocalNoteReadStatus(for noteID: Int64, read: Bool, completion: (() -> Void)? = nil) {
         assert(Thread.isMainThread)
         let storage = storageManager.viewStorage
         guard let storageNote = storage.loadNotification(noteID: noteID) else {
@@ -170,6 +171,12 @@ extension NotificationStore {
             privateStorage = manager.newDerivedStorage()
         }
         return privateStorage
+    }
+
+    /// Nukes the private Shared Derived Storage instance.
+    ///
+    static func resetSharedDerivedStorage() {
+        privateStorage = nil
     }
 }
 

@@ -86,7 +86,7 @@ import Yosemite
     ///
     func showHelpCenterIfPossible(from controller: UIViewController) {
 
-        ZendeskManager.shared.presentInController = controller
+        presentInController = controller
 
         WooAnalytics.shared.track(.supportBrowseOurFaqTapped)
 
@@ -126,9 +126,9 @@ import Yosemite
     ///
     func showTicketListIfPossible(from controller: UIViewController, with sourceTag: WordPressSupportSourceTag? = nil) {
 
-        ZendeskManager.shared.presentInController = controller
+        presentInController = controller
 
-        ZendeskManager.shared.createIdentity { success in
+        createIdentity { success in
             guard success else {
                 return
             }
@@ -137,16 +137,16 @@ import Yosemite
             WooAnalytics.shared.track(.supportTicketListViewed)
 
             let requestListController = RequestUi.buildRequestList()
-            ZendeskManager.shared.showZendeskView(requestListController)
+            self.showZendeskView(requestListController)
         }
     }
 
     /// Displays an alert allowing the user to change their Support email address.
     ///
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping (Bool) -> Void) {
-        ZendeskManager.shared.presentInController = controller
+        presentInController = controller
 
-        ZendeskManager.shared.getUserInformationAndShowPrompt(withName: false) { success in
+        getUserInformationAndShowPrompt(withName: false) { success in
             completion(success)
         }
     }
@@ -158,7 +158,7 @@ import Yosemite
     ///
     func userSupportEmail() -> String? {
         let _ = getUserProfile()
-        return ZendeskManager.shared.userEmail
+        return userEmail
     }
 
 }

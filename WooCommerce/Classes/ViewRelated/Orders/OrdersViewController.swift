@@ -432,7 +432,8 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return Order.descriptionForSectionIdentifier(resultsController.sections[section].name)
+        let rawAge = resultsController.sections[section].name
+        return Age(rawValue: rawAge)?.description
     }
 }
 

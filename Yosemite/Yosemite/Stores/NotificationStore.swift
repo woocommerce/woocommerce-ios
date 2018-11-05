@@ -30,6 +30,8 @@ public class NotificationStore: Store {
             synchronizeNotifications(onCompletion: onCompletion)
         case .updateLastSeen(let timestamp, let onCompletion):
             updateLastSeen(timestamp: timestamp, onCompletion: onCompletion)
+        case .updateReadStatus(let noteID, let read, let onCompletion):
+            updateReadStatus(noteID: noteID, read: read, onCompletion: onCompletion)
         }
     }
 }
@@ -70,12 +72,28 @@ private extension NotificationStore {
             onCompletion(error)
         }
     }
+
+    /// Updates the read status for the given notification ID
+    ///
+    func updateReadStatus(noteID: Int64, read: Bool, onCompletion: @escaping (Error?) -> Void) {
+        let remote = NotificationsRemote(network: network)
+        remote.updateReadStatus(String(noteID), read: read) { [weak self] (error) in
+            guard let `self` = self, error == nil else {
+                onCompletion(error)
+                return
+            }
+            
+            self.updateReadStatus(noteID: noteID, read: read, onCompletion: { (error) in
+                onCompletion(error)
+            })
+        }
+    }
 }
 
 
 // MARK: - Persistence
 //
-private extension NotificationStore {
+extension NotificationStore {
 
     /// Deletes the collection of local notifications that cannot be found in a given collection of
     /// remote hashes.
@@ -111,9 +129,7 @@ private extension NotificationStore {
 
         derivedStorage.perform {
             for remoteNote in remoteNotes {
-                let predicate = NSPredicate(format: "(noteID == %ld)", remoteNote.noteId)
-                let localNote = derivedStorage.firstObject(ofType: Storage.Note.self, matching: predicate) ?? derivedStorage.insertNewObject(ofType: Storage.Note.self)
-
+                let localNote = derivedStorage.loadNotification(noteID: remoteNote.noteId) ?? derivedStorage.insertNewObject(ofType: Storage.Note.self)
                 localNote.update(with: remoteNote)
             }
         }
@@ -123,6 +139,22 @@ private extension NotificationStore {
                 completion?()
             }
         }
+    }
+
+    /// Updates the read status for the given noteID in the Storage layer. If the local note to update cannot be found,
+    /// nothing is updated/created in storage.
+    ///
+    func updateReadStatus(for noteID: Int64, read: Bool, completion: (() -> Void)? = nil) {
+        assert(Thread.isMainThread)
+        let storage = storageManager.viewStorage
+        guard let storageNote = storage.loadNotification(noteID: noteID) else {
+            completion?()
+            return
+        }
+
+        storageNote.read = read
+        storage.saveIfNeeded()
+        completion?()
     }
 }
 

@@ -85,4 +85,54 @@ class NotificationStoreTests: XCTestCase {
         notificationStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+
+    // MARK: - NotificationAction.updateLastSeen
+
+    /// Verifies that NotificationAction.updateLastSeen handles a success response from the backend properly
+    ///
+    func testUpdateLastSeenReturnsSuccess() {
+        let expectation = self.expectation(description: "Update last seen success response")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "notifications/seen", filename: "generic_success")
+        let action = NotificationAction.updateLastSeen(timestamp: "2018-11-05T16:03:15+00:00") { (error) in
+            XCTAssertNil(error)
+            expectation.fulfill()
+        }
+
+        noteStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that NotificationAction.updateLastSeen returns an error whenever there is an error response from the backend.
+    ///
+    func testUpdateLastSeenReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Update last seen error response")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "notifications/seen", filename: "generic_error")
+        let action = NotificationAction.updateLastSeen(timestamp: "2018-11-05T16:03:15+00:00") { (error) in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        noteStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that NotificationAction.updateLastSeen returns an error whenever there is no backend response.
+    ///
+    func testUpdateLastSeenReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Update last seen empty response")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = NotificationAction.updateLastSeen(timestamp: "2018-11-05T16:03:15+00:00") { (error) in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        noteStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }

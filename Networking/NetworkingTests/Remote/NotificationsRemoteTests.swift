@@ -131,7 +131,7 @@ class NotificationsRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_success")
 
-        remote.updateReadStatus("123", read: true) { error in
+        remote.updateReadStatus("", read: true) { error in
             XCTAssertNil(error)
             expectation.fulfill()
         }

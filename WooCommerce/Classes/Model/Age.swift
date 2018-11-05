@@ -22,26 +22,35 @@ enum Age: String {
 }
 
 
-// MARK: - Helper Initializers
+// MARK: - Convenience Methods Initializers
 //
 extension Age {
 
-    /// Initializes the Age Entity, based on a set of DateComponents
+    /// Returns the Age entity that best describes a given timespan.
     ///
-    init(dateComponents: DateComponents) {
+    static func from(startDate: Date, toDate: Date) -> Age {
+        let components = [.day, .weekOfYear, .month] as Set<Calendar.Component>
+        let dateComponents = Calendar.current.dateComponents(components, from: startDate, to: toDate)
+
         // Months
         if let month = dateComponents.month, month >= 1 {
-            self = .months
-        // Weeks
-        } else if let week = dateComponents.weekOfYear, week >= 1 {
-            self = .weeks
-        // Days
-        } else if let day = dateComponents.day, day > 1 {
-            self = .days
-        } else if let day = dateComponents.day, day == 1 {
-            self = .yesterday
-        } else {
-            self = .today
+            return .months
         }
+
+        // Weeks
+        if let week = dateComponents.weekOfYear, week >= 1 {
+            return .weeks
+        }
+
+        // Days
+        if let day = dateComponents.day, day > 1 {
+            return .days
+        }
+
+        if let day = dateComponents.day, day == 1 {
+            return .yesterday
+        }
+
+        return .today
     }
 }

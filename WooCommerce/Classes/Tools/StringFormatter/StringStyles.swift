@@ -64,7 +64,7 @@ extension StringStyles {
         let bold: Style         = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.bold]
         let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.italics, .foregroundColor: NukeMe.subjectBlockquotedColor]
         let italics: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.italics]
-        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: NukeMe.bodyNoticonFont, .foregroundColor: NukeMe.subjectNoticonColor]
+        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.noticon(forStyle: .body), .foregroundColor: NukeMe.subjectNoticonColor]
 
         return StringStyles(regular: regular, bold: bold, blockquote: blockquote, italics: italics, match: nil, noticon: noticon)
     }()
@@ -106,20 +106,11 @@ extension StringStyles {
         let bold: Style         = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold, .foregroundColor: NukeMe.bodyTextColor]
         let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics, .foregroundColor: NukeMe.bodyBlockquotedColor]
         let match: Style        = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold, .foregroundColor: NukeMe.bodyLinkColor]
-        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: NukeMe.bodyNoticonFont, .foregroundColor: NukeMe.bodyNoticonColor]
+        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.noticon(forStyle: .body), .foregroundColor: NukeMe.bodyNoticonColor]
         let italic: Style       = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics, .foregroundColor: NukeMe.bodyTextColor]
         let link: Style         = [.foregroundColor: NukeMe.bodyLinkColor]
 
         return StringStyles(regular: regular, bold: bold, blockquote: blockquote, match: match, noticon: noticon, link: link)
-    }()
-
-
-    /// Styles: Notification Defaults / Badge Blocks
-    ///
-    static let badge: StringStyles = {
-        let regular: Style      = [.font: UIFont.body, .foregroundColor: NukeMe.bodyTextColor, .paragraphStyle: NSParagraphStyle.badge]
-
-        return StringStyles(regular: regular, bold: body.bold, blockquote: body.blockquote, italics: body.italics, link: body.link)
     }()
 }
 
@@ -134,7 +125,6 @@ private struct NukeMe {
 
     static let headerItalicsColor = UIColor.gray
 
-    static let bodyNoticonFont = UIFont.body
     static let bodyTextColor = UIColor.black
     static let bodyBlockquotedColor = UIColor.black
     static let bodyLinkColor = UIColor.black

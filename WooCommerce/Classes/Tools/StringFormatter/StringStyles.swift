@@ -60,11 +60,11 @@ extension StringStyles {
     /// Styles: Notifications List / Subject Block
     ///
     static let subject: StringStyles = {
-        let regular: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline, .foregroundColor: NukeMe.subjectTextColor]
+        let regular: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline, .foregroundColor: StyleManager.defaultTextColor]
         let bold: Style         = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.bold]
-        let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.italics, .foregroundColor: NukeMe.subjectBlockquotedColor]
+        let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.italics]
         let italics: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.italics]
-        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.noticon(forStyle: .body), .foregroundColor: NukeMe.subjectNoticonColor]
+        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.noticon(forStyle: .subheadline), .foregroundColor: NukeMe.subjectNoticonColor]
 
         return StringStyles(regular: regular, bold: bold, blockquote: blockquote, italics: italics, match: nil, noticon: noticon)
     }()
@@ -73,7 +73,7 @@ extension StringStyles {
     /// Styles: Notifications List / Snippet Block
     ///
     static let snippet: StringStyles = {
-        let regular: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline, .foregroundColor: NukeMe.snippetColor]
+        let regular: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.footnote, .foregroundColor: StyleManager.defaultTextColor]
 
         return StringStyles(regular: regular)
     }()
@@ -118,10 +118,7 @@ extension StringStyles {
 // MARK: - TODO: Nuke this. Map the Colors, as required, from the StyleManager
 //
 private struct NukeMe {
-    static let subjectTextColor = UIColor.black
     static let subjectNoticonColor = UIColor.black
-    static let subjectBlockquotedColor = UIColor.black
-    static let snippetColor = UIColor.black
 
     static let headerItalicsColor = UIColor.gray
 

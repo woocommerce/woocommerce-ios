@@ -57,7 +57,7 @@ class NoteTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        noticonLabel.font = UIFont.noticon(forStyle: .body)
+        noticonLabel.font = UIFont.noticon(forStyle: .title1)
     }
 
     override func prepareForReuse() {

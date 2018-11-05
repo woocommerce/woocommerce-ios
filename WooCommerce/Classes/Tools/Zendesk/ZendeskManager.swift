@@ -18,11 +18,11 @@ import Yosemite
 
     // MARK: - Public Properties
 
-    static var sharedInstance: ZendeskManager = ZendeskManager()
-    static var zendeskEnabled = false
-    static var unreadNotificationsCount = 0
+    static let shared = ZendeskManager()
+    var zendeskEnabled = false
+    var unreadNotificationsCount = 0
 
-    static var showSupportNotificationIndicator: Bool {
+    var showSupportNotificationIndicator: Bool {
         return unreadNotificationsCount > 0
     }
 
@@ -42,22 +42,22 @@ import Yosemite
     private var haveUserIdentity = false
     private var alertNameField: UITextField?
 
-    private static var zdAppID: String?
-    private static var zdUrl: String?
-    private static var zdClientId: String?
-    private static var presentInController: UIViewController?
+    private var zdAppID: String?
+    private var zdUrl: String?
+    private var zdClientId: String?
+    private var presentInController: UIViewController?
 
-    private static var appVersion: String {
+    private var appVersion: String {
         return Bundle.main.shortVersionString() ?? Constants.unknownValue
     }
 
-    private static var appLanguage: String {
+    private var appLanguage: String {
         return Locale.preferredLanguages[0]
     }
 
     // MARK: - Public Methods
 
-    static func setup() {
+    func initialize() {
         guard getZendeskCredentials() == true else {
             return
         }
@@ -73,7 +73,7 @@ import Yosemite
         Zendesk.initialize(appId: appId, clientId: clientId, zendeskUrl: url)
         Support.initialize(withZendesk: Zendesk.instance)
 
-        ZendeskManager.sharedInstance.haveUserIdentity = getUserProfile()
+        haveUserIdentity = getUserProfile()
         toggleZendesk(enabled: true)
 
         observeZendeskNotifications()
@@ -82,11 +82,11 @@ import Yosemite
     // MARK: - Show Zendesk Views
 
     // -TODO: in the future this should show the Zendesk Help Center.
-    /// Link to the online FAQ
+    /// For now, link to the online FAQ
     ///
     func showHelpCenterIfPossible(from controller: UIViewController) {
 
-        ZendeskManager.presentInController = controller
+        ZendeskManager.shared.presentInController = controller
 
         WooAnalytics.shared.track(.supportBrowseOurFaqTapped)
 
@@ -96,7 +96,7 @@ import Yosemite
 
         let safariViewController = SFSafariViewController(url: faqURL)
         safariViewController.modalPresentationStyle = .pageSheet
-        guard let vc = ZendeskManager.presentInController else {
+        guard let vc = presentInController else {
             return
         }
         vc.present(safariViewController, animated: true, completion: nil)
@@ -106,9 +106,9 @@ import Yosemite
     ///
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: WordPressSupportSourceTag? = nil) {
 
-        ZendeskManager.presentInController = controller
+        presentInController = controller
 
-        ZendeskManager.createIdentity { success in
+        createIdentity { success in
             guard success else {
                 return
             }
@@ -118,7 +118,7 @@ import Yosemite
 
             let newRequestConfig = self.createRequest()
             let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
-            ZendeskManager.showZendeskView(newRequestController)
+            self.showZendeskView(newRequestController)
         }
     }
 
@@ -126,9 +126,9 @@ import Yosemite
     ///
     func showTicketListIfPossible(from controller: UIViewController, with sourceTag: WordPressSupportSourceTag? = nil) {
 
-        ZendeskManager.presentInController = controller
+        ZendeskManager.shared.presentInController = controller
 
-        ZendeskManager.createIdentity { success in
+        ZendeskManager.shared.createIdentity { success in
             guard success else {
                 return
             }
@@ -137,16 +137,16 @@ import Yosemite
             WooAnalytics.shared.track(.supportTicketListViewed)
 
             let requestListController = RequestUi.buildRequestList()
-            ZendeskManager.showZendeskView(requestListController)
+            ZendeskManager.shared.showZendeskView(requestListController)
         }
     }
 
     /// Displays an alert allowing the user to change their Support email address.
     ///
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping (Bool) -> Void) {
-        ZendeskManager.presentInController = controller
+        ZendeskManager.shared.presentInController = controller
 
-        ZendeskManager.getUserInformationAndShowPrompt(withName: false) { success in
+        ZendeskManager.shared.getUserInformationAndShowPrompt(withName: false) { success in
             completion(success)
         }
     }
@@ -156,9 +156,9 @@ import Yosemite
 
     /// Returns the user's Support email address.
     ///
-    static func userSupportEmail() -> String? {
+    func userSupportEmail() -> String? {
         let _ = getUserProfile()
-        return ZendeskManager.sharedInstance.userEmail
+        return ZendeskManager.shared.userEmail
     }
 
 }
@@ -167,7 +167,7 @@ import Yosemite
 
 private extension ZendeskManager {
 
-    static func getZendeskCredentials() -> Bool {
+    func getZendeskCredentials() -> Bool {
         let appId = ApiCredentials.zendeskAppId
         let url = ApiCredentials.zendeskUrl
         let clientId = ApiCredentials.zendeskClientId
@@ -184,16 +184,16 @@ private extension ZendeskManager {
         return true
     }
 
-    static func toggleZendesk(enabled: Bool) {
+    func toggleZendesk(enabled: Bool) {
         zendeskEnabled = enabled
         DDLogInfo("Zendesk Enabled: \(enabled)")
     }
 
-    static func createIdentity(completion: @escaping (Bool) -> Void) {
+    func createIdentity(completion: @escaping (Bool) -> Void) {
 
         // If we already have an identity, do nothing.
-        guard ZendeskManager.sharedInstance.haveUserIdentity == false else {
-            DDLogDebug("Using existing Zendesk identity: \(ZendeskManager.sharedInstance.userEmail ?? ""), \(ZendeskManager.sharedInstance.userName ?? "")")
+        guard haveUserIdentity == false else {
+            DDLogDebug("Using existing Zendesk identity: \(userEmail ?? ""), \(userName ?? "")")
             completion(true)
             return
         }
@@ -206,60 +206,60 @@ private extension ZendeskManager {
          */
 
         if getUserProfile() {
-            ZendeskManager.createZendeskIdentity { success in
+            createZendeskIdentity { success in
                 guard success else {
                     DDLogInfo("Creating Zendesk identity failed.")
                     completion(false)
                     return
                 }
                 DDLogDebug("Using User Defaults for Zendesk identity.")
-                ZendeskManager.sharedInstance.haveUserIdentity = true
+                self.haveUserIdentity = true
                 completion(true)
                 return
             }
         }
 
-        ZendeskManager.getUserInformationAndShowPrompt(withName: true) { success in
+        getUserInformationAndShowPrompt(withName: true) { success in
             completion(success)
         }
     }
 
-    static func getUserInformationAndShowPrompt(withName: Bool, completion: @escaping (Bool) -> Void) {
-        ZendeskManager.getUserInformationIfAvailable()
-        ZendeskManager.promptUserForInformation(withName: withName) { success in
+    func getUserInformationAndShowPrompt(withName: Bool, completion: @escaping (Bool) -> Void) {
+        getUserInformationIfAvailable()
+        promptUserForInformation(withName: withName) { success in
             guard success else {
                 DDLogInfo("No user information to create Zendesk identity with.")
                 completion(false)
                 return
             }
 
-            ZendeskManager.createZendeskIdentity { success in
+            self.createZendeskIdentity { success in
                 guard success else {
                     DDLogInfo("Creating Zendesk identity failed.")
                     completion(false)
                     return
                 }
                 DDLogDebug("Using information from prompt for Zendesk identity.")
-                ZendeskManager.sharedInstance.haveUserIdentity = true
+                self.haveUserIdentity = true
                 completion(true)
                 return
             }
         }
     }
 
-    static func getUserInformationIfAvailable() {
-        ZendeskManager.sharedInstance.userEmail = StoresManager.shared.sessionManager.defaultAccount?.email
-        ZendeskManager.sharedInstance.userName = StoresManager.shared.sessionManager.defaultAccount?.username
+    func getUserInformationIfAvailable() {
+        userEmail = StoresManager.shared.sessionManager.defaultAccount?.email
+        userName = StoresManager.shared.sessionManager.defaultAccount?.username
 
         if let displayName = StoresManager.shared.sessionManager.defaultAccount?.displayName,
             !displayName.isEmpty {
-            ZendeskManager.sharedInstance.userName = displayName
+            userName = displayName
         }
     }
 
-    static func createZendeskIdentity(completion: @escaping (Bool) -> Void) {
+    func createZendeskIdentity(completion: @escaping (Bool) -> Void) {
 
-        guard let userEmail = ZendeskManager.sharedInstance.userEmail else {
+        guard let userEmail = userEmail else {
             DDLogInfo("No user email to create Zendesk identity with.")
             let identity = Identity.createAnonymous()
             Zendesk.instance?.setIdentity(identity)
@@ -267,9 +267,9 @@ private extension ZendeskManager {
             return
         }
 
-        let zendeskIdentity = Identity.createAnonymous(name: ZendeskManager.sharedInstance.userName, email: userEmail)
+        let zendeskIdentity = Identity.createAnonymous(name: userName, email: userEmail)
         Zendesk.instance?.setIdentity(zendeskIdentity)
-        DDLogDebug("Zendesk identity created with email '\(userEmail)' and name '\(ZendeskManager.sharedInstance.userName ?? "")'.")
+        DDLogDebug("Zendesk identity created with email '\(userEmail)' and name '\(userName ?? "")'.")
         completion(true)
     }
 
@@ -282,21 +282,21 @@ private extension ZendeskManager {
 
         // Set form field values
         var ticketFields = [ZDKCustomField]()
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.appVersion as NSNumber, andValue: ZendeskManager.appVersion))
+        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.appVersion as NSNumber, andValue: appVersion))
 
         // -TODO: append the sites list
         // ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.allBlogs as NSNumber, andValue: ZendeskManager.getBlogInformation()))
 
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.deviceFreeSpace as NSNumber, andValue: ZendeskManager.getDeviceFreeSpace()))
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.networkInformation as NSNumber, andValue: ZendeskManager.getNetworkInformation()))
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.logs as NSNumber, andValue: ZendeskManager.getLogFile()))
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.currentSite as NSNumber, andValue: ZendeskManager.getCurrentSiteDescription()))
+        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.deviceFreeSpace as NSNumber, andValue: getDeviceFreeSpace()))
+        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.networkInformation as NSNumber, andValue: getNetworkInformation()))
+        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.logs as NSNumber, andValue: getLogFile()))
+        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.currentSite as NSNumber, andValue: getCurrentSiteDescription()))
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.sourcePlatform as NSNumber, andValue: Constants.sourcePlatform))
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: ZendeskManager.appLanguage))
+        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: appLanguage))
         requestConfig.fields = ticketFields
 
         // Set tags
-        requestConfig.tags = ZendeskManager.getTags()
+        requestConfig.tags = getTags()
 
         // Set the ticket subject
         requestConfig.subject = Constants.ticketSubject
@@ -306,7 +306,7 @@ private extension ZendeskManager {
 
     // MARK: - View
 
-    static func showZendeskView(_ zendeskView: UIViewController) {
+    func showZendeskView(_ zendeskView: UIViewController) {
         guard let presentInController = presentInController else {
             return
         }
@@ -328,29 +328,29 @@ private extension ZendeskManager {
 
     // MARK: - User Defaults
 
-    static func saveUserProfile() {
+    func saveUserProfile() {
         var userProfile = [String: String]()
-        userProfile[Constants.profileEmailKey] = ZendeskManager.sharedInstance.userEmail
-        userProfile[Constants.profileNameKey] = ZendeskManager.sharedInstance.userName
+        userProfile[Constants.profileEmailKey] = userEmail
+        userProfile[Constants.profileNameKey] = userName
         DDLogDebug("Zendesk - saving profile to User Defaults: \(userProfile)")
         UserDefaults.standard.set(userProfile, forKey: Constants.zendeskProfileUDKey)
         UserDefaults.standard.synchronize()
     }
 
-    static func getUserProfile() -> Bool {
+    func getUserProfile() -> Bool {
         guard let userProfile = UserDefaults.standard.dictionary(forKey: Constants.zendeskProfileUDKey) else {
             return false
         }
         DDLogDebug("Zendesk - read profile from User Defaults: \(userProfile)")
-        ZendeskManager.sharedInstance.userEmail = userProfile.valueAsString(forKey: Constants.profileEmailKey)
-        ZendeskManager.sharedInstance.userName = userProfile.valueAsString(forKey: Constants.profileNameKey)
+        userEmail = userProfile.valueAsString(forKey: Constants.profileEmailKey)
+        userName = userProfile.valueAsString(forKey: Constants.profileNameKey)
         return true
     }
 
 
     // MARK: - Data Helpers
 
-    static func getDeviceFreeSpace() -> String {
+    func getDeviceFreeSpace() -> String {
 
         guard let resourceValues = try? URL(fileURLWithPath: "/").resourceValues(forKeys: [.volumeAvailableCapacityKey]),
             let capacityBytes = resourceValues.volumeAvailableCapacity else {
@@ -374,7 +374,7 @@ private extension ZendeskManager {
         return "\(formattedCapacity) \(sizeAbbreviation)"
     }
 
-    static func getLogFile() -> String {
+    func getLogFile() -> String {
 
         guard let logFileInformation = AppDelegate.shared.fileLogger.logFileManager.sortedLogFileInfos.first,
             let logData = try? Data(contentsOf: URL(fileURLWithPath: logFileInformation.filePath)),
@@ -385,7 +385,7 @@ private extension ZendeskManager {
         return logText
     }
 
-    static func getCurrentSiteDescription() -> String {
+    func getCurrentSiteDescription() -> String {
         guard let site = StoresManager.shared.sessionManager.defaultSite else {
             return String()
         }
@@ -394,7 +394,7 @@ private extension ZendeskManager {
         return "\(url) (\(site.description))"
     }
 
-    static func getTags() -> [String] {
+    func getTags() -> [String] {
 
         // Future tags tk:
         //Constants.wpComTag,    // wp.com
@@ -404,14 +404,14 @@ private extension ZendeskManager {
                      Constants.platformTag] // iOS
 
         // Add sourceTag
-        if let sourceTagOrigin = ZendeskManager.sharedInstance.sourceTag?.origin {
+        if let sourceTagOrigin = sourceTag?.origin {
             tags.append(sourceTagOrigin)
         }
 
         return tags
     }
 
-    static func getNetworkInformation() -> String {
+    func getNetworkInformation() -> String {
 
         var networkInformation = [String]()
 
@@ -442,7 +442,7 @@ private extension ZendeskManager {
 
     // MARK: - User Information Prompt
 
-    static func promptUserForInformation(withName: Bool, completion: @escaping (Bool) -> Void) {
+    func promptUserForInformation(withName: Bool, completion: @escaping (Bool) -> Void) {
 
         let alertController = UIAlertController(title: nil,
                                                 message: nil,
@@ -465,19 +465,19 @@ private extension ZendeskManager {
                 return
             }
 
-            ZendeskManager.sharedInstance.userEmail = email
+            self.userEmail = email
 
             if withName {
-                ZendeskManager.sharedInstance.userName = alertController?.textFields?.last?.text
+                self.userName = alertController?.textFields?.last?.text
             }
 
-            saveUserProfile()
+            self.saveUserProfile()
             completion(true)
             return
         }
 
         // Enable Submit based on email validity.
-        let email = ZendeskManager.sharedInstance.userEmail ?? ""
+        let email = userEmail ?? ""
         submitAction.isEnabled = EmailFormatValidator.validate(string: email)
 
         // Make Submit button bold.
@@ -487,10 +487,10 @@ private extension ZendeskManager {
         alertController.addTextField(configurationHandler: { textField in
             textField.clearButtonMode = .always
             textField.placeholder = LocalizedText.emailPlaceholder
-            textField.text = ZendeskManager.sharedInstance.userEmail
+            textField.text = self.userEmail
 
             textField.addTarget(self,
-                                action: #selector(emailTextFieldDidChange),
+                                action: #selector(self.emailTextFieldDidChange),
                                 for: UIControl.Event.editingChanged)
         })
 
@@ -499,9 +499,9 @@ private extension ZendeskManager {
             alertController.addTextField { textField in
                 textField.clearButtonMode = .always
                 textField.placeholder = LocalizedText.namePlaceholder
-                textField.text = ZendeskManager.sharedInstance.userName
-                textField.delegate = ZendeskManager.sharedInstance
-                ZendeskManager.sharedInstance.alertNameField = textField
+                textField.text = self.userName
+                textField.delegate = ZendeskManager.shared
+                ZendeskManager.shared.alertNameField = textField
             }
         }
 
@@ -511,7 +511,7 @@ private extension ZendeskManager {
 
     /// Uses `@objc` because this method is used in a `#selector()` call
     ///
-    @objc static func emailTextFieldDidChange(_ textField: UITextField) {
+    @objc func emailTextFieldDidChange(_ textField: UITextField) {
         guard let alertController = presentInController?.presentedViewController as? UIAlertController,
             let email = alertController.textFields?.first?.text,
             let submitAction = alertController.actions.last else {
@@ -522,7 +522,7 @@ private extension ZendeskManager {
         updateNameFieldForEmail(email)
     }
 
-    static func updateNameFieldForEmail(_ email: String) {
+    func updateNameFieldForEmail(_ email: String) {
         guard let alertController = presentInController?.presentedViewController as? UIAlertController,
             let nameField = alertController.textFields?.last else {
                 return
@@ -533,12 +533,12 @@ private extension ZendeskManager {
         }
 
         // If we don't already have the user's name, generate it from the email.
-        if ZendeskManager.sharedInstance.userName == nil {
+        if userName == nil {
             nameField.text = generateDisplayName(from: email)
         }
     }
 
-    static func generateDisplayName(from rawEmail: String) -> String {
+    func generateDisplayName(from rawEmail: String) -> String {
 
         // Generate Name, using the same format as Signup.
 
@@ -558,43 +558,43 @@ private extension ZendeskManager {
 
     // MARK: - Zendesk Notifications
 
-    static func observeZendeskNotifications() {
+    func observeZendeskNotifications() {
         // Ticket Attachments
-        NotificationCenter.default.addObserver(self, selector: #selector(ZendeskManager.zendeskNotification(_:)),
+        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
                                                name: NSNotification.Name(rawValue: ZDKAPI_UploadAttachmentSuccess), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ZendeskManager.zendeskNotification(_:)),
+        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
                                                name: NSNotification.Name(rawValue: ZDKAPI_UploadAttachmentError), object: nil)
 
         // New Ticket Creation
-        NotificationCenter.default.addObserver(self, selector: #selector(ZendeskManager.zendeskNotification(_:)),
+        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
                                                name: NSNotification.Name(rawValue: ZDKAPI_RequestSubmissionSuccess), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ZendeskManager.zendeskNotification(_:)),
+        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
                                                name: NSNotification.Name(rawValue: ZDKAPI_RequestSubmissionError), object: nil)
 
         // Ticket Reply
-        NotificationCenter.default.addObserver(self, selector: #selector(ZendeskManager.zendeskNotification(_:)),
+        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
                                                name: NSNotification.Name(rawValue: ZDKAPI_CommentSubmissionSuccess), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ZendeskManager.zendeskNotification(_:)),
+        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
                                                name: NSNotification.Name(rawValue: ZDKAPI_CommentSubmissionError), object: nil)
 
         // View Ticket List
-        NotificationCenter.default.addObserver(self, selector: #selector(ZendeskManager.zendeskNotification(_:)),
+        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
                                                name: NSNotification.Name(rawValue: ZDKAPI_RequestsError), object: nil)
 
         // View Individual Ticket
-        NotificationCenter.default.addObserver(self, selector: #selector(ZendeskManager.zendeskNotification(_:)),
+        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
                                                name: NSNotification.Name(rawValue: ZDKAPI_CommentListSuccess), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ZendeskManager.zendeskNotification(_:)),
+        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
                                                name: NSNotification.Name(rawValue: ZDKAPI_CommentListError), object: nil)
 
         // Help Center
-        NotificationCenter.default.addObserver(self, selector: #selector(ZendeskManager.zendeskNotification(_:)),
+        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
                                                name: NSNotification.Name(rawValue: ZD_HC_SearchSuccess), object: nil)
     }
 
     /// Uses `@objc` because it's referenced in an ObjC `#selector` call
     ///
-    @objc static func zendeskNotification(_ notification: Foundation.Notification) {
+    @objc func zendeskNotification(_ notification: Foundation.Notification) {
         switch notification.name.rawValue {
         case ZDKAPI_RequestSubmissionSuccess:
             WooAnalytics.shared.track(.supportNewRequestCreated)
@@ -682,7 +682,7 @@ extension ZendeskManager: ZDKHelpCenterConversationsUIDelegate {
 
     func active() -> ZDKContactUsVisibility {
         // If we don't have the user's information, disable 'Contact Us' via the Help Center and Article view.
-        if !ZendeskManager.sharedInstance.haveUserIdentity {
+        if !haveUserIdentity {
             return .off
         }
 
@@ -696,7 +696,7 @@ extension ZendeskManager: ZDKHelpCenterConversationsUIDelegate {
 extension ZendeskManager: UITextFieldDelegate {
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard textField == ZendeskManager.sharedInstance.alertNameField,
+        guard textField == alertNameField,
             let text = textField.text else {
                 return true
         }

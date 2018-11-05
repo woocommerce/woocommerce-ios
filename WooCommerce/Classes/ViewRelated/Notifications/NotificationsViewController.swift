@@ -15,16 +15,18 @@ class NotificationsViewController: UIViewController {
     ///
     private lazy var resultsController: ResultsController<StorageNote> = {
         let storageManager = AppDelegate.shared.storageManager
-        return ResultsController<StorageNote>(storageManager: storageManager, sectionNameKeyPath: nil, sortedBy: [])
+        let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
+
+        return ResultsController<StorageNote>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
     /// Rendered Subjects Cache.
     ///
-    private var subjectStorage = [Int64: NSAttributedString?]()
+    private var subjectStorage = [Int64: NSAttributedString]()
 
     /// Rendered Snippet Cache.
     ///
-    private var snippetStorage = [Int64: NSAttributedString?]()
+    private var snippetStorage = [Int64: NSAttributedString]()
 
     /// String Formatter: Given a NoteBlock, this tool will return an AttributedString.
     ///
@@ -43,6 +45,7 @@ class NotificationsViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = StyleManager.tableViewBackgroundColor
 
+        configureTableView()
         configureTableViewCells()
         configureResultsController()
     }
@@ -64,6 +67,14 @@ private extension NotificationsViewController {
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Notifications", comment: "Notifications tab title")
         tabBarItem.image = Gridicon.iconOfType(.statsAlt)
+    }
+
+    /// Setup: TableView
+    ///
+    func configureTableView() {
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.rowHeight = UITableView.automaticDimension
     }
 
     /// Setup: ResultsController
@@ -120,13 +131,14 @@ extension NotificationsViewController: UITableViewDataSource {
             fatalError()
         }
 
-        let note = resultsController.object(at: indexPath)
-
-        cell.noticon = note.noticon
-        cell.attributedSubject = renderSubject(note: note)
-        cell.attributedSnippet = renderSnippet(note: note)
+        configure(cell, at: indexPath)
 
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let rawAge = resultsController.sections[section].name
+        return Age(rawValue: rawAge)?.description
     }
 }
 
@@ -141,6 +153,22 @@ extension NotificationsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+
+// MARK: - Cell Setup
+//
+private extension NotificationsViewController {
+
+    /// Initializes the Notifications Cell at the specified indexPath
+    ///
+    func configure(_ cell: NoteTableViewCell, at indexPath: IndexPath) {
+        let note = resultsController.object(at: indexPath)
+
+        cell.noticon = note.noticon
+        cell.attributedSubject = renderSubject(note: note)
+        cell.attributedSnippet = renderSnippet(note: note)
     }
 }
 

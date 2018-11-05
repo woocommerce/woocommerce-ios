@@ -10,6 +10,10 @@ import Yosemite
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
 /// as well as displaying views for the Help Center, new tickets, and ticket list.
 ///
+
+/// This class is `@objc` because the `ZDKHelpCenterConversationsUIDelegate` inherits from `NSObject`.
+/// This has to stay until Zendesk removes ObjC code from their framework.
+///
 @objc class ZendeskManager: NSObject {
 
     // MARK: - Public Properties

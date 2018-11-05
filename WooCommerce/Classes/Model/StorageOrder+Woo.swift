@@ -12,29 +12,11 @@ extension StorageOrder {
             return ""
         }
 
-        let toDate = Date().normalizedDate()
-
         // Analyze the Delta-Components
-        let calendar = Calendar.current
         let components = [.day, .weekOfYear, .month] as Set<Calendar.Component>
-        let dateComponents = calendar.dateComponents(components, from: fromDate, to: toDate)
-        let identifier: Age
+        let toDate = Date().normalizedDate()
+        let dateComponents = Calendar.current.dateComponents(components, from: fromDate, to: toDate)
 
-        // Months
-        if let month = dateComponents.month, month >= 1 {
-            identifier = .months
-            // Weeks
-        } else if let week = dateComponents.weekOfYear, week >= 1 {
-            identifier = .weeks
-            // Days
-        } else if let day = dateComponents.day, day > 1 {
-            identifier = .days
-        } else if let day = dateComponents.day, day == 1 {
-            identifier = .yesterday
-        } else {
-            identifier = .today
-        }
-
-        return identifier.rawValue
+        return Age(dateComponents: dateComponents).rawValue
     }
 }

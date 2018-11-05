@@ -10,6 +10,8 @@ extension UserDefaults {
         case defaultUsername
         case defaultStoreID
         case defaultAnonymousID
+        case userOptedInAnalytics
+        case userOptedInCrashlytics
         case versionOfLastRun
         case analyticsUsername
     }

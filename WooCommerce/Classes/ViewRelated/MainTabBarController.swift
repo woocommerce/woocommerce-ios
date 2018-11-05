@@ -5,7 +5,7 @@ import Yosemite
 
 /// Enum representing the individual tabs
 ///
-enum WooTab: Int, CustomStringConvertible {
+enum WooTab: Int {
 
     /// My Store Tab
     ///
@@ -18,28 +18,6 @@ enum WooTab: Int, CustomStringConvertible {
     /// Notifications Tab
     ///
     case notifications = 2
-
-    var description: String {
-        switch self {
-        case .myStore:
-            return NSLocalizedString("My Store", comment: "Dashboard tab title")
-        case .orders:
-            return NSLocalizedString("Orders", comment: "Orders tab title")
-        case .notifications:
-            return NSLocalizedString("Notifications", comment: "Notifications tab title")
-        }
-    }
-
-    var tabIcon: UIImage {
-        switch self {
-        case .myStore:
-            return Gridicon.iconOfType(.statsAlt)
-        case .orders:
-            return Gridicon.iconOfType(.pages)
-        case .notifications:
-            return Gridicon.iconOfType(.bell)
-        }
-    }
 }
 
 
@@ -62,22 +40,7 @@ class MainTabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupTabBar()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
-    }
-
-    private func setupTabBar() {
-        guard let items = tabBar.items else {
-            fatalError()
-        }
-
-        for (index, item) in items.enumerated() {
-            guard let tab = WooTab(rawValue: index) else {
-                fatalError()
-            }
-            item.title = tab.description
-            item.image = tab.tabIcon
-        }
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {

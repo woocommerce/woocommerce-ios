@@ -1,11 +1,22 @@
 import UIKit
+import Gridicons
 
 
 // MARK: - NotificationsViewController
 //
 class NotificationsViewController: UIViewController {
 
+    /// Main TableView.
+    ///
+    @IBOutlet private var tableView: UITableView!
+
+
     // MARK: - View Lifecycle
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setupTabBarItem()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -14,8 +25,12 @@ class NotificationsViewController: UIViewController {
         displayPlaceholder()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+
+    /// Setup: TabBar
+    ///
+    func setupTabBarItem() {
+        tabBarItem.title = NSLocalizedString("Notifications", comment: "Notifications tab title")
+        tabBarItem.image = Gridicon.iconOfType(.statsAlt)
     }
 
     /// Displays the Empty State Overlay.

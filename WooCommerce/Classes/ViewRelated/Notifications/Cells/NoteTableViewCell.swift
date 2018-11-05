@@ -8,7 +8,7 @@ class NoteTableViewCell: UITableViewCell {
 
     /// Image: Icon
     ///
-    @IBOutlet private var iconImageView: UIImageView!
+    @IBOutlet private var noticonLabel: UILabel!
 
     /// Label: Subject
     ///
@@ -21,12 +21,12 @@ class NoteTableViewCell: UITableViewCell {
 
     /// Icon Image property.
     ///
-    var iconImage: UIImage? {
+    var noticon: String? {
         get {
-            return iconImageView.image
+            return noticonLabel.text
         }
         set {
-            iconImageView.image = newValue
+            noticonLabel.text = newValue
         }
     }
 
@@ -55,8 +55,15 @@ class NoteTableViewCell: UITableViewCell {
 
     // MARK: - Overridden Methods
 
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        noticonLabel.font = UIFont.noticon(forStyle: .body)
+    }
+
     override func prepareForReuse() {
-        iconImage = nil
+        super.prepareForReuse()
+
+        noticon = nil
         attributedSubject = nil
         attributedSnippet = nil
     }

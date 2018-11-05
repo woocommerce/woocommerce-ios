@@ -20,9 +20,9 @@ import Yosemite
 
     static var sharedInstance: ZendeskManager = ZendeskManager()
     static var zendeskEnabled = false
-    @objc static var unreadNotificationsCount = 0
+    static var unreadNotificationsCount = 0
 
-    @objc static var showSupportNotificationIndicator: Bool {
+    static var showSupportNotificationIndicator: Bool {
         return unreadNotificationsCount > 0
     }
 
@@ -57,7 +57,7 @@ import Yosemite
 
     // MARK: - Public Methods
 
-    @objc static func setup() {
+    static func setup() {
         guard getZendeskCredentials() == true else {
             return
         }
@@ -509,6 +509,8 @@ private extension ZendeskManager {
         presentInController?.present(alertController, animated: true, completion: nil)
     }
 
+    /// Uses `@objc` because this method is used in a `#selector()` call
+    ///
     @objc static func emailTextFieldDidChange(_ textField: UITextField) {
         guard let alertController = presentInController?.presentedViewController as? UIAlertController,
             let email = alertController.textFields?.first?.text,
@@ -590,6 +592,8 @@ private extension ZendeskManager {
                                                name: NSNotification.Name(rawValue: ZD_HC_SearchSuccess), object: nil)
     }
 
+    /// Uses `@objc` because it's referenced in an ObjC `#selector` call
+    ///
     @objc static func zendeskNotification(_ notification: Foundation.Notification) {
         switch notification.name.rawValue {
         case ZDKAPI_RequestSubmissionSuccess:

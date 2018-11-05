@@ -28,6 +28,8 @@ public class NotificationStore: Store {
         switch action {
         case .synchronizeNotifications(let onCompletion):
             synchronizeNotifications(onCompletion: onCompletion)
+        case .updateLastSeen(let timestamp, let onCompletion):
+            updateLastSeen(timestamp: timestamp, onCompletion: onCompletion)
         }
     }
 }
@@ -57,6 +59,15 @@ private extension NotificationStore {
                     onCompletion(nil)
                 }
             }
+        }
+    }
+
+    /// Updates the last seen notification
+    ///
+    func updateLastSeen(timestamp: String, onCompletion: @escaping (Error?) -> Void) {
+        let remote = NotificationsRemote(network: network)
+        remote.updateLastSeen(timestamp) { (error) in
+            onCompletion(error)
         }
     }
 }

@@ -92,7 +92,6 @@
 		B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */; };
 		B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */; };
 		B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57B67892107546E00AF8905 /* Address+Woo.swift */; };
-		B57B678C2107638C00AF8905 /* Order+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57B678B2107638C00AF8905 /* Order+Woo.swift */; };
 		B57B678E21078C5400AF8905 /* OrderItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */; };
 		B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C743C20F5493300EEFC87 /* AccountHeaderView.swift */; };
 		B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B57C744220F54F1C00EEFC87 /* AccountHeaderView.xib */; };
@@ -115,6 +114,8 @@
 		B59D1EE321907C7B009D1978 /* NSAttributedString+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EE221907C7B009D1978 /* NSAttributedString+Helpers.swift */; };
 		B59D1EE5219080B4009D1978 /* Note+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EE4219080B4009D1978 /* Note+Woo.swift */; };
 		B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B59D1EE6219089A3009D1978 /* Noticons.ttf */; };
+		B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EE92190AE96009D1978 /* StorageNote+Woo.swift */; };
+		B59D1EEC2190B08B009D1978 /* Age.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EEB2190B08B009D1978 /* Age.swift */; };
 		B5A0369B214C0E8500774E2C /* CocoaLumberjack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A0369A214C0E8500774E2C /* CocoaLumberjack.swift */; };
 		B5A82EE221025C450053ADC8 /* FulfillViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A82EE121025C450053ADC8 /* FulfillViewController.swift */; };
 		B5A82EE521025E550053ADC8 /* FulfillViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5A82EE421025E550053ADC8 /* FulfillViewController.xib */; };
@@ -323,7 +324,6 @@
 		B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3E32049BFAA00D4AA8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B57B67892107546E00AF8905 /* Address+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Address+Woo.swift"; sourceTree = "<group>"; };
-		B57B678B2107638C00AF8905 /* Order+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Woo.swift"; sourceTree = "<group>"; };
 		B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemViewModel.swift; sourceTree = "<group>"; };
 		B57C743C20F5493300EEFC87 /* AccountHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountHeaderView.swift; sourceTree = "<group>"; };
 		B57C744220F54F1C00EEFC87 /* AccountHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountHeaderView.xib; sourceTree = "<group>"; };
@@ -347,6 +347,8 @@
 		B59D1EE221907C7B009D1978 /* NSAttributedString+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+Helpers.swift"; sourceTree = "<group>"; };
 		B59D1EE4219080B4009D1978 /* Note+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+Woo.swift"; sourceTree = "<group>"; };
 		B59D1EE6219089A3009D1978 /* Noticons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Noticons.ttf; sourceTree = "<group>"; };
+		B59D1EE92190AE96009D1978 /* StorageNote+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageNote+Woo.swift"; sourceTree = "<group>"; };
+		B59D1EEB2190B08B009D1978 /* Age.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Age.swift; sourceTree = "<group>"; };
 		B59F38E020D40A24008C1829 /* WooCommerce.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerce.entitlements; sourceTree = "<group>"; };
 		B5A0369A214C0E8500774E2C /* CocoaLumberjack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaLumberjack.swift; sourceTree = "<group>"; };
 		B5A82EE121025C450053ADC8 /* FulfillViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FulfillViewController.swift; sourceTree = "<group>"; };
@@ -693,11 +695,12 @@
 		B57B67882107545B00AF8905 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B59D1EEB2190B08B009D1978 /* Age.swift */,
 				B57B67892107546E00AF8905 /* Address+Woo.swift */,
 				B59D1EE4219080B4009D1978 /* Note+Woo.swift */,
-				B57B678B2107638C00AF8905 /* Order+Woo.swift */,
 				748C777F211E18A600814F2C /* OrderStats+Woo.swift */,
 				B5E96B3721137AA100DF68D0 /* OrderStatus+Woo.swift */,
+				B59D1EE92190AE96009D1978 /* StorageNote+Woo.swift */,
 				CE24BCD7212F25D4001CD12E /* StorageOrder+Woo.swift */,
 				743EDD9E214B05350039071B /* TopEarnerStatsItem+Woo.swift */,
 			);
@@ -1314,6 +1317,7 @@
 				CE21B3E020FFC59700A259D5 /* ProductDetailsTableViewCell.swift in Sources */,
 				B5DB01B52114AB2D00A4F797 /* FabricManager.swift in Sources */,
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
+				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
 				CE263DE6206ACD220015A693 /* NotificationsViewController.swift in Sources */,
 				B541B220218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift in Sources */,
 				CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */,
@@ -1349,6 +1353,7 @@
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
 				B5E96B3821137AA100DF68D0 /* OrderStatus+Woo.swift in Sources */,
 				B541B226218A412C008FE7C1 /* UIFont+Woo.swift in Sources */,
+				B59D1EEC2190B08B009D1978 /* Age.swift in Sources */,
 				B57C744720F55BC800EEFC87 /* UIView+Helpers.swift in Sources */,
 				B5A82EE221025C450053ADC8 /* FulfillViewController.swift in Sources */,
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,
@@ -1390,7 +1395,6 @@
 				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
 				CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */,
-				B57B678C2107638C00AF8905 /* Order+Woo.swift in Sources */,
 				7493BB8E2149852A003071A9 /* TopPerformersHeaderView.swift in Sources */,
 				CE1EC8CA20B479F1009762BF /* TwoColumnLabelView.swift in Sources */,
 				CE21B3DD20FF9BC200A259D5 /* ProductListViewController.swift in Sources */,

@@ -18,7 +18,15 @@ class NotificationsViewController: UIViewController {
         return ResultsController<StorageNote>(storageManager: storageManager, sectionNameKeyPath: nil, sortedBy: [])
     }()
 
+    /// Rendered Subjects Cache.
     ///
+    private var subjectStorage = [Int64: NSAttributedString?]()
+
+    /// Rendered Snippet Cache.
+    ///
+    private var snippetStorage = [Int64: NSAttributedString?]()
+
+    /// String Formatter: Given a NoteBlock, this tool will return an AttributedString.
     ///
     private let formatter = StringFormatter()
 
@@ -114,28 +122,12 @@ extension NotificationsViewController: UITableViewDataSource {
 
         let note = resultsController.object(at: indexPath)
 
+        cell.noticon = note.noticon
         cell.attributedSubject = renderSubject(note: note)
         cell.attributedSnippet = renderSnippet(note: note)
 
         return cell
     }
-
-    ///
-    ///
-    func renderSubject(note: Note) -> NSAttributedString? {
-        return note.blockForSubject.map {
-            formatter.format(block: $0, with: .subject)
-        }
-    }
-
-    ///
-    ///
-    func renderSnippet(note: Note) -> NSAttributedString? {
-        return note.blockForSnippet.map {
-            formatter.format(block: $0, with: .snippet)
-        }
-    }
-
 }
 
 
@@ -149,5 +141,37 @@ extension NotificationsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+
+// MARK: - Formatting
+//
+private extension NotificationsViewController {
+
+    /// Returns the formatted Subject (if any). For performance reasons, we'll cache the result.
+    ///
+    func renderSubject(note: Note) -> NSAttributedString? {
+        if let cached = subjectStorage[note.hash] {
+            return cached
+        }
+
+        let subject = note.blockForSubject.map { formatter.format(block: $0, with: .subject) }
+        subjectStorage[note.hash] = subject
+
+        return subject
+    }
+
+    /// Returns the formatted Snippet (if any). For performance reasons, we'll cache the result.
+    ///
+    func renderSnippet(note: Note) -> NSAttributedString? {
+        if let cached = snippetStorage[note.hash] {
+            return cached
+        }
+
+        let snippet = note.blockForSnippet.map { formatter.format(block: $0, with: .snippet) }
+        snippetStorage[note.hash] = snippet
+
+        return snippet
     }
 }

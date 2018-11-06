@@ -5,6 +5,7 @@ import Foundation
 //
 public struct Note {
 
+
     /// Notification's Primary Key.
     ///
     public let noteId: Int64
@@ -49,22 +50,41 @@ public struct Note {
     ///
     public let title: String?
 
-    /// Raw Subject Blocks.
+
+    /// Raw Subject Blocks as Data.
+    ///
+    public let subjectAsData: Data
+
+    /// Subject Blocks.
     ///
     public let subject: [NoteBlock]
 
-    /// Raw Header Blocks.
+
+    /// Raw Header Blocks as Data.
+    ///
+    public let headerAsData: Data
+
+    /// Header Blocks.
     ///
     public let header: [NoteBlock]
 
-    /// Raw Body Blocks.
+
+    /// Raw Body Blocks as Data.
+    ///
+    public let bodyAsData: Data
+
+    /// Body Blocks.
     ///
     public let body: [NoteBlock]
 
-    /// Raw Associated Metadata.
+
+    /// Raw Associated Metadata as Data.
+    ///
+    public let metaAsData: Data
+
+    /// Associated Metadata.
     ///
     public let meta: MetaContainer
-
 
 
     /// Designed Initializer.
@@ -78,10 +98,10 @@ public struct Note {
                 type: String,
                 url: String?,
                 title: String?,
-                subject: [NoteBlock],
-                header: [NoteBlock],
-                body: [NoteBlock],
-                meta: [String: AnyCodable]) {
+                subject: Data,
+                header: Data,
+                body: Data,
+                meta: Data) {
 
         self.noteId = noteId
         self.hash = hash
@@ -94,10 +114,19 @@ public struct Note {
         self.kind = Kind(rawValue: type) ?? .unknown
         self.url = url
         self.title = title
-        self.subject = subject
-        self.header = header
-        self.body = body
-        self.meta = MetaContainer(payload: meta)
+
+        self.subjectAsData = subject
+        self.subject = (try? JSONDecoder().decode([NoteBlock].self, from: subject)) ?? []
+
+        self.headerAsData = header
+        self.header = (try? JSONDecoder().decode([NoteBlock].self, from: header)) ?? []
+
+        self.bodyAsData = body
+        self.body = (try? JSONDecoder().decode([NoteBlock].self, from: body)) ?? []
+
+        self.metaAsData = meta
+        let metaDict = (try? JSONDecoder().decode([String: AnyCodable].self, from: meta)) ?? [:]
+        self.meta = MetaContainer(payload: metaDict)
     }
 }
 
@@ -122,10 +151,17 @@ extension Note: Decodable {
         let url = container.failsafeDecodeIfPresent(String.self, forKey: .url)
         let title = container.failsafeDecodeIfPresent(String.self, forKey: .title)
 
-        let subject = container.failsafeDecodeIfPresent([NoteBlock].self, forKey: .subject) ?? []
-        let header = container.failsafeDecodeIfPresent([NoteBlock].self, forKey: .header) ?? []
-        let body = container.failsafeDecodeIfPresent([NoteBlock].self, forKey: .body) ?? []
-        let meta = container.failsafeDecodeIfPresent([String: AnyCodable].self, forKey: .meta) ?? [:]
+        let rawSubjectAsData = container.failsafeDecodeIfPresent([AnyCodable].self, forKey: .subject) ?? []
+        let subjectAsData = try JSONEncoder().encode(rawSubjectAsData)
+
+        let rawHeaderAsData = container.failsafeDecodeIfPresent([AnyCodable].self, forKey: .header) ?? []
+        let headerAsData = try JSONEncoder().encode(rawHeaderAsData)
+
+        let rawBodyAsData = container.failsafeDecodeIfPresent([AnyCodable].self, forKey: .body) ?? []
+        let bodyAsData = try JSONEncoder().encode(rawBodyAsData)
+
+        let rawMetaAsData = container.failsafeDecodeIfPresent([String: AnyCodable].self, forKey: .meta) ?? [:]
+        let metaAsData = try JSONEncoder().encode(rawMetaAsData)
 
         self.init(noteId: noteID,
                   hash: hash,
@@ -136,10 +172,10 @@ extension Note: Decodable {
                   type: type,
                   url: url,
                   title: title,
-                  subject: subject,
-                  header: header,
-                  body: body,
-                  meta: meta)
+                  subject: subjectAsData,
+                  header: headerAsData,
+                  body: bodyAsData,
+                  meta: metaAsData)
     }
 }
 

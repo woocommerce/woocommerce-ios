@@ -6,7 +6,15 @@ import Alamofire
 ///
 class MockupNetwork: Network {
 
-    /// Mapping between URL Suffix and JSON Mockup responses.
+    /// Should this instance use the responseQueue or responseMap
+    ///
+    private var useResponseQueue: Bool = false
+
+    /// Mapping between URL Suffix and JSON Mockup responses (in a FIFO queue).
+    ///
+    private var responseQueue = [String: Queue<String>]()
+
+    /// Mapping between URL Suffix and JSON Mockup responses (in a simple array).
     ///
     private var responseMap = [String: String]()
 
@@ -23,17 +31,24 @@ class MockupNetwork: Network {
     var requestsForResponseData = [URLRequestConvertible]()
 
 
-
-
     /// Public Initializer
     ///
     required init(credentials: Credentials) { }
 
     /// Dummy convenience initializer. Remember: Real Network wrappers will allways need credentials!
     ///
-    convenience init() {
+    /// Note: If the useResponseQueue param is `true`, any repsonses added via `simulateResponse` will stored in a FIFO queue
+    /// and used once for a matching request (then removed from the queue). Subsuquent requests will use the next response in the queue, and so on.
+    ///
+    /// If the useResponseQueue param is `false`, any repsonses added via `simulateResponse` will stored in an array and can
+    /// be reused multiple times.
+    ///
+    /// - Parameter useResponseQueue: Use the response queue. Default is `false`.
+    ///
+    convenience init(useResponseQueue: Bool = false) {
         let dummy = Credentials(username: "", authToken: "")
         self.init(credentials: dummy)
+        self.useResponseQueue = useResponseQueue
     }
 
 
@@ -48,7 +63,8 @@ class MockupNetwork: Network {
             return
         }
 
-        if let filename = filename(for: request), let response = Loader.jsonObject(for: filename) {
+        let name = filename(for: request)
+        if let name = name, let response = Loader.jsonObject(for: name) {
             completion(response, nil)
             return
         }
@@ -67,7 +83,8 @@ class MockupNetwork: Network {
             return
         }
 
-        if let filename = filename(for: request), let data = Loader.contentsOf(filename) {
+        let name = filename(for: request)
+        if let name = name, let data = Loader.contentsOf(name) {
             completion(data, nil)
             return
         }
@@ -77,15 +94,19 @@ class MockupNetwork: Network {
 }
 
 
-/// Public Methods
-///
+// MARK: - Public Methods
+//
 extension MockupNetwork {
 
     /// Whenever a request is enqueued, we'll return the specified JSON Encoded file, whenever the Request's URL suffix matches with
     /// the specified one.
     ///
     func simulateResponse(requestUrlSuffix: String, filename: String) {
-        responseMap[requestUrlSuffix] = filename
+        if useResponseQueue {
+            addResponseToQueue(requestUrlSuffix: requestUrlSuffix, filename: filename)
+        } else {
+            addResponseToMap(requestUrlSuffix: requestUrlSuffix, filename: filename)
+        }
     }
 
     /// We'll return the specified Error, whenever a request matches the specified Suffix Criteria!
@@ -100,13 +121,43 @@ extension MockupNetwork {
         responseMap.removeAll()
         errorMap.removeAll()
     }
+}
 
-    /// Returns the Mockup JSON Filename for a given URLRequestConvertible.
+
+// MARK: - Private Helpers
+//
+private extension MockupNetwork {
+
+    /// Adds the URL suffix and response JSON Filename to the response queue
     ///
-    private func filename(for request: URLRequestConvertible) -> String? {
+    private func addResponseToQueue(requestUrlSuffix: String, filename: String) {
+        if responseQueue[requestUrlSuffix] == nil {
+            responseQueue[requestUrlSuffix] = Queue<String>()
+        }
+        responseQueue[requestUrlSuffix]?.enqueue(filename)
+    }
+
+    /// Adds the URL suffix and response JSON Filename to the response map
+    ///
+    private func addResponseToMap(requestUrlSuffix: String, filename: String) {
+        responseMap[requestUrlSuffix] = filename
+    }
+
+    /// Returns the Mockup JSON Filename for a given URLRequestConvertible from either:
+    ///
+    ///   * the FIFO response queue (where the response is removed from the queue when this func returns)
+    ///   * the responseMap (array)
+    ///
+    func filename(for request: URLRequestConvertible) -> String? {
         let searchPath = path(for: request)
-        for (pattern, filename) in responseMap where searchPath.hasSuffix(pattern) {
-            return filename
+        if useResponseQueue {
+            if var queue = responseQueue.filter({ searchPath.hasSuffix($0.key) }).first?.value {
+                return queue.dequeue()
+            }
+        } else {
+            if let filename = responseMap.filter({ searchPath.hasSuffix($0.key) }).first?.value {
+                return filename
+            }
         }
 
         return nil

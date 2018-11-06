@@ -18,6 +18,16 @@ public extension DateFormatter {
             formatter.dateFormat = "yyyy'-'MM'-'dd'T'HH:mm:ss"
             return formatter
         }()
+
+        /// ISO8601 DateFormatter
+        ///
+        public static let iso8601: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.timeZone = TimeZone(identifier: "GMT")
+            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+            return formatter
+        }()
     }
 
 

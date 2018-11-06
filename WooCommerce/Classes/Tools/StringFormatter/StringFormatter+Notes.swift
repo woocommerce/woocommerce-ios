@@ -7,13 +7,14 @@ import Networking
 extension StringFormatter {
 
     /// Returns an AttributedString representation of a given NoteBlock, with the specified Styles applied to it.
+    /// For convenience's sake, Newlines [Leading, Trailing] will also be trimmed in this spot.
     ///
     func format(block: NoteBlock, with styles: StringStyles) -> NSAttributedString {
         guard let text = block.text else {
             return NSAttributedString()
         }
 
-        return format(text: text, with: styles, using: block.ranges as [StringDescriptor])
+        return format(text: text, with: styles, using: block.ranges as [StringDescriptor]).trimNewlines()
     }
 }
 

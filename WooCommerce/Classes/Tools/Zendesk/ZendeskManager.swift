@@ -88,7 +88,7 @@ import Yosemite
         guard let faqURL = WooConstants.faqURL else {
             return
         }
-        
+
         presentInController = controller
         WooAnalytics.shared.track(.supportBrowseOurFaqTapped)
 
@@ -396,8 +396,10 @@ private extension ZendeskManager {
         //Constants.wpComTag,    // wp.com
         //Constants.jetpackTag,  // jetpack
         //site.planTitle         // site plan
-        var tags = [ Constants.wooMobileTag,// woo-ios
-                     Constants.platformTag] // iOS
+
+        /// tags: woo-ios, ios
+        ///
+        var tags = [Constants.wooMobileTag, Constants.platformTag]
 
         // Add sourceTag
         if let sourceTagOrigin = sourceTag?.origin {

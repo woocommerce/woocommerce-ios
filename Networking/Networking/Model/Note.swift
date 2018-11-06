@@ -109,7 +109,7 @@ public struct Note {
         self.icon = icon
         self.noticon = noticon
         self.timestamp = timestamp
-        self.timestampAsDate = DateFormatter.Defaults.dateTimeFormatter.date(from: timestamp) ?? Date()
+        self.timestampAsDate = DateFormatter.Defaults.iso8601.date(from: timestamp) ?? Date()
         self.type = type
         self.kind = Kind(rawValue: type) ?? .unknown
         self.url = url

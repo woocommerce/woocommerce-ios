@@ -54,6 +54,14 @@ extension UIFont {
 ///
 extension UIFont {
 
+    /// Returns a Noticons UIFont instance with the specified Style.
+    ///
+    static func noticon(forStyle style: UIFont.TextStyle) -> UIFont {
+        let name = "Noticons"
+        let size = pointSize(for: style)
+        return UIFont(name: name, size: size)!
+    }
+
     /// Returns a UIFont instance for the specified Style + Weight.
     ///
     class func font(forStyle style: UIFont.TextStyle, weight: UIFont.Weight) -> UIFont {

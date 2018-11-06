@@ -25,6 +25,7 @@ class AuthenticatedState: StoresManagerState {
 
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

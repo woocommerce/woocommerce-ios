@@ -62,6 +62,21 @@ class NoteListMapperTests: XCTestCase {
         XCTAssertEqual(note.meta.link(forKey: .post), "https://public-someurl.sometld")
     }
 
+    /// Verifies that the Timestamp is properly mapped into a Swift Date
+    ///
+    func testSampleNotificationGetsItsDateProperlyConvertedIntoASwiftDate() {
+        // Sample Note: Zero
+        let note = sampleNotes[0]
+
+        // Decompose!
+        let components = [.day, .month, .year, .hour, .minute, .second] as Set<Calendar.Component>
+        let dateComponents = Calendar.current.dateComponents(components, from: note.timestampAsDate)
+
+        XCTAssertEqual(dateComponents.day, 22)
+        XCTAssertEqual(dateComponents.month, 10)
+        XCTAssertEqual(dateComponents.year, 2018)
+    }
+
     /// Verifies that a broken Notifications document is "Gracefully handled". This means that:
     ///   - Default values are set
     ///   - Faulty encoded types are processed correctly (anyways)

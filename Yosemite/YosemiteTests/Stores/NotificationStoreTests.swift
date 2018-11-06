@@ -30,7 +30,10 @@ class NotificationStoreTests: XCTestCase {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockupStorageManager()
-        network = MockupNetwork(useResponseQueue: true)
+        network = MockupNetwork()
+
+        // Need to nuke this in-between tests otherwise some will randomly fail
+        NotificationStore.resetSharedDerivedStorage()
     }
 
 
@@ -134,5 +137,143 @@ class NotificationStoreTests: XCTestCase {
 
         noteStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - NotificationAction.updateReadStatus
+
+    /// Verifies that NotificationAction.updateReadStatus handles a success response from the backend properly
+    ///
+    func testUpdateNotificationReadStatusReturnsSuccess() {
+        let expectation = self.expectation(description: "Update read status success response")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let originalNote = sampleNotification()
+        let expectedNote = sampleNotificationMutated()
+
+        network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_success")
+        let action = NotificationAction.updateReadStatus(noteID: originalNote.noteId, read: true) { [weak self] (error) in
+            XCTAssertNil(error)
+            let storageNote = self?.viewStorage.loadNotification(noteID: originalNote.noteId)
+            XCTAssertEqual(storageNote?.toReadOnly().read, expectedNote.read)
+            expectation.fulfill()
+        }
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
+        noteStore.updateLocalNotes(with: [originalNote]) { [weak self] in
+            XCTAssertEqual(self?.viewStorage.countObjects(ofType: Storage.Note.self), 1)
+            noteStore.onAction(action)
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that NotificationAction.updateReadStatus returns an error whenever there is an error response from the backend.
+    ///
+    func testUpdateNotificationReadStatusReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Update notification read status error response")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_error")
+        let action = NotificationAction.updateReadStatus(noteID: 9999, read: true) { (error) in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        noteStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that NotificationAction.updateReadStatus returns an error whenever there is no backend response.
+    ///
+    func testUpdateNotificationReadStatusReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Update notification read status empty response")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = NotificationAction.updateReadStatus(noteID: 9999, read: true) { (error) in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        noteStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `updateLocalNoteReadStatus` does not produce duplicate entries.
+    ///
+    func testUpdateStoredNotificationEffectivelyUpdatesPreexistantNotification() {
+        let expectation = self.expectation(description: "Update read status on existing note")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let originalNote = sampleNotification()
+        let expectedNote = sampleNotificationMutated()
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
+        noteStore.updateLocalNotes(with: [originalNote]) { [weak self] in
+            XCTAssertEqual(self?.viewStorage.countObjects(ofType: Storage.Note.self), 1)
+            noteStore.updateLocalNoteReadStatus(for: originalNote.noteId, read: true) {
+                XCTAssertEqual(self?.viewStorage.countObjects(ofType: Storage.Note.self), 1)
+                let storageNote = self?.viewStorage.loadNotification(noteID: originalNote.noteId)
+                XCTAssertEqual(storageNote?.toReadOnly().read, expectedNote.read)
+                expectation.fulfill()
+            }
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `updateLocalNoteReadStatus` does not produce duplicate entries with an invalid notification ID.
+    ///
+    func testUpdateStoredNotificationDoesntUpdateInvalidNote() {
+        let expectation = self.expectation(description: "Update read status on invalid note")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
+        noteStore.updateLocalNoteReadStatus(for: 9999, read: true) { [weak self] in
+            XCTAssertEqual(self?.viewStorage.countObjects(ofType: Storage.Note.self), 0)
+            let storageNote = self?.viewStorage.loadNotification(noteID: 9999)
+            XCTAssertNil(storageNote)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+}
+
+
+// MARK: - Private Methods
+//
+private extension NotificationStoreTests {
+
+    //  MARK: - Notification Sample
+
+    func sampleNotification() -> Networking.Note {
+        return Note(noteId: 123456,
+                    hash: 11223344,
+                    read: false,
+                    icon: "https://gravatar.tld/some-hash",
+                    noticon: "\u{f408}",
+                    timestamp: "2018-10-22T18:51:33+00:00",
+                    type: "comment_like",
+                    url: "https:\\someurl.sometld",
+                    title: "3 Likes",
+                    subject: Data(),
+                    header: Data(),
+                    body: Data(),
+                    meta: Data())
+    }
+
+    func sampleNotificationMutated() -> Networking.Note {
+        return Note(noteId: 123456,
+                    hash: 11223344,
+                    read: true,
+                    icon: "https://gravatar.tld/some-hash",
+                    noticon: "\u{f408}",
+                    timestamp: "2018-10-22T18:51:33+00:00",
+                    type: "comment_like",
+                    url: "https:\\someurl.sometld",
+                    title: "3 Likes",
+                    subject: Data(),
+                    header: Data(),
+                    body: Data(),
+                    meta: Data())
     }
 }

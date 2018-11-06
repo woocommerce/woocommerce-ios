@@ -19,8 +19,8 @@ import Yosemite
     // MARK: - Public Properties
 
     static let shared = ZendeskManager()
-    var zendeskEnabled = false
-    var unreadNotificationsCount = 0
+    private var zendeskEnabled = false
+    private var unreadNotificationsCount = 0
 
     var showSupportNotificationIndicator: Bool {
         return unreadNotificationsCount > 0
@@ -85,21 +85,17 @@ import Yosemite
     /// For now, link to the online FAQ
     ///
     func showHelpCenterIfPossible(from controller: UIViewController) {
-
-        presentInController = controller
-
-        WooAnalytics.shared.track(.supportBrowseOurFaqTapped)
-
         guard let faqURL = WooConstants.faqURL else {
             return
         }
+        
+        presentInController = controller
+        WooAnalytics.shared.track(.supportBrowseOurFaqTapped)
 
         let safariViewController = SFSafariViewController(url: faqURL)
         safariViewController.modalPresentationStyle = .pageSheet
-        guard let vc = presentInController else {
-            return
-        }
-        vc.present(safariViewController, animated: true, completion: nil)
+
+        controller.present(safariViewController, animated: true, completion: nil)
     }
 
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.

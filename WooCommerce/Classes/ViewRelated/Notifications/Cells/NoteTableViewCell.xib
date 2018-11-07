@@ -19,26 +19,26 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🐮" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MDO-G5-bNl">
-                        <rect key="frame" x="16" y="11" width="25" height="25"/>
+                        <rect key="frame" x="14" y="11" width="25" height="25"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="25" id="Eqv-DJ-O5N"/>
-                            <constraint firstAttribute="height" constant="25" id="w2h-Rr-ayg"/>
+                            <constraint firstAttribute="height" priority="750" constant="25" id="w2h-Rr-ayg"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="fNu-km-jyX">
-                        <rect key="frame" x="51" y="11" width="308" height="39"/>
+                        <rect key="frame" x="55" y="11" width="304" height="39"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Subject" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ow4-CR-HAI" userLabel="Subject Label">
-                                <rect key="frame" x="0.0" y="0.0" width="308" height="19.5"/>
+                                <rect key="frame" x="0.0" y="0.0" width="304" height="19.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="752" text="Snippet" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JQs-0C-rb6" userLabel="Snippet Label">
-                                <rect key="frame" x="0.0" y="19.5" width="308" height="19.5"/>
+                                <rect key="frame" x="0.0" y="19.5" width="304" height="19.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -52,10 +52,10 @@
                         </constraints>
                     </stackView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UhB-G7-KD0" userLabel="Sidebar View">
-                        <rect key="frame" x="0.0" y="0.0" width="4" height="88.5"/>
+                        <rect key="frame" x="0.0" y="0.0" width="2" height="88.5"/>
                         <color key="backgroundColor" red="0.58188301320000002" green="0.21569153669999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="4" id="jKh-ml-k7R"/>
+                            <constraint firstAttribute="width" constant="2" id="jKh-ml-k7R"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -63,7 +63,7 @@
                     <constraint firstItem="UhB-G7-KD0" firstAttribute="leading" secondItem="6jk-CV-iAi" secondAttribute="leading" id="2eg-xX-jov"/>
                     <constraint firstAttribute="bottom" secondItem="UhB-G7-KD0" secondAttribute="bottom" constant="-1" id="39u-V2-3Gt"/>
                     <constraint firstAttribute="bottomMargin" relation="greaterThanOrEqual" secondItem="fNu-km-jyX" secondAttribute="bottom" id="4o0-dm-QtB"/>
-                    <constraint firstItem="fNu-km-jyX" firstAttribute="leading" secondItem="MDO-G5-bNl" secondAttribute="trailing" constant="10" id="Ald-qj-tKS"/>
+                    <constraint firstItem="fNu-km-jyX" firstAttribute="leading" secondItem="MDO-G5-bNl" secondAttribute="trailing" constant="16" id="Ald-qj-tKS"/>
                     <constraint firstItem="UhB-G7-KD0" firstAttribute="top" secondItem="6jk-CV-iAi" secondAttribute="top" id="KyI-Qp-7Fa"/>
                     <constraint firstItem="fNu-km-jyX" firstAttribute="top" secondItem="6jk-CV-iAi" secondAttribute="topMargin" id="LG7-Ks-nd3"/>
                     <constraint firstItem="fNu-km-jyX" firstAttribute="trailing" secondItem="6jk-CV-iAi" secondAttribute="trailingMargin" id="WBn-oY-CQU"/>

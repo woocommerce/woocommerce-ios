@@ -79,6 +79,18 @@ class NoteTableViewCell: UITableViewCell {
         attributedSubject = nil
         attributedSnippet = nil
     }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        // Note: this is required, since the cell unhighlight mechanism will reset the new background color
+        super.setSelected(selected, animated: animated)
+        refreshColors()
+    }
+
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        // Note: this is required, since the cell unhighlight mechanism will reset the new background color
+        super.setHighlighted(highlighted, animated: animated)
+        refreshColors()
+    }
 }
 
 

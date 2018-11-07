@@ -10,7 +10,7 @@ class VersionFooterView: UIView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+
         footerLabel.applyFootnoteStyle()
         footerLabel.textColor = StyleManager.sectionTitleColor
         footerLabel.isAccessibilityElement = true

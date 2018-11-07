@@ -1,21 +1,30 @@
-//
-//  VersionFooterView.swift
-//  WooCommerce
-//
-//  Created by Thuy Copeland on 11/6/18.
-//  Copyright © 2018 Automattic. All rights reserved.
-//
-
 import UIKit
 
-class VersionFooterView: UITableViewHeaderFooterView {
 
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
+// MARK: - VersionFooterView
+//
+class VersionFooterView: UIView {
+    @IBOutlet var footerLabel: UILabel!
+
+    static let reuseIdentifier = "VersionFooterView"
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        footerLabel.applyFootnoteStyle()
+        footerLabel.textColor = StyleManager.sectionTitleColor
+        footerLabel.isAccessibilityElement = true
+
+        backgroundColor = StyleManager.sectionBackgroundColor
     }
-    */
 
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+
+    /// Convenience method
+    ///
+    class func makeFromNib() -> VersionFooterView {
+        return Bundle.main.loadNibNamed("VersionFooterView", owner: self, options: nil)?.first as! VersionFooterView
+    }
 }

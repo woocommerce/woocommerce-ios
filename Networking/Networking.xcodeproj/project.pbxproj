@@ -64,6 +64,9 @@
 		74C8F06C20EEBD5D00B6EDC9 /* broken-order.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C8F06B20EEBD5D00B6EDC9 /* broken-order.json */; };
 		74C8F06E20EEC1E800B6EDC9 /* OrderNotesMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C8F06D20EEC1E700B6EDC9 /* OrderNotesMapperTests.swift */; };
 		74C8F07020EEC3A800B6EDC9 /* broken-notes.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C8F06F20EEC3A800B6EDC9 /* broken-notes.json */; };
+		74C947832193A6C70024CB60 /* comment-moderate-trash.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C9477E2193A6C60024CB60 /* comment-moderate-trash.json */; };
+		74C947842193A6C70024CB60 /* comment-moderate-approved.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C9477F2193A6C60024CB60 /* comment-moderate-approved.json */; };
+		74C947862193A6C70024CB60 /* comment-moderate-unapproved.json in Resources */ = {isa = PBXBuildFile; fileRef = 74C947812193A6C70024CB60 /* comment-moderate-unapproved.json */; };
 		74CF5E8421402C04000CED0A /* TopEarnerStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74CF5E8321402C04000CED0A /* TopEarnerStatsRemoteTests.swift */; };
 		74D3BD142114FE6900A6E85E /* MIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D3BD132114FE6900A6E85E /* MIContainer.swift */; };
 		74D522B62113607F00042831 /* StatGranularity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D522B52113607F00042831 /* StatGranularity.swift */; };
@@ -210,6 +213,9 @@
 		74C8F06B20EEBD5D00B6EDC9 /* broken-order.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "broken-order.json"; sourceTree = "<group>"; };
 		74C8F06D20EEC1E700B6EDC9 /* OrderNotesMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNotesMapperTests.swift; sourceTree = "<group>"; };
 		74C8F06F20EEC3A800B6EDC9 /* broken-notes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "broken-notes.json"; sourceTree = "<group>"; };
+		74C9477E2193A6C60024CB60 /* comment-moderate-trash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "comment-moderate-trash.json"; sourceTree = "<group>"; };
+		74C9477F2193A6C60024CB60 /* comment-moderate-approved.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "comment-moderate-approved.json"; sourceTree = "<group>"; };
+		74C947812193A6C70024CB60 /* comment-moderate-unapproved.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "comment-moderate-unapproved.json"; sourceTree = "<group>"; };
 		74CF5E8321402C04000CED0A /* TopEarnerStatsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopEarnerStatsRemoteTests.swift; sourceTree = "<group>"; };
 		74D3BD132114FE6900A6E85E /* MIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIContainer.swift; sourceTree = "<group>"; };
 		74D522B52113607F00042831 /* StatGranularity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatGranularity.swift; sourceTree = "<group>"; };
@@ -532,6 +538,9 @@
 				74A7B4BD217A841400E85A8B /* broken-settings-general.json */,
 				B58D10C72114D21C00107ED4 /* generic_error.json */,
 				B53EF53521813681003E146F /* generic_success.json */,
+				74C9477F2193A6C60024CB60 /* comment-moderate-approved.json */,
+				74C9477E2193A6C60024CB60 /* comment-moderate-trash.json */,
+				74C947812193A6C70024CB60 /* comment-moderate-unapproved.json */,
 				740211DE2193985A002248DA /* comment-moderate-spam.json */,
 				B505F6D420BEE4E600BB1B69 /* me.json */,
 				B58D10C92114D22E00107ED4 /* new-order-note.json */,
@@ -755,8 +764,10 @@
 				B5147876211B9227007562E5 /* broken-orders-mark-2.json in Resources */,
 				B58D10C82114D21D00107ED4 /* generic_error.json in Resources */,
 				B505F6D520BEE4E700BB1B69 /* me.json in Resources */,
+				74C947832193A6C70024CB60 /* comment-moderate-trash.json in Resources */,
 				B58D10CA2114D22E00107ED4 /* new-order-note.json in Resources */,
 				B5C6FCD620A3768900A4F8E4 /* order.json in Resources */,
+				74C947862193A6C70024CB60 /* comment-moderate-unapproved.json in Resources */,
 				B559EBAA20A0B5CD00836CD4 /* orders-load-all.json in Resources */,
 				74C8F06620EEB76400B6EDC9 /* order-notes.json in Resources */,
 				748D424E210FB1F500CF7D1B /* order-stats-day.json in Resources */,
@@ -768,6 +779,7 @@
 				7412A51121702E9700994370 /* order-stats-alt.json in Resources */,
 				74046E21217A73D0007DD7BF /* settings-general.json in Resources */,
 				7492FAE3217FBDBC00ED2C69 /* settings-general-alt.json in Resources */,
+				74C947842193A6C70024CB60 /* comment-moderate-approved.json in Resources */,
 				B56C1EBA20EA7D2C00D749F9 /* sites.json in Resources */,
 				74A1D263211898F000931DFA /* site-visits-day.json in Resources */,
 				74A1D264211898F000931DFA /* site-visits-week.json in Resources */,

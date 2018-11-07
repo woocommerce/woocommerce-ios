@@ -47,7 +47,7 @@ public class CommentRemote: Remote {
     ///   - status: New status for comment
     ///   - completion: callback to be executed on completion
     ///
-    public func moderateComment(siteID: Int, commentID: Int, status: CommentStatus, completion: @escaping (CommentStatus, Error?) -> Void) {
+    public func moderateComment(siteID: Int, commentID: Int, status: CommentStatus, completion: @escaping (CommentStatus?, Error?) -> Void) {
         let path = "\(Paths.sites)/" + String(siteID) + "/" + "\(Paths.comments)/" + String(commentID)
         let parameters = [
             ParameterKeys.status: status.rawValue,

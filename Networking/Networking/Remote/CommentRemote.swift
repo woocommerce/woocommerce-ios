@@ -29,6 +29,10 @@ public enum CommentStatus: String {
     /// Untrash a comment. Only works when the comment is in the trash.
     ///
     case untrash
+
+    /// No idea what status this is. Note: this specific case is used when parsing the response from the server.
+    ///
+    case unknown
 }
 
 /// Comment: Remote Endpoints
@@ -43,15 +47,15 @@ public class CommentRemote: Remote {
     ///   - status: New status for comment
     ///   - completion: callback to be executed on completion
     ///
-    public func moderateComment(siteID: Int, commentID: Int, status: CommentStatus, completion: @escaping (Any?, Error?) -> Void) {
+    public func moderateComment(siteID: Int, commentID: Int, status: CommentStatus, completion: @escaping (CommentStatus, Error?) -> Void) {
         let path = "\(Paths.sites)/" + String(siteID) + "/" + "\(Paths.comments)/" + String(commentID)
         let parameters = [
             ParameterKeys.status: status.rawValue,
             ParameterKeys.context: ParameterValues.edit
         ]
-
+        let mapper = CommentResultMapper()
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
-        enqueue(request, completion: completion)
+        enqueue(request, mapper: mapper, completion: completion)
     }
 }
 

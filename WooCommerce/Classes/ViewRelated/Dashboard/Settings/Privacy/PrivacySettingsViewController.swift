@@ -22,7 +22,7 @@ class PrivacySettingsViewController: UIViewController {
 
     /// Send crash reports
     ///
-    private var reportCrashes = WooAnalytics.shared.userHasOptedIn {
+    private var reportCrashes = AppDelegate.shared.fabricManager.userHasOptedIn {
         didSet {
             reportCrashesWasUpdated(newValue: reportCrashes)
         }
@@ -198,7 +198,7 @@ private extension PrivacySettingsViewController {
         // Save user's preference
         AppDelegate.shared.fabricManager.setUserHasOptedIn(newValue)
 
-        // This event will only report if the user has turned tracking back on
+        // This event will only report if the user has Analytics currently on
         WooAnalytics.shared.track(.settingsReportCrashesToggled)
     }
 

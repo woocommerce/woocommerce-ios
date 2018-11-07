@@ -7,5 +7,7 @@ class ValueOneTableViewCell: UITableViewCell {
 
         textLabel?.applyBodyStyle()
         detailTextLabel?.applySubheadlineStyle()
+        detailTextLabel?.lineBreakMode = .byWordWrapping
+        detailTextLabel?.numberOfLines = 0
     }
 }

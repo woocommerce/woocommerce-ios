@@ -14,9 +14,17 @@ class PrivacySettingsViewController: UIViewController {
 
     /// Collect tracking info
     ///
-    private var collectInfo: Bool = WooAnalytics.shared.userHasOptedIn {
+    private var collectInfo = WooAnalytics.shared.userHasOptedIn {
         didSet {
             collectInfoWasUpdated(newValue: collectInfo)
+        }
+    }
+
+    /// Send crash reports
+    ///
+    private var reportCrashes = AppDelegate.shared.fabricManager.userHasOptedIn {
+        didSet {
+            reportCrashesWasUpdated(newValue: reportCrashes)
         }
     }
 
@@ -63,9 +71,8 @@ private extension PrivacySettingsViewController {
 
     func configureSections() {
         sections = [
-            Section(title: nil, rows: [.collectInfo, .shareInfo, .shareInfoPolicy]),
-            Section(title: nil, rows: [.privacyInfo, .privacyPolicy]),
-            Section(title: nil, rows: [.thirdPartyInfo, .thirdPartyPolicy]),
+            Section(title: nil, rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
+            Section(title: nil, rows: [.reportCrashes, .crashInfo])
         ]
     }
 
@@ -93,6 +100,10 @@ private extension PrivacySettingsViewController {
             configureCookieInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .thirdPartyPolicy:
             configureCookiePolicy(cell: cell)
+        case let cell as SwitchTableViewCell where row == .reportCrashes:
+            configureReportCrashes(cell: cell)
+        case let cell as TopLeftImageTableViewCell where row == .crashInfo:
+            configureCrashInfo(cell: cell)
         default:
             fatalError()
         }
@@ -114,8 +125,9 @@ private extension PrivacySettingsViewController {
     }
 
     func configureShareInfo(cell: TopLeftImageTableViewCell) {
-        cell.imageView?.image = Gridicon.iconOfType(.infoOutline)
-        cell.imageView?.tintColor = StyleManager.defaultTextColor
+        // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
+        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString("Share information with our analytics tool about your use of services while logged in to your WordPress.com account.", comment: "Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting")
     }
 
@@ -128,8 +140,9 @@ private extension PrivacySettingsViewController {
     }
 
     func configurePrivacyInfo(cell: TopLeftImageTableViewCell) {
-        cell.imageView?.image = Gridicon.iconOfType(.userCircle)
-        cell.imageView?.tintColor = StyleManager.defaultTextColor
+        // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
+        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString("This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.", comment: "Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect.")
     }
 
@@ -142,23 +155,51 @@ private extension PrivacySettingsViewController {
     }
 
     func configureCookieInfo(cell: TopLeftImageTableViewCell) {
-        cell.imageView?.image = Gridicon.iconOfType(.briefcase)
-        cell.imageView?.tintColor = StyleManager.defaultTextColor
+        // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
+        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString("We use other tracking tools, including some from third parties. Read about these and how to control them.", comment: "Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect.")
+    }
+
+    func configureReportCrashes(cell: SwitchTableViewCell) {
+        // image
+        cell.imageView?.image = Gridicon.iconOfType(.bug)
+        cell.imageView?.tintColor = StyleManager.defaultTextColor
+
+        // text
+        cell.title = NSLocalizedString("Report crashes", comment: "Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle.")
+
+        // switch
+        cell.isOn = reportCrashes
+        cell.onChange = { newValue in
+            self.reportCrashes = newValue
+        }
+    }
+
+    func configureCrashInfo(cell: TopLeftImageTableViewCell) {
+        // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
+        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.tintColor = .white
+        cell.textLabel?.text = NSLocalizedString("To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.", comment: "Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does")
     }
 
 
     // MARK: Actions
     //
     func collectInfoWasUpdated(newValue: Bool) {
-        // save the user's preference
+        // Save the user's preference
         WooAnalytics.shared.setUserHasOptedIn(newValue)
 
-        // Note that Crash Reporting opt-in is dependent on the Collect info setting.
+        // This event will only report if the user has turned tracking back on
+        WooAnalytics.shared.track(.settingsCollectInfoToggled)
+    }
+
+    func reportCrashesWasUpdated(newValue: Bool) {
+        // Save user's preference
         AppDelegate.shared.fabricManager.setUserHasOptedIn(newValue)
 
-        // this event will only report if the user has turned tracking back on
-        WooAnalytics.shared.track(.settingsCollectInfoToggled)
+        // This event will only report if the user has Analytics currently on
+        WooAnalytics.shared.track(.settingsReportCrashesToggled)
     }
 
 
@@ -281,6 +322,8 @@ private enum Row: CaseIterable {
     case shareInfoPolicy
     case thirdPartyInfo
     case thirdPartyPolicy
+    case reportCrashes
+    case crashInfo
 
     var type: UITableViewCell.Type {
         switch self {
@@ -298,6 +341,10 @@ private enum Row: CaseIterable {
             return TopLeftImageTableViewCell.self
         case .thirdPartyPolicy:
             return BasicTableViewCell.self
+        case .reportCrashes:
+            return SwitchTableViewCell.self
+        case .crashInfo:
+            return TopLeftImageTableViewCell.self
         }
     }
 

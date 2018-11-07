@@ -62,18 +62,18 @@ public class CommentRemote: Remote {
 
 // MARK: - Constants!
 //
-public extension CommentRemote {
-    private enum Paths {
+private extension CommentRemote {
+    enum Paths {
         static let sites: String        = "sites"
         static let comments: String     = "comments"
     }
 
-    private enum ParameterKeys {
+    enum ParameterKeys {
         static let status: String       = "status"
         static let context: String      = "context"
     }
 
-    private enum ParameterValues {
+    enum ParameterValues {
         static let edit: String       = "edit"
     }
 }

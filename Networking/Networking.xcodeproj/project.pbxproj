@@ -15,6 +15,7 @@
 		74046E1D217A6989007DD7BF /* SiteSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74046E1C217A6989007DD7BF /* SiteSetting.swift */; };
 		74046E1F217A6B70007DD7BF /* SiteSettingsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74046E1E217A6B70007DD7BF /* SiteSettingsMapper.swift */; };
 		74046E21217A73D0007DD7BF /* settings-general.json in Resources */ = {isa = PBXBuildFile; fileRef = 74046E20217A73D0007DD7BF /* settings-general.json */; };
+		740CF89921937A030023ED3A /* CommentRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740CF89821937A030023ED3A /* CommentRemote.swift */; };
 		7412A51121702E9700994370 /* order-stats-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = 7412A51021702E9700994370 /* order-stats-alt.json */; };
 		741B950120EBC8A700DD6E2D /* OrderCouponLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */; };
 		743057B5218B6ACD00441A76 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743057B4218B6ACD00441A76 /* Queue.swift */; };
@@ -157,6 +158,7 @@
 		74046E1C217A6989007DD7BF /* SiteSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSetting.swift; sourceTree = "<group>"; };
 		74046E1E217A6B70007DD7BF /* SiteSettingsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSettingsMapper.swift; sourceTree = "<group>"; };
 		74046E20217A73D0007DD7BF /* settings-general.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "settings-general.json"; sourceTree = "<group>"; };
+		740CF89821937A030023ED3A /* CommentRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentRemote.swift; sourceTree = "<group>"; };
 		7412A51021702E9700994370 /* order-stats-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-alt.json"; sourceTree = "<group>"; };
 		741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCouponLine.swift; sourceTree = "<group>"; };
 		743057B4218B6ACD00441A76 /* Queue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Queue.swift; path = ../../Yosemite/Yosemite/Internal/Queue.swift; sourceTree = "<group>"; };
@@ -456,6 +458,7 @@
 			children = (
 				B557DA0020975500005962F4 /* Remote.swift */,
 				B505F6D020BEE39600BB1B69 /* AccountRemote.swift */,
+				740CF89821937A030023ED3A /* CommentRemote.swift */,
 				B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */,
 				B557DA0120975500005962F4 /* OrdersRemote.swift */,
 				748D4247210F89ED00CF7D1B /* OrderStatsRemote.swift */,
@@ -854,6 +857,7 @@
 				B505F6EA20BEFC3700BB1B69 /* MockupNetwork.swift in Sources */,
 				748D4248210F89ED00CF7D1B /* OrderStatsRemote.swift in Sources */,
 				7452387221124B7700A973CD /* AnyEncodable.swift in Sources */,
+				740CF89921937A030023ED3A /* CommentRemote.swift in Sources */,
 				74ABA1CD213F1B6B00FFAD30 /* TopEarnerStats.swift in Sources */,
 				B557DA0220975500005962F4 /* JetpackRequest.swift in Sources */,
 				74046E1F217A6B70007DD7BF /* SiteSettingsMapper.swift in Sources */,

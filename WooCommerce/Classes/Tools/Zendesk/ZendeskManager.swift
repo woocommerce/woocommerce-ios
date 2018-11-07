@@ -401,7 +401,7 @@ private extension ZendeskManager {
         ///
         var tags = [Constants.wooMobileTag, Constants.platformTag]
 
-        /// Determine if the account is a wp.com account
+        /// Determine if the account is a wp.com account. No tag if self-hosted.
         ///
 
 

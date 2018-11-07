@@ -397,9 +397,21 @@ private extension ZendeskManager {
         //Constants.jetpackTag,  // jetpack
         //site.planTitle         // site plan
 
-        /// tags: woo-ios, ios
+        /// Start with default tags
         ///
         var tags = [Constants.wooMobileTag, Constants.platformTag]
+
+        /// Determine if the account is a wp.com account
+        ///
+
+
+        /// Determine if the account has jetpack installed
+        ///
+
+
+        /// Add the site plan
+        ///
+
 
         // Add sourceTag
         if let sourceTagOrigin = sourceTag?.origin {

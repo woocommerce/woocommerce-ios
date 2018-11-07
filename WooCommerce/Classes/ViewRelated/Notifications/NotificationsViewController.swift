@@ -20,6 +20,14 @@ class NotificationsViewController: UIViewController {
         return ResultsController<StorageNote>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
+    /// Pull To Refresh Support.
+    ///
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(pullToRefresh(sender:)), for: .valueChanged)
+        return refreshControl
+    }()
+
     /// Rendered Subjects Cache.
     ///
     private var subjectStorage = [Int64: NSAttributedString]()
@@ -75,6 +83,7 @@ private extension NotificationsViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.refreshControl = refreshControl
     }
 
     /// Setup: ResultsController
@@ -96,17 +105,32 @@ private extension NotificationsViewController {
 }
 
 
+// MARK: - Actions
+//
+private extension NotificationsViewController {
+
+    @IBAction func pullToRefresh(sender: UIRefreshControl) {
+        WooAnalytics.shared.track(.notificationsListPulledToRefresh)
+        synchronizeNotifications {
+            sender.endRefreshing()
+        }
+    }
+}
+
+
 // MARK: - Sync'ing Helpers
 //
 private extension NotificationsViewController {
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
-    func synchronizeNotifications() {
+    func synchronizeNotifications(onCompletion: (() -> Void)? = nil) {
         let action = NotificationAction.synchronizeNotifications { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
             }
+
+            onCompletion?()
         }
 
         StoresManager.shared.dispatch(action)

@@ -190,6 +190,7 @@ private extension NotificationsViewController {
     func configure(_ cell: NoteTableViewCell, at indexPath: IndexPath) {
         let note = resultsController.object(at: indexPath)
 
+        cell.read = note.read
         cell.noticon = note.noticon
         cell.attributedSubject = renderSubject(note: note)
         cell.attributedSnippet = renderSnippet(note: note)

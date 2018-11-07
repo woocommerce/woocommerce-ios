@@ -182,6 +182,11 @@
 		CE24BCD8212F25D4001CD12E /* StorageOrder+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE24BCD7212F25D4001CD12E /* StorageOrder+Woo.swift */; };
 		CE263DE6206ACD220015A693 /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE263DE5206ACD220015A693 /* NotificationsViewController.swift */; };
 		CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */; };
+		CE27257C21924A8C002B22EB /* HelpAndSupportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27257B21924A8C002B22EB /* HelpAndSupportViewController.swift */; };
+		CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */; };
+		CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */; };
+		CE272584219263B9002B22EB /* VersionFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE272583219263B9002B22EB /* VersionFooterView.swift */; };
+		CE27258621926468002B22EB /* VersionFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE27258521926468002B22EB /* VersionFooterView.xib */; };
 		CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */; };
 		CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */; };
 		CE32B11520BF8779006FBCF4 /* ProductListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11320BF8779006FBCF4 /* ProductListTableViewCell.swift */; };
@@ -416,6 +421,11 @@
 		CE24BCD7212F25D4001CD12E /* StorageOrder+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageOrder+Woo.swift"; sourceTree = "<group>"; };
 		CE263DE5206ACD220015A693 /* NotificationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
 		CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
+		CE27257B21924A8C002B22EB /* HelpAndSupportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpAndSupportViewController.swift; sourceTree = "<group>"; };
+		CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueOneTableViewCell.swift; sourceTree = "<group>"; };
+		CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ValueOneTableViewCell.xib; sourceTree = "<group>"; };
+		CE272583219263B9002B22EB /* VersionFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionFooterView.swift; sourceTree = "<group>"; };
+		CE27258521926468002B22EB /* VersionFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VersionFooterView.xib; sourceTree = "<group>"; };
 		CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnSectionHeaderView.xib; sourceTree = "<group>"; };
 		CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnSectionHeaderView.swift; sourceTree = "<group>"; };
 		CE32B11320BF8779006FBCF4 /* ProductListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListTableViewCell.swift; sourceTree = "<group>"; };
@@ -902,6 +912,16 @@
 			path = Privacy;
 			sourceTree = "<group>";
 		};
+		CE27257A219249B5002B22EB /* Help */ = {
+			isa = PBXGroup;
+			children = (
+				CE27257B21924A8C002B22EB /* HelpAndSupportViewController.swift */,
+				CE272583219263B9002B22EB /* VersionFooterView.swift */,
+				CE27258521926468002B22EB /* VersionFooterView.xib */,
+			);
+			path = Help;
+			sourceTree = "<group>";
+		};
 		CE583A0221076BBE00D73C1C /* AddNote */ = {
 			isa = PBXGroup;
 			children = (
@@ -935,6 +955,7 @@
 		CE85FD5820F7A59E0080B73E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				CE27257A219249B5002B22EB /* Help */,
 				CE22E3F821714639005A6BEF /* Privacy */,
 				B509112F2049E27A007D25DC /* SettingsViewController.swift */,
 				CE85FD5920F7A7640080B73E /* SettingsFooterView.swift */,
@@ -951,8 +972,11 @@
 				B5A8532120BDBFAE00FAAB4D /* CircularImageView.swift */,
 				CE24BCCD212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift */,
 				CE24BCCE212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib */,
+				7441E1D121503F77004E6ECE /* IntrinsicTableView.swift */,
 				CE1EC8EA20B8A3FF009762BF /* LeftImageTableViewCell.swift */,
 				CE1EC8EB20B8A3FF009762BF /* LeftImageTableViewCell.xib */,
+				B5BE75DA213F1D1E00909A14 /* OverlayMessageView.swift */,
+				B5BE75DC213F1D3D00909A14 /* OverlayMessageView.xib */,
 				CE583A052107849F00D73C1C /* SwitchTableViewCell.swift */,
 				CE583A062107849F00D73C1C /* SwitchTableViewCell.xib */,
 				CE583A092107937F00D73C1C /* TextViewTableViewCell.swift */,
@@ -963,10 +987,9 @@
 				CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */,
 				CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */,
 				CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */,
-				B5BE75DA213F1D1E00909A14 /* OverlayMessageView.swift */,
-				B5BE75DC213F1D3D00909A14 /* OverlayMessageView.xib */,
 				B50BB4152141828F00AF0F3C /* FooterSpinnerView.swift */,
-				7441E1D121503F77004E6ECE /* IntrinsicTableView.swift */,
+				CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */,
+				CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -1147,7 +1170,9 @@
 				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
 				CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */,
 				B59D1EE121907304009D1978 /* NoteTableViewCell.xib in Resources */,
+				CE27258621926468002B22EB /* VersionFooterView.xib in Resources */,
 				B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */,
+				CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */,
 				CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */,
 				B5A82EE521025E550053ADC8 /* FulfillViewController.xib in Resources */,
 				B554016B2170D6010067DC90 /* ChartPlaceholderView.xib in Resources */,
@@ -1383,17 +1408,20 @@
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
 				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
+				CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */,
 				747AA08B2107CF8D0047A89B /* TracksProvider.swift in Sources */,
 				CE1EC8F120B8A408009762BF /* OrderNoteTableViewCell.swift in Sources */,
 				CE583A0421076C0100D73C1C /* AddANoteViewController.swift in Sources */,
 				B58B4AC02108FF6100076FDD /* Array+Helpers.swift in Sources */,
 				748C7780211E18A600814F2C /* OrderStats+Woo.swift in Sources */,
+				CE272584219263B9002B22EB /* VersionFooterView.swift in Sources */,
 				B59C09D92188CBB100AB41D6 /* Array+Notes.swift in Sources */,
 				CE4DDB7B20DD312400D32EC8 /* Date+Helpers.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
 				B5E96B3821137AA100DF68D0 /* OrderStatus+Woo.swift in Sources */,
 				B541B226218A412C008FE7C1 /* UIFont+Woo.swift in Sources */,
 				B59D1EEC2190B08B009D1978 /* Age.swift in Sources */,
+				CE27257C21924A8C002B22EB /* HelpAndSupportViewController.swift in Sources */,
 				B57C744720F55BC800EEFC87 /* UIView+Helpers.swift in Sources */,
 				B5A82EE221025C450053ADC8 /* FulfillViewController.swift in Sources */,
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,

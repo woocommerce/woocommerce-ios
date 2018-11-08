@@ -75,7 +75,7 @@ private extension NotificationsViewController {
     ///
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Notifications", comment: "Notifications tab title")
-        tabBarItem.image = Gridicon.iconOfType(.statsAlt)
+        tabBarItem.image = Gridicon.iconOfType(.bell)
     }
 
     /// Setup: Navigation

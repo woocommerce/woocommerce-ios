@@ -6,6 +6,10 @@ import UIKit
 //
 class NoteTableViewCell: UITableViewCell {
 
+    /// Sidebar
+    ///
+    @IBOutlet private var sidebarView: UIView!
+
     /// Image: Icon
     ///
     @IBOutlet private var noticonLabel: UILabel!
@@ -18,6 +22,14 @@ class NoteTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var snippetLabel: UILabel!
 
+
+    /// Indicates if the Row should be marked as Read or not.
+    ///
+    var read: Bool = false {
+        didSet {
+            refreshColors()
+        }
+    }
 
     /// Icon Image property.
     ///
@@ -66,5 +78,30 @@ class NoteTableViewCell: UITableViewCell {
         noticon = nil
         attributedSubject = nil
         attributedSnippet = nil
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        // Note: this is required, since the cell unhighlight mechanism will reset the new background color
+        super.setSelected(selected, animated: animated)
+        refreshColors()
+    }
+
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        // Note: this is required, since the cell unhighlight mechanism will reset the new background color
+        super.setHighlighted(highlighted, animated: animated)
+        refreshColors()
+    }
+}
+
+
+// MARK: - Private
+//
+private extension NoteTableViewCell {
+
+    /// Refreshes the Cell's Colors.
+    ///
+    func refreshColors() {
+        sidebarView.backgroundColor = read ? UIColor.clear : StyleManager.wooAccent
+        noticonLabel.textColor = read ? StyleManager.wooGreyMid : StyleManager.wooAccent
     }
 }

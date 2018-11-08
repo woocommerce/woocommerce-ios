@@ -25,7 +25,7 @@ class CommentRemoteTests: XCTestCase {
     }
 
 
-    /// Verifies that moderateComment as spam properly parses the successful response
+    /// Verifies that 'moderateComment' as spam properly parses the successful response
     ///
     func testMarkCommentAsSpamReturnsSuccess() {
         let remote = CommentRemote(network: network)
@@ -43,7 +43,7 @@ class CommentRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that moderateComment as unspam properly parses the successful response
+    /// Verifies that 'moderateComment' as unspam properly parses the successful response
     ///
     func testMarkCommentAsUnspamReturnsSuccess() {
         let remote = CommentRemote(network: network)
@@ -61,7 +61,7 @@ class CommentRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that moderateComment as approved properly parses the successful response
+    /// Verifies that 'moderateComment' as approved properly parses the successful response
     ///
     func testMarkCommentAsApprovedReturnsSuccess() {
         let remote = CommentRemote(network: network)
@@ -79,7 +79,7 @@ class CommentRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that moderateComment as unapproved properly parses the successful response
+    /// Verifies that 'moderateComment' as unapproved properly parses the successful response
     ///
     func testMarkCommentAsUnapprovedReturnsSuccess() {
         let remote = CommentRemote(network: network)
@@ -97,7 +97,7 @@ class CommentRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that moderateComment as trash properly parses the successful response
+    /// Verifies that 'moderateComment' as trash properly parses the successful response
     ///
     func testMarkCommentAsTrashReturnsSuccess() {
         let remote = CommentRemote(network: network)
@@ -115,7 +115,7 @@ class CommentRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that moderateComment as untrash properly parses the successful response
+    /// Verifies that 'moderateComment' as untrash properly parses the successful response
     ///
     func testMarkCommentAsUntrashReturnsSuccess() {
         let remote = CommentRemote(network: network)
@@ -127,6 +127,24 @@ class CommentRemoteTests: XCTestCase {
             XCTAssertNotNil(updatedStatus)
             XCTAssertEqual(updatedStatus, .approved)
 
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `moderateComment` correctly returns a Dotcom Error, whenever the request failed.
+    ///
+    func testUpdateReadStatusProperlyParsesErrorResponses() {
+        let remote = CommentRemote(network: network)
+        let expectation = self.expectation(description: "Error Handling")
+
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "generic_error")
+        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .untrash) { (updatedStatus, error) in
+            XCTAssertNil(updatedStatus)
+            XCTAssertNotNil(error)
+            let error = error as? DotcomError
+            XCTAssertEqual(error?.code, "unknown_token")
             expectation.fulfill()
         }
 

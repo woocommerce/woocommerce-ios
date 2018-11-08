@@ -30,7 +30,7 @@ public enum CommentStatus: String {
     ///
     case untrash
 
-    /// No idea what status this is. Note: this specific case is used when parsing the response from the server.
+    /// Unknown status. Note: this specific case is only used locally when parsing the response from the server.
     ///
     case unknown
 }

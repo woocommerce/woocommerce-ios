@@ -60,7 +60,7 @@ private extension HelpAndSupportViewController {
 
     func configureTableViewFooter() {
         let versionLabel = NSLocalizedString("Version", comment: "App version label")
-        let appVersion = UserAgent.bundleShortVersion 
+        let appVersion = UserAgent.bundleShortVersion
         let versionSummary = versionLabel + " " + appVersion
 
         /// `tableView.tableFooterView` can't handle a footerView that uses autolayout only.

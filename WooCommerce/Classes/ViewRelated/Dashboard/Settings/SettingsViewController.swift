@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import MessageUI
+import Gridicons
 
 
 // MARK: - SettingsViewController
@@ -74,7 +75,11 @@ private extension SettingsViewController {
         // Hence the container view with a defined frame.
         //
         let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Constants.footerHeight))
-        let footerView = SettingsFooterView.makeFromNib()
+        let footerView = TableFooterView.instantiateFromNib() as TableFooterView
+        footerView.iconImage = Gridicon.iconOfType(.heartOutline)
+        footerView.iconColor = StyleManager.wooGreyMid
+        footerView.footnoteText = NSLocalizedString("Made with love by Automattic", comment: "Tagline after the heart icon, displayed to the user")
+        footerView.footnoteColor = StyleManager.wooGreyMid
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
     }
@@ -175,12 +180,7 @@ private extension SettingsViewController {
 
     func supportWasPressed() {
         WooAnalytics.shared.track(.settingsContactSupportTapped)
-        guard shouldDisplayEmailComposer() else {
-            displayContactUsAlert()
-            return
-        }
-
-        displaySupportEmailComposer()
+        performSegue(withIdentifier: Segues.helpSupportSegue, sender: nil)
     }
 
     func privacyWasPressed() {
@@ -191,39 +191,6 @@ private extension SettingsViewController {
     func logOutUser() {
         StoresManager.shared.deauthenticate()
         navigationController?.popToRootViewController(animated: true)
-    }
-
-    func shouldDisplayEmailComposer() -> Bool {
-        return MFMailComposeViewController.canSendMail()
-    }
-
-    func displayContactUsAlert() {
-        let messageUnformatted = NSLocalizedString("Please contact us via email:\n %@", comment: "Alert message to confirm a user meant to log out.")
-        let messageFormatted = String(format: messageUnformatted, WooConstants.supportMail)
-        let alertController = UIAlertController(title: "", message: messageFormatted, preferredStyle: .alert)
-
-        let cancelText = NSLocalizedString("Dismiss", comment: "Dismiss Alert Action")
-        alertController.addActionWithTitle(cancelText, style: .cancel)
-
-        present(alertController, animated: true)
-    }
-
-    func displaySupportEmailComposer() {
-        // Workaround: MFMailCompose isn't *FULLY* picking up UINavigationBar's WC's appearance. Title / Buttons look awful.
-        // We're falling back to iOS's default appearance
-        UINavigationBar.applyDefaultAppearance()
-
-        // Subject + Composer
-        let subjectUnformatted = NSLocalizedString("WooCommerce iOS %@ support", comment: "Support Email's Title")
-        let subjectFormatted = String(format: subjectUnformatted, Bundle.main.detailedVersionNumber())
-
-        let controller = MFMailComposeViewController()
-        controller.setSubject(subjectFormatted)
-        controller.setToRecipients([WooConstants.supportMail])
-        controller.mailComposeDelegate = self
-
-        // Display the Mail Composer
-        present(controller, animated: true, completion: nil)
     }
 }
 
@@ -299,7 +266,6 @@ extension SettingsViewController: UITableViewDelegate {
 
 // MARK: - Private Types
 //
-
 private struct Constants {
     static let rowHeight = CGFloat(44)
     static let footerHeight = 90
@@ -336,4 +302,5 @@ private enum Row: CaseIterable {
 
 private struct Segues {
     static let privacySegue = "ShowPrivacySettingsViewController"
+    static let helpSupportSegue = "ShowHelpAndSupportViewController"
 }

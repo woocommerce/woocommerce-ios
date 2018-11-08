@@ -147,6 +147,7 @@ public enum WooAnalyticsStat: String {
     //
     case notificationsSelected                  = "main_tab_notifications_selected"
     case notificationsReselected                = "main_tab_notifications_reselected"
+    case notificationsListPulledToRefresh       = "notifications_list_pulled_to_refresh"
 }
 
 public extension WooAnalyticsStat {

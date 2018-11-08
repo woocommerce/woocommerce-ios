@@ -20,6 +20,14 @@ class NotificationsViewController: UIViewController {
         return ResultsController<StorageNote>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
+    /// Pull To Refresh Support.
+    ///
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(pullToRefresh(sender:)), for: .valueChanged)
+        return refreshControl
+    }()
+
     /// Rendered Subjects Cache.
     ///
     private var subjectStorage = [Int64: NSAttributedString]()
@@ -45,6 +53,7 @@ class NotificationsViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = StyleManager.tableViewBackgroundColor
 
+        configureNavigationItem()
         configureTableView()
         configureTableViewCells()
         configureResultsController()
@@ -69,12 +78,20 @@ private extension NotificationsViewController {
         tabBarItem.image = Gridicon.iconOfType(.statsAlt)
     }
 
+    /// Setup: Navigation
+    ///
+    func configureNavigationItem() {
+        // Don't show the Settings title in the next-view's back button
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+    }
+
     /// Setup: TableView
     ///
     func configureTableView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.refreshControl = refreshControl
     }
 
     /// Setup: ResultsController
@@ -96,17 +113,32 @@ private extension NotificationsViewController {
 }
 
 
+// MARK: - Actions
+//
+private extension NotificationsViewController {
+
+    @IBAction func pullToRefresh(sender: UIRefreshControl) {
+        WooAnalytics.shared.track(.notificationsListPulledToRefresh)
+        synchronizeNotifications {
+            sender.endRefreshing()
+        }
+    }
+}
+
+
 // MARK: - Sync'ing Helpers
 //
 private extension NotificationsViewController {
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
-    func synchronizeNotifications() {
+    func synchronizeNotifications(onCompletion: (() -> Void)? = nil) {
         let action = NotificationAction.synchronizeNotifications { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
             }
+
+            onCompletion?()
         }
 
         StoresManager.shared.dispatch(action)
@@ -153,6 +185,11 @@ extension NotificationsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        let note = resultsController.object(at: indexPath)
+        let detailsViewController = NotificationDetailsViewController(note: note)
+
+        navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }
 

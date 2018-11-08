@@ -17,7 +17,7 @@ import Yosemite
 @objc class ZendeskManager: NSObject {
 
     // MARK: - Public Properties
-
+    //
     static let shared = ZendeskManager()
     private var zendeskEnabled = false
     private var unreadNotificationsCount = 0
@@ -32,7 +32,7 @@ import Yosemite
     }
 
     // MARK: - Private Properties
-
+    //
     private override init() {}
     private var sourceTag: WordPressSupportSourceTag?
 
@@ -56,7 +56,7 @@ import Yosemite
     }
 
     // MARK: - Public Methods
-
+    //
     func initialize() {
         guard getZendeskCredentials() == true else {
             return
@@ -160,7 +160,7 @@ import Yosemite
 }
 
 // MARK: - Private Extension
-
+//
 private extension ZendeskManager {
 
     func getZendeskCredentials() -> Bool {
@@ -301,7 +301,7 @@ private extension ZendeskManager {
     }
 
     // MARK: - View
-
+    //
     func showZendeskView(_ zendeskView: UIViewController) {
         guard let presentInController = presentInController else {
             return
@@ -323,7 +323,7 @@ private extension ZendeskManager {
 
 
     // MARK: - User Defaults
-
+    //
     func saveUserProfile() {
         var userProfile = [String: String]()
         userProfile[Constants.profileEmailKey] = userEmail
@@ -345,7 +345,7 @@ private extension ZendeskManager {
 
 
     // MARK: - Data Helpers
-
+    //
     func getDeviceFreeSpace() -> String {
 
         guard let resourceValues = try? URL(fileURLWithPath: "/").resourceValues(forKeys: [.volumeAvailableCapacityKey]),
@@ -451,7 +451,7 @@ private extension ZendeskManager {
 
 
     // MARK: - User Information Prompt
-
+    //
     func promptUserForInformation(withName: Bool, completion: @escaping (Bool) -> Void) {
 
         let alertController = UIAlertController(title: nil,
@@ -567,7 +567,7 @@ private extension ZendeskManager {
     }
 
     // MARK: - Zendesk Notifications
-
+    //
     func observeZendeskNotifications() {
         // Ticket Attachments
         NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
@@ -682,7 +682,7 @@ private extension ZendeskManager {
 }
 
 // MARK: - ZDKHelpCenterConversationsUIDelegate
-
+//
 extension ZendeskManager: ZDKHelpCenterConversationsUIDelegate {
 
     func navBarConversationsUIType() -> ZDKNavBarConversationsUIType {
@@ -702,7 +702,7 @@ extension ZendeskManager: ZDKHelpCenterConversationsUIDelegate {
 }
 
 // MARK: - UITextFieldDelegate
-
+//
 extension ZendeskManager: UITextFieldDelegate {
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {

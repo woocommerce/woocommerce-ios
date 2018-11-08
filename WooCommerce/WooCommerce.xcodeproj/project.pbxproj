@@ -147,6 +147,8 @@
 		B5DBF3C520E148E000B53AED /* DeauthenticatedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3C420E148E000B53AED /* DeauthenticatedState.swift */; };
 		B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3CA20E149CC00B53AED /* AuthenticatedState.swift */; };
 		B5E96B3821137AA100DF68D0 /* OrderStatus+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E96B3721137AA100DF68D0 /* OrderStatus+Woo.swift */; };
+		B5F8B7E02194759100DAB7E2 /* NotificationDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F8B7DF2194759100DAB7E2 /* NotificationDetailsViewController.swift */; };
+		B5F8B7E5219478FA00DAB7E2 /* NotificationDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F8B7E4219478FA00DAB7E2 /* NotificationDetailsViewController.xib */; };
 		B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */; };
 		CE021535215BE3AB00C19555 /* LoginNavigationController+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE021534215BE3AB00C19555 /* LoginNavigationController+Woo.swift */; };
 		CE14452E2188C11700A991D8 /* ZendeskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE14452D2188C11700A991D8 /* ZendeskManager.swift */; };
@@ -381,6 +383,8 @@
 		B5DBF3C420E148E000B53AED /* DeauthenticatedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeauthenticatedState.swift; sourceTree = "<group>"; };
 		B5DBF3CA20E149CC00B53AED /* AuthenticatedState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedState.swift; sourceTree = "<group>"; };
 		B5E96B3721137AA100DF68D0 /* OrderStatus+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+Woo.swift"; sourceTree = "<group>"; };
+		B5F8B7DF2194759100DAB7E2 /* NotificationDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDetailsViewController.swift; sourceTree = "<group>"; };
+		B5F8B7E4219478FA00DAB7E2 /* NotificationDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationDetailsViewController.xib; sourceTree = "<group>"; };
 		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE021534215BE3AB00C19555 /* LoginNavigationController+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginNavigationController+Woo.swift"; sourceTree = "<group>"; };
 		CE14452D2188C11700A991D8 /* ZendeskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZendeskManager.swift; sourceTree = "<group>"; };
@@ -740,6 +744,8 @@
 				B59D1EDD219072B8009D1978 /* Cells */,
 				B59C09DB2188D70200AB41D6 /* Notifications.storyboard */,
 				CE263DE5206ACD220015A693 /* NotificationsViewController.swift */,
+				B5F8B7DF2194759100DAB7E2 /* NotificationDetailsViewController.swift */,
+				B5F8B7E4219478FA00DAB7E2 /* NotificationDetailsViewController.xib */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -1131,6 +1137,7 @@
 				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,
 				CE583A082107849F00D73C1C /* SwitchTableViewCell.xib in Resources */,
 				CE22571B20E16FBC0037F478 /* LeftImageTableViewCell.xib in Resources */,
+				B5F8B7E5219478FA00DAB7E2 /* NotificationDetailsViewController.xib in Resources */,
 				CE22E3FC21714776005A6BEF /* TopLeftImageTableViewCell.xib in Resources */,
 				B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */,
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
@@ -1238,7 +1245,7 @@
 				"$(SRCROOT)/Credentials/replace_secrets.rb",
 				"$(SRCROOT)/Credentials/ApiCredentials.tpl",
 				"$(SRCROOT)/Credentials/InfoPlist.tpl",
-				"~/.woo_app_credentials.json",
+				"~/.mobile-secrets/iOS/WCiOS/woo_app_credentials.json",
 			);
 			outputPaths = (
 				"$(SRCROOT)/DerivedSources/ApiCredentials.swift",
@@ -1399,6 +1406,7 @@
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,
 				CE85FD5A20F7A7640080B73E /* SettingsFooterView.swift in Sources */,
+				B5F8B7E02194759100DAB7E2 /* NotificationDetailsViewController.swift in Sources */,
 				74334F36214AB130006D6AC5 /* ProductTableViewCell.swift in Sources */,
 				CE855364209BA6A700938BDC /* ShowHideSectionFooter.swift in Sources */,
 				7441E1D221503F77004E6ECE /* IntrinsicTableView.swift in Sources */,
@@ -1539,7 +1547,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				SECRETS_PATH = "$HOME/.mobile-secrets/iOS/WCiOS/woo_app_credentials.json";
 				VALID_ARCHS = "$(inherited)";
 			};
 			name = Debug;
@@ -1550,7 +1558,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				SECRETS_PATH = "$HOME/.mobile-secrets/iOS/WCiOS/woo_app_credentials.json";
 				VALID_ARCHS = "$(inherited)";
 			};
 			name = Release;
@@ -1688,7 +1696,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce Development";
-				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				SECRETS_PATH = "$HOME/.mobile-secrets/iOS/WCiOS/woo_app_credentials.json";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -1713,7 +1721,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce App Store";
-				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				SECRETS_PATH = "$HOME/.mobile-secrets/iOS/WCiOS/woo_app_credentials.json";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";

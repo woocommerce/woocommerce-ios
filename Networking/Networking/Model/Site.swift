@@ -21,6 +21,14 @@ public struct Site: Decodable {
     ///
     public let url: String
 
+    /// Short name for site's plan.
+    ///
+    public let plan: String
+
+    /// Indicates if Jetpack is installed.
+    ///
+    public let isJetpackInstalled: Bool
+
     ///  Indicates if there is a WooCommerce Store Active.
     ///
     public let isWooCommerceActive: Bool
@@ -39,19 +47,25 @@ public struct Site: Decodable {
         name = try siteContainer.decode(String.self, forKey: .name)
         description = try siteContainer.decode(String.self, forKey: .description)
         url = try siteContainer.decode(String.self, forKey: .url)
+        isJetpackInstalled = try siteContainer.decode(Bool.self, forKey: .jetpack)
 
         let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
         isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
         isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
+
+        let planContainer = try siteContainer.nestedContainer(keyedBy: PlanKeys.self, forKey: .plan)
+        plan = try planContainer.decode(String.self, forKey: .shortName)
     }
 
     /// Designated Initializer.
     ///
-    public init(siteID: Int, name: String, description: String, url: String, isWooCommerceActive: Bool, isWordPressStore: Bool) {
+    public init(siteID: Int, name: String, description: String, url: String, plan: String, isJetpackInstalled: Bool, isWooCommerceActive: Bool, isWordPressStore: Bool) {
         self.siteID = siteID
         self.name = name
         self.description = description
         self.url = url
+        self.plan = plan
+        self.isJetpackInstalled = isJetpackInstalled
         self.isWordPressStore = isWordPressStore
         self.isWooCommerceActive = isWooCommerceActive
     }
@@ -66,6 +80,8 @@ extension Site: Comparable {
             lhs.name == rhs.name &&
             lhs.description == rhs.description &&
             lhs.url == rhs.url &&
+            lhs.plan == rhs.plan &&
+            lhs.isJetpackInstalled == rhs.isJetpackInstalled &&
             lhs.isWooCommerceActive == rhs.isWooCommerceActive &&
             lhs.isWordPressStore == rhs.isWordPressStore
     }
@@ -87,11 +103,17 @@ private extension Site {
         case name           = "name"
         case description    = "description"
         case url            = "URL"
+        case jetpack        = "jetpack"
         case options        = "options"
+        case plan           = "plan"
     }
 
     enum OptionKeys: String, CodingKey {
         case isWordPressStore = "is_wpcom_store"
         case isWooCommerceActive = "woocommerce_is_active"
+    }
+
+    enum PlanKeys: String, CodingKey {
+        case shortName      = "product_name_short"
     }
 }

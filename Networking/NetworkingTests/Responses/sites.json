@@ -5,6 +5,7 @@
       "name": "Testing Blog",
       "description": "Testing Tagline",
       "URL": "https:\/\/some-testing-url.testing.blog",
+      "jetpack": true,
       "options": {
         "timezone": "",
         "gmt_offset": 0,
@@ -129,6 +130,9 @@
         "is_multi_site": false,
         "file_mod_disabled": false
       },
+      "plan": {
+          "product_name_short": "Free",
+      },
       "updates": {
         "plugins": 3,
         "themes": 1,
@@ -142,6 +146,7 @@
       "name": "Thoughts",
       "description": "Your Favorite Blog",
       "URL": "https:\/\/thoughts.testing.blog",
+      "jetpack": false,
       "options": {
         "timezone": "",
         "gmt_offset": 0,
@@ -213,6 +218,9 @@
         "woocommerce_is_active": false,
         "design_type": null,
         "site_goals": null
+      },
+      "plan": {
+          "product_name_short": "Free",
       }
     }
     ]

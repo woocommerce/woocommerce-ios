@@ -43,18 +43,27 @@ public struct Site: Decodable {
     public init(from decoder: Decoder) throws {
         let siteContainer = try decoder.container(keyedBy: SiteKeys.self)
 
-        siteID = try siteContainer.decode(Int.self, forKey: .siteID)
-        name = try siteContainer.decode(String.self, forKey: .name)
-        description = try siteContainer.decode(String.self, forKey: .description)
-        url = try siteContainer.decode(String.self, forKey: .url)
-        isJetpackInstalled = try siteContainer.decode(Bool.self, forKey: .jetpack)
+        let siteID = try siteContainer.decode(Int.self, forKey: .siteID)
+        let name = try siteContainer.decode(String.self, forKey: .name)
+        let description = try siteContainer.decode(String.self, forKey: .description)
+        let url = try siteContainer.decode(String.self, forKey: .url)
+        let isJetpackInstalled = try siteContainer.decode(Bool.self, forKey: .jetpack)
 
         let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
-        isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
-        isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
+        let isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
+        let isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
 
         let planContainer = try siteContainer.nestedContainer(keyedBy: PlanKeys.self, forKey: .plan)
-        plan = try planContainer.decode(String.self, forKey: .shortName)
+        let plan = try planContainer.decode(String.self, forKey: .shortName)
+
+        self.init(siteID: siteID,
+                  name: name,
+                  description: description,
+                  url: url,
+                  plan: plan,
+                  isJetpackInstalled: isJetpackInstalled,
+                  isWooCommerceActive: isWooCommerceActive,
+                  isWordPressStore: isWordPressStore)
     }
 
     /// Designated Initializer.

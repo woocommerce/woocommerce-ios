@@ -4,8 +4,8 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 
 ## Model 6
 - @thuycopeland 2018-11-8
-    - Added new entity: `isJetpackInstalled`, to encapsulate site properties
-    - Added new entity: `plan`, to encapsulate site properties
+    - Added new attribute: `isJetpackInstalled`, to site entity
+    - Added new attribute: `plan`, to site entity
 
 ## Model 5
 - @bummytime 2018-10-26

@@ -20,7 +20,7 @@ extension NoteDetailsRow {
     /// Returns a collection of NoteDetailsRow(s) that represent a given Notification's Header + Body.
     /// Each one of the returned DetailsRow is meant to be mapped to a single UI component.
     ///
-    func details(from note: Note) -> [NoteDetailsRow] {
+    static func details(from note: Note) -> [NoteDetailsRow] {
         return [
             headerDetailRows(from: note.header),
             commentDetailRows(from: note.body) ?? regularDetailRows(from: note.body)
@@ -30,7 +30,7 @@ extension NoteDetailsRow {
 
     /// Returns an array containing a single NoteDetailsRow, representing a given collection of Header Blocks.
     ///
-    private func headerDetailRows(from blocks: [NoteBlock]) -> [NoteDetailsRow] {
+    private static func headerDetailRows(from blocks: [NoteBlock]) -> [NoteDetailsRow] {
         guard let gravatar = blocks.first(ofKind: .image) else {
             return []
         }
@@ -48,7 +48,7 @@ extension NoteDetailsRow {
     /// A proper Comment Notification is expected to contain the following body blocks: [.comment, .user, Optional(.text)]
     /// Whenever such criteria isn't met, this method returns nil.
     ///
-    private func commentDetailRows(from blocks: [NoteBlock]) -> [NoteDetailsRow]? {
+    private static func commentDetailRows(from blocks: [NoteBlock]) -> [NoteDetailsRow]? {
         guard let comment = blocks.first(ofKind: .comment), let user = blocks.first(ofKind: .user) else {
             return nil
         }
@@ -66,7 +66,7 @@ extension NoteDetailsRow {
     /// Note: You must first call `commentDetailRows`. If such method returns *nil*, then the Body Blocks are assumed *not*
     /// to represent a Comment (in such case: those blocks are expected to be "regular blocks").
     ///
-    private func regularDetailRows(from blocks: [NoteBlock]) -> [NoteDetailsRow] {
+    private static func regularDetailRows(from blocks: [NoteBlock]) -> [NoteDetailsRow] {
         return blocks.compactMap { block -> NoteDetailsRow? in
             switch block.kind {
             case .image:    return .image(image: block)

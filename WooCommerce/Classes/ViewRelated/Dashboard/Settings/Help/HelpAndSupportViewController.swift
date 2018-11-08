@@ -60,14 +60,15 @@ private extension HelpAndSupportViewController {
 
     func configureTableViewFooter() {
         let versionLabel = NSLocalizedString("Version", comment: "App version label")
-        let appVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? String()
+        let appVersion = UserAgent.bundleShortVersion 
         let versionSummary = versionLabel + " " + appVersion
 
         /// `tableView.tableFooterView` can't handle a footerView that uses autolayout only.
         /// Hence the container view with a defined frame.
         let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Constants.footerHeight))
-        let footerView = VersionFooterView.makeFromNib()
-        footerView.footerLabel.text = versionSummary
+        let footerView = TableFooterView.instantiateFromNib() as TableFooterView
+        footerView.footnoteText = versionSummary
+        footerView.footnoteColor = StyleManager.wooGreyMid
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
     }
@@ -220,7 +221,7 @@ extension HelpAndSupportViewController: UITableViewDelegate {
 //
 private struct Constants {
     static let rowHeight = CGFloat(44)
-    static let footerHeight = 90
+    static let footerHeight = 44
 }
 
 private struct Section {

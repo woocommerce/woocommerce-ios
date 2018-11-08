@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import MessageUI
+import Gridicons
 
 
 // MARK: - SettingsViewController
@@ -74,7 +75,11 @@ private extension SettingsViewController {
         // Hence the container view with a defined frame.
         //
         let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Constants.footerHeight))
-        let footerView = SettingsFooterView.makeFromNib()
+        let footerView = TableFooterView.instantiateFromNib() as TableFooterView
+        footerView.iconImage = Gridicon.iconOfType(.heartOutline)
+        footerView.iconColor = StyleManager.wooGreyMid
+        footerView.footnoteText = NSLocalizedString("Made with love by Automattic", comment: "Tagline after the heart icon, displayed to the user")
+        footerView.footnoteColor = StyleManager.wooGreyMid
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
     }

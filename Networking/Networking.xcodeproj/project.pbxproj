@@ -47,6 +47,7 @@
 		74A1D26F21189EA100931DFA /* SiteVisitStatsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A1D26E21189EA000931DFA /* SiteVisitStatsRemote.swift */; };
 		74A7B4BC217A807400E85A8B /* SiteSettingsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7B4BB217A807400E85A8B /* SiteSettingsMapperTests.swift */; };
 		74A7B4BE217A841400E85A8B /* broken-settings-general.json in Resources */ = {isa = PBXBuildFile; fileRef = 74A7B4BD217A841400E85A8B /* broken-settings-general.json */; };
+		74AB0ACA21948CE4008220CD /* CommentResultMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AB0AC921948CE4008220CD /* CommentResultMapperTests.swift */; };
 		74ABA1C5213F17AA00FFAD30 /* top-performers-day.json in Resources */ = {isa = PBXBuildFile; fileRef = 74ABA1C4213F17AA00FFAD30 /* top-performers-day.json */; };
 		74ABA1C9213F19FE00FFAD30 /* top-performers-month.json in Resources */ = {isa = PBXBuildFile; fileRef = 74ABA1C6213F19FD00FFAD30 /* top-performers-month.json */; };
 		74ABA1CA213F19FE00FFAD30 /* top-performers-year.json in Resources */ = {isa = PBXBuildFile; fileRef = 74ABA1C7213F19FE00FFAD30 /* top-performers-year.json */; };
@@ -196,6 +197,7 @@
 		74A1D26E21189EA000931DFA /* SiteVisitStatsRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsRemote.swift; sourceTree = "<group>"; };
 		74A7B4BB217A807400E85A8B /* SiteSettingsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteSettingsMapperTests.swift; sourceTree = "<group>"; };
 		74A7B4BD217A841400E85A8B /* broken-settings-general.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "broken-settings-general.json"; sourceTree = "<group>"; };
+		74AB0AC921948CE4008220CD /* CommentResultMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentResultMapperTests.swift; sourceTree = "<group>"; };
 		74ABA1C4213F17AA00FFAD30 /* top-performers-day.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "top-performers-day.json"; sourceTree = "<group>"; };
 		74ABA1C6213F19FD00FFAD30 /* top-performers-month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "top-performers-month.json"; sourceTree = "<group>"; };
 		74ABA1C7213F19FE00FFAD30 /* top-performers-year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "top-performers-year.json"; sourceTree = "<group>"; };
@@ -627,6 +629,7 @@
 			isa = PBXGroup;
 			children = (
 				B505F6D220BEE3A500BB1B69 /* AccountMapperTests.swift */,
+				74AB0AC921948CE4008220CD /* CommentResultMapperTests.swift */,
 				B554FA922180C17200C54DFF /* NoteHashListMapperTests.swift */,
 				B5C151BF217EE3FB00C7BDC1 /* NoteListMapperTests.swift */,
 				B5C6FCCC20A34B8300A4F8E4 /* OrderListMapperTests.swift */,
@@ -943,6 +946,7 @@
 				74D5BECE217E0F98007B0348 /* SiteSettingsRemoteTests.swift in Sources */,
 				74A7B4BC217A807400E85A8B /* SiteSettingsMapperTests.swift in Sources */,
 				74AE244D2113704C00CA8C54 /* OrderStatsRemoteTests.swift in Sources */,
+				74AB0ACA21948CE4008220CD /* CommentResultMapperTests.swift in Sources */,
 				B505F6D320BEE3A500BB1B69 /* AccountMapperTests.swift in Sources */,
 				B5C6FCC820A32E4800A4F8E4 /* DateFormatterWooTests.swift in Sources */,
 				74C8F06A20EEBC8C00B6EDC9 /* OrderMapperTests.swift in Sources */,

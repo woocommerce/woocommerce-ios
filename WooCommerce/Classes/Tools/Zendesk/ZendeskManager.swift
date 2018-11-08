@@ -388,28 +388,32 @@ private extension ZendeskManager {
 
     func getTags() -> [String] {
 
-        // Future tags tk:
-        //Constants.wpComTag,    // wp.com
-        //Constants.jetpackTag,  // jetpack
-        //site.planTitle         // site plan
-
-        /// Start with default tags
+        /// Start with default tags.
         ///
         var tags = [Constants.wooMobileTag, Constants.platformTag]
 
-        /// Determine if the account is a wp.com account. No tag if self-hosted.
+        /// Determine if the account is a wp.com account.
+        /// No tag if self-hosted.
         ///
+        let site = StoresManager.shared.sessionManager.defaultSite
+        if site?.isWordPressStore == true {
+            tags.append(Constants.wpComTag)
+        }
 
-
-        /// Determine if the account has jetpack installed
+        /// Determine if the account has jetpack installed.
         ///
+        if site?.isJetpackInstalled == true {
+            tags.append(Constants.jetpackTag)
+        }
 
-
-        /// Add the site plan
+        /// Add the site plan.
         ///
+        if let plan = site?.plan {
+            tags.append(plan)
+        }
 
-
-        // Add sourceTag
+        /// Add source tag.
+        ///
         if let sourceTagOrigin = sourceTag?.origin {
             tags.append(sourceTagOrigin)
         }

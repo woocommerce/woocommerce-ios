@@ -21,7 +21,7 @@ class NotificationDetailsViewController: UIViewController {
     ///
     private var note: Note! {
         didSet {
-            rebuildDetailRows(from: note)
+            buildDetailsRows()
         }
     }
 
@@ -54,15 +54,8 @@ class NotificationDetailsViewController: UIViewController {
         configureNavigationItem()
         configureMainView()
         configureEntityListener()
-    }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-
-/// Header:     [.header]
-/// Comment:    [OLD Comment Cell + Text + Actions]
-/// Regular:    [.image, .text, .user]
+        buildDetailsRows()
     }
 }
 
@@ -90,7 +83,7 @@ private extension NotificationDetailsViewController {
     ///
     func configureEntityListener() {
         entityListener.onUpsert = { [weak self] note in
-            self?.rebuildDetailRows(from: note)
+            self?.note = note
         }
 
         entityListener.onDelete = { [weak self] in
@@ -111,7 +104,7 @@ private extension NotificationDetailsViewController {
 
     /// Reloads all of the Notification Detail Rows!
     ///
-    func rebuildDetailRows(from note: Note) {
+    func buildDetailsRows() {
         rows = NoteDetailsRow.details(from: note)
         tableView.reloadData()
     }
@@ -126,4 +119,32 @@ private extension NotificationDetailsViewController {
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
+}
+
+
+// MARK: UITableViewDataSource Conformance
+//
+extension NotificationDetailsViewController: UITableViewDataSource {
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return rows.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
+/// TODO:
+///     Header:     [.header]
+///     Comment:    [OLD Comment Cell + Text + Actions]
+///     Regular:    [.image, .text, .user]
+
+        return UITableViewCell(style: .default, reuseIdentifier: "")
+    }
+}
+
+
+
+// MARK: UITableViewDelegate Conformance
+//
+extension NotificationDetailsViewController: UITableViewDelegate {
+
 }

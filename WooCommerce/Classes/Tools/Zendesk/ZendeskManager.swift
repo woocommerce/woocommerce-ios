@@ -390,7 +390,7 @@ private extension ZendeskManager {
 
         /// Start with default tags.
         ///
-        var tags = [Constants.wooMobileTag, Constants.platformTag]
+        var tags = [Constants.platformTag]
 
         /// Determine if the account is a wp.com account.
         /// No tag if self-hosted.
@@ -643,7 +643,6 @@ private extension ZendeskManager {
         static let blogSeperator = "\n----------\n"
         static let jetpackTag = "jetpack"
         static let wpComTag = "wpcom"
-        static let wooMobileTag = "woo_-_ios"
         static let networkWiFi = "WiFi"
         static let networkWWAN = "Mobile"
         static let networkTypeLabel = "Network Type:"
@@ -653,7 +652,7 @@ private extension ZendeskManager {
         static let profileEmailKey = "email"
         static let profileNameKey = "name"
         static let nameFieldCharacterLimit = 50
-        static let sourcePlatform = "mobile_-_ios"
+        static let sourcePlatform = "woo_-_ios"
     }
 
     // Zendesk expects these as NSNumber. However, they are defined as UInt64 to satisfy 32-bit devices (ex: iPhone 5).

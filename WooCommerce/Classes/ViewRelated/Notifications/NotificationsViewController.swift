@@ -45,6 +45,7 @@ class NotificationsViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = StyleManager.tableViewBackgroundColor
 
+        configureNavigationItem()
         configureTableView()
         configureTableViewCells()
         configureResultsController()
@@ -67,6 +68,13 @@ private extension NotificationsViewController {
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Notifications", comment: "Notifications tab title")
         tabBarItem.image = Gridicon.iconOfType(.statsAlt)
+    }
+
+    /// Setup: Navigation
+    ///
+    func configureNavigationItem() {
+        // Don't show the Settings title in the next-view's back button
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
     /// Setup: TableView
@@ -153,6 +161,11 @@ extension NotificationsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        let note = resultsController.object(at: indexPath)
+        let detailsViewController = NotificationDetailsViewController(note: note)
+
+        navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }
 

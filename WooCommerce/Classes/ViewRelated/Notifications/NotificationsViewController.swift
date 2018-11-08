@@ -75,7 +75,7 @@ private extension NotificationsViewController {
     ///
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Notifications", comment: "Notifications tab title")
-        tabBarItem.image = Gridicon.iconOfType(.statsAlt)
+        tabBarItem.image = Gridicon.iconOfType(.bell)
     }
 
     /// Setup: Navigation
@@ -203,6 +203,7 @@ private extension NotificationsViewController {
     func configure(_ cell: NoteTableViewCell, at indexPath: IndexPath) {
         let note = resultsController.object(at: indexPath)
 
+        cell.read = note.read
         cell.noticon = note.noticon
         cell.attributedSubject = renderSubject(note: note)
         cell.attributedSnippet = renderSnippet(note: note)

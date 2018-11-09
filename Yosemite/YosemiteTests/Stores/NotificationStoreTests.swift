@@ -89,6 +89,36 @@ class NotificationStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `NotificationAction.synchronizeNotifications` will only request the notifications that aren't locally
+    /// stored, and are up to date.
+    ///
+    func testSynchronizeNotificationsRequestsOnlyOutdatedNotes() {
+        let expectation = self.expectation(description: "Sync notifications")
+        let notificationStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
+
+        /// Secondary Sync:
+        /// This call is expected to just request the Hashes, and not to perform a 4th network call (because everything
+        /// will be up to date. Supposedly.)
+        ///
+        let nestedSyncAction = NotificationAction.synchronizeNotifications() { (error) in
+            XCTAssertEqual(self.network.requestsForResponseData.count, 3)
+            expectation.fulfill()
+        }
+
+        /// Initial Sync
+        ///
+        let initialSyncAction = NotificationAction.synchronizeNotifications() { (error) in
+
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 40)
+            notificationStore.onAction(nestedSyncAction)
+        }
+
+        notificationStore.onAction(initialSyncAction)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 
     // MARK: - NotificationAction.updateLastSeen
 

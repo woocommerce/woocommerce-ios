@@ -7,6 +7,10 @@ import Storage
 //
 public class NotificationStore: Store {
 
+    /// Thread Safety
+    ///
+    private static let lock = NSLock()
+
     /// Shared private StorageType for use during then entire notification sync process
     ///
     private static var privateStorage: StorageType!
@@ -167,9 +171,12 @@ extension NotificationStore {
     /// derived StorageType, given a specified StorageManagerType.
     ///
     static func sharedDerivedStorage(with manager: StorageManagerType) -> StorageType {
+        lock.lock()
         if privateStorage == nil {
             privateStorage = manager.newDerivedStorage()
         }
+        lock.unlock()
+
         return privateStorage
     }
 

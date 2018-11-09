@@ -53,6 +53,7 @@ class NotificationDetailsViewController: UIViewController {
 
         configureNavigationItem()
         configureMainView()
+        configureTableView()
         configureEntityListener()
 
         registerTableViewCells()
@@ -78,6 +79,13 @@ private extension NotificationDetailsViewController {
     ///
     func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
+    }
+
+    /// Setup: TableView
+    ///
+    func configureTableView() {
+        // Hide "Empty Rows"
+        tableView.tableFooterView = UIView()
     }
 
     /// Setup: EntityListener
@@ -185,10 +193,12 @@ private extension NotificationDetailsViewController {
     ///
     func setupHeaderCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
         guard let headerCell = cell as? NoteDetailsHeaderTableViewCell,
-            case let .header(gravatarBlock, snippetBlock) = row else {
+            case let .header(gravatarBlock, _) = row else {
                 return
         }
 
+        let formatter = StringFormatter()
+        headerCell.textLabel?.attributedText = formatter.format(block: gravatarBlock, with: .header)
     }
 
 
@@ -196,9 +206,17 @@ private extension NotificationDetailsViewController {
     ///
     func setupCommentCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
         guard let commentCell = cell as? NoteDetailsCommentTableViewCell,
-            case let .comment(commentBlock, userBlock, footerBlock) = row else {
+            case let .comment(commentBlock, userBlock, _) = row else {
                 return
         }
 
+        let formatter = StringFormatter()
+        commentCell.titleText = userBlock.text
+        commentCell.detailsText = note.timestampAsDate.mediumString()
+        commentCell.commentAttributedText = formatter.format(block: commentBlock, with: .body)
+
+        // Download the Gravatar
+        let gravatarURL = userBlock.media.first?.url
+        commentCell.downloadGravatar(with: gravatarURL)
     }
 }

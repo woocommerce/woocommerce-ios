@@ -13,7 +13,7 @@ class HelpAndSupportViewController: UIViewController {
     ///
     private var sections = [Section]()
 
-    /// Main Account's email
+    /// User's preferred email for support messages
     ///
     private var accountEmail: String {
         return StoresManager.shared.sessionManager.defaultAccount?.email ?? NSLocalizedString("Set email", comment: "Tells user to set an email that support can use for replies")
@@ -150,20 +150,35 @@ private extension HelpAndSupportViewController {
 //
 private extension HelpAndSupportViewController {
 
+    /// Browse our FAQ action
+    ///
     func browseFaqWasPressed() {
-
+        ZendeskManager.shared.showHelpCenterIfPossible(from: self)
     }
 
+    /// Contact Support action
+    ///
     func contactSupportWasPressed() {
-
+        ZendeskManager.shared.showNewRequestIfPossible(from: self)
     }
 
+    /// My Tickets action
+    ///
     func myTicketsWasPressed() {
-
+        ZendeskManager.shared.showTicketListIfPossible(from: self)
     }
 
+    /// User's contact email action
+    ///
     func contactEmailWasPressed() {
-
+        ZendeskManager.shared.showSupportEmailPrompt(from: self) { success in
+            guard success else {
+                return
+            }
+            // Tracking when the dialog's "OK" button is pressed, not necessarily if the value changed.
+            WooAnalytics.shared.track(.supportIdentitySet)
+            self.tableView.reloadData()
+        }
     }
 }
 

@@ -53,7 +53,7 @@ private extension CommentStore {
     /// Updates the comment's trash status
     ///
     func updateTrashStatus(siteID: Int, commentID: Int, isTrash: Bool, onCompletion: @escaping (CommentStatus?, Error?) -> Void) {
-        let newStatus = isTrash ? CommentStatus.trash : CommentStatus.unspam
+        let newStatus = isTrash ? CommentStatus.trash : CommentStatus.untrash
         moderateComment(siteID: siteID, commentID: commentID, status: newStatus, onCompletion: onCompletion)
     }
 

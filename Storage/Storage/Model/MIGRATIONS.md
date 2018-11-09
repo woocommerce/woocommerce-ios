@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 6
+- @thuycopeland 2018-11-8
+    - Added new attribute: `isJetpackInstalled`, to site entity
+    - Added new attribute: `plan`, to site entity
+
 ## Model 5
 - @bummytime 2018-10-26
     - Added new entity: `Note`, to encapsulate all things notifications

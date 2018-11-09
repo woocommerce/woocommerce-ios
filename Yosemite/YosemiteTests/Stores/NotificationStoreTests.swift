@@ -49,11 +49,11 @@ class NotificationStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
         let action = NotificationAction.synchronizeNotifications() { (error) in
             XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 2)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 40)
 
-            if let note = self.viewStorage.loadNotification(noteID: 99998888, noteHash: 987654)?.toReadOnly() {
+            if let note = self.viewStorage.loadNotification(noteID: 100036, noteHash: 987654)?.toReadOnly() {
                 // Plain Fields
-                XCTAssertEqual(note.noteId, 99998888)
+                XCTAssertEqual(note.noteId, 100036)
                 XCTAssertEqual(note.hash, 987654)
                 XCTAssertEqual(note.read, false)
                 XCTAssertEqual(note.icon,"https://s.wp.com/wp-content/mu-plugins/achievements/likeable-blog-5-2x.png")

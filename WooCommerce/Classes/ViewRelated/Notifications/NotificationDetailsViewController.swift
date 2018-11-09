@@ -104,7 +104,7 @@ private extension NotificationDetailsViewController {
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
-        let cells = [NoteDetailsHeaderTableViewCell.self, NoteDetailsCommentTableViewCell.self, BasicTableViewCell.self]
+        let cells = [NoteDetailsHeaderTableViewCell.self, NoteDetailsCommentTableViewCell.self]
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
@@ -182,9 +182,6 @@ private extension NotificationDetailsViewController {
             setupHeaderCell(cell, at: row)
         case .comment:
             setupCommentCell(cell, at: row)
-        default:
-            DDLogError("Unsupported NotificationDetails Row!!")
-            break
         }
     }
 

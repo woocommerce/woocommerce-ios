@@ -7,9 +7,12 @@ import Yosemite
 enum NoteDetailsRow {
     case header(gravatar: NoteBlock, snippet: NoteBlock?)
     case comment(comment: NoteBlock, user: NoteBlock, footer: NoteBlock?)
-    case image(image: NoteBlock)
-    case text(text: NoteBlock)
-    case user(user: NoteBlock)
+
+// Note: As of Mark 1, we only support Comment Rows. Uncomment when the time comes!
+//
+//    case image(image: NoteBlock)
+//    case text(text: NoteBlock)
+//    case user(user: NoteBlock)
 }
 
 
@@ -25,9 +28,6 @@ extension NoteDetailsRow {
             return NoteDetailsHeaderTableViewCell.reuseIdentifier
         case .comment:
             return NoteDetailsCommentTableViewCell.reuseIdentifier
-        default:
-            // Not supported (YET!)
-            return BasicTableViewCell.reuseIdentifier
         }
     }
 }
@@ -87,17 +87,21 @@ extension NoteDetailsRow {
     /// to represent a Comment (in such case: those blocks are expected to be "regular blocks").
     ///
     private static func regularDetailRows(from blocks: [NoteBlock]) -> [NoteDetailsRow] {
-        return blocks.compactMap { block -> NoteDetailsRow? in
-            switch block.kind {
-            case .image:
-                return .image(image: block)
-            case .text:
-                return .text(text: block)
-            case .user:
-                return .user(user: block)
-            default:
-                return nil
-            }
-        }
+        return []
+
+// Note: As of Mark 1, we only support Comment Rows. Uncomment when the time comes!
+//
+//        return blocks.compactMap { block -> NoteDetailsRow? in
+//            switch block.kind {
+//            case .image:
+//                return .image(image: block)
+//            case .text:
+//                return .text(text: block)
+//            case .user:
+//                return .user(user: block)
+//            default:
+//                return nil
+//            }
+//        }
     }
 }

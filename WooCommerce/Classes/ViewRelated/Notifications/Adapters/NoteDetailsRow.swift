@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 
-// MARK: - NoteDetailsRow
+// MARK: - NoteDetailsRow: Map to different UITableView Cells.
 //
 enum NoteDetailsRow {
     case header(gravatar: NoteBlock, snippet: NoteBlock?)
@@ -14,6 +14,26 @@ enum NoteDetailsRow {
 
 
 // MARK: - Helpers
+//
+extension NoteDetailsRow {
+
+    /// Returns the UITableView reuseIdentifier.
+    ///
+    var reuseIdentifier: String {
+        switch self {
+        case .header:
+            return NoteDetailsHeaderTableViewCell.reuseIdentifier
+        case .comment:
+            return NoteDetailsCommentTableViewCell.reuseIdentifier
+        default:
+            // Not supported (YET!)
+            return BasicTableViewCell.reuseIdentifier
+        }
+    }
+}
+
+
+// MARK: - Builders
 //
 extension NoteDetailsRow {
 
@@ -35,7 +55,7 @@ extension NoteDetailsRow {
             return []
         }
 
-        // Note: Snippet is actually optional!
+        // Note: Snippet Block is actually optional!
         return [
             .header(gravatar: gravatar, snippet: blocks.first(ofKind: .text))
         ]
@@ -53,7 +73,7 @@ extension NoteDetailsRow {
             return nil
         }
 
-        // Note: Footer is actually optional!
+        // Note: Footer Block is actually optional!
         return [
             .comment(comment: comment, user: user, footer: blocks.first(ofKind: .text))
         ]
@@ -69,10 +89,14 @@ extension NoteDetailsRow {
     private static func regularDetailRows(from blocks: [NoteBlock]) -> [NoteDetailsRow] {
         return blocks.compactMap { block -> NoteDetailsRow? in
             switch block.kind {
-            case .image:    return .image(image: block)
-            case .text:     return .text(text: block)
-            case .user:     return .user(user: block)
-            case .comment:  return nil
+            case .image:
+                return .image(image: block)
+            case .text:
+                return .text(text: block)
+            case .user:
+                return .user(user: block)
+            default:
+                return nil
             }
         }
     }

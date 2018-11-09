@@ -13,7 +13,7 @@ public class NotificationsRemote: Remote {
     ///     - pageSize: Number of hashes to retrieve.
     ///     - completion: callback to be executed on completion.
     ///
-    public func loadNotes(noteIds: [String]? = nil, pageSize: Int? = nil, completion: @escaping ([Note]?, Error?) -> Void) {
+    public func loadNotes(noteIds: [Int64]? = nil, pageSize: Int? = nil, completion: @escaping ([Note]?, Error?) -> Void) {
         let request = requestForNotifications(fields: .all, noteIds: noteIds, pageSize: pageSize)
         let mapper = NoteListMapper()
 
@@ -28,7 +28,7 @@ public class NotificationsRemote: Remote {
     ///     - pageSize: Number of hashes to retrieve.
     ///     - completion: callback to be executed on completion.
     ///
-    public func loadHashes(noteIds: [String]? = nil, pageSize: Int? = nil, completion: @escaping ([NoteHash]?, Error?) -> Void) {
+    public func loadHashes(noteIds: [Int64]? = nil, pageSize: Int? = nil, completion: @escaping ([NoteHash]?, Error?) -> Void) {
         let request = requestForNotifications(fields: .hashes, noteIds: noteIds, pageSize: pageSize)
         let mapper = NoteHashListMapper()
 
@@ -106,14 +106,15 @@ private extension NotificationsRemote {
     ///     - pageSize: Number of notifications to load.
     ///     - completion: Callback to be executed on completion.
     ///
-    func requestForNotifications(fields: Fields? = nil, noteIds: [String]? = nil, pageSize: Int?) -> DotcomRequest {
+    func requestForNotifications(fields: Fields? = nil, noteIds: [Int64]? = nil, pageSize: Int?) -> DotcomRequest {
         var parameters = [String: String]()
         if let fields = fields {
             parameters[ParameterKeys.fields] = fields.rawValue
         }
 
         if let notificationIds = noteIds {
-            parameters[ParameterKeys.identifiers] = notificationIds.joined(separator: ",")
+            let identifiersAsStrings = notificationIds.map { String($0) }
+            parameters[ParameterKeys.identifiers] = identifiersAsStrings.joined(separator: ",")
         }
 
         if let pageSize = pageSize {

@@ -73,6 +73,9 @@
 /* Billing title for customer info cell */
 "Billing details" = "Billing details";
 
+/* Browse our FAQ title */
+"Browse our FAQ" = "Browse our FAQ";
+
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "By signing up, you agree to our _Terms of Service_.";
 
@@ -83,7 +86,8 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label */
+   Cancel button label
+   Cancel prompt for user information. */
 "Cancel" = "Cancel";
 
 /* Cancelled Order Status */
@@ -94,6 +98,9 @@
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Certificate error";
+
+/* Settings > Privacy Settings > collect info section. Label the `Collect information` toggle. */
+"Collect information" = "Collect information";
 
 /* Completed Order Status */
 "Completed" = "Completed";
@@ -118,6 +125,12 @@
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Connecting to WordPress.com";
+
+/* Contact Email title */
+"Contact Email" = "Contact Email";
+
+/* Contact Support title */
+"Contact Support" = "Contact Support";
 
 /* No comment provided by engineer. */
 "Continue" = "Continue";
@@ -167,7 +180,6 @@
 "Discount" = "Discount";
 
 /* Add a note screen - button title for closing the view
-   Dismiss Alert Action
    Dismiss the action sheet */
 "Dismiss" = "Dismiss";
 
@@ -179,6 +191,9 @@
 
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Double tap to toggle setting.";
+
+/* Email address text field placeholder */
+"Email" = "Email";
 
 /* Placeholder for a textfield. The user may enter their email address. */
 "Email address" = "Email address";
@@ -235,23 +250,33 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Gain insights into how products are performing on your store";
 
+/* Subtitle for Browse our FAQ */
+"Get answers to questions you have" = "Get answers to questions you have";
+
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Getting account information";
 
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google sign up failed.";
 
-/* Help button */
+/* Help and Support navigation title
+   Help button */
 "Help" = "Help";
 
 /* Contact Support Action */
 "Help & Support" = "Help & Support";
+
+/* My Store > Settings > Privacy settings section */
+"HELP IMPROVE THE APP" = "HELP IMPROVE THE APP";
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "Hide billing";
 
 /* Error message shown a URL does not point to an existing site. */
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again.";
+
+/* My Store > Settings > Help & Support section title */
+"HOW CAN WE HELP?" = "HOW CAN WE HELP?";
 
 /* Detail label for yes/no switch. */
 "If disabled will add the note as private." = "If disabled will add the note as private.";
@@ -291,6 +316,9 @@
 
 /* Later today */
 "later today" = "later today";
+
+/* Settings > Privacy Settings. A text link to the cookie policy. */
+"Learn more" = "Learn more";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support.";
@@ -356,9 +384,14 @@
 /* Plural of 'month' — a statistical unit */
 "Months" = "Months";
 
-/* Dashboard navigation title
-   My store tab title */
+/* Dashboard navigation title */
 "My store" = "My store";
+
+/* My Tickets title */
+"My Tickets" = "My Tickets";
+
+/* Name text field placeholder */
+"Name" = "Name";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "Navigates to Settings.";
@@ -397,24 +430,22 @@
 /* Notifications tab title */
 "Notifications" = "Notifications";
 
-/* Notifications Unavailable Placeholder */
-"Notifications aren't ready yet, but\n coming in a future release. Stay tuned!" = "Notifications aren't ready yet, but\n coming in a future release. Stay tuned!";
-
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "Off";
 
 /* Button title. An acknowledgement of the message displayed in a prompt.
    Dismisses the alert
-   Ok button for dismissing alert helping users understand their site address */
+   Ok button for dismissing alert helping users understand their site address
+   Submit button on prompt for user information. */
 "OK" = "OK";
 
-/* Notifications +2 Days Section Header */
+/* +2 Days Section Header */
 "Older than 2 days" = "Older than 2 days";
 
-/* Notifications Months Section Header */
+/* Months Section Header */
 "Older than a Month" = "Older than a Month";
 
-/* Notifications Weeks Section Header */
+/* Weeks Section Header */
 "Older than a Week" = "Older than a Week";
 
 /* Spoken label to indicate switch control is turned on */
@@ -440,9 +471,8 @@
 "Order Notes" = "Order Notes";
 
 /* Orders Notice Title
-   Orders tab title
-   Orders title
-   Orders Title */
+   Orders Title
+   Orders title */
 "Orders" = "Orders";
 
 /* Orders Title */
@@ -470,9 +500,6 @@
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "Please check your email";
 
-/* Alert message to confirm a user meant to log out. */
-"Please contact us via email:\n %@" = "Please contact us via email:\n %@";
-
 /* No comment provided by engineer. */
 "Please enter a site address." = "Please enter a site address.";
 
@@ -485,6 +512,9 @@
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Please enter your credentials";
 
+/* Instructions for alert asking for email. */
+"Please enter your email address." = "Please enter your email address.";
+
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "Please fill out all the fields";
 
@@ -493,6 +523,12 @@
 
 /* My Store > Settings > Primary Store information section */
 "PRIMARY STORE" = "PRIMARY STORE";
+
+/* Navigates to Privacy Settings screen */
+"Privacy Settings" = "Privacy Settings";
+
+/* Privacy settings screen title */
+"Privacy settings" = "Privacy settings";
 
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
@@ -522,6 +558,12 @@
 /* Quantity abbreviation for section title */
 "QTY" = "QTY";
 
+/* Subtitle for Contact Support */
+"Reach our happiness engineers who can help answer tough questions" = "Reach our happiness engineers who can help answer tough questions";
+
+/* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
+"Read privacy policy" = "Read privacy policy";
+
 /* Refunded Order Status */
 "Refunded" = "Refunded";
 
@@ -530,6 +572,9 @@
 
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "Remove Filters";
+
+/* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
+"Report crashes" = "Report crashes";
 
 /* Retry Action */
 "Retry" = "Retry";
@@ -540,9 +585,15 @@
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "Send Link";
 
+/* Tells user to set an email that support can use for replies */
+"Set email" = "Set email";
+
 /* Accessibility label for the Settings button.
    Settings navigation title */
 "Settings" = "Settings";
+
+/* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
+"Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Share information with our analytics tool about your use of services while logged in to your WordPress.com account.";
 
 /* Action: Opens the Store in a browser */
 "Share your Store" = "Share your Store";
@@ -709,6 +760,9 @@
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "This email address is not registered on WordPress.com.";
 
+/* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
+"This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.";
+
 /* Top Performers section title - this month */
 "This Month" = "This Month";
 
@@ -718,13 +772,19 @@
 /* Top Performers section title - this year */
 "This Year" = "This Year";
 
+/* Instructions for alert asking for email and name. */
+"To continue please enter your email address and name." = "To continue please enter your email address and name.";
+
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "To create your new WordPress.com account, please enter your email address.";
+
+/* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
+"To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.";
 
 /* No comment provided by engineer. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once.";
 
-/* Notifications Today Section Header
+/* Today Section Header
    Top Performers section title - today */
 "Today" = "Today";
 
@@ -801,6 +861,12 @@
 /* two factor code placeholder */
 "Verification code" = "Verification code";
 
+/* App version label */
+"Version" = "Version";
+
+/* subtitle for My Tickets */
+"View previously submitted support tickets" = "View previously submitted support tickets";
+
 /* User role badge */
 "Viewer" = "Viewer";
 
@@ -815,6 +881,9 @@
 
 /* Instructional text on how to open the email containing a magic link. */
 "We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up.";
+
+/* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
+"We use other tracking tools, including some from third parties. Read about these and how to control them." = "We use other tracking tools, including some from third parties. Read about these and how to control them.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "We were unable to send you an email at this time. Please try again later.";
@@ -843,8 +912,8 @@
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!";
 
-/* Support Email's Title */
-"WooCommerce iOS %@ support" = "WooCommerce iOS %@ support";
+/* Subject of new Zendesk ticket. */
+"WooCommerce for iOS Support" = "WooCommerce for iOS Support";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@";
@@ -858,7 +927,7 @@
 /* Plural of 'year' — a statistical unit */
 "Years" = "Years";
 
-/* Notifications Yesterday Section Header */
+/* Yesterday Section Header */
 "Yesterday" = "Yesterday";
 
 /* No comment provided by engineer. */

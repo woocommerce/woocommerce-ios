@@ -55,6 +55,7 @@ class NotificationDetailsViewController: UIViewController {
         configureMainView()
         configureEntityListener()
 
+        registerTableViewCells()
         buildDetailsRows()
     }
 }
@@ -87,12 +88,18 @@ private extension NotificationDetailsViewController {
         }
 
         entityListener.onDelete = { [weak self] in
-            guard let `self` = self else {
-                return
-            }
+            self?.navigationController?.popViewController(animated: true)
+            self?.displayNoteDeletedNotice()
+        }
+    }
 
-            self.navigationController?.popViewController(animated: true)
-            self.displayNoteDeletedNotice()
+    /// Registers all of the available TableViewCells.
+    ///
+    func registerTableViewCells() {
+        let cells = [NoteDetailsHeaderTableViewCell.self, NoteDetailsCommentTableViewCell.self, BasicTableViewCell.self]
+
+        for cell in cells {
+            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
     }
 }
@@ -119,6 +126,13 @@ private extension NotificationDetailsViewController {
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
+
+
+    /// Returns the DetailsRow at a given IndexPath.
+    ///
+    func detailsForRow(at indexPath: IndexPath) -> NoteDetailsRow {
+        return rows[indexPath.row]
+    }
 }
 
 
@@ -131,20 +145,60 @@ extension NotificationDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = detailsForRow(at: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
 
-/// TODO:
-///     Header:     [.header]
-///     Comment:    [OLD Comment Cell + Text + Actions]
-///     Regular:    [.image, .text, .user]
+        setup(cell: cell, at: row)
 
-        return UITableViewCell(style: .default, reuseIdentifier: "")
+        return cell
     }
 }
-
 
 
 // MARK: UITableViewDelegate Conformance
 //
 extension NotificationDetailsViewController: UITableViewDelegate {
 
+}
+
+
+// MARK: - Cell Setup
+//
+private extension NotificationDetailsViewController {
+
+    /// Main Cell Setup Method
+    ///
+    func setup(cell: UITableViewCell, at row: NoteDetailsRow) {
+        switch row {
+        case .header:
+            setupHeaderCell(cell, at: row)
+        case .comment:
+            setupCommentCell(cell, at: row)
+        default:
+            DDLogError("Unsupported NotificationDetails Row!!")
+            break
+        }
+    }
+
+
+    /// Setup: Header Cell
+    ///
+    func setupHeaderCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
+        guard let headerCell = cell as? NoteDetailsHeaderTableViewCell,
+            case let .header(gravatarBlock, snippetBlock) = row else {
+                return
+        }
+
+    }
+
+
+    /// Setup: Comment Cell
+    ///
+    func setupCommentCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
+        guard let commentCell = cell as? NoteDetailsCommentTableViewCell,
+            case let .comment(commentBlock, userBlock, footerBlock) = row else {
+                return
+        }
+
+    }
 }

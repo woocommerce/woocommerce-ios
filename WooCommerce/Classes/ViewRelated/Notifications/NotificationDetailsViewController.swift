@@ -86,6 +86,7 @@ private extension NotificationDetailsViewController {
     func configureTableView() {
         // Hide "Empty Rows"
         tableView.tableFooterView = UIView()
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Setup: EntityListener

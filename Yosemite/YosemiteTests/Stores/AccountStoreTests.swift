@@ -290,6 +290,8 @@ private extension AccountStoreTests {
                     name: "Awesome Test Site",
                     description: "Best description ever!",
                     url: "automattic.com",
+                    plan: "Free",
+                    isJetpackInstalled: true,
                     isWooCommerceActive: true,
                     isWordPressStore: false)
     }

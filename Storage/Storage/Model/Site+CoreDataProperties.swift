@@ -11,6 +11,8 @@ extension Site {
     @NSManaged public var name: String?
     @NSManaged public var tagline: String?
     @NSManaged public var url: String?
+    @NSManaged public var plan: String?
+    @NSManaged public var isJetpackInstalled: NSNumber?
     @NSManaged public var isWooCommerceActive: NSNumber?
     @NSManaged public var isWordPressStore: NSNumber?
 }

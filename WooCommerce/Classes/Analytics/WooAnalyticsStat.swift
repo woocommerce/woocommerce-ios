@@ -90,6 +90,10 @@ public enum WooAnalyticsStat: String {
     case supportTicketUserViewed                = "support_ticket_user_viewed"
     case supportTicketViewFailed                = "support_ticket_view_failed"
     case supportHelpCenterUserSearched          = "support_help_center_user_searched"
+    case supportIdentityFormViewed              = "support_identity_form_viewed"
+    case supportIdentitySet                     = "support_identity_set"
+
+
 
     // Settings View Events
     //

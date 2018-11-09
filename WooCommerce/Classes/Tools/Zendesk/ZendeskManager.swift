@@ -140,6 +140,7 @@ import Yosemite
     /// Displays an alert allowing the user to change their Support email address.
     ///
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping (Bool) -> Void) {
+        WooAnalytics.shared.track(.supportIdentityFormViewed)
         presentInController = controller
 
         getUserInformationAndShowPrompt(withName: false) { success in

@@ -361,13 +361,13 @@ private extension NotificationsViewController {
     /// Should be called before Sync'ing Starts: Transitions to .results / .syncing
     ///
     func transitionToSyncingState() {
-        state = .empty //isEmpty ? .syncing : .results
+        state = .syncing //isEmpty ? .syncing : .results
     }
 
     /// Should be called after Sync'ing wraps up: Transitions to .empty / .results
     ///
     func transitionToResultsUpdatedState() {
-        state = .empty //isEmpty ? .empty : .results
+        state = .syncing //isEmpty ? .empty : .results
     }
 }
 

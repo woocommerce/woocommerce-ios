@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="100" id="ba1-rz-4HV" userLabel="Comment" customClass="NoteDetailsCommentTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" tableViewCell="ba1-rz-4HV" id="p0w-Eh-NgH">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="99.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="qcp-iw-3SL" customClass="CircularImageView" customModule="WordPress" customModuleProvider="target">
+                        <rect key="frame" x="16" y="11" width="32" height="32"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="37" id="Da7-XZ-kzz"/>
+                            <constraint firstAttribute="width" constant="37" id="Qrb-Xl-Ymo"/>
+                            <constraint firstAttribute="height" constant="32" id="kY5-OW-EHJ"/>
+                            <constraint firstAttribute="width" constant="32" id="kyz-pf-ord"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="Qrb-Xl-Ymo"/>
+                                <exclude reference="Da7-XZ-kzz"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=regular">
+                            <mask key="constraints">
+                                <include reference="Qrb-Xl-Ymo"/>
+                                <exclude reference="kyz-pf-ord"/>
+                                <exclude reference="kY5-OW-EHJ"/>
+                                <include reference="Da7-XZ-kzz"/>
+                            </mask>
+                        </variation>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="250" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MB2-nk-Fuo">
+                        <rect key="frame" x="58" y="9" width="25" height="18"/>
+                        <constraints>
+                            <constraint firstAttribute="height" priority="750" constant="18" id="YNK-wk-4pI"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="250" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6d4-9R-dcK">
+                        <rect key="frame" x="58" y="27" width="44" height="18"/>
+                        <constraints>
+                            <constraint firstAttribute="height" priority="750" constant="18" id="Xur-u7-Wbw"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FpQ-yp-a6e">
+                        <rect key="frame" x="16" y="45" width="288" height="44"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="28" id="mhf-tZ-eCY"/>
+                        </constraints>
+                        <string key="text">1
+2
+3</string>
+                        <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="10"/>
+                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                    </textView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="FpQ-yp-a6e" firstAttribute="bottom" secondItem="p0w-Eh-NgH" secondAttribute="bottomMargin" id="22L-QN-oca"/>
+                    <constraint firstItem="6d4-9R-dcK" firstAttribute="top" secondItem="MB2-nk-Fuo" secondAttribute="bottom" id="4dz-UQ-k5m"/>
+                    <constraint firstItem="MB2-nk-Fuo" firstAttribute="top" secondItem="p0w-Eh-NgH" secondAttribute="topMargin" constant="-2" id="7vu-mB-zjT"/>
+                    <constraint firstItem="6d4-9R-dcK" firstAttribute="leading" secondItem="qcp-iw-3SL" secondAttribute="trailing" constant="10" id="Fk8-Te-czR"/>
+                    <constraint firstItem="FpQ-yp-a6e" firstAttribute="trailing" secondItem="p0w-Eh-NgH" secondAttribute="trailingMargin" id="JI0-17-7m1"/>
+                    <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="MB2-nk-Fuo" secondAttribute="trailing" id="KXj-dp-lei"/>
+                    <constraint firstItem="qcp-iw-3SL" firstAttribute="top" secondItem="p0w-Eh-NgH" secondAttribute="topMargin" id="LZ5-7b-YMV"/>
+                    <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="6d4-9R-dcK" secondAttribute="trailing" id="fwX-Vq-3Sf"/>
+                    <constraint firstItem="FpQ-yp-a6e" firstAttribute="leading" secondItem="p0w-Eh-NgH" secondAttribute="leadingMargin" id="iJQ-Re-Ht8"/>
+                    <constraint firstItem="MB2-nk-Fuo" firstAttribute="leading" secondItem="qcp-iw-3SL" secondAttribute="trailing" constant="10" id="j02-8v-a9S"/>
+                    <constraint firstItem="FpQ-yp-a6e" firstAttribute="top" secondItem="qcp-iw-3SL" secondAttribute="bottom" constant="2" id="whu-f4-xTS"/>
+                    <constraint firstItem="qcp-iw-3SL" firstAttribute="leading" secondItem="p0w-Eh-NgH" secondAttribute="leadingMargin" id="xLw-6R-ASC"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="detailsLabel" destination="6d4-9R-dcK" id="pCn-M7-He8"/>
+                <outlet property="gravatarImageView" destination="qcp-iw-3SL" id="e8j-K5-3V4"/>
+                <outlet property="textView" destination="FpQ-yp-a6e" id="qCC-ZC-o7p"/>
+                <outlet property="titleLabel" destination="MB2-nk-Fuo" id="Rem-KB-lV9"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+</document>

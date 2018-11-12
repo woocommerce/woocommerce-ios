@@ -536,7 +536,6 @@ private extension OrdersViewController {
 
         state = .emptyUnfiltered
     }
-
 }
 
 

@@ -47,6 +47,24 @@ class NotificationsViewController: UIViewController {
     ///
     private let formatter = StringFormatter()
 
+    /// UI Active State
+    ///
+    private var state: State = .results {
+        didSet {
+            guard oldValue != state else {
+                return
+            }
+
+            didLeave(state: oldValue)
+            didEnter(state: state)
+        }
+    }
+
+    /// Indicates if there are no results onscreen.
+    ///
+    private var isEmpty: Bool {
+        return resultsController.isEmpty
+    }
 
 
     // MARK: - View Lifecycle
@@ -246,5 +264,61 @@ private extension NotificationsViewController {
         snippetStorage[note.hash] = snippet
 
         return snippet
+    }
+}
+
+
+// MARK: - FSM Management
+//
+private extension NotificationsViewController {
+
+    ///
+    ///
+    func didEnter(state: State) {
+        switch state {
+        case .placeholder:
+            break
+        case .results:
+            break
+        case .syncing:
+            break
+        }
+    }
+
+    ///
+    ///
+    func didLeave(state: State) {
+        switch state {
+        case .placeholder:
+            break
+        case .results:
+            break
+        case .syncing:
+            break
+        }
+    }
+
+    ///
+    ///
+    func transitionToSyncingState() {
+        state = isEmpty ? .syncing : .results
+    }
+
+    ///
+    ///
+    func transitionToResultsUpdatedState() {
+        state = isEmpty ? .placeholder : .results
+    }
+}
+
+
+// MARK: - Nested Types
+//
+private extension NotificationsViewController {
+
+    enum State {
+        case syncing
+        case results
+        case placeholder
     }
 }

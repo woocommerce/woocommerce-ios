@@ -24,7 +24,7 @@ class NotificationsViewController: UIViewController {
     /// TODO: Remove ASAP as soon as the (pending) backend PR is merged
     ///
     private var filter: NSPredicate {
-        return NSPredicate(format: "type == %@ OR title == 'Product Review'", Note.Kind.storeOrder.rawValue)
+        return NSPredicate(format: "type == %@ OR subtype == %@", Note.Kind.storeOrder.rawValue, Note.Subkind.storeReview.rawValue)
     }
 
     /// Pull To Refresh Support.

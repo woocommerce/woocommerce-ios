@@ -16,13 +16,13 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="-1" translatesAutoresizingMaskIntoConstraints="NO" id="tLL-AN-zl3">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="90"/>
+                    <rect key="frame" x="25" y="0.0" width="270" height="90"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lOK-PB-egW">
-                            <rect key="frame" x="0.0" y="0.0" width="107.5" height="90"/>
+                            <rect key="frame" x="0.0" y="0.0" width="90.5" height="90"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="238-3o-tIA">
-                                    <rect key="frame" x="23.5" y="20" width="60" height="50"/>
+                                    <rect key="frame" x="15.5" y="20" width="60" height="50"/>
                                     <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="50" id="FcV-e0-1Wp"/>
@@ -37,10 +37,10 @@
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ee5-kF-HK7">
-                            <rect key="frame" x="106.5" y="0.0" width="107" height="90"/>
+                            <rect key="frame" x="89.5" y="0.0" width="91" height="90"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lCJ-LD-Hg1">
-                                    <rect key="frame" x="23.5" y="20" width="60" height="50"/>
+                                    <rect key="frame" x="15.5" y="20" width="60" height="50"/>
                                     <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="60" id="FXL-Ch-Asp"/>
@@ -55,10 +55,10 @@
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fId-CU-eJU">
-                            <rect key="frame" x="212.5" y="0.0" width="107.5" height="90"/>
+                            <rect key="frame" x="179.5" y="0.0" width="90.5" height="90"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jer-Xj-TlY">
-                                    <rect key="frame" x="24" y="20" width="60" height="50"/>
+                                    <rect key="frame" x="15" y="20" width="60" height="50"/>
                                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="60" id="1iZ-qF-fwS"/>
@@ -79,7 +79,7 @@
                     </constraints>
                 </stackView>
                 <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="bottom" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="1eD-TF-3NS">
-                    <rect key="frame" x="31" y="110" width="258" height="120"/>
+                    <rect key="frame" x="32" y="110" width="256" height="120"/>
                     <subviews>
                         <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="nwv-3X-yXO">
                             <rect key="frame" x="0.0" y="60" width="10" height="60"/>
@@ -89,27 +89,27 @@
                             </constraints>
                         </view>
                         <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="2vq-Ow-XTA">
-                            <rect key="frame" x="41.5" y="0.0" width="10" height="120"/>
+                            <rect key="frame" x="41" y="0.0" width="10" height="120"/>
                             <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </view>
                         <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="ezD-Ei-g97">
-                            <rect key="frame" x="82.5" y="60" width="10" height="60"/>
+                            <rect key="frame" x="82" y="60" width="10" height="60"/>
                             <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </view>
                         <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="oHZ-Fw-E7W">
-                            <rect key="frame" x="124" y="100" width="10" height="20"/>
+                            <rect key="frame" x="123" y="100" width="10" height="20"/>
                             <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </view>
                         <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Src-7C-V4i">
-                            <rect key="frame" x="165.5" y="60" width="10" height="60"/>
+                            <rect key="frame" x="164" y="60" width="10" height="60"/>
                             <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </view>
                         <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="RAr-us-CuM">
-                            <rect key="frame" x="206.5" y="0.0" width="10" height="120"/>
+                            <rect key="frame" x="205" y="0.0" width="10" height="120"/>
                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </view>
                         <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Gcg-G1-3tN">
-                            <rect key="frame" x="248" y="60" width="10" height="60"/>
+                            <rect key="frame" x="246" y="60" width="10" height="60"/>
                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </view>
                     </subviews>
@@ -132,13 +132,13 @@
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstAttribute="trailingMargin" secondItem="1eD-TF-3NS" secondAttribute="trailing" constant="15" id="0A0-Wc-apU"/>
-                <constraint firstAttribute="trailing" secondItem="tLL-AN-zl3" secondAttribute="trailing" id="DmR-KI-vaH"/>
-                <constraint firstItem="tLL-AN-zl3" firstAttribute="leading" secondItem="myP-39-aJj" secondAttribute="leading" id="Ozr-WO-msf"/>
+                <constraint firstAttribute="trailingMargin" secondItem="1eD-TF-3NS" secondAttribute="trailing" constant="16" id="0A0-Wc-apU"/>
+                <constraint firstAttribute="trailingMargin" secondItem="tLL-AN-zl3" secondAttribute="trailing" constant="9" id="DmR-KI-vaH"/>
+                <constraint firstItem="tLL-AN-zl3" firstAttribute="leading" secondItem="myP-39-aJj" secondAttribute="leadingMargin" constant="9" id="Ozr-WO-msf"/>
                 <constraint firstItem="tLL-AN-zl3" firstAttribute="top" secondItem="myP-39-aJj" secondAttribute="top" id="PTs-AI-Nzh"/>
                 <constraint firstAttribute="bottom" secondItem="1eD-TF-3NS" secondAttribute="bottom" constant="60" id="SCd-TV-K5s"/>
                 <constraint firstItem="1eD-TF-3NS" firstAttribute="top" secondItem="tLL-AN-zl3" secondAttribute="bottom" constant="20" id="SjD-pr-7cU"/>
-                <constraint firstItem="1eD-TF-3NS" firstAttribute="leading" secondItem="myP-39-aJj" secondAttribute="leadingMargin" constant="15" id="xuD-lZ-hT8"/>
+                <constraint firstItem="1eD-TF-3NS" firstAttribute="leading" secondItem="myP-39-aJj" secondAttribute="leadingMargin" constant="16" id="xuD-lZ-hT8"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>

@@ -40,7 +40,7 @@ class NoteListMapperTests: XCTestCase {
         let note = sampleNotes[0]
 
         // Plain Fields
-        XCTAssertEqual(note.noteId, 123456)
+        XCTAssertEqual(note.noteId, 100001)
         XCTAssertEqual(note.hash, 987654)
         XCTAssertEqual(note.read, false)
         XCTAssert(note.icon == "https://gravatar.tld/some-hash")

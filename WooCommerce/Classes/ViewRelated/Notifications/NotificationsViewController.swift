@@ -2,6 +2,7 @@ import UIKit
 import Gridicons
 import Yosemite
 import WordPressUI
+import SafariServices
 
 
 // MARK: - NotificationsViewController
@@ -290,6 +291,40 @@ private extension NotificationsViewController {
         tableView.removeGhostContent()
         resultsController.startForwardingEvents(to: self.tableView)
     }
+
+    /// Displays the Empty State Overlay.
+    ///
+    func displayEmptyNotesOverlay() {
+        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
+        overlayView.messageImage = .waitingForCustomersImage
+        overlayView.messageText = NSLocalizedString("No Notifications Yet!", comment: "Empty Notifications List Message")
+        overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
+        overlayView.onAction = { [weak self] in
+            self?.displayDefaultSite()
+        }
+
+        overlayView.attach(to: view)
+    }
+
+    /// Removes all of the the OverlayMessageView instances in the view hierarchy.
+    ///
+    func removeAllOverlays() {
+        for subview in view.subviews where subview is OverlayMessageView {
+            subview.removeFromSuperview()
+        }
+    }
+
+    /// Displays the Default Site in a WebView.
+    ///
+    func displayDefaultSite() {
+        guard let urlAsString = StoresManager.shared.sessionManager.defaultSite?.url, let siteURL = URL(string: urlAsString) else {
+            return
+        }
+
+        let safariViewController = SFSafariViewController(url: siteURL)
+        safariViewController.modalPresentationStyle = .pageSheet
+        present(safariViewController, animated: true, completion: nil)
+    }
 }
 
 
@@ -302,7 +337,7 @@ private extension NotificationsViewController {
     func didEnter(state: State) {
         switch state {
         case .empty:
-            break
+            displayEmptyNotesOverlay()
         case .results:
             break
         case .syncing:
@@ -315,7 +350,7 @@ private extension NotificationsViewController {
     func didLeave(state: State) {
         switch state {
         case .empty:
-            break
+            removeAllOverlays()
         case .results:
             break
         case .syncing:

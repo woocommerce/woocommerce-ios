@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import Yosemite
+import WordPressUI
 
 
 // MARK: - NotificationsViewController
@@ -163,9 +164,11 @@ private extension NotificationsViewController {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
             }
 
+            self.transitionToResultsUpdatedState()
             onCompletion?()
         }
 
+        transitionToSyncingState()
         StoresManager.shared.dispatch(action)
     }
 }
@@ -268,46 +271,68 @@ private extension NotificationsViewController {
 }
 
 
+// MARK: - Placeholders
+//
+private extension NotificationsViewController {
+
+    /// Renders Placeholder Notes: For safety reasons, we'll also halt ResultsController <> UITableView glue.
+    ///
+    func displayPlaceholderNotes() {
+        let options = GhostOptions(reuseIdentifier: NoteTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
+        tableView.displayGhostContent(options: options)
+
+        resultsController.stopForwardingEvents()
+    }
+
+    /// Removes Placeholder Notes (and restores the ResultsController <> UITableView link).
+    ///
+    func removePlaceholderNotes() {
+        tableView.removeGhostContent()
+        resultsController.startForwardingEvents(to: self.tableView)
+    }
+}
+
+
 // MARK: - FSM Management
 //
 private extension NotificationsViewController {
 
-    ///
+    /// Runs whenever the FSM enters a State.
     ///
     func didEnter(state: State) {
         switch state {
-        case .placeholder:
+        case .empty:
             break
         case .results:
             break
         case .syncing:
-            break
+            displayPlaceholderNotes()
         }
     }
 
-    ///
+    /// Runs whenever the FSM leaves a State.
     ///
     func didLeave(state: State) {
         switch state {
-        case .placeholder:
+        case .empty:
             break
         case .results:
             break
         case .syncing:
-            break
+            removePlaceholderNotes()
         }
     }
 
-    ///
+    /// Should be called before Sync'ing Starts: Transitions to .results / .syncing
     ///
     func transitionToSyncingState() {
         state = isEmpty ? .syncing : .results
     }
 
-    ///
+    /// Should be called after Sync'ing wraps up: Transitions to .empty / .results
     ///
     func transitionToResultsUpdatedState() {
-        state = isEmpty ? .placeholder : .results
+        state = isEmpty ? .empty : .results
     }
 }
 
@@ -316,9 +341,13 @@ private extension NotificationsViewController {
 //
 private extension NotificationsViewController {
 
+    enum Settings {
+        static let placeholderRowsPerSection = [3]
+    }
+
     enum State {
-        case syncing
+        case empty
         case results
-        case placeholder
+        case syncing
     }
 }

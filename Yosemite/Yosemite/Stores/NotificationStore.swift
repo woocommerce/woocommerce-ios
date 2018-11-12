@@ -7,6 +7,10 @@ import Storage
 //
 public class NotificationStore: Store {
 
+    /// Thread Safety
+    ///
+    private static let lock = NSLock()
+
     /// Shared private StorageType for use during then entire notification sync process
     ///
     private static var privateStorage: StorageType!
@@ -46,24 +50,38 @@ private extension NotificationStore {
     func synchronizeNotifications(onCompletion: @escaping (Error?) -> Void) {
         let remote = NotificationsRemote(network: network)
 
-        remote.loadNotes(pageSize: Constants.maximumPageSize) { [weak self] (remoteNotes, error) in
-            guard let `self` = self, let remoteNotes = remoteNotes else {
+        remote.loadHashes(pageSize: Constants.maximumPageSize) { [weak self] (hashes, error) in
+            guard let hashes = hashes else {
                 onCompletion(error)
                 return
             }
 
-            // Step 1: Delete local missing notes
-            let remoteIDs = remoteNotes.map({ $0.noteId })
-            self.deleteLocalMissingNotes(from: remoteIDs) {
+            self?.deleteLocalMissingNotes(from: hashes) { [weak self] in
 
-                // Step 2: Update the storage notes from the fetched notes
-                self.updateLocalNotes(with: remoteNotes) {
-                    type(of: self).resetSharedDerivedStorage()
-                    onCompletion(nil)
+                self?.determineUpdatedNotes(using: hashes) { outdatedIDs in
+
+                    guard outdatedIDs.isEmpty == false else {
+                        onCompletion(nil)
+                        return
+                    }
+
+                    remote.loadNotes(noteIds: outdatedIDs, pageSize: Constants.maximumPageSize) { [weak self] (notes, error) in
+
+                        guard let notes = notes else {
+                            onCompletion(error)
+                            return
+                        }
+
+                        self?.updateLocalNotes(with: notes) {
+                            onCompletion(nil)
+                        }
+                    }
                 }
             }
         }
     }
+
+    
 
     /// Updates the last seen notification
     ///
@@ -101,10 +119,12 @@ extension NotificationStore {
     ///
     /// - Parameter remoteIds: Collection of remote Note IDs.
     ///
-    func deleteLocalMissingNotes(from remoteIDs: [Int64], completion: @escaping (() -> Void)) {
+    func deleteLocalMissingNotes(from hashes: [NoteHash], completion: @escaping (() -> Void)) {
         let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
 
         derivedStorage.perform {
+            // The beauty of threadsafe Immutable Entities!!
+            let remoteIDs = hashes.map { $0.noteID }
             let predicate = NSPredicate(format: "NOT (noteID IN %@)", remoteIDs)
 
             for orphan in derivedStorage.allObjects(ofType: Storage.Note.self, matching: predicate, sortedBy: nil) {
@@ -157,6 +177,34 @@ extension NotificationStore {
         storage.saveIfNeeded()
         completion?()
     }
+
+    /// Given a collection of NoteHash Entities, this method will determine the `.noteID`'s of those entities that
+    /// are either not locally found, or got their `.hash` field outdated.
+    ///
+    func determineUpdatedNotes(using hashes: [NoteHash], completion: @escaping ([Int64]) -> Void) {
+        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
+
+        derivedStorage.perform {
+            let remoteIds = hashes.map { $0.noteID }
+            let predicate = NSPredicate(format: "noteID IN %@", remoteIds)
+            var localHashes = [Int64: Int64]()
+
+            for note in derivedStorage.allObjects(ofType: StorageNote.self, matching: predicate, sortedBy: nil) {
+                localHashes[note.noteID] = Int64(note.noteHash)
+            }
+
+            let outdated = hashes.filter { remote in
+                let localHash = localHashes[remote.noteID]
+                return localHash == nil || localHash != remote.hash
+            }
+
+            let outdatedIds = outdated.map { $0.noteID }
+
+            DispatchQueue.main.async {
+                completion(outdatedIds)
+            }
+        }
+    }
 }
 
 
@@ -167,9 +215,12 @@ extension NotificationStore {
     /// derived StorageType, given a specified StorageManagerType.
     ///
     static func sharedDerivedStorage(with manager: StorageManagerType) -> StorageType {
+        lock.lock()
         if privateStorage == nil {
             privateStorage = manager.newDerivedStorage()
         }
+        lock.unlock()
+
         return privateStorage
     }
 

@@ -38,6 +38,10 @@ public struct Note {
     ///
     public let kind: Kind
 
+    /// Notification.Subtype expressed as a Swift Native enum.
+    ///
+    public let subkind: Subkind?
+
     /// Notification Type.
     ///
     public let type: String?
@@ -118,6 +122,7 @@ public struct Note {
         self.type = type
         self.subtype = subtype
         self.kind = Kind(rawValue: type) ?? .unknown
+        self.subkind = subtype.flatMap { Subkind(rawValue: $0) }
         self.url = url
         self.title = title
 
@@ -224,5 +229,11 @@ extension Note {
         case storeOrder = "store_order"
         case user
         case unknown
+    }
+
+    /// Known Notification Subkind(s)
+    ///
+    public enum Subkind: String {
+        case storeReview = "store_review"
     }
 }

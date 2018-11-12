@@ -257,6 +257,7 @@ class NoteListMapperTests: XCTestCase {
     func testStoreReviewSubtypeIsProperlyParsed() {
         let storeReview = sampleNotes.first(where: { $0.noteId == 100009 })
         XCTAssertEqual(storeReview?.subtype, "store_review")
+        XCTAssertEqual(storeReview?.subkind, .storeReview)
     }
 }
 

@@ -129,7 +129,7 @@ private extension NotificationDetailsViewController {
     ///
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
         WooAnalytics.shared.track(.notificationsListPulledToRefresh)
-        Hack.overrideTitle = false
+
         synchronizeNotification(noteId: note.noteId) {
             sender.endRefreshing()
         }

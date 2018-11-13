@@ -1,6 +1,8 @@
 import UIKit
 import Gridicons
 import Yosemite
+import WordPressUI
+import SafariServices
 
 
 // MARK: - NotificationsViewController
@@ -47,6 +49,24 @@ class NotificationsViewController: UIViewController {
     ///
     private let formatter = StringFormatter()
 
+    /// UI Active State
+    ///
+    private var state: State = .results {
+        didSet {
+            guard oldValue != state else {
+                return
+            }
+
+            didLeave(state: oldValue)
+            didEnter(state: state)
+        }
+    }
+
+    /// Indicates if there are no results onscreen.
+    ///
+    private var isEmpty: Bool {
+        return resultsController.isEmpty
+    }
 
 
     // MARK: - View Lifecycle
@@ -145,9 +165,11 @@ private extension NotificationsViewController {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
             }
 
+            self.transitionToResultsUpdatedState()
             onCompletion?()
         }
 
+        transitionToSyncingState()
         StoresManager.shared.dispatch(action)
     }
 }
@@ -246,5 +268,121 @@ private extension NotificationsViewController {
         snippetStorage[note.hash] = snippet
 
         return snippet
+    }
+}
+
+
+// MARK: - Placeholders
+//
+private extension NotificationsViewController {
+
+    /// Renders Placeholder Notes: For safety reasons, we'll also halt ResultsController <> UITableView glue.
+    ///
+    func displayPlaceholderNotes() {
+        let options = GhostOptions(reuseIdentifier: NoteTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
+        tableView.displayGhostContent(options: options)
+
+        resultsController.stopForwardingEvents()
+    }
+
+    /// Removes Placeholder Notes (and restores the ResultsController <> UITableView link).
+    ///
+    func removePlaceholderNotes() {
+        tableView.removeGhostContent()
+        resultsController.startForwardingEvents(to: self.tableView)
+    }
+
+    /// Displays the Empty State Overlay.
+    ///
+    func displayEmptyNotesOverlay() {
+        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
+        overlayView.messageImage = .waitingForCustomersImage
+        overlayView.messageText = NSLocalizedString("No Notifications Yet!", comment: "Empty Notifications List Message")
+        overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
+        overlayView.onAction = { [weak self] in
+            self?.displayDefaultSite()
+        }
+
+        overlayView.attach(to: view)
+    }
+
+    /// Removes all of the the OverlayMessageView instances in the view hierarchy.
+    ///
+    func removeAllOverlays() {
+        for subview in view.subviews where subview is OverlayMessageView {
+            subview.removeFromSuperview()
+        }
+    }
+
+    /// Displays the Default Site in a WebView.
+    ///
+    func displayDefaultSite() {
+        guard let urlAsString = StoresManager.shared.sessionManager.defaultSite?.url, let siteURL = URL(string: urlAsString) else {
+            return
+        }
+
+        let safariViewController = SFSafariViewController(url: siteURL)
+        safariViewController.modalPresentationStyle = .pageSheet
+        present(safariViewController, animated: true, completion: nil)
+    }
+}
+
+
+// MARK: - Finite State Machine Management
+//
+private extension NotificationsViewController {
+
+    /// Runs whenever the FSM enters a State.
+    ///
+    func didEnter(state: State) {
+        switch state {
+        case .empty:
+            displayEmptyNotesOverlay()
+        case .results:
+            break
+        case .syncing:
+            displayPlaceholderNotes()
+        }
+    }
+
+    /// Runs whenever the FSM leaves a State.
+    ///
+    func didLeave(state: State) {
+        switch state {
+        case .empty:
+            removeAllOverlays()
+        case .results:
+            break
+        case .syncing:
+            removePlaceholderNotes()
+        }
+    }
+
+    /// Should be called before Sync'ing Starts: Transitions to .results / .syncing
+    ///
+    func transitionToSyncingState() {
+        state = isEmpty ? .syncing : .results
+    }
+
+    /// Should be called after Sync'ing wraps up: Transitions to .empty / .results
+    ///
+    func transitionToResultsUpdatedState() {
+        state = isEmpty ? .empty : .results
+    }
+}
+
+
+// MARK: - Nested Types
+//
+private extension NotificationsViewController {
+
+    enum Settings {
+        static let placeholderRowsPerSection = [3]
+    }
+
+    enum State {
+        case empty
+        case results
+        case syncing
     }
 }

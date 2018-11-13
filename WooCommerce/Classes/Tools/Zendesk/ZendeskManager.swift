@@ -17,7 +17,7 @@ import Yosemite
 @objc class ZendeskManager: NSObject {
 
     // MARK: - Public Properties
-
+    //
     static let shared = ZendeskManager()
     private var zendeskEnabled = false
     private var unreadNotificationsCount = 0
@@ -32,7 +32,7 @@ import Yosemite
     }
 
     // MARK: - Private Properties
-
+    //
     private override init() {}
     private var sourceTag: WordPressSupportSourceTag?
 
@@ -56,7 +56,7 @@ import Yosemite
     }
 
     // MARK: - Public Methods
-
+    //
     func initialize() {
         guard getZendeskCredentials() == true else {
             return
@@ -160,7 +160,7 @@ import Yosemite
 }
 
 // MARK: - Private Extension
-
+//
 private extension ZendeskManager {
 
     func getZendeskCredentials() -> Bool {
@@ -279,10 +279,6 @@ private extension ZendeskManager {
         // Set form field values
         var ticketFields = [ZDKCustomField]()
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.appVersion as NSNumber, andValue: appVersion))
-
-        // -TODO: append the sites list
-        // ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.allBlogs as NSNumber, andValue: ZendeskManager.getBlogInformation()))
-
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.deviceFreeSpace as NSNumber, andValue: getDeviceFreeSpace()))
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.networkInformation as NSNumber, andValue: getNetworkInformation()))
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.logs as NSNumber, andValue: getLogFile()))
@@ -301,7 +297,7 @@ private extension ZendeskManager {
     }
 
     // MARK: - View
-
+    //
     func showZendeskView(_ zendeskView: UIViewController) {
         guard let presentInController = presentInController else {
             return
@@ -323,7 +319,7 @@ private extension ZendeskManager {
 
 
     // MARK: - User Defaults
-
+    //
     func saveUserProfile() {
         var userProfile = [String: String]()
         userProfile[Constants.profileEmailKey] = userEmail
@@ -345,7 +341,7 @@ private extension ZendeskManager {
 
 
     // MARK: - Data Helpers
-
+    //
     func getDeviceFreeSpace() -> String {
 
         guard let resourceValues = try? URL(fileURLWithPath: "/").resourceValues(forKeys: [.volumeAvailableCapacityKey]),
@@ -392,17 +388,34 @@ private extension ZendeskManager {
 
     func getTags() -> [String] {
 
-        // Future tags tk:
-        //Constants.wpComTag,    // wp.com
-        //Constants.jetpackTag,  // jetpack
-        //site.planTitle         // site plan
-
-        /// tags: woo-ios, ios
+        /// Start with default tags.
         ///
-        var tags = [Constants.wooMobileTag, Constants.platformTag]
+        var tags = [Constants.platformTag]
 
-        // Add sourceTag
-        if let sourceTagOrigin = sourceTag?.origin {
+        /// Determine if the account is a wp.com account.
+        /// No tag if self-hosted.
+        ///
+        guard let site = StoresManager.shared.sessionManager.defaultSite else {
+            return tags
+        }
+
+        tags.append(Constants.wpComTag)
+
+        /// Determine if the account has jetpack installed.
+        ///
+        if site.isJetpackInstalled == true {
+            tags.append(Constants.jetpackTag)
+        }
+
+        /// Add the site plan.
+        ///
+        if site.plan.isEmpty == false {
+            tags.append(site.plan)
+        }
+
+        /// Add source tag.
+        ///
+        if let sourceTagOrigin = sourceTag?.origin, sourceTagOrigin.isEmpty == false {
             tags.append(sourceTagOrigin)
         }
 
@@ -439,7 +452,7 @@ private extension ZendeskManager {
 
 
     // MARK: - User Information Prompt
-
+    //
     func promptUserForInformation(withName: Bool, completion: @escaping (Bool) -> Void) {
 
         let alertController = UIAlertController(title: nil,
@@ -555,7 +568,7 @@ private extension ZendeskManager {
     }
 
     // MARK: - Zendesk Notifications
-
+    //
     func observeZendeskNotifications() {
         // Ticket Attachments
         NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
@@ -631,7 +644,6 @@ private extension ZendeskManager {
         static let blogSeperator = "\n----------\n"
         static let jetpackTag = "jetpack"
         static let wpComTag = "wpcom"
-        static let wooMobileTag = "woo_-_ios"
         static let networkWiFi = "WiFi"
         static let networkWWAN = "Mobile"
         static let networkTypeLabel = "Network Type:"
@@ -641,7 +653,7 @@ private extension ZendeskManager {
         static let profileEmailKey = "email"
         static let profileNameKey = "name"
         static let nameFieldCharacterLimit = 50
-        static let sourcePlatform = "mobile_-_ios"
+        static let sourcePlatform = "woo_-_ios"
     }
 
     // Zendesk expects these as NSNumber. However, they are defined as UInt64 to satisfy 32-bit devices (ex: iPhone 5).
@@ -670,7 +682,7 @@ private extension ZendeskManager {
 }
 
 // MARK: - ZDKHelpCenterConversationsUIDelegate
-
+//
 extension ZendeskManager: ZDKHelpCenterConversationsUIDelegate {
 
     func navBarConversationsUIType() -> ZDKNavBarConversationsUIType {
@@ -690,7 +702,7 @@ extension ZendeskManager: ZDKHelpCenterConversationsUIDelegate {
 }
 
 // MARK: - UITextFieldDelegate
-
+//
 extension ZendeskManager: UITextFieldDelegate {
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {

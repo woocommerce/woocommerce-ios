@@ -250,6 +250,15 @@ class NoteListMapperTests: XCTestCase {
         let commentNote = sampleNotes.first(where: { $0.kind == .comment })
         XCTAssertEqual(commentNote?.body[1].kind, .comment)
     }
+
+
+    /// Verifies that the Notification's subtype is properly parsed.
+    ///
+    func testStoreReviewSubtypeIsProperlyParsed() {
+        let storeReview = sampleNotes.first(where: { $0.noteId == 100009 })
+        XCTAssertEqual(storeReview?.subtype, "store_review")
+        XCTAssertEqual(storeReview?.subkind, .storeReview)
+    }
 }
 
 

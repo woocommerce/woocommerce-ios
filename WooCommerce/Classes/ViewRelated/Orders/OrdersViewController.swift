@@ -479,7 +479,7 @@ extension OrdersViewController {
 }
 
 
-// MARK: - FSM Management
+// MARK: - Finite State Machine Management
 //
 private extension OrdersViewController {
 
@@ -536,7 +536,6 @@ private extension OrdersViewController {
 
         state = .emptyUnfiltered
     }
-
 }
 
 

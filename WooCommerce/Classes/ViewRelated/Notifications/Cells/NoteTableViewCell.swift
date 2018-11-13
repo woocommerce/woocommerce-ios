@@ -72,14 +72,6 @@ class NoteTableViewCell: UITableViewCell {
         noticonLabel.font = UIFont.noticon(forStyle: .title1)
     }
 
-    override func prepareForReuse() {
-        super.prepareForReuse()
-
-        noticon = nil
-        attributedSubject = nil
-        attributedSnippet = nil
-    }
-
     override func setSelected(_ selected: Bool, animated: Bool) {
         // Note: this is required, since the cell unhighlight mechanism will reset the new background color
         super.setSelected(selected, animated: animated)

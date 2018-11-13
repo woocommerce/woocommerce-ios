@@ -172,7 +172,7 @@ extension PeriodDataViewController {
 
         placehoderChartsView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(placehoderChartsView)
-        view.pinSubviewToAllEdgeMargins(placehoderChartsView)
+        view.pinSubviewToAllEdges(placehoderChartsView)
     }
 
 }

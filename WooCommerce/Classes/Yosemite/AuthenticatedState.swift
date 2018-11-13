@@ -29,7 +29,8 @@ class AuthenticatedState: StoresManagerState {
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
     }
 

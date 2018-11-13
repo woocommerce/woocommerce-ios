@@ -49,11 +49,11 @@ class NotificationStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
         let action = NotificationAction.synchronizeNotifications() { (error) in
             XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 2)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 40)
 
-            if let note = self.viewStorage.loadNotification(noteID: 99998888, noteHash: 987654)?.toReadOnly() {
+            if let note = self.viewStorage.loadNotification(noteID: 100036, noteHash: 987654)?.toReadOnly() {
                 // Plain Fields
-                XCTAssertEqual(note.noteId, 99998888)
+                XCTAssertEqual(note.noteId, 100036)
                 XCTAssertEqual(note.hash, 987654)
                 XCTAssertEqual(note.read, false)
                 XCTAssertEqual(note.icon,"https://s.wp.com/wp-content/mu-plugins/achievements/likeable-blog-5-2x.png")
@@ -89,6 +89,36 @@ class NotificationStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `NotificationAction.synchronizeNotifications` will only request the notifications that aren't locally
+    /// stored, and are up to date.
+    ///
+    func testSynchronizeNotificationsRequestsOnlyOutdatedNotes() {
+        let expectation = self.expectation(description: "Sync notifications")
+        let notificationStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
+
+        /// Secondary Sync:
+        /// This call is expected to just request the Hashes, and not to perform a 4th network call (because everything
+        /// will be up to date. Supposedly.)
+        ///
+        let nestedSyncAction = NotificationAction.synchronizeNotifications() { (error) in
+            XCTAssertEqual(self.network.requestsForResponseData.count, 3)
+            expectation.fulfill()
+        }
+
+        /// Initial Sync
+        ///
+        let initialSyncAction = NotificationAction.synchronizeNotifications() { (error) in
+
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 40)
+            notificationStore.onAction(nestedSyncAction)
+        }
+
+        notificationStore.onAction(initialSyncAction)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 
     // MARK: - NotificationAction.updateLastSeen
 

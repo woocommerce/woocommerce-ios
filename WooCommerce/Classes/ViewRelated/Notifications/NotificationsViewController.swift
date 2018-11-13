@@ -17,8 +17,15 @@ class NotificationsViewController: UIViewController {
         let storageManager = AppDelegate.shared.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
 
-        return ResultsController<StorageNote>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
+        return ResultsController<StorageNote>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", matching: filter, sortedBy: [descriptor])
     }()
+
+    /// Store Notifications CoreData Filter. IMPORTANT!! This is CLEARLY a quick hack (we can't filter based on the title!)
+    /// TODO: Remove ASAP as soon as the (pending) backend PR is merged
+    ///
+    private var filter: NSPredicate {
+        return NSPredicate(format: "type == %@ OR title == 'Product Review'", Note.Kind.storeOrder.rawValue)
+    }
 
     /// Pull To Refresh Support.
     ///

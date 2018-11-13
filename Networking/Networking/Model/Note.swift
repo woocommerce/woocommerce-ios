@@ -38,9 +38,17 @@ public struct Note {
     ///
     public let kind: Kind
 
+    /// Notification.Subtype expressed as a Swift Native enum.
+    ///
+    public let subkind: Subkind?
+
     /// Notification Type.
     ///
     public let type: String?
+
+    /// Notification Subtype.
+    ///
+    public let subtype: String?
 
     /// Associated Resource's URL.
     ///
@@ -96,6 +104,7 @@ public struct Note {
                 noticon: String?,
                 timestamp: String,
                 type: String,
+                subtype: String?,
                 url: String?,
                 title: String?,
                 subject: Data,
@@ -111,7 +120,9 @@ public struct Note {
         self.timestamp = timestamp
         self.timestampAsDate = DateFormatter.Defaults.iso8601.date(from: timestamp) ?? Date()
         self.type = type
+        self.subtype = subtype
         self.kind = Kind(rawValue: type) ?? .unknown
+        self.subkind = subtype.flatMap { Subkind(rawValue: $0) }
         self.url = url
         self.title = title
 
@@ -148,6 +159,7 @@ extension Note: Decodable {
         let noticon = container.failsafeDecodeIfPresent(String.self, forKey: .noticon)
         let timestamp = container.failsafeDecodeIfPresent(stringForKey: .timestamp) ?? String()
         let type = container.failsafeDecodeIfPresent(String.self, forKey: .type) ?? String()
+        let subtype = container.failsafeDecodeIfPresent(String.self, forKey: .subtype)
         let url = container.failsafeDecodeIfPresent(String.self, forKey: .url)
         let title = container.failsafeDecodeIfPresent(String.self, forKey: .title)
 
@@ -170,6 +182,7 @@ extension Note: Decodable {
                   noticon: noticon,
                   timestamp: timestamp,
                   type: type,
+                  subtype: subtype,
                   url: url,
                   title: title,
                   subject: subjectAsData,
@@ -194,6 +207,7 @@ extension Note {
         case noticon
         case timestamp
         case type
+        case subtype
         case url
         case title
         case subject
@@ -215,5 +229,11 @@ extension Note {
         case storeOrder = "store_order"
         case user
         case unknown
+    }
+
+    /// Known Notification Subkind(s)
+    ///
+    public enum Subkind: String {
+        case storeReview = "store_review"
     }
 }

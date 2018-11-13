@@ -328,7 +328,7 @@ private extension NotificationsViewController {
 }
 
 
-// MARK: - FSM Management
+// MARK: - Finite State Machine Management
 //
 private extension NotificationsViewController {
 

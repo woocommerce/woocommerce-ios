@@ -29,7 +29,7 @@ class NotificationDetailsViewController: UIViewController {
     ///
     private var note: Note! {
         didSet {
-            buildDetailsRows()
+            reloadInterface()
         }
     }
 
@@ -65,7 +65,7 @@ class NotificationDetailsViewController: UIViewController {
         configureEntityListener()
 
         registerTableViewCells()
-        buildDetailsRows()
+        reloadInterface()
     }
 }
 
@@ -77,8 +77,6 @@ private extension NotificationDetailsViewController {
     /// Setup: Navigation
     ///
     func configureNavigationItem() {
-        title = note.title
-
         // Don't show the Notifications title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
@@ -131,6 +129,7 @@ private extension NotificationDetailsViewController {
     ///
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
         WooAnalytics.shared.track(.notificationsListPulledToRefresh)
+        Hack.overrideTitle = false
         synchronizeNotification(noteId: note.noteId) {
             sender.endRefreshing()
         }
@@ -156,9 +155,10 @@ private extension NotificationDetailsViewController {
 //
 private extension NotificationDetailsViewController {
 
-    /// Reloads all of the Notification Detail Rows!
+    /// Reloads all of the Details Interface
     ///
-    func buildDetailsRows() {
+    func reloadInterface() {
+        title = note.title
         rows = NoteDetailsRow.details(from: note)
         tableView.reloadData()
     }

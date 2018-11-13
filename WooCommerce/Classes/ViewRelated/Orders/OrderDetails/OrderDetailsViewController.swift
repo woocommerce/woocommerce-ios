@@ -8,35 +8,25 @@ import CocoaLumberjack
 
 class OrderDetailsViewController: UIViewController {
 
-    // MARK: - Properties
-
+    /// Main TableView.
+    ///
     @IBOutlet weak var tableView: UITableView!
-    var viewModel: OrderDetailsViewModel! {
-        didSet {
-            reloadSections()
-            reloadTableViewIfPossible()
-        }
-    }
 
+    /// Pull To Refresh Support.
+    ///
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
         return refreshControl
     }()
 
-    private var orderNotes: [OrderNoteViewModel] = [] {
-        didSet {
-            reloadSections()
-            reloadTableViewIfPossible()
-        }
-    }
-
+    /// Indicates if the Billing details should be rendered.
+    ///
     private var displaysBillingDetails = false {
         didSet {
             reloadSections()
         }
     }
-    private var sections = [Section]()
 
     /// EntityListener: Update / Deletion Notifications.
     ///
@@ -44,6 +34,27 @@ class OrderDetailsViewController: UIViewController {
         return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: viewModel.order)
     }()
 
+    /// Sections to be rendered
+    ///
+    private var sections = [Section]()
+
+    /// Order to be rendered!
+    ///
+    var viewModel: OrderDetailsViewModel! {
+        didSet {
+            reloadSections()
+            reloadTableViewIfPossible()
+        }
+    }
+
+    /// Order Notes
+    ///
+    private var orderNotes: [OrderNote] = [] {
+        didSet {
+            reloadSections()
+            reloadTableViewIfPossible()
+        }
+    }
 
 
     // MARK: - View Lifecycle
@@ -60,11 +71,6 @@ class OrderDetailsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         syncNotes()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        self.navigationController?.isNavigationBarHidden = false
     }
 }
 
@@ -101,6 +107,7 @@ private extension OrderDetailsViewController {
             guard let `self` = self else {
                 return
             }
+
             self.viewModel = OrderDetailsViewModel(order: order)
         }
 
@@ -360,11 +367,9 @@ private extension OrderDetailsViewController {
             return
         }
 
-        cell.iconButton.setImage(note.iconImage, for: .normal)
-        cell.iconButton.backgroundColor = note.iconColor
-        cell.dateCreated = note.formattedDateCreated
-        cell.statusText = note.statusText
-        cell.contents = note.contents
+        cell.isCustomerNote = note.isCustomerNote
+        cell.dateCreated = note.dateCreated.toString(dateStyle: .medium, timeStyle: .short)
+        cell.contents = note.note
     }
 
     func configurePayment(cell: PaymentTableViewCell) {
@@ -434,7 +439,7 @@ private extension OrderDetailsViewController {
 
     // MARK: - Get order note
     //
-    func note(at indexPath: IndexPath) -> OrderNoteViewModel? {
+    func note(at indexPath: IndexPath) -> OrderNote? {
         // We need to subtract 1 here because the first order note row is the "Add Order" cell
         let noteIndex = indexPath.row - 1
         guard orderNotes.indices.contains(noteIndex) else {
@@ -474,7 +479,7 @@ private extension OrderDetailsViewController {
                 return
             }
 
-            self?.orderNotes = orderNotes.map { OrderNoteViewModel(with: $0) }
+            self?.orderNotes = orderNotes
             WooAnalytics.shared.track(.orderNotesLoaded, withProperties: ["id": self?.viewModel.order.orderID ?? 0])
             onCompletion?(nil)
         }
@@ -526,7 +531,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if sections[section].title == nil {
             // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
-            return CGFloat.leastNonzeroMagnitude
+            return .leastNonzeroMagnitude
         }
 
         return UITableView.automaticDimension
@@ -548,18 +553,13 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // Give the table some breathing room
-        let lastSection = sections.count - 1
-        if section == lastSection {
+        let lastSectionIndex = sections.count - 1
+
+        if sections[section].footer != nil || section == lastSectionIndex {
             return UITableView.automaticDimension
         }
 
-        guard let _ = sections[section].footer else {
-            // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section footers.
-            return CGFloat.leastNonzeroMagnitude
-        }
-
-        return UITableView.automaticDimension
+        return .leastNonzeroMagnitude
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {

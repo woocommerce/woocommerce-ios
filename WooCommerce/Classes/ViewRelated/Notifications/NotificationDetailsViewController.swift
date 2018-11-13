@@ -17,6 +17,14 @@ class NotificationDetailsViewController: UIViewController {
         return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: note)
     }()
 
+    /// Pull To Refresh Support.
+    ///
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(pullToRefresh(sender:)), for: .valueChanged)
+        return refreshControl
+    }()
+
     /// Note to be displayed!
     ///
     private var note: Note! {
@@ -87,6 +95,7 @@ private extension NotificationDetailsViewController {
         // Hide "Empty Rows"
         tableView.tableFooterView = UIView()
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.refreshControl = refreshControl
     }
 
     /// Setup: EntityListener
@@ -110,6 +119,35 @@ private extension NotificationDetailsViewController {
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
+    }
+}
+
+
+// MARK: - Sync
+//
+private extension NotificationDetailsViewController {
+
+    /// Refresh Control's Callback.
+    ///
+    @IBAction func pullToRefresh(sender: UIRefreshControl) {
+        WooAnalytics.shared.track(.notificationsListPulledToRefresh)
+        synchronizeNotification(noteId: note.noteId) {
+            sender.endRefreshing()
+        }
+    }
+
+    /// Synchronizes the Notifications associated to the active WordPress.com account.
+    ///
+    func synchronizeNotification(noteId: Int64, onCompletion: @escaping () -> Void) {
+        let action = NotificationAction.synchronizeNotification(noteId: noteId) { error in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing notification [\(noteId)]: \(error)")
+            }
+
+            onCompletion()
+        }
+
+        StoresManager.shared.dispatch(action)
     }
 }
 

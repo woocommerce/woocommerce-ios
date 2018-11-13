@@ -22,11 +22,10 @@ class NotificationsViewController: UIViewController {
         return ResultsController<StorageNote>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", matching: filter, sortedBy: [descriptor])
     }()
 
-    /// Store Notifications CoreData Filter. IMPORTANT!! This is CLEARLY a quick hack (we can't filter based on the title!)
-    /// TODO: Remove ASAP as soon as the (pending) backend PR is merged
+    /// Store Notifications CoreData Filter.
     ///
     private var filter: NSPredicate {
-        return NSPredicate(format: "type == %@ OR title == 'Product Review'", Note.Kind.storeOrder.rawValue)
+        return NSPredicate(format: "type == %@ OR subtype == %@", Note.Kind.storeOrder.rawValue, Note.Subkind.storeReview.rawValue)
     }
 
     /// Pull To Refresh Support.

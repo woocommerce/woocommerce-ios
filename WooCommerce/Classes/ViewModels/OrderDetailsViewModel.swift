@@ -8,13 +8,10 @@ class OrderDetailsViewModel {
     let moneyFormatter: MoneyFormatter
     let couponLines: [OrderCouponLine]?
 
-    let orderStatusViewModel: OrderStatusViewModel
-
     init(order: Order) {
         self.order = order
         self.moneyFormatter = MoneyFormatter()
         self.couponLines = order.coupons
-        self.orderStatusViewModel = OrderStatusViewModel(orderStatus: order.status)
     }
 
     var summaryTitle: String? {
@@ -38,18 +35,6 @@ class OrderDetailsViewModel {
     }
 
     let fulfillTitle = NSLocalizedString("Fulfill order", comment: "Fulfill order button title")
-
-    var paymentStatus: String {
-        return order.status.description
-    }
-
-    var paymentBackgroundColor: UIColor {
-        return orderStatusViewModel.backgroundColor
-    }
-
-    var paymentBorderColor: CGColor {
-        return orderStatusViewModel.borderColor
-    }
 
     var isProcessingPayment: Bool {
         return order.status == .processing

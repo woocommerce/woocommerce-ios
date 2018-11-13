@@ -1,6 +1,10 @@
 import Foundation
 import Storage
 
+public class Hack {
+    public static var overrideTitle = true
+}
+
 // Storage.Note: ReadOnlyConvertible Conformance.
 //
 extension Storage.Note: ReadOnlyConvertible {
@@ -15,7 +19,7 @@ extension Storage.Note: ReadOnlyConvertible {
         noticon = note.noticon
         timestamp = note.timestamp
         url = note.url
-        title = note.title
+        title = Hack.overrideTitle ? ("HACK " + (note.title ?? "")) : note.title
         type = note.type
         subject = note.subjectAsData
         header = note.headerAsData

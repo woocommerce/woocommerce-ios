@@ -415,7 +415,7 @@ private extension ZendeskManager {
 
         /// Add source tag.
         ///
-        if let sourceTagOrigin = sourceTag?.origin {
+        if let sourceTagOrigin = sourceTag?.origin, sourceTagOrigin.isEmpty == false {
             tags.append(sourceTagOrigin)
         }
 

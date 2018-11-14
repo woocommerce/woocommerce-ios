@@ -73,13 +73,13 @@ private extension OrderLoaderViewController {
                 return
             }
 
-            guard let order = order else {
-                DDLogError("## Error loading Order \(self.siteID).\(self.orderID): \(error.debugDescription)")
+//            guard let order = order else {
+//                DDLogError("## Error loading Order \(self.siteID).\(self.orderID): \(error.debugDescription)")
                 self.state = .failure
-                return
-            }
-
-            self.state = .success(order: order)
+//                return
+//            }
+//
+//            self.state = .success(order: order)
         }
 
         state = .loading

@@ -111,7 +111,6 @@ class NotificationStoreTests: XCTestCase {
         /// Initial Sync
         ///
         let initialSyncAction = NotificationAction.synchronizeNotifications() { (error) in
-
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 40)
             notificationStore.onAction(nestedSyncAction)
         }
@@ -119,6 +118,33 @@ class NotificationStoreTests: XCTestCase {
         notificationStore.onAction(initialSyncAction)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that `NotificationAction.synchronizeNotification` will effectively request a single notification,
+    /// which will be stored in CoreData.
+    ///
+    func testSynchronizeSingleNotificationEffectivelyUpdatesRequestedNote() {
+        let expectation = self.expectation(description: "Sync notification")
+        let notificationStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let notificationId = Int64(100001)
+
+        network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
+
+        let syncAction = NotificationAction.synchronizeNotification(noteId: notificationId) { error in
+            let note = self.viewStorage.loadNotification(noteID: notificationId)
+            XCTAssertNil(error)
+            XCTAssertNotNil(note)
+
+            let request = self.network.requestsForResponseData[0] as! DotcomRequest
+            XCTAssertEqual(request.parameters?["ids"], String(notificationId))
+
+            expectation.fulfill()
+        }
+
+        notificationStore.onAction(syncAction)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
 
     // MARK: - NotificationAction.updateLastSeen
 

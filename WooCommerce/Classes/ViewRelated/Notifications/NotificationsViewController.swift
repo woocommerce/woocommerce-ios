@@ -78,6 +78,8 @@ class NotificationsViewController: UIViewController {
         return resultsController.fetchedObjects.filter { $0.read == false }
     }
 
+    var hackedReadStatus = true
+
 
     // MARK: - View Lifecycle
 
@@ -177,7 +179,7 @@ private extension NotificationsViewController {
     }
 
     @IBAction func markAllAsRead() {
-        let identifiers = unreadNotes.map { $0.noteId }
+        let identifiers = resultsController.fetchedObjects.map { $0.noteId }
         guard identifiers.isEmpty == false else {
             DDLogVerbose("# Every single notification is already marked as Read!")
             return
@@ -214,13 +216,14 @@ private extension NotificationsViewController {
     /// Marks the specified collection of Notifications as Read.
     ///
     func markAsRead(identifiers: [Int64]) {
-        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { error in
+        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: hackedReadStatus) { error in
             if let error = error {
                 DDLogError("⛔️ Error marking notifications as read: \(error)")
             }
         }
 
         StoresManager.shared.dispatch(action)
+        hackedReadStatus = !hackedReadStatus
     }
 }
 

@@ -22,7 +22,6 @@
 
 /* Begin PBXBuildFile section */
 		74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74036CBF211B882100E462C2 /* PeriodDataViewController.swift */; };
-		7403F7E220EC04070097198F /* OrderStatusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7403F7E120EC04070097198F /* OrderStatusViewModel.swift */; };
 		7421344A210A323C00C13890 /* WooAnalyticsStat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74213449210A323C00C13890 /* WooAnalyticsStat.swift */; };
 		74334F36214AB130006D6AC5 /* ProductTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74334F34214AB12F006D6AC5 /* ProductTableViewCell.swift */; };
 		74334F37214AB130006D6AC5 /* ProductTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74334F35214AB12F006D6AC5 /* ProductTableViewCell.xib */; };
@@ -121,6 +120,7 @@
 		B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B59D1EE6219089A3009D1978 /* Noticons.ttf */; };
 		B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EE92190AE96009D1978 /* StorageNote+Woo.swift */; };
 		B59D1EEC2190B08B009D1978 /* Age.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EEB2190B08B009D1978 /* Age.swift */; };
+		B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D49CC219B587E006BF0AD /* UILabel+OrderStatus.swift */; };
 		B5A0369B214C0E8500774E2C /* CocoaLumberjack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A0369A214C0E8500774E2C /* CocoaLumberjack.swift */; };
 		B5A82EE221025C450053ADC8 /* FulfillViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A82EE121025C450053ADC8 /* FulfillViewController.swift */; };
 		B5A82EE521025E550053ADC8 /* FulfillViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5A82EE421025E550053ADC8 /* FulfillViewController.xib */; };
@@ -258,7 +258,6 @@
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74036CBF211B882100E462C2 /* PeriodDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodDataViewController.swift; sourceTree = "<group>"; };
-		7403F7E120EC04070097198F /* OrderStatusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusViewModel.swift; sourceTree = "<group>"; };
 		74213449210A323C00C13890 /* WooAnalyticsStat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalyticsStat.swift; sourceTree = "<group>"; };
 		74334F34214AB12F006D6AC5 /* ProductTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductTableViewCell.swift; sourceTree = "<group>"; };
 		74334F35214AB12F006D6AC5 /* ProductTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductTableViewCell.xib; sourceTree = "<group>"; };
@@ -366,6 +365,7 @@
 		B59D1EE6219089A3009D1978 /* Noticons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Noticons.ttf; sourceTree = "<group>"; };
 		B59D1EE92190AE96009D1978 /* StorageNote+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageNote+Woo.swift"; sourceTree = "<group>"; };
 		B59D1EEB2190B08B009D1978 /* Age.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Age.swift; sourceTree = "<group>"; };
+		B59D49CC219B587E006BF0AD /* UILabel+OrderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+OrderStatus.swift"; sourceTree = "<group>"; };
 		B59F38E020D40A24008C1829 /* WooCommerce.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerce.entitlements; sourceTree = "<group>"; };
 		B5A0369A214C0E8500774E2C /* CocoaLumberjack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaLumberjack.swift; sourceTree = "<group>"; };
 		B5A82EE121025C450053ADC8 /* FulfillViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FulfillViewController.swift; sourceTree = "<group>"; };
@@ -926,6 +926,7 @@
 				B5A82EE6210263460053ADC8 /* UIViewController+Helpers.swift */,
 				B5AA7B3E20ED81C2004DA14F /* UserDefaults+Woo.swift */,
 				CE021534215BE3AB00C19555 /* LoginNavigationController+Woo.swift */,
+				B59D49CC219B587E006BF0AD /* UILabel+OrderStatus.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -959,7 +960,6 @@
 			children = (
 				B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */,
 				CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */,
-				7403F7E120EC04070097198F /* OrderStatusViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -1406,6 +1406,7 @@
 				CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */,
 				CE21B3E020FFC59700A259D5 /* ProductDetailsTableViewCell.swift in Sources */,
 				B5DB01B52114AB2D00A4F797 /* FabricManager.swift in Sources */,
+				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
 				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
 				CE263DE6206ACD220015A693 /* NotificationsViewController.swift in Sources */,
@@ -1509,7 +1510,6 @@
 				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
 				74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */,
 				74AFF2EA211B9B1B0038153A /* StoreStatsViewController.swift in Sources */,
-				7403F7E220EC04070097198F /* OrderStatusViewModel.swift in Sources */,
 				CE021535215BE3AB00C19555 /* LoginNavigationController+Woo.swift in Sources */,
 				B541B223218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift in Sources */,
 				B50BB4162141828F00AF0F3C /* FooterSpinnerView.swift in Sources */,

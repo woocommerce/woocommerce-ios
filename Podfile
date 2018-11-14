@@ -4,7 +4,7 @@ use_frameworks!
 platform :ios, '11.0'
 workspace 'WooCommerce.xcworkspace'
 
-
+plugin 'cocoapods-repo-update'
 
 # Main Target!
 # ============

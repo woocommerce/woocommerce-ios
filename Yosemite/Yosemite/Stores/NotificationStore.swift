@@ -36,8 +36,10 @@ public class NotificationStore: Store {
             synchronizeNotification(with: noteId, onCompletion: onCompletion)
         case .updateLastSeen(let timestamp, let onCompletion):
             updateLastSeen(timestamp: timestamp, onCompletion: onCompletion)
-        case .updateReadStatus(let noteID, let read, let onCompletion):
-            updateReadStatus(noteID: noteID, read: read, onCompletion: onCompletion)
+        case .updateReadStatus(let noteId, let read, let onCompletion):
+            updateReadStatus(for: [noteId], read: read, onCompletion: onCompletion)
+        case .updateMultipleReadStatus(let noteIds, let read, let onCompletion):
+            updateReadStatus(for: noteIds, read: read, onCompletion: onCompletion)
         }
     }
 }
@@ -116,17 +118,18 @@ private extension NotificationStore {
     }
 
 
-    /// Updates the read status for the given notification ID
+    /// Updates the read status for the given notification ID(s)
     ///
-    func updateReadStatus(noteID: Int64, read: Bool, onCompletion: @escaping (Error?) -> Void) {
+    func updateReadStatus(for noteIds: [Int64], read: Bool, onCompletion: @escaping (Error?) -> Void) {
         let remote = NotificationsRemote(network: network)
-        remote.updateReadStatus(String(noteID), read: read) { [weak self] (error) in
+
+        remote.updateReadStatus(noteIds: noteIds, read: read) { [weak self] (error) in
             guard let `self` = self, error == nil else {
                 onCompletion(error)
                 return
             }
 
-            self.updateLocalNoteReadStatus(for: noteID, read: read) {
+            self.updateLocalNoteReadStatus(for: noteIds, read: read) {
                 onCompletion(nil)
             }
         }
@@ -186,20 +189,23 @@ extension NotificationStore {
         }
     }
 
-    /// Updates the read status for the given noteID in the Storage layer. If the local note to update cannot be found,
-    /// nothing is updated/created in storage.
+    /// Updates the read status for the specified Notifications. The callback happens on the Main Thread.
     ///
-    func updateLocalNoteReadStatus(for noteID: Int64, read: Bool, completion: (() -> Void)? = nil) {
-        assert(Thread.isMainThread)
-        let storage = storageManager.viewStorage
-        guard let storageNote = storage.loadNotification(noteID: noteID) else {
-            completion?()
-            return
+    func updateLocalNoteReadStatus(for noteIDs: [Int64], read: Bool, completion: (() -> Void)? = nil) {
+        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
+
+        derivedStorage.perform {
+            let notifications = noteIDs.compactMap { derivedStorage.loadNotification(noteID: $0) }
+            for note in notifications {
+                note.read = read
+            }
         }
 
-        storageNote.read = read
-        storage.saveIfNeeded()
-        completion?()
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async {
+                completion?()
+            }
+        }
     }
 
     /// Given a collection of NoteHash Entities, this method will determine the `.noteID`'s of those entities that

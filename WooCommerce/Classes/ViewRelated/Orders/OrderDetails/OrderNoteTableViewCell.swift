@@ -85,8 +85,9 @@ private extension OrderNoteTableViewCell {
     ///
     func configureLabels() {
         dateLabel.applyBodyStyle()
-        statusLabel.applyBodyStyle()
         noteLabel.applyBodyStyle()
+        statusLabel.applyBodyStyle()
+        statusLabel.textColor = StyleManager.wooGreyMid
     }
 
     /// Setup: Icon Button

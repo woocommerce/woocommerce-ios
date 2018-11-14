@@ -3,6 +3,7 @@ import Gridicons
 import Yosemite
 import WordPressUI
 import SafariServices
+import Gridicons
 
 
 // MARK: - NotificationsViewController
@@ -12,6 +13,10 @@ class NotificationsViewController: UIViewController {
     /// Main TableView.
     ///
     @IBOutlet private var tableView: UITableView!
+
+    /// Haptic Feedback!
+    ///
+    private let hapticGenerator = UINotificationFeedbackGenerator()
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Notes in sync.
     ///
@@ -67,6 +72,12 @@ class NotificationsViewController: UIViewController {
         return resultsController.isEmpty
     }
 
+    /// Returns a collection of every Unreead Notification
+    ///
+    private var unreadNotes: [Note] {
+        return resultsController.fetchedObjects.filter { $0.read == false }
+    }
+
 
     // MARK: - View Lifecycle
 
@@ -80,6 +91,7 @@ class NotificationsViewController: UIViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
 
         configureNavigationItem()
+        configureNavigationBarButtons()
         configureTableView()
         configureTableViewCells()
         configureResultsController()
@@ -109,6 +121,20 @@ private extension NotificationsViewController {
     func configureNavigationItem() {
         // Don't show the Settings title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+    }
+
+    /// Setup: NavigationBar Buttons
+    ///
+    func configureNavigationBarButtons() {
+        let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
+                                             style: .plain,
+                                             target: self,
+                                             action: #selector(markAllAsRead))
+        rightBarButton.tintColor = .white
+        rightBarButton.accessibilityTraits = .button
+        rightBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Notifications as Read Button")
+        rightBarButton.accessibilityHint = NSLocalizedString("Marks Every Notification as Read", comment: "VoiceOver accessibility hint for the Mark All Notifications as Read Action")
+        navigationItem.rightBarButtonItem = rightBarButton
     }
 
     /// Setup: TableView
@@ -149,10 +175,23 @@ private extension NotificationsViewController {
             sender.endRefreshing()
         }
     }
+
+    @IBAction func markAllAsRead() {
+        let identifiers = unreadNotes.map { $0.noteId }
+        guard identifiers.isEmpty == false else {
+            DDLogVerbose("# Every single notification is already marked as Read!")
+            return
+        }
+
+        hapticGenerator.prepare()
+        hapticGenerator.notificationOccurred(.success)
+
+        markAsRead(identifiers: identifiers)
+    }
 }
 
 
-// MARK: - Sync'ing Helpers
+// MARK: - Yosemite Wrappers
 //
 private extension NotificationsViewController {
 
@@ -169,6 +208,18 @@ private extension NotificationsViewController {
         }
 
         transitionToSyncingState()
+        StoresManager.shared.dispatch(action)
+    }
+
+    /// Marks the specified collection of Notifications as Read.
+    ///
+    func markAsRead(identifiers: [Int64]) {
+        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { error in
+            if let error = error {
+                DDLogError("⛔️ Error marking notifications as read: \(error)")
+            }
+        }
+
         StoresManager.shared.dispatch(action)
     }
 }

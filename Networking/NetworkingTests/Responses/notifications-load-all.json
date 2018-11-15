@@ -1228,6 +1228,7 @@
         "id": 100009,
         "note_hash": 987654,
         "type": "comment",
+        "subtype": "store_review",
         "read": 1,
         "noticon": "\uf300",
         "timestamp": "2018-10-19T12:56:47+00:00",

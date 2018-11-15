@@ -10,6 +10,7 @@ extension Note {
 
     @NSManaged public var noteID: Int64
     @NSManaged public var noteHash: Int64
+    @NSManaged public var siteID: Int64
     @NSManaged public var read: Bool
     @NSManaged public var icon: String?
     @NSManaged public var noticon: String?

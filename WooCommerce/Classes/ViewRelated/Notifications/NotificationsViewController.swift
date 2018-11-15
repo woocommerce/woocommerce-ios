@@ -30,7 +30,10 @@ class NotificationsViewController: UIViewController {
     /// Store Notifications CoreData Filter.
     ///
     private var filter: NSPredicate {
-        return NSPredicate(format: "type == %@ OR subtype == %@", Note.Kind.storeOrder.rawValue, Note.Subkind.storeReview.rawValue)
+        let typePredicate = NSPredicate(format: "type == %@ OR subtype == %@", Note.Kind.storeOrder.rawValue, Note.Subkind.storeReview.rawValue)
+        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [typePredicate, sitePredicate])
     }
 
     /// Pull To Refresh Support.

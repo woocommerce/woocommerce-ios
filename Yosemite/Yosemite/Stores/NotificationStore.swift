@@ -121,11 +121,26 @@ private extension NotificationStore {
     /// Updates the read status for the given notification ID(s)
     ///
     func updateReadStatus(for noteIds: [Int64], read: Bool, onCompletion: @escaping (Error?) -> Void) {
-        let remote = NotificationsRemote(network: network)
+        /// Optimistically Update
+        ///
+        updateLocalNoteReadStatus(for: noteIds, read: read)
 
+        /// On error we'll just mark the Note for Refresh
+        ///
+        let remote = NotificationsRemote(network: network)
         remote.updateReadStatus(noteIds: noteIds, read: read) { error in
             guard let error = error else {
-                onCompletion(nil)
+
+                /// What is this about:
+                /// Notice that there are few conditions in which the Network Request's callback may run *before*
+                /// the Optimisitc Update, such as in Unit Tests.
+                /// This may cause the Callback to run before the Read Flag has been toggled, which isn't cool.
+                /// *FORGIVE ME*, this is a workaround: the onCompletion closure must run after a No-OP in the derived
+                /// storage.
+                ///
+                self.performSharedDerivedStorageNoOp {
+                    onCompletion(nil)
+                }
                 return
             }
 
@@ -133,8 +148,6 @@ private extension NotificationStore {
                 onCompletion(error)
             }
         }
-
-        updateLocalNoteReadStatus(for: noteIds, read: read)
     }
 }
 
@@ -259,6 +272,16 @@ extension NotificationStore {
                 return
             }
 
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Runs a No-OP in the Shared Derived Storage. On completion, the callback will be executed on the main thread.
+    ///
+    func performSharedDerivedStorageNoOp(onCompletion: @escaping () -> Void) {
+        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
+
+        derivedStorage.perform {
             DispatchQueue.main.async(execute: onCompletion)
         }
     }

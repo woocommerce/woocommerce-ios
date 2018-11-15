@@ -16,6 +16,7 @@
         <attribute name="noteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="noticon" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="read" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="siteID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="subject" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="subtype" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="timestamp" attributeType="String" syncable="YES"/>
@@ -176,7 +177,7 @@
     </entity>
     <elements>
         <element name="Account" positionX="-200.9765625" positionY="63.5625" width="128" height="120"/>
-        <element name="Note" positionX="-162" positionY="180" width="128" height="255"/>
+        <element name="Note" positionX="-162" positionY="180" width="128" height="270"/>
         <element name="Order" positionX="-20" positionY="27" width="128" height="690"/>
         <element name="OrderCoupon" positionX="-206.01953125" positionY="379.74609375" width="128" height="120"/>
         <element name="OrderItem" positionX="-364.890625" positionY="379.453125" width="128" height="225"/>

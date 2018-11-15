@@ -123,16 +123,18 @@ private extension NotificationStore {
     func updateReadStatus(for noteIds: [Int64], read: Bool, onCompletion: @escaping (Error?) -> Void) {
         let remote = NotificationsRemote(network: network)
 
-        remote.updateReadStatus(noteIds: noteIds, read: read) { [weak self] (error) in
-            guard let `self` = self, error == nil else {
-                onCompletion(error)
+        remote.updateReadStatus(noteIds: noteIds, read: read) { error in
+            guard let error = error else {
+                onCompletion(nil)
                 return
             }
 
-            self.updateLocalNoteReadStatus(for: noteIds, read: read) {
-                onCompletion(nil)
+            self.invalidateCache(for: noteIds) {
+                onCompletion(error)
             }
         }
+
+        updateLocalNoteReadStatus(for: noteIds, read: read)
     }
 }
 
@@ -172,7 +174,7 @@ extension NotificationStore {
     ///     - remoteNotes: Collection of Notes
     ///     - completion: Callback to be executed on completion
     ///
-    func updateLocalNotes(with remoteNotes: [Note], completion: (() -> Void)? = nil) {
+    func updateLocalNotes(with remoteNotes: [Note], onCompletion: (() -> Void)? = nil) {
         let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
 
         derivedStorage.perform {
@@ -183,15 +185,17 @@ extension NotificationStore {
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async {
-                completion?()
+            guard let onCompletion = onCompletion else {
+                return
             }
+
+            DispatchQueue.main.async(execute: onCompletion)
         }
     }
 
     /// Updates the read status for the specified Notifications. The callback happens on the Main Thread.
     ///
-    func updateLocalNoteReadStatus(for noteIDs: [Int64], read: Bool, completion: (() -> Void)? = nil) {
+    func updateLocalNoteReadStatus(for noteIDs: [Int64], read: Bool, onCompletion: (() -> Void)? = nil) {
         let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
 
         derivedStorage.perform {
@@ -202,9 +206,11 @@ extension NotificationStore {
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async {
-                completion?()
+            guard let onCompletion = onCompletion else {
+                return
             }
+
+            DispatchQueue.main.async(execute: onCompletion)
         }
     }
 
@@ -233,6 +239,27 @@ extension NotificationStore {
             DispatchQueue.main.async {
                 completion(outdatedIds)
             }
+        }
+    }
+
+    ///
+    ///
+    func invalidateCache(for noteIds: [Int64], onCompletion: (() -> Void)? = nil) {
+        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
+
+        derivedStorage.perform {
+            let notifications = noteIds.compactMap { derivedStorage.loadNotification(noteID: $0) }
+            for note in notifications {
+                note.noteHash = Int64.min
+            }
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            guard let onCompletion = onCompletion else {
+                return
+            }
+
+            DispatchQueue.main.async(execute: onCompletion)
         }
     }
 }

@@ -126,3 +126,33 @@ extension MainTabBarController {
         return navController.topViewController as? T
     }
 }
+
+
+// MARK: - Tab dot madness!
+//
+extension MainTabBarController {
+
+    func showDotOnTab(index: Int, radius: CGFloat = 5, color: UIColor = StyleManager.wooAccent, xOffset: CGFloat = 0, yOffset: CGFloat = 0) {
+        let tag = index + 42
+
+        hideDotOnTab(index: index)
+        let dotDiameter = radius * 2
+        let xOffsetBase = CGFloat(21)
+        let yOffsetBase = CGFloat(3)
+
+        let dot = UIView(frame: CGRect(x: xOffsetBase + xOffset, y: yOffsetBase + yOffset, width: dotDiameter, height: dotDiameter))
+        dot.tag = tag
+        dot.backgroundColor = color
+        dot.layer.cornerRadius = radius
+        tabBar.subviews[index + 1].subviews.first?.insertSubview(dot, at: 1)
+    }
+
+    func hideDotOnTab(index: Int) {
+        let tag = index + 42
+        if let subviews = tabBar.subviews[index + 1].subviews.first?.subviews {
+            for subview in subviews where subview.tag == tag {
+                subview.removeFromSuperview()
+            }
+        }
+    }
+}

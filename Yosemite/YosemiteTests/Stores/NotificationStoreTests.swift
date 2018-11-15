@@ -293,8 +293,34 @@ class NotificationStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `NotificationAction.updateReadStatus` effectively invalidates the note's hash on error.
+    ///
+    func testMarkAsReadInvalidatesTheNotificationHashOnError() {
+        let expectation = self.expectation(description: "Update read status success response")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let originalNote = sampleNotification()
 
-    // MARK: - NotificationAction.updateReadStatus
+        network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_error")
+        let action = NotificationAction.updateReadStatus(noteId: originalNote.noteId, read: true) { [weak self] (error) in
+            XCTAssertNotNil(error)
+
+            let storageNote = self?.viewStorage.loadNotification(noteID: originalNote.noteId)
+            XCTAssertEqual(storageNote?.toReadOnly().hash, Int64.min)
+
+            expectation.fulfill()
+        }
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
+        noteStore.updateLocalNotes(with: [originalNote]) { [weak self] in
+            XCTAssertEqual(self?.viewStorage.countObjects(ofType: Storage.Note.self), 1)
+            noteStore.onAction(action)
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - NotificationAction.updateMultipleReadStatus
 
     /// Verifies that NotificationAction.updateMultipleReadStatus handles a success response from the backend properly
     ///
@@ -322,7 +348,6 @@ class NotificationStoreTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
-
 }
 
 

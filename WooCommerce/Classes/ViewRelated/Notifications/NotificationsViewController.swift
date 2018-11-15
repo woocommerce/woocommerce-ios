@@ -123,15 +123,15 @@ private extension NotificationsViewController {
     /// Setup: NavigationBar Buttons
     ///
     func configureNavigationBarButtons() {
-        let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
+        let leftBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.checkmark),
                                              style: .plain,
                                              target: self,
                                              action: #selector(markAllAsRead))
-        rightBarButton.tintColor = .white
-        rightBarButton.accessibilityTraits = .button
-        rightBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Notifications as Read Button")
-        rightBarButton.accessibilityHint = NSLocalizedString("Marks Every Notification as Read", comment: "VoiceOver accessibility hint for the Mark All Notifications as Read Action")
-        navigationItem.rightBarButtonItem = rightBarButton
+        leftBarButton.tintColor = .white
+        leftBarButton.accessibilityTraits = .button
+        leftBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Notifications as Read Button")
+        leftBarButton.accessibilityHint = NSLocalizedString("Marks Every Notification as Read", comment: "VoiceOver accessibility hint for the Mark All Notifications as Read Action")
+        navigationItem.leftBarButtonItem = leftBarButton
     }
 
     /// Setup: TableView

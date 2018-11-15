@@ -242,7 +242,7 @@ extension NotificationStore {
         }
     }
 
-    ///
+    /// Invalidates the Hash for the specified Notifications.
     ///
     func invalidateCache(for noteIds: [Int64], onCompletion: (() -> Void)? = nil) {
         let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)

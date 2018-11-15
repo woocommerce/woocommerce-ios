@@ -60,11 +60,11 @@ extension StringStyles {
     /// Styles: Notifications List / Subject Block
     ///
     static let subject: StringStyles = {
-        let regular: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline, .foregroundColor: StyleManager.defaultTextColor]
-        let bold: Style         = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.bold]
-        let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.italics]
-        let italics: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.italics]
-        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.noticon(forStyle: .subheadline), .foregroundColor: StyleManager.defaultTextColor]
+        let regular: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
+        let bold: Style         = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold]
+        let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics]
+        let italics: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics]
+        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.noticon(forStyle: .body), .foregroundColor: StyleManager.wooGreyMid]
 
         return StringStyles(regular: regular, bold: bold, blockquote: blockquote, italics: italics, match: nil, noticon: noticon)
     }()
@@ -73,8 +73,7 @@ extension StringStyles {
     /// Styles: Notifications List / Snippet Block
     ///
     static let snippet: StringStyles = {
-        let regular: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.footnote, .foregroundColor: StyleManager.defaultTextColor]
-
+        let regular: Style = [.paragraphStyle: NSParagraphStyle.footnote, .font: UIFont.footnote, .foregroundColor: StyleManager.defaultTextColor]
         return StringStyles(regular: regular)
     }()
 
@@ -108,7 +107,7 @@ extension StringStyles {
         let match: Style        = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold, .foregroundColor: StyleManager.defaultTextColor]
         let noticon: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.noticon(forStyle: .body), .foregroundColor: StyleManager.defaultTextColor]
         let italic: Style       = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics, .foregroundColor: StyleManager.defaultTextColor]
-        let link: Style         = [.foregroundColor: StyleManager.defaultTextColor]
+        let link: Style         = [.foregroundColor: StyleManager.wooCommerceBrandColor]
 
         return StringStyles(regular: regular, bold: bold, blockquote: blockquote, match: match, noticon: noticon, link: link)
     }()

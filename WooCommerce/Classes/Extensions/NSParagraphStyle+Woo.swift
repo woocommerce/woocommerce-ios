@@ -18,6 +18,12 @@ extension NSParagraphStyle {
         return NSMutableParagraphStyle(standardLineHeightUsingFont: UIFont.body)
     }
 
+    /// Returns a ParagraphStyle with it's minimum Line Height set to accomodate `UIFont.footnote`
+    ///
+    static var footnote: NSParagraphStyle {
+        return NSMutableParagraphStyle(standardLineHeightUsingFont: UIFont.footnote)
+    }
+
     /// Returns a ParagraphStyle with it's minimum Line Height set to accomodate `UIFont.body` / Centered
     ///
     static var badge: NSParagraphStyle {

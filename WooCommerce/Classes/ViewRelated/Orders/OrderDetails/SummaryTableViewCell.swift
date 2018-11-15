@@ -1,51 +1,58 @@
 import UIKit
+import Yosemite
 
+
+// MARK: - SummaryTableViewCell
+//
 class SummaryTableViewCell: UITableViewCell {
+
+    /// Label: Title
+    ///
     @IBOutlet private weak var titleLabel: UILabel!
+
+    /// Label: Creation / Update Date
+    ///
     @IBOutlet private weak var createdLabel: UILabel!
+
+    /// Label: Payment Status
+    ///
     @IBOutlet private weak var paymentStatusLabel: PaddedLabel!
 
-    public var paymentBackgroundColor: UIColor = .clear
-
-
-    public var title: String? {
+    /// Title
+    ///
+    var title: String? {
         get {
             return titleLabel.text
         }
         set {
             titleLabel.text = newValue
-            titleLabel.applyHeadlineStyle()
         }
     }
 
-    public var dateCreated: String? {
+    /// Date
+    ///
+    var dateCreated: String? {
         get {
             return createdLabel.text
         }
         set {
             createdLabel.text = newValue
-            createdLabel.applyFootnoteStyle()
         }
     }
 
-    public var paymentStatus: String? {
-        get {
-            return paymentStatusLabel.text
-        }
-        set {
-            paymentStatusLabel.text = newValue
-            paymentStatusLabel.applyPaddedLabelDefaultStyles()
-            paymentStatusLabel.backgroundColor = paymentBackgroundColor
-        }
+    /// Displays the specified OrderStatus, and applies the right Label Style
+    ///
+    func display(orderStatus: OrderStatus) {
+        paymentStatusLabel.text = orderStatus.description
+        paymentStatusLabel.applyStyle(for: orderStatus)
     }
 
-    public var paymentBorderColor: CGColor? {
-        get {
-            return paymentStatusLabel.layer.borderColor
-        }
-        set {
-            paymentStatusLabel.layer.borderColor = newValue
-        }
+
+    // MARK: - Overridden Methods
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        configureLabels()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -59,9 +66,28 @@ class SummaryTableViewCell: UITableViewCell {
             super.setHighlighted(highlighted, animated: animated)
         }
     }
+}
 
+
+// MARK: - Private
+//
+private extension SummaryTableViewCell {
+
+    /// Preserves the current Payment BG Color
+    ///
     func preserveLabelColors(action: () -> Void) {
+        let paymentColor = paymentStatusLabel.backgroundColor
+
         action()
-        paymentStatusLabel.backgroundColor = paymentBackgroundColor
+
+        paymentStatusLabel.backgroundColor = paymentColor
+    }
+
+    /// Setup: Labels
+    ///
+    func configureLabels() {
+        titleLabel.applyHeadlineStyle()
+        createdLabel.applyFootnoteStyle()
+        paymentStatusLabel.applyPaddedLabelDefaultStyles()
     }
 }

@@ -32,6 +32,8 @@ public class NotificationStore: Store {
         switch action {
         case .synchronizeNotifications(let onCompletion):
             synchronizeNotifications(onCompletion: onCompletion)
+        case .synchronizeNotification(let noteId, let onCompletion):
+            synchronizeNotification(with: noteId, onCompletion: onCompletion)
         case .updateLastSeen(let timestamp, let onCompletion):
             updateLastSeen(timestamp: timestamp, onCompletion: onCompletion)
         case .updateReadStatus(let noteID, let read, let onCompletion):
@@ -81,7 +83,28 @@ private extension NotificationStore {
         }
     }
 
-    
+
+    /// Synchronizes the Notification matching the specified ID, and updates the local entity.
+    ///
+    /// - Parameters:
+    ///     - noteId: Notification ID of the note to be downloaded.
+    ///     - onCompletion: Closure to be executed on completion.
+    ///
+    func synchronizeNotification(with noteId: Int64, onCompletion: @escaping (Error?) -> Void) {
+        let remote = NotificationsRemote(network: network)
+
+        remote.loadNotes(noteIds: [noteId]) { notes, error in
+            guard let notes = notes else {
+                onCompletion(error)
+                return
+            }
+
+            self.updateLocalNotes(with: notes) {
+                onCompletion(nil)
+            }
+        }
+    }
+
 
     /// Updates the last seen notification
     ///
@@ -91,6 +114,7 @@ private extension NotificationStore {
             onCompletion(error)
         }
     }
+
 
     /// Updates the read status for the given notification ID
     ///

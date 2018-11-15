@@ -3,6 +3,9 @@
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
 ## Model 6
+- @jleandroperez 2018-11-12
+    - New `Note.subtype` property (optional type)
+
 - @thuycopeland 2018-11-8
     - Added new attribute: `isJetpackInstalled`, to site entity
     - Added new attribute: `plan`, to site entity

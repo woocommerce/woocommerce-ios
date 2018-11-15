@@ -1,21 +1,40 @@
 import UIKit
 
 
+// MARK: - OrderListCell
+//
 class OrderListCell: UITableViewCell {
-    @IBOutlet var titleLabel: UILabel!
-    @IBOutlet var totalLabel: UILabel!
-    @IBOutlet var paymentStatusLabel: PaddedLabel!
+
+    /// Order's Title
+    ///
+    @IBOutlet private var titleLabel: UILabel!
+
+    /// Order's Total
+    ///
+    @IBOutlet private var totalLabel: UILabel!
+
+    /// Payment
+    ///
+    @IBOutlet private var paymentStatusLabel: PaddedLabel!
 
 
+    /// Renders the specified Order ViewModel
+    ///
     func configureCell(viewModel: OrderDetailsViewModel) {
         titleLabel.text = viewModel.summaryTitle
-        titleLabel.applyHeadlineStyle()
 
         totalLabel.text = viewModel.totalFriendlyString
-        totalLabel.applyBodyStyle()
 
-        paymentStatusLabel.text = viewModel.paymentStatus
-        paymentStatusLabel.applyStatusStyle(for: viewModel.orderStatusViewModel.orderStatus)
+        paymentStatusLabel.text = viewModel.order.status.description
+        paymentStatusLabel.applyStyle(for: viewModel.order.status)
+    }
+
+
+    // MARK: - Overridden Methods
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        configureLabels()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -34,12 +53,28 @@ class OrderListCell: UITableViewCell {
         super.prepareForReuse()
         paymentStatusLabel.layer.borderColor = UIColor.clear.cgColor
     }
+}
 
+
+// MARK: - Private
+//
+private extension OrderListCell {
+
+    /// Preserves the current Payment BG Color
+    ///
     func preserveLabelColors(action: () -> Void) {
         let paymentColor = paymentStatusLabel.backgroundColor
 
         action()
 
         paymentStatusLabel.backgroundColor = paymentColor
+    }
+
+    /// Setup: Labels
+    ///
+    func configureLabels() {
+        titleLabel.applyHeadlineStyle()
+        totalLabel.applyBodyStyle()
+        paymentStatusLabel.applyFootnoteStyle()
     }
 }

@@ -332,14 +332,16 @@ class NotificationStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_success")
 
-        let action = NotificationAction.updateMultipleReadStatus(noteIds: [originalNote.noteId], read: true) { [weak self] (error) in
-            let storageNote = self?.viewStorage.loadNotification(noteID: originalNote.noteId)
-            XCTAssertEqual(storageNote?.toReadOnly().read, expectedNote.read)
+        // Mark as Read
+        let action = NotificationAction.updateMultipleReadStatus(noteIds: [originalNote.noteId], read: true) { error in
             XCTAssertNil(error)
 
+            let reloadedNote = self.viewStorage.loadNotification(noteID: originalNote.noteId)?.toReadOnly()
+            XCTAssertEqual(reloadedNote?.read, expectedNote.read)
             expectation.fulfill()
         }
 
+        // Insert the Note
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
         noteStore.updateLocalNotes(with: [originalNote]) { [weak self] in
             XCTAssertEqual(self?.viewStorage.countObjects(ofType: Storage.Note.self), 1)

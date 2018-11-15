@@ -43,15 +43,25 @@ public class NotificationsRemote: Remote {
     ///     - read: The new Read Status to be set.
     ///     - completion: Closure to be executed on completion, indicating whether the OP was successful or not.
     ///
-    public func updateReadStatus(_ notificationID: String, read: Bool, completion: @escaping (Error?) -> Void) {
+    public func updateReadStatus(noteIds: [Int64], read: Bool, completion: @escaping (Error?) -> Void) {
         // Note: Isn't the API wonderful?
+        //
         let booleanFromPlanetMars = read ? Constants.readAsInteger : Constants.unreadAsInteger
-        let payload = [notificationID: booleanFromPlanetMars]
 
-        var parameters = [String: String]()
-        if let encoded = payload.toJSONEncoded() {
-            parameters[ParameterKeys.counts] = encoded
+        // Payload: [NoteID: ReadStatus]
+        //
+        var payload = [String: Int]()
+
+        for noteId in noteIds {
+            let noteIdAsString = String(noteId)
+            payload[noteIdAsString] = booleanFromPlanetMars
         }
+
+        // Parameters: [.counts: [Payload]]
+        //
+        let parameters: [String: Any] = [
+            ParameterKeys.counts: payload
+        ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.read, parameters: parameters)
         let mapper = SuccessResultMapper()

@@ -136,7 +136,7 @@ class NotificationStoreTests: XCTestCase {
             XCTAssertNotNil(note)
 
             let request = self.network.requestsForResponseData[0] as! DotcomRequest
-            XCTAssertEqual(request.parameters?["ids"], String(notificationId))
+            XCTAssertEqual(request.parameters?["ids"] as? String, String(notificationId))
 
             expectation.fulfill()
         }
@@ -207,7 +207,7 @@ class NotificationStoreTests: XCTestCase {
         let expectedNote = sampleNotificationMutated()
 
         network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_success")
-        let action = NotificationAction.updateReadStatus(noteID: originalNote.noteId, read: true) { [weak self] (error) in
+        let action = NotificationAction.updateReadStatus(noteId: originalNote.noteId, read: true) { [weak self] (error) in
             XCTAssertNil(error)
             let storageNote = self?.viewStorage.loadNotification(noteID: originalNote.noteId)
             XCTAssertEqual(storageNote?.toReadOnly().read, expectedNote.read)
@@ -230,7 +230,7 @@ class NotificationStoreTests: XCTestCase {
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_error")
-        let action = NotificationAction.updateReadStatus(noteID: 9999, read: true) { (error) in
+        let action = NotificationAction.updateReadStatus(noteId: 9999, read: true) { (error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -245,7 +245,7 @@ class NotificationStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Update notification read status empty response")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = NotificationAction.updateReadStatus(noteID: 9999, read: true) { (error) in
+        let action = NotificationAction.updateReadStatus(noteId: 9999, read: true) { (error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -265,7 +265,7 @@ class NotificationStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
         noteStore.updateLocalNotes(with: [originalNote]) { [weak self] in
             XCTAssertEqual(self?.viewStorage.countObjects(ofType: Storage.Note.self), 1)
-            noteStore.updateLocalNoteReadStatus(for: originalNote.noteId, read: true) {
+            noteStore.updateLocalNoteReadStatus(for: [originalNote.noteId], read: true) {
                 XCTAssertEqual(self?.viewStorage.countObjects(ofType: Storage.Note.self), 1)
                 let storageNote = self?.viewStorage.loadNotification(noteID: originalNote.noteId)
                 XCTAssertEqual(storageNote?.toReadOnly().read, expectedNote.read)
@@ -283,11 +283,69 @@ class NotificationStoreTests: XCTestCase {
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
-        noteStore.updateLocalNoteReadStatus(for: 9999, read: true) { [weak self] in
+        noteStore.updateLocalNoteReadStatus(for: [9999], read: true) { [weak self] in
             XCTAssertEqual(self?.viewStorage.countObjects(ofType: Storage.Note.self), 0)
             let storageNote = self?.viewStorage.loadNotification(noteID: 9999)
             XCTAssertNil(storageNote)
             expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `NotificationAction.updateReadStatus` effectively invalidates the note's hash on error.
+    ///
+    func testMarkAsReadInvalidatesTheNotificationHashOnError() {
+        let expectation = self.expectation(description: "Update read status success response")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let originalNote = sampleNotification()
+
+        network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_error")
+        let action = NotificationAction.updateReadStatus(noteId: originalNote.noteId, read: true) { [weak self] (error) in
+            XCTAssertNotNil(error)
+
+            let storageNote = self?.viewStorage.loadNotification(noteID: originalNote.noteId)
+            XCTAssertEqual(storageNote?.toReadOnly().hash, Int64.min)
+
+            expectation.fulfill()
+        }
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
+        noteStore.updateLocalNotes(with: [originalNote]) { [weak self] in
+            XCTAssertEqual(self?.viewStorage.countObjects(ofType: Storage.Note.self), 1)
+            noteStore.onAction(action)
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - NotificationAction.updateMultipleReadStatus
+
+    /// Verifies that NotificationAction.updateMultipleReadStatus handles a success response from the backend properly
+    ///
+    func testUpdateMultipleNotificationReadStatusEffectivelyPatchesLocalFlags() {
+        let expectation = self.expectation(description: "Update read status success response")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let originalNote = sampleNotification()
+        let expectedNote = sampleNotificationMutated()
+
+        network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_success")
+
+        // Mark as Read
+        let action = NotificationAction.updateMultipleReadStatus(noteIds: [originalNote.noteId], read: true) { error in
+            XCTAssertNil(error)
+
+            let reloadedNote = self.viewStorage.loadNotification(noteID: originalNote.noteId)?.toReadOnly()
+            XCTAssertEqual(reloadedNote?.read, expectedNote.read)
+            expectation.fulfill()
+        }
+
+        // Insert the Note
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
+        noteStore.updateLocalNotes(with: [originalNote]) { [weak self] in
+            XCTAssertEqual(self?.viewStorage.countObjects(ofType: Storage.Note.self), 1)
+            noteStore.onAction(action)
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)

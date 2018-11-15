@@ -72,12 +72,6 @@ class NotificationsViewController: UIViewController {
         return resultsController.isEmpty
     }
 
-    /// Returns a collection of every Unreead Notification
-    ///
-    private var unreadNotes: [Note] {
-        return resultsController.fetchedObjects.filter { $0.read == false }
-    }
-
 
     // MARK: - View Lifecycle
 
@@ -177,16 +171,14 @@ private extension NotificationsViewController {
     }
 
     @IBAction func markAllAsRead() {
-        let identifiers = unreadNotes.map { $0.noteId }
-        guard identifiers.isEmpty == false else {
+        let unread = resultsController.fetchedObjects.filter { $0.read == false }
+        if unread.isEmpty {
             DDLogVerbose("# Every single notification is already marked as Read!")
             return
         }
 
-        hapticGenerator.prepare()
+        markAsRead(notes: unread)
         hapticGenerator.notificationOccurred(.success)
-
-        markAsRead(identifiers: identifiers)
     }
 }
 
@@ -194,6 +186,19 @@ private extension NotificationsViewController {
 // MARK: - Yosemite Wrappers
 //
 private extension NotificationsViewController {
+
+    /// Marks the specified collection of Notifications as Read.
+    ///
+    func markAsRead(notes: [Note]) {
+        let identifiers = notes.map { $0.noteId }
+        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { error in
+            if let error = error {
+                DDLogError("⛔️ Error marking notifications as read: \(error)")
+            }
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
@@ -208,18 +213,6 @@ private extension NotificationsViewController {
         }
 
         transitionToSyncingState()
-        StoresManager.shared.dispatch(action)
-    }
-
-    /// Marks the specified collection of Notifications as Read.
-    ///
-    func markAsRead(identifiers: [Int64]) {
-        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { error in
-            if let error = error {
-                DDLogError("⛔️ Error marking notifications as read: \(error)")
-            }
-        }
-
         StoresManager.shared.dispatch(action)
     }
 }

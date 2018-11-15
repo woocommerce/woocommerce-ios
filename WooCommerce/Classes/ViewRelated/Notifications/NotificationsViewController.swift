@@ -53,8 +53,6 @@ class NotificationsViewController: UIViewController {
     ///
     private let formatter = StringFormatter()
 
-    private var nextStatus = false
-
     /// UI Active State
     ///
     private var state: State = .results {
@@ -173,7 +171,11 @@ private extension NotificationsViewController {
     }
 
     @IBAction func markAllAsRead() {
-        let unread = resultsController.fetchedObjects
+        let unread = resultsController.fetchedObjects.filter { $0.read == false }
+        if unread.isEmpty {
+            DDLogVerbose("# Every single notification is already marked as Read!")
+            return
+        }
 
         markAsRead(notes: unread)
         hapticGenerator.notificationOccurred(.success)
@@ -189,14 +191,13 @@ private extension NotificationsViewController {
     ///
     func markAsRead(notes: [Note]) {
         let identifiers = notes.map { $0.noteId }
-        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: nextStatus) { error in
+        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { error in
             if let error = error {
                 DDLogError("⛔️ Error marking notifications as read: \(error)")
             }
         }
 
         StoresManager.shared.dispatch(action)
-        nextStatus = !nextStatus
     }
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.

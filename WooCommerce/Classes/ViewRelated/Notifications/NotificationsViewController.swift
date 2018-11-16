@@ -75,6 +75,11 @@ class NotificationsViewController: UIViewController {
         return resultsController.isEmpty
     }
 
+    /// The current unread Notes.
+    ///
+    private var unreadNotes: [Note] {
+        return resultsController.fetchedObjects.filter { $0.read == false }
+    }
 
     // MARK: - View Lifecycle
 
@@ -147,6 +152,14 @@ private extension NotificationsViewController {
     ///
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
+        resultsController.onDidChangeContent = { [weak self] in
+            // FIXME: This should be removed once `PushNotificationsManager` is in place
+            self?.updateNotificationsTabIfNeeded()
+        }
+        resultsController.onDidResetContent = {
+            // FIXME: This should be removed once `PushNotificationsManager` is in place
+            MainTabBarController.hideDotOn(.notifications)
+        }
         try? resultsController.performFetch()
     }
 
@@ -174,13 +187,12 @@ private extension NotificationsViewController {
     }
 
     @IBAction func markAllAsRead() {
-        let unread = resultsController.fetchedObjects.filter { $0.read == false }
-        if unread.isEmpty {
+        if unreadNotes.isEmpty {
             DDLogVerbose("# Every single notification is already marked as Read!")
             return
         }
 
-        markAsRead(notes: unread)
+        markAsRead(notes: unreadNotes)
         hapticGenerator.notificationOccurred(.success)
     }
 }
@@ -443,6 +455,22 @@ private extension NotificationsViewController {
     ///
     func transitionToResultsUpdatedState() {
         state = isEmpty ? .empty : .results
+    }
+}
+
+
+// MARK: - Private Helpers
+//
+private extension NotificationsViewController {
+
+    // FIXME: This should be removed once `PushNotificationsManager` is in place
+    func updateNotificationsTabIfNeeded() {
+        guard !unreadNotes.isEmpty else {
+            MainTabBarController.hideDotOn(.notifications)
+            return
+        }
+        
+        MainTabBarController.showDotOn(.notifications)
     }
 }
 

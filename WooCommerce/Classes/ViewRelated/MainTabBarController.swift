@@ -143,7 +143,9 @@ extension MainTabBarController {
                                              width: DotConstants.diameter,
                                              height: DotConstants.diameter), borderWidth: DotConstants.borderWidth)
         dot.tag = dotTag(for: tab)
+        dot.isHidden = true
         tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(dot, at: 1)
+        dot.fadeIn()
     }
 
     static func hideDotOn(_ tab: WooTab) {
@@ -154,7 +156,9 @@ extension MainTabBarController {
         let tag = dotTag(for: tab)
         if let subviews = tabBar.subviews[tab.rawValue].subviews.first?.subviews {
             for subview in subviews where subview.tag == tag {
-                subview.removeFromSuperview()
+                subview.fadeOut() { _ in
+                    subview.removeFromSuperview()
+                }
             }
         }
     }

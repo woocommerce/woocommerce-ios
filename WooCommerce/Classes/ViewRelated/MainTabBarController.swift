@@ -132,7 +132,11 @@ extension MainTabBarController {
 //
 extension MainTabBarController {
 
-    func showDotOn(_ tab: WooTab) {
+    static func showDotOn(_ tab: WooTab) {
+        guard let tabBar = AppDelegate.shared.tabBarController?.tabBar else {
+            return
+        }
+
         hideDotOn(tab)
         let dot = GreenDotView(frame: CGRect(x: DotConstants.xOffset,
                                              y: DotConstants.yOffset,
@@ -142,7 +146,11 @@ extension MainTabBarController {
         tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(dot, at: 1)
     }
 
-    func hideDotOn(_ tab: WooTab) {
+    static func hideDotOn(_ tab: WooTab) {
+        guard let tabBar = AppDelegate.shared.tabBarController?.tabBar else {
+            return
+        }
+
         let tag = dotTag(for: tab)
         if let subviews = tabBar.subviews[tab.rawValue].subviews.first?.subviews {
             for subview in subviews where subview.tag == tag {
@@ -151,7 +159,7 @@ extension MainTabBarController {
         }
     }
 
-    private func dotTag(for tab: WooTab) -> Int {
+    private static func dotTag(for tab: WooTab) -> Int {
         return tab.rawValue + DotConstants.tagOffset
     }
 }
@@ -193,7 +201,7 @@ private class GreenDotView: UIView {
     }
 
     private func setupSubviews() {
-        self.backgroundColor = .clear
+        backgroundColor = .clear
     }
 
     override func draw(_ rect: CGRect) {

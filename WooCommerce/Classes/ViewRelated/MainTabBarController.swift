@@ -134,24 +134,27 @@ extension MainTabBarController {
 
     func showDotOn(_ tab: WooTab) {
         hideDotOn(tab)
-        let tag = tab.rawValue + DotConstants.tagOffset
         let dot = UIView(frame: CGRect(x: DotConstants.xOffset,
                                        y: DotConstants.yOffset,
                                        width: DotConstants.diameter,
                                        height: DotConstants.diameter))
-        dot.tag = tag
+        dot.tag = dotTag(for: tab)
         dot.backgroundColor = StyleManager.wooAccent
         dot.layer.cornerRadius = (DotConstants.diameter / 2)
         tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(dot, at: 1)
     }
 
     func hideDotOn(_ tab: WooTab) {
-        let tag = tab.rawValue + DotConstants.tagOffset
+        let tag = dotTag(for: tab)
         if let subviews = tabBar.subviews[tab.rawValue].subviews.first?.subviews {
             for subview in subviews where subview.tag == tag {
                 subview.removeFromSuperview()
             }
         }
+    }
+
+    private func dotTag(for tab: WooTab) -> Int {
+        return tab.rawValue + DotConstants.tagOffset
     }
 }
 

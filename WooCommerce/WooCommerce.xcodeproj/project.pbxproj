@@ -125,6 +125,7 @@
 		B59D1EEC2190B08B009D1978 /* Age.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EEB2190B08B009D1978 /* Age.swift */; };
 		B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D49CC219B587E006BF0AD /* UILabel+OrderStatus.swift */; };
 		B5A0369B214C0E8500774E2C /* CocoaLumberjack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A0369A214C0E8500774E2C /* CocoaLumberjack.swift */; };
+		B5A56BF5219F5AB20065A902 /* NSNotificationName+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A56BF4219F5AB20065A902 /* NSNotificationName+Woo.swift */; };
 		B5A82EE221025C450053ADC8 /* FulfillViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A82EE121025C450053ADC8 /* FulfillViewController.swift */; };
 		B5A82EE521025E550053ADC8 /* FulfillViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5A82EE421025E550053ADC8 /* FulfillViewController.xib */; };
 		B5A82EE7210263460053ADC8 /* UIViewController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A82EE6210263460053ADC8 /* UIViewController+Helpers.swift */; };
@@ -389,6 +390,7 @@
 		B59D49CC219B587E006BF0AD /* UILabel+OrderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+OrderStatus.swift"; sourceTree = "<group>"; };
 		B59F38E020D40A24008C1829 /* WooCommerce.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerce.entitlements; sourceTree = "<group>"; };
 		B5A0369A214C0E8500774E2C /* CocoaLumberjack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaLumberjack.swift; sourceTree = "<group>"; };
+		B5A56BF4219F5AB20065A902 /* NSNotificationName+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSNotificationName+Woo.swift"; sourceTree = "<group>"; };
 		B5A82EE121025C450053ADC8 /* FulfillViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FulfillViewController.swift; sourceTree = "<group>"; };
 		B5A82EE421025E550053ADC8 /* FulfillViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FulfillViewController.xib; sourceTree = "<group>"; };
 		B5A82EE6210263460053ADC8 /* UIViewController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Helpers.swift"; sourceTree = "<group>"; };
@@ -948,6 +950,7 @@
 				CE021534215BE3AB00C19555 /* LoginNavigationController+Woo.swift */,
 				B59D49CC219B587E006BF0AD /* UILabel+OrderStatus.swift */,
 				B53B3F38219C817800DF1EB6 /* UIStoryboard+Woo.swift */,
+				B5A56BF4219F5AB20065A902 /* NSNotificationName+Woo.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1537,6 +1540,7 @@
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				CE14452E2188C11700A991D8 /* ZendeskManager.swift in Sources */,
 				B5BE75DB213F1D1E00909A14 /* OverlayMessageView.swift in Sources */,
+				B5A56BF5219F5AB20065A902 /* NSNotificationName+Woo.swift in Sources */,
 				B541B2152189EEA1008FE7C1 /* Scanner+Helpers.swift in Sources */,
 				743EDD9F214B05350039071B /* TopEarnerStatsItem+Woo.swift in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* LeftImageTableViewCell.swift in Sources */,

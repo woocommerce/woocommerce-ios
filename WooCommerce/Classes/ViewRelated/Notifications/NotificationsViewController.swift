@@ -78,6 +78,10 @@ class NotificationsViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
+    deinit {
+        stopListeningToNotifications()
+    }
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         configureTabBarItem()
@@ -92,6 +96,8 @@ class NotificationsViewController: UIViewController {
         configureTableView()
         configureTableViewCells()
         configureResultsController()
+
+        startListeningToNotifications()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -217,6 +223,19 @@ private extension NotificationsViewController {
 
         transitionToSyncingState()
         StoresManager.shared.dispatch(action)
+    }
+}
+
+
+// MARK: - ResultsController
+//
+extension NotificationsViewController {
+
+    /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
+    ///
+    func reloadResultsController() {
+        resultsController.predicate = filter
+        tableView.reloadData()
     }
 }
 
@@ -399,6 +418,31 @@ private extension NotificationsViewController {
         let safariViewController = SFSafariViewController(url: siteURL)
         safariViewController.modalPresentationStyle = .pageSheet
         present(safariViewController, animated: true, completion: nil)
+    }
+}
+
+
+// MARK: - Notifications
+//
+extension NotificationsViewController {
+
+    /// Setup: Notification Hooks
+    ///
+    func startListeningToNotifications() {
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
+    }
+
+    /// Tear down the Notifications Hooks
+    ///
+    func stopListeningToNotifications() {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    /// Default Site Updated Handler
+    ///
+    @objc func defaultSiteWasUpdated() {
+        reloadResultsController()
     }
 }
 

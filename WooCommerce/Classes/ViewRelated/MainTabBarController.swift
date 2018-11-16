@@ -134,13 +134,11 @@ extension MainTabBarController {
 
     func showDotOn(_ tab: WooTab) {
         hideDotOn(tab)
-        let dot = UIView(frame: CGRect(x: DotConstants.xOffset,
-                                       y: DotConstants.yOffset,
-                                       width: DotConstants.diameter,
-                                       height: DotConstants.diameter))
+        let dot = GreenDotView(frame: CGRect(x: DotConstants.xOffset,
+                                             y: DotConstants.yOffset,
+                                             width: DotConstants.diameter,
+                                             height: DotConstants.diameter), borderWidth: DotConstants.borderWidth)
         dot.tag = dotTag(for: tab)
-        dot.backgroundColor = StyleManager.wooAccent
-        dot.layer.cornerRadius = (DotConstants.diameter / 2)
         tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(dot, at: 1)
     }
 
@@ -164,9 +162,50 @@ extension MainTabBarController {
 private extension MainTabBarController {
 
     enum DotConstants {
-        static let diameter  = CGFloat(9)
-        static let xOffset   = CGFloat(3)
-        static let yOffset   = CGFloat(1)
-        static let tagOffset = 999
+        static let diameter    = CGFloat(10)
+        static let borderWidth = CGFloat(1)
+        static let xOffset     = CGFloat(2)
+        static let yOffset     = CGFloat(0)
+        static let tagOffset   = 999
+    }
+}
+
+
+// MARK: - GreenDot UIView
+//
+private class GreenDotView: UIView {
+
+    private var borderWidth = CGFloat(1) // Border line width defaults to 1
+
+    /// Designated Initializer
+    ///
+    init(frame: CGRect, borderWidth: CGFloat) {
+        super.init(frame: frame)
+        self.borderWidth = borderWidth
+        setupSubviews()
+    }
+
+    /// Required Initializer
+    ///
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setupSubviews()
+    }
+
+    private func setupSubviews() {
+        self.backgroundColor = .clear
+    }
+
+    override func draw(_ rect: CGRect) {
+        let path = UIBezierPath(ovalIn: CGRect(x: rect.origin.x + borderWidth,
+                                               y: rect.origin.y + borderWidth,
+                                               width: rect.size.width - borderWidth*2,
+                                               height: rect.size.width - borderWidth*2))
+        StyleManager.wooAccent.setFill()
+        path.fill()
+
+        path.lineWidth = borderWidth
+        StyleManager.wooWhite.setStroke()
+        path.stroke()
     }
 }

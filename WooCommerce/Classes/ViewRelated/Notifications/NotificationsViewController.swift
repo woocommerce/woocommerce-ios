@@ -123,15 +123,15 @@ private extension NotificationsViewController {
     /// Setup: NavigationBar Buttons
     ///
     func configureNavigationBarButtons() {
-        let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
+        let leftBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.checkmark),
                                              style: .plain,
                                              target: self,
                                              action: #selector(markAllAsRead))
-        rightBarButton.tintColor = .white
-        rightBarButton.accessibilityTraits = .button
-        rightBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Notifications as Read Button")
-        rightBarButton.accessibilityHint = NSLocalizedString("Marks Every Notification as Read", comment: "VoiceOver accessibility hint for the Mark All Notifications as Read Action")
-        navigationItem.rightBarButtonItem = rightBarButton
+        leftBarButton.tintColor = .white
+        leftBarButton.accessibilityTraits = .button
+        leftBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Notifications as Read Button")
+        leftBarButton.accessibilityHint = NSLocalizedString("Marks Every Notification as Read", comment: "VoiceOver accessibility hint for the Mark All Notifications as Read Action")
+        navigationItem.leftBarButtonItem = leftBarButton
     }
 
     /// Setup: TableView
@@ -262,8 +262,37 @@ extension NotificationsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let note = resultsController.object(at: indexPath)
-        let detailsViewController = NotificationDetailsViewController(note: note)
 
+        switch note.kind {
+        case .storeOrder:
+            presentOrderDetails(for: note)
+        default:
+            presentNotificationDetails(for: note)
+        }
+    }
+}
+
+
+// MARK: - Details Rendering
+//
+private extension NotificationsViewController {
+
+    /// Pushes the Order Details associated to a given Note (if possible).
+    ///
+    func presentOrderDetails(for note: Note) {
+        guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
+            DDLogError("## Notification with [\(note.noteId)] lacks its OrderID!")
+            return
+        }
+
+        let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: siteID)
+        navigationController?.pushViewController(loaderViewController, animated: true)
+    }
+
+    /// Pushes the Notification Details associated to a given Note.
+    ///
+    func presentNotificationDetails(for note: Note) {
+        let detailsViewController = NotificationDetailsViewController(note: note)
         navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }

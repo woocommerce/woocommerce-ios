@@ -104,6 +104,8 @@ class StoresManager {
     func updateDefaultStore(storeID: Int) {
         sessionManager.defaultStoreID = storeID
         restoreSessionSiteIfPossible()
+
+        NotificationCenter.default.post(name: .StoresManagerDidUpdateDefaultSite, object: nil)
     }
 }
 

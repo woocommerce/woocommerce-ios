@@ -132,27 +132,38 @@ extension MainTabBarController {
 //
 extension MainTabBarController {
 
-    func showDotOnTab(index: Int, radius: CGFloat = 5, color: UIColor = StyleManager.wooAccent, xOffset: CGFloat = 0, yOffset: CGFloat = 0) {
-        let tag = index + 42
-
-        hideDotOnTab(index: index)
-        let dotDiameter = radius * 2
-        let xOffsetBase = CGFloat(21)
-        let yOffsetBase = CGFloat(3)
-
-        let dot = UIView(frame: CGRect(x: xOffsetBase + xOffset, y: yOffsetBase + yOffset, width: dotDiameter, height: dotDiameter))
+    func showDotOn(_ tab: WooTab) {
+        hideDotOn(tab)
+        let tag = tab.rawValue + DotConstants.tagOffset
+        let dot = UIView(frame: CGRect(x: DotConstants.xOffset,
+                                       y: DotConstants.yOffset,
+                                       width: DotConstants.diameter,
+                                       height: DotConstants.diameter))
         dot.tag = tag
-        dot.backgroundColor = color
-        dot.layer.cornerRadius = radius
-        tabBar.subviews[index + 1].subviews.first?.insertSubview(dot, at: 1)
+        dot.backgroundColor = StyleManager.wooAccent
+        dot.layer.cornerRadius = (DotConstants.diameter / 2)
+        tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(dot, at: 1)
     }
 
-    func hideDotOnTab(index: Int) {
-        let tag = index + 42
-        if let subviews = tabBar.subviews[index + 1].subviews.first?.subviews {
+    func hideDotOn(_ tab: WooTab) {
+        let tag = tab.rawValue + DotConstants.tagOffset
+        if let subviews = tabBar.subviews[tab.rawValue].subviews.first?.subviews {
             for subview in subviews where subview.tag == tag {
                 subview.removeFromSuperview()
             }
         }
+    }
+}
+
+
+// MARK: - Constants!
+//
+private extension MainTabBarController {
+
+    enum DotConstants {
+        static let diameter  = CGFloat(9)
+        static let xOffset   = CGFloat(3)
+        static let yOffset   = CGFloat(1)
+        static let tagOffset = 999
     }
 }

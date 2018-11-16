@@ -86,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        tabBarController?.showDotOnTab(index: 1)
+        tabBarController?.showDotOn(.notifications)
 
         return true
     }

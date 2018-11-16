@@ -262,8 +262,37 @@ extension NotificationsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let note = resultsController.object(at: indexPath)
-        let detailsViewController = NotificationDetailsViewController(note: note)
 
+        switch note.kind {
+        case .storeOrder:
+            presentOrderDetails(for: note)
+        default:
+            presentNotificationDetails(for: note)
+        }
+    }
+}
+
+
+// MARK: - Details Rendering
+//
+private extension NotificationsViewController {
+
+    /// Pushes the Order Details associated to a given Note (if possible).
+    ///
+    func presentOrderDetails(for note: Note) {
+        guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
+            DDLogError("## Notification with [\(note.noteId)] lacks its OrderID!")
+            return
+        }
+
+        let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: siteID)
+        navigationController?.pushViewController(loaderViewController, animated: true)
+    }
+
+    /// Pushes the Notification Details associated to a given Note.
+    ///
+    func presentNotificationDetails(for note: Note) {
+        let detailsViewController = NotificationDetailsViewController(note: note)
         navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }

@@ -237,7 +237,7 @@ extension StorePickerViewController {
             }
 
             StoresManager.shared.dispatch(action)
-            
+
             // We need to call refreshUserData() here because the user selected
             // their default store and tracks should to know about it.
             WooAnalytics.shared.refreshUserData()

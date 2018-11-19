@@ -56,7 +56,7 @@ public struct Site: Decodable {
         var plan = String()
         if siteContainer.contains(.plan) {
             let planContainer = try siteContainer.nestedContainer(keyedBy: PlanKeys.self, forKey: .plan)
-            plan = try planContainer.decode(String.self, forKey: .shortName)
+            plan = try planContainer.decodeIfPresent(String.self, forKey: .shortName) ?? String()
         }
 
         self.init(siteID: siteID,

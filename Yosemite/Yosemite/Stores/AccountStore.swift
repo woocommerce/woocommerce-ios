@@ -31,6 +31,8 @@ public class AccountStore: Store {
             synchronizeAccount(onCompletion: onCompletion)
         case .synchronizeSites(let onCompletion):
             synchronizeSites(onCompletion: onCompletion)
+        case .synchronizeSiteDetails(let onCompletion):
+            synchronizeSiteDetails(onCompletion: onCompletion)
         }
     }
 }
@@ -62,6 +64,22 @@ private extension AccountStore {
         let remote = AccountRemote(network: network)
 
         remote.loadSites { [weak self]  (sites, error) in
+            guard let sites = sites else {
+                onCompletion(error)
+                return
+            }
+
+            self?.upsertStoredSites(readOnlySites: sites)
+            onCompletion(nil)
+        }
+    }
+
+    /// Loads the details of all the Sites.
+    ///
+    func synchronizeSiteDetails(onCompletion: @escaping (Error?) -> Void) {
+        let remote = AccountRemote(network: network)
+
+        remote.loadSitesDetail { [weak self]  (sites, error) in
             guard let sites = sites else {
                 onCompletion(error)
                 return

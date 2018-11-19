@@ -19,7 +19,7 @@ import Yosemite
     // MARK: - Public Properties
     //
     static let shared = ZendeskManager()
-    private var zendeskEnabled = false
+    private (set) var zendeskEnabled = false
     private var unreadNotificationsCount = 0
 
     var showSupportNotificationIndicator: Bool {

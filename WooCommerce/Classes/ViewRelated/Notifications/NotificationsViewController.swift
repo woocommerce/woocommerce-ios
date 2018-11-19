@@ -143,6 +143,17 @@ private extension NotificationsViewController {
         leftBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Notifications as Read Button")
         leftBarButton.accessibilityHint = NSLocalizedString("Marks Every Notification as Read", comment: "VoiceOver accessibility hint for the Mark All Notifications as Read Action")
         navigationItem.leftBarButtonItem = leftBarButton
+
+
+        let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
+                                             style: .plain,
+                                             target: self,
+                                             action: #selector(displayFiltersAlert))
+        rightBarButton.tintColor = .white
+        rightBarButton.accessibilityTraits = .button
+        rightBarButton.accessibilityLabel = NSLocalizedString("Filter notifications", comment: "Accessibility label for the Filter notifications button.")
+        rightBarButton.accessibilityHint = NSLocalizedString("Filters the notifications list by notification type.", comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list.")
+        navigationItem.rightBarButtonItem = rightBarButton
     }
 
     /// Setup: TableView
@@ -193,6 +204,7 @@ private extension NotificationsViewController {
     }
 
     @IBAction func markAllAsRead() {
+        WooAnalytics.shared.track(.notificationsListReadAllTapped)
         if unreadNotes.isEmpty {
             DDLogVerbose("# Every single notification is already marked as Read!")
             return
@@ -200,6 +212,40 @@ private extension NotificationsViewController {
 
         markAsRead(notes: unreadNotes)
         hapticGenerator.notificationOccurred(.success)
+    }
+
+    @IBAction func displayFiltersAlert() {
+        WooAnalytics.shared.track(.notificationsListFilterTapped)
+
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+
+        actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
+        actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
+            // TODO: self?.typeFilter = nil
+        }
+
+        let noteKinds = resultsController.fetchedObjects.compactMap({ (note) -> String? in
+            if note.kind == Note.Kind.storeOrder {
+                return FilterAction.displayOrders
+            } else if note.subkind == Note.Subkind.storeReview {
+                return FilterAction.displayReviews
+            } else {
+                return nil
+            }
+        })
+
+        for kind in Array(Set(noteKinds)) {
+            actionSheet.addDefaultActionWithTitle(kind) { [weak self] _ in
+                // TODO: self?.typeFilter = type
+            }
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = navigationItem.rightBarButtonItem
+        popoverController?.sourceView = self.view
+
+        present(actionSheet, animated: true)
     }
 }
 
@@ -522,6 +568,13 @@ private extension NotificationsViewController {
 // MARK: - Nested Types
 //
 private extension NotificationsViewController {
+
+    enum FilterAction {
+        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
+        static let displayAll = NSLocalizedString("All", comment: "All filter title")
+        static let displayOrders = NSLocalizedString("Orders", comment: "Orders filter title")
+        static let displayReviews = NSLocalizedString("Reviews", comment: "Reviews filter title")
+    }
 
     enum Settings {
         static let placeholderRowsPerSection = [3]

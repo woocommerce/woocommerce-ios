@@ -6,6 +6,8 @@ import Yosemite
 import CocoaLumberjack
 
 
+// MARK: - OrderDetailsViewController: Displays the details for a given Order.
+//
 class OrderDetailsViewController: UIViewController {
 
     /// Main TableView.

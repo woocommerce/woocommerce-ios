@@ -36,8 +36,10 @@ public class NotificationStore: Store {
             synchronizeNotification(with: noteId, onCompletion: onCompletion)
         case .updateLastSeen(let timestamp, let onCompletion):
             updateLastSeen(timestamp: timestamp, onCompletion: onCompletion)
-        case .updateReadStatus(let noteID, let read, let onCompletion):
-            updateReadStatus(noteID: noteID, read: read, onCompletion: onCompletion)
+        case .updateReadStatus(let noteId, let read, let onCompletion):
+            updateReadStatus(for: [noteId], read: read, onCompletion: onCompletion)
+        case .updateMultipleReadStatus(let noteIds, let read, let onCompletion):
+            updateReadStatus(for: noteIds, read: read, onCompletion: onCompletion)
         }
     }
 }
@@ -116,18 +118,34 @@ private extension NotificationStore {
     }
 
 
-    /// Updates the read status for the given notification ID
+    /// Updates the read status for the given notification ID(s)
     ///
-    func updateReadStatus(noteID: Int64, read: Bool, onCompletion: @escaping (Error?) -> Void) {
+    func updateReadStatus(for noteIds: [Int64], read: Bool, onCompletion: @escaping (Error?) -> Void) {
+        /// Optimistically Update
+        ///
+        updateLocalNoteReadStatus(for: noteIds, read: read)
+
+        /// On error we'll just mark the Note for Refresh
+        ///
         let remote = NotificationsRemote(network: network)
-        remote.updateReadStatus(String(noteID), read: read) { [weak self] (error) in
-            guard let `self` = self, error == nil else {
-                onCompletion(error)
+        remote.updateReadStatus(noteIds: noteIds, read: read) { error in
+            guard let error = error else {
+
+                /// What is this about:
+                /// Notice that there are few conditions in which the Network Request's callback may run *before*
+                /// the Optimisitc Update, such as in Unit Tests.
+                /// This may cause the Callback to run before the Read Flag has been toggled, which isn't cool.
+                /// *FORGIVE ME*, this is a workaround: the onCompletion closure must run after a No-OP in the derived
+                /// storage.
+                ///
+                self.performSharedDerivedStorageNoOp {
+                    onCompletion(nil)
+                }
                 return
             }
 
-            self.updateLocalNoteReadStatus(for: noteID, read: read) {
-                onCompletion(nil)
+            self.invalidateCache(for: noteIds) {
+                onCompletion(error)
             }
         }
     }
@@ -169,7 +187,7 @@ extension NotificationStore {
     ///     - remoteNotes: Collection of Notes
     ///     - completion: Callback to be executed on completion
     ///
-    func updateLocalNotes(with remoteNotes: [Note], completion: (() -> Void)? = nil) {
+    func updateLocalNotes(with remoteNotes: [Note], onCompletion: (() -> Void)? = nil) {
         let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
 
         derivedStorage.perform {
@@ -180,26 +198,33 @@ extension NotificationStore {
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async {
-                completion?()
+            guard let onCompletion = onCompletion else {
+                return
             }
+
+            DispatchQueue.main.async(execute: onCompletion)
         }
     }
 
-    /// Updates the read status for the given noteID in the Storage layer. If the local note to update cannot be found,
-    /// nothing is updated/created in storage.
+    /// Updates the read status for the specified Notifications. The callback happens on the Main Thread.
     ///
-    func updateLocalNoteReadStatus(for noteID: Int64, read: Bool, completion: (() -> Void)? = nil) {
-        assert(Thread.isMainThread)
-        let storage = storageManager.viewStorage
-        guard let storageNote = storage.loadNotification(noteID: noteID) else {
-            completion?()
-            return
+    func updateLocalNoteReadStatus(for noteIDs: [Int64], read: Bool, onCompletion: (() -> Void)? = nil) {
+        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
+
+        derivedStorage.perform {
+            let notifications = noteIDs.compactMap { derivedStorage.loadNotification(noteID: $0) }
+            for note in notifications {
+                note.read = read
+            }
         }
 
-        storageNote.read = read
-        storage.saveIfNeeded()
-        completion?()
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            guard let onCompletion = onCompletion else {
+                return
+            }
+
+            DispatchQueue.main.async(execute: onCompletion)
+        }
     }
 
     /// Given a collection of NoteHash Entities, this method will determine the `.noteID`'s of those entities that
@@ -227,6 +252,37 @@ extension NotificationStore {
             DispatchQueue.main.async {
                 completion(outdatedIds)
             }
+        }
+    }
+
+    /// Invalidates the Hash for the specified Notifications.
+    ///
+    func invalidateCache(for noteIds: [Int64], onCompletion: (() -> Void)? = nil) {
+        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
+
+        derivedStorage.perform {
+            let notifications = noteIds.compactMap { derivedStorage.loadNotification(noteID: $0) }
+            for note in notifications {
+                note.noteHash = Int64.min
+            }
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            guard let onCompletion = onCompletion else {
+                return
+            }
+
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Runs a No-OP in the Shared Derived Storage. On completion, the callback will be executed on the main thread.
+    ///
+    func performSharedDerivedStorageNoOp(onCompletion: @escaping () -> Void) {
+        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
+
+        derivedStorage.perform {
+            DispatchQueue.main.async(execute: onCompletion)
         }
     }
 }

@@ -60,11 +60,11 @@ extension StringStyles {
     /// Styles: Notifications List / Subject Block
     ///
     static let subject: StringStyles = {
-        let regular: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline, .foregroundColor: StyleManager.defaultTextColor]
-        let bold: Style         = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.bold]
-        let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.italics]
-        let italics: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.subheadline.italics]
-        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.noticon(forStyle: .subheadline), .foregroundColor: NukeMe.subjectNoticonColor]
+        let regular: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
+        let bold: Style         = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold]
+        let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics]
+        let italics: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics]
+        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.noticon(forStyle: .body), .foregroundColor: StyleManager.wooGreyMid]
 
         return StringStyles(regular: regular, bold: bold, blockquote: blockquote, italics: italics, match: nil, noticon: noticon)
     }()
@@ -73,8 +73,7 @@ extension StringStyles {
     /// Styles: Notifications List / Snippet Block
     ///
     static let snippet: StringStyles = {
-        let regular: Style      = [.paragraphStyle: NSParagraphStyle.subheadline, .font: UIFont.footnote, .foregroundColor: StyleManager.defaultTextColor]
-
+        let regular: Style = [.paragraphStyle: NSParagraphStyle.footnote, .font: UIFont.footnote, .foregroundColor: StyleManager.defaultTextColor]
         return StringStyles(regular: regular)
     }()
 
@@ -82,9 +81,9 @@ extension StringStyles {
     /// Styles: Notification Defailts / Header Block
     ///
     static let header: StringStyles = {
-        let regular: Style      = [.font: UIFont.body, .foregroundColor: NukeMe.bodyTextColor]
-        let bold: Style         = [.font: UIFont.body.bold, .foregroundColor: NukeMe.bodyTextColor]
-        let italics: Style      = [.font: UIFont.body.italics, .foregroundColor: NukeMe.headerItalicsColor]
+        let regular: Style      = [.font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
+        let bold: Style         = [.font: UIFont.body.bold, .foregroundColor: StyleManager.defaultTextColor]
+        let italics: Style      = [.font: UIFont.body.italics, .foregroundColor: StyleManager.defaultTextColor]
 
         return StringStyles(regular: regular, bold: bold, italics: italics)
     }()
@@ -93,7 +92,7 @@ extension StringStyles {
     /// Styles: Notification Defailts / Footer Block
     ///
     static let footer: StringStyles = {
-        let regular: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: NukeMe.footerTextColor]
+        let regular: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
 
         return StringStyles(regular: regular, noticon: body.noticon)
     }()
@@ -102,30 +101,14 @@ extension StringStyles {
     /// Styles: Notification Defailts / Body Blocks
     ///
     static let body: StringStyles = {
-        let regular: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: NukeMe.bodyTextColor]
-        let bold: Style         = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold, .foregroundColor: NukeMe.bodyTextColor]
-        let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics, .foregroundColor: NukeMe.bodyBlockquotedColor]
-        let match: Style        = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold, .foregroundColor: NukeMe.bodyLinkColor]
-        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.noticon(forStyle: .body), .foregroundColor: NukeMe.bodyNoticonColor]
-        let italic: Style       = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics, .foregroundColor: NukeMe.bodyTextColor]
-        let link: Style         = [.foregroundColor: NukeMe.bodyLinkColor]
+        let regular: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
+        let bold: Style         = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold, .foregroundColor: StyleManager.defaultTextColor]
+        let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics, .foregroundColor: StyleManager.defaultTextColor]
+        let match: Style        = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold, .foregroundColor: StyleManager.defaultTextColor]
+        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.noticon(forStyle: .body), .foregroundColor: StyleManager.defaultTextColor]
+        let italic: Style       = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics, .foregroundColor: StyleManager.defaultTextColor]
+        let link: Style         = [.foregroundColor: StyleManager.wooCommerceBrandColor]
 
         return StringStyles(regular: regular, bold: bold, blockquote: blockquote, match: match, noticon: noticon, link: link)
     }()
-}
-
-
-// MARK: - TODO: Nuke this. Map the Colors, as required, from the StyleManager
-//
-private struct NukeMe {
-    static let subjectNoticonColor = UIColor.black
-
-    static let headerItalicsColor = UIColor.gray
-
-    static let bodyTextColor = UIColor.black
-    static let bodyBlockquotedColor = UIColor.black
-    static let bodyLinkColor = UIColor.black
-    static let bodyNoticonColor = UIColor.black
-
-    static let footerTextColor = UIColor.black
 }

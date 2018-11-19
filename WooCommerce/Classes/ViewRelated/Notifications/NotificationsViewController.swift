@@ -3,6 +3,7 @@ import Gridicons
 import Yosemite
 import WordPressUI
 import SafariServices
+import Gridicons
 
 
 // MARK: - NotificationsViewController
@@ -12,6 +13,10 @@ class NotificationsViewController: UIViewController {
     /// Main TableView.
     ///
     @IBOutlet private var tableView: UITableView!
+
+    /// Haptic Feedback!
+    ///
+    private let hapticGenerator = UINotificationFeedbackGenerator()
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Notes in sync.
     ///
@@ -25,7 +30,10 @@ class NotificationsViewController: UIViewController {
     /// Store Notifications CoreData Filter.
     ///
     private var filter: NSPredicate {
-        return NSPredicate(format: "type == %@ OR subtype == %@", Note.Kind.storeOrder.rawValue, Note.Subkind.storeReview.rawValue)
+        let typePredicate = NSPredicate(format: "type == %@ OR subtype == %@", Note.Kind.storeOrder.rawValue, Note.Subkind.storeReview.rawValue)
+        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [typePredicate, sitePredicate])
     }
 
     /// Pull To Refresh Support.
@@ -67,8 +75,17 @@ class NotificationsViewController: UIViewController {
         return resultsController.isEmpty
     }
 
+    /// The current unread Notes.
+    ///
+    private var unreadNotes: [Note] {
+        return resultsController.fetchedObjects.filter { $0.read == false }
+    }
 
     // MARK: - View Lifecycle
+
+    deinit {
+        stopListeningToNotifications()
+    }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -80,9 +97,12 @@ class NotificationsViewController: UIViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
 
         configureNavigationItem()
+        configureNavigationBarButtons()
         configureTableView()
         configureTableViewCells()
         configureResultsController()
+
+        startListeningToNotifications()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -111,6 +131,20 @@ private extension NotificationsViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
+    /// Setup: NavigationBar Buttons
+    ///
+    func configureNavigationBarButtons() {
+        let leftBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.checkmark),
+                                             style: .plain,
+                                             target: self,
+                                             action: #selector(markAllAsRead))
+        leftBarButton.tintColor = .white
+        leftBarButton.accessibilityTraits = .button
+        leftBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Notifications as Read Button")
+        leftBarButton.accessibilityHint = NSLocalizedString("Marks Every Notification as Read", comment: "VoiceOver accessibility hint for the Mark All Notifications as Read Action")
+        navigationItem.leftBarButtonItem = leftBarButton
+    }
+
     /// Setup: TableView
     ///
     func configureTableView() {
@@ -124,6 +158,14 @@ private extension NotificationsViewController {
     ///
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
+        resultsController.onDidChangeContent = { [weak self] in
+            // FIXME: This should be removed once `PushNotificationsManager` is in place
+            self?.updateNotificationsTabIfNeeded()
+        }
+        resultsController.onDidResetContent = {
+            // FIXME: This should be removed once `PushNotificationsManager` is in place
+            MainTabBarController.hideDotOn(.notifications)
+        }
         try? resultsController.performFetch()
     }
 
@@ -149,12 +191,35 @@ private extension NotificationsViewController {
             sender.endRefreshing()
         }
     }
+
+    @IBAction func markAllAsRead() {
+        if unreadNotes.isEmpty {
+            DDLogVerbose("# Every single notification is already marked as Read!")
+            return
+        }
+
+        markAsRead(notes: unreadNotes)
+        hapticGenerator.notificationOccurred(.success)
+    }
 }
 
 
-// MARK: - Sync'ing Helpers
+// MARK: - Yosemite Wrappers
 //
 private extension NotificationsViewController {
+
+    /// Marks the specified collection of Notifications as Read.
+    ///
+    func markAsRead(notes: [Note]) {
+        let identifiers = notes.map { $0.noteId }
+        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { error in
+            if let error = error {
+                DDLogError("⛔️ Error marking notifications as read: \(error)")
+            }
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
@@ -170,6 +235,19 @@ private extension NotificationsViewController {
 
         transitionToSyncingState()
         StoresManager.shared.dispatch(action)
+    }
+}
+
+
+// MARK: - ResultsController
+//
+extension NotificationsViewController {
+
+    /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
+    ///
+    func reloadResultsController() {
+        resultsController.predicate = filter
+        tableView.reloadData()
     }
 }
 
@@ -215,8 +293,37 @@ extension NotificationsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let note = resultsController.object(at: indexPath)
-        let detailsViewController = NotificationDetailsViewController(note: note)
 
+        switch note.kind {
+        case .storeOrder:
+            presentOrderDetails(for: note)
+        default:
+            presentNotificationDetails(for: note)
+        }
+    }
+}
+
+
+// MARK: - Details Rendering
+//
+private extension NotificationsViewController {
+
+    /// Pushes the Order Details associated to a given Note (if possible).
+    ///
+    func presentOrderDetails(for note: Note) {
+        guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
+            DDLogError("## Notification with [\(note.noteId)] lacks its OrderID!")
+            return
+        }
+
+        let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: siteID)
+        navigationController?.pushViewController(loaderViewController, animated: true)
+    }
+
+    /// Pushes the Notification Details associated to a given Note.
+    ///
+    func presentNotificationDetails(for note: Note) {
+        let detailsViewController = NotificationDetailsViewController(note: note)
         navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }
@@ -327,6 +434,31 @@ private extension NotificationsViewController {
 }
 
 
+// MARK: - Notifications
+//
+extension NotificationsViewController {
+
+    /// Setup: Notification Hooks
+    ///
+    func startListeningToNotifications() {
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
+    }
+
+    /// Tear down the Notifications Hooks
+    ///
+    func stopListeningToNotifications() {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    /// Default Site Updated Handler
+    ///
+    @objc func defaultSiteWasUpdated() {
+        reloadResultsController()
+    }
+}
+
+
 // MARK: - Finite State Machine Management
 //
 private extension NotificationsViewController {
@@ -367,6 +499,22 @@ private extension NotificationsViewController {
     ///
     func transitionToResultsUpdatedState() {
         state = isEmpty ? .empty : .results
+    }
+}
+
+
+// MARK: - Private Helpers
+//
+private extension NotificationsViewController {
+
+    // FIXME: This should be removed once `PushNotificationsManager` is in place
+    func updateNotificationsTabIfNeeded() {
+        guard !unreadNotes.isEmpty else {
+            MainTabBarController.hideDotOn(.notifications)
+            return
+        }
+        
+        MainTabBarController.showDotOn(.notifications)
     }
 }
 

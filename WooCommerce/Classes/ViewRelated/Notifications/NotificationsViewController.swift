@@ -208,7 +208,7 @@ private extension NotificationsViewController {
 //
 private extension NotificationsViewController {
 
-    /// Marks a specific Notifications as Read.
+    /// Marks a specific Notification as read.
     ///
     func markAsReadIfNeeded(note: Note) {
         guard note.read == false else {
@@ -217,7 +217,7 @@ private extension NotificationsViewController {
 
         let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
             if let error = error {
-                DDLogError("⛔️ Error marking notifications as read: \(error)")
+                DDLogError("⛔️ Error marking single notification as read: \(error)")
             }
         }
         StoresManager.shared.dispatch(action)

@@ -210,7 +210,11 @@ private extension NotificationsViewController {
 
     /// Marks a specific Notifications as Read.
     ///
-    func markAsRead(note: Note) {
+    func markAsReadIfNeeded(note: Note) {
+        guard note.read == false else {
+            return
+        }
+
         let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
             if let error = error {
                 DDLogError("⛔️ Error marking notifications as read: \(error)")
@@ -305,7 +309,7 @@ extension NotificationsViewController: UITableViewDelegate {
 
         let note = resultsController.object(at: indexPath)
 
-        markAsRead(note: note)
+        markAsReadIfNeeded(note: note)
 
         switch note.kind {
         case .storeOrder:

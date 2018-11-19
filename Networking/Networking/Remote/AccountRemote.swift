@@ -30,4 +30,18 @@ public class AccountRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Loads Details for Sites collection associated with the WordPress.com user.
+    ///
+    public func loadSitesDetail(completion: @escaping ([Site]?, Error?) -> Void) {
+        let path = "me/sites"
+        let parameters = [
+            "fields": "ID,name,description,URL,jetpack,plan,options"
+        ]
+
+        let request = DotcomRequest(wordpressApiVersion: .mark1_2, method: .get, path: path, parameters: parameters)
+        let mapper = SiteListMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }

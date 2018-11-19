@@ -76,6 +76,11 @@ private extension HelpAndSupportViewController {
     func configureSections() {
         let helpAndSupportTitle = NSLocalizedString("HOW CAN WE HELP?", comment: "My Store > Settings > Help & Support section title")
 
+        guard ZendeskManager.shared.zendeskEnabled == true else {
+            sections = [Section(title: helpAndSupportTitle, rows: [.browseFaq])]
+            return
+        }
+
         sections = [
             Section(title: helpAndSupportTitle, rows: [.browseFaq,
                                                        .contactSupport,

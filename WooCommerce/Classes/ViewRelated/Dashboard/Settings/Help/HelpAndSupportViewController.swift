@@ -16,7 +16,7 @@ class HelpAndSupportViewController: UIViewController {
     /// User's preferred email for support messages
     ///
     private var accountEmail: String {
-        return StoresManager.shared.sessionManager.defaultAccount?.email ?? NSLocalizedString("Set email", comment: "Tells user to set an email that support can use for replies")
+        return ZendeskManager.shared.userSupportEmail() ?? NSLocalizedString("Set email", comment: "Tells user to set an email that support can use for replies")
     }
 
 

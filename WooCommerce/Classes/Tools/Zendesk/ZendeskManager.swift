@@ -394,15 +394,18 @@ private extension ZendeskManager {
         var tags = [Constants.platformTag]
 
         /// Determine if the account is a wp.com account.
-        /// No tag if self-hosted.
         ///
         guard let site = StoresManager.shared.sessionManager.defaultSite else {
             return tags
         }
 
-        tags.append(Constants.wpComTag)
+        /// Determine this is a wp.com store.
+        /// No tag if self-hosted.
+        if site.isWordPressStore == true {
+            tags.append(Constants.wpComTag)
+        }
 
-        /// Determine if the account has jetpack installed.
+        /// Determine if the account has Jetpack installed.
         ///
         if site.isJetpackInstalled == true {
             tags.append(Constants.jetpackTag)

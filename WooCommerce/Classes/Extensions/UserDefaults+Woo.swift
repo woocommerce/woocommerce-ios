@@ -14,6 +14,7 @@ extension UserDefaults {
         case userOptedInCrashlytics
         case versionOfLastRun
         case analyticsUsername
+        case notificationsLastSeenTime
     }
 }
 

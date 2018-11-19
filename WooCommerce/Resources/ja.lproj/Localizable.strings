@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-09 16:48:52+0000 */
+/* Translation-Revision-Date: 2018-11-16 11:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -22,16 +22,16 @@
 "Add" = "追加";
 
 /* Add Tracking row label */
-"Add Tracking" = "Add Tracking";
+"Add Tracking" = "トラッキングを追加";
 
 /* Button text for adding a new order note */
-"Add a note" = "Add a note";
+"Add a note" = "メモを追加";
 
 /* Accessibility label for the 'Add a note' button */
-"Add a note button" = "Add a note button";
+"Add a note button" = "メモボタンを追加";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
-"Adds a note to an order" = "Adds a note to an order";
+"Adds a note to an order" = "注文にメモを追加します";
 
 /* All filter title */
 "All" = "すべて";
@@ -58,7 +58,7 @@
 "An error occurred while processing your request: " = "リクエストの処理中にエラーが発生しました。";
 
 /* Alert message to confirm a user meant to log out. */
-"Are you sure you want to log out of the account %@?" = "Are you sure you want to log out of the account %@?";
+"Are you sure you want to log out of the account %@?" = "アカウント %@ からログアウトしてもよいですか ?";
 
 /* No comment provided by engineer. */
 "Authenticating" = "認証中";
@@ -73,19 +73,19 @@
 "Back" = "戻る";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
-"Bar number %1$i, %2$@, " = "Bar number %1$i, %2$@, ";
+"Bar number %1$i, %2$@, " = "バー番号%1$i、%2$@、";
 
 /* Billing title for customer info cell */
-"Billing details" = "Billing details";
+"Billing details" = "請求詳細";
 
 /* Browse our FAQ title */
-"Browse our FAQ" = "Browse our FAQ";
+"Browse our FAQ" = "よく聞かれる質問を表示";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "登録することで、利用規約に合意したことになります。";
 
 /* Call phone number button title */
-"Call" = "Call";
+"Call" = "通話";
 
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "リンクをリクエストできません";
@@ -94,7 +94,7 @@
 "Cancel" = "キャンセル";
 
 /* Cancelled Order Status */
-"Canceled" = "Canceled";
+"Canceled" = "キャンセル";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "お気に入りのサイトをいつでもチェックし、いつでもどこからでもコメントできます。";
@@ -112,16 +112,16 @@
 "Completing Signup" = "登録を完了しています";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear. */
-"Composes a new email message to the billing customer." = "Composes a new email message to the billing customer.";
+"Composes a new email message to the billing customer." = "請求対象の顧客に送信する新しいメールメッセージを作成します。";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
-"Composes a new order note." = "Composes a new order note.";
+"Composes a new order note." = "新しい注文メモを作成します。";
 
 /* Title shown when a user logs in with Google but no matching WordPress.com account is found */
 "Connected But…" = "接続されたが…";
 
 /* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
-"Connected Store" = "Connected Store";
+"Connected Store" = "連携ストア";
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "WordPress.com に接続中";
@@ -154,28 +154,28 @@
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "接続できませんでした。ご利用のホスティングサービスは POST 要求をブロックしていますが、アプリはあなたのサイトとの通信に POST 要求を必要としています。ホスティングサービスに連絡して、この問題を解決してください。";
 
 /* No comment provided by engineer. */
-"Customer Information" = "Customer Information";
+"Customer Information" = "顧客情報";
 
 /* No comment provided by engineer. */
-"Customer Provided Note" = "Customer Provided Note";
+"Customer Provided Note" = "顧客提供メモ";
 
 /* Statistical unit - a single day */
-"Day" = "Day";
+"Day" = "日";
 
 /* Plural of 'day' — a statistical unit */
 "Days" = "日";
 
 /* Order Notice */
-"Deleted: Order #(viewModel.order.number)" = "Deleted: Order #(viewModel.order.number)";
+"Deleted: Order #(viewModel.order.number)" = "削除済み:注文番号 (viewModel.order.number)";
 
 /* The row label to tap for a detailed product list */
 "Details" = "詳細";
 
 /* Screen title: Details Order number (number) */
-"Details Order #(viewModel.order.number)" = "Details Order #(viewModel.order.number)";
+"Details Order #(viewModel.order.number)" = "注文番号 (viewModel.order.number) の詳細";
 
 /* Discount label for payment view */
-"Discount" = "Discount";
+"Discount" = "割引";
 
 /* No comment provided by engineer. */
 "Dismiss" = "非表示にする";
@@ -187,7 +187,7 @@
 "Double tap to dismiss" = "ダブルタップして非表示";
 
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
-"Double tap to toggle setting." = "Double tap to toggle setting.";
+"Double tap to toggle setting." = "設定を切り替えるにはダブルタップします。";
 
 /* Email address text field placeholder */
 "Email" = "メール";
@@ -196,13 +196,13 @@
 "Email address" = "メールアドレス";
 
 /* Label for yes/no switch - emailing the note to customer. */
-"Email note to customer" = "Email note to customer";
+"Email note to customer" = "顧客にメールでメモを送信";
 
 /* No comment provided by engineer. */
-"Email note to customer %@" = "Email note to customer %@";
+"Email note to customer %@" = "顧客 %@ にメールでメモを送信";
 
 /* Accessibility label that lets the user know the billing customer's email address */
-"Email: %@" = "Email: %@";
+"Email: %@" = "メール:%@";
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空の URL";
@@ -223,28 +223,28 @@
 "Failed to serialize request to the REST API." = "REST API へのリクエストをシリアライズできませんでした。";
 
 /* Filter the orders list. */
-"Filter orders" = "Filter orders";
+"Filter orders" = "注文を絞り込み";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
-"Filters the order list by payment status." = "Filters the order list by payment status.";
+"Filters the order list by payment status." = "支払いステータスで注文リストを絞り込みます。";
 
 /* User role badge */
 "Follower" = "フォロワー";
 
 /* Order Fulfillment Title */
-"Fulfill Order #(order.number)" = "Fulfill Order #(order.number)";
+"Fulfill Order #(order.number)" = "注文番号 (order.number) を履行";
 
 /* Fulfill order button title */
-"Fulfill order" = "Fulfill order";
+"Fulfill order" = "注文を履行";
 
 /* Fulfill Notice Title */
-"Fulfillment" = "Fulfillment";
+"Fulfillment" = "履行";
 
 /* Description for Top Performers section of My Store tab. */
-"Gain insights into how products are performing on your store" = "Gain insights into how products are performing on your store";
+"Gain insights into how products are performing on your store" = "ストアでの商品売り上げ状況に関する統計概要を得られます";
 
 /* Subtitle for Browse our FAQ */
-"Get answers to questions you have" = "Get answers to questions you have";
+"Get answers to questions you have" = "不明な点について問い合わせます";
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "アカウント情報を取得中";
@@ -253,10 +253,10 @@
 "Google sign up failed." = "Google の登録に失敗しました。";
 
 /* My Store > Settings > Privacy settings section */
-"HELP IMPROVE THE APP" = "HELP IMPROVE THE APP";
+"HELP IMPROVE THE APP" = "アプリの改善にご協力ください";
 
 /* My Store > Settings > Help & Support section title */
-"HOW CAN WE HELP?" = "HOW CAN WE HELP?";
+"HOW CAN WE HELP?" = "どのようなサポートをお求めですか ?";
 
 /* No comment provided by engineer. */
 "Help" = "ヘルプ";
@@ -265,13 +265,13 @@
 "Help & Support" = "ヘルプ & サポート";
 
 /* Footer text to hide the billing cell */
-"Hide billing" = "Hide billing";
+"Hide billing" = "課金を非表示";
 
 /* Error message shown a URL does not point to an existing site. */
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "この URL の WordPress サイトはないようです。綴りをもう一度確認してから、やり直してください。";
 
 /* Detail label for yes/no switch. */
-"If disabled will add the note as private." = "If disabled will add the note as private.";
+"If disabled will add the note as private." = "無効化すると、プライベートメモとして追加されます。";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "プラグイン無効化中。自動更新オフ。";
@@ -331,19 +331,19 @@
 "Log in to the WordPress.com account you used to connect Jetpack." = "Jetpack を接続するのに使用した WordPress.com アカウントにログインします。";
 
 /* Authentication Login Button */
-"Log in with Jetpack" = "Log in with Jetpack";
+"Log in with Jetpack" = "Jetpack でログイン";
 
 /* Logout Action */
-"Logout account" = "Logout account";
+"Logout account" = "アカウントからログアウト";
 
 /* Title of a button. */
 "Lost your password?" = "パスワードをお忘れですか ?";
 
 /* Tagline after the heart icon, displayed to the user */
-"Made with love by Automattic" = "Made with love by Automattic";
+"Made with love by Automattic" = "Automattic が愛情込めて作成";
 
 /* Login Prologue Legend */
-"Manage orders, track sales and monitor store activity with real-time alerts." = "Manage orders, track sales and monitor store activity with real-time alerts.";
+"Manage orders, track sales and monitor store activity with real-time alerts." = "注文を管理し、売り上げをトラッキングし、ストアのアクティビティをリアルタイムのアラートでモニターします。";
 
 /* shown in promotional screens during first launch */
 "Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "外出先でも Jetpack 連携サイトを管理。WordPress をどこへでも持ち歩けます。";
@@ -355,7 +355,7 @@
 "Mapped Domain" = "マッピング済みドメイン";
 
 /* Fulfill Order Action Button */
-"Mark Order Complete" = "Mark Order Complete";
+"Mark Order Complete" = "注文を完了としてマーク";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "メディアにはアップロードする関連したファイルはありません。";
@@ -364,10 +364,10 @@
 "Message" = "メッセージ";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
-"Minimum value %1$@, maximum value %2$@" = "Minimum value %1$@, maximum value %2$@";
+"Minimum value %1$@, maximum value %2$@" = "最小値%1$@、最大値%2$@";
 
 /* Statistical unit - a single week */
-"Month" = "Month";
+"Month" = "月";
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "月";
@@ -376,13 +376,13 @@
 "My Tickets" = "自分のチケット";
 
 /* Dashboard navigation title */
-"My store" = "My store";
+"My store" = "自分のストア";
 
 /* Name text field placeholder */
 "Name" = "名前";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
-"Navigates to Settings." = "Navigates to Settings.";
+"Navigates to Settings." = "「設定」に移動します。";
 
 /* A button title. */
 "Need help finding your site address?" = "自分のサイトアドレスを忘れましたか ?";
@@ -397,19 +397,19 @@
 "Next" = "次へ";
 
 /* Default text for Top Performers section when no data exists for a given period. */
-"No activity this period" = "No activity this period";
+"No activity this period" = "この期間のアクティビティはありません";
 
 /* No comment provided by engineer. */
-"No address specified." = "No address specified.";
+"No address specified." = "アドレスが指定されていません。";
 
 /* Text displayed when no data is available for revenue chart. */
-"No data available" = "No data available";
+"No data available" = "使用可能なデータがありません";
 
 /* Orders List (Empty State + Filters) */
-"No results for the selected criteria" = "No results for the selected criteria";
+"No results for the selected criteria" = "選択した基準と一致する結果はありません";
 
 /* No comment provided by engineer. */
-"Note to customer" = "Note to customer";
+"Note to customer" = "お客様への通知";
 
 /* Notifications tab title */
 "Notifications" = "通知";
@@ -433,52 +433,52 @@
 "On" = "オン";
 
 /* On Hold Order Status */
-"On Hold" = "On Hold";
+"On Hold" = "保留中";
 
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "メールを開く";
 
 /* No comment provided by engineer. */
-"Optional Tracking Information" = "Optional Tracking Information";
+"Optional Tracking Information" = "オプションのトラッキング情報";
 
 /* No comment provided by engineer. */
-"Order #(viewModel.order.number)" = "Order #(viewModel.order.number)";
+"Order #(viewModel.order.number)" = "注文番号 (viewModel.order.number)";
 
 /* Fulfill Notice Message */
-"Order Marked as Complete!" = "Order Marked as Complete!";
+"Order Marked as Complete!" = "注文が完了としてマークされました。";
 
 /* Order notes section title */
-"Order Notes" = "Order Notes";
+"Order Notes" = "注文メモ";
 
 /* No comment provided by engineer. */
-"Orders" = "Orders";
+"Orders" = "注文";
 
 /* Orders Title */
-"Orders: (filter)" = "Orders: (filter)";
+"Orders: (filter)" = "注文:(フィルター)";
 
 /* My Store > Settings > Primary Store information section */
-"PRIMARY STORE" = "PRIMARY STORE";
+"PRIMARY STORE" = "プライマリストア";
 
 /* Product section title */
-"PRODUCT" = "PRODUCT";
+"PRODUCT" = "商品";
 
 /* No comment provided by engineer. */
 "Password" = "パスワード";
 
 /* Payment section title */
-"Payment" = "Payment";
+"Payment" = "決済";
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (totalValue) received via (order.paymentMethodTitle)" = "Payment of (totalValue) received via (order.paymentMethodTitle)";
+"Payment of (totalValue) received via (order.paymentMethodTitle)" = "(totalValue) の支払いを (order.paymentMethodTitle) から受領しました";
 
 /* Pending Order Status */
 "Pending" = "承認待ち";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
-"Phone number: %@" = "Phone number: %@";
+"Phone number: %@" = "電話番号:%@";
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
-"Pick Store to Connect" = "Pick Store to Connect";
+"Pick Store to Connect" = "連携するストアを選択";
 
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "メールを確認してください";
@@ -508,55 +508,55 @@
 "Privacy Settings" = "プライバシー設定";
 
 /* Privacy settings screen title */
-"Privacy settings" = "Privacy settings";
+"Privacy settings" = "プライバシー設定";
 
 /* No comment provided by engineer. */
-"Private note" = "Private note";
+"Private note" = "プライベートメモ";
 
 /* Processing Order Status */
-"Processing" = "Processing";
+"Processing" = "処理中";
 
 /* No comment provided by engineer. */
-"Product" = "Product";
+"Product" = "商品";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
-"Prompts with the option to call or message the billing customer." = "Prompts with the option to call or message the billing customer.";
+"Prompts with the option to call or message the billing customer." = "請求対象の顧客に電話で連絡するかメッセージを送信するか選択するよう求めます。";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "公園で投稿を公開。バスからブログに投稿。カフェでコメントを送信。WordPress をどこでも使えます。";
 
 /* Quantity abbreviation for section title */
-"QTY" = "QTY";
+"QTY" = "数量";
 
 /* No comment provided by engineer. */
-"Qty" = "Qty";
+"Qty" = "数量";
 
 /* Subtitle for Contact Support */
-"Reach our happiness engineers who can help answer tough questions" = "Reach our happiness engineers who can help answer tough questions";
+"Reach our happiness engineers who can help answer tough questions" = "サポートスタッフにお問い合わせください。難しい質問にもお答えします";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "個人情報保護方針を読む";
 
 /* Refunded Order Status */
-"Refunded" = "Refunded";
+"Refunded" = "返金済み";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "登録済みドメイン";
 
 /* Action: Opens the Store in a browser */
-"Remove Filters" = "Remove Filters";
+"Remove Filters" = "フィルターを削除";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
-"Report crashes" = "Report crashes";
+"Report crashes" = "クラッシュをレポート";
 
 /* Retry Action */
 "Retry" = "再度試す";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
-"Review, prepare, and ship these pending orders" = "Review, prepare, and ship these pending orders";
+"Review, prepare, and ship these pending orders" = "これらの保留中の注文を確認して準備し、配送してください";
 
 /* SKU label */
-"SKU:" = "SKU:";
+"SKU:" = "商品コード:";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS 送信完了";
@@ -565,7 +565,7 @@
 "Send Link" = "リンクを送信";
 
 /* Tells user to set an email that support can use for replies */
-"Set email" = "Set email";
+"Set email" = "メールを設定";
 
 /* No comment provided by engineer. */
 "Settings" = "設定";
@@ -574,16 +574,16 @@
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "WordPress.com アカウントへのログイン中のサービス利用の情報を分析ツールと共有してください。";
 
 /* Action: Opens the Store in a browser */
-"Share your Store" = "Share your Store";
+"Share your Store" = "ストアを共有";
 
 /* Shipping label for payment view */
-"Shipping" = "Shipping";
+"Shipping" = "配送";
 
 /* Shipping title for customer info cell */
-"Shipping details" = "Shipping details";
+"Shipping details" = "配送詳細";
 
 /* Footer text to show the billing cell */
-"Show billing" = "Show billing";
+"Show billing" = "課金を表示";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "登録";
@@ -649,28 +649,28 @@
 "Sorry, you may not use that site address." = "ご指定のサイトアドレスはご利用いただけません。";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
-"Starting period %1$@, ending period %2$@" = "Starting period %1$@, ending period %2$@";
+"Starting period %1$@, ending period %2$@" = "開始期間%1$@、終了期間%2$@";
 
 /* VoiceOver accessibility label for the store revenue chart. */
-"Store revenue chart" = "Store revenue chart";
+"Store revenue chart" = "ストアの収益グラフ";
 
 /* VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}. */
-"Store revenue chart %@" = "Store revenue chart %@";
+"Store revenue chart %@" = "ストアの収益グラフ %@";
 
 /* VoiceOver accessibility label for the store revenue chart's X-axis. */
-"Store revenue chart: X Axis" = "Store revenue chart: X Axis";
+"Store revenue chart: X Axis" = "ストアの収益グラフ:X 軸";
 
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
-"Store revenue chart: Y Axis" = "Store revenue chart: Y Axis";
+"Store revenue chart: Y Axis" = "ストアの収益グラフ:Y 軸";
 
 /* Subtotal label for payment view */
-"Subtotal" = "Subtotal";
+"Subtotal" = "小計";
 
 /* Tax label for total taxes line */
-"Tax:" = "Tax:";
+"Tax:" = "税:";
 
 /* Taxes label for payment view */
-"Taxes" = "Taxes";
+"Taxes" = "税";
 
 /* Button title */
 "Text me a code instead" = "代わりに SMS でコードを送信する";
@@ -706,7 +706,7 @@
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "このサーバーの証明書が無効です。「%@」を偽装しているサーバーに接続中の可能性があるため、機密情報が危険にさらされる恐れがあります。\n\nこの証明書をそのまま信頼しますか ?";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
-"The order has been deleted from your Store!" = "The order has been deleted from your Store!";
+"The order has been deleted from your Store!" = "この注文はストアから削除されました。";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "サーバーが空のレスポンスを返しました。これは通常、サイトのメモリ上限を上げる必要があることを意味しています。";
@@ -727,16 +727,16 @@
 "There was a problem removing the block for specified site." = "指定したサイトのブロックを解除する際に問題が発生しました。";
 
 /* Top Performers section title - this month */
-"This Month" = "This Month";
+"This Month" = "今月";
 
 /* Top Performers section title - this week */
-"This Week" = "This Week";
+"This Week" = "今週";
 
 /* Top Performers section title - this year */
-"This Year" = "This Year";
+"This Year" = "今年";
 
 /* Login Disclaimer Text and Jetpack config instructions */
-"This app requires Jetpack to connect to your Store. Read the " = "This app requires Jetpack to connect to your Store. Read the ";
+"This app requires Jetpack to connect to your Store. Read the " = "このアプリを使用するには、Jetpack をストアに連携させる必要があります。参照先";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "このメールアドレスは WordPress.com に登録されていません。";
@@ -751,7 +751,7 @@
 "To create your new WordPress.com account, please enter your email address." = "新しい WordPress.com アカウントを作成するには、メールアドレスを入力してください。";
 
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
-"To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.";
+"To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "自動クラッシュレポートを有効化して、アプリのパフォーマンス向上とたまに発生するバグの修正にご協力ください。";
 
 /* No comment provided by engineer. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "この Google アカウントで先に進むには、最初に WordPress.com パスワードを使用してログインしてください。これは一度しか尋ねられません。";
@@ -760,7 +760,7 @@
 "Today" = "今日";
 
 /* Header label for Top Performers section of My Store tab. */
-"Top Performers" = "Top Performers";
+"Top Performers" = "成績優秀者";
 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "次の ID に該当するトピックは見つかりませんでした:";
@@ -769,16 +769,16 @@
 "Total" = "合計:";
 
 /* Top performers — label for the total number of products ordered */
-"Total Product Order: %ld" = "Total Product Order: %ld";
+"Total Product Order: %ld" = "商品注文の合計:%ld";
 
 /* Description for Top Performers right column header */
-"Total Spend" = "Total Spend";
+"Total Spend" = "支払い合計額";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信用する";
 
 /* No comment provided by engineer. */
-"Try another account" = "Try another account";
+"Try another account" = "別のアカウントでお試しください";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "別のメールで試す";
@@ -790,13 +790,13 @@
 "Unable To Connect" = "接続できない";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"Unable to find WooCommerce stores connected to this account" = "Unable to find WooCommerce stores connected to this account";
+"Unable to find WooCommerce stores connected to this account" = "このアカウントに連携している WooCommerce ストアが見つかりません";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "ご指定の URL に WordPress サイトが見つかりませんでした。「ヘルプ !」をタップしてよくある質問をご覧ください。";
 
 /* Refresh Action Failed */
-"Unable to refresh list" = "Unable to refresh list";
+"Unable to refresh list" = "リストを更新できません";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "メールアドレスを検証できません。後ほど、もう一度お試しください。";
@@ -811,10 +811,10 @@
 "Unknown error" = "不明なエラー";
 
 /* Stats summary date */
-"Updated %@" = "Updated %@";
+"Updated %@" = "%@を更新しました";
 
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
-"Updated %1$@ at %2$@" = "Updated %1$@ at %2$@";
+"Updated %1$@ at %2$@" = "%2$@に%1$@を更新しました";
 
 /* No comment provided by engineer. */
 "Username" = "ユーザー名";
@@ -829,16 +829,16 @@
 "Version" = "バージョン";
 
 /* subtitle for My Tickets */
-"View previously submitted support tickets" = "View previously submitted support tickets";
+"View previously submitted support tickets" = "これまでに送信されたサポートチケットを表示します";
 
 /* User role badge */
 "Viewer" = "読者";
 
 /* Add a note screen - Write Note section title */
-"WRITE NOTE" = "WRITE NOTE";
+"WRITE NOTE" = "メモを入力";
 
 /* Orders List (Empty State / No Filters) */
-"Waiting for Customers" = "Waiting for Customers";
+"Waiting for Customers" = "顧客待ち";
 
 /* Message shown on screen while waiting for Google to finish its signup process. */
 "Waiting for Google to complete…" = "Google が完了するのを待機しています…";
@@ -865,7 +865,7 @@
 "We're sure this is a great site - but it's not a WordPress site, so you can't connect to it with this app." = "こちらはすてきなサイトですが、WordPress のサイトではありません。このアプリで連携することはできません。";
 
 /* Statistical unit - a single week */
-"Week" = "Week";
+"Week" = "週";
 
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "週";
@@ -880,13 +880,13 @@
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "正しい二段階認証コードではありません。コードを再確認してもう一度お試しください。";
 
 /* Subject of new Zendesk ticket. */
-"WooCommerce for iOS Support" = "WooCommerce for iOS Support";
+"WooCommerce for iOS Support" = "iOS 対応 WooCommerce サポート";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "WordPress バージョンが古すぎます。%1$@ のサイトは WordPress %2$@ を使用しています。最新バージョンか、最低でも %3$@ に更新することをおすすめします。";
 
 /* Statistical unit - a single year */
-"Year" = "Year";
+"Year" = "年";
 
 /* Plural of 'year' — a statistical unit */
 "Years" = "年";
@@ -898,10 +898,10 @@
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "ご指定のメールアドレスはアカウント登録にご利用いただけません。このメールプロバイダによって、こちらから送信するメールがブロックされる問題が発生することがあるためです。恐れ入りますが、他のメールプロバイダのアドレスをお使いください。";
 
 /* Title text used on the My Store UI when a user has a _single_ pending order to process. */
-"You have %ld order to fulfill" = "You have %ld order to fulfill";
+"You have %ld order to fulfill" = "履行する注文が%ld件あります";
 
 /* Title text used on the My Store UI when a user has _multiple_ pending orders to process. */
-"You have %ld orders to fulfill" = "You have %ld orders to fulfill";
+"You have %ld orders to fulfill" = "履行する注文が%ld件あります";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "アプリがブログに接続するのを防止するモバイルプラグインが DudaMobile からインストールされたようです。";
@@ -916,7 +916,7 @@
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "Safari でサイトにアクセスすると、画面の上部にあるバーにサイトアドレスが表示されます。";
 
 /* Login Disclaimer Linked Text */
-"configuration instructions" = "configuration instructions";
+"configuration instructions" = "設定手順";
 
 /* Site Address placeholder */
 "example.wordpress.com" = "example.wordress.com";

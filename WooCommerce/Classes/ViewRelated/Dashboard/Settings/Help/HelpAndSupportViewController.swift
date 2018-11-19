@@ -164,19 +164,31 @@ private extension HelpAndSupportViewController {
     /// Contact Support action
     ///
     func contactSupportWasPressed() {
-        ZendeskManager.shared.showNewRequestIfPossible(from: self)
+        guard let navController = navigationController else {
+            return
+        }
+
+        ZendeskManager.shared.showNewRequestIfPossible(from: navController)
     }
 
     /// My Tickets action
     ///
     func myTicketsWasPressed() {
-        ZendeskManager.shared.showTicketListIfPossible(from: self)
+        guard let navController = navigationController else {
+            return
+        }
+
+        ZendeskManager.shared.showTicketListIfPossible(from: navController)
     }
 
     /// User's contact email action
     ///
     func contactEmailWasPressed() {
-        ZendeskManager.shared.showSupportEmailPrompt(from: self) { success in
+        guard let navController = navigationController else {
+            return
+        }
+
+        ZendeskManager.shared.showSupportEmailPrompt(from: navController) { success in
             guard success else {
                 return
             }

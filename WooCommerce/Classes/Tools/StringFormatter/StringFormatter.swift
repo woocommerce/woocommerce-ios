@@ -51,7 +51,7 @@ struct StringFormatter {
 
 // MARK: - Private
 //
-private extension StringFormatter  {
+private extension StringFormatter {
 
     /// Replaces some common extra whitespace with hairline spaces so that comments display better
     ///

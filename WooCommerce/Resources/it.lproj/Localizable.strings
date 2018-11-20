@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-09 16:47:00+0000 */
+/* Translation-Revision-Date: 2018-11-15 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -22,16 +22,16 @@
 "Add" = "Aggiungi";
 
 /* Add Tracking row label */
-"Add Tracking" = "Add Tracking";
+"Add Tracking" = "Aggiungi monitoraggio";
 
 /* Button text for adding a new order note */
-"Add a note" = "Add a note";
+"Add a note" = "Aggiungi una nota";
 
 /* Accessibility label for the 'Add a note' button */
-"Add a note button" = "Add a note button";
+"Add a note button" = "Aggiungi un pulsante per le note";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
-"Adds a note to an order" = "Adds a note to an order";
+"Adds a note to an order" = "Aggiunge una nota a un ordine";
 
 /* All filter title */
 "All" = "Tutti";
@@ -58,7 +58,7 @@
 "An error occurred while processing your request: " = "Si è verificato un errore durante l’elaborazione della richiesta: ";
 
 /* Alert message to confirm a user meant to log out. */
-"Are you sure you want to log out of the account %@?" = "Are you sure you want to log out of the account %@?";
+"Are you sure you want to log out of the account %@?" = "Vuoi davvero disconnetterti dal tuo account %@?";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Autenticazione in corso";
@@ -73,19 +73,19 @@
 "Back" = "Indietro";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
-"Bar number %1$i, %2$@, " = "Bar number %1$i, %2$@, ";
+"Bar number %1$i, %2$@, " = "Numero della barra %1$i, %2$@, ";
 
 /* Billing title for customer info cell */
-"Billing details" = "Billing details";
+"Billing details" = "Dati di fatturazione";
 
 /* Browse our FAQ title */
-"Browse our FAQ" = "Browse our FAQ";
+"Browse our FAQ" = "Leggi le nostre FAQ";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Iscrivendoti, accetti i nostri _Termini di servizio_.";
 
 /* Call phone number button title */
-"Call" = "Call";
+"Call" = "Chiama";
 
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Può non essere necessario il collegamento";
@@ -94,7 +94,7 @@
 "Cancel" = "Annulla";
 
 /* Cancelled Order Status */
-"Canceled" = "Canceled";
+"Canceled" = "Operazione annullata";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Tieni il passo con i tuoi siti preferiti e partecipa a una conversazione ovunque e in qualsiasi momento.";
@@ -103,7 +103,7 @@
 "Certificate error" = "Errore di certificato";
 
 /* Settings > Privacy Settings > collect info section. Label the `Collect information` toggle. */
-"Collect information" = "Collect information";
+"Collect information" = "Raccogli informazioni";
 
 /* Completed Order Status */
 "Completed" = "Operazione completata";
@@ -112,25 +112,25 @@
 "Completing Signup" = "Completamento della registrazione";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear. */
-"Composes a new email message to the billing customer." = "Composes a new email message to the billing customer.";
+"Composes a new email message to the billing customer." = "Scrive un nuovo messaggio e-mail per il cliente della fatturazione.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
-"Composes a new order note." = "Composes a new order note.";
+"Composes a new order note." = "Scrive una nota dell'ordine.";
 
 /* Title shown when a user logs in with Google but no matching WordPress.com account is found */
 "Connected But…" = "Connesso ma…";
 
 /* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
-"Connected Store" = "Connected Store";
+"Connected Store" = "Negozio collegato";
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Connessione con WordPress.com in corso";
 
 /* Contact Email title */
-"Contact Email" = "Contact Email";
+"Contact Email" = "E-mail di contatto";
 
 /* Contact Support title */
-"Contact Support" = "Contact Support";
+"Contact Support" = "Contatta il supporto";
 
 /* No comment provided by engineer. */
 "Continue" = "Prosegui";
@@ -154,28 +154,28 @@
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Impossibile connettersi. L’host sta bloccando le richieste POST ma queste sono necessarie per la corretta comunicazione dell'app con il sito. Contatta il tuo fornitore del servizio di hosting per risolvere questo problema.";
 
 /* No comment provided by engineer. */
-"Customer Information" = "Customer Information";
+"Customer Information" = "Informazioni cliente";
 
 /* No comment provided by engineer. */
-"Customer Provided Note" = "Customer Provided Note";
+"Customer Provided Note" = "Nota fornita dai clienti";
 
 /* Statistical unit - a single day */
-"Day" = "Day";
+"Day" = "Giorno";
 
 /* Plural of 'day' — a statistical unit */
 "Days" = "Giorni";
 
 /* Order Notice */
-"Deleted: Order #(viewModel.order.number)" = "Deleted: Order #(viewModel.order.number)";
+"Deleted: Order #(viewModel.order.number)" = "Eliminato: Ordine n. (viewModel.order.number)";
 
 /* The row label to tap for a detailed product list */
 "Details" = "Detagli";
 
 /* Screen title: Details Order number (number) */
-"Details Order #(viewModel.order.number)" = "Details Order #(viewModel.order.number)";
+"Details Order #(viewModel.order.number)" = "Dettagli ordine n. (viewModel.order.number)";
 
 /* Discount label for payment view */
-"Discount" = "Discount";
+"Discount" = "Sconto";
 
 /* No comment provided by engineer. */
 "Dismiss" = "Respinto";
@@ -187,22 +187,22 @@
 "Double tap to dismiss" = "Doppio tocco per ignorare";
 
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
-"Double tap to toggle setting." = "Double tap to toggle setting.";
+"Double tap to toggle setting." = "Tocca due volte per attivare\/disattivare l'impostazione.";
 
 /* Email address text field placeholder */
-"Email" = "Email";
+"Email" = "E-mail";
 
 /* Placeholder for a textfield. The user may enter their email address. */
 "Email address" = "Indirizzo e-mail";
 
 /* Label for yes/no switch - emailing the note to customer. */
-"Email note to customer" = "Email note to customer";
+"Email note to customer" = "Nota e-mail al cliente";
 
 /* No comment provided by engineer. */
-"Email note to customer %@" = "Email note to customer %@";
+"Email note to customer %@" = "Nota e-mail al cliente %@";
 
 /* Accessibility label that lets the user know the billing customer's email address */
-"Email: %@" = "Email: %@";
+"Email: %@" = "E-mail: %@";
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "URL vuota";
@@ -223,28 +223,28 @@
 "Failed to serialize request to the REST API." = "Tentativo di richiesta di serializzazione all'API REST non riuscito.";
 
 /* Filter the orders list. */
-"Filter orders" = "Filter orders";
+"Filter orders" = "Filtra ordini";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
-"Filters the order list by payment status." = "Filters the order list by payment status.";
+"Filters the order list by payment status." = "Filtra l'elenco degli ordini per stato di pagamento.";
 
 /* User role badge */
 "Follower" = "Follower";
 
 /* Order Fulfillment Title */
-"Fulfill Order #(order.number)" = "Fulfill Order #(order.number)";
+"Fulfill Order #(order.number)" = "Evadi ordine n. (order.number)";
 
 /* Fulfill order button title */
-"Fulfill order" = "Fulfill order";
+"Fulfill order" = "Evadi ordine";
 
 /* Fulfill Notice Title */
-"Fulfillment" = "Fulfillment";
+"Fulfillment" = "Evasione";
 
 /* Description for Top Performers section of My Store tab. */
-"Gain insights into how products are performing on your store" = "Gain insights into how products are performing on your store";
+"Gain insights into how products are performing on your store" = "Ottieni informazioni su come i prodotti vengono tracciati nel negozio";
 
 /* Subtitle for Browse our FAQ */
-"Get answers to questions you have" = "Get answers to questions you have";
+"Get answers to questions you have" = "Ottieni risposte alle tue domande";
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Recupero informazioni account";
@@ -253,10 +253,10 @@
 "Google sign up failed." = "Accesso a Google non riuscito.";
 
 /* My Store > Settings > Privacy settings section */
-"HELP IMPROVE THE APP" = "HELP IMPROVE THE APP";
+"HELP IMPROVE THE APP" = "AIUTACI A MIGLIORARE L'APP";
 
 /* My Store > Settings > Help & Support section title */
-"HOW CAN WE HELP?" = "HOW CAN WE HELP?";
+"HOW CAN WE HELP?" = "COME POSSIAMO AIUTARTI?";
 
 /* No comment provided by engineer. */
 "Help" = "Aiuto";
@@ -265,13 +265,13 @@
 "Help & Support" = "Aiuto e supporto";
 
 /* Footer text to hide the billing cell */
-"Hide billing" = "Hide billing";
+"Hide billing" = "Nascondi fatturazione";
 
 /* Error message shown a URL does not point to an existing site. */
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Mm, sembra che non ci sia un sito WordPress associato a questa URL. Verifica di aver scritto correttamente e riprova.";
 
 /* Detail label for yes/no switch. */
-"If disabled will add the note as private." = "If disabled will add the note as private.";
+"If disabled will add the note as private." = "Se disabilitato, la nota verrà aggiunta come privata.";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Inattivo, Aggiornamenti automatici disattivati";
@@ -307,7 +307,7 @@
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Sembra che tu abbia immesso una password errata. Vuoi riprovare?";
 
 /* Settings > Privacy Settings. A text link to the cookie policy. */
-"Learn more" = "Learn more";
+"Learn more" = "Per saperne di più";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limite raggiunto. Si consiglia di attendere almeno un minuto prima di riprovare. Se l'errore persiste, o se pensi che sia un errore del sistema, si prega di contattare il supporto.";
@@ -331,19 +331,19 @@
 "Log in to the WordPress.com account you used to connect Jetpack." = "Accedi all'account WordPress.com che hai utilizzato per connettere Jetpack.";
 
 /* Authentication Login Button */
-"Log in with Jetpack" = "Log in with Jetpack";
+"Log in with Jetpack" = "Accedi con Jetpack";
 
 /* Logout Action */
-"Logout account" = "Logout account";
+"Logout account" = "Disconnetti account";
 
 /* Title of a button. */
 "Lost your password?" = "Password persa?";
 
 /* Tagline after the heart icon, displayed to the user */
-"Made with love by Automattic" = "Made with love by Automattic";
+"Made with love by Automattic" = "Creato con amore da Automattic";
 
 /* Login Prologue Legend */
-"Manage orders, track sales and monitor store activity with real-time alerts." = "Manage orders, track sales and monitor store activity with real-time alerts.";
+"Manage orders, track sales and monitor store activity with real-time alerts." = "Gestisci gli ordini, traccia le vendite e monitora le attività del negozio con avvisi in tempo reale.";
 
 /* shown in promotional screens during first launch */
 "Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "Gestisci il tuo sito con Jetpack mentre sei in movimento: hai WordPress in tasca.";
@@ -355,7 +355,7 @@
 "Mapped Domain" = "Dominio mappato";
 
 /* Fulfill Order Action Button */
-"Mark Order Complete" = "Mark Order Complete";
+"Mark Order Complete" = "Contrassegna ordine come completo";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Gli elementi multimediali non sono associati a un file da caricare.";
@@ -364,25 +364,25 @@
 "Message" = "Messaggio";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
-"Minimum value %1$@, maximum value %2$@" = "Minimum value %1$@, maximum value %2$@";
+"Minimum value %1$@, maximum value %2$@" = "Valore minimo %1$@, valore massimo %2$@";
 
 /* Statistical unit - a single week */
-"Month" = "Month";
+"Month" = "Mese";
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "Mesi";
 
 /* My Tickets title */
-"My Tickets" = "My Tickets";
+"My Tickets" = "I miei ticket";
 
 /* Dashboard navigation title */
-"My store" = "My store";
+"My store" = "Il mio negozio";
 
 /* Name text field placeholder */
-"Name" = "Name";
+"Name" = "Nome";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
-"Navigates to Settings." = "Navigates to Settings.";
+"Navigates to Settings." = "Naviga fino a Impostazioni.";
 
 /* A button title. */
 "Need help finding your site address?" = "Hai bisogno di aiuto per trovare l'indirizzo del tuo sito?";
@@ -397,19 +397,19 @@
 "Next" = "Successivo";
 
 /* Default text for Top Performers section when no data exists for a given period. */
-"No activity this period" = "No activity this period";
+"No activity this period" = "Nessuna attività per questo periodo";
 
 /* No comment provided by engineer. */
-"No address specified." = "No address specified.";
+"No address specified." = "Nessun indirizzo specificato";
 
 /* Text displayed when no data is available for revenue chart. */
-"No data available" = "No data available";
+"No data available" = "Nessun dato disponibile";
 
 /* Orders List (Empty State + Filters) */
-"No results for the selected criteria" = "No results for the selected criteria";
+"No results for the selected criteria" = "Nessun risultato per i criteri selezionati";
 
 /* No comment provided by engineer. */
-"Note to customer" = "Note to customer";
+"Note to customer" = "Nota per il cliente";
 
 /* Notifications tab title */
 "Notifications" = "Notifiche";
@@ -433,52 +433,52 @@
 "On" = "On";
 
 /* On Hold Order Status */
-"On Hold" = "On Hold";
+"On Hold" = "In sospeso";
 
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Apri Mail";
 
 /* No comment provided by engineer. */
-"Optional Tracking Information" = "Optional Tracking Information";
+"Optional Tracking Information" = "Informazioni di monitoraggio opzionali";
 
 /* No comment provided by engineer. */
-"Order #(viewModel.order.number)" = "Order #(viewModel.order.number)";
+"Order #(viewModel.order.number)" = "Ordine n. (viewModel.order.number)";
 
 /* Fulfill Notice Message */
-"Order Marked as Complete!" = "Order Marked as Complete!";
+"Order Marked as Complete!" = "Ordine contrassegnato come completo.";
 
 /* Order notes section title */
-"Order Notes" = "Order Notes";
+"Order Notes" = "Note ordine";
 
 /* No comment provided by engineer. */
-"Orders" = "Orders";
+"Orders" = "Ordini";
 
 /* Orders Title */
-"Orders: (filter)" = "Orders: (filter)";
+"Orders: (filter)" = "Ordini: (filtro)";
 
 /* My Store > Settings > Primary Store information section */
-"PRIMARY STORE" = "PRIMARY STORE";
+"PRIMARY STORE" = "NEGOZIO PRINCIPALE";
 
 /* Product section title */
-"PRODUCT" = "PRODUCT";
+"PRODUCT" = "PRODOTTO";
 
 /* No comment provided by engineer. */
 "Password" = "Password";
 
 /* Payment section title */
-"Payment" = "Payment";
+"Payment" = "Pagamento";
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (totalValue) received via (order.paymentMethodTitle)" = "Payment of (totalValue) received via (order.paymentMethodTitle)";
+"Payment of (totalValue) received via (order.paymentMethodTitle)" = "Pagamento di (totalValue) ricevuto tramite (order.paymentMethodTitle)";
 
 /* Pending Order Status */
 "Pending" = "In sospeso";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
-"Phone number: %@" = "Phone number: %@";
+"Phone number: %@" = "Numero di telefono: %@";
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
-"Pick Store to Connect" = "Pick Store to Connect";
+"Pick Store to Connect" = "Scegli un negozio da collegare";
 
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "Controlla la tua e-mail";
@@ -496,7 +496,7 @@
 "Please enter your credentials" = "Si prega di inserire i dati di accesso";
 
 /* Instructions for alert asking for email. */
-"Please enter your email address." = "Please enter your email address.";
+"Please enter your email address." = "Inserisci il tuo indirizzo e-mail.";
 
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "Si prega di riempire tutti i campi";
@@ -505,55 +505,55 @@
 "Please open your email app and look for an email from WordPress.com." = "Apri la tua app per le e-mail e controlla un'e-mail da WordPress.com.";
 
 /* Navigates to Privacy Settings screen */
-"Privacy Settings" = "Privacy Settings";
+"Privacy Settings" = "Impostazioni privacy";
 
 /* Privacy settings screen title */
-"Privacy settings" = "Privacy settings";
+"Privacy settings" = "Impostazioni privacy";
 
 /* No comment provided by engineer. */
-"Private note" = "Private note";
+"Private note" = "Nota privata";
 
 /* Processing Order Status */
-"Processing" = "Processing";
+"Processing" = "In elaborazione";
 
 /* No comment provided by engineer. */
-"Product" = "Product";
+"Product" = "Prodotto";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
-"Prompts with the option to call or message the billing customer." = "Prompts with the option to call or message the billing customer.";
+"Prompts with the option to call or message the billing customer." = "Richiede l'opzione per chiamare o inviare messaggi al cliente della fatturazione.";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Pubblica dal parco. Lavora al blog sull'autobus. Commenta dal bar. WordPress si sposta con te.";
 
 /* Quantity abbreviation for section title */
-"QTY" = "QTY";
+"QTY" = "QUANTITÀ";
 
 /* No comment provided by engineer. */
-"Qty" = "Qty";
+"Qty" = "Quantità";
 
 /* Subtitle for Contact Support */
-"Reach our happiness engineers who can help answer tough questions" = "Reach our happiness engineers who can help answer tough questions";
+"Reach our happiness engineers who can help answer tough questions" = "Contatta i nostri Happiness Engineer che possono aiutarti a rispondere a domande difficili";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
-"Read privacy policy" = "Read privacy policy";
+"Read privacy policy" = "Leggi la politica sulla privacy";
 
 /* Refunded Order Status */
-"Refunded" = "Refunded";
+"Refunded" = "Rimborsato";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Dominio registrato";
 
 /* Action: Opens the Store in a browser */
-"Remove Filters" = "Remove Filters";
+"Remove Filters" = "Rimuovi filtri";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
-"Report crashes" = "Report crashes";
+"Report crashes" = "Segnala arresti anomali";
 
 /* Retry Action */
 "Retry" = "Riprova";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
-"Review, prepare, and ship these pending orders" = "Review, prepare, and ship these pending orders";
+"Review, prepare, and ship these pending orders" = "Rivedi, prepara e invia questi ordini in attesa";
 
 /* SKU label */
 "SKU:" = "SKU:";
@@ -565,25 +565,25 @@
 "Send Link" = "Invia link";
 
 /* Tells user to set an email that support can use for replies */
-"Set email" = "Set email";
+"Set email" = "Imposta e-mail";
 
 /* No comment provided by engineer. */
 "Settings" = "Impostazioni";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
-"Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Share information with our analytics tool about your use of services while logged in to your WordPress.com account.";
+"Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Condividi informazioni con gli strumenti di analisi relative all'uso dei servizi mentre sei connesso al tuo account WordPress.com.";
 
 /* Action: Opens the Store in a browser */
-"Share your Store" = "Share your Store";
+"Share your Store" = "Condividi il negozio";
 
 /* Shipping label for payment view */
-"Shipping" = "Shipping";
+"Shipping" = "Spedizione";
 
 /* Shipping title for customer info cell */
-"Shipping details" = "Shipping details";
+"Shipping details" = "Dati di spedizione";
 
 /* Footer text to show the billing cell */
-"Show billing" = "Show billing";
+"Show billing" = "Mostra fatturazione";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "Registrati";
@@ -649,28 +649,28 @@
 "Sorry, you may not use that site address." = "Spiacenti, non puoi usare quell'indirizzo per il tuo sito.";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
-"Starting period %1$@, ending period %2$@" = "Starting period %1$@, ending period %2$@";
+"Starting period %1$@, ending period %2$@" = "Periodo di inizio %1$@, periodo di fine %2$@";
 
 /* VoiceOver accessibility label for the store revenue chart. */
-"Store revenue chart" = "Store revenue chart";
+"Store revenue chart" = "Grafico del fatturato del negozio";
 
 /* VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}. */
-"Store revenue chart %@" = "Store revenue chart %@";
+"Store revenue chart %@" = "Grafico del fatturato del negozio %@";
 
 /* VoiceOver accessibility label for the store revenue chart's X-axis. */
-"Store revenue chart: X Axis" = "Store revenue chart: X Axis";
+"Store revenue chart: X Axis" = "Grafico del fatturato del negozio: Asse X";
 
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
-"Store revenue chart: Y Axis" = "Store revenue chart: Y Axis";
+"Store revenue chart: Y Axis" = "Grafico del fatturato del negozio: Asse Y";
 
 /* Subtotal label for payment view */
-"Subtotal" = "Subtotal";
+"Subtotal" = "Subtotale";
 
 /* Tax label for total taxes line */
-"Tax:" = "Tax:";
+"Tax:" = "Tasse:";
 
 /* Taxes label for payment view */
-"Taxes" = "Taxes";
+"Taxes" = "Tasse";
 
 /* Button title */
 "Text me a code instead" = "Inviami un codice invece";
@@ -706,7 +706,7 @@
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Il certificato per questo server non è valido. Continuando, corri il rischio di connetterti ad un server che finge di essere  “%@”, il che potrebbe compromettere la sicurezza di informazioni riservate che ti appartengono.\n\nVuoi accettare comunque il certificato?";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
-"The order has been deleted from your Store!" = "The order has been deleted from your Store!";
+"The order has been deleted from your Store!" = "Questo ordine è stato eliminato dal tuo negozio.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Il server ha restituito una risposta vuota. Questo di solito significa che è necessario aumentare il limite di memoria per il tuo sito.";
@@ -727,31 +727,31 @@
 "There was a problem removing the block for specified site." = "Si è verificato un problema rimuovendo il blocco per il sito indicato.";
 
 /* Top Performers section title - this month */
-"This Month" = "This Month";
+"This Month" = "Questo mese";
 
 /* Top Performers section title - this week */
-"This Week" = "This Week";
+"This Week" = "Questa settimana";
 
 /* Top Performers section title - this year */
-"This Year" = "This Year";
+"This Year" = "Quest'anno";
 
 /* Login Disclaimer Text and Jetpack config instructions */
-"This app requires Jetpack to connect to your Store. Read the " = "This app requires Jetpack to connect to your Store. Read the ";
+"This app requires Jetpack to connect to your Store. Read the " = "Questa app richiede che Jetpack sia connesso al tuo negozio. Leggi ";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Questo indirizzo e-mail non è registrato su Wordpress.com.";
 
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
-"This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.";
+"This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "Queste informazioni ci aiutano a migliorare i prodotti, offrire proposte di marketing più pertinenti, personalizzare l’esperienza WordPress.com e molto altro, come indicato nel dettaglio nella nostra politica sulla privacy.";
 
 /* Instructions for alert asking for email and name. */
-"To continue please enter your email address and name." = "To continue please enter your email address and name.";
+"To continue please enter your email address and name." = "Per continuare, inserisci indirizzo e-mail e nome.";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Per creare il tuo nuovo account WordPress.com, inserisci il tuo indirizzo e-mail.";
 
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
-"To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.";
+"To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "Per aiutarci a migliorare le prestazioni dell'app e correggere bug occasionali, attiva i rapporti di arresto anomalo.";
 
 /* No comment provided by engineer. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Per procedere con questo account Google, accedi prima con la tua password di WordPress.com. Sarà chiesta una volta sola.";
@@ -760,7 +760,7 @@
 "Today" = "Oggi";
 
 /* Header label for Top Performers section of My Store tab. */
-"Top Performers" = "Top Performers";
+"Top Performers" = "I migliori esecutori";
 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "Argomento non trovato per ID:";
@@ -769,16 +769,16 @@
 "Total" = "Totale";
 
 /* Top performers — label for the total number of products ordered */
-"Total Product Order: %ld" = "Total Product Order: %ld";
+"Total Product Order: %ld" = "Ordine prodotto totale: %ld";
 
 /* Description for Top Performers right column header */
-"Total Spend" = "Total Spend";
+"Total Spend" = "Spesa totale";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Procedi ugualmente";
 
 /* No comment provided by engineer. */
-"Try another account" = "Try another account";
+"Try another account" = "Prova un altro account";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Prova con un'altra e-mail";
@@ -790,13 +790,13 @@
 "Unable To Connect" = "Impossibile connettersi";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"Unable to find WooCommerce stores connected to this account" = "Unable to find WooCommerce stores connected to this account";
+"Unable to find WooCommerce stores connected to this account" = "Impossibile trovare negozi WooCommerce collegati a questo account";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Non è stato trovato un sito WordPress all'URL che hai inserito. Tocca 'Bisogno di Aiuto?' per visualizzare le FAQ.";
 
 /* Refresh Action Failed */
-"Unable to refresh list" = "Unable to refresh list";
+"Unable to refresh list" = "Impossibile aggiornare l'elenco";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Impossibile verificare l'indirizzo e-mail. Riprova più tardi.";
@@ -811,10 +811,10 @@
 "Unknown error" = "Errore sconosciuto";
 
 /* Stats summary date */
-"Updated %@" = "Updated %@";
+"Updated %@" = "%@ aggiornato";
 
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
-"Updated %1$@ at %2$@" = "Updated %1$@ at %2$@";
+"Updated %1$@ at %2$@" = "%1$@ aggiornato al giorno %2$@";
 
 /* No comment provided by engineer. */
 "Username" = "Nome utente";
@@ -829,16 +829,16 @@
 "Version" = "Versione";
 
 /* subtitle for My Tickets */
-"View previously submitted support tickets" = "View previously submitted support tickets";
+"View previously submitted support tickets" = "Visualizza ticket di supporto inviati in precedenza";
 
 /* User role badge */
 "Viewer" = "Visitatore";
 
 /* Add a note screen - Write Note section title */
-"WRITE NOTE" = "WRITE NOTE";
+"WRITE NOTE" = "SCRIVI UNA NOTA";
 
 /* Orders List (Empty State / No Filters) */
-"Waiting for Customers" = "Waiting for Customers";
+"Waiting for Customers" = "In attesa dei clienti";
 
 /* Message shown on screen while waiting for Google to finish its signup process. */
 "Waiting for Google to complete…" = "In attesa di Google per il completamento…";
@@ -850,7 +850,7 @@
 "We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "Ti abbiamo inviato un link per l'accesso. Controlla la tua e-mail su questo dispositivo e premi il link per terminare l'iscrizione.";
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
-"We use other tracking tools, including some from third parties. Read about these and how to control them." = "We use other tracking tools, including some from third parties. Read about these and how to control them.";
+"We use other tracking tools, including some from third parties. Read about these and how to control them." = "Utilizziamo altri strumenti di tracciamento, inclusi alcuni di terze parti. Leggi le informazioni sugli strumenti e come utilizzarli.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "Al momento non siamo stati in grado di inviarti un'e-mail. Riprova più tardi.";
@@ -865,7 +865,7 @@
 "We're sure this is a great site - but it's not a WordPress site, so you can't connect to it with this app." = "Questo è sicuramente un ottimo sito, ma non essendo un sito WordPress non puoi connetterlo a questa app.";
 
 /* Statistical unit - a single week */
-"Week" = "Week";
+"Week" = "Settimana";
 
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "Settimane";
@@ -880,13 +880,13 @@
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Questo non è un codice di autenticazione a due fattori valido. Controlla il tuo codice e riprova!";
 
 /* Subject of new Zendesk ticket. */
-"WooCommerce for iOS Support" = "WooCommerce for iOS Support";
+"WooCommerce for iOS Support" = "Supporto WooCommerce per iOS";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "La versione di WordPress è troppo vecchia Il sito %1$@ usa WordPress %2$@. Ti suggeriamo di aggiornare all'ultima versione, o, almeno, alla versione %3$@";
 
 /* Statistical unit - a single year */
-"Year" = "Year";
+"Year" = "Anno";
 
 /* Plural of 'year' — a statistical unit */
 "Years" = "Anni";
@@ -898,10 +898,10 @@
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "L'indirizzo email che hai inserito non può essere usato per creare l'account. Stiamo avendo problemi con il tuo provider di posta elettronica che blocca le nostre email di attivazione. Si prega di riprovare con un altro indirizzo email.";
 
 /* Title text used on the My Store UI when a user has a _single_ pending order to process. */
-"You have %ld order to fulfill" = "You have %ld order to fulfill";
+"You have %ld order to fulfill" = "Hai %ld ordine da evadere";
 
 /* Title text used on the My Store UI when a user has _multiple_ pending orders to process. */
-"You have %ld orders to fulfill" = "You have %ld orders to fulfill";
+"You have %ld orders to fulfill" = "Hai %ld ordini da evadere";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Sembra che tu abbia installato un plugin per mobile di DudaMobile che impedisce all'applicazione di stabilire una connessione con il tuo blog";
@@ -916,7 +916,7 @@
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "L'indirizzo del tuo sito, quando visiti il sito con Safari, appare nella barra in cima allo schermo.";
 
 /* Login Disclaimer Linked Text */
-"configuration instructions" = "configuration instructions";
+"configuration instructions" = "istruzioni di configurazione";
 
 /* Site Address placeholder */
 "example.wordpress.com" = "example.wordress.com";

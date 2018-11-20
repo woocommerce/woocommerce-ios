@@ -289,11 +289,10 @@ private extension NotificationsViewController {
 private extension NotificationsViewController {
 
     func didChangeFilter(newFilter: NoteTypeFilter?) {
-        //        WooAnalytics.shared.track(.filterOrdersOptionSelected,
-        //                                  withProperties: ["status": newFilter?.rawValue ?? String()])
-        //        WooAnalytics.shared.track(.ordersListFilterOrSearch,
-        //                                  withProperties: ["filter": newFilter?.rawValue ?? String(),
-        //                                                   "search": ""])
+                WooAnalytics.shared.track(.filterNotificationsOptionSelected,
+                                          withProperties: ["status": newFilter?.rawValue ?? String()])
+                WooAnalytics.shared.track(.notificationListFilter,
+                                          withProperties: ["range": newFilter?.rawValue ?? String()])
 
         // Display the Filter in the Title
         refreshTitle()
@@ -364,6 +363,8 @@ private extension NotificationsViewController {
         let action = NotificationAction.synchronizeNotifications { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
+            } else {
+                WooAnalytics.shared.track(.notificationListLoaded)
             }
 
             self.transitionToResultsUpdatedState()

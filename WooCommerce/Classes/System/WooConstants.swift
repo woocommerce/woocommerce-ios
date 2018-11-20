@@ -27,7 +27,7 @@ enum WooConstants {
 
     /// Cookie policy URL
     ///
-    static let cookieURL = URL(string:"https://automattic.com/cookies/")
+    static let cookieURL = URL(string: "https://automattic.com/cookies/")
 
     /// Privacy policy URL
     ///

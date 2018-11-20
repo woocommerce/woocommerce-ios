@@ -31,12 +31,16 @@ class HelpAndSupportViewController: UIViewController {
         configureTableView()
         configureTableViewFooter()
         registerTableViewCells()
+        warnDeveloperIfNeeded()
     }
 }
 
 // MARK: - View Configuration
 //
 private extension HelpAndSupportViewController {
+
+    /// Set the title and back button.
+    ///
     func configureNavigation() {
         title = NSLocalizedString("Help", comment: "Help and Support navigation title")
         // Don't show the Settings title in the next-view's back button
@@ -48,16 +52,22 @@ private extension HelpAndSupportViewController {
         navigationItem.backBarButtonItem = backButton
     }
 
+    /// Apply Woo styles.
+    ///
     func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
+    /// Configure common table properties.
+    ///
     func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
+    /// Display the version number in the footer.
+    ///
     func configureTableViewFooter() {
         let versionLabel = NSLocalizedString("Version", comment: "App version label")
         let appVersion = UserAgent.bundleShortVersion
@@ -73,6 +83,8 @@ private extension HelpAndSupportViewController {
         footerContainer.addSubview(footerView)
     }
 
+    /// Disable Zendesk if configuration on ZD init fails.
+    ///
     func configureSections() {
         let helpAndSupportTitle = NSLocalizedString("HOW CAN WE HELP?", comment: "My Store > Settings > Help & Support section title")
 
@@ -89,9 +101,22 @@ private extension HelpAndSupportViewController {
         ]
     }
 
+    /// Register table cells.
+    ///
     func registerTableViewCells() {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
+        }
+    }
+
+    /// Warn devs that logged in with an Automattic email.
+    ///
+    func warnDeveloperIfNeeded() {
+        if accountEmail.contains(Constants.devEmail) {
+            let alert = UIAlertController(title: "Warning", message: "Developer email account detected. Please log in with a non-Automattic email to submit or view support tickets.", preferredStyle: .alert)
+            let cancel = UIAlertAction(title: "Dismiss", style: .cancel, handler: nil)
+            alert.addAction(cancel)
+            present(alert, animated: true, completion: nil)
         }
     }
 
@@ -112,6 +137,8 @@ private extension HelpAndSupportViewController {
         }
     }
 
+    /// Browse our FAQ cell.
+    ///
     func configureBrowseFaq(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -119,6 +146,8 @@ private extension HelpAndSupportViewController {
         cell.detailTextLabel?.text = NSLocalizedString("Get answers to questions you have", comment: "Subtitle for Browse our FAQ")
     }
 
+    /// Contact Support cell.
+    ///
     func configureContactSupport(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -126,6 +155,8 @@ private extension HelpAndSupportViewController {
         cell.detailTextLabel?.text = NSLocalizedString("Reach our happiness engineers who can help answer tough questions", comment: "Subtitle for Contact Support")
     }
 
+    /// My Tickets cell.
+    ///
     func configureMyTickets(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -133,6 +164,8 @@ private extension HelpAndSupportViewController {
         cell.detailTextLabel?.text = NSLocalizedString("View previously submitted support tickets", comment: "subtitle for My Tickets")
     }
 
+    /// Contact Email cell.
+    ///
     func configureMyContactEmail(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -254,6 +287,7 @@ extension HelpAndSupportViewController: UITableViewDelegate {
 private struct Constants {
     static let rowHeight = CGFloat(44)
     static let footerHeight = 44
+    static let devEmail = "@automattic.com"
 }
 
 private struct Section {

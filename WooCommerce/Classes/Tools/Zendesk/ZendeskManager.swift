@@ -288,6 +288,7 @@ private extension ZendeskManager {
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.currentSite as NSNumber, andValue: getCurrentSiteDescription()))
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.sourcePlatform as NSNumber, andValue: Constants.sourcePlatform))
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: appLanguage))
+        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.subcategory as NSNumber, andValue: Constants.subcategory))
         requestConfig.fields = ticketFields
 
         // Set tags
@@ -660,6 +661,7 @@ private extension ZendeskManager {
         static let profileNameKey = "name"
         static let nameFieldCharacterLimit = 50
         static let sourcePlatform = "woo_-_ios"
+        static let subcategory = "WooCommerce Mobile Apps"
     }
 
     // Zendesk expects these as NSNumber. However, they are defined as UInt64 to satisfy 32-bit devices (ex: iPhone 5).
@@ -674,6 +676,7 @@ private extension ZendeskManager {
         static let currentSite: UInt64 = 360000103103
         static let sourcePlatform: UInt64 = 360009311651
         static let appLanguage: UInt64 = 360008583691
+        static let subcategory: UInt64 = 25176023
     }
 
     struct LocalizedText {

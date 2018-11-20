@@ -269,23 +269,9 @@ private extension NotificationsViewController {
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
 
         actionSheet.addCancelActionWithTitle(NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"))
-        actionSheet.addDefaultActionWithTitle(NoteTypeFilter.all.description) { [weak self] _ in
-            self?.currentTypeFilter = .all
-        }
-
-        let noteKinds = resultsController.fetchedObjects.compactMap({ (note) -> NoteTypeFilter? in
-            if note.kind == Note.Kind.storeOrder {
-                return NoteTypeFilter.orders
-            } else if note.subkind == Note.Subkind.storeReview {
-                return NoteTypeFilter.reviews
-            } else {
-                return nil
-            }
-        })
-
-        for typeFilter in Array(Set(noteKinds)) {
-            actionSheet.addDefaultActionWithTitle(typeFilter.description) { [weak self] _ in
-                self?.currentTypeFilter = typeFilter
+        for noteType in NoteTypeFilter.knownTypes {
+            actionSheet.addDefaultActionWithTitle(noteType.description) { [weak self] _ in
+                self?.currentTypeFilter = noteType
             }
         }
 
@@ -402,8 +388,18 @@ extension NotificationsViewController {
     }
 
     func refreshResultsPredicate() {
-        let typePredicate = NSPredicate(format: "type == %@ OR subtype == %@", Note.Kind.storeOrder.rawValue, Note.Subkind.storeReview.rawValue)
         let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        var typePredicate: NSPredicate
+
+        switch currentTypeFilter {
+        case .all:
+            typePredicate = NSPredicate(format: "type == %@ OR subtype == %@", Note.Kind.storeOrder.rawValue, Note.Subkind.storeReview.rawValue)
+        case .orders:
+            typePredicate = NSPredicate(format: "type == %@", Note.Kind.storeOrder.rawValue)
+        case .reviews:
+            typePredicate = NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
+        }
+
         resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [typePredicate, sitePredicate])
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
@@ -700,6 +696,12 @@ private extension NotificationsViewController {
         case all
         case orders = "store_order"
         case reviews = "store_review"
+
+        /// Returns a collection of all of the known Note Types
+        ///
+        static var knownTypes: [NoteTypeFilter] {
+            return [.all, .orders, .reviews]
+        }
 
         var description: String {
             switch self {

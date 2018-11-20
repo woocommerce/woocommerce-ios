@@ -150,6 +150,12 @@ public enum WooAnalyticsStat: String {
     case notificationsListPulledToRefresh       = "notifications_list_pulled_to_refresh"
     case notificationsListReadAllTapped         = "notifications_list_menu_mark_read_button_tapped"
     case notificationsListFilterTapped          = "notifications_list_menu_filter_tapped"
+    case filterNotificationsOptionSelected      = "filter_notifications_by_status_dialog_option_selected"
+
+    // Notification Data/Action Events
+    //
+    case notificationListLoaded                 = "notifications_loaded"
+    case notificationListFilter                 = "notifications_filter"
 }
 
 public extension WooAnalyticsStat {

@@ -234,6 +234,11 @@ extension StorePickerViewController {
                 if let error = error {
                     DDLogError("⛔️ StorePickerViewController (All Sites) — Error synchronizing sites details: \(error)")
                 }
+
+                if let storeID = StoresManager.shared.sessionManager.defaultStoreID {
+                    // Refresh the cached default site
+                    StoresManager.shared.updateDefaultStore(storeID: storeID)
+                }
             }
 
             StoresManager.shared.dispatch(action)

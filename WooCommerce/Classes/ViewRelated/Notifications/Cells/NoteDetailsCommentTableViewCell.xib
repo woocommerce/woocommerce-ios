@@ -47,14 +47,14 @@
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="250" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6d4-9R-dcK">
-                        <rect key="frame" x="72" y="42.5" width="47" height="16"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="749" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6d4-9R-dcK">
+                        <rect key="frame" x="72" y="42.5" width="47" height="12.5"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" editable="NO" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FpQ-yp-a6e">
-                        <rect key="frame" x="16" y="72" width="288" height="79"/>
+                        <rect key="frame" x="16" y="69" width="288" height="82"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="28" id="mhf-tZ-eCY"/>
@@ -121,7 +121,7 @@
                     <constraint firstItem="FpQ-yp-a6e" firstAttribute="leading" secondItem="p0w-Eh-NgH" secondAttribute="leadingMargin" id="iJQ-Re-Ht8"/>
                     <constraint firstItem="MB2-nk-Fuo" firstAttribute="leading" secondItem="qcp-iw-3SL" secondAttribute="trailing" constant="16" id="j02-8v-a9S"/>
                     <constraint firstItem="MB2-nk-Fuo" firstAttribute="top" secondItem="qcp-iw-3SL" secondAttribute="top" id="kYZ-Gx-lHX"/>
-                    <constraint firstItem="FpQ-yp-a6e" firstAttribute="top" secondItem="qcp-iw-3SL" secondAttribute="bottom" constant="10" id="whu-f4-xTS"/>
+                    <constraint firstItem="FpQ-yp-a6e" firstAttribute="top" secondItem="6d4-9R-dcK" secondAttribute="bottom" constant="14" id="whu-f4-xTS"/>
                     <constraint firstItem="qcp-iw-3SL" firstAttribute="leading" secondItem="p0w-Eh-NgH" secondAttribute="leadingMargin" id="xLw-6R-ASC"/>
                 </constraints>
             </tableViewCellContentView>

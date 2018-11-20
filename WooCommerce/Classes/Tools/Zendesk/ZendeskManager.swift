@@ -76,6 +76,8 @@ import Yosemite
         haveUserIdentity = getUserProfile()
         toggleZendesk(enabled: true)
 
+        Theme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
+
         observeZendeskNotifications()
     }
 
@@ -682,28 +684,8 @@ private extension ZendeskManager {
         static let emailPlaceholder = NSLocalizedString("Email", comment: "Email address text field placeholder")
         static let namePlaceholder = NSLocalizedString("Name", comment: "Name text field placeholder")
     }
-
 }
 
-// MARK: - ZDKHelpCenterConversationsUIDelegate
-//
-extension ZendeskManager: ZDKHelpCenterConversationsUIDelegate {
-
-    func navBarConversationsUIType() -> ZDKNavBarConversationsUIType {
-        // When ZDKContactUsVisibility is on, use the default right nav bar label.
-        return .localizedLabel
-    }
-
-    func active() -> ZDKContactUsVisibility {
-        // If we don't have the user's information, disable 'Contact Us' via the Help Center and Article view.
-        if !haveUserIdentity {
-            return .off
-        }
-
-        return .articleListAndArticle
-    }
-
-}
 
 // MARK: - UITextFieldDelegate
 //

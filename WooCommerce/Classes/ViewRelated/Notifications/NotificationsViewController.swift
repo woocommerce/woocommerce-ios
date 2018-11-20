@@ -249,6 +249,21 @@ private extension NotificationsViewController {
         StoresManager.shared.dispatch(action)
     }
 
+    /// Marks a specific Notification as read.
+    ///
+    func markAsReadIfNeeded(note: Note) {
+        guard note.read == false else {
+            return
+        }
+
+        let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
+            if let error = error {
+                DDLogError("⛔️ Error marking single notification as read: \(error)")
+            }
+        }
+        StoresManager.shared.dispatch(action)
+    }
+
     /// Marks the specified collection of Notifications as Read.
     ///
     func markAsRead(notes: [Note]) {
@@ -334,6 +349,8 @@ extension NotificationsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let note = resultsController.object(at: indexPath)
+
+        markAsReadIfNeeded(note: note)
 
         switch note.kind {
         case .storeOrder:
@@ -554,7 +571,7 @@ private extension NotificationsViewController {
             MainTabBarController.hideDotOn(.notifications)
             return
         }
-        
+
         MainTabBarController.showDotOn(.notifications)
     }
 }

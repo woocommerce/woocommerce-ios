@@ -14,6 +14,26 @@ class NotificationsViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
+    /// Mark all as read nav bar button
+    ///
+    private lazy var leftBarButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: Gridicon.iconOfType(.checkmark),
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(markAllAsRead))
+        return button
+    }()
+
+    /// Filter nav bar button
+    ///
+    private lazy var rightBarButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(displayFiltersAlert))
+        return button
+    }()
+
     /// Haptic Feedback!
     ///
     private let hapticGenerator = UINotificationFeedbackGenerator()
@@ -147,21 +167,12 @@ private extension NotificationsViewController {
     /// Setup: NavigationBar Buttons
     ///
     func configureNavigationBarButtons() {
-        let leftBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.checkmark),
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(markAllAsRead))
         leftBarButton.tintColor = .white
         leftBarButton.accessibilityTraits = .button
         leftBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Notifications as Read Button")
         leftBarButton.accessibilityHint = NSLocalizedString("Marks Every Notification as Read", comment: "VoiceOver accessibility hint for the Mark All Notifications as Read Action")
         navigationItem.leftBarButtonItem = leftBarButton
 
-
-        let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(displayFiltersAlert))
         rightBarButton.tintColor = .white
         rightBarButton.accessibilityTraits = .button
         rightBarButton.accessibilityLabel = NSLocalizedString("Filter notifications", comment: "Accessibility label for the Filter notifications button.")
@@ -573,10 +584,13 @@ private extension NotificationsViewController {
         switch state {
         case .empty:
             displayEmptyNotesOverlay()
+            updateNavBarButtonsState(enabled: false)
         case .results:
+            updateNavBarButtonsState(enabled: true)
             break
         case .syncing:
             displayPlaceholderNotes()
+            updateNavBarButtonsState(enabled: false)
         }
     }
 
@@ -619,6 +633,15 @@ private extension NotificationsViewController {
         }
 
         MainTabBarController.showDotOn(.notifications)
+    }
+
+    /// Enables/disables the navbar buttons if needed
+    ///
+    /// - Parameter enabled: If true, navbar buttons are enabled; if false, they are disabled
+    ///
+    func updateNavBarButtonsState(enabled: Bool) {
+        leftBarButton.isEnabled = enabled
+        rightBarButton.isEnabled = enabled
     }
 }
 

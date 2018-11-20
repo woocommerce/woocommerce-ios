@@ -44,16 +44,23 @@ class NotificationsViewController: UIViewController {
         let storageManager = AppDelegate.shared.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
 
-        return ResultsController<StorageNote>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", matching: filter, sortedBy: [descriptor])
+        return ResultsController<StorageNote>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
-    /// Store Notifications CoreData Filter.
+    /// OrderStatus that must be matched by retrieved orders.
     ///
-    private var filter: NSPredicate {
-        let typePredicate = NSPredicate(format: "type == %@ OR subtype == %@", Note.Kind.storeOrder.rawValue, Note.Subkind.storeReview.rawValue)
-        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+    private var typeFilter: NoteTypeFilter? {
+        didSet {
+            guard isViewLoaded else {
+                return
+            }
 
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [typePredicate, sitePredicate])
+            guard oldValue?.rawValue != typeFilter?.rawValue else {
+                return
+            }
+
+            //didChangeFilter(newFilter: statusFilter)
+        }
     }
 
     /// Pull To Refresh Support.
@@ -127,6 +134,7 @@ class NotificationsViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = StyleManager.tableViewBackgroundColor
 
+        refreshResultsPredicate()
         configureNavigationItem()
         configureNavigationBarButtons()
         configureTableView()
@@ -250,16 +258,16 @@ private extension NotificationsViewController {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
 
-        actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
-        actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
+        actionSheet.addCancelActionWithTitle(NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"))
+        actionSheet.addDefaultActionWithTitle(NoteTypeFilter.all.description) { [weak self] _ in
             // TODO: self?.typeFilter = nil
         }
 
         let noteKinds = resultsController.fetchedObjects.compactMap({ (note) -> String? in
             if note.kind == Note.Kind.storeOrder {
-                return FilterAction.displayOrders
+                return NoteTypeFilter.orders.description
             } else if note.subkind == Note.Subkind.storeReview {
-                return FilterAction.displayReviews
+                return NoteTypeFilter.reviews.description
             } else {
                 return nil
             }
@@ -359,7 +367,15 @@ extension NotificationsViewController {
     /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
     ///
     func reloadResultsController() {
-        resultsController.predicate = filter
+        refreshResultsPredicate()
+        tableView.reloadData()
+    }
+
+    func refreshResultsPredicate() {
+        let typePredicate = NSPredicate(format: "type == %@ OR subtype == %@", Note.Kind.storeOrder.rawValue, Note.Subkind.storeReview.rawValue)
+        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [typePredicate, sitePredicate])
+        tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }
 }
@@ -650,11 +666,21 @@ private extension NotificationsViewController {
 //
 private extension NotificationsViewController {
 
-    enum FilterAction {
-        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
-        static let displayAll = NSLocalizedString("All", comment: "All filter title")
-        static let displayOrders = NSLocalizedString("Orders", comment: "Orders filter title")
-        static let displayReviews = NSLocalizedString("Reviews", comment: "Reviews filter title")
+    enum NoteTypeFilter: String {
+        case all
+        case orders = "store_order"
+        case reviews = "store_review"
+
+        var description: String {
+            switch self {
+            case .all:
+                return NSLocalizedString("All", comment: "All filter title")
+            case .orders:
+                return NSLocalizedString("Orders", comment: "Orders filter title")
+            case .reviews:
+                return NSLocalizedString("Reviews", comment: "Reviews filter title")
+            }
+        }
     }
 
     enum Settings {

@@ -45,7 +45,7 @@ class VerticalButton: UIButton {
 }
 
 
-// MARK: -  Private
+// MARK: - Private
 //
 private extension VerticalButton {
 

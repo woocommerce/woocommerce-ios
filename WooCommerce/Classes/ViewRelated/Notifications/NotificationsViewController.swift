@@ -81,6 +81,17 @@ class NotificationsViewController: UIViewController {
         return resultsController.fetchedObjects.filter { $0.read == false }
     }
 
+    /// The last seen time for notifications
+    ///
+    private var lastSeenTime: String? {
+        get {
+            return UserDefaults.standard[.notificationsLastSeenTime]
+        }
+        set {
+            return UserDefaults.standard[.notificationsLastSeenTime] = newValue
+        }
+    }
+
     // MARK: - View Lifecycle
 
     deinit {
@@ -108,7 +119,9 @@ class NotificationsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        synchronizeNotifications()
+        synchronizeNotifications { [weak self] in
+            self?.updateLastSeenTime()
+        }
     }
 }
 
@@ -158,13 +171,19 @@ private extension NotificationsViewController {
     ///
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
+
+        // The following two assignments are actually overridding wiring performed by `startForwardingEvents`.
+        // FIXME: NUKE them ASAP
+        //
         resultsController.onDidChangeContent = { [weak self] in
             // FIXME: This should be removed once `PushNotificationsManager` is in place
             self?.updateNotificationsTabIfNeeded()
+            self?.tableView?.endUpdates()
         }
-        resultsController.onDidResetContent = {
+        resultsController.onDidResetContent = { [weak self] in
             // FIXME: This should be removed once `PushNotificationsManager` is in place
             MainTabBarController.hideDotOn(.notifications)
+            self?.tableView?.reloadData()
         }
         try? resultsController.performFetch()
     }
@@ -207,6 +226,28 @@ private extension NotificationsViewController {
 // MARK: - Yosemite Wrappers
 //
 private extension NotificationsViewController {
+
+    /// Update the last seen time for notifications
+    ///
+    func updateLastSeenTime() {
+        guard let firstNote = resultsController.fetchedObjects.first else {
+            return
+        }
+        guard firstNote.timestamp != lastSeenTime else {
+            return
+        }
+
+        let timestamp = firstNote.timestamp
+        let action = NotificationAction.updateLastSeen(timestamp: timestamp) { [weak self] (error) in
+            if let error = error {
+                DDLogError("⛔️ Error marking notifications as seen: \(error)")
+            } else {
+                self?.lastSeenTime = timestamp
+            }
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
 
     /// Marks a specific Notification as read.
     ///
@@ -530,7 +571,7 @@ private extension NotificationsViewController {
             MainTabBarController.hideDotOn(.notifications)
             return
         }
-
+        
         MainTabBarController.showDotOn(.notifications)
     }
 }

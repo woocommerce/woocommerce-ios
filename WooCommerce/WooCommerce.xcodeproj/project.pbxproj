@@ -22,7 +22,6 @@
 
 /* Begin PBXBuildFile section */
 		74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74036CBF211B882100E462C2 /* PeriodDataViewController.swift */; };
-		7403F7E220EC04070097198F /* OrderStatusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7403F7E120EC04070097198F /* OrderStatusViewModel.swift */; };
 		7421344A210A323C00C13890 /* WooAnalyticsStat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74213449210A323C00C13890 /* WooAnalyticsStat.swift */; };
 		74334F36214AB130006D6AC5 /* ProductTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74334F34214AB12F006D6AC5 /* ProductTableViewCell.swift */; };
 		74334F37214AB130006D6AC5 /* ProductTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74334F35214AB12F006D6AC5 /* ProductTableViewCell.xib */; };
@@ -32,6 +31,7 @@
 		746791662108D87B007CF1DC /* MockupAnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746791652108D87B007CF1DC /* MockupAnalyticsProvider.swift */; };
 		747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747AA0882107CEC60047A89B /* AnalyticsProvider.swift */; };
 		747AA08B2107CF8D0047A89B /* TracksProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747AA08A2107CF8D0047A89B /* TracksProvider.swift */; };
+		748AD087219F481B00023535 /* UIView+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748AD086219F481B00023535 /* UIView+Animation.swift */; };
 		748C7780211E18A600814F2C /* OrderStats+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748C777F211E18A600814F2C /* OrderStats+Woo.swift */; };
 		748C7782211E294000814F2C /* Double+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748C7781211E294000814F2C /* Double+Woo.swift */; };
 		748C7784211E2D8400814F2C /* DoubleWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748C7783211E2D8400814F2C /* DoubleWooTests.swift */; };
@@ -57,11 +57,14 @@
 		B517EA18218B232700730EC4 /* StringFormatter+Notes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B517EA17218B232700730EC4 /* StringFormatter+Notes.swift */; };
 		B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B517EA19218B2D2600730EC4 /* StringFormatterTests.swift */; };
 		B517EA1D218B41F200730EC4 /* String+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B517EA1C218B41F200730EC4 /* String+Woo.swift */; };
+		B5290ED9219B3FA900A6AF7F /* Date+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5290ED8219B3FA900A6AF7F /* Date+Woo.swift */; };
 		B53A569721123D3B000776C9 /* ResultsControllerUIKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569621123D3B000776C9 /* ResultsControllerUIKitTests.swift */; };
 		B53A569B21123E8E000776C9 /* MockupTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569A21123E8E000776C9 /* MockupTableView.swift */; };
 		B53A569D21123EEB000776C9 /* MockupStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569C21123EEB000776C9 /* MockupStorage.swift */; };
 		B53A56A22112470C000776C9 /* MockupStorage+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A56A12112470C000776C9 /* MockupStorage+Sample.swift */; };
 		B53A56A42112483E000776C9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A56A32112483D000776C9 /* Constants.swift */; };
+		B53B3F37219C75AC00DF1EB6 /* OrderLoaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B3F36219C75AC00DF1EB6 /* OrderLoaderViewController.swift */; };
+		B53B3F39219C817800DF1EB6 /* UIStoryboard+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B3F38219C817800DF1EB6 /* UIStoryboard+Woo.swift */; };
 		B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B898820D450AF00EDB467 /* SessionManagerTests.swift */; };
 		B53B898D20D462A000EDB467 /* StoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B898C20D462A000EDB467 /* StoresManager.swift */; };
 		B541B2132189E7FD008FE7C1 /* ScannerWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541B2122189E7FD008FE7C1 /* ScannerWooTests.swift */; };
@@ -86,13 +89,17 @@
 		B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */ = {isa = PBXBuildFile; fileRef = B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */; };
 		B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55D4C0520B6027100D7A50F /* AuthenticationManager.swift */; };
 		B55D4C2720B717C000D7A50F /* UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55D4C2620B717C000D7A50F /* UserAgent.swift */; };
+		B560D6862195BCA90027BB7E /* NoteDetailsHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B560D6852195BCA90027BB7E /* NoteDetailsHeaderTableViewCell.swift */; };
+		B560D6882195BCC70027BB7E /* NoteDetailsHeaderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B560D6872195BCC70027BB7E /* NoteDetailsHeaderTableViewCell.xib */; };
+		B560D68A2195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B560D6892195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib */; };
+		B560D68C2195BD1E0027BB7E /* NoteDetailsCommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B560D68B2195BD1D0027BB7E /* NoteDetailsCommentTableViewCell.swift */; };
 		B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */; };
 		B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */; };
 		B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */; };
 		B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */; };
 		B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */; };
+		B573B1A0219DC2690081C78C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B573B19D219DC2690081C78C /* Localizable.strings */; };
 		B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57B67892107546E00AF8905 /* Address+Woo.swift */; };
-		B57B678C2107638C00AF8905 /* Order+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57B678B2107638C00AF8905 /* Order+Woo.swift */; };
 		B57B678E21078C5400AF8905 /* OrderItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */; };
 		B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C743C20F5493300EEFC87 /* AccountHeaderView.swift */; };
 		B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B57C744220F54F1C00EEFC87 /* AccountHeaderView.xib */; };
@@ -110,7 +117,16 @@
 		B58B4AC02108FF6100076FDD /* Array+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58B4ABF2108FF6100076FDD /* Array+Helpers.swift */; };
 		B59C09D92188CBB100AB41D6 /* Array+Notes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59C09D82188CBB100AB41D6 /* Array+Notes.swift */; };
 		B59C09DC2188D70200AB41D6 /* Notifications.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B59C09DB2188D70200AB41D6 /* Notifications.storyboard */; };
+		B59D1EDF219072CC009D1978 /* NoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EDE219072CC009D1978 /* NoteTableViewCell.swift */; };
+		B59D1EE121907304009D1978 /* NoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B59D1EE021907304009D1978 /* NoteTableViewCell.xib */; };
+		B59D1EE321907C7B009D1978 /* NSAttributedString+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EE221907C7B009D1978 /* NSAttributedString+Helpers.swift */; };
+		B59D1EE5219080B4009D1978 /* Note+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EE4219080B4009D1978 /* Note+Woo.swift */; };
+		B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B59D1EE6219089A3009D1978 /* Noticons.ttf */; };
+		B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EE92190AE96009D1978 /* StorageNote+Woo.swift */; };
+		B59D1EEC2190B08B009D1978 /* Age.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EEB2190B08B009D1978 /* Age.swift */; };
+		B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D49CC219B587E006BF0AD /* UILabel+OrderStatus.swift */; };
 		B5A0369B214C0E8500774E2C /* CocoaLumberjack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A0369A214C0E8500774E2C /* CocoaLumberjack.swift */; };
+		B5A56BF5219F5AB20065A902 /* NSNotificationName+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A56BF4219F5AB20065A902 /* NSNotificationName+Woo.swift */; };
 		B5A82EE221025C450053ADC8 /* FulfillViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A82EE121025C450053ADC8 /* FulfillViewController.swift */; };
 		B5A82EE521025E550053ADC8 /* FulfillViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5A82EE421025E550053ADC8 /* FulfillViewController.xib */; };
 		B5A82EE7210263460053ADC8 /* UIViewController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A82EE6210263460053ADC8 /* UIViewController+Helpers.swift */; };
@@ -128,6 +144,7 @@
 		B5C3B5E820D189F30072CB9D /* Networking.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E220D189E60072CB9D /* Networking.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B5C3B5E920D189F70072CB9D /* Yosemite.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E620D189ED0072CB9D /* Yosemite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B5C3B5EA20D189FC0072CB9D /* Storage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E420D189EA0072CB9D /* Storage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B5C6CE612190D28E00515926 /* NSAttributedStringHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6CE602190D28E00515926 /* NSAttributedStringHelperTests.swift */; };
 		B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5D1AFB320BC445900DB0E8C /* Images.xcassets */; };
 		B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFB720BC510200DB0E8C /* UIImage+Woo.swift */; };
 		B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFB920BC515600DB0E8C /* UIColor+Woo.swift */; };
@@ -140,18 +157,20 @@
 		B5DBF3C520E148E000B53AED /* DeauthenticatedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3C420E148E000B53AED /* DeauthenticatedState.swift */; };
 		B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3CA20E149CC00B53AED /* AuthenticatedState.swift */; };
 		B5E96B3821137AA100DF68D0 /* OrderStatus+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E96B3721137AA100DF68D0 /* OrderStatus+Woo.swift */; };
+		B5F04D952194F2A300501EE1 /* NoteDetailsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F04D942194F2A300501EE1 /* NoteDetailsRow.swift */; };
+		B5F8B7E02194759100DAB7E2 /* NotificationDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F8B7DF2194759100DAB7E2 /* NotificationDetailsViewController.swift */; };
+		B5F8B7E5219478FA00DAB7E2 /* NotificationDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F8B7E4219478FA00DAB7E2 /* NotificationDetailsViewController.xib */; };
 		B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */; };
 		CE021535215BE3AB00C19555 /* LoginNavigationController+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE021534215BE3AB00C19555 /* LoginNavigationController+Woo.swift */; };
+		CE14452E2188C11700A991D8 /* ZendeskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE14452D2188C11700A991D8 /* ZendeskManager.swift */; };
 		CE17C2E220ACA06800AFBD20 /* BillingDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE17C2E020ACA06800AFBD20 /* BillingDetailsTableViewCell.swift */; };
 		CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE17C2E120ACA06800AFBD20 /* BillingDetailsTableViewCell.xib */; };
 		CE1CCB402056F21C000EE3AC /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* Style.swift */; };
-		CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = CE1CCB4620570A6B000EE3AC /* en.lproj */; };
 		CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */; };
 		CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */; };
 		CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */; };
 		CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */; };
 		CE1EC8CA20B479F1009762BF /* TwoColumnLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */; };
-		CE1EC8E920B8A3F5009762BF /* OrderNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8E820B8A3F5009762BF /* OrderNoteViewModel.swift */; };
 		CE1EC8EC20B8A3FF009762BF /* LeftImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8EA20B8A3FF009762BF /* LeftImageTableViewCell.swift */; };
 		CE1EC8F020B8A408009762BF /* OrderNoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8EE20B8A408009762BF /* OrderNoteTableViewCell.xib */; };
 		CE1EC8F120B8A408009762BF /* OrderNoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8EF20B8A408009762BF /* OrderNoteTableViewCell.swift */; };
@@ -174,13 +193,16 @@
 		CE24BCD8212F25D4001CD12E /* StorageOrder+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE24BCD7212F25D4001CD12E /* StorageOrder+Woo.swift */; };
 		CE263DE6206ACD220015A693 /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE263DE5206ACD220015A693 /* NotificationsViewController.swift */; };
 		CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */; };
+		CE27257C21924A8C002B22EB /* HelpAndSupportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27257B21924A8C002B22EB /* HelpAndSupportViewController.swift */; };
+		CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */; };
+		CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */; };
 		CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */; };
 		CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */; };
 		CE32B11520BF8779006FBCF4 /* ProductListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11320BF8779006FBCF4 /* ProductListTableViewCell.swift */; };
 		CE32B11620BF8779006FBCF4 /* ProductListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B11420BF8779006FBCF4 /* ProductListTableViewCell.xib */; };
 		CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11920BF8E32006FBCF4 /* UIButton+Helpers.swift */; };
 		CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */; };
-		CE4DDB7B20DD312400D32EC8 /* Date+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DDB7A20DD312400D32EC8 /* Date+Helpers.swift */; };
+		CE4DDB7B20DD312400D32EC8 /* DateFormatter+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DDB7A20DD312400D32EC8 /* DateFormatter+Helpers.swift */; };
 		CE583A0421076C0100D73C1C /* AddANoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A0321076C0100D73C1C /* AddANoteViewController.swift */; };
 		CE583A072107849F00D73C1C /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A052107849F00D73C1C /* SwitchTableViewCell.swift */; };
 		CE583A082107849F00D73C1C /* SwitchTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE583A062107849F00D73C1C /* SwitchTableViewCell.xib */; };
@@ -192,8 +214,8 @@
 		CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */; };
 		CE855367209BA6A700938BDC /* ShowHideSectionFooter.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE855363209BA6A700938BDC /* ShowHideSectionFooter.xib */; };
 		CE85FD5320F677770080B73E /* Dashboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE85FD5220F677770080B73E /* Dashboard.storyboard */; };
-		CE85FD5A20F7A7640080B73E /* SettingsFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85FD5920F7A7640080B73E /* SettingsFooterView.swift */; };
-		CE85FD5C20F7A7740080B73E /* SettingsFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE85FD5B20F7A7740080B73E /* SettingsFooterView.xib */; };
+		CE85FD5A20F7A7640080B73E /* TableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85FD5920F7A7640080B73E /* TableFooterView.swift */; };
+		CE85FD5C20F7A7740080B73E /* TableFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE85FD5B20F7A7740080B73E /* TableFooterView.xib */; };
 		CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */; };
 		CEE005F62076C4040079161F /* Orders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F52076C4040079161F /* Orders.storyboard */; };
 		CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE006032077D1280079161F /* SummaryTableViewCell.swift */; };
@@ -240,7 +262,6 @@
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74036CBF211B882100E462C2 /* PeriodDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodDataViewController.swift; sourceTree = "<group>"; };
-		7403F7E120EC04070097198F /* OrderStatusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusViewModel.swift; sourceTree = "<group>"; };
 		74213449210A323C00C13890 /* WooAnalyticsStat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalyticsStat.swift; sourceTree = "<group>"; };
 		74334F34214AB12F006D6AC5 /* ProductTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductTableViewCell.swift; sourceTree = "<group>"; };
 		74334F35214AB12F006D6AC5 /* ProductTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductTableViewCell.xib; sourceTree = "<group>"; };
@@ -250,6 +271,7 @@
 		746791652108D87B007CF1DC /* MockupAnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupAnalyticsProvider.swift; sourceTree = "<group>"; };
 		747AA0882107CEC60047A89B /* AnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
 		747AA08A2107CF8D0047A89B /* TracksProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksProvider.swift; sourceTree = "<group>"; };
+		748AD086219F481B00023535 /* UIView+Animation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Animation.swift"; sourceTree = "<group>"; };
 		748C777F211E18A600814F2C /* OrderStats+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderStats+Woo.swift"; sourceTree = "<group>"; };
 		748C7781211E294000814F2C /* Double+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Woo.swift"; sourceTree = "<group>"; };
 		748C7783211E2D8400814F2C /* DoubleWooTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoubleWooTests.swift; sourceTree = "<group>"; };
@@ -277,11 +299,14 @@
 		B517EA17218B232700730EC4 /* StringFormatter+Notes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringFormatter+Notes.swift"; sourceTree = "<group>"; };
 		B517EA19218B2D2600730EC4 /* StringFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringFormatterTests.swift; sourceTree = "<group>"; };
 		B517EA1C218B41F200730EC4 /* String+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Woo.swift"; sourceTree = "<group>"; };
+		B5290ED8219B3FA900A6AF7F /* Date+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Woo.swift"; sourceTree = "<group>"; };
 		B53A569621123D3B000776C9 /* ResultsControllerUIKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsControllerUIKitTests.swift; sourceTree = "<group>"; };
 		B53A569A21123E8E000776C9 /* MockupTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupTableView.swift; sourceTree = "<group>"; };
 		B53A569C21123EEB000776C9 /* MockupStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockupStorage.swift; path = ../../../Yosemite/YosemiteTests/Mockups/MockupStorage.swift; sourceTree = "<group>"; };
 		B53A56A12112470C000776C9 /* MockupStorage+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MockupStorage+Sample.swift"; path = "../../../Yosemite/YosemiteTests/Mockups/MockupStorage+Sample.swift"; sourceTree = "<group>"; };
 		B53A56A32112483D000776C9 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = ../../Yosemite/YosemiteTests/Settings/Constants.swift; sourceTree = "<group>"; };
+		B53B3F36219C75AC00DF1EB6 /* OrderLoaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderLoaderViewController.swift; sourceTree = "<group>"; };
+		B53B3F38219C817800DF1EB6 /* UIStoryboard+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Woo.swift"; sourceTree = "<group>"; };
 		B53B898820D450AF00EDB467 /* SessionManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManagerTests.swift; sourceTree = "<group>"; };
 		B53B898C20D462A000EDB467 /* StoresManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresManager.swift; sourceTree = "<group>"; };
 		B541B2122189E7FD008FE7C1 /* ScannerWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerWooTests.swift; sourceTree = "<group>"; };
@@ -308,6 +333,10 @@
 		B55D4C0520B6027100D7A50F /* AuthenticationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		B55D4C1920B6193000D7A50F /* InfoPlist.tpl */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = InfoPlist.tpl; sourceTree = "<group>"; };
 		B55D4C2620B717C000D7A50F /* UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgent.swift; sourceTree = "<group>"; };
+		B560D6852195BCA90027BB7E /* NoteDetailsHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailsHeaderTableViewCell.swift; sourceTree = "<group>"; };
+		B560D6872195BCC70027BB7E /* NoteDetailsHeaderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteDetailsHeaderTableViewCell.xib; sourceTree = "<group>"; };
+		B560D6892195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteDetailsCommentTableViewCell.xib; sourceTree = "<group>"; };
+		B560D68B2195BD1D0027BB7E /* NoteDetailsCommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailsCommentTableViewCell.swift; sourceTree = "<group>"; };
 		B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinatorTests.swift; sourceTree = "<group>"; };
 		B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WooCommerce.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -317,8 +346,24 @@
 		B56DB3D82049BFAA00D4AA8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3E32049BFAA00D4AA8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B573B19E219DC2690081C78C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B573B19F219DC2690081C78C /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B573B1A1219DC28E0081C78C /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B573B1A2219DC2950081C78C /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B573B1A3219DC2A20081C78C /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B573B1A4219DC2A20081C78C /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B573B1A5219DC2A20081C78C /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B573B1A6219DC2B20081C78C /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B573B1A7219DC2B30081C78C /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B573B1A8219DC2B30081C78C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B573B1A9219DC2B30081C78C /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		B573B1AA219DC2B30081C78C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B573B1AB219DC2B40081C78C /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B573B1AC219DC2B40081C78C /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B573B1AD219DC2B40081C78C /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B573B1AE219DC2BC0081C78C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		B573B1AF219DC2BD0081C78C /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B57B67892107546E00AF8905 /* Address+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Address+Woo.swift"; sourceTree = "<group>"; };
-		B57B678B2107638C00AF8905 /* Order+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Woo.swift"; sourceTree = "<group>"; };
 		B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemViewModel.swift; sourceTree = "<group>"; };
 		B57C743C20F5493300EEFC87 /* AccountHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountHeaderView.swift; sourceTree = "<group>"; };
 		B57C744220F54F1C00EEFC87 /* AccountHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountHeaderView.xib; sourceTree = "<group>"; };
@@ -337,8 +382,17 @@
 		B597D0BE212476E100577E35 /* ARCHITECTURE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = ARCHITECTURE.md; path = ../ARCHITECTURE.md; sourceTree = "<group>"; };
 		B59C09D82188CBB100AB41D6 /* Array+Notes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Notes.swift"; sourceTree = "<group>"; };
 		B59C09DB2188D70200AB41D6 /* Notifications.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Notifications.storyboard; sourceTree = "<group>"; };
+		B59D1EDE219072CC009D1978 /* NoteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTableViewCell.swift; sourceTree = "<group>"; };
+		B59D1EE021907304009D1978 /* NoteTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteTableViewCell.xib; sourceTree = "<group>"; };
+		B59D1EE221907C7B009D1978 /* NSAttributedString+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+Helpers.swift"; sourceTree = "<group>"; };
+		B59D1EE4219080B4009D1978 /* Note+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+Woo.swift"; sourceTree = "<group>"; };
+		B59D1EE6219089A3009D1978 /* Noticons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Noticons.ttf; sourceTree = "<group>"; };
+		B59D1EE92190AE96009D1978 /* StorageNote+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageNote+Woo.swift"; sourceTree = "<group>"; };
+		B59D1EEB2190B08B009D1978 /* Age.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Age.swift; sourceTree = "<group>"; };
+		B59D49CC219B587E006BF0AD /* UILabel+OrderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+OrderStatus.swift"; sourceTree = "<group>"; };
 		B59F38E020D40A24008C1829 /* WooCommerce.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerce.entitlements; sourceTree = "<group>"; };
 		B5A0369A214C0E8500774E2C /* CocoaLumberjack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaLumberjack.swift; sourceTree = "<group>"; };
+		B5A56BF4219F5AB20065A902 /* NSNotificationName+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSNotificationName+Woo.swift"; sourceTree = "<group>"; };
 		B5A82EE121025C450053ADC8 /* FulfillViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FulfillViewController.swift; sourceTree = "<group>"; };
 		B5A82EE421025E550053ADC8 /* FulfillViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FulfillViewController.xib; sourceTree = "<group>"; };
 		B5A82EE6210263460053ADC8 /* UIViewController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Helpers.swift"; sourceTree = "<group>"; };
@@ -354,6 +408,7 @@
 		B5C3B5E220D189E60072CB9D /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C3B5E420D189EA0072CB9D /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C3B5E620D189ED0072CB9D /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5C6CE602190D28E00515926 /* NSAttributedStringHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSAttributedStringHelperTests.swift; sourceTree = "<group>"; };
 		B5D1AFB320BC445900DB0E8C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		B5D1AFB720BC510200DB0E8C /* UIImage+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Woo.swift"; sourceTree = "<group>"; };
 		B5D1AFB920BC515600DB0E8C /* UIColor+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Woo.swift"; sourceTree = "<group>"; };
@@ -366,18 +421,20 @@
 		B5DBF3C420E148E000B53AED /* DeauthenticatedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeauthenticatedState.swift; sourceTree = "<group>"; };
 		B5DBF3CA20E149CC00B53AED /* AuthenticatedState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedState.swift; sourceTree = "<group>"; };
 		B5E96B3721137AA100DF68D0 /* OrderStatus+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+Woo.swift"; sourceTree = "<group>"; };
+		B5F04D942194F2A300501EE1 /* NoteDetailsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailsRow.swift; sourceTree = "<group>"; };
+		B5F8B7DF2194759100DAB7E2 /* NotificationDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDetailsViewController.swift; sourceTree = "<group>"; };
+		B5F8B7E4219478FA00DAB7E2 /* NotificationDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationDetailsViewController.xib; sourceTree = "<group>"; };
 		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE021534215BE3AB00C19555 /* LoginNavigationController+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginNavigationController+Woo.swift"; sourceTree = "<group>"; };
+		CE14452D2188C11700A991D8 /* ZendeskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZendeskManager.swift; sourceTree = "<group>"; };
 		CE17C2E020ACA06800AFBD20 /* BillingDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		CE17C2E120ACA06800AFBD20 /* BillingDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BillingDetailsTableViewCell.xib; sourceTree = "<group>"; };
 		CE1CCB3F2056F21C000EE3AC /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
-		CE1CCB4620570A6B000EE3AC /* en.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = en.lproj; sourceTree = "<group>"; };
 		CE1CCB4A20570B1F000EE3AC /* OrderListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCell.swift; sourceTree = "<group>"; };
 		CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTableViewCell.swift; sourceTree = "<group>"; };
 		CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaymentTableViewCell.xib; sourceTree = "<group>"; };
 		CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnLabelView.xib; sourceTree = "<group>"; };
 		CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnLabelView.swift; sourceTree = "<group>"; };
-		CE1EC8E820B8A3F5009762BF /* OrderNoteViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderNoteViewModel.swift; sourceTree = "<group>"; };
 		CE1EC8EA20B8A3FF009762BF /* LeftImageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftImageTableViewCell.swift; sourceTree = "<group>"; };
 		CE1EC8EB20B8A3FF009762BF /* LeftImageTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LeftImageTableViewCell.xib; sourceTree = "<group>"; };
 		CE1EC8EE20B8A408009762BF /* OrderNoteTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderNoteTableViewCell.xib; sourceTree = "<group>"; };
@@ -400,13 +457,16 @@
 		CE24BCD7212F25D4001CD12E /* StorageOrder+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageOrder+Woo.swift"; sourceTree = "<group>"; };
 		CE263DE5206ACD220015A693 /* NotificationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
 		CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
+		CE27257B21924A8C002B22EB /* HelpAndSupportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpAndSupportViewController.swift; sourceTree = "<group>"; };
+		CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueOneTableViewCell.swift; sourceTree = "<group>"; };
+		CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ValueOneTableViewCell.xib; sourceTree = "<group>"; };
 		CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnSectionHeaderView.xib; sourceTree = "<group>"; };
 		CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnSectionHeaderView.swift; sourceTree = "<group>"; };
 		CE32B11320BF8779006FBCF4 /* ProductListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListTableViewCell.swift; sourceTree = "<group>"; };
 		CE32B11420BF8779006FBCF4 /* ProductListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductListTableViewCell.xib; sourceTree = "<group>"; };
 		CE32B11920BF8E32006FBCF4 /* UIButton+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Helpers.swift"; sourceTree = "<group>"; };
 		CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContact+Helpers.swift"; sourceTree = "<group>"; };
-		CE4DDB7A20DD312400D32EC8 /* Date+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Helpers.swift"; sourceTree = "<group>"; };
+		CE4DDB7A20DD312400D32EC8 /* DateFormatter+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Helpers.swift"; sourceTree = "<group>"; };
 		CE583A0321076C0100D73C1C /* AddANoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddANoteViewController.swift; sourceTree = "<group>"; };
 		CE583A052107849F00D73C1C /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
 		CE583A062107849F00D73C1C /* SwitchTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SwitchTableViewCell.xib; sourceTree = "<group>"; };
@@ -418,8 +478,8 @@
 		CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerInfoTableViewCell.swift; sourceTree = "<group>"; };
 		CE855363209BA6A700938BDC /* ShowHideSectionFooter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShowHideSectionFooter.xib; sourceTree = "<group>"; };
 		CE85FD5220F677770080B73E /* Dashboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Dashboard.storyboard; sourceTree = "<group>"; };
-		CE85FD5920F7A7640080B73E /* SettingsFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFooterView.swift; sourceTree = "<group>"; };
-		CE85FD5B20F7A7740080B73E /* SettingsFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsFooterView.xib; sourceTree = "<group>"; };
+		CE85FD5920F7A7640080B73E /* TableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableFooterView.swift; sourceTree = "<group>"; };
+		CE85FD5B20F7A7740080B73E /* TableFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableFooterView.xib; sourceTree = "<group>"; };
 		CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalytics.swift; sourceTree = "<group>"; };
 		CECA64B020D9990E005A44C4 /* WooCommerce-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WooCommerce-Bridging-Header.h"; sourceTree = "<group>"; };
 		CEE005F52076C4040079161F /* Orders.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Orders.storyboard; sourceTree = "<group>"; };
@@ -587,6 +647,7 @@
 				B5A03699214C0E7000774E2C /* Logging */,
 				B5DB01B32114AB2D00A4F797 /* Fabric */,
 				B58B4ABC2108F7F800076FDD /* Notices */,
+				CE14452C2188C0EC00A991D8 /* Zendesk */,
 				B55D4C2620B717C000D7A50F /* UserAgent.swift */,
 				B54FBE542111F70700390F57 /* ResultsController+UIKit.swift */,
 				B5D6DC53214802740003E48A /* SyncCoordinator.swift */,
@@ -643,7 +704,6 @@
 				CE1CCB4920570B05000EE3AC /* Orders */,
 				B59C09DA2188D6E800AB41D6 /* Notifications */,
 				B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */,
-				CE263DE5206ACD220015A693 /* NotificationsViewController.swift */,
 				CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */,
 			);
 			path = ViewRelated;
@@ -670,9 +730,10 @@
 		B56DB3F22049C0C000D4AA8E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B59D1EE7219089A7009D1978 /* Fonts */,
 				B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */,
 				B5D1AFB320BC445900DB0E8C /* Images.xcassets */,
-				CE1CCB4620570A6B000EE3AC /* en.lproj */,
+				B573B19D219DC2690081C78C /* Localizable.strings */,
 				B56DB3D82049BFAA00D4AA8E /* Info.plist */,
 				B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */,
 				B59F38E020D40A24008C1829 /* WooCommerce.entitlements */,
@@ -683,10 +744,12 @@
 		B57B67882107545B00AF8905 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B59D1EEB2190B08B009D1978 /* Age.swift */,
 				B57B67892107546E00AF8905 /* Address+Woo.swift */,
-				B57B678B2107638C00AF8905 /* Order+Woo.swift */,
+				B59D1EE4219080B4009D1978 /* Note+Woo.swift */,
 				748C777F211E18A600814F2C /* OrderStats+Woo.swift */,
 				B5E96B3721137AA100DF68D0 /* OrderStatus+Woo.swift */,
+				B59D1EE92190AE96009D1978 /* StorageNote+Woo.swift */,
 				CE24BCD7212F25D4001CD12E /* StorageOrder+Woo.swift */,
 				743EDD9E214B05350039071B /* TopEarnerStatsItem+Woo.swift */,
 			);
@@ -699,6 +762,7 @@
 				748C7783211E2D8400814F2C /* DoubleWooTests.swift */,
 				B57C745020F56EE900EEFC87 /* UITableViewCellHelpersTests.swift */,
 				B541B2122189E7FD008FE7C1 /* ScannerWooTests.swift */,
+				B5C6CE602190D28E00515926 /* NSAttributedStringHelperTests.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -717,9 +781,35 @@
 		B59C09DA2188D6E800AB41D6 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				B5F04D962194F2D500501EE1 /* Adapters */,
+				B59D1EDD219072B8009D1978 /* Cells */,
 				B59C09DB2188D70200AB41D6 /* Notifications.storyboard */,
+				CE263DE5206ACD220015A693 /* NotificationsViewController.swift */,
+				B5F8B7DF2194759100DAB7E2 /* NotificationDetailsViewController.swift */,
+				B5F8B7E4219478FA00DAB7E2 /* NotificationDetailsViewController.xib */,
 			);
 			path = Notifications;
+			sourceTree = "<group>";
+		};
+		B59D1EDD219072B8009D1978 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				B59D1EDE219072CC009D1978 /* NoteTableViewCell.swift */,
+				B59D1EE021907304009D1978 /* NoteTableViewCell.xib */,
+				B560D6852195BCA90027BB7E /* NoteDetailsHeaderTableViewCell.swift */,
+				B560D6872195BCC70027BB7E /* NoteDetailsHeaderTableViewCell.xib */,
+				B560D68B2195BD1D0027BB7E /* NoteDetailsCommentTableViewCell.swift */,
+				B560D6892195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		B59D1EE7219089A7009D1978 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				B59D1EE6219089A3009D1978 /* Noticons.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		B5A03699214C0E7000774E2C /* Logging */ = {
@@ -790,6 +880,22 @@
 			path = Yosemite;
 			sourceTree = "<group>";
 		};
+		B5F04D962194F2D500501EE1 /* Adapters */ = {
+			isa = PBXGroup;
+			children = (
+				B5F04D942194F2A300501EE1 /* NoteDetailsRow.swift */,
+			);
+			path = Adapters;
+			sourceTree = "<group>";
+		};
+		CE14452C2188C0EC00A991D8 /* Zendesk */ = {
+			isa = PBXGroup;
+			children = (
+				CE14452D2188C11700A991D8 /* ZendeskManager.swift */,
+			);
+			path = Zendesk;
+			sourceTree = "<group>";
+		};
 		CE1CCB3E2056F204000EE3AC /* Styles */ = {
 			isa = PBXGroup;
 			children = (
@@ -818,8 +924,10 @@
 				B58B4ABF2108FF6100076FDD /* Array+Helpers.swift */,
 				B59C09D82188CBB100AB41D6 /* Array+Notes.swift */,
 				CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */,
-				CE4DDB7A20DD312400D32EC8 /* Date+Helpers.swift */,
+				B5290ED8219B3FA900A6AF7F /* Date+Woo.swift */,
+				CE4DDB7A20DD312400D32EC8 /* DateFormatter+Helpers.swift */,
 				748C7781211E294000814F2C /* Double+Woo.swift */,
+				B59D1EE221907C7B009D1978 /* NSAttributedString+Helpers.swift */,
 				B57C744420F55BA600EEFC87 /* NSObject+Helpers.swift */,
 				B541B2162189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift */,
 				B541B21F218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift */,
@@ -838,10 +946,14 @@
 				B582F95820FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift */,
 				B57C744D20F56E3800EEFC87 /* UITableViewCell+Helpers.swift */,
 				B554E1782152F20000F31188 /* UINavigationBar+Appearance.swift */,
+				748AD086219F481B00023535 /* UIView+Animation.swift */,
 				B57C744620F55BC800EEFC87 /* UIView+Helpers.swift */,
 				B5A82EE6210263460053ADC8 /* UIViewController+Helpers.swift */,
 				B5AA7B3E20ED81C2004DA14F /* UserDefaults+Woo.swift */,
 				CE021534215BE3AB00C19555 /* LoginNavigationController+Woo.swift */,
+				B59D49CC219B587E006BF0AD /* UILabel+OrderStatus.swift */,
+				B53B3F38219C817800DF1EB6 /* UIStoryboard+Woo.swift */,
+				B5A56BF4219F5AB20065A902 /* NSNotificationName+Woo.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -852,6 +964,14 @@
 				CE22E3F62170E23C005A6BEF /* PrivacySettingsViewController.swift */,
 			);
 			path = Privacy;
+			sourceTree = "<group>";
+		};
+		CE27257A219249B5002B22EB /* Help */ = {
+			isa = PBXGroup;
+			children = (
+				CE27257B21924A8C002B22EB /* HelpAndSupportViewController.swift */,
+			);
+			path = Help;
 			sourceTree = "<group>";
 		};
 		CE583A0221076BBE00D73C1C /* AddNote */ = {
@@ -865,10 +985,8 @@
 		CE85535B209B5B6A00938BDC /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				CE1EC8E820B8A3F5009762BF /* OrderNoteViewModel.swift */,
 				B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */,
 				CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */,
-				7403F7E120EC04070097198F /* OrderStatusViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -887,10 +1005,9 @@
 		CE85FD5820F7A59E0080B73E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				CE27257A219249B5002B22EB /* Help */,
 				CE22E3F821714639005A6BEF /* Privacy */,
 				B509112F2049E27A007D25DC /* SettingsViewController.swift */,
-				CE85FD5920F7A7640080B73E /* SettingsFooterView.swift */,
-				CE85FD5B20F7A7740080B73E /* SettingsFooterView.xib */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -903,10 +1020,15 @@
 				B5A8532120BDBFAE00FAAB4D /* CircularImageView.swift */,
 				CE24BCCD212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift */,
 				CE24BCCE212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib */,
+				7441E1D121503F77004E6ECE /* IntrinsicTableView.swift */,
 				CE1EC8EA20B8A3FF009762BF /* LeftImageTableViewCell.swift */,
 				CE1EC8EB20B8A3FF009762BF /* LeftImageTableViewCell.xib */,
+				B5BE75DA213F1D1E00909A14 /* OverlayMessageView.swift */,
+				B5BE75DC213F1D3D00909A14 /* OverlayMessageView.xib */,
 				CE583A052107849F00D73C1C /* SwitchTableViewCell.swift */,
 				CE583A062107849F00D73C1C /* SwitchTableViewCell.xib */,
+				CE85FD5920F7A7640080B73E /* TableFooterView.swift */,
+				CE85FD5B20F7A7740080B73E /* TableFooterView.xib */,
 				CE583A092107937F00D73C1C /* TextViewTableViewCell.swift */,
 				CE583A0A2107937F00D73C1C /* TextViewTableViewCell.xib */,
 				CE22E3F921714776005A6BEF /* TopLeftImageTableViewCell.swift */,
@@ -915,10 +1037,9 @@
 				CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */,
 				CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */,
 				CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */,
-				B5BE75DA213F1D1E00909A14 /* OverlayMessageView.swift */,
-				B5BE75DC213F1D3D00909A14 /* OverlayMessageView.xib */,
 				B50BB4152141828F00AF0F3C /* FooterSpinnerView.swift */,
-				7441E1D121503F77004E6ECE /* IntrinsicTableView.swift */,
+				CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */,
+				CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -934,6 +1055,7 @@
 				B557DA1320979904005962F4 /* CustomerNoteTableViewCell.swift */,
 				B557DA1420979904005962F4 /* CustomerNoteTableViewCell.xib */,
 				CEE006072077D14C0079161F /* OrderDetailsViewController.swift */,
+				B53B3F36219C75AC00DF1EB6 /* OrderLoaderViewController.swift */,
 				CE1EC8EF20B8A408009762BF /* OrderNoteTableViewCell.swift */,
 				CE1EC8EE20B8A408009762BF /* OrderNoteTableViewCell.xib */,
 				CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */,
@@ -977,6 +1099,7 @@
 				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
 				20B459508F75052BDBC0902F /* [CP] Copy Pods Resources */,
 				93BCF01B20DC21EF00EBF7A1 /* Fabric / Crashlytics */,
+				CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1032,6 +1155,9 @@
 							com.apple.Push = {
 								enabled = 1;
 							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
 						};
 					};
 					B56DB3DC2049BFAA00D4AA8E = {
@@ -1049,6 +1175,22 @@
 			knownRegions = (
 				en,
 				Base,
+				ar,
+				de,
+				id,
+				es,
+				it,
+				ko,
+				he,
+				ja,
+				fr,
+				"zh-Hant",
+				ru,
+				tr,
+				sv,
+				"pt-BR",
+				"zh-Hans",
+				nl,
 			);
 			mainGroup = B56DB3BD2049BFAA00D4AA8E;
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
@@ -1069,6 +1211,7 @@
 			files = (
 				B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */,
 				CE583A0C2107937F00D73C1C /* TextViewTableViewCell.xib in Resources */,
+				B560D68A2195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib in Resources */,
 				B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */,
 				74E0F441211C9AE600A79CCE /* PeriodDataViewController.xib in Resources */,
 				B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */,
@@ -1076,13 +1219,15 @@
 				B557DA1620979904005962F4 /* CustomerNoteTableViewCell.xib in Resources */,
 				93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
+				B573B1A0219DC2690081C78C /* Localizable.strings in Resources */,
 				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,
 				CE583A082107849F00D73C1C /* SwitchTableViewCell.xib in Resources */,
 				CE22571B20E16FBC0037F478 /* LeftImageTableViewCell.xib in Resources */,
+				B5F8B7E5219478FA00DAB7E2 /* NotificationDetailsViewController.xib in Resources */,
 				CE22E3FC21714776005A6BEF /* TopLeftImageTableViewCell.xib in Resources */,
 				B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */,
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
-				CE85FD5C20F7A7740080B73E /* SettingsFooterView.xib in Resources */,
+				CE85FD5C20F7A7740080B73E /* TableFooterView.xib in Resources */,
 				B57C744C20F564B400EEFC87 /* EmptyStoresTableViewCell.xib in Resources */,
 				B59C09DC2188D70200AB41D6 /* Notifications.storyboard in Resources */,
 				CE855367209BA6A700938BDC /* ShowHideSectionFooter.xib in Resources */,
@@ -1094,10 +1239,13 @@
 				CE24BCD0212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib in Resources */,
 				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
 				CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */,
+				B59D1EE121907304009D1978 /* NoteTableViewCell.xib in Resources */,
+				B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */,
+				B560D6882195BCC70027BB7E /* NoteDetailsHeaderTableViewCell.xib in Resources */,
+				CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */,
 				CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */,
 				B5A82EE521025E550053ADC8 /* FulfillViewController.xib in Resources */,
 				B554016B2170D6010067DC90 /* ChartPlaceholderView.xib in Resources */,
-				CE1CCB4720570A6C000EE3AC /* en.lproj in Resources */,
 				CE32B11620BF8779006FBCF4 /* ProductListTableViewCell.xib in Resources */,
 				B557652D20F6827900185843 /* StoreTableViewCell.xib in Resources */,
 				7493BB8F2149852A003071A9 /* TopPerformersHeaderView.xib in Resources */,
@@ -1131,10 +1279,12 @@
 			inputPaths = (
 				"${SRCROOT}/../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-resources.sh",
 				"${PODS_ROOT}/GoogleSignInRepacked/Resources/GoogleSignIn.bundle",
+				"${PODS_ROOT}/ZendeskSDK/ZendeskSDK/4.2/ZendeskSDKStrings.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ZendeskSDKStrings.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1182,7 +1332,7 @@
 				"$(SRCROOT)/Credentials/replace_secrets.rb",
 				"$(SRCROOT)/Credentials/ApiCredentials.tpl",
 				"$(SRCROOT)/Credentials/InfoPlist.tpl",
-				"~/.woo_app_credentials.json",
+				"~/.mobile-secrets/iOS/WCiOS/woo_app_credentials.json",
 			);
 			outputPaths = (
 				"$(SRCROOT)/DerivedSources/ApiCredentials.swift",
@@ -1219,6 +1369,9 @@
 				"${BUILT_PRODUCTS_DIR}/WordPressShared/WordPressShared.framework",
 				"${BUILT_PRODUCTS_DIR}/WordPressUI/WordPressUI.framework",
 				"${BUILT_PRODUCTS_DIR}/XLPagerTabStrip/XLPagerTabStrip.framework",
+				"${PODS_ROOT}/ZendeskSDK/ZendeskSDK/4.2/ZendeskCoreSDK.framework",
+				"${PODS_ROOT}/ZendeskSDK/ZendeskSDK/4.2/ZendeskProviderSDK.framework",
+				"${PODS_ROOT}/ZendeskSDK/ZendeskSDK/4.2/ZendeskSDK.framework",
 				"${BUILT_PRODUCTS_DIR}/lottie-ios/Lottie.framework",
 				"${BUILT_PRODUCTS_DIR}/wpxmlrpc/wpxmlrpc.framework",
 			);
@@ -1244,6 +1397,9 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WordPressShared.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WordPressUI.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XLPagerTabStrip.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZendeskCoreSDK.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZendeskProviderSDK.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZendeskSDK.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lottie.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/wpxmlrpc.framework",
 			);
@@ -1251,6 +1407,20 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Zendesk Strip Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Per Zendesk documentation (https://developer.zendesk.com/embeddables/docs/ios_support_sdk/sdk_add#adding-the-sdk-with-cocoapods):\n# This script should be the last step in your projects \"Build Phases\".\n# This step is required to work around an App store submission bug when archiving universal binaries.\n\nbash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZendeskCoreSDK.framework/strip-frameworks.sh\"\n";
 		};
 		E8FC62641D61F33F705BC760 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1280,7 +1450,9 @@
 				CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */,
 				CE21B3E020FFC59700A259D5 /* ProductDetailsTableViewCell.swift in Sources */,
 				B5DB01B52114AB2D00A4F797 /* FabricManager.swift in Sources */,
+				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
+				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
 				CE263DE6206ACD220015A693 /* NotificationsViewController.swift in Sources */,
 				B541B220218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift in Sources */,
 				CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */,
@@ -1295,6 +1467,7 @@
 				748C7782211E294000814F2C /* Double+Woo.swift in Sources */,
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
 				B58B4AB22108F01700076FDD /* NoticeView.swift in Sources */,
+				B59D1EE321907C7B009D1978 /* NSAttributedString+Helpers.swift in Sources */,
 				CE17C2E220ACA06800AFBD20 /* BillingDetailsTableViewCell.swift in Sources */,
 				B511ED27218A660E005787DC /* StringDescriptor.swift in Sources */,
 				B55D4C2720B717C000D7A50F /* UserAgent.swift in Sources */,
@@ -1305,22 +1478,28 @@
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
 				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
+				B53B3F39219C817800DF1EB6 /* UIStoryboard+Woo.swift in Sources */,
+				CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */,
 				747AA08B2107CF8D0047A89B /* TracksProvider.swift in Sources */,
 				CE1EC8F120B8A408009762BF /* OrderNoteTableViewCell.swift in Sources */,
 				CE583A0421076C0100D73C1C /* AddANoteViewController.swift in Sources */,
 				B58B4AC02108FF6100076FDD /* Array+Helpers.swift in Sources */,
 				748C7780211E18A600814F2C /* OrderStats+Woo.swift in Sources */,
 				B59C09D92188CBB100AB41D6 /* Array+Notes.swift in Sources */,
-				CE4DDB7B20DD312400D32EC8 /* Date+Helpers.swift in Sources */,
+				CE4DDB7B20DD312400D32EC8 /* DateFormatter+Helpers.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
 				B5E96B3821137AA100DF68D0 /* OrderStatus+Woo.swift in Sources */,
 				B541B226218A412C008FE7C1 /* UIFont+Woo.swift in Sources */,
+				B59D1EEC2190B08B009D1978 /* Age.swift in Sources */,
+				CE27257C21924A8C002B22EB /* HelpAndSupportViewController.swift in Sources */,
 				B57C744720F55BC800EEFC87 /* UIView+Helpers.swift in Sources */,
 				B5A82EE221025C450053ADC8 /* FulfillViewController.swift in Sources */,
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,
-				CE85FD5A20F7A7640080B73E /* SettingsFooterView.swift in Sources */,
+				B5F8B7E02194759100DAB7E2 /* NotificationDetailsViewController.swift in Sources */,
+				CE85FD5A20F7A7640080B73E /* TableFooterView.swift in Sources */,
 				74334F36214AB130006D6AC5 /* ProductTableViewCell.swift in Sources */,
+				B560D6862195BCA90027BB7E /* NoteDetailsHeaderTableViewCell.swift in Sources */,
 				CE855364209BA6A700938BDC /* ShowHideSectionFooter.swift in Sources */,
 				7441E1D221503F77004E6ECE /* IntrinsicTableView.swift in Sources */,
 				B517EA1D218B41F200730EC4 /* String+Woo.swift in Sources */,
@@ -1348,7 +1527,6 @@
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */,
 				B517EA18218B232700730EC4 /* StringFormatter+Notes.swift in Sources */,
-				CE1EC8E920B8A3F5009762BF /* OrderNoteViewModel.swift in Sources */,
 				CE583A072107849F00D73C1C /* SwitchTableViewCell.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
 				B58B4AB62108F11C00076FDD /* Notice.swift in Sources */,
@@ -1356,38 +1534,45 @@
 				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
 				CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */,
-				B57B678C2107638C00AF8905 /* Order+Woo.swift in Sources */,
 				7493BB8E2149852A003071A9 /* TopPerformersHeaderView.swift in Sources */,
 				CE1EC8CA20B479F1009762BF /* TwoColumnLabelView.swift in Sources */,
 				CE21B3DD20FF9BC200A259D5 /* ProductListViewController.swift in Sources */,
+				B59D1EDF219072CC009D1978 /* NoteTableViewCell.swift in Sources */,
 				74AAF6A5212A04A900C612B0 /* ChartMarker.swift in Sources */,
 				CE32B11520BF8779006FBCF4 /* ProductListTableViewCell.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
+				CE14452E2188C11700A991D8 /* ZendeskManager.swift in Sources */,
 				B5BE75DB213F1D1E00909A14 /* OverlayMessageView.swift in Sources */,
+				B5A56BF5219F5AB20065A902 /* NSNotificationName+Woo.swift in Sources */,
 				B541B2152189EEA1008FE7C1 /* Scanner+Helpers.swift in Sources */,
 				743EDD9F214B05350039071B /* TopEarnerStatsItem+Woo.swift in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* LeftImageTableViewCell.swift in Sources */,
 				74A93A40212DC60B00C13E04 /* NewOrdersViewController.swift in Sources */,
 				B554E1792152F20000F31188 /* UINavigationBar+Appearance.swift in Sources */,
 				B55401692170D5E10067DC90 /* ChartPlaceholderView.swift in Sources */,
+				B5290ED9219B3FA900A6AF7F /* Date+Woo.swift in Sources */,
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
+				B5F04D952194F2A300501EE1 /* NoteDetailsRow.swift in Sources */,
 				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
 				74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */,
 				74AFF2EA211B9B1B0038153A /* StoreStatsViewController.swift in Sources */,
-				7403F7E220EC04070097198F /* OrderStatusViewModel.swift in Sources */,
 				CE021535215BE3AB00C19555 /* LoginNavigationController+Woo.swift in Sources */,
 				B541B223218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift in Sources */,
 				B50BB4162141828F00AF0F3C /* FooterSpinnerView.swift in Sources */,
+				B59D1EE5219080B4009D1978 /* Note+Woo.swift in Sources */,
 				CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */,
 				B57B678E21078C5400AF8905 /* OrderItemViewModel.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,
 				B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderListCell.swift in Sources */,
+				748AD087219F481B00023535 /* UIView+Animation.swift in Sources */,
 				748D34DF214828DD00E21A2F /* TopPerformersViewController.swift in Sources */,
 				B5AA7B3D20ED5D15004DA14F /* SessionManager.swift in Sources */,
+				B53B3F37219C75AC00DF1EB6 /* OrderLoaderViewController.swift in Sources */,
 				CE24BCCF212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift in Sources */,
 				B53B898D20D462A000EDB467 /* StoresManager.swift in Sources */,
 				B5D1AFC020BC67C200DB0E8C /* WooConstants.swift in Sources */,
+				B560D68C2195BD1E0027BB7E /* NoteDetailsCommentTableViewCell.swift in Sources */,
 				CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */,
 				B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */,
 				CE1F512920697F0100C6C810 /* UIFont+Helpers.swift in Sources */,
@@ -1407,6 +1592,7 @@
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,
 				B541B2132189E7FD008FE7C1 /* ScannerWooTests.swift in Sources */,
 				B53A56A42112483E000776C9 /* Constants.swift in Sources */,
+				B5C6CE612190D28E00515926 /* NSAttributedStringHelperTests.swift in Sources */,
 				748C7784211E2D8400814F2C /* DoubleWooTests.swift in Sources */,
 				B53A56A22112470C000776C9 /* MockupStorage+Sample.swift in Sources */,
 				746791662108D87B007CF1DC /* MockupAnalyticsProvider.swift in Sources */,
@@ -1448,6 +1634,30 @@
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
+		B573B19D219DC2690081C78C /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B573B19E219DC2690081C78C /* en */,
+				B573B19F219DC2690081C78C /* es */,
+				B573B1A1219DC28E0081C78C /* de */,
+				B573B1A2219DC2950081C78C /* ar */,
+				B573B1A3219DC2A20081C78C /* fr */,
+				B573B1A4219DC2A20081C78C /* he */,
+				B573B1A5219DC2A20081C78C /* id */,
+				B573B1A6219DC2B20081C78C /* nl */,
+				B573B1A7219DC2B30081C78C /* sv */,
+				B573B1A8219DC2B30081C78C /* ja */,
+				B573B1A9219DC2B30081C78C /* pt-BR */,
+				B573B1AA219DC2B30081C78C /* ko */,
+				B573B1AB219DC2B40081C78C /* ru */,
+				B573B1AC219DC2B40081C78C /* tr */,
+				B573B1AD219DC2B40081C78C /* it */,
+				B573B1AE219DC2BC0081C78C /* zh-Hans */,
+				B573B1AF219DC2BD0081C78C /* zh-Hant */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -1457,7 +1667,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				SECRETS_PATH = "$HOME/.mobile-secrets/iOS/WCiOS/woo_app_credentials.json";
 				VALID_ARCHS = "$(inherited)";
 			};
 			name = Debug;
@@ -1468,7 +1678,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				SECRETS_PATH = "$HOME/.mobile-secrets/iOS/WCiOS/woo_app_credentials.json";
 				VALID_ARCHS = "$(inherited)";
 			};
 			name = Release;
@@ -1477,6 +1687,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1538,6 +1749,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1606,7 +1818,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce Development";
-				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				SECRETS_PATH = "$HOME/.mobile-secrets/iOS/WCiOS/woo_app_credentials.json";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -1631,7 +1843,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce App Store";
-				SECRETS_PATH = $HOME/.woo_app_credentials.json;
+				SECRETS_PATH = "$HOME/.mobile-secrets/iOS/WCiOS/woo_app_credentials.json";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";

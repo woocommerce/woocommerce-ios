@@ -40,6 +40,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     let storageManager = CoreDataManager(name: WooConstants.databaseStackName)
 
+    /// Cocoalumberjack DDLog
+    /// The type definition is needed because DDFilelogger doesn't have a nullability specifier (but is still a non-optional).
+    ///
+    let fileLogger: DDFileLogger = DDFileLogger()
+
     /// Tab Bar Controller
     ///
     var tabBarController: MainTabBarController? {
@@ -67,6 +72,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         displayAuthenticatorIfNeeded()
         displayStorePickerIfNeeded()
 
+        // Components that require prior Auth
+        setupZendesk()
+
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
 
@@ -77,7 +85,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
         return true
     }
 
@@ -156,6 +163,12 @@ private extension AppDelegate {
         fabricManager.initialize()
     }
 
+    /// Sets up the Zendesk SDK.
+    ///
+    func setupZendesk() {
+        ZendeskManager.shared.initialize()
+    }
+
     /// Sets up the WordPress Authenticator.
     ///
     func setupAnalytics() {
@@ -171,7 +184,6 @@ private extension AppDelegate {
     /// Sets up CocoaLumberjack logging.
     ///
     func setupCocoaLumberjack() {
-        let fileLogger: DDFileLogger = DDFileLogger()
         fileLogger.rollingFrequency = TimeInterval(60*60*24)  // 24 hours
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
 

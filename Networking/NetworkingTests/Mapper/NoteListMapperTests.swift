@@ -40,7 +40,7 @@ class NoteListMapperTests: XCTestCase {
         let note = sampleNotes[0]
 
         // Plain Fields
-        XCTAssertEqual(note.noteId, 123456)
+        XCTAssertEqual(note.noteId, 100001)
         XCTAssertEqual(note.hash, 987654)
         XCTAssertEqual(note.read, false)
         XCTAssert(note.icon == "https://gravatar.tld/some-hash")
@@ -60,6 +60,21 @@ class NoteListMapperTests: XCTestCase {
         XCTAssertEqual(note.meta.identifier(forKey: .site), 123456)
         XCTAssertEqual(note.meta.identifier(forKey: .post), 2996)
         XCTAssertEqual(note.meta.link(forKey: .post), "https://public-someurl.sometld")
+    }
+
+    /// Verifies that the Timestamp is properly mapped into a Swift Date
+    ///
+    func testSampleNotificationGetsItsDateProperlyConvertedIntoASwiftDate() {
+        // Sample Note: Zero
+        let note = sampleNotes[0]
+
+        // Decompose!
+        let components = [.day, .month, .year, .hour, .minute, .second] as Set<Calendar.Component>
+        let dateComponents = Calendar.current.dateComponents(components, from: note.timestampAsDate)
+
+        XCTAssertEqual(dateComponents.day, 22)
+        XCTAssertEqual(dateComponents.month, 10)
+        XCTAssertEqual(dateComponents.year, 2018)
     }
 
     /// Verifies that a broken Notifications document is "Gracefully handled". This means that:
@@ -234,6 +249,15 @@ class NoteListMapperTests: XCTestCase {
     func testCommentBlockIsProperlyParsed() {
         let commentNote = sampleNotes.first(where: { $0.kind == .comment })
         XCTAssertEqual(commentNote?.body[1].kind, .comment)
+    }
+
+
+    /// Verifies that the Notification's subtype is properly parsed.
+    ///
+    func testStoreReviewSubtypeIsProperlyParsed() {
+        let storeReview = sampleNotes.first(where: { $0.noteId == 100009 })
+        XCTAssertEqual(storeReview?.subtype, "store_review")
+        XCTAssertEqual(storeReview?.subkind, .storeReview)
     }
 }
 

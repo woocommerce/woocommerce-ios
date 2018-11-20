@@ -104,6 +104,8 @@ class StoresManager {
     func updateDefaultStore(storeID: Int) {
         sessionManager.defaultStoreID = storeID
         restoreSessionSiteIfPossible()
+
+        NotificationCenter.default.post(name: .StoresManagerDidUpdateDefaultSite, object: nil)
     }
 }
 
@@ -161,6 +163,21 @@ private extension StoresManager {
         dispatch(action)
     }
 
+    /// Loads the specified site settings, if possible.
+    ///
+    func fetchSiteSettings(with siteID: Int) {
+        guard siteID != 0 else {
+            // Just return if the siteID == 0 so we are not making extra requests
+            return
+        }
+        let action = SettingAction.retrieveSiteSettings(siteID: siteID) { error in
+            if let error = error {
+                DDLogWarn("⚠️ Could not successfully fetch settings for siteID \(siteID): \(error)")
+            }
+        }
+        dispatch(action)
+    }
+
     /// Loads the Default Site into the current Session, if possible.
     ///
     func restoreSessionSiteIfPossible() {
@@ -169,6 +186,7 @@ private extension StoresManager {
         }
 
         restoreSessionSite(with: siteID)
+        fetchSiteSettings(with: siteID)
     }
 
     /// Loads the specified siteID into the Session, if possible.

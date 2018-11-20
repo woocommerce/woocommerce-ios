@@ -4,7 +4,7 @@ use_frameworks!
 platform :ios, '11.0'
 workspace 'WooCommerce.xcworkspace'
 
-
+plugin 'cocoapods-repo-update'
 
 # Main Target!
 # ============
@@ -32,6 +32,7 @@ target 'WooCommerce' do
   pod 'CocoaLumberjack', '~> 3.4'
   pod 'XLPagerTabStrip', '~> 8.1'
   pod 'Charts', '~> 3.2'
+  pod 'ZendeskSDK', '~> 2.2'
 
   # Unit Tests
   # ==========

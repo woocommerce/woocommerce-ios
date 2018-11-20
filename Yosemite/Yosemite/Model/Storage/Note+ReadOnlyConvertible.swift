@@ -8,6 +8,9 @@ extension Storage.Note: ReadOnlyConvertible {
     /// Updates the Storage.Note with the a ReadOnly.
     ///
     public func update(with note: Yosemite.Note) {
+        let theSiteID = note.meta.identifier(forKey: .site) ?? Int.min
+
+        siteID = Int64(theSiteID)
         noteID = Int64(note.noteId)
         noteHash = Int64(note.hash)
         read = note.read
@@ -17,6 +20,7 @@ extension Storage.Note: ReadOnlyConvertible {
         url = note.url
         title = note.title
         type = note.type
+        subtype = note.subtype
         subject = note.subjectAsData
         header = note.headerAsData
         body = note.bodyAsData
@@ -33,6 +37,7 @@ extension Storage.Note: ReadOnlyConvertible {
                     noticon: noticon,
                     timestamp: timestamp ?? "",
                     type: type ?? "",
+                    subtype: subtype,
                     url: url,
                     title: title,
                     subject: subject ?? Data(),

@@ -13,7 +13,7 @@ public class NotificationsRemote: Remote {
     ///     - pageSize: Number of hashes to retrieve.
     ///     - completion: callback to be executed on completion.
     ///
-    public func loadNotes(noteIds: [String]? = nil, pageSize: Int? = nil, completion: @escaping ([Note]?, Error?) -> Void) {
+    public func loadNotes(noteIds: [Int64]? = nil, pageSize: Int? = nil, completion: @escaping ([Note]?, Error?) -> Void) {
         let request = requestForNotifications(fields: .all, noteIds: noteIds, pageSize: pageSize)
         let mapper = NoteListMapper()
 
@@ -28,7 +28,7 @@ public class NotificationsRemote: Remote {
     ///     - pageSize: Number of hashes to retrieve.
     ///     - completion: callback to be executed on completion.
     ///
-    public func loadHashes(noteIds: [String]? = nil, pageSize: Int? = nil, completion: @escaping ([NoteHash]?, Error?) -> Void) {
+    public func loadHashes(noteIds: [Int64]? = nil, pageSize: Int? = nil, completion: @escaping ([NoteHash]?, Error?) -> Void) {
         let request = requestForNotifications(fields: .hashes, noteIds: noteIds, pageSize: pageSize)
         let mapper = NoteHashListMapper()
 
@@ -43,15 +43,25 @@ public class NotificationsRemote: Remote {
     ///     - read: The new Read Status to be set.
     ///     - completion: Closure to be executed on completion, indicating whether the OP was successful or not.
     ///
-    public func updateReadStatus(_ notificationID: String, read: Bool, completion: @escaping (Error?) -> Void) {
+    public func updateReadStatus(noteIds: [Int64], read: Bool, completion: @escaping (Error?) -> Void) {
         // Note: Isn't the API wonderful?
+        //
         let booleanFromPlanetMars = read ? Constants.readAsInteger : Constants.unreadAsInteger
-        let payload = [notificationID: booleanFromPlanetMars]
 
-        var parameters = [String: String]()
-        if let encoded = payload.toJSONEncoded() {
-            parameters[ParameterKeys.counts] = encoded
+        // Payload: [NoteID: ReadStatus]
+        //
+        var payload = [String: Int]()
+
+        for noteId in noteIds {
+            let noteIdAsString = String(noteId)
+            payload[noteIdAsString] = booleanFromPlanetMars
         }
+
+        // Parameters: [.counts: [Payload]]
+        //
+        let parameters: [String: Any] = [
+            ParameterKeys.counts: payload
+        ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.read, parameters: parameters)
         let mapper = SuccessResultMapper()
@@ -106,14 +116,15 @@ private extension NotificationsRemote {
     ///     - pageSize: Number of notifications to load.
     ///     - completion: Callback to be executed on completion.
     ///
-    func requestForNotifications(fields: Fields? = nil, noteIds: [String]? = nil, pageSize: Int?) -> DotcomRequest {
+    func requestForNotifications(fields: Fields? = nil, noteIds: [Int64]? = nil, pageSize: Int?) -> DotcomRequest {
         var parameters = [String: String]()
         if let fields = fields {
             parameters[ParameterKeys.fields] = fields.rawValue
         }
 
         if let notificationIds = noteIds {
-            parameters[ParameterKeys.identifiers] = notificationIds.joined(separator: ",")
+            let identifiersAsStrings = notificationIds.map { String($0) }
+            parameters[ParameterKeys.identifiers] = identifiersAsStrings.joined(separator: ",")
         }
 
         if let pageSize = pageSize {

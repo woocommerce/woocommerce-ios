@@ -246,6 +246,24 @@ private extension NotificationDetailsViewController {
                 return
         }
 
+        //
+        commentCell.onSpam = {
+            // TODO: Wire Me!
+        }
+
+        commentCell.onTrash = {
+            // TODO: Wire Me!
+        }
+
+        commentCell.onApprove = {
+            // TODO: Wire Me!
+        }
+
+        commentCell.onUnapprove = {
+            // TODO: Wire Me!
+        }
+
+        //
         let formatter = StringFormatter()
         commentCell.titleText = userBlock.text
         commentCell.detailsText = note.timestampAsDate.mediumString()

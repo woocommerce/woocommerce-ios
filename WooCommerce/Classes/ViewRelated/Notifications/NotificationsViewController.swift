@@ -571,7 +571,7 @@ private extension NotificationsViewController {
             MainTabBarController.hideDotOn(.notifications)
             return
         }
-        
+
         MainTabBarController.showDotOn(.notifications)
     }
 }

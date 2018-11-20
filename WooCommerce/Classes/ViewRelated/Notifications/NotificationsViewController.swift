@@ -49,17 +49,17 @@ class NotificationsViewController: UIViewController {
 
     /// OrderStatus that must be matched by retrieved orders.
     ///
-    private var typeFilter: NoteTypeFilter? {
+    private var currentTypeFilter: NoteTypeFilter = .all {
         didSet {
             guard isViewLoaded else {
                 return
             }
 
-            guard oldValue?.rawValue != typeFilter?.rawValue else {
+            guard oldValue != currentTypeFilter else {
                 return
             }
 
-            //didChangeFilter(newFilter: statusFilter)
+            didChangeFilter(newFilter: currentTypeFilter)
         }
     }
 
@@ -134,6 +134,7 @@ class NotificationsViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = StyleManager.tableViewBackgroundColor
 
+        refreshTitle()
         refreshResultsPredicate()
         configureNavigationItem()
         configureNavigationBarButtons()
@@ -227,6 +228,15 @@ private extension NotificationsViewController {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
     }
+
+    func refreshTitle() {
+        guard currentTypeFilter != .all else {
+            navigationItem.title = NSLocalizedString("Notifications", comment: "Notifications title")
+            return
+        }
+
+        navigationItem.title = NSLocalizedString("Notifications: \(currentTypeFilter.description)", comment: "Notifications filtered title")
+    }
 }
 
 
@@ -260,22 +270,22 @@ private extension NotificationsViewController {
 
         actionSheet.addCancelActionWithTitle(NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"))
         actionSheet.addDefaultActionWithTitle(NoteTypeFilter.all.description) { [weak self] _ in
-            // TODO: self?.typeFilter = nil
+            self?.currentTypeFilter = .all
         }
 
-        let noteKinds = resultsController.fetchedObjects.compactMap({ (note) -> String? in
+        let noteKinds = resultsController.fetchedObjects.compactMap({ (note) -> NoteTypeFilter? in
             if note.kind == Note.Kind.storeOrder {
-                return NoteTypeFilter.orders.description
+                return NoteTypeFilter.orders
             } else if note.subkind == Note.Subkind.storeReview {
-                return NoteTypeFilter.reviews.description
+                return NoteTypeFilter.reviews
             } else {
                 return nil
             }
         })
 
-        for kind in Array(Set(noteKinds)) {
-            actionSheet.addDefaultActionWithTitle(kind) { [weak self] _ in
-                // TODO: self?.typeFilter = type
+        for typeFilter in Array(Set(noteKinds)) {
+            actionSheet.addDefaultActionWithTitle(typeFilter.description) { [weak self] _ in
+                self?.currentTypeFilter = typeFilter
             }
         }
 
@@ -284,6 +294,26 @@ private extension NotificationsViewController {
         popoverController?.sourceView = self.view
 
         present(actionSheet, animated: true)
+    }
+}
+
+
+// MARK: - Filters
+//
+private extension NotificationsViewController {
+
+    func didChangeFilter(newFilter: NoteTypeFilter?) {
+        //        WooAnalytics.shared.track(.filterOrdersOptionSelected,
+        //                                  withProperties: ["status": newFilter?.rawValue ?? String()])
+        //        WooAnalytics.shared.track(.ordersListFilterOrSearch,
+        //                                  withProperties: ["filter": newFilter?.rawValue ?? String(),
+        //                                                   "search": ""])
+
+        // Display the Filter in the Title
+        refreshTitle()
+
+        // Filter right away the cached orders
+        refreshResultsPredicate()
     }
 }
 

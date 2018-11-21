@@ -53,36 +53,36 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
     var onUnapprove: (() -> Void)?
 
 
-    /// Indicates if the Spam Button is Hidden (or not!)
+    /// Indicates if the Spam Button is enabled (or not!)
     ///
-    var isSpamHidden: Bool {
+    var isSpamEnabled: Bool {
         get {
-            return spamButton.isHidden
+            return !spamButton.isHidden
         }
         set {
-            spamButton.isHidden = newValue
+            spamButton.isHidden = !newValue
         }
     }
 
-    /// Indicates if the Trash Button is Hidden (or not!)
+    /// Indicates if the Trash Button is enabled (or not!)
     ///
-    var isTrashHidden: Bool {
+    var isTrashEnabled: Bool {
         get {
-            return trashButton.isHidden
+            return !trashButton.isHidden
         }
         set {
-            trashButton.isHidden = newValue
+            trashButton.isHidden = !newValue
         }
     }
 
-    /// Indicates if the Approval Button is Hidden (or not!)
+    /// Indicates if the Approval Button is enabled (or not!)
     ///
-    var isApproveHidden: Bool {
+    var isApproveEnabled: Bool {
         get {
-            return approvalButton.isHidden
+            return !approvalButton.isHidden
         }
         set {
-            approvalButton.isHidden = newValue
+            approvalButton.isHidden = !newValue
         }
     }
 

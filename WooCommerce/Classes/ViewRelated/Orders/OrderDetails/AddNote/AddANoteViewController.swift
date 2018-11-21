@@ -64,7 +64,7 @@ class AddANoteViewController: UIViewController {
 
     @objc func addButtonTapped() {
         navigationItem.rightBarButtonItem?.isEnabled = false
-        
+
         WooAnalytics.shared.track(.orderNoteAddButtonTapped)
         WooAnalytics.shared.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
                                                                   "status": viewModel.order.status.rawValue,

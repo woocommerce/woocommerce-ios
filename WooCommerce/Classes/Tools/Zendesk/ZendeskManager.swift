@@ -134,7 +134,8 @@ import Yosemite
             self.sourceTag = sourceTag
             WooAnalytics.shared.track(.supportTicketListViewed)
 
-            let requestListController = RequestUi.buildRequestList()
+            let requestConfig = self.createRequest()
+            let requestListController = RequestUi.buildRequestList(with: [requestConfig])
             self.showZendeskView(requestListController)
         }
     }

@@ -250,18 +250,26 @@ private extension NotificationDetailsViewController {
             let siteID = commentBlock.meta.identifier(forKey: .site) {
 
             commentCell.onSpam = { [weak self] in
+                WooAnalytics.shared.track(.notificationReviewSpamTapped)
+                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.spam])
                 self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .spam, undoStatus: .unspam)
             }
 
             commentCell.onTrash = { [weak self] in
+                WooAnalytics.shared.track(.notificationReviewTrashTapped)
+                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.trash])
                 self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .trash, undoStatus: .untrash)
             }
 
             commentCell.onApprove = { [weak self] in
+                WooAnalytics.shared.track(.notificationReviewApprovedTapped)
+                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.approved])
                 self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .approved, undoStatus: .unapproved)
             }
 
             commentCell.onUnapprove = { [weak self] in
+                WooAnalytics.shared.track(.notificationReviewApprovedTapped)
+                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.unapproved])
                 self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .unapproved, undoStatus: .approved)
             }
         }
@@ -278,7 +286,7 @@ private extension NotificationDetailsViewController {
 }
 
 
-// MARK: - Private Helpers
+// MARK: - Comment Moderation
 //
 private extension NotificationDetailsViewController {
 
@@ -294,21 +302,17 @@ private extension NotificationDetailsViewController {
 
         StoresManager.shared.dispatch(done)
 
-        displayModerationCompleteNotice(newStatus: doneStatus) {
-//            WooAnalytics.shared.track(.reviewStatusChangeUndoButtonTapped)
-//            WooAnalytics.shared.track(.reviewStatusChangeUndo, withProperties: ["id": orderID])
-//            WooAnalytics.shared.track(.reviewStatusChange, withProperties: ["id": orderID,
-//                                                                           "from": doneStatus.rawValue,
-//                                                                           "to": undoStatus.rawValue])
+        displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
+            WooAnalytics.shared.track(.notificationReviewActionUndo)
             StoresManager.shared.dispatch(undo)
-        }
+        })
 
         navigationController?.popViewController(animated: true)
     }
 
     /// Displays the `Comment moderated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
     ///
-    private func displayModerationCompleteNotice(newStatus: CommentStatus, onUndoAction: @escaping () -> Void) {
+    func displayModerationCompleteNotice(newStatus: CommentStatus, onUndoAction: @escaping () -> Void) {
         guard newStatus != .unknown else {
             return
         }
@@ -339,61 +343,61 @@ private extension NotificationDetailsViewController {
 
     /// Returns an comment moderation action that will result in the specified comment being updated accordingly.
     ///
-    private func moderateCommentAction(siteID: Int, commentID: Int, status: CommentStatus) -> Action? {
+    func moderateCommentAction(siteID: Int, commentID: Int, status: CommentStatus) -> Action? {
         switch status {
         case .approved:
             return CommentAction.updateApprovalStatus(siteID: siteID, commentID: commentID, isApproved: true) { (_, error) in
                 guard let error = error else {
-                    //WooAnalytics.shared.track(.commentStatusChangeSuccess)
+                    WooAnalytics.shared.track(.notificationReviewActionSuccess)
                     return
                 }
-                //WooAnalytics.shared.track(.commentStatusChangeFailed, withError: error)
+                WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
                 DDLogError("⛔️ Comment moderation failure for Approved status. Error: \(error)")
             }
 
         case .unapproved:
             return CommentAction.updateApprovalStatus(siteID: siteID, commentID: commentID, isApproved: false) { (_, error) in
                 guard let error = error else {
-                    //WooAnalytics.shared.track(.commentStatusChangeSuccess)
+                    WooAnalytics.shared.track(.notificationReviewActionSuccess)
                     return
                 }
-                //WooAnalytics.shared.track(.commentStatusChangeFailed, withError: error)
+                WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
                 DDLogError("⛔️ Comment moderation failure for Unapproved status. Error: \(error)")
             }
         case .spam:
             return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: true) { (_, error) in
                 guard let error = error else {
-                    //WooAnalytics.shared.track(.commentStatusChangeSuccess)
+                    WooAnalytics.shared.track(.notificationReviewActionSuccess)
                     return
                 }
-                //WooAnalytics.shared.track(.commentStatusChangeFailed, withError: error)
+                WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
                 DDLogError("⛔️ Comment moderation failure for Spam status. Error: \(error)")
             }
         case .unspam:
             return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: false) { (_, error) in
                 guard let error = error else {
-                    //WooAnalytics.shared.track(.commentStatusChangeSuccess)
+                    WooAnalytics.shared.track(.notificationReviewActionSuccess)
                     return
                 }
-                //WooAnalytics.shared.track(.commentStatusChangeFailed, withError: error)
+                WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
                 DDLogError("⛔️ Comment moderation failure for Unspam status. Error: \(error)")
             }
         case .trash:
             return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: true) { (_, error) in
                 guard let error = error else {
-                    //WooAnalytics.shared.track(.commentStatusChangeSuccess)
+                    WooAnalytics.shared.track(.notificationReviewActionSuccess)
                     return
                 }
-                //WooAnalytics.shared.track(.commentStatusChangeFailed, withError: error)
+                WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
                 DDLogError("⛔️ Comment moderation failure for Trash status. Error: \(error)")
             }
         case .untrash:
             return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: false) { (_, error) in
                 guard let error = error else {
-                    //WooAnalytics.shared.track(.commentStatusChangeSuccess)
+                    WooAnalytics.shared.track(.notificationReviewActionSuccess)
                     return
                 }
-                //WooAnalytics.shared.track(.commentStatusChangeFailed, withError: error)
+                WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
                 DDLogError("⛔️ Comment moderation failure for Untrash status. Error: \(error)")
             }
         case .unknown:

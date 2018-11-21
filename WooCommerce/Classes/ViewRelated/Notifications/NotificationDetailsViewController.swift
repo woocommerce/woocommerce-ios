@@ -246,6 +246,21 @@ private extension NotificationDetailsViewController {
                 return
         }
 
+        // Setup: Properties
+        let formatter = StringFormatter()
+        commentCell.titleText = userBlock.text
+        commentCell.detailsText = note.timestampAsDate.mediumString()
+        commentCell.commentAttributedText = formatter.format(block: commentBlock, with: .body)
+
+        let gravatarURL = userBlock.media.first?.url
+        commentCell.downloadGravatar(with: gravatarURL)
+
+        commentCell.isApproveEnabled  = commentBlock.isActionEnabled(.approve)
+        commentCell.isTrashEnabled    = commentBlock.isActionEnabled(.trash)
+        commentCell.isSpamEnabled     = commentBlock.isActionEnabled(.spam)
+        commentCell.isApproveSelected = commentBlock.isActionOn(.approve)
+
+        // Setup: Callbacks
         if let commentID = commentBlock.meta.identifier(forKey: .comment),
             let siteID = commentBlock.meta.identifier(forKey: .site) {
 
@@ -273,15 +288,6 @@ private extension NotificationDetailsViewController {
                 self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .unapproved, undoStatus: .approved)
             }
         }
-
-        let formatter = StringFormatter()
-        commentCell.titleText = userBlock.text
-        commentCell.detailsText = note.timestampAsDate.mediumString()
-        commentCell.commentAttributedText = formatter.format(block: commentBlock, with: .body)
-
-        // Download the Gravatar
-        let gravatarURL = userBlock.media.first?.url
-        commentCell.downloadGravatar(with: gravatarURL)
     }
 }
 

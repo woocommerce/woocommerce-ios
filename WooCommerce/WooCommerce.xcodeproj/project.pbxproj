@@ -110,6 +110,7 @@
 		B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744D20F56E3800EEFC87 /* UITableViewCell+Helpers.swift */; };
 		B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C745020F56EE900EEFC87 /* UITableViewCellHelpersTests.swift */; };
 		B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B582F95820FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift */; };
+		B586906621A5F4B1001F1EFC /* UINavigationController+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B586906521A5F4B1001F1EFC /* UINavigationController+Woo.swift */; };
 		B58B4AB22108F01700076FDD /* NoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58B4AAF2108F01400076FDD /* NoticeView.swift */; };
 		B58B4AB32108F01700076FDD /* NoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58B4AB02108F01600076FDD /* NoticePresenter.swift */; };
 		B58B4AB62108F11C00076FDD /* Notice.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58B4AB52108F11C00076FDD /* Notice.swift */; };
@@ -376,6 +377,7 @@
 		B57C744D20F56E3800EEFC87 /* UITableViewCell+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+Helpers.swift"; sourceTree = "<group>"; };
 		B57C745020F56EE900EEFC87 /* UITableViewCellHelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableViewCellHelpersTests.swift; sourceTree = "<group>"; };
 		B582F95820FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewHeaderFooterView+Helpers.swift"; sourceTree = "<group>"; };
+		B586906521A5F4B1001F1EFC /* UINavigationController+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Woo.swift"; sourceTree = "<group>"; };
 		B58B4AAF2108F01400076FDD /* NoticeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoticeView.swift; sourceTree = "<group>"; };
 		B58B4AB02108F01600076FDD /* NoticePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoticePresenter.swift; sourceTree = "<group>"; };
 		B58B4AB52108F11C00076FDD /* Notice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notice.swift; sourceTree = "<group>"; };
@@ -959,6 +961,7 @@
 				B59D49CC219B587E006BF0AD /* UILabel+OrderStatus.swift */,
 				B53B3F38219C817800DF1EB6 /* UIStoryboard+Woo.swift */,
 				B5A56BF4219F5AB20065A902 /* NSNotificationName+Woo.swift */,
+				B586906521A5F4B1001F1EFC /* UINavigationController+Woo.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1503,6 +1506,7 @@
 				B5A82EE221025C450053ADC8 /* FulfillViewController.swift in Sources */,
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,
+				B586906621A5F4B1001F1EFC /* UINavigationController+Woo.swift in Sources */,
 				B5F8B7E02194759100DAB7E2 /* NotificationDetailsViewController.swift in Sources */,
 				CE85FD5A20F7A7640080B73E /* TableFooterView.swift in Sources */,
 				74334F36214AB130006D6AC5 /* ProductTableViewCell.swift in Sources */,

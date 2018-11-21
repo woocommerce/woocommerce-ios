@@ -246,24 +246,26 @@ private extension NotificationDetailsViewController {
                 return
         }
 
-        //
-        commentCell.onSpam = {
-            // TODO: Wire Me!
+        if let commentID = commentBlock.meta.identifier(forKey: .comment),
+            let siteID = commentBlock.meta.identifier(forKey: .site) {
+
+            commentCell.onSpam = { [weak self] in
+                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .spam, undoStatus: .unspam)
+            }
+
+            commentCell.onTrash = { [weak self] in
+                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .trash, undoStatus: .untrash)
+            }
+
+            commentCell.onApprove = { [weak self] in
+                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .approved, undoStatus: .unapproved)
+            }
+
+            commentCell.onUnapprove = { [weak self] in
+                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .unapproved, undoStatus: .approved)
+            }
         }
 
-        commentCell.onTrash = {
-            // TODO: Wire Me!
-        }
-
-        commentCell.onApprove = {
-            // TODO: Wire Me!
-        }
-
-        commentCell.onUnapprove = {
-            // TODO: Wire Me!
-        }
-
-        //
         let formatter = StringFormatter()
         commentCell.titleText = userBlock.text
         commentCell.detailsText = note.timestampAsDate.mediumString()
@@ -272,5 +274,131 @@ private extension NotificationDetailsViewController {
         // Download the Gravatar
         let gravatarURL = userBlock.media.first?.url
         commentCell.downloadGravatar(with: gravatarURL)
+    }
+}
+
+
+// MARK: - Private Helpers
+//
+private extension NotificationDetailsViewController {
+
+    /// Whenever the Fulfillment Action is pressed, we'll mark the order as Completed, and pull back to the previous screen.
+    ///
+    func moderateComment(siteID: Int, commentID: Int, doneStatus: CommentStatus, undoStatus: CommentStatus) {
+        guard let done = moderateCommentAction(siteID: siteID, commentID: commentID, status: doneStatus) else {
+            return
+        }
+        guard let undo = moderateCommentAction(siteID: siteID, commentID: commentID, status: undoStatus) else {
+            return
+        }
+
+        StoresManager.shared.dispatch(done)
+
+        displayModerationCompleteNotice(newStatus: doneStatus) {
+//            WooAnalytics.shared.track(.reviewStatusChangeUndoButtonTapped)
+//            WooAnalytics.shared.track(.reviewStatusChangeUndo, withProperties: ["id": orderID])
+//            WooAnalytics.shared.track(.reviewStatusChange, withProperties: ["id": orderID,
+//                                                                           "from": doneStatus.rawValue,
+//                                                                           "to": undoStatus.rawValue])
+            StoresManager.shared.dispatch(undo)
+        }
+
+        navigationController?.popViewController(animated: true)
+    }
+
+    /// Displays the `Comment moderated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
+    ///
+    private func displayModerationCompleteNotice(newStatus: CommentStatus, onUndoAction: @escaping () -> Void) {
+        guard newStatus != .unknown else {
+            return
+        }
+
+        var title = ""
+
+        switch newStatus {
+        case .approved:
+            title = NSLocalizedString("Review marked as approved.", comment: "Review moderation notice message for an approved review")
+        case .unapproved:
+            title = NSLocalizedString("Review marked as unapproved.", comment: "Review moderation notice message for an un-approved review")
+        case .spam:
+            title = NSLocalizedString("Review marked as spam.", comment: "Review moderation notice message for a spam review")
+        case .unspam:
+            title = NSLocalizedString("Review marked as not spam.", comment: "Review moderation notice message for a not-spam review")
+        case .trash:
+            title = NSLocalizedString("Review moved to trash.", comment: "Review moderation notice message for a trashed review")
+        case .untrash:
+            title = NSLocalizedString("Review removed from trash.", comment: "Review moderation notice message for a not-trashed review")
+        case .unknown:
+            title = ""
+        }
+
+        let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
+        let notice = Notice(title: title, message: nil, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Returns an comment moderation action that will result in the specified comment being updated accordingly.
+    ///
+    private func moderateCommentAction(siteID: Int, commentID: Int, status: CommentStatus) -> Action? {
+        switch status {
+        case .approved:
+            return CommentAction.updateApprovalStatus(siteID: siteID, commentID: commentID, isApproved: true) { (_, error) in
+                guard let error = error else {
+                    //WooAnalytics.shared.track(.commentStatusChangeSuccess)
+                    return
+                }
+                //WooAnalytics.shared.track(.commentStatusChangeFailed, withError: error)
+                DDLogError("⛔️ Comment moderation failure for Approved status. Error: \(error)")
+            }
+
+        case .unapproved:
+            return CommentAction.updateApprovalStatus(siteID: siteID, commentID: commentID, isApproved: false) { (_, error) in
+                guard let error = error else {
+                    //WooAnalytics.shared.track(.commentStatusChangeSuccess)
+                    return
+                }
+                //WooAnalytics.shared.track(.commentStatusChangeFailed, withError: error)
+                DDLogError("⛔️ Comment moderation failure for Unapproved status. Error: \(error)")
+            }
+        case .spam:
+            return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: true) { (_, error) in
+                guard let error = error else {
+                    //WooAnalytics.shared.track(.commentStatusChangeSuccess)
+                    return
+                }
+                //WooAnalytics.shared.track(.commentStatusChangeFailed, withError: error)
+                DDLogError("⛔️ Comment moderation failure for Spam status. Error: \(error)")
+            }
+        case .unspam:
+            return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: false) { (_, error) in
+                guard let error = error else {
+                    //WooAnalytics.shared.track(.commentStatusChangeSuccess)
+                    return
+                }
+                //WooAnalytics.shared.track(.commentStatusChangeFailed, withError: error)
+                DDLogError("⛔️ Comment moderation failure for Unspam status. Error: \(error)")
+            }
+        case .trash:
+            return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: true) { (_, error) in
+                guard let error = error else {
+                    //WooAnalytics.shared.track(.commentStatusChangeSuccess)
+                    return
+                }
+                //WooAnalytics.shared.track(.commentStatusChangeFailed, withError: error)
+                DDLogError("⛔️ Comment moderation failure for Trash status. Error: \(error)")
+            }
+        case .untrash:
+            return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: false) { (_, error) in
+                guard let error = error else {
+                    //WooAnalytics.shared.track(.commentStatusChangeSuccess)
+                    return
+                }
+                //WooAnalytics.shared.track(.commentStatusChangeFailed, withError: error)
+                DDLogError("⛔️ Comment moderation failure for Untrash status. Error: \(error)")
+            }
+        case .unknown:
+            DDLogError("⛔️ Comment moderation failure: attempted to update comment with unknown status.")
+            return nil
+        }
     }
 }

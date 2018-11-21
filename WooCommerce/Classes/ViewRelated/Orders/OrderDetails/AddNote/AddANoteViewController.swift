@@ -63,6 +63,8 @@ class AddANoteViewController: UIViewController {
     }
 
     @objc func addButtonTapped() {
+        navigationItem.rightBarButtonItem?.isEnabled = false
+
         WooAnalytics.shared.track(.orderNoteAddButtonTapped)
         WooAnalytics.shared.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
                                                                   "status": viewModel.order.status.rawValue,
@@ -73,6 +75,7 @@ class AddANoteViewController: UIViewController {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
                 WooAnalytics.shared.track(.orderNoteAddFailed, withError: error)
                 // TODO: should this alert the user that there was an error?
+                self?.navigationItem.rightBarButtonItem?.isEnabled = true
                 return
             }
             WooAnalytics.shared.track(.orderNoteAddSuccess)

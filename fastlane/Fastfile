@@ -16,4 +16,9 @@ lane :get_pullrequests_list do | options |
   get_prs_list(repository:GHHELPER_REPO, start_tag:"#{options[:start_tag]}", report_path:"#{File.expand_path('~')}/wcios_prs_list.txt")
 end
 
+desc "Run release preflight checks"
+lane :release_preflight do | options |
+    configure_validate()
+end
+
 end

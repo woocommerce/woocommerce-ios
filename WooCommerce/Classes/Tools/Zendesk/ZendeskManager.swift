@@ -660,7 +660,7 @@ private extension ZendeskManager {
         static let profileEmailKey = "email"
         static let profileNameKey = "name"
         static let nameFieldCharacterLimit = 50
-        static let sourcePlatform = "woo_-_ios"
+        static let sourcePlatform = "mobile_-_woo_ios"
         static let subcategory = "WooCommerce Mobile Apps"
     }
 

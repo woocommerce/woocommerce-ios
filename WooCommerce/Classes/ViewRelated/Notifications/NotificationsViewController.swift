@@ -455,8 +455,12 @@ extension NotificationsViewController: UITableViewDelegate {
         switch note.kind {
         case .storeOrder:
             presentOrderDetails(for: note)
+            WooAnalytics.shared.track(.notificationOpened, withProperties: ["type": "order",
+                                                                            "already_read": note.read])
         default:
             presentNotificationDetails(for: note)
+            WooAnalytics.shared.track(.notificationOpened, withProperties: ["type": "review",
+                                                                            "already_read": note.read])
         }
     }
 }

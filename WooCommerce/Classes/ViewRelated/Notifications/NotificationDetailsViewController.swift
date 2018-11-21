@@ -251,25 +251,25 @@ private extension NotificationDetailsViewController {
 
             commentCell.onSpam = { [weak self] in
                 WooAnalytics.shared.track(.notificationReviewSpamTapped)
-                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.spam])
+                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.spam.rawValue])
                 self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .spam, undoStatus: .unspam)
             }
 
             commentCell.onTrash = { [weak self] in
                 WooAnalytics.shared.track(.notificationReviewTrashTapped)
-                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.trash])
+                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.trash.rawValue])
                 self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .trash, undoStatus: .untrash)
             }
 
             commentCell.onApprove = { [weak self] in
                 WooAnalytics.shared.track(.notificationReviewApprovedTapped)
-                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.approved])
+                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.approved.rawValue])
                 self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .approved, undoStatus: .unapproved)
             }
 
             commentCell.onUnapprove = { [weak self] in
                 WooAnalytics.shared.track(.notificationReviewApprovedTapped)
-                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.unapproved])
+                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.unapproved.rawValue])
                 self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .unapproved, undoStatus: .approved)
             }
         }

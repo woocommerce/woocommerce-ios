@@ -14,6 +14,26 @@ class NotificationsViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
+    /// Mark all as read nav bar button
+    ///
+    private lazy var leftBarButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: Gridicon.iconOfType(.checkmark),
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(markAllAsRead))
+        return button
+    }()
+
+    /// Filter nav bar button
+    ///
+    private lazy var rightBarButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(displayFiltersAlert))
+        return button
+    }()
+
     /// Haptic Feedback!
     ///
     private let hapticGenerator = UINotificationFeedbackGenerator()
@@ -24,16 +44,23 @@ class NotificationsViewController: UIViewController {
         let storageManager = AppDelegate.shared.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
 
-        return ResultsController<StorageNote>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", matching: filter, sortedBy: [descriptor])
+        return ResultsController<StorageNote>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
-    /// Store Notifications CoreData Filter.
+    /// OrderStatus that must be matched by retrieved orders.
     ///
-    private var filter: NSPredicate {
-        let typePredicate = NSPredicate(format: "type == %@ OR subtype == %@", Note.Kind.storeOrder.rawValue, Note.Subkind.storeReview.rawValue)
-        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+    private var currentTypeFilter: NoteTypeFilter = .all {
+        didSet {
+            guard isViewLoaded else {
+                return
+            }
 
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [typePredicate, sitePredicate])
+            guard oldValue != currentTypeFilter else {
+                return
+            }
+
+            didChangeFilter(newFilter: currentTypeFilter)
+        }
     }
 
     /// Pull To Refresh Support.
@@ -107,6 +134,8 @@ class NotificationsViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = StyleManager.tableViewBackgroundColor
 
+        refreshTitle()
+        refreshResultsPredicate()
         configureNavigationItem()
         configureNavigationBarButtons()
         configureTableView()
@@ -147,15 +176,17 @@ private extension NotificationsViewController {
     /// Setup: NavigationBar Buttons
     ///
     func configureNavigationBarButtons() {
-        let leftBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.checkmark),
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(markAllAsRead))
         leftBarButton.tintColor = .white
         leftBarButton.accessibilityTraits = .button
         leftBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Notifications as Read Button")
         leftBarButton.accessibilityHint = NSLocalizedString("Marks Every Notification as Read", comment: "VoiceOver accessibility hint for the Mark All Notifications as Read Action")
         navigationItem.leftBarButtonItem = leftBarButton
+
+        rightBarButton.tintColor = .white
+        rightBarButton.accessibilityTraits = .button
+        rightBarButton.accessibilityLabel = NSLocalizedString("Filter notifications", comment: "Accessibility label for the Filter notifications button.")
+        rightBarButton.accessibilityHint = NSLocalizedString("Filters the notifications list by notification type.", comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list.")
+        navigationItem.rightBarButtonItem = rightBarButton
     }
 
     /// Setup: TableView
@@ -197,6 +228,15 @@ private extension NotificationsViewController {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
     }
+
+    func refreshTitle() {
+        guard currentTypeFilter != .all else {
+            navigationItem.title = NSLocalizedString("Notifications", comment: "Notifications title")
+            return
+        }
+
+        navigationItem.title = NSLocalizedString("Notifications: \(currentTypeFilter.description)", comment: "Notifications filtered title")
+    }
 }
 
 
@@ -212,6 +252,7 @@ private extension NotificationsViewController {
     }
 
     @IBAction func markAllAsRead() {
+        WooAnalytics.shared.track(.notificationsListReadAllTapped)
         if unreadNotes.isEmpty {
             DDLogVerbose("# Every single notification is already marked as Read!")
             return
@@ -219,6 +260,45 @@ private extension NotificationsViewController {
 
         markAsRead(notes: unreadNotes)
         hapticGenerator.notificationOccurred(.success)
+    }
+
+    @IBAction func displayFiltersAlert() {
+        WooAnalytics.shared.track(.notificationsListFilterTapped)
+
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+
+        actionSheet.addCancelActionWithTitle(NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"))
+        for noteType in NoteTypeFilter.knownTypes {
+            actionSheet.addDefaultActionWithTitle(noteType.description) { [weak self] _ in
+                self?.currentTypeFilter = noteType
+            }
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = navigationItem.rightBarButtonItem
+        popoverController?.sourceView = self.view
+
+        present(actionSheet, animated: true)
+    }
+}
+
+
+// MARK: - Filters
+//
+private extension NotificationsViewController {
+
+    func didChangeFilter(newFilter: NoteTypeFilter?) {
+                WooAnalytics.shared.track(.filterNotificationsOptionSelected,
+                                          withProperties: ["status": newFilter?.rawValue ?? String()])
+                WooAnalytics.shared.track(.notificationListFilter,
+                                          withProperties: ["range": newFilter?.rawValue ?? String()])
+
+        // Display the Filter in the Title
+        refreshTitle()
+
+        // Filter right away the cached orders
+        refreshResultsPredicate()
     }
 }
 
@@ -283,6 +363,8 @@ private extension NotificationsViewController {
         let action = NotificationAction.synchronizeNotifications { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
+            } else {
+                WooAnalytics.shared.track(.notificationListLoaded)
             }
 
             self.transitionToResultsUpdatedState()
@@ -302,7 +384,25 @@ extension NotificationsViewController {
     /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
     ///
     func reloadResultsController() {
-        resultsController.predicate = filter
+        refreshResultsPredicate()
+        tableView.reloadData()
+    }
+
+    func refreshResultsPredicate() {
+        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        var typePredicate: NSPredicate
+
+        switch currentTypeFilter {
+        case .all:
+            typePredicate = NSPredicate(format: "type == %@ OR subtype == %@", Note.Kind.storeOrder.rawValue, Note.Subkind.storeReview.rawValue)
+        case .orders:
+            typePredicate = NSPredicate(format: "type == %@", Note.Kind.storeOrder.rawValue)
+        case .reviews:
+            typePredicate = NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
+        }
+
+        resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [typePredicate, sitePredicate])
+        tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }
 }
@@ -527,10 +627,13 @@ private extension NotificationsViewController {
         switch state {
         case .empty:
             displayEmptyNotesOverlay()
+            updateNavBarButtonsState(enabled: false)
         case .results:
+            updateNavBarButtonsState(enabled: true)
             break
         case .syncing:
             displayPlaceholderNotes()
+            updateNavBarButtonsState(enabled: false)
         }
     }
 
@@ -574,12 +677,44 @@ private extension NotificationsViewController {
 
         MainTabBarController.showDotOn(.notifications)
     }
+
+    /// Enables/disables the navbar buttons if needed
+    ///
+    /// - Parameter enabled: If true, navbar buttons are enabled; if false, they are disabled
+    ///
+    func updateNavBarButtonsState(enabled: Bool) {
+        leftBarButton.isEnabled = enabled
+        rightBarButton.isEnabled = enabled
+    }
 }
 
 
 // MARK: - Nested Types
 //
 private extension NotificationsViewController {
+
+    enum NoteTypeFilter: String {
+        case all
+        case orders = "store_order"
+        case reviews = "store_review"
+
+        /// Returns a collection of all of the known Note Types
+        ///
+        static var knownTypes: [NoteTypeFilter] {
+            return [.all, .orders, .reviews]
+        }
+
+        var description: String {
+            switch self {
+            case .all:
+                return NSLocalizedString("All", comment: "All filter title")
+            case .orders:
+                return NSLocalizedString("Orders", comment: "Orders filter title")
+            case .reviews:
+                return NSLocalizedString("Reviews", comment: "Reviews filter title")
+            }
+        }
+    }
 
     enum Settings {
         static let placeholderRowsPerSection = [3]

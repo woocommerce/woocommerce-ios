@@ -396,6 +396,53 @@ class OrderStoreTests: XCTestCase {
         orderStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that Inoccuous Upsert OP(s) performed in Derived Contexts **DO NOT** trigger Refresh Events in the
+    /// main thread.
+    ///
+    /// This translates effectively into: Ensure that performing update OP's that don't really change anything, do not
+    /// end up causing UI refresh OP's in the main thread.
+    ///
+    func testInoccuousUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
+        // Stack
+        let viewContext = storageManager.persistentContainer.viewContext
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let entityListener = EntityListener(viewContext: viewContext, readOnlyEntity: sampleOrder())
+
+        // Track Events: Upsert == 1 / Delete == 0
+        var numberOfUpsertEvents = 0
+        entityListener.onUpsert = { upserted in
+            numberOfUpsertEvents += 1
+        }
+
+        // We expect *never* to get a deletion event
+        entityListener.onDelete = {
+            XCTFail()
+        }
+
+        // Initial save: This should trigger *ONE* Upsert event
+        let backgroundSaveExpectation = expectation(description: "Retrieve order notes empty response")
+        let derivedContext = storageManager.newDerivedStorage()
+
+        derivedContext.perform {
+            orderStore.upsertStoredOrder(readOnlyOrder: self.sampleOrder(), in: derivedContext)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedContext) {
+
+            // Secondary Save: Expect ZERO new Upsert Events
+            derivedContext.perform {
+                orderStore.upsertStoredOrder(readOnlyOrder: self.sampleOrder(), in: derivedContext)
+            }
+
+            self.storageManager.saveDerivedType(derivedStorage: derivedContext) {
+                XCTAssertEqual(numberOfUpsertEvents, 1)
+                backgroundSaveExpectation.fulfill()
+            }
+        }
+
+        wait(for: [backgroundSaveExpectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 

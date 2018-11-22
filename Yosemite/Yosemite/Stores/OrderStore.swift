@@ -174,15 +174,6 @@ extension OrderStore {
     /// Updates, inserts, or prunes the provided StorageOrder's items using the provided read-only Order's items
     ///
     private func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
-        guard !readOnlyOrder.items.isEmpty else {
-            // No items in the read-only order, so remove all the items in Storage.Order
-            storageOrder.items?.forEach {
-                storageOrder.removeFromItems($0)
-                storage.deleteObject($0)
-            }
-            return
-        }
-
         // Upsert the items from the read-only order
         for readOnlyItem in readOnlyOrder.items {
             if let existingStorageItem = storage.loadOrderItem(itemID: readOnlyItem.itemID) {
@@ -195,26 +186,17 @@ extension OrderStore {
         }
 
         // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items
-        storageOrder.items?.forEach({ storageItem in
+        storageOrder.items?.forEach { storageItem in
             if readOnlyOrder.items.first(where: { $0.itemID == storageItem.itemID } ) == nil {
                 storageOrder.removeFromItems(storageItem)
                 storage.deleteObject(storageItem)
             }
-        })
+        }
     }
 
     /// Updates, inserts, or prunes the provided StorageOrder's coupons using the provided read-only Order's coupons
     ///
     private func handleOrderCoupons(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
-        guard !readOnlyOrder.coupons.isEmpty else {
-            // No coupons in the read-only order, so remove all the coupons in Storage.Order
-            storageOrder.coupons?.forEach {
-                storageOrder.removeFromCoupons($0)
-                storage.deleteObject($0)
-            }
-            return
-        }
-
         // Upsert the coupons from the read-only order
         for readOnlyCoupon in readOnlyOrder.coupons {
             if let existingStorageCoupon = storage.loadOrderCoupon(couponID: readOnlyCoupon.couponID) {
@@ -227,11 +209,11 @@ extension OrderStore {
         }
 
         // Now, remove any objects that exist in storageOrder.coupons but not in readOnlyOrder.coupons
-        storageOrder.coupons?.forEach({ storageCoupon in
+        storageOrder.coupons?.forEach { storageCoupon in
             if readOnlyOrder.coupons.first(where: { $0.couponID == storageCoupon.couponID } ) == nil {
                 storageOrder.removeFromCoupons(storageCoupon)
                 storage.deleteObject(storageCoupon)
             }
-        })
+        }
     }
 }

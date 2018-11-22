@@ -66,8 +66,9 @@ private extension OrderStore {
                 return
             }
 
-            self?.upsertStoredOrders(readOnlyOrders: orders)
-            onCompletion(nil)
+            self?.upsertStoredOrdersInBackground(readOnlyOrders: orders) {
+                onCompletion(nil)
+            }
         }
     }
 
@@ -87,8 +88,9 @@ private extension OrderStore {
                 return
             }
 
-            self?.upsertStoredOrder(readOnlyOrder: order)
-            onCompletion(order, nil)
+            self?.upsertStoredOrdersInBackground(readOnlyOrders: [order]) {
+                onCompletion(order, nil)
+            }
         }
     }
 
@@ -148,33 +150,38 @@ extension OrderStore {
         return oldStatus
     }
 
-    /// Updates (OR Inserts) the specified ReadOnly Order Entity into the Storage Layer.
+    /// Unit Testing Helper:
+    /// Updates or Inserts the specified ReadOnly Order in a given Storage Layer.
     ///
-    func upsertStoredOrder(readOnlyOrder: Networking.Order) {
-        assert(Thread.isMainThread)
+    func upsertStoredOrder(readOnlyOrder: Networking.Order, in storage: StorageType) {
+        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], in: storage)
+    }
 
-        let storage = storageManager.viewStorage
-        let storageOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) ?? storage.insertNewObject(ofType: Storage.Order.self)
-        storageOrder.update(with: readOnlyOrder)
-        handleOrderItems(readOnlyOrder, storageOrder, storage)
-        handleOrderCoupons(readOnlyOrder, storageOrder, storage)
-        storage.saveIfNeeded()
+    /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*. onCompletion will be called
+    /// on the main thread!
+    ///
+    private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order], onCompletion: (() -> Void)? = nil) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async {
+                onCompletion?()
+            }
+        }
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Order Entities into the Storage Layer.
     ///
-    func upsertStoredOrders(readOnlyOrders: [Networking.Order]) {
-        assert(Thread.isMainThread)
-
-        let storage = storageManager.viewStorage
+    private func upsertStoredOrders(readOnlyOrders: [Networking.Order], in storage: StorageType) {
         for readOnlyOrder in readOnlyOrders {
             let storageOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) ?? storage.insertNewObject(ofType: Storage.Order.self)
             storageOrder.update(with: readOnlyOrder)
             handleOrderItems(readOnlyOrder, storageOrder, storage)
             handleOrderCoupons(readOnlyOrder, storageOrder, storage)
         }
-
-        storage.saveIfNeeded()
     }
 
     /// Updates, inserts, or prunes the provided StorageOrder's items using the provided read-only Order's items

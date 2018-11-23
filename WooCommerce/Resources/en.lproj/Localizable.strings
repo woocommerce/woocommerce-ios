@@ -52,6 +52,15 @@
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "An error occurred while processing your request: ";
 
+/* Approve a comment */
+"Approve" = "Approve";
+
+/* Unapprove a comment */
+"Approved" = "Approved";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "Approves the comment";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Are you sure you want to log out of the account %@?";
 
@@ -167,6 +176,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Days";
 
+/* Deleted Notification's Title */
+"Deleted Notification!" = "Deleted Notification!";
+
 /* Order Notice */
 "Deleted: Order #\(viewModel.order.number)" = "Deleted: Order #\(viewModel.order.number)";
 
@@ -229,8 +241,14 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Failed to serialize request to the REST API.";
 
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "Filter notifications";
+
 /* Filter the orders list. */
 "Filter orders" = "Filter orders";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "Filters the notifications list by notification type.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Filters the order list by payment status.";
@@ -323,6 +341,9 @@
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support.";
 
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "Loading Order";
+
 /* Button title.  Tapping takes the user to the login form.
    Log In button label. */
 "Log In" = "Log In";
@@ -366,8 +387,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Mapped Domain";
 
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "Mark All as Read";
+
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "Mark Order Complete";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "Marks Every Notification as Read";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Media doesn't have an associated file to upload.";
@@ -383,6 +410,12 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "Months";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "Moves a comment to Spam";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "Moves the comment to Trash";
 
 /* Dashboard navigation title */
 "My store" = "My store";
@@ -420,6 +453,9 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "No data available";
 
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "No Notifications Yet!";
+
 /* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "No results for the selected criteria";
 
@@ -427,8 +463,12 @@
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Note to customer";
 
-/* Notifications tab title */
+/* Notifications tab title
+   Notifications title */
 "Notifications" = "Notifications";
+
+/* Notifications filtered title */
+"Notifications: \(currentTypeFilter.description)" = "Notifications: \(currentTypeFilter.description)";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "Off";
@@ -470,9 +510,8 @@
 /* Order notes section title */
 "Order Notes" = "Order Notes";
 
-/* Orders Notice Title
-   Orders Title
-   Orders title */
+/* Orders filter title
+   Orders Title */
 "Orders" = "Orders";
 
 /* Orders Title */
@@ -576,11 +615,15 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "Report crashes";
 
-/* Retry Action */
+/* Retry Action
+   Retry the last action */
 "Retry" = "Retry";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Review, prepare, and ship these pending orders";
+
+/* Reviews filter title */
+"Reviews" = "Reviews";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "Send Link";
@@ -676,6 +719,9 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Sorry, you may not use that site address.";
 
+/* Verb, spam a comment */
+"Spam" = "Spam";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Starting period %1$@, ending period %2$@";
 
@@ -729,6 +775,12 @@
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"\(loginFields.username)\" doesn't match any account on WordPress.com" = "The Google account \"\(loginFields.username)\" doesn't match any account on WordPress.com";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed!" = "The notification has been removed!";
+
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "The Order couldn't be loaded!";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "The order has been deleted from your Store!";
@@ -806,6 +858,9 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "Total Spend";
 
+/* Move a comment to the trash */
+"Trash" = "Trash";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Trust";
 
@@ -832,6 +887,9 @@
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Unable to verify the email address. Please try again later.";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "Unapproves the comment";
 
 /* Undo Action */
 "Undo" = "Undo";

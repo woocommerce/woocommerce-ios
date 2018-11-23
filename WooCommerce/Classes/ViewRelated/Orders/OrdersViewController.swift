@@ -91,7 +91,7 @@ class OrdersViewController: UIViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
 
-        tabBarItem.title = NSLocalizedString("Orders", comment: "Orders title")
+        tabBarItem.title = NSLocalizedString("Orders", comment: "Orders Title")
         tabBarItem.image = Gridicon.iconOfType(.pages)
     }
 
@@ -150,7 +150,7 @@ private extension OrdersViewController {
     }
 
     func configureTabBarItem() {
-        tabBarItem.title = NSLocalizedString("Orders", comment: "Orders title")
+        tabBarItem.title = NSLocalizedString("Orders", comment: "Orders Title")
     }
 
     func configureTableView() {
@@ -337,7 +337,7 @@ private extension OrdersViewController {
     /// Displays the Error Notice.
     ///
     func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int) {
-        let title = NSLocalizedString("Orders", comment: "Orders Notice Title")
+        let title = NSLocalizedString("Orders", comment: "Orders Title")
         let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in

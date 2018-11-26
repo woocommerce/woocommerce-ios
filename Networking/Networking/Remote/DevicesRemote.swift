@@ -6,7 +6,6 @@ import Alamofire
 ///
 public class DevicesRemote: Remote {
 
-    ///
     /// - Parameters:
     ///     - deviceToken: APNS Token to be registered.
     ///     - deviceModel: Model of the device to be registered.
@@ -21,21 +20,24 @@ public class DevicesRemote: Remote {
                                deviceModel: String,
                                deviceName: String,
                                deviceOSVersion: String,
-                               deviceUUID: String,
+                               deviceUUID: String?,
                                applicationId: String,
                                applicationVersion: String,
                                completion: @escaping (DeviceSettings?, Error?) -> Void) {
 
-        let parameters = [
+        var parameters = [
             ParameterKeys.applicationId: applicationId,
             ParameterKeys.applicationVersion: applicationVersion,
             ParameterKeys.deviceFamily: Constants.defaultDeviceFamily,
             ParameterKeys.deviceToken: deviceToken,
             ParameterKeys.deviceModel: deviceModel,
             ParameterKeys.deviceName: deviceName,
-            ParameterKeys.deviceUUID: deviceUUID,
             ParameterKeys.deviceOSVersion: deviceOSVersion
         ]
+
+        if let deviceUUID = deviceUUID {
+            parameters[ParameterKeys.deviceUUID] = deviceUUID
+        }
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.register, parameters: parameters)
         let mapper = DeviceSettingsMapper()

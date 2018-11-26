@@ -79,6 +79,10 @@ class NotificationsViewController: UIViewController {
     ///
     private var snippetStorage = [Int64: NSAttributedString]()
 
+    /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
+    ///
+    private var estimatedRowHeights = [IndexPath: CGFloat]()
+
     /// String Formatter: Given a NoteBlock, this tool will return an AttributedString.
     ///
     private let formatter = StringFormatter()
@@ -194,7 +198,6 @@ private extension NotificationsViewController {
     func configureTableView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
     }
 
@@ -445,6 +448,14 @@ extension NotificationsViewController: UITableViewDelegate {
         return UITableView.automaticDimension
     }
 
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return estimatedRowHeights[indexPath] ?? Settings.estimatedRowHeight
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return estimatedRowHeights[indexPath] ?? UITableView.automaticDimension
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -462,6 +473,16 @@ extension NotificationsViewController: UITableViewDelegate {
             WooAnalytics.shared.track(.notificationOpened, withProperties: ["type": "review",
                                                                             "already_read": note.read])
         }
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+
+        // Preserve the Cell Height
+        // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
+        // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
+        // the actual value. AKA no flicker!
+        //
+        estimatedRowHeights[indexPath] = cell.frame.height
     }
 }
 
@@ -721,6 +742,7 @@ private extension NotificationsViewController {
     }
 
     enum Settings {
+        static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
     }
 

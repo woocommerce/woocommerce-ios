@@ -32,6 +32,8 @@ public class MockupStorageManager: StorageManagerType {
         return container
     }()
 
+    /// Returns a new Derived Storage instance.
+    ///
     public func newDerivedStorage() -> StorageType {
         let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         childManagedObjectContext.parent = persistentContainer.viewContext
@@ -39,6 +41,8 @@ public class MockupStorageManager: StorageManagerType {
         return childManagedObjectContext
     }
 
+    /// Persists the Derived Storage's Changes.
+    ///
     public func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void) {
         derivedStorage.perform {
             derivedStorage.saveIfNeeded()

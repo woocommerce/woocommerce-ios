@@ -7,6 +7,12 @@ import Storage
 //
 public class OrderStore: Store {
 
+    /// Shared private StorageType for use during then entire Orders sync process
+    ///
+    private lazy var sharedDerivedStorage: StorageType = {
+        return storageManager.newDerivedStorage()
+    }()
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -60,8 +66,9 @@ private extension OrderStore {
                 return
             }
 
-            self?.upsertStoredOrders(readOnlyOrders: orders)
-            onCompletion(nil)
+            self?.upsertStoredOrdersInBackground(readOnlyOrders: orders) {
+                onCompletion(nil)
+            }
         }
     }
 
@@ -81,8 +88,9 @@ private extension OrderStore {
                 return
             }
 
-            self?.upsertStoredOrder(readOnlyOrder: order)
-            onCompletion(order, nil)
+            self?.upsertStoredOrdersInBackground(readOnlyOrders: [order]) {
+                onCompletion(order, nil)
+            }
         }
     }
 
@@ -142,47 +150,43 @@ extension OrderStore {
         return oldStatus
     }
 
-    /// Updates (OR Inserts) the specified ReadOnly Order Entity into the Storage Layer.
+    /// Unit Testing Helper:
+    /// Updates or Inserts the specified ReadOnly Order in a given Storage Layer.
     ///
-    func upsertStoredOrder(readOnlyOrder: Networking.Order) {
-        assert(Thread.isMainThread)
+    func upsertStoredOrder(readOnlyOrder: Networking.Order, in storage: StorageType) {
+        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], in: storage)
+    }
 
-        let storage = storageManager.viewStorage
-        let storageOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) ?? storage.insertNewObject(ofType: Storage.Order.self)
-        storageOrder.update(with: readOnlyOrder)
-        handleOrderItems(readOnlyOrder, storageOrder, storage)
-        handleOrderCoupons(readOnlyOrder, storageOrder, storage)
-        storage.saveIfNeeded()
+    /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*. onCompletion will be called
+    /// on the main thread!
+    ///
+    private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order], onCompletion: (() -> Void)? = nil) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async {
+                onCompletion?()
+            }
+        }
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Order Entities into the Storage Layer.
     ///
-    func upsertStoredOrders(readOnlyOrders: [Networking.Order]) {
-        assert(Thread.isMainThread)
-
-        let storage = storageManager.viewStorage
+    private func upsertStoredOrders(readOnlyOrders: [Networking.Order], in storage: StorageType) {
         for readOnlyOrder in readOnlyOrders {
             let storageOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) ?? storage.insertNewObject(ofType: Storage.Order.self)
             storageOrder.update(with: readOnlyOrder)
             handleOrderItems(readOnlyOrder, storageOrder, storage)
             handleOrderCoupons(readOnlyOrder, storageOrder, storage)
         }
-
-        storage.saveIfNeeded()
     }
 
     /// Updates, inserts, or prunes the provided StorageOrder's items using the provided read-only Order's items
     ///
     private func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
-        guard !readOnlyOrder.items.isEmpty else {
-            // No items in the read-only order, so remove all the items in Storage.Order
-            storageOrder.items?.forEach {
-                storageOrder.removeFromItems($0)
-                storage.deleteObject($0)
-            }
-            return
-        }
-
         // Upsert the items from the read-only order
         for readOnlyItem in readOnlyOrder.items {
             if let existingStorageItem = storage.loadOrderItem(itemID: readOnlyItem.itemID) {
@@ -195,26 +199,17 @@ extension OrderStore {
         }
 
         // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items
-        storageOrder.items?.forEach({ storageItem in
+        storageOrder.items?.forEach { storageItem in
             if readOnlyOrder.items.first(where: { $0.itemID == storageItem.itemID } ) == nil {
                 storageOrder.removeFromItems(storageItem)
                 storage.deleteObject(storageItem)
             }
-        })
+        }
     }
 
     /// Updates, inserts, or prunes the provided StorageOrder's coupons using the provided read-only Order's coupons
     ///
     private func handleOrderCoupons(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
-        guard !readOnlyOrder.coupons.isEmpty else {
-            // No coupons in the read-only order, so remove all the coupons in Storage.Order
-            storageOrder.coupons?.forEach {
-                storageOrder.removeFromCoupons($0)
-                storage.deleteObject($0)
-            }
-            return
-        }
-
         // Upsert the coupons from the read-only order
         for readOnlyCoupon in readOnlyOrder.coupons {
             if let existingStorageCoupon = storage.loadOrderCoupon(couponID: readOnlyCoupon.couponID) {
@@ -227,11 +222,11 @@ extension OrderStore {
         }
 
         // Now, remove any objects that exist in storageOrder.coupons but not in readOnlyOrder.coupons
-        storageOrder.coupons?.forEach({ storageCoupon in
+        storageOrder.coupons?.forEach { storageCoupon in
             if readOnlyOrder.coupons.first(where: { $0.couponID == storageCoupon.couponID } ) == nil {
                 storageOrder.removeFromCoupons(storageCoupon)
                 storage.deleteObject(storageCoupon)
             }
-        })
+        }
     }
 }

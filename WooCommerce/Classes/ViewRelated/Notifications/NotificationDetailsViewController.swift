@@ -371,6 +371,7 @@ private extension NotificationDetailsViewController {
                 DDLogError("⛔️ Comment moderation failure for Unapproved status. Error: \(error)")
             }
         case .spam:
+            updateNoteDeletedStatusLocally(noteID: note.noteId, deleteInProgress: true)
             return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: true) { (_, error) in
                 guard let error = error else {
                     WooAnalytics.shared.track(.notificationReviewActionSuccess)
@@ -380,6 +381,7 @@ private extension NotificationDetailsViewController {
                 DDLogError("⛔️ Comment moderation failure for Spam status. Error: \(error)")
             }
         case .unspam:
+            updateNoteDeletedStatusLocally(noteID: note.noteId, deleteInProgress: false)
             return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: false) { (_, error) in
                 guard let error = error else {
                     WooAnalytics.shared.track(.notificationReviewActionSuccess)
@@ -389,6 +391,7 @@ private extension NotificationDetailsViewController {
                 DDLogError("⛔️ Comment moderation failure for Unspam status. Error: \(error)")
             }
         case .trash:
+            updateNoteDeletedStatusLocally(noteID: note.noteId, deleteInProgress: true)
             return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: true) { (_, error) in
                 guard let error = error else {
                     WooAnalytics.shared.track(.notificationReviewActionSuccess)
@@ -398,6 +401,7 @@ private extension NotificationDetailsViewController {
                 DDLogError("⛔️ Comment moderation failure for Trash status. Error: \(error)")
             }
         case .untrash:
+            updateNoteDeletedStatusLocally(noteID: note.noteId, deleteInProgress: false)
             return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: false) { (_, error) in
                 guard let error = error else {
                     WooAnalytics.shared.track(.notificationReviewActionSuccess)
@@ -410,5 +414,18 @@ private extension NotificationDetailsViewController {
             DDLogError("⛔️ Comment moderation failure: attempted to update comment with unknown status.")
             return nil
         }
+    }
+
+    /// Marks the note as deleted locally (so the note list removes the deleted note immediately)
+    ///
+    func updateNoteDeletedStatusLocally(noteID: Int64, deleteInProgress: Bool) {
+        let action = NotificationAction.updateLocalDeletedStatus(noteId: noteID, deleteInProgress: deleteInProgress) { error in
+            guard let error = error else {
+                return
+            }
+            DDLogError("⛔️ Error marking deleteInProgress == \(deleteInProgress) for note \(noteID) locally: \(error)")
+        }
+
+        StoresManager.shared.dispatch(action)
     }
 }

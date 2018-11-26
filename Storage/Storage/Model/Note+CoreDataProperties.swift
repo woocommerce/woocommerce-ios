@@ -23,4 +23,5 @@ extension Note {
     @NSManaged public var header: Data?
     @NSManaged public var body: Data?
     @NSManaged public var meta: Data?
+    @NSManaged public var deleteInProgress: Bool
 }

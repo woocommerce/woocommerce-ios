@@ -90,10 +90,15 @@ public struct Note {
     ///
     public let metaAsData: Data
 
+
     /// Associated Metadata.
     ///
     public let meta: MetaContainer
 
+
+    /// Transient property indicating a delete op is in progress (local only — does not exist server-side)
+    ///
+    public let deleteInProgress: Bool
 
     /// Designed Initializer.
     ///
@@ -110,7 +115,8 @@ public struct Note {
                 subject: Data,
                 header: Data,
                 body: Data,
-                meta: Data) {
+                meta: Data,
+                deleteInProgress: Bool = false) {
 
         self.noteId = noteId
         self.hash = hash
@@ -138,6 +144,7 @@ public struct Note {
         self.metaAsData = meta
         let metaDict = (try? JSONDecoder().decode([String: AnyCodable].self, from: meta)) ?? [:]
         self.meta = MetaContainer(payload: metaDict)
+        self.deleteInProgress = false
     }
 }
 

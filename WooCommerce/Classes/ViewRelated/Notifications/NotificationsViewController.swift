@@ -392,6 +392,7 @@ extension NotificationsViewController {
     }
 
     func refreshResultsPredicate() {
+        let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
         let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
         var typePredicate: NSPredicate
 
@@ -404,7 +405,7 @@ extension NotificationsViewController {
             typePredicate = NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
         }
 
-        resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [typePredicate, sitePredicate])
+        resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [typePredicate, sitePredicate, notDeletedPredicate])
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }

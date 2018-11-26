@@ -11,4 +11,5 @@ public enum NotificationAction: Action {
     case updateLastSeen(timestamp: String, onCompletion: (Error?) -> Void)
     case updateReadStatus(noteId: Int64, read: Bool, onCompletion: (Error?) -> Void)
     case updateMultipleReadStatus(noteIds: [Int64], read: Bool, onCompletion: (Error?) -> Void)
+    case updateLocalDeletedStatus(noteId: Int64, deleteInProgress: Bool, onCompletion: (Error?) -> Void)
 }

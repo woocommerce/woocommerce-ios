@@ -25,6 +25,7 @@ extension Storage.Note: ReadOnlyConvertible {
         header = note.headerAsData
         body = note.bodyAsData
         meta = note.metaAsData
+        deleteInProgress = note.deleteInProgress
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -43,6 +44,7 @@ extension Storage.Note: ReadOnlyConvertible {
                     subject: subject ?? Data(),
                     header: header ?? Data(),
                     body: body ?? Data(),
-                    meta: meta ?? Data())
+                    meta: meta ?? Data(),
+                    deleteInProgress: deleteInProgress)
     }
 }

@@ -86,7 +86,7 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
         }
     }
 
-    /// Indicate sif the Approval Button is Selected (or not!)
+    /// Indicates if the Approval Button is Selected (or not!)
     ///
     var isApproveSelected: Bool {
         get {
@@ -213,12 +213,14 @@ private extension NoteDetailsCommentTableViewCell {
     /// Spam Button Callback
     ///
     @IBAction func spamWasPressed(_ sender: UIButton) {
+        sender.animateImageOverlay(style: .explosion)
         onSpam?()
     }
 
     /// Trash Button Callback
     ///
     @IBAction func trashWasPressed(_ sender: UIButton) {
+        sender.animateImageOverlay(style: .explosion)
         onTrash?()
     }
 
@@ -228,7 +230,7 @@ private extension NoteDetailsCommentTableViewCell {
         let onClick = isApproveSelected ? onUnapprove : onApprove
         let newState = !isApproveSelected
 
-        sender.animateImageOverlay(style: newState ? .implosion : .explosion)
+        sender.animateImageOverlay(style: newState ? .explosion : .implosion)
         isApproveSelected = newState
 
         onClick?()

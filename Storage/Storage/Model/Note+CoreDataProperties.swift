@@ -24,7 +24,7 @@ extension Note {
     @NSManaged public var body: Data?
     @NSManaged public var meta: Data?
 
-    /// Transient attribute indicating a delete op is in progress (local only — does not exist server-side).
+    /// This attribute indicates a delete op is in progress (local only — does not exist server-side).
     ///
     /// NOTE: This value does NOT exist in the Netowrking Note model!
     ///

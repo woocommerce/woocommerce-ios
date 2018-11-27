@@ -336,9 +336,11 @@ private extension NotificationDetailsViewController {
                 return
             }
 
-            WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
             DDLogError("⛔️ Comment (UNDO) moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
-            NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: undoStatus)
+
+            // FIXME: Uncomment this error notice + Tracks call 👇 once we figure out why the server is return errors constantly 😭
+            //WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
+            //NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: undoStatus)
         }) else {
             return
         }
@@ -353,9 +355,11 @@ private extension NotificationDetailsViewController {
                 return
             }
 
-            WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
             DDLogError("⛔️ Comment moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
-            NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: doneStatus)
+
+            // FIXME: Uncomment this error notice + Tracks call 👇 once we figure out why the server is return errors constantly 😭
+            //WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
+            //NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: doneStatus)
         }) else {
             return
         }

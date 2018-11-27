@@ -40,6 +40,8 @@ public class NotificationStore: Store {
             updateReadStatus(for: [noteId], read: read, onCompletion: onCompletion)
         case .updateMultipleReadStatus(let noteIds, let read, let onCompletion):
             updateReadStatus(for: noteIds, read: read, onCompletion: onCompletion)
+        case .updateLocalDeletedStatus(let noteId, let deleteInProgress, let onCompletion):
+            updateDeletedStatus(noteId: noteId, deleteInProgress: deleteInProgress, onCompletion: onCompletion)
         }
     }
 }
@@ -147,6 +149,15 @@ private extension NotificationStore {
             self.invalidateCache(for: noteIds) {
                 onCompletion(error)
             }
+        }
+    }
+
+    /// Marks the provided notification as "currently being deleted" — no network call is made. This is
+    /// useful for filtering on the notifications list.
+    ///
+    func updateDeletedStatus(noteId: Int64, deleteInProgress: Bool, onCompletion: @escaping (Error?) -> Void) {
+        markLocalNoteAsDeleted(for: noteId, isDeleted: deleteInProgress) {
+            onCompletion(nil)
         }
     }
 }
@@ -282,6 +293,25 @@ extension NotificationStore {
         let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
 
         derivedStorage.perform {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates the deletion "status" for the specified Notification. The callback happens on the Main Thread.
+    ///
+    func markLocalNoteAsDeleted(for noteID: Int64, isDeleted: Bool, onCompletion: (() -> Void)? = nil) {
+        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
+
+        derivedStorage.perform {
+            let notification = derivedStorage.loadNotification(noteID: noteID)
+            notification?.deleteInProgress = isDeleted
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            guard let onCompletion = onCompletion else {
+                return
+            }
+
             DispatchQueue.main.async(execute: onCompletion)
         }
     }

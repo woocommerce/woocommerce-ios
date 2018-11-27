@@ -20,7 +20,7 @@ target 'WooCommerce' do
   pod 'Gridicons', '0.16'
   pod 'WordPressAuthenticator', '~> 1.1'
   pod 'WordPressShared', '~> 1.1'
-  pod 'WordPressUI', '~> 1.0'
+  pod 'WordPressUI', '~> 1.1'
 
 
   # External Libraries

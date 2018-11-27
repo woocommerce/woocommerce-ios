@@ -1,9 +1,9 @@
 import Foundation
 
 
-/// WordPress.com Device Settings
+/// WordPress.com Device
 ///
-public struct DeviceSettings: Decodable {
+public struct DotcomDevice: Decodable {
 
     /// Dotcom DeviceId
     ///
@@ -13,7 +13,7 @@ public struct DeviceSettings: Decodable {
 
 // MARK: - Nested Types
 //
-extension DeviceSettings {
+extension DotcomDevice {
 
     /// Coding Keys
     ///

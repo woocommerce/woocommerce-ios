@@ -296,7 +296,7 @@ private extension NotificationDetailsViewController {
 //
 private extension NotificationDetailsViewController {
 
-    /// Whenever the Fulfillment Action is pressed, we'll mark the order as Completed, and pull back to the previous screen.
+    /// Dispatches the moderation command (Approve/Unapprove, Spam, Trash) to the backend
     ///
     func moderateComment(siteID: Int, commentID: Int, doneStatus: CommentStatus, undoStatus: CommentStatus) {
         guard let done = moderateCommentAction(siteID: siteID, commentID: commentID, status: doneStatus) else {

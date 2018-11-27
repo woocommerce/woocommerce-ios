@@ -64,8 +64,7 @@ class DevicesRemoteTests: XCTestCase {
         let remote = DevicesRemote(network: network)
         let expectation = self.expectation(description: "Unregister Device")
 
-        let path = String("devices/" + Parameters.dotcomDeviceID + "/delete")
-        network.simulateResponse(requestUrlSuffix: path, filename: "generic_success")
+        network.simulateResponse(requestUrlSuffix: "/delete", filename: "generic_success")
 
         remote.unregisterDevice(deviceId: Parameters.dotcomDeviceID) { error in
             XCTAssertNil(error)
@@ -81,8 +80,7 @@ class DevicesRemoteTests: XCTestCase {
         let remote = DevicesRemote(network: network)
         let expectation = self.expectation(description: "Unregister Device")
 
-        let path = String("devices/" + Parameters.dotcomDeviceID + "/delete")
-        network.simulateResponse(requestUrlSuffix: path, filename: "generic_error")
+        network.simulateResponse(requestUrlSuffix: "/delete", filename: "generic_error")
 
         remote.unregisterDevice(deviceId: Parameters.dotcomDeviceID) { error in
             XCTAssertNotNil(error)

@@ -366,62 +366,40 @@ private extension NotificationDetailsViewController {
 
     /// Returns an comment moderation action that will result in the specified comment being updated accordingly.
     ///
-    func moderateCommentAction(siteID: Int, commentID: Int, status: CommentStatus, onCompletion: @escaping (Error?) -> Void) -> Action? {
+    func moderateCommentAction(siteID: Int, commentID: Int, status: CommentStatus, onCompletion: @escaping (Error?) -> Void) -> [Action]? {
         let noteID = note.noteId
 
         switch status {
         case .approved:
-            return CommentAction.updateApprovalStatus(siteID: siteID, commentID: commentID, isApproved: true) { (_, error) in
-                onCompletion(error)
-            }
+            return [CommentAction.updateApprovalStatus(siteID: siteID, commentID: commentID, isApproved: true, onCompletion: { (_, error) in onCompletion(error) })]
         case .unapproved:
-            return CommentAction.updateApprovalStatus(siteID: siteID, commentID: commentID, isApproved: false) { (_, error) in
-                onCompletion(error)
-            }
+            return [CommentAction.updateApprovalStatus(siteID: siteID, commentID: commentID, isApproved: false, onCompletion: { (_, error) in onCompletion(error) })]
         case .spam:
-            return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: true) { [weak self] (_, error) in
-                if error == nil {
-                    self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: true)
-                }
-                onCompletion(error)
-            }
+            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: true),
+                    CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: true, onCompletion: { (_, error) in onCompletion(error) })]
         case .unspam:
-            return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: false) { [weak self] (_, error) in
-                if error == nil {
-                    self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: false)
-                }
-                onCompletion(error)
-            }
+            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: false),
+                    CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: false, onCompletion: { (_, error) in onCompletion(error) })]
         case .trash:
-            return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: true) { [weak self] (_, error) in
-                if error == nil {
-                    self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: true)
-                }
-                onCompletion(error)
-            }
+            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: true),
+                    CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: true, onCompletion: { (_, error) in onCompletion(error) })]
         case .untrash:
-            return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: false) { [weak self] (_, error) in
-                if error == nil {
-                    self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: false)
-                }
-                onCompletion(error)
-            }
+            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: false),
+                    CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: false, onCompletion: { (_, error) in onCompletion(error) })]
         case .unknown:
             DDLogError("⛔️ Comment moderation failure: attempted to update comment with unknown status.")
             return nil
         }
     }
 
-    /// Marks the note as deleted locally (so the note list removes the deleted note immediately)
+    /// Returns a "note pending deletion" action (so the note list removes the deleted note immediately)
     ///
-    func updateNoteDeletedStatusLocally(noteID: Int64, deleteInProgress: Bool) {
+    func locallyDeletedStatusAction(noteID: Int64, deleteInProgress: Bool) -> Action {
         let action = NotificationAction.updateLocalDeletedStatus(noteId: noteID, deleteInProgress: deleteInProgress) { error in
-            guard let error = error else {
-                return
+            if error != nil {
+                DDLogError("⛔️ Error marking deleteInProgress == \(deleteInProgress) for note \(noteID) locally: \(String(describing: error))")
             }
-            DDLogError("⛔️ Error marking deleteInProgress == \(deleteInProgress) for note \(noteID) locally: \(error)")
         }
-
-        StoresManager.shared.dispatch(action)
+        return action
     }
 }

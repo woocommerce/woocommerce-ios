@@ -167,7 +167,7 @@ private extension NotificationDetailsViewController {
 
     /// Displays the Error Notice.
     ///
-    func displayModerationErrorNotice(failedStatus: CommentStatus) {
+    static func displayModerationErrorNotice(failedStatus: CommentStatus) {
         let title = NSLocalizedString("Notification Error", comment: "Notification error notice title")
         let message = String.localizedStringWithFormat(NSLocalizedString("Unable to mark the notification as %@",
                                                                          comment: "Notification error notice message"), failedStatus.description)
@@ -178,7 +178,7 @@ private extension NotificationDetailsViewController {
 
     /// Displays the `Comment moderated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
     ///
-    func displayModerationCompleteNotice(newStatus: CommentStatus, onUndoAction: @escaping () -> Void) {
+    static func displayModerationCompleteNotice(newStatus: CommentStatus, onUndoAction: @escaping () -> Void) {
         guard newStatus != .unknown else {
             return
         }
@@ -330,7 +330,7 @@ private extension NotificationDetailsViewController {
     /// Dispatches the moderation command (Approve/Unapprove, Spam, Trash) to the backend
     ///
     func moderateComment(siteID: Int, commentID: Int, doneStatus: CommentStatus, undoStatus: CommentStatus) {
-        guard let undo = moderateCommentAction(siteID: siteID, commentID: commentID, status: undoStatus, onCompletion: { [weak self] (error) in
+        guard let undo = moderateCommentAction(siteID: siteID, commentID: commentID, status: undoStatus, onCompletion: { (error) in
             guard let error = error else {
                 WooAnalytics.shared.track(.notificationReviewActionSuccess)
                 return
@@ -338,15 +338,15 @@ private extension NotificationDetailsViewController {
 
             WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
             DDLogError("⛔️ Comment (UNDO) moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
-            self?.displayModerationErrorNotice(failedStatus: undoStatus)
+            NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: undoStatus)
         }) else {
             return
         }
 
-        guard let done = moderateCommentAction(siteID: siteID, commentID: commentID, status: doneStatus, onCompletion: { [weak self] (error) in
+        guard let done = moderateCommentAction(siteID: siteID, commentID: commentID, status: doneStatus, onCompletion: { (error) in
             guard let error = error else {
                 WooAnalytics.shared.track(.notificationReviewActionSuccess)
-                self?.displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
+                NotificationDetailsViewController.displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
                     WooAnalytics.shared.track(.notificationReviewActionUndo)
                     StoresManager.shared.dispatch(undo)
                 })
@@ -355,7 +355,7 @@ private extension NotificationDetailsViewController {
 
             WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
             DDLogError("⛔️ Comment moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
-            self?.displayModerationErrorNotice(failedStatus: doneStatus)
+            NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: doneStatus)
         }) else {
             return
         }

@@ -380,28 +380,28 @@ private extension NotificationDetailsViewController {
             }
         case .spam:
             return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: true) { [weak self] (_, error) in
-                if error != nil {
+                if error == nil {
                     self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: true)
                 }
                 onCompletion(error)
             }
         case .unspam:
             return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: false) { [weak self] (_, error) in
-                if error != nil {
+                if error == nil {
                     self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: false)
                 }
                 onCompletion(error)
             }
         case .trash:
             return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: true) { [weak self] (_, error) in
-                if error != nil {
+                if error == nil {
                     self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: true)
                 }
                 onCompletion(error)
             }
         case .untrash:
             return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: false) { [weak self] (_, error) in
-                if error != nil {
+                if error == nil {
                     self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: false)
                 }
                 onCompletion(error)

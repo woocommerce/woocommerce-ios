@@ -151,6 +151,67 @@ private extension NotificationDetailsViewController {
 }
 
 
+// MARK: - Display Notices
+//
+private extension NotificationDetailsViewController {
+
+    /// Displays a Notice onScreen, indicating that the current Note has been deleted from the Store.
+    ///
+    func displayNoteDeletedNotice() {
+        let title = NSLocalizedString("Notification", comment: "Deleted Notification's Title")
+        let message = NSLocalizedString("The notification has been removed!", comment: "Displayed whenever a Notification that was onscreen got deleted.")
+        let notice = Notice(title: title, message: message, feedbackType: .error)
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Displays the Error Notice.
+    ///
+    func displayModerationErrorNotice(failedStatus: CommentStatus, retryAction: Action) {
+        let title = NSLocalizedString("Notification Error", comment: "Notification error notice title")
+        let message = String.localizedStringWithFormat(NSLocalizedString("Unable to mark the notification as %@",
+                                                                         comment: "Notification error notice message"), failedStatus.description)
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) {
+            StoresManager.shared.dispatch(retryAction)
+        }
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Displays the `Comment moderated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
+    ///
+    func displayModerationCompleteNotice(newStatus: CommentStatus, onUndoAction: @escaping () -> Void) {
+        guard newStatus != .unknown else {
+            return
+        }
+
+        var title = ""
+
+        switch newStatus {
+        case .approved:
+            title = NSLocalizedString("Review marked as approved.", comment: "Review moderation notice message for an approved review")
+        case .unapproved:
+            title = NSLocalizedString("Review marked as unapproved.", comment: "Review moderation notice message for an un-approved review")
+        case .spam:
+            title = NSLocalizedString("Review marked as spam.", comment: "Review moderation notice message for a spam review")
+        case .unspam:
+            title = NSLocalizedString("Review marked as not spam.", comment: "Review moderation notice message for a not-spam review")
+        case .trash:
+            title = NSLocalizedString("Review moved to trash.", comment: "Review moderation notice message for a trashed review")
+        case .untrash:
+            title = NSLocalizedString("Review removed from trash.", comment: "Review moderation notice message for a not-trashed review")
+        case .unknown:
+            title = ""
+        }
+
+        let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
+        let notice = Notice(title: title, message: nil, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+}
+
+
 // MARK: - Private Methods
 //
 private extension NotificationDetailsViewController {
@@ -162,18 +223,6 @@ private extension NotificationDetailsViewController {
         rows = NoteDetailsRow.details(from: note)
         tableView.reloadData()
     }
-
-
-    /// Displays a Notice onScreen, indicating that the current Note has been deleted from the Store.
-    ///
-    func displayNoteDeletedNotice() {
-        let title = NSLocalizedString("Deleted Notification!", comment: "Deleted Notification's Title")
-        let message = NSLocalizedString("The notification has been removed!", comment: "Displayed whenever a Notification that was onscreen got deleted.")
-        let notice = Notice(title: title, message: message, feedbackType: .error)
-
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
-    }
-
 
     /// Returns the DetailsRow at a given IndexPath.
     ///
@@ -316,40 +365,11 @@ private extension NotificationDetailsViewController {
         navigationController?.popViewController(animated: true)
     }
 
-    /// Displays the `Comment moderated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
-    ///
-    func displayModerationCompleteNotice(newStatus: CommentStatus, onUndoAction: @escaping () -> Void) {
-        guard newStatus != .unknown else {
-            return
-        }
-
-        var title = ""
-
-        switch newStatus {
-        case .approved:
-            title = NSLocalizedString("Review marked as approved.", comment: "Review moderation notice message for an approved review")
-        case .unapproved:
-            title = NSLocalizedString("Review marked as unapproved.", comment: "Review moderation notice message for an un-approved review")
-        case .spam:
-            title = NSLocalizedString("Review marked as spam.", comment: "Review moderation notice message for a spam review")
-        case .unspam:
-            title = NSLocalizedString("Review marked as not spam.", comment: "Review moderation notice message for a not-spam review")
-        case .trash:
-            title = NSLocalizedString("Review moved to trash.", comment: "Review moderation notice message for a trashed review")
-        case .untrash:
-            title = NSLocalizedString("Review removed from trash.", comment: "Review moderation notice message for a not-trashed review")
-        case .unknown:
-            title = ""
-        }
-
-        let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
-        let notice = Notice(title: title, message: nil, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
-    }
-
     /// Returns an comment moderation action that will result in the specified comment being updated accordingly.
     ///
     func moderateCommentAction(siteID: Int, commentID: Int, status: CommentStatus) -> Action? {
+        let noteID = note.noteId
+
         switch status {
         case .approved:
             return CommentAction.updateApprovalStatus(siteID: siteID, commentID: commentID, isApproved: true) { (_, error) in
@@ -371,9 +391,9 @@ private extension NotificationDetailsViewController {
                 DDLogError("⛔️ Comment moderation failure for Unapproved status. Error: \(error)")
             }
         case .spam:
-            updateNoteDeletedStatusLocally(noteID: note.noteId, deleteInProgress: true)
-            return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: true) { (_, error) in
+            return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: true) { [weak self] (_, error) in
                 guard let error = error else {
+                    self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: true)
                     WooAnalytics.shared.track(.notificationReviewActionSuccess)
                     return
                 }
@@ -381,9 +401,9 @@ private extension NotificationDetailsViewController {
                 DDLogError("⛔️ Comment moderation failure for Spam status. Error: \(error)")
             }
         case .unspam:
-            updateNoteDeletedStatusLocally(noteID: note.noteId, deleteInProgress: false)
-            return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: false) { (_, error) in
+            return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: false) { [weak self] (_, error) in
                 guard let error = error else {
+                    self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: false)
                     WooAnalytics.shared.track(.notificationReviewActionSuccess)
                     return
                 }
@@ -391,9 +411,9 @@ private extension NotificationDetailsViewController {
                 DDLogError("⛔️ Comment moderation failure for Unspam status. Error: \(error)")
             }
         case .trash:
-            updateNoteDeletedStatusLocally(noteID: note.noteId, deleteInProgress: true)
-            return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: true) { (_, error) in
+            return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: true) { [weak self] (_, error) in
                 guard let error = error else {
+                    self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: true)
                     WooAnalytics.shared.track(.notificationReviewActionSuccess)
                     return
                 }
@@ -401,9 +421,9 @@ private extension NotificationDetailsViewController {
                 DDLogError("⛔️ Comment moderation failure for Trash status. Error: \(error)")
             }
         case .untrash:
-            updateNoteDeletedStatusLocally(noteID: note.noteId, deleteInProgress: false)
-            return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: false) { (_, error) in
+            return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: false) { [weak self] (_, error) in
                 guard let error = error else {
+                    self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: false)
                     WooAnalytics.shared.track(.notificationReviewActionSuccess)
                     return
                 }

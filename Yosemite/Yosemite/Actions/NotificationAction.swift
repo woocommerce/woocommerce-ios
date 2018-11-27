@@ -6,6 +6,15 @@ import Networking
 // MARK: - NotificationAction: Defines all of the Actions supported by the NotificationStore.
 //
 public enum NotificationAction: Action {
+
+    /// Registers a device for Push Notifications Delivery.
+    ///
+    case registerDevice(device: APNSDevice, applicationId: String, applicationVersion: String, onCompletion: (DotcomDevice?, Error?) -> Void)
+
+    /// Unregisters a device for Push Notifications Delivery.
+    ///
+    case unregisterDevice(deviceId: String, onCompletion: (Error?) -> Void)
+
     /// Synchronizes the full Notifications collection.
     ///
     case synchronizeNotifications(onCompletion: (Error?) -> Void)

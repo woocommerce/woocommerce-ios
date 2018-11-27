@@ -159,7 +159,7 @@ private extension NotificationDetailsViewController {
     ///
     func displayNoteDeletedNotice() {
         let title = NSLocalizedString("Notification", comment: "Deleted Notification's Title")
-        let message = NSLocalizedString("The notification has been removed!", comment: "Displayed whenever a Notification that was onscreen got deleted.")
+        let message = NSLocalizedString("The notification has been removed", comment: "Displayed whenever a Notification that was onscreen got deleted.")
         let notice = Notice(title: title, message: message, feedbackType: .error)
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
@@ -167,14 +167,11 @@ private extension NotificationDetailsViewController {
 
     /// Displays the Error Notice.
     ///
-    func displayModerationErrorNotice(failedStatus: CommentStatus, retryAction: Action) {
+    func displayModerationErrorNotice(failedStatus: CommentStatus) {
         let title = NSLocalizedString("Notification Error", comment: "Notification error notice title")
         let message = String.localizedStringWithFormat(NSLocalizedString("Unable to mark the notification as %@",
                                                                          comment: "Notification error notice message"), failedStatus.description)
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) {
-            StoresManager.shared.dispatch(retryAction)
-        }
+        let notice = Notice(title: title, message: message, feedbackType: .error)
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
@@ -186,27 +183,12 @@ private extension NotificationDetailsViewController {
             return
         }
 
-        var title = ""
-
-        switch newStatus {
-        case .approved:
-            title = NSLocalizedString("Review marked as approved.", comment: "Review moderation notice message for an approved review")
-        case .unapproved:
-            title = NSLocalizedString("Review marked as unapproved.", comment: "Review moderation notice message for an un-approved review")
-        case .spam:
-            title = NSLocalizedString("Review marked as spam.", comment: "Review moderation notice message for a spam review")
-        case .unspam:
-            title = NSLocalizedString("Review marked as not spam.", comment: "Review moderation notice message for a not-spam review")
-        case .trash:
-            title = NSLocalizedString("Review moved to trash.", comment: "Review moderation notice message for a trashed review")
-        case .untrash:
-            title = NSLocalizedString("Review removed from trash.", comment: "Review moderation notice message for a not-trashed review")
-        case .unknown:
-            title = ""
-        }
-
+        let title = NSLocalizedString("Notification", comment: "Notification notice title")
+        let message = String.localizedStringWithFormat(NSLocalizedString("Notification marked as %@",
+                                                                         comment: "Notification moderation success notice message"), newStatus.description)
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
-        let notice = Notice(title: title, message: nil, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
+        let notice = Notice(title: title, message: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
+
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 }
@@ -348,87 +330,81 @@ private extension NotificationDetailsViewController {
     /// Dispatches the moderation command (Approve/Unapprove, Spam, Trash) to the backend
     ///
     func moderateComment(siteID: Int, commentID: Int, doneStatus: CommentStatus, undoStatus: CommentStatus) {
-        guard let done = moderateCommentAction(siteID: siteID, commentID: commentID, status: doneStatus) else {
+        guard let undo = moderateCommentAction(siteID: siteID, commentID: commentID, status: undoStatus, onCompletion: { [weak self] (error) in
+            guard let error = error else {
+                WooAnalytics.shared.track(.notificationReviewActionSuccess)
+                return
+            }
+
+            WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
+            DDLogError("⛔️ Comment (UNDO) moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
+            self?.displayModerationErrorNotice(failedStatus: undoStatus)
+        }) else {
             return
         }
-        guard let undo = moderateCommentAction(siteID: siteID, commentID: commentID, status: undoStatus) else {
+
+        guard let done = moderateCommentAction(siteID: siteID, commentID: commentID, status: doneStatus, onCompletion: { [weak self] (error) in
+            guard let error = error else {
+                WooAnalytics.shared.track(.notificationReviewActionSuccess)
+                self?.displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
+                    WooAnalytics.shared.track(.notificationReviewActionUndo)
+                    StoresManager.shared.dispatch(undo)
+                })
+                return
+            }
+
+            WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
+            DDLogError("⛔️ Comment moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
+            self?.displayModerationErrorNotice(failedStatus: doneStatus)
+        }) else {
             return
         }
 
         StoresManager.shared.dispatch(done)
-
-        displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
-            WooAnalytics.shared.track(.notificationReviewActionUndo)
-            StoresManager.shared.dispatch(undo)
-        })
-
         navigationController?.popViewController(animated: true)
     }
 
     /// Returns an comment moderation action that will result in the specified comment being updated accordingly.
     ///
-    func moderateCommentAction(siteID: Int, commentID: Int, status: CommentStatus) -> Action? {
+    func moderateCommentAction(siteID: Int, commentID: Int, status: CommentStatus, onCompletion: @escaping (Error?) -> Void) -> Action? {
         let noteID = note.noteId
 
         switch status {
         case .approved:
             return CommentAction.updateApprovalStatus(siteID: siteID, commentID: commentID, isApproved: true) { (_, error) in
-                guard let error = error else {
-                    WooAnalytics.shared.track(.notificationReviewActionSuccess)
-                    return
-                }
-                WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
-                DDLogError("⛔️ Comment moderation failure for Approved status. Error: \(error)")
+                onCompletion(error)
             }
-
         case .unapproved:
             return CommentAction.updateApprovalStatus(siteID: siteID, commentID: commentID, isApproved: false) { (_, error) in
-                guard let error = error else {
-                    WooAnalytics.shared.track(.notificationReviewActionSuccess)
-                    return
-                }
-                WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
-                DDLogError("⛔️ Comment moderation failure for Unapproved status. Error: \(error)")
+                onCompletion(error)
             }
         case .spam:
             return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: true) { [weak self] (_, error) in
-                guard let error = error else {
+                if error != nil {
                     self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: true)
-                    WooAnalytics.shared.track(.notificationReviewActionSuccess)
-                    return
                 }
-                WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
-                DDLogError("⛔️ Comment moderation failure for Spam status. Error: \(error)")
+                onCompletion(error)
             }
         case .unspam:
             return CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: false) { [weak self] (_, error) in
-                guard let error = error else {
+                if error != nil {
                     self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: false)
-                    WooAnalytics.shared.track(.notificationReviewActionSuccess)
-                    return
                 }
-                WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
-                DDLogError("⛔️ Comment moderation failure for Unspam status. Error: \(error)")
+                onCompletion(error)
             }
         case .trash:
             return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: true) { [weak self] (_, error) in
-                guard let error = error else {
+                if error != nil {
                     self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: true)
-                    WooAnalytics.shared.track(.notificationReviewActionSuccess)
-                    return
                 }
-                WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
-                DDLogError("⛔️ Comment moderation failure for Trash status. Error: \(error)")
+                onCompletion(error)
             }
         case .untrash:
             return CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: false) { [weak self] (_, error) in
-                guard let error = error else {
+                if error != nil {
                     self?.updateNoteDeletedStatusLocally(noteID: noteID, deleteInProgress: false)
-                    WooAnalytics.shared.track(.notificationReviewActionSuccess)
-                    return
                 }
-                WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
-                DDLogError("⛔️ Comment moderation failure for Untrash status. Error: \(error)")
+                onCompletion(error)
             }
         case .unknown:
             DDLogError("⛔️ Comment moderation failure: attempted to update comment with unknown status.")

@@ -27,7 +27,7 @@ class SiteAPIRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load site API information")
 
         network.simulateResponse(requestUrlSuffix: "", filename: "site-api")
-        remote.loadAPIInformation(siteID: sampleSiteID) { (siteAPI, error) in
+        remote.loadAPIInformation(for: sampleSiteID) { (siteAPI, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(siteAPI)
             XCTAssertEqual(siteAPI?.siteID, self.sampleSiteID)
@@ -44,7 +44,7 @@ class SiteAPIRemoteTests: XCTestCase {
         let remote = SiteAPIRemote(network: network)
         let expectation = self.expectation(description: "Load site API information contains errors")
 
-        remote.loadAPIInformation(siteID: sampleSiteID) { (siteAPI, error) in
+        remote.loadAPIInformation(for: sampleSiteID) { (siteAPI, error) in
             XCTAssertNil(siteAPI)
             XCTAssertNotNil(error)
             expectation.fulfill()

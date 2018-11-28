@@ -13,7 +13,7 @@ public class SiteAPIRemote: Remote {
     ///   - siteID: Site for which we'll fetch the API settings.
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadAPIInformation(siteID: Int, completion: @escaping (SiteAPI?, Error?) -> Void) {
+    public func loadAPIInformation(for siteID: Int, completion: @escaping (SiteAPI?, Error?) -> Void) {
         let path = String()
         let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path)
         let mapper = SiteAPIMapper(siteID: siteID)

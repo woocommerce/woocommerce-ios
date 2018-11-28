@@ -5,6 +5,10 @@ import Foundation
 ///
 enum WooAPIVersion: String {
 
+    /// No version specificed (root path)
+    ///
+    case none = "/"
+
     /// Woo Endpoint Mark 2
     ///
     case mark2 = "/wc/v2/"

@@ -5,8 +5,9 @@ import WordPressUI
 public extension FancyAlertViewController {
 
     private struct Strings {
-        static let titleText = NSLocalizedString("Upgrade to WC 3.5", comment: "Title of alert warning users to upgrade to WC 3.5.")
-        static let bodyText = NSLocalizedString("You'll want to upgrade to 3.5", comment: "Body text of alert warning users to upgrade to WC 3.5.")
+        static let titleText = NSLocalizedString("Update to WooCommerce 3.5 to keep using this app", comment: "Title of alert warning users to upgrade to WC 3.5.")
+        static let bodyText = NSLocalizedString("This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app.",
+                                                comment: "Body text of alert warning users to upgrade to WC 3.5.")
         static let dismissButtonText = NSLocalizedString("Got it!", comment: "Dismiss button title shown in alert warning users to upgrade to WC 3.5.")
     }
 

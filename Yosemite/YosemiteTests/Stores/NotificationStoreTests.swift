@@ -352,6 +352,89 @@ class NotificationStoreTests: XCTestCase {
     }
 
 
+    // MARK: - NotificationAction.registerDevice
+
+    /// Verifies that NotificationAction.registerDevice successfully handles a success response from the backend.
+    ///
+    func testRegisterDeviceHandlesSuccessfulResponse() {
+        let expectation = self.expectation(description: "Register Device")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "new", filename: "device-settings")
+
+        let action = NotificationAction.registerDevice(device: sampleAPNSDevice(), applicationId: sampleApplicationID, applicationVersion: sampleApplicationVersion) { (device, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(device)
+            XCTAssertEqual(device?.deviceId, "12345678")
+
+            expectation.fulfill()
+        }
+
+        noteStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that NotificationAction.registerDevice successfully handles a failure response from the backend.
+    ///
+    func testRegisterDeviceHandlesFailureResponse() {
+        let expectation = self.expectation(description: "Register Device")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "new", filename: "generic_error")
+
+        let action = NotificationAction.registerDevice(device: sampleAPNSDevice(), applicationId: sampleApplicationID, applicationVersion: sampleApplicationVersion) { (device, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(device)
+
+            expectation.fulfill()
+        }
+
+        noteStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - NotificationAction.unregisterDevice
+
+    /// Verifies that NotificationAction.unregisterDevice successfully handles a success response from the backend.
+    ///
+    func testUnregisterDeviceHandlesSuccessfulResponse() {
+        let expectation = self.expectation(description: "Unregister Device")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "delete", filename: "generic_success")
+
+        let action = NotificationAction.unregisterDevice(deviceId: sampleDotcomDeviceID) { error in
+            XCTAssertNil(error)
+            expectation.fulfill()
+        }
+
+        noteStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that NotificationAction.unregisterDevice successfully handles a failure response from the backend.
+    ///
+    func testUnregisterDeviceHandlesFailureResponse() {
+        let expectation = self.expectation(description: "Unregister Device")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "delete", filename: "generic_error")
+
+        let action = NotificationAction.unregisterDevice(deviceId: sampleDotcomDeviceID) { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        noteStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
     // MARK: - NotificationAction.updateLocalDeletedStatus
 
     /// Verifies that `markLocalNoteAsDeleted` works as expected.
@@ -383,8 +466,32 @@ class NotificationStoreTests: XCTestCase {
 //
 private extension NotificationStoreTests {
 
-    //  MARK: - Notification Sample
+    /// Returns a sample AppID
+    ///
+    var sampleApplicationID: String {
+        return "99"
+    }
 
+    /// Returns a sample AppVersion
+    ///
+    var sampleApplicationVersion: String {
+        return "99"
+    }
+
+    /// Returns a sample Dotcom Device ID
+    ///
+    var sampleDotcomDeviceID: String {
+        return "1234"
+    }
+
+    /// Returns a sample Apple Device
+    ///
+    func sampleAPNSDevice() -> APNSDevice {
+        return APNSDevice(token: "1234", model: "iPhone", name: "Something", iOSVersion: "99", identifierForVendor: "1234")
+    }
+
+    /// Returns a sample Dotcom Notification
+    ///
     func sampleNotification() -> Networking.Note {
         return Note(noteId: 123456,
                     hash: 11223344,
@@ -402,6 +509,8 @@ private extension NotificationStoreTests {
                     meta: Data())
     }
 
+    /// Returns a sample Dotcom Notification (same as above but slightly mutated!)
+    ///
     func sampleNotificationMutated() -> Networking.Note {
         return Note(noteId: 123456,
                     hash: 11223344,

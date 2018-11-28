@@ -34,4 +34,5 @@ public enum NotificationAction: Action {
     /// Updates, in batch, the Notification's read flag.
     ///
     case updateMultipleReadStatus(noteIds: [Int64], read: Bool, onCompletion: (Error?) -> Void)
+    case updateLocalDeletedStatus(noteId: Int64, deleteInProgress: Bool, onCompletion: (Error?) -> Void)
 }

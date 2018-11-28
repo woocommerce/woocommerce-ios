@@ -433,8 +433,34 @@ class NotificationStoreTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
-}
 
+
+    // MARK: - NotificationAction.updateLocalDeletedStatus
+
+    /// Verifies that `markLocalNoteAsDeleted` works as expected.
+    ///
+    func testUpdateDeletedStatusEffectivelyUpdatesPreexistantNotification() {
+        let expectation = self.expectation(description: "Update delete status on existing note")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let originalNote = sampleNotification()
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
+        noteStore.updateLocalNotes(with: [originalNote]) { [weak self] in
+            XCTAssertEqual(self?.viewStorage.countObjects(ofType: Storage.Note.self), 1)
+            let storageNote = self?.viewStorage.loadNotification(noteID: originalNote.noteId)
+            XCTAssertEqual(storageNote?.deleteInProgress, false)
+
+            noteStore.markLocalNoteAsDeleted(for: originalNote.noteId, isDeleted: true) {
+                XCTAssertEqual(self?.viewStorage.countObjects(ofType: Storage.Note.self), 1)
+                XCTAssertEqual(storageNote?.deleteInProgress, true)
+                expectation.fulfill()
+            }
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+}
 
 // MARK: - Private Methods
 //

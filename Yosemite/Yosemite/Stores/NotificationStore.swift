@@ -30,10 +30,14 @@ public class NotificationStore: Store {
         }
 
         switch action {
+        case .registerDevice(let device, let applicationId, let applicationVersion, let onCompletion):
+            registerDevice(device: device, applicationId: applicationId, applicationVersion: applicationVersion, onCompletion: onCompletion)
         case .synchronizeNotifications(let onCompletion):
             synchronizeNotifications(onCompletion: onCompletion)
         case .synchronizeNotification(let noteId, let onCompletion):
             synchronizeNotification(with: noteId, onCompletion: onCompletion)
+        case .unregisterDevice(let deviceId, let onCompletion):
+            unregisterDevice(deviceId: deviceId, onCompletion: onCompletion)
         case .updateLastSeen(let timestamp, let onCompletion):
             updateLastSeen(timestamp: timestamp, onCompletion: onCompletion)
         case .updateReadStatus(let noteId, let read, let onCompletion):
@@ -50,6 +54,22 @@ public class NotificationStore: Store {
 // MARK: - Services!
 //
 private extension NotificationStore {
+
+    /// Registers an APNS Device in the WordPress.com Delivery Subsystem.
+    ///
+    func registerDevice(device: APNSDevice, applicationId: String, applicationVersion: String, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
+        let remote = DevicesRemote(network: network)
+        remote.registerDevice(device: device, applicationId: applicationId, applicationVersion: applicationVersion, completion: onCompletion)
+    }
+
+
+    /// Unregisters a Dotcom Device from the Push Notifications Delivery Subsystem.
+    ///
+    func unregisterDevice(deviceId: String, onCompletion: @escaping (Error?) -> Void) {
+        let remote = DevicesRemote(network: network)
+        remote.unregisterDevice(deviceId: deviceId, completion: onCompletion)
+    }
+
 
     /// Retrieves the latest notifications (if any!).
     ///

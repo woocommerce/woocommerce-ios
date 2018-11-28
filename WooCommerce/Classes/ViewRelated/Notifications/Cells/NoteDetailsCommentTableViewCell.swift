@@ -53,40 +53,40 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
     var onUnapprove: (() -> Void)?
 
 
-    /// Indicates if the Spam Button is Hidden (or not!)
+    /// Indicates if the Spam Button is enabled (or not!)
     ///
-    var isSpamHidden: Bool {
+    var isSpamEnabled: Bool {
         get {
-            return spamButton.isHidden
+            return !spamButton.isHidden
         }
         set {
-            spamButton.isHidden = newValue
+            spamButton.isHidden = !newValue
         }
     }
 
-    /// Indicates if the Trash Button is Hidden (or not!)
+    /// Indicates if the Trash Button is enabled (or not!)
     ///
-    var isTrashHidden: Bool {
+    var isTrashEnabled: Bool {
         get {
-            return trashButton.isHidden
+            return !trashButton.isHidden
         }
         set {
-            trashButton.isHidden = newValue
+            trashButton.isHidden = !newValue
         }
     }
 
-    /// Indicates if the Approval Button is Hidden (or not!)
+    /// Indicates if the Approval Button is enabled (or not!)
     ///
-    var isApproveHidden: Bool {
+    var isApproveEnabled: Bool {
         get {
-            return approvalButton.isHidden
+            return !approvalButton.isHidden
         }
         set {
-            approvalButton.isHidden = newValue
+            approvalButton.isHidden = !newValue
         }
     }
 
-    /// Indicate sif the Approval Button is Selected (or not!)
+    /// Indicates if the Approval Button is Selected (or not!)
     ///
     var isApproveSelected: Bool {
         get {
@@ -213,12 +213,14 @@ private extension NoteDetailsCommentTableViewCell {
     /// Spam Button Callback
     ///
     @IBAction func spamWasPressed(_ sender: UIButton) {
+        sender.animateImageOverlay(style: .explosion)
         onSpam?()
     }
 
     /// Trash Button Callback
     ///
     @IBAction func trashWasPressed(_ sender: UIButton) {
+        sender.animateImageOverlay(style: .explosion)
         onTrash?()
     }
 
@@ -228,7 +230,7 @@ private extension NoteDetailsCommentTableViewCell {
         let onClick = isApproveSelected ? onUnapprove : onApprove
         let newState = !isApproveSelected
 
-        sender.animateImageOverlay(style: newState ? .implosion : .explosion)
+        sender.animateImageOverlay(style: newState ? .explosion : .implosion)
         isApproveSelected = newState
 
         onClick?()

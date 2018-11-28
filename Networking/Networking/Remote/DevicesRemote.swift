@@ -6,42 +6,34 @@ import Alamofire
 ///
 public class DevicesRemote: Remote {
 
+    /// Registers a device for Push Notifications Delivery.
     ///
     /// - Parameters:
-    ///     - deviceToken: APNS Token to be registered.
-    ///     - deviceModel: Model of the device to be registered.
-    ///     - deviceName: Name of the device to be registered.
-    ///     - deviceOSVersion: iOS Version
-    ///     - deviceUUID: Unique Device Identifier
-    ///     - applicationId: Identifier of the App
+    ///     - device: APNS Device to be registered.
+    ///     - applicationId: App ID.
     ///     - applicationVersion: App Version.
     ///     - completion: Closure to be executed on commpletion.
     ///
-    public func registerDevice(deviceToken: String,
-                               deviceModel: String,
-                               deviceName: String,
-                               deviceOSVersion: String,
-                               deviceUUID: String,
-                               applicationId: String,
-                               applicationVersion: String,
-                               completion: @escaping (DeviceSettings?, Error?) -> Void) {
-
-        let parameters = [
+    public func registerDevice(device: APNSDevice, applicationId: String, applicationVersion: String, completion: @escaping (DotcomDevice?, Error?) -> Void) {
+        var parameters = [
             ParameterKeys.applicationId: applicationId,
             ParameterKeys.applicationVersion: applicationVersion,
-            ParameterKeys.deviceFamily: Constants.defaultDeviceFamily,
-            ParameterKeys.deviceToken: deviceToken,
-            ParameterKeys.deviceModel: deviceModel,
-            ParameterKeys.deviceName: deviceName,
-            ParameterKeys.deviceUUID: deviceUUID,
-            ParameterKeys.deviceOSVersion: deviceOSVersion
+            ParameterKeys.deviceFamily: device.family,
+            ParameterKeys.deviceToken: device.token,
+            ParameterKeys.deviceModel: device.model,
+            ParameterKeys.deviceName: device.name,
+            ParameterKeys.deviceOSVersion: device.iOSVersion
         ]
 
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.register, parameters: parameters)
-        let mapper = DeviceSettingsMapper()
+        if let deviceUUID = device.identifierForVendor {
+            parameters[ParameterKeys.deviceUUID] = deviceUUID
+        }
 
-        enqueue(request, mapper: mapper) { (settings, error) in
-            completion(settings, error)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.register, parameters: parameters)
+        let mapper = DotcomDeviceMapper()
+
+        enqueue(request, mapper: mapper) { (device, error) in
+            completion(device, error)
         }
     }
 
@@ -72,10 +64,6 @@ public class DevicesRemote: Remote {
 // MARK: - Constants!
 //
 private extension DevicesRemote {
-
-    enum Constants {
-        static let defaultDeviceFamily = "apple"
-    }
 
     enum Paths {
         static let register = "devices/new"

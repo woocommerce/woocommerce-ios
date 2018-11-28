@@ -152,8 +152,12 @@ class NotificationsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        synchronizeNotifications { [weak self] in
-            self?.updateLastSeenTime()
+        synchronizeNotifications() {
+            // FIXME: This is being disabled temporarily because of a race condition caused with WPiOS.
+            // We should consider updating and re-enabling this logic (when updates happen on the server) at a later time.
+            // See this issue for more deets: https://github.com/woocommerce/woocommerce-ios/issues/469
+            //
+            //self?.updateLastSeenTime()
         }
     }
 }
@@ -392,6 +396,7 @@ extension NotificationsViewController {
     }
 
     func refreshResultsPredicate() {
+        let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
         let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
         var typePredicate: NSPredicate
 
@@ -404,7 +409,7 @@ extension NotificationsViewController {
             typePredicate = NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
         }
 
-        resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [typePredicate, sitePredicate])
+        resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [typePredicate, sitePredicate, notDeletedPredicate])
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }
@@ -466,8 +471,12 @@ extension NotificationsViewController: UITableViewDelegate {
         switch note.kind {
         case .storeOrder:
             presentOrderDetails(for: note)
+            WooAnalytics.shared.track(.notificationOpened, withProperties: ["type": "order",
+                                                                            "already_read": note.read])
         default:
             presentNotificationDetails(for: note)
+            WooAnalytics.shared.track(.notificationOpened, withProperties: ["type": "review",
+                                                                            "already_read": note.read])
         }
     }
 

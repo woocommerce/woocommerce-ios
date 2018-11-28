@@ -53,11 +53,18 @@ public struct SiteAPI: Decodable {
 //
 extension SiteAPI: Comparable {
     public static func == (lhs: SiteAPI, rhs: SiteAPI) -> Bool {
-        return lhs.siteID == rhs.siteID
+        return lhs.siteID == rhs.siteID &&
+            lhs.namespaces == rhs.namespaces &&
+            lhs.highestWooVersion == rhs.highestWooVersion
+
     }
 
     public static func < (lhs: SiteAPI, rhs: SiteAPI) -> Bool {
         return lhs.siteID < rhs.siteID
+    }
+
+    public static func > (lhs: SiteAPI, rhs: SiteAPI) -> Bool {
+        return lhs.siteID > rhs.siteID
     }
 }
 

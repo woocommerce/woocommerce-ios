@@ -15,7 +15,6 @@ extension UserDefaults {
         case versionOfLastRun
         case analyticsUsername
         case notificationsLastSeenTime
-        case displayedWooUpgradeAlert
     }
 }
 

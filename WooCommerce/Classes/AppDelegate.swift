@@ -112,7 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        displayFancyAlertIfNeeded()
+        displayWooUpgradeAlertIfNeeded()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -306,12 +306,17 @@ extension AppDelegate {
 //
 private extension AppDelegate {
 
-    func displayFancyAlertIfNeeded() {
-        // TODO: User defaults check
+    func displayWooUpgradeAlertIfNeeded() {
+        let alertWasShown = UserDefaults.standard[.displayedWooUpgradeAlert] as? Bool ?? false
+        guard alertWasShown == false else {
+            return
+        }
 
         let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = tabBarController
-        tabBarController?.present(fancyAlert, animated: true)
+        tabBarController?.present(fancyAlert, animated: true) {
+            UserDefaults.standard[.displayedWooUpgradeAlert] = true
+        }
     }
 }

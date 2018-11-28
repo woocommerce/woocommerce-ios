@@ -134,6 +134,7 @@ private extension AppDelegate {
     ///
     func setupComponentsAppearance() {
         setupWooAppearance()
+        setupFancyAlertAppearance()
         setupFancyButtonAppearance()
     }
 
@@ -145,6 +146,26 @@ private extension AppDelegate {
 
         // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
         window?.tintColor = StyleManager.wooCommerceBrandColor
+    }
+
+    /// Sets up FancyAlert's UIAppearance.
+    ///
+    func setupFancyAlertAppearance() {
+        let alertAppearance = FancyAlertView.appearance()
+
+        alertAppearance.titleTextColor = StyleManager.defaultTextColor
+        alertAppearance.titleFont = UIFont.title1
+
+        alertAppearance.bodyTextColor = StyleManager.defaultTextColor
+        alertAppearance.bodyFont = UIFont.body
+
+        alertAppearance.actionFont = UIFont.headline
+        alertAppearance.infoFont = UIFont.subheadline
+        alertAppearance.infoTintColor = StyleManager.wooCommerceBrandColor
+
+        alertAppearance.topDividerColor = StyleManager.wooGreyBorder
+        alertAppearance.bottomDividerColor = StyleManager.wooGreyLight
+        alertAppearance.headerBackgroundColor = StyleManager.wooGreyLight
     }
 
     /// Sets up FancyButton's UIAppearance.

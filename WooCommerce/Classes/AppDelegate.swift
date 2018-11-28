@@ -1,6 +1,7 @@
 import UIKit
 import CoreData
 import Storage
+import Yosemite
 
 import CocoaLumberjack
 import WordPressUI
@@ -112,7 +113,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        displayWooUpgradeAlert()
+
+        displayWooUpgradeAlertIfNeeded()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -306,10 +308,34 @@ extension AppDelegate {
 //
 private extension AppDelegate {
 
-    func displayWooUpgradeAlert() {
-        let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
-        fancyAlert.modalPresentationStyle = .custom
-        fancyAlert.transitioningDelegate = tabBarController
-        tabBarController?.present(fancyAlert, animated: true)
+    /// This function fetches the current site's API and then displays a warning if it is not WC REST v3.
+    ///
+    /// NOTE: This method should be nuked for MVLP release
+    ///
+    func displayWooUpgradeAlertIfNeeded() {
+        guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore == false else {
+            return
+        }
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID,
+            siteID != 0 else {
+                return
+        }
+
+        let action = SettingAction.retrieveSiteAPI(siteID: siteID) { [weak self] (siteAPI, error) in
+            guard error == nil else {
+                DDLogWarn("⚠️ Could not successfully fetch API info for siteID \(siteID): \(String(describing: error))")
+                return
+            }
+            guard let siteAPI = siteAPI, siteAPI.highestWooVersion != .mark3 else {
+                return
+            }
+
+            let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
+            fancyAlert.modalPresentationStyle = .custom
+            fancyAlert.transitioningDelegate = self?.tabBarController
+            self?.tabBarController?.present(fancyAlert, animated: true)
+        }
+
+        StoresManager.shared.dispatch(action)
     }
 }

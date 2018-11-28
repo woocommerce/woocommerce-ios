@@ -13,6 +13,20 @@ public struct SiteAPI: Decodable {
     ///
     public let namespaces: [String]
 
+    /// Highest Woo API version installed on the site
+    ///
+    public var highestWooVersion: WooAPIVersion {
+        if namespaces.contains(WooAPIVersion.mark3.rawValue) {
+            return .mark3
+        } else if namespaces.contains(WooAPIVersion.mark2.rawValue) {
+            return .mark2
+        } else if namespaces.contains(WooAPIVersion.mark1.rawValue) {
+            return .mark1
+        }
+
+        return .none
+    }
+
     /// Decodable Conformance.
     ///
     public init(from decoder: Decoder) throws {

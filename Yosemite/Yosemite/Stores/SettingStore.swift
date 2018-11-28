@@ -25,6 +25,8 @@ public class SettingStore: Store {
         switch action {
         case .retrieveSiteSettings(let siteID, let onCompletion):
             retrieveSiteSettings(siteID: siteID, onCompletion: onCompletion)
+        case .retrieveSiteAPI(let siteID, let onCompletion):
+            retrieveSiteAPI(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -46,6 +48,16 @@ private extension SettingStore {
 
             self?.upsertStoredSiteSettings(siteID: siteID, readOnlySiteSettings: settings)
             onCompletion(nil)
+        }
+    }
+
+    /// Retrieves the site API information associated with the provided Site ID (if any!).
+    /// This call does NOT persist anything in the Storage layer.
+    ///
+    func retrieveSiteAPI(siteID: Int, onCompletion: @escaping (SiteAPI?, Error?) -> Void) {
+        let remote = SiteAPIRemote(network: network)
+        remote.loadAPIInformation(for: siteID) { (siteAPI, error) in            
+            onCompletion(siteAPI, error)
         }
     }
 }

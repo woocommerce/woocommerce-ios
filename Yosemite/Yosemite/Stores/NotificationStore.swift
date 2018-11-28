@@ -30,16 +30,22 @@ public class NotificationStore: Store {
         }
 
         switch action {
+        case .registerDevice(let device, let applicationId, let applicationVersion, let onCompletion):
+            registerDevice(device: device, applicationId: applicationId, applicationVersion: applicationVersion, onCompletion: onCompletion)
         case .synchronizeNotifications(let onCompletion):
             synchronizeNotifications(onCompletion: onCompletion)
         case .synchronizeNotification(let noteId, let onCompletion):
             synchronizeNotification(with: noteId, onCompletion: onCompletion)
+        case .unregisterDevice(let deviceId, let onCompletion):
+            unregisterDevice(deviceId: deviceId, onCompletion: onCompletion)
         case .updateLastSeen(let timestamp, let onCompletion):
             updateLastSeen(timestamp: timestamp, onCompletion: onCompletion)
         case .updateReadStatus(let noteId, let read, let onCompletion):
             updateReadStatus(for: [noteId], read: read, onCompletion: onCompletion)
         case .updateMultipleReadStatus(let noteIds, let read, let onCompletion):
             updateReadStatus(for: noteIds, read: read, onCompletion: onCompletion)
+        case .updateLocalDeletedStatus(let noteId, let deleteInProgress, let onCompletion):
+            updateDeletedStatus(noteId: noteId, deleteInProgress: deleteInProgress, onCompletion: onCompletion)
         }
     }
 }
@@ -48,6 +54,22 @@ public class NotificationStore: Store {
 // MARK: - Services!
 //
 private extension NotificationStore {
+
+    /// Registers an APNS Device in the WordPress.com Delivery Subsystem.
+    ///
+    func registerDevice(device: APNSDevice, applicationId: String, applicationVersion: String, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
+        let remote = DevicesRemote(network: network)
+        remote.registerDevice(device: device, applicationId: applicationId, applicationVersion: applicationVersion, completion: onCompletion)
+    }
+
+
+    /// Unregisters a Dotcom Device from the Push Notifications Delivery Subsystem.
+    ///
+    func unregisterDevice(deviceId: String, onCompletion: @escaping (Error?) -> Void) {
+        let remote = DevicesRemote(network: network)
+        remote.unregisterDevice(deviceId: deviceId, completion: onCompletion)
+    }
+
 
     /// Retrieves the latest notifications (if any!).
     ///
@@ -147,6 +169,15 @@ private extension NotificationStore {
             self.invalidateCache(for: noteIds) {
                 onCompletion(error)
             }
+        }
+    }
+
+    /// Marks the provided notification as "currently being deleted" — no network call is made. This is
+    /// useful for filtering on the notifications list.
+    ///
+    func updateDeletedStatus(noteId: Int64, deleteInProgress: Bool, onCompletion: @escaping (Error?) -> Void) {
+        markLocalNoteAsDeleted(for: noteId, isDeleted: deleteInProgress) {
+            onCompletion(nil)
         }
     }
 }
@@ -282,6 +313,25 @@ extension NotificationStore {
         let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
 
         derivedStorage.perform {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates the deletion "status" for the specified Notification. The callback happens on the Main Thread.
+    ///
+    func markLocalNoteAsDeleted(for noteID: Int64, isDeleted: Bool, onCompletion: (() -> Void)? = nil) {
+        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
+
+        derivedStorage.perform {
+            let notification = derivedStorage.loadNotification(noteID: noteID)
+            notification?.deleteInProgress = isDeleted
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            guard let onCompletion = onCompletion else {
+                return
+            }
+
             DispatchQueue.main.async(execute: onCompletion)
         }
     }

@@ -81,14 +81,15 @@
 		B505F6D720BEE58800BB1B69 /* AccountRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6D620BEE58800BB1B69 /* AccountRemoteTests.swift */; };
 		B505F6EA20BEFC3700BB1B69 /* MockupNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662620A09BCC00037A38 /* MockupNetwork.swift */; };
 		B505F6EC20BEFDC200BB1B69 /* Loader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518663420A0A2E800037A38 /* Loader.swift */; };
+		B50A583921AD861700617455 /* APNSDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50A583821AD861700617455 /* APNSDevice.swift */; };
 		B5147876211B9227007562E5 /* broken-orders-mark-2.json in Resources */ = {isa = PBXBuildFile; fileRef = B5147875211B9227007562E5 /* broken-orders-mark-2.json */; };
 		B518662220A097C200037A38 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662120A097C200037A38 /* Network.swift */; };
 		B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662320A099BF00037A38 /* AlamofireNetwork.swift */; };
 		B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */; };
 		B518663520A0A2E800037A38 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518663320A0A2E800037A38 /* Constants.swift */; };
-		B524193F21AC5FE400D6FC0A /* DeviceSettingsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524193E21AC5FE400D6FC0A /* DeviceSettingsMapper.swift */; };
-		B524194121AC60A700D6FC0A /* DeviceSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524194021AC60A700D6FC0A /* DeviceSettings.swift */; };
-		B524194321AC622500D6FC0A /* DeviceSettingsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524194221AC622500D6FC0A /* DeviceSettingsMapperTests.swift */; };
+		B524193F21AC5FE400D6FC0A /* DotcomDeviceMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524193E21AC5FE400D6FC0A /* DotcomDeviceMapper.swift */; };
+		B524194121AC60A700D6FC0A /* DotcomDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524194021AC60A700D6FC0A /* DotcomDevice.swift */; };
+		B524194321AC622500D6FC0A /* DotcomDeviceMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524194221AC622500D6FC0A /* DotcomDeviceMapperTests.swift */; };
 		B524194721AC643900D6FC0A /* device-settings.json in Resources */ = {isa = PBXBuildFile; fileRef = B524194621AC643900D6FC0A /* device-settings.json */; };
 		B524194921AC659500D6FC0A /* DevicesRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524194821AC659500D6FC0A /* DevicesRemoteTests.swift */; };
 		B53EF5322180F21C003E146F /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EF5312180F21C003E146F /* Dictionary+Woo.swift */; };
@@ -236,6 +237,7 @@
 		B505F6D220BEE3A500BB1B69 /* AccountMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountMapperTests.swift; sourceTree = "<group>"; };
 		B505F6D420BEE4E600BB1B69 /* me.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = me.json; sourceTree = "<group>"; };
 		B505F6D620BEE58800BB1B69 /* AccountRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountRemoteTests.swift; sourceTree = "<group>"; };
+		B50A583821AD861700617455 /* APNSDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APNSDevice.swift; sourceTree = "<group>"; };
 		B5147875211B9227007562E5 /* broken-orders-mark-2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "broken-orders-mark-2.json"; sourceTree = "<group>"; };
 		B518662120A097C200037A38 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		B518662320A099BF00037A38 /* AlamofireNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlamofireNetwork.swift; sourceTree = "<group>"; };
@@ -243,9 +245,9 @@
 		B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersRemoteTests.swift; sourceTree = "<group>"; };
 		B518663320A0A2E800037A38 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B518663420A0A2E800037A38 /* Loader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Loader.swift; sourceTree = "<group>"; };
-		B524193E21AC5FE400D6FC0A /* DeviceSettingsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSettingsMapper.swift; sourceTree = "<group>"; };
-		B524194021AC60A700D6FC0A /* DeviceSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSettings.swift; sourceTree = "<group>"; };
-		B524194221AC622500D6FC0A /* DeviceSettingsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSettingsMapperTests.swift; sourceTree = "<group>"; };
+		B524193E21AC5FE400D6FC0A /* DotcomDeviceMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomDeviceMapper.swift; sourceTree = "<group>"; };
+		B524194021AC60A700D6FC0A /* DotcomDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomDevice.swift; sourceTree = "<group>"; };
+		B524194221AC622500D6FC0A /* DotcomDeviceMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomDeviceMapperTests.swift; sourceTree = "<group>"; };
 		B524194621AC643900D6FC0A /* device-settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "device-settings.json"; sourceTree = "<group>"; };
 		B524194821AC659500D6FC0A /* DevicesRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesRemoteTests.swift; sourceTree = "<group>"; };
 		B53EF5312180F21C003E146F /* Dictionary+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Woo.swift"; sourceTree = "<group>"; };
@@ -372,6 +374,15 @@
 			);
 			name = Tools;
 			path = Network/Tools;
+			sourceTree = "<group>";
+		};
+		B50A583A21AD872E00617455 /* Devices */ = {
+			isa = PBXGroup;
+			children = (
+				B50A583821AD861700617455 /* APNSDevice.swift */,
+				B524194021AC60A700D6FC0A /* DotcomDevice.swift */,
+			);
+			name = Devices;
 			sourceTree = "<group>";
 		};
 		B518662020A097B200037A38 /* Network */ = {
@@ -522,10 +533,10 @@
 		B557DA1B20979E6D005962F4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B50A583A21AD872E00617455 /* Devices */,
 				74A1D26921189AC100931DFA /* Stats */,
 				B505F6CE20BEE38B00BB1B69 /* Account.swift */,
 				B5BB1D0F20A237FB00112D92 /* Address.swift */,
-				B524194021AC60A700D6FC0A /* DeviceSettings.swift */,
 				B53EF53721813806003E146F /* DotcomError.swift */,
 				B5A2417C217F9ECC00595DEF /* MetaContainer.swift */,
 				B59325C6217E22FC000B0E8E /* Note.swift */,
@@ -597,7 +608,7 @@
 				B567AF2820A0FA1E00AB6C62 /* Mapper.swift */,
 				B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */,
 				740211E221939C83002248DA /* CommentResultMapper.swift */,
-				B524193E21AC5FE400D6FC0A /* DeviceSettingsMapper.swift */,
+				B524193E21AC5FE400D6FC0A /* DotcomDeviceMapper.swift */,
 				B554FA8E2180BC7000C54DFF /* NoteHashListMapper.swift */,
 				B59325CB217E2B4C000B0E8E /* NoteListMapper.swift */,
 				B5C6FCD320A373BA00A4F8E4 /* OrderMapper.swift */,
@@ -647,7 +658,7 @@
 			children = (
 				B505F6D220BEE3A500BB1B69 /* AccountMapperTests.swift */,
 				74AB0AC921948CE4008220CD /* CommentResultMapperTests.swift */,
-				B524194221AC622500D6FC0A /* DeviceSettingsMapperTests.swift */,
+				B524194221AC622500D6FC0A /* DotcomDeviceMapperTests.swift */,
 				B554FA922180C17200C54DFF /* NoteHashListMapperTests.swift */,
 				B5C151BF217EE3FB00C7BDC1 /* NoteListMapperTests.swift */,
 				B5C6FCCC20A34B8300A4F8E4 /* OrderListMapperTests.swift */,
@@ -887,6 +898,7 @@
 				74ABA1CF213F1D1600FFAD30 /* TopEarnerStatsItem.swift in Sources */,
 				7452387421124B7700A973CD /* AnyDecodable.swift in Sources */,
 				B56C1EB620EA757B00D749F9 /* SiteListMapper.swift in Sources */,
+				B50A583921AD861700617455 /* APNSDevice.swift in Sources */,
 				B59325D4217E4206000B0E8E /* NoteBlock.swift in Sources */,
 				B557DA1A20979D66005962F4 /* Settings.swift in Sources */,
 				74ABA1D1213F22CA00FFAD30 /* TopEarnersStatsRemote.swift in Sources */,
@@ -935,7 +947,7 @@
 				CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */,
 				74046E1B217A684D007DD7BF /* SiteSettingsRemote.swift in Sources */,
 				B5C6FCCF20A3592900A4F8E4 /* OrderItem.swift in Sources */,
-				B524193F21AC5FE400D6FC0A /* DeviceSettingsMapper.swift in Sources */,
+				B524193F21AC5FE400D6FC0A /* DotcomDeviceMapper.swift in Sources */,
 				748D424A210F92EA00CF7D1B /* OrderStatsItem.swift in Sources */,
 				74A1D26B21189B8100931DFA /* SiteVisitStatsItem.swift in Sources */,
 				B505F6EC20BEFDC200BB1B69 /* Loader.swift in Sources */,
@@ -946,7 +958,7 @@
 				B53EF5342180F646003E146F /* DotcomValidator.swift in Sources */,
 				74046E1D217A6989007DD7BF /* SiteSetting.swift in Sources */,
 				B5BB1D1020A237FB00112D92 /* Address.swift in Sources */,
-				B524194121AC60A700D6FC0A /* DeviceSettings.swift in Sources */,
+				B524194121AC60A700D6FC0A /* DotcomDevice.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
 				B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */,
 				B557DA0F20975E07005962F4 /* DotcomRequest.swift in Sources */,
@@ -965,7 +977,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				74CF5E8421402C04000CED0A /* TopEarnerStatsRemoteTests.swift in Sources */,
-				B524194321AC622500D6FC0A /* DeviceSettingsMapperTests.swift in Sources */,
+				B524194321AC622500D6FC0A /* DotcomDeviceMapperTests.swift in Sources */,
 				74D5BECE217E0F98007B0348 /* SiteSettingsRemoteTests.swift in Sources */,
 				74A7B4BC217A807400E85A8B /* SiteSettingsMapperTests.swift in Sources */,
 				74AE244D2113704C00CA8C54 /* OrderStatsRemoteTests.swift in Sources */,

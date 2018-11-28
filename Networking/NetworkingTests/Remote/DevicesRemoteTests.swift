@@ -25,18 +25,14 @@ class DevicesRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "devices/new", filename: "device-settings")
 
-        remote.registerDevice(deviceToken: Parameters.deviceToken,
-                              deviceModel: Parameters.deviceModel,
-                              deviceName: Parameters.deviceName,
-                              deviceOSVersion: Parameters.deviceOSVersion,
-                              deviceUUID: Parameters.deviceUUID,
+        remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
                               applicationVersion: Parameters.applicationVersion) { (settings, error) in
 
-                                XCTAssertNil(error)
-                                XCTAssertNotNil(settings)
-                                XCTAssertEqual(settings?.deviceId, "12345678")
-                                expectation.fulfill()
+            XCTAssertNil(error)
+            XCTAssertNotNil(settings)
+            XCTAssertEqual(settings?.deviceId, "12345678")
+            expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
@@ -50,17 +46,13 @@ class DevicesRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "devices/new", filename: "generic_error")
 
-        remote.registerDevice(deviceToken: Parameters.deviceToken,
-                              deviceModel: Parameters.deviceModel,
-                              deviceName: Parameters.deviceName,
-                              deviceOSVersion: Parameters.deviceOSVersion,
-                              deviceUUID: Parameters.deviceUUID,
+        remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
                               applicationVersion: Parameters.applicationVersion) { (settings, error) in
 
-                                XCTAssertNotNil(error)
-                                XCTAssertNil(settings)
-                                expectation.fulfill()
+            XCTAssertNotNil(error)
+            XCTAssertNil(settings)
+            expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
@@ -72,10 +64,9 @@ class DevicesRemoteTests: XCTestCase {
         let remote = DevicesRemote(network: network)
         let expectation = self.expectation(description: "Unregister Device")
 
-        let path = String("devices/" + Parameters.deviceId + "/delete")
-        network.simulateResponse(requestUrlSuffix: path, filename: "generic_success")
+        network.simulateResponse(requestUrlSuffix: "/delete", filename: "generic_success")
 
-        remote.unregisterDevice(deviceId: Parameters.deviceId) { error in
+        remote.unregisterDevice(deviceId: Parameters.dotcomDeviceID) { error in
             XCTAssertNil(error)
             expectation.fulfill()
         }
@@ -89,10 +80,9 @@ class DevicesRemoteTests: XCTestCase {
         let remote = DevicesRemote(network: network)
         let expectation = self.expectation(description: "Unregister Device")
 
-        let path = String("devices/" + Parameters.deviceId + "/delete")
-        network.simulateResponse(requestUrlSuffix: path, filename: "generic_error")
+        network.simulateResponse(requestUrlSuffix: "/delete", filename: "generic_error")
 
-        remote.unregisterDevice(deviceId: Parameters.deviceId) { error in
+        remote.unregisterDevice(deviceId: Parameters.dotcomDeviceID) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -105,12 +95,12 @@ class DevicesRemoteTests: XCTestCase {
 // MARK: - Sample Device Parameters
 //
 private enum Parameters {
-    static let deviceId = "1234"
-    static let deviceToken = "12345678123456781234567812345678"
-    static let deviceModel = "iPhone99,1"
-    static let deviceName = "iPhone XX"
-    static let deviceOSVersion = "iOS 45.1"
-    static let deviceUUID = "1234"
+    static let appleDevice = APNSDevice(token: "12345678123456781234567812345678",
+                                        model: "iPhone99,1",
+                                        name: "iPhone XX",
+                                        iOSVersion: "iOS 45.1",
+                                        identifierForVendor: "1234")
+    static let dotcomDeviceID = "1234"
     static let applicationId = "9"
     static let applicationVersion = "99"
 }

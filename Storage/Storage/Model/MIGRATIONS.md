@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 7
+- @bummytime 2018-11-26
+    - New `Note.deleteInProgress` property
+
 ## Model 6
 - @jleandroperez 2018-11-15
     - New `Note.siteID` property

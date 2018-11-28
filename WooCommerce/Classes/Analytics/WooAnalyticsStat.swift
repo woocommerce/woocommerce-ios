@@ -151,15 +151,23 @@ public enum WooAnalyticsStat: String {
     //
     case notificationsSelected                  = "main_tab_notifications_selected"
     case notificationsReselected                = "main_tab_notifications_reselected"
+    case notificationOpened                     = "notification_open"
     case notificationsListPulledToRefresh       = "notifications_list_pulled_to_refresh"
     case notificationsListReadAllTapped         = "notifications_list_menu_mark_read_button_tapped"
     case notificationsListFilterTapped          = "notifications_list_menu_filter_tapped"
     case filterNotificationsOptionSelected      = "filter_notifications_by_status_dialog_option_selected"
+    case notificationReviewApprovedTapped       = "review_detail_approve_button_tapped"
+    case notificationReviewTrashTapped          = "review_detail_trash_button_tapped"
+    case notificationReviewSpamTapped           = "review_detail_spam_button_tapped"
 
     // Notification Data/Action Events
     //
     case notificationListLoaded                 = "notifications_loaded"
     case notificationListFilter                 = "notifications_filter"
+    case notificationReviewAction               = "review_action"
+    case notificationReviewActionSuccess        = "review_action_success"
+    case notificationReviewActionFailed         = "review_action_failed"
+    case notificationReviewActionUndo           = "review_action_undo"
 }
 
 public extension WooAnalyticsStat {

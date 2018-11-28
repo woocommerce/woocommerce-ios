@@ -273,6 +273,12 @@ private extension ZendeskManager {
         completion(true)
     }
 
+
+    // MARK: - Request Controller Configuration
+    //
+
+    /// Important: Any time a new request controller is created, these configurations should be attached.
+    /// Without it, the tickets won't appear in the correct view(s) in the web portal and they won't contain all the metadata needed to solve a ticket.
     func createRequest() -> RequestUiConfiguration {
 
         let requestConfig = RequestUiConfiguration()
@@ -297,6 +303,8 @@ private extension ZendeskManager {
 
         // Set the ticket subject
         requestConfig.subject = Constants.ticketSubject
+
+        // No extra config needed to attach an image. Hooray!
 
         return requestConfig
     }
@@ -394,7 +402,8 @@ private extension ZendeskManager {
     func getTags() -> [String] {
 
         /// Start with default tags.
-        ///
+        /// Tags are used for refining and filtering tickets so they display in the web portal, under "Lovely Views".
+        /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
         var tags = [Constants.platformTag, Constants.sdkTag]
 
         /// Determine if the account is a wp.com account.

@@ -112,6 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        displayFancyAlertIfNeeded()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -151,21 +152,19 @@ private extension AppDelegate {
     /// Sets up FancyAlert's UIAppearance.
     ///
     func setupFancyAlertAppearance() {
-        let alertAppearance = FancyAlertView.appearance()
+        let appearance = FancyAlertView.appearance()
+        appearance.bottomDividerColor = StyleManager.wooGreyBorder
+        appearance.topDividerColor = StyleManager.wooGreyBorder
 
-        alertAppearance.titleTextColor = StyleManager.defaultTextColor
-        alertAppearance.titleFont = UIFont.title1
+        appearance.titleTextColor = StyleManager.defaultTextColor
+        appearance.titleFont = UIFont.title2
 
-        alertAppearance.bodyTextColor = StyleManager.defaultTextColor
-        alertAppearance.bodyFont = UIFont.body
+        appearance.bodyTextColor = StyleManager.defaultTextColor
+        appearance.bodyFont = UIFont.body
 
-        alertAppearance.actionFont = UIFont.headline
-        alertAppearance.infoFont = UIFont.subheadline
-        alertAppearance.infoTintColor = StyleManager.wooCommerceBrandColor
-
-        alertAppearance.topDividerColor = StyleManager.wooGreyBorder
-        alertAppearance.bottomDividerColor = StyleManager.wooGreyLight
-        alertAppearance.headerBackgroundColor = StyleManager.wooGreyLight
+        appearance.actionFont = UIFont.headline
+        appearance.infoFont = UIFont.subheadline
+        appearance.infoTintColor = StyleManager.wooCommerceBrandColor
     }
 
     /// Sets up FancyButton's UIAppearance.
@@ -299,5 +298,20 @@ extension AppDelegate {
         }
 
         StoresManager.shared.synchronizeEntities()
+    }
+}
+
+
+// MARK: - Fancy Alerts
+//
+private extension AppDelegate {
+
+    func displayFancyAlertIfNeeded() {
+        // TODO: User defaults check
+
+        let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
+        fancyAlert.modalPresentationStyle = .custom
+        fancyAlert.transitioningDelegate = tabBarController
+        tabBarController?.present(fancyAlert, animated: true)
     }
 }

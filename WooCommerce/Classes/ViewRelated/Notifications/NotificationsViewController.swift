@@ -152,8 +152,12 @@ class NotificationsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        synchronizeNotifications { [weak self] in
-            self?.updateLastSeenTime()
+        synchronizeNotifications() {
+            // FIXME: This is being disabled temporarily because of a race condition caused with WPiOS.
+            // We should consider updating and re-enabling this logic (when updates happen on the server) at a later time.
+            // See this issue for more deets: https://github.com/woocommerce/woocommerce-ios/issues/469
+            //
+            //self?.updateLastSeenTime()
         }
     }
 }

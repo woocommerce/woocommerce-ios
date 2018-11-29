@@ -307,7 +307,7 @@ extension AppDelegate {
 
 // MARK: - Fancy Alerts
 //
-private extension AppDelegate {
+extension AppDelegate {
 
     /// This function fetches the current site's API and then displays a warning if it is not WC REST v3.
     ///
@@ -331,6 +331,7 @@ private extension AppDelegate {
                 return
             }
 
+            DDLogWarn("⚠️ WC version older than v3.5 — highest API version: \(siteAPI.highestWooVersion.rawValue) for siteID: \(siteID)")
             let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
             fancyAlert.modalPresentationStyle = .custom
             fancyAlert.transitioningDelegate = self?.tabBarController

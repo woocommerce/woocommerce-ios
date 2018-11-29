@@ -62,7 +62,7 @@ extension TopPerformersViewController {
     func syncTopPerformers(onCompletion: (() -> Void)? = nil) {
         let group = DispatchGroup()
 
-        displayGhostContent()
+        ensureGhostContentIsDisplayed()
 
         dataVCs.forEach { vc in
             group.enter()
@@ -82,6 +82,16 @@ extension TopPerformersViewController {
 // MARK: - Placeholders
 //
 private extension TopPerformersViewController {
+
+    /// Displays the Ghost Placeholder whenever there is no visible data.
+    ///
+    func ensureGhostContentIsDisplayed() {
+        guard visibleChildViewController.hasTopEarnerStatsItems == false else {
+            return
+        }
+
+        displayGhostContent()
+    }
 
     /// Locks UI Interaction and displays Ghost Placeholder animations.
     ///

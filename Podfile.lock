@@ -78,7 +78,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
-  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.3`)
+  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, branch `remove/core-telephony-messages-from-logs`)
   - Charts (~> 3.2)
   - CocoaLumberjack (~> 3.4)
   - Crashlytics (~> 3.10)
@@ -119,18 +119,18 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Automattic-Tracks-iOS:
+    :branch: remove/core-telephony-messages-from-logs
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
-    :tag: 0.2.3
 
 CHECKOUT OPTIONS:
   Automattic-Tracks-iOS:
+    :commit: 43b50a7143443f21274f4bb71b27106da44ada1a
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
-    :tag: 0.2.3
 
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  Automattic-Tracks-iOS: d8c6c6c1351b1905a73e45f431b15598d71963b5
+  Automattic-Tracks-iOS: 87b6ca33ab70bf96842b7441a6bcd66c90c55bce
   Charts: f122fb70b19847fa5817d018b77d6c5a2296ab25
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   Crashlytics: ca7ab4bc304aa216bdc2e4c1a96389ee77252203
@@ -154,6 +154,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 22d4c58200d7c105e0e407ab6bfd01a5d85014be
   ZendeskSDK: af6509ad7968d367f95b2645713802712152f879
 
-PODFILE CHECKSUM: 57db761746b51300bd1cb2743c5bbab8f56d50e5
+PODFILE CHECKSUM: 8c9e24e673dcccd0bec52301447334ad1c2cf6db
 
 COCOAPODS: 1.5.3

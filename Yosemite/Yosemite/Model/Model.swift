@@ -24,11 +24,13 @@ public typealias OrderStats = Networking.OrderStats
 public typealias OrderStatsItem = Networking.OrderStatsItem
 public typealias StatGranularity = Networking.StatGranularity
 public typealias Site = Networking.Site
+public typealias SiteAPI = Networking.SiteAPI
 public typealias SiteSetting = Networking.SiteSetting
 public typealias SiteVisitStats = Networking.SiteVisitStats
 public typealias SiteVisitStatsItem = Networking.SiteVisitStatsItem
 public typealias TopEarnerStats = Networking.TopEarnerStats
 public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
+public typealias WooAPIVersion = Networking.WooAPIVersion
 
 
 // MARK: - Exported Storage Symbols

@@ -239,7 +239,10 @@ extension StorePickerViewController {
             WooAnalytics.shared.refreshUserData()
             WooAnalytics.shared.track(.loginEpilogueContinueTapped,
                                       withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? String()])
-            dismiss(animated: true, completion: nil)
+
+            dismiss(animated: true) {
+                RequirementsChecker.checkMinimumWooVersion()
+            }
         }
     }
 }

@@ -19,7 +19,7 @@ open class SearchTableViewCell: UITableViewCell {
 
     /// Search 'UITextField's reference!
     ///
-    @IBOutlet private var textField: LoginTextField!
+    @IBOutlet var textField: LoginTextField!
 
     /// UITextField's listener
     ///
@@ -44,6 +44,7 @@ open class SearchTableViewCell: UITableViewCell {
     override open func awakeFromNib() {
         super.awakeFromNib()
         textField.delegate = self
+        textField.returnKeyType = .search
         textField.contentInsets = Constants.textInsetsWithIcon
         textField.accessibilityIdentifier = "Search field"
         textField.leftViewImage = textField?.leftViewImage?.imageWithTintColor(Constants.leftImageTintColor)

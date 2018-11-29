@@ -19,7 +19,7 @@ open class SearchTableViewCell: UITableViewCell {
 
     /// Search 'UITextField's reference!
     ///
-    @IBOutlet var textField: LoginTextField!
+    @IBOutlet public var textField: LoginTextField!
 
     /// UITextField's listener
     ///

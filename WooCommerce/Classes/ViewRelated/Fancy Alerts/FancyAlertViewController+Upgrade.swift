@@ -31,7 +31,7 @@ public extension FancyAlertViewController {
                                                      headerImage: nil,
                                                      dividerPosition: .bottom,
                                                      defaultButton: dismissButton,
-                                                     cancelButton:  nil,
+                                                     cancelButton: nil,
                                                      moreInfoButton: moreInfoButton,
                                                      dismissAction: {})
 
@@ -54,4 +54,3 @@ private extension FancyAlertViewController {
         static let dismissButtonText  = NSLocalizedString("Dismiss", comment: "Dismiss button title shown in alert warning users to upgrade to WC 3.5.")
     }
 }
-

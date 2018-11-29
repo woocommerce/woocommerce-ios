@@ -28,6 +28,7 @@
 		743E272021AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743E271F21AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift */; };
 		743EDD9F214B05350039071B /* TopEarnerStatsItem+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743EDD9E214B05350039071B /* TopEarnerStatsItem+Woo.swift */; };
 		7441E1D221503F77004E6ECE /* IntrinsicTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7441E1D121503F77004E6ECE /* IntrinsicTableView.swift */; };
+		7459A6C621B0680300F83A78 /* RequirementsChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7459A6C521B0680300F83A78 /* RequirementsChecker.swift */; };
 		746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746791622108D7C0007CF1DC /* WooAnalyticsTests.swift */; };
 		746791662108D87B007CF1DC /* MockupAnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746791652108D87B007CF1DC /* MockupAnalyticsProvider.swift */; };
 		747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747AA0882107CEC60047A89B /* AnalyticsProvider.swift */; };
@@ -278,6 +279,7 @@
 		743E271F21AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FancyAlertViewController+Upgrade.swift"; sourceTree = "<group>"; };
 		743EDD9E214B05350039071B /* TopEarnerStatsItem+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TopEarnerStatsItem+Woo.swift"; sourceTree = "<group>"; };
 		7441E1D121503F77004E6ECE /* IntrinsicTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntrinsicTableView.swift; sourceTree = "<group>"; };
+		7459A6C521B0680300F83A78 /* RequirementsChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequirementsChecker.swift; sourceTree = "<group>"; };
 		746791622108D7C0007CF1DC /* WooAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalyticsTests.swift; sourceTree = "<group>"; };
 		746791652108D87B007CF1DC /* MockupAnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupAnalyticsProvider.swift; sourceTree = "<group>"; };
 		747AA0882107CEC60047A89B /* AnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
@@ -678,6 +680,7 @@
 				CE14452C2188C0EC00A991D8 /* Zendesk */,
 				B55D4C2620B717C000D7A50F /* UserAgent.swift */,
 				B54FBE542111F70700390F57 /* ResultsController+UIKit.swift */,
+				7459A6C521B0680300F83A78 /* RequirementsChecker.swift */,
 				B5D6DC53214802740003E48A /* SyncCoordinator.swift */,
 				CEFE5873214AE0E0007B9808 /* MoneyFormatter.swift */,
 			);
@@ -1488,6 +1491,7 @@
 				CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */,
 				CE21B3E020FFC59700A259D5 /* ProductDetailsTableViewCell.swift in Sources */,
 				B5DB01B52114AB2D00A4F797 /* FabricManager.swift in Sources */,
+				7459A6C621B0680300F83A78 /* RequirementsChecker.swift in Sources */,
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
 				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,

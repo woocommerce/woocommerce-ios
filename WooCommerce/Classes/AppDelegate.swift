@@ -1,13 +1,11 @@
 import UIKit
 import CoreData
 import Storage
-import Yosemite
 
 import CocoaLumberjack
 import WordPressUI
 import WordPressKit
 import WordPressAuthenticator
-
 
 
 // MARK: - Woo's App Delegate!
@@ -114,8 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 
-        // TODO: Nuke this 👇👇 after the WCiOS v0.12 release!!
-        displayWooUpgradeAlertIfNeeded()
+        RequirementsChecker.checkMinimumWooVersion()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -301,43 +298,5 @@ extension AppDelegate {
         }
 
         StoresManager.shared.synchronizeEntities()
-    }
-}
-
-
-// MARK: - Fancy Alerts
-//
-extension AppDelegate {
-
-    /// This function fetches the current site's API and then displays a warning if it is not WC REST v3.
-    ///
-    /// NOTE: This method should be nuked for MVLP release
-    ///
-    func displayWooUpgradeAlertIfNeeded() {
-        guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore == false else {
-            return
-        }
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID,
-            siteID != 0 else {
-                return
-        }
-
-        let action = SettingAction.retrieveSiteAPI(siteID: siteID) { [weak self] (siteAPI, error) in
-            guard error == nil else {
-                DDLogWarn("⚠️ Could not successfully fetch API info for siteID \(siteID): \(String(describing: error))")
-                return
-            }
-            guard let siteAPI = siteAPI, siteAPI.highestWooVersion != .mark3 else {
-                return
-            }
-
-            DDLogWarn("⚠️ WC version older than v3.5 — highest API version: \(siteAPI.highestWooVersion.rawValue) for siteID: \(siteID)")
-            let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
-            fancyAlert.modalPresentationStyle = .custom
-            fancyAlert.transitioningDelegate = self?.tabBarController
-            self?.tabBarController?.present(fancyAlert, animated: true)
-        }
-
-        StoresManager.shared.dispatch(action)
     }
 }

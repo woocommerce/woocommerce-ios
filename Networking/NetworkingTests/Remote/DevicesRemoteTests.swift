@@ -32,7 +32,7 @@ class DevicesRemoteTests: XCTestCase {
 
             XCTAssertNil(error)
             XCTAssertNotNil(settings)
-            XCTAssertEqual(settings?.deviceId, "12345678")
+            XCTAssertEqual(settings?.deviceID, "12345678")
             expectation.fulfill()
         }
 

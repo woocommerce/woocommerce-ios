@@ -365,7 +365,7 @@ class NotificationStoreTests: XCTestCase {
         let action = NotificationAction.registerDevice(device: sampleAPNSDevice(), applicationId: sampleApplicationID, applicationVersion: sampleApplicationVersion, defaultStoreID: sampleDefaultStoreID) { (device, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(device)
-            XCTAssertEqual(device?.deviceId, "12345678")
+            XCTAssertEqual(device?.deviceID, "12345678")
 
             expectation.fulfill()
         }

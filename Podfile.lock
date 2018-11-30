@@ -14,6 +14,7 @@ PODS:
   - CocoaLumberjack/Default (3.4.2)
   - CocoaLumberjack/Extensions (3.4.2):
     - CocoaLumberjack/Default
+  - Cosmos (17.0.0)
   - Crashlytics (3.11.1):
     - Fabric (~> 1.8.1)
   - Fabric (1.8.2)
@@ -81,6 +82,7 @@ DEPENDENCIES:
   - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, tag `0.2.3`)
   - Charts (~> 3.2)
   - CocoaLumberjack (~> 3.4)
+  - Cosmos (~> 17.0)
   - Crashlytics (~> 3.10)
   - Gridicons (= 0.16)
   - KeychainAccess (~> 3.1)
@@ -96,6 +98,7 @@ SPEC REPOS:
     - Alamofire
     - Charts
     - CocoaLumberjack
+    - Cosmos
     - Crashlytics
     - Fabric
     - FormatterKit
@@ -133,6 +136,7 @@ SPEC CHECKSUMS:
   Automattic-Tracks-iOS: d8c6c6c1351b1905a73e45f431b15598d71963b5
   Charts: f122fb70b19847fa5817d018b77d6c5a2296ab25
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
+  Cosmos: 309e489f21ffc91a1eeecfebef7f817cd2fcfba6
   Crashlytics: ca7ab4bc304aa216bdc2e4c1a96389ee77252203
   Fabric: d2b22f443ba195d8a7cc204da230977c72733b40
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
@@ -154,6 +158,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 22d4c58200d7c105e0e407ab6bfd01a5d85014be
   ZendeskSDK: af6509ad7968d367f95b2645713802712152f879
 
-PODFILE CHECKSUM: 57db761746b51300bd1cb2743c5bbab8f56d50e5
+PODFILE CHECKSUM: e7d1b6e4712e1015b3a13ab3dcd3ca340a44fceb
 
 COCOAPODS: 1.5.3

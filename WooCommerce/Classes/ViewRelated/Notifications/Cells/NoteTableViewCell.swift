@@ -23,9 +23,13 @@ class NoteTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var snippetLabel: UILabel!
 
+    /// UIView: container view for rating star view
+    ///
+    @IBOutlet private var starViewContainer: UIView!
+
     /// Star View for reviews
     ///
-    @IBOutlet private weak var starView: CosmosView!
+    private var starView = CosmosView()
 
     /// Indicates if the Row should be marked as Read or not.
     ///
@@ -121,15 +125,31 @@ private extension NoteTableViewCell {
     }
 
     func setupStarView() {
+        if starViewContainer.subviews.isEmpty {
+            starView.translatesAutoresizingMaskIntoConstraints = false
+            starViewContainer.addSubview(starView)
+            starViewContainer.pinSubviewToAllEdges(starView)
+        }
+
         starView.accessibilityLabel = NSLocalizedString("Star rating", comment: "VoiceOver accessibility label for a product review star rating ")
         starView.settings.updateOnTouch = false
         starView.settings.fillMode = .full
-        starView.settings.starSize = 13
-        starView.settings.starMargin = 0
+        starView.settings.starSize = Constants.starSize
+        starView.settings.starMargin = Constants.starMargin
         starView.settings.filledColor = StyleManager.defaultTextColor
         starView.settings.filledBorderColor = StyleManager.defaultTextColor
         starView.settings.emptyColor = .clear
         starView.settings.emptyBorderColor = .clear
         starView.isHidden = (starRating == nil)
+    }    
+}
+
+
+// MARK: - Constants!
+//
+private extension NoteTableViewCell {
+    enum Constants {
+        static let starSize   = Double(13)
+        static let starMargin = Double(0)
     }
 }

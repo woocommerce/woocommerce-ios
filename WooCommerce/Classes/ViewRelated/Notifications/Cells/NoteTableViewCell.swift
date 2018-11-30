@@ -77,12 +77,12 @@ class NoteTableViewCell: UITableViewCell {
     var starRating: Int? {
         didSet {
             guard let starRating = starRating else {
-                starView.isHidden = true
+                starViewContainer.isHidden = true
                 return
             }
 
             starView.rating = Double(starRating)
-            starView.isHidden = false
+            starViewContainer.isHidden = false
         }
     }
 
@@ -92,7 +92,7 @@ class NoteTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         noticonLabel.font = UIFont.noticon(forStyle: .title1)
-        setupStarView()
+        configureStarView()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -124,7 +124,7 @@ private extension NoteTableViewCell {
         noticonLabel.textColor = read ? StyleManager.wooGreyMid : StyleManager.wooAccent
     }
 
-    func setupStarView() {
+    func configureStarView() {
         if starViewContainer.subviews.isEmpty {
             starView.translatesAutoresizingMaskIntoConstraints = false
             starViewContainer.addSubview(starView)
@@ -140,7 +140,7 @@ private extension NoteTableViewCell {
         starView.settings.filledBorderColor = StyleManager.defaultTextColor
         starView.settings.emptyColor = .clear
         starView.settings.emptyBorderColor = .clear
-        starView.isHidden = (starRating == nil)
+        starViewContainer.isHidden = (starRating == nil)
     }    
 }
 

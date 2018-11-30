@@ -121,6 +121,7 @@ private extension NoteTableViewCell {
     }
 
     func setupStarView() {
+        starView.accessibilityLabel = NSLocalizedString("Star rating", comment: "VoiceOver accessibility label for a product review star rating ")
         starView.settings.updateOnTouch = false
         starView.settings.fillMode = .full
         starView.settings.starSize = 13

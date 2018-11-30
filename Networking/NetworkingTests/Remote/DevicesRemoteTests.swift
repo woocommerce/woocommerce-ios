@@ -27,7 +27,8 @@ class DevicesRemoteTests: XCTestCase {
 
         remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion) { (settings, error) in
+                              applicationVersion: Parameters.applicationVersion,
+                              defaultStoreID: Parameters.defaultStoreID) { (settings, error) in
 
             XCTAssertNil(error)
             XCTAssertNotNil(settings)
@@ -48,7 +49,8 @@ class DevicesRemoteTests: XCTestCase {
 
         remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion) { (settings, error) in
+                              applicationVersion: Parameters.applicationVersion,
+                              defaultStoreID: Parameters.defaultStoreID) { (settings, error) in
 
             XCTAssertNotNil(error)
             XCTAssertNil(settings)
@@ -100,7 +102,8 @@ private enum Parameters {
                                         name: "iPhone XX",
                                         iOSVersion: "iOS 45.1",
                                         identifierForVendor: "1234")
-    static let dotcomDeviceID = "1234"
     static let applicationId = "9"
     static let applicationVersion = "99"
+    static let defaultStoreID = 1234
+    static let dotcomDeviceID = "1234"
 }

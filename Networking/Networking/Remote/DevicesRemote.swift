@@ -12,9 +12,10 @@ public class DevicesRemote: Remote {
     ///     - device: APNS Device to be registered.
     ///     - applicationId: App ID.
     ///     - applicationVersion: App Version.
+    ///     - defaultStoreID: Active Store ID.
     ///     - completion: Closure to be executed on commpletion.
     ///
-    public func registerDevice(device: APNSDevice, applicationId: String, applicationVersion: String, completion: @escaping (DotcomDevice?, Error?) -> Void) {
+    public func registerDevice(device: APNSDevice, applicationId: String, applicationVersion: String, defaultStoreID: Int, completion: @escaping (DotcomDevice?, Error?) -> Void) {
         var parameters = [
             ParameterKeys.applicationId: applicationId,
             ParameterKeys.applicationVersion: applicationVersion,
@@ -22,7 +23,8 @@ public class DevicesRemote: Remote {
             ParameterKeys.deviceToken: device.token,
             ParameterKeys.deviceModel: device.model,
             ParameterKeys.deviceName: device.name,
-            ParameterKeys.deviceOSVersion: device.iOSVersion
+            ParameterKeys.deviceOSVersion: device.iOSVersion,
+            ParameterKeys.defaultStoreID: String(defaultStoreID)
         ]
 
         if let deviceUUID = device.identifierForVendor {
@@ -79,5 +81,6 @@ private extension DevicesRemote {
         static let deviceName = "device_name"
         static let deviceOSVersion = "os_version"
         static let deviceUUID = "device_uuid"
+        static let defaultStoreID = "selected_blog_id"
     }
 }

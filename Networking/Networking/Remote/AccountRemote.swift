@@ -36,7 +36,7 @@ public class AccountRemote: Remote {
     public func loadSitesDetail(completion: @escaping ([Site]?, Error?) -> Void) {
         let path = "me/sites"
         let parameters = [
-            "fields": "ID,name,description,URL,jetpack,plan,options"
+            "fields": "ID,name,description,URL,plan,options"
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_2, method: .get, path: path, parameters: parameters)

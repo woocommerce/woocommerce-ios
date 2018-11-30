@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Cosmos
 
 
 // MARK: - NoteTableViewCell
@@ -22,6 +23,9 @@ class NoteTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var snippetLabel: UILabel!
 
+    /// Star View for reviews
+    ///
+    @IBOutlet private weak var starView: CosmosView!
 
     /// Indicates if the Row should be marked as Read or not.
     ///
@@ -64,12 +68,27 @@ class NoteTableViewCell: UITableViewCell {
         }
     }
 
+    /// Star rating value (if nil, star rating view will be hidden)
+    ///
+    var starRating: Int? {
+        didSet {
+            guard let starRating = starRating else {
+                starView.isHidden = true
+                return
+            }
+
+            starView.rating = Double(starRating)
+            starView.isHidden = false
+        }
+    }
+
 
     // MARK: - Overridden Methods
 
     override func awakeFromNib() {
         super.awakeFromNib()
         noticonLabel.font = UIFont.noticon(forStyle: .title1)
+        setupStarView()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -83,6 +102,10 @@ class NoteTableViewCell: UITableViewCell {
         super.setHighlighted(highlighted, animated: animated)
         refreshColors()
     }
+
+    override public func prepareForReuse() {
+        starView.prepareForReuse()
+    }
 }
 
 
@@ -95,5 +118,17 @@ private extension NoteTableViewCell {
     func refreshColors() {
         sidebarView.backgroundColor = read ? UIColor.clear : StyleManager.wooAccent
         noticonLabel.textColor = read ? StyleManager.wooGreyMid : StyleManager.wooAccent
+    }
+
+    func setupStarView() {
+        starView.settings.updateOnTouch = false
+        starView.settings.fillMode = .full
+        starView.settings.starSize = 13
+        starView.settings.starMargin = 0
+        starView.settings.filledColor = StyleManager.defaultTextColor
+        starView.settings.filledBorderColor = StyleManager.defaultTextColor
+        starView.settings.emptyColor = .clear
+        starView.settings.emptyBorderColor = .clear
+        starView.isHidden = (starRating == nil)
     }
 }

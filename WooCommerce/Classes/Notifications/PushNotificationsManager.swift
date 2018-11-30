@@ -111,7 +111,7 @@ extension PushNotificationsManager {
 
     /// Registers the Device Token agains WordPress.com backend, if there's a default account.
     ///
-    func registerDeviceToken(with tokenData: Data) {
+    func registerDeviceToken(with tokenData: Data, defaultStoreID: Int) {
         guard StoresManager.shared.isAuthenticated else {
             return
         }
@@ -128,8 +128,8 @@ extension PushNotificationsManager {
 
         ///
         ///
-        registerDotcomDevice(with: newToken) { (deviceID, error) in
-            guard let deviceID = deviceID else {
+        registerDotcomDevice(with: newToken, defaultStoreID: defaultStoreID) { (device, error) in
+            guard let deviceID = device?.deviceID else {
                 DDLogError("⛔️ Dotcom Push Notifications Registration Failure: \(error.debugDescription)")
                 return
             }
@@ -236,25 +236,21 @@ private extension PushNotificationsManager {
 
     /// Registers an APNS DeviceToken in the WordPress.com backend.
     ///
-    func registerDotcomDevice(with deviceToken: String, onCompletion: @escaping (String?, Error?) -> Void) {
+    func registerDotcomDevice(with deviceToken: String, defaultStoreID: Int, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
         let device = APNSDevice(deviceToken: deviceToken)
-//        let action = NotificationAction.registerDevice(device: device,
-//                                                       applicationId: WooConstants.pushApplicationID,
-//                                                       applicationVersion: Bundle.main.version) { (device, error) in
-//            onCompletion(device?.deviceId, error)
-//        }
-//
-//        StoresManager.shared.dispatch(action)
+        let action = NotificationAction.registerDevice(device: device,
+                                                       applicationId: WooConstants.pushApplicationID,
+                                                       applicationVersion: Bundle.main.version,
+                                                       defaultStoreID: defaultStoreID,
+                                                       onCompletion: onCompletion)
+        StoresManager.shared.dispatch(action)
     }
 
 
     /// Unregisters a given DeviceID from the Push Notifications backend.
     ///
     func unregisterDotcomDevice(with deviceID: String, onCompletion: @escaping (Error?) -> Void) {
-        let action = NotificationAction.unregisterDevice(deviceId: deviceID) { error in
-            onCompletion(error)
-        }
-
+        let action = NotificationAction.unregisterDevice(deviceId: deviceID, onCompletion: onCompletion)
         StoresManager.shared.dispatch(action)
     }
 }

@@ -404,7 +404,9 @@ private extension ZendeskManager {
         /// Start with default tags.
         /// Tags are used for refining and filtering tickets so they display in the web portal, under "Lovely Views".
         /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
-        var tags = [Constants.platformTag, Constants.sdkTag]
+        var tags = [Constants.platformTag,
+                    Constants.sdkTag,
+                    Constants.jetpackTag]
 
         /// Determine if the account is a wp.com account.
         ///
@@ -416,12 +418,6 @@ private extension ZendeskManager {
         /// No tag if self-hosted.
         if site.isWordPressStore == true {
             tags.append(Constants.wpComTag)
-        }
-
-        /// Determine if the account has Jetpack installed.
-        ///
-        if site.isJetpackInstalled == true {
-            tags.append(Constants.jetpackTag)
         }
 
         /// Add the site plan.

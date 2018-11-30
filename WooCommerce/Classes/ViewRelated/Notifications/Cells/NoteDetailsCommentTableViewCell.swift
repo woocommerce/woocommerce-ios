@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import WordPressUI
 import Gridicons
+import Cosmos
 
 
 // MARK: - NoteDetailsCommentTableViewCell
@@ -35,6 +36,14 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
     /// Button: Approval
     ///
     @IBOutlet private var approvalButton: UIButton!
+
+    /// UIView: container view for rating star view
+    ///
+    @IBOutlet private var starViewContainer: UIView!
+
+    /// Star View for reviews
+    ///
+    private var starView = CosmosView()
 
     /// Closure to be executed whenever the Spam Button is pressed.
     ///
@@ -132,6 +141,20 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
         }
     }
 
+    /// Star rating value (if nil, star rating view will be hidden)
+    ///
+    var starRating: Int? {
+        didSet {
+            guard let starRating = starRating else {
+                starViewContainer.isHidden = true
+                return
+            }
+
+            starView.rating = Double(starRating)
+            starViewContainer.isHidden = false
+        }
+    }
+
     /// Downloads the Gravatar Image at the specified URL (if any!).
     ///
     func downloadGravatar(with url: URL?) {
@@ -145,6 +168,7 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         configureActionButtons()
+        configureStarView()
         configureDefaultAppearance()
     }
 }
@@ -185,6 +209,28 @@ private extension NoteDetailsCommentTableViewCell {
         for button in buttons {
             refreshAppearance(button: button)
         }
+    }
+
+    /// Setup: Star rating view
+    ///
+    func configureStarView() {
+        if starViewContainer.subviews.isEmpty {
+            starView.translatesAutoresizingMaskIntoConstraints = false
+            starViewContainer.addSubview(starView)
+            starViewContainer.pinSubviewToAllEdges(starView)
+        }
+
+        starView.accessibilityLabel = NSLocalizedString("Star rating", comment: "VoiceOver accessibility label for a product review star rating ")
+        starView.settings.updateOnTouch = false
+        starView.settings.totalStars = Star.totalStars
+        starView.settings.fillMode = .full
+        starView.settings.starSize = Star.size
+        starView.settings.starMargin = Star.margin
+        starView.settings.filledColor = StyleManager.goldStarColor
+        starView.settings.filledBorderColor = StyleManager.goldStarColor
+        starView.settings.emptyColor = StyleManager.wooGreyLight
+        starView.settings.emptyBorderColor = StyleManager.wooGreyLight
+        starViewContainer.isHidden = (starRating == nil)
     }
 
     /// Setup: Button Appearance
@@ -261,4 +307,13 @@ private struct Approve {
     static let selectedTitle    = NSLocalizedString("Approved", comment: "Unapprove a comment")
     static let normalLabel      = NSLocalizedString("Approves the comment", comment: "Approves a comment. Spoken Hint.")
     static let selectedLabel    = NSLocalizedString("Unapproves the comment", comment: "Unapproves a comment. Spoken Hint.")
+}
+
+
+// MARK: - Star View: Defaults
+//
+private struct Star {
+    static let totalStars = 5
+    static let size       = Double(16)
+    static let margin     = Double(2)
 }

@@ -32,6 +32,17 @@ extension Note {
             return nil
         }
 
-        return block.text?.filter({ "\u{2605}".contains($0) }).count
+        return block.text?.filter({ Constants.filledInStar.contains($0) }).count
     }
 }
+
+
+// MARK: - Constants!
+//
+private extension Note {
+    enum Constants {
+        static let filledInStar = "\u{2605}"  // Unicode Black Star ★
+        static let emptyStar    = "\u{2606}"  // Unicode White Star ☆
+    }
+}
+

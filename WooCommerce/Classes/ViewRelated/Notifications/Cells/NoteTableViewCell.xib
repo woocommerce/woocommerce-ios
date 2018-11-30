@@ -29,7 +29,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="fNu-km-jyX">
-                        <rect key="frame" x="55" y="11" width="304" height="58.5"/>
+                        <rect key="frame" x="55" y="11" width="304" height="56.5"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Subject" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ow4-CR-HAI" userLabel="Subject Label">
                                 <rect key="frame" x="0.0" y="0.0" width="304" height="20.5"/>
@@ -43,8 +43,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dNq-nY-Zo0" customClass="CosmosView" customModule="Cosmos">
-                                <rect key="frame" x="0.0" y="42.5" width="304" height="16"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dNq-nY-Zo0">
+                                <rect key="frame" x="0.0" y="42.5" width="304" height="14"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="14" id="PU1-eo-Wum"/>
@@ -77,7 +77,7 @@
                 <outlet property="noticonLabel" destination="MDO-G5-bNl" id="FLd-C3-3oN"/>
                 <outlet property="sidebarView" destination="UhB-G7-KD0" id="hlK-xQ-KPR"/>
                 <outlet property="snippetLabel" destination="JQs-0C-rb6" id="Ecy-tm-Fz2"/>
-                <outlet property="starView" destination="dNq-nY-Zo0" id="Ttt-ru-KLa"/>
+                <outlet property="starViewContainer" destination="dNq-nY-Zo0" id="iOP-48-y2e"/>
                 <outlet property="subjectLabel" destination="Ow4-CR-HAI" id="AMO-Yd-fmE"/>
             </connections>
             <point key="canvasLocation" x="240.80000000000001" y="-62.068965517241381"/>

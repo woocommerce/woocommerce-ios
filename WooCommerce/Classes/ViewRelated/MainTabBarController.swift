@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import Yosemite
+import WordPressUI
 
 
 /// Enum representing the individual tabs
@@ -57,6 +58,19 @@ class MainTabBarController: UITabBarController {
         } else {
             trackTabSelected(newTab: userSelectedTab)
         }
+    }
+}
+
+
+// MARK: - UIViewControllerTransitioningDelegate
+//
+extension MainTabBarController: UIViewControllerTransitioningDelegate {
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        guard presented is FancyAlertViewController else {
+            return nil
+        }
+
+        return FancyAlertPresentationController(presentedViewController: presented, presenting: presenting)
     }
 }
 

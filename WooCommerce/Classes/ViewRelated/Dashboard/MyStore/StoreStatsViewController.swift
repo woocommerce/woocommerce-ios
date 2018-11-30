@@ -69,7 +69,7 @@ extension StoreStatsViewController {
     func syncAllStats(onCompletion: (() -> Void)? = nil) {
         let group = DispatchGroup()
 
-        displayGhostContent()
+        ensureGhostContentIsDisplayed()
 
         periodVCs.forEach { (vc) in
             group.enter()
@@ -96,6 +96,16 @@ extension StoreStatsViewController {
 // MARK: - Placeholders
 //
 private extension StoreStatsViewController {
+
+    /// Displays the Ghost Placeholder whenever there is no visible data.
+    ///
+    func ensureGhostContentIsDisplayed() {
+        guard visibleChildViewController.shouldDisplayGhostContent else {
+            return
+        }
+
+        displayGhostContent()
+    }
 
     /// Locks UI Interaction and displays Ghost Placeholder animations.
     ///

@@ -10,7 +10,11 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
 
     // MARK: - Properties
 
-    public let granularity: StatGranularity
+    let granularity: StatGranularity
+
+    var hasTopEarnerStatsItems: Bool {
+        return (topEarnerStats?.items?.count ?? 0) > 0
+    }
 
     @IBOutlet private weak var tableView: IntrinsicTableView!
 
@@ -31,10 +35,6 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
 
     private var topEarnerStats: TopEarnerStats? {
         return resultsController.fetchedObjects.first
-    }
-
-    private var hasTopEarnerStatsItems: Bool {
-        return (topEarnerStats?.items?.count ?? 0) > 0
     }
 
     private var tabDescription: String {

@@ -192,6 +192,79 @@ class SettingStoreTests: XCTestCase {
         settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [])
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
     }
+
+
+    // MARK: - SettingAction.retrieveSiteAPI
+
+
+    /// Verifies that `SettingAction.retrieveSiteAPI` returns the expected API information.
+    ///
+    func testRetrieveSiteAPIReturnsExpectedStatus() {
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectation = self.expectation(description: "Retrieve Site API info successfully")
+
+        network.simulateResponse(requestUrlSuffix: "", filename: "site-api")
+        let action = SettingAction.retrieveSiteAPI(siteID: sampleSiteID) { (siteAPI, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(siteAPI)
+            XCTAssertEqual(siteAPI, self.sampleSiteAPIWithWoo())
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `SettingAction.retrieveSiteAPI` returns the expected API information.
+    ///
+    func testRetrieveSiteAPIReturnsExpectedStatusForNonWooSite() {
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectation = self.expectation(description: "Retrieve Site API info successfully for non-Woo site")
+
+        network.simulateResponse(requestUrlSuffix: "", filename: "site-api-no-woo")
+        let action = SettingAction.retrieveSiteAPI(siteID: sampleSiteID) { (siteAPI, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(siteAPI)
+            XCTAssertEqual(siteAPI, self.sampleSiteAPINoWoo())
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `SettingAction.retrieveSiteAPI` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveSiteAPIReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve Site API info error response")
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "", filename: "generic_error")
+        let action = SettingAction.retrieveSiteAPI(siteID: sampleSiteID) { (siteAPI, error) in
+            XCTAssertNil(siteAPI)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        settingStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `SettingAction.retrieveSiteAPI` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveSiteAPIReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve Site API info empty response")
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = SettingAction.retrieveSiteAPI(siteID: sampleSiteID) { (siteAPI, error) in
+            XCTAssertNil(siteAPI)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        settingStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 
@@ -199,7 +272,7 @@ class SettingStoreTests: XCTestCase {
 //
 private extension SettingStoreTests {
 
-    //  MARK: - SiteSetting Samples
+    // MARK: - SiteSetting Samples
 
     func sampleSiteSetting() -> Networking.SiteSetting {
         return SiteSetting(siteID: sampleSiteID,
@@ -231,5 +304,17 @@ private extension SettingStoreTests {
                            label: "Thousand separator!!",
                            description: "This sets the thousand separator!!",
                            value: "~")
+    }
+
+    // MARK: - SiteAPI Samples
+
+    func sampleSiteAPIWithWoo() -> Networking.SiteAPI {
+        return SiteAPI(siteID: sampleSiteID,
+                       namespaces: ["oembed/1.0", "wpcomsh/v1", "akismet/v1", "jetpack/v4", "wpcom/v2", "wc/v1", "wc/v2", "wc/v3", "wp/v2"])
+    }
+
+    func sampleSiteAPINoWoo() -> Networking.SiteAPI {
+        return SiteAPI(siteID: sampleSiteID,
+                       namespaces: ["oembed/1.0", "wpcomsh/v1", "akismet/v1", "jetpack/v4", "wpcom/v2", "wp/v2"])
     }
 }

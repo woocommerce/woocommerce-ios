@@ -33,7 +33,6 @@ class AccountMapperTests: XCTestCase {
         XCTAssertEqual(first.description, "Testing Tagline")
         XCTAssertEqual(first.url, "https://some-testing-url.testing.blog")
         XCTAssertEqual(first.plan, "Free")
-        XCTAssertEqual(first.isJetpackInstalled, true)
         XCTAssertEqual(first.isWooCommerceActive, true)
         XCTAssertEqual(first.isWordPressStore, true)
 
@@ -43,7 +42,6 @@ class AccountMapperTests: XCTestCase {
         XCTAssertEqual(second.description, "Your Favorite Blog")
         XCTAssertEqual(second.url, "https://thoughts.testing.blog")
         XCTAssertEqual(second.plan, "Free")
-        XCTAssertEqual(second.isJetpackInstalled, false)
         XCTAssertEqual(second.isWooCommerceActive, false)
         XCTAssertEqual(second.isWordPressStore, false)
     }

@@ -8,6 +8,7 @@ import Storage
 
 public typealias Account = Networking.Account
 public typealias Address = Networking.Address
+public typealias APNSDevice = Networking.APNSDevice
 public typealias CommentStatus = Networking.CommentStatus
 public typealias Credentials = Networking.Credentials
 public typealias MetaContainer = Networking.MetaContainer

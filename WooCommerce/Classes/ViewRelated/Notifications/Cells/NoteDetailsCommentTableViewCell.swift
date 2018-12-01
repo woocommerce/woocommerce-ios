@@ -171,6 +171,10 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
         configureStarView()
         configureDefaultAppearance()
     }
+
+    override public func prepareForReuse() {
+        starView.prepareForReuse()
+    }
 }
 
 
@@ -314,6 +318,6 @@ private struct Approve {
 //
 private struct Star {
     static let totalStars = 5
-    static let size       = Double(16)
+    static let size       = Double(18)
     static let margin     = Double(2)
 }

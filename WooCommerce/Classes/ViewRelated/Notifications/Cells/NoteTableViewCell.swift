@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Gridicons
 import Cosmos
 
 
@@ -134,12 +135,10 @@ private extension NoteTableViewCell {
         starView.accessibilityLabel = NSLocalizedString("Star rating", comment: "VoiceOver accessibility label for a product review star rating ")
         starView.settings.updateOnTouch = false
         starView.settings.fillMode = .full
-        starView.settings.starSize = Constants.starSize
-        starView.settings.starMargin = Constants.starMargin
-        starView.settings.filledColor = StyleManager.defaultTextColor
-        starView.settings.filledBorderColor = StyleManager.defaultTextColor
-        starView.settings.emptyColor = .clear
-        starView.settings.emptyBorderColor = .clear
+        starView.settings.starSize = Star.size
+        starView.settings.starMargin = Star.margin
+        starView.settings.filledImage = Star.filledImage
+        starView.settings.emptyImage = Star.emptyImage
         starViewContainer.isHidden = (starRating == nil)
     }    
 }
@@ -148,8 +147,11 @@ private extension NoteTableViewCell {
 // MARK: - Constants!
 //
 private extension NoteTableViewCell {
-    enum Constants {
-        static let starSize   = Double(13)
-        static let starMargin = Double(0)
+
+    enum Star {
+        static let size   = Double(13)
+        static let margin = Double(0)
+        static let filledImage = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(StyleManager.defaultTextColor)
+        static let emptyImage  = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(.clear)
     }
 }

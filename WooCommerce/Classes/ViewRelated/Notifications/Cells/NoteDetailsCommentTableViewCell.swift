@@ -230,10 +230,8 @@ private extension NoteDetailsCommentTableViewCell {
         starView.settings.fillMode = .full
         starView.settings.starSize = Star.size
         starView.settings.starMargin = Star.margin
-        starView.settings.filledColor = StyleManager.goldStarColor
-        starView.settings.filledBorderColor = StyleManager.goldStarColor
-        starView.settings.emptyColor = StyleManager.wooGreyLight
-        starView.settings.emptyBorderColor = StyleManager.wooGreyLight
+        starView.settings.filledImage = Star.filledImage
+        starView.settings.emptyImage = Star.emptyImage
         starViewContainer.isHidden = (starRating == nil)
     }
 
@@ -317,7 +315,9 @@ private struct Approve {
 // MARK: - Star View: Defaults
 //
 private struct Star {
-    static let totalStars = 5
-    static let size       = Double(18)
-    static let margin     = Double(2)
+    static let totalStars  = 5
+    static let size        = Double(18)
+    static let margin      = Double(2)
+    static let filledImage = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(StyleManager.goldStarColor)
+    static let emptyImage  = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(StyleManager.wooGreyLight)
 }

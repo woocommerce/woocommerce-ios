@@ -102,6 +102,7 @@
 		B560D68A2195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B560D6892195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib */; };
 		B560D68C2195BD1E0027BB7E /* NoteDetailsCommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B560D68B2195BD1D0027BB7E /* NoteDetailsCommentTableViewCell.swift */; };
 		B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */; };
+		B56C721221B5B44000E5E85B /* PushNotificationsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C721121B5B44000E5E85B /* PushNotificationsConfiguration.swift */; };
 		B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */; };
 		B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */; };
 		B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */; };
@@ -366,6 +367,7 @@
 		B560D6892195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteDetailsCommentTableViewCell.xib; sourceTree = "<group>"; };
 		B560D68B2195BD1D0027BB7E /* NoteDetailsCommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailsCommentTableViewCell.swift; sourceTree = "<group>"; };
 		B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinatorTests.swift; sourceTree = "<group>"; };
+		B56C721121B5B44000E5E85B /* PushNotificationsConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsConfiguration.swift; sourceTree = "<group>"; };
 		B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WooCommerce.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B56DB3CE2049BFAA00D4AA8E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -911,6 +913,7 @@
 			isa = PBXGroup;
 			children = (
 				B555530E21B57DE700449E71 /* ApplicationWrapper.swift */,
+				B56C721121B5B44000E5E85B /* PushNotificationsConfiguration.swift */,
 				B5BBD6DD21B1703600E3207E /* PushNotificationsManager.swift */,
 				B555530C21B57DC300449E71 /* UserNotificationCenterWrapper.swift */,
 			);
@@ -1656,6 +1659,7 @@
 				74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */,
 				74AFF2EA211B9B1B0038153A /* StoreStatsViewController.swift in Sources */,
 				B55BC1F121A878A30011A0C0 /* String+HTML.swift in Sources */,
+				B56C721221B5B44000E5E85B /* PushNotificationsConfiguration.swift in Sources */,
 				CE021535215BE3AB00C19555 /* LoginNavigationController+Woo.swift in Sources */,
 				B541B223218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift in Sources */,
 				B50BB4162141828F00AF0F3C /* FooterSpinnerView.swift in Sources */,

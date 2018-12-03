@@ -29,7 +29,10 @@ class PushNotificationsManagerTests: XCTestCase {
     override func setUp() {
         application = MockupApplication()
         userNotificationCenter = MockupUserNotificationCenter()
-        manager = PushNotificationsManager(defaults: defaults, application: application, userNotificationCenter: userNotificationCenter)
+        let configuration = PushNotificationsConfiguration(defaults: defaults,
+                                                           application: application,
+                                                           userNotificationCenter: userNotificationCenter)
+        manager = PushNotificationsManager(configuration: configuration)
     }
 
 

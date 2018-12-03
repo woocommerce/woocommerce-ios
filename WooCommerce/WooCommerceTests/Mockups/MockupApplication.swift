@@ -24,4 +24,11 @@ class MockupApplication: ApplicationWrapper {
     func registerForRemoteNotifications() {
         registerWasCalled = true
     }
+
+    /// Restores the initial state
+    ///
+    func reset() {
+        registerWasCalled = false
+        applicationIconBadgeNumber = .min
+    }
 }

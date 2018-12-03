@@ -178,6 +178,44 @@ import Yosemite
         let _ = getUserProfile()
         return userEmail
     }
+
+    /// Returns the tags for the ZD ticket field
+    ///
+    func getTags() -> [String] {
+
+        /// Start with default tags.
+        /// Tags are used for refining and filtering tickets so they display in the web portal, under "Lovely Views".
+        /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
+        var tags = [Constants.platformTag,
+                    Constants.sdkTag,
+                    Constants.jetpackTag]
+
+        /// Determine if the account is a wp.com account.
+        ///
+        guard let site = StoresManager.shared.sessionManager.defaultSite else {
+            return tags
+        }
+
+        /// Determine this is a wp.com store.
+        /// No tag if self-hosted.
+        if site.isWordPressStore == true {
+            tags.append(Constants.wpComTag)
+        }
+
+        /// Add the site plan.
+        ///
+        if site.plan.isEmpty == false {
+            tags.append(site.plan)
+        }
+
+        /// Add source tag.
+        ///
+        if let sourceTagOrigin = sourceTag?.origin, sourceTagOrigin.isEmpty == false {
+            tags.append(sourceTagOrigin)
+        }
+
+        return tags
+    }
 }
 
 // MARK: - Private Extension
@@ -416,41 +454,6 @@ private extension ZendeskManager {
         return "\(url) (\(site.description))"
     }
 
-    func getTags() -> [String] {
-
-        /// Start with default tags.
-        /// Tags are used for refining and filtering tickets so they display in the web portal, under "Lovely Views".
-        /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
-        var tags = [Constants.platformTag,
-                    Constants.sdkTag,
-                    Constants.jetpackTag]
-
-        /// Determine if the account is a wp.com account.
-        ///
-        guard let site = StoresManager.shared.sessionManager.defaultSite else {
-            return tags
-        }
-
-        /// Determine this is a wp.com store.
-        /// No tag if self-hosted.
-        if site.isWordPressStore == true {
-            tags.append(Constants.wpComTag)
-        }
-
-        /// Add the site plan.
-        ///
-        if site.plan.isEmpty == false {
-            tags.append(site.plan)
-        }
-
-        /// Add source tag.
-        ///
-        if let sourceTagOrigin = sourceTag?.origin, sourceTagOrigin.isEmpty == false {
-            tags.append(sourceTagOrigin)
-        }
-
-        return tags
-    }
 
     func getNetworkInformation() -> String {
 

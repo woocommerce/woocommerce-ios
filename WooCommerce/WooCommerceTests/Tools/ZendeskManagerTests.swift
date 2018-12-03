@@ -27,7 +27,7 @@ class ZendeskManagerTests: XCTestCase {
     /// Test default tags return as expected.
     ///
     func testZendeskDefaultTags() {
-        let tags = ZendeskManager.shared.getTags() // how do I access private methods for testing again?
+        let tags = ZendeskManager.shared.getTags()
         XCTAssertEqual(zdTags, tags)
     }
 

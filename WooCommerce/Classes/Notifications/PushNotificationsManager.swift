@@ -117,11 +117,6 @@ extension PushNotificationsManager {
     ///     - defaultStoreID: Default WooCommerce Store ID
     ///
     func registerDeviceToken(with tokenData: Data, defaultStoreID: Int) {
-        guard StoresManager.shared.isAuthenticated else {
-            return
-        }
-
-        // Token Cleanup
         let newToken = tokenData.hexString
 
         if deviceToken != newToken {
@@ -129,6 +124,8 @@ extension PushNotificationsManager {
         } else {
             DDLogInfo("Device Token Received: [\(newToken)]")
         }
+
+        deviceToken = newToken
 
         // Register in the Dotcom's Infrastructure
         registerDotcomDevice(with: newToken, defaultStoreID: defaultStoreID) { (device, error) in
@@ -140,8 +137,6 @@ extension PushNotificationsManager {
             DDLogVerbose("Successfully registered Device ID \(deviceID) for Push Notifications")
             self.deviceID = deviceID
         }
-
-        deviceToken = newToken
     }
 
 
@@ -229,7 +224,7 @@ private extension PushNotificationsManager {
         }
 
         DDLogInfo("Running Notifications Background Fetch...")
-        StoresManager.shared.dispatch(action)
+        configuration.storesManager.dispatch(action)
 
         return true
     }
@@ -249,7 +244,7 @@ private extension PushNotificationsManager {
                                                        applicationVersion: Bundle.main.version,
                                                        defaultStoreID: defaultStoreID,
                                                        onCompletion: onCompletion)
-        StoresManager.shared.dispatch(action)
+        configuration.storesManager.dispatch(action)
     }
 
 
@@ -257,7 +252,7 @@ private extension PushNotificationsManager {
     ///
     func unregisterDotcomDevice(with deviceID: String, onCompletion: @escaping (Error?) -> Void) {
         let action = NotificationAction.unregisterDevice(deviceId: deviceID, onCompletion: onCompletion)
-        StoresManager.shared.dispatch(action)
+        configuration.storesManager.dispatch(action)
     }
 }
 
@@ -266,7 +261,7 @@ private extension PushNotificationsManager {
 //
 private extension PushNotificationsManager {
 
-    ///
+    /// Tracks the specified Notification's Payload.
     ///
     func trackNotification(with userInfo: [AnyHashable: Any]) {
         var properties = [String: String]()

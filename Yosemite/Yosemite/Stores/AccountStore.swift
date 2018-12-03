@@ -83,8 +83,7 @@ private extension AccountStore {
                 return
             }
 
-            // How do I convert between a SitePlan type and a Site type?
-            self?.updateStoredSitePlan(readOnlySite: siteplan)
+            self?.updateStoredSite(plan: siteplan)
             onCompletion(nil)
         }
     }
@@ -138,13 +137,13 @@ extension AccountStore {
 
     /// Updates the specified ReadOnly Site Plan attribute in the Site entity, in the Storage Layer.
     ///
-    func updateStoredSitePlan(readOnlySite: Networking.Site) {
+    func updateStoredSite(plan: SitePlan) {
         assert(Thread.isMainThread)
 
         let storage = storageManager.viewStorage
 
-        let storageSite = storage.loadSite(siteID: readOnlySite.siteID)
-        storageSite?.update(with: readOnlySite)
+        let storageSite = storage.loadSite(siteID: plan.siteID)
+        storageSite?.plan = plan.shortName
 
         storage.saveIfNeeded()
     }

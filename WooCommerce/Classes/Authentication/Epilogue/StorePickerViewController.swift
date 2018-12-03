@@ -241,7 +241,7 @@ extension StorePickerViewController {
                                       withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? String()])
 
             dismiss(animated: true) {
-                RequirementsChecker.checkMinimumWooVersion()
+                AppDelegate.shared.authenticatorWasDismissed()
             }
         }
     }

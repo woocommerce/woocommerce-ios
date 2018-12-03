@@ -72,6 +72,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupCocoaLumberjack()
         setupLogLevel(.verbose)
         setupNoticePresenter()
+        setupPushNotificationsManagerIfPossible()
 
         // Display the Authentication UI
         displayAuthenticatorIfNeeded()
@@ -82,10 +83,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
-
-        // Push Notifications
-        registerForRemoteNotificationsIfPossible()
-        requestPushNotificationsAuthIfNeeded()
 
         // Upgrade check...
         checkForUpgrades()
@@ -252,6 +249,17 @@ private extension AppDelegate {
     func setupNoticePresenter() {
         noticePresenter.presentingViewController = window?.rootViewController
     }
+
+    /// Push Notifications: Authorization + Registration!
+    ///
+    func setupPushNotificationsManagerIfPossible() {
+        guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore == false else {
+            return
+        }
+
+        pushNotesManager.registerForRemoteNotifications()
+        pushNotesManager.ensureAuthorizationIsRequested()
+    }
 }
 
 
@@ -271,28 +279,6 @@ private extension AppDelegate {
         }
 
         UserDefaults.standard[.versionOfLastRun] = currentVersion
-    }
-}
-
-
-// MARK: - Push Notifications
-//
-extension AppDelegate {
-
-    /// Push Notifications Registration
-    ///
-    func registerForRemoteNotificationsIfPossible() {
-        guard StoresManager.shared.isAuthenticated else {
-            return
-        }
-
-        pushNotesManager.registerForRemoteNotifications()
-    }
-
-    /// Requests permission to enable Push Notifications (if needed / possible)
-    ///
-    func requestPushNotificationsAuthIfNeeded() {
-        pushNotesManager.ensureAuthorizationIsRequested()
     }
 }
 
@@ -348,5 +334,12 @@ extension AppDelegate {
         }
 
         StoresManager.shared.synchronizeEntities()
+    }
+
+    /// Runs whenever the Authentication Flow is completed successfully.
+    ///
+    func authenticatorWasDismissed() {
+        setupPushNotificationsManagerIfPossible()
+        RequirementsChecker.checkMinimumWooVersion()
     }
 }

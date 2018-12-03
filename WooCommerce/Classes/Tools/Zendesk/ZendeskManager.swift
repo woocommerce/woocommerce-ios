@@ -81,6 +81,24 @@ import Yosemite
         observeZendeskNotifications()
     }
 
+    /// Notification received or public method called,
+    /// to signal that the default site may contain plan information.
+    /// Uses `@objc` because this method is used in a `#selector()` call.
+    @objc func updateSitePlan() {
+        guard let siteID = StoresManager.shared.sessionManager.defaultSite?.siteID else {
+            return
+        }
+
+        let action = AccountAction.synchronizeSitePlan(siteID: siteID) { (error) in
+            if let error = error {
+                DDLogError("⛔️ AccountAction: (Default Site) — Error synchronizing site plan: \(error)")
+            }
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
+
     // MARK: - Show Zendesk Views
 
     // -TODO: in the future this should show the Zendesk Help Center.
@@ -160,7 +178,6 @@ import Yosemite
         let _ = getUserProfile()
         return userEmail
     }
-
 }
 
 // MARK: - Private Extension
@@ -645,8 +662,17 @@ private extension ZendeskManager {
         }
     }
 
-    // MARK: - Constants
 
+    // MARK: - Observe Notifications
+    //
+    func observeNotifications() {
+        // Default Site Plan Changes
+        NotificationCenter.default.addObserver(self, selector: #selector(updateSitePlan), name: NSNotification.Name.StoresManagerDidUpdateDefaultSite, object: nil)
+    }
+
+
+    // MARK: - Constants
+    //
     struct Constants {
         static let unknownValue = "unknown"
         static let noValue = "none"

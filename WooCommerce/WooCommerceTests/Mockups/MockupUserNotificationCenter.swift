@@ -32,4 +32,12 @@ class MockupUserNotificationCenter: UserNotificationCenterWrapper {
         requestAuthorizationWasCalled = true
         completion(requestAuthorizationIsSuccessful)
     }
+
+    /// Restores the initial state
+    ///
+    func reset() {
+        authorizationStatus = .notDetermined
+        requestAuthorizationWasCalled = false
+        requestAuthorizationIsSuccessful = false
+    }
 }

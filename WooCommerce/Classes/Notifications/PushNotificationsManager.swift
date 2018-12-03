@@ -10,43 +10,35 @@ import Yosemite
 ///
 class PushNotificationsManager {
 
-    /// Reference to the UserDefaults Instance that should be used.
+    /// PushNotifications Configuration
     ///
-    private let defaults: UserDefaults
-
-    /// Wraps UIApplication's API. Why not use the SDK directly?: Unit Tests!
-    ///
-    private var application: ApplicationWrapper
-
-    /// Wraps UNUserNotificationCenter API. Why not use the SDK directly?: Unit Tests!
-    ///
-    private let userNotificationCenter: UserNotificationCenterWrapper
+    private let configuration: PushNotificationsConfiguration
 
     /// Returns the current Application's State.`
     ///
     private var applicationState: UIApplication.State {
-        return application.applicationState
+        return configuration.application.applicationState
     }
 
-    ///
+    /// Apple's Push Notifications DeviceToken.
     ///
     private var deviceToken: String? {
         get {
-            return defaults.object(forKey: .deviceToken)
+            return configuration.defaults.object(forKey: .deviceToken)
         }
         set {
-            defaults.set(newValue, forKey: .deviceToken)
+            configuration.defaults.set(newValue, forKey: .deviceToken)
         }
     }
 
-    ///
+    /// WordPress.com Device Identifier.
     ///
     private var deviceID: String? {
         get {
-            return defaults.object(forKey: .deviceID)
+            return configuration.defaults.object(forKey: .deviceID)
         }
         set {
-            defaults.set(newValue, forKey: .deviceID)
+            configuration.defaults.set(newValue, forKey: .deviceID)
         }
     }
 
@@ -54,20 +46,10 @@ class PushNotificationsManager {
     /// Initializes the PushNotificationsManager.
     ///
     /// - Parameters:
-    ///     - defaults: UserDefaults Reference that should be used to store the Device ID + Token.
-    ///     - application: UIApplication's API Wrapper, related to Push Notification.
-    ///     - userNotificationCenter: UNUserNotificationCenter's API Wrapper.
+    ///     - configuration: PushNotificationsConfiguration Instance that should be used.
     ///
-    init(defaults: UserDefaults, application: ApplicationWrapper, userNotificationCenter: UserNotificationCenterWrapper) {
-        self.defaults = defaults
-        self.application = application
-        self.userNotificationCenter = userNotificationCenter
-    }
-
-    /// Convenience Initializer.
-    ///
-    convenience init() {
-        self.init(defaults: .standard, application: UIApplication.shared, userNotificationCenter: UNUserNotificationCenter.current())
+    init(configuration: PushNotificationsConfiguration = .default) {
+        self.configuration = configuration
     }
 }
 
@@ -81,13 +63,13 @@ extension PushNotificationsManager {
     /// - Paramter onCompletion: Closure to be executed on completion. Receives a Boolean indicating if we've got Push Permission.
     ///
     func ensureAuthorizationIsRequested(onCompletion: ((Bool) -> Void)? = nil) {
-        userNotificationCenter.loadAuthorizationStatus(queue: .main) { status in
+        configuration.userNotificationCenter.loadAuthorizationStatus(queue: .main) { status in
             guard status == .notDetermined else {
                 onCompletion?(status == .authorized)
                 return
             }
 
-            self.userNotificationCenter.requestAuthorization(queue: .main) { allowed in
+            self.configuration.userNotificationCenter.requestAuthorization(queue: .main) { allowed in
                 let stat: WooAnalyticsStat = allowed ? .pushNotificationOSAlertAllowed : .pushNotificationOSAlertDenied
                 WooAnalytics.shared.track(stat)
 
@@ -103,7 +85,7 @@ extension PushNotificationsManager {
     ///
     func registerForRemoteNotifications() {
         DDLogInfo("Registering for Remote Notifications...")
-        application.registerForRemoteNotifications()
+        configuration.application.registerForRemoteNotifications()
     }
 
 
@@ -129,6 +111,10 @@ extension PushNotificationsManager {
 
 
     /// Registers the Device Token agains WordPress.com backend, if there's a default account.
+    ///
+    /// - Parameters:
+    ///     - tokenData: APNS's Token Data
+    ///     - defaultStoreID: Default WooCommerce Store ID
     ///
     func registerDeviceToken(with tokenData: Data, defaultStoreID: Int) {
         guard StoresManager.shared.isAuthenticated else {
@@ -162,6 +148,8 @@ extension PushNotificationsManager {
     /// Handles Push Notifications Registration Errors. This method unregisters the current device from the WordPress.com
     /// Push Service.
     ///
+    /// - Parameter error: Error received after attempting to register for Push Notifications.
+    ///
     func registrationDidFail(with error: Error) {
         DDLogError("⛔️ Push Notifications Registration Failure: \(error)")
         unregisterForRemoteNotifications()
@@ -176,7 +164,7 @@ extension PushNotificationsManager {
 
         // Badge: Update
         if let badgeCountNumber = userInfo[APNSKey.badge] as? Int {
-            application.applicationIconBadgeNumber = badgeCountNumber
+            configuration.application.applicationIconBadgeNumber = badgeCountNumber
         }
 
         // Badge: Reset

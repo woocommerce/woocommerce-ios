@@ -4,7 +4,7 @@ import UIKit
 
 /// ApplicationWrapper: Wraps UIApplication's API. Meant for Unit Testing Purposes.
 ///
-protocol ApplicationWrapper {
+protocol ApplicationWrapper: class {
 
     /// App's Badge Count
     ///

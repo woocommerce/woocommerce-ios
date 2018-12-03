@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 import Gridicons
-import Cosmos
 
 
 // MARK: - NoteTableViewCell
@@ -24,13 +23,9 @@ class NoteTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var snippetLabel: UILabel!
 
-    /// UIView: container view for rating star view
+    /// Custom UIView: Rating star view
     ///
-    @IBOutlet private var starViewContainer: UIView!
-
-    /// Star View for reviews
-    ///
-    private var starView = CosmosView()
+    @IBOutlet private var starRatingView: RatingView!
 
     /// Indicates if the Row should be marked as Read or not.
     ///
@@ -78,12 +73,12 @@ class NoteTableViewCell: UITableViewCell {
     var starRating: Int? {
         didSet {
             guard let starRating = starRating else {
-                starViewContainer.isHidden = true
+                starRatingView.isHidden = true
                 return
             }
 
-            starView.rating = Double(starRating)
-            starViewContainer.isHidden = false
+            starRatingView.rating = CGFloat(starRating)
+            starRatingView.isHidden = false
         }
     }
 
@@ -107,10 +102,6 @@ class NoteTableViewCell: UITableViewCell {
         super.setHighlighted(highlighted, animated: animated)
         refreshColors()
     }
-
-    override public func prepareForReuse() {
-        starView.prepareForReuse()
-    }
 }
 
 
@@ -126,21 +117,10 @@ private extension NoteTableViewCell {
     }
 
     func configureStarView() {
-        if starViewContainer.subviews.isEmpty {
-            starView.translatesAutoresizingMaskIntoConstraints = false
-            starViewContainer.addSubview(starView)
-            starViewContainer.pinSubviewToAllEdges(starView)
-        }
-
-        starView.accessibilityLabel = NSLocalizedString("Star rating", comment: "VoiceOver accessibility label for a product review star rating ")
-        starView.settings.updateOnTouch = false
-        starView.settings.fillMode = .full
-        starView.settings.starSize = Star.size
-        starView.settings.starMargin = Star.margin
-        starView.settings.filledImage = Star.filledImage
-        starView.settings.emptyImage = Star.emptyImage
-        starViewContainer.isHidden = (starRating == nil)
-    }    
+        starRatingView.starImage = Star.filledImage
+        starRatingView.emptyStarImage = Star.emptyImage
+        starRatingView.isHidden = (starRating == nil)
+    }
 }
 
 
@@ -150,7 +130,6 @@ private extension NoteTableViewCell {
 
     enum Star {
         static let size   = Double(13)
-        static let margin = Double(0)
         static let filledImage = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(StyleManager.defaultTextColor)
         static let emptyImage  = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(.clear)
     }

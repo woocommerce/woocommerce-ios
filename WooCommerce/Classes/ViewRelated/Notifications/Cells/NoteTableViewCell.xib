@@ -43,7 +43,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dNq-nY-Zo0">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dNq-nY-Zo0" customClass="RatingView" customModule="WooCommerce" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="42.5" width="304" height="14"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -77,7 +77,7 @@
                 <outlet property="noticonLabel" destination="MDO-G5-bNl" id="FLd-C3-3oN"/>
                 <outlet property="sidebarView" destination="UhB-G7-KD0" id="hlK-xQ-KPR"/>
                 <outlet property="snippetLabel" destination="JQs-0C-rb6" id="Ecy-tm-Fz2"/>
-                <outlet property="starViewContainer" destination="dNq-nY-Zo0" id="iOP-48-y2e"/>
+                <outlet property="starRatingView" destination="dNq-nY-Zo0" id="Bo9-lO-30X"/>
                 <outlet property="subjectLabel" destination="Ow4-CR-HAI" id="AMO-Yd-fmE"/>
             </connections>
             <point key="canvasLocation" x="240.80000000000001" y="-62.068965517241381"/>

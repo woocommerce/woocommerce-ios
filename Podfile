@@ -36,7 +36,6 @@ target 'WooCommerce' do
   pod 'XLPagerTabStrip', '~> 8.1'
   pod 'Charts', '~> 3.2'
   pod 'ZendeskSDK', '~> 2.2'
-  pod 'Cosmos', '~> 17.0'
 
   # Unit Tests
   # ==========

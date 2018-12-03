@@ -45,4 +45,3 @@ private extension Note {
         static let emptyStar    = "\u{2606}"  // Unicode White Star ☆
     }
 }
-

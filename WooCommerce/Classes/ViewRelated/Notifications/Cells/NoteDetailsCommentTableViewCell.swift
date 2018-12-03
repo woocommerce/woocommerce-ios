@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import WordPressUI
 import Gridicons
-import Cosmos
 
 
 // MARK: - NoteDetailsCommentTableViewCell
@@ -37,13 +36,9 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var approvalButton: UIButton!
 
-    /// UIView: container view for rating star view
+    /// Custom UIView: Rating star view
     ///
-    @IBOutlet private var starViewContainer: UIView!
-
-    /// Star View for reviews
-    ///
-    private var starView = CosmosView()
+    @IBOutlet private var starRatingView: RatingView!
 
     /// Closure to be executed whenever the Spam Button is pressed.
     ///
@@ -146,12 +141,12 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
     var starRating: Int? {
         didSet {
             guard let starRating = starRating else {
-                starViewContainer.isHidden = true
+                starRatingView.isHidden = true
                 return
             }
 
-            starView.rating = Double(starRating)
-            starViewContainer.isHidden = false
+            starRatingView.rating = CGFloat(starRating)
+            starRatingView.isHidden = false
         }
     }
 
@@ -170,10 +165,6 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
         configureActionButtons()
         configureStarView()
         configureDefaultAppearance()
-    }
-
-    override public func prepareForReuse() {
-        starView.prepareForReuse()
     }
 }
 
@@ -218,21 +209,9 @@ private extension NoteDetailsCommentTableViewCell {
     /// Setup: Star rating view
     ///
     func configureStarView() {
-        if starViewContainer.subviews.isEmpty {
-            starView.translatesAutoresizingMaskIntoConstraints = false
-            starViewContainer.addSubview(starView)
-            starViewContainer.pinSubviewToAllEdges(starView)
-        }
-
-        starView.accessibilityLabel = NSLocalizedString("Star rating", comment: "VoiceOver accessibility label for a product review star rating ")
-        starView.settings.updateOnTouch = false
-        starView.settings.totalStars = Star.totalStars
-        starView.settings.fillMode = .full
-        starView.settings.starSize = Star.size
-        starView.settings.starMargin = Star.margin
-        starView.settings.filledImage = Star.filledImage
-        starView.settings.emptyImage = Star.emptyImage
-        starViewContainer.isHidden = (starRating == nil)
+        starRatingView.starImage = Star.filledImage
+        starRatingView.emptyStarImage = Star.emptyImage
+        starRatingView.isHidden = (starRating == nil)
     }
 
     /// Setup: Button Appearance
@@ -315,9 +294,7 @@ private struct Approve {
 // MARK: - Star View: Defaults
 //
 private struct Star {
-    static let totalStars  = 5
     static let size        = Double(18)
-    static let margin      = Double(2)
     static let filledImage = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(StyleManager.goldStarColor)
     static let emptyImage  = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(StyleManager.wooGreyLight)
 }

@@ -103,6 +103,7 @@
 		B560D68C2195BD1E0027BB7E /* NoteDetailsCommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B560D68B2195BD1D0027BB7E /* NoteDetailsCommentTableViewCell.swift */; };
 		B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */; };
 		B56C721221B5B44000E5E85B /* PushNotificationsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C721121B5B44000E5E85B /* PushNotificationsConfiguration.swift */; };
+		B56C721421B5BBC000E5E85B /* MockupStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C721321B5BBC000E5E85B /* MockupStoresManager.swift */; };
 		B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */; };
 		B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */; };
 		B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */; };
@@ -368,6 +369,7 @@
 		B560D68B2195BD1D0027BB7E /* NoteDetailsCommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailsCommentTableViewCell.swift; sourceTree = "<group>"; };
 		B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinatorTests.swift; sourceTree = "<group>"; };
 		B56C721121B5B44000E5E85B /* PushNotificationsConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsConfiguration.swift; sourceTree = "<group>"; };
+		B56C721321B5BBC000E5E85B /* MockupStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupStoresManager.swift; sourceTree = "<group>"; };
 		B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WooCommerce.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B56DB3CE2049BFAA00D4AA8E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -589,6 +591,7 @@
 				B555531021B57E6F00449E71 /* MockupApplication.swift */,
 				B53A569C21123EEB000776C9 /* MockupStorage.swift */,
 				B53A56A12112470C000776C9 /* MockupStorage+Sample.swift */,
+				B56C721321B5BBC000E5E85B /* MockupStoresManager.swift */,
 				B53A569A21123E8E000776C9 /* MockupTableView.swift */,
 				B555531221B57E8800449E71 /* MockupUserNotificationCenter.swift */,
 			);
@@ -1703,6 +1706,7 @@
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,
 				B541B2132189E7FD008FE7C1 /* ScannerWooTests.swift in Sources */,
 				B53A56A42112483E000776C9 /* Constants.swift in Sources */,
+				B56C721421B5BBC000E5E85B /* MockupStoresManager.swift in Sources */,
 				B5C6CE612190D28E00515926 /* NSAttributedStringHelperTests.swift in Sources */,
 				748C7784211E2D8400814F2C /* DoubleWooTests.swift in Sources */,
 				B5718D6521B56B400026C9F0 /* PushNotificationsManagerTests.swift in Sources */,

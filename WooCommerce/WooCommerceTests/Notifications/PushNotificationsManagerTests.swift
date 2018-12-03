@@ -100,10 +100,7 @@ class PushNotificationsManagerTests: XCTestCase {
     ///
     func testHandleNotificationUpdatesApplicationsBadgeNumber() {
         let updatedBadgeNumber = 10
-        let userInfo: [String: Any] = [
-            "aps.badge": updatedBadgeNumber,
-            "type": "badge-reset"
-        ]
+        let userInfo = notificationPayload(badgeCount: updatedBadgeNumber)
 
         XCTAssertEqual(application.applicationIconBadgeNumber, Int.min)
 
@@ -119,7 +116,6 @@ class PushNotificationsManagerTests: XCTestCase {
         manager.unregisterForRemoteNotifications()
         XCTAssert(storesManager.receivedActions.isEmpty)
     }
-
 
     /// Verifies that `unregisterForRemoteNotifications` does dispatch `.unregisterDevice` Action, whenever the
     /// deviceID is known.
@@ -188,6 +184,20 @@ class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(defaults.containsObject(forKey: .deviceToken))
         manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
         XCTAssertTrue(defaults.containsObject(forKey: .deviceToken))
+    }
+}
+
+
+// MARK: - Private Methods
+//
+private extension PushNotificationsManagerTests {
+
+    /// Returns a Sample Notification Payload, with the specified BadgeCount
+    ///
+    func notificationPayload(badgeCount: Int) -> [String: Any] {
+        return [
+            "aps.badge": badgeCount
+        ]
     }
 }
 

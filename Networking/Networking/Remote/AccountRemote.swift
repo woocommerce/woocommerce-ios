@@ -31,16 +31,16 @@ public class AccountRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Loads Details for Sites collection associated with the WordPress.com user.
+    /// Loads the site plan for the default site associated with the WordPress.com user.
     ///
-    public func loadSitesDetail(completion: @escaping ([Site]?, Error?) -> Void) {
-        let path = "me/sites"
+    public func loadSitePlan(for siteID: Int, completion: @escaping (SitePlan?, Error?) -> Void) {
+        let path = "sites/\(siteID)"
         let parameters = [
-            "fields": "ID,name,description,URL,plan,options"
+            "fields": "ID,plan"
         ]
 
-        let request = DotcomRequest(wordpressApiVersion: .mark1_2, method: .get, path: path, parameters: parameters)
-        let mapper = SiteListMapper()
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
+        let mapper = SitePlanMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }

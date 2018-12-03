@@ -234,7 +234,8 @@ extension StorePickerViewController {
         case .empty:
             restartAuthentication()
         default:
-            let action = AccountAction.synchronizeSiteDetails { (error) in
+            let siteID = StoresManager.shared.sessionManager.defaultStoreID
+            let action = AccountAction.synchronizeSitePlan(siteID: siteID) { (error) in
                 if let error = error {
                     DDLogError("⛔️ StorePickerViewController (All Sites) — Error synchronizing sites details: \(error)")
                 }

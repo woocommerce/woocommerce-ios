@@ -16,11 +16,12 @@ class RatingView: UIView {
             return _rating
         }
         set (newRating) {
-            if newRating >= Defaults.maxStars {
-                _rating = Defaults.maxStars
-            } else {
-                _rating = newRating
+            guard (newRating >= Defaults.minRating) else {
+                _rating = Defaults.minRating
+                return
             }
+
+            _rating = min(newRating, Defaults.maxStars)
         }
     }
 
@@ -42,7 +43,7 @@ class RatingView: UIView {
 
     // MARK: Private Properties
 
-    private var _rating: CGFloat = 0.0 {
+    private var _rating: CGFloat = Defaults.minRating {
         didSet {
             updateImageViews()
         }
@@ -181,7 +182,8 @@ private class StarView: UIView {
 // MARK: - Constants!
 //
 fileprivate enum Defaults {
-    static let padding  = CGFloat(0.0)
+    static let minRating = CGFloat(0.0)
     static let maxStars = CGFloat(5.0)
+    static let padding  = CGFloat(0.0)
     static let height = CGFloat(10.0)
 }

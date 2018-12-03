@@ -37,7 +37,6 @@ class ZendeskManagerTests: XCTestCase {
         super.setUp()
 
         setupZendesk()
-        setupRequestConfig()
     }
 
     func setupZendesk() {

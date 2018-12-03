@@ -43,6 +43,12 @@ extension UserDefaults {
         removeObject(forKey: key.rawValue)
     }
 
+    /// Indicates if there's an entry for the specified Key.
+    ///
+    func containsObject(forKey key: Key) -> Bool {
+        return value(forKey: key.rawValue) != nil
+    }
+
     /// Subscript Accessible via our new Key type!
     ///
     subscript<T>(key: Key) -> T? {

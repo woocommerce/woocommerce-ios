@@ -530,6 +530,7 @@ private extension NotificationsViewController {
         cell.noticon = note.noticon
         cell.attributedSubject = renderSubject(note: note)
         cell.attributedSnippet = renderSnippet(note: note)
+        cell.starRating = note.starRating
     }
 }
 
@@ -747,7 +748,7 @@ private extension NotificationsViewController {
     }
 
     enum Settings {
-        static let estimatedRowHeight = CGFloat(86)
+        static let estimatedRowHeight = CGFloat(88)
         static let placeholderRowsPerSection = [3]
     }
 

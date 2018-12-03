@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Gridicons
 
 
 // MARK: - NoteTableViewCell
@@ -22,6 +23,9 @@ class NoteTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var snippetLabel: UILabel!
 
+    /// Custom UIView: Rating star view
+    ///
+    @IBOutlet private var starRatingView: RatingView!
 
     /// Indicates if the Row should be marked as Read or not.
     ///
@@ -64,12 +68,27 @@ class NoteTableViewCell: UITableViewCell {
         }
     }
 
+    /// Star rating value (if nil, star rating view will be hidden)
+    ///
+    var starRating: Int? {
+        didSet {
+            guard let starRating = starRating else {
+                starRatingView.isHidden = true
+                return
+            }
+
+            starRatingView.rating = CGFloat(starRating)
+            starRatingView.isHidden = false
+        }
+    }
+
 
     // MARK: - Overridden Methods
 
     override func awakeFromNib() {
         super.awakeFromNib()
         noticonLabel.font = UIFont.noticon(forStyle: .title1)
+        configureStarView()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -95,5 +114,23 @@ private extension NoteTableViewCell {
     func refreshColors() {
         sidebarView.backgroundColor = read ? UIColor.clear : StyleManager.wooAccent
         noticonLabel.textColor = read ? StyleManager.wooGreyMid : StyleManager.wooAccent
+    }
+
+    func configureStarView() {
+        starRatingView.starImage = Star.filledImage
+        starRatingView.emptyStarImage = Star.emptyImage
+        starRatingView.isHidden = (starRating == nil)
+    }
+}
+
+
+// MARK: - Constants!
+//
+private extension NoteTableViewCell {
+
+    enum Star {
+        static let size   = Double(13)
+        static let filledImage = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(StyleManager.defaultTextColor)
+        static let emptyImage  = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(.clear)
     }
 }

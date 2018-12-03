@@ -158,6 +158,8 @@
 		B5C6FCD620A3768900A4F8E4 /* order.json in Resources */ = {isa = PBXBuildFile; fileRef = B5C6FCD520A3768900A4F8E4 /* order.json */; };
 		B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */; };
 		CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */ = {isa = PBXBuildFile; fileRef = CE20179220E3EFA7005B4C18 /* broken-orders.json */; };
+		CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345D21B571A7007573C6 /* SitePlanMapper.swift */; };
+		CE50346021B5799F007573C6 /* SitePlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345F21B5799F007573C6 /* SitePlan.swift */; };
 		CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */; };
 /* End PBXBuildFile section */
 
@@ -328,6 +330,8 @@
 		BD9439D9B8F2C1ED2EADAA51 /* Pods-NetworkingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C8F9A8CC6F90A8C9B5EF2EE2 /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
 		CE20179220E3EFA7005B4C18 /* broken-orders.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "broken-orders.json"; sourceTree = "<group>"; };
+		CE50345D21B571A7007573C6 /* SitePlanMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlanMapper.swift; sourceTree = "<group>"; };
+		CE50345F21B5799F007573C6 /* SitePlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlan.swift; sourceTree = "<group>"; };
 		CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteMapper.swift; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -568,6 +572,7 @@
 				B56C1EB720EA76F500D749F9 /* Site.swift */,
 				7426CA0E21AF2C90004E9FFC /* SiteAPI.swift */,
 				74046E1C217A6989007DD7BF /* SiteSetting.swift */,
+				CE50345F21B5799F007573C6 /* SitePlan.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -637,6 +642,7 @@
 				748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */,
 				7426CA1021AF30BD004E9FFC /* SiteAPIMapper.swift */,
 				B56C1EB520EA757B00D749F9 /* SiteListMapper.swift */,
+				CE50345D21B571A7007573C6 /* SitePlanMapper.swift */,
 				74046E1E217A6B70007DD7BF /* SiteSettingsMapper.swift */,
 				74A1D26C21189DFE00931DFA /* SiteVisitStatsMapper.swift */,
 				B53EF53B21814900003E146F /* SuccessResultMapper.swift */,
@@ -946,6 +952,7 @@
 				B5A2417D217F9ECC00595DEF /* MetaContainer.swift in Sources */,
 				B53EF53821813806003E146F /* DotcomError.swift in Sources */,
 				B5C151BB217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift in Sources */,
+				CE50346021B5799F007573C6 /* SitePlan.swift in Sources */,
 				B59325CC217E2B4C000B0E8E /* NoteListMapper.swift in Sources */,
 				B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */,
 				B554FA8F2180BC7000C54DFF /* NoteHashListMapper.swift in Sources */,
@@ -962,6 +969,7 @@
 				7452387321124B7700A973CD /* AnyCodable.swift in Sources */,
 				B5A036A1214C0F5400774E2C /* CocoaLumberjack.swift in Sources */,
 				B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */,
+				CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */,
 				7426CA0F21AF2C90004E9FFC /* SiteAPI.swift in Sources */,
 				B53EF5322180F21C003E146F /* Dictionary+Woo.swift in Sources */,
 				74A1D26D21189DFF00931DFA /* SiteVisitStatsMapper.swift in Sources */,

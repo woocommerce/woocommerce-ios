@@ -112,12 +112,15 @@ private extension HelpAndSupportViewController {
     /// Warn devs that logged in with an Automattic email.
     ///
     func warnDeveloperIfNeeded() {
-        if accountEmail.contains(Constants.devEmail) {
-            let alert = UIAlertController(title: "Warning", message: "Developer email account detected. Please log in with a non-Automattic email to submit or view support tickets.", preferredStyle: .alert)
-            let cancel = UIAlertAction(title: "Dismiss", style: .cancel, handler: nil)
-            alert.addAction(cancel)
-            present(alert, animated: true, completion: nil)
+        guard accountEmail.contains(Constants.devEmail) else {
+            return
         }
+
+        let alert = UIAlertController(title: "Warning", message: "Developer email account detected. Please log in with a non-Automattic email to submit or view support tickets.", preferredStyle: .alert)
+        let cancel = UIAlertAction(title: "Dismiss", style: .cancel, handler: nil)
+        alert.addAction(cancel)
+        
+        present(alert, animated: true, completion: nil)
     }
 
     /// Cells currently configured in the order they appear on screen

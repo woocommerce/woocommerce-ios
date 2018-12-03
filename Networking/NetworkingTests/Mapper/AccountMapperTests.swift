@@ -32,7 +32,6 @@ class AccountMapperTests: XCTestCase {
         XCTAssertEqual(first.name, "Testing Blog")
         XCTAssertEqual(first.description, "Testing Tagline")
         XCTAssertEqual(first.url, "https://some-testing-url.testing.blog")
-        XCTAssertEqual(first.plan, "Free")
         XCTAssertEqual(first.isWooCommerceActive, true)
         XCTAssertEqual(first.isWordPressStore, true)
 
@@ -41,9 +40,17 @@ class AccountMapperTests: XCTestCase {
         XCTAssertEqual(second.name, "Thoughts")
         XCTAssertEqual(second.description, "Your Favorite Blog")
         XCTAssertEqual(second.url, "https://thoughts.testing.blog")
-        XCTAssertEqual(second.plan, "Free")
         XCTAssertEqual(second.isWooCommerceActive, false)
         XCTAssertEqual(second.isWordPressStore, false)
+    }
+
+    /// Verifies that the Plan field for Site is properly parsed.
+    ///
+    func testSitePlanFieldIsProperlyParsed() {
+        let site = mapLoadSitePlanResponse()
+
+        XCTAssertEqual(site!.siteID, 1112233334444555)
+        XCTAssertEqual(site!.shortName, "Business")
     }
 }
 
@@ -71,5 +78,15 @@ private extension AccountMapperTests {
         }
 
         return try? SiteListMapper().map(response: response)
+    }
+
+    /// Returns the SitePlanMapper output upon receiving `sites/$site` mockup response (Data Encoded).
+    ///
+    func mapLoadSitePlanResponse() -> SitePlan? {
+        guard let response = Loader.contentsOf("site-plan") else {
+            return nil
+        }
+
+        return try? SitePlanMapper().map(response: response)
     }
 }

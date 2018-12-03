@@ -187,7 +187,13 @@ extension PushNotificationsManager {
 //
 private extension PushNotificationsManager {
 
+    /// Handles a Notification while in Inactive Mode
     ///
+    /// - Parameters:
+    ///     - userInfo: The Notification's Payload
+    ///     - completionHandler: A callback, to be executed on completion
+    ///
+    /// - Returns: True when handled. False otherwise
     ///
     func handleInactiveNotification(_ userInfo: [AnyHashable: Any], completionHandler: (UIBackgroundFetchResult) -> Void) -> Bool {
         guard applicationState == .inactive else {
@@ -198,14 +204,20 @@ private extension PushNotificationsManager {
             return false
         }
 
-        //        WPTabBarController.sharedInstance().showNotificationsTabForNote(withID: notificationId)
+        MainTabBarController.switchToNotificationsTab()
         completionHandler(.newData)
 
         return true
     }
 
 
+    /// Handles a Notification while in Background Mode
     ///
+    /// - Parameters:
+    ///     - userInfo: The Notification's Payload
+    ///     - completionHandler: A callback, to be executed on completion
+    ///
+    /// - Returns: True when handled. False otherwise
     ///
     func handleBackgroundNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
         guard applicationState == .background else {

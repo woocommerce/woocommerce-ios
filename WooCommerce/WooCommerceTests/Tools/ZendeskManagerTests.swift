@@ -1,33 +1,46 @@
-//
-//  ZendeskManagerTests.swift
-//  WooCommerceTests
-//
-//  Created by Thuy Copeland on 11/30/18.
-//  Copyright © 2018 Automattic. All rights reserved.
-//
-
 import XCTest
+@testable import WooCommerce
 
+
+/// Zendesk Manager Tests
+///
 class ZendeskManagerTests: XCTestCase {
 
+    /// Shared instance of ZendeskManager.
+    ///
+    private var zendesk: ZendeskManager!
+
+    /// The Zendesk web portal URL.
+    ///
+    private let zdUrl = "https://automattic.zendesk.com"
+
+    /// Default ticket tags.
+    ///
+    private let zdTags = ["iOS", "woo-mobile-sdk", "jetpack"]
+
+    /// Ensure the Zendesk URL is set to the parent brand.
+    ///
+    func testZendeskUrl() {
+        XCTAssertEqual(ApiCredentials.zendeskUrl, zdUrl)
+    }
+
+    /// Test default tags return as expected.
+    ///
+    func testZendeskDefaultTags() {
+        let tags = ZendeskManager.shared.getTags() // how do I access private methods for testing again?
+        XCTAssertEqual(zdTags, tags)
+    }
+
+    // MARK: - Overridden Methods
+    //
     override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        super.setUp()
+
+        setupZendesk()
+        setupRequestConfig()
     }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func setupZendesk() {
+        ZendeskManager.shared.initialize()
     }
-
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
 }

@@ -12,15 +12,15 @@ class PushNotificationsManager {
 
     /// PushNotifications Configuration
     ///
-    private let configuration: PushNotificationsConfiguration
+    let configuration: PushNotificationsConfiguration
 
-    /// Returns the current Application's State.`
+    /// Returns the current Application's State
     ///
     private var applicationState: UIApplication.State {
         return configuration.application.applicationState
     }
 
-    /// Apple's Push Notifications DeviceToken.
+    /// Apple's Push Notifications DeviceToken
     ///
     private var deviceToken: String? {
         get {
@@ -31,7 +31,7 @@ class PushNotificationsManager {
         }
     }
 
-    /// WordPress.com Device Identifier.
+    /// WordPress.com Device Identifier
     ///
     private var deviceID: String? {
         get {

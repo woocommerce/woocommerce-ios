@@ -5,23 +5,24 @@ import AutomatticTracks
 import Yosemite
 
 
-///
+
+/// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
 ///
 class PushNotificationsManager {
 
-    ///
+    /// Reference to the UserDefaults Instance that should be used.
     ///
     private let defaults: UserDefaults
 
+    /// Wraps UIApplication's API. Why not use the SDK directly?: Unit Tests!
     ///
-    ///
-    private let application: UIApplication
+    private var application: ApplicationWrapper
 
+    /// Wraps UNUserNotificationCenter API. Why not use the SDK directly?: Unit Tests!
     ///
-    ///
-    private let userNotificationCenter: UNUserNotificationCenter
+    private let userNotificationCenter: UserNotificationCenterWrapper
 
-    ///
+    /// Returns the current Application's State.`
     ///
     private var applicationState: UIApplication.State {
         return application.applicationState
@@ -50,12 +51,23 @@ class PushNotificationsManager {
     }
 
 
+    /// Initializes the PushNotificationsManager.
     ///
+    /// - Parameters:
+    ///     - defaults: UserDefaults Reference that should be used to store the Device ID + Token.
+    ///     - application: UIApplication's API Wrapper, related to Push Notification.
+    ///     - userNotificationCenter: UNUserNotificationCenter's API Wrapper.
     ///
-    init(defaults: UserDefaults = .standard, application: UIApplication = .shared, userNotificationCenter: UNUserNotificationCenter = UNUserNotificationCenter.current()) {
+    init(defaults: UserDefaults, application: ApplicationWrapper, userNotificationCenter: UserNotificationCenterWrapper) {
         self.defaults = defaults
         self.application = application
         self.userNotificationCenter = userNotificationCenter
+    }
+
+    /// Convenience Initializer.
+    ///
+    convenience init() {
+        self.init(defaults: .standard, application: UIApplication.shared, userNotificationCenter: UNUserNotificationCenter.current())
     }
 }
 
@@ -64,17 +76,22 @@ class PushNotificationsManager {
 //
 extension PushNotificationsManager {
 
+    /// Requests Authorization to receive Push Notifications, *only* when the current Status is not determined.
     ///
+    /// - Paramter onCompletion: Closure to be executed on completion. Receives a Boolean indicating if we've got Push Permission.
     ///
-    func ensureAuthorizationIsRequested() {
-        loadAuthorizationStatus { status in
+    func ensureAuthorizationIsRequested(onCompletion: ((Bool) -> Void)? = nil) {
+        userNotificationCenter.loadAuthorizationStatus(queue: .main) { status in
             guard status == .notDetermined else {
+                onCompletion?(status == .authorized)
                 return
             }
 
-            self.requestAuthorization { allowed in
+            self.userNotificationCenter.requestAuthorization(queue: .main) { allowed in
                 let stat: WooAnalyticsStat = allowed ? .pushNotificationOSAlertAllowed : .pushNotificationOSAlertDenied
                 WooAnalytics.shared.track(stat)
+
+                onCompletion?(allowed)
             }
 
             WooAnalytics.shared.track(.pushNotificationOSAlertShown)
@@ -82,20 +99,22 @@ extension PushNotificationsManager {
     }
 
 
-    ///
+    /// Registers the Application for Remote Notifgications.
     ///
     func registerForRemoteNotifications() {
+        DDLogInfo("Registering for Remote Notifications...")
         application.registerForRemoteNotifications()
     }
 
 
-    ///
+    /// Unregisters the Application from WordPress.com Push Notifications Service.
     ///
     func unregisterForRemoteNotifications() {
         guard let knownDeviceId = deviceID else {
             return
         }
 
+        DDLogInfo("Unregistering from WordPress.com Notifications Service...")
         unregisterDotcomDevice(with: knownDeviceId) { error in
             if let error = error {
                 DDLogError("⛔️ Unable to unregister push for Device ID \(knownDeviceId): \(error)")
@@ -116,8 +135,7 @@ extension PushNotificationsManager {
             return
         }
 
-        ///
-        ///
+        // Token Cleanup
         let newToken = tokenData.hexString
 
         if deviceToken != newToken {
@@ -126,8 +144,7 @@ extension PushNotificationsManager {
             DDLogInfo("Device Token Received: [\(newToken)]")
         }
 
-        ///
-        ///
+        // Register in the Dotcom's Infrastructure
         registerDotcomDevice(with: newToken, defaultStoreID: defaultStoreID) { (device, error) in
             guard let deviceID = device?.deviceID else {
                 DDLogError("⛔️ Dotcom Push Notifications Registration Failure: \(error.debugDescription)")
@@ -142,7 +159,8 @@ extension PushNotificationsManager {
     }
 
 
-    ///
+    /// Handles Push Notifications Registration Errors. This method unregisters the current device from the WordPress.com
+    /// Push Service.
     ///
     func registrationDidFail(with error: Error) {
         DDLogError("⛔️ Push Notifications Registration Failure: \(error)")
@@ -150,7 +168,7 @@ extension PushNotificationsManager {
     }
 
 
-    ///
+    /// Handles a Remote Push Notifican Payload. On completion the `completionHandler` will be executed.
     ///
     func handleNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         DDLogVerbose("Application State: \(applicationState.rawValue)")
@@ -252,32 +270,6 @@ private extension PushNotificationsManager {
     func unregisterDotcomDevice(with deviceID: String, onCompletion: @escaping (Error?) -> Void) {
         let action = NotificationAction.unregisterDevice(deviceId: deviceID, onCompletion: onCompletion)
         StoresManager.shared.dispatch(action)
-    }
-}
-
-
-// MARK: - Permission Management
-//
-private extension PushNotificationsManager {
-
-    ///
-    ///
-    func loadAuthorizationStatus(queue: DispatchQueue = .main, completion: @escaping (_ status: UNAuthorizationStatus) -> Void) {
-        userNotificationCenter.getNotificationSettings { settings in
-            queue.async {
-                completion(settings.authorizationStatus)
-            }
-        }
-    }
-
-    ///
-    ///
-    func requestAuthorization(queue: DispatchQueue = .main, completion: @escaping (Bool) -> Void) {
-        userNotificationCenter.requestAuthorization(options: [.badge, .sound, .alert]) { (allowed, _)  in
-            queue.async {
-                completion(allowed)
-            }
-        }
     }
 }
 

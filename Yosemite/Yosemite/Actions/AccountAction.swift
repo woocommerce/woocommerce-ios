@@ -10,5 +10,5 @@ public enum AccountAction: Action {
     case loadSite(siteID: Int, onCompletion: (Site?) -> Void)
     case synchronizeAccount(onCompletion: (Account?, Error?) -> Void)
     case synchronizeSites(onCompletion: (Error?) -> Void)
-    case synchronizeSiteDetails(onCompletion: (Error?) -> Void)
+    case synchronizeSitePlan(siteID: Int, onCompletion: (Error?) -> Void)
 }

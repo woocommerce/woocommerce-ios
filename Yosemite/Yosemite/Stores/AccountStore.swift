@@ -3,7 +3,6 @@ import Networking
 import Storage
 
 
-
 // MARK: - AccountStore
 //
 public class AccountStore: Store {
@@ -31,8 +30,8 @@ public class AccountStore: Store {
             synchronizeAccount(onCompletion: onCompletion)
         case .synchronizeSites(let onCompletion):
             synchronizeSites(onCompletion: onCompletion)
-        case .synchronizeSiteDetails(let onCompletion):
-            synchronizeSiteDetails(onCompletion: onCompletion)
+        case .synchronizeSitePlan(let siteID, let onCompletion):
+            synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -74,18 +73,18 @@ private extension AccountStore {
         }
     }
 
-    /// Loads the details of all the Sites.
+    /// Loads the site plan for the default site.
     ///
-    func synchronizeSiteDetails(onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeSitePlan(siteID: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = AccountRemote(network: network)
-
-        remote.loadSitesDetail { [weak self]  (sites, error) in
-            guard let sites = sites else {
+        remote.loadSitePlan(for: siteID) { [weak self]  (siteplan, error) in
+            guard let siteplan = siteplan else {
                 onCompletion(error)
                 return
             }
 
-            self?.upsertStoredSites(readOnlySites: sites)
+            // How do I convert between a SitePlan type and a Site type?
+            self?.updateStoredSitePlan(readOnlySite: siteplan)
             onCompletion(nil)
         }
     }
@@ -133,6 +132,19 @@ extension AccountStore {
             let storageSite = storage.loadSite(siteID: readOnlySite.siteID) ?? storage.insertNewObject(ofType: Storage.Site.self)
             storageSite.update(with: readOnlySite)
         }
+
+        storage.saveIfNeeded()
+    }
+
+    /// Updates the specified ReadOnly Site Plan attribute in the Site entity, in the Storage Layer.
+    ///
+    func updateStoredSitePlan(readOnlySite: Networking.Site) {
+        assert(Thread.isMainThread)
+
+        let storage = storageManager.viewStorage
+
+        let storageSite = storage.loadSite(siteID: readOnlySite.siteID)
+        storageSite?.update(with: readOnlySite)
 
         storage.saveIfNeeded()
     }

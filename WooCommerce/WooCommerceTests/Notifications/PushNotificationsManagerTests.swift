@@ -1,5 +1,6 @@
 import XCTest
 import UserNotifications
+import Yosemite
 @testable import WooCommerce
 
 
@@ -7,32 +8,42 @@ import UserNotifications
 ///
 class PushNotificationsManagerTests: XCTestCase {
 
-    /// Testing UserDefaults
+    /// PushNotifications Manager
     ///
-    private var defaults = UserDefaults(suiteName: "PushNotificationsTests")!
+    private lazy var manager: PushNotificationsManager = {
+        let configuration = PushNotificationsConfiguration(application: application,
+                                                           defaults: defaults,
+                                                           storesManager: storesManager,
+                                                           userNotificationCenter: userNotificationCenter)
 
-    /// Testing ApplicationWrapper
-    ///
-    private var application: MockupApplication!
+        return PushNotificationsManager(configuration: configuration)
+    }()
 
-    /// Testing UserNotificationCenterWrapper
+    /// Mockup: UIApplication
     ///
-    private var userNotificationCenter: MockupUserNotificationCenter!
+    private var application = MockupApplication()
 
-    /// PushNotificationsManager Instance
+    /// UserDefaults: Testing Suite
     ///
-    private var manager: PushNotificationsManager!
+    private var defaults = UserDefaults(suiteName: Sample.defaultSuiteName)!
+
+    /// Mockup: Stores Manager
+    ///
+    private var storesManager = MockupStoresManager(sessionManager: .testingInstance)
+
+    /// Mockup: UserNotificationCenter
+    ///
+    private var userNotificationCenter = MockupUserNotificationCenter()
+
 
 
     // MARK: - Overridden Methods
 
     override func setUp() {
-        application = MockupApplication()
-        userNotificationCenter = MockupUserNotificationCenter()
-        let configuration = PushNotificationsConfiguration(defaults: defaults,
-                                                           application: application,
-                                                           userNotificationCenter: userNotificationCenter)
-        manager = PushNotificationsManager(configuration: configuration)
+        defaults.removePersistentDomain(forName: Sample.defaultSuiteName)
+        application.reset()
+        storesManager.reset()
+        userNotificationCenter.reset()
     }
 
 
@@ -99,4 +110,105 @@ class PushNotificationsManagerTests: XCTestCase {
         manager.handleNotification(userInfo) { _ in }
         XCTAssertEqual(application.applicationIconBadgeNumber, updatedBadgeNumber)
     }
+
+
+    /// Verifies that `unregisterForRemoteNotifications` does not dispatch any action, whenever the DeviceID is unknown.
+    ///
+    func testUnregisterForRemoteNotificationsDoesNothingWhenThereIsNoDeviceIdStored() {
+        XCTAssert(storesManager.receivedActions.isEmpty)
+        manager.unregisterForRemoteNotifications()
+        XCTAssert(storesManager.receivedActions.isEmpty)
+    }
+
+
+    /// Verifies that `unregisterForRemoteNotifications` does dispatch `.unregisterDevice` Action, whenever the
+    /// deviceID is known.
+    ///
+    func testUnregisterForRemoteNotificationsEffectivelyDispatchesUnregisterDeviceAction() {
+        defaults.set(Sample.deviceID, forKey: .deviceID)
+        manager.unregisterForRemoteNotifications()
+
+        guard case let .unregisterDevice(deviceID, _) = storesManager.receivedActions.first as! NotificationAction else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(deviceID, Sample.deviceID)
+    }
+
+
+    /// Verifies that `unregisterForRemoteNotifications` does nuke the DeviceID and DeviceToken, whenever the `unregisterDevice`
+    /// Action is successful.
+    ///
+    func testUnregisterForRemoteNotificationsEffectivelyNukesDeviceIdentifierAndTokenOnSuccess() {
+        defaults.set(Sample.deviceID, forKey: .deviceID)
+        defaults.set(Sample.deviceToken, forKey: .deviceToken)
+
+        manager.unregisterForRemoteNotifications()
+
+        guard case let .unregisterDevice(_, onCompletion) = storesManager.receivedActions.first as! NotificationAction else {
+            XCTFail()
+            return
+        }
+
+        onCompletion(nil)
+
+        XCTAssertFalse(defaults.containsObject(forKey: .deviceID))
+        XCTAssertFalse(defaults.containsObject(forKey: .deviceToken))
+    }
+
+
+    /// Verifies that `registerDevice` effectively dispatches a `registerDevice` Action.
+    ///
+    func testRegisterForRemoteNotificationsDispatchesRegisterDeviceAction() {
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            XCTFail()
+            return
+        }
+
+        manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
+
+        guard case let .registerDevice(_, _, _, storeID, _) = storesManager.receivedActions.first as! NotificationAction else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(storeID, Sample.defaultStoreID)
+    }
+
+
+    /// Verifies that `registerDeviceToken` effectively stores the Device Token.
+    ///
+    func testRegisterForRemoteNotificationsStoresDeviceTokenInUserDefaults() {
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertFalse(defaults.containsObject(forKey: .deviceToken))
+        manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
+        XCTAssertTrue(defaults.containsObject(forKey: .deviceToken))
+    }
+}
+
+
+// MARK: - Testing Constants
+//
+private struct Sample {
+
+    /// Sample DeviceID
+    ///
+    static let deviceID = "1234"
+
+    /// Sample DeviceToken
+    ///
+    static let deviceToken = "4fa963db2cfc824b0d67740ed2b1c0b472cce8eafcb82184905361eb88be55b9"
+
+    /// Sample StoreID
+    ///
+    static let defaultStoreID = 9999
+
+    /// UserDefaults Suite Name
+    ///
+    static let defaultSuiteName = "PushNotificationsTests"
 }

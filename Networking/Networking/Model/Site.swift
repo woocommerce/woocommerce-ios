@@ -48,17 +48,11 @@ public struct Site: Decodable {
         let isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
         let isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
 
-        var plan = String()
-        if siteContainer.contains(.plan) {
-            let planContainer = try siteContainer.nestedContainer(keyedBy: PlanKeys.self, forKey: .plan)
-            plan = try planContainer.decodeIfPresent(String.self, forKey: .shortName) ?? String()
-        }
-
         self.init(siteID: siteID,
                   name: name,
                   description: description,
                   url: url,
-                  plan: plan,
+                  plan: String(), // Not created on init. Added in supplementary API request.
                   isWooCommerceActive: isWooCommerceActive,
                   isWordPressStore: isWordPressStore)
     }

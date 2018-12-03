@@ -13,7 +13,7 @@ extension Storage.Site: ReadOnlyConvertible {
         name = site.name
         tagline = site.description
         url = site.url
-        plan = site.plan
+//        plan = site.plan // We're not assigning the plan here because it's not sent on the intial API request.
         isWooCommerceActive = NSNumber(booleanLiteral: site.isWooCommerceActive)
         isWordPressStore = NSNumber(booleanLiteral: site.isWordPressStore)
     }

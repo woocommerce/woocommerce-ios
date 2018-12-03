@@ -30,8 +30,8 @@ public class NotificationStore: Store {
         }
 
         switch action {
-        case .registerDevice(let device, let applicationId, let applicationVersion, let onCompletion):
-            registerDevice(device: device, applicationId: applicationId, applicationVersion: applicationVersion, onCompletion: onCompletion)
+        case .registerDevice(let device, let applicationId, let applicationVersion, let defaultStoreID, let onCompletion):
+            registerDevice(device: device, applicationId: applicationId, applicationVersion: applicationVersion, defaultStoreID: defaultStoreID, onCompletion: onCompletion)
         case .synchronizeNotifications(let onCompletion):
             synchronizeNotifications(onCompletion: onCompletion)
         case .synchronizeNotification(let noteId, let onCompletion):
@@ -57,9 +57,9 @@ private extension NotificationStore {
 
     /// Registers an APNS Device in the WordPress.com Delivery Subsystem.
     ///
-    func registerDevice(device: APNSDevice, applicationId: String, applicationVersion: String, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
+    func registerDevice(device: APNSDevice, applicationId: String, applicationVersion: String, defaultStoreID: Int, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
         let remote = DevicesRemote(network: network)
-        remote.registerDevice(device: device, applicationId: applicationId, applicationVersion: applicationVersion, completion: onCompletion)
+        remote.registerDevice(device: device, applicationId: applicationId, applicationVersion: applicationVersion, defaultStoreID: defaultStoreID, completion: onCompletion)
     }
 
 

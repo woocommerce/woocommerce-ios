@@ -7,13 +7,17 @@ import UserNotifications
 ///
 struct PushNotificationsConfiguration {
 
+    /// Wraps UIApplication's API. Why not use the SDK directly?: Unit Tests!
+    ///
+    let application: ApplicationWrapper
+
     /// Reference to the UserDefaults Instance that should be used.
     ///
     let defaults: UserDefaults
 
-    /// Wraps UIApplication's API. Why not use the SDK directly?: Unit Tests!
+    /// Reference to the StoresManager that should receive any Yosemite Actions.
     ///
-    let application: ApplicationWrapper
+    let storesManager: StoresManager
 
     /// Wraps UNUserNotificationCenter API. Why not use the SDK directly?: Unit Tests!
     ///
@@ -28,8 +32,9 @@ extension PushNotificationsConfiguration {
     /// Returns the Default PushNotificationsConfiguration
     ///
     static var `default`: PushNotificationsConfiguration {
-        return PushNotificationsConfiguration(defaults: .standard,
-                                              application: UIApplication.shared,
+        return PushNotificationsConfiguration(application: UIApplication.shared,
+                                              defaults: .standard,
+                                              storesManager: .shared,
                                               userNotificationCenter: UNUserNotificationCenter.current())
     }
 }

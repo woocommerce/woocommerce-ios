@@ -28,7 +28,11 @@ class ZendeskManagerTests: XCTestCase {
     ///
     func testZendeskDefaultTags() {
         let tags = ZendeskManager.shared.getTags()
-        XCTAssertEqual(zdTags, tags)
+        XCTAssert(tags.count >= 3, "Test failed: expected a minimum of 3 default tags.")
+        XCTAssert(zdTags.count == 3, "Test failed: expected 3 default tags.")
+        for index in 0..<zdTags.count {
+            XCTAssertEqual(zdTags[index], tags[index])
+        }
     }
 
     // MARK: - Overridden Methods

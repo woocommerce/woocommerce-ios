@@ -119,7 +119,7 @@ private extension HelpAndSupportViewController {
         let alert = UIAlertController(title: "Warning", message: "Developer email account detected. Please log in with a non-Automattic email to submit or view support tickets.", preferredStyle: .alert)
         let cancel = UIAlertAction(title: "Dismiss", style: .cancel, handler: nil)
         alert.addAction(cancel)
-        
+
         present(alert, animated: true, completion: nil)
     }
 

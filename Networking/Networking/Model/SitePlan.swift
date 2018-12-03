@@ -1,7 +1,7 @@
 import Foundation
 
 
-/// Represents a WordPress.com Site.
+/// Represents a WordPress.com default Site's plan.
 ///
 public struct SitePlan: Decodable {
 

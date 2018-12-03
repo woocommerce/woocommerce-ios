@@ -79,6 +79,7 @@ import Yosemite
         Theme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
 
         observeZendeskNotifications()
+        observeNotifications()
     }
 
     /// Notification received or public method called,

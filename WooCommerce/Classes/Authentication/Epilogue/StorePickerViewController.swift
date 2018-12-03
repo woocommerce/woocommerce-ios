@@ -234,20 +234,6 @@ extension StorePickerViewController {
         case .empty:
             restartAuthentication()
         default:
-            let siteID = StoresManager.shared.sessionManager.defaultStoreID
-            let action = AccountAction.synchronizeSitePlan(siteID: siteID) { (error) in
-                if let error = error {
-                    DDLogError("⛔️ StorePickerViewController (All Sites) — Error synchronizing sites details: \(error)")
-                }
-
-                if let storeID = StoresManager.shared.sessionManager.defaultStoreID {
-                    // Refresh the cached default site
-                    StoresManager.shared.updateDefaultStore(storeID: storeID)
-                }
-            }
-
-            StoresManager.shared.dispatch(action)
-
             // We need to call refreshUserData() here because the user selected
             // their default store and tracks should to know about it.
             WooAnalytics.shared.refreshUserData()

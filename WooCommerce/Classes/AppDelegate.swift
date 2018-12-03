@@ -35,7 +35,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     let noticePresenter = NoticePresenter()
 
-    /// Push Notifications Manager
+    /// Push Notifications Manager.
+    /// This property must be Lazy, because of potential circular references between PushNotificationsConfiguration and the
+    /// actual AppDelegate Instance.
     ///
     private(set) lazy var pushNotesManager = PushNotificationsManager()
 

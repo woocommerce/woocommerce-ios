@@ -35,6 +35,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     let noticePresenter = NoticePresenter()
 
+    /// Push Notifications Manager
+    ///
+    private(set) lazy var pushNotesManager = PushNotificationsManager()
+
     /// CoreData Stack
     ///
     let storageManager = CoreDataManager(name: WooConstants.databaseStackName)
@@ -77,6 +81,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
 
+        // Push Notifications
+        registerForRemoteNotificationsIfPossible()
+        requestPushNotificationsAuthIfNeeded()
+
         // Upgrade check...
         checkForUpgrades()
 
@@ -93,6 +101,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         return authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
+    }
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        guard let defaultStoreID = StoresManager.shared.sessionManager.defaultStoreID else {
+            return
+        }
+
+        pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: defaultStoreID)
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        pushNotesManager.registrationDidFail(with: error)
+    }
+
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        pushNotesManager.handleNotification(userInfo, completionHandler: completionHandler)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -229,6 +253,8 @@ private extension AppDelegate {
 }
 
 
+// MARK: - Minimum Version
+//
 private extension AppDelegate {
 
     func checkForUpgrades() {
@@ -243,6 +269,28 @@ private extension AppDelegate {
         }
 
         UserDefaults.standard[.versionOfLastRun] = currentVersion
+    }
+}
+
+
+// MARK: - Push Notifications
+//
+extension AppDelegate {
+
+    /// Push Notifications Registration
+    ///
+    func registerForRemoteNotificationsIfPossible() {
+        guard StoresManager.shared.isAuthenticated else {
+            return
+        }
+
+        pushNotesManager.registerForRemoteNotifications()
+    }
+
+    /// Requests permission to enable Push Notifications (if needed / possible)
+    ///
+    func requestPushNotificationsAuthIfNeeded() {
+        pushNotesManager.ensureAuthorizationIsRequested()
     }
 }
 

@@ -36,6 +36,10 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var approvalButton: UIButton!
 
+    /// Custom UIView: Rating star view
+    ///
+    @IBOutlet private var starRatingView: RatingView!
+
     /// Closure to be executed whenever the Spam Button is pressed.
     ///
     var onSpam: (() -> Void)?
@@ -132,6 +136,20 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
         }
     }
 
+    /// Star rating value (if nil, star rating view will be hidden)
+    ///
+    var starRating: Int? {
+        didSet {
+            guard let starRating = starRating else {
+                starRatingView.isHidden = true
+                return
+            }
+
+            starRatingView.rating = CGFloat(starRating)
+            starRatingView.isHidden = false
+        }
+    }
+
     /// Downloads the Gravatar Image at the specified URL (if any!).
     ///
     func downloadGravatar(with url: URL?) {
@@ -145,6 +163,7 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         configureActionButtons()
+        configureStarView()
         configureDefaultAppearance()
     }
 }
@@ -185,6 +204,14 @@ private extension NoteDetailsCommentTableViewCell {
         for button in buttons {
             refreshAppearance(button: button)
         }
+    }
+
+    /// Setup: Star rating view
+    ///
+    func configureStarView() {
+        starRatingView.starImage = Star.filledImage
+        starRatingView.emptyStarImage = Star.emptyImage
+        starRatingView.isHidden = (starRating == nil)
     }
 
     /// Setup: Button Appearance
@@ -261,4 +288,13 @@ private struct Approve {
     static let selectedTitle    = NSLocalizedString("Approved", comment: "Unapprove a comment")
     static let normalLabel      = NSLocalizedString("Approves the comment", comment: "Approves a comment. Spoken Hint.")
     static let selectedLabel    = NSLocalizedString("Unapproves the comment", comment: "Unapproves a comment. Spoken Hint.")
+}
+
+
+// MARK: - Star View: Defaults
+//
+private struct Star {
+    static let size        = Double(18)
+    static let filledImage = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(StyleManager.goldStarColor)
+    static let emptyImage  = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(StyleManager.wooGreyLight)
 }

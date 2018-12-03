@@ -282,6 +282,7 @@ private extension NotificationDetailsViewController {
         commentCell.titleText = userBlock.text
         commentCell.detailsText = note.timestampAsDate.mediumString()
         commentCell.commentAttributedText = formatter.format(block: commentBlock, with: .body)
+        commentCell.starRating = note.starRating
 
         let gravatarURL = userBlock.media.first?.url
         commentCell.downloadGravatar(with: gravatarURL)

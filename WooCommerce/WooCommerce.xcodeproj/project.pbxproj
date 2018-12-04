@@ -175,6 +175,7 @@
 		B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */; };
 		CE021535215BE3AB00C19555 /* LoginNavigationController+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE021534215BE3AB00C19555 /* LoginNavigationController+Woo.swift */; };
 		CE14452E2188C11700A991D8 /* ZendeskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE14452D2188C11700A991D8 /* ZendeskManager.swift */; };
+		CE16177A21B7192A00B82A47 /* AuthenticationConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */; };
 		CE17C2E220ACA06800AFBD20 /* BillingDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE17C2E020ACA06800AFBD20 /* BillingDetailsTableViewCell.swift */; };
 		CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE17C2E120ACA06800AFBD20 /* BillingDetailsTableViewCell.xib */; };
 		CE1CCB402056F21C000EE3AC /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* Style.swift */; };
@@ -451,6 +452,7 @@
 		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE021534215BE3AB00C19555 /* LoginNavigationController+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginNavigationController+Woo.swift"; sourceTree = "<group>"; };
 		CE14452D2188C11700A991D8 /* ZendeskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZendeskManager.swift; sourceTree = "<group>"; };
+		CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationConstants.swift; sourceTree = "<group>"; };
 		CE17C2E020ACA06800AFBD20 /* BillingDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		CE17C2E120ACA06800AFBD20 /* BillingDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BillingDetailsTableViewCell.xib; sourceTree = "<group>"; };
 		CE1CCB3F2056F21C000EE3AC /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
@@ -668,6 +670,7 @@
 				B5A8F8AB20B88D8400D211DE /* Prologue */,
 				B5D1AFC420BC7B3000DB0E8C /* Epilogue */,
 				B55D4C0520B6027100D7A50F /* AuthenticationManager.swift */,
+				CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -1596,6 +1599,7 @@
 				B541B2152189EEA1008FE7C1 /* Scanner+Helpers.swift in Sources */,
 				743EDD9F214B05350039071B /* TopEarnerStatsItem+Woo.swift in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* LeftImageTableViewCell.swift in Sources */,
+				CE16177A21B7192A00B82A47 /* AuthenticationConstants.swift in Sources */,
 				74A93A40212DC60B00C13E04 /* NewOrdersViewController.swift in Sources */,
 				B554E1792152F20000F31188 /* UINavigationBar+Appearance.swift in Sources */,
 				B55401692170D5E10067DC90 /* ChartPlaceholderView.swift in Sources */,

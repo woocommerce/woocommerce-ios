@@ -36,6 +36,10 @@ import WordPressUI
     ///
     public let style: WordPressAuthenticatorStyle
 
+    /// Authenticator's Display Texts.
+    ///
+    public let text: WordPressAuthenticatorDisplayText
+
     /// Notification to be posted whenever the signing flow completes.
     ///
     @objc public static let WPSigninDidFinishNotification = "WPSigninDidFinishNotification"
@@ -55,19 +59,22 @@ import WordPressUI
 
     /// Designated Initializer
     ///
-    private init(configuration: WordPressAuthenticatorConfiguration, style: WordPressAuthenticatorStyle) {
+    private init(configuration: WordPressAuthenticatorConfiguration, style: WordPressAuthenticatorStyle, text: WordPressAuthenticatorDisplayText) {
         self.configuration = configuration
         self.style = style
+        self.text = text
     }
 
     /// Initializes the WordPressAuthenticator with the specified Configuration.
     ///
-    public static func initialize(configuration: WordPressAuthenticatorConfiguration, style: WordPressAuthenticatorStyle = .defaultStyle) {
+    public static func initialize(configuration: WordPressAuthenticatorConfiguration,
+                                  style: WordPressAuthenticatorStyle = .defaultStyle,
+                                  text: WordPressAuthenticatorDisplayText = .defaultText) {
         guard privateInstance == nil else {
             fatalError("WordPressAuthenticator is already initialized")
         }
 
-        privateInstance = WordPressAuthenticator(configuration: configuration, style: style)
+        privateInstance = WordPressAuthenticator(configuration: configuration, style: style, text: text)
     }
 
     // MARK: - Public Methods

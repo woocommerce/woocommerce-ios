@@ -475,7 +475,8 @@
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Note to customer";
 
-/* Deleted Notification's Title Notification notice title */
+/* Deleted Notification's Title
+   Notification notice title */
 "Notification" = "Notification";
 
 /* Notification error notice title */

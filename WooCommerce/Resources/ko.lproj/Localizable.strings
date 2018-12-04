@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-14 09:54:38+0000 */
+/* Translation-Revision-Date: 2018-11-28 08:54:02+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -56,6 +56,15 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "요청을 처리하는 동안 다음 오류가 발생했습니다. ";
+
+/* Approve a comment */
+"Approve" = "승인하기";
+
+/* Unapprove a comment */
+"Approved" = "승인";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "댓글 승인";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "%@ 계정에서 로그아웃하시겠어요?";
@@ -165,6 +174,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "일";
 
+/* Deleted Notification's Title */
+"Deleted Notification!" = "삭제된 알림입니다!";
+
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "삭제됨: 주문 #(viewModel.order.number)";
 
@@ -222,8 +234,14 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API에 요청을 일련화할 수 없습니다.";
 
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "알림 필터링";
+
 /* Filter the orders list. */
 "Filter orders" = "주문에 필터 적용";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "알림 목록을 알림 유형별로 필터링합니다.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "결제 상태별로 주문 목록에 필터를 적용합니다.";
@@ -312,6 +330,9 @@
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "한계에 이르렀습니다. 1분 후에 다시 할 수 있습니다. 제한이 해제 되기까지 기다리는 시간을 증가시키기 전에 다시 해보세요. 이것이 에러라면 지원 센터에 연락하세요. ";
 
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "주문 로드 중";
+
 /* No comment provided by engineer. */
 "Log In" = "로그인";
 
@@ -354,8 +375,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "매핑된 도메인";
 
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "모두 읽음으로 표시";
+
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "주문을 완료로 표시";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "모든 알림을 읽음으로 표시";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "미디어에 업로드할 관련 파일이 없습니다.";
@@ -371,6 +398,12 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "월";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "댓글을 스팸으로 이동";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "댓글을 휴지통으로 이동";
 
 /* My Tickets title */
 "My Tickets" = "내 티켓";
@@ -396,6 +429,9 @@
 /* No comment provided by engineer. */
 "Next" = "다음";
 
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "아직 알림이 없습니다!";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "이 기간에 활동이 없음";
 
@@ -411,8 +447,11 @@
 /* No comment provided by engineer. */
 "Note to customer" = "고객에게 남길 메모";
 
-/* Notifications tab title */
+/* No comment provided by engineer. */
 "Notifications" = "알림";
+
+/* Notifications filtered title */
+"Notifications: (currentTypeFilter.description)" = "알림: (currentTypeFilter.description)";
 
 /* No comment provided by engineer. */
 "OK" = "확인";
@@ -508,7 +547,7 @@
 "Privacy Settings" = "개인 정보 설정";
 
 /* Privacy settings screen title */
-"Privacy settings" = "개인 정보 설정";
+"Privacy settings" = "프라이버시 설정";
 
 /* No comment provided by engineer. */
 "Private note" = "비공개 메모";
@@ -549,11 +588,14 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "충돌 보고";
 
-/* Retry Action */
+/* No comment provided by engineer. */
 "Retry" = "재실행";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "대기 중인 주문 검토, 준비 및 배송";
+
+/* Reviews filter title */
+"Reviews" = "검토";
 
 /* SKU label */
 "SKU:" = "SKU:";
@@ -648,6 +690,9 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "죄송합니다. 해당 사이트 주소는 사용할 수 없습니다.";
 
+/* Verb, spam a comment */
+"Spam" = "스팸";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "시작 기간 %1$@, 종료 기간 %2$@";
 
@@ -699,11 +744,17 @@
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "Google 계정 \"(loginFields.username)\"이 워드프레스닷컴의 계정과 일치하지 않습니다.";
 
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "주문을 로드할 수 없습니다!";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "URL에 올바른 호스트가 없습니다.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "이 서버의 인증서가 올바르지 않습니다. “%@”(으)로 사칭한 서버에 연결 중일 수 있습니다. 기밀 정보가 노출될 수 있습니다.\n\n그래도 인증서를 신뢰하시겠어요?";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed!" = "알림이 제거되었습니다!";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "스토어에서 주문이 삭제되었습니다!";
@@ -774,6 +825,9 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "총 지출";
 
+/* Move a comment to the trash */
+"Trash" = "휴지통";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "신뢰함";
 
@@ -800,6 +854,9 @@
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "이메일 주소를 확인할 수 없습니다. 나중에 다시 시도하세요.";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "댓글 승인 취소";
 
 /* Undo Action */
 "Undo" = "실행 취소";

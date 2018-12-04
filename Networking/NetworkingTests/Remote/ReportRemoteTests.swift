@@ -16,11 +16,13 @@ class ReportRemoteTests: XCTestCase {
     override func setUp() {
         network.removeAllSimulatedResponses()
     }
+
     /// Verifies that 'loadOrderTotals' properly parses the successful response
     ///
     func testOrderTotalsReturnsSuccess() {
-        let remote = ReportRemote(network: network)
         let expectation = self.expectation(description: "Load order totals")
+        let remote = ReportRemote(network: network)
+
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "report-orders")
         remote.loadOrderTotals(for: sampleSiteID) { (reportTotals, error) in
             XCTAssertNil(error)
@@ -38,11 +40,13 @@ class ReportRemoteTests: XCTestCase {
         }
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
     /// Verifies that `loadOrderTotals` correctly returns a Dotcom Error, whenever the request failed.
     ///
     func testOrderTotalsProperlyParsesErrorResponses() {
-        let remote = ReportRemote(network: network)
         let expectation = self.expectation(description: "Error Handling")
+        let remote = ReportRemote(network: network)
+
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "generic_error")
         remote.loadOrderTotals(for: sampleSiteID) { (reportTotals, error) in
             XCTAssertNil(reportTotals)

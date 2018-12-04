@@ -67,8 +67,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///
     @objc func localizeControls() {
-        let displayText = WordPressAuthenticatorDisplayText.defaultText
-        instructionLabel?.text = displayText.siteLoginInstructions
+        instructionLabel?.text = WordPressAuthenticator.shared.text.siteLoginInstructions
 
         siteURLField.placeholder = NSLocalizedString("example.wordpress.com", comment: "Site Address placeholder")
 

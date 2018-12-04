@@ -27,6 +27,6 @@ public class ReportRemote: Remote {
 //
 private extension ReportRemote {
     enum Constants {
-        static let orderTotalsPath: String   = "reports/orders/totals"
+        static let orderTotalsPath = "reports/orders/totals"
     }
 }

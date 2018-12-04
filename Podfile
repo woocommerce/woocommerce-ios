@@ -21,7 +21,8 @@ target 'WooCommerce' do
   pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.4-beta.1'
 
   pod 'Gridicons', '0.16'
-  pod 'WordPressAuthenticator', '~> 1.1'
+  # pod 'WordPressAuthenticator', '~> 1.1'
+  pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS', :branch => 'feature/35-expose-login-text'
   pod 'WordPressShared', '~> 1.1'
   pod 'WordPressUI', '~> 1.1'
 

@@ -59,7 +59,9 @@ import WordPressUI
 
     /// Designated Initializer
     ///
-    private init(configuration: WordPressAuthenticatorConfiguration, style: WordPressAuthenticatorStyle, text: WordPressAuthenticatorDisplayText) {
+    private init(configuration: WordPressAuthenticatorConfiguration,
+                 style: WordPressAuthenticatorStyle,
+                 text: WordPressAuthenticatorDisplayText) {
         self.configuration = configuration
         self.style = style
         self.text = text

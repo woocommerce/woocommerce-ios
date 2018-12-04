@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-14 09:54:50+0000 */
+/* Translation-Revision-Date: 2018-11-27 11:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -56,6 +56,15 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Er deed zich een fout voor tijdens verwerken van je verzoek:";
+
+/* Approve a comment */
+"Approve" = "Goedkeuren";
+
+/* Unapprove a comment */
+"Approved" = "Goedgekeurd";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "De reactie wordt goedgekeurd";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Weet je zeker dat je wilt uitloggen bij het account %@?";
@@ -165,6 +174,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Dagen";
 
+/* Deleted Notification's Title */
+"Deleted Notification!" = "Melding verwijderd!";
+
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "Verwijderd: Bestelnr. (viewModel.order.number)";
 
@@ -222,8 +234,14 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Aanvraag naar de REST API serialiseren mislukt.";
 
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "Meldingen filteren";
+
 /* Filter the orders list. */
 "Filter orders" = "Bestellingen filteren";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "Filtert de lijst met meldingen op type melding.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Filtert de bestellijst op betaalstatus.";
@@ -312,6 +330,9 @@
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limiet bereikt. Je kan het na 1 minuut nogmaals proberen. Als je het eerder probeert dan zul je langer moeten wachten totdat de ban wordt opgeheven. Neem contact op met de helpdesk wanneer je denk dat dit niet klopt.";
 
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "Bestelling wordt geladen";
+
 /* No comment provided by engineer. */
 "Log In" = "Inloggen";
 
@@ -354,8 +375,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Toegewezen domein";
 
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "Alle als gelezen markeren";
+
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "Bestelling markeren als voltooid";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "Markeert elke melding als gelezen";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Media heeft geen geassocieerd bestand om te uploaden.";
@@ -371,6 +398,12 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "Maanden";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "Verplaatst een reactie naar spam";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "Verplaatst de reactie naar de prullenbak";
 
 /* My Tickets title */
 "My Tickets" = "Mijn tickets";
@@ -396,6 +429,9 @@
 /* No comment provided by engineer. */
 "Next" = "Volgende";
 
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "Nog geen meldingen!";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Geen activiteiten deze periode";
 
@@ -411,8 +447,11 @@
 /* No comment provided by engineer. */
 "Note to customer" = "Bericht aan klant";
 
-/* Notifications tab title */
+/* No comment provided by engineer. */
 "Notifications" = "Meldingen";
+
+/* Notifications filtered title */
+"Notifications: (currentTypeFilter.description)" = "Meldingen: (currentTypeFilter.description)";
 
 /* No comment provided by engineer. */
 "OK" = "OK";
@@ -549,11 +588,14 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "Crashes melden";
 
-/* Retry Action */
+/* No comment provided by engineer. */
 "Retry" = "Opnieuw";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Controleer deze bestellingen in behandeling, bereid ze voor en verzend ze";
+
+/* Reviews filter title */
+"Reviews" = "Beoordelingen";
 
 /* SKU label */
 "SKU:" = "SKU:";
@@ -648,6 +690,9 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Sorry, je mag dit site adres niet gebruiken.";
 
+/* Verb, spam a comment */
+"Spam" = "Spam";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "Beginperiode %1$@, eindperiode %2$@";
 
@@ -699,11 +744,17 @@
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "Het Google account \"(loginFields.username)\" komt niet overeen met een account op WordPress.com";
 
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "De bestelling kon niet worden geladen!";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "De URL heeft geen geldige host.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Het certificaat voor deze server is ongeldig. Je maakt mogelijk verbinding met een server die zich voordoet als “%@”, wat je vertrouwelijke informatie in gevaar kan brengen.\n\nWil je het certificaat toch vertrouwen?";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed!" = "De melding is verwijderd!";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "De bestelling is uit je winkel verwijderd!";
@@ -774,6 +825,9 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "Totaal uitgegeven";
 
+/* Move a comment to the trash */
+"Trash" = "Prullenbak";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Vertrouw";
 
@@ -800,6 +854,9 @@
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Niet mogelijk om e-mailadres te verifiëren. Probeer het later opnieuw.";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "De reactie wordt afgekeurd";
 
 /* Undo Action */
 "Undo" = "Ongedaan maken";

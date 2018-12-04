@@ -258,8 +258,12 @@ private extension AppDelegate {
             return
         }
 
-        pushNotesManager.registerForRemoteNotifications()
-        pushNotesManager.ensureAuthorizationIsRequested()
+        #if targetEnvironment(simulator)
+            DDLogVerbose("Push Notifications not supported in the Simulator!")
+        #else
+            pushNotesManager.registerForRemoteNotifications()
+            pushNotesManager.ensureAuthorizationIsRequested()
+        #endif
     }
 }
 

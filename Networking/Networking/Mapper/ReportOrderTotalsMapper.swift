@@ -19,12 +19,16 @@ struct ReportOrderTotalsMapper: Mapper {
         return returnDict
     }
 }
+
+
 private extension ReportOrderTotalsMapper{
     enum Constants {
         static let slugKey: String  = "slug"
         static let totalKey: String = "total"
     }
 }
+
+
 /// The report endpoint returns the totals document within a `data` key. This entity
 /// allows us to do parse all the things with JSONDecoder.
 ///

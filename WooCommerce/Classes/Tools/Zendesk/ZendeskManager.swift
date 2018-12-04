@@ -19,7 +19,7 @@ import Yosemite
     // MARK: - Public Properties
     //
     static let shared = ZendeskManager()
-    private var zendeskEnabled = false
+    private (set) var zendeskEnabled = false
     private var unreadNotificationsCount = 0
 
     var showSupportNotificationIndicator: Bool {
@@ -76,8 +76,29 @@ import Yosemite
         haveUserIdentity = getUserProfile()
         toggleZendesk(enabled: true)
 
+        Theme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
+
         observeZendeskNotifications()
+        observeNotifications()
     }
+
+    /// Notification received or public method called,
+    /// to signal that the default site may contain plan information.
+    /// Uses `@objc` because this method is used in a `#selector()` call.
+    @objc func updateSitePlan() {
+        guard let siteID = StoresManager.shared.sessionManager.defaultSite?.siteID else {
+            return
+        }
+
+        let action = AccountAction.synchronizeSitePlan(siteID: siteID) { (error) in
+            if let error = error {
+                DDLogError("⛔️ AccountAction: (Default Site) — Error synchronizing site plan: \(error)")
+            }
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
 
     // MARK: - Show Zendesk Views
 
@@ -132,7 +153,8 @@ import Yosemite
             self.sourceTag = sourceTag
             WooAnalytics.shared.track(.supportTicketListViewed)
 
-            let requestListController = RequestUi.buildRequestList()
+            let requestConfig = self.createRequest()
+            let requestListController = RequestUi.buildRequestList(with: [requestConfig])
             self.showZendeskView(requestListController)
         }
     }
@@ -140,6 +162,7 @@ import Yosemite
     /// Displays an alert allowing the user to change their Support email address.
     ///
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping (Bool) -> Void) {
+        WooAnalytics.shared.track(.supportIdentityFormViewed)
         presentInController = controller
 
         getUserInformationAndShowPrompt(withName: false) { success in
@@ -157,6 +180,43 @@ import Yosemite
         return userEmail
     }
 
+    /// Returns the tags for the ZD ticket field
+    ///
+    func getTags() -> [String] {
+
+        /// Start with default tags.
+        /// Tags are used for refining and filtering tickets so they display in the web portal, under "Lovely Views".
+        /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
+        var tags = [Constants.platformTag,
+                    Constants.sdkTag,
+                    Constants.jetpackTag]
+
+        /// Determine if the account is a wp.com account.
+        ///
+        guard let site = StoresManager.shared.sessionManager.defaultSite else {
+            return tags
+        }
+
+        /// Determine this is a wp.com store.
+        /// No tag if self-hosted.
+        if site.isWordPressStore == true {
+            tags.append(Constants.wpComTag)
+        }
+
+        /// Add the site plan.
+        ///
+        if site.plan.isEmpty == false {
+            tags.append(site.plan)
+        }
+
+        /// Add source tag.
+        ///
+        if let sourceTagOrigin = sourceTag?.origin, sourceTagOrigin.isEmpty == false {
+            tags.append(sourceTagOrigin)
+        }
+
+        return tags
+    }
 }
 
 // MARK: - Private Extension
@@ -269,6 +329,12 @@ private extension ZendeskManager {
         completion(true)
     }
 
+
+    // MARK: - Request Controller Configuration
+    //
+
+    /// Important: Any time a new request controller is created, these configurations should be attached.
+    /// Without it, the tickets won't appear in the correct view(s) in the web portal and they won't contain all the metadata needed to solve a ticket.
     func createRequest() -> RequestUiConfiguration {
 
         let requestConfig = RequestUiConfiguration()
@@ -285,6 +351,7 @@ private extension ZendeskManager {
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.currentSite as NSNumber, andValue: getCurrentSiteDescription()))
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.sourcePlatform as NSNumber, andValue: Constants.sourcePlatform))
         ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: appLanguage))
+        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.subcategory as NSNumber, andValue: Constants.subcategory))
         requestConfig.fields = ticketFields
 
         // Set tags
@@ -292,6 +359,8 @@ private extension ZendeskManager {
 
         // Set the ticket subject
         requestConfig.subject = Constants.ticketSubject
+
+        // No extra config needed to attach an image. Hooray!
 
         return requestConfig
     }
@@ -386,41 +455,6 @@ private extension ZendeskManager {
         return "\(url) (\(site.description))"
     }
 
-    func getTags() -> [String] {
-
-        /// Start with default tags.
-        ///
-        var tags = [Constants.platformTag]
-
-        /// Determine if the account is a wp.com account.
-        /// No tag if self-hosted.
-        ///
-        guard let site = StoresManager.shared.sessionManager.defaultSite else {
-            return tags
-        }
-
-        tags.append(Constants.wpComTag)
-
-        /// Determine if the account has jetpack installed.
-        ///
-        if site.isJetpackInstalled == true {
-            tags.append(Constants.jetpackTag)
-        }
-
-        /// Add the site plan.
-        ///
-        if site.plan.isEmpty == false {
-            tags.append(site.plan)
-        }
-
-        /// Add source tag.
-        ///
-        if let sourceTagOrigin = sourceTag?.origin, sourceTagOrigin.isEmpty == false {
-            tags.append(sourceTagOrigin)
-        }
-
-        return tags
-    }
 
     func getNetworkInformation() -> String {
 
@@ -632,14 +666,24 @@ private extension ZendeskManager {
         }
     }
 
-    // MARK: - Constants
 
+    // MARK: - Observe Notifications
+    //
+    func observeNotifications() {
+        // Default Site Plan Changes
+        NotificationCenter.default.addObserver(self, selector: #selector(updateSitePlan), name: NSNotification.Name.StoresManagerDidUpdateDefaultSite, object: nil)
+    }
+
+
+    // MARK: - Constants
+    //
     struct Constants {
         static let unknownValue = "unknown"
         static let noValue = "none"
         static let mobileCategoryID: UInt64 = 360000041586
         static let articleLabel = "iOS"
         static let platformTag = "iOS"
+        static let sdkTag = "woo-mobile-sdk"
         static let ticketSubject = NSLocalizedString("WooCommerce for iOS Support", comment: "Subject of new Zendesk ticket.")
         static let blogSeperator = "\n----------\n"
         static let jetpackTag = "jetpack"
@@ -653,7 +697,8 @@ private extension ZendeskManager {
         static let profileEmailKey = "email"
         static let profileNameKey = "name"
         static let nameFieldCharacterLimit = 50
-        static let sourcePlatform = "woo_-_ios"
+        static let sourcePlatform = "mobile_-_woo_ios"
+        static let subcategory = "WooCommerce Mobile Apps"
     }
 
     // Zendesk expects these as NSNumber. However, they are defined as UInt64 to satisfy 32-bit devices (ex: iPhone 5).
@@ -668,6 +713,7 @@ private extension ZendeskManager {
         static let currentSite: UInt64 = 360000103103
         static let sourcePlatform: UInt64 = 360009311651
         static let appLanguage: UInt64 = 360008583691
+        static let subcategory: UInt64 = 25176023
     }
 
     struct LocalizedText {
@@ -678,28 +724,8 @@ private extension ZendeskManager {
         static let emailPlaceholder = NSLocalizedString("Email", comment: "Email address text field placeholder")
         static let namePlaceholder = NSLocalizedString("Name", comment: "Name text field placeholder")
     }
-
 }
 
-// MARK: - ZDKHelpCenterConversationsUIDelegate
-//
-extension ZendeskManager: ZDKHelpCenterConversationsUIDelegate {
-
-    func navBarConversationsUIType() -> ZDKNavBarConversationsUIType {
-        // When ZDKContactUsVisibility is on, use the default right nav bar label.
-        return .localizedLabel
-    }
-
-    func active() -> ZDKContactUsVisibility {
-        // If we don't have the user's information, disable 'Contact Us' via the Help Center and Article view.
-        if !haveUserIdentity {
-            return .off
-        }
-
-        return .articleListAndArticle
-    }
-
-}
 
 // MARK: - UITextFieldDelegate
 //

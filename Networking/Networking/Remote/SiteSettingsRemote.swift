@@ -14,7 +14,7 @@ public class SiteSettingsRemote: Remote {
     ///
     public func loadGeneralSettings(for siteID: Int, completion: @escaping ([SiteSetting]?, Error?) -> Void) {
         let path = Constants.generalSettingsPath
-        let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = SiteSettingsMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

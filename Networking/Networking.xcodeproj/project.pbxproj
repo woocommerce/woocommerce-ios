@@ -20,6 +20,11 @@
 		74046E21217A73D0007DD7BF /* settings-general.json in Resources */ = {isa = PBXBuildFile; fileRef = 74046E20217A73D0007DD7BF /* settings-general.json */; };
 		740CF89921937A030023ED3A /* CommentRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740CF89821937A030023ED3A /* CommentRemote.swift */; };
 		7412A51121702E9700994370 /* order-stats-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = 7412A51021702E9700994370 /* order-stats-alt.json */; };
+		7412A8EA21B6E192005D182A /* ReportRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7412A8E921B6E192005D182A /* ReportRemote.swift */; };
+		7412A8EC21B6E286005D182A /* ReportOrderTotalsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7412A8EB21B6E286005D182A /* ReportOrderTotalsMapper.swift */; };
+		7412A8EE21B6E335005D182A /* ReportOrderMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7412A8ED21B6E335005D182A /* ReportOrderMapperTests.swift */; };
+		7412A8F021B6E416005D182A /* report-orders.json in Resources */ = {isa = PBXBuildFile; fileRef = 7412A8EF21B6E415005D182A /* report-orders.json */; };
+		7412A8F221B6E47A005D182A /* ReportRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7412A8F121B6E47A005D182A /* ReportRemoteTests.swift */; };
 		741B950120EBC8A700DD6E2D /* OrderCouponLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */; };
 		7426CA0D21AF27B9004E9FFC /* SiteAPIRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426CA0C21AF27B9004E9FFC /* SiteAPIRemote.swift */; };
 		7426CA0F21AF2C90004E9FFC /* SiteAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426CA0E21AF2C90004E9FFC /* SiteAPI.swift */; };
@@ -187,6 +192,11 @@
 		74046E20217A73D0007DD7BF /* settings-general.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "settings-general.json"; sourceTree = "<group>"; };
 		740CF89821937A030023ED3A /* CommentRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentRemote.swift; sourceTree = "<group>"; };
 		7412A51021702E9700994370 /* order-stats-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-alt.json"; sourceTree = "<group>"; };
+		7412A8E921B6E192005D182A /* ReportRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportRemote.swift; sourceTree = "<group>"; };
+		7412A8EB21B6E286005D182A /* ReportOrderTotalsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportOrderTotalsMapper.swift; sourceTree = "<group>"; };
+		7412A8ED21B6E335005D182A /* ReportOrderMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportOrderMapperTests.swift; sourceTree = "<group>"; };
+		7412A8EF21B6E415005D182A /* report-orders.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "report-orders.json"; sourceTree = "<group>"; };
+		7412A8F121B6E47A005D182A /* ReportRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportRemoteTests.swift; sourceTree = "<group>"; };
 		741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCouponLine.swift; sourceTree = "<group>"; };
 		7426CA0C21AF27B9004E9FFC /* SiteAPIRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteAPIRemote.swift; sourceTree = "<group>"; };
 		7426CA0E21AF2C90004E9FFC /* SiteAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteAPI.swift; sourceTree = "<group>"; };
@@ -426,6 +436,7 @@
 				B554FA8A2180B1D500C54DFF /* NotificationsRemoteTests.swift */,
 				B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */,
 				74AE244C2113704C00CA8C54 /* OrderStatsRemoteTests.swift */,
+				7412A8F121B6E47A005D182A /* ReportRemoteTests.swift */,
 				74AB5B5021AF426D00859C12 /* SiteAPIRemoteTests.swift */,
 				74D5BECD217E0F98007B0348 /* SiteSettingsRemoteTests.swift */,
 				74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */,
@@ -523,6 +534,7 @@
 				B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */,
 				B557DA0120975500005962F4 /* OrdersRemote.swift */,
 				748D4247210F89ED00CF7D1B /* OrderStatsRemote.swift */,
+				7412A8E921B6E192005D182A /* ReportRemote.swift */,
 				7426CA0C21AF27B9004E9FFC /* SiteAPIRemote.swift */,
 				74046E1A217A684D007DD7BF /* SiteSettingsRemote.swift */,
 				74A1D26E21189EA000931DFA /* SiteVisitStatsRemote.swift */,
@@ -608,6 +620,7 @@
 				743FDB9A210FB36900AC737F /* order-stats-year.json */,
 				B58D10C52114D1F100107ED4 /* order-stats.json */,
 				7412A51021702E9700994370 /* order-stats-alt.json */,
+				7412A8EF21B6E415005D182A /* report-orders.json */,
 				74046E20217A73D0007DD7BF /* settings-general.json */,
 				7492FAE2217FBDBC00ED2C69 /* settings-general-alt.json */,
 				B56C1EB920EA7D2C00D749F9 /* sites.json */,
@@ -643,6 +656,7 @@
 				74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */,
 				CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */,
 				748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */,
+				7412A8EB21B6E286005D182A /* ReportOrderTotalsMapper.swift */,
 				7426CA1021AF30BD004E9FFC /* SiteAPIMapper.swift */,
 				B56C1EB520EA757B00D749F9 /* SiteListMapper.swift */,
 				CE50345D21B571A7007573C6 /* SitePlanMapper.swift */,
@@ -694,6 +708,7 @@
 				74C8F06920EEBC8C00B6EDC9 /* OrderMapperTests.swift */,
 				74C8F06D20EEC1E700B6EDC9 /* OrderNotesMapperTests.swift */,
 				743FDB9F210FB3E500AC737F /* OrderStatsMapperTests.swift */,
+				7412A8ED21B6E335005D182A /* ReportOrderMapperTests.swift */,
 				74AB5B4C21AF354E00859C12 /* SiteAPIMapperTests.swift */,
 				74A7B4BB217A807400E85A8B /* SiteSettingsMapperTests.swift */,
 				74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */,
@@ -837,6 +852,7 @@
 				7426CA1321AF34A3004E9FFC /* site-api.json in Resources */,
 				748D424E210FB1F500CF7D1B /* order-stats-day.json in Resources */,
 				743FDB9E210FB36900AC737F /* order-stats-week.json in Resources */,
+				7412A8F021B6E416005D182A /* report-orders.json in Resources */,
 				B554FA8D2180B59700C54DFF /* notifications-load-hashes.json in Resources */,
 				743FDB9C210FB36900AC737F /* order-stats-month.json in Resources */,
 				743FDB9D210FB36900AC737F /* order-stats-year.json in Resources */,
@@ -953,6 +969,7 @@
 				74046E1F217A6B70007DD7BF /* SiteSettingsMapper.swift in Sources */,
 				7426CA1121AF30BD004E9FFC /* SiteAPIMapper.swift in Sources */,
 				B56C1EB820EA76F500D749F9 /* Site.swift in Sources */,
+				7412A8EA21B6E192005D182A /* ReportRemote.swift in Sources */,
 				B5A2417D217F9ECC00595DEF /* MetaContainer.swift in Sources */,
 				B53EF53821813806003E146F /* DotcomError.swift in Sources */,
 				B5C151BB217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift in Sources */,
@@ -962,6 +979,7 @@
 				B554FA8F2180BC7000C54DFF /* NoteHashListMapper.swift in Sources */,
 				B556FD69211CE2EC00B5DAE7 /* HTTPStatusCode.swift in Sources */,
 				B557DA0D20975DB1005962F4 /* WordPressAPIVersion.swift in Sources */,
+				7412A8EC21B6E286005D182A /* ReportOrderTotalsMapper.swift in Sources */,
 				74A1D26F21189EA100931DFA /* SiteVisitStatsRemote.swift in Sources */,
 				B557DA1D20979E7D005962F4 /* Order.swift in Sources */,
 				743057B5218B6ACD00441A76 /* Queue.swift in Sources */,
@@ -1027,6 +1045,8 @@
 				74AB5B4D21AF354E00859C12 /* SiteAPIMapperTests.swift in Sources */,
 				B5C151C0217EE3FB00C7BDC1 /* NoteListMapperTests.swift in Sources */,
 				B567AF3120A0FB8F00AB6C62 /* JetpackRequestTests.swift in Sources */,
+				7412A8F221B6E47A005D182A /* ReportRemoteTests.swift in Sources */,
+				7412A8EE21B6E335005D182A /* ReportOrderMapperTests.swift in Sources */,
 				B505F6D720BEE58800BB1B69 /* AccountRemoteTests.swift in Sources */,
 				B554FA8B2180B1D500C54DFF /* NotificationsRemoteTests.swift in Sources */,
 				B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */,

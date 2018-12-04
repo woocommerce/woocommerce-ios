@@ -1,0 +1,46 @@
+{
+    "data": [
+        {
+            "slug": "pending",
+            "name": "Pending payment",
+            "total": 123
+        },
+        {
+            "slug": "processing",
+            "name": "Processing",
+            "total": 4
+        },
+        {
+            "slug": "on-hold",
+            "name": "On hold",
+            "total": 5
+        },
+        {
+            "slug": "completed",
+            "name": "Completed",
+            "total": 6
+        },
+        {
+            "slug": "cancelled",
+            "name": "Cancelled",
+            "total": 7
+        },
+        {
+            "slug": "refunded",
+            "name": "Refunded",
+            "total": 8
+        },
+        {
+            "slug": "failed",
+            "name": "Failed",
+            "total": 9
+        },
+        {
+            "slug": "cia-investigation",
+            "name": "CIA Investigation",
+            "total": 10
+        }
+    ]
+}
+
+

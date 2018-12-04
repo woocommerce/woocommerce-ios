@@ -4,6 +4,7 @@ import Foundation
 /// Mapper: Order totals report
 ///
 struct ReportOrderTotalsMapper: Mapper {
+
     /// (Attempts) to extract order totals report from a given JSON Encoded response.
     ///
     func map(response: Data) throws -> [OrderStatus: Int] {
@@ -21,7 +22,7 @@ struct ReportOrderTotalsMapper: Mapper {
 }
 
 
-private extension ReportOrderTotalsMapper{
+private extension ReportOrderTotalsMapper {
     enum Constants {
         static let slugKey  = "slug"
         static let totalKey = "total"

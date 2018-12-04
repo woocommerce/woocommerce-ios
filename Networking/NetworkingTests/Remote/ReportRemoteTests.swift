@@ -5,12 +5,15 @@ import XCTest
 /// ReportRemote Unit Tests
 ///
 class ReportRemoteTests: XCTestCase {
+
     /// Dummy Network Wrapper
     ///
     let network = MockupNetwork()
+
     /// Dummy Site ID
     ///
     let sampleSiteID = 1234
+
     /// Repeat always!
     ///
     override func setUp() {

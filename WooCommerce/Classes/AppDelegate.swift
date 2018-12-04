@@ -259,7 +259,7 @@ private extension AppDelegate {
         }
 
         #if targetEnvironment(simulator)
-            DDLogVerbose("Push Notifications not supported in the Simulator!")
+            DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
         #else
             pushNotesManager.registerForRemoteNotifications()
             pushNotesManager.ensureAuthorizationIsRequested()

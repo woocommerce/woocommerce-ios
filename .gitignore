@@ -77,3 +77,6 @@ fastlane/test_output
 fastlane/README.md 
 
 \.DS_Store
+
+# Ignore Local Configuration files (like the ones used for Fastlane)
+.env

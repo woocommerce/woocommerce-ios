@@ -23,8 +23,8 @@ struct ReportOrderTotalsMapper: Mapper {
 
 private extension ReportOrderTotalsMapper{
     enum Constants {
-        static let slugKey: String  = "slug"
-        static let totalKey: String = "total"
+        static let slugKey  = "slug"
+        static let totalKey = "total"
     }
 }
 

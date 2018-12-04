@@ -11,7 +11,7 @@ public struct SitePlan: Decodable {
 
     /// Short name for the site's plan.
     ///
-    public var shortName: String?
+    public let shortName: String
 
 
     /// Decodable Conformance.
@@ -29,7 +29,7 @@ public struct SitePlan: Decodable {
 
     /// Designated Initializer.
     ///
-    public init(siteID: Int, shortName: String?) {
+    public init(siteID: Int, shortName: String) {
         self.siteID = siteID
         self.shortName = shortName
     }

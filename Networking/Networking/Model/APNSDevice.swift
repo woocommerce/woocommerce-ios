@@ -7,25 +7,36 @@ public struct APNSDevice {
 
     /// Push Notifications Token.
     ///
-    let token: String
+    public let token: String
 
     /// Device Family.
     ///
-    let family: String = "apple"
+    public let family: String = "apple"
 
     /// Device Model.
     ///
-    let model: String
+    public let model: String
 
     /// Device Name.
     ///
-    let name: String
+    public let name: String
 
     /// OS Version we're currently running.
     ///
-    let iOSVersion: String
+    public let iOSVersion: String
 
     /// Device's UUID.
     ///
-    let identifierForVendor: String?
+    public let identifierForVendor: String?
+
+
+    /// Designated initializer.
+    ///
+    public init(token: String, model: String, name: String, iOSVersion: String, identifierForVendor: String?) {
+        self.token = token
+        self.model = model
+        self.name = name
+        self.iOSVersion = iOSVersion
+        self.identifierForVendor = identifierForVendor
+    }
 }

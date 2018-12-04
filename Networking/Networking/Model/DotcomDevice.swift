@@ -7,7 +7,19 @@ public struct DotcomDevice: Decodable {
 
     /// Dotcom DeviceId
     ///
-    public let deviceId: String
+    public let deviceID: String
+
+
+    /// Decodable Initializer.
+    ///
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        guard let deviceId = container.failsafeDecodeIfPresent(stringForKey: .deviceID) else {
+            throw DotcomDeviceParseError.missingDeviceID
+        }
+
+        self.deviceID = deviceId
+    }
 }
 
 
@@ -18,6 +30,13 @@ extension DotcomDevice {
     /// Coding Keys
     ///
     private enum CodingKeys: String, CodingKey {
-        case deviceId = "ID"
+        case deviceID = "ID"
     }
+}
+
+
+/// Parsing Errors
+///
+enum DotcomDeviceParseError: Error {
+    case missingDeviceID
 }

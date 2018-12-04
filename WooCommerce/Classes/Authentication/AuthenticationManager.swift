@@ -38,7 +38,11 @@ class AuthenticationManager {
                                                 viewControllerBackgroundColor: StyleManager.wooGreyLight,
                                                 navBarImage: StyleManager.navBarImage)
 
-        WordPressAuthenticator.initialize(configuration: configuration, style: style)
+        let text = WordPressAuthenticatorDisplayText(emailLoginInstructions: NSLocalizedString("Log in with your WordPress.com account email address to manage your WooCommerce stores.", comment: "Sign in instructions on the 'log in using email' screen."),
+                                                     jetpackLoginInstructions: NSLocalizedString("Log in with your WordPress.com account email address to manage your WooCommerce stores.", comment: "Sign in instructions on the 'log in using email' screen."),
+                                                     siteLoginInstructions: NSLocalizedString("Enter the address of your WooCommerce store you'd like to connect.", comment: "Sign in instructions for logging in with a URL."))
+
+        WordPressAuthenticator.initialize(configuration: configuration, style: style, text: text)
         WordPressAuthenticator.shared.delegate = self
     }
 

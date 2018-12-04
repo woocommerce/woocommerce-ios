@@ -17,7 +17,7 @@ class DotcomDeviceMapperTests: XCTestCase {
         let settings = try? mapDotcomDevice(from: sampleDeviceSettings)
 
         XCTAssertNotNil(settings)
-        XCTAssertEqual(settings!.deviceId, "12345678")
+        XCTAssertEqual(settings!.deviceID, "12345678")
     }
 }
 

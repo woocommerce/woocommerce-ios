@@ -362,10 +362,10 @@ class NotificationStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "new", filename: "device-settings")
 
-        let action = NotificationAction.registerDevice(device: sampleAPNSDevice(), applicationId: sampleApplicationID, applicationVersion: sampleApplicationVersion) { (device, error) in
+        let action = NotificationAction.registerDevice(device: sampleAPNSDevice(), applicationId: sampleApplicationID, applicationVersion: sampleApplicationVersion, defaultStoreID: sampleDefaultStoreID) { (device, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(device)
-            XCTAssertEqual(device?.deviceId, "12345678")
+            XCTAssertEqual(device?.deviceID, "12345678")
 
             expectation.fulfill()
         }
@@ -383,7 +383,7 @@ class NotificationStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "new", filename: "generic_error")
 
-        let action = NotificationAction.registerDevice(device: sampleAPNSDevice(), applicationId: sampleApplicationID, applicationVersion: sampleApplicationVersion) { (device, error) in
+        let action = NotificationAction.registerDevice(device: sampleAPNSDevice(), applicationId: sampleApplicationID, applicationVersion: sampleApplicationVersion, defaultStoreID: sampleDefaultStoreID) { (device, error) in
             XCTAssertNotNil(error)
             XCTAssertNil(device)
 
@@ -482,6 +482,12 @@ private extension NotificationStoreTests {
     ///
     var sampleDotcomDeviceID: String {
         return "1234"
+    }
+
+    /// Returns a sample Default Store ID
+    ///
+    var sampleDefaultStoreID: Int {
+        return 1234
     }
 
     /// Returns a sample Apple Device

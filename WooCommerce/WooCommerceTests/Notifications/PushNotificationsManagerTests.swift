@@ -11,10 +11,10 @@ class PushNotificationsManagerTests: XCTestCase {
     /// PushNotifications Manager
     ///
     private lazy var manager: PushNotificationsManager = {
-        let configuration = PushNotificationsConfiguration(application: application,
-                                                           defaults: defaults,
-                                                           storesManager: storesManager,
-                                                           userNotificationCenter: userNotificationCenter)
+        let configuration = PushNotificationsConfiguration(application: self.application,
+                                                           defaults: self.defaults,
+                                                           storesManager: self.storesManager,
+                                                           userNotificationCenter: self.userNotificationCenter)
 
         return PushNotificationsManager(configuration: configuration)
     }()

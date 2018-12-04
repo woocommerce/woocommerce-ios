@@ -96,19 +96,6 @@ class PushNotificationsManagerTests: XCTestCase {
     }
 
 
-    /// Verifies that `handleNotification` effectively updates the App's Badge Number.
-    ///
-    func testHandleNotificationUpdatesApplicationsBadgeNumber() {
-        let updatedBadgeNumber = 10
-        let userInfo = notificationPayload(badgeCount: updatedBadgeNumber)
-
-        XCTAssertEqual(application.applicationIconBadgeNumber, Int.min)
-
-        manager.handleNotification(userInfo) { _ in }
-        XCTAssertEqual(application.applicationIconBadgeNumber, updatedBadgeNumber)
-    }
-
-
     /// Verifies that `unregisterForRemoteNotifications` does not dispatch any action, whenever the DeviceID is unknown.
     ///
     func testUnregisterForRemoteNotificationsDoesNothingWhenThereIsNoDeviceIdStored() {
@@ -184,6 +171,38 @@ class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(defaults.containsObject(forKey: .deviceToken))
         manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
         XCTAssertTrue(defaults.containsObject(forKey: .deviceToken))
+    }
+
+
+    /// Verifies that `registrationDidFail` enqueues a `unregisterDevice` NotificationAction.
+    ///
+    func testRegistrationDidFailDispatchesUnregisterDeviceAction() {
+        defaults.set(Sample.deviceID, forKey: .deviceID)
+
+        manager.registrationDidFail(with: SampleError.first)
+
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+        let action = storesManager.receivedActions.first as! NotificationAction
+
+        switch action {
+        case .unregisterDevice(_, _):
+            break
+        default:
+            XCTFail()
+        }
+    }
+
+
+    /// Verifies that `handleNotification` effectively updates the App's Badge Number.
+    ///
+    func testHandleNotificationUpdatesApplicationsBadgeNumber() {
+        let updatedBadgeNumber = 10
+        let userInfo = notificationPayload(badgeCount: updatedBadgeNumber)
+
+        XCTAssertEqual(application.applicationIconBadgeNumber, Int.min)
+
+        manager.handleNotification(userInfo) { _ in }
+        XCTAssertEqual(application.applicationIconBadgeNumber, updatedBadgeNumber)
     }
 
 

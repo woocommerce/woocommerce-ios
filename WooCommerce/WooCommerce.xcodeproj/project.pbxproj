@@ -105,7 +105,6 @@
 		B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */; };
 		B56C721221B5B44000E5E85B /* PushNotificationsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C721121B5B44000E5E85B /* PushNotificationsConfiguration.swift */; };
 		B56C721421B5BBC000E5E85B /* MockupStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C721321B5BBC000E5E85B /* MockupStoresManager.swift */; };
-		B56C721621B5E26D00E5E85B /* SessionManager+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C721521B5E26D00E5E85B /* SessionManager+Helpers.swift */; };
 		B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */; };
 		B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */; };
 		B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */; };
@@ -114,6 +113,8 @@
 		B573B1A0219DC2690081C78C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B573B19D219DC2690081C78C /* Localizable.strings */; };
 		B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57B67892107546E00AF8905 /* Address+Woo.swift */; };
 		B57B678E21078C5400AF8905 /* OrderItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */; };
+		B57C347021B73E1800246C5A /* SessionManager+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C346E21B73E1800246C5A /* SessionManager+Helpers.swift */; };
+		B57C347121B73E1800246C5A /* SampleError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C346F21B73E1800246C5A /* SampleError.swift */; };
 		B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C743C20F5493300EEFC87 /* AccountHeaderView.swift */; };
 		B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B57C744220F54F1C00EEFC87 /* AccountHeaderView.xib */; };
 		B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744420F55BA600EEFC87 /* NSObject+Helpers.swift */; };
@@ -374,7 +375,6 @@
 		B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinatorTests.swift; sourceTree = "<group>"; };
 		B56C721121B5B44000E5E85B /* PushNotificationsConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsConfiguration.swift; sourceTree = "<group>"; };
 		B56C721321B5BBC000E5E85B /* MockupStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupStoresManager.swift; sourceTree = "<group>"; };
-		B56C721521B5E26D00E5E85B /* SessionManager+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SessionManager+Helpers.swift"; sourceTree = "<group>"; };
 		B56C721921B5F65E00E5E85B /* Woo-Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Debug.entitlements"; sourceTree = "<group>"; };
 		B56C721A21B5F65E00E5E85B /* Woo-Release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Release.entitlements"; sourceTree = "<group>"; };
 		B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WooCommerce.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -405,6 +405,8 @@
 		B573B1AF219DC2BD0081C78C /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B57B67892107546E00AF8905 /* Address+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Address+Woo.swift"; sourceTree = "<group>"; };
 		B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemViewModel.swift; sourceTree = "<group>"; };
+		B57C346E21B73E1800246C5A /* SessionManager+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionManager+Helpers.swift"; sourceTree = "<group>"; };
+		B57C346F21B73E1800246C5A /* SampleError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleError.swift; sourceTree = "<group>"; };
 		B57C743C20F5493300EEFC87 /* AccountHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountHeaderView.swift; sourceTree = "<group>"; };
 		B57C744220F54F1C00EEFC87 /* AccountHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountHeaderView.xib; sourceTree = "<group>"; };
 		B57C744420F55BA600EEFC87 /* NSObject+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Helpers.swift"; sourceTree = "<group>"; };
@@ -452,7 +454,6 @@
 		B5BBD6DD21B1703600E3207E /* PushNotificationsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsManager.swift; sourceTree = "<group>"; };
 		B5BBD6DF21B174B200E3207E /* Data+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Woo.swift"; sourceTree = "<group>"; };
 		B5BBD6E121B182F700E3207E /* APNSDevice+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APNSDevice+Woo.swift"; sourceTree = "<group>"; };
-		B5BBD6E321B1C03C00E3207E /* Woo-Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Debug.entitlements"; sourceTree = "<group>"; };
 		B5BBD6E521B1D0C000E3207E /* DataWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataWooTests.swift; sourceTree = "<group>"; };
 		B5BE75DA213F1D1E00909A14 /* OverlayMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayMessageView.swift; sourceTree = "<group>"; };
 		B5BE75DC213F1D3D00909A14 /* OverlayMessageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OverlayMessageView.xib; sourceTree = "<group>"; };
@@ -750,13 +751,14 @@
 		B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */ = {
 			isa = PBXGroup;
 			children = (
-				B53A56A32112483D000776C9 /* Constants.swift */,
+				B57C346D21B73E1800246C5A /* Internal */,
 				B57C744F20F56ED300EEFC87 /* Extensions */,
 				B53B898A20D4606400EDB467 /* System */,
 				746791642108D853007CF1DC /* Mockups */,
 				B5718D6321B56B3F0026C9F0 /* Notifications */,
 				B53A569521123D27000776C9 /* Tools */,
 				B5DBF3C120E1482900B53AED /* Yosemite */,
+				B53A56A32112483D000776C9 /* Constants.swift */,
 				B56DB3E32049BFAA00D4AA8E /* Info.plist */,
 			);
 			path = WooCommerceTests;
@@ -832,6 +834,15 @@
 				743EDD9E214B05350039071B /* TopEarnerStatsItem+Woo.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		B57C346D21B73E1800246C5A /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				B57C346E21B73E1800246C5A /* SessionManager+Helpers.swift */,
+				B57C346F21B73E1800246C5A /* SampleError.swift */,
+			);
+			path = Internal;
 			sourceTree = "<group>";
 		};
 		B57C744F20F56ED300EEFC87 /* Extensions */ = {
@@ -969,7 +980,6 @@
 			isa = PBXGroup;
 			children = (
 				B5DBF3C220E1484400B53AED /* StoresManagerTests.swift */,
-				B56C721521B5E26D00E5E85B /* SessionManager+Helpers.swift */,
 			);
 			path = Yosemite;
 			sourceTree = "<group>";
@@ -1711,11 +1721,12 @@
 				B55BC1F321A8790F0011A0C0 /* StringHTMLTests.swift in Sources */,
 				B5980A6721AC91AA00EBF596 /* BundleWooTests.swift in Sources */,
 				B53A569B21123E8E000776C9 /* MockupTableView.swift in Sources */,
+				B57C347021B73E1800246C5A /* SessionManager+Helpers.swift in Sources */,
+				B57C347121B73E1800246C5A /* SampleError.swift in Sources */,
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,
 				CEFE5876214AFAFC007B9808 /* MoneyFormatterTests.swift in Sources */,
 				746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */,
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,
-				B56C721621B5E26D00E5E85B /* SessionManager+Helpers.swift in Sources */,
 				B541B2132189E7FD008FE7C1 /* ScannerWooTests.swift in Sources */,
 				B53A56A42112483E000776C9 /* Constants.swift in Sources */,
 				B56C721421B5BBC000E5E85B /* MockupStoresManager.swift in Sources */,

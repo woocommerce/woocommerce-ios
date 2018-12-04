@@ -20,11 +20,8 @@ public struct SitePlan: Decodable {
         let sitePlanContainer = try decoder.container(keyedBy: PlanKeys.self)
         let siteID = try sitePlanContainer.decode(Int.self, forKey: .siteID)
 
-        var shortName: String?
-        if sitePlanContainer.contains(.plan) {
-            let planContainer = try sitePlanContainer.nestedContainer(keyedBy: PlanKeys.self, forKey: .plan)
-            shortName = try planContainer.decodeIfPresent(String.self, forKey: .shortName)
-        }
+        let planContainer = try sitePlanContainer.nestedContainer(keyedBy: PlanKeys.self, forKey: .plan)
+        let shortName = try planContainer.decode(String.self, forKey: .shortName)
 
         self.init(siteID: siteID,
                   shortName: shortName)

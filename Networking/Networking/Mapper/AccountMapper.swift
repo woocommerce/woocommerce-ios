@@ -5,7 +5,7 @@ import Foundation
 ///
 class AccountMapper: Mapper {
 
-    /// (Attempts) to convert a dictionary into an Account  entity.
+    /// (Attempts) to convert a dictionary into an Account entity.
     ///
     func map(response: Data) throws -> Account {
         let decoder = JSONDecoder()

@@ -13,7 +13,7 @@ class HelpAndSupportViewController: UIViewController {
     ///
     private var sections = [Section]()
 
-    /// Main Account's email
+    /// User's preferred email for support messages
     ///
     private var accountEmail: String {
         return StoresManager.shared.sessionManager.defaultAccount?.email ?? NSLocalizedString("Set email", comment: "Tells user to set an email that support can use for replies")
@@ -31,12 +31,16 @@ class HelpAndSupportViewController: UIViewController {
         configureTableView()
         configureTableViewFooter()
         registerTableViewCells()
+        warnDeveloperIfNeeded()
     }
 }
 
 // MARK: - View Configuration
 //
 private extension HelpAndSupportViewController {
+
+    /// Set the title and back button.
+    ///
     func configureNavigation() {
         title = NSLocalizedString("Help", comment: "Help and Support navigation title")
         // Don't show the Settings title in the next-view's back button
@@ -48,16 +52,22 @@ private extension HelpAndSupportViewController {
         navigationItem.backBarButtonItem = backButton
     }
 
+    /// Apply Woo styles.
+    ///
     func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
+    /// Configure common table properties.
+    ///
     func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
+    /// Display the version number in the footer.
+    ///
     func configureTableViewFooter() {
         let versionLabel = NSLocalizedString("Version", comment: "App version label")
         let appVersion = UserAgent.bundleShortVersion
@@ -73,8 +83,15 @@ private extension HelpAndSupportViewController {
         footerContainer.addSubview(footerView)
     }
 
+    /// Disable Zendesk if configuration on ZD init fails.
+    ///
     func configureSections() {
         let helpAndSupportTitle = NSLocalizedString("HOW CAN WE HELP?", comment: "My Store > Settings > Help & Support section title")
+
+        guard ZendeskManager.shared.zendeskEnabled == true else {
+            sections = [Section(title: helpAndSupportTitle, rows: [.browseFaq])]
+            return
+        }
 
         sections = [
             Section(title: helpAndSupportTitle, rows: [.browseFaq,
@@ -84,10 +101,26 @@ private extension HelpAndSupportViewController {
         ]
     }
 
+    /// Register table cells.
+    ///
     func registerTableViewCells() {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
         }
+    }
+
+    /// Warn devs that logged in with an Automattic email.
+    ///
+    func warnDeveloperIfNeeded() {
+        guard accountEmail.contains(Constants.devEmail) else {
+            return
+        }
+
+        let alert = UIAlertController(title: "Warning", message: "Developer email account detected. Please log in with a non-Automattic email to submit or view support tickets.", preferredStyle: .alert)
+        let cancel = UIAlertAction(title: "Dismiss", style: .cancel, handler: nil)
+        alert.addAction(cancel)
+
+        present(alert, animated: true, completion: nil)
     }
 
     /// Cells currently configured in the order they appear on screen
@@ -107,6 +140,8 @@ private extension HelpAndSupportViewController {
         }
     }
 
+    /// Browse our FAQ cell.
+    ///
     func configureBrowseFaq(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -114,6 +149,8 @@ private extension HelpAndSupportViewController {
         cell.detailTextLabel?.text = NSLocalizedString("Get answers to questions you have", comment: "Subtitle for Browse our FAQ")
     }
 
+    /// Contact Support cell.
+    ///
     func configureContactSupport(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -121,6 +158,8 @@ private extension HelpAndSupportViewController {
         cell.detailTextLabel?.text = NSLocalizedString("Reach our happiness engineers who can help answer tough questions", comment: "Subtitle for Contact Support")
     }
 
+    /// My Tickets cell.
+    ///
     func configureMyTickets(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -128,6 +167,8 @@ private extension HelpAndSupportViewController {
         cell.detailTextLabel?.text = NSLocalizedString("View previously submitted support tickets", comment: "subtitle for My Tickets")
     }
 
+    /// Contact Email cell.
+    ///
     func configureMyContactEmail(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -150,20 +191,47 @@ private extension HelpAndSupportViewController {
 //
 private extension HelpAndSupportViewController {
 
+    /// Browse our FAQ action
+    ///
     func browseFaqWasPressed() {
-
+        ZendeskManager.shared.showHelpCenterIfPossible(from: self)
     }
 
+    /// Contact Support action
+    ///
     func contactSupportWasPressed() {
+        guard let navController = navigationController else {
+            return
+        }
 
+        ZendeskManager.shared.showNewRequestIfPossible(from: navController)
     }
 
+    /// My Tickets action
+    ///
     func myTicketsWasPressed() {
+        guard let navController = navigationController else {
+            return
+        }
 
+        ZendeskManager.shared.showTicketListIfPossible(from: navController)
     }
 
+    /// User's contact email action
+    ///
     func contactEmailWasPressed() {
+        guard let navController = navigationController else {
+            return
+        }
 
+        ZendeskManager.shared.showSupportEmailPrompt(from: navController) { success in
+            guard success else {
+                return
+            }
+            // Tracking when the dialog's "OK" button is pressed, not necessarily if the value changed.
+            WooAnalytics.shared.track(.supportIdentitySet)
+            self.tableView.reloadData()
+        }
     }
 }
 
@@ -222,6 +290,7 @@ extension HelpAndSupportViewController: UITableViewDelegate {
 private struct Constants {
     static let rowHeight = CGFloat(44)
     static let footerHeight = 44
+    static let devEmail = "@automattic.com"
 }
 
 private struct Section {

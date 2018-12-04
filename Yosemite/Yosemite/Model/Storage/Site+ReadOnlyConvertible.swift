@@ -13,8 +13,7 @@ extension Storage.Site: ReadOnlyConvertible {
         name = site.name
         tagline = site.description
         url = site.url
-        plan = site.plan
-        isJetpackInstalled = NSNumber(booleanLiteral: site.isJetpackInstalled)
+//        plan = site.plan // We're not assigning the plan here because it's not sent on the intial API request.
         isWooCommerceActive = NSNumber(booleanLiteral: site.isWooCommerceActive)
         isWordPressStore = NSNumber(booleanLiteral: site.isWordPressStore)
     }
@@ -27,7 +26,6 @@ extension Storage.Site: ReadOnlyConvertible {
                     description: tagline ?? "",
                     url: url ?? "",
                     plan: plan ?? "",
-                    isJetpackInstalled: isJetpackInstalled?.boolValue ?? false,
                     isWooCommerceActive: isWooCommerceActive?.boolValue ?? false,
                     isWordPressStore: isWordPressStore?.boolValue ?? false)
     }

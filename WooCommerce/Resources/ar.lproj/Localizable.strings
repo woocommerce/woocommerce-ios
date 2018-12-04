@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-13 23:54:03+0000 */
+/* Translation-Revision-Date: 2018-11-28 10:54:10+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -56,6 +56,15 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "حدث خطأ أثناء معالجة طلبك: ";
+
+/* Approve a comment */
+"Approve" = "موافقة";
+
+/* Unapprove a comment */
+"Approved" = "تمت الموافقة";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "يوافق على التعليق";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "هل أنت متأكد من رغبتك في تسجيل الخروج من الحساب %@؟";
@@ -165,6 +174,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "ايام";
 
+/* Deleted Notification's Title */
+"Deleted Notification!" = "التنبيه المحذوف!";
+
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "محذوف: طلب رقم #(viewModel.order.number)";
 
@@ -222,8 +234,14 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "فشل في تسلسل الطلب إلى REST API.";
 
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "ترشيح التنبيهات";
+
 /* Filter the orders list. */
 "Filter orders" = "تصفية الطلبات";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "يُرشِّح قائمة التنبيهات حسب نوع التنبيه.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "تصفية قائمة الطلبات حسب حالة الدفع.";
@@ -312,6 +330,9 @@
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "تم الوصول إلى الحد المسموح به. يمكنك المحاولة مرة أخرى في غضون دقيقة واحدة. حاول مرة أخرى لأن ذلك سيؤدي إلى زيادة الوقت الذي ينبغي لك انتظاره قبل رفع الحظر. إذا كنت تعتقد أن ذلك خطأ داخلي، فاتصل بالدعم.";
 
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "تحميل الطلب";
+
 /* No comment provided by engineer. */
 "Log In" = "تسجيل الدخول";
 
@@ -354,8 +375,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "النطاق المعيّن";
 
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "وسم الكل كمقروء";
+
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "وضع علامة مكتمل على الطلب";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "يوسم كل تنبيه كمقروء";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "لا تحتوي وسائل التواصل على ملف مرتبط لرفعه.";
@@ -371,6 +398,12 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "أشهر";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "ينقل تعليقًا إلى البريد المزعج";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "ينقل التعليق إلى سلة المهملات";
 
 /* My Tickets title */
 "My Tickets" = "تذاكري";
@@ -396,6 +429,9 @@
 /* No comment provided by engineer. */
 "Next" = "التالي";
 
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "لا توجد تنبيهات بعد!";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "لا يوجد أي نشاط في هذه الفترة";
 
@@ -411,8 +447,11 @@
 /* No comment provided by engineer. */
 "Note to customer" = "ملاحظة إلى العميل";
 
-/* Notifications tab title */
+/* No comment provided by engineer. */
 "Notifications" = "تنبيهات";
+
+/* Notifications filtered title */
+"Notifications: (currentTypeFilter.description)" = "التنبيهات: (currentTypeFilter.description)";
 
 /* No comment provided by engineer. */
 "OK" = "موافق";
@@ -549,11 +588,14 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "الإبلاغ عن الأعطال";
 
-/* Retry Action */
+/* No comment provided by engineer. */
 "Retry" = "إعادة المحاولة";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "مراجعة هذه الطلبات المُعلّقة وإعدادها وشحنها";
+
+/* Reviews filter title */
+"Reviews" = "مراجعات";
 
 /* SKU label */
 "SKU:" = "وحدة SKU:";
@@ -648,6 +690,9 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "عذرًا، لا يمكنك استخدام عنوان الموقع هذا.";
 
+/* Verb, spam a comment */
+"Spam" = "البريد المزعج";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "فترة البدء %1$@، فترة الانتهاء %2$@";
 
@@ -699,11 +744,17 @@
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "لا يطابق حساب Google \"(loginFields.username)\" أي حساب على وردبرس.كوم";
 
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "تعذر تحميل الطلب!";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "يفتقد عنوان URL إلى مضيف صالح.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "شهادة هذا الخادم غير صالحة. قد تكون مرتبطًا بخادم يبدو &quot;%@&quot; والذي قد يجعل معلوماتك السرية في خطر.\n\nهل تريد أن تثق في الشهادة على أية حال؟";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed!" = "تمت إزالة التنبيه!";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "تم حذف الطلب من متجرك!";
@@ -774,6 +825,9 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "إجمالي الإنفاق";
 
+/* Move a comment to the trash */
+"Trash" = "سلة المهملات";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "الثقة";
 
@@ -800,6 +854,9 @@
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "تعذر التحقق من عنوان البريد الإلكتروني. يُرجى إعادة المحاولة لاحقًا.";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "غير موافق على التعليق";
 
 /* Undo Action */
 "Undo" = "تراجع";

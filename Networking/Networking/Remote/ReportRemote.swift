@@ -5,6 +5,7 @@ import Alamofire
 /// Reports: Remote Endpoints
 ///
 public class ReportRemote: Remote {
+
     /// Retrieves all of the order totals for a given site.
     ///
     /// *Note:* This is a Woo REST API v3 endpoint! It will not work on any Woo site under v3.5.
@@ -20,6 +21,8 @@ public class ReportRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 }
+
+
 // MARK: - Constants!
 //
 private extension ReportRemote {

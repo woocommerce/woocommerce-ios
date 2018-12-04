@@ -5,12 +5,14 @@ import XCTest
 /// ReportOrderMapper Unit Tests
 ///
 class ReportOrderMapperTests: XCTestCase {
+
     /// Verifies that the broken response causes the mapper to return an unknown status
     ///
     func testBrokenResponseReturnsUnknownStatus() {
         let reportTotals = try? mapLoadBrokenResponse()
         XCTAssertNil(reportTotals)
     }
+
     /// Verifies that a valid report totals response is properly parsed (YAY!).
     ///
     func testSampleResponseLoaded() {
@@ -27,9 +29,12 @@ class ReportOrderMapperTests: XCTestCase {
         XCTAssertEqual(reportTotals?[OrderStatus(rawValue: "cia-investigation")], 10)
     }
 }
+
+
 /// Private Methods.
 ///
 private extension ReportOrderMapperTests {
+
     /// Returns the ReportOrderMapper output upon receiving `filename` (Data Encoded)
     ///
     func mapOrderStatusResult(from filename: String) throws -> [OrderStatus: Int] {
@@ -37,11 +42,13 @@ private extension ReportOrderMapperTests {
         let mapper = ReportOrderTotalsMapper()
         return try mapper.map(response: response)
     }
+
     /// Returns the ReportOrderMapper output upon receiving data from the endpoint
     ///
     func mapSuccessfulResponse() throws -> [OrderStatus: Int] {
         return try mapOrderStatusResult(from: "report-orders")
     }
+
     /// Returns the ReportOrderMapper output upon receiving a broken response.
     ///
     func mapLoadBrokenResponse() throws -> [OrderStatus: Int] {

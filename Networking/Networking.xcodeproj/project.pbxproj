@@ -699,11 +699,11 @@
 				74C8F06920EEBC8C00B6EDC9 /* OrderMapperTests.swift */,
 				74C8F06D20EEC1E700B6EDC9 /* OrderNotesMapperTests.swift */,
 				743FDB9F210FB3E500AC737F /* OrderStatsMapperTests.swift */,
+				7412A8ED21B6E335005D182A /* ReportOrderMapperTests.swift */,
 				74AB5B4C21AF354E00859C12 /* SiteAPIMapperTests.swift */,
 				74A7B4BB217A807400E85A8B /* SiteSettingsMapperTests.swift */,
 				74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */,
 				74ABA1D4213F26B300FFAD30 /* TopEarnerStatsMapperTests.swift */,
-				7412A8ED21B6E335005D182A /* ReportOrderMapperTests.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";

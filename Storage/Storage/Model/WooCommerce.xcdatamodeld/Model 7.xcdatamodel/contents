@@ -134,6 +134,7 @@
         <relationship name="stats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderStats" inverseName="items" inverseEntity="OrderStats" syncable="YES"/>
     </entity>
     <entity name="Site" representedClassName="Site" syncable="YES">
+        <attribute name="isJetpackInstalled" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="isWooCommerceActive" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="isWordPressStore" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
@@ -184,7 +185,7 @@
         <element name="OrderNote" positionX="-365.16796875" positionY="630.2109375" width="128" height="118"/>
         <element name="OrderStats" positionX="137.859375" positionY="388.33203125" width="128" height="225"/>
         <element name="OrderStatsItem" positionX="321.74609375" positionY="425.51171875" width="128" height="330"/>
-        <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="150"/>
+        <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="165"/>
         <element name="SiteSetting" positionX="-362.54296875" positionY="217.9921875" width="128" height="120"/>
         <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="90"/>
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>

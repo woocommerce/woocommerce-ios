@@ -185,6 +185,31 @@ class PushNotificationsManagerTests: XCTestCase {
         manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
         XCTAssertTrue(defaults.containsObject(forKey: .deviceToken))
     }
+
+
+    /// Verifies that `handleNotification` dispatches a `synchronizeNotifications` Action, which, in turn, signals that there's
+    /// new data available in the app.
+    ///
+    func testHandleNotificationResultsInSynchronizeNotificationsActionWhichSignalsThatThereIsNewDataOnSuccess() {
+        let payload = notificationPayload()
+        var handleNotificationCallbackWasExecuted = false
+
+        application.applicationState = .background
+        manager.handleNotification(payload) { result in
+            XCTAssertEqual(result, .newData)
+            handleNotificationCallbackWasExecuted = true
+        }
+
+        guard case let .synchronizeNotifications(onCompletion) = storesManager.receivedActions.first as! NotificationAction else {
+            XCTFail()
+            return
+        }
+
+        // Simulate Action Execution: This is actually a synchronous OP. No need to wait!
+        onCompletion(nil)
+
+        XCTAssertTrue(handleNotificationCallbackWasExecuted)
+    }
 }
 
 
@@ -192,11 +217,12 @@ class PushNotificationsManagerTests: XCTestCase {
 //
 private extension PushNotificationsManagerTests {
 
-    /// Returns a Sample Notification Payload, with the specified BadgeCount
+    /// Returns a Sample Notification Payload
     ///
-    func notificationPayload(badgeCount: Int) -> [String: Any] {
+    func notificationPayload(badgeCount: Int = 0, noteID: Int = 1234) -> [String: Any] {
         return [
-            "aps.badge": badgeCount
+            "aps.badge": badgeCount,
+            "note_id": noteID
         ]
     }
 }

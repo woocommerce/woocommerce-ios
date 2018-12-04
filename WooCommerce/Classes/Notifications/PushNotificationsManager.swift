@@ -45,8 +45,7 @@ class PushNotificationsManager {
 
     /// Initializes the PushNotificationsManager.
     ///
-    /// - Parameters:
-    ///     - configuration: PushNotificationsConfiguration Instance that should be used.
+    /// - Parameter configuration: PushNotificationsConfiguration Instance that should be used.
     ///
     init(configuration: PushNotificationsConfiguration = .default) {
         self.configuration = configuration
@@ -60,7 +59,7 @@ extension PushNotificationsManager {
 
     /// Requests Authorization to receive Push Notifications, *only* when the current Status is not determined.
     ///
-    /// - Paramter onCompletion: Closure to be executed on completion. Receives a Boolean indicating if we've got Push Permission.
+    /// - Parameter onCompletion: Closure to be executed on completion. Receives a Boolean indicating if we've got Push Permission.
     ///
     func ensureAuthorizationIsRequested(onCompletion: ((Bool) -> Void)? = nil) {
         configuration.userNotificationCenter.loadAuthorizationStatus(queue: .main) { status in
@@ -171,8 +170,7 @@ extension PushNotificationsManager {
         trackNotification(with: userInfo)
 
         // Handling!
-        let handlers = [ handleInactiveNotification,
-                         handleBackgroundNotification ]
+        let handlers = [ handleInactiveNotification, handleBackgroundNotification ]
 
         for handler in handlers {
             if handler(userInfo, completionHandler) {

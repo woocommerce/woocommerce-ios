@@ -5,7 +5,6 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 ## Model 7
 - @bummytime 2018-11-26
     - New `Note.deleteInProgress` property
-    - Deleted attribute: `isJetpackInstalled` from site entity
 
 ## Model 6
 - @jleandroperez 2018-11-15

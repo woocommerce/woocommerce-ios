@@ -100,8 +100,10 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///
     func localizeControls() {
+        let displayText = WordPressAuthenticatorDisplayText.defaultText
+
         if loginFields.meta.jetpackLogin {
-            instructionLabel?.text = NSLocalizedString("Log in to the WordPress.com account you used to connect Jetpack.", comment: "Instruction text on the login's email address screen.")
+            instructionLabel?.text = displayText.emailLoginInstructions
         } else {
             instructionLabel?.text = NSLocalizedString("Log in to WordPress.com using an email address to manage all your WordPress sites.", comment: "Instruction text on the login's email address screen.")
         }

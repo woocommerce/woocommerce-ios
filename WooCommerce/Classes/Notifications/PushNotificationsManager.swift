@@ -85,7 +85,7 @@ extension PushNotificationsManager {
     /// Registers the Application for Remote Notifgications.
     ///
     func registerForRemoteNotifications() {
-        DDLogInfo("Registering for Remote Notifications...")
+        DDLogInfo("📱 Registering for Remote Notifications...")
         configuration.application.registerForRemoteNotifications()
     }
 
@@ -97,14 +97,14 @@ extension PushNotificationsManager {
             return
         }
 
-        DDLogInfo("Unregistering from WordPress.com Notifications Service...")
+        DDLogInfo("📱 Unregistering from WordPress.com Notifications Service...")
         unregisterDotcomDevice(with: knownDeviceId) { error in
             if let error = error {
                 DDLogError("⛔️ Unable to unregister push for Device ID \(knownDeviceId): \(error)")
                 return
             }
 
-            DDLogInfo("Successfully unregistered Device ID \(knownDeviceId) for Push Notifications!")
+            DDLogInfo("📱 Successfully unregistered Device ID \(knownDeviceId) for Push Notifications!")
             self.deviceID = nil
             self.deviceToken = nil
         }
@@ -121,9 +121,9 @@ extension PushNotificationsManager {
         let newToken = tokenData.hexString
 
         if deviceToken != newToken {
-            DDLogInfo("Device Token Changed! OLD: [\(String(describing: deviceToken))] NEW: [\(newToken)]")
+            DDLogInfo("📱 Device Token Changed! OLD: [\(String(describing: deviceToken))] NEW: [\(newToken)]")
         } else {
-            DDLogInfo("Device Token Received: [\(newToken)]")
+            DDLogInfo("📱 Device Token Received: [\(newToken)]")
         }
 
         deviceToken = newToken
@@ -135,7 +135,7 @@ extension PushNotificationsManager {
                 return
             }
 
-            DDLogVerbose("Successfully registered Device ID \(deviceID) for Push Notifications")
+            DDLogVerbose("📱 Successfully registered Device ID \(deviceID) for Push Notifications")
             self.deviceID = deviceID
         }
     }
@@ -155,8 +155,7 @@ extension PushNotificationsManager {
     /// Handles a Remote Push Notifican Payload. On completion the `completionHandler` will be executed.
     ///
     func handleNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        DDLogVerbose("Application State: \(applicationState.rawValue)")
-        DDLogVerbose("Push Notification Received: \n\(userInfo)\n")
+        DDLogVerbose("📱 Push Notification Received: \n\(userInfo)\n")
 
         // Badge: Update
         if let badgeCountNumber = userInfo[APNSKey.badge] as? Int {
@@ -204,6 +203,7 @@ private extension PushNotificationsManager {
             return false
         }
 
+        DDLogVerbose("📱 Handling Notification in Inactive State")
         configuration.application.displayNotificationDetails(for: notificationId)
         completionHandler(.newData)
 
@@ -229,13 +229,13 @@ private extension PushNotificationsManager {
         }
 
         let action = NotificationAction.synchronizeNotifications { error in
-            DDLogInfo("Finished Notifications Background Fetch!")
+            DDLogInfo("📱 Finished Notifications Background Fetch!")
 
             let result = (error == nil) ? UIBackgroundFetchResult.newData : .noData
             completionHandler(result)
         }
 
-        DDLogInfo("Running Notifications Background Fetch...")
+        DDLogInfo("📱 Running Notifications Background Fetch...")
         configuration.storesManager.dispatch(action)
 
         return true

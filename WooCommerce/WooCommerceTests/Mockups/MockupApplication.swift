@@ -19,10 +19,20 @@ class MockupApplication: ApplicationWrapper {
     ///
     var registerWasCalled = false
 
+    /// Notification Identifiers received via the `displayNotificationDetails` method.
+    ///
+    var displayDetailsNoteIDs = [Int]()
+
     /// Inoccuous `registerForRemoteNotifications`
     ///
     func registerForRemoteNotifications() {
         registerWasCalled = true
+    }
+
+    /// Inoccuous `displayNotificationDetails`
+    ///
+    func displayNotificationDetails(for noteID: Int) {
+        displayDetailsNoteIDs.append(noteID)
     }
 
     /// Restores the initial state
@@ -30,5 +40,6 @@ class MockupApplication: ApplicationWrapper {
     func reset() {
         registerWasCalled = false
         applicationIconBadgeNumber = .min
+        displayDetailsNoteIDs = []
     }
 }

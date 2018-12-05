@@ -209,7 +209,7 @@ class PushNotificationsManagerTests: XCTestCase {
     /// Verifies that `handleNotification` dispatches a `synchronizeNotifications` Action, which, in turn, signals that there's
     /// new data available in the app, on success.
     ///
-    func testHandleNotificationResultsInSynchronizeNotificationsActionWhichSignalsThatThereIsNewDataOnSuccess() {
+    func testHandleNotificationResultsInSynchronizeNotificationsActionWhichSignalsThatThereIsNewDataOnSuccessWhenAppStateIsBackground() {
         let payload = notificationPayload()
         var handleNotificationCallbackWasExecuted = false
 
@@ -233,7 +233,7 @@ class PushNotificationsManagerTests: XCTestCase {
     /// Verifies that `handleNotification` dispatches a `synchronizeNotifications` Action, which, in turn, signals that there's
     /// NO New Data available in the app, on error.
     ///
-    func testHandleNotificationResultsInSynchronizeNotificationsActionWhichSignalsThatThereIsNoNewDataOnError() {
+    func testHandleNotificationResultsInSynchronizeNotificationsActionWhichSignalsThatThereIsNoNewDataOnErrorWhenAppStateIsBackground() {
         let payload = notificationPayload()
         var handleNotificationCallbackWasExecuted = false
 
@@ -250,6 +250,24 @@ class PushNotificationsManagerTests: XCTestCase {
 
         // Simulate Action Execution: This is actually a synchronous OP. No need to wait!
         onCompletion(SampleError.first)
+        XCTAssertTrue(handleNotificationCallbackWasExecuted)
+    }
+
+
+    /// Verifies that `handleNotification` opens the Notification Details for the newly received note, whenever the application
+    /// state is inactive.
+    ///
+    func testHandleNotificationDisplaysDetailsForTheNewNotificationWheneverTheAppStateIsInactive() {
+        let payload = notificationPayload()
+        var handleNotificationCallbackWasExecuted = false
+
+        application.applicationState = .inactive
+        manager.handleNotification(payload) { result in
+            XCTAssertEqual(result, .newData)
+            handleNotificationCallbackWasExecuted = true
+        }
+
+        XCTAssertEqual(application.displayDetailsNoteIDs.first, 1234)
         XCTAssertTrue(handleNotificationCallbackWasExecuted)
     }
 }

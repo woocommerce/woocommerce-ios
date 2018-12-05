@@ -207,7 +207,7 @@ class PushNotificationsManagerTests: XCTestCase {
 
 
     /// Verifies that `handleNotification` dispatches a `synchronizeNotifications` Action, which, in turn, signals that there's
-    /// new data available in the app.
+    /// new data available in the app, on success.
     ///
     func testHandleNotificationResultsInSynchronizeNotificationsActionWhichSignalsThatThereIsNewDataOnSuccess() {
         let payload = notificationPayload()
@@ -226,7 +226,30 @@ class PushNotificationsManagerTests: XCTestCase {
 
         // Simulate Action Execution: This is actually a synchronous OP. No need to wait!
         onCompletion(nil)
+        XCTAssertTrue(handleNotificationCallbackWasExecuted)
+    }
 
+
+    /// Verifies that `handleNotification` dispatches a `synchronizeNotifications` Action, which, in turn, signals that there's
+    /// NO New Data available in the app, on error.
+    ///
+    func testHandleNotificationResultsInSynchronizeNotificationsActionWhichSignalsThatThereIsNoNewDataOnError() {
+        let payload = notificationPayload()
+        var handleNotificationCallbackWasExecuted = false
+
+        application.applicationState = .background
+        manager.handleNotification(payload) { result in
+            XCTAssertEqual(result, .noData)
+            handleNotificationCallbackWasExecuted = true
+        }
+
+        guard case let .synchronizeNotifications(onCompletion) = storesManager.receivedActions.first as! NotificationAction else {
+            XCTFail()
+            return
+        }
+
+        // Simulate Action Execution: This is actually a synchronous OP. No need to wait!
+        onCompletion(SampleError.first)
         XCTAssertTrue(handleNotificationCallbackWasExecuted)
     }
 }

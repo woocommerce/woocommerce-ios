@@ -62,13 +62,15 @@ extension PushNotificationsManager {
     /// - Parameter onCompletion: Closure to be executed on completion. Receives a Boolean indicating if we've got Push Permission.
     ///
     func ensureAuthorizationIsRequested(onCompletion: ((Bool) -> Void)? = nil) {
-        configuration.userNotificationCenter.loadAuthorizationStatus(queue: .main) { status in
+        let nc = configuration.userNotificationCenter
+
+        nc.loadAuthorizationStatus(queue: .main) { status in
             guard status == .notDetermined else {
                 onCompletion?(status == .authorized)
                 return
             }
 
-            self.configuration.userNotificationCenter.requestAuthorization(queue: .main) { allowed in
+            nc.requestAuthorization(queue: .main) { allowed in
                 let stat: WooAnalyticsStat = allowed ? .pushNotificationOSAlertAllowed : .pushNotificationOSAlertDenied
                 WooAnalytics.shared.track(stat)
 

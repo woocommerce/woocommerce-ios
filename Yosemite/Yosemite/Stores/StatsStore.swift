@@ -28,6 +28,8 @@ public class StatsStore: Store {
             retrieveSiteVisitStats(siteID: siteID, granularity: granularity, latestDateToInclude: latestDateToInclude,  quantity: quantity, onCompletion: onCompletion)
         case .retrieveTopEarnerStats(let siteID, let granularity, let latestDateToInclude, let onCompletion):
             retrieveTopEarnerStats(siteID: siteID, granularity: granularity, latestDateToInclude: latestDateToInclude, onCompletion: onCompletion)
+        case .retrieveOrderTotals(let siteID, let status, let onCompletion):
+            retrieveOrderTotals(siteID: siteID, status: status, onCompletion: onCompletion)
         }
     }
 }
@@ -109,6 +111,15 @@ private extension StatsStore  {
 
             self?.upsertStoredTopEarnerStats(readOnlyStats: topEarnerStats)
             onCompletion(nil)
+        }
+    }
+
+    /// Retrieves current order totals for the given site & status
+    ///
+    func retrieveOrderTotals(siteID: Int, status: OrderStatus, onCompletion: @escaping (Int?, Error?) -> Void) {
+        let remote = ReportRemote(network: network)
+        remote.loadOrderTotals(for: siteID) { (orderTotals, error) in
+            onCompletion(orderTotals?[status], error)
         }
     }
 }

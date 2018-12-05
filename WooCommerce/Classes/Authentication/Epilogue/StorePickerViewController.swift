@@ -159,6 +159,7 @@ private extension StorePickerViewController {
             return
         }
 
+        // TODO: Add a requirements check here!
         StoresManager.shared.updateDefaultStore(storeID: firstSite.siteID)
     }
 
@@ -300,6 +301,8 @@ extension StorePickerViewController: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
             return
         }
+
+        // TODO: Add a requirements check here!
 
         reloadDefaultStoreAndSelectedStoreRows {
             StoresManager.shared.updateDefaultStore(storeID: site.siteID)

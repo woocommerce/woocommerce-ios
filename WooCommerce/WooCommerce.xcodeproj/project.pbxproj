@@ -115,6 +115,8 @@
 		B57B678E21078C5400AF8905 /* OrderItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */; };
 		B57C347021B73E1800246C5A /* SessionManager+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C346E21B73E1800246C5A /* SessionManager+Helpers.swift */; };
 		B57C347121B73E1800246C5A /* SampleError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C346F21B73E1800246C5A /* SampleError.swift */; };
+		B57C5C8E21B80AE600FF82B2 /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C8D21B80AE600FF82B2 /* Dictionary+Woo.swift */; };
+		B57C5C9021B80B4B00FF82B2 /* DictionaryWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C8F21B80B4B00FF82B2 /* DictionaryWooTests.swift */; };
 		B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C743C20F5493300EEFC87 /* AccountHeaderView.swift */; };
 		B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B57C744220F54F1C00EEFC87 /* AccountHeaderView.xib */; };
 		B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744420F55BA600EEFC87 /* NSObject+Helpers.swift */; };
@@ -407,6 +409,8 @@
 		B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemViewModel.swift; sourceTree = "<group>"; };
 		B57C346E21B73E1800246C5A /* SessionManager+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionManager+Helpers.swift"; sourceTree = "<group>"; };
 		B57C346F21B73E1800246C5A /* SampleError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleError.swift; sourceTree = "<group>"; };
+		B57C5C8D21B80AE600FF82B2 /* Dictionary+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Woo.swift"; sourceTree = "<group>"; };
+		B57C5C8F21B80B4B00FF82B2 /* DictionaryWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryWooTests.swift; sourceTree = "<group>"; };
 		B57C743C20F5493300EEFC87 /* AccountHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountHeaderView.swift; sourceTree = "<group>"; };
 		B57C744220F54F1C00EEFC87 /* AccountHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountHeaderView.xib; sourceTree = "<group>"; };
 		B57C744420F55BA600EEFC87 /* NSObject+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Helpers.swift"; sourceTree = "<group>"; };
@@ -850,6 +854,7 @@
 			children = (
 				B5980A6621AC91AA00EBF596 /* BundleWooTests.swift */,
 				B5BBD6E521B1D0C000E3207E /* DataWooTests.swift */,
+				B57C5C8F21B80B4B00FF82B2 /* DictionaryWooTests.swift */,
 				748C7783211E2D8400814F2C /* DoubleWooTests.swift */,
 				B5980A6421AC905C00EBF596 /* UIDeviceWooTests.swift */,
 				B57C745020F56EE900EEFC87 /* UITableViewCellHelpersTests.swift */,
@@ -1032,6 +1037,7 @@
 				B5BBD6DF21B174B200E3207E /* Data+Woo.swift */,
 				B5290ED8219B3FA900A6AF7F /* Date+Woo.swift */,
 				CE4DDB7A20DD312400D32EC8 /* DateFormatter+Helpers.swift */,
+				B57C5C8D21B80AE600FF82B2 /* Dictionary+Woo.swift */,
 				748C7781211E294000814F2C /* Double+Woo.swift */,
 				B59D1EE221907C7B009D1978 /* NSAttributedString+Helpers.swift */,
 				B57C744420F55BA600EEFC87 /* NSObject+Helpers.swift */,
@@ -1595,6 +1601,7 @@
 				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
 				B53B3F39219C817800DF1EB6 /* UIStoryboard+Woo.swift in Sources */,
+				B57C5C8E21B80AE600FF82B2 /* Dictionary+Woo.swift in Sources */,
 				CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */,
 				B555530F21B57DE700449E71 /* ApplicationWrapper.swift in Sources */,
 				747AA08B2107CF8D0047A89B /* TracksProvider.swift in Sources */,
@@ -1726,6 +1733,7 @@
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,
 				CEFE5876214AFAFC007B9808 /* MoneyFormatterTests.swift in Sources */,
 				746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */,
+				B57C5C9021B80B4B00FF82B2 /* DictionaryWooTests.swift in Sources */,
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,
 				B541B2132189E7FD008FE7C1 /* ScannerWooTests.swift in Sources */,
 				B53A56A42112483E000776C9 /* Constants.swift in Sources */,

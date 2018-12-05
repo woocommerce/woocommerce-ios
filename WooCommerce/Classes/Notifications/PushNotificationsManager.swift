@@ -164,7 +164,7 @@ extension PushNotificationsManager {
         }
 
         // Badge: Reset
-        guard userInfo.valueAsString(forKey: APNSKey.type) != PushType.badgeReset else {
+        guard userInfo.string(forKey: APNSKey.type) != PushType.badgeReset else {
             return
         }
 
@@ -200,7 +200,7 @@ private extension PushNotificationsManager {
             return false
         }
 
-        guard let notificationId = userInfo.valueAsString(forKey: APNSKey.identifier) else {
+        guard let notificationId = userInfo.string(forKey: APNSKey.identifier) else {
             return false
         }
 
@@ -224,7 +224,7 @@ private extension PushNotificationsManager {
             return false
         }
 
-        guard let _ = userInfo.valueAsString(forKey: APNSKey.identifier) else {
+        guard let _ = userInfo.string(forKey: APNSKey.identifier) else {
             return false
         }
 
@@ -278,11 +278,11 @@ private extension PushNotificationsManager {
     func trackNotification(with userInfo: [AnyHashable: Any]) {
         var properties = [String: String]()
 
-        if let noteId = userInfo.valueAsString(forKey: APNSKey.identifier) {
+        if let noteId = userInfo.string(forKey: APNSKey.identifier) {
             properties[AnalyticKey.identifier] = String(noteId)
         }
 
-        if let type = userInfo.valueAsString(forKey: APNSKey.type) {
+        if let type = userInfo.string(forKey: APNSKey.type) {
             properties[AnalyticKey.type] = type
         }
 

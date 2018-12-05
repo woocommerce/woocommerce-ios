@@ -28,7 +28,7 @@ class StoresManagerTests: XCTestCase {
     ///
     func testInitialStateIsAuthenticatedAssumingCredentialsWereNotMissing() {
         var session = SessionManager.testingInstance
-        session.defaultCredentials = Settings.credentials
+        session.defaultCredentials = SessionSettings.credentials
 
         let manager = StoresManager.testingInstance
         XCTAssertTrue(manager.isAuthenticated)
@@ -39,7 +39,7 @@ class StoresManagerTests: XCTestCase {
     ///
     func testAuthenticateEffectivelyTogglesStoreManagerToAuthenticatedState() {
         let manager = StoresManager.testingInstance
-        manager.authenticate(credentials: Settings.credentials)
+        manager.authenticate(credentials: SessionSettings.credentials)
 
         XCTAssertTrue(manager.isAuthenticated)
     }
@@ -49,7 +49,7 @@ class StoresManagerTests: XCTestCase {
     ///
     func testDeauthenticateEffectivelyTogglesStoreManagerToDeauthenticatedState() {
         let manager = StoresManager.testingInstance
-        manager.authenticate(credentials: Settings.credentials)
+        manager.authenticate(credentials: SessionSettings.credentials)
         manager.deauthenticate()
 
         XCTAssertFalse(manager.isAuthenticated)
@@ -60,42 +60,21 @@ class StoresManagerTests: XCTestCase {
     ///
     func testAuthenticatePersistsDefaultCredentialsInKeychain() {
         let manager = StoresManager.testingInstance
-        manager.authenticate(credentials: Settings.credentials)
+        manager.authenticate(credentials: SessionSettings.credentials)
 
         let session = SessionManager.testingInstance
-        XCTAssertEqual(session.defaultCredentials, Settings.credentials)
-    }
-}
-
-
-// MARK: - SessionManager: Testing Methods
-//
-private extension SessionManager {
-
-    /// Returns a SessionManager instance with testing Keychain/UserDefaults
-    ///
-    static var testingInstance: SessionManager {
-        return SessionManager(defaults: Settings.defaults, keychainServiceName: Settings.keychainServiceName)
+        XCTAssertEqual(session.defaultCredentials, SessionSettings.credentials)
     }
 }
 
 
 // MARK: - StoresManager: Testing Methods
 //
-private extension StoresManager {
+extension StoresManager {
 
     /// Returns a StoresManager instance with testing Keychain/UserDefaults
     ///
     static var testingInstance: StoresManager {
         return StoresManager(sessionManager: .testingInstance)
     }
-}
-
-
-// MARK: - Testing Constants
-//
-private enum Settings {
-    static let credentials = Credentials(username: "username", authToken: "authToken")
-    static let defaults = UserDefaults(suiteName: "storesManagerTests")!
-    static let keychainServiceName = "com.woocommerce.storesmanagertests"
 }

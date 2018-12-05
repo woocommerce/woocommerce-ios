@@ -49,8 +49,8 @@ struct PushNotificationsConfiguration {
 
 
     /// Designated Initializer:
-    /// Why do we use @autoclosure? because the `UIApplication.shared` property, if executed at the AppDelegate instantiation
-    /// point, will cause a circular reference (and hence a crash!).
+    /// Why do we use @autoclosure? because the `UIApplication.shared` property, if executed during the AppDelegate instantiation
+    /// will cause a circular reference (and hence a crash!).
     ///
     init(application: @autoclosure @escaping () -> ApplicationWrapper,
          defaults: @autoclosure @escaping () -> UserDefaults,
@@ -62,7 +62,6 @@ struct PushNotificationsConfiguration {
         self.storesManagerClosure = storesManager
         self.userNotificationCenterClosure = userNotificationCenter
     }
-
 }
 
 

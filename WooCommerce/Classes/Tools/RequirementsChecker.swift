@@ -13,33 +13,48 @@ class RequirementsChecker {
     private init() { }
 
 
-    /// This function fetches the current site's API and then displays a warning if WC REST v3 is not available.
+    /// This function fetches the default site's API and then displays a warning if WC REST v3 is not available.
     ///
-    static func checkMinimumWooVersion() {
-        guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore == false else {
+    static func checkMinimumWooVersionForDefaultStore() {
+        guard StoresManager.shared.isAuthenticated else {
+            DDLogWarn("⚠️ Cannot check WC version on default store — user is not authenticated.")
             return
         }
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID,
-            siteID != 0 else {
-                return
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID, siteID != 0 else {
+            DDLogWarn("⚠️ Cannot check WC version on default store — default siteID is nil or 0.")
+            return
         }
 
-        let action = SettingAction.retrieveSiteAPI(siteID: siteID) { (siteAPI, error) in
-            guard error == nil else {
+        checkMinimumWooVersion(for: siteID)
+    }
+
+    /// This function fetches the provided site's API and then displays a warning if WC REST v3 is not available.
+    ///
+    static func checkMinimumWooVersion(for siteID: Int) {
+        let action = retrieveSiteAPIAction(siteID: siteID)
+        StoresManager.shared.dispatch(action)
+    }
+}
+
+private extension RequirementsChecker {
+
+    /// Returns a `SettingAction.retrieveSiteAPI` action
+    ///
+    static func retrieveSiteAPIAction(siteID: Int) -> SettingAction {
+        return SettingAction.retrieveSiteAPI(siteID: siteID) { (siteAPI, error) in
+            guard let siteAPI = siteAPI else {
                 DDLogWarn("⚠️ Could not successfully fetch API info for siteID \(siteID): \(String(describing: error))")
                 return
             }
-            guard let siteAPI = siteAPI, siteAPI.highestWooVersion != .mark3 else {
-                return
+
+            if siteAPI.highestWooVersion != .mark3 {
+                DDLogWarn("⚠️ WC version older than v3.5 — highest API version: \(siteAPI.highestWooVersion.rawValue) for siteID: \(siteAPI.siteID)")
             }
 
-            DDLogWarn("⚠️ WC version older than v3.5 — highest API version: \(siteAPI.highestWooVersion.rawValue) for siteID: \(siteID)")
             let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
             fancyAlert.modalPresentationStyle = .custom
             fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
             AppDelegate.shared.tabBarController?.present(fancyAlert, animated: true)
         }
-
-        StoresManager.shared.dispatch(action)
     }
 }

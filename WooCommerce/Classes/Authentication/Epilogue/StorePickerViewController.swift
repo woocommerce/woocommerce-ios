@@ -159,7 +159,7 @@ private extension StorePickerViewController {
             return
         }
 
-        // TODO: Add a requirements check here!
+        displaySiteWCRequirementWarningIfNeeded(for: firstSite.siteID)
         StoresManager.shared.updateDefaultStore(storeID: firstSite.siteID)
     }
 
@@ -219,6 +219,24 @@ private extension StorePickerViewController {
 
         let loginViewController = AppDelegate.shared.authenticationManager.loginForWordPressDotCom()
         navigationController.setViewControllers([loginViewController], animated: true)
+    }
+
+    /// If the provided site's WC version is not valid, display a warning to the user.
+    ///
+    func displaySiteWCRequirementWarningIfNeeded(for siteID: Int) {
+        actionButton.isEnabled = false
+        RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] (isValidWCVersion) in
+            guard isValidWCVersion == false else {
+                self?.actionButton.isEnabled = true
+                return
+            }
+
+            // Display a warning to the user about the site version
+            let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
+            fancyAlert.modalPresentationStyle = .custom
+            fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
+            self?.present(fancyAlert, animated: true)
+        }
     }
 }
 
@@ -302,7 +320,7 @@ extension StorePickerViewController: UITableViewDelegate {
             return
         }
 
-        // TODO: Add a requirements check here!
+        displaySiteWCRequirementWarningIfNeeded(for: site.siteID)
 
         reloadDefaultStoreAndSelectedStoreRows {
             StoresManager.shared.updateDefaultStore(storeID: site.siteID)

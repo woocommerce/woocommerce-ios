@@ -2,9 +2,9 @@ import Foundation
 import UIKit
 
 
-/// ApplicationWrapper: Wraps UIApplication's API. Meant for Unit Testing Purposes.
+/// ApplicationAdapter: Wraps UIApplication's API. Meant for Unit Testing Purposes.
 ///
-protocol ApplicationWrapper: class {
+protocol ApplicationAdapter: class {
 
     /// App's Badge Count
     ///
@@ -24,9 +24,9 @@ protocol ApplicationWrapper: class {
 }
 
 
-/// UIApplication: ApplicationWrapper Conformance.
+/// UIApplication: ApplicationAdapter Conformance.
 ///
-extension UIApplication: ApplicationWrapper {
+extension UIApplication: ApplicationAdapter {
 
     /// Displays the Details for the specified Notification ID
     ///

@@ -21,7 +21,7 @@ class PushNotificationsManagerTests: XCTestCase {
 
     /// Mockup: UIApplication
     ///
-    private let application = MockupApplication()
+    private let application = MockupApplicationAdapter()
 
     /// UserDefaults: Testing Suite
     ///

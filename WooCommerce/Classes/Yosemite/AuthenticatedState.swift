@@ -47,7 +47,10 @@ class AuthenticatedState: StoresManagerState {
     /// Executed before the current state is deactivated.
     ///
     func willLeave() {
-        AppDelegate.shared.pushNotesManager.unregisterForRemoteNotifications()
+        let pushNotesManager = AppDelegate.shared.pushNotesManager
+
+        pushNotesManager.unregisterForRemoteNotifications()
+        pushNotesManager.resetBadgeCount()
     }
 
     /// Executed whenever the state is activated.

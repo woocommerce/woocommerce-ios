@@ -62,7 +62,7 @@ extension PushNotificationsManager {
     /// - Parameter onCompletion: Closure to be executed on completion. Receives a Boolean indicating if we've got Push Permission.
     ///
     func ensureAuthorizationIsRequested(onCompletion: ((Bool) -> Void)? = nil) {
-        let nc = configuration.userNotificationCenter
+        let nc = configuration.userNotificationsCenter
 
         nc.loadAuthorizationStatus(queue: .main) { status in
             guard status == .notDetermined else {

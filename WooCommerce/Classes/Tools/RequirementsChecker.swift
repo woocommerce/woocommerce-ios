@@ -30,8 +30,8 @@ class RequirementsChecker {
 
     /// This function fetches the provided site's API and then displays a warning if WC REST v3 is not available.
     ///
-    static func checkMinimumWooVersion(for siteID: Int) {
-        let action = retrieveSiteAPIAction(siteID: siteID)
+    static func checkMinimumWooVersion(for siteID: Int, onCompletion: ((SiteAPI?) -> Void)? = nil) {
+        let action = retrieveSiteAPIAction(siteID: siteID, onCompletion: onCompletion)
         StoresManager.shared.dispatch(action)
     }
 }
@@ -40,10 +40,11 @@ private extension RequirementsChecker {
 
     /// Returns a `SettingAction.retrieveSiteAPI` action
     ///
-    static func retrieveSiteAPIAction(siteID: Int) -> SettingAction {
+    static func retrieveSiteAPIAction(siteID: Int, onCompletion: ((SiteAPI?) -> Void)? = nil) -> SettingAction {
         return SettingAction.retrieveSiteAPI(siteID: siteID) { (siteAPI, error) in
             guard let siteAPI = siteAPI else {
                 DDLogWarn("⚠️ Could not successfully fetch API info for siteID \(siteID): \(String(describing: error))")
+                onCompletion?(nil)
                 return
             }
 
@@ -55,6 +56,8 @@ private extension RequirementsChecker {
             fancyAlert.modalPresentationStyle = .custom
             fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
             AppDelegate.shared.tabBarController?.present(fancyAlert, animated: true)
+
+            onCompletion?(siteAPI)
         }
     }
 }

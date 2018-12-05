@@ -14,26 +14,26 @@ class PushNotificationsManagerTests: XCTestCase {
         let configuration = PushNotificationsConfiguration(application: self.application,
                                                            defaults: self.defaults,
                                                            storesManager: self.storesManager,
-                                                           notificationsDelegate: self.userNotificationCenter)
+                                                           userNotificationsCenter: self.userNotificationCenter)
 
         return PushNotificationsManager(configuration: configuration)
     }()
 
     /// Mockup: UIApplication
     ///
-    private var application = MockupApplication()
+    private let application = MockupApplication()
 
     /// UserDefaults: Testing Suite
     ///
-    private var defaults = UserDefaults(suiteName: Sample.defaultSuiteName)!
+    private let defaults = UserDefaults(suiteName: Sample.defaultSuiteName)!
 
     /// Mockup: Stores Manager
     ///
-    private var storesManager = MockupStoresManager(sessionManager: .testingInstance)
+    private let storesManager = MockupStoresManager(sessionManager: .testingInstance)
 
     /// Mockup: UserNotificationCenter
     ///
-    private var userNotificationCenter = MockupUserNotificationsCenterAdapter()
+    private let userNotificationCenter = MockupUserNotificationsCenterAdapter()
 
 
 

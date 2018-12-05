@@ -2,9 +2,9 @@ import Foundation
 import UserNotifications
 
 
-/// UserNotificationCenterWrapper: Wraps UNUserNotificationCenter API. Meant for Unit Testing Purposes.
+/// UserNotificationsCenterAdapter: Wraps UNUserNotificationCenter API. Meant for Unit Testing Purposes.
 ///
-protocol UserNotificationCenterWrapper {
+protocol UserNotificationsCenterAdapter {
 
     /// Loads the Notifications Authorization Status
     ///
@@ -16,9 +16,9 @@ protocol UserNotificationCenterWrapper {
 }
 
 
-// MARK: - UNUserNotificationCenter: Wrapper COnformance
+// MARK: - UNUserNotificationCenter: UserNotificationsCenterAdapter Conformance
 //
-extension UNUserNotificationCenter: UserNotificationCenterWrapper {
+extension UNUserNotificationCenter: UserNotificationsCenterAdapter {
 
     /// Loads the Notifications Authorization Status
     ///

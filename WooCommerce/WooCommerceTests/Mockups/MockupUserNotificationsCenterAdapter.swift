@@ -3,9 +3,9 @@ import UserNotifications
 @testable import WooCommerce
 
 
-/// MockupUserNotificationCenter: UNUserNotificationCenter Mockup
+/// MockupUserNotificationsCenterAdapter: UNUserNotificationCenter Mockup
 ///
-class MockupUserNotificationCenter: UserNotificationCenterWrapper {
+class MockupUserNotificationsCenterAdapter: UserNotificationsCenterAdapter {
 
     /// User Notifications Authorization Status
     ///

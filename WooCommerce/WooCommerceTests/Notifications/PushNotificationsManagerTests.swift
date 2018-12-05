@@ -14,7 +14,7 @@ class PushNotificationsManagerTests: XCTestCase {
         let configuration = PushNotificationsConfiguration(application: self.application,
                                                            defaults: self.defaults,
                                                            storesManager: self.storesManager,
-                                                           userNotificationCenter: self.userNotificationCenter)
+                                                           notificationsDelegate: self.userNotificationCenter)
 
         return PushNotificationsManager(configuration: configuration)
     }()
@@ -33,7 +33,7 @@ class PushNotificationsManagerTests: XCTestCase {
 
     /// Mockup: UserNotificationCenter
     ///
-    private var userNotificationCenter = MockupUserNotificationCenter()
+    private var userNotificationCenter = MockupUserNotificationsCenterAdapter()
 
 
 
@@ -185,7 +185,7 @@ class PushNotificationsManagerTests: XCTestCase {
         let action = storesManager.receivedActions.first as! NotificationAction
 
         switch action {
-        case .unregisterDevice(_, _):
+        case .unregisterDevice:
             break
         default:
             XCTFail()

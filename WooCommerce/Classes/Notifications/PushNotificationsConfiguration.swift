@@ -27,8 +27,8 @@ struct PushNotificationsConfiguration {
 
     /// Wraps UNUserNotificationCenter API. Why not use the SDK directly?: Unit Tests!
     ///
-    var userNotificationCenter: UserNotificationCenterWrapper {
-        return userNotificationCenterClosure()
+    var userNotificationsCenter: UserNotificationsCenterAdapter {
+        return userNotificationsCenterClosure()
     }
 
     /// Application Closure: Returns a reference to the ApplicationWrapper
@@ -43,9 +43,9 @@ struct PushNotificationsConfiguration {
     ///
     private let storesManagerClosure: () -> StoresManager
 
-    /// NotificationCenter Closure: Returns a reference to UserNotificationCenterWrapper
+    /// NotificationCenter Closure: Returns a reference to UserNotificationsCenterAdapter
     ///
-    private let userNotificationCenterClosure: () -> UserNotificationCenterWrapper
+    private let userNotificationsCenterClosure: () -> UserNotificationsCenterAdapter
 
 
     /// Designated Initializer:
@@ -55,12 +55,12 @@ struct PushNotificationsConfiguration {
     init(application: @autoclosure @escaping () -> ApplicationWrapper,
          defaults: @autoclosure @escaping () -> UserDefaults,
          storesManager: @autoclosure @escaping () -> StoresManager,
-         userNotificationCenter: @autoclosure @escaping () -> UserNotificationCenterWrapper) {
+         userNotificationsCenter: @autoclosure @escaping () -> UserNotificationsCenterAdapter) {
 
         self.applicationClosure = application
         self.defaultsClosure = defaults
         self.storesManagerClosure = storesManager
-        self.userNotificationCenterClosure = userNotificationCenter
+        self.userNotificationsCenterClosure = userNotificationsCenter
     }
 }
 
@@ -75,6 +75,6 @@ extension PushNotificationsConfiguration {
         return PushNotificationsConfiguration(application: UIApplication.shared,
                                               defaults: .standard,
                                               storesManager: .shared,
-                                              userNotificationCenter: UNUserNotificationCenter.current())
+                                              userNotificationsCenterClosure: UNUserNotificationCenter.current())
     }
 }

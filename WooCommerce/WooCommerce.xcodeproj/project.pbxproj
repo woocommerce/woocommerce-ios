@@ -83,10 +83,10 @@
 		B554016B2170D6010067DC90 /* ChartPlaceholderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B554016A2170D6010067DC90 /* ChartPlaceholderView.xib */; };
 		B554E1792152F20000F31188 /* UINavigationBar+Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554E1782152F20000F31188 /* UINavigationBar+Appearance.swift */; };
 		B554E17B2152F27200F31188 /* UILabel+Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554E17A2152F27200F31188 /* UILabel+Appearance.swift */; };
-		B555530D21B57DC300449E71 /* UserNotificationCenterWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B555530C21B57DC300449E71 /* UserNotificationCenterWrapper.swift */; };
+		B555530D21B57DC300449E71 /* UserNotificationsCenterAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B555530C21B57DC300449E71 /* UserNotificationsCenterAdapter.swift */; };
 		B555530F21B57DE700449E71 /* ApplicationWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B555530E21B57DE700449E71 /* ApplicationWrapper.swift */; };
 		B555531121B57E6F00449E71 /* MockupApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B555531021B57E6F00449E71 /* MockupApplication.swift */; };
-		B555531321B57E8800449E71 /* MockupUserNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B555531221B57E8800449E71 /* MockupUserNotificationCenter.swift */; };
+		B555531321B57E8800449E71 /* MockupUserNotificationsCenterAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B555531221B57E8800449E71 /* MockupUserNotificationsCenterAdapter.swift */; };
 		B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557652A20F681E800185843 /* StoreTableViewCell.swift */; };
 		B557652D20F6827900185843 /* StoreTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B557652C20F6827900185843 /* StoreTableViewCell.xib */; };
 		B557DA1520979904005962F4 /* CustomerNoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1320979904005962F4 /* CustomerNoteTableViewCell.swift */; };
@@ -353,10 +353,10 @@
 		B554016A2170D6010067DC90 /* ChartPlaceholderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChartPlaceholderView.xib; sourceTree = "<group>"; };
 		B554E1782152F20000F31188 /* UINavigationBar+Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Appearance.swift"; sourceTree = "<group>"; };
 		B554E17A2152F27200F31188 /* UILabel+Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Appearance.swift"; sourceTree = "<group>"; };
-		B555530C21B57DC300449E71 /* UserNotificationCenterWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNotificationCenterWrapper.swift; sourceTree = "<group>"; };
+		B555530C21B57DC300449E71 /* UserNotificationsCenterAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNotificationsCenterAdapter.swift; sourceTree = "<group>"; };
 		B555530E21B57DE700449E71 /* ApplicationWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationWrapper.swift; sourceTree = "<group>"; };
 		B555531021B57E6F00449E71 /* MockupApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupApplication.swift; sourceTree = "<group>"; };
-		B555531221B57E8800449E71 /* MockupUserNotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupUserNotificationCenter.swift; sourceTree = "<group>"; };
+		B555531221B57E8800449E71 /* MockupUserNotificationsCenterAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupUserNotificationsCenterAdapter.swift; sourceTree = "<group>"; };
 		B557652A20F681E800185843 /* StoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreTableViewCell.swift; sourceTree = "<group>"; };
 		B557652C20F6827900185843 /* StoreTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StoreTableViewCell.xib; sourceTree = "<group>"; };
 		B557DA1320979904005962F4 /* CustomerNoteTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerNoteTableViewCell.swift; sourceTree = "<group>"; };
@@ -605,7 +605,7 @@
 				B53A56A12112470C000776C9 /* MockupStorage+Sample.swift */,
 				B56C721321B5BBC000E5E85B /* MockupStoresManager.swift */,
 				B53A569A21123E8E000776C9 /* MockupTableView.swift */,
-				B555531221B57E8800449E71 /* MockupUserNotificationCenter.swift */,
+				B555531221B57E8800449E71 /* MockupUserNotificationsCenterAdapter.swift */,
 			);
 			path = Mockups;
 			sourceTree = "<group>";
@@ -942,7 +942,7 @@
 				B555530E21B57DE700449E71 /* ApplicationWrapper.swift */,
 				B56C721121B5B44000E5E85B /* PushNotificationsConfiguration.swift */,
 				B5BBD6DD21B1703600E3207E /* PushNotificationsManager.swift */,
-				B555530C21B57DC300449E71 /* UserNotificationCenterWrapper.swift */,
+				B555530C21B57DC300449E71 /* UserNotificationsCenterAdapter.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -1674,7 +1674,7 @@
 				CE14452E2188C11700A991D8 /* ZendeskManager.swift in Sources */,
 				B5BE75DB213F1D1E00909A14 /* OverlayMessageView.swift in Sources */,
 				B5A56BF5219F5AB20065A902 /* NSNotificationName+Woo.swift in Sources */,
-				B555530D21B57DC300449E71 /* UserNotificationCenterWrapper.swift in Sources */,
+				B555530D21B57DC300449E71 /* UserNotificationsCenterAdapter.swift in Sources */,
 				B541B2152189EEA1008FE7C1 /* Scanner+Helpers.swift in Sources */,
 				743EDD9F214B05350039071B /* TopEarnerStatsItem+Woo.swift in Sources */,
 				B5BBD6DE21B1703700E3207E /* PushNotificationsManager.swift in Sources */,
@@ -1722,7 +1722,7 @@
 			files = (
 				B57C5C9F21B80E8300FF82B2 /* SampleError.swift in Sources */,
 				B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */,
-				B555531321B57E8800449E71 /* MockupUserNotificationCenter.swift in Sources */,
+				B555531321B57E8800449E71 /* MockupUserNotificationsCenterAdapter.swift in Sources */,
 				B555531121B57E6F00449E71 /* MockupApplication.swift in Sources */,
 				B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */,
 				B53A569D21123EEB000776C9 /* MockupStorage.swift in Sources */,

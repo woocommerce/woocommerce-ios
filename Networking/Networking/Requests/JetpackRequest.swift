@@ -41,6 +41,9 @@ struct JetpackRequest: URLRequestConvertible {
     ///     - parameters: Collection of Key/Value parameters, to be forwarded to the Jetpack Connected site.
     ///
     init(wooApiVersion: WooAPIVersion, method: HTTPMethod, siteID: Int, path: String, parameters: [String: String]? = nil) {
+        if [.mark1, .mark2].contains(wooApiVersion) {
+            DDLogWarn("⚠️ You are using an older version of the Woo REST API: \(wooApiVersion.rawValue), for path: \(path)")
+        }
         self.wooApiVersion = wooApiVersion
         self.method = method
         self.siteID = siteID

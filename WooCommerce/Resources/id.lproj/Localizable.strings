@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-14 10:54:03+0000 */
+/* Translation-Revision-Date: 2018-11-27 10:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -56,6 +56,15 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Terjadi error saat mencoba memproses permintaan Anda: ";
+
+/* Approve a comment */
+"Approve" = "Setujui";
+
+/* Unapprove a comment */
+"Approved" = "Disetujui";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "Menyetujui komentar";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Apakah Anda yakin ingin logout dari akun %@?";
@@ -165,6 +174,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Hari";
 
+/* Deleted Notification's Title */
+"Deleted Notification!" = "Telah Menghapus Pemberitahuan!";
+
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "Dihapus: Pesanan #(viewModel.order.number)";
 
@@ -222,8 +234,14 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Gagal menyambungkan permintaan ke REST API.";
 
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "Saring pemberitahuan";
+
 /* Filter the orders list. */
 "Filter orders" = "Saring pesanan";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "Menyaring daftar pemberitahuan menurut jenis pemberitahuan.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Menyaring daftar pesanan menurut status pembayaran.";
@@ -312,6 +330,9 @@
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Melampaui Batas. Anda dapat coba lagi semenit kemudian. Mencoba sebelum semenit akan menambah waktu Anda harus menunggu sebelum ban dicabut. Jika Anda merasa ini sebuah kesalahan, silahkan kontak support.";
 
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "Memuat Pesanan";
+
 /* No comment provided by engineer. */
 "Log In" = "Masuk";
 
@@ -354,8 +375,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Domain Dipetakan";
 
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "Tandai Semua sebagai Sudah Dibaca";
+
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "Tandai Pesanan Selesai";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "Tandai Setiap Pemberitahuan sebagai Sudah Dibaca";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Media tidak memiliki file yang dikaitkan untuk diunggah.";
@@ -371,6 +398,12 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "Bulan";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "Pindahkan komentar ke Spam";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "Pindahkan komentar ke Tempat Sampah";
 
 /* My Tickets title */
 "My Tickets" = "Tiket Saya";
@@ -396,6 +429,9 @@
 /* No comment provided by engineer. */
 "Next" = "Selanjutnya";
 
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "Belum Ada Pemberitahuan!";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Tidak ada aktivitas dalam periode ini";
 
@@ -411,8 +447,11 @@
 /* No comment provided by engineer. */
 "Note to customer" = "Catatan untuk pelanggan";
 
-/* Notifications tab title */
+/* No comment provided by engineer. */
 "Notifications" = "Notifikasi";
+
+/* Notifications filtered title */
+"Notifications: (currentTypeFilter.description)" = "Pemberitahuan: (currentTypeFilter.description)";
 
 /* No comment provided by engineer. */
 "OK" = "OK";
@@ -549,11 +588,14 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "Laporkan masalah crash";
 
-/* Retry Action */
+/* No comment provided by engineer. */
 "Retry" = "Coba Lagi";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Tinjau, siapkan, dan kirimkan pesanan yang tertunda ini";
+
+/* Reviews filter title */
+"Reviews" = "Ulasan";
 
 /* SKU label */
 "SKU:" = "SKU:";
@@ -648,6 +690,9 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Maaf, Anda tidak dapat menggunakan alamat situs tersebut.";
 
+/* Verb, spam a comment */
+"Spam" = "Spam";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "Periode awal %1$@, periode akhir %2$@";
 
@@ -699,11 +744,17 @@
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "Akun Google \"(loginFields.username)\" tidak cocok dengan akun WordPress.com mana pun.";
 
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "Pesanan tidak dapat dimuat!";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "URL tidak menemukan host yang valid.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Sertifikat untuk server ini tidak sah. Anda mungkin tersambung dengan server yang menyamar sebagai “%@” yang bisa membuat informasi rahasia Anda beresiko,\n\nApakah Anda ingin mempercayai sertifikat itu?";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed!" = "Pemberitahuan telah dihapus!";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "Pesanan yang telah dihapus dari Toko Anda!";
@@ -774,6 +825,9 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "Total Pengeluaran";
 
+/* Move a comment to the trash */
+"Trash" = "Buang";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Percayai";
 
@@ -800,6 +854,9 @@
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Tidak dapat memverifikasi alamat email. Silakan coba lagi nanti.";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "Tidak menyetujui komentar";
 
 /* Undo Action */
 "Undo" = "Urungkan";

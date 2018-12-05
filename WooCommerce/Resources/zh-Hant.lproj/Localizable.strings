@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-14 09:54:07+0000 */
+/* Translation-Revision-Date: 2018-11-28 07:54:02+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -56,6 +56,15 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "處理要求時發生錯誤：";
+
+/* Approve a comment */
+"Approve" = "核准";
+
+/* Unapprove a comment */
+"Approved" = "已核准";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "核准留言";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "你確定要登出帳號 %@ 嗎？";
@@ -165,6 +174,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "天";
 
+/* Deleted Notification's Title */
+"Deleted Notification!" = "通知已刪除！";
+
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "已刪除：訂單編號 (viewModel.order.number)";
 
@@ -222,8 +234,14 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API 無法序列化要求。";
 
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "篩選通知";
+
 /* Filter the orders list. */
 "Filter orders" = "篩選訂單";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "依通知類型篩選通知。";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "依付款狀態篩選訂單清單";
@@ -312,6 +330,9 @@
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "已達限制。你可以在 1 分鐘後再試一次。如果在 1 分鐘不到之前重試，只會延長你必須等候繼續進行的時間。如果你覺得這是錯誤，請聯絡支援團隊。";
 
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "正在載入訂單";
+
 /* No comment provided by engineer. */
 "Log In" = "登入";
 
@@ -354,8 +375,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "對應網域";
 
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "將全部標示為已讀";
+
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "將訂單標示為完成";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "將所有通知標示為已讀";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "媒體沒有可上傳的相關檔案。";
@@ -371,6 +398,12 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "月";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "將留言移至垃圾留言";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "將這則留言移到垃圾桶";
 
 /* My Tickets title */
 "My Tickets" = "我的票證";
@@ -396,6 +429,9 @@
 /* No comment provided by engineer. */
 "Next" = "下一步";
 
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "尚未有任何通知！";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "此期間沒有任何活動";
 
@@ -411,8 +447,11 @@
 /* No comment provided by engineer. */
 "Note to customer" = "給顧客的備註";
 
-/* Notifications tab title */
+/* No comment provided by engineer. */
 "Notifications" = "通知";
+
+/* Notifications filtered title */
+"Notifications: (currentTypeFilter.description)" = "通知：(currentTypeFilter.description)";
 
 /* No comment provided by engineer. */
 "OK" = "確定";
@@ -549,11 +588,14 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "報告當機";
 
-/* Retry Action */
+/* No comment provided by engineer. */
 "Retry" = "重試";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "檢視、準備和運送這些待處理訂單";
+
+/* Reviews filter title */
+"Reviews" = "評論";
 
 /* SKU label */
 "SKU:" = "貨號：";
@@ -648,6 +690,9 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "很抱歉，你不可使用該網站位址。";
 
+/* Verb, spam a comment */
+"Spam" = "垃圾留言";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "期限：%1$@ 至 %2$@";
 
@@ -699,11 +744,17 @@
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "沒有任何與 Google 帳號「(loginFields.username)」匹配的 WordPress.com 帳號";
 
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "無法載入訂單！";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "網址缺少有效的主機。";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "此伺服器的憑證無效。你可能正連線至冒充為「%@」的伺服器，而這可能洩漏你的機密資料。\n\n是否仍然要信任憑證？";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed!" = "通知已移除！";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "已從你的商店刪除此訂單！";
@@ -774,6 +825,9 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "消費總額";
 
+/* Move a comment to the trash */
+"Trash" = "移至垃圾桶";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信任";
 
@@ -800,6 +854,9 @@
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "無法驗證電子郵件地址。請稍後再試一次。";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "駁回此留言";
 
 /* Undo Action */
 "Undo" = "復原";

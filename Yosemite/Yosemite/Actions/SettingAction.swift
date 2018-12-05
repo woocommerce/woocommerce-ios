@@ -6,4 +6,5 @@ import Networking
 //
 public enum SettingAction: Action {
     case retrieveSiteSettings(siteID: Int, onCompletion: (Error?) -> Void)
+    case retrieveSiteAPI(siteID: Int, onCompletion: (SiteAPI?, Error?) -> Void)
 }

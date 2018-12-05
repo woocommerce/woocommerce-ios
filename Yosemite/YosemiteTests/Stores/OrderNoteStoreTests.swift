@@ -74,7 +74,7 @@ class OrderNoteStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes/", filename: "order-notes")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderNote.self), 0)
         let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { (orderNotes, error) in
@@ -97,7 +97,7 @@ class OrderNoteStoreTests: XCTestCase {
         let remoteCustomerNote = sampleCustomerNote()
         let remoteSellerNote = sampleSellerNote()
 
-        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes/", filename: "order-notes")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderNote.self), 0)
         let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { (orderNotes, error) in
@@ -130,7 +130,7 @@ class OrderNoteStoreTests: XCTestCase {
     func testUpdateStoredOrderNoteEffectivelyUpdatesPreexistantOrderNote() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
 
         XCTAssertNil(viewStorage.firstObject(ofType: Storage.OrderNote.self, matching: nil))
         orderNoteStore.upsertStoredOrderNote(readOnlyOrderNote: sampleCustomerNote(), orderID: sampleOrderID)
@@ -147,7 +147,7 @@ class OrderNoteStoreTests: XCTestCase {
     func testUpdateStoredOrderNoteEffectivelyPersistsNewOrderNote() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         let remoteOrderNote = sampleCustomerNote()
 
         XCTAssertNil(viewStorage.loadAccount(userId: remoteOrderNote.noteID))

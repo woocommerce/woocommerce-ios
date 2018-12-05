@@ -11,7 +11,7 @@ protocol StringDescriptor {
 
     /// Associated URL.
     ///
-    var url: URL?  { get }
+    var url: URL? { get }
 
     /// String Payload associated to the range.
     ///

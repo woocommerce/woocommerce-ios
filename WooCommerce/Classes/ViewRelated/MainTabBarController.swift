@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import Yosemite
+import WordPressUI
 
 
 /// Enum representing the individual tabs
@@ -52,23 +53,65 @@ class MainTabBarController: UITabBarController {
 
         // Did we reselect the already-selected tab?
         if currentlySelectedTab == userSelectedTab {
-            switch userSelectedTab {
-            case .myStore:
-                WooAnalytics.shared.track(.dashboardReselected)
-            case .orders:
-                WooAnalytics.shared.track(.ordersReselected)
-            case .notifications:
-                WooAnalytics.shared.track(.notificationsReselected)
-            }
+            trackTabReselected(tab: userSelectedTab)
+            scrollContentToTop()
         } else {
-            switch userSelectedTab {
-            case .myStore:
-                WooAnalytics.shared.track(.dashboardSelected)
-            case .orders:
-                WooAnalytics.shared.track(.ordersSelected)
-            case .notifications:
-                WooAnalytics.shared.track(.notificationsSelected)
-            }
+            trackTabSelected(newTab: userSelectedTab)
+        }
+    }
+}
+
+
+// MARK: - UIViewControllerTransitioningDelegate
+//
+extension MainTabBarController: UIViewControllerTransitioningDelegate {
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        guard presented is FancyAlertViewController else {
+            return nil
+        }
+
+        return FancyAlertPresentationController(presentedViewController: presented, presenting: presenting)
+    }
+}
+
+
+// MARK: - Static navigation helpers
+//
+private extension MainTabBarController {
+
+    /// *When applicable* this method will scroll the visible content to top.
+    ///
+    func scrollContentToTop() {
+        guard let navController = selectedViewController as? UINavigationController else {
+            return
+        }
+
+        navController.scrollContentToTop(animated: true)
+    }
+
+    /// Tracks "Tab Selected" Events.
+    ///
+    func trackTabSelected(newTab: WooTab) {
+        switch newTab {
+        case .myStore:
+            WooAnalytics.shared.track(.dashboardSelected)
+        case .orders:
+            WooAnalytics.shared.track(.ordersSelected)
+        case .notifications:
+            WooAnalytics.shared.track(.notificationsSelected)
+        }
+    }
+
+    /// Tracks "Tab Re Selected" Events.
+    ///
+    func trackTabReselected(tab: WooTab) {
+        switch tab {
+        case .myStore:
+            WooAnalytics.shared.track(.dashboardReselected)
+        case .orders:
+            WooAnalytics.shared.track(.ordersReselected)
+        case .notifications:
+            WooAnalytics.shared.track(.notificationsReselected)
         }
     }
 }

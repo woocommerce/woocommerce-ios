@@ -73,6 +73,10 @@ class StorePickerViewController: UIViewController {
         }
     }
 
+    /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
+    ///
+    private var estimatedRowHeights = [IndexPath: CGFloat]()
+
     /// Closure to be executed upon dismissal.
     ///
     var onDismiss: (() -> Void)?
@@ -235,7 +239,10 @@ extension StorePickerViewController {
             WooAnalytics.shared.refreshUserData()
             WooAnalytics.shared.track(.loginEpilogueContinueTapped,
                                       withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? String()])
-            dismiss(animated: true, completion: nil)
+
+            dismiss(animated: true) {
+                RequirementsChecker.checkMinimumWooVersion()
+            }
         }
     }
 }
@@ -280,6 +287,14 @@ extension StorePickerViewController: UITableViewDataSource {
 //
 extension StorePickerViewController: UITableViewDelegate {
 
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return estimatedRowHeights[indexPath] ?? StorePickerConstants.estimatedRowHeight
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return estimatedRowHeights[indexPath] ?? UITableView.automaticDimension
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let site = state.site(at: indexPath) else {
             tableView.deselectRow(at: indexPath, animated: true)
@@ -293,6 +308,16 @@ extension StorePickerViewController: UITableViewDelegate {
         tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         tableView.deselectRow(at: indexPath, animated: true)
     }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+
+        // Preserve the Cell Height
+        // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
+        // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
+        // the actual value. AKA no flicker!
+        //
+        estimatedRowHeights[indexPath] = cell.frame.height
+    }
 }
 
 
@@ -302,6 +327,7 @@ private enum StorePickerConstants {
     static let backgroundShadowOpacity = Float(0.2)
     static let numberOfSections = 1
     static let emptyStateRowCount = 1
+    static let estimatedRowHeight = CGFloat(50)
 }
 
 

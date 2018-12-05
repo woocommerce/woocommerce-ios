@@ -8,7 +8,6 @@ import WordPressKit
 import WordPressAuthenticator
 
 
-
 // MARK: - Woo's App Delegate!
 //
 @UIApplicationMain
@@ -112,6 +111,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+
+        RequirementsChecker.checkMinimumWooVersion()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -134,6 +135,7 @@ private extension AppDelegate {
     ///
     func setupComponentsAppearance() {
         setupWooAppearance()
+        setupFancyAlertAppearance()
         setupFancyButtonAppearance()
     }
 
@@ -145,6 +147,24 @@ private extension AppDelegate {
 
         // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
         window?.tintColor = StyleManager.wooCommerceBrandColor
+    }
+
+    /// Sets up FancyAlert's UIAppearance.
+    ///
+    func setupFancyAlertAppearance() {
+        let appearance = FancyAlertView.appearance()
+        appearance.bottomDividerColor = StyleManager.wooGreyBorder
+        appearance.topDividerColor = StyleManager.wooGreyBorder
+
+        appearance.titleTextColor = StyleManager.defaultTextColor
+        appearance.titleFont = UIFont.title2
+
+        appearance.bodyTextColor = StyleManager.defaultTextColor
+        appearance.bodyFont = UIFont.body
+
+        appearance.actionFont = UIFont.headline
+        appearance.infoFont = UIFont.subheadline
+        appearance.infoTintColor = StyleManager.wooCommerceBrandColor
     }
 
     /// Sets up FancyButton's UIAppearance.

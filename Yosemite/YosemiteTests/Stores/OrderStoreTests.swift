@@ -233,19 +233,20 @@ class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
-        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
+
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
 
-        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated())
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
         let storageOrder1 = viewStorage.loadOrder(orderID: sampleOrderMutated().orderID)
         XCTAssertEqual(storageOrder1?.toReadOnly(), sampleOrderMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 2)
         
-        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2())
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
         let storageOrder2 = viewStorage.loadOrder(orderID: sampleOrderMutated2().orderID)
         XCTAssertEqual(storageOrder2?.toReadOnly(), sampleOrderMutated2())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
@@ -260,7 +261,7 @@ class OrderStoreTests: XCTestCase {
         let remoteOrder = sampleOrder()
 
         XCTAssertNil(viewStorage.loadOrder(orderID: remoteOrder.orderID))
-        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder)
+        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, in: viewStorage)
 
         let storageOrder = viewStorage.loadOrder(orderID: remoteOrder.orderID)
         XCTAssertEqual(storageOrder?.toReadOnly(), remoteOrder)
@@ -308,7 +309,7 @@ class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve single order empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
 
         network.simulateError(requestUrlSuffix: "orders/963", error: NetworkError.notFound)
@@ -331,7 +332,7 @@ class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         /// Insert Order [Status == .completed]
-        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated())
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
 
         // Update: Expected Status is actually coming from `order.json` (Status == .processing actually!)
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
@@ -356,7 +357,7 @@ class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         /// Insert Order [Status == .completed]
-        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated())
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
 
         network.removeAllSimulatedResponses()
 
@@ -378,7 +379,7 @@ class OrderStoreTests: XCTestCase {
     func testResetStoredOrdersEffectivelyNukesTheOrdersCache() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder())
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
@@ -394,6 +395,53 @@ class OrderStoreTests: XCTestCase {
 
         orderStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that Inoccuous Upsert OP(s) performed in Derived Contexts **DO NOT** trigger Refresh Events in the
+    /// main thread.
+    ///
+    /// This translates effectively into: Ensure that performing update OP's that don't really change anything, do not
+    /// end up causing UI refresh OP's in the main thread.
+    ///
+    func testInoccuousUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
+        // Stack
+        let viewContext = storageManager.persistentContainer.viewContext
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let entityListener = EntityListener(viewContext: viewContext, readOnlyEntity: sampleOrder())
+
+        // Track Events: Upsert == 1 / Delete == 0
+        var numberOfUpsertEvents = 0
+        entityListener.onUpsert = { upserted in
+            numberOfUpsertEvents += 1
+        }
+
+        // We expect *never* to get a deletion event
+        entityListener.onDelete = {
+            XCTFail()
+        }
+
+        // Initial save: This should trigger *ONE* Upsert event
+        let backgroundSaveExpectation = expectation(description: "Retrieve order notes empty response")
+        let derivedContext = storageManager.newDerivedStorage()
+
+        derivedContext.perform {
+            orderStore.upsertStoredOrder(readOnlyOrder: self.sampleOrder(), in: derivedContext)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedContext) {
+
+            // Secondary Save: Expect ZERO new Upsert Events
+            derivedContext.perform {
+                orderStore.upsertStoredOrder(readOnlyOrder: self.sampleOrder(), in: derivedContext)
+            }
+
+            self.storageManager.saveDerivedType(derivedStorage: derivedContext) {
+                XCTAssertEqual(numberOfUpsertEvents, 1)
+                backgroundSaveExpectation.fulfill()
+            }
+        }
+
+        wait(for: [backgroundSaveExpectation], timeout: Constants.expectationTimeout)
     }
 }
 

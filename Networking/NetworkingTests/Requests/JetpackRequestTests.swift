@@ -8,7 +8,7 @@ class JetpackRequestTests: XCTestCase {
 
     /// Testing API Version
     ///
-    private let sampleWooApiVersion = WooAPIVersion.mark2
+    private let sampleWooApiVersion = WooAPIVersion.mark3
 
     /// Sample SiteID
     ///
@@ -33,7 +33,7 @@ class JetpackRequestTests: XCTestCase {
     /// Verifies that a POST JetpackRequest will query the Jetpack Tunneled WordPress.com API.
     ///
     func testPostRequestQueriesDotcomJetpackTunnelEndpointWithNoExtraQueryParameters() {
-        let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
 
         let expectedURL = URL(string: jetpackEndpointBaseURL)!
         let generatedURL = try! request.asURLRequest().url!
@@ -43,7 +43,7 @@ class JetpackRequestTests: XCTestCase {
     /// Verifies that a POST JetpackRequest will serialize all of the Tunneling Parameters in the request body.
     ///
     func testPostRequestQueriesDotcomJetpackTunnelEndpointWithItsParametersInTheBody() {
-        let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
 
         guard let urlRequest = try? request.asURLRequest(),
             let generatedBodyAsData = urlRequest.httpBody,
@@ -60,7 +60,7 @@ class JetpackRequestTests: XCTestCase {
     /// Verifies that a GET JetpackRequest will query the Jetpack Tunneled WordPress.com API, with the expected query parameters.
     ///
     func testGetRequestQueriesDotcomJetpackTunnelEndpointWithExpectedQueryParameters() {
-        let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: sampleSiteID, path: sampleRPC)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: sampleSiteID, path: sampleRPC)
 
         let expectedURL = URL(string: jetpackEndpointBaseURL + queryParameters(for: request))!
         let generatedURL = try! request.asURLRequest().url!
@@ -70,7 +70,7 @@ class JetpackRequestTests: XCTestCase {
     /// Verifies that a GET JetpackRequest will not serialize anything in the body.
     ///
     func testGetRequestDoesNotSerializeAnythingInTheBody() {
-        let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
 
         let output = try! request.asURLRequest()
         XCTAssertNil(output.httpBody)

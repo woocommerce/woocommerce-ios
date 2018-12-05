@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-14 12:54:03+0000 */
+/* Translation-Revision-Date: 2018-11-27 11:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -56,6 +56,15 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Une erreur est survenue lors de l’exécution de votre demande :";
+
+/* Approve a comment */
+"Approve" = "Approuver";
+
+/* Unapprove a comment */
+"Approved" = "Approuvé";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "Permet d'accepter ce commentaire";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Voulez-vous vraiment vous déconnecter du compte %@ ?";
@@ -165,6 +174,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Jours";
 
+/* Deleted Notification's Title */
+"Deleted Notification!" = "Notification supprimée !";
+
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "Supprimé : Commande n° (viewModel.order.number)";
 
@@ -222,8 +234,14 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Échec de la publication de la demande sur l’API REST.";
 
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "Filtrer les notifications";
+
 /* Filter the orders list. */
 "Filter orders" = "Filtrer les commandes";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "Filtre la liste des notifications par type de notification.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Filtre la liste des commandes par état de paiement.";
@@ -312,6 +330,9 @@
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limite atteinte. Vous pouvez ressayer dans 1 minute. Avant cela, un nouvelle tentative ne fera qu'augmenter l'attente avant que l'interdiction soit levée. Si vous pensez qu'il s'agît d'une erreur, contactez le support.";
 
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "Chargement de la commande";
+
 /* No comment provided by engineer. */
 "Log In" = "Connexion";
 
@@ -354,8 +375,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Domaine mappé";
 
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "Tout marquer comme lu";
+
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "Marquer la commande comme terminée";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "Marque chaque notification comme lue";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Le média n’a pas de fichier associé à téléverser.";
@@ -371,6 +398,12 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "Mois";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "Déplace un commentaire dans les indésirables";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "Déplace le commentaire dans la corbeille";
 
 /* My Tickets title */
 "My Tickets" = "Mes tickets";
@@ -396,6 +429,9 @@
 /* No comment provided by engineer. */
 "Next" = "Suivant";
 
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "Pas encore de notification !";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Aucune activité sur cette période";
 
@@ -411,8 +447,11 @@
 /* No comment provided by engineer. */
 "Note to customer" = "Note au client";
 
-/* Notifications tab title */
+/* No comment provided by engineer. */
 "Notifications" = "Notifications";
+
+/* Notifications filtered title */
+"Notifications: (currentTypeFilter.description)" = "Notifications : (currentTypeFilter.description)";
 
 /* No comment provided by engineer. */
 "OK" = "OK";
@@ -549,11 +588,14 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "Signaler les incidents";
 
-/* Retry Action */
+/* No comment provided by engineer. */
 "Retry" = "Réessayer";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Contrôler, préparer et livrer ces commandes en attente";
+
+/* Reviews filter title */
+"Reviews" = "Avis";
 
 /* SKU label */
 "SKU:" = "UGS :";
@@ -648,6 +690,9 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Vous ne pouvez pas utiliser cette adresse de site.";
 
+/* Verb, spam a comment */
+"Spam" = "Indésirables";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "Période commençant le %1$@ et se terminant le %2$@";
 
@@ -699,11 +744,17 @@
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "Le compte Google « (loginFields.username) » ne correspond à aucun compte sur WordPress.com";
 
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "Impossible de charger la commande !";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "L’URL ne contient pas d’hôte valide.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Le certificat de ce serveur n’est pas valide. Le serveur auquel vous vous connectez prétend être « %@ », ce qui peut constituer un risque de sécurité pour vos données confidentielles.\n\nSouhaitez-vous faire confiance au certificat malgré tout ?";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed!" = "La notification a été supprimée !";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "La commande a été supprimée de votre boutique !";
@@ -727,16 +778,16 @@
 "There was a problem removing the block for specified site." = "Un problème est survenu lors de la suppression du bloc du site spécifié.";
 
 /* Top Performers section title - this month */
-"This Month" = "Ce Mois-ci";
+"This Month" = "Ce mois-ci";
 
 /* Top Performers section title - this week */
-"This Week" = "Cette Semaine";
+"This Week" = "Cette semaine";
 
 /* Top Performers section title - this year */
 "This Year" = "Cette année";
 
 /* Login Disclaimer Text and Jetpack config instructions */
-"This app requires Jetpack to connect to your Store. Read the " = "Cette application nécessite de connecter Jetpack à votre boutique. Lire les ";
+"This app requires Jetpack to connect to your Store. Read the " = "Cette application nécessite de connecter Jetpack à votre boutique. Lire ";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Cette adresse e-mail n’est pas enregistrée sur WordPress.com.";
@@ -774,6 +825,9 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "Dépense totale";
 
+/* Move a comment to the trash */
+"Trash" = "Déplacer vers la corbeille";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Faire confiance";
 
@@ -800,6 +854,9 @@
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Impossible de vérifier l’adresse e-mail. Veuillez réessayer ultérieurement.";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "Permet de ne pas accepter le commentaire";
 
 /* Undo Action */
 "Undo" = "Annuler";

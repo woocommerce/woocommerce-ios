@@ -37,6 +37,7 @@ protocol Style {
     var statusSuccessColor: UIColor { get }
     var statusSuccessBoldColor: UIColor { get }
     var tableViewBackgroundColor: UIColor { get }
+    var goldStarColor: UIColor { get }
     var wooCommerceBrandColor: UIColor { get }
     var wooAccent: UIColor { get }
     var wooGreyLight: UIColor { get }
@@ -85,6 +86,7 @@ class DefaultStyle: Style {
     let sectionBackgroundColor          = HandbookColors.wooGreyLight
     let sectionTitleColor               = HandbookColors.wooSecondary
     let tableViewBackgroundColor        = HandbookColors.wooGreyLight
+    let goldStarColor                   = UIColor(red: 238.0/255.0, green: 180.0/255.0, blue: 34.0/255.0, alpha: 1.0)
 
     let statusDangerColor               = HandbookColors.statusRedDimmed
     let statusDangerBoldColor           = HandbookColors.statusRed
@@ -264,6 +266,10 @@ class StyleManager {
 
     static var statusSuccessBoldColor: UIColor {
         return active.statusSuccessBoldColor
+    }
+
+    static var goldStarColor: UIColor {
+        return active.goldStarColor
     }
 
     static var tableViewBackgroundColor: UIColor {

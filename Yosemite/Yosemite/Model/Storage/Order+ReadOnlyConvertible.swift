@@ -75,7 +75,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      customerNote: customerNote ?? "",
                      dateCreated: dateCreated ?? Date(),
                      dateModified: dateModified ?? Date(),
-                     datePaid: datePaid ?? Date(),
+                     datePaid: datePaid,
                      discountTotal: discountTotal ?? "",
                      discountTax: discountTax ?? "",
                      shippingTotal: shippingTotal ?? "",
@@ -106,8 +106,8 @@ extension Storage.Order: ReadOnlyConvertible {
                        state: billingState ?? "",
                        postcode: billingPostcode ?? "",
                        country: billingCountry,
-                       phone: billingPhone ?? "",
-                       email: billingEmail ?? "")
+                       phone: billingPhone,
+                       email: billingEmail)
     }
 
     private func createReadOnlyShippingAddress() -> Yosemite.Address? {
@@ -124,7 +124,7 @@ extension Storage.Order: ReadOnlyConvertible {
                        state: shippingState ?? "",
                        postcode: shippingPostcode ?? "",
                        country: shippingCountry,
-                       phone: shippingPhone ?? "",
-                       email: shippingEmail ?? "")
+                       phone: shippingPhone,
+                       email: shippingEmail)
     }
 }

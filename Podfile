@@ -16,11 +16,14 @@ target 'WooCommerce' do
   # Automattic Libraries
   # ====================
   #
-  pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.3'
+
+  # Use the latest bugfix for coretelephony
+  pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.4-beta.1'
+
   pod 'Gridicons', '0.16'
   pod 'WordPressAuthenticator', '~> 1.1'
   pod 'WordPressShared', '~> 1.1'
-  pod 'WordPressUI', '~> 1.0'
+  pod 'WordPressUI', '~> 1.1'
 
 
   # External Libraries

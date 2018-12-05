@@ -145,6 +145,12 @@ extension PeriodDataViewController {
 
 extension PeriodDataViewController {
 
+    /// Indicates if the receiver has Remote Stats, or not.
+    ///
+    var shouldDisplayGhostContent: Bool {
+        return orderStats == nil
+    }
+
     /// Displays the Placeholder Period Graph + Starts the Animation.
     /// Why is this public? Because the actual Sync OP is handled by StoreStatsViewController. We coordinate multiple
     /// placeholder animations from that spot!

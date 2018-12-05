@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-14 13:54:10+0000 */
+/* Translation-Revision-Date: 2018-11-26 18:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -56,6 +56,15 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Se produjo un error al procesar su solicitud:";
+
+/* Approve a comment */
+"Approve" = "Aprobar";
+
+/* Unapprove a comment */
+"Approved" = "Se ha aprobado";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "Aprueba el comentario";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "¿Estás seguro que quieres salir de la cuenta %@?";
@@ -165,6 +174,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Días";
 
+/* Deleted Notification's Title */
+"Deleted Notification!" = "Se ha eliminado la notificación.";
+
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "Se ha eliminado: Pedido núm. (viewModel.order.number)";
 
@@ -222,8 +234,14 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "No se ha podido serializar la solicitud a la API REST.";
 
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "Filtrar notificaciones";
+
 /* Filter the orders list. */
 "Filter orders" = "Filtrar pedidos";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "Filtra la lista de notificaciones por tipo de notificación.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Filtra la lista de pedidos según el estado de los pagos.";
@@ -312,6 +330,9 @@
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Límite alcanzado. Puedes intentarlo de nuevo en 1 minuto. Intentarlo antes sólo incrementará el tiempo de espera. Si piensas que esto es un error, contacta con el soporte.";
 
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "Cargando el pedido";
+
 /* No comment provided by engineer. */
 "Log In" = "Acceder";
 
@@ -354,8 +375,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Dominio mapeado";
 
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "Marcar todo como leído";
+
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "Marcar el pedido como completado";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "Marca todas las notificaciones como leídas";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Los medios no están asociados a un archivo a subir.";
@@ -371,6 +398,12 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "Meses";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "Traslada un comentario a spam";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "Traslada el comentario a la papelera";
 
 /* My Tickets title */
 "My Tickets" = "Mis tickets";
@@ -396,6 +429,9 @@
 /* No comment provided by engineer. */
 "Next" = "Siguiente";
 
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "Todavía no hay notificaciones.";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Sin actividad durante este periodo";
 
@@ -411,8 +447,11 @@
 /* No comment provided by engineer. */
 "Note to customer" = "Enviar la nota al cliente";
 
-/* Notifications tab title */
+/* No comment provided by engineer. */
 "Notifications" = "Notificaciones";
+
+/* Notifications filtered title */
+"Notifications: (currentTypeFilter.description)" = "Notificaciones: (currentTypeFilter.description)";
 
 /* No comment provided by engineer. */
 "OK" = "OK";
@@ -549,11 +588,14 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "Informar de fallos";
 
-/* Retry Action */
+/* No comment provided by engineer. */
 "Retry" = "Reintentar";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Revisa, prepara y envía estos pedidos pendientes.";
+
+/* Reviews filter title */
+"Reviews" = "Reseñas";
 
 /* SKU label */
 "SKU:" = "SKU:";
@@ -648,6 +690,9 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "No puedes utilizar esta dirección para el sitio.";
 
+/* Verb, spam a comment */
+"Spam" = "Spam";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "Periodo de inicio: %1$@. Periodo de finalización: %2$@.";
 
@@ -699,11 +744,17 @@
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "La cuenta de Google \"(loginFields.username)\" no coincide con ninguna cuenta de WordPress.com";
 
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "No se ha podido cargar el pedido.";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "La URL no contiene un host válido.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "El certificado para este servidor no es válido. Puede que estés intentando conectar con un servidor que aparenta ser \"%@\", lo que podría poner en peligro tu información confidencial.\n\n¿Deseas confiar en el certificado de todos modos?";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed!" = "Se ha eliminado la notificación.";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "El pedido se ha eliminado de tu tienda.";
@@ -774,6 +825,9 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "Gasto total";
 
+/* Move a comment to the trash */
+"Trash" = "Papelera";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Confiar";
 
@@ -800,6 +854,9 @@
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "No ha sido posible verificar la dirección de correo electrónico. Por favor, inténtalo de nuevo más tarde.";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "Rechaza el comentario";
 
 /* Undo Action */
 "Undo" = "Deshacer";

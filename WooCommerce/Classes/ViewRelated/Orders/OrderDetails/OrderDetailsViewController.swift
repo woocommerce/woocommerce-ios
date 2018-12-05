@@ -371,7 +371,7 @@ private extension OrderDetailsViewController {
 
         cell.isCustomerNote = note.isCustomerNote
         cell.dateCreated = note.dateCreated.toString(dateStyle: .medium, timeStyle: .short)
-        cell.contents = note.note
+        cell.contents = note.note.strippedHTML
     }
 
     func configurePayment(cell: PaymentTableViewCell) {

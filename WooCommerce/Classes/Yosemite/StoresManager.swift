@@ -54,6 +54,14 @@ class StoresManager {
         state.onAction(action)
     }
 
+    /// Forwards the Actions to the current State.
+    ///
+    func dispatch(_ actions: [Action]) {
+        for action in actions {
+            state.onAction(action)
+        }
+    }
+
     /// Switches the internal state to Authenticated.
     ///
     @discardableResult

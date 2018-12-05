@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-13 16:54:03+0000 */
+/* Translation-Revision-Date: 2018-11-27 00:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -56,6 +56,15 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Ocorreu um erro ao processar sua solicitação: ";
+
+/* Approve a comment */
+"Approve" = "Aprovar";
+
+/* Unapprove a comment */
+"Approved" = "Aprovado";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "Aprova o comentário";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Tem certeza de que deseja fazer logout da conta %@?";
@@ -165,6 +174,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Dias";
 
+/* Deleted Notification's Title */
+"Deleted Notification!" = "Notificação excluída!";
+
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "Excluídos: Pedido nº (viewModel.order.number)";
 
@@ -222,8 +234,14 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Ocorreu um erro durante a solicitação da REST API.";
 
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "Filtrar notificações";
+
 /* Filter the orders list. */
 "Filter orders" = "Filtrar pedidos";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "Filtra a lista de notificações por tipo de notificação.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Filtra a lista de pedidos conforme o status de pagamento.";
@@ -312,6 +330,9 @@
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limite atingido Tente novamente em 1 minuto. Tentar novamente antes disso aumentará o tempo que precisa esperar antes de a restrição ser eliminada. Se acha que isso é um erro, contate o suporte.";
 
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "Carregando pedido";
+
 /* No comment provided by engineer. */
 "Log In" = "Fazer login";
 
@@ -354,8 +375,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Domínio mapeado";
 
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "Marcar todas como lidas";
+
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "Marcar pedido como concluído";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "Marca todas as notificações como lidas";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "A mídia não tem um arquivo associado a ser enviado.";
@@ -371,6 +398,12 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "Meses";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "Define um comentário como spam";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "Move o comentário para a lixeira";
 
 /* My Tickets title */
 "My Tickets" = "Meus tíquetes";
@@ -396,6 +429,9 @@
 /* No comment provided by engineer. */
 "Next" = "Próximo";
 
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "Nenhuma notificação ainda!";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Nenhuma atividade no período";
 
@@ -411,8 +447,11 @@
 /* No comment provided by engineer. */
 "Note to customer" = "Nota para o cliente";
 
-/* Notifications tab title */
+/* No comment provided by engineer. */
 "Notifications" = "Notificações";
+
+/* Notifications filtered title */
+"Notifications: (currentTypeFilter.description)" = "Notificações: (currentTypeFilter.description)";
 
 /* No comment provided by engineer. */
 "OK" = "OK";
@@ -549,11 +588,14 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "Reportar travamentos";
 
-/* Retry Action */
+/* No comment provided by engineer. */
 "Retry" = "Tentar novamente";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Revise, prepare e envie esses pedidos pendentes";
+
+/* Reviews filter title */
+"Reviews" = "Avaliações";
 
 /* SKU label */
 "SKU:" = "SKU:";
@@ -648,6 +690,9 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Desculpe, você não pode usar esse endereço de site.";
 
+/* Verb, spam a comment */
+"Spam" = "Spam";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "Período inicial %1$@, período final %2$@";
 
@@ -699,11 +744,17 @@
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "A conta do Google \"(loginFields.username)\" não corresponde à nenhuma conta do WordPress.com";
 
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "O pedido não foi carregado!";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "Está faltando um host válido no URL.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "O certificado para este servidor é inválido. Você talvez esteja conectando a um servidor que está fingindo ser \"%@\", o que poderia colocar suas informações confidenciais em risco.";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed!" = "A notificação foi removida!";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "O pedido foi excluído de sua loja!";
@@ -736,7 +787,7 @@
 "This Year" = "Este ano";
 
 /* Login Disclaimer Text and Jetpack config instructions */
-"This app requires Jetpack to connect to your Store. Read the " = "Este aplicativo requer que o Jetpack se conecte a sua loja. Leia o ";
+"This app requires Jetpack to connect to your Store. Read the " = "Este aplicativo requer que o Jetpack se conecte a sua loja. Leia as ";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Este endereço de e-mail não está registrado no WordPress.com.";
@@ -774,6 +825,9 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "Total gasto";
 
+/* Move a comment to the trash */
+"Trash" = "Enviar para a lixeira";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Confiar";
 
@@ -800,6 +854,9 @@
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Não foi possível verificar o endereço de e-mail. Tente novamente mais tarde.";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "Não aprova o comentário";
 
 /* Undo Action */
 "Undo" = "Desfazer";

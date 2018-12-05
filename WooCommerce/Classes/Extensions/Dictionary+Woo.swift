@@ -23,4 +23,23 @@ extension Dictionary {
             return nil
         }
     }
+
+    /// This method attempts to convert a given value into an Integer, if it's not already the case.
+    ///
+    /// - Parameter key: The key to retrieve.
+    ///
+    /// - Returns: Value as a Integer (when possible!)
+    ///
+    public func integer(forKey key: Key) -> Int? {
+        switch self[key] {
+        case let integer as Int:
+            return integer
+        case let string as String:
+            return Int(string)
+        case let number as NSNumber:
+            return number.intValue
+        default:
+            return nil
+        }
+    }
 }

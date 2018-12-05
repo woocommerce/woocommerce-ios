@@ -9,7 +9,7 @@ struct PushNotificationsConfiguration {
 
     /// Wraps UIApplication's API. Why not use the SDK directly?: Unit Tests!
     ///
-    var application: ApplicationWrapper {
+    var application: ApplicationAdapter {
         return applicationClosure()
     }
 
@@ -31,9 +31,9 @@ struct PushNotificationsConfiguration {
         return userNotificationsCenterClosure()
     }
 
-    /// Application Closure: Returns a reference to the ApplicationWrapper
+    /// Application Closure: Returns a reference to the ApplicationAdapter
     ///
-    private let applicationClosure: () -> ApplicationWrapper
+    private let applicationClosure: () -> ApplicationAdapter
 
     /// UserDefaults Closure: Returns a reference to UserDefaults
     ///
@@ -52,7 +52,7 @@ struct PushNotificationsConfiguration {
     /// Why do we use @autoclosure? because the `UIApplication.shared` property, if executed during the AppDelegate instantiation
     /// will cause a circular reference (and hence a crash!).
     ///
-    init(application: @autoclosure @escaping () -> ApplicationWrapper,
+    init(application: @autoclosure @escaping () -> ApplicationAdapter,
          defaults: @autoclosure @escaping () -> UserDefaults,
          storesManager: @autoclosure @escaping () -> StoresManager,
          userNotificationsCenter: @autoclosure @escaping () -> UserNotificationsCenterAdapter) {

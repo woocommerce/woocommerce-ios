@@ -3,9 +3,9 @@ import UIKit
 @testable import WooCommerce
 
 
-/// MockupApplication: UIApplication Mockup!
+/// MockupApplicationAdapter: UIApplication Mockup!
 ///
-class MockupApplication: ApplicationWrapper {
+class MockupApplicationAdapter: ApplicationAdapter {
 
     /// Badge Count
     ///

@@ -159,6 +159,9 @@ class NotificationsViewController: UIViewController {
             //
             //self?.updateLastSeenTime()
         }
+
+        /// FIXME: Remove once the `updateLastSeenTime` call is fixed.
+        AppDelegate.shared.pushNotesManager.resetBadgeCount()
     }
 }
 

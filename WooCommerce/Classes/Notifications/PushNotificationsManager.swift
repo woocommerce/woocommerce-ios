@@ -111,6 +111,14 @@ extension PushNotificationsManager {
     }
 
 
+    /// Resets the Badge Count.
+    /// FIXME: Once the Mark as Seen call is rewired, make sure this is only called during the Logout flow.
+    ///
+    func resetBadgeCount() {
+        configuration.application.applicationIconBadgeNumber = 0
+    }
+
+
     /// Registers the Device Token agains WordPress.com backend, if there's a default account.
     ///
     /// - Parameters:

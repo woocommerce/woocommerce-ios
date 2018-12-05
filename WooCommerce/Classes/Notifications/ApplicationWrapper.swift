@@ -17,9 +17,21 @@ protocol ApplicationWrapper: class {
     /// Registers the app for Push Notifications
     ///
     func registerForRemoteNotifications()
+
+    /// Displays the Details for the specified Notification.
+    ///
+    func displayNotificationDetails(for noteID: Int)
 }
 
 
 /// UIApplication: ApplicationWrapper Conformance.
 ///
-extension UIApplication: ApplicationWrapper { }
+extension UIApplication: ApplicationWrapper {
+
+    /// Displays the Details for the specified Notification ID
+    ///
+    func displayNotificationDetails(for noteID: Int) {
+        // TODO: Wire the actual NoteID
+        MainTabBarController.switchToNotificationsTab()
+    }
+}

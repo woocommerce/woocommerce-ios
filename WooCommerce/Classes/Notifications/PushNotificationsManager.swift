@@ -200,11 +200,11 @@ private extension PushNotificationsManager {
             return false
         }
 
-        guard let notificationId = userInfo.string(forKey: APNSKey.identifier) else {
+        guard let notificationId = userInfo.integer(forKey: APNSKey.identifier) else {
             return false
         }
 
-        MainTabBarController.switchToNotificationsTab()
+        configuration.application.displayNotificationDetails(for: notificationId)
         completionHandler(.newData)
 
         return true
@@ -224,7 +224,7 @@ private extension PushNotificationsManager {
             return false
         }
 
-        guard let _ = userInfo.string(forKey: APNSKey.identifier) else {
+        guard let _ = userInfo[APNSKey.identifier] else {
             return false
         }
 
@@ -279,7 +279,7 @@ private extension PushNotificationsManager {
         var properties = [String: String]()
 
         if let noteId = userInfo.string(forKey: APNSKey.identifier) {
-            properties[AnalyticKey.identifier] = String(noteId)
+            properties[AnalyticKey.identifier] = noteId
         }
 
         if let type = userInfo.string(forKey: APNSKey.type) {

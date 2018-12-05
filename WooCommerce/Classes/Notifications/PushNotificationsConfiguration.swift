@@ -75,6 +75,6 @@ extension PushNotificationsConfiguration {
         return PushNotificationsConfiguration(application: UIApplication.shared,
                                               defaults: .standard,
                                               storesManager: .shared,
-                                              userNotificationsCenterClosure: UNUserNotificationCenter.current())
+                                              userNotificationsCenter: UNUserNotificationCenter.current())
     }
 }

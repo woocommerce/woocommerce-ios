@@ -24,6 +24,7 @@ extension Dictionary {
         }
     }
 
+
     /// This method attempts to convert a given value into an Integer, if it's not already the case.
     ///
     /// - Parameter key: The key to retrieve.

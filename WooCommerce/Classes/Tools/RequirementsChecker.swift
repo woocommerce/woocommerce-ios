@@ -13,7 +13,8 @@ class RequirementsChecker {
     private init() { }
 
 
-    /// This function fetches the default site's API and then displays a warning if WC REST v3 is not available.
+    /// This function checks the default site's API version and then displays a warning if the
+    /// site's WC version is not valid.
     ///
     static func checkMinimumWooVersionForDefaultStore() {
         guard StoresManager.shared.isAuthenticated else {
@@ -25,12 +26,26 @@ class RequirementsChecker {
             return
         }
 
-        checkMinimumWooVersion(for: siteID)
+        checkMinimumWooVersion(for: siteID) { (isValidWCVersion) in
+            guard isValidWCVersion == false else {
+                return
+            }
+
+            let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
+            fancyAlert.modalPresentationStyle = .custom
+            fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
+            AppDelegate.shared.tabBarController?.present(fancyAlert, animated: true)
+        }
     }
 
-    /// This function fetches the provided site's API and then displays a warning if WC REST v3 is not available.
+    /// This function simply checks the provided site's API version. No warning will be displayed to the user.
     ///
-    static func checkMinimumWooVersion(for siteID: Int, onCompletion: ((SiteAPI?) -> Void)? = nil) {
+    /// - Parameters:
+    ///     - siteID: The SiteID to perform a version check on
+    ///     - completion: Closure to be executed upon completion (with a Bool parameter where `true` means the
+    ///                   site's WC version is valid and `false` means it's a legacy version that must be upgraded).
+    ///
+    static func checkMinimumWooVersion(for siteID: Int, onCompletion: ((Bool) -> Void)? = nil) {
         let action = retrieveSiteAPIAction(siteID: siteID, onCompletion: onCompletion)
         StoresManager.shared.dispatch(action)
     }
@@ -40,11 +55,11 @@ private extension RequirementsChecker {
 
     /// Returns a `SettingAction.retrieveSiteAPI` action
     ///
-    static func retrieveSiteAPIAction(siteID: Int, onCompletion: ((SiteAPI?) -> Void)? = nil) -> SettingAction {
+    static func retrieveSiteAPIAction(siteID: Int, onCompletion: ((Bool) -> Void)? = nil) -> SettingAction {
         return SettingAction.retrieveSiteAPI(siteID: siteID) { (siteAPI, error) in
             guard let siteAPI = siteAPI else {
                 DDLogWarn("⚠️ Could not successfully fetch API info for siteID \(siteID): \(String(describing: error))")
-                onCompletion?(nil)
+                onCompletion?(true)
                 return
             }
 
@@ -52,12 +67,8 @@ private extension RequirementsChecker {
                 DDLogWarn("⚠️ WC version older than v3.5 — highest API version: \(siteAPI.highestWooVersion.rawValue) for siteID: \(siteAPI.siteID)")
             }
 
-            let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
-            fancyAlert.modalPresentationStyle = .custom
-            fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
-            AppDelegate.shared.tabBarController?.present(fancyAlert, animated: true)
-
-            onCompletion?(siteAPI)
+            let isValidVersion = (siteAPI.highestWooVersion == .mark3)
+            onCompletion?(isValidVersion)
         }
     }
 }

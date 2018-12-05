@@ -386,6 +386,61 @@ class StatsStoreTests: XCTestCase {
         let storageTopEarnerStats = viewStorage.loadTopEarnerStats(date: "2018-W12", granularity: StatGranularity.week.rawValue)
         XCTAssertEqual(storageTopEarnerStats?.toReadOnly(), expectedTopEarnerStats)
     }
+
+
+    // MARK: - StatsAction.retrieveOrderTotals
+
+
+    /// Verifies that StatsAction.retrieveOrderTotals returns the expected totals.
+    ///
+    func testRetrieveOrderTotalsReturnsExpectedTotal() {
+        let expectation = self.expectation(description: "Retrieve order totals")
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "report-orders")
+        let action = StatsAction.retrieveOrderTotals(siteID: sampleSiteID, status: .processing) { (total, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(total)
+            XCTAssertEqual(total, 4)
+            expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that StatsAction.retrieveOrderTotals returns an error, whenever there is an error response.
+    ///
+    func testRetrieveOrderTotalsReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve order totals error response")
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "generic_error")
+        let action = StatsAction.retrieveOrderTotals(siteID: sampleSiteID, status: .processing) { (total, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(total)
+            expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that StatsAction.retrieveOrderTotals returns an error, whenever there is not backend response.
+    ///
+    func testRetrieveOrderTotalsReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve order totals empty response error")
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = StatsAction.retrieveOrderTotals(siteID: sampleSiteID, status: .processing) { (total, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(total)
+            expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 

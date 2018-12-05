@@ -56,6 +56,15 @@ class PushNotificationsManagerTests: XCTestCase {
     }
 
 
+    /// Verifies that `resetBadgeCount` sets the badgeNumber to zero
+    ///
+    func testResetBadgeCountEffectivelyDropsTheBadgeNumberToZero() {
+        application.applicationIconBadgeNumber = 90
+        manager.resetBadgeCount()
+        XCTAssertEqual(application.applicationIconBadgeNumber, 0)
+    }
+
+
     /// Verifies that `ensureAuthorizationIsRequested` effectively requests Push Notes Auth via UNUserNotificationsCenter,
     /// whenever the initial status is `.notDetermined`. This specific tests verifies the `Non Authorized` flow.
     ///

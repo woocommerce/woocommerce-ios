@@ -45,7 +45,7 @@ class StorePickerViewController: UIViewController {
 
     /// Default Action Button.
     ///
-    @IBOutlet private var actionButton: FancyButton! {
+    @IBOutlet private var actionButton: FancyAnimatedButton! {
         didSet {
             actionButton.backgroundColor = .clear
             actionButton.titleFont = StyleManager.actionButtonTitleFont
@@ -224,19 +224,28 @@ private extension StorePickerViewController {
     /// If the provided site's WC version is not valid, display a warning to the user.
     ///
     func displaySiteWCRequirementWarningIfNeeded(for siteID: Int) {
-        actionButton.isEnabled = false
-        RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] (isValidWCVersion) in
-            guard isValidWCVersion == false else {
-                self?.actionButton.isEnabled = true
-                return
-            }
+        updateActionButtonState(animating: true, enabled: false)
 
-            // Display a warning to the user about the site version
-            let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
-            fancyAlert.modalPresentationStyle = .custom
-            fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
-            self?.present(fancyAlert, animated: true)
+        // Wait till the requirement check is complete before allowing the user to select another store
+        tableView.allowsSelection = false
+
+        RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] (isValidWCVersion) in
+            self?.updateActionButtonState(animating: false, enabled: isValidWCVersion)
+            self?.tableView.allowsSelection = true
+
+            if isValidWCVersion == false {
+                // Display a warning to the user about the site version
+                let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
+                fancyAlert.modalPresentationStyle = .custom
+                fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
+                self?.present(fancyAlert, animated: true)
+            }
         }
+    }
+
+    func updateActionButtonState(animating: Bool, enabled: Bool) {
+        actionButton.isEnabled = enabled
+        actionButton.showActivityIndicator(animating)
     }
 }
 

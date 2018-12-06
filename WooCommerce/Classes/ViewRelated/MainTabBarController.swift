@@ -39,9 +39,26 @@ class MainTabBarController: UITabBarController {
         return StyleManager.statusBarLight
     }
 
+    /// KVO Token
+    ///
+    private var observationToken: NSKeyValueObservation?
+
+
+    // MARK: - Overridden Methods
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        /// Note:
+        /// We hook up KVO in this spot... because at the point in which `viewDidLoad` fires, we haven't really fully
+        /// loaded the childViewControllers, and the tabBar isn't fully initialized.
+        ///
+        startListeningToBadgeUpdatesIfNeeded()
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
@@ -173,13 +190,34 @@ extension MainTabBarController {
 
 // MARK: - Tab dot madness!
 //
-extension MainTabBarController {
+private extension MainTabBarController {
 
-    static func showDotOn(_ tab: WooTab) {
-        guard let tabBar = AppDelegate.shared.tabBarController?.tabBar else {
+    /// Setup: KVO Hooks.
+    ///
+    func startListeningToBadgeUpdatesIfNeeded() {
+        guard observationToken == nil else {
             return
         }
 
+        observationToken = UIApplication.shared.observe(\.applicationIconBadgeNumber, options: [.initial, .new]) {  (application, _) in
+            self.badgeCountWasUpdated(newValue: application.applicationIconBadgeNumber)
+        }
+    }
+
+    /// Displays or Hides the Dot, depending on the new Badge Value
+    ///
+    func badgeCountWasUpdated(newValue: Int) {
+        guard newValue > 0 else {
+            hideDotOn(.notifications)
+            return
+        }
+
+        showDotOn(.notifications)
+    }
+
+    /// Shows the dot in the specified WooTab
+    ///
+    func showDotOn(_ tab: WooTab) {
         hideDotOn(tab)
         let dot = GreenDotView(frame: CGRect(x: DotConstants.xOffset,
                                              y: DotConstants.yOffset,
@@ -191,11 +229,9 @@ extension MainTabBarController {
         dot.fadeIn()
     }
 
-    static func hideDotOn(_ tab: WooTab) {
-        guard let tabBar = AppDelegate.shared.tabBarController?.tabBar else {
-            return
-        }
-
+    /// Hides the Dot in the specified WooTab
+    ///
+    func hideDotOn(_ tab: WooTab) {
         let tag = dotTag(for: tab)
         if let subviews = tabBar.subviews[tab.rawValue].subviews.first?.subviews {
             for subview in subviews where subview.tag == tag {
@@ -206,7 +242,9 @@ extension MainTabBarController {
         }
     }
 
-    private static func dotTag(for tab: WooTab) -> Int {
+    /// Returns the DotView's Tag for the specified WooTab
+    ///
+    func dotTag(for tab: WooTab) -> Int {
         return tab.rawValue + DotConstants.tagOffset
     }
 }

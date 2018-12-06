@@ -165,8 +165,8 @@ extension PushNotificationsManager {
         DDLogVerbose("📱 Push Notification Received: \n\(userInfo)\n")
 
         // Badge: Update
-        if let badgeCountNumber = userInfo[APNSKey.badge] as? Int {
-            configuration.application.applicationIconBadgeNumber = badgeCountNumber
+        if let aps = userInfo[APNSKey.aps] as? [String: Any], let badgeNumber = aps.integer(forKey: APNSKey.badge) {
+            configuration.application.applicationIconBadgeNumber = badgeNumber
         }
 
         // Badge: Reset
@@ -306,7 +306,8 @@ private extension PushNotificationsManager {
 // MARK: - Private Types
 //
 private enum APNSKey {
-    static let badge = "aps.badge"
+    static let aps = "aps"
+    static let badge = "badge"
     static let identifier = "note_id"
     static let type = "type"
 }

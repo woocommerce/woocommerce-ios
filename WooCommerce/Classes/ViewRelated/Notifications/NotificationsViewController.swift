@@ -17,21 +17,19 @@ class NotificationsViewController: UIViewController {
     /// Mark all as read nav bar button
     ///
     private lazy var leftBarButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(image: Gridicon.iconOfType(.checkmark),
-                                     style: .plain,
-                                     target: self,
-                                     action: #selector(markAllAsRead))
-        return button
+        return UIBarButtonItem(image: Gridicon.iconOfType(.checkmark),
+                               style: .plain,
+                               target: self,
+                               action: #selector(markAllAsRead))
     }()
 
     /// Filter nav bar button
     ///
     private lazy var rightBarButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
-                                     style: .plain,
-                                     target: self,
-                                     action: #selector(displayFiltersAlert))
-        return button
+        return UIBarButtonItem(image: Gridicon.iconOfType(.menus),
+                               style: .plain,
+                               target: self,
+                               action: #selector(displayFiltersAlert))
     }()
 
     /// Haptic Feedback!

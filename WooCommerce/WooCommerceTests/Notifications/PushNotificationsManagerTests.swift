@@ -290,7 +290,7 @@ private extension PushNotificationsManagerTests {
     ///
     func notificationPayload(badgeCount: Int = 0, noteID: Int = 1234) -> [String: Any] {
         return [
-            "aps.badge": badgeCount,
+            "aps": ["badge": badgeCount],
             "note_id": noteID
         ]
     }

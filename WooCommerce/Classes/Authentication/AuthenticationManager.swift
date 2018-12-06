@@ -38,7 +38,13 @@ class AuthenticationManager {
                                                 viewControllerBackgroundColor: StyleManager.wooGreyLight,
                                                 navBarImage: StyleManager.navBarImage)
 
-        WordPressAuthenticator.initialize(configuration: configuration, style: style)
+        let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
+                                                     jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
+                                                     siteLoginInstructions: AuthenticationConstants.siteInstructions)
+
+        WordPressAuthenticator.initialize(configuration: configuration,
+                                          style: style,
+                                          displayStrings: displayStrings)
         WordPressAuthenticator.shared.delegate = self
     }
 

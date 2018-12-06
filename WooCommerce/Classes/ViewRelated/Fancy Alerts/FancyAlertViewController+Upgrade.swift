@@ -55,7 +55,6 @@ public extension FancyAlertViewController {
 
 // MARK: - Private Helpers
 //
-
 private extension FancyAlertViewController {
 
     static func makeDismissButtonConfig() -> FancyAlertViewController.Config.ButtonConfig  {

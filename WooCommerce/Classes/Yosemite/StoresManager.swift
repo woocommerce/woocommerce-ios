@@ -18,6 +18,9 @@ class StoresManager {
     /// Active StoresManager State.
     ///
     private var state: StoresManagerState {
+        willSet {
+            state.willLeave()
+        }
         didSet {
             state.didEnter()
         }
@@ -100,6 +103,7 @@ class StoresManager {
     @discardableResult
     func deauthenticate() -> StoresManager {
         state = DeauthenticatedState()
+
         sessionManager.reset()
         WooAnalytics.shared.refreshUserData()
         AppDelegate.shared.storageManager.reset()
@@ -216,6 +220,10 @@ private extension StoresManager {
 // MARK: - StoresManagerState
 //
 protocol StoresManagerState {
+
+    /// Executed before the state is deactivated.
+    ///
+    func willLeave()
 
     /// Executed whenever the State is activated.
     ///

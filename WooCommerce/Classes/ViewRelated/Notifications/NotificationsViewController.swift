@@ -152,6 +152,7 @@ class NotificationsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        resetApplicationBadge()
         synchronizeNotifications() {
             // FIXME: This is being disabled temporarily because of a race condition caused with WPiOS.
             // We should consider updating and re-enabling this logic (when updates happen on the server) at a later time.
@@ -313,6 +314,12 @@ private extension NotificationsViewController {
 // MARK: - Yosemite Wrappers
 //
 private extension NotificationsViewController {
+
+    /// Nukes the BadgeCount
+    ///
+    func resetApplicationBadge() {
+        AppDelegate.shared.pushNotesManager.resetBadgeCount()
+    }
 
     /// Update the last seen time for notifications
     ///
@@ -632,6 +639,7 @@ extension NotificationsViewController {
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
+        nc.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
     /// Tear down the Notifications Hooks
@@ -644,6 +652,17 @@ extension NotificationsViewController {
     ///
     @objc func defaultSiteWasUpdated() {
         reloadResultsController()
+    }
+
+    /// Application became Active Again (while the Notes Tab was onscreen)
+    ///
+    @objc func applicationDidBecomeActive() {
+        guard isViewLoaded == true && view.window != nil else {
+            return
+        }
+
+        resetApplicationBadge()
+        updateNotificationsTabIfNeeded()
     }
 }
 

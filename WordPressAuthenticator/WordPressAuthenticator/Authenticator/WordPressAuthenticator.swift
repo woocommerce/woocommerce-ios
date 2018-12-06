@@ -38,7 +38,7 @@ import WordPressUI
 
     /// Authenticator's Display Texts.
     ///
-    public let text: WordPressAuthenticatorDisplayText
+    public let displayStrings: WordPressAuthenticatorDisplayStrings
 
     /// Notification to be posted whenever the signing flow completes.
     ///
@@ -61,22 +61,22 @@ import WordPressUI
     ///
     private init(configuration: WordPressAuthenticatorConfiguration,
                  style: WordPressAuthenticatorStyle,
-                 text: WordPressAuthenticatorDisplayText) {
+                 displayStrings: WordPressAuthenticatorDisplayStrings) {
         self.configuration = configuration
         self.style = style
-        self.text = text
+        self.displayStrings = displayStrings
     }
 
     /// Initializes the WordPressAuthenticator with the specified Configuration.
     ///
     public static func initialize(configuration: WordPressAuthenticatorConfiguration,
                                   style: WordPressAuthenticatorStyle = .defaultStyle,
-                                  text: WordPressAuthenticatorDisplayText = .defaultText) {
+                                  displayStrings: WordPressAuthenticatorDisplayStrings = .defaultStrings) {
         guard privateInstance == nil else {
             fatalError("WordPressAuthenticator is already initialized")
         }
 
-        privateInstance = WordPressAuthenticator(configuration: configuration, style: style, text: text)
+        privateInstance = WordPressAuthenticator(configuration: configuration, style: style, displayStrings: displayStrings)
     }
 
     // MARK: - Public Methods

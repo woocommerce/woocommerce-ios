@@ -159,7 +159,7 @@ private extension StorePickerViewController {
             return
         }
 
-        displaySiteWCRequirementWarningIfNeeded(for: firstSite)
+        displaySiteWCRequirementWarningIfNeeded(siteID: firstSite.siteID, siteName: firstSite.name)
         StoresManager.shared.updateDefaultStore(storeID: firstSite.siteID)
     }
 
@@ -223,12 +223,16 @@ private extension StorePickerViewController {
 
     /// If the provided site's WC version is not valid, display a warning to the user.
     ///
-    func displaySiteWCRequirementWarningIfNeeded(for site: Site) {
-        let siteName = site.name
-
+    func displaySiteWCRequirementWarningIfNeeded(siteID: Int, siteName: String) {
         updateActionButtonAndTableState(animating: true, enabled: false)
-        RequirementsChecker.checkMinimumWooVersion(for: site.siteID) { [weak self] (isValidWCVersion) in
+        RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] (isValidWCVersion, error) in
             self?.updateActionButtonAndTableState(animating: false, enabled: isValidWCVersion)
+            guard error == nil else {
+                // If there is an error display a notice to the user
+                self?.displayVersionCheckErrorNotice(siteID: siteID, siteName: siteName)
+                return
+            }
+
 
             if isValidWCVersion == false {
                 // Display a warning to the user about the site version
@@ -249,6 +253,19 @@ private extension StorePickerViewController {
 
         // Wait till the requirement check is complete before allowing the user to select another store
         tableView.allowsSelection = !animating
+    }
+
+    /// Displays the Error Notice for the version check.
+    ///
+    func displayVersionCheckErrorNotice(siteID: Int, siteName: String) {
+        let title = NSLocalizedString("Error", comment: "Site Picker error notice title")
+        let message = String.localizedStringWithFormat(NSLocalizedString("Cannot connect to %@.", comment: "Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name}"), siteName)
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.displaySiteWCRequirementWarningIfNeeded(siteID: siteID, siteName: siteName)
+        }
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -332,7 +349,7 @@ extension StorePickerViewController: UITableViewDelegate {
             return
         }
 
-        displaySiteWCRequirementWarningIfNeeded(for: site)
+        displaySiteWCRequirementWarningIfNeeded(siteID: site.siteID, siteName: site.name)
 
         reloadDefaultStoreAndSelectedStoreRows {
             StoresManager.shared.updateDefaultStore(storeID: site.siteID)

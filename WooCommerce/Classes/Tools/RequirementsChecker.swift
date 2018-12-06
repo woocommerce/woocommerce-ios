@@ -58,7 +58,7 @@ private extension RequirementsChecker {
     static func retrieveSiteAPIAction(siteID: Int, onCompletion: ((Bool) -> Void)? = nil) -> SettingAction {
         return SettingAction.retrieveSiteAPI(siteID: siteID) { (siteAPI, error) in
             guard let siteAPI = siteAPI else {
-                DDLogWarn("⚠️ Could not successfully fetch API info for siteID \(siteID): \(String(describing: error))")
+                DDLogError("⛔️ Could not successfully fetch API info for siteID \(siteID): \(String(describing: error))")
                 onCompletion?(true)
                 return
             }

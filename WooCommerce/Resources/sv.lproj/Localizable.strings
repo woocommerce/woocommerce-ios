@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-14 10:54:03+0000 */
+/* Translation-Revision-Date: 2018-11-27 15:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -56,6 +56,15 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Ett fel inträffade när din begäran behandlades:";
+
+/* Approve a comment */
+"Approve" = "Godkänn";
+
+/* Unapprove a comment */
+"Approved" = "Godkänd";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "Godkänner kommentaren";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Är du säker på att du vill logga ut från kontot %@?";
@@ -165,6 +174,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Dagar";
 
+/* Deleted Notification's Title */
+"Deleted Notification!" = "Borttagen avisering!";
+
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "Borttagen: Order med nummer (viewModel.order.number)";
 
@@ -222,8 +234,14 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Det gick inte att serialisera förfrågan till REST API.";
 
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "Filtrera aviseringar";
+
 /* Filter the orders list. */
 "Filter orders" = "Filtrera beställningar";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "Filtrerar aviseringslistan enligt aviseringstyp.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Filtrera orderlistan efter betalningsstatus.";
@@ -312,6 +330,9 @@
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Gräns nådd. Du kan försöka igen om 1 minut. Att försöka igen innan kommer bara öka tiden du måste vänta innan förbudet är upphävt. Vänligen kontakta support om du tror detta är ett fel.";
 
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "Hämtar beställning";
+
 /* No comment provided by engineer. */
 "Log In" = "Logga in";
 
@@ -354,8 +375,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Ompekad domän";
 
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "Markera alla som lästa";
+
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "Markera ordern som slutförd";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "Markerar varje avisering som läst";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Valt media har ingen tillhörande fil som kan laddas upp.";
@@ -371,6 +398,12 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "Månader";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "Markerar kommentaren som skräppost";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "Flyttar kommentaren till papperskorgen";
 
 /* My Tickets title */
 "My Tickets" = "Mina ärenden";
@@ -396,6 +429,9 @@
 /* No comment provided by engineer. */
 "Next" = "Nästa";
 
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "Inga aviseringar än!";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Ingen aktivitet den här perioden";
 
@@ -411,8 +447,11 @@
 /* No comment provided by engineer. */
 "Note to customer" = "Kundmeddelande";
 
-/* Notifications tab title */
+/* No comment provided by engineer. */
 "Notifications" = "Notiser";
+
+/* Notifications filtered title */
+"Notifications: (currentTypeFilter.description)" = "Aviseringar: (currentTypeFilter.description)";
 
 /* No comment provided by engineer. */
 "OK" = "OK";
@@ -549,11 +588,14 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "Rapportera krascher";
 
-/* Retry Action */
+/* No comment provided by engineer. */
 "Retry" = "Försök igen";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Granska, förbered och skicka dessa väntande ordrar";
+
+/* Reviews filter title */
+"Reviews" = "Recensioner";
 
 /* SKU label */
 "SKU:" = "Artikelnr:";
@@ -648,6 +690,9 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Du kan inte använda den adressen till webbplatsen.";
 
+/* Verb, spam a comment */
+"Spam" = "Skräppost";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "Startperiod %1$@, slutperiod %2$@";
 
@@ -699,11 +744,17 @@
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "Google-kontot ”(loginFields.username)” matchar inte något konto på WordPress.com";
 
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "Det gick inte att hämta beställningen!";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "Det finns ingen gilitg värd för webbadressen.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Certifikatet för den här servern är inte giltigt. Det kan hända att du ansluter till en server som påstår sig vara \"%@\", vilket kan försätta din sekretessbelagda information i fara.\n\nVill du lita på certifikatet i alla fall?";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed!" = "Meddelandet har tagits bort!";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "Ordern har tagits bort från din butik!";
@@ -774,6 +825,9 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "Spenderat totalt";
 
+/* Move a comment to the trash */
+"Trash" = "Ta bort";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Godkänn";
 
@@ -800,6 +854,9 @@
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Kunde inte verifiera e-postadressen. Försök igen senare.";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "Kommentaren godkänns inte";
 
 /* Undo Action */
 "Undo" = "Ångra";

@@ -1,0 +1,73 @@
+{
+    "ID": 1112233334444555,
+    "plan": {
+        "product_id": 1,
+        "product_slug": "business-bundle",
+        "product_name_short": "Business",
+        "free_trial": false,
+        "expired": false,
+        "user_is_owner": false,
+        "is_free": true,
+        "features": {
+            "active": [
+                "free-blog",
+                "space",
+                "support"
+            ],
+            "available": {
+                "free-blog": [
+                    "personal-bundle",
+                    "value_bundle",
+                    "business-bundle"
+                ],
+                "custom-domain": [
+                    "personal-bundle",
+                    "value_bundle",
+                    "business-bundle"
+                ],
+                "space": [
+                    "personal-bundle",
+                    "value_bundle",
+                    "business-bundle"
+                ],
+                "no-adverts\/no-adverts.php": [
+                    "personal-bundle",
+                    "value_bundle",
+                    "business-bundle"
+                ],
+                "support": [
+                    "personal-bundle",
+                    "value_bundle",
+                    "business-bundle"
+                ],
+                "custom-design": [
+                    "value_bundle",
+                    "business-bundle"
+                ],
+                "videopress": [
+                    "value_bundle",
+                    "business-bundle"
+                ],
+                "unlimited_themes": [
+                    "value_bundle",
+                    "business-bundle"
+                ],
+                "live_support": [
+                    "value_bundle",
+                    "business-bundle"
+                ],
+                "simple-payments": [
+                    "value_bundle",
+                    "business-bundle"
+                ],
+                "premium-themes": [
+                    "business-bundle"
+                ],
+                "google-analytics": [
+                    "business-bundle"
+                ]
+            }
+        }
+    }
+}
+

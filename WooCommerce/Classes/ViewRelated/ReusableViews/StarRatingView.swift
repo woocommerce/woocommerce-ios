@@ -16,7 +16,7 @@ class RatingView: UIView {
             return _rating
         }
         set (newRating) {
-            guard (newRating >= Defaults.minRating) else {
+            guard newRating >= Defaults.minRating else {
                 _rating = Defaults.minRating
                 return
             }

@@ -4,7 +4,6 @@ import XCTest
 
 /// String+HTML Unit Tests
 ///
-
 class StringHTMLTests: XCTestCase {
 
     /// Verifies that regular HTML Tags are effectively nuked

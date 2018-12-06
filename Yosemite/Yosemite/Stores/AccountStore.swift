@@ -3,7 +3,6 @@ import Networking
 import Storage
 
 
-
 // MARK: - AccountStore
 //
 public class AccountStore: Store {
@@ -31,6 +30,8 @@ public class AccountStore: Store {
             synchronizeAccount(onCompletion: onCompletion)
         case .synchronizeSites(let onCompletion):
             synchronizeSites(onCompletion: onCompletion)
+        case .synchronizeSitePlan(let siteID, let onCompletion):
+            synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -68,6 +69,21 @@ private extension AccountStore {
             }
 
             self?.upsertStoredSites(readOnlySites: sites)
+            onCompletion(nil)
+        }
+    }
+
+    /// Loads the site plan for the default site.
+    ///
+    func synchronizeSitePlan(siteID: Int, onCompletion: @escaping (Error?) -> Void) {
+        let remote = AccountRemote(network: network)
+        remote.loadSitePlan(for: siteID) { [weak self]  (siteplan, error) in
+            guard let siteplan = siteplan else {
+                onCompletion(error)
+                return
+            }
+
+            self?.updateStoredSite(plan: siteplan)
             onCompletion(nil)
         }
     }
@@ -115,6 +131,19 @@ extension AccountStore {
             let storageSite = storage.loadSite(siteID: readOnlySite.siteID) ?? storage.insertNewObject(ofType: Storage.Site.self)
             storageSite.update(with: readOnlySite)
         }
+
+        storage.saveIfNeeded()
+    }
+
+    /// Updates the specified ReadOnly Site Plan attribute in the Site entity, in the Storage Layer.
+    ///
+    func updateStoredSite(plan: SitePlan) {
+        assert(Thread.isMainThread)
+
+        let storage = storageManager.viewStorage
+
+        let storageSite = storage.loadSite(siteID: plan.siteID)
+        storageSite?.plan = plan.shortName
 
         storage.saveIfNeeded()
     }

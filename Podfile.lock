@@ -39,7 +39,7 @@ PODS:
   - Reachability (3.2)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (0.5.0)
-  - WordPressAuthenticator (1.1.6):
+  - WordPressAuthenticator (1.1.7-beta.1):
     - 1PasswordExtension (= 1.8.5)
     - Alamofire (= 4.7.3)
     - CocoaLumberjack (= 3.4.2)
@@ -84,7 +84,7 @@ DEPENDENCIES:
   - Crashlytics (~> 3.10)
   - Gridicons (= 0.16)
   - KeychainAccess (~> 3.1)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS`, branch `feature/35-expose-login-text`)
+  - WordPressAuthenticator (~> 1.1-beta)
   - WordPressShared (~> 1.1)
   - WordPressUI (~> 1.1)
   - XLPagerTabStrip (~> 8.1)
@@ -109,6 +109,7 @@ SPEC REPOS:
     - Reachability
     - SVProgressHUD
     - UIDeviceIdentifier
+    - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
     - WordPressUI
@@ -120,17 +121,11 @@ EXTERNAL SOURCES:
   Automattic-Tracks-iOS:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
     :tag: 0.2.4-beta.1
-  WordPressAuthenticator:
-    :branch: feature/35-expose-login-text
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS
 
 CHECKOUT OPTIONS:
   Automattic-Tracks-iOS:
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
     :tag: 0.2.4-beta.1
-  WordPressAuthenticator:
-    :commit: 89c7c87b03abdbd75585e7d60198fc0bd82af156
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS
 
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
@@ -151,7 +146,7 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: a959a6d4f51036b4180dd31fb26483a820f1cc46
-  WordPressAuthenticator: 83f495cce863d3f65bb440f6dea57161af401729
+  WordPressAuthenticator: ef9169f1d8c7ee06c731c39c6acc9c015228b0bf
   WordPressKit: b0d9838a874a2ea126da17965d939f0422d94581
   WordPressShared: a2fc2db66c210a05d317ae9678b5823dd6a4d708
   WordPressUI: 3c69543f0170e011226e48910b8c3071e5d400af
@@ -159,6 +154,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 22d4c58200d7c105e0e407ab6bfd01a5d85014be
   ZendeskSDK: af6509ad7968d367f95b2645713802712152f879
 
-PODFILE CHECKSUM: 500f5ee289e6186ded30443beae465786328b4f2
+PODFILE CHECKSUM: eda66038cac2c897846549e76ccda370867e3dd2
 
 COCOAPODS: 1.5.3

@@ -210,20 +210,6 @@ private extension NotificationsViewController {
     ///
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
-
-        // The following two assignments are actually overridding wiring performed by `startForwardingEvents`.
-        // FIXME: NUKE them ASAP
-        //
-        resultsController.onDidChangeContent = { [weak self] in
-            // FIXME: This should be removed once `PushNotificationsManager` is in place
-            self?.updateNotificationsTabIfNeeded()
-            self?.tableView?.endUpdates()
-        }
-        resultsController.onDidResetContent = { [weak self] in
-            // FIXME: This should be removed once `PushNotificationsManager` is in place
-            MainTabBarController.hideDotOn(.notifications)
-            self?.tableView?.reloadData()
-        }
         try? resultsController.performFetch()
     }
 
@@ -662,7 +648,6 @@ extension NotificationsViewController {
         }
 
         resetApplicationBadge()
-        updateNotificationsTabIfNeeded()
     }
 }
 
@@ -717,16 +702,6 @@ private extension NotificationsViewController {
 // MARK: - Private Helpers
 //
 private extension NotificationsViewController {
-
-    // FIXME: This should be removed once `PushNotificationsManager` is in place
-    func updateNotificationsTabIfNeeded() {
-        guard !unreadNotes.isEmpty else {
-            MainTabBarController.hideDotOn(.notifications)
-            return
-        }
-
-        MainTabBarController.showDotOn(.notifications)
-    }
 
     /// Enables/disables the navbar buttons if needed
     ///

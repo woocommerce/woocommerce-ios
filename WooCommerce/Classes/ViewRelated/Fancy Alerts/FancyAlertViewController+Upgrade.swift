@@ -86,7 +86,7 @@ private extension FancyAlertViewController {
         // Titles
         static let titleText          = NSLocalizedString("Update to WooCommerce 3.5 to keep using this app",
                                                           comment: "Title of alert warning users to upgrade to WC 3.5.")
-        static let titleTextForSite   = NSLocalizedString("Update %@ to WooCommerce 3.5 to use this app",
+        static let titleTextForSite   = NSLocalizedString("Update %@ to WooCommerce 3.5",
                                                           comment: "Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app")
 
         // Body

@@ -248,7 +248,7 @@ private extension StorePickerViewController {
         actionButton.showActivityIndicator(animating)
 
         // Wait till the requirement check is complete before allowing the user to select another store
-        tableView.allowsSelection = enabled
+        tableView.allowsSelection = !animating
     }
 }
 

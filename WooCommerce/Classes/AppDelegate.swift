@@ -343,6 +343,6 @@ extension AppDelegate {
     ///
     func authenticatorWasDismissed() {
         setupPushNotificationsManagerIfPossible()
-        RequirementsChecker.checkMinimumWooVersion()
+        RequirementsChecker.checkMinimumWooVersionForDefaultStore()
     }
 }

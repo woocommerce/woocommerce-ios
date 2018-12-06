@@ -26,8 +26,9 @@ class RequirementsChecker {
             return
         }
 
-        checkMinimumWooVersion(for: siteID) { (isValidWCVersion) in
-            guard isValidWCVersion == false else {
+        checkMinimumWooVersion(for: siteID) { (isValidWCVersion, error) in
+            guard error == nil, isValidWCVersion == false else {
+                // Let's not display the alert if there is an error
                 return
             }
 
@@ -40,26 +41,34 @@ class RequirementsChecker {
 
     /// This function simply checks the provided site's API version. No warning will be displayed to the user.
     ///
-    /// - Parameters:
-    ///     - siteID: The SiteID to perform a version check on
-    ///     - completion: Closure to be executed upon completion (with a Bool parameter where `true` means the
-    ///                   site's WC version is valid and `false` means it's a legacy version that must be upgraded).
+    /// - parameter siteID: The SiteID to perform a version check on
+    /// - parameter onCompletion: Closure to be executed upon completion
+    /// - parameter isValidWCVersion: a Bool parameter where `true` means the site's WC version is valid and `false` means it's a legacy version that must be upgraded
+    /// - parameter error: Any error that occured while checking the WC version
     ///
-    static func checkMinimumWooVersion(for siteID: Int, onCompletion: ((Bool) -> Void)? = nil) {
+    /// NOTE: If an error occurs while checking the site WC version, we will send 'false' back inside the closure along
+    ///       with the error itself.
+    ///
+    static func checkMinimumWooVersion(for siteID: Int, onCompletion: ((_ isValidWCVersion: Bool, _ error: Error?) -> Void)? = nil) {
         let action = retrieveSiteAPIAction(siteID: siteID, onCompletion: onCompletion)
         StoresManager.shared.dispatch(action)
     }
 }
 
+
+// MARK: - Private helpers
+//
 private extension RequirementsChecker {
 
     /// Returns a `SettingAction.retrieveSiteAPI` action
     ///
-    static func retrieveSiteAPIAction(siteID: Int, onCompletion: ((Bool) -> Void)? = nil) -> SettingAction {
+    static func retrieveSiteAPIAction(siteID: Int, onCompletion: ((Bool, Error?) -> Void)? = nil) -> SettingAction {
         return SettingAction.retrieveSiteAPI(siteID: siteID) { (siteAPI, error) in
             guard let siteAPI = siteAPI else {
                 DDLogError("⛔️ Could not successfully fetch API info for siteID \(siteID): \(String(describing: error))")
-                onCompletion?(true)
+
+                // By default, send `false` back for errors
+                onCompletion?(false, error)
                 return
             }
 
@@ -68,7 +77,7 @@ private extension RequirementsChecker {
             }
 
             let isValidVersion = (siteAPI.highestWooVersion == .mark3)
-            onCompletion?(isValidVersion)
+            onCompletion?(isValidVersion, nil)
         }
     }
 }

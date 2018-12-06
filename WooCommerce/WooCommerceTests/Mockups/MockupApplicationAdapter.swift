@@ -19,9 +19,9 @@ class MockupApplicationAdapter: ApplicationAdapter {
     ///
     var registerWasCalled = false
 
-    /// Notification Identifiers received via the `displayNotificationDetails` method.
+    /// Notification Identifiers received via the `presentNotificationDetails` method.
     ///
-    var displayDetailsNoteIDs = [Int]()
+    var presentDetailsNoteIDs = [Int]()
 
     /// Inoccuous `registerForRemoteNotifications`
     ///
@@ -31,8 +31,8 @@ class MockupApplicationAdapter: ApplicationAdapter {
 
     /// Inoccuous `displayNotificationDetails`
     ///
-    func displayNotificationDetails(for noteID: Int) {
-        displayDetailsNoteIDs.append(noteID)
+    func presentNotificationDetails(for noteID: Int) {
+        presentDetailsNoteIDs.append(noteID)
     }
 
     /// Restores the initial state
@@ -40,6 +40,6 @@ class MockupApplicationAdapter: ApplicationAdapter {
     func reset() {
         registerWasCalled = false
         applicationIconBadgeNumber = .min
-        displayDetailsNoteIDs = []
+        presentDetailsNoteIDs = []
     }
 }

@@ -211,7 +211,7 @@ private extension PushNotificationsManager {
         }
 
         DDLogVerbose("📱 Handling Notification in Inactive State")
-        configuration.application.displayNotificationDetails(for: notificationId)
+        configuration.application.presentNotificationDetails(for: notificationId)
         completionHandler(.newData)
 
         return true

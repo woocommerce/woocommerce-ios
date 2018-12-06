@@ -377,7 +377,7 @@ private extension NotificationsViewController {
 
 // MARK: - ResultsController
 //
-extension NotificationsViewController {
+private extension NotificationsViewController {
 
     /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
     ///
@@ -456,19 +456,7 @@ extension NotificationsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let note = resultsController.object(at: indexPath)
-
-        markAsReadIfNeeded(note: note)
-
-        switch note.kind {
-        case .storeOrder:
-            presentOrderDetails(for: note)
-            WooAnalytics.shared.track(.notificationOpened, withProperties: ["type": "order",
-                                                                            "already_read": note.read])
-        default:
-            presentNotificationDetails(for: note)
-            WooAnalytics.shared.track(.notificationOpened, withProperties: ["type": "review",
-                                                                            "already_read": note.read])
-        }
+        presentDetails(for: note)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -479,6 +467,43 @@ extension NotificationsViewController: UITableViewDelegate {
         // the actual value. AKA no flicker!
         //
         estimatedRowHeights[indexPath] = cell.frame.height
+    }
+}
+
+
+// MARK: - Public Methods
+//
+extension NotificationsViewController {
+
+    /// Presents the Details for the Notification with the specified Identifier.
+    ///
+    /// NOTE: This method will not perform any kind of RPC. It's effectively a NO-OP whenever the target note hasn't been
+    /// already retrieved.
+    ///
+    func presentDetails(for noteId: Int) {
+        let notificationMaybe = resultsController.fetchedObjects.first { $0.noteId == noteId }
+        guard let notification = notificationMaybe else {
+            return
+        }
+
+        presentDetails(for: notification)
+    }
+
+    /// Presents the Details for a given Note Instance: Either NotificationDetails, or OrderDetails, depending on the
+    /// Notification's Kind.
+    ///
+    func presentDetails(for note: Note) {
+        switch note.kind {
+        case .storeOrder:
+            presentOrderDetails(for: note)
+        default:
+            presentNotificationDetails(for: note)
+        }
+
+        WooAnalytics.shared.track(.notificationOpened, withProperties: [ "type": note.kind.rawValue,
+                                                                         "already_read": note.read ])
+
+        markAsReadIfNeeded(note: note)
     }
 }
 
@@ -616,7 +641,7 @@ private extension NotificationsViewController {
 
 // MARK: - Notifications
 //
-extension NotificationsViewController {
+private extension NotificationsViewController {
 
     /// Setup: Notification Hooks
     ///

@@ -146,14 +146,8 @@ extension MainTabBarController {
 
     /// Switches to the Orders tab and pops to the root view controller
     ///
-    static func switchToOrdersTab(filter: OrderStatus? = nil) {
+    static func switchToOrdersTab() {
         navigateTo(.orders)
-
-        guard let ordersViewController: OrdersViewController = childViewController() else {
-            return
-        }
-
-        ordersViewController.statusFilter = filter
     }
 
     /// Switches to the Notifications tab and pops to the root view controller
@@ -184,6 +178,36 @@ extension MainTabBarController {
         }
 
         return navController.topViewController as? T
+    }
+}
+
+
+// MARK: - Static Navigation + Details!
+//
+extension MainTabBarController {
+
+    /// Displays the Orders List with the specified Filter applied.
+    ///
+    static func presentOrders(statusFilter: OrderStatus) {
+        switchToOrdersTab()
+
+        guard let ordersViewController: OrdersViewController = childViewController() else {
+            return
+        }
+
+        ordersViewController.statusFilter = statusFilter
+    }
+
+    /// Switches to the Notifications Tab, and displays the details for the specified Notification ID.
+    ///
+    static func presentNotificationDetails(for noteID: Int) {
+        switchToNotificationsTab()
+
+        guard let notificationsViewController: NotificationsViewController = childViewController() else {
+            return
+        }
+
+        notificationsViewController.presentDetails(for: noteID)
     }
 }
 

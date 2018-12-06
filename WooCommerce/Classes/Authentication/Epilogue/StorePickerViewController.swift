@@ -24,6 +24,14 @@ class StorePickerViewController: UIViewController {
         return AccountHeaderView.instantiateFromNib()
     }()
 
+    /// Site Picker's dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
+    ///
+    private lazy var noticePresenter: NoticePresenter = {
+        let noticePresenter = NoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     /// ResultsController: Loads Sites from the Storage Layer.
     ///
     private let resultsController: ResultsController<StorageSite> = {
@@ -259,13 +267,13 @@ private extension StorePickerViewController {
     ///
     func displayVersionCheckErrorNotice(siteID: Int, siteName: String) {
         let title = NSLocalizedString("Error", comment: "Site Picker error notice title")
-        let message = String.localizedStringWithFormat(NSLocalizedString("Cannot connect to %@.", comment: "Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name}"), siteName)
+        let message = String.localizedStringWithFormat(NSLocalizedString("Cannot connect to %@", comment: "Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name}"), siteName)
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.displaySiteWCRequirementWarningIfNeeded(siteID: siteID, siteName: siteName)
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
     }
 }
 

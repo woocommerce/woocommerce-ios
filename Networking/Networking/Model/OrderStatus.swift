@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents all of the possible Order Statuses
 ///
-public enum OrderStatus: Decodable {
+public enum OrderStatus: Decodable, Hashable {
     case pending
     case processing
     case onHold

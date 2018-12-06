@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-14 16:54:03+0000 */
+/* Translation-Revision-Date: 2018-11-27 11:54:02+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -56,6 +56,15 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Возникла ошибка при обработке вашего запроса:";
+
+/* Approve a comment */
+"Approve" = "Одобрить";
+
+/* Unapprove a comment */
+"Approved" = "Одобрен";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "Одобрение комментария";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Вы уверены, что хотите выйти из учётной записи %@?";
@@ -165,6 +174,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Дни";
 
+/* Deleted Notification's Title */
+"Deleted Notification!" = "Уведомление удалено";
+
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "Удалено: заказ №(viewModel.order.number)";
 
@@ -222,8 +234,14 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Не удалось сериализировать запрос в API-интерфейс REST.";
 
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "Фильтровать уведомления";
+
 /* Filter the orders list. */
 "Filter orders" = "Фильтровать заказы";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "Фильтрование уведомлений по типу.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Отфильтровать список заказов по статусу оплаты.";
@@ -312,6 +330,9 @@
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Достигнут лимит попыток. Вы можете попробовать снова через 1 минуту. Если вы попытаетесь подключиться раньше, время ожидания только увеличится. Если вы считаете, что произошла ошибка, обратитесь в службу поддержки.";
 
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "Загрузка заказа";
+
 /* No comment provided by engineer. */
 "Log In" = "Войти";
 
@@ -354,8 +375,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Привязанный домен";
 
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "Отметить все как прочитанные";
+
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "Отметить заказ как выполненный";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "Отметить все уведомления как прочитанные";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Мультимедиа объект не имеет ассоциированного файла для загрузки.";
@@ -371,6 +398,12 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "Месяцы";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "Отправить комментарий в «Спам»";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "Отправить комментарий в Корзину";
 
 /* My Tickets title */
 "My Tickets" = "Мои обращения в поддержку";
@@ -396,6 +429,9 @@
 /* No comment provided by engineer. */
 "Next" = "Далее";
 
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "Пока нет уведомлений";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Активность за этот период отсутствует";
 
@@ -411,8 +447,11 @@
 /* No comment provided by engineer. */
 "Note to customer" = "Примечание для клиента";
 
-/* Notifications tab title */
+/* No comment provided by engineer. */
 "Notifications" = "Уведомления";
+
+/* Notifications filtered title */
+"Notifications: (currentTypeFilter.description)" = "Уведомления: (currentTypeFilter.description)";
 
 /* No comment provided by engineer. */
 "OK" = "Хорошо";
@@ -549,11 +588,14 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "Сообщить об отказах";
 
-/* Retry Action */
+/* No comment provided by engineer. */
 "Retry" = "Повторить";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Просмотреть, подготовить и отправить эти ожидающие заказы";
+
+/* Reviews filter title */
+"Reviews" = "Обзоры";
 
 /* SKU label */
 "SKU:" = "АРТИКУЛ:";
@@ -648,6 +690,9 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Извините, этот адрес сайта нельзя использовать.";
 
+/* Verb, spam a comment */
+"Spam" = "Спамить";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "Период начала — %1$@, период окончания — %2$@";
 
@@ -699,11 +744,17 @@
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "Учетная запись Google \"(loginFields.username)\" не соответствует ни одной учетной запись WordPress.com";
 
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "Невозможно загрузить заказ!";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "В URL-адресе отсутствует допустимый хост.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Сертификат для этого сервера недействителен. Возможно, вы пытаетесь подключиться к серверу, который имитирует «%@». Это может представлять риск для конфиденциальности вашей информации.\n\nДоверять этому сертификату?";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed!" = "Уведомление удалено!";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "Заказ удалён из вашего магазина!";
@@ -774,6 +825,9 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "Общий объём выручки";
 
+/* Move a comment to the trash */
+"Trash" = "Корзина";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Безопасность";
 
@@ -800,6 +854,9 @@
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Невозможно проверить ваш электронный адрес. Попробуйте позже еще раз.";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "Отклонение комментария";
 
 /* Undo Action */
 "Undo" = "Назад";

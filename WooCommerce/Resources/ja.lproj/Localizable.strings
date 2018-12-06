@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-16 11:54:03+0000 */
+/* Translation-Revision-Date: 2018-11-30 13:54:02+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -56,6 +56,15 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "リクエストの処理中にエラーが発生しました。";
+
+/* Approve a comment */
+"Approve" = "承認";
+
+/* Unapprove a comment */
+"Approved" = "承認済み";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "コメントを承認";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "アカウント %@ からログアウトしてもよいですか ?";
@@ -165,6 +174,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "日";
 
+/* Deleted Notification's Title */
+"Deleted Notification!" = "通知が削除されました";
+
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "削除済み:注文番号 (viewModel.order.number)";
 
@@ -222,8 +234,14 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API へのリクエストをシリアライズできませんでした。";
 
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "通知をフィルター";
+
 /* Filter the orders list. */
 "Filter orders" = "注文を絞り込み";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "通知タイプ別に通知リストをフィルターします。";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "支払いステータスで注文リストを絞り込みます。";
@@ -312,6 +330,9 @@
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "ログイン試行の上限に達しました。1分後にもう一度お試しいただけます。それ以前にログインしようとした場合、制限解除までの時間がさらに延長されます。エラーだと思われる場合はサポートにご連絡ください。";
 
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "注文を読み込む";
+
 /* No comment provided by engineer. */
 "Log In" = "ログイン";
 
@@ -340,7 +361,7 @@
 "Lost your password?" = "パスワードをお忘れですか ?";
 
 /* Tagline after the heart icon, displayed to the user */
-"Made with love by Automattic" = "Automattic が愛情込めて作成";
+"Made with love by Automattic" = "Made with love by Automattic";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "注文を管理し、売り上げをトラッキングし、ストアのアクティビティをリアルタイムのアラートでモニターします。";
@@ -354,8 +375,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "マッピング済みドメイン";
 
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "すべてを既読にする";
+
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "注文を完了としてマーク";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "すべての通知を既読にする";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "メディアにはアップロードする関連したファイルはありません。";
@@ -371,6 +398,12 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "月";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "コメントをスパムに移動します";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "コメントをごみ箱に移動します";
 
 /* My Tickets title */
 "My Tickets" = "自分のチケット";
@@ -396,6 +429,9 @@
 /* No comment provided by engineer. */
 "Next" = "次へ";
 
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "通知はまだありません";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "この期間のアクティビティはありません";
 
@@ -411,8 +447,11 @@
 /* No comment provided by engineer. */
 "Note to customer" = "お客様への通知";
 
-/* Notifications tab title */
+/* No comment provided by engineer. */
 "Notifications" = "通知";
+
+/* Notifications filtered title */
+"Notifications: (currentTypeFilter.description)" = "通知:(currentTypeFilter.description)";
 
 /* No comment provided by engineer. */
 "OK" = "OK";
@@ -549,11 +588,14 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "クラッシュをレポート";
 
-/* Retry Action */
+/* No comment provided by engineer. */
 "Retry" = "再度試す";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "これらの保留中の注文を確認して準備し、配送してください";
+
+/* Reviews filter title */
+"Reviews" = "レビュー";
 
 /* SKU label */
 "SKU:" = "商品コード:";
@@ -648,6 +690,9 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "ご指定のサイトアドレスはご利用いただけません。";
 
+/* Verb, spam a comment */
+"Spam" = "スパム";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "開始期間%1$@、終了期間%2$@";
 
@@ -699,11 +744,17 @@
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "Google アカウント \"(loginFields.username)\" が WordPress.com 上のアカウントと一致しません";
 
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "The Order couldn't be loaded!";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "この URL には有効なホストがありません。";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "このサーバーの証明書が無効です。「%@」を偽装しているサーバーに接続中の可能性があるため、機密情報が危険にさらされる恐れがあります。\n\nこの証明書をそのまま信頼しますか ?";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed!" = "通知が削除されました";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "この注文はストアから削除されました。";
@@ -774,6 +825,9 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "支払い合計額";
 
+/* Move a comment to the trash */
+"Trash" = "ゴミ箱";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信用する";
 
@@ -800,6 +854,9 @@
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "メールアドレスを検証できません。後ほど、もう一度お試しください。";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "コメントを承認しない";
 
 /* Undo Action */
 "Undo" = "元に戻す";
@@ -829,7 +886,7 @@
 "Version" = "バージョン";
 
 /* subtitle for My Tickets */
-"View previously submitted support tickets" = "これまでに送信されたサポートチケットを表示します";
+"View previously submitted support tickets" = "送信済みのサポートチケットを表示";
 
 /* User role badge */
 "Viewer" = "読者";

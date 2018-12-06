@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-14 09:54:05+0000 */
+/* Translation-Revision-Date: 2018-11-27 09:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -56,6 +56,15 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "אירעה שגיאה בעת עיבוד הבקשה שלך: ";
+
+/* Approve a comment */
+"Approve" = "אישור";
+
+/* Unapprove a comment */
+"Approved" = "מאושר";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "אישור התגובה";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "האם ברצונך להתנתק מהחשבון %@?";
@@ -165,6 +174,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "ימים";
 
+/* Deleted Notification's Title */
+"Deleted Notification!" = "מחיקת ההודעה!";
+
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "נמחק: הזמנה ‎#‎(viewModel.order.number)‎";
 
@@ -222,8 +234,14 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "לא הצלחנו לערוך בסדרה בקשה אל REST API.";
 
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "סינון הודעות";
+
 /* Filter the orders list. */
 "Filter orders" = "סינון הזמנות";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "סינון של רשימת ההודעות לפי סוג.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "הפעולה מסננת את רשימת ההזמנות לפי מצב התשלומים.";
@@ -312,6 +330,9 @@
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "מגבלת זיכרון. ניתן לנסות שוב בעוד דקה. אם תנסה שוב לפני כן, הדבר רק יגביר את הזמן שאתה צריך לחכות לפני שהאיסור יוסר. אם אתה חושב שמדובר בשגיאה, פנה לתמיכה.";
 
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "טוען הזמנה";
+
 /* No comment provided by engineer. */
 "Log In" = "התחבר";
 
@@ -354,8 +375,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "דומיין ממופה";
 
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "סימון כל הפריטים כ'נקרא'";
+
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "סימון הזמנה כ'הושלמה'";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "הפעולה מסמנת את כל ההודעות כהודעות שנקראו";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "לפריט המדיה חסר קובץ מקושר להעלאה.";
@@ -371,6 +398,12 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "חודשים";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "העברת תגובה לתגובות הזבל";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "העברת התגובות לפח";
 
 /* My Tickets title */
 "My Tickets" = "הפנייה שלי";
@@ -396,6 +429,9 @@
 /* No comment provided by engineer. */
 "Next" = "הבא";
 
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "אין עדיין הודעות!";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "אין פעילות בפרק זמן זה";
 
@@ -411,8 +447,11 @@
 /* No comment provided by engineer. */
 "Note to customer" = "הערה ללקוח";
 
-/* Notifications tab title */
+/* No comment provided by engineer. */
 "Notifications" = "התראות";
+
+/* Notifications filtered title */
+"Notifications: (currentTypeFilter.description)" = "הודעות: (currentTypeFilter.description)";
 
 /* No comment provided by engineer. */
 "OK" = "אישור";
@@ -549,11 +588,14 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "דיווח על קריסות";
 
-/* Retry Action */
+/* No comment provided by engineer. */
 "Retry" = "נסה שנית";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "בדיקה, הכנה ומשלוח של ההזמנות שבהמתנה";
+
+/* Reviews filter title */
+"Reviews" = "חוות דעת";
 
 /* SKU label */
 "SKU:" = "מק\"ט:";
@@ -648,6 +690,9 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "לא ניתן להשתמש בכתובת את זו.";
 
+/* Verb, spam a comment */
+"Spam" = "תגובת זבל";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "תקופת התחלה: %1$@, תקופת סיום: %2$@";
 
@@ -699,11 +744,17 @@
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "חשבון ה-Google‏ \"(loginFields.username)\" לא תואם לשום חשבון ב-WordPress.com‏";
 
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "לא ניתן לטעון את ההזמנה!";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "בכתובת האינטרנט חסר מארח חוקי.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "האישור עבור שרת זה אינו חוקי. ייתכן שאתה מתחבר לשרת שמתחזה ל-&quot;%@&quot;, מה שעלול לסכן את המידע הסודי שלך.\n\nלבטוח באישור בכל מקרה?";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed!" = "ההודעה הזו הוסרה!";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "ההזמנה נמחקה מהחנות שלך!";
@@ -736,7 +787,7 @@
 "This Year" = "השנה";
 
 /* Login Disclaimer Text and Jetpack config instructions */
-"This app requires Jetpack to connect to your Store. Read the " = "אפליקציה זו דורשת Jetpack כדי לחבר אותך לחנות. לקריאת ";
+"This app requires Jetpack to connect to your Store. Read the " = "אפליקציה זו דורשת Jetpack כדי לחבר אותך לחנות. לקריאה של ";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "כתובת האימייל הזו לא רשומה ב-WordPress.com.";
@@ -774,6 +825,9 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "הוצאה כוללת";
 
+/* Move a comment to the trash */
+"Trash" = "פח";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "אמון";
 
@@ -800,6 +854,9 @@
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "אין אפשרות לאמת את כתובת האימייל. יש לנסות שוב מאוחר יותר.";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "דחיית התגובה";
 
 /* Undo Action */
 "Undo" = "ביטול פעולה אחרונה";

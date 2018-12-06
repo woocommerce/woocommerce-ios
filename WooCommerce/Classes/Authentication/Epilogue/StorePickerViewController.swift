@@ -159,7 +159,7 @@ private extension StorePickerViewController {
             return
         }
 
-        displaySiteWCRequirementWarningIfNeeded(for: firstSite.siteID)
+        displaySiteWCRequirementWarningIfNeeded(for: firstSite)
         StoresManager.shared.updateDefaultStore(storeID: firstSite.siteID)
     }
 
@@ -223,19 +223,16 @@ private extension StorePickerViewController {
 
     /// If the provided site's WC version is not valid, display a warning to the user.
     ///
-    func displaySiteWCRequirementWarningIfNeeded(for siteID: Int) {
-        updateActionButtonState(animating: true, enabled: false)
+    func displaySiteWCRequirementWarningIfNeeded(for site: Site) {
+        let siteName = site.name
 
-        // Wait till the requirement check is complete before allowing the user to select another store
-        tableView.allowsSelection = false
-
-        RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] (isValidWCVersion) in
-            self?.updateActionButtonState(animating: false, enabled: isValidWCVersion)
-            self?.tableView.allowsSelection = true
+        updateActionButtonAndTableState(animating: true, enabled: false)
+        RequirementsChecker.checkMinimumWooVersion(for: site.siteID) { [weak self] (isValidWCVersion) in
+            self?.updateActionButtonAndTableState(animating: false, enabled: isValidWCVersion)
 
             if isValidWCVersion == false {
                 // Display a warning to the user about the site version
-                let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
+                let fancyAlert = FancyAlertViewController.makewWooUpgradeAlertControllerForSitePicker(siteName: siteName)
                 fancyAlert.modalPresentationStyle = .custom
                 fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
                 self?.present(fancyAlert, animated: true)
@@ -243,9 +240,15 @@ private extension StorePickerViewController {
         }
     }
 
-    func updateActionButtonState(animating: Bool, enabled: Bool) {
+    /// Little helper func that helps manage the actionButton and Table state while checking on a
+    /// site's WC requirements.
+    ///
+    func updateActionButtonAndTableState(animating: Bool, enabled: Bool) {
         actionButton.isEnabled = enabled
         actionButton.showActivityIndicator(animating)
+
+        // Wait till the requirement check is complete before allowing the user to select another store
+        tableView.allowsSelection = enabled
     }
 }
 
@@ -329,7 +332,7 @@ extension StorePickerViewController: UITableViewDelegate {
             return
         }
 
-        displaySiteWCRequirementWarningIfNeeded(for: site.siteID)
+        displaySiteWCRequirementWarningIfNeeded(for: site)
 
         reloadDefaultStoreAndSelectedStoreRows {
             StoresManager.shared.updateDefaultStore(storeID: site.siteID)

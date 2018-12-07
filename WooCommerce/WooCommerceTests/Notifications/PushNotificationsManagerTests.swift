@@ -276,7 +276,7 @@ class PushNotificationsManagerTests: XCTestCase {
             handleNotificationCallbackWasExecuted = true
         }
 
-        XCTAssertEqual(application.displayDetailsNoteIDs.first, 1234)
+        XCTAssertEqual(application.presentDetailsNoteIDs.first, 1234)
         XCTAssertTrue(handleNotificationCallbackWasExecuted)
     }
 }
@@ -290,7 +290,7 @@ private extension PushNotificationsManagerTests {
     ///
     func notificationPayload(badgeCount: Int = 0, noteID: Int = 1234) -> [String: Any] {
         return [
-            "aps.badge": badgeCount,
+            "aps": ["badge": badgeCount],
             "note_id": noteID
         ]
     }

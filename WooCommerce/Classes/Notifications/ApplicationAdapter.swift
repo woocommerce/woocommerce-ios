@@ -18,9 +18,9 @@ protocol ApplicationAdapter: class {
     ///
     func registerForRemoteNotifications()
 
-    /// Displays the Details for the specified Notification.
+    /// Presents the Details for the specified Notification.
     ///
-    func displayNotificationDetails(for noteID: Int)
+    func presentNotificationDetails(for noteID: Int)
 }
 
 
@@ -28,10 +28,9 @@ protocol ApplicationAdapter: class {
 ///
 extension UIApplication: ApplicationAdapter {
 
-    /// Displays the Details for the specified Notification ID
+    /// Presents the Details for the specified Notification ID
     ///
-    func displayNotificationDetails(for noteID: Int) {
-        // TODO: Wire the actual NoteID
-        MainTabBarController.switchToNotificationsTab()
+    func presentNotificationDetails(for noteID: Int) {
+        MainTabBarController.presentNotificationDetails(for: noteID)
     }
 }

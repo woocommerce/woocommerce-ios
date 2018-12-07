@@ -276,7 +276,7 @@ class PushNotificationsManagerTests: XCTestCase {
             handleNotificationCallbackWasExecuted = true
         }
 
-        XCTAssertEqual(application.displayDetailsNoteIDs.first, 1234)
+        XCTAssertEqual(application.presentDetailsNoteIDs.first, 1234)
         XCTAssertTrue(handleNotificationCallbackWasExecuted)
     }
 }

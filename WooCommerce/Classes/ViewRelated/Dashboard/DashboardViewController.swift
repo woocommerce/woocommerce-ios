@@ -26,14 +26,14 @@ class DashboardViewController: UIViewController {
 
     // MARK: View Lifecycle
 
+    deinit {
+        stopListeningToNotifications()
+    }
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         startListeningToNotifications()
         tabBarItem.image = Gridicon.iconOfType(.statsAlt)
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
 
     override func viewDidLoad() {
@@ -92,9 +92,35 @@ private extension DashboardViewController {
 
         navigationItem.backBarButtonItem = backButton
     }
+}
 
+
+// MARK: - Notifications
+//
+extension DashboardViewController {
+
+    /// Wires all of the Notification Hooks
+    ///
     func startListeningToNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
+    }
+
+    /// Stops listening to all related Notifications
+    ///
+    func stopListeningToNotifications() {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    /// Runs whenever the default Account is updated.
+    ///
+    @objc func defaultAccountWasUpdated() {
+        guard storeStatsViewController != nil, StoresManager.shared.isAuthenticated == false else {
+            return
+        }
+
+        storeStatsViewController.clearAllFields()
+        applyHideAnimation(for: newOrdersContainerView)
     }
 }
 
@@ -134,13 +160,6 @@ extension DashboardViewController: NewOrdersDelegate {
 // MARK: - Private Helpers
 //
 private extension DashboardViewController {
-
-    @objc func defaultAccountWasUpdated(sender: Notification) {
-        guard storeStatsViewController != nil, StoresManager.shared.isAuthenticated == false else {
-            return
-        }
-        storeStatsViewController.clearAllFields()
-    }
 
     func reloadData() {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")

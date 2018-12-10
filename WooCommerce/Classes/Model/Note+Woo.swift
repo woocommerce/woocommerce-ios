@@ -34,6 +34,26 @@ extension Note {
 
         return block.text?.filter({ Constants.filledInStar.contains($0) }).count
     }
+
+    /// Returns the Product Name String
+    ///
+    var product: String? {
+        guard subkind == .storeReview, let block = body.first(ofKind: .text), let text = block.text else {
+            return nil
+        }
+
+        let substrings = block.ranges.compactMap { range -> String? in
+            guard let swiftRange = Range(range.range, in: text) else {
+                return nil
+            }
+
+            return String(text[swiftRange])
+        }
+
+        return substrings.first {
+            $0.contains(Constants.filledInStar) == false && $0.contains(Constants.filledInStar) == false
+        }
+    }
 }
 
 

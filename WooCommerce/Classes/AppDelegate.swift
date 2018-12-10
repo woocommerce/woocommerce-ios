@@ -137,7 +137,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-
+        DDLogVerbose("👀 Application terminating...")
+        NotificationCenter.default.post(name: .applicationTerminating, object: nil)
     }
 }
 

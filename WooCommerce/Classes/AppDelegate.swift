@@ -70,7 +70,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupCocoaLumberjack()
         setupLogLevel(.verbose)
         setupNoticePresenter()
-        setupPushNotificationsManagerIfPossible()
 
         // Display the Authentication UI
         displayAuthenticatorIfNeeded()
@@ -249,21 +248,6 @@ private extension AppDelegate {
     func setupNoticePresenter() {
         noticePresenter.presentingViewController = window?.rootViewController
     }
-
-    /// Push Notifications: Authorization + Registration!
-    ///
-    func setupPushNotificationsManagerIfPossible() {
-        guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore == false else {
-            return
-        }
-
-        #if targetEnvironment(simulator)
-            DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
-        #else
-            pushNotesManager.registerForRemoteNotifications()
-            pushNotesManager.ensureAuthorizationIsRequested()
-        #endif
-    }
 }
 
 
@@ -343,7 +327,6 @@ extension AppDelegate {
     /// Runs whenever the Authentication Flow is completed successfully.
     ///
     func authenticatorWasDismissed() {
-        setupPushNotificationsManagerIfPossible()
         RequirementsChecker.checkMinimumWooVersionForDefaultStore()
     }
 }

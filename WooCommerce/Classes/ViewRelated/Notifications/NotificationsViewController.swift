@@ -144,6 +144,7 @@ class NotificationsViewController: UIViewController {
         configureTableViewCells()
         configureResultsController()
 
+        setupPushNotificationsManagerIfPossible()
         startListeningToNotifications()
     }
 
@@ -642,6 +643,21 @@ private extension NotificationsViewController {
 // MARK: - Notifications
 //
 private extension NotificationsViewController {
+
+    /// Push Notifications: Authorization + Registration!
+    ///
+    func setupPushNotificationsManagerIfPossible() {
+        guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore == false else {
+            return
+        }
+
+        #if targetEnvironment(simulator)
+        DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
+        #else
+        AppDelegate.shared.pushNotesManager.registerForRemoteNotifications()
+        AppDelegate.shared.pushNotesManager.ensureAuthorizationIsRequested()
+        #endif
+    }
 
     /// Setup: Notification Hooks
     ///

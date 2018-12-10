@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
+import Gridicons
 
 
 // MARK: - NotificationDetailsViewController
@@ -254,6 +255,8 @@ private extension NotificationDetailsViewController {
         switch row {
         case .header:
             setupHeaderCell(cell, at: row)
+        case .headerPlain:
+            setupHeaderPlainCell(cell, at: row)
         case .comment:
             setupCommentCell(cell, at: row)
         }
@@ -270,6 +273,20 @@ private extension NotificationDetailsViewController {
 
         let formatter = StringFormatter()
         headerCell.textLabel?.attributedText = formatter.format(block: gravatarBlock, with: .header)
+    }
+
+
+    /// Setup: Header Cell (Plain)
+    ///
+    func setupHeaderPlainCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
+        guard let headerCell = cell as? NoteDetailsHeaderPlainTableViewCell,
+            case let .headerPlain(title) = row else {
+                return
+        }
+
+        headerCell.leftImage = Gridicon.iconOfType(.product)
+        headerCell.rightImage = Gridicon.iconOfType(.external)
+        headerCell.plainText = title
     }
 
 

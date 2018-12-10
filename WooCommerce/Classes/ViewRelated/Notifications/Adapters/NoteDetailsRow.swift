@@ -6,6 +6,7 @@ import Yosemite
 //
 enum NoteDetailsRow {
     case header(gravatar: NoteBlock, snippet: NoteBlock?)
+    case headerPlain(title: String)
     case comment(comment: NoteBlock, user: NoteBlock, footer: NoteBlock?)
 
 // Note: As of Mark 1, we only support Comment Rows. Uncomment when the time comes!
@@ -26,6 +27,8 @@ extension NoteDetailsRow {
         switch self {
         case .header:
             return NoteDetailsHeaderTableViewCell.reuseIdentifier
+        case .headerPlain:
+            return NoteDetailsHeaderPlainTableViewCell.reuseIdentifier
         case .comment:
             return NoteDetailsCommentTableViewCell.reuseIdentifier
         }
@@ -43,6 +46,7 @@ extension NoteDetailsRow {
     static func details(from note: Note) -> [NoteDetailsRow] {
         return [
             headerDetailRows(from: note.header),
+            headerDetailRowsForStoreReview(for: note),
             commentDetailRows(from: note.body) ?? regularDetailRows(from: note.body)
         ].flatMap { $0 }
     }
@@ -61,6 +65,22 @@ extension NoteDetailsRow {
         ]
     }
 
+    /// Returns an array containing a Header Plain row, whenever:
+    ///
+    /// A. We're dealing with a Store Review Notification
+    /// B. There are no actual Header Blocks
+    ///
+    /// This is meant to be a temporary workaround, client side. Please remove whenever a proper Header is added, backend side.
+    ///
+    private static func headerDetailRowsForStoreReview(for note: Note) -> [NoteDetailsRow] {
+        guard note.subkind == .storeReview, note.header.isEmpty, let title = note.product else {
+            return []
+        }
+
+        return [
+            .headerPlain(title: title)
+        ]
+    }
 
     /// Returns an array containing a single NoteDetailsRow of the `.comment` type, whenever the specified collection of
     /// Body Blocks contain the "Comment Payload".

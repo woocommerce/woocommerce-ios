@@ -34,6 +34,27 @@ extension Note {
 
         return block.text?.filter({ Constants.filledInStar.contains($0) }).count
     }
+
+    /// Returns the Associated Product (Name + URL), if any.
+    ///
+    var product: (name: String, url: URL)? {
+        guard subkind == .storeReview, let block = body.first(ofKind: .text), let text = block.text else {
+            return nil
+        }
+
+        let ranges: [(name: String, url: URL)] = block.ranges.compactMap { range in
+            guard let swiftRange = Range(range.range, in: text), let url = range.url else {
+                return nil
+            }
+
+            let name = String(text[swiftRange])
+            return (name, url)
+        }
+
+        return ranges.first {
+            return $0.name.contains(Constants.filledInStar) == false && $0.name.contains(Constants.emptyStar) == false
+        }
+    }
 }
 
 

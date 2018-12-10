@@ -96,6 +96,7 @@ private extension NotificationDetailsViewController {
         tableView.tableFooterView = UIView()
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
+        tableView.separatorInset = .zero
     }
 
     /// Setup: EntityListener

@@ -35,13 +35,9 @@ extension Note {
         return block.text?.filter({ Constants.filledInStar.contains($0) }).count
     }
 
-    /// For convenience, and future proofing, NoteProduct is a lightweight structure ("Named Touple").
-    ///
-    typealias NoteProduct = (name: String, url: URL)
-
     /// Returns the Associated Product (Name + URL), if any.
     ///
-    var product: NoteProduct? {
+    var product: (name: String, url: URL)? {
         guard subkind == .storeReview, let block = body.first(ofKind: .text), let text = block.text else {
             return nil
         }

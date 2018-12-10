@@ -35,23 +35,28 @@ extension Note {
         return block.text?.filter({ Constants.filledInStar.contains($0) }).count
     }
 
-    /// Returns the Product Name String
+    /// For convenience, and future proofing, NoteProduct is a lightweight structure ("Named Touple").
     ///
-    var product: String? {
+    typealias NoteProduct = (name: String, url: URL)
+
+    /// Returns the Associated Product (Name + URL), if any.
+    ///
+    var product: NoteProduct? {
         guard subkind == .storeReview, let block = body.first(ofKind: .text), let text = block.text else {
             return nil
         }
 
-        let substrings = block.ranges.compactMap { range -> String? in
-            guard let swiftRange = Range(range.range, in: text) else {
+        let ranges: [(name: String, url: URL)] = block.ranges.compactMap { range in
+            guard let swiftRange = Range(range.range, in: text), let url = range.url else {
                 return nil
             }
 
-            return String(text[swiftRange])
+            let name = String(text[swiftRange])
+            return (name, url)
         }
 
-        return substrings.first {
-            $0.contains(Constants.filledInStar) == false && $0.contains(Constants.filledInStar) == false
+        return ranges.first {
+            return $0.name.contains(Constants.filledInStar) == false && $0.name.contains(Constants.emptyStar) == false
         }
     }
 }

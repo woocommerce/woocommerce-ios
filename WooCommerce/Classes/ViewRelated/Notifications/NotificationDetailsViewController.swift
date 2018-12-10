@@ -112,7 +112,11 @@ private extension NotificationDetailsViewController {
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
-        let cells = [NoteDetailsHeaderTableViewCell.self, NoteDetailsCommentTableViewCell.self]
+        let cells = [
+            NoteDetailsHeaderTableViewCell.self,
+            NoteDetailsHeaderPlainTableViewCell.self,
+            NoteDetailsCommentTableViewCell.self
+        ]
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)

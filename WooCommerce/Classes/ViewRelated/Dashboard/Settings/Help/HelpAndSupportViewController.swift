@@ -31,6 +31,8 @@ class HelpAndSupportViewController: UIViewController {
         configureTableView()
         configureTableViewFooter()
         registerTableViewCells()
+        setupPushNotificationsManagerIfPossible()
+
         warnDeveloperIfNeeded()
     }
 }
@@ -184,6 +186,22 @@ private extension HelpAndSupportViewController {
 
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
+    }
+
+
+    /// Push Notifications: Authorization + Registration!
+    ///
+    func setupPushNotificationsManagerIfPossible() {
+        guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore == false else {
+            return
+        }
+
+        #if targetEnvironment(simulator)
+        DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
+        #else
+        AppDelegate.shared.pushNotesManager.registerForRemoteNotifications()
+        AppDelegate.shared.pushNotesManager.ensureAuthorizationIsRequested()
+        #endif
     }
 }
 

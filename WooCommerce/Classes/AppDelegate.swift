@@ -124,6 +124,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+
+        let info = NoticeNotificationInfo(identifier: UUID().uuidString,
+                                          categoryIdentifier: "lalala",
+                                          title: "Title",
+                                          body: "Some Body",
+                                          userInfo: [:])
+
+        let title = NSLocalizedString("Testing Background Notice", comment: "")
+        let message = NSLocalizedString("Message LALALALALA", comment: "")
+        let notice = Notice(title: title, message: message, feedbackType: .error, notificationInfo: info)
+
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {

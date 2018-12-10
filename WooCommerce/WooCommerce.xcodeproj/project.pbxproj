@@ -188,6 +188,8 @@
 		B5F04D952194F2A300501EE1 /* NoteDetailsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F04D942194F2A300501EE1 /* NoteDetailsRow.swift */; };
 		B5F571A421BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F571A321BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift */; };
 		B5F571A621BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F571A521BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib */; };
+		B5F571A921BEECA50010D1B8 /* Responses in Resources */ = {isa = PBXBuildFile; fileRef = B5F571A821BEECA50010D1B8 /* Responses */; };
+		B5F571AB21BEECB60010D1B8 /* NoteWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F571AA21BEECB60010D1B8 /* NoteWooTests.swift */; };
 		B5F8B7E02194759100DAB7E2 /* NotificationDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F8B7DF2194759100DAB7E2 /* NotificationDetailsViewController.swift */; };
 		B5F8B7E5219478FA00DAB7E2 /* NotificationDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F8B7E4219478FA00DAB7E2 /* NotificationDetailsViewController.xib */; };
 		B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */; };
@@ -485,6 +487,8 @@
 		B5F04D942194F2A300501EE1 /* NoteDetailsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailsRow.swift; sourceTree = "<group>"; };
 		B5F571A321BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailsHeaderPlainTableViewCell.swift; sourceTree = "<group>"; };
 		B5F571A521BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoteDetailsHeaderPlainTableViewCell.xib; sourceTree = "<group>"; };
+		B5F571A821BEECA50010D1B8 /* Responses */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Responses; path = ../../Networking/NetworkingTests/Responses; sourceTree = "<group>"; };
+		B5F571AA21BEECB60010D1B8 /* NoteWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteWooTests.swift; sourceTree = "<group>"; };
 		B5F8B7DF2194759100DAB7E2 /* NotificationDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDetailsViewController.swift; sourceTree = "<group>"; };
 		B5F8B7E4219478FA00DAB7E2 /* NotificationDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationDetailsViewController.xib; sourceTree = "<group>"; };
 		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -764,10 +768,12 @@
 		B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */ = {
 			isa = PBXGroup;
 			children = (
+				B5F571A821BEECA50010D1B8 /* Responses */,
 				B57C5C9B21B80E8200FF82B2 /* Internal */,
 				B57C744F20F56ED300EEFC87 /* Extensions */,
 				B53B898A20D4606400EDB467 /* System */,
 				746791642108D853007CF1DC /* Mockups */,
+				B5F571AC21BEF03C0010D1B8 /* Model */,
 				B5718D6321B56B3F0026C9F0 /* Notifications */,
 				B53A569521123D27000776C9 /* Tools */,
 				B5DBF3C120E1482900B53AED /* Yosemite */,
@@ -1006,6 +1012,14 @@
 				B5F04D942194F2A300501EE1 /* NoteDetailsRow.swift */,
 			);
 			path = Adapters;
+			sourceTree = "<group>";
+		};
+		B5F571AC21BEF03C0010D1B8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B5F571AA21BEECB60010D1B8 /* NoteWooTests.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		CE14452C2188C0EC00A991D8 /* Zendesk */ = {
@@ -1399,6 +1413,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5F571A921BEECA50010D1B8 /* Responses in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1760,6 +1775,7 @@
 				B5718D6521B56B400026C9F0 /* PushNotificationsManagerTests.swift in Sources */,
 				B53A56A22112470C000776C9 /* MockupStorage+Sample.swift in Sources */,
 				746791662108D87B007CF1DC /* MockupAnalyticsProvider.swift in Sources */,
+				B5F571AB21BEECB60010D1B8 /* NoteWooTests.swift in Sources */,
 				B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */,
 				B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */,
 				B53A569721123D3B000776C9 /* ResultsControllerUIKitTests.swift in Sources */,

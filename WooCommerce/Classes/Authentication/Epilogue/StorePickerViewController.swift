@@ -90,8 +90,11 @@ class StorePickerViewController: UIViewController {
     var onDismiss: (() -> Void)?
 
 
+    // MARK: - View Lifecycle
 
-    // MARK: - Overridden Methods
+    deinit {
+        stopListeningToNotifications()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,6 +103,8 @@ class StorePickerViewController: UIViewController {
         setupAccountHeader()
         setupTableView()
         refreshResults()
+
+        startListeningToNotifications()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -152,6 +157,39 @@ private extension StorePickerViewController {
     func stateWasUpdated() {
         preselectDefaultStoreIfPossible()
         reloadInterface()
+    }
+}
+
+
+// MARK: - Notifications
+//
+extension StorePickerViewController {
+
+    /// Wires all of the Notification Hooks
+    ///
+    func startListeningToNotifications() {
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(applicationTerminating), name: .applicationTerminating, object: nil)
+    }
+
+    /// Stops listening to all related Notifications
+    ///
+    func stopListeningToNotifications() {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    /// Runs whenever the application is about to terminate.
+    ///
+    @objc func applicationTerminating() {
+        guard StoresManager.shared.isAuthenticated else {
+            return
+        }
+
+        // If we are on this screen and the app is about to terminate, it means a default store
+        // was never selected so force the user to go through the auth flow again.
+        //
+        // For more deets, see: https://github.com/woocommerce/woocommerce-ios/issues/466
+        StoresManager.shared.deauthenticate()
     }
 }
 

@@ -6,7 +6,7 @@ import Yosemite
 //
 enum NoteDetailsRow {
     case header(gravatar: NoteBlock, snippet: NoteBlock?)
-    case headerPlain(title: String)
+    case headerPlain(title: String, url: URL)
     case comment(comment: NoteBlock, user: NoteBlock, footer: NoteBlock?)
 
 // Note: As of Mark 1, we only support Comment Rows. Uncomment when the time comes!
@@ -73,12 +73,12 @@ extension NoteDetailsRow {
     /// This is meant to be a temporary workaround, client side. Please remove whenever a proper Header is added, backend side.
     ///
     private static func headerDetailRowsForStoreReview(for note: Note) -> [NoteDetailsRow] {
-        guard note.subkind == .storeReview, note.header.isEmpty, let title = note.product else {
+        guard note.subkind == .storeReview, note.header.isEmpty, let product = note.product else {
             return []
         }
 
         return [
-            .headerPlain(title: title)
+            .headerPlain(title: product.name, url: product.url)
         ]
     }
 

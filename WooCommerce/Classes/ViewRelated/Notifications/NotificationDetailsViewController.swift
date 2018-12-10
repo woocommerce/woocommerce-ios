@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import Yosemite
 import Gridicons
+import SafariServices
 
 
 // MARK: - NotificationDetailsViewController
@@ -242,6 +243,15 @@ extension NotificationDetailsViewController: UITableViewDataSource {
 //
 extension NotificationDetailsViewController: UITableViewDelegate {
 
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let row = detailsForRow(at: indexPath)
+        switch row {
+        case .headerPlain(_, let url):
+            displaySafariViewController(at: url)
+        default:
+            break
+        }
+    }
 }
 
 
@@ -280,7 +290,7 @@ private extension NotificationDetailsViewController {
     ///
     func setupHeaderPlainCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
         guard let headerCell = cell as? NoteDetailsHeaderPlainTableViewCell,
-            case let .headerPlain(title) = row else {
+            case let .headerPlain(title, _) = row else {
                 return
         }
 
@@ -427,5 +437,19 @@ private extension NotificationDetailsViewController {
             }
         }
         return action
+    }
+}
+
+
+// MARK: - Private Methods
+//
+private extension NotificationDetailsViewController {
+
+    /// Presents a WebView at the specified URL
+    ///
+    func displaySafariViewController(at url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        safariViewController.modalPresentationStyle = .pageSheet
+        present(safariViewController, animated: true, completion: nil)
     }
 }

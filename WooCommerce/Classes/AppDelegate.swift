@@ -112,7 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         pushNotesManager.registrationDidFail(with: error)
     }
 
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         pushNotesManager.handleNotification(userInfo, completionHandler: completionHandler)
     }
 
@@ -133,7 +133,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 
-        RequirementsChecker.checkMinimumWooVersion()
+        RequirementsChecker.checkMinimumWooVersionForDefaultStore()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -343,6 +343,6 @@ extension AppDelegate {
     ///
     func authenticatorWasDismissed() {
         setupPushNotificationsManagerIfPossible()
-        RequirementsChecker.checkMinimumWooVersion()
+        RequirementsChecker.checkMinimumWooVersionForDefaultStore()
     }
 }

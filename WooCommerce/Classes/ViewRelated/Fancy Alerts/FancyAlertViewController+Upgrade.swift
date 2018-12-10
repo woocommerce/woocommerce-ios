@@ -57,13 +57,13 @@ public extension FancyAlertViewController {
 //
 private extension FancyAlertViewController {
 
-    static func makeDismissButtonConfig() -> FancyAlertViewController.Config.ButtonConfig  {
+    static func makeDismissButtonConfig() -> FancyAlertViewController.Config.ButtonConfig {
         return FancyAlertViewController.Config.ButtonConfig(Strings.dismissButtonText) { controller, _ in
             controller.dismiss(animated: true)
         }
     }
 
-    static func makeMoreInfoButtonConfig() -> FancyAlertViewController.Config.ButtonConfig  {
+    static func makeMoreInfoButtonConfig() -> FancyAlertViewController.Config.ButtonConfig {
         return FancyAlertViewController.Config.ButtonConfig(Strings.moreInfoButtonText) { controller, _ in
             guard let url = URL(string: Strings.moreInfoURLString) else {
                 return

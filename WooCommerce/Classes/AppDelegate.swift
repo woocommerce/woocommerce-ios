@@ -112,7 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         pushNotesManager.registrationDidFail(with: error)
     }
 
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         pushNotesManager.handleNotification(userInfo, completionHandler: completionHandler)
     }
 

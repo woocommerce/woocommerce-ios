@@ -184,7 +184,7 @@ private extension StoresManager {
         }
         let action = SettingAction.retrieveSiteSettings(siteID: siteID) { error in
             if let error = error {
-                DDLogWarn("⚠️ Could not successfully fetch settings for siteID \(siteID): \(error)")
+                DDLogError("⛔️ Could not successfully fetch settings for siteID \(siteID): \(error)")
             }
         }
         dispatch(action)

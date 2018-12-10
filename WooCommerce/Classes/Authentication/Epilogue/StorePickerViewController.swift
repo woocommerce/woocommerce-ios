@@ -24,6 +24,14 @@ class StorePickerViewController: UIViewController {
         return AccountHeaderView.instantiateFromNib()
     }()
 
+    /// Site Picker's dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
+    ///
+    private lazy var noticePresenter: NoticePresenter = {
+        let noticePresenter = NoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     /// ResultsController: Loads Sites from the Storage Layer.
     ///
     private let resultsController: ResultsController<StorageSite> = {
@@ -45,7 +53,7 @@ class StorePickerViewController: UIViewController {
 
     /// Default Action Button.
     ///
-    @IBOutlet private var actionButton: FancyButton! {
+    @IBOutlet private var actionButton: FancyAnimatedButton! {
         didSet {
             actionButton.backgroundColor = .clear
             actionButton.titleFont = StyleManager.actionButtonTitleFont
@@ -159,6 +167,7 @@ private extension StorePickerViewController {
             return
         }
 
+        displaySiteWCRequirementWarningIfNeeded(siteID: firstSite.siteID, siteName: firstSite.name)
         StoresManager.shared.updateDefaultStore(storeID: firstSite.siteID)
     }
 
@@ -218,6 +227,53 @@ private extension StorePickerViewController {
 
         let loginViewController = AppDelegate.shared.authenticationManager.loginForWordPressDotCom()
         navigationController.setViewControllers([loginViewController], animated: true)
+    }
+
+    /// If the provided site's WC version is not valid, display a warning to the user.
+    ///
+    func displaySiteWCRequirementWarningIfNeeded(siteID: Int, siteName: String) {
+        updateActionButtonAndTableState(animating: true, enabled: false)
+        RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] (isValidWCVersion, error) in
+            self?.updateActionButtonAndTableState(animating: false, enabled: isValidWCVersion)
+            guard error == nil else {
+                // If there is an error display a notice to the user
+                self?.displayVersionCheckErrorNotice(siteID: siteID, siteName: siteName)
+                return
+            }
+
+
+            if isValidWCVersion == false {
+                // Display a warning to the user about the site version
+                let fancyAlert = FancyAlertViewController.makewWooUpgradeAlertControllerForSitePicker(siteName: siteName)
+                fancyAlert.modalPresentationStyle = .custom
+                fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
+                self?.present(fancyAlert, animated: true)
+            }
+        }
+    }
+
+    /// Little helper func that helps manage the actionButton and Table state while checking on a
+    /// site's WC requirements.
+    ///
+    func updateActionButtonAndTableState(animating: Bool, enabled: Bool) {
+        actionButton.isEnabled = enabled
+        actionButton.showActivityIndicator(animating)
+
+        // Wait till the requirement check is complete before allowing the user to select another store
+        tableView.allowsSelection = !animating
+    }
+
+    /// Displays the Error Notice for the version check.
+    ///
+    func displayVersionCheckErrorNotice(siteID: Int, siteName: String) {
+        let title = NSLocalizedString("Error", comment: "Site Picker error notice title")
+        let message = String.localizedStringWithFormat(NSLocalizedString("Cannot connect to %@", comment: "Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name}"), siteName)
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.displaySiteWCRequirementWarningIfNeeded(siteID: siteID, siteName: siteName)
+        }
+
+        noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -300,6 +356,8 @@ extension StorePickerViewController: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
             return
         }
+
+        displaySiteWCRequirementWarningIfNeeded(siteID: site.siteID, siteName: site.name)
 
         reloadDefaultStoreAndSelectedStoreRows {
             StoresManager.shared.updateDefaultStore(storeID: site.siteID)

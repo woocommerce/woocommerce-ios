@@ -186,6 +186,8 @@
 		B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3CA20E149CC00B53AED /* AuthenticatedState.swift */; };
 		B5E96B3821137AA100DF68D0 /* OrderStatus+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E96B3721137AA100DF68D0 /* OrderStatus+Woo.swift */; };
 		B5F04D952194F2A300501EE1 /* NoteDetailsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F04D942194F2A300501EE1 /* NoteDetailsRow.swift */; };
+		B5F571A421BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F571A321BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift */; };
+		B5F571A621BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F571A521BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib */; };
 		B5F8B7E02194759100DAB7E2 /* NotificationDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F8B7DF2194759100DAB7E2 /* NotificationDetailsViewController.swift */; };
 		B5F8B7E5219478FA00DAB7E2 /* NotificationDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F8B7E4219478FA00DAB7E2 /* NotificationDetailsViewController.xib */; };
 		B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */; };
@@ -481,6 +483,8 @@
 		B5DBF3CA20E149CC00B53AED /* AuthenticatedState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedState.swift; sourceTree = "<group>"; };
 		B5E96B3721137AA100DF68D0 /* OrderStatus+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+Woo.swift"; sourceTree = "<group>"; };
 		B5F04D942194F2A300501EE1 /* NoteDetailsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailsRow.swift; sourceTree = "<group>"; };
+		B5F571A321BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailsHeaderPlainTableViewCell.swift; sourceTree = "<group>"; };
+		B5F571A521BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoteDetailsHeaderPlainTableViewCell.xib; sourceTree = "<group>"; };
 		B5F8B7DF2194759100DAB7E2 /* NotificationDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDetailsViewController.swift; sourceTree = "<group>"; };
 		B5F8B7E4219478FA00DAB7E2 /* NotificationDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationDetailsViewController.xib; sourceTree = "<group>"; };
 		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -901,6 +905,8 @@
 				B59D1EE021907304009D1978 /* NoteTableViewCell.xib */,
 				B560D6852195BCA90027BB7E /* NoteDetailsHeaderTableViewCell.swift */,
 				B560D6872195BCC70027BB7E /* NoteDetailsHeaderTableViewCell.xib */,
+				B5F571A321BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift */,
+				B5F571A521BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib */,
 				B560D68B2195BD1D0027BB7E /* NoteDetailsCommentTableViewCell.swift */,
 				B560D6892195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib */,
 			);
@@ -1358,6 +1364,7 @@
 				B57C744C20F564B400EEFC87 /* EmptyStoresTableViewCell.xib in Resources */,
 				B59C09DC2188D70200AB41D6 /* Notifications.storyboard in Resources */,
 				CE855367209BA6A700938BDC /* ShowHideSectionFooter.xib in Resources */,
+				B5F571A621BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib in Resources */,
 				CE1EC8F020B8A408009762BF /* OrderNoteTableViewCell.xib in Resources */,
 				B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */,
 				B5BE75DD213F1D3D00909A14 /* OverlayMessageView.xib in Resources */,
@@ -1574,6 +1581,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5F571A421BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift in Sources */,
 				CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */,
 				CE21B3E020FFC59700A259D5 /* ProductDetailsTableViewCell.swift in Sources */,
 				B5DB01B52114AB2D00A4F797 /* FabricManager.swift in Sources */,

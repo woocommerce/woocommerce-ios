@@ -1,6 +1,8 @@
 import Foundation
 import UIKit
 import Yosemite
+import Gridicons
+import SafariServices
 
 
 // MARK: - NotificationDetailsViewController
@@ -94,6 +96,7 @@ private extension NotificationDetailsViewController {
         tableView.tableFooterView = UIView()
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
+        tableView.separatorInset = .zero
     }
 
     /// Setup: EntityListener
@@ -112,7 +115,11 @@ private extension NotificationDetailsViewController {
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
-        let cells = [NoteDetailsHeaderTableViewCell.self, NoteDetailsCommentTableViewCell.self]
+        let cells = [
+            NoteDetailsHeaderTableViewCell.self,
+            NoteDetailsHeaderPlainTableViewCell.self,
+            NoteDetailsCommentTableViewCell.self
+        ]
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
@@ -237,6 +244,15 @@ extension NotificationDetailsViewController: UITableViewDataSource {
 //
 extension NotificationDetailsViewController: UITableViewDelegate {
 
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let row = detailsForRow(at: indexPath)
+        switch row {
+        case .headerPlain(_, let url):
+            displaySafariViewController(at: url)
+        default:
+            break
+        }
+    }
 }
 
 
@@ -250,6 +266,8 @@ private extension NotificationDetailsViewController {
         switch row {
         case .header:
             setupHeaderCell(cell, at: row)
+        case .headerPlain:
+            setupHeaderPlainCell(cell, at: row)
         case .comment:
             setupCommentCell(cell, at: row)
         }
@@ -266,6 +284,20 @@ private extension NotificationDetailsViewController {
 
         let formatter = StringFormatter()
         headerCell.textLabel?.attributedText = formatter.format(block: gravatarBlock, with: .header)
+    }
+
+
+    /// Setup: Header Cell (Plain)
+    ///
+    func setupHeaderPlainCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
+        guard let headerCell = cell as? NoteDetailsHeaderPlainTableViewCell,
+            case let .headerPlain(title, _) = row else {
+                return
+        }
+
+        headerCell.leftImage = Gridicon.iconOfType(.product)
+        headerCell.rightImage = Gridicon.iconOfType(.external)
+        headerCell.plainText = title
     }
 
 
@@ -406,5 +438,19 @@ private extension NotificationDetailsViewController {
             }
         }
         return action
+    }
+}
+
+
+// MARK: - Private Methods
+//
+private extension NotificationDetailsViewController {
+
+    /// Presents a WebView at the specified URL
+    ///
+    func displaySafariViewController(at url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        safariViewController.modalPresentationStyle = .pageSheet
+        present(safariViewController, animated: true, completion: nil)
     }
 }

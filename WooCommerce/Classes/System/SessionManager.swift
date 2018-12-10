@@ -11,6 +11,10 @@ extension NSNotification.Name {
     /// Posted whenever the Default Account is updated.
     ///
     public static let defaultAccountWasUpdated = Foundation.Notification.Name(rawValue: "DefaultAccountWasUpdated")
+
+    /// Posted whenever the app is about to terminate.
+    ///
+    public static let applicationTerminating = Foundation.Notification.Name(rawValue: "ApplicationTerminating")
 }
 
 

@@ -294,7 +294,7 @@ private extension PushNotificationsManager {
     /// Registers the specified DeviceToken for Support Push Notifications.
     ///
     func registerSupportDevice(with deviceToken: String) {
-        configuration.supportManager.registerDeviceToken(deviceToken)
+        configuration.supportManager.deviceTokenWasReceived(deviceToken: deviceToken)
     }
 
     /// Unregisters the specified DeviceToken for Support Push Notifications.

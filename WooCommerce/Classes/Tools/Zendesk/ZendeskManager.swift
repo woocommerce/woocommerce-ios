@@ -29,6 +29,7 @@ class ZendeskManager: NSObject {
     //
     private var sourceTag: WordPressSupportSourceTag?
 
+    private var deviceToken: String?
     private var userName: String?
     private var userEmail: String?
     private var deviceID: String?
@@ -36,6 +37,16 @@ class ZendeskManager: NSObject {
     private var alertNameField: UITextField?
 
     private var presentInController: UIViewController?
+
+    /// Returns a ZendeskPushProvider Instance (If Possible)
+    ///
+    private var zendeskPushProvider: ZDKPushProvider? {
+        guard let zendesk = Zendesk.instance else {
+            return nil
+        }
+
+        return ZDKPushProvider(zendesk: zendesk)
+    }
 
 
 
@@ -59,7 +70,7 @@ class ZendeskManager: NSObject {
     ///
     func initialize() {
         guard zendeskEnabled == false else {
-            DDLogInfo("Zendesk was already Initialized!")
+            DDLogError("☎️ Zendesk was already Initialized!")
             return
         }
 
@@ -180,35 +191,42 @@ class ZendeskManager: NSObject {
 //
 extension ZendeskManager {
 
-    /// Registers the specified DeviceToken in the Zendesk Backend.
+    /// Stores the DeviceToken. Zendesk doesn't allow us to register for APNS until an Identity has been created.
     ///
-    func registerDeviceToken(_ deviceToken: String) {
-        guard let zendesk = Zendesk.instance else {
-            DDLogError("[Zendesk] Couldn't register Device Token. Invalid Zendesk Instance")
+    func deviceTokenWasReceived(deviceToken: String) {
+        self.deviceToken = deviceToken
+    }
+
+    /// Registers the last known DeviceToken in the Zendesk Backend (if any).
+    ///
+    func registerDeviceTokenIfNeeded() {
+        guard let deviceToken = deviceToken else {
+            DDLogError("☎️ [Zendesk] Couldn't register Device Token. Invalid Zendesk Instance")
             return
         }
 
-        DDLogInfo("[Zendesk] Registering Device Token...")
-        ZDKPushProvider(zendesk: zendesk).register(deviceIdentifier: deviceToken, locale: Locale.preferredLanguage) { (_, error) in
+        registerDeviceToken(deviceToken)
+    }
+
+    /// Registers the specified DeviceToken in the Zendesk Backend (if possible).
+    ///
+    func registerDeviceToken(_ deviceToken: String) {
+        DDLogInfo("☎️ [Zendesk] Registering Device Token...")
+        zendeskPushProvider?.register(deviceIdentifier: deviceToken, locale: Locale.preferredLanguage) { (_, error) in
             if let error = error {
-                DDLogError("[Zendesk] Couldn't register Device Token [\(deviceToken)]. Error: \(error)")
+                DDLogError("☎️ [Zendesk] Couldn't register Device Token [\(deviceToken)]. Error: \(error)")
                 return
             }
 
-            DDLogInfo("[Zendesk] Successfully registered Device Token: [\(deviceToken)]")
+            DDLogInfo("☎️ [Zendesk] Successfully registered Device Token: [\(deviceToken)]")
         }
     }
 
     /// Unregisters from the Zendesk Push Notifications Service.
     ///
     func unregisterForRemoteNotifications() {
-        guard let zendesk = Zendesk.instance else {
-            DDLogError("[Zendesk] Couldn't unregister Device Token. Invalid Zendesk Instance")
-            return
-        }
-
-        DDLogInfo("[Zendesk] Unregistering Device...")
-        ZDKPushProvider(zendesk: zendesk).unregisterForPush()
+        DDLogInfo("☎️ [Zendesk] Unregistering Device...")
+        zendeskPushProvider?.unregisterForPush()
     }
 }
 
@@ -293,21 +311,24 @@ private extension ZendeskManager {
             let identity = Identity.createAnonymous()
             Zendesk.instance?.setIdentity(identity)
             completion(false)
+
             return
         }
 
         let zendeskIdentity = Identity.createAnonymous(name: userName, email: userEmail)
         Zendesk.instance?.setIdentity(zendeskIdentity)
+        registerDeviceTokenIfNeeded()
+
         DDLogDebug("Zendesk identity created with email '\(userEmail)' and name '\(userName ?? "")'.")
         completion(true)
     }
 
 
     // MARK: - Request Controller Configuration
-    //
 
     /// Important: Any time a new request controller is created, these configurations should be attached.
     /// Without it, the tickets won't appear in the correct view(s) in the web portal and they won't contain all the metadata needed to solve a ticket.
+    ///
     func createRequest() -> RequestUiConfiguration {
 
         let requestConfig = RequestUiConfiguration()

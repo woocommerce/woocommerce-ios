@@ -5,9 +5,9 @@ import Foundation
 ///
 protocol SupportManagerAdapter {
 
-    /// Executed whenever the app should register a given DeviceToken for Push Notifications.
+    /// Executed whenever the app receives a Push Notifications Token.
     ///
-    func registerDeviceToken(_ deviceToken: String)
+    func deviceTokenWasReceived(deviceToken: String)
 
     /// Executed whenever the app should unregister for Remote Notifications.
     ///

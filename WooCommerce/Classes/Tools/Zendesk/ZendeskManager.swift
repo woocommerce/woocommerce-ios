@@ -30,7 +30,6 @@ class ZendeskManager: NSObject {
     private var deviceToken: String?
     private var userName: String?
     private var userEmail: String?
-    private var deviceID: String?
     private var haveUserIdentity = false
     private var alertNameField: UITextField?
 
@@ -75,11 +74,10 @@ class ZendeskManager: NSObject {
 
         Zendesk.initialize(appId: ApiCredentials.zendeskAppId, clientId: ApiCredentials.zendeskClientId, zendeskUrl: ApiCredentials.zendeskUrl)
         Support.initialize(withZendesk: Zendesk.instance)
+        Theme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
 
         haveUserIdentity = getUserProfile()
         zendeskEnabled = true
-
-        Theme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
     }
 
 

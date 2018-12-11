@@ -51,6 +51,7 @@ class ZendeskManager: NSObject {
         // NO-OP
     }
 
+
     // MARK: - Public Methods
 
 
@@ -175,16 +176,46 @@ class ZendeskManager: NSObject {
 }
 
 
+// MARK: - Push Notifications
 //
+extension ZendeskManager {
 
+    /// Registers the specified DeviceToken in the Zendesk Backend.
+    ///
+    func registerDeviceToken(_ deviceToken: String) {
+        guard let zendesk = Zendesk.instance else {
+            DDLogError("[Zendesk] Couldn't register Device Token. Invalid Zendesk Instance")
+            return
         }
 
+        DDLogInfo("[Zendesk] Registering Device Token...")
+        ZDKPushProvider(zendesk: zendesk).register(deviceIdentifier: deviceToken, locale: Locale.preferredLanguage) { (_, error) in
+            if let error = error {
+                DDLogError("[Zendesk] Couldn't register Device Token [\(deviceToken)]. Error: \(error)")
+                return
+            }
+
+            DDLogInfo("[Zendesk] Successfully registered Device Token: [\(deviceToken)]")
+        }
     }
 
-    func toggleZendesk(enabled: Bool) {
-        zendeskEnabled = enabled
-        DDLogInfo("Zendesk Enabled: \(enabled)")
+    /// Unregisters from the Zendesk Push Notifications Service.
+    ///
+    func unregisterForRemoteNotifications() {
+        guard let zendesk = Zendesk.instance else {
+            DDLogError("[Zendesk] Couldn't unregister Device Token. Invalid Zendesk Instance")
+            return
+        }
+
+        DDLogInfo("[Zendesk] Unregistering Device...")
+        ZDKPushProvider(zendesk: zendesk).unregisterForPush()
     }
+}
+
+
+// MARK: - Private Extension
+//
+private extension ZendeskManager {
 
     func createIdentity(completion: @escaping (Bool) -> Void) {
 
@@ -236,6 +267,7 @@ class ZendeskManager: NSObject {
                     completion(false)
                     return
                 }
+
                 DDLogDebug("Using information from prompt for Zendesk identity.")
                 self.haveUserIdentity = true
                 completion(true)

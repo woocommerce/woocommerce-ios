@@ -72,7 +72,6 @@ class ZendeskManager: NSObject {
         Theme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
 
         observeZendeskNotifications()
-        observeNotifications()
     }
 
 
@@ -617,13 +616,6 @@ private extension ZendeskManager {
                                                name: NSNotification.Name(rawValue: ZD_HC_SearchSuccess), object: nil)
     }
 
-    /// Listens to WooCommerce Notifications
-    ///
-    func observeNotifications() {
-        // Default Site Plan Changes
-        NotificationCenter.default.addObserver(self, selector: #selector(updateSitePlan), name: .StoresManagerDidUpdateDefaultSite, object: nil)
-    }
-
 
     /// Handles (all of the) Zendesk Notifications
     ///
@@ -652,22 +644,6 @@ private extension ZendeskManager {
         default:
             break
         }
-    }
-
-    /// Notification received or public method called, to signal that the default site may contain plan information.
-    ///
-    @objc func updateSitePlan() {
-        guard let siteID = StoresManager.shared.sessionManager.defaultSite?.siteID else {
-            return
-        }
-
-        let action = AccountAction.synchronizeSitePlan(siteID: siteID) { (error) in
-            if let error = error {
-                DDLogError("⛔️ AccountAction: (Default Site) — Error synchronizing site plan: \(error)")
-            }
-        }
-
-        StoresManager.shared.dispatch(action)
     }
 }
 

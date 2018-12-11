@@ -126,7 +126,7 @@ extension PushNotificationsManager {
     func registerDeviceToken(with tokenData: Data, defaultStoreID: Int) {
         let newToken = tokenData.hexString
 
-        if deviceToken != newToken {
+        if let _ = deviceToken, deviceToken != newToken {
             DDLogInfo("📱 Device Token Changed! OLD: [\(String(describing: deviceToken))] NEW: [\(newToken)]")
         } else {
             DDLogInfo("📱 Device Token Received: [\(newToken)]")

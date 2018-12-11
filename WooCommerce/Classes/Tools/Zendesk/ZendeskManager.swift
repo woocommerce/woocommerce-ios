@@ -12,10 +12,18 @@ import Yosemite
 ///
 class ZendeskManager: NSObject {
 
-    // MARK: - Public Properties
-    //
+    /// Shared Instance
+    ///
     static let shared = ZendeskManager()
-    private (set) var zendeskEnabled = false
+
+    /// Indicates if Zendesk is Enabled (or not)
+    ///
+    private (set) var zendeskEnabled = false {
+        didSet {
+            DDLogInfo("Zendesk Enabled: \(zendeskEnabled)")
+        }
+    }
+
     private var unreadNotificationsCount = 0
 
     var showSupportNotificationIndicator: Bool {

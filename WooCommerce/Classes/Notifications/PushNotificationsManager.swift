@@ -93,18 +93,17 @@ extension PushNotificationsManager {
     /// Unregisters the Application from WordPress.com Push Notifications Service.
     ///
     func unregisterForRemoteNotifications() {
-        guard let knownDeviceId = deviceID else {
-            return
-        }
+        DDLogInfo("📱 Unregistering For Remote Notifications...")
 
-        DDLogInfo("📱 Unregistering from WordPress.com Notifications Service...")
-        unregisterDotcomDevice(with: knownDeviceId) { error in
+        unregisterSupportDevice()
+
+        unregisterDotcomDeviceIfPossible() { error in
             if let error = error {
-                DDLogError("⛔️ Unable to unregister push for Device ID \(knownDeviceId): \(error)")
+                DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
                 return
             }
 
-            DDLogInfo("📱 Successfully unregistered Device ID \(knownDeviceId) for Push Notifications!")
+            DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
             self.deviceID = nil
             self.deviceToken = nil
         }
@@ -134,6 +133,9 @@ extension PushNotificationsManager {
         }
 
         deviceToken = newToken
+
+        // Register in Support's Infrasturcture
+        registerSupportDevice(with: newToken)
 
         // Register in the Dotcom's Infrastructure
         registerDotcomDevice(with: newToken, defaultStoreID: defaultStoreID) { (device, error) in
@@ -266,12 +268,39 @@ private extension PushNotificationsManager {
         configuration.storesManager.dispatch(action)
     }
 
+    /// Unregisters the known DeviceID (if any) from the Push Notifications Backend.
+    ///
+    func unregisterDotcomDeviceIfPossible(onCompletion: @escaping (Error?) -> Void) {
+        guard let knownDeviceId = deviceID else {
+            onCompletion(nil)
+            return
+        }
+
+        unregisterDotcomDevice(with: knownDeviceId, onCompletion: onCompletion)
+    }
 
     /// Unregisters a given DeviceID from the Push Notifications backend.
     ///
     func unregisterDotcomDevice(with deviceID: String, onCompletion: @escaping (Error?) -> Void) {
         let action = NotificationAction.unregisterDevice(deviceId: deviceID, onCompletion: onCompletion)
         configuration.storesManager.dispatch(action)
+    }
+}
+
+// MARK: - Support Relay
+//
+private extension PushNotificationsManager {
+
+    /// Registers the specified DeviceToken for Support Push Notifications.
+    ///
+    func registerSupportDevice(with deviceToken: String) {
+        configuration.supportManager.registerDeviceToken(deviceToken)
+    }
+
+    /// Unregisters the specified DeviceToken for Support Push Notifications.
+    ///
+    func unregisterSupportDevice() {
+        configuration.supportManager.unregisterForRemoteNotifications()
     }
 }
 

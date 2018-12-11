@@ -326,6 +326,7 @@ private extension ZendeskManager {
             ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: Locale.preferredLanguage),
             ZDKCustomField(fieldId: TicketFieldIDs.subcategory as NSNumber, andValue: Constants.subcategory)
         ].compactMap { $0 }
+
         requestConfig.fields = ticketFields
 
         // Set tags

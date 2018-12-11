@@ -25,6 +25,12 @@ struct PushNotificationsConfiguration {
         return storesManagerClosure()
     }
 
+    /// Reference to the SupportManager.
+    ///
+    var supportManager: SupportManagerAdapter {
+        return supportManagerClosure()
+    }
+
     /// Wraps UNUserNotificationCenter API. Why not use the SDK directly?: Unit Tests!
     ///
     var userNotificationsCenter: UserNotificationsCenterAdapter {
@@ -43,6 +49,10 @@ struct PushNotificationsConfiguration {
     ///
     private let storesManagerClosure: () -> StoresManager
 
+    /// SupportManagerAdapter Closure: Returns a reference to the SupportManagerAdapter
+    ///
+    private let supportManagerClosure: () -> SupportManagerAdapter
+
     /// NotificationCenter Closure: Returns a reference to UserNotificationsCenterAdapter
     ///
     private let userNotificationsCenterClosure: () -> UserNotificationsCenterAdapter
@@ -55,11 +65,13 @@ struct PushNotificationsConfiguration {
     init(application: @autoclosure @escaping () -> ApplicationAdapter,
          defaults: @autoclosure @escaping () -> UserDefaults,
          storesManager: @autoclosure @escaping () -> StoresManager,
+         supportManager: @autoclosure @escaping () -> SupportManagerAdapter,
          userNotificationsCenter: @autoclosure @escaping () -> UserNotificationsCenterAdapter) {
 
         self.applicationClosure = application
         self.defaultsClosure = defaults
         self.storesManagerClosure = storesManager
+        self.supportManagerClosure = supportManager
         self.userNotificationsCenterClosure = userNotificationsCenter
     }
 }
@@ -75,6 +87,7 @@ extension PushNotificationsConfiguration {
         return PushNotificationsConfiguration(application: UIApplication.shared,
                                               defaults: .standard,
                                               storesManager: .shared,
+                                              supportManager: ZendeskManager.shared,
                                               userNotificationsCenter: UNUserNotificationCenter.current())
     }
 }

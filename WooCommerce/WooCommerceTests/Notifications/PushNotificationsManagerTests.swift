@@ -14,6 +14,7 @@ class PushNotificationsManagerTests: XCTestCase {
         let configuration = PushNotificationsConfiguration(application: self.application,
                                                            defaults: self.defaults,
                                                            storesManager: self.storesManager,
+                                                           supportManager: self.supportManager,
                                                            userNotificationsCenter: self.userNotificationCenter)
 
         return PushNotificationsManager(configuration: configuration)
@@ -30,6 +31,10 @@ class PushNotificationsManagerTests: XCTestCase {
     /// Mockup: Stores Manager
     ///
     private let storesManager = MockupStoresManager(sessionManager: .testingInstance)
+
+    /// Mockup: Support Manager
+    ///
+    private let supportManager = MockupSupportManager()
 
     /// Mockup: UserNotificationCenter
     ///
@@ -150,6 +155,15 @@ class PushNotificationsManagerTests: XCTestCase {
     }
 
 
+    /// Verifies that `unregisterForRemoteNotifications` relays the Unregister call to the Support Manager.
+    ///
+    func testUnregisterForRemoteNotificationsRelaysUnregisterCallToSupportManager() {
+        XCTAssertFalse(supportManager.unregisterWasCalled)
+        manager.unregisterForRemoteNotifications()
+        XCTAssertTrue(supportManager.unregisterWasCalled)
+    }
+
+
     /// Verifies that `registerDevice` effectively dispatches a `registerDevice` Action.
     ///
     func testRegisterForRemoteNotificationsDispatchesRegisterDeviceAction() {
@@ -180,6 +194,20 @@ class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(defaults.containsObject(forKey: .deviceToken))
         manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
         XCTAssertTrue(defaults.containsObject(forKey: .deviceToken))
+    }
+
+
+    /// Verifies that `registerDevice` effectively relays the register call to the Support Manager.
+    ///
+    func testRegisterForRemoteNotificationsRelaysRegisterCallToSupportManager() {
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            XCTFail()
+            return
+        }
+
+        XCTAssert(supportManager.registeredDeviceTokens.isEmpty)
+        manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
+        XCTAssertEqual(supportManager.registeredDeviceTokens.first, tokenAsData.hexString)
     }
 
 

@@ -225,7 +225,7 @@ extension ZendeskManager {
     /// Unregisters from the Zendesk Push Notifications Service.
     ///
     func unregisterForRemoteNotifications() {
-        DDLogInfo("☎️ [Zendesk] Unregistering Device...")
+        DDLogInfo("☎️ [Zendesk] Unregistering for Notifications...")
         zendeskPushProvider?.unregisterForPush()
     }
 }
@@ -268,6 +268,10 @@ private extension ZendeskManager {
         }
 
         getUserInformationAndShowPrompt(withName: true) { success in
+            if success {
+                self.registerDeviceTokenIfNeeded()
+            }
+
             completion(success)
         }
     }

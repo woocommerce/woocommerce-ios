@@ -57,7 +57,8 @@ class ZendeskManager: NSObject {
     /// Designated Initialier
     ///
     private override init() {
-        // NO-OP
+        super.init()
+        observeZendeskNotifications()
     }
 
 
@@ -79,8 +80,6 @@ class ZendeskManager: NSObject {
         zendeskEnabled = true
 
         Theme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
-
-        observeZendeskNotifications()
     }
 
 

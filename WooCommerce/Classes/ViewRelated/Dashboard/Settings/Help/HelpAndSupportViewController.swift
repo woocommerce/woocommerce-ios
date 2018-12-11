@@ -194,7 +194,7 @@ private extension HelpAndSupportViewController {
     /// Browse our FAQ action
     ///
     func browseFaqWasPressed() {
-        ZendeskManager.shared.showHelpCenterIfPossible(from: self)
+        ZendeskManager.shared.showHelpCenter(from: self)
     }
 
     /// Contact Support action

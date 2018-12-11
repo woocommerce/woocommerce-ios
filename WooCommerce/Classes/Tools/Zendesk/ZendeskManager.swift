@@ -37,9 +37,6 @@ class ZendeskManager: NSObject {
     private var haveUserIdentity = false
     private var alertNameField: UITextField?
 
-    private var zdAppID: String?
-    private var zdUrl: String?
-    private var zdClientId: String?
     private var presentInController: UIViewController?
 
 
@@ -51,23 +48,21 @@ class ZendeskManager: NSObject {
     }
 
     // MARK: - Public Methods
-    //
+
+
+    /// Sets up the Zendesk Manager instance
+    ///
     func initialize() {
-        guard getZendeskCredentials() == true else {
+        guard zendeskEnabled == false else {
+            DDLogInfo("Zendesk was already Initialized!")
             return
         }
 
-        guard let appId = zdAppID, let url = zdUrl, let clientId = zdClientId else {
-            DDLogInfo("Unable to set up Zendesk.")
-            toggleZendesk(enabled: false)
-            return
-        }
-
-        Zendesk.initialize(appId: appId, clientId: clientId, zendeskUrl: url)
+        Zendesk.initialize(appId: ApiCredentials.zendeskAppId, clientId: ApiCredentials.zendeskClientId, zendeskUrl: ApiCredentials.zendeskUrl)
         Support.initialize(withZendesk: Zendesk.instance)
 
         haveUserIdentity = getUserProfile()
-        toggleZendesk(enabled: true)
+        zendeskEnabled = true
 
         Theme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
 
@@ -195,25 +190,10 @@ class ZendeskManager: NSObject {
 }
 
 
-// MARK: - Private Extension
 //
-private extension ZendeskManager {
 
-    func getZendeskCredentials() -> Bool {
-        let appId = ApiCredentials.zendeskAppId
-        let url = ApiCredentials.zendeskUrl
-        let clientId = ApiCredentials.zendeskClientId
-
-        guard !appId.isEmpty, !url.isEmpty, !clientId.isEmpty else {
-            DDLogInfo("Unable to get Zendesk credentials.")
-            toggleZendesk(enabled: false)
-            return false
         }
 
-        zdAppID = appId
-        zdUrl = url
-        zdClientId = clientId
-        return true
     }
 
     func toggleZendesk(enabled: Bool) {

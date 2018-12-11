@@ -157,14 +157,14 @@ private extension StoresManager {
 
     /// Synchronizes the WordPress.com Account, associated with the current credentials.
     ///
-    func synchronizeAccount(onCompletion: ((Error?) -> Void)?) {
+    func synchronizeAccount(onCompletion: @escaping (Error?) -> Void) {
         let action = AccountAction.synchronizeAccount { [weak self] (account, error) in
             if let `self` = self, let account = account, self.isAuthenticated {
                 self.sessionManager.defaultAccount = account
                 WooAnalytics.shared.refreshUserData()
             }
 
-            onCompletion?(error)
+            onCompletion(error)
         }
 
         dispatch(action)
@@ -172,11 +172,8 @@ private extension StoresManager {
 
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.
     ///
-    func synchronizeSites(onCompletion: ((Error?) -> Void)?) {
-        let action = AccountAction.synchronizeSites { error in
-            onCompletion?(error)
-        }
-
+    func synchronizeSites(onCompletion: @escaping (Error?) -> Void) {
+        let action = AccountAction.synchronizeSites(onCompletion: onCompletion)
         dispatch(action)
     }
 

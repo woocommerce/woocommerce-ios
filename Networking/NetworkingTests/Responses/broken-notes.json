@@ -5,6 +5,7 @@
              "date_created_gmt": null,
              "note": "",
              "customer_note": false,
+             "author": "",
              "_links": null
              }]
 }

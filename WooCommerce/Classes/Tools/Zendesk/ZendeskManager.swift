@@ -240,6 +240,7 @@ private extension ZendeskManager {
         // If we already have an identity, do nothing.
         guard haveUserIdentity == false else {
             DDLogDebug("Using existing Zendesk identity: \(userEmail ?? ""), \(userName ?? "")")
+            registerDeviceTokenIfNeeded()
             completion(true)
             return
         }
@@ -260,6 +261,7 @@ private extension ZendeskManager {
                 }
                 DDLogDebug("Using User Defaults for Zendesk identity.")
                 self.haveUserIdentity = true
+                self.registerDeviceTokenIfNeeded()
                 completion(true)
                 return
             }
@@ -317,7 +319,6 @@ private extension ZendeskManager {
 
         let zendeskIdentity = Identity.createAnonymous(name: userName, email: userEmail)
         Zendesk.instance?.setIdentity(zendeskIdentity)
-        registerDeviceTokenIfNeeded()
 
         DDLogDebug("Zendesk identity created with email '\(userEmail)' and name '\(userName ?? "")'.")
         completion(true)

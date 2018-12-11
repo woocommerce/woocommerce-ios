@@ -56,6 +56,7 @@
 		B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112D2049E27A007D25DC /* DashboardViewController.swift */; };
 		B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112E2049E27A007D25DC /* OrdersViewController.swift */; };
 		B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112F2049E27A007D25DC /* SettingsViewController.swift */; };
+		B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED021C041DF000076A9 /* Locale+Woo.swift */; };
 		B50BB4162141828F00AF0F3C /* FooterSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50BB4152141828F00AF0F3C /* FooterSpinnerView.swift */; };
 		B511ED27218A660E005787DC /* StringDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B511ED26218A660E005787DC /* StringDescriptor.swift */; };
 		B517EA18218B232700730EC4 /* StringFormatter+Notes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B517EA17218B232700730EC4 /* StringFormatter+Notes.swift */; };
@@ -333,6 +334,7 @@
 		B509112D2049E27A007D25DC /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		B509112E2049E27A007D25DC /* OrdersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrdersViewController.swift; sourceTree = "<group>"; };
 		B509112F2049E27A007D25DC /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		B509FED021C041DF000076A9 /* Locale+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locale+Woo.swift"; sourceTree = "<group>"; };
 		B50BB4152141828F00AF0F3C /* FooterSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterSpinnerView.swift; sourceTree = "<group>"; };
 		B511ED26218A660E005787DC /* StringDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringDescriptor.swift; sourceTree = "<group>"; };
 		B517EA17218B232700730EC4 /* StringFormatter+Notes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringFormatter+Notes.swift"; sourceTree = "<group>"; };
@@ -1076,6 +1078,7 @@
 				B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */,
 				748C7781211E294000814F2C /* Double+Woo.swift */,
 				740987B221B87760000E4C80 /* FancyAnimatedButton+Woo.swift */,
+				B509FED021C041DF000076A9 /* Locale+Woo.swift */,
 				B59D1EE221907C7B009D1978 /* NSAttributedString+Helpers.swift */,
 				B5A56BF4219F5AB20065A902 /* NSNotificationName+Woo.swift */,
 				B57C744420F55BA600EEFC87 /* NSObject+Helpers.swift */,
@@ -1611,6 +1614,7 @@
 				B5F571A421BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift in Sources */,
 				CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */,
 				CE21B3E020FFC59700A259D5 /* ProductDetailsTableViewCell.swift in Sources */,
+				B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */,
 				B5DB01B52114AB2D00A4F797 /* FabricManager.swift in Sources */,
 				7459A6C621B0680300F83A78 /* RequirementsChecker.swift in Sources */,
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,

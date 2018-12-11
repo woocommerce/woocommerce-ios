@@ -283,19 +283,15 @@ class ZendeskManager: NSObject {
         // Set Zendesk ticket form to use
         requestConfig.ticketFormID = TicketFieldIDs.form as NSNumber
 
-        // App Settings
-        let appVersion = Bundle.main.shortVersionString() ?? Constants.unknownValue
-        let appLanguage = Locale.preferredLanguages.first ?? Constants.unknownValue
-
         // Set form field values
         let ticketFields = [
-            ZDKCustomField(fieldId: TicketFieldIDs.appVersion as NSNumber, andValue: appVersion),
+            ZDKCustomField(fieldId: TicketFieldIDs.appVersion as NSNumber, andValue: Bundle.main.version),
             ZDKCustomField(fieldId: TicketFieldIDs.deviceFreeSpace as NSNumber, andValue: getDeviceFreeSpace()),
             ZDKCustomField(fieldId: TicketFieldIDs.networkInformation as NSNumber, andValue: getNetworkInformation()),
             ZDKCustomField(fieldId: TicketFieldIDs.logs as NSNumber, andValue: getLogFile()),
             ZDKCustomField(fieldId: TicketFieldIDs.currentSite as NSNumber, andValue: getCurrentSiteDescription()),
             ZDKCustomField(fieldId: TicketFieldIDs.sourcePlatform as NSNumber, andValue: Constants.sourcePlatform),
-            ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: appLanguage),
+            ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: Locale.preferredLanguage),
             ZDKCustomField(fieldId: TicketFieldIDs.subcategory as NSNumber, andValue: Constants.subcategory)
         ].compactMap { $0 }
         requestConfig.fields = ticketFields

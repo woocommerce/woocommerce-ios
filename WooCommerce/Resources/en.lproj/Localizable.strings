@@ -159,12 +159,6 @@
 /* Error message informing the user that there was a problem unsubscribing to a site or feed. */
 "Could not unfollow the site at the address specified." = "Could not unfollow the site at the address specified.";
 
-/* Error message shown a URL points to a valid site but not a WordPress site. */
-"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
-
-/* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
-
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
 "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
@@ -227,6 +221,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Empty URL";
+
+/* Sign in instructions for logging in with a URL. */
+"Enter the address of your WooCommerce store you'd like to connect." = "Enter the address of your WooCommerce store you'd like to connect.";
 
 /* Instruction text on the login's site addresss screen. */
 "Enter the address of your WordPress site you'd like to connect." = "Enter the address of your WordPress site you'd like to connect.";
@@ -368,6 +365,9 @@
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "Log in with Jetpack";
+
+/* Sign in instructions on the 'log in using email' screen. */
+"Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Log in with your WordPress.com account email address to manage your WooCommerce stores.";
 
 /* Alert button title - confirms and logs out the user */
 "Log Out" = "Log Out";
@@ -985,6 +985,9 @@
 
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance.";
+
+/* Error message shown a URL points to a valid site but not a WordPress site. */
+"We're sure this is a great site - but it's not a WordPress site, so you can't connect to it with this app." = "We're sure this is a great site - but it's not a WordPress site, so you can't connect to it with this app.";
 
 /* Statistical unit - a single week */
 "Week" = "Week";

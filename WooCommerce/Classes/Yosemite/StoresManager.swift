@@ -91,6 +91,11 @@ class StoresManager {
             group.leave()
         }
 
+        group.enter()
+        synchronizeSitePlan { _ in
+            group.leave()
+        }
+
         group.notify(queue: .main) {
             onCompletion?()
         }
@@ -172,6 +177,17 @@ private extension StoresManager {
             onCompletion?(error)
         }
 
+        dispatch(action)
+    }
+
+    /// Synchronizes the WordPress.com Site Plan.
+    ///
+    func synchronizeSitePlan(onCompletion: @escaping (Error?) -> Void) {
+        guard let siteID = sessionManager.defaultSite?.siteID else {
+            return
+        }
+
+        let action = AccountAction.synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         dispatch(action)
     }
 

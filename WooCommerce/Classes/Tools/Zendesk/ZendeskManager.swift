@@ -42,13 +42,6 @@ class ZendeskManager: NSObject {
     private var zdClientId: String?
     private var presentInController: UIViewController?
 
-    private var appVersion: String {
-        return Bundle.main.shortVersionString() ?? Constants.unknownValue
-    }
-
-    private var appLanguage: String {
-        return Locale.preferredLanguages[0]
-    }
 
 
     /// Designated Initialier
@@ -326,16 +319,21 @@ private extension ZendeskManager {
         // Set Zendesk ticket form to use
         requestConfig.ticketFormID = TicketFieldIDs.form as NSNumber
 
+        // App Settings
+        let appVersion = Bundle.main.shortVersionString() ?? Constants.unknownValue
+        let appLanguage = Locale.preferredLanguages.first ?? Constants.unknownValue
+
         // Set form field values
-        var ticketFields = [ZDKCustomField]()
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.appVersion as NSNumber, andValue: appVersion))
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.deviceFreeSpace as NSNumber, andValue: getDeviceFreeSpace()))
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.networkInformation as NSNumber, andValue: getNetworkInformation()))
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.logs as NSNumber, andValue: getLogFile()))
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.currentSite as NSNumber, andValue: getCurrentSiteDescription()))
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.sourcePlatform as NSNumber, andValue: Constants.sourcePlatform))
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: appLanguage))
-        ticketFields.append(ZDKCustomField(fieldId: TicketFieldIDs.subcategory as NSNumber, andValue: Constants.subcategory))
+        let ticketFields = [
+            ZDKCustomField(fieldId: TicketFieldIDs.appVersion as NSNumber, andValue: appVersion),
+            ZDKCustomField(fieldId: TicketFieldIDs.deviceFreeSpace as NSNumber, andValue: getDeviceFreeSpace()),
+            ZDKCustomField(fieldId: TicketFieldIDs.networkInformation as NSNumber, andValue: getNetworkInformation()),
+            ZDKCustomField(fieldId: TicketFieldIDs.logs as NSNumber, andValue: getLogFile()),
+            ZDKCustomField(fieldId: TicketFieldIDs.currentSite as NSNumber, andValue: getCurrentSiteDescription()),
+            ZDKCustomField(fieldId: TicketFieldIDs.sourcePlatform as NSNumber, andValue: Constants.sourcePlatform),
+            ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: appLanguage),
+            ZDKCustomField(fieldId: TicketFieldIDs.subcategory as NSNumber, andValue: Constants.subcategory)
+        ].compactMap { $0 }
         requestConfig.fields = ticketFields
 
         // Set tags

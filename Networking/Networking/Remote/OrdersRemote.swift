@@ -94,7 +94,8 @@ public class OrdersRemote: Remote {
     public func addOrderNote(for siteID: Int, orderID: Int, isCustomerNote: Bool, with note: String, completion: @escaping (OrderNote?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.notesPath)"
         let parameters = [ParameterKeys.note: note,
-                          ParameterKeys.customerNote: String(isCustomerNote)]
+                          ParameterKeys.customerNote: String(isCustomerNote),
+                          ParameterKeys.addedByUser: String(true)] // This will always be true when creating notes in-app
         let mapper = OrderNoteMapper()
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
@@ -118,6 +119,7 @@ public extension OrdersRemote {
     }
 
     private enum ParameterKeys {
+        static let addedByUser: String      = "added_by_user"
         static let customerNote: String     = "customer_note"
         static let note: String             = "note"
         static let page: String             = "page"

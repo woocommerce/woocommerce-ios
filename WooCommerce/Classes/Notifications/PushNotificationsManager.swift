@@ -320,4 +320,5 @@ private enum AnalyticKey {
 
 private enum PushType {
     static let badgeReset = "badge-reset"
+    static let zendesk = "zendesk"
 }

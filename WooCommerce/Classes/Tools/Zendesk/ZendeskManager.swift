@@ -24,16 +24,6 @@ class ZendeskManager: NSObject {
         }
     }
 
-    private var unreadNotificationsCount = 0
-
-    var showSupportNotificationIndicator: Bool {
-        return unreadNotificationsCount > 0
-    }
-
-    struct PushNotificationIdentifiers {
-        static let key = "type"
-        static let type = "zendesk"
-    }
 
     // MARK: - Private Properties
     //

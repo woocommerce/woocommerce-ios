@@ -90,14 +90,10 @@ class ZendeskManager: NSObject {
     /// For now, link to the online FAQ
     ///
     func showHelpCenterIfPossible(from controller: UIViewController) {
-        guard let faqURL = WooConstants.faqURL else {
-            return
-        }
-
         presentInController = controller
         WooAnalytics.shared.track(.supportBrowseOurFaqTapped)
 
-        let safariViewController = SFSafariViewController(url: faqURL)
+        let safariViewController = SFSafariViewController(url: WooConstants.faqURL)
         safariViewController.modalPresentationStyle = .pageSheet
 
         controller.present(safariViewController, animated: true, completion: nil)

@@ -206,11 +206,7 @@ private extension PrivacySettingsViewController {
     /// Display Automattic's Cookie Policy web page
     ///
     func presentCookiePolicyWebView() {
-        guard let cookieURL = WooConstants.cookieURL else {
-            return
-        }
-
-        let safariViewController = SFSafariViewController(url: cookieURL)
+        let safariViewController = SFSafariViewController(url: WooConstants.cookieURL)
         safariViewController.modalPresentationStyle = .pageSheet
         present(safariViewController, animated: true, completion: nil)
     }
@@ -218,11 +214,7 @@ private extension PrivacySettingsViewController {
     /// Display Automattic's Privacy Policy web page
     ///
     func presentPrivacyPolicyWebView() {
-        guard let privacyURL = WooConstants.privacyURL else {
-            return
-        }
-
-        let safariViewController = SFSafariViewController(url: privacyURL)
+        let safariViewController = SFSafariViewController(url: WooConstants.privacyURL)
         safariViewController.modalPresentationStyle = .pageSheet
         present(safariViewController, animated: true, completion: nil)
     }

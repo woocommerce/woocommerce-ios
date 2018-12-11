@@ -181,6 +181,7 @@ private extension StoresManager {
     ///
     func synchronizeSitePlan(onCompletion: @escaping (Error?) -> Void) {
         guard let siteID = sessionManager.defaultSite?.siteID else {
+            onCompletion(StoresManagerError.missingDefaultSite)
             return
         }
 
@@ -245,4 +246,11 @@ protocol StoresManagerState {
     /// Executed whenever an Action is received.
     ///
     func onAction(_ action: Action)
+}
+
+
+// MARK: - StoresManagerError
+//
+enum StoresManagerError: Error {
+    case missingDefaultSite
 }

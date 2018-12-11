@@ -10,11 +10,7 @@ import Yosemite
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
 /// as well as displaying views for the Help Center, new tickets, and ticket list.
 ///
-
-/// This class is `@objc` because the `ZDKHelpCenterConversationsUIDelegate` inherits from `NSObject`.
-/// This has to stay until Zendesk removes ObjC code from their framework.
-///
-@objc class ZendeskManager: NSObject {
+class ZendeskManager: NSObject {
 
     // MARK: - Public Properties
     //
@@ -33,7 +29,6 @@ import Yosemite
 
     // MARK: - Private Properties
     //
-    private override init() {}
     private var sourceTag: WordPressSupportSourceTag?
 
     private var userName: String?
@@ -55,6 +50,13 @@ import Yosemite
         return Locale.preferredLanguages[0]
     }
 
+
+    /// Designated Initialier
+    ///
+    private override init() {
+        // NO-OP
+    }
+
     // MARK: - Public Methods
     //
     func initialize() {
@@ -62,12 +64,10 @@ import Yosemite
             return
         }
 
-        guard let appId = zdAppID,
-            let url = zdUrl,
-            let clientId = zdClientId else {
-                DDLogInfo("Unable to set up Zendesk.")
-                toggleZendesk(enabled: false)
-                return
+        guard let appId = zdAppID, let url = zdUrl, let clientId = zdClientId else {
+            DDLogInfo("Unable to set up Zendesk.")
+            toggleZendesk(enabled: false)
+            return
         }
 
         Zendesk.initialize(appId: appId, clientId: clientId, zendeskUrl: url)
@@ -80,23 +80,6 @@ import Yosemite
 
         observeZendeskNotifications()
         observeNotifications()
-    }
-
-    /// Notification received or public method called,
-    /// to signal that the default site may contain plan information.
-    /// Uses `@objc` because this method is used in a `#selector()` call.
-    @objc func updateSitePlan() {
-        guard let siteID = StoresManager.shared.sessionManager.defaultSite?.siteID else {
-            return
-        }
-
-        let action = AccountAction.synchronizeSitePlan(siteID: siteID) { (error) in
-            if let error = error {
-                DDLogError("⛔️ AccountAction: (Default Site) — Error synchronizing site plan: \(error)")
-            }
-        }
-
-        StoresManager.shared.dispatch(action)
     }
 
 
@@ -218,6 +201,7 @@ import Yosemite
         return tags
     }
 }
+
 
 // MARK: - Private Extension
 //
@@ -451,18 +435,13 @@ private extension ZendeskManager {
             return String()
         }
 
-        let url = site.url
-        return "\(url) (\(site.description))"
+        return "\(site.url) (\(site.description))"
     }
 
 
     func getNetworkInformation() -> String {
-
-        var networkInformation = [String]()
-
-        let reachibilityStatus = ZDKReachability.forInternetConnection().currentReachabilityStatus()
-
         let networkType: String = {
+            let reachibilityStatus = ZDKReachability.forInternetConnection().currentReachabilityStatus()
             switch reachibilityStatus {
             case .reachableViaWiFi:
                 return Constants.networkWiFi
@@ -477,9 +456,11 @@ private extension ZendeskManager {
         let carrierName = networkCarrier?.carrierName ?? Constants.unknownValue
         let carrierCountryCode = networkCarrier?.isoCountryCode ?? Constants.unknownValue
 
-        networkInformation.append("\(Constants.networkTypeLabel) \(networkType)")
-        networkInformation.append("\(Constants.networkCarrierLabel) \(carrierName)")
-        networkInformation.append("\(Constants.networkCountryCodeLabel) \(carrierCountryCode)")
+        let networkInformation = [
+            "\(Constants.networkTypeLabel) \(networkType)",
+            "\(Constants.networkCarrierLabel) \(carrierName)",
+            "\(Constants.networkCountryCodeLabel) \(carrierCountryCode)"
+        ]
 
         return networkInformation.joined(separator: "\n")
     }
@@ -489,22 +470,17 @@ private extension ZendeskManager {
     //
     func promptUserForInformation(withName: Bool, completion: @escaping (Bool) -> Void) {
 
-        let alertController = UIAlertController(title: nil,
-                                                message: nil,
-                                                preferredStyle: .alert)
-
         let alertMessage = withName ? LocalizedText.alertMessageWithName : LocalizedText.alertMessage
-        alertController.setValue(NSAttributedString(string: alertMessage, attributes: [.font: UIFont.caption1]),
-                                 forKey: "attributedMessage")
+        let alertController = UIAlertController(title: nil, message: alertMessage, preferredStyle: .alert)
 
         // Cancel Action
-        alertController.addCancelActionWithTitle(LocalizedText.alertCancel) { (_) in
+        alertController.addCancelActionWithTitle(LocalizedText.alertCancel) { _ in
             completion(false)
             return
         }
 
         // Submit Action
-        let submitAction = alertController.addDefaultActionWithTitle(LocalizedText.alertSubmit) { [weak alertController] (_) in
+        let submitAction = alertController.addDefaultActionWithTitle(LocalizedText.alertSubmit) { [weak alertController] _ in
             guard let email = alertController?.textFields?.first?.text else {
                 completion(false)
                 return
@@ -529,7 +505,7 @@ private extension ZendeskManager {
         alertController.preferredAction = submitAction
 
         // Email Text Field
-        alertController.addTextField(configurationHandler: { textField in
+        alertController.addTextField { textField in
             textField.clearButtonMode = .always
             textField.placeholder = LocalizedText.emailPlaceholder
             textField.text = self.userEmail
@@ -537,7 +513,7 @@ private extension ZendeskManager {
             textField.addTarget(self,
                                 action: #selector(self.emailTextFieldDidChange),
                                 for: UIControl.Event.editingChanged)
-        })
+        }
 
         // Name Text Field
         if withName {
@@ -600,9 +576,15 @@ private extension ZendeskManager {
 
         return autoDisplayName
     }
+}
 
-    // MARK: - Zendesk Notifications
-    //
+
+// MARK: - Notifications
+//
+private extension ZendeskManager {
+
+    /// Listens to Zendesk Notifications
+    ///
     func observeZendeskNotifications() {
         // Ticket Attachments
         NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
@@ -637,9 +619,17 @@ private extension ZendeskManager {
                                                name: NSNotification.Name(rawValue: ZD_HC_SearchSuccess), object: nil)
     }
 
-    /// Uses `@objc` because it's referenced in an ObjC `#selector` call
+    /// Listens to WooCommerce Notifications
     ///
-    @objc func zendeskNotification(_ notification: Foundation.Notification) {
+    func observeNotifications() {
+        // Default Site Plan Changes
+        NotificationCenter.default.addObserver(self, selector: #selector(updateSitePlan), name: .StoresManagerDidUpdateDefaultSite, object: nil)
+    }
+
+
+    /// Handles (all of the) Zendesk Notifications
+    ///
+    @objc func zendeskNotification(_ notification: Notification) {
         switch notification.name.rawValue {
         case ZDKAPI_RequestSubmissionSuccess:
             WooAnalytics.shared.track(.supportNewRequestCreated)
@@ -666,14 +656,27 @@ private extension ZendeskManager {
         }
     }
 
+    /// Notification received or public method called, to signal that the default site may contain plan information.
+    ///
+    @objc func updateSitePlan() {
+        guard let siteID = StoresManager.shared.sessionManager.defaultSite?.siteID else {
+            return
+        }
 
-    // MARK: - Observe Notifications
-    //
-    func observeNotifications() {
-        // Default Site Plan Changes
-        NotificationCenter.default.addObserver(self, selector: #selector(updateSitePlan), name: NSNotification.Name.StoresManagerDidUpdateDefaultSite, object: nil)
+        let action = AccountAction.synchronizeSitePlan(siteID: siteID) { (error) in
+            if let error = error {
+                DDLogError("⛔️ AccountAction: (Default Site) — Error synchronizing site plan: \(error)")
+            }
+        }
+
+        StoresManager.shared.dispatch(action)
     }
+}
 
+
+// MARK: - Nested Types
+//
+private extension ZendeskManager {
 
     // MARK: - Constants
     //
@@ -717,8 +720,8 @@ private extension ZendeskManager {
     }
 
     struct LocalizedText {
-        static let alertMessageWithName = NSLocalizedString("To continue please enter your email address and name.", comment: "Instructions for alert asking for email and name.")
-        static let alertMessage = NSLocalizedString("Please enter your email address.", comment: "Instructions for alert asking for email.")
+        static let alertMessageWithName = NSLocalizedString("Please enter your email address and username:", comment: "Instructions for alert asking for email and name.")
+        static let alertMessage = NSLocalizedString("Please enter your email address:", comment: "Instructions for alert asking for email.")
         static let alertSubmit = NSLocalizedString("OK", comment: "Submit button on prompt for user information.")
         static let alertCancel = NSLocalizedString("Cancel", comment: "Cancel prompt for user information.")
         static let emailPlaceholder = NSLocalizedString("Email", comment: "Email address text field placeholder")
@@ -740,5 +743,4 @@ extension ZendeskManager: UITextFieldDelegate {
         let newLength = text.count + string.count - range.length
         return newLength <= Constants.nameFieldCharacterLimit
     }
-
 }

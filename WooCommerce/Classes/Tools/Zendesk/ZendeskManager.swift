@@ -1,8 +1,8 @@
 import Foundation
 import ZendeskSDK
 import ZendeskCoreSDK
+import WordPressShared
 import CoreTelephony
-import WordPressAuthenticator
 import SafariServices
 import Yosemite
 
@@ -27,8 +27,6 @@ class ZendeskManager: NSObject {
 
     // MARK: - Private Properties
     //
-    private var sourceTag: WordPressSupportSourceTag?
-
     private var deviceToken: String?
     private var userName: String?
     private var userEmail: String?
@@ -101,7 +99,7 @@ class ZendeskManager: NSObject {
 
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
     ///
-    func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: WordPressSupportSourceTag? = nil) {
+    func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
 
         presentInController = controller
 
@@ -110,10 +108,9 @@ class ZendeskManager: NSObject {
                 return
             }
 
-            self.sourceTag = sourceTag
             WooAnalytics.shared.track(.supportNewRequestViewed)
 
-            let newRequestConfig = self.createRequest()
+            let newRequestConfig = self.createRequest(supportSourceTag: sourceTag)
             let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
             self.showZendeskView(newRequestController)
         }
@@ -121,7 +118,7 @@ class ZendeskManager: NSObject {
 
     /// Displays the Zendesk Request List view from the given controller, allowing user to access their tickets.
     ///
-    func showTicketListIfPossible(from controller: UIViewController, with sourceTag: WordPressSupportSourceTag? = nil) {
+    func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
 
         presentInController = controller
 
@@ -130,10 +127,9 @@ class ZendeskManager: NSObject {
                 return
             }
 
-            self.sourceTag = sourceTag
             WooAnalytics.shared.track(.supportTicketListViewed)
 
-            let requestConfig = self.createRequest()
+            let requestConfig = self.createRequest(supportSourceTag: sourceTag)
             let requestListController = RequestUi.buildRequestList(with: [requestConfig])
             self.showZendeskView(requestListController)
         }
@@ -164,7 +160,7 @@ class ZendeskManager: NSObject {
     /// Tags are used for refining and filtering tickets so they display in the web portal, under "Lovely Views".
     /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
     ///
-    func getTags() -> [String] {
+    func getTags(supportSourceTag: String?) -> [String] {
         var tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
         guard let site = StoresManager.shared.sessionManager.defaultSite else {
             return tags
@@ -178,7 +174,7 @@ class ZendeskManager: NSObject {
             tags.append(site.plan)
         }
 
-        if let sourceTagOrigin = sourceTag?.origin, sourceTagOrigin.isEmpty == false {
+        if let sourceTagOrigin = supportSourceTag, sourceTagOrigin.isEmpty == false {
             tags.append(sourceTagOrigin)
         }
 
@@ -334,7 +330,7 @@ private extension ZendeskManager {
     /// Important: Any time a new request controller is created, these configurations should be attached.
     /// Without it, the tickets won't appear in the correct view(s) in the web portal and they won't contain all the metadata needed to solve a ticket.
     ///
-    func createRequest() -> RequestUiConfiguration {
+    func createRequest(supportSourceTag: String?) -> RequestUiConfiguration {
 
         let requestConfig = RequestUiConfiguration()
 
@@ -356,7 +352,7 @@ private extension ZendeskManager {
         requestConfig.fields = ticketFields
 
         // Set tags
-        requestConfig.tags = getTags()
+        requestConfig.tags = getTags(supportSourceTag: supportSourceTag)
 
         // Set the ticket subject
         requestConfig.subject = Constants.ticketSubject

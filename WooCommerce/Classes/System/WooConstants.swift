@@ -31,13 +31,13 @@ enum WooConstants {
 
     /// Cookie policy URL
     ///
-    static let cookieURL = URL(string: "https://automattic.com/cookies/")
+    static let cookieURL = URL(string: "https://automattic.com/cookies/")!
 
     /// Privacy policy URL
     ///
-    static let privacyURL = URL(string: "https://automattic.com/privacy/")
+    static let privacyURL = URL(string: "https://automattic.com/privacy/")!
 
     /// FAQ URL
     ///
-    static let faqURL = URL(string: "https://docs.woocommerce.com/document/frequently-asked-questions")
+    static let faqURL = URL(string: "https://docs.woocommerce.com/document/frequently-asked-questions")!
 }

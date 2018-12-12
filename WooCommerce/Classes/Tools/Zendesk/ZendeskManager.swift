@@ -7,6 +7,17 @@ import SafariServices
 import Yosemite
 
 
+extension NSNotification.Name {
+    static let ZDPNReceived = NSNotification.Name(rawValue: "ZDPNReceived")
+    static let ZDPNCleared = NSNotification.Name(rawValue: "ZDPNCleared")
+}
+
+extension NSNotification {
+    public static let ZDPNReceived = NSNotification.Name.ZDPNReceived
+    public static let ZDPNCleared = NSNotification.Name.ZDPNCleared
+}
+
+
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
 /// as well as displaying views for the Help Center, new tickets, and ticket list.
 ///
@@ -24,6 +35,16 @@ class ZendeskManager: NSObject {
         }
     }
 
+    var unreadNotificationsCount = 0
+
+    var showSupportNotificationIndicator: Bool {
+        return unreadNotificationsCount > 0
+    }
+
+    struct PushNotificationIdentifiers {
+        static let key = "type"
+        static let type = "zendesk"
+    }
 
     // MARK: - Private Properties
     //
@@ -183,13 +204,6 @@ class ZendeskManager: NSObject {
 // MARK: - Push Notifications
 //
 extension ZendeskManager {
-
-    /// Stores the DeviceToken. Zendesk doesn't allow us to register for APNS until an Identity has been created.
-    ///
-    func deviceTokenWasReceived(deviceToken: String) {
-        self.deviceToken = deviceToken
-    }
-
     /// Registers the last known DeviceToken in the Zendesk Backend (if any).
     ///
     func registerDeviceTokenIfNeeded() {
@@ -220,6 +234,40 @@ extension ZendeskManager {
     func unregisterForRemoteNotifications() {
         DDLogInfo("☎️ [Zendesk] Unregistering for Notifications...")
         zendeskPushProvider?.unregisterForPush()
+    }
+
+    func postNotificationReceived() {
+        // Updating unread indicators should trigger UI updates, so send notification in main thread.
+        DispatchQueue.main.async {
+           NotificationCenter.default.post(name: .ZDPNReceived, object: nil)
+        }
+    }
+
+    func postNotificationRead() {
+        // Updating unread indicators should trigger UI updates, so send notification in main thread.
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .ZDPNCleared, object: nil)
+        }
+    }
+}
+
+
+// MARK: - ZendeskManager: SupportManagerAdapter Conformance
+//
+extension ZendeskManager: SupportManagerAdapter {
+    /// Stores the DeviceToken. Zendesk doesn't allow us to register for APNS until an Identity has been created.
+    ///
+    func deviceTokenWasReceived(deviceToken: String) {
+        self.deviceToken = deviceToken
+    }
+
+
+    /// Delegate method for a received push notification
+    ///
+    func pushNotificationReceived(with userInfo: [AnyHashable: Any]) {
+        unreadNotificationsCount += 1
+        saveUnreadCount()
+        postNotificationReceived()
     }
 }
 
@@ -400,6 +448,10 @@ private extension ZendeskManager {
         userEmail = userProfile.valueAsString(forKey: Constants.profileEmailKey)
         userName = userProfile.valueAsString(forKey: Constants.profileNameKey)
         return true
+    }
+
+    func saveUnreadCount() {
+        UserDefaults.standard.set(unreadNotificationsCount, forKey: Constants.unreadNotificationsKey)
     }
 
 
@@ -692,6 +744,7 @@ private extension ZendeskManager {
         static let zendeskProfileUDKey = "wc_zendesk_profile"
         static let profileEmailKey = "email"
         static let profileNameKey = "name"
+        static let unreadNotificationsKey = "wc_zendesk_unread_notifications"
         static let nameFieldCharacterLimit = 50
         static let sourcePlatform = "mobile_-_woo_ios"
         static let subcategory = "WooCommerce Mobile Apps"

@@ -12,9 +12,8 @@ protocol SupportManagerAdapter {
     /// Executed whenever the app should unregister for Remote Notifications.
     ///
     func unregisterForRemoteNotifications()
+
+    /// Executed whenever a remote push notification is received.
+    ///
+    func pushNotificationReceived(with userInfo: [AnyHashable: Any])
 }
-
-
-// MARK: - ZendeskManager: SupportManagerAdapter Conformance
-//
-extension ZendeskManager: SupportManagerAdapter { }

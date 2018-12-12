@@ -188,6 +188,39 @@ extension PushNotificationsManager {
             }
         }
     }
+
+
+    /// Handles a Support Remote Notification
+    ///
+    /// - Note: This should actually be *private*. BUT: for unit testing purposes we'll have to keep it public. Sorry.
+    ///
+    /// - Parameters:
+    ///     - userInfo: The Notification's Payload
+    ///     - completionHandler: A callback, to be executed on completion
+    ///
+    /// - Returns: True when handled. False otherwise
+    ///
+    func handleSupportNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
+        DDLogVerbose("☎️ Support Push Notification Received: \n\(userInfo)\n")
+
+        guard let type = userInfo.string(forKey: ZendeskManager.PushNotificationIdentifiers.key),
+            type == ZendeskManager.PushNotificationIdentifiers.type else {
+                return false
+        }
+
+        DispatchQueue.main.async {
+            self.configuration.supportManager.pushNotificationReceived(with: userInfo)
+        }
+
+        trackNotification(with: userInfo)
+
+        // In the WP app we check the background state and force-navigate the user to the "Me" tab.
+        // In the interest of cutting scope, we're not doing that in our app at this time.
+
+        completionHandler(.newData)
+
+        return true
+    }
 }
 
 

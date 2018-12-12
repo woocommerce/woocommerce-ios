@@ -261,9 +261,25 @@ extension ZendeskManager: SupportManagerAdapter {
         zendeskPushProvider?.unregisterForPush()
     }
 
+    /// This handles in-app Zendesk push notifications.
+    /// If the updated ticket or the ticket list is being displayed,
+    /// the view will be refreshed.
+    ///
+    func handlePushNotification(_ userInfo: NSDictionary) {
+        guard ZendeskManager.shared.zendeskEnabled == true,
+            let payload = userInfo as? [AnyHashable: Any],
+            // let requestId = payload["ticket_id"] as? String else {
+            let requestId = payload["zendesk_sdk_request_id"] as? String else {
+                DDLogInfo("Zendesk push notification payload invalid.")
+                return
+        }
+
+        let _ = Support.instance?.refreshRequest(requestId: requestId)
+    }
+
     /// Delegate method for a received push notification
     ///
-    func pushNotificationReceived(with userInfo: [AnyHashable: Any]) {
+    func pushNotificationReceived() {
         unreadNotificationsCount += 1
         saveUnreadCount()
         postNotificationReceived()

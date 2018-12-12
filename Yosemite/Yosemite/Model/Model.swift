@@ -40,6 +40,7 @@ public typealias WooAPIVersion = Networking.WooAPIVersion
 public typealias StorageAccount = Storage.Account
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order
+public typealias StorageOrderNote = Storage.OrderNote
 public typealias StorageOrderStats = Storage.OrderStats
 public typealias StorageOrderStatsItem = Storage.OrderStatsItem
 public typealias StorageSite = Storage.Site

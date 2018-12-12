@@ -5,6 +5,7 @@
         "date_created_gmt": "2018-06-22T15:36:20",
         "note": "This order would be so much better with ketchup.",
         "customer_note": true,
+        "author": "someadmin",
         "_links": {
             "self": [
                 {

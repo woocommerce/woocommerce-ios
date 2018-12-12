@@ -13,4 +13,5 @@ extension OrderNote {
     @NSManaged public var note: String?
     @NSManaged public var isCustomerNote: Bool
     @NSManaged public var order: Order?
+    @NSManaged public var author: String?
 }

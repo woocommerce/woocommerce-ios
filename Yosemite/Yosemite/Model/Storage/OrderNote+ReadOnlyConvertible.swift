@@ -13,6 +13,7 @@ extension Storage.OrderNote: ReadOnlyConvertible {
         dateCreated = orderNote.dateCreated
         note = orderNote.note
         isCustomerNote = orderNote.isCustomerNote
+        author = orderNote.author
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -21,6 +22,7 @@ extension Storage.OrderNote: ReadOnlyConvertible {
         return OrderNote(noteId: Int(noteID),
                          dateCreated: dateCreated ?? Date(),
                          note: note ?? "",
-                         isCustomerNote: isCustomerNote)
+                         isCustomerNote: isCustomerNote,
+                         author: author ?? "")
     }
 }

@@ -10,15 +10,25 @@ class OrderNotesMapperTests: XCTestCase {
     ///
     func testNoteFieldsAreProperlyParsed() {
         let notes = mapLoadAllOrderNotesResponse()
-        XCTAssertEqual(notes.count, 18)
+        XCTAssertEqual(notes.count, 19)
 
         let firstNote = notes[0]
-        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-06-23T17:06:55")
+        let firstNoteCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-06-23T16:05:55")
 
-        XCTAssertEqual(firstNote.noteID, 2261)
-        XCTAssertEqual(firstNote.dateCreated, dateCreated)
-        XCTAssertEqual(firstNote.note, "I love your products!")
-        XCTAssertEqual(firstNote.isCustomerNote, true)
+        XCTAssertEqual(firstNote.noteID, 2260)
+        XCTAssertEqual(firstNote.dateCreated, firstNoteCreated)
+        XCTAssertEqual(firstNote.note, "This order is going to be a problem.")
+        XCTAssertEqual(firstNote.isCustomerNote, false)
+        XCTAssertEqual(firstNote.author, "someadmin")
+
+        let secondNote = notes[1]
+        let secondNoteCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-06-23T17:06:55")
+
+        XCTAssertEqual(secondNote.noteID, 2261)
+        XCTAssertEqual(secondNote.dateCreated, secondNoteCreated)
+        XCTAssertEqual(secondNote.note, "I love your products!")
+        XCTAssertEqual(secondNote.isCustomerNote, true)
+        XCTAssertEqual(secondNote.author, "someuser")
     }
 
     /// Verifies that an Note in a broken state does [gets default values] | [gets skipped while parsing]

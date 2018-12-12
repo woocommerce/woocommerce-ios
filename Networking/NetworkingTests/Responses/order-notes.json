@@ -1,11 +1,37 @@
 {
     "data": [
              {
+                "id": 2260,
+                "date_created": "2018-06-23T12:05:55",
+                "date_created_gmt": "2018-06-23T16:05:55",
+                "note": "This order is going to be a problem.",
+                "customer_note": false,
+                "author": "someadmin",
+                "_links": {
+                    "self": [
+                        {
+                            "href": "https:\/\/jamosova3.mystagingwebsite.com\/wp-json\/wc\/v2\/orders\/1044\/notes\/2260"
+                        }
+                    ],
+                    "collection": [
+                        {
+                            "href": "https:\/\/jamosova3.mystagingwebsite.com\/wp-json\/wc\/v2\/orders\/1044\/notes"
+                        }
+                    ],
+                    "up": [
+                        {
+                            "href": "https:\/\/jamosova3.mystagingwebsite.com\/wp-json\/wc\/v2\/orders\/1044"
+                        }
+                    ]
+                }
+             },
+             {
              "id": 2261,
              "date_created": "2018-06-23T13:06:55",
              "date_created_gmt": "2018-06-23T17:06:55",
              "note": "I love your products!",
              "customer_note": true,
+             "author": "someuser",
              "_links": {
              "self": [
                       {
@@ -30,6 +56,7 @@
              "date_created_gmt": "2018-05-29T03:07:46",
              "note": "Order status changed from Completed to Processing.",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -54,6 +81,7 @@
              "date_created_gmt": "2018-05-26T05:00:24",
              "note": "Order status changed from Processing to Completed.",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -78,6 +106,7 @@
              "date_created_gmt": "2018-05-26T04:59:48",
              "note": "Order status changed from Completed to Processing.",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -102,6 +131,7 @@
              "date_created_gmt": "2018-05-26T04:59:44",
              "note": "Order status changed from Processing to Completed.",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -126,6 +156,7 @@
              "date_created_gmt": "2018-05-26T04:39:42",
              "note": "Order status changed from Completed to Processing.",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -150,6 +181,7 @@
              "date_created_gmt": "2018-05-26T04:39:39",
              "note": "Order status changed from Processing to Completed.",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -174,6 +206,7 @@
              "date_created_gmt": "2018-05-26T04:02:55",
              "note": "Order status changed from Completed to Processing.",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -198,6 +231,7 @@
              "date_created_gmt": "2018-05-26T02:03:19",
              "note": "Order status changed from Processing to Completed.",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -222,6 +256,7 @@
              "date_created_gmt": "2018-05-25T22:24:42",
              "note": "Order status changed from Completed to Processing.",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -246,6 +281,7 @@
              "date_created_gmt": "2018-05-23T17:39:33",
              "note": "Order status changed from Processing to Completed.",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -270,6 +306,7 @@
              "date_created_gmt": "2018-05-22T21:29:47",
              "note": "Order status changed from Completed to Processing.",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -294,6 +331,7 @@
              "date_created_gmt": "2018-05-22T15:54:39",
              "note": "Order status changed from Processing to Completed.",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -318,6 +356,7 @@
              "date_created_gmt": "2018-05-09T14:39:08",
              "note": "Is this a real name?",
              "customer_note": true,
+             "author": "someuser",
              "_links": {
              "self": [
                       {
@@ -342,6 +381,7 @@
              "date_created_gmt": "2018-04-30T16:00:28",
              "note": "Order has been exported to Shipstation",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -366,6 +406,7 @@
              "date_created_gmt": "2018-04-25T13:24:15",
              "note": "Stripe charge complete (Charge ID: ch_1CKnbUJK48mSkzFLKh1h23Ln)",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -390,6 +431,7 @@
              "date_created_gmt": "2018-04-25T13:24:15",
              "note": "Fabric (Variable Product) (#264)<span class=\"description\">Fabric: Italian<\/span> stock reduced from 11 to 10.",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {
@@ -414,6 +456,7 @@
              "date_created_gmt": "2018-04-25T13:24:15",
              "note": "Order status changed from Pending payment to Processing.",
              "customer_note": false,
+             "author": "system",
              "_links": {
              "self": [
                       {

@@ -369,6 +369,7 @@ private extension OrderDetailsViewController {
             return
         }
 
+        cell.isSystemNote = note.isSystemNote
         cell.isCustomerNote = note.isCustomerNote
         cell.dateCreated = note.dateCreated.toString(dateStyle: .medium, timeStyle: .short)
         cell.contents = note.note.strippedHTML

@@ -1,8 +1,8 @@
 import Foundation
 import ZendeskSDK
 import ZendeskCoreSDK
+import WordPressShared
 import CoreTelephony
-import WordPressAuthenticator
 import SafariServices
 import Yosemite
 
@@ -12,66 +12,72 @@ import Yosemite
 ///
 class ZendeskManager: NSObject {
 
-    // MARK: - Public Properties
-    //
+    /// Shared Instance
+    ///
     static let shared = ZendeskManager()
-    private (set) var zendeskEnabled = false
-    private var unreadNotificationsCount = 0
 
-    var showSupportNotificationIndicator: Bool {
-        return unreadNotificationsCount > 0
+    /// Indicates if Zendesk is Enabled (or not)
+    ///
+    private (set) var zendeskEnabled = false {
+        didSet {
+            DDLogInfo("Zendesk Enabled: \(zendeskEnabled)")
+        }
     }
 
-    struct PushNotificationIdentifiers {
-        static let key = "type"
-        static let type = "zendesk"
-    }
 
     // MARK: - Private Properties
     //
-    private var sourceTag: WordPressSupportSourceTag?
-
+    private var deviceToken: String?
     private var userName: String?
     private var userEmail: String?
-    private var deviceID: String?
     private var haveUserIdentity = false
     private var alertNameField: UITextField?
 
-    private var zdAppID: String?
-    private var zdUrl: String?
-    private var zdClientId: String?
     private var presentInController: UIViewController?
 
+    /// Returns a ZendeskPushProvider Instance (If Possible)
+    ///
+    private var zendeskPushProvider: ZDKPushProvider? {
+        guard let zendesk = Zendesk.instance else {
+            return nil
+        }
 
+        return ZDKPushProvider(zendesk: zendesk)
+    }
+
+
+
+    /// Deinitializer
+    ///
+    deinit {
+        stopListeningToNotifications()
+    }
 
     /// Designated Initialier
     ///
     private override init() {
-        // NO-OP
+        super.init()
+        observeZendeskNotifications()
     }
 
+
     // MARK: - Public Methods
-    //
+
+
+    /// Sets up the Zendesk Manager instance
+    ///
     func initialize() {
-        guard getZendeskCredentials() == true else {
+        guard zendeskEnabled == false else {
+            DDLogError("☎️ Zendesk was already Initialized!")
             return
         }
 
-        guard let appId = zdAppID, let url = zdUrl, let clientId = zdClientId else {
-            DDLogInfo("Unable to set up Zendesk.")
-            toggleZendesk(enabled: false)
-            return
-        }
-
-        Zendesk.initialize(appId: appId, clientId: clientId, zendeskUrl: url)
+        Zendesk.initialize(appId: ApiCredentials.zendeskAppId, clientId: ApiCredentials.zendeskClientId, zendeskUrl: ApiCredentials.zendeskUrl)
         Support.initialize(withZendesk: Zendesk.instance)
-
-        haveUserIdentity = getUserProfile()
-        toggleZendesk(enabled: true)
-
         Theme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
 
-        observeZendeskNotifications()
+        haveUserIdentity = getUserProfile()
+        zendeskEnabled = true
     }
 
 
@@ -80,23 +86,17 @@ class ZendeskManager: NSObject {
     // -TODO: in the future this should show the Zendesk Help Center.
     /// For now, link to the online FAQ
     ///
-    func showHelpCenterIfPossible(from controller: UIViewController) {
-        guard let faqURL = WooConstants.faqURL else {
-            return
-        }
-
-        presentInController = controller
-        WooAnalytics.shared.track(.supportBrowseOurFaqTapped)
-
-        let safariViewController = SFSafariViewController(url: faqURL)
+    func showHelpCenter(from controller: UIViewController) {
+        let safariViewController = SFSafariViewController(url: WooConstants.faqURL)
         safariViewController.modalPresentationStyle = .pageSheet
-
         controller.present(safariViewController, animated: true, completion: nil)
+
+        WooAnalytics.shared.track(.supportBrowseOurFaqTapped)
     }
 
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
     ///
-    func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: WordPressSupportSourceTag? = nil) {
+    func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
 
         presentInController = controller
 
@@ -105,10 +105,9 @@ class ZendeskManager: NSObject {
                 return
             }
 
-            self.sourceTag = sourceTag
             WooAnalytics.shared.track(.supportNewRequestViewed)
 
-            let newRequestConfig = self.createRequest()
+            let newRequestConfig = self.createRequest(supportSourceTag: sourceTag)
             let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
             self.showZendeskView(newRequestController)
         }
@@ -116,7 +115,7 @@ class ZendeskManager: NSObject {
 
     /// Displays the Zendesk Request List view from the given controller, allowing user to access their tickets.
     ///
-    func showTicketListIfPossible(from controller: UIViewController, with sourceTag: WordPressSupportSourceTag? = nil) {
+    func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
 
         presentInController = controller
 
@@ -125,10 +124,9 @@ class ZendeskManager: NSObject {
                 return
             }
 
-            self.sourceTag = sourceTag
             WooAnalytics.shared.track(.supportTicketListViewed)
 
-            let requestConfig = self.createRequest()
+            let requestConfig = self.createRequest(supportSourceTag: sourceTag)
             let requestListController = RequestUi.buildRequestList(with: [requestConfig])
             self.showZendeskView(requestListController)
         }
@@ -155,38 +153,25 @@ class ZendeskManager: NSObject {
         return userEmail
     }
 
-    /// Returns the tags for the ZD ticket field
+    /// Returns the tags for the ZD ticket field.
+    /// Tags are used for refining and filtering tickets so they display in the web portal, under "Lovely Views".
+    /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
     ///
-    func getTags() -> [String] {
-
-        /// Start with default tags.
-        /// Tags are used for refining and filtering tickets so they display in the web portal, under "Lovely Views".
-        /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
-        var tags = [Constants.platformTag,
-                    Constants.sdkTag,
-                    Constants.jetpackTag]
-
-        /// Determine if the account is a wp.com account.
-        ///
+    func getTags(supportSourceTag: String?) -> [String] {
+        var tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
         guard let site = StoresManager.shared.sessionManager.defaultSite else {
             return tags
         }
 
-        /// Determine this is a wp.com store.
-        /// No tag if self-hosted.
         if site.isWordPressStore == true {
             tags.append(Constants.wpComTag)
         }
 
-        /// Add the site plan.
-        ///
         if site.plan.isEmpty == false {
             tags.append(site.plan)
         }
 
-        /// Add source tag.
-        ///
-        if let sourceTagOrigin = sourceTag?.origin, sourceTagOrigin.isEmpty == false {
+        if let sourceTagOrigin = supportSourceTag, sourceTagOrigin.isEmpty == false {
             tags.append(sourceTagOrigin)
         }
 
@@ -195,37 +180,60 @@ class ZendeskManager: NSObject {
 }
 
 
+// MARK: - Push Notifications
+//
+extension ZendeskManager {
+
+    /// Stores the DeviceToken. Zendesk doesn't allow us to register for APNS until an Identity has been created.
+    ///
+    func deviceTokenWasReceived(deviceToken: String) {
+        self.deviceToken = deviceToken
+    }
+
+    /// Registers the last known DeviceToken in the Zendesk Backend (if any).
+    ///
+    func registerDeviceTokenIfNeeded() {
+        guard let deviceToken = deviceToken else {
+            DDLogError("☎️ [Zendesk] Couldn't register Device Token. Invalid Zendesk Instance")
+            return
+        }
+
+        registerDeviceToken(deviceToken)
+    }
+
+    /// Registers the specified DeviceToken in the Zendesk Backend (if possible).
+    ///
+    func registerDeviceToken(_ deviceToken: String) {
+        DDLogInfo("☎️ [Zendesk] Registering Device Token...")
+        zendeskPushProvider?.register(deviceIdentifier: deviceToken, locale: Locale.preferredLanguage) { (_, error) in
+            if let error = error {
+                DDLogError("☎️ [Zendesk] Couldn't register Device Token [\(deviceToken)]. Error: \(error)")
+                return
+            }
+
+            DDLogInfo("☎️ [Zendesk] Successfully registered Device Token: [\(deviceToken)]")
+        }
+    }
+
+    /// Unregisters from the Zendesk Push Notifications Service.
+    ///
+    func unregisterForRemoteNotifications() {
+        DDLogInfo("☎️ [Zendesk] Unregistering for Notifications...")
+        zendeskPushProvider?.unregisterForPush()
+    }
+}
+
+
 // MARK: - Private Extension
 //
 private extension ZendeskManager {
-
-    func getZendeskCredentials() -> Bool {
-        let appId = ApiCredentials.zendeskAppId
-        let url = ApiCredentials.zendeskUrl
-        let clientId = ApiCredentials.zendeskClientId
-
-        guard !appId.isEmpty, !url.isEmpty, !clientId.isEmpty else {
-            DDLogInfo("Unable to get Zendesk credentials.")
-            toggleZendesk(enabled: false)
-            return false
-        }
-
-        zdAppID = appId
-        zdUrl = url
-        zdClientId = clientId
-        return true
-    }
-
-    func toggleZendesk(enabled: Bool) {
-        zendeskEnabled = enabled
-        DDLogInfo("Zendesk Enabled: \(enabled)")
-    }
 
     func createIdentity(completion: @escaping (Bool) -> Void) {
 
         // If we already have an identity, do nothing.
         guard haveUserIdentity == false else {
             DDLogDebug("Using existing Zendesk identity: \(userEmail ?? ""), \(userName ?? "")")
+            registerDeviceTokenIfNeeded()
             completion(true)
             return
         }
@@ -246,12 +254,17 @@ private extension ZendeskManager {
                 }
                 DDLogDebug("Using User Defaults for Zendesk identity.")
                 self.haveUserIdentity = true
+                self.registerDeviceTokenIfNeeded()
                 completion(true)
                 return
             }
         }
 
         getUserInformationAndShowPrompt(withName: true) { success in
+            if success {
+                self.registerDeviceTokenIfNeeded()
+            }
+
             completion(success)
         }
     }
@@ -271,6 +284,7 @@ private extension ZendeskManager {
                     completion(false)
                     return
                 }
+
                 DDLogDebug("Using information from prompt for Zendesk identity.")
                 self.haveUserIdentity = true
                 completion(true)
@@ -296,47 +310,46 @@ private extension ZendeskManager {
             let identity = Identity.createAnonymous()
             Zendesk.instance?.setIdentity(identity)
             completion(false)
+
             return
         }
 
         let zendeskIdentity = Identity.createAnonymous(name: userName, email: userEmail)
         Zendesk.instance?.setIdentity(zendeskIdentity)
+
         DDLogDebug("Zendesk identity created with email '\(userEmail)' and name '\(userName ?? "")'.")
         completion(true)
     }
 
 
     // MARK: - Request Controller Configuration
-    //
 
     /// Important: Any time a new request controller is created, these configurations should be attached.
     /// Without it, the tickets won't appear in the correct view(s) in the web portal and they won't contain all the metadata needed to solve a ticket.
-    func createRequest() -> RequestUiConfiguration {
+    ///
+    func createRequest(supportSourceTag: String?) -> RequestUiConfiguration {
 
         let requestConfig = RequestUiConfiguration()
 
         // Set Zendesk ticket form to use
         requestConfig.ticketFormID = TicketFieldIDs.form as NSNumber
 
-        // App Settings
-        let appVersion = Bundle.main.shortVersionString() ?? Constants.unknownValue
-        let appLanguage = Locale.preferredLanguages.first ?? Constants.unknownValue
-
         // Set form field values
         let ticketFields = [
-            ZDKCustomField(fieldId: TicketFieldIDs.appVersion as NSNumber, andValue: appVersion),
+            ZDKCustomField(fieldId: TicketFieldIDs.appVersion as NSNumber, andValue: Bundle.main.version),
             ZDKCustomField(fieldId: TicketFieldIDs.deviceFreeSpace as NSNumber, andValue: getDeviceFreeSpace()),
             ZDKCustomField(fieldId: TicketFieldIDs.networkInformation as NSNumber, andValue: getNetworkInformation()),
             ZDKCustomField(fieldId: TicketFieldIDs.logs as NSNumber, andValue: getLogFile()),
             ZDKCustomField(fieldId: TicketFieldIDs.currentSite as NSNumber, andValue: getCurrentSiteDescription()),
             ZDKCustomField(fieldId: TicketFieldIDs.sourcePlatform as NSNumber, andValue: Constants.sourcePlatform),
-            ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: appLanguage),
+            ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: Locale.preferredLanguage),
             ZDKCustomField(fieldId: TicketFieldIDs.subcategory as NSNumber, andValue: Constants.subcategory)
         ].compactMap { $0 }
+
         requestConfig.fields = ticketFields
 
         // Set tags
-        requestConfig.tags = getTags()
+        requestConfig.tags = getTags(supportSourceTag: supportSourceTag)
 
         // Set the ticket subject
         requestConfig.subject = Constants.ticketSubject
@@ -616,6 +629,12 @@ private extension ZendeskManager {
                                                name: NSNotification.Name(rawValue: ZD_HC_SearchSuccess), object: nil)
     }
 
+
+    /// Removes all of the Notification Hooks.
+    ///
+    func stopListeningToNotifications() {
+        NotificationCenter.default.removeObserver(self)
+    }
 
     /// Handles (all of the) Zendesk Notifications
     ///

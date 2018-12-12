@@ -13,7 +13,7 @@ protocol SupportManagerAdapter {
     ///
     func unregisterForRemoteNotifications()
 
-    /// Executed whenever a remote push notification is received.
+    /// Executed whenever the app receives a Remote Notification.
     ///
     func pushNotificationReceived(with userInfo: [AnyHashable: Any])
 }

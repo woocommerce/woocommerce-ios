@@ -229,13 +229,6 @@ extension ZendeskManager {
         }
     }
 
-    /// Unregisters from the Zendesk Push Notifications Service.
-    ///
-    func unregisterForRemoteNotifications() {
-        DDLogInfo("☎️ [Zendesk] Unregistering for Notifications...")
-        zendeskPushProvider?.unregisterForPush()
-    }
-
     func postNotificationReceived() {
         // Updating unread indicators should trigger UI updates, so send notification in main thread.
         DispatchQueue.main.async {
@@ -261,6 +254,12 @@ extension ZendeskManager: SupportManagerAdapter {
         self.deviceToken = deviceToken
     }
 
+    /// Unregisters from the Zendesk Push Notifications Service.
+    ///
+    func unregisterForRemoteNotifications() {
+        DDLogInfo("☎️ [Zendesk] Unregistering for Notifications...")
+        zendeskPushProvider?.unregisterForPush()
+    }
 
     /// Delegate method for a received push notification
     ///

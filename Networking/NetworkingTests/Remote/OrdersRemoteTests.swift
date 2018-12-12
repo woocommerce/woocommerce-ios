@@ -18,6 +18,17 @@ class OrdersRemoteTests: XCTestCase {
     ///
     let sampleOrderID = 1467
 
+    /// Dummy author string
+    ///
+    let sampleAuthor = "someuser"
+
+    /// Dummy author string for an "admin"
+    ///
+    let sampleAdminUserAuthor = "someadmin"
+
+    /// Dummy author string for the system
+    ///
+    let sampleSystemAuthor = "system"
 
     /// Repeat always!
     ///
@@ -145,7 +156,7 @@ class OrdersRemoteTests: XCTestCase {
         remote.loadOrderNotes(for: sampleSiteID, orderID: sampleOrderID) { orderNotes, error in
             XCTAssertNil(error)
             XCTAssertNotNil(orderNotes)
-            XCTAssertEqual(orderNotes?.count, 18)
+            XCTAssertEqual(orderNotes?.count, 19)
             expectation.fulfill()
         }
 

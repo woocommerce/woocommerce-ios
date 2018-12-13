@@ -2,11 +2,30 @@ import Foundation
 import UserNotifications
 
 
-class InteractiveNotificationsManager: NSObject {
+final class InteractiveNotificationsManager: NSObject {
 
+    /// Returns the shared InteractiveNotificationsManager instance.
+    ///
+    static let shared = InteractiveNotificationsManager()
+
+    /// Sets the delegate for User Notifications.
+    ///
+    /// This method should be called once during the app initialization process.
+    ///
+    func registerForUserNotifications() {
+        let notificationCenter = UNUserNotificationCenter.current()
+        notificationCenter.delegate = self
+        // -TODO: Set notification categories
+    }
 }
 
+
+// MARK: - UNUserNotificationCenterDelegate Conformance
+//
 extension InteractiveNotificationsManager: UNUserNotificationCenterDelegate {
+
+    /// This method is only called when the app is in the foreground and a push notification is received.
+    ///
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Swift.Void) {
@@ -24,4 +43,6 @@ extension InteractiveNotificationsManager: UNUserNotificationCenterDelegate {
             ZendeskManager.shared.handlePushNotification(userInfo)
         }
     }
+
+    
 }

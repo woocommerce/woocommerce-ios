@@ -1,5 +1,6 @@
 import UIKit
 import WordPressShared
+import SafariServices
 
 
 class AboutViewController: UIViewController {
@@ -133,6 +134,12 @@ private extension AboutViewController {
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
     }
+
+    func displayWebView(url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        safariViewController.modalPresentationStyle = .pageSheet
+        present(safariViewController, animated: true, completion: nil)
+    }
 }
 
 
@@ -143,13 +150,13 @@ private extension AboutViewController {
     /// Terms of Service action
     ///
     func privacyWasPressed() {
-
+        displayWebView(url: WooConstants.privacyURL)
     }
 
     /// Privacy Policy action
     ///
     func termsWasPressed() {
-
+        displayWebView(url: WooConstants.termsOfServiceUrl)
     }
 }
 

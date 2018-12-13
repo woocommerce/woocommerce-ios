@@ -27,7 +27,7 @@ enum WooConstants {
 
     /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
     ///
-    static let termsOfServiceUrl = "https://wordpress.com/tos/"
+    static let termsOfServiceUrl = URL(string: "https://wordpress.com/tos/")!
 
     /// Cookie policy URL
     ///

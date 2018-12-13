@@ -25,4 +25,8 @@ class MockupSupportManager: SupportManagerAdapter {
     func unregisterForRemoteNotifications() {
         unregisterWasCalled = true
     }
+
+    /// Executed whenever the app receives a Remote Notification.
+    ///
+    func pushNotificationReceived() { }
 }

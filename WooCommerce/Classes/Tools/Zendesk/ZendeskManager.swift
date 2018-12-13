@@ -194,7 +194,7 @@ extension ZendeskManager {
     ///
     func registerDeviceTokenIfNeeded() {
         guard let deviceToken = deviceToken else {
-            DDLogError("☎️ [Zendesk] Couldn't register Device Token. Invalid Zendesk Instance")
+            DDLogError("☎️ [Zendesk] Missing Device Token!")
             return
         }
 

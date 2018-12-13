@@ -158,6 +158,7 @@ class ZendeskManager: NSObject {
     func showSingleTicketViewIfPossible(for requestId: String) {
         let requestConfig = self.createRequest(supportSourceTag: nil)
         let requestController = RequestUi.buildRequestUi(requestId: requestId, configurations: [requestConfig])
+
         showZendeskView(requestController)
     }
 
@@ -216,7 +217,7 @@ extension ZendeskManager {
     ///
     func registerDeviceTokenIfNeeded() {
         guard let deviceToken = deviceToken else {
-            DDLogError("☎️ [Zendesk] Couldn't register Device Token. Invalid Zendesk Instance")
+            DDLogError("☎️ [Zendesk] Couldn't register Device Token. Invalid device token.")
             return
         }
 
@@ -269,21 +270,33 @@ extension ZendeskManager: SupportManagerAdapter {
         zendeskPushProvider?.unregisterForPush()
     }
 
-    /// This handles in-app Zendesk push notifications.
-    /// If the updated ticket or the ticket list is being displayed,
-    /// the view will be refreshed.
+    /// This handles Zendesk push notifications.
+    /// If the updated ticket or the ticket list is being displayed, the view will be refreshed.
+    /// If no view controller is loaded, it will load a view controller and present the single ticket view.
     ///
-    func handlePushNotification(_ userInfo: NSDictionary) {
+    func handlePushNotification(_ userInfo: [AnyHashable: Any]) {
         guard ZendeskManager.shared.zendeskEnabled == true,
-            let payload = userInfo as? [AnyHashable: Any],
-            // let requestId = payload["ticket_id"] as? String else {
-            let requestId = payload["zendesk_sdk_request_id"] as? String else {
+            let requestId = userInfo["zendesk_sdk_request_id"] as? String else {
                 DDLogInfo("Zendesk push notification payload invalid.")
                 return
         }
 
+        // No view controller loaded
+        guard presentInController != nil else {
+            // Navigate to the correct part of the app
+
+            // load a VC
+
+            // assign the VC to presentInController
+
+            // open single ticket view
+            showSingleTicketViewIfPossible(for: requestId)
+
+            return
+        }
+
+        // If the ticket list is being displayed, refresh the view.
         let _ = Support.instance?.refreshRequest(requestId: requestId)
-        showSingleTicketViewIfPossible(for: requestId)
     }
 
     /// Delegate method for a received push notification

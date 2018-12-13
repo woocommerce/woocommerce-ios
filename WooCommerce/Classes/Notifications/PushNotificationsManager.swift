@@ -180,7 +180,7 @@ extension PushNotificationsManager {
         trackNotification(with: userInfo)
 
         // Handling!
-        let handlers = [ handleInactiveNotification, handleBackgroundNotification ]
+        let handlers = [ handleSupportNotification, handleInactiveNotification, handleBackgroundNotification ]
 
         for handler in handlers {
             if handler(userInfo, completionHandler) {

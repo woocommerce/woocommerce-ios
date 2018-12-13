@@ -103,7 +103,7 @@ class ZendeskManager: NSObject {
 
 
     // MARK: - Show Zendesk Views
-
+    //
     // -TODO: in the future this should show the Zendesk Help Center.
     /// For now, link to the online FAQ
     ///
@@ -151,6 +151,14 @@ class ZendeskManager: NSObject {
             let requestListController = RequestUi.buildRequestList(with: [requestConfig])
             self.showZendeskView(requestListController)
         }
+    }
+
+    /// Displays a single ticket's view if possible.
+    ///
+    func showSingleTicketViewIfPossible(for requestId: String) {
+        let requestConfig = self.createRequest(supportSourceTag: nil)
+        let requestController = RequestUi.buildRequestUi(requestId: requestId, configurations: [requestConfig])
+        showZendeskView(requestController)
     }
 
     /// Displays an alert allowing the user to change their Support email address.
@@ -275,6 +283,7 @@ extension ZendeskManager: SupportManagerAdapter {
         }
 
         let _ = Support.instance?.refreshRequest(requestId: requestId)
+        showSingleTicketViewIfPossible(for: requestId)
     }
 
     /// Delegate method for a received push notification

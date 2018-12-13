@@ -16,4 +16,8 @@ protocol SupportManagerAdapter {
     /// Executed whenever the app receives a Remote Notification.
     ///
     func pushNotificationReceived()
+
+    /// Executed whenever the a user has tapped on a Remote Notification.
+    ///
+    func handlePushNotification(_ userInfo: [AnyHashable: Any])
 }

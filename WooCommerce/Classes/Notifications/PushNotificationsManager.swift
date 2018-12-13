@@ -214,8 +214,9 @@ extension PushNotificationsManager {
 
         trackNotification(with: userInfo)
 
-        // In the WP app we check the background state and force-navigate the user to the "Me" tab.
-        // In the interest of cutting scope, we're not doing that in our app at this time.
+        if applicationState == .background {
+            MainTabBarController.switchToMyStoreTab()
+        }
 
         completionHandler(.newData)
 

@@ -39,10 +39,21 @@ extension InteractiveNotificationsManager: UNUserNotificationCenterDelegate {
 
     private func handleZendeskNotification(userInfo: NSDictionary) {
         if let type = userInfo.string(forKey: ZendeskManager.PushNotificationIdentifiers.key),
-            type == ZendeskManager.PushNotificationIdentifiers.type {
-            ZendeskManager.shared.handlePushNotification(userInfo)
+            type == ZendeskManager.PushNotificationIdentifiers.type,
+        let payload = userInfo as? [AnyHashable : Any] {
+            ZendeskManager.shared.handlePushNotification(payload)
         }
     }
 
-    
+    /// This method is only called when the app is in the background
+    /// and the user tapped a remote push notification.
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo as NSDictionary
+        // other notifications
+        handleZendeskNotification(userInfo: userInfo)
+
+        completionHandler()
+    }
 }

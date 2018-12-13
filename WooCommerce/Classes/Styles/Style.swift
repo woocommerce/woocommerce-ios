@@ -108,7 +108,7 @@ class DefaultStyle: Style {
 
     /// NavBar
     ///
-    let navBarImage                     = UIImage(named: "woo-logo")!
+    let navBarImage                     = UIImage.wooLogoImage()!
 
     /// StatusBar
     ///

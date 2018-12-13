@@ -208,7 +208,7 @@ private extension SettingsViewController {
 
     func aboutWasPressed() {
         WooAnalytics.shared.track(.settingsAboutLinkTapped)
-        // TODO: open about screen
+        performSegue(withIdentifier: Segues.aboutSegue, sender: nil)
     }
 
     func licensesWasPressed() {
@@ -341,4 +341,5 @@ private enum Row: CaseIterable {
 private struct Segues {
     static let privacySegue = "ShowPrivacySettingsViewController"
     static let helpSupportSegue = "ShowHelpAndSupportViewController"
+    static let aboutSegue = "ShowAboutSettingsViewController"
 }

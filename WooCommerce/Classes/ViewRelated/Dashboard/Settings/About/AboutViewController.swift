@@ -32,6 +32,7 @@ class AboutViewController: UIViewController {
         configureMainView()
         configureSections()
         configureTableView()
+        configureTableViewHeader()
         configureTableViewFooter()
         registerTableViewCells()
     }
@@ -69,7 +70,17 @@ private extension AboutViewController {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
-    /// Display the version number in the footer.
+    /// Setup the tableview header.
+    ///
+    func configureTableViewHeader() {
+        let tintedImage             = UIImage.wooLogoImage(withSize: Constants.headerImageSize, tintColor: StyleManager.wooCommerceBrandColor)
+        let imageView               = UIImageView(image: tintedImage)
+        imageView.contentMode       = .center
+        imageView.frame.size.height += Constants.headerPadding
+        tableView.tableHeaderView = imageView
+    }
+
+    /// Setup the tableview footer.
     ///
     func configureTableViewFooter() {
         /// `tableView.tableFooterView` can't handle a footerView that uses autolayout only.
@@ -211,8 +222,10 @@ extension AboutViewController: UITableViewDelegate {
 // MARK: - Private Types
 //
 private struct Constants {
-    static let rowHeight = CGFloat(44)
-    static let footerHeight = 44
+    static let rowHeight       = CGFloat(44)
+    static let headerImageSize = CGSize(width: 140, height: 84)
+    static let headerPadding   = CGFloat(40)
+    static let footerHeight    = 44
 }
 
 private struct Section {

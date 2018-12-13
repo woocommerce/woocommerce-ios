@@ -125,19 +125,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         return false
     }
 
-    /// Returns Helpshift's Unread Messages Count.
-    ///
-    var supportBadgeCount: Int {
-        // TODO: Wire Zendesk
-        return Int.min
-    }
-
-    /// Refreshes Helpshift's Unread Count.
-    ///
-    func refreshSupportBadgeCount() {
-        // TODO: Wire Zendesk
-    }
-
     /// Returns an instance of a SupportView, configured to be displayed from a specified Support Source.
     ///
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, options: [String: Any] = [:]) {

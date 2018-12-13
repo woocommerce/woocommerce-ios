@@ -218,6 +218,12 @@ extension PushNotificationsManager {
             MainTabBarController.switchToMyStoreTab()
         }
 
+        if applicationState == .inactive {
+            DispatchQueue.main.async {
+                self.configuration.supportManager.handlePushNotification(userInfo)
+            }
+        }
+
         completionHandler(.newData)
 
         return true

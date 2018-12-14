@@ -307,6 +307,20 @@ class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(application.presentDetailsNoteIDs.first, 1234)
         XCTAssertTrue(handleNotificationCallbackWasExecuted)
     }
+
+
+    /// Verifies that `handleNotification` displays an InApp Notification whenever the app is in active state.
+    ///
+    func testHandleNotificationDisplaysInAppNotificationWheneverTheAppStateIsActive() {
+        let payload = notificationPayload()
+
+        application.applicationState = .active
+        manager.handleNotification(payload) { _ in
+            // NO-OP
+        }
+
+        XCTAssertEqual(application.presentInAppMessages.first, Sample.defaultMessage)
+    }
 }
 
 
@@ -318,7 +332,10 @@ private extension PushNotificationsManagerTests {
     ///
     func notificationPayload(badgeCount: Int = 0, noteID: Int = 1234) -> [String: Any] {
         return [
-            "aps": ["badge": badgeCount],
+            "aps": [
+                "badge": badgeCount,
+                "alert": Sample.defaultMessage
+            ],
             "note_id": noteID
         ]
     }
@@ -344,4 +361,8 @@ private struct Sample {
     /// UserDefaults Suite Name
     ///
     static let defaultSuiteName = "PushNotificationsTests"
+
+    /// Sample Message
+    ///
+    static let defaultMessage = "Loren Ipsum Expectom patronum wingardium leviousm"
 }

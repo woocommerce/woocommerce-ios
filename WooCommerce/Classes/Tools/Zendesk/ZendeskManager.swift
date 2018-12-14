@@ -155,7 +155,7 @@ class ZendeskManager: NSObject {
 
     /// Displays a single ticket's view if possible.
     ///
-    func showSingleTicketViewIfPossible(for requestId: String, wantsModal: Bool) {
+    func showSingleTicketViewIfPossible(for requestId: String) {
         let requestConfig = self.createRequest(supportSourceTag: nil)
         let requestController = RequestUi.buildRequestUi(requestId: requestId, configurations: [requestConfig])
 
@@ -284,26 +284,29 @@ extension ZendeskManager: SupportManagerAdapter {
         // No view controller is loaded
         if presentInController == nil {
             let selectedViewController = AppDelegate.shared.tabBarController?.selectedViewController
-            guard let navController = selectedViewController as? UINavigationController else {
-                DDLogError("⛔️ Unable to navigate to Zendesk deep link. Failed to find a nav controller.")
-                return
-            }
-
-            MainTabBarController.switchToMyStoreTab()
-            presentInController = navController
-
-            let settingsVC = SettingsViewController()
-            navController.pushViewController(settingsVC, animated: false)
-
-            let helpAndSupportVC = HelpAndSupportViewController()
-            navController.pushViewController(helpAndSupportVC, animated: false)
+            presentInController = selectedViewController
         }
 
         // If the ticket list is being displayed, refresh the view.
         let _ = Support.instance?.refreshRequest(requestId: requestId)
 
+
+        guard let navController = presentInController as? UINavigationController else {
+            DDLogError("⛔️ Unable to navigate to Zendesk deep link. Failed to find a nav controller.")
+            return
+        }
+        MainTabBarController.switchToMyStoreTab()
+
+        let storyboard = UIStoryboard(name: "Dashboard", bundle: .main)
+        let settingsVC = storyboard.instantiateViewController(withIdentifier: "SettingsViewController") as! SettingsViewController
+        navController.pushViewController(settingsVC, animated: false)
+
+        let helpAndSupportVC = storyboard.instantiateViewController(withIdentifier: "HelpAndSupportViewController") as! HelpAndSupportViewController
+        navController.pushViewController(helpAndSupportVC, animated: false)
+        presentInController = navController
+
         // Otherwise, present the single ticket view.
-        showSingleTicketViewIfPossible(for: requestId, wantsModal: true)
+        showSingleTicketViewIfPossible(for: requestId)
     }
 
     /// Delegate method for a received push notification

@@ -88,14 +88,6 @@ class AuthenticationManager {
 // MARK: - WordPressAuthenticator Delegate
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
-    func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
-        // TODO: wire Zendesk
-    }
-
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
-        // TODO: wire Zendesk
-    }
-
 
     /// Indicates if the active Authenticator can be dismissed or not.
     ///
@@ -107,15 +99,13 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Indicates whether if the Support Action should be enabled, or not.
     ///
     var supportActionEnabled: Bool {
-        // TODO: Wire Zendesk
-        return false
+        return true
     }
 
     /// Indicates if Support is Enabled.
     ///
     var supportEnabled: Bool {
-        // TODO: Wire Zendesk
-        return false
+        return ZendeskManager.shared.zendeskEnabled
     }
 
     /// Indicates if the Support notification indicator should be displayed.
@@ -125,30 +115,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         return false
     }
 
-    /// Returns Helpshift's Unread Messages Count.
+    /// Executed whenever a new WordPress.com account has been created.
+    /// Note: As of now, this is a NO-OP, we're not supporting any signup flows.
     ///
-    var supportBadgeCount: Int {
-        // TODO: Wire Zendesk
-        return Int.min
-    }
-
-    /// Refreshes Helpshift's Unread Count.
-    ///
-    func refreshSupportBadgeCount() {
-        // TODO: Wire Zendesk
-    }
-
-    /// Returns an instance of a SupportView, configured to be displayed from a specified Support Source.
-    ///
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, options: [String: Any] = [:]) {
-        // TODO: Wire Zendesk
-    }
-
-    /// Presents Support new request, with the specified ViewController as a source.
-    ///
-    func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, options: [String: Any]) {
-        // TODO: Wire Zendesk
-    }
+    func createdWordPressComAccount(username: String, authToken: String) { }
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
@@ -164,6 +134,28 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         // NO-OP: The current WC version does not support Signup.
     }
 
+    /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
+    ///
+    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
+        let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
+        guard let supportViewController = UIStoryboard.dashboard.instantiateViewController(withIdentifier: identifier) as? HelpAndSupportViewController else {
+            return
+        }
+
+        supportViewController.displaysDismissAction = true
+
+        let navController = UINavigationController(rootViewController: supportViewController)
+        navController.modalPresentationStyle = .formSheet
+
+        sourceViewController.present(navController, animated: true, completion: nil)
+    }
+
+    /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
+    ///
+    func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
+        ZendeskManager.shared.showNewRequestIfPossible(from: sourceViewController, with: sourceTag.name)
+    }
+
     /// Indicates if the Login Epilogue should be presented.
     ///
     func shouldPresentLoginEpilogue(isJetpackLogin: Bool) -> Bool {
@@ -171,16 +163,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     /// Indicates if the Signup Epilogue should be displayed.
+    /// Note: As of now, this is a NO-OP, we're not supporting any signup flows.
     ///
     func shouldPresentSignupEpilogue() -> Bool {
-        // Note: The current WC version does not support Signup.
         return false
-    }
-
-    /// Executed whenever a new WordPress.com account has been created.
-    ///
-    func createdWordPressComAccount(username: String, authToken: String) {
-        // NO-OP: The current WC version does not support Signup.
     }
 
     /// Synchronizes the specified WordPress Account.

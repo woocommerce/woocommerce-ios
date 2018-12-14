@@ -281,22 +281,21 @@ extension ZendeskManager: SupportManagerAdapter {
                 return
         }
 
-        // No view controller loaded
-        guard presentInController != nil else {
-            // Navigate to the correct part of the app
+        // No view controller is loaded
+        if presentInController == nil {
+            MainTabBarController.switchToMyStoreTab()
+            guard let rootViewController = UIApplication.shared.keyWindow?.rootViewController else {
+                return
+            }
 
-            // load a VC
-
-            // assign the VC to presentInController
-
-            // open single ticket view
-            showSingleTicketViewIfPossible(for: requestId)
-
-            return
+            presentInController = rootViewController.navigationController
         }
 
         // If the ticket list is being displayed, refresh the view.
         let _ = Support.instance?.refreshRequest(requestId: requestId)
+
+        // Otherwise, present the single ticket view.
+        showSingleTicketViewIfPossible(for: requestId)
     }
 
     /// Delegate method for a received push notification

@@ -222,8 +222,8 @@ extension AboutViewController: UITableViewDelegate {
 //
 private struct Constants {
     static let rowHeight       = CGFloat(44)
-    static let headerImageSize = CGSize(width: 140, height: 84)
-    static let headerPadding   = CGFloat(50)
+    static let headerImageSize = CGSize(width: 61, height: 36)
+    static let headerPadding   = CGFloat(60)
     static let footerHeight    = 44
 }
 

@@ -19,14 +19,26 @@ class MockupApplicationAdapter: ApplicationAdapter {
     ///
     var registerWasCalled = false
 
+    /// Messages received via the `presentInAppNotification` method.
+    ///
+    var presentInAppMessages = [String]()
+
     /// Notification Identifiers received via the `presentNotificationDetails` method.
     ///
     var presentDetailsNoteIDs = [Int]()
+
+
 
     /// Inoccuous `registerForRemoteNotifications`
     ///
     func registerForRemoteNotifications() {
         registerWasCalled = true
+    }
+
+    /// Inoccuous `presentInAppNotification`
+    ///
+    func presentInAppNotification(message: String) {
+        presentInAppMessages.append(message)
     }
 
     /// Inoccuous `displayNotificationDetails`

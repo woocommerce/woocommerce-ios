@@ -5,6 +5,7 @@ import Yosemite
 // MARK: - HelpAndSupportViewController
 //
 class HelpAndSupportViewController: UIViewController {
+
     /// Main TableView
     ///
     @IBOutlet weak var tableView: UITableView!
@@ -18,6 +19,10 @@ class HelpAndSupportViewController: UIViewController {
     private var accountEmail: String {
         return StoresManager.shared.sessionManager.defaultAccount?.email ?? NSLocalizedString("Set email", comment: "Tells user to set an email that support can use for replies")
     }
+
+    /// Indicates if the NavBar should display a dismiss button
+    ///
+    var displaysDismissAction = false
 
 
     // MARK: - Overridden Methods
@@ -43,13 +48,19 @@ private extension HelpAndSupportViewController {
     ///
     func configureNavigation() {
         title = NSLocalizedString("Help", comment: "Help and Support navigation title")
-        // Don't show the Settings title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
 
-        navigationItem.backBarButtonItem = backButton
+        // Don't show the Settings title in the next-view's back button
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+
+        // Dismiss
+        navigationItem.leftBarButtonItem = {
+            guard displaysDismissAction else {
+                return nil
+            }
+
+            let title = NSLocalizedString("Dismiss", comment: "Add a note screen - button title for closing the view")
+            return UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(dismissWasPressed))
+        }()
     }
 
     /// Apply Woo styles.
@@ -232,6 +243,10 @@ private extension HelpAndSupportViewController {
             WooAnalytics.shared.track(.supportIdentitySet)
             self.tableView.reloadData()
         }
+    }
+
+    @objc func dismissWasPressed() {
+        dismiss(animated: true, completion: nil)
     }
 }
 

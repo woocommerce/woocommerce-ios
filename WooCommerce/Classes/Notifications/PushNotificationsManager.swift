@@ -211,10 +211,8 @@ private extension PushNotificationsManager {
     /// - Returns: True when handled. False otherwise
     ///
     func handleSupportNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
-        DDLogVerbose("☎️ Support Push Notification Received: \n\(userInfo)\n")
 
-        guard let type = userInfo.string(forKey: ZendeskManager.PushNotificationIdentifiers.key),
-            type == ZendeskManager.PushNotificationIdentifiers.type else {
+        guard userInfo.string(forKey: APNSKey.type) == PushType.zendesk else {
                 return false
         }
 
@@ -224,14 +222,8 @@ private extension PushNotificationsManager {
 
         trackNotification(with: userInfo)
 
-        if applicationState == .background {
-//            MainTabBarController.switchToMyStoreTab()
-        }
-
         if applicationState == .inactive {
-            DispatchQueue.main.async {
-                self.configuration.supportManager.handlePushNotification(userInfo)
-            }
+            self.configuration.supportManager.displaySupportRequest(using: userInfo)
         }
 
         completionHandler(.newData)

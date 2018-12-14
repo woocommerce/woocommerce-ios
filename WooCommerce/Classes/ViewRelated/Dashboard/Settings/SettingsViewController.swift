@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 import MessageUI
 import Gridicons
+import SafariServices
 
 
 // MARK: - SettingsViewController
@@ -85,13 +86,15 @@ private extension SettingsViewController {
     }
 
     func configureSections() {
-        let primaryStoreTitle = NSLocalizedString("PRIMARY STORE", comment: "My Store > Settings > Primary Store information section")
-        let privacySettingsTitle = NSLocalizedString("HELP IMPROVE THE APP", comment: "My Store > Settings > Privacy settings section")
+        let primaryStoreTitle = NSLocalizedString("PRIMARY STORE", comment: "My Store > Settings > Primary Store information section").uppercased()
+        let privacySettingsTitle = NSLocalizedString("HELP IMPROVE THE APP", comment: "My Store > Settings > Privacy settings section").uppercased()
+        let aboutSettingsTitle = NSLocalizedString("About the app", comment: "My Store > Settings > About app section").uppercased()
 
         sections = [
             Section(title: primaryStoreTitle, rows: [.primaryStore]),
             Section(title: nil, rows: [.support]),
             Section(title: privacySettingsTitle, rows: [.privacy]),
+            Section(title: aboutSettingsTitle, rows: [.about, .licenses]),
             Section(title: nil, rows: [.logout]),
         ]
     }
@@ -112,6 +115,10 @@ private extension SettingsViewController {
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
+        case let cell as BasicTableViewCell where row == .about:
+            configureAbout(cell: cell)
+        case let cell as BasicTableViewCell where row == .licenses:
+            configureLicenses(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
         default:
@@ -134,6 +141,18 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Privacy Settings", comment: "Navigates to Privacy Settings screen")
+    }
+
+    func configureAbout(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("WooCommerce", comment: "Navigates to about WooCommerce app screen")
+    }
+
+    func configureLicenses(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Open source licenses", comment: "Navigates to open source licenses screen")
     }
 
     func configureLogout(cell: BasicTableViewCell) {
@@ -186,6 +205,16 @@ private extension SettingsViewController {
     func privacyWasPressed() {
         WooAnalytics.shared.track(.settingsPrivacySettingsTapped)
         performSegue(withIdentifier: Segues.privacySegue, sender: nil)
+    }
+
+    func aboutWasPressed() {
+        WooAnalytics.shared.track(.settingsAboutLinkTapped)
+        performSegue(withIdentifier: Segues.aboutSegue, sender: nil)
+    }
+
+    func licensesWasPressed() {
+        WooAnalytics.shared.track(.settingsLicensesLinkTapped)
+        performSegue(withIdentifier: Segues.licensesSegue, sender: nil)
     }
 
     func logOutUser() {
@@ -257,6 +286,10 @@ extension SettingsViewController: UITableViewDelegate {
             supportWasPressed()
         case .privacy:
             privacyWasPressed()
+        case .licenses:
+            licensesWasPressed()
+        case .about:
+            aboutWasPressed()
         default:
             break
         }
@@ -281,6 +314,8 @@ private enum Row: CaseIterable {
     case support
     case logout
     case privacy
+    case about
+    case licenses
 
     var type: UITableViewCell.Type {
         switch self {
@@ -292,6 +327,10 @@ private enum Row: CaseIterable {
             return BasicTableViewCell.self
         case .privacy:
             return BasicTableViewCell.self
+        case .about:
+            return BasicTableViewCell.self
+        case .licenses:
+            return BasicTableViewCell.self
         }
     }
 
@@ -301,6 +340,8 @@ private enum Row: CaseIterable {
 }
 
 private struct Segues {
-    static let privacySegue = "ShowPrivacySettingsViewController"
+    static let privacySegue     = "ShowPrivacySettingsViewController"
     static let helpSupportSegue = "ShowHelpAndSupportViewController"
+    static let aboutSegue       = "ShowAboutViewController"
+    static let licensesSegue    = "ShowLicensesViewController"
 }

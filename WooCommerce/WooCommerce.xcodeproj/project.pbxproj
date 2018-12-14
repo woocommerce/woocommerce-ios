@@ -23,6 +23,7 @@
 /* Begin PBXBuildFile section */
 		74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74036CBF211B882100E462C2 /* PeriodDataViewController.swift */; };
 		740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740987B221B87760000E4C80 /* FancyAnimatedButton+Woo.swift */; };
+		740ADFE521C33688009EE5A9 /* licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 740ADFE421C33688009EE5A9 /* licenses.html */; };
 		7421344A210A323C00C13890 /* WooAnalyticsStat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74213449210A323C00C13890 /* WooAnalyticsStat.swift */; };
 		74334F36214AB130006D6AC5 /* ProductTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74334F34214AB12F006D6AC5 /* ProductTableViewCell.swift */; };
 		74334F37214AB130006D6AC5 /* ProductTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74334F35214AB12F006D6AC5 /* ProductTableViewCell.xib */; };
@@ -46,9 +47,12 @@
 		748D34E12148291E00E21A2F /* TopPerformerDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748D34E02148291E00E21A2F /* TopPerformerDataViewController.swift */; };
 		7493BB8E2149852A003071A9 /* TopPerformersHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7493BB8C2149852A003071A9 /* TopPerformersHeaderView.swift */; };
 		7493BB8F2149852A003071A9 /* TopPerformersHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7493BB8D2149852A003071A9 /* TopPerformersHeaderView.xib */; };
+		74A33D8021C3F234009E25DE /* LicensesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A33D7F21C3F233009E25DE /* LicensesViewController.swift */; };
 		74A93A40212DC60B00C13E04 /* NewOrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A93A3F212DC60B00C13E04 /* NewOrdersViewController.swift */; };
+		74A95B5821C403EA00FEE953 /* pure-min.css in Resources */ = {isa = PBXBuildFile; fileRef = 74A95B5721C403EA00FEE953 /* pure-min.css */; };
 		74AAF6A5212A04A900C612B0 /* ChartMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AAF6A4212A04A900C612B0 /* ChartMarker.swift */; };
 		74AFF2EA211B9B1B0038153A /* StoreStatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AFF2E9211B9B1B0038153A /* StoreStatsViewController.swift */; };
+		74C6FEA521C2F1FA009286B6 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C6FEA421C2F1FA009286B6 /* AboutViewController.swift */; };
 		74D0A5302139CF1300E2919F /* String+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D0A52F2139CF1300E2919F /* String+Helpers.swift */; };
 		74E0F441211C9AE600A79CCE /* PeriodDataViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74E0F440211C9AE600A79CCE /* PeriodDataViewController.xib */; };
 		74F9E9CD214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */; };
@@ -172,6 +176,7 @@
 		B5BE75DB213F1D1E00909A14 /* OverlayMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BE75DA213F1D1E00909A14 /* OverlayMessageView.swift */; };
 		B5BE75DD213F1D3D00909A14 /* OverlayMessageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5BE75DC213F1D3D00909A14 /* OverlayMessageView.xib */; };
 		B5C3876421C41B9F006CE970 /* UIApplication+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C3876321C41B9F006CE970 /* UIApplication+Woo.swift */; };
+		B5C3876221C3FD29006CE970 /* RELEASE-NOTES.md in Resources */ = {isa = PBXBuildFile; fileRef = B5C3876121C3FD29006CE970 /* RELEASE-NOTES.md */; };
 		B5C3B5E320D189E60072CB9D /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E220D189E60072CB9D /* Networking.framework */; };
 		B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E420D189EA0072CB9D /* Storage.framework */; };
 		B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E620D189ED0072CB9D /* Yosemite.framework */; };
@@ -304,6 +309,7 @@
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74036CBF211B882100E462C2 /* PeriodDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodDataViewController.swift; sourceTree = "<group>"; };
 		740987B221B87760000E4C80 /* FancyAnimatedButton+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FancyAnimatedButton+Woo.swift"; sourceTree = "<group>"; };
+		740ADFE421C33688009EE5A9 /* licenses.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = licenses.html; sourceTree = "<group>"; };
 		74213449210A323C00C13890 /* WooAnalyticsStat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalyticsStat.swift; sourceTree = "<group>"; };
 		74334F34214AB12F006D6AC5 /* ProductTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductTableViewCell.swift; sourceTree = "<group>"; };
 		74334F35214AB12F006D6AC5 /* ProductTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductTableViewCell.xib; sourceTree = "<group>"; };
@@ -327,9 +333,12 @@
 		748D34E02148291E00E21A2F /* TopPerformerDataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopPerformerDataViewController.swift; sourceTree = "<group>"; };
 		7493BB8C2149852A003071A9 /* TopPerformersHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopPerformersHeaderView.swift; sourceTree = "<group>"; };
 		7493BB8D2149852A003071A9 /* TopPerformersHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TopPerformersHeaderView.xib; sourceTree = "<group>"; };
+		74A33D7F21C3F233009E25DE /* LicensesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LicensesViewController.swift; sourceTree = "<group>"; };
 		74A93A3F212DC60B00C13E04 /* NewOrdersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrdersViewController.swift; sourceTree = "<group>"; };
+		74A95B5721C403EA00FEE953 /* pure-min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "pure-min.css"; sourceTree = "<group>"; };
 		74AAF6A4212A04A900C612B0 /* ChartMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartMarker.swift; sourceTree = "<group>"; };
 		74AFF2E9211B9B1B0038153A /* StoreStatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsViewController.swift; sourceTree = "<group>"; };
+		74C6FEA421C2F1FA009286B6 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		74D0A52F2139CF1300E2919F /* String+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Helpers.swift"; sourceTree = "<group>"; };
 		74E0F440211C9AE600A79CCE /* PeriodDataViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PeriodDataViewController.xib; sourceTree = "<group>"; };
 		74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoPeriodDataTableViewCell.xib; sourceTree = "<group>"; };
@@ -481,6 +490,7 @@
 		B5BE75DA213F1D1E00909A14 /* OverlayMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayMessageView.swift; sourceTree = "<group>"; };
 		B5BE75DC213F1D3D00909A14 /* OverlayMessageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OverlayMessageView.xib; sourceTree = "<group>"; };
 		B5C3876321C41B9F006CE970 /* UIApplication+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Woo.swift"; sourceTree = "<group>"; };
+		B5C3876121C3FD29006CE970 /* RELEASE-NOTES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "RELEASE-NOTES.md"; sourceTree = "<group>"; };
 		B5C3B5E220D189E60072CB9D /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C3B5E420D189EA0072CB9D /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C3B5E620D189ED0072CB9D /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -614,6 +624,15 @@
 			path = MyStore;
 			sourceTree = "<group>";
 		};
+		740ADFE321C33669009EE5A9 /* HTML */ = {
+			isa = PBXGroup;
+			children = (
+				740ADFE421C33688009EE5A9 /* licenses.html */,
+				74A95B5721C403EA00FEE953 /* pure-min.css */,
+			);
+			path = HTML;
+			sourceTree = "<group>";
+		};
 		743E271E21AEF13E00D6DC82 /* Fancy Alerts */ = {
 			isa = PBXGroup;
 			children = (
@@ -646,6 +665,15 @@
 				747AA08A2107CF8D0047A89B /* TracksProvider.swift */,
 			);
 			path = Analytics;
+			sourceTree = "<group>";
+		};
+		74C6FEA321C2F189009286B6 /* About */ = {
+			isa = PBXGroup;
+			children = (
+				74C6FEA421C2F1FA009286B6 /* AboutViewController.swift */,
+				74A33D7F21C3F233009E25DE /* LicensesViewController.swift */,
+			);
+			path = About;
 			sourceTree = "<group>";
 		};
 		74F9E9CA214C034A00A3F2D2 /* Cells */ = {
@@ -764,6 +792,7 @@
 				B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */,
 				88A44ABE866401E6DB03AC60 /* Frameworks */,
 				B56DB3C72049BFAA00D4AA8E /* Products */,
+				B5C3876121C3FD29006CE970 /* RELEASE-NOTES.md */,
 				B559EBAD20A0BF8E00836CD4 /* README.md */,
 				B597D0BE212476E100577E35 /* ARCHITECTURE.md */,
 				B559EBAE20A0BF8F00836CD4 /* LICENSE */,
@@ -834,6 +863,7 @@
 		B56DB3F22049C0C000D4AA8E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				740ADFE321C33669009EE5A9 /* HTML */,
 				B59D1EE7219089A7009D1978 /* Fonts */,
 				B5E5DA7221BB0B3100FFDF42 /* Sounds */,
 				B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */,
@@ -1176,6 +1206,7 @@
 		CE85FD5820F7A59E0080B73E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				74C6FEA321C2F189009286B6 /* About */,
 				CE27257A219249B5002B22EB /* Help */,
 				CE22E3F821714639005A6BEF /* Privacy */,
 				B509112F2049E27A007D25DC /* SettingsViewController.swift */,
@@ -1411,6 +1442,7 @@
 				B5F571A621BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib in Resources */,
 				CE1EC8F020B8A408009762BF /* OrderNoteTableViewCell.xib in Resources */,
 				B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */,
+				74A95B5821C403EA00FEE953 /* pure-min.css in Resources */,
 				B5BE75DD213F1D3D00909A14 /* OverlayMessageView.xib in Resources */,
 				748D34DE214828DD00E21A2F /* TopPerformerDataViewController.xib in Resources */,
 				CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */,
@@ -1419,10 +1451,12 @@
 				CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */,
 				B59D1EE121907304009D1978 /* NoteTableViewCell.xib in Resources */,
 				B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */,
+				B5C3876221C3FD29006CE970 /* RELEASE-NOTES.md in Resources */,
 				B560D6882195BCC70027BB7E /* NoteDetailsHeaderTableViewCell.xib in Resources */,
 				CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */,
 				CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */,
 				B5A82EE521025E550053ADC8 /* FulfillViewController.xib in Resources */,
+				740ADFE521C33688009EE5A9 /* licenses.html in Resources */,
 				B554016B2170D6010067DC90 /* ChartPlaceholderView.xib in Resources */,
 				CE32B11620BF8779006FBCF4 /* ProductListTableViewCell.xib in Resources */,
 				B557652D20F6827900185843 /* StoreTableViewCell.xib in Resources */,
@@ -1725,6 +1759,7 @@
 				CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */,
 				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
+				74A33D8021C3F234009E25DE /* LicensesViewController.swift in Sources */,
 				CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */,
 				7493BB8E2149852A003071A9 /* TopPerformersHeaderView.swift in Sources */,
 				CE1EC8CA20B479F1009762BF /* TwoColumnLabelView.swift in Sources */,
@@ -1769,6 +1804,7 @@
 				748D34DF214828DD00E21A2F /* TopPerformersViewController.swift in Sources */,
 				B509FED321C05121000076A9 /* SupportManagerAdapter.swift in Sources */,
 				B5AA7B3D20ED5D15004DA14F /* SessionManager.swift in Sources */,
+				74C6FEA521C2F1FA009286B6 /* AboutViewController.swift in Sources */,
 				B53B3F37219C75AC00DF1EB6 /* OrderLoaderViewController.swift in Sources */,
 				CE24BCCF212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift in Sources */,
 				B53B898D20D462A000EDB467 /* StoresManager.swift in Sources */,

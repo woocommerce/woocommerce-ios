@@ -12,12 +12,6 @@ extension NSNotification.Name {
     static let ZDPNCleared = NSNotification.Name(rawValue: "ZDPNCleared")
 }
 
-extension NSNotification {
-    public static let ZDPNReceived = NSNotification.Name.ZDPNReceived
-    public static let ZDPNCleared = NSNotification.Name.ZDPNCleared
-}
-
-
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
 /// as well as displaying views for the Help Center, new tickets, and ticket list.
 ///
@@ -35,16 +29,12 @@ class ZendeskManager: NSObject {
         }
     }
 
-    var unreadNotificationsCount = 0
+    private var unreadNotificationsCount = 0
 
     var showSupportNotificationIndicator: Bool {
         return unreadNotificationsCount > 0
     }
 
-    struct PushNotificationIdentifiers {
-        static let key = "type"
-        static let type = "zendesk"
-    }
 
     // MARK: - Private Properties
     //
@@ -272,9 +262,9 @@ extension ZendeskManager: SupportManagerAdapter {
 
     /// This handles Zendesk push notifications.
     ///
-    func handlePushNotification(_ userInfo: [AnyHashable: Any]) {
-        guard ZendeskManager.shared.zendeskEnabled == true,
-            let requestId = userInfo["zendesk_sdk_request_id"] as? String else {
+    func displaySupportRequest(using userInfo: [AnyHashable : Any]) {
+        guard zendeskEnabled == true,
+            let requestId = userInfo[PushKey.requestID] as? String else {
                 DDLogInfo("Zendesk push notification payload invalid.")
                 return
         }
@@ -297,11 +287,10 @@ extension ZendeskManager: SupportManagerAdapter {
         presentInController.popToRootViewController(animated: false)
 
         // navigate thru the stack
-        let storyboard = UIStoryboard(name: "Dashboard", bundle: .main)
-        let settingsVC = storyboard.instantiateViewController(withIdentifier: "SettingsViewController") as! SettingsViewController
+        let settingsVC = UIStoryboard.dashboard.instantiateViewController(withIdentifier: SettingsViewController.classNameWithoutNamespaces) as! SettingsViewController
         presentInController.pushViewController(settingsVC, animated: false)
 
-        let helpAndSupportVC = storyboard.instantiateViewController(withIdentifier: "HelpAndSupportViewController") as! HelpAndSupportViewController
+        let helpAndSupportVC = UIStoryboard.dashboard.instantiateViewController(withIdentifier: HelpAndSupportViewController.classNameWithoutNamespaces) as! HelpAndSupportViewController
         presentInController.pushViewController(helpAndSupportVC, animated: false)
 
         // show the single ticket view instead of the ticket list
@@ -818,6 +807,10 @@ private extension ZendeskManager {
         static let alertCancel = NSLocalizedString("Cancel", comment: "Cancel prompt for user information.")
         static let emailPlaceholder = NSLocalizedString("Email", comment: "Email address text field placeholder")
         static let namePlaceholder = NSLocalizedString("Name", comment: "Name text field placeholder")
+    }
+
+    struct PushKey {
+        static let requestID = "zendesk_sdk_request_id"
     }
 }
 

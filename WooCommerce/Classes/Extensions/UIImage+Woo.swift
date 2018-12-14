@@ -40,6 +40,13 @@ extension UIImage {
         return UIImage(named: "icon-jetpack-gray")!
     }
 
+    /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.
+    ///
+    /// - Parameters:
+    ///   - size: desired size of the resulting bitmap image
+    ///   - tintColor: desired tint color of the resulting bitmap image
+    /// - Returns: a bitmap image
+    ///
     static func wooLogoImage(withSize size: CGSize = Metrics.defaultWooLogoSize, tintColor: UIColor = .white) -> UIImage? {
         let rect = CGRect(origin: .zero, size: size)
         let vectorImage = UIImage(named: "woo-logo")!

@@ -357,7 +357,7 @@ private extension PushNotificationsManager {
             completionHandler(result)
         }
 
-        DDLogInfo("📱 Synchronizing Notifications in [\(applicationState.description) State]...")
+        DDLogInfo("📱 Synchronizing Notifications in \(applicationState.description) State...")
         configuration.storesManager.dispatch(action)
     }
 }

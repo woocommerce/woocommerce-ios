@@ -40,6 +40,17 @@ extension UIImage {
         return UIImage(named: "icon-jetpack-gray")!
     }
 
+    static func wooLogoImage(withSize size: CGSize = Metrics.defaultWooLogoSize, tintColor: UIColor = .white) -> UIImage? {
+        let rect = CGRect(origin: .zero, size: size)
+        let vectorImage = UIImage(named: "woo-logo")!
+        let renderer = UIGraphicsImageRenderer(size: size)
+        let im2 = renderer.image { ctx in
+            vectorImage.draw(in: rect)
+        }
+
+        return im2.imageWithTintColor(tintColor)
+    }
+
     /// Error State Image
     ///
     static var errorStateImage: UIImage {
@@ -50,5 +61,12 @@ extension UIImage {
     ///
     static var waitingForCustomersImage: UIImage {
         return UIImage(named: "woo-waiting-customers")!
+    }
+}
+
+private extension UIImage {
+
+    enum Metrics {
+        static let defaultWooLogoSize = CGSize(width: 30, height: 18)
     }
 }

@@ -7,6 +7,25 @@ class DictionaryWooTests: XCTestCase {
 
     private let sampleKey = "key"
 
+
+    /// Verifies that `dictionary(forKey:)` returns nil whenever the value is not precisely a dictionary.
+    ///
+    func testDictionaryForKeyReturnsNilWheneverTheValueIsNotPreciselySomeDictionary() {
+        let sample = [sampleKey: 3.14]
+        XCTAssertNil(sample.dictionary(forKey: sampleKey))
+    }
+
+    /// Verifies that `dictionary(forKey:)` effectively returns the stored value, whenever it can be casted as [AnyHashable: Any].
+    ///
+    func testDictionaryForKeyReturnsTargetDictionaryWheneverTheValueIsSomeHashableCollection() {
+        let sample = [sampleKey: [sampleKey: 3.14]]
+
+        let retrieved = sample.dictionary(forKey: sampleKey)
+        XCTAssertNotNil(retrieved)
+
+        XCTAssertEqual(retrieved?.string(forKey: sampleKey), "3.14")
+    }
+
     /// Verifies that a Float is effectively returned as a String Value, when retrieved via `string(forKey:)`
     ///
     func testStringForKeyReturnsStringValueWheneverTheValueIsStoredAsFloat() {

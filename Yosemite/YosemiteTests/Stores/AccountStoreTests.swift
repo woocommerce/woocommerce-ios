@@ -212,37 +212,51 @@ class AccountStoreTests: XCTestCase {
 
     func testLoadSiteActionReturnsExpectedSite() {
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let group = DispatchGroup()
         let expectation = self.expectation(description: "Load Site Action Success")
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 0)
-        accountStore.upsertStoredSites(readOnlySites: [sampleSitePristine()])
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
 
-        let action = AccountAction.loadSite(siteID: 999) { site in
-            XCTAssertNotNil(site)
-            XCTAssertEqual(site!, self.sampleSitePristine())
-            expectation.fulfill()
+        group.enter()
+        accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSitePristine()]) {
+            group.leave()
         }
 
-        accountStore.onAction(action)
+        group.notify(queue: .main) {
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
+            let action = AccountAction.loadSite(siteID: 999) { site in
+                XCTAssertNotNil(site)
+                XCTAssertEqual(site!, self.sampleSitePristine())
+                XCTAssertTrue(Thread.isMainThread)
+                expectation.fulfill()
+            }
+            accountStore.onAction(action)
+        }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     func testLoadSiteActionReturnsNilForUnknownSite() {
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let group = DispatchGroup()
         let expectation = self.expectation(description: "Load Site Action Error")
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 0)
-        accountStore.upsertStoredSites(readOnlySites: [sampleSitePristine()])
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
 
-        let action = AccountAction.loadSite(siteID: 9999) { site in
-            XCTAssertNil(site)
-            expectation.fulfill()
+        group.enter()
+        accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSitePristine()]) {
+            group.leave()
         }
 
-        accountStore.onAction(action)
+        group.notify(queue: .main) {
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
+            let action = AccountAction.loadSite(siteID: 9999) { site in
+                XCTAssertNil(site)
+                XCTAssertTrue(Thread.isMainThread)
+                expectation.fulfill()
+            }
+            accountStore.onAction(action)
+        }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }

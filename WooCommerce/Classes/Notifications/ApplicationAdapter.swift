@@ -18,6 +18,10 @@ protocol ApplicationAdapter: class {
     ///
     func registerForRemoteNotifications()
 
+    /// Presents a given Message with an "In App" notification
+    ///
+    func presentInAppNotification(message: String)
+
     /// Presents the Details for the specified Notification.
     ///
     func presentNotificationDetails(for noteID: Int)
@@ -32,5 +36,12 @@ extension UIApplication: ApplicationAdapter {
     ///
     func presentNotificationDetails(for noteID: Int) {
         MainTabBarController.presentNotificationDetails(for: noteID)
+    }
+
+    /// Presents a given Message with an "In App" notification
+    ///
+    func presentInAppNotification(message: String) {
+        let notice = Notice(title: message, message: nil, feedbackType: .success)
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 }

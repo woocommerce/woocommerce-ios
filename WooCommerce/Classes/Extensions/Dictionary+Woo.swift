@@ -5,6 +5,17 @@ import Foundation
 //
 extension Dictionary {
 
+    /// This method returns the [AnyHashable: Any] dictionary for a given key, if possible.
+    ///
+    /// - Parameter key: The key to retrieve.
+    ///
+    /// - Returns: Value as a [AnyHashable: Any] instance
+    ///
+    public func dictionary(forKey key: Key) -> [AnyHashable: Any]? {
+        return self[key] as? [AnyHashable: Any]
+    }
+
+
     /// This method attempts to convert a given value into a String, if it's not already the case.
     /// Initial implementation supports only NSNumber. This is meant for bulletproof parsing, in which a String
     /// value might be serialized, backend side, as a Number.

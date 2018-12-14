@@ -49,11 +49,8 @@
                                             <constraint firstAttribute="height" constant="1" id="8O6-Qx-Y7L"/>
                                         </constraints>
                                     </view>
-                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iZC-Gc-okA">
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iZC-Gc-okA">
                                         <rect key="frame" x="0.0" y="50" width="375" height="329"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="327" id="eGV-6I-Bmn"/>
-                                        </constraints>
                                     </scrollView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kbr-bQ-njj">
                                         <rect key="frame" x="0.0" y="379" width="375" height="1"/>
@@ -200,7 +197,8 @@
                         <outlet property="tableView" destination="wI4-XX-k2z" id="6bZ-RB-KF9"/>
                         <segue destination="tLZ-3e-cJY" kind="show" identifier="ShowPrivacySettingsViewController" id="26d-pC-r7k"/>
                         <segue destination="iSl-b1-8Q7" kind="show" identifier="ShowHelpAndSupportViewController" id="6A7-eX-DcD"/>
-                        <segue destination="0FF-UX-4XZ" kind="show" identifier="ShowAboutSettingsViewController" id="5nL-8n-wgD"/>
+                        <segue destination="0FF-UX-4XZ" kind="show" identifier="ShowAboutViewController" id="5nL-8n-wgD"/>
+                        <segue destination="2kR-vO-lWS" kind="show" identifier="ShowLicensesViewController" id="dPp-oU-Gdl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FEk-Qx-6OE" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -525,7 +523,41 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="T2j-DL-NgU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2281" y="2038"/>
+            <point key="canvasLocation" x="2265" y="2237"/>
+        </scene>
+        <!--Licenses View Controller-->
+        <scene sceneID="Uj1-Ej-yhV">
+            <objects>
+                <viewController storyboardIdentifier="LicensesViewController" id="2kR-vO-lWS" customClass="LicensesViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="pIy-Ye-9vd">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Ux-jX-kZE">
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <wkWebViewConfiguration key="configuration">
+                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                    <wkPreferences key="preferences"/>
+                                </wkWebViewConfiguration>
+                            </wkWebView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="3Ux-jX-kZE" firstAttribute="leading" secondItem="gcq-RR-2k7" secondAttribute="leading" id="Qmb-Md-7xS"/>
+                            <constraint firstItem="gcq-RR-2k7" firstAttribute="trailing" secondItem="3Ux-jX-kZE" secondAttribute="trailing" id="hPA-YS-aD5"/>
+                            <constraint firstItem="gcq-RR-2k7" firstAttribute="bottom" secondItem="3Ux-jX-kZE" secondAttribute="bottom" id="qGU-af-Ie5"/>
+                            <constraint firstItem="3Ux-jX-kZE" firstAttribute="top" secondItem="gcq-RR-2k7" secondAttribute="top" id="roD-E5-KXz"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="gcq-RR-2k7"/>
+                    </view>
+                    <connections>
+                        <outlet property="webView" destination="3Ux-jX-kZE" id="Mwl-R5-9dT"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mMe-a0-E0Y" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2265" y="1525"/>
         </scene>
     </scenes>
 </document>

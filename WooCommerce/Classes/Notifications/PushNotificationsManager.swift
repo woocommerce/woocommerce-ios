@@ -216,9 +216,7 @@ private extension PushNotificationsManager {
                 return false
         }
 
-        DispatchQueue.main.async {
-            self.configuration.supportManager.pushNotificationReceived()
-        }
+        self.configuration.supportManager.pushNotificationReceived()
 
         trackNotification(with: userInfo)
 

@@ -155,11 +155,11 @@ class ZendeskManager: NSObject {
 
     /// Displays a single ticket's view if possible.
     ///
-    func showSingleTicketViewIfPossible(for requestId: String) {
+    func showSingleTicketViewIfPossible(for requestId: String, wantsModal: Bool) {
         let requestConfig = self.createRequest(supportSourceTag: nil)
         let requestController = RequestUi.buildRequestUi(requestId: requestId, configurations: [requestConfig])
 
-        showZendeskView(requestController)
+        showZendeskView(requestController, wantsModal: wantsModal)
     }
 
     /// Displays an alert allowing the user to change their Support email address.
@@ -283,19 +283,26 @@ extension ZendeskManager: SupportManagerAdapter {
 
         // No view controller is loaded
         if presentInController == nil {
-            MainTabBarController.switchToMyStoreTab()
-            guard let rootViewController = UIApplication.shared.keyWindow?.rootViewController else {
+//            MainTabBarController.switchToMyStoreTab()
+            let selectedViewController = AppDelegate.shared.tabBarController?.selectedViewController
+            guard let navController = selectedViewController as? UINavigationController else {
+                DDLogDebug("I'm out of ideas.")
                 return
             }
 
-            presentInController = rootViewController.navigationController
+            presentInController = navController
+
+//            let settingsVC = SettingsViewController()
+//            navController.pushViewController(settingsVC, animated: true)
+//            let helpAndSupportVC = HelpAndSupportViewController()
+//            navController.pushViewController(helpAndSupportVC, animated: true)
         }
 
         // If the ticket list is being displayed, refresh the view.
         let _ = Support.instance?.refreshRequest(requestId: requestId)
 
         // Otherwise, present the single ticket view.
-        showSingleTicketViewIfPossible(for: requestId)
+        showSingleTicketViewIfPossible(for: requestId, wantsModal: true)
     }
 
     /// Delegate method for a received push notification
@@ -445,13 +452,13 @@ private extension ZendeskManager {
 
     // MARK: - View
     //
-    func showZendeskView(_ zendeskView: UIViewController) {
+    func showZendeskView(_ zendeskView: UIViewController, wantsModal: Bool = false) {
         guard let presentInController = presentInController else {
             return
         }
 
         // If the controller is a UIViewController, set the modal display for iPad.
-        if !presentInController.isKind(of: UINavigationController.self) && UIDevice.current.userInterfaceIdiom == .pad {
+        if !presentInController.isKind(of: UINavigationController.self) && UIDevice.current.userInterfaceIdiom == .pad || wantsModal == true {
             let navController = UINavigationController(rootViewController: zendeskView)
             navController.modalPresentationStyle = .fullScreen
             navController.modalTransitionStyle = .crossDissolve

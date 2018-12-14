@@ -215,7 +215,7 @@ extension PushNotificationsManager {
         trackNotification(with: userInfo)
 
         if applicationState == .background {
-            MainTabBarController.switchToMyStoreTab()
+//            MainTabBarController.switchToMyStoreTab()
         }
 
         if applicationState == .inactive {

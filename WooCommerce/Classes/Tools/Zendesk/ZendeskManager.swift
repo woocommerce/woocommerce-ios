@@ -265,7 +265,7 @@ extension ZendeskManager: SupportManagerAdapter {
     func displaySupportRequest(using userInfo: [AnyHashable : Any]) {
         guard zendeskEnabled == true,
             let requestId = userInfo[PushKey.requestID] as? String else {
-                DDLogInfo("Zendesk push notification payload invalid.")
+                DDLogInfo("Zendesk push notification payload is invalid.")
                 return
         }
 

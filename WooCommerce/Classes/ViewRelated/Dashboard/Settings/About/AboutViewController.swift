@@ -249,4 +249,3 @@ private enum Row: CaseIterable {
         return type.reuseIdentifier
     }
 }
-

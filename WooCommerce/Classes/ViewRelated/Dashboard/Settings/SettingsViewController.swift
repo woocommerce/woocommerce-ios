@@ -214,12 +214,7 @@ private extension SettingsViewController {
 
     func licensesWasPressed() {
         WooAnalytics.shared.track(.settingsLicensesLinkTapped)
-        guard let url = Bundle.main.url(forResource: "licenses", withExtension: "html") else {
-            return
-        }
-
-        let safariViewController = SFSafariViewController(url: url)
-        present(safariViewController, animated: true, completion: nil)
+        performSegue(withIdentifier: Segues.licensesSegue, sender: nil)
     }
 
     func logOutUser() {
@@ -345,7 +340,8 @@ private enum Row: CaseIterable {
 }
 
 private struct Segues {
-    static let privacySegue = "ShowPrivacySettingsViewController"
+    static let privacySegue     = "ShowPrivacySettingsViewController"
     static let helpSupportSegue = "ShowHelpAndSupportViewController"
-    static let aboutSegue = "ShowAboutSettingsViewController"
+    static let aboutSegue       = "ShowAboutViewController"
+    static let licensesSegue    = "ShowLicensesViewController"
 }

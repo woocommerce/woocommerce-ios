@@ -269,13 +269,13 @@ extension ZendeskManager: SupportManagerAdapter {
                 return
         }
 
+        // select My Store
+        MainTabBarController.switchToMyStoreTab()
+
         // grab the tab bar
         guard let tabBar = AppDelegate.shared.tabBarController else {
             return
         }
-
-        // select My Store
-        tabBar.selectedIndex = 0
 
         // store the navController
         guard let navController = tabBar.selectedViewController as? UINavigationController else {

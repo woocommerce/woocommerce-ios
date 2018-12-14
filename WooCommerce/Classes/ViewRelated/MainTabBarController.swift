@@ -76,6 +76,17 @@ class MainTabBarController: UITabBarController {
             trackTabSelected(newTab: userSelectedTab)
         }
     }
+
+    // MARK: - Public Methods
+
+    /// Switches the TabBarcController to the specified Tab
+    ///
+    func navigateTo(_ tab: WooTab) {
+        selectedIndex = tab.rawValue
+        if let navController = selectedViewController as? UINavigationController {
+            navController.popToRootViewController(animated: false)
+        }
+    }
 }
 
 
@@ -156,17 +167,14 @@ extension MainTabBarController {
         navigateTo(.notifications)
     }
 
-    /// Switches the TabBarcController to the specified Tab
+    /// Switches the TabBarController to the specified Tab
     ///
     private static func navigateTo(_ tab: WooTab) {
         guard let tabBar = AppDelegate.shared.tabBarController else {
             return
         }
 
-        tabBar.selectedIndex = tab.rawValue
-        if let navController = tabBar.selectedViewController as? UINavigationController {
-            navController.popToRootViewController(animated: false)
-        }
+        tabBar.navigateTo(tab)
     }
 
     /// Returns the "Top Visible Child" of the specified type

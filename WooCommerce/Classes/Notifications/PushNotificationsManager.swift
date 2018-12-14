@@ -181,6 +181,7 @@ extension PushNotificationsManager {
 
         // Handling!
         let handlers = [
+            handleSupportNotification,
             handleForegroundNotification,
             handleInactiveNotification,
             handleBackgroundNotification
@@ -198,6 +199,36 @@ extension PushNotificationsManager {
 // MARK: - Push Handlers
 //
 private extension PushNotificationsManager {
+
+    /// Handles a Support Remote Notification
+    ///
+    /// - Note: This should actually be *private*. BUT: for unit testing purposes we'll have to keep it public. Sorry.
+    ///
+    /// - Parameters:
+    ///     - userInfo: The Notification's Payload
+    ///     - completionHandler: A callback, to be executed on completion
+    ///
+    /// - Returns: True when handled. False otherwise
+    ///
+    func handleSupportNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
+
+        guard userInfo.string(forKey: APNSKey.type) == PushType.zendesk else {
+                return false
+        }
+
+        self.configuration.supportManager.pushNotificationReceived()
+
+        trackNotification(with: userInfo)
+
+        if applicationState == .inactive {
+            self.configuration.supportManager.displaySupportRequest(using: userInfo)
+        }
+
+        completionHandler(.newData)
+
+        return true
+    }
+
 
     /// Handles a Notification while in Foreground Mode
     ///

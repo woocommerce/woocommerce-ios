@@ -23,6 +23,7 @@
 /* Begin PBXBuildFile section */
 		74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74036CBF211B882100E462C2 /* PeriodDataViewController.swift */; };
 		740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740987B221B87760000E4C80 /* FancyAnimatedButton+Woo.swift */; };
+		740ADFE521C33688009EE5A9 /* licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 740ADFE421C33688009EE5A9 /* licenses.html */; };
 		7421344A210A323C00C13890 /* WooAnalyticsStat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74213449210A323C00C13890 /* WooAnalyticsStat.swift */; };
 		74334F36214AB130006D6AC5 /* ProductTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74334F34214AB12F006D6AC5 /* ProductTableViewCell.swift */; };
 		74334F37214AB130006D6AC5 /* ProductTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74334F35214AB12F006D6AC5 /* ProductTableViewCell.xib */; };
@@ -304,6 +305,7 @@
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74036CBF211B882100E462C2 /* PeriodDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodDataViewController.swift; sourceTree = "<group>"; };
 		740987B221B87760000E4C80 /* FancyAnimatedButton+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FancyAnimatedButton+Woo.swift"; sourceTree = "<group>"; };
+		740ADFE421C33688009EE5A9 /* licenses.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = licenses.html; sourceTree = "<group>"; };
 		74213449210A323C00C13890 /* WooAnalyticsStat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalyticsStat.swift; sourceTree = "<group>"; };
 		74334F34214AB12F006D6AC5 /* ProductTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductTableViewCell.swift; sourceTree = "<group>"; };
 		74334F35214AB12F006D6AC5 /* ProductTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductTableViewCell.xib; sourceTree = "<group>"; };
@@ -614,6 +616,14 @@
 			path = MyStore;
 			sourceTree = "<group>";
 		};
+		740ADFE321C33669009EE5A9 /* HTML */ = {
+			isa = PBXGroup;
+			children = (
+				740ADFE421C33688009EE5A9 /* licenses.html */,
+			);
+			path = HTML;
+			sourceTree = "<group>";
+		};
 		743E271E21AEF13E00D6DC82 /* Fancy Alerts */ = {
 			isa = PBXGroup;
 			children = (
@@ -842,6 +852,7 @@
 		B56DB3F22049C0C000D4AA8E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				740ADFE321C33669009EE5A9 /* HTML */,
 				B59D1EE7219089A7009D1978 /* Fonts */,
 				B5E5DA7221BB0B3100FFDF42 /* Sounds */,
 				B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */,
@@ -1431,6 +1442,7 @@
 				CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */,
 				CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */,
 				B5A82EE521025E550053ADC8 /* FulfillViewController.xib in Resources */,
+				740ADFE521C33688009EE5A9 /* licenses.html in Resources */,
 				B554016B2170D6010067DC90 /* ChartPlaceholderView.xib in Resources */,
 				CE32B11620BF8779006FBCF4 /* ProductListTableViewCell.xib in Resources */,
 				B557652D20F6827900185843 /* StoreTableViewCell.xib in Resources */,

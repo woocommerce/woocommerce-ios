@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 import MessageUI
 import Gridicons
+import SafariServices
 
 
 // MARK: - SettingsViewController
@@ -213,7 +214,12 @@ private extension SettingsViewController {
 
     func licensesWasPressed() {
         WooAnalytics.shared.track(.settingsLicensesLinkTapped)
-        // TODO: open licewnses screen
+        guard let url = Bundle.main.url(forResource: "licenses", withExtension: "html") else {
+            return
+        }
+
+        let safariViewController = SFSafariViewController(url: url)
+        present(safariViewController, animated: true, completion: nil)
     }
 
     func logOutUser() {

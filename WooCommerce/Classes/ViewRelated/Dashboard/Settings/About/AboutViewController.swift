@@ -148,7 +148,6 @@ private extension AboutViewController {
 
     func displayWebView(url: URL) {
         let safariViewController = SFSafariViewController(url: url)
-        safariViewController.modalPresentationStyle = .pageSheet
         present(safariViewController, animated: true, completion: nil)
     }
 }
@@ -224,7 +223,7 @@ extension AboutViewController: UITableViewDelegate {
 private struct Constants {
     static let rowHeight       = CGFloat(44)
     static let headerImageSize = CGSize(width: 140, height: 84)
-    static let headerPadding   = CGFloat(40)
+    static let headerPadding   = CGFloat(50)
     static let footerHeight    = 44
 }
 

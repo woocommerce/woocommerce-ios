@@ -7,6 +7,11 @@ import SafariServices
 import Yosemite
 
 
+extension NSNotification.Name {
+    static let ZDPNReceived = NSNotification.Name(rawValue: "ZDPNReceived")
+    static let ZDPNCleared = NSNotification.Name(rawValue: "ZDPNCleared")
+}
+
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
 /// as well as displaying views for the Help Center, new tickets, and ticket list.
 ///
@@ -22,6 +27,12 @@ class ZendeskManager: NSObject {
         didSet {
             DDLogInfo("Zendesk Enabled: \(zendeskEnabled)")
         }
+    }
+
+    private var unreadNotificationsCount = 0
+
+    var showSupportNotificationIndicator: Bool {
+        return unreadNotificationsCount > 0
     }
 
 
@@ -82,7 +93,7 @@ class ZendeskManager: NSObject {
 
 
     // MARK: - Show Zendesk Views
-
+    //
     // -TODO: in the future this should show the Zendesk Help Center.
     /// For now, link to the online FAQ
     ///
@@ -130,6 +141,15 @@ class ZendeskManager: NSObject {
             let requestListController = RequestUi.buildRequestList(with: [requestConfig])
             self.showZendeskView(requestListController)
         }
+    }
+
+    /// Displays a single ticket's view if possible.
+    ///
+    func showSingleTicketViewIfPossible(for requestId: String) {
+        let requestConfig = self.createRequest(supportSourceTag: nil)
+        let requestController = RequestUi.buildRequestUi(requestId: requestId, configurations: [requestConfig])
+
+        showZendeskView(requestController)
     }
 
     /// Displays an alert allowing the user to change their Support email address.
@@ -183,13 +203,6 @@ class ZendeskManager: NSObject {
 // MARK: - Push Notifications
 //
 extension ZendeskManager {
-
-    /// Stores the DeviceToken. Zendesk doesn't allow us to register for APNS until an Identity has been created.
-    ///
-    func deviceTokenWasReceived(deviceToken: String) {
-        self.deviceToken = deviceToken
-    }
-
     /// Registers the last known DeviceToken in the Zendesk Backend (if any).
     ///
     func registerDeviceTokenIfNeeded() {
@@ -215,11 +228,81 @@ extension ZendeskManager {
         }
     }
 
+    func postNotificationReceived() {
+        // Updating unread indicators should trigger UI updates, so send notification in main thread.
+        DispatchQueue.main.async {
+           NotificationCenter.default.post(name: .ZDPNReceived, object: nil)
+        }
+    }
+
+    func postNotificationRead() {
+        // Updating unread indicators should trigger UI updates, so send notification in main thread.
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .ZDPNCleared, object: nil)
+        }
+    }
+}
+
+
+// MARK: - ZendeskManager: SupportManagerAdapter Conformance
+//
+extension ZendeskManager: SupportManagerAdapter {
+    /// Stores the DeviceToken. Zendesk doesn't allow us to register for APNS until an Identity has been created.
+    ///
+    func deviceTokenWasReceived(deviceToken: String) {
+        self.deviceToken = deviceToken
+    }
+
     /// Unregisters from the Zendesk Push Notifications Service.
     ///
     func unregisterForRemoteNotifications() {
         DDLogInfo("☎️ [Zendesk] Unregistering for Notifications...")
         zendeskPushProvider?.unregisterForPush()
+    }
+
+    /// This handles Zendesk push notifications.
+    ///
+    func displaySupportRequest(using userInfo: [AnyHashable : Any]) {
+        guard zendeskEnabled == true,
+            let requestId = userInfo[PushKey.requestID] as? String else {
+                DDLogInfo("Zendesk push notification payload is invalid.")
+                return
+        }
+
+        // grab the tab bar
+        guard let tabBar = AppDelegate.shared.tabBarController else {
+            return
+        }
+
+        // select My Store
+        tabBar.navigateTo(.myStore)
+
+        // store the navController
+        guard let navController = tabBar.selectedViewController as? UINavigationController else {
+            DDLogError("⛔️ Unable to navigate to Zendesk deep link. Failed to find a nav controller.")
+            return
+        }
+
+        // navigate thru the stack
+        let settingsVC = UIStoryboard.dashboard.instantiateViewController(withIdentifier: SettingsViewController.classNameWithoutNamespaces) as! SettingsViewController
+        navController.pushViewController(settingsVC, animated: false)
+
+        let helpAndSupportVC = UIStoryboard.dashboard.instantiateViewController(withIdentifier: HelpAndSupportViewController.classNameWithoutNamespaces) as! HelpAndSupportViewController
+        navController.pushViewController(helpAndSupportVC, animated: false)
+
+        // save the reference
+        self.presentInController = navController
+
+        // show the single ticket view instead of the ticket list
+        showSingleTicketViewIfPossible(for: requestId)
+    }
+
+    /// Delegate method for a received push notification
+    ///
+    func pushNotificationReceived() {
+        unreadNotificationsCount += 1
+        saveUnreadCount()
+        postNotificationReceived()
     }
 }
 
@@ -400,6 +483,10 @@ private extension ZendeskManager {
         userEmail = userProfile.valueAsString(forKey: Constants.profileEmailKey)
         userName = userProfile.valueAsString(forKey: Constants.profileNameKey)
         return true
+    }
+
+    func saveUnreadCount() {
+        UserDefaults.standard.set(unreadNotificationsCount, forKey: Constants.unreadNotificationsKey)
     }
 
 
@@ -692,6 +779,7 @@ private extension ZendeskManager {
         static let zendeskProfileUDKey = "wc_zendesk_profile"
         static let profileEmailKey = "email"
         static let profileNameKey = "name"
+        static let unreadNotificationsKey = "wc_zendesk_unread_notifications"
         static let nameFieldCharacterLimit = 50
         static let sourcePlatform = "mobile_-_woo_ios"
         static let subcategory = "WooCommerce Mobile Apps"
@@ -719,6 +807,10 @@ private extension ZendeskManager {
         static let alertCancel = NSLocalizedString("Cancel", comment: "Cancel prompt for user information.")
         static let emailPlaceholder = NSLocalizedString("Email", comment: "Email address text field placeholder")
         static let namePlaceholder = NSLocalizedString("Name", comment: "Name text field placeholder")
+    }
+
+    struct PushKey {
+        static let requestID = "zendesk_sdk_request_id"
     }
 }
 

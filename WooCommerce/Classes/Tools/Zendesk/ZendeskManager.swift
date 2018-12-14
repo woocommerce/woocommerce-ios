@@ -278,20 +278,23 @@ extension ZendeskManager: SupportManagerAdapter {
         tabBar.selectedIndex = 0
 
         // store the navController
-        guard let presentInController = tabBar.selectedViewController as? UINavigationController else {
+        guard let navController = tabBar.selectedViewController as? UINavigationController else {
             DDLogError("⛔️ Unable to navigate to Zendesk deep link. Failed to find a nav controller.")
             return
         }
 
         // pop the current stack
-        presentInController.popToRootViewController(animated: false)
+        navController.popToRootViewController(animated: false)
 
         // navigate thru the stack
         let settingsVC = UIStoryboard.dashboard.instantiateViewController(withIdentifier: SettingsViewController.classNameWithoutNamespaces) as! SettingsViewController
-        presentInController.pushViewController(settingsVC, animated: false)
+        navController.pushViewController(settingsVC, animated: false)
 
         let helpAndSupportVC = UIStoryboard.dashboard.instantiateViewController(withIdentifier: HelpAndSupportViewController.classNameWithoutNamespaces) as! HelpAndSupportViewController
-        presentInController.pushViewController(helpAndSupportVC, animated: false)
+        navController.pushViewController(helpAndSupportVC, animated: false)
+
+        // save the reference
+        self.presentInController = navController
 
         // show the single ticket view instead of the ticket list
         showSingleTicketViewIfPossible(for: requestId)

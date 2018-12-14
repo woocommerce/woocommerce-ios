@@ -167,7 +167,7 @@ extension PushNotificationsManager {
         DDLogVerbose("📱 Push Notification Received: \n\(userInfo)\n")
 
         // Badge: Update
-        if let aps = userInfo[APNSKey.aps] as? [String: Any], let badgeNumber = aps.integer(forKey: APNSKey.badge) {
+        if let badgeNumber = userInfo.dictionary(forKey: APNSKey.aps)?.integer(forKey: APNSKey.badge) {
             configuration.application.applicationIconBadgeNumber = badgeNumber
         }
 
@@ -180,7 +180,11 @@ extension PushNotificationsManager {
         trackNotification(with: userInfo)
 
         // Handling!
-        let handlers = [ handleInactiveNotification, handleBackgroundNotification ]
+        let handlers = [
+            handleForegroundNotification,
+            handleInactiveNotification,
+            handleBackgroundNotification
+        ]
 
         for handler in handlers {
             if handler(userInfo, completionHandler) {
@@ -195,6 +199,29 @@ extension PushNotificationsManager {
 //
 private extension PushNotificationsManager {
 
+    /// Handles a Notification while in Foreground Mode
+    ///
+    /// - Parameters:
+    ///     - userInfo: The Notification's Payload
+    ///     - completionHandler: A callback, to be executed on completion
+    ///
+    /// - Returns: True when handled. False otherwise
+    ///
+    func handleForegroundNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
+        guard applicationState == .active, let _ = userInfo[APNSKey.identifier] else {
+            return false
+        }
+
+        if let message = userInfo.dictionary(forKey: APNSKey.aps)?.string(forKey: APNSKey.alert) {
+            configuration.application.presentInAppNotification(message: message)
+        }
+
+        synchronizeNotifications(completionHandler: completionHandler)
+
+        return true
+    }
+
+
     /// Handles a Notification while in Inactive Mode
     ///
     /// - Parameters:
@@ -204,11 +231,7 @@ private extension PushNotificationsManager {
     /// - Returns: True when handled. False otherwise
     ///
     func handleInactiveNotification(_ userInfo: [AnyHashable: Any], completionHandler: (UIBackgroundFetchResult) -> Void) -> Bool {
-        guard applicationState == .inactive else {
-            return false
-        }
-
-        guard let notificationId = userInfo.integer(forKey: APNSKey.identifier) else {
+        guard applicationState == .inactive, let notificationId = userInfo.integer(forKey: APNSKey.identifier) else {
             return false
         }
 
@@ -229,23 +252,11 @@ private extension PushNotificationsManager {
     /// - Returns: True when handled. False otherwise
     ///
     func handleBackgroundNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
-        guard applicationState == .background else {
+        guard applicationState == .background, let _ = userInfo[APNSKey.identifier] else {
             return false
         }
 
-        guard let _ = userInfo[APNSKey.identifier] else {
-            return false
-        }
-
-        let action = NotificationAction.synchronizeNotifications { error in
-            DDLogInfo("📱 Finished Notifications Background Fetch!")
-
-            let result = (error == nil) ? UIBackgroundFetchResult.newData : .noData
-            completionHandler(result)
-        }
-
-        DDLogInfo("📱 Running Notifications Background Fetch...")
-        configuration.storesManager.dispatch(action)
+        synchronizeNotifications(completionHandler: completionHandler)
 
         return true
     }
@@ -332,10 +343,31 @@ private extension PushNotificationsManager {
 }
 
 
+// MARK: - Yosemite Methods
+//
+private extension PushNotificationsManager {
+
+    /// Synchronizes all of the Notifications. On success this method will always signal `.newData`, and `.noData` on error.
+    ///
+    func synchronizeNotifications(completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        let action = NotificationAction.synchronizeNotifications { error in
+            DDLogInfo("📱 Finished Synchronizing Notifications!")
+
+            let result = (error == nil) ? UIBackgroundFetchResult.newData : .noData
+            completionHandler(result)
+        }
+
+        DDLogInfo("📱 Synchronizing Notifications in [\(applicationState.description) State]...")
+        configuration.storesManager.dispatch(action)
+    }
+}
+
+
 // MARK: - Private Types
 //
 private enum APNSKey {
     static let aps = "aps"
+    static let alert = "alert"
     static let badge = "badge"
     static let identifier = "note_id"
     static let type = "type"

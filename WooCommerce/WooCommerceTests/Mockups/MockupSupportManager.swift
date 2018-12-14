@@ -32,5 +32,5 @@ class MockupSupportManager: SupportManagerAdapter {
 
     /// Executed whenever the a user has tapped on a Remote Notification.
     ///
-    func handlePushNotification(_ userInfo: [AnyHashable: Any])
+    func handlePushNotification(_ userInfo: [AnyHashable: Any]) { }
 }

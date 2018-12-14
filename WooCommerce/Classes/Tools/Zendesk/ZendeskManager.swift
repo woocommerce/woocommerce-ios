@@ -159,7 +159,7 @@ class ZendeskManager: NSObject {
         let requestConfig = self.createRequest(supportSourceTag: nil)
         let requestController = RequestUi.buildRequestUi(requestId: requestId, configurations: [requestConfig])
 
-        showZendeskView(requestController, wantsModal: wantsModal)
+        showZendeskView(requestController)
     }
 
     /// Displays an alert allowing the user to change their Support email address.
@@ -283,19 +283,20 @@ extension ZendeskManager: SupportManagerAdapter {
 
         // No view controller is loaded
         if presentInController == nil {
-//            MainTabBarController.switchToMyStoreTab()
             let selectedViewController = AppDelegate.shared.tabBarController?.selectedViewController
             guard let navController = selectedViewController as? UINavigationController else {
-                DDLogDebug("I'm out of ideas.")
+                DDLogError("⛔️ Unable to navigate to Zendesk deep link. Failed to find a nav controller.")
                 return
             }
 
+            MainTabBarController.switchToMyStoreTab()
             presentInController = navController
 
-//            let settingsVC = SettingsViewController()
-//            navController.pushViewController(settingsVC, animated: true)
-//            let helpAndSupportVC = HelpAndSupportViewController()
-//            navController.pushViewController(helpAndSupportVC, animated: true)
+            let settingsVC = SettingsViewController()
+            navController.pushViewController(settingsVC, animated: false)
+
+            let helpAndSupportVC = HelpAndSupportViewController()
+            navController.pushViewController(helpAndSupportVC, animated: false)
         }
 
         // If the ticket list is being displayed, refresh the view.
@@ -452,13 +453,13 @@ private extension ZendeskManager {
 
     // MARK: - View
     //
-    func showZendeskView(_ zendeskView: UIViewController, wantsModal: Bool = false) {
+    func showZendeskView(_ zendeskView: UIViewController) {
         guard let presentInController = presentInController else {
             return
         }
 
         // If the controller is a UIViewController, set the modal display for iPad.
-        if !presentInController.isKind(of: UINavigationController.self) && UIDevice.current.userInterfaceIdiom == .pad || wantsModal == true {
+        if !presentInController.isKind(of: UINavigationController.self) && UIDevice.current.userInterfaceIdiom == .pad {
             let navController = UINavigationController(rootViewController: zendeskView)
             navController.modalPresentationStyle = .fullScreen
             navController.modalTransitionStyle = .crossDissolve

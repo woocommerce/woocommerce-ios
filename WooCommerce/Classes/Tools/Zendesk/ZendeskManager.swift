@@ -109,7 +109,7 @@ class ZendeskManager: NSObject {
     ///
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
 
-        createIdentity { success in
+        createIdentity(presentIn: controller) { success in
             guard success else {
                 return
             }
@@ -126,7 +126,7 @@ class ZendeskManager: NSObject {
     ///
     func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
 
-        createIdentity { success in
+        createIdentity(presentIn: controller) { success in
             guard success else {
                 return
             }
@@ -160,7 +160,7 @@ class ZendeskManager: NSObject {
             withName = false
         }
 
-        getUserInformationAndShowPrompt(withName: withName) { success in
+        getUserInformationAndShowPrompt(withName: withName, from: controller) { success in
             completion(success)
         }
     }
@@ -310,7 +310,7 @@ extension ZendeskManager: SupportManagerAdapter {
 //
 private extension ZendeskManager {
 
-    func createIdentity(completion: @escaping (Bool) -> Void) {
+    func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
 
         // If we already have an identity, do nothing.
         guard haveUserIdentity == false else {
@@ -342,7 +342,7 @@ private extension ZendeskManager {
             }
         }
 
-        getUserInformationAndShowPrompt(withName: true) { success in
+        getUserInformationAndShowPrompt(withName: true, from: viewController) { success in
             if success {
                 self.registerDeviceTokenIfNeeded()
             }
@@ -351,9 +351,9 @@ private extension ZendeskManager {
         }
     }
 
-    func getUserInformationAndShowPrompt(withName: Bool, completion: @escaping (Bool) -> Void) {
+    func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping (Bool) -> Void) {
         getUserInformationIfAvailable()
-        promptUserForInformation(withName: withName) { success in
+        promptUserForInformation(withName: withName, from: viewController) { success in
             guard success else {
                 DDLogInfo("No user information to create Zendesk identity with.")
                 completion(false)
@@ -572,7 +572,7 @@ private extension ZendeskManager {
 
     // MARK: - User Information Prompt
     //
-    func promptUserForInformation(withName: Bool, completion: @escaping (Bool) -> Void) {
+    func promptUserForInformation(withName: Bool, from viewController: UIViewController, completion: @escaping (Bool) -> Void) {
 
         let alertMessage = withName ? LocalizedText.alertMessageWithName : LocalizedText.alertMessage
         let alertController = UIAlertController(title: nil, message: alertMessage, preferredStyle: .alert)
@@ -631,7 +631,7 @@ private extension ZendeskManager {
         }
 
         // Show alert
-        presentInController?.present(alertController, animated: true, completion: nil)
+        viewController.present(alertController, animated: true, completion: nil)
     }
 
     /// Uses `@objc` because this method is used in a `#selector()` call

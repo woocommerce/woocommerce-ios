@@ -139,6 +139,7 @@ private extension SettingsViewController {
     func configurePrimaryStore(cell: HeadlineLabelTableViewCell) {
         cell.headline = siteUrl
         cell.body = accountName
+        cell.selectionStyle = .none
     }
 
     func configureSupport(cell: BasicTableViewCell) {
@@ -190,6 +191,7 @@ private extension SettingsViewController {
     }
 
     func configureLogout(cell: BasicTableViewCell) {
+        cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = StyleManager.destructiveActionColor
         cell.textLabel?.text = NSLocalizedString("Logout account", comment: "Logout Action")

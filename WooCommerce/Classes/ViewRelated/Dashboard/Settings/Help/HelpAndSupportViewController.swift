@@ -17,7 +17,18 @@ class HelpAndSupportViewController: UIViewController {
     /// User's preferred email for support messages
     ///
     private var accountEmail: String {
-        return StoresManager.shared.sessionManager.defaultAccount?.email ?? NSLocalizedString("Set email", comment: "Tells user to set an email that support can use for replies")
+        // A stored Zendesk email address is preferred
+        if let zendeskEmail = ZendeskManager.shared.userSupportEmail() {
+            return zendeskEmail
+        }
+
+        // If no preferred ZD email exists, try the account email
+        if let mainEmail = StoresManager.shared.sessionManager.defaultAccount?.email {
+            return mainEmail
+        }
+
+        // If that doesn't exist, indicate we need them to set an email.
+        return NSLocalizedString("Set email", comment: "Tells user to set an email that support can use for replies")
     }
 
     /// Indicates if the NavBar should display a dismiss button

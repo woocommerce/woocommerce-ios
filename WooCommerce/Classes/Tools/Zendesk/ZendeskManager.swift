@@ -642,6 +642,8 @@ private extension ZendeskManager {
 
     func updateNameFieldForEmail(_ email: String) {
         guard let alertController = presentInController?.presentedViewController as? UIAlertController,
+            let totalTextFields = alertController.textFields?.count,
+            totalTextFields > 1,
             let nameField = alertController.textFields?.last else {
                 return
         }

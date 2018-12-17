@@ -158,7 +158,13 @@ class ZendeskManager: NSObject {
         WooAnalytics.shared.track(.supportIdentityFormViewed)
         presentInController = controller
 
-        getUserInformationAndShowPrompt(withName: false) { success in
+        // If the user hasn't already set a username, go ahead and ask for that too.
+        var withName = true
+        if let name = userName, !name.isEmpty {
+            withName = false
+        }
+
+        getUserInformationAndShowPrompt(withName: withName) { success in
             completion(success)
         }
     }

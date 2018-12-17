@@ -93,7 +93,7 @@ private extension SettingsViewController {
         sections = [
             Section(title: primaryStoreTitle, rows: [.primaryStore]),
             Section(title: nil, rows: [.support]),
-            Section(title: privacySettingsTitle, rows: [.privacy]),
+            Section(title: privacySettingsTitle, rows: [.privacy, .featureRequest]),
             Section(title: aboutSettingsTitle, rows: [.about, .licenses]),
             Section(title: nil, rows: [.logout]),
         ]
@@ -115,6 +115,8 @@ private extension SettingsViewController {
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
+        case let cell as BasicTableViewCell where row == .featureRequest:
+            configureFeatureSuggestions(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
             configureAbout(cell: cell)
         case let cell as BasicTableViewCell where row == .licenses:
@@ -141,6 +143,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Privacy Settings", comment: "Navigates to Privacy Settings screen")
+    }
+
+    func configureFeatureSuggestions(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Feature Request", comment: "Navigates to the feature request screen")
     }
 
     func configureAbout(cell: BasicTableViewCell) {
@@ -217,6 +225,11 @@ private extension SettingsViewController {
         performSegue(withIdentifier: Segues.licensesSegue, sender: nil)
     }
 
+    func featureRequestWasPressed() {
+        let safariViewController = SFSafariViewController(url: WooConstants.featureRequestURL)
+        present(safariViewController, animated: true, completion: nil)
+    }
+
     func logOutUser() {
         StoresManager.shared.deauthenticate()
         navigationController?.popToRootViewController(animated: true)
@@ -286,6 +299,8 @@ extension SettingsViewController: UITableViewDelegate {
             supportWasPressed()
         case .privacy:
             privacyWasPressed()
+        case .featureRequest:
+            featureRequestWasPressed()
         case .licenses:
             licensesWasPressed()
         case .about:
@@ -314,6 +329,7 @@ private enum Row: CaseIterable {
     case support
     case logout
     case privacy
+    case featureRequest
     case about
     case licenses
 
@@ -326,6 +342,8 @@ private enum Row: CaseIterable {
         case .logout:
             return BasicTableViewCell.self
         case .privacy:
+            return BasicTableViewCell.self
+        case .featureRequest:
             return BasicTableViewCell.self
         case .about:
             return BasicTableViewCell.self

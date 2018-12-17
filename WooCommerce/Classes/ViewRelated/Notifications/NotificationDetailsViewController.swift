@@ -165,9 +165,8 @@ private extension NotificationDetailsViewController {
     /// Displays a Notice onScreen, indicating that the current Note has been deleted from the Store.
     ///
     func displayNoteDeletedNotice() {
-        let title = NSLocalizedString("Notification", comment: "Deleted Notification's Title")
-        let message = NSLocalizedString("The notification has been removed", comment: "Displayed whenever a Notification that was onscreen got deleted.")
-        let notice = Notice(title: title, message: message, feedbackType: .error)
+        let title = NSLocalizedString("The notification has been removed", comment: "Displayed whenever a Notification that was onscreen got deleted.")
+        let notice = Notice(title: title, feedbackType: .error)
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }

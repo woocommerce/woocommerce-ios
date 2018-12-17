@@ -175,7 +175,7 @@ private extension NotificationDetailsViewController {
     ///
     static func displayModerationErrorNotice(failedStatus: CommentStatus) {
         let title = NSLocalizedString("Error", comment: "Review error notice title")
-        let message = String.localizedStringWithFormat(NSLocalizedString("Unable to mark review as %@",
+        let message = String.localizedStringWithFormat(NSLocalizedString("Unable to mark review %@",
                                                                          comment: "Review error notice message"), failedStatus.description)
         let notice = Notice(title: title, message: message, feedbackType: .error)
 

@@ -44,7 +44,7 @@ class ZendeskManager: NSObject {
     private var haveUserIdentity = false
     private var alertNameField: UITextField?
 
-    private var presentInController: UIViewController?
+    private weak var presentInController: UIViewController?
 
     /// Returns a ZendeskPushProvider Instance (If Possible)
     ///

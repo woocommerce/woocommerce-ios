@@ -109,8 +109,6 @@ class ZendeskManager: NSObject {
     ///
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
 
-        presentInController = controller
-
         createIdentity { success in
             guard success else {
                 return
@@ -120,15 +118,13 @@ class ZendeskManager: NSObject {
 
             let newRequestConfig = self.createRequest(supportSourceTag: sourceTag)
             let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
-            self.showZendeskView(newRequestController)
+            self.showZendeskView(newRequestController, from: controller)
         }
     }
 
     /// Displays the Zendesk Request List view from the given controller, allowing user to access their tickets.
     ///
     func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
-
-        presentInController = controller
 
         createIdentity { success in
             guard success else {
@@ -139,17 +135,17 @@ class ZendeskManager: NSObject {
 
             let requestConfig = self.createRequest(supportSourceTag: sourceTag)
             let requestListController = RequestUi.buildRequestList(with: [requestConfig])
-            self.showZendeskView(requestListController)
+            self.showZendeskView(requestListController, from: controller)
         }
     }
 
     /// Displays a single ticket's view if possible.
     ///
-    func showSingleTicketViewIfPossible(for requestId: String) {
+    func showSingleTicketViewIfPossible(for requestId: String, from navController: UINavigationController) {
         let requestConfig = self.createRequest(supportSourceTag: nil)
         let requestController = RequestUi.buildRequestUi(requestId: requestId, configurations: [requestConfig])
 
-        showZendeskView(requestController)
+        showZendeskView(requestController, from: navController)
     }
 
     /// Displays an alert allowing the user to change their Support email address.
@@ -296,11 +292,8 @@ extension ZendeskManager: SupportManagerAdapter {
         let helpAndSupportVC = UIStoryboard.dashboard.instantiateViewController(withIdentifier: HelpAndSupportViewController.classNameWithoutNamespaces) as! HelpAndSupportViewController
         navController.pushViewController(helpAndSupportVC, animated: false)
 
-        // save the reference
-        self.presentInController = navController
-
         // show the single ticket view instead of the ticket list
-        showSingleTicketViewIfPossible(for: requestId)
+        showSingleTicketViewIfPossible(for: requestId, from: navController)
     }
 
     /// Delegate method for a received push notification
@@ -450,17 +443,25 @@ private extension ZendeskManager {
 
     // MARK: - View
     //
-    func showZendeskView(_ zendeskView: UIViewController) {
-        guard let presentInController = presentInController else {
-            return
-        }
+    func showZendeskView(_ zendeskView: UIViewController, from controller: UIViewController) {
+        // Got some duck typing going on in here. Sorry.
 
         // If the controller is a UIViewController, set the modal display for iPad.
-        if !presentInController.isKind(of: UINavigationController.self) && UIDevice.current.userInterfaceIdiom == .pad {
+        if !controller.isKind(of: UINavigationController.self) && UIDevice.current.userInterfaceIdiom == .pad {
             let navController = UINavigationController(rootViewController: zendeskView)
             navController.modalPresentationStyle = .fullScreen
             navController.modalTransitionStyle = .crossDissolve
-            presentInController.present(navController, animated: true)
+            controller.present(navController, animated: true)
+            return
+        }
+
+        if let navController = controller as? UINavigationController {
+            navController.pushViewController(zendeskView, animated: true)
+            return
+        }
+
+        if let navController = controller.navigationController {
+            navController.pushViewController(zendeskView, animated: true)
             return
         }
 

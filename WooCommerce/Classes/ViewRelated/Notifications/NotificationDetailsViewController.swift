@@ -107,7 +107,7 @@ private extension NotificationDetailsViewController {
         }
 
         entityListener.onDelete = { [weak self] in
-            self?.navigationController?.popViewController(animated: true)
+            self?.navigationController?.popToRootViewController(animated: true)
             self?.displayNoteDeletedNotice()
         }
     }

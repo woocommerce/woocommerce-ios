@@ -86,14 +86,16 @@ private extension SettingsViewController {
     }
 
     func configureSections() {
-        let primaryStoreTitle = NSLocalizedString("PRIMARY STORE", comment: "My Store > Settings > Primary Store information section").uppercased()
-        let privacySettingsTitle = NSLocalizedString("HELP IMPROVE THE APP", comment: "My Store > Settings > Privacy settings section").uppercased()
+        let primaryStoreTitle = NSLocalizedString("Primary Store", comment: "My Store > Settings > Primary Store information section").uppercased()
+        let improveTheAppTitle = NSLocalizedString("Help Improve The App", comment: "My Store > Settings > Privacy settings section").uppercased()
+        let notificationsTitle = NSLocalizedString("Notifications", comment: "My Store > Settings > Notifications app section").uppercased()
         let aboutSettingsTitle = NSLocalizedString("About the app", comment: "My Store > Settings > About app section").uppercased()
 
         sections = [
             Section(title: primaryStoreTitle, rows: [.primaryStore]),
             Section(title: nil, rows: [.support]),
-            Section(title: privacySettingsTitle, rows: [.privacy, .featureRequest]),
+            Section(title: notificationsTitle, rows: [.notificationOrders, .notificationSound, .notificationReviews]),
+            Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest]),
             Section(title: aboutSettingsTitle, rows: [.about, .licenses]),
             Section(title: nil, rows: [.logout]),
         ]
@@ -113,6 +115,12 @@ private extension SettingsViewController {
             configurePrimaryStore(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
+        case let cell as SwitchTableViewCell where row == .notificationOrders:
+            configureNotificationOrders(cell: cell)
+        case let cell as SwitchTableViewCell where row == .notificationSound:
+            configureNotificationSound(cell: cell)
+        case let cell as SwitchTableViewCell where row == .notificationReviews:
+            configureNotificationReviews(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .featureRequest:
@@ -137,6 +145,24 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Help & Support", comment: "Contact Support Action")
+    }
+
+    func configureNotificationOrders(cell: SwitchTableViewCell) {
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Orders", comment: "Setting title for order notifications")
+        cell.detailTextLabel?.text = NSLocalizedString("Get alerts when new orders come in", comment: "Setting detail for order notifications")
+    }
+
+    func configureNotificationSound(cell: SwitchTableViewCell) {
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Tone", comment: "Setting title for the notification sound")
+        cell.detailTextLabel?.text = NSLocalizedString("Play Cha-Ching sound on new order", comment: "Setting detail for the notification sound")
+    }
+
+    func configureNotificationReviews(cell: SwitchTableViewCell) {
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Product Reviews", comment: "Setting title for product review notifications")
+        cell.detailTextLabel?.text = NSLocalizedString("Get alerts for new product reviews", comment: "Setting detail for product review notifications")
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -332,6 +358,9 @@ private enum Row: CaseIterable {
     case featureRequest
     case about
     case licenses
+    case notificationOrders
+    case notificationSound
+    case notificationReviews
 
     var type: UITableViewCell.Type {
         switch self {
@@ -349,6 +378,12 @@ private enum Row: CaseIterable {
             return BasicTableViewCell.self
         case .licenses:
             return BasicTableViewCell.self
+        case .notificationOrders:
+            return SwitchTableViewCell.self
+        case .notificationSound:
+            return SwitchTableViewCell.self
+        case .notificationReviews:
+            return SwitchTableViewCell.self
         }
     }
 

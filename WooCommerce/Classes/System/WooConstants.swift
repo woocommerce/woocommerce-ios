@@ -40,4 +40,8 @@ enum WooConstants {
     /// FAQ URL
     ///
     static let faqURL = URL(string: "https://docs.woocommerce.com/document/frequently-asked-questions")!
+
+    /// Feature Request URL
+    ///
+    static let featureRequestURL = URL(string: "http://ideas.woocommerce.com/forums/133476-woocommerce?category_id=84283")!
 }

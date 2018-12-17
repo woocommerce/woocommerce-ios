@@ -44,7 +44,7 @@ class ZendeskManager: NSObject {
     private var haveUserIdentity = false
     private var alertNameField: UITextField?
 
-    private var presentInController: UIViewController?
+//    private var presentInController: UIViewController?
 
     /// Returns a ZendeskPushProvider Instance (If Possible)
     ///
@@ -109,9 +109,7 @@ class ZendeskManager: NSObject {
     ///
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
 
-        presentInController = controller
-
-        createIdentity { success in
+        createIdentity(from: controller) { success in
             guard success else {
                 return
             }
@@ -120,7 +118,8 @@ class ZendeskManager: NSObject {
 
             let newRequestConfig = self.createRequest(supportSourceTag: sourceTag)
             let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
-            self.showZendeskView(newRequestController)
+            let navController = UINavigationController(rootViewController: controller)
+            self.showZendeskView(newRequestController, in: navController)
         }
     }
 
@@ -128,9 +127,7 @@ class ZendeskManager: NSObject {
     ///
     func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
 
-        presentInController = controller
-
-        createIdentity { success in
+        createIdentity(from: controller) { success in
             guard success else {
                 return
             }
@@ -139,26 +136,27 @@ class ZendeskManager: NSObject {
 
             let requestConfig = self.createRequest(supportSourceTag: sourceTag)
             let requestListController = RequestUi.buildRequestList(with: [requestConfig])
-            self.showZendeskView(requestListController)
+            let navController = UINavigationController(rootViewController: controller)
+            self.showZendeskView(requestListController, in: navController)
         }
     }
 
     /// Displays a single ticket's view if possible.
     ///
-    func showSingleTicketViewIfPossible(for requestId: String) {
+    func showSingleTicketViewIfPossible(for requestId: String, in navController: UINavigationController) {
         let requestConfig = self.createRequest(supportSourceTag: nil)
         let requestController = RequestUi.buildRequestUi(requestId: requestId, configurations: [requestConfig])
 
-        showZendeskView(requestController)
+        showZendeskView(requestController, in: navController)
     }
 
     /// Displays an alert allowing the user to change their Support email address.
     ///
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping (Bool) -> Void) {
         WooAnalytics.shared.track(.supportIdentityFormViewed)
-        presentInController = controller
 
-        getUserInformationAndShowPrompt(withName: false) { success in
+
+        getUserInformationAndShowPrompt(withName: false, from: controller) { success in
             completion(success)
         }
     }
@@ -290,11 +288,8 @@ extension ZendeskManager: SupportManagerAdapter {
         let helpAndSupportVC = UIStoryboard.dashboard.instantiateViewController(withIdentifier: HelpAndSupportViewController.classNameWithoutNamespaces) as! HelpAndSupportViewController
         navController.pushViewController(helpAndSupportVC, animated: false)
 
-        // save the reference
-        self.presentInController = navController
-
         // show the single ticket view instead of the ticket list
-        showSingleTicketViewIfPossible(for: requestId)
+        showSingleTicketViewIfPossible(for: requestId, in: navController)
     }
 
     /// Delegate method for a received push notification
@@ -311,7 +306,7 @@ extension ZendeskManager: SupportManagerAdapter {
 //
 private extension ZendeskManager {
 
-    func createIdentity(completion: @escaping (Bool) -> Void) {
+    func createIdentity(from controller: UIViewController, completion: @escaping (Bool) -> Void) {
 
         // If we already have an identity, do nothing.
         guard haveUserIdentity == false else {
@@ -343,7 +338,7 @@ private extension ZendeskManager {
             }
         }
 
-        getUserInformationAndShowPrompt(withName: true) { success in
+        getUserInformationAndShowPrompt(withName: true, from: controller) { success in
             if success {
                 self.registerDeviceTokenIfNeeded()
             }
@@ -352,9 +347,11 @@ private extension ZendeskManager {
         }
     }
 
-    func getUserInformationAndShowPrompt(withName: Bool, completion: @escaping (Bool) -> Void) {
+    func getUserInformationAndShowPrompt(withName: Bool,
+                                         from controller: UIViewController,
+                                         completion: @escaping (Bool) -> Void) {
         getUserInformationIfAvailable()
-        promptUserForInformation(withName: withName) { success in
+        promptUserForInformation(withName: withName, from: controller) { success in
             guard success else {
                 DDLogInfo("No user information to create Zendesk identity with.")
                 completion(false)
@@ -444,23 +441,16 @@ private extension ZendeskManager {
 
     // MARK: - View
     //
-    func showZendeskView(_ zendeskView: UIViewController) {
-        guard let presentInController = presentInController else {
-            return
-        }
-
-        // If the controller is a UIViewController, set the modal display for iPad.
-        if !presentInController.isKind(of: UINavigationController.self) && UIDevice.current.userInterfaceIdiom == .pad {
-            let navController = UINavigationController(rootViewController: zendeskView)
+    func showZendeskView(_ zendeskView: UIViewController, in navController: UINavigationController) {
+        // Set the modal display for iPad.
+        if UIDevice.current.userInterfaceIdiom == .pad {
             navController.modalPresentationStyle = .fullScreen
             navController.modalTransitionStyle = .crossDissolve
-            presentInController.present(navController, animated: true)
+            navController.present(zendeskView, animated: true)
             return
         }
 
-        if let navController = presentInController as? UINavigationController {
-            navController.pushViewController(zendeskView, animated: true)
-        }
+        navController.pushViewController(zendeskView, animated: true)
     }
 
 
@@ -565,7 +555,9 @@ private extension ZendeskManager {
 
     // MARK: - User Information Prompt
     //
-    func promptUserForInformation(withName: Bool, completion: @escaping (Bool) -> Void) {
+    func promptUserForInformation(withName: Bool,
+                                  from controller: UIViewController,
+                                  completion: @escaping (Bool) -> Void) {
 
         let alertMessage = withName ? LocalizedText.alertMessageWithName : LocalizedText.alertMessage
         let alertController = UIAlertController(title: nil, message: alertMessage, preferredStyle: .alert)
@@ -624,24 +616,24 @@ private extension ZendeskManager {
         }
 
         // Show alert
-        presentInController?.present(alertController, animated: true, completion: nil)
+        controller.present(alertController, animated: true, completion: nil)
     }
 
     /// Uses `@objc` because this method is used in a `#selector()` call
     ///
-    @objc func emailTextFieldDidChange(_ textField: UITextField) {
-        guard let alertController = presentInController?.presentedViewController as? UIAlertController,
+    @objc func emailTextFieldDidChange(_ textField: UITextField, in controller: UIViewController) {
+        guard let alertController = controller.presentedViewController as? UIAlertController,
             let email = alertController.textFields?.first?.text,
             let submitAction = alertController.actions.last else {
                 return
         }
 
         submitAction.isEnabled = EmailFormatValidator.validate(string: email)
-        updateNameFieldForEmail(email)
+        updateNameFieldForEmail(email, in: controller)
     }
 
-    func updateNameFieldForEmail(_ email: String) {
-        guard let alertController = presentInController?.presentedViewController as? UIAlertController,
+    func updateNameFieldForEmail(_ email: String, in controller: UIViewController) {
+        guard let alertController = controller.presentedViewController as? UIAlertController,
             let nameField = alertController.textFields?.last else {
                 return
         }

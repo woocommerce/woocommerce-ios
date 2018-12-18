@@ -178,6 +178,10 @@ public enum WooAnalyticsStat: String {
     case notificationReviewActionSuccess        = "review_action_success"
     case notificationReviewActionFailed         = "review_action_failed"
     case notificationReviewActionUndo           = "review_action_undo"
+
+    // Jetpack Tunnel Events
+    //
+    case jetpackTunnelTimeout                   = "jetpack_tunnel_timeout"
 }
 
 public extension WooAnalyticsStat {

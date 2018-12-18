@@ -88,7 +88,6 @@ private extension AuthenticatedState {
     /// Executed whenever a DotcomError is received (ApplicationLayer). This allows us to have a *Master* error handling flow!
     ///
     func tunnelTimeoutWasReceived(note: Notification) {
-        DDLogError("😣 Tracked Jetpack Tunnel Timeout")
         WooAnalytics.shared.track(.jetpackTunnelTimeout)
     }
 }

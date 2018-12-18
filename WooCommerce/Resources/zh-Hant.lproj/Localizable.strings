@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-28 07:54:02+0000 */
+/* Translation-Revision-Date: 2018-12-11 08:54:02+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -11,6 +11,15 @@
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "驗證碼僅包含數字。";
+
+/* About this app (information page title) */
+"About" = "About";
+
+/* My Store > Settings > About app section */
+"About the app" = "About the app";
+
+/* Application's Active State */
+"Active" = "Active";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "已啟用，關閉自動更新";
@@ -81,6 +90,9 @@
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "上一步";
 
+/* Application's Background State */
+"Background" = "Background";
+
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "長條數目 %1$i, %2$@,";
 
@@ -104,6 +116,9 @@
 
 /* Cancelled Order Status */
 "Canceled" = "已取消";
+
+/* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
+"Cannot connect to %@" = "Cannot connect to %@";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "隨時隨地掌握最愛網站的最新動態並加入討論。";
@@ -156,6 +171,12 @@
 /* Error message informing the user that there was a problem unsubscribing to a site or feed. */
 "Could not unfollow the site at the address specified." = "無法取消關注指定位址的網站。";
 
+/* Error message shown a URL points to a valid site but not a WordPress site. */
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
+
+/* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
+
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
 "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "無法連結。嘗試存取網站的 XMLRPC 終端時發生 403 錯誤。此應用程式需要 XMLRPC 終端才能與你的網站通訊。請聯絡你的主機服務提供者，以解決此問題。";
 
@@ -173,9 +194,6 @@
 
 /* Plural of 'day' — a statistical unit */
 "Days" = "天";
-
-/* Deleted Notification's Title */
-"Deleted Notification!" = "通知已刪除！";
 
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "已刪除：訂單編號 (viewModel.order.number)";
@@ -219,6 +237,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空的網址";
 
+/* Sign in instructions for logging in with a URL. */
+"Enter the address of your WooCommerce store you'd like to connect." = "請輸入要連結的 WooCommerce 商店位址。";
+
 /* Instruction text on the login's site addresss screen. */
 "Enter the address of your WordPress site you'd like to connect." = "請輸入要連結的 WordPress 網站位址。";
 
@@ -228,11 +249,17 @@
 /* No comment provided by engineer. */
 "Enter your password instead." = "請改為輸入你的密碼。";
 
+/* No comment provided by engineer. */
+"Error" = "Error";
+
 /* Failed Order Status */
 "Failed" = "失敗";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API 無法序列化要求。";
+
+/* Navigates to the feature request screen */
+"Feature Request" = "Feature Request";
 
 /* Accessibility label for the Filter notifications button. */
 "Filter notifications" = "篩選通知";
@@ -291,6 +318,9 @@
 /* Detail label for yes/no switch. */
 "If disabled will add the note as private." = "如果停用，會將此備註新增為私人備註。";
 
+/* Application's Inactive State */
+"Inactive" = "Inactive";
+
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "未啟用，關閉自動更新";
 
@@ -327,6 +357,9 @@
 /* Settings > Privacy Settings. A text link to the cookie policy. */
 "Learn more" = "瞭解更多";
 
+/* Licenses (information page title) */
+"Licenses" = "Licenses";
+
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "已達限制。你可以在 1 分鐘後再試一次。如果在 1 分鐘不到之前重試，只會延長你必須等候繼續進行的時間。如果你覺得這是錯誤，請聯絡支援團隊。";
 
@@ -353,6 +386,9 @@
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "透過 Jetpack 登入";
+
+/* Sign in instructions on the 'log in using email' screen. */
+"Log in with your WordPress.com account email address to manage your WooCommerce stores." = "使用 WordPress.com 帳號電子郵件地址登入，即可管理 WooCommerce 商店。";
 
 /* Logout Action */
 "Logout account" = "登出帳號";
@@ -448,7 +484,7 @@
 "Note to customer" = "給顧客的備註";
 
 /* No comment provided by engineer. */
-"Notifications" = "通知";
+"Notifications" = "Notifications";
 
 /* Notifications filtered title */
 "Notifications: (currentTypeFilter.description)" = "通知：(currentTypeFilter.description)";
@@ -476,6 +512,9 @@
 
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "開啟郵件";
+
+/* Navigates to open source licenses screen */
+"Open source licenses" = "Open source licenses";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "選用追蹤資訊";
@@ -534,14 +573,20 @@
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "請輸入你的密碼";
 
+/* Instructions for alert asking for email and name. */
+"Please enter your email address and username:" = "Please enter your email address and username:";
+
 /* Instructions for alert asking for email. */
-"Please enter your email address." = "請輸入你的電子郵件地址。";
+"Please enter your email address:" = "請輸入你的電子郵件地址。";
 
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "請填寫所有欄位";
 
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "請開啟電子郵件應用程式，找到 WordPress.com 傳送的電子郵件。";
+
+/* Opens the Privacy Policy web page */
+"Privacy Policy" = "Privacy Policy";
 
 /* Navigates to Privacy Settings screen */
 "Privacy Settings" = "隱私權設定";
@@ -590,6 +635,9 @@
 
 /* No comment provided by engineer. */
 "Retry" = "重試";
+
+/* Review moderation success notice message */
+"Review marked %@" = "Review marked %@";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "檢視、準備和運送這些待處理訂單";
@@ -711,11 +759,17 @@
 /* Subtotal label for payment view */
 "Subtotal" = "小計";
 
+/* Labels an order note to let user know it's a system status message */
+"System status" = "System status";
+
 /* Tax label for total taxes line */
 "Tax:" = "稅金：";
 
 /* Taxes label for payment view */
 "Taxes" = "稅金";
+
+/* Opens the Terms of Service web page */
+"Terms of Service" = "Terms of Service";
 
 /* Button title */
 "Text me a code instead" = "請改用簡訊傳送驗證碼給我";
@@ -754,7 +808,7 @@
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "此伺服器的憑證無效。你可能正連線至冒充為「%@」的伺服器，而這可能洩漏你的機密資料。\n\n是否仍然要信任憑證？";
 
 /* Displayed whenever a Notification that was onscreen got deleted. */
-"The notification has been removed!" = "通知已移除！";
+"The notification has been removed" = "通知已移除！";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "已從你的商店刪除此訂單！";
@@ -794,9 +848,6 @@
 
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "這類資訊有助我們改進產品、提供與你更加相關的行銷活動、帶來更為個人化的 WordPress.com 使用體驗；若要瞭解更多詳細內容，請參見我們的「隱私權政策」。";
-
-/* Instructions for alert asking for email and name. */
-"To continue please enter your email address and name." = "若要繼續，請輸入你的電子郵件地址和姓名。";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "若要建立新的 WordPress.com 帳號，請輸入你的電子郵件地址。";
@@ -846,6 +897,9 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "找不到與此帳號連結的 WooCommerce 商店";
 
+/* Review error notice message */
+"Unable to mark review %@" = "Unable to mark review %@";
+
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "無法透過該 URL 讀取 WordPress 網站。點選「需要說明？」即可檢視常見問題集。";
 
@@ -860,6 +914,9 @@
 
 /* Undo Action */
 "Undo" = "復原";
+
+/* Unknown Application State */
+"Unknown" = "Unknown";
 
 /* No comment provided by engineer. */
 "Unknown Search Terms" = "不明搜尋字詞";
@@ -884,6 +941,9 @@
 
 /* App version label */
 "Version" = "版本";
+
+/* Displays the version of the App */
+"Version %@" = "Version %@";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "檢視先前提交的支援票證";
@@ -918,9 +978,6 @@
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "我們無法用此 URL 連上 Jetpack 網站。如需協助，請與我們聯絡。";
 
-/* Error message shown a URL points to a valid site but not a WordPress site. */
-"We're sure this is a great site - but it's not a WordPress site, so you can't connect to it with this app." = "我們相信這是個很棒的網站，但很可惜它不是 WordPress 網站，因此無法以此應用程式連結。";
-
 /* Statistical unit - a single week */
 "Week" = "週";
 
@@ -935,6 +992,9 @@
 
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "糟糕，此雙重驗證碼無效。請再次檢查你的驗證碼，然後再試一次！";
+
+/* Navigates to about WooCommerce app screen */
+"WooCommerce" = "WooCommerce";
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "iOS 版 WooCommerce 支援";
@@ -972,6 +1032,9 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "當你使用 Safari 造訪自己的網站時，網站位址會顯示在畫面上方的網址列中。";
 
+/* Notification status description for 'approved' */
+"approved" = "已核准";
+
 /* Login Disclaimer Linked Text */
 "configuration instructions" = "設定說明";
 
@@ -981,12 +1044,30 @@
 /* Later today */
 "later today" = "今日稍晚";
 
+/* Notification status description for 'unspam' (opposite of spam) */
+"not spam" = "非垃圾留言";
+
+/* Notification status description for 'untrash' (opposite of trash) */
+"not trash" = "移出垃圾桶";
+
+/* Notification status description for 'spam' */
+"spam" = "垃圾留言";
+
 /* Today */
 "today" = "今天";
+
+/* Notification status description for 'trash' */
+"trash" = "移至垃圾桶";
+
+/* Notification status description for 'unapproved' */
+"unapproved" = "未核准";
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "不明的 URL";
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} 透過 Google 登入。";
+
+/* About View's Footer Text. The variable is the current year */
+"© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
 

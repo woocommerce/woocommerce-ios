@@ -294,4 +294,22 @@ class MoneyFormatterTests: XCTestCase {
         let formattedDecimal = MoneyFormatter().formatDecimal(from: stringValue)
         XCTAssertEqual(decimalValue, formattedDecimal)
     }
+
+
+    /// This is where a float to decimal unit test would go.
+    /// It's not here because we don't allow using floats for currency.
+    /// https://storedev.wordpress.com/2018/02/21/lets-talk-about-floating-point/
+
+
+    /// Testing that the formatted decimal value is not rounded.
+    ///
+    func testStringValueIsNotRoundedWhenFormattedAsDecimal() {
+        let stringValue = "9.9999"
+        let decimalValue = Decimal(string: stringValue)
+
+        let formattedDecimal = MoneyFormatter().formatDecimal(from: stringValue)
+        XCTAssertEqual(decimalValue, formattedDecimal)
+    }
+
+    
 }

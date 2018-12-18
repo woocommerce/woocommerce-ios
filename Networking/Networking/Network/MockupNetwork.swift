@@ -22,10 +22,6 @@ class MockupNetwork: Network {
     ///
     private var errorMap = [String: Error]()
 
-    /// Keeps a collection of all of the `responseJSON` requests.
-    ///
-    var requestsForResponseJSON = [URLRequestConvertible]()
-
     /// Keeps a collection of all of the `responseData` requests.
     ///
     var requestsForResponseData = [URLRequestConvertible]()
@@ -51,25 +47,6 @@ class MockupNetwork: Network {
         self.useResponseQueue = useResponseQueue
     }
 
-
-    /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the specified response, *PARSED* as json.
-    /// Otherwise, an error will be relayed back (.notFound!).
-    ///
-    func responseJSON(for request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
-        requestsForResponseJSON.append(request)
-
-        if let error = error(for: request) {
-            completion(nil, error)
-            return
-        }
-
-        guard let name = filename(for: request), let response = Loader.jsonObject(for: name) else {
-            completion(nil, NetworkError.notFound)
-            return
-        }
-
-        completion(response, nil)
-    }
 
     /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the specified response file, loaded as *Data*.
     /// Otherwise, an error will be relayed back (.notFound!).

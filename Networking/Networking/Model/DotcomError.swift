@@ -7,45 +7,34 @@ public struct DotcomError: Error, Decodable {
 
     /// Error Code
     ///
-    public let code: String
+    public let error: String
 
     /// Descriptive Message
     ///
     public let message: String?
-
-
-    /// Coding Keys!
-    ///
-    private enum CodingKeys: String, CodingKey {
-        case code = "error"
-        case message
-    }
-}
-
-/// MARK: - DotcomError Methods
-///
-extension DotcomError {
-
-    /// Designated Initializer
-    ///
-    init?(dictionary: [AnyHashable: Any]) {
-        guard let code = dictionary[CodingKeys.code.rawValue] as? String else {
-            return nil
-        }
-
-        self.code = code
-        self.message = dictionary[CodingKeys.message.rawValue] as? String
-    }
 }
 
 
 /// Known Dotcom Errors
 ///
-extension DotcomError {
+public extension DotcomError {
+
+    /// Request Failure
+    ///
+    public static var requestFailed: DotcomError {
+        return DotcomError(error: "http_request_failed", message: nil)
+    }
 
     /// Something went wrong. We just don't know what!
     ///
-    static var unknown: DotcomError {
-        return DotcomError(code: "unknown", message: nil)
+    public static var unknown: DotcomError {
+        return DotcomError(error: "unknown", message: nil)
     }
+}
+
+
+// MARK: - Equatable Conformance
+//
+public func ==(lhs: DotcomError, rhs: DotcomError) -> Bool {
+    return lhs.error == rhs.error
 }

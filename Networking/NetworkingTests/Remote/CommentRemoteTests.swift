@@ -144,7 +144,7 @@ class CommentRemoteTests: XCTestCase {
             XCTAssertNil(updatedStatus)
             XCTAssertNotNil(error)
             let error = error as? DotcomError
-            XCTAssertEqual(error?.code, "unknown_token")
+            XCTAssertEqual(error?.error, "unknown_token")
             expectation.fulfill()
         }
 

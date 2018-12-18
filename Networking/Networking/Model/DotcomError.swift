@@ -9,6 +9,10 @@ public enum DotcomError: Error, Decodable {
     ///
     case empty
 
+    /// Missing Token!
+    ///
+    case unauthorized
+
     /// We're not properly authenticated
     ///
     case invalidToken
@@ -30,10 +34,12 @@ public enum DotcomError: Error, Decodable {
         let error = try container.decode(String.self, forKey: .error)
 
         switch error {
-        case Constants.requestFailed:
-            self = .requestFailed
         case Constants.invalidToken:
             self = .invalidToken
+        case Constants.requestFailed:
+            self = .requestFailed
+        case Constants.unauthorized:
+            self = .unauthorized
         default:
             let message = try container.decodeIfPresent(String.self, forKey: .message)
             self = .unknown(code: error, message: message)
@@ -44,6 +50,7 @@ public enum DotcomError: Error, Decodable {
     /// Constants
     ///
     private enum Constants {
+        static let unauthorized     = "unauthorized"
         static let invalidToken     = "invalid_token"
         static let requestFailed    = "http_request_failed"
     }
@@ -62,6 +69,8 @@ public enum DotcomError: Error, Decodable {
 public func ==(lhs: DotcomError, rhs: DotcomError) -> Bool {
     switch (lhs, rhs) {
     case (.requestFailed, .requestFailed):
+        return true
+    case (.unauthorized, .unauthorized):
         return true
     case let (.unknown(codeLHS, _), .unknown(codeRHS, _)):
         return codeLHS == codeRHS

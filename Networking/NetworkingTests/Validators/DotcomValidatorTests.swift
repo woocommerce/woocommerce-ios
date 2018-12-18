@@ -16,7 +16,6 @@ class DotcomValidatorTests: XCTestCase {
                 return
         }
 
-        XCTAssertEqual(dotcomError.error, "unknown_token")
-        XCTAssertEqual(dotcomError.message, "Unknown Token")
+        XCTAssert(dotcomError == .unauthorized)
     }
 }

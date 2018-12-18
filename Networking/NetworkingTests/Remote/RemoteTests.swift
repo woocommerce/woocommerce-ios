@@ -9,7 +9,7 @@ class RemoteTests: XCTestCase {
 
     /// Sample Request
     ///
-    private let request = try! URLRequest(url: "www.a8c.com/something", method: .get)
+    private let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: 123, path: "something", parameters: [:])
 
 
     /// Verifies that `enqueue:mapper:` properly wraps up the received request within an AuthenticatedRequest, with
@@ -22,18 +22,17 @@ class RemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Enqueue with Mapper")
 
         remote.enqueue(request, mapper: mapper) { (payload, error) in
-            guard case NetworkError.notFound? = error else {
-                XCTFail()
-                return
+            guard case NetworkError.notFound? = error,
+                let receivedRequest = network.requestsForResponseData.first as? JetpackRequest
+                else {
+                    XCTFail()
+                    return
             }
 
             XCTAssertNil(payload)
-
             XCTAssert(network.requestsForResponseData.count == 1)
-
-            let first = network.requestsForResponseData.first as! URLRequest
-            XCTAssertNotNil(first)
-            XCTAssertEqual(first, self.request)
+            XCTAssertEqual(receivedRequest.method, self.request.method)
+            XCTAssertEqual(receivedRequest.path, self.request.path)
 
             expectation.fulfill()
         }
@@ -63,14 +62,14 @@ class RemoteTests: XCTestCase {
     }
 
 
-    /// Verifies that `enqueue:` posts a `RemoteDidReceiveApplicationError` Notification whenever the backend returns a
+    /// Verifies that `enqueue:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
     /// Request Timeout error.
     ///
-    func testEnqueueRequestWithoutMapperPostsApplicationErrorNotificationWhenTheResponseContainsTimeoutError() {
+    func testEnqueueRequestWithoutMapperPostJetpackTimeoutNotificationWhenTheResponseContainsTimeoutError() {
         let network = MockupNetwork()
         let remote = Remote(network: network)
 
-        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveApplicationError, object: nil, handler: nil)
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJetpackTimeoutError, object: nil, handler: nil)
         let expectationForRequest = expectation(description: "Request")
 
         network.simulateResponse(requestUrlSuffix: "something", filename: "timeout_error")
@@ -85,15 +84,15 @@ class RemoteTests: XCTestCase {
     }
 
 
-    /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveApplicationError` Notification whenever the backend returns a
+    /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
     /// Request Timeout error.
     ///
-    func testEnqueueRequestWithMapperPostsApplicationErrorNotificationWhenTheResponseContainsTimeoutError() {
+    func testEnqueueRequestWithMapperPostsJetpackTimeoutNotificationWhenTheResponseContainsTimeoutError() {
         let network = MockupNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
 
-        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveApplicationError, object: nil, handler: nil)
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJetpackTimeoutError, object: nil, handler: nil)
         let expectationForRequest = expectation(description: "Request")
 
         network.simulateResponse(requestUrlSuffix: "something", filename: "timeout_error")

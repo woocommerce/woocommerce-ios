@@ -16,6 +16,10 @@ class AuthenticatedState: StoresManagerState {
     ///
     private let services: [ActionsProcessor]
 
+    /// NotificationCenter Tokens
+    ///
+    private var errorObserverToken: NSObjectProtocol?
+
 
     /// Designated Initializer
     ///
@@ -32,6 +36,8 @@ class AuthenticatedState: StoresManagerState {
             SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
+
+        startListeningToNotifications()
     }
 
     /// Convenience Initializer
@@ -62,5 +68,30 @@ class AuthenticatedState: StoresManagerState {
     ///
     func onAction(_ action: Action) {
         dispatcher.dispatch(action)
+    }
+}
+
+
+// MARK: - Private Methods
+//
+private extension AuthenticatedState {
+
+    /// Starts listening for Notifications
+    ///
+    func startListeningToNotifications() {
+        let nc = NotificationCenter.default
+        errorObserverToken = nc.addObserver(forName: .RemoteDidReceiveApplicationError, object: nil, queue: .main) { [weak self] note in
+            self?.applicationErrorWasReceived(note: note)
+        }
+    }
+
+    /// Executed whenever a ApplicationLayer Error is received. This is DotcomErrors, precisely, and allows us to have
+    /// a *Master* error handler.
+    ///
+    func applicationErrorWasReceived(note: Notification) {
+        guard let error = note.object as? DotcomError else {
+            return
+        }
+
     }
 }

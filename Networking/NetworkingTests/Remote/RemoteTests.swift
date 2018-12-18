@@ -39,6 +39,7 @@ class RemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+
     /// Verifies that `enqueue:mapper:` properly wraps up the received request within an AuthenticatedRequest, with the remote credentials.
     ///
     func testEnqueueProperlyWrapsUpDataRequestsIntoAuthenticatedRequestWithCredentials() {
@@ -68,6 +69,7 @@ class RemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+
     /// Verifies that `enqueue:mapper:` relays any received payload over to the Mapper.
     ///
     func testEnqueueWithMapperProperlyRelaysReceivedPayloadToMapper() {
@@ -86,6 +88,52 @@ class RemoteTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    /// Verifies that `enqueue:` posts a `RemoteDidReceiveApplicationError` Notification whenever the backend returns a
+    /// Request Timeout error.
+    ///
+    func testEnqueueRequestWithoutMapperPostsApplicationErrorNotificationWhenTheResponseContainsTimeoutError() {
+        let network = MockupNetwork()
+        let remote = Remote(network: network)
+
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveApplicationError, object: nil, handler: nil)
+        let expectationForRequest = expectation(description: "Request")
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "timeout_error")
+
+        remote.enqueue(request) { (payload, error) in
+            XCTAssertNil(payload)
+            XCTAssert(error is DotcomError)
+            expectationForRequest.fulfill()
+        }
+
+        wait(for: [expectationForNotification, expectationForRequest], timeout: Constants.expectationTimeout)
+    }
+
+
+    /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveApplicationError` Notification whenever the backend returns a
+    /// Request Timeout error.
+    ///
+    func testEnqueueRequestWithMapperPostsApplicationErrorNotificationWhenTheResponseContainsTimeoutError() {
+        let network = MockupNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveApplicationError, object: nil, handler: nil)
+        let expectationForRequest = expectation(description: "Request")
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "timeout_error")
+
+        remote.enqueue(request, mapper: mapper) { (payload, error) in
+            XCTAssertNil(payload)
+            XCTAssert(error is DotcomError)
+            expectationForRequest.fulfill()
+        }
+
+        wait(for: [expectationForNotification, expectationForRequest], timeout: Constants.expectationTimeout)
+
     }
 }
 

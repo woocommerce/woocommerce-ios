@@ -139,6 +139,7 @@
 		B572F69A21AC475C003EEFF0 /* DevicesRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B572F69921AC475C003EEFF0 /* DevicesRemote.swift */; };
 		B57B1E6721C916850046E764 /* NetworkErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57B1E6621C916850046E764 /* NetworkErrorTests.swift */; };
 		B57B1E6A21C925280046E764 /* DotcomValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57B1E6921C925280046E764 /* DotcomValidatorTests.swift */; };
+		B57B1E6C21C94C9F0046E764 /* timeout_error.json in Resources */ = {isa = PBXBuildFile; fileRef = B57B1E6B21C94C9F0046E764 /* timeout_error.json */; };
 		B58D10C62114D1F200107ED4 /* order-stats.json in Resources */ = {isa = PBXBuildFile; fileRef = B58D10C52114D1F100107ED4 /* order-stats.json */; };
 		B58D10C82114D21D00107ED4 /* generic_error.json in Resources */ = {isa = PBXBuildFile; fileRef = B58D10C72114D21C00107ED4 /* generic_error.json */; };
 		B58D10CA2114D22E00107ED4 /* new-order-note.json in Resources */ = {isa = PBXBuildFile; fileRef = B58D10C92114D22E00107ED4 /* new-order-note.json */; };
@@ -317,6 +318,7 @@
 		B572F69921AC475C003EEFF0 /* DevicesRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesRemote.swift; sourceTree = "<group>"; };
 		B57B1E6621C916850046E764 /* NetworkErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkErrorTests.swift; sourceTree = "<group>"; };
 		B57B1E6921C925280046E764 /* DotcomValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomValidatorTests.swift; sourceTree = "<group>"; };
+		B57B1E6B21C94C9F0046E764 /* timeout_error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = timeout_error.json; sourceTree = "<group>"; };
 		B58D10C52114D1F100107ED4 /* order-stats.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats.json"; sourceTree = "<group>"; };
 		B58D10C72114D21C00107ED4 /* generic_error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = generic_error.json; sourceTree = "<group>"; };
 		B58D10C92114D22E00107ED4 /* new-order-note.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "new-order-note.json"; sourceTree = "<group>"; };
@@ -608,6 +610,7 @@
 				74A7B4BD217A841400E85A8B /* broken-settings-general.json */,
 				B58D10C72114D21C00107ED4 /* generic_error.json */,
 				B53EF53521813681003E146F /* generic_success.json */,
+				B57B1E6B21C94C9F0046E764 /* timeout_error.json */,
 				74C9477F2193A6C60024CB60 /* comment-moderate-approved.json */,
 				74C9477E2193A6C60024CB60 /* comment-moderate-trash.json */,
 				74C947812193A6C70024CB60 /* comment-moderate-unapproved.json */,
@@ -867,6 +870,7 @@
 				74AB5B4F21AF3F0E00859C12 /* site-api-no-woo.json in Resources */,
 				74C947832193A6C70024CB60 /* comment-moderate-trash.json in Resources */,
 				B58D10CA2114D22E00107ED4 /* new-order-note.json in Resources */,
+				B57B1E6C21C94C9F0046E764 /* timeout_error.json in Resources */,
 				B5C6FCD620A3768900A4F8E4 /* order.json in Resources */,
 				74C947862193A6C70024CB60 /* comment-moderate-unapproved.json in Resources */,
 				B559EBAA20A0B5CD00836CD4 /* orders-load-all.json in Resources */,

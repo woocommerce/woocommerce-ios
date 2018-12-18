@@ -666,21 +666,24 @@ private extension ZendeskManager {
     }
 
     func generateDisplayName(from rawEmail: String) -> String {
+        guard rawEmail.isEmpty == false else {
+            return ""
+        }
 
         // Generate Name, using the same format as Signup.
 
         // step 1: lower case
         let email = rawEmail.lowercased()
         // step 2: remove the @ and everything after
-        let localPart = email.split(separator: "@")[0]
+        let localPart = email.split(separator: "@")[safe: 0]
         // step 3: remove all non-alpha characters
-        let localCleaned = localPart.replacingOccurrences(of: "[^A-Za-z/.]", with: "", options: .regularExpression)
+        let localCleaned = localPart?.replacingOccurrences(of: "[^A-Za-z/.]", with: "", options: .regularExpression)
         // step 4: turn periods into spaces
-        let nameLowercased = localCleaned.replacingOccurrences(of: ".", with: " ")
+        let nameLowercased = localCleaned?.replacingOccurrences(of: ".", with: " ")
         // step 5: capitalize
-        let autoDisplayName = nameLowercased.capitalized
+        let autoDisplayName = nameLowercased?.capitalized
 
-        return autoDisplayName
+        return autoDisplayName ?? ""
     }
 }
 

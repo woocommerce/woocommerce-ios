@@ -53,7 +53,7 @@ public class DevicesRemote: Remote {
 
         enqueue(request, mapper: mapper) { (success, error) in
             guard success == true else {
-                completion(error ?? DotcomError.unknown)
+                completion(error ?? DotcomError.empty)
                 return
             }
 

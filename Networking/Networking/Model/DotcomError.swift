@@ -9,6 +9,10 @@ public enum DotcomError: Error, Decodable {
     ///
     case empty
 
+    /// We're not properly authenticated
+    ///
+    case invalidToken
+
     /// Remote Request Failed
     ///
     case requestFailed
@@ -28,6 +32,8 @@ public enum DotcomError: Error, Decodable {
         switch error {
         case Constants.requestFailed:
             self = .requestFailed
+        case Constants.invalidToken:
+            self = .invalidToken
         default:
             let message = try container.decodeIfPresent(String.self, forKey: .message)
             self = .unknown(code: error, message: message)
@@ -38,7 +44,8 @@ public enum DotcomError: Error, Decodable {
     /// Constants
     ///
     private enum Constants {
-        static let requestFailed = "http_request_failed"
+        static let invalidToken     = "invalid_token"
+        static let requestFailed    = "http_request_failed"
     }
 
     /// Coding Keys

@@ -91,30 +91,35 @@ public class Remote {
 //
 private extension Remote {
 
-    /// Publishes a `RemoteDidReceiveJetpackTimeout` whenever the DotcomError refers to a Jetpack Timeout event.
+    /// Handles *all* of the DotcomError(s) that are successfully parsed.
     ///
     func dotcomErrorWasReceived(error: Error, for request: URLRequestConvertible) {
-        guard let dotcomError = error as? DotcomError, dotcomError == DotcomError.requestFailed else {
+        guard let dotcomError = error as? DotcomError else {
             return
         }
 
-        var userInfo = [AnyHashable: Any]()
-        if let url = request.urlRequest?.url?.absoluteString {
-            userInfo[DotcomErrorNotificationKey.url.rawValue] = url
+        switch dotcomError {
+        case .requestFailed where request is JetpackRequest:
+            publishJetpackTimeoutNotification(error: dotcomError)
+        case .invalidToken:
+            publishInvalidTokenNotification(error: dotcomError)
+        default:
+            break
         }
-
-        NotificationCenter.default.post(name: .RemoteDidReceiveJetpackTimeout, object: error, userInfo: userInfo)
     }
-}
 
 
-// MARK: - Notification(s) UserInfo Keys
-//
-public enum DotcomErrorNotificationKey: String {
-
-    /// Reference to the Request that yielded a given Error
+    /// Publishes a `Jetpack Timeout` Notification.
     ///
-    case url
+    private func publishJetpackTimeoutNotification(error: DotcomError) {
+        NotificationCenter.default.post(name: .RemoteDidReceiveJetpackTimeoutError, object: error, userInfo: nil)
+    }
+
+    /// Publishes an `Invalid Token` Notification.
+    ///
+    private func publishInvalidTokenNotification(error: DotcomError) {
+        NotificationCenter.default.post(name: .RemoteDidReceiveInvalidTokenError, object: error, userInfo: nil)
+    }
 }
 
 
@@ -122,7 +127,11 @@ public enum DotcomErrorNotificationKey: String {
 //
 public extension NSNotification.Name {
 
-    /// Posted whenever a DotcomValidation Error is received. Allows us to implement a "Master Flow" Error Handler.
+    /// Posted whenever an Invalid Token Error is received.
     ///
-    public static let RemoteDidReceiveJetpackTimeout = NSNotification.Name(rawValue: "RemoteDidReceiveDotcomError")
+    public static let RemoteDidReceiveInvalidTokenError = NSNotification.Name(rawValue: "RemoteDidReceiveInvalidTokenError")
+
+    /// Posted whenever a Jetpack Timeout is received.
+    ///
+    public static let RemoteDidReceiveJetpackTimeoutError = NSNotification.Name(rawValue: "RemoteDidReceiveJetpackTimeoutError")
 }

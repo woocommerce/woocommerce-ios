@@ -282,4 +282,16 @@ class MoneyFormatterTests: XCTestCase {
         // Therefore, there are no decimal values for this currency.
         XCTAssertEqual(formattedDecimal, "619\u{00a0}¥")
     }
+
+    // -MARK: Decimal Unit Testing
+
+    /// Testing string value returns as accurate decimal value.
+    ///
+    func testStringReturnsDecimal() {
+        let stringValue = "9.99"
+        let decimalValue = Decimal(string: stringValue)
+
+        let formattedDecimal = MoneyFormatter().formatDecimal(from: stringValue)
+        XCTAssertEqual(decimalValue, formattedDecimal)
+    }
 }

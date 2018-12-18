@@ -80,18 +80,15 @@ private extension AuthenticatedState {
     ///
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
-        errorObserverToken = nc.addObserver(forName: .RemoteDidReceiveApplicationError, object: nil, queue: .main) { [weak self] note in
-            self?.applicationErrorWasReceived(note: note)
+        errorObserverToken = nc.addObserver(forName: .RemoteDidReceiveJetpackTimeout, object: nil, queue: .main) { [weak self] note in
+            self?.timeoutWasReceived(note: note)
         }
     }
 
-    /// Executed whenever a ApplicationLayer Error is received. This is DotcomErrors, precisely, and allows us to have
-    /// a *Master* error handler.
+    /// Executed whenever a DotcomError is received (ApplicationLayer). This allows us to have a *Master* error handling flow!
     ///
-    func applicationErrorWasReceived(note: Notification) {
-        guard let error = note.object as? DotcomError else {
-            return
-        }
-
+    func timeoutWasReceived(note: Notification) {
+        DDLogError("😣 Tracked Jetpack Tunnel Timeout")
+        WooAnalytics.shared.track(.jetpackTunnelTimeout, withProperties: note.userInfo)
     }
 }

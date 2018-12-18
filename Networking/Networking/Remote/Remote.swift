@@ -30,15 +30,15 @@ public class Remote {
     ///     - completion: Closure to be executed upon completion. Will receive the JSON Parsed Response (if successful)
     ///
     func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
-        network.responseData(for: request) { (data, networkingError) in
+        network.responseData(for: request) { (data, networError) in
             guard let data = data else {
-                completion(nil, networkingError)
+                completion(nil, networError)
                 return
             }
 
-            if let applicationError = DotcomValidator.error(from: data) {
-                self.applicationErrorWasReceived(error: applicationError, for: request)
-                completion(nil, applicationError)
+            if let dotcomError = DotcomValidator.error(from: data) {
+                self.dotcomErrorWasReceived(error: dotcomError, for: request)
+                completion(nil, dotcomError)
                 return
             }
 
@@ -63,15 +63,15 @@ public class Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M, completion: @escaping (M.Output?, Error?) -> Void) {
-        network.responseData(for: request) { (data, networkingError) in
+        network.responseData(for: request) { (data, networkError) in
             guard let data = data else {
-                completion(nil, networkingError)
+                completion(nil, networkError)
                 return
             }
 
-            if let applicationError = DotcomValidator.error(from: data) {
-                self.applicationErrorWasReceived(error: applicationError, for: request)
-                completion(nil, applicationError)
+            if let dotcomError = DotcomValidator.error(from: data) {
+                self.dotcomErrorWasReceived(error: dotcomError, for: request)
+                completion(nil, dotcomError)
                 return
             }
 
@@ -91,23 +91,28 @@ public class Remote {
 //
 private extension Remote {
 
-    /// Publishes a `RemoteDidReceiveApplicationError` with the associated Error entity.
+    /// Publishes a `RemoteDidReceiveJetpackTimeout` whenever the DotcomError refers to a Jetpack Timeout event.
     ///
-    func applicationErrorWasReceived(error: Error, for request: URLRequestConvertible) {
-        var userInfo = [AnyHashable: Any]()
-        if let request = request.urlRequest, let url = request.url {
-            userInfo[RemoteNotificationKey.url.rawValue] = url.absoluteString
+    func dotcomErrorWasReceived(error: Error, for request: URLRequestConvertible) {
+        guard let dotcomError = error as? DotcomError, dotcomError == DotcomError.requestFailed else {
+            return
         }
 
-        NotificationCenter.default.post(name: .RemoteDidReceiveApplicationError, object: error, userInfo: userInfo)
+        var userInfo = [AnyHashable: Any]()
+        if let url = request.urlRequest?.url?.absoluteString {
+            userInfo[DotcomErrorNotificationKey.url.rawValue] = url
+        }
+
+        NotificationCenter.default.post(name: .RemoteDidReceiveJetpackTimeout, object: error, userInfo: userInfo)
     }
 }
 
+
 // MARK: - Notification(s) UserInfo Keys
 //
-public enum RemoteNotificationKey: String {
+public enum DotcomErrorNotificationKey: String {
 
-    /// Reference to the URL that yielded a given Error
+    /// Reference to the Request that yielded a given Error
     ///
     case url
 }
@@ -119,5 +124,5 @@ public extension NSNotification.Name {
 
     /// Posted whenever a DotcomValidation Error is received. Allows us to implement a "Master Flow" Error Handler.
     ///
-    public static let RemoteDidReceiveApplicationError = NSNotification.Name(rawValue: "RemoteDidReceiveApplicationError")
+    public static let RemoteDidReceiveJetpackTimeout = NSNotification.Name(rawValue: "RemoteDidReceiveDotcomError")
 }

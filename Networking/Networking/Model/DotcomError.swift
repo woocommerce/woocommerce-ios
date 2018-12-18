@@ -3,32 +3,46 @@ import Foundation
 
 /// WordPress.com Request Error
 ///
-public struct DotcomError: Error, Decodable {
+public enum DotcomError: Error, Decodable {
 
-    /// Error Code
+    /// Remote Request Failed
     ///
-    public let error: String
+    case requestFailed
 
-    /// Descriptive Message
+    /// Unknown: Represents an unmapped remote error. Capisce?
     ///
-    public let message: String?
-}
+    case unknown(code: String, message: String?)
 
 
-/// Known Dotcom Errors
-///
-public extension DotcomError {
 
-    /// Request Failure
+    /// Decodable Initializer.
     ///
-    public static var requestFailed: DotcomError {
-        return DotcomError(error: "http_request_failed", message: nil)
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let error = try container.decode(String.self, forKey: .error)
+        let message = try container.decodeIfPresent(String.self, forKey: .message)
+
+        switch error {
+        case Constants.requestFailed:
+            self = .requestFailed
+        default:
+            self = .unknown(code: error, message: message)
+        }
     }
 
-    /// Something went wrong. We just don't know what!
+
+    /// Constants
     ///
-    public static var unknown: DotcomError {
-        return DotcomError(error: "unknown", message: nil)
+    private enum Constants {
+        static let requestFailed = "http_request_failed"
+    }
+
+    /// Coding Keys
+    ///
+    private enum CodingKeys: String, CodingKey {
+        case error
+        case message
     }
 }
 
@@ -36,5 +50,12 @@ public extension DotcomError {
 // MARK: - Equatable Conformance
 //
 public func ==(lhs: DotcomError, rhs: DotcomError) -> Bool {
-    return lhs.error == rhs.error
+    switch (lhs, rhs) {
+    case (.requestFailed, .requestFailed):
+        return true
+    case let (.unknown(codeLHS, _), .unknown(codeRHS, _)):
+        return codeLHS == codeRHS
+    default:
+        return false
+    }
 }

@@ -22,6 +22,22 @@ public struct DotcomError: Error, Decodable {
     }
 }
 
+/// MARK: - DotcomError Methods
+///
+extension DotcomError {
+
+    /// Designated Initializer
+    ///
+    init?(dictionary: [AnyHashable: Any]) {
+        guard let code = dictionary[CodingKeys.code.rawValue] as? String else {
+            return nil
+        }
+
+        self.code = code
+        self.message = dictionary[CodingKeys.message.rawValue] as? String
+    }
+}
+
 
 /// Known Dotcom Errors
 ///

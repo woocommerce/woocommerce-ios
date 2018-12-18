@@ -2,6 +2,7 @@ import Foundation
 import Alamofire
 
 
+
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
 public class AlamofireNetwork: Network {
@@ -26,14 +27,21 @@ public class AlamofireNetwork: Network {
     ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion.
     ///
+    /// - Note:
+    ///     - The response body will always be returned (when possible), even when there's a networking error.
+    ///       This differs slightly from the standard Alamofire `.validate()` behavior, and it's required so that
+    ///       the upper layers can properly detect "Jetpack Tunnel" Errors.
+    ///     - Yes. We do the above because the Jetpack Tunnel endpoint doesn't properly relay the correct statusCode.
+    ///
     public func responseJSON(for request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
-        let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
 
-        Alamofire.request(authenticated)
-            .validate()
-            .responseJSON { response in
-                completion(response.value, response.customizedError)
+        responseData(for: request) { (data, error) in
+            let parsed = data.flatMap { data in
+                try? JSONSerialization.jsonObject(with: data, options: [])
             }
+
+            completion(parsed, error)
+        }
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
@@ -45,13 +53,18 @@ public class AlamofireNetwork: Network {
     ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion.
     ///
+    /// - Note:
+    ///     - The response body will always be returned (when possible), even when there's a networking error.
+    ///       This differs slightly from the standard Alamofire `.validate()` behavior, and it's required so that
+    ///       the upper layers can properly detect "Jetpack Tunnel" Errors.
+    ///     - Yes. We do the above because the Jetpack Tunnel endpoint doesn't properly relay the correct statusCode.
+    ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
 
         Alamofire.request(authenticated)
-            .validate()
             .responseData { response in
-                completion(response.value, response.customizedError)
+                completion(response.value, response.networkingError)
             }
     }
 }
@@ -61,20 +74,17 @@ public class AlamofireNetwork: Network {
 ///
 private extension Alamofire.DataResponse {
 
-    /// Returns `NetworkError.notFound` whenever the Request failed with a 404 StatusCode. This may be used by upper layers,
-    /// to determine if an object should be deleted (for instance!).
+    /// Returns the Networking Layer Error (if any): Whenever the statusCode is not within the [200, 300) range.
     ///
-    /// In any other case, this property will actually return the regular `DataResponse.error` result.
+    /// NOTE: that we're not doing the standard Alamofire Validation, because the stock routine, on error, will never relay
+    /// back the response body. And since the Jetpack Tunneling API does not relay the proper statusCodes, we're left in
+    /// the dark.
     ///
-    var customizedError: Error? {
-        guard result.isFailure else {
-            return nil
+    /// Precisely: Request Timeout should be a 408, but we just get a 400, with the details in the response's body.
+    ///
+    var networkingError: Error? {
+        return response.flatMap { response in
+            NetworkError(from: response.statusCode)
         }
-
-        guard response?.statusCode == HTTPStatusCode.notFound else {
-            return error
-        }
-
-        return NetworkError.notFound
     }
 }

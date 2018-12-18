@@ -283,7 +283,7 @@ class MoneyFormatterTests: XCTestCase {
         XCTAssertEqual(formattedDecimal, "619\u{00a0}¥")
     }
 
-    // -MARK: Decimal Unit Testing
+    // MARK: - Decimal Unit Testing
 
     /// Testing string value returns as accurate decimal value.
     ///
@@ -311,5 +311,22 @@ class MoneyFormatterTests: XCTestCase {
         XCTAssertEqual(decimalValue, formattedDecimal)
     }
 
-    
+    /// Testing that the default decimal point is 2 when not specified.
+    ///
+    func testDefaultDecimalPointIsTwoWhenUnspecified() {
+        let stringValue = "9.9911"
+        let decimalValue = NSDecimalNumber(string: stringValue)
+
+        let roundingBehavior = NSDecimalNumberHandler(roundingMode: .plain,
+                                                      scale: 2,
+                                                      raiseOnExactness: false,
+                                                      raiseOnOverflow: false,
+                                                      raiseOnUnderflow: false,
+                                                      raiseOnDivideByZero: false)
+        let truncatedDecimal = decimalValue.rounding(accordingToBehavior: roundingBehavior)
+
+        let formattedDecimal = MoneyFormatter().formatDecimal(from: stringValue)
+
+        XCTAssertEqual(truncatedDecimal, formattedDecimal)
+    }
 }

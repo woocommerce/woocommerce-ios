@@ -30,17 +30,3 @@ public protocol Network {
     ///
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void)
 }
-
-
-/// Networking Errors
-///
-public enum NetworkError: Error {
-
-    /// Something went wrong. But we have no idea what it was!
-    ///
-    case unknown
-
-    /// Resource Not Found (statusCode = 404)
-    ///
-    case notFound
-}

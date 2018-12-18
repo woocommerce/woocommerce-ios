@@ -10,6 +10,18 @@ public class MoneyFormatter {
         return formatter
     }()
 
+
+    /// Returns a formatted decimal value from a given string.
+    ///
+    func formatDecimal(from stringValue: String) -> Decimal? {
+        guard let decimalValue = Decimal(string: stringValue) else {
+            DDLogError("Error: string value could not be converted to decimal: \(stringValue)")
+            return nil
+        }
+
+        return decimalValue
+    }
+
     /// Returns a localized and formatted currency string, including zero values.
     ///
     func format(value: String, currencyCode: String, locale: Locale = .current) -> String? {

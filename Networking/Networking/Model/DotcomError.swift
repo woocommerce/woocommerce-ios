@@ -5,6 +5,10 @@ import Foundation
 ///
 public enum DotcomError: Error, Decodable {
 
+    /// Non explicit reason
+    ///
+    case empty
+
     /// Remote Request Failed
     ///
     case requestFailed

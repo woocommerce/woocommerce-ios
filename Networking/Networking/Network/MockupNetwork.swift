@@ -53,7 +53,7 @@ class MockupNetwork: Network {
 
 
     /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the specified response, *PARSED* as json.
-    /// Otherwise, an error will be relayed back (.unavailable!).
+    /// Otherwise, an error will be relayed back (.notFound!).
     ///
     func responseJSON(for request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
         requestsForResponseJSON.append(request)
@@ -63,17 +63,16 @@ class MockupNetwork: Network {
             return
         }
 
-        let name = filename(for: request)
-        if let name = name, let response = Loader.jsonObject(for: name) {
-            completion(response, nil)
+        guard let name = filename(for: request), let response = Loader.jsonObject(for: name) else {
+            completion(nil, NetworkError.notFound)
             return
         }
 
-        completion(nil, NetworkError.unknown)
+        completion(response, nil)
     }
 
     /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the specified response file, loaded as *Data*.
-    /// Otherwise, an error will be relayed back (.unavailable!).
+    /// Otherwise, an error will be relayed back (.notFound!).
     ///
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         requestsForResponseData.append(request)
@@ -83,13 +82,12 @@ class MockupNetwork: Network {
             return
         }
 
-        let name = filename(for: request)
-        if let name = name, let data = Loader.contentsOf(name) {
-            completion(data, nil)
+        guard let name = filename(for: request), let data = Loader.contentsOf(name) else {
+            completion(nil, NetworkError.notFound)
             return
         }
 
-        completion(nil, NetworkError.unknown)
+        completion(data, nil)
     }
 }
 

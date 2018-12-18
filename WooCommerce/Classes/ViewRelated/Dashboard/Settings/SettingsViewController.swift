@@ -97,7 +97,7 @@ private extension SettingsViewController {
             Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
             Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
             Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
-            Section(title: nil, rows: [.logout], footerHeight: UITableView.automaticDimension)
+            Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
         ]
     }
 

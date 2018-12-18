@@ -92,12 +92,12 @@ private extension SettingsViewController {
         let otherTitle = NSLocalizedString("Other", comment: "My Store > Settings > Other app section").uppercased()
 
         sections = [
-            Section(title: primaryStoreTitle, rows: [.primaryStore]),
-            Section(title: nil, rows: [.support]),
-            Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest]),
-            Section(title: aboutSettingsTitle, rows: [.about, .licenses]),
-            Section(title: otherTitle, rows: [.appSettings]),
-            Section(title: nil, rows: [.logout]),
+            Section(title: primaryStoreTitle, rows: [.primaryStore], footerHeight: CGFloat.leastNonzeroMagnitude),
+            Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
+            Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
+            Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
+            Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
+            Section(title: nil, rows: [.logout], footerHeight: UITableView.automaticDimension)
         ]
     }
 
@@ -286,8 +286,7 @@ extension SettingsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
-        return CGFloat.leastNonzeroMagnitude
+        return sections[section].footerHeight
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -343,6 +342,7 @@ private struct Constants {
 private struct Section {
     let title: String?
     let rows: [Row]
+    let footerHeight: CGFloat
 }
 
 private enum Row: CaseIterable {

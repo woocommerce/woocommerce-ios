@@ -2,6 +2,7 @@ import Foundation
 import Alamofire
 import CocoaLumberjack
 
+
 /// Represents a collection of Remote Endpoints
 ///
 public class Remote {
@@ -29,13 +30,19 @@ public class Remote {
     ///     - completion: Closure to be executed upon completion. Will receive the JSON Parsed Response (if successful)
     ///
     func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
-        network.responseJSON(for: request) { (payload, error) in
-            guard let payload = payload else {
-                completion(nil, error)
+        network.responseJSON(for: request) { (document, networkingError) in
+            guard let document = document else {
+                completion(nil, networkingError)
                 return
             }
 
-            completion(payload, error)
+            if let applicationError = DotcomValidator.error(from: document) {
+                self.applicationErrorWasReceived(error: applicationError)
+                completion(nil, applicationError)
+                return
+            }
+
+            completion(document, nil)
         }
     }
 
@@ -51,14 +58,15 @@ public class Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M, completion: @escaping (M.Output?, Error?) -> Void) {
-        network.responseData(for: request) { (data, error) in
+        network.responseData(for: request) { (data, networkingError) in
             guard let data = data else {
-                completion(nil, error)
+                completion(nil, networkingError)
                 return
             }
 
-            if let error = DotcomValidator.error(from: data) {
-                completion(nil, error)
+            if let applicationError = DotcomValidator.error(from: data) {
+                self.applicationErrorWasReceived(error: applicationError)
+                completion(nil, applicationError)
                 return
             }
 
@@ -71,4 +79,26 @@ public class Remote {
             }
         }
     }
+}
+
+
+// MARK: - Private Methods
+//
+private extension Remote {
+
+    /// Publishes a `RemoteDidReceiveApplicationError` with the associated Error entity.
+    ///
+    func applicationErrorWasReceived(error: Error) {
+        NotificationCenter.default.post(name: .RemoteDidReceiveApplicationError, object: error)
+    }
+}
+
+
+// MARK: - Remote Notifications
+//
+public extension NSNotification.Name {
+
+    /// Posted whenever a DotcomValidation Error is received. Allows us to implement a "Master Flow" Error Handler.
+    ///
+    public static let RemoteDidReceiveApplicationError = NSNotification.Name(rawValue: "RemoteDidReceiveApplicationError")
 }

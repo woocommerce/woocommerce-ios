@@ -44,7 +44,7 @@ class ZendeskManager: NSObject {
     private var haveUserIdentity = false
     private var alertNameField: UITextField?
 
-    private var presentInController: UIViewController?
+    private weak var presentInController: UIViewController?
 
     /// Returns a ZendeskPushProvider Instance (If Possible)
     ///
@@ -109,9 +109,7 @@ class ZendeskManager: NSObject {
     ///
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
 
-        presentInController = controller
-
-        createIdentity { success in
+        createIdentity(presentIn: controller) { success in
             guard success else {
                 return
             }
@@ -120,7 +118,7 @@ class ZendeskManager: NSObject {
 
             let newRequestConfig = self.createRequest(supportSourceTag: sourceTag)
             let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
-            self.showZendeskView(newRequestController)
+            self.showZendeskView(newRequestController, from: controller)
         }
     }
 
@@ -128,9 +126,7 @@ class ZendeskManager: NSObject {
     ///
     func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
 
-        presentInController = controller
-
-        createIdentity { success in
+        createIdentity(presentIn: controller) { success in
             guard success else {
                 return
             }
@@ -139,17 +135,17 @@ class ZendeskManager: NSObject {
 
             let requestConfig = self.createRequest(supportSourceTag: sourceTag)
             let requestListController = RequestUi.buildRequestList(with: [requestConfig])
-            self.showZendeskView(requestListController)
+            self.showZendeskView(requestListController, from: controller)
         }
     }
 
     /// Displays a single ticket's view if possible.
     ///
-    func showSingleTicketViewIfPossible(for requestId: String) {
+    func showSingleTicketViewIfPossible(for requestId: String, from navController: UINavigationController) {
         let requestConfig = self.createRequest(supportSourceTag: nil)
         let requestController = RequestUi.buildRequestUi(requestId: requestId, configurations: [requestConfig])
 
-        showZendeskView(requestController)
+        showZendeskView(requestController, from: navController)
     }
 
     /// Displays an alert allowing the user to change their Support email address.
@@ -158,7 +154,13 @@ class ZendeskManager: NSObject {
         WooAnalytics.shared.track(.supportIdentityFormViewed)
         presentInController = controller
 
-        getUserInformationAndShowPrompt(withName: false) { success in
+        // If the user hasn't already set a username, go ahead and ask for that too.
+        var withName = true
+        if let name = userName, !name.isEmpty {
+            withName = false
+        }
+
+        getUserInformationAndShowPrompt(withName: withName, from: controller) { success in
             completion(success)
         }
     }
@@ -290,11 +292,8 @@ extension ZendeskManager: SupportManagerAdapter {
         let helpAndSupportVC = UIStoryboard.dashboard.instantiateViewController(withIdentifier: HelpAndSupportViewController.classNameWithoutNamespaces) as! HelpAndSupportViewController
         navController.pushViewController(helpAndSupportVC, animated: false)
 
-        // save the reference
-        self.presentInController = navController
-
         // show the single ticket view instead of the ticket list
-        showSingleTicketViewIfPossible(for: requestId)
+        showSingleTicketViewIfPossible(for: requestId, from: navController)
     }
 
     /// Delegate method for a received push notification
@@ -311,7 +310,7 @@ extension ZendeskManager: SupportManagerAdapter {
 //
 private extension ZendeskManager {
 
-    func createIdentity(completion: @escaping (Bool) -> Void) {
+    func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
 
         // If we already have an identity, do nothing.
         guard haveUserIdentity == false else {
@@ -343,7 +342,7 @@ private extension ZendeskManager {
             }
         }
 
-        getUserInformationAndShowPrompt(withName: true) { success in
+        getUserInformationAndShowPrompt(withName: true, from: viewController) { success in
             if success {
                 self.registerDeviceTokenIfNeeded()
             }
@@ -352,9 +351,9 @@ private extension ZendeskManager {
         }
     }
 
-    func getUserInformationAndShowPrompt(withName: Bool, completion: @escaping (Bool) -> Void) {
+    func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping (Bool) -> Void) {
         getUserInformationIfAvailable()
-        promptUserForInformation(withName: withName) { success in
+        promptUserForInformation(withName: withName, from: viewController) { success in
             guard success else {
                 DDLogInfo("No user information to create Zendesk identity with.")
                 completion(false)
@@ -444,17 +443,25 @@ private extension ZendeskManager {
 
     // MARK: - View
     //
-    func showZendeskView(_ zendeskView: UIViewController) {
-        guard let presentInController = presentInController else {
-            return
-        }
+    func showZendeskView(_ zendeskView: UIViewController, from controller: UIViewController) {
+        // Got some duck typing going on in here. Sorry.
 
         // If the controller is a UIViewController, set the modal display for iPad.
-        if !presentInController.isKind(of: UINavigationController.self) && UIDevice.current.userInterfaceIdiom == .pad {
+        if !controller.isKind(of: UINavigationController.self) && UIDevice.current.userInterfaceIdiom == .pad {
             let navController = UINavigationController(rootViewController: zendeskView)
             navController.modalPresentationStyle = .fullScreen
             navController.modalTransitionStyle = .crossDissolve
-            presentInController.present(navController, animated: true)
+            controller.present(navController, animated: true)
+            return
+        }
+
+        if let navController = controller as? UINavigationController {
+            navController.pushViewController(zendeskView, animated: true)
+            return
+        }
+
+        if let navController = controller.navigationController {
+            navController.pushViewController(zendeskView, animated: true)
             return
         }
 
@@ -565,7 +572,7 @@ private extension ZendeskManager {
 
     // MARK: - User Information Prompt
     //
-    func promptUserForInformation(withName: Bool, completion: @escaping (Bool) -> Void) {
+    func promptUserForInformation(withName: Bool, from viewController: UIViewController, completion: @escaping (Bool) -> Void) {
 
         let alertMessage = withName ? LocalizedText.alertMessageWithName : LocalizedText.alertMessage
         let alertController = UIAlertController(title: nil, message: alertMessage, preferredStyle: .alert)
@@ -624,7 +631,7 @@ private extension ZendeskManager {
         }
 
         // Show alert
-        presentInController?.present(alertController, animated: true, completion: nil)
+        viewController.present(alertController, animated: true, completion: nil)
     }
 
     /// Uses `@objc` because this method is used in a `#selector()` call
@@ -642,6 +649,8 @@ private extension ZendeskManager {
 
     func updateNameFieldForEmail(_ email: String) {
         guard let alertController = presentInController?.presentedViewController as? UIAlertController,
+            let totalTextFields = alertController.textFields?.count,
+            totalTextFields > 1,
             let nameField = alertController.textFields?.last else {
                 return
         }
@@ -657,21 +666,24 @@ private extension ZendeskManager {
     }
 
     func generateDisplayName(from rawEmail: String) -> String {
+        guard rawEmail.isEmpty == false else {
+            return ""
+        }
 
         // Generate Name, using the same format as Signup.
 
         // step 1: lower case
         let email = rawEmail.lowercased()
         // step 2: remove the @ and everything after
-        let localPart = email.split(separator: "@")[0]
+        let localPart = email.split(separator: "@")[safe: 0]
         // step 3: remove all non-alpha characters
-        let localCleaned = localPart.replacingOccurrences(of: "[^A-Za-z/.]", with: "", options: .regularExpression)
+        let localCleaned = localPart?.replacingOccurrences(of: "[^A-Za-z/.]", with: "", options: .regularExpression)
         // step 4: turn periods into spaces
-        let nameLowercased = localCleaned.replacingOccurrences(of: ".", with: " ")
+        let nameLowercased = localCleaned?.replacingOccurrences(of: ".", with: " ")
         // step 5: capitalize
-        let autoDisplayName = nameLowercased.capitalized
+        let autoDisplayName = nameLowercased?.capitalized
 
-        return autoDisplayName
+        return autoDisplayName ?? ""
     }
 }
 

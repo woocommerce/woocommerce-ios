@@ -88,15 +88,15 @@ private extension SettingsViewController {
     func configureSections() {
         let primaryStoreTitle = NSLocalizedString("Primary Store", comment: "My Store > Settings > Primary Store information section").uppercased()
         let improveTheAppTitle = NSLocalizedString("Help Improve The App", comment: "My Store > Settings > Privacy settings section").uppercased()
-        let notificationsTitle = NSLocalizedString("Notifications", comment: "My Store > Settings > Notifications app section").uppercased()
         let aboutSettingsTitle = NSLocalizedString("About the app", comment: "My Store > Settings > About app section").uppercased()
+        let otherTitle = NSLocalizedString("Other", comment: "My Store > Settings > Other app section").uppercased()
 
         sections = [
             Section(title: primaryStoreTitle, rows: [.primaryStore]),
             Section(title: nil, rows: [.support]),
-            Section(title: notificationsTitle, rows: [.notificationOrders, .notificationSound, .notificationReviews]),
             Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest]),
             Section(title: aboutSettingsTitle, rows: [.about, .licenses]),
+            Section(title: otherTitle, rows: [.appSettings]),
             Section(title: nil, rows: [.logout]),
         ]
     }
@@ -115,12 +115,6 @@ private extension SettingsViewController {
             configurePrimaryStore(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
-        case let cell as SwitchTableViewCell where row == .notificationOrders:
-            configureNotificationOrders(cell: cell)
-        case let cell as SwitchTableViewCell where row == .notificationSound:
-            configureNotificationSound(cell: cell)
-        case let cell as SwitchTableViewCell where row == .notificationReviews:
-            configureNotificationReviews(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .featureRequest:
@@ -129,6 +123,8 @@ private extension SettingsViewController {
             configureAbout(cell: cell)
         case let cell as BasicTableViewCell where row == .licenses:
             configureLicenses(cell: cell)
+        case let cell as BasicTableViewCell where row == .appSettings:
+            configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
         default:
@@ -146,24 +142,6 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Help & Support", comment: "Contact Support Action")
-    }
-
-    func configureNotificationOrders(cell: SwitchTableViewCell) {
-        cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Orders", comment: "Setting title for order notifications")
-        cell.detailTextLabel?.text = NSLocalizedString("Get alerts when new orders come in", comment: "Setting detail for order notifications")
-    }
-
-    func configureNotificationSound(cell: SwitchTableViewCell) {
-        cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Tone", comment: "Setting title for the notification sound")
-        cell.detailTextLabel?.text = NSLocalizedString("Play Cha-Ching sound on new order", comment: "Setting detail for the notification sound")
-    }
-
-    func configureNotificationReviews(cell: SwitchTableViewCell) {
-        cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Product Reviews", comment: "Setting title for product review notifications")
-        cell.detailTextLabel?.text = NSLocalizedString("Get alerts for new product reviews", comment: "Setting detail for product review notifications")
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -188,6 +166,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Open source licenses", comment: "Navigates to open source licenses screen")
+    }
+
+    func configureAppSettings(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Open device settings", comment: "Opens iOS's Device Settings for the app")
     }
 
     func configureLogout(cell: BasicTableViewCell) {
@@ -256,6 +240,13 @@ private extension SettingsViewController {
     func featureRequestWasPressed() {
         let safariViewController = SFSafariViewController(url: WooConstants.featureRequestURL)
         present(safariViewController, animated: true, completion: nil)
+    }
+
+    func appSettingsWasPressed() {
+        guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
+            return
+        }
+        UIApplication.shared.open(targetURL)
     }
 
     func logOutUser() {
@@ -333,6 +324,8 @@ extension SettingsViewController: UITableViewDelegate {
             licensesWasPressed()
         case .about:
             aboutWasPressed()
+        case .appSettings:
+            appSettingsWasPressed()
         default:
             break
         }
@@ -360,9 +353,7 @@ private enum Row: CaseIterable {
     case featureRequest
     case about
     case licenses
-    case notificationOrders
-    case notificationSound
-    case notificationReviews
+    case appSettings
 
     var type: UITableViewCell.Type {
         switch self {
@@ -380,12 +371,8 @@ private enum Row: CaseIterable {
             return BasicTableViewCell.self
         case .licenses:
             return BasicTableViewCell.self
-        case .notificationOrders:
-            return SwitchTableViewCell.self
-        case .notificationSound:
-            return SwitchTableViewCell.self
-        case .notificationReviews:
-            return SwitchTableViewCell.self
+        case .appSettings:
+            return BasicTableViewCell.self
         }
     }
 

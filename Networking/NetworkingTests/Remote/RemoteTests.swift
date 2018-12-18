@@ -21,7 +21,10 @@ class RemoteTests: XCTestCase {
 
         remote.enqueue(request) { (payload, error) in
             XCTAssertNil(payload)
-            XCTAssertEqual(error as! NetworkError, NetworkError.unknown)
+            guard case NetworkError.notFound? = error else {
+                XCTFail()
+                return
+            }
 
             XCTAssert(network.requestsForResponseData.isEmpty)
             XCTAssert(network.requestsForResponseJSON.count == 1)
@@ -45,8 +48,12 @@ class RemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Enqueue with Mapper")
 
         remote.enqueue(request, mapper: mapper) { (payload, error) in
+            guard case NetworkError.notFound? = error else {
+                XCTFail()
+                return
+            }
+
             XCTAssertNil(payload)
-            XCTAssertEqual(error as! NetworkError, NetworkError.unknown)
 
             XCTAssert(network.requestsForResponseJSON.isEmpty)
             XCTAssert(network.requestsForResponseData.count == 1)

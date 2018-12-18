@@ -37,7 +37,7 @@ public class Remote {
             }
 
             if let applicationError = DotcomValidator.error(from: document) {
-                self.applicationErrorWasReceived(error: applicationError)
+                self.applicationErrorWasReceived(error: applicationError, for: request)
                 completion(nil, applicationError)
                 return
             }
@@ -65,7 +65,7 @@ public class Remote {
             }
 
             if let applicationError = DotcomValidator.error(from: data) {
-                self.applicationErrorWasReceived(error: applicationError)
+                self.applicationErrorWasReceived(error: applicationError, for: request)
                 completion(nil, applicationError)
                 return
             }
@@ -88,9 +88,23 @@ private extension Remote {
 
     /// Publishes a `RemoteDidReceiveApplicationError` with the associated Error entity.
     ///
-    func applicationErrorWasReceived(error: Error) {
-        NotificationCenter.default.post(name: .RemoteDidReceiveApplicationError, object: error)
+    func applicationErrorWasReceived(error: Error, for request: URLRequestConvertible) {
+        var userInfo = [AnyHashable: Any]()
+        if let request = request.urlRequest, let url = request.url {
+            userInfo[RemoteNotificationKey.url.rawValue] = url.absoluteString
+        }
+
+        NotificationCenter.default.post(name: .RemoteDidReceiveApplicationError, object: error, userInfo: userInfo)
     }
+}
+
+// MARK: - Notification(s) UserInfo Keys
+//
+public enum RemoteNotificationKey: String {
+
+    /// Reference to the URL that yielded a given Error
+    ///
+    case url
 }
 
 

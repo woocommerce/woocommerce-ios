@@ -23,14 +23,13 @@ public enum DotcomError: Error, Decodable {
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-
         let error = try container.decode(String.self, forKey: .error)
-        let message = try container.decodeIfPresent(String.self, forKey: .message)
 
         switch error {
         case Constants.requestFailed:
             self = .requestFailed
         default:
+            let message = try container.decodeIfPresent(String.self, forKey: .message)
             self = .unknown(code: error, message: message)
         }
     }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-28 10:54:10+0000 */
+/* Translation-Revision-Date: 2018-12-11 13:54:02+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -11,6 +11,15 @@
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "سيحتوي رمز التحقق على أرقام فقط.";
+
+/* About this app (information page title) */
+"About" = "About";
+
+/* My Store > Settings > About app section */
+"About the app" = "About the app";
+
+/* Application's Active State */
+"Active" = "Active";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "نشط، التحديثات التلقائية قيد إيقاف التشغيل";
@@ -81,6 +90,9 @@
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "رجوع";
 
+/* Application's Background State */
+"Background" = "Background";
+
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "رقم الشريط %1$i, %2$@, ";
 
@@ -104,6 +116,9 @@
 
 /* Cancelled Order Status */
 "Canceled" = "تم الإلغاء";
+
+/* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
+"Cannot connect to %@" = "Cannot connect to %@";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "حافظ على مواقعك المفضلة وانضم إلى المحادثة أينما كنت ووقتما تشاء.";
@@ -156,6 +171,12 @@
 /* Error message informing the user that there was a problem unsubscribing to a site or feed. */
 "Could not unfollow the site at the address specified." = "تعذر إلغاء متابعة الموقع في العنوان المحدد.";
 
+/* Error message shown a URL points to a valid site but not a WordPress site. */
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
+
+/* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
+
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
 "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "تعذر الاتصال. تلقينا الخطأ 403 عند محاولة الوصول إلى نقطة نهاية موقعك XMLRPC. يحتاج التطبيق إلى ذلك للاتصال بموقعك. يُرجى الاتصال بالمضيف لحل هذه المشكلة.";
 
@@ -173,9 +194,6 @@
 
 /* Plural of 'day' — a statistical unit */
 "Days" = "ايام";
-
-/* Deleted Notification's Title */
-"Deleted Notification!" = "التنبيه المحذوف!";
 
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "محذوف: طلب رقم #(viewModel.order.number)";
@@ -219,6 +237,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "عنوان URL فارغ";
 
+/* Sign in instructions for logging in with a URL. */
+"Enter the address of your WooCommerce store you'd like to connect." = "أدخل عنوان متجر WooCommerce الخاص بك الذي تود الاتصال به.";
+
 /* Instruction text on the login's site addresss screen. */
 "Enter the address of your WordPress site you'd like to connect." = "أدخل عنوان موقع وردبرس الذي تود الاتصال به.";
 
@@ -228,11 +249,17 @@
 /* No comment provided by engineer. */
 "Enter your password instead." = "بدلاً من ذلك، أدخل كلمة المرور.";
 
+/* No comment provided by engineer. */
+"Error" = "Error";
+
 /* Failed Order Status */
 "Failed" = "فشل";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "فشل في تسلسل الطلب إلى REST API.";
+
+/* Navigates to the feature request screen */
+"Feature Request" = "Feature Request";
 
 /* Accessibility label for the Filter notifications button. */
 "Filter notifications" = "ترشيح التنبيهات";
@@ -291,6 +318,9 @@
 /* Detail label for yes/no switch. */
 "If disabled will add the note as private." = "إذا تم تعطيله، فستضاف الملاحظة بوصفها خاصة.";
 
+/* Application's Inactive State */
+"Inactive" = "Inactive";
+
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "غير نشط، التحديثات التلقائية قيد إيقاف التشغيل";
 
@@ -327,6 +357,9 @@
 /* Settings > Privacy Settings. A text link to the cookie policy. */
 "Learn more" = "تعرف على المزيد";
 
+/* Licenses (information page title) */
+"Licenses" = "Licenses";
+
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "تم الوصول إلى الحد المسموح به. يمكنك المحاولة مرة أخرى في غضون دقيقة واحدة. حاول مرة أخرى لأن ذلك سيؤدي إلى زيادة الوقت الذي ينبغي لك انتظاره قبل رفع الحظر. إذا كنت تعتقد أن ذلك خطأ داخلي، فاتصل بالدعم.";
 
@@ -353,6 +386,9 @@
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "تسجيل الدخول باستخدام Jetpack";
+
+/* Sign in instructions on the 'log in using email' screen. */
+"Log in with your WordPress.com account email address to manage your WooCommerce stores." = "سجِّل الدخول باستخدام عنوان البريد الإلكتروني لحساب وردبرس.كوم الخاص بك لإدارة متاجر WooCommerce الخاصة بك.";
 
 /* Logout Action */
 "Logout account" = "تسجيل الخروج من الحساب";
@@ -448,7 +484,7 @@
 "Note to customer" = "ملاحظة إلى العميل";
 
 /* No comment provided by engineer. */
-"Notifications" = "تنبيهات";
+"Notifications" = "Notifications";
 
 /* Notifications filtered title */
 "Notifications: (currentTypeFilter.description)" = "التنبيهات: (currentTypeFilter.description)";
@@ -476,6 +512,9 @@
 
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "فتح البريد";
+
+/* Navigates to open source licenses screen */
+"Open source licenses" = "Open source licenses";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "معلومات التعقب الاختيارية";
@@ -534,14 +573,20 @@
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "يُرجى إدخال بيانات اعتمادك";
 
+/* Instructions for alert asking for email and name. */
+"Please enter your email address and username:" = "Please enter your email address and username:";
+
 /* Instructions for alert asking for email. */
-"Please enter your email address." = "يُرجى إدخال عنوان البريد الإلكتروني.";
+"Please enter your email address:" = "يُرجى إدخال عنوان البريد الإلكتروني.";
 
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "يُرجى تعبئة جميع الحقول";
 
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "يُرجى فتح تطبيق البريد الإلكتروني والبحث عن بريد إلكتروني من وردبرس.كوم.";
+
+/* Opens the Privacy Policy web page */
+"Privacy Policy" = "Privacy Policy";
 
 /* Navigates to Privacy Settings screen */
 "Privacy Settings" = "إعدادات الخصوصية";
@@ -590,6 +635,9 @@
 
 /* No comment provided by engineer. */
 "Retry" = "إعادة المحاولة";
+
+/* Review moderation success notice message */
+"Review marked %@" = "Review marked %@";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "مراجعة هذه الطلبات المُعلّقة وإعدادها وشحنها";
@@ -711,11 +759,17 @@
 /* Subtotal label for payment view */
 "Subtotal" = "الإجمالي الفرعي";
 
+/* Labels an order note to let user know it's a system status message */
+"System status" = "System status";
+
 /* Tax label for total taxes line */
 "Tax:" = "الضريبة:";
 
 /* Taxes label for payment view */
 "Taxes" = "الضرائب";
+
+/* Opens the Terms of Service web page */
+"Terms of Service" = "Terms of Service";
 
 /* Button title */
 "Text me a code instead" = "اكتب رمزًا لي بدلاً من ذلك";
@@ -754,7 +808,7 @@
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "شهادة هذا الخادم غير صالحة. قد تكون مرتبطًا بخادم يبدو &quot;%@&quot; والذي قد يجعل معلوماتك السرية في خطر.\n\nهل تريد أن تثق في الشهادة على أية حال؟";
 
 /* Displayed whenever a Notification that was onscreen got deleted. */
-"The notification has been removed!" = "تمت إزالة التنبيه!";
+"The notification has been removed" = "تمت إزالة التنبيه!";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "تم حذف الطلب من متجرك!";
@@ -794,9 +848,6 @@
 
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "تساعدنا هذه المعلومات على تحسين منتجاتنا، وجعل التسويق أكثر ملاءمة لك، وتخصيص تجربة وردبرس.كوم، والمزيد كما يرد بالتفصيل في سياسة الخصوصية لدينا.";
-
-/* Instructions for alert asking for email and name. */
-"To continue please enter your email address and name." = "للمتابعة، يرجى إدخال عنوان بريدك الإلكتروني واسمك.";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "لإنشاء حسابك الجديد على وردبرس.كوم، يرجى إدخال عنوان بريدك الإلكتروني.";
@@ -846,6 +897,9 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "يتعذر العثور على متاجر WooCommerce المتصلة بهذا الحساب";
 
+/* Review error notice message */
+"Unable to mark review %@" = "Unable to mark review %@";
+
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "يتعذر قراءة موقع WordPress على معرف URL ذلك. انقر على \"هل تحتاج إلى المساعدة؟\" لعرض الأسئلة المتداولة.";
 
@@ -860,6 +914,9 @@
 
 /* Undo Action */
 "Undo" = "تراجع";
+
+/* Unknown Application State */
+"Unknown" = "Unknown";
 
 /* No comment provided by engineer. */
 "Unknown Search Terms" = "مصطلحات بحث غير معروفة";
@@ -884,6 +941,9 @@
 
 /* App version label */
 "Version" = "النسخة";
+
+/* Displays the version of the App */
+"Version %@" = "Version %@";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "عرض تذاكر الدعم التي تم إرسالها مسبقًا";
@@ -918,9 +978,6 @@
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "لا يمكننا الاتصال بموقع Jetpack على عنوان URL هذا. اتصل بنا لطلب المساعدة.";
 
-/* Error message shown a URL points to a valid site but not a WordPress site. */
-"We're sure this is a great site - but it's not a WordPress site, so you can't connect to it with this app." = "إننا متأكدون من أن هذا موقع رائع -- لكنه ليس موقع وردبرس، لذا لا يمكنك الاتصال به باستخدام هذا التطبيق.";
-
 /* Statistical unit - a single week */
 "Week" = "أسبوع";
 
@@ -935,6 +992,9 @@
 
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "عذرًا، هذا رمز تحقق من عاملين غير صالح. تحقق مجددًا من رمزك وحاول مجددًا!";
+
+/* Navigates to about WooCommerce app screen */
+"WooCommerce" = "WooCommerce";
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "WooCommerce لدعم نظام التشغيل iOS";
@@ -972,6 +1032,9 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "يظهر عنوان موقعك في الشريط الموجود في أعلى الشاشة عندما تدخل إلى موقعك من متصفح Safari.";
 
+/* Notification status description for 'approved' */
+"approved" = "تمت الموافقة عليها";
+
 /* Login Disclaimer Linked Text */
 "configuration instructions" = "تعليمات التكوين";
 
@@ -981,12 +1044,30 @@
 /* Later today */
 "later today" = "في وقتٍ لاحقٍ اليوم";
 
+/* Notification status description for 'unspam' (opposite of spam) */
+"not spam" = "ليس بريدًا مزعجًا";
+
+/* Notification status description for 'untrash' (opposite of trash) */
+"not trash" = "ليس في سلة مهملات";
+
+/* Notification status description for 'spam' */
+"spam" = "بريد مزعج";
+
 /* Today */
 "today" = "اليوم";
+
+/* Notification status description for 'trash' */
+"trash" = "سلة المهملات";
+
+/* Notification status description for 'unapproved' */
+"unapproved" = "لم تتم الموافقة عليها";
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "عنوان url غير معروف";
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} تسجيل الدخول باستخدام Google.";
+
+/* About View's Footer Text. The variable is the current year */
+"© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
 

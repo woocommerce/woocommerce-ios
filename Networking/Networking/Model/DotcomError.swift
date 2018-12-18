@@ -64,6 +64,28 @@ public enum DotcomError: Error, Decodable {
 }
 
 
+// MARK: - CustomStringConvertible Conformance
+//
+extension DotcomError: CustomStringConvertible {
+
+    public var description: String {
+        switch self {
+        case .empty:
+            return NSLocalizedString("Dotcom Response Empty", comment: "WordPress.com Error thrown when the response body is empty")
+        case .invalidToken:
+            return NSLocalizedString("Dotcom Token Invalid", comment: "WordPress.com Invalid Token")
+        case .requestFailed:
+            return NSLocalizedString("Dotcom Request Failed", comment: "WordPress.com Request Failure")
+        case .unauthorized:
+            return NSLocalizedString("Dotcom Missing Token", comment: "WordPress.com Missing Token")
+        case .unknown(let code, let message):
+            let theMessage = message ?? String()
+            return NSLocalizedString("Dotcom Error: [\(code)] \(theMessage)", comment: "WordPress.com (unmapped!) error")
+        }
+    }
+}
+
+
 // MARK: - Equatable Conformance
 //
 public func ==(lhs: DotcomError, rhs: DotcomError) -> Bool {

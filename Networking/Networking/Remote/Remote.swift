@@ -30,19 +30,24 @@ public class Remote {
     ///     - completion: Closure to be executed upon completion. Will receive the JSON Parsed Response (if successful)
     ///
     func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
-        network.responseJSON(for: request) { (document, networkingError) in
-            guard let document = document else {
+        network.responseData(for: request) { (data, networkingError) in
+            guard let data = data else {
                 completion(nil, networkingError)
                 return
             }
 
-            if let applicationError = DotcomValidator.error(from: document) {
+            if let applicationError = DotcomValidator.error(from: data) {
                 self.applicationErrorWasReceived(error: applicationError, for: request)
                 completion(nil, applicationError)
                 return
             }
 
-            completion(document, nil)
+            do {
+                let document = try JSONSerialization.jsonObject(with: data, options: [])
+                completion(document, nil)
+            } catch {
+                completion(nil, error)
+            }
         }
     }
 

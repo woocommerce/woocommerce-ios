@@ -83,7 +83,7 @@ class NotificationsRemoteTests: XCTestCase {
 
         remote.updateLastSeen("") { error in
             let error = error as? DotcomError
-            XCTAssertEqual(error?.code, "unknown_token")
+            XCTAssertEqual(error?.error, "unknown_token")
             expectation.fulfill()
         }
 
@@ -116,7 +116,7 @@ class NotificationsRemoteTests: XCTestCase {
 
         remote.updateReadStatus(noteIds: [], read: true) { error in
             let error = error as? DotcomError
-            XCTAssertEqual(error?.code, "unknown_token")
+            XCTAssertEqual(error?.error, "unknown_token")
             expectation.fulfill()
         }
 

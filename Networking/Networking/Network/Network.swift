@@ -14,14 +14,6 @@ public protocol Network {
     ///
     init(credentials: Credentials)
 
-    /// Executes the specified Network Request. Upon completion, the payload will be parsed as JSON, and sent back to the caller.
-    ///
-    /// - Parameters:
-    ///     - request: Request that should be performed.
-    ///     - completion: Closure to be executed upon completion.
-    ///
-    func responseJSON(for request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void)
-
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
     ///
     /// - Parameters:

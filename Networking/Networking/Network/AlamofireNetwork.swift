@@ -18,32 +18,6 @@ public class AlamofireNetwork: Network {
         self.credentials = credentials
     }
 
-    /// Executes the specified Network Request. Upon completion, the payload will be parsed as JSON, and sent back to the caller.
-    ///
-    /// - Important:
-    ///     - Authentication Headers will be injected, based on the Network's Credentials.
-    ///
-    /// - Parameters:
-    ///     - request: Request that should be performed.
-    ///     - completion: Closure to be executed upon completion.
-    ///
-    /// - Note:
-    ///     - The response body will always be returned (when possible), even when there's a networking error.
-    ///       This differs slightly from the standard Alamofire `.validate()` behavior, and it's required so that
-    ///       the upper layers can properly detect "Jetpack Tunnel" Errors.
-    ///     - Yes. We do the above because the Jetpack Tunnel endpoint doesn't properly relay the correct statusCode.
-    ///
-    public func responseJSON(for request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
-
-        responseData(for: request) { (data, error) in
-            let parsed = data.flatMap { data in
-                try? JSONSerialization.jsonObject(with: data, options: [])
-            }
-
-            completion(parsed, error)
-        }
-    }
-
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
     ///
     /// - Important:

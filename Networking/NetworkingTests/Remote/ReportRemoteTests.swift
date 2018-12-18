@@ -56,7 +56,7 @@ class ReportRemoteTests: XCTestCase {
             XCTAssertNil(reportTotals)
             XCTAssertNotNil(error)
             let error = error as? DotcomError
-            XCTAssertEqual(error?.code, "unknown_token")
+            XCTAssertEqual(error?.error, "unknown_token")
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: Constants.expectationTimeout)

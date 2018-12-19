@@ -3,10 +3,15 @@ import Networking
 import Storage
 
 
-
 // MARK: - AccountStore
 //
 public class AccountStore: Store {
+
+    /// Shared private StorageType for use during synchronizeSites and synchronizeSitePlan processes
+    ///
+    private lazy var sharedDerivedStorage: StorageType = {
+        return storageManager.newDerivedStorage()
+    }()
 
     /// Registers for supported Actions.
     ///
@@ -31,6 +36,8 @@ public class AccountStore: Store {
             synchronizeAccount(onCompletion: onCompletion)
         case .synchronizeSites(let onCompletion):
             synchronizeSites(onCompletion: onCompletion)
+        case .synchronizeSitePlan(let siteID, let onCompletion):
+            synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -67,8 +74,25 @@ private extension AccountStore {
                 return
             }
 
-            self?.upsertStoredSites(readOnlySites: sites)
-            onCompletion(nil)
+            self?.upsertStoredSitesInBackground(readOnlySites: sites) {
+                onCompletion(nil)
+            }
+        }
+    }
+
+    /// Loads the site plan for the default site.
+    ///
+    func synchronizeSitePlan(siteID: Int, onCompletion: @escaping (Error?) -> Void) {
+        let remote = AccountRemote(network: network)
+        remote.loadSitePlan(for: siteID) { [weak self]  (siteplan, error) in
+            guard let siteplan = siteplan else {
+                onCompletion(error)
+                return
+            }
+
+            self?.updateStoredSitePlanInBackground(plan: siteplan) {
+                onCompletion(nil)
+            }
         }
     }
 
@@ -104,18 +128,34 @@ extension AccountStore {
         storage.saveIfNeeded()
     }
 
-    /// Updates (OR Inserts) the specified ReadOnly Site Entities into the Storage Layer.
+    /// Updates the specified ReadOnly Site Plan attribute in the Site entity, in the Storage Layer.
     ///
-    func upsertStoredSites(readOnlySites: [Networking.Site]) {
-        assert(Thread.isMainThread)
-
-        let storage = storageManager.viewStorage
-
-        for readOnlySite in readOnlySites {
-            let storageSite = storage.loadSite(siteID: readOnlySite.siteID) ?? storage.insertNewObject(ofType: Storage.Site.self)
-            storageSite.update(with: readOnlySite)
+    func updateStoredSitePlanInBackground(plan: SitePlan, onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            let storageSite = derivedStorage.loadSite(siteID: plan.siteID)
+            storageSite?.plan = plan.shortName
         }
 
-        storage.saveIfNeeded()
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
     }
+
+    /// Updates (OR Inserts) the specified ReadOnly Site Entities into the Storage Layer.
+    ///
+    func upsertStoredSitesInBackground(readOnlySites: [Networking.Site], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            for readOnlySite in readOnlySites {
+                let storageSite = derivedStorage.loadSite(siteID: readOnlySite.siteID) ?? derivedStorage.insertNewObject(ofType: Storage.Site.self)
+                storageSite.update(with: readOnlySite)
+            }
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
 }

@@ -2,6 +2,13 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 8 (Release 0.13)
+- @jleandroperez 2018-12-14
+    - Removed  `Site.isJetpackInstalled` attribute.
+
+- @bummytime 2018-12-11
+    - New `OrderNote.author` attribute
+
 ## Model 7
 - @bummytime 2018-11-26
     - New `Note.deleteInProgress` property

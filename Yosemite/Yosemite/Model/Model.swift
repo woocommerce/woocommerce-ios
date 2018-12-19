@@ -8,8 +8,10 @@ import Storage
 
 public typealias Account = Networking.Account
 public typealias Address = Networking.Address
+public typealias APNSDevice = Networking.APNSDevice
 public typealias CommentStatus = Networking.CommentStatus
 public typealias Credentials = Networking.Credentials
+public typealias DotcomDevice = Networking.DotcomDevice
 public typealias MetaContainer = Networking.MetaContainer
 public typealias Note = Networking.Note
 public typealias NoteBlock = Networking.NoteBlock
@@ -38,6 +40,7 @@ public typealias WooAPIVersion = Networking.WooAPIVersion
 public typealias StorageAccount = Storage.Account
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order
+public typealias StorageOrderNote = Storage.OrderNote
 public typealias StorageOrderStats = Storage.OrderStats
 public typealias StorageOrderStatsItem = Storage.OrderStatsItem
 public typealias StorageSite = Storage.Site

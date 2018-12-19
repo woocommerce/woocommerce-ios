@@ -9,6 +9,10 @@ enum WordPressAPIVersion: String {
     ///
     case mark1_1 = "rest/v1.1/"
 
+    /// WordPress.com Endpoint Mark 1.2
+    ///
+    case mark1_2 = "rest/v1.2/"
+
     /// WPcom REST API Endpoint Mark 2
     ///
     case wpcomMark2 = "wpcom/v2/"

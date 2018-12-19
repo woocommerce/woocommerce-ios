@@ -88,6 +88,10 @@ class OrdersViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
+    deinit {
+        stopListeningToNotifications()
+    }
+
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         fatalError()
     }
@@ -104,11 +108,14 @@ class OrdersViewController: UIViewController {
 
         refreshTitle()
         refreshResultsPredicate()
+
         configureSyncingCoordinator()
         configureNavigation()
         configureTabBarItem()
         configureTableView()
         configureResultsController()
+
+        startListeningToNotifications()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -171,6 +178,31 @@ private extension OrdersViewController {
 
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
+    }
+}
+
+
+// MARK: - Notifications
+//
+extension OrdersViewController {
+
+    /// Wires all of the Notification Hooks
+    ///
+    func startListeningToNotifications() {
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
+    }
+
+    /// Stops listening to all related Notifications
+    ///
+    func stopListeningToNotifications() {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    /// Runs whenever the default Account is updated.
+    ///
+    @objc func defaultAccountWasUpdated() {
+        syncingCoordinator.resetInternalState()
     }
 }
 
@@ -457,7 +489,7 @@ extension OrdersViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return estimatedRowHeights[indexPath] ?? UITableView.automaticDimension
+        return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

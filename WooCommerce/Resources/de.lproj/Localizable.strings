@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-11-29 10:54:02+0000 */
+/* Translation-Revision-Date: 2018-12-11 08:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -11,6 +11,15 @@
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "Der Verifizierungscode besteht ausschließlich aus Zahlen.";
+
+/* About this app (information page title) */
+"About" = "About";
+
+/* My Store > Settings > About app section */
+"About the app" = "About the app";
+
+/* Application's Active State */
+"Active" = "Active";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "Aktiv, automatische Updates aus";
@@ -81,6 +90,9 @@
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Zurück";
 
+/* Application's Background State */
+"Background" = "Background";
+
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "Barcodenummer %1$i, %2$@, ";
 
@@ -104,6 +116,9 @@
 
 /* Cancelled Order Status */
 "Canceled" = "Abgebrochen";
+
+/* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
+"Cannot connect to %@" = "Cannot connect to %@";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Du kannst überall und jederzeit deine bevorzugten Websites verfolgen und an der Unterhaltung teilnehmen.";
@@ -156,6 +171,12 @@
 /* Error message informing the user that there was a problem unsubscribing to a site or feed. */
 "Could not unfollow the site at the address specified." = "Konnte Website-Abo für die Website an der angegeben Adresse nicht beenden.";
 
+/* Error message shown a URL points to a valid site but not a WordPress site. */
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
+
+/* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
+
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
 "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Verbindung fehlgeschlagen. Wir haben einen 403-Fehler erhalten, als wir versucht haben, den XMLRPC-Endpunkt deiner Website aufzurufen. Die App braucht diesen, um mit deiner Website zu kommunizieren. Kontaktiere deinen Host, um dieses Problem zu beheben.";
 
@@ -173,9 +194,6 @@
 
 /* Plural of 'day' — a statistical unit */
 "Days" = "Tage";
-
-/* Deleted Notification's Title */
-"Deleted Notification!" = "Benachrichtigung gelöscht.";
 
 /* Order Notice */
 "Deleted: Order #(viewModel.order.number)" = "Gelöscht: Bestellnr. (viewModel.order.number)";
@@ -219,6 +237,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Leere URL";
 
+/* Sign in instructions for logging in with a URL. */
+"Enter the address of your WooCommerce store you'd like to connect." = "Gib die Adresse deines WooCommerce-Shops ein, den du verbinden möchtest.";
+
 /* Instruction text on the login's site addresss screen. */
 "Enter the address of your WordPress site you'd like to connect." = "Gib die Adresse der WordPress-Website ein, die du verbinden möchtest.";
 
@@ -228,11 +249,17 @@
 /* No comment provided by engineer. */
 "Enter your password instead." = "Gib stattdessen dein Passwort ein.";
 
+/* No comment provided by engineer. */
+"Error" = "Error";
+
 /* Failed Order Status */
 "Failed" = "Fehlgeschlagen";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Fehler beim Serialisieren der Anforderung an die REST API.";
+
+/* Navigates to the feature request screen */
+"Feature Request" = "Feature Request";
 
 /* Accessibility label for the Filter notifications button. */
 "Filter notifications" = "Benachrichtigungen filtern";
@@ -291,6 +318,9 @@
 /* Detail label for yes/no switch. */
 "If disabled will add the note as private." = "Wenn deaktiviert, wird der Hinweis als privat hinzugefügt.";
 
+/* Application's Inactive State */
+"Inactive" = "Inactive";
+
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Inaktiv, automatische Updates aus";
 
@@ -327,11 +357,14 @@
 /* Settings > Privacy Settings. A text link to the cookie policy. */
 "Learn more" = "Mehr erfahren";
 
+/* Licenses (information page title) */
+"Licenses" = "Licenses";
+
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limit erreicht. Du kannst es noch einmal in 1 Minute probieren. Wenn Du es vorher weiter versuchst wird sich die Zeit bis zur Aufhebung der Sperre nur weiter erhöhen. Wenn Du glaubst, es handelt sich um einen Fehler, kontaktiere bitte den Support.";
 
 /* Displayed when an Order is being retrieved */
-"Loading Order" = "Auftrag wird geladen";
+"Loading Order" = "Bestellung wird geladen";
 
 /* No comment provided by engineer. */
 "Log In" = "Anmelden";
@@ -353,6 +386,9 @@
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "Mit Jetpack anmelden";
+
+/* Sign in instructions on the 'log in using email' screen. */
+"Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Melde dich mit der E-Mail-Adresse deines WordPress.com-Kontos an, um deine WooCommerce-Shops zu verwalten.";
 
 /* Logout Action */
 "Logout account" = "Von Konto abmelden";
@@ -448,7 +484,7 @@
 "Note to customer" = "Hinweis an Kunden";
 
 /* No comment provided by engineer. */
-"Notifications" = "Benachrichtigungen";
+"Notifications" = "Notifications";
 
 /* Notifications filtered title */
 "Notifications: (currentTypeFilter.description)" = "Benachrichtigungen: (currentTypeFilter.description)";
@@ -476,6 +512,9 @@
 
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Mail öffnen";
+
+/* Navigates to open source licenses screen */
+"Open source licenses" = "Open source licenses";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Optionale Verfolgungsinformationen";
@@ -534,14 +573,20 @@
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Bitte Zugangsdaten eingeben";
 
+/* Instructions for alert asking for email and name. */
+"Please enter your email address and username:" = "Please enter your email address and username:";
+
 /* Instructions for alert asking for email. */
-"Please enter your email address." = "Bitte gib deine E-Mail-Adresse ein.";
+"Please enter your email address:" = "Bitte gib deine E-Mail-Adresse ein.";
 
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "Bitte fülle alle Felder aus";
 
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Bitte öffne deine E-Mail-App und suche nach einer E-Mail von WordPress.com.";
+
+/* Opens the Privacy Policy web page */
+"Privacy Policy" = "Privacy Policy";
 
 /* Navigates to Privacy Settings screen */
 "Privacy Settings" = "Datenschutzeinstellungen";
@@ -590,6 +635,9 @@
 
 /* No comment provided by engineer. */
 "Retry" = "Erneut versuchen";
+
+/* Review moderation success notice message */
+"Review marked %@" = "Review marked %@";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Diese ausstehenden Bestellungen prüfen, vorbereiten und versenden";
@@ -711,11 +759,17 @@
 /* Subtotal label for payment view */
 "Subtotal" = "Zwischensumme";
 
+/* Labels an order note to let user know it's a system status message */
+"System status" = "System status";
+
 /* Tax label for total taxes line */
 "Tax:" = "Steuern:";
 
 /* Taxes label for payment view */
 "Taxes" = "Steuern";
+
+/* Opens the Terms of Service web page */
+"Terms of Service" = "Terms of Service";
 
 /* Button title */
 "Text me a code instead" = "Code per SMS senden";
@@ -745,7 +799,7 @@
 "The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "Das Google-Konto \"(loginFields.username)\" stimmt mit keinem WordPress.com-Konto überein.";
 
 /* Fetching an Order Failed */
-"The Order couldn't be loaded!" = "Fehler beim Laden des Auftrags.";
+"The Order couldn't be loaded!" = "Fehler beim Laden der Bestellung.";
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "Diese URL hat keinen gültigen Host.";
@@ -754,7 +808,7 @@
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Das Zertifikat für diesen Server ist ungültig. Du könntest zu einem Server verbinden, der nur vorgibt \"%@\" zu sein, was ein Sicherheitsrisiko darstellt.\n\nMöchtest Du dem Zertifikat trotzdem vertrauen?";
 
 /* Displayed whenever a Notification that was onscreen got deleted. */
-"The notification has been removed!" = "Die Benachrichtigung wurde entfernt.";
+"The notification has been removed" = "Die Benachrichtigung wurde entfernt.";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. */
 "The order has been deleted from your Store!" = "Die Bestellung wurde aus deinem Shop gelöscht!";
@@ -794,9 +848,6 @@
 
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "Diese Informationen helfen uns dabei, unsere Produkte zu verbessern, Marketing besser auf dich zuzuschneiden, deine Erfahrung mit WordPress.com zu personalisieren und mehr. All das kannst du auch in unserer Datenschutzerklärung nachlesen.";
-
-/* Instructions for alert asking for email and name. */
-"To continue please enter your email address and name." = "Bitte gib deine E-Mail-Adresse und deinen Namen ein, um fortfahren zu können.";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Um dein neues WordPress.com-Konto zu erstellen, gib deine E-Mail-Adresse ein.";
@@ -846,6 +897,9 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "Es können keine WooCommerce-Shops gefunden werden, die mit diesem Konto verknüpft sind";
 
+/* Review error notice message */
+"Unable to mark review %@" = "Unable to mark review %@";
+
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Es konnte keine WordPress-Website unter dieser Adresse gefunden werden. Bitte tippe „Brauchst du Hilfe?“ an, um die FAQ anzusehen.";
 
@@ -860,6 +914,9 @@
 
 /* Undo Action */
 "Undo" = "Rückgängig";
+
+/* Unknown Application State */
+"Unknown" = "Unknown";
 
 /* No comment provided by engineer. */
 "Unknown Search Terms" = "Unbekannte Suchbegriffe";
@@ -884,6 +941,9 @@
 
 /* App version label */
 "Version" = "Version";
+
+/* Displays the version of the App */
+"Version %@" = "Version %@";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Bislang gesendete Support-Tickets anzeigen";
@@ -918,9 +978,6 @@
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "Wir können zur Jetpack-Website unter dieser URL keine Verbindung herstellen. Wende dich an uns, um Unterstützung zu erhalten.";
 
-/* Error message shown a URL points to a valid site but not a WordPress site. */
-"We're sure this is a great site - but it's not a WordPress site, so you can't connect to it with this app." = "Das ist mit Sicherheit eine tolle Website&nbsp;&ndash;&nbsp;aber es handelt es um keine WordPress-Website. Deshalb kannst du sie nicht mit dieser App verbinden.";
-
 /* Statistical unit - a single week */
 "Week" = "Woche";
 
@@ -935,6 +992,9 @@
 
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Ups, das ist kein gültiger zweistufiger Verifizierungscode. Überprüfe deinen Code und versuche es noch einmal!";
+
+/* Navigates to about WooCommerce app screen */
+"WooCommerce" = "WooCommerce";
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "Unterstützung für WooCommerce für iOS";
@@ -972,6 +1032,9 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "Wenn du deine Website im Safari aufrufst, wird die Adresse deiner Website oben in der Leiste angezeigt.";
 
+/* Notification status description for 'approved' */
+"approved" = "genehmigt";
+
 /* Login Disclaimer Linked Text */
 "configuration instructions" = "Konfigurationsanleitung";
 
@@ -981,12 +1044,30 @@
 /* Later today */
 "later today" = "später heute";
 
+/* Notification status description for 'unspam' (opposite of spam) */
+"not spam" = "kein Spam";
+
+/* Notification status description for 'untrash' (opposite of trash) */
+"not trash" = "nicht in den Papierkorb";
+
+/* Notification status description for 'spam' */
+"spam" = "Spam";
+
 /* Today */
 "today" = "heute";
+
+/* Notification status description for 'trash' */
+"trash" = "Papierkorb";
+
+/* Notification status description for 'unapproved' */
+"unapproved" = "nicht genehmigt";
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "Unbekannte URL";
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Mit Google anmelden.";
+
+/* About View's Footer Text. The variable is the current year */
+"© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
 

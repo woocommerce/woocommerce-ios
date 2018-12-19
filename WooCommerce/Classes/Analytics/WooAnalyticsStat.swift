@@ -90,6 +90,10 @@ public enum WooAnalyticsStat: String {
     case supportTicketUserViewed                = "support_ticket_user_viewed"
     case supportTicketViewFailed                = "support_ticket_view_failed"
     case supportHelpCenterUserSearched          = "support_help_center_user_searched"
+    case supportIdentityFormViewed              = "support_identity_form_viewed"
+    case supportIdentitySet                     = "support_identity_set"
+
+
 
     // Settings View Events
     //
@@ -102,6 +106,8 @@ public enum WooAnalyticsStat: String {
     case settingsPrivacyPolicyTapped        = "settings_privacy_settings_privacy_policy_link_tapped"
     case settingsShareInfoLearnMoreTapped   = "settings_privacy_settings_share_info_link_tapped"
     case settingsThirdPartyLearnMoreTapped  = "settings_privacy_settings_third_party_tracking_info_link_tapped"
+    case settingsLicensesLinkTapped         = "settings_about_open_source_licenses_link_tapped"
+    case settingsAboutLinkTapped            = "settings_about_woocommerce_link_tapped"
 
     case settingsLogoutTapped               = "settings_logout_button_tapped"
     case settingsLogoutConfirmation         = "settings_logout_confirmation_dialog_result"
@@ -142,6 +148,14 @@ public enum WooAnalyticsStat: String {
     case orderStatusChangeSuccess               = "order_status_change_success"
     case orderStatusChangeFailed                = "order_status_change_failed"
     case orderStatusChangeUndo                  = "order_status_change_undo"
+
+    // Push Notifications Events
+    //
+    case pushNotificationReceived               = "push_notification_received"
+    case pushNotificationAlertPressed           = "push_notification_alert_pressed"
+    case pushNotificationOSAlertAllowed         = "push_notification_os_alert_allowed"
+    case pushNotificationOSAlertDenied          = "push_notification_os_alert_denied"
+    case pushNotificationOSAlertShown           = "push_notification_os_alert_shown"
 
     // Notification View Events
     //

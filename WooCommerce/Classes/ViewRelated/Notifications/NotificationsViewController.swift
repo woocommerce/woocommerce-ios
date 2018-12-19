@@ -17,21 +17,19 @@ class NotificationsViewController: UIViewController {
     /// Mark all as read nav bar button
     ///
     private lazy var leftBarButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(image: Gridicon.iconOfType(.checkmark),
-                                     style: .plain,
-                                     target: self,
-                                     action: #selector(markAllAsRead))
-        return button
+        return UIBarButtonItem(image: Gridicon.iconOfType(.checkmark),
+                               style: .plain,
+                               target: self,
+                               action: #selector(markAllAsRead))
     }()
 
     /// Filter nav bar button
     ///
     private lazy var rightBarButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
-                                     style: .plain,
-                                     target: self,
-                                     action: #selector(displayFiltersAlert))
-        return button
+        return UIBarButtonItem(image: Gridicon.iconOfType(.menus),
+                               style: .plain,
+                               target: self,
+                               action: #selector(displayFiltersAlert))
     }()
 
     /// Haptic Feedback!
@@ -152,6 +150,7 @@ class NotificationsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        resetApplicationBadge()
         synchronizeNotifications() {
             // FIXME: This is being disabled temporarily because of a race condition caused with WPiOS.
             // We should consider updating and re-enabling this logic (when updates happen on the server) at a later time.
@@ -209,20 +208,6 @@ private extension NotificationsViewController {
     ///
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
-
-        // The following two assignments are actually overridding wiring performed by `startForwardingEvents`.
-        // FIXME: NUKE them ASAP
-        //
-        resultsController.onDidChangeContent = { [weak self] in
-            // FIXME: This should be removed once `PushNotificationsManager` is in place
-            self?.updateNotificationsTabIfNeeded()
-            self?.tableView?.endUpdates()
-        }
-        resultsController.onDidResetContent = { [weak self] in
-            // FIXME: This should be removed once `PushNotificationsManager` is in place
-            MainTabBarController.hideDotOn(.notifications)
-            self?.tableView?.reloadData()
-        }
         try? resultsController.performFetch()
     }
 
@@ -314,6 +299,12 @@ private extension NotificationsViewController {
 //
 private extension NotificationsViewController {
 
+    /// Nukes the BadgeCount
+    ///
+    func resetApplicationBadge() {
+        AppDelegate.shared.pushNotesManager.resetBadgeCount()
+    }
+
     /// Update the last seen time for notifications
     ///
     func updateLastSeenTime() {
@@ -386,7 +377,7 @@ private extension NotificationsViewController {
 
 // MARK: - ResultsController
 //
-extension NotificationsViewController {
+private extension NotificationsViewController {
 
     /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
     ///
@@ -458,26 +449,14 @@ extension NotificationsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return estimatedRowHeights[indexPath] ?? UITableView.automaticDimension
+        return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let note = resultsController.object(at: indexPath)
-
-        markAsReadIfNeeded(note: note)
-
-        switch note.kind {
-        case .storeOrder:
-            presentOrderDetails(for: note)
-            WooAnalytics.shared.track(.notificationOpened, withProperties: ["type": "order",
-                                                                            "already_read": note.read])
-        default:
-            presentNotificationDetails(for: note)
-            WooAnalytics.shared.track(.notificationOpened, withProperties: ["type": "review",
-                                                                            "already_read": note.read])
-        }
+        presentDetails(for: note)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -488,6 +467,43 @@ extension NotificationsViewController: UITableViewDelegate {
         // the actual value. AKA no flicker!
         //
         estimatedRowHeights[indexPath] = cell.frame.height
+    }
+}
+
+
+// MARK: - Public Methods
+//
+extension NotificationsViewController {
+
+    /// Presents the Details for the Notification with the specified Identifier.
+    ///
+    /// NOTE: This method will not perform any kind of RPC. It's effectively a NO-OP whenever the target note hasn't been
+    /// already retrieved.
+    ///
+    func presentDetails(for noteId: Int) {
+        let notificationMaybe = resultsController.fetchedObjects.first { $0.noteId == noteId }
+        guard let notification = notificationMaybe else {
+            return
+        }
+
+        presentDetails(for: notification)
+    }
+
+    /// Presents the Details for a given Note Instance: Either NotificationDetails, or OrderDetails, depending on the
+    /// Notification's Kind.
+    ///
+    func presentDetails(for note: Note) {
+        switch note.kind {
+        case .storeOrder:
+            presentOrderDetails(for: note)
+        default:
+            presentNotificationDetails(for: note)
+        }
+
+        WooAnalytics.shared.track(.notificationOpened, withProperties: [ "type": note.kind.rawValue,
+                                                                         "already_read": note.read ])
+
+        markAsReadIfNeeded(note: note)
     }
 }
 
@@ -625,13 +641,14 @@ private extension NotificationsViewController {
 
 // MARK: - Notifications
 //
-extension NotificationsViewController {
+private extension NotificationsViewController {
 
     /// Setup: Notification Hooks
     ///
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
+        nc.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
     /// Tear down the Notifications Hooks
@@ -644,6 +661,16 @@ extension NotificationsViewController {
     ///
     @objc func defaultSiteWasUpdated() {
         reloadResultsController()
+    }
+
+    /// Application became Active Again (while the Notes Tab was onscreen)
+    ///
+    @objc func applicationDidBecomeActive() {
+        guard isViewLoaded == true && view.window != nil else {
+            return
+        }
+
+        resetApplicationBadge()
     }
 }
 
@@ -698,16 +725,6 @@ private extension NotificationsViewController {
 // MARK: - Private Helpers
 //
 private extension NotificationsViewController {
-
-    // FIXME: This should be removed once `PushNotificationsManager` is in place
-    func updateNotificationsTabIfNeeded() {
-        guard !unreadNotes.isEmpty else {
-            MainTabBarController.hideDotOn(.notifications)
-            return
-        }
-
-        MainTabBarController.showDotOn(.notifications)
-    }
 
     /// Enables/disables the navbar buttons if needed
     ///

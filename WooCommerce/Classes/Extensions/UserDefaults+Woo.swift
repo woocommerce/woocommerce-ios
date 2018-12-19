@@ -10,6 +10,8 @@ extension UserDefaults {
         case defaultUsername
         case defaultStoreID
         case defaultAnonymousID
+        case deviceID
+        case deviceToken
         case userOptedInAnalytics
         case userOptedInCrashlytics
         case versionOfLastRun
@@ -39,6 +41,12 @@ extension UserDefaults {
     ///
     func removeObject(forKey key: Key) {
         removeObject(forKey: key.rawValue)
+    }
+
+    /// Indicates if there's an entry for the specified Key.
+    ///
+    func containsObject(forKey key: Key) -> Bool {
+        return value(forKey: key.rawValue) != nil
     }
 
     /// Subscript Accessible via our new Key type!

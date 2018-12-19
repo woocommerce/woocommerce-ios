@@ -34,6 +34,18 @@ class OrderNoteStoreTests: XCTestCase {
     ///
     private let sampleOrderID = 963
 
+    /// Dummy author string
+    ///
+    let sampleAuthor = "someuser"
+
+    /// Dummy author string for an "admin"
+    ///
+    let sampleAdminAuthor = "someadmin"
+
+    /// Dummy author string for the system
+    ///
+    let sampleSystemAuthor = "system"
+
 
     override func setUp() {
         super.setUp()
@@ -47,8 +59,6 @@ class OrderNoteStoreTests: XCTestCase {
     func testRetrieveOrderNotesReturnsExpectedFields() {
         let expectation = self.expectation(description: "Retrieve order notes")
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let remoteCustomerNote = sampleCustomerNote()
-        let remoteSellerNote = sampleSellerNote()
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes/", filename: "order-notes")
         let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { (orderNotes, error) in
@@ -57,9 +67,10 @@ class OrderNoteStoreTests: XCTestCase {
                 XCTFail()
                 return
             }
-            XCTAssertEqual(orderNotes.count, 18)
-            XCTAssertEqual(orderNotes[0], remoteCustomerNote)
-            XCTAssertEqual(orderNotes[2], remoteSellerNote)
+            XCTAssertEqual(orderNotes.count, 19)
+            XCTAssertEqual(orderNotes[0], self.sampleSellerNote())
+            XCTAssertEqual(orderNotes[1], self.sampleCustomerNote())
+            XCTAssertEqual(orderNotes[2], self.sampleSystemNote())
             expectation.fulfill()
         }
 
@@ -78,7 +89,7 @@ class OrderNoteStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes/", filename: "order-notes")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderNote.self), 0)
         let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { (orderNotes, error) in
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderNote.self), 18)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderNote.self), 19)
             XCTAssertNotNil(orderNotes)
             XCTAssertNil(error)
             expectation.fulfill()
@@ -125,36 +136,60 @@ class OrderNoteStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `upsertStoredOrderNote` does not produce duplicate entries.
+    /// Verifies that `upsertStoredOrderNoteInBackground` does not produce duplicate entries.
     ///
-    func testUpdateStoredOrderNoteEffectivelyUpdatesPreexistantOrderNote() {
+    func testUpdateStoredOrderNoteInBackgroundEffectivelyUpdatesPreexistantOrderNote() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
 
         XCTAssertNil(viewStorage.firstObject(ofType: Storage.OrderNote.self, matching: nil))
-        orderNoteStore.upsertStoredOrderNote(readOnlyOrderNote: sampleCustomerNote(), orderID: sampleOrderID)
-        orderNoteStore.upsertStoredOrderNote(readOnlyOrderNote: sampleCustomerNoteMutated(), orderID: sampleOrderID)
-        XCTAssert(viewStorage.countObjects(ofType: Storage.OrderNote.self, matching: nil) == 1)
 
-        let expectedNote = sampleCustomerNoteMutated()
-        let storageOrderNote = viewStorage.loadOrderNote(noteID: expectedNote.noteID)
-        XCTAssertEqual(storageOrderNote?.toReadOnly(), expectedNote)
+        let group = DispatchGroup()
+
+        group.enter()
+        orderNoteStore.upsertStoredOrderNoteInBackground(readOnlyOrderNote: sampleCustomerNote(), orderID: sampleOrderID) {
+            group.leave()
+        }
+
+        group.enter()
+        orderNoteStore.upsertStoredOrderNoteInBackground(readOnlyOrderNote: sampleCustomerNoteMutated(), orderID: sampleOrderID) {
+            group.leave()
+        }
+
+        let expectation = self.expectation(description: "Stored Order Note")
+        group.notify(queue: .main) {
+            let expectedOrderNote = self.sampleCustomerNoteMutated()
+            let storageOrderNote = self.viewStorage.loadOrderNote(noteID: expectedOrderNote.noteID)
+            XCTAssertEqual(storageOrderNote?.toReadOnly(), expectedOrderNote)
+            XCTAssert(self.viewStorage.countObjects(ofType: Storage.OrderNote.self, matching: nil) == 1)
+
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `upsertStoredOrderNote` effectively inserts a new OrderNote, with the specified payload.
+    /// Verifies that `upsertStoredOrderNoteInBackground` effectively inserts a new OrderNote, with the specified payload.
     ///
-    func testUpdateStoredOrderNoteEffectivelyPersistsNewOrderNote() {
+    func testUpdateStoredOrderNoteInBackgroundEffectivelyPersistsNewOrderNote() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
+
         let remoteOrderNote = sampleCustomerNote()
-
         XCTAssertNil(viewStorage.loadAccount(userId: remoteOrderNote.noteID))
-        orderNoteStore.upsertStoredOrderNote(readOnlyOrderNote: remoteOrderNote, orderID: sampleOrderID)
 
-        let storageOrderNote = viewStorage.loadOrderNote(noteID: remoteOrderNote.noteID)
-        XCTAssertEqual(storageOrderNote?.toReadOnly(), remoteOrderNote)
+        let expectation = self.expectation(description: "Stored Order Note")
+        orderNoteStore.upsertStoredOrderNoteInBackground(readOnlyOrderNote: remoteOrderNote, orderID: sampleOrderID) {
+            let storageOrderNote = self.viewStorage.loadOrderNote(noteID: remoteOrderNote.noteID)
+            XCTAssertEqual(storageOrderNote?.toReadOnly(), remoteOrderNote)
+            XCTAssertTrue(Thread.isMainThread)
+
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that OrderNoteAction.retrieveOrderNotes returns an error whenever there is an error response from the backend.
@@ -206,21 +241,32 @@ private extension OrderNoteStoreTests {
         return OrderNote(noteId: 2261,
                          dateCreated: date(with: "2018-06-23T17:06:55"),
                          note: "I love your products!",
-                         isCustomerNote: true)
+                         isCustomerNote: true,
+                         author: sampleAuthor)
     }
 
     func sampleCustomerNoteMutated() -> Networking.OrderNote {
         return OrderNote(noteId: 2261,
-                         dateCreated: date(with: "2018-06-23T17:06:55"),
+                         dateCreated: date(with: "2018-06-23T18:07:55"),
                          note: "I HATE your products!",
-                         isCustomerNote: false)
+                         isCustomerNote: true,
+                         author: sampleAuthor)
     }
 
     func sampleSellerNote() -> Networking.OrderNote {
-        return OrderNote(noteId: 2073,
-                         dateCreated: date(with: "2018-05-26T05:00:24"),
-                         note: "Order status changed from Processing to Completed.",
-                         isCustomerNote: false)
+        return OrderNote(noteId: 2260,
+                         dateCreated: date(with: "2018-06-23T16:05:55"),
+                         note: "This order is going to be a problem.",
+                         isCustomerNote: false,
+                         author: sampleAdminAuthor)
+    }
+
+    func sampleSystemNote() -> Networking.OrderNote {
+        return OrderNote(noteId: 2099,
+                         dateCreated: date(with: "2018-05-29T03:07:46"),
+                         note: "Order status changed from Completed to Processing.",
+                         isCustomerNote: false,
+                         author: sampleSystemAuthor)
     }
 
     func sampleOrder() -> Networking.Order {

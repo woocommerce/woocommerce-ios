@@ -23,6 +23,7 @@
 		7471401121877668009A11CC /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471401021877668009A11CC /* NotificationAction.swift */; };
 		7471401321877A8B009A11CC /* NotificationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471401221877A8B009A11CC /* NotificationStore.swift */; };
 		748525AC218A45360036DF75 /* NotificationStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748525AB218A45360036DF75 /* NotificationStoreTests.swift */; };
+		74858DB421C02B5A00754F3E /* OrderNote+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858DB321C02B5A00754F3E /* OrderNote+ReadOnlyType.swift */; };
 		7492FAD9217FAD1000ED2C69 /* SiteSetting+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7492FAD8217FAD1000ED2C69 /* SiteSetting+ReadOnlyConvertible.swift */; };
 		7492FADB217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7492FADA217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift */; };
 		7492FADD217FAF5C00ED2C69 /* SettingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7492FADC217FAF5C00ED2C69 /* SettingStore.swift */; };
@@ -107,6 +108,7 @@
 		7471401021877668009A11CC /* NotificationAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAction.swift; sourceTree = "<group>"; };
 		7471401221877A8B009A11CC /* NotificationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationStore.swift; sourceTree = "<group>"; };
 		748525AB218A45360036DF75 /* NotificationStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationStoreTests.swift; sourceTree = "<group>"; };
+		74858DB321C02B5A00754F3E /* OrderNote+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderNote+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		7492FAD8217FAD1000ED2C69 /* SiteSetting+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SiteSetting+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		7492FADA217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SiteSetting+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		7492FADC217FAF5C00ED2C69 /* SettingStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingStore.swift; sourceTree = "<group>"; };
@@ -234,6 +236,7 @@
 				B52E002F211A439E00700FDE /* Account+ReadOnlyType.swift */,
 				74B260202188B5F30041793A /* Note+ReadOnlyType.swift */,
 				B52E0031211A440D00700FDE /* Order+ReadOnlyType.swift */,
+				74858DB321C02B5A00754F3E /* OrderNote+ReadOnlyType.swift */,
 				74FD596A216FB65900A5AE83 /* OrderStats+ReadOnlyType.swift */,
 				B52E0033211A449600700FDE /* Site+ReadOnlyType.swift */,
 				7492FADA217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift */,
@@ -639,6 +642,7 @@
 				74A7689020D45F9300F9D437 /* OrderAction.swift in Sources */,
 				74FD596E216FB6ED00A5AE83 /* OrderStats+ReadOnlyConvertible.swift in Sources */,
 				7499936620EFBC7200CF01CD /* OrderNoteStore.swift in Sources */,
+				74858DB421C02B5A00754F3E /* OrderNote+ReadOnlyType.swift in Sources */,
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,
 				74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */,
 				B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */,

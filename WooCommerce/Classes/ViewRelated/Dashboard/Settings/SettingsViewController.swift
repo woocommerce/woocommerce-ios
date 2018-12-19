@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 import MessageUI
 import Gridicons
+import SafariServices
 
 
 // MARK: - SettingsViewController
@@ -85,14 +86,18 @@ private extension SettingsViewController {
     }
 
     func configureSections() {
-        let primaryStoreTitle = NSLocalizedString("PRIMARY STORE", comment: "My Store > Settings > Primary Store information section")
-        let privacySettingsTitle = NSLocalizedString("HELP IMPROVE THE APP", comment: "My Store > Settings > Privacy settings section")
+        let primaryStoreTitle = NSLocalizedString("Primary Store", comment: "My Store > Settings > Primary Store information section").uppercased()
+        let improveTheAppTitle = NSLocalizedString("Help Improve The App", comment: "My Store > Settings > Privacy settings section").uppercased()
+        let aboutSettingsTitle = NSLocalizedString("About the app", comment: "My Store > Settings > About app section").uppercased()
+        let otherTitle = NSLocalizedString("Other", comment: "My Store > Settings > Other app section").uppercased()
 
         sections = [
-            Section(title: primaryStoreTitle, rows: [.primaryStore]),
-            Section(title: nil, rows: [.support]),
-            Section(title: privacySettingsTitle, rows: [.privacy]),
-            Section(title: nil, rows: [.logout]),
+            Section(title: primaryStoreTitle, rows: [.primaryStore], footerHeight: CGFloat.leastNonzeroMagnitude),
+            Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
+            Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
+            Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
+            Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
+            Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
         ]
     }
 
@@ -112,6 +117,14 @@ private extension SettingsViewController {
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
+        case let cell as BasicTableViewCell where row == .featureRequest:
+            configureFeatureSuggestions(cell: cell)
+        case let cell as BasicTableViewCell where row == .about:
+            configureAbout(cell: cell)
+        case let cell as BasicTableViewCell where row == .licenses:
+            configureLicenses(cell: cell)
+        case let cell as BasicTableViewCell where row == .appSettings:
+            configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
         default:
@@ -122,6 +135,7 @@ private extension SettingsViewController {
     func configurePrimaryStore(cell: HeadlineLabelTableViewCell) {
         cell.headline = siteUrl
         cell.body = accountName
+        cell.selectionStyle = .none
     }
 
     func configureSupport(cell: BasicTableViewCell) {
@@ -136,7 +150,32 @@ private extension SettingsViewController {
         cell.textLabel?.text = NSLocalizedString("Privacy Settings", comment: "Navigates to Privacy Settings screen")
     }
 
+    func configureFeatureSuggestions(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Feature Request", comment: "Navigates to the feature request screen")
+    }
+
+    func configureAbout(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("WooCommerce", comment: "Navigates to about WooCommerce app screen")
+    }
+
+    func configureLicenses(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Open source licenses", comment: "Navigates to open source licenses screen")
+    }
+
+    func configureAppSettings(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Open device settings", comment: "Opens iOS's Device Settings for the app")
+    }
+
     func configureLogout(cell: BasicTableViewCell) {
+        cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = StyleManager.destructiveActionColor
         cell.textLabel?.text = NSLocalizedString("Logout account", comment: "Logout Action")
@@ -188,6 +227,28 @@ private extension SettingsViewController {
         performSegue(withIdentifier: Segues.privacySegue, sender: nil)
     }
 
+    func aboutWasPressed() {
+        WooAnalytics.shared.track(.settingsAboutLinkTapped)
+        performSegue(withIdentifier: Segues.aboutSegue, sender: nil)
+    }
+
+    func licensesWasPressed() {
+        WooAnalytics.shared.track(.settingsLicensesLinkTapped)
+        performSegue(withIdentifier: Segues.licensesSegue, sender: nil)
+    }
+
+    func featureRequestWasPressed() {
+        let safariViewController = SFSafariViewController(url: WooConstants.featureRequestURL)
+        present(safariViewController, animated: true, completion: nil)
+    }
+
+    func appSettingsWasPressed() {
+        guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
+            return
+        }
+        UIApplication.shared.open(targetURL)
+    }
+
     func logOutUser() {
         StoresManager.shared.deauthenticate()
         navigationController?.popToRootViewController(animated: true)
@@ -225,8 +286,7 @@ extension SettingsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
-        return CGFloat.leastNonzeroMagnitude
+        return sections[section].footerHeight
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -257,6 +317,14 @@ extension SettingsViewController: UITableViewDelegate {
             supportWasPressed()
         case .privacy:
             privacyWasPressed()
+        case .featureRequest:
+            featureRequestWasPressed()
+        case .licenses:
+            licensesWasPressed()
+        case .about:
+            aboutWasPressed()
+        case .appSettings:
+            appSettingsWasPressed()
         default:
             break
         }
@@ -274,6 +342,7 @@ private struct Constants {
 private struct Section {
     let title: String?
     let rows: [Row]
+    let footerHeight: CGFloat
 }
 
 private enum Row: CaseIterable {
@@ -281,6 +350,10 @@ private enum Row: CaseIterable {
     case support
     case logout
     case privacy
+    case featureRequest
+    case about
+    case licenses
+    case appSettings
 
     var type: UITableViewCell.Type {
         switch self {
@@ -292,6 +365,14 @@ private enum Row: CaseIterable {
             return BasicTableViewCell.self
         case .privacy:
             return BasicTableViewCell.self
+        case .featureRequest:
+            return BasicTableViewCell.self
+        case .about:
+            return BasicTableViewCell.self
+        case .licenses:
+            return BasicTableViewCell.self
+        case .appSettings:
+            return BasicTableViewCell.self
         }
     }
 
@@ -301,6 +382,8 @@ private enum Row: CaseIterable {
 }
 
 private struct Segues {
-    static let privacySegue = "ShowPrivacySettingsViewController"
+    static let privacySegue     = "ShowPrivacySettingsViewController"
     static let helpSupportSegue = "ShowHelpAndSupportViewController"
+    static let aboutSegue       = "ShowAboutViewController"
+    static let licensesSegue    = "ShowLicensesViewController"
 }

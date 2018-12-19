@@ -1,6 +1,8 @@
 import Foundation
 import UIKit
 import Yosemite
+import Gridicons
+import SafariServices
 
 
 // MARK: - NotificationDetailsViewController
@@ -94,6 +96,7 @@ private extension NotificationDetailsViewController {
         tableView.tableFooterView = UIView()
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
+        tableView.separatorInset = .zero
     }
 
     /// Setup: EntityListener
@@ -104,7 +107,7 @@ private extension NotificationDetailsViewController {
         }
 
         entityListener.onDelete = { [weak self] in
-            self?.navigationController?.popViewController(animated: true)
+            self?.navigationController?.popToRootViewController(animated: true)
             self?.displayNoteDeletedNotice()
         }
     }
@@ -112,7 +115,11 @@ private extension NotificationDetailsViewController {
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
-        let cells = [NoteDetailsHeaderTableViewCell.self, NoteDetailsCommentTableViewCell.self]
+        let cells = [
+            NoteDetailsHeaderTableViewCell.self,
+            NoteDetailsHeaderPlainTableViewCell.self,
+            NoteDetailsCommentTableViewCell.self
+        ]
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
@@ -158,9 +165,8 @@ private extension NotificationDetailsViewController {
     /// Displays a Notice onScreen, indicating that the current Note has been deleted from the Store.
     ///
     func displayNoteDeletedNotice() {
-        let title = NSLocalizedString("Notification", comment: "Deleted Notification's Title")
-        let message = NSLocalizedString("The notification has been removed", comment: "Displayed whenever a Notification that was onscreen got deleted.")
-        let notice = Notice(title: title, message: message, feedbackType: .error)
+        let title = NSLocalizedString("The notification has been removed", comment: "Displayed whenever a Notification that was onscreen got deleted.")
+        let notice = Notice(title: title, feedbackType: .error)
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
@@ -168,9 +174,9 @@ private extension NotificationDetailsViewController {
     /// Displays the Error Notice.
     ///
     static func displayModerationErrorNotice(failedStatus: CommentStatus) {
-        let title = NSLocalizedString("Notification Error", comment: "Notification error notice title")
-        let message = String.localizedStringWithFormat(NSLocalizedString("Unable to mark the notification as %@",
-                                                                         comment: "Notification error notice message"), failedStatus.description)
+        let title = NSLocalizedString("Error", comment: "Review error notice title")
+        let message = String.localizedStringWithFormat(NSLocalizedString("Unable to mark review %@",
+                                                                         comment: "Review error notice message"), failedStatus.description)
         let notice = Notice(title: title, message: message, feedbackType: .error)
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
@@ -183,11 +189,10 @@ private extension NotificationDetailsViewController {
             return
         }
 
-        let title = NSLocalizedString("Notification", comment: "Notification notice title")
-        let message = String.localizedStringWithFormat(NSLocalizedString("Notification marked as %@",
-                                                                         comment: "Notification moderation success notice message"), newStatus.description)
+        let title = String.localizedStringWithFormat(NSLocalizedString("Review marked %@",
+                                                                       comment: "Review moderation success notice message"), newStatus.description)
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
-        let notice = Notice(title: title, message: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
+        let notice = Notice(title: title, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
@@ -237,6 +242,15 @@ extension NotificationDetailsViewController: UITableViewDataSource {
 //
 extension NotificationDetailsViewController: UITableViewDelegate {
 
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let row = detailsForRow(at: indexPath)
+        switch row {
+        case .headerPlain(_, let url):
+            displaySafariViewController(at: url)
+        default:
+            break
+        }
+    }
 }
 
 
@@ -250,6 +264,8 @@ private extension NotificationDetailsViewController {
         switch row {
         case .header:
             setupHeaderCell(cell, at: row)
+        case .headerPlain:
+            setupHeaderPlainCell(cell, at: row)
         case .comment:
             setupCommentCell(cell, at: row)
         }
@@ -266,6 +282,20 @@ private extension NotificationDetailsViewController {
 
         let formatter = StringFormatter()
         headerCell.textLabel?.attributedText = formatter.format(block: gravatarBlock, with: .header)
+    }
+
+
+    /// Setup: Header Cell (Plain)
+    ///
+    func setupHeaderPlainCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
+        guard let headerCell = cell as? NoteDetailsHeaderPlainTableViewCell,
+            case let .headerPlain(title, _) = row else {
+                return
+        }
+
+        headerCell.leftImage = Gridicon.iconOfType(.product)
+        headerCell.rightImage = Gridicon.iconOfType(.external)
+        headerCell.plainText = title
     }
 
 
@@ -338,10 +368,8 @@ private extension NotificationDetailsViewController {
             }
 
             DDLogError("⛔️ Comment (UNDO) moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
-
-            // FIXME: Uncomment this error notice + Tracks call 👇 once we figure out why the server is return errors constantly 😭
-            //WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
-            //NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: undoStatus)
+            WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
+            NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: undoStatus)
         }) else {
             return
         }
@@ -357,10 +385,8 @@ private extension NotificationDetailsViewController {
             }
 
             DDLogError("⛔️ Comment moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
-
-            // FIXME: Uncomment this error notice + Tracks call 👇 once we figure out why the server is return errors constantly 😭
-            //WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
-            //NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: doneStatus)
+            WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
+            NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: doneStatus)
         }) else {
             return
         }
@@ -406,5 +432,19 @@ private extension NotificationDetailsViewController {
             }
         }
         return action
+    }
+}
+
+
+// MARK: - Private Methods
+//
+private extension NotificationDetailsViewController {
+
+    /// Presents a WebView at the specified URL
+    ///
+    func displaySafariViewController(at url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        safariViewController.modalPresentationStyle = .pageSheet
+        present(safariViewController, animated: true, completion: nil)
     }
 }

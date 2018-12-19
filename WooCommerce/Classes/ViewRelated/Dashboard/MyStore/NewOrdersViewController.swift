@@ -17,15 +17,6 @@ class NewOrdersViewController: UIViewController {
     @IBOutlet private weak var chevronImageView: UIImageView!
     @IBOutlet private weak var actionButton: UIButton!
 
-    /// ResultsController: Loads Orders with status `Processing` from the Storage Layer
-    ///
-    private lazy var resultsController: ResultsController<StorageOrder> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "status = %@", OrderStatus.processing.rawValue)
-        let descriptor = NSSortDescriptor(key: "orderID", ascending: true)
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
     // MARK: - Public Properties
 
     public var delegate: NewOrdersDelegate?
@@ -39,7 +30,6 @@ class NewOrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-        configureResultsController()
     }
 }
 
@@ -54,10 +44,16 @@ extension NewOrdersViewController {
             return
         }
 
-        let action = OrderAction.synchronizeOrders(siteID: siteID, status: nil, pageNumber: Syncing.pageNumber, pageSize: Syncing.pageSize) { error in
-            if let error = error {
-                DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing orders: \(error)")
+        let action = StatsAction.retrieveOrderTotals(siteID: siteID, status: .processing) { [weak self] (processingOrderCount, error) in
+            guard let `self` = self, let processingOrderCount = processingOrderCount else {
+                if let error = error {
+                    DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing pending orders: \(error)")
+                }
+                onCompletion?()
+                return
             }
+
+            self.updateNewOrdersIfNeeded(orderCount: processingOrderCount)
             onCompletion?()
         }
 
@@ -81,16 +77,6 @@ private extension NewOrdersViewController {
                                                   comment: "Description text used on the UI element displayed when a user has pending orders to process.")
         chevronImageView.image = UIImage.chevronImage
     }
-
-    func configureResultsController() {
-        resultsController.onDidChangeContent = { [weak self] in
-            self?.updateNewOrdersIfNeeded()
-        }
-        resultsController.onDidResetContent = { [weak self] in
-            self?.updateNewOrdersIfNeeded()
-        }
-        try? resultsController.performFetch()
-    }
 }
 
 
@@ -101,7 +87,7 @@ private extension NewOrdersViewController {
     @IBAction func buttonTouchUpInside(_ sender: UIButton) {
         sender.fadeOutSelectedBackground {
             WooAnalytics.shared.track(.dashboardNewOrdersButtonTapped)
-            MainTabBarController.switchToOrdersTab(filter: .processing)
+            MainTabBarController.presentOrders(statusFilter: .processing)
         }
     }
 
@@ -161,12 +147,12 @@ private extension UIButton {
 // MARK: - Private Helpers
 //
 private extension NewOrdersViewController {
-    func updateNewOrdersIfNeeded() {
-        let currentCount = resultsController.fetchedObjects.count
-        titleLabel.text = String.pluralize(currentCount,
-                                    singular: NSLocalizedString("You have %ld order to fulfill", comment: "Title text used on the My Store UI when a user has a _single_ pending order to process."),
-                                    plural: NSLocalizedString("You have %ld orders to fulfill", comment: "Title text used on the My Store UI when a user has _multiple_ pending orders to process."))
-        delegate?.didUpdateNewOrdersData(hasNewOrders: currentCount > 0)
+
+    func updateNewOrdersIfNeeded(orderCount: Int) {
+        titleLabel.text = String.pluralize(orderCount,
+                                           singular: NSLocalizedString("You have %ld order to fulfill", comment: "Title text used on the My Store UI when a user has a _single_ pending order to process."),
+                                           plural: NSLocalizedString("You have %ld orders to fulfill", comment: "Title text used on the My Store UI when a user has _multiple_ pending orders to process."))
+        delegate?.didUpdateNewOrdersData(hasNewOrders: orderCount > 0)
     }
 }
 
@@ -174,6 +160,7 @@ private extension NewOrdersViewController {
 // MARK: - Constants!
 //
 private extension NewOrdersViewController {
+
     enum Constants {
         static let newOrdersTitleLabelInsets = UIEdgeInsets(top: 14, left: 14, bottom: 0, right: 4)
         static let newOrdersDescriptionLabelInsets = UIEdgeInsets(top: 4, left: 14, bottom: 0, right: 4)

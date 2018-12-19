@@ -18,6 +18,9 @@ class StoresManager {
     /// Active StoresManager State.
     ///
     private var state: StoresManagerState {
+        willSet {
+            state.willLeave()
+        }
         didSet {
             state.didEnter()
         }
@@ -88,6 +91,11 @@ class StoresManager {
             group.leave()
         }
 
+        group.enter()
+        synchronizeSitePlan { _ in
+            group.leave()
+        }
+
         group.notify(queue: .main) {
             onCompletion?()
         }
@@ -100,6 +108,7 @@ class StoresManager {
     @discardableResult
     func deauthenticate() -> StoresManager {
         state = DeauthenticatedState()
+
         sessionManager.reset()
         WooAnalytics.shared.refreshUserData()
         AppDelegate.shared.storageManager.reset()
@@ -148,14 +157,14 @@ private extension StoresManager {
 
     /// Synchronizes the WordPress.com Account, associated with the current credentials.
     ///
-    func synchronizeAccount(onCompletion: ((Error?) -> Void)?) {
+    func synchronizeAccount(onCompletion: @escaping (Error?) -> Void) {
         let action = AccountAction.synchronizeAccount { [weak self] (account, error) in
             if let `self` = self, let account = account, self.isAuthenticated {
                 self.sessionManager.defaultAccount = account
                 WooAnalytics.shared.refreshUserData()
             }
 
-            onCompletion?(error)
+            onCompletion(error)
         }
 
         dispatch(action)
@@ -163,11 +172,20 @@ private extension StoresManager {
 
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.
     ///
-    func synchronizeSites(onCompletion: ((Error?) -> Void)?) {
-        let action = AccountAction.synchronizeSites { error in
-            onCompletion?(error)
+    func synchronizeSites(onCompletion: @escaping (Error?) -> Void) {
+        let action = AccountAction.synchronizeSites(onCompletion: onCompletion)
+        dispatch(action)
+    }
+
+    /// Synchronizes the WordPress.com Site Plan.
+    ///
+    func synchronizeSitePlan(onCompletion: @escaping (Error?) -> Void) {
+        guard let siteID = sessionManager.defaultSite?.siteID else {
+            onCompletion(StoresManagerError.missingDefaultSite)
+            return
         }
 
+        let action = AccountAction.synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         dispatch(action)
     }
 
@@ -180,7 +198,7 @@ private extension StoresManager {
         }
         let action = SettingAction.retrieveSiteSettings(siteID: siteID) { error in
             if let error = error {
-                DDLogWarn("⚠️ Could not successfully fetch settings for siteID \(siteID): \(error)")
+                DDLogError("⛔️ Could not successfully fetch settings for siteID \(siteID): \(error)")
             }
         }
         dispatch(action)
@@ -217,6 +235,10 @@ private extension StoresManager {
 //
 protocol StoresManagerState {
 
+    /// Executed before the state is deactivated.
+    ///
+    func willLeave()
+
     /// Executed whenever the State is activated.
     ///
     func didEnter()
@@ -224,4 +246,11 @@ protocol StoresManagerState {
     /// Executed whenever an Action is received.
     ///
     func onAction(_ action: Action)
+}
+
+
+// MARK: - StoresManagerError
+//
+enum StoresManagerError: Error {
+    case missingDefaultSite
 }

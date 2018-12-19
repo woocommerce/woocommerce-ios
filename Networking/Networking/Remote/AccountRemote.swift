@@ -30,4 +30,18 @@ public class AccountRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Loads the site plan for the default site associated with the WordPress.com user.
+    ///
+    public func loadSitePlan(for siteID: Int, completion: @escaping (SitePlan?, Error?) -> Void) {
+        let path = "sites/\(siteID)"
+        let parameters = [
+            "fields": "ID,plan"
+        ]
+
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
+        let mapper = SitePlanMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }

@@ -13,27 +13,35 @@ enum WooConstants {
     ///
     static let keychainServiceName = "com.automattic.woocommerce"
 
+    /// Push Notifications ApplicationID
+    ///
+#if DEBUG
+    static let pushApplicationID = "com.automattic.woocommerce:dev"
+#else
+    static let pushApplicationID = "com.automattic.woocommerce"
+#endif
+
     /// Jetpack Setup URL
     ///
     static let jetpackSetupUrl = "https://jetpack.com/support/getting-started-with-jetpack/"
 
     /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
     ///
-    static let termsOfServiceUrl = "https://wordpress.com/tos/"
-
-    /// Support Email
-    ///
-    static let supportMail = "mobile-support@woocommerce.com"
+    static let termsOfServiceUrl = URL(string: "https://wordpress.com/tos/")!
 
     /// Cookie policy URL
     ///
-    static let cookieURL = URL(string: "https://automattic.com/cookies/")
+    static let cookieURL = URL(string: "https://automattic.com/cookies/")!
 
     /// Privacy policy URL
     ///
-    static let privacyURL = URL(string: "https://automattic.com/privacy/")
+    static let privacyURL = URL(string: "https://automattic.com/privacy/")!
 
     /// FAQ URL
     ///
-    static let faqURL = URL(string: "https://docs.woocommerce.com/document/frequently-asked-questions")
+    static let faqURL = URL(string: "https://docs.woocommerce.com/document/frequently-asked-questions")!
+
+    /// Feature Request URL
+    ///
+    static let featureRequestURL = URL(string: "http://ideas.woocommerce.com/forums/133476-woocommerce?category_id=84283")!
 }

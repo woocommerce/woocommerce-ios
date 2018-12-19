@@ -35,6 +35,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     let noticePresenter = NoticePresenter()
 
+    /// Push Notifications Manager
+    ///
+    let pushNotesManager = PushNotificationsManager()
+
     /// CoreData Stack
     ///
     let storageManager = CoreDataManager(name: WooConstants.databaseStackName)
@@ -66,6 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupCocoaLumberjack()
         setupLogLevel(.verbose)
         setupNoticePresenter()
+        setupPushNotificationsManagerIfPossible()
 
         // Display the Authentication UI
         displayAuthenticatorIfNeeded()
@@ -95,6 +100,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
     }
 
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        guard let defaultStoreID = StoresManager.shared.sessionManager.defaultStoreID else {
+            return
+        }
+
+        pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: defaultStoreID)
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        pushNotesManager.registrationDidFail(with: error)
+    }
+
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        pushNotesManager.handleNotification(userInfo, completionHandler: completionHandler)
+    }
+
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
@@ -112,11 +133,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 
-        RequirementsChecker.checkMinimumWooVersion()
+        RequirementsChecker.checkMinimumWooVersionForDefaultStore()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-
+        DDLogVerbose("👀 Application terminating...")
+        NotificationCenter.default.post(name: .applicationTerminating, object: nil)
     }
 }
 
@@ -226,9 +248,26 @@ private extension AppDelegate {
     func setupNoticePresenter() {
         noticePresenter.presentingViewController = window?.rootViewController
     }
+
+    /// Push Notifications: Authorization + Registration!
+    ///
+    func setupPushNotificationsManagerIfPossible() {
+        guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore == false else {
+            return
+        }
+
+        #if targetEnvironment(simulator)
+            DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
+        #else
+            pushNotesManager.registerForRemoteNotifications()
+            pushNotesManager.ensureAuthorizationIsRequested()
+        #endif
+    }
 }
 
 
+// MARK: - Minimum Version
+//
 private extension AppDelegate {
 
     func checkForUpgrades() {
@@ -298,5 +337,12 @@ extension AppDelegate {
         }
 
         StoresManager.shared.synchronizeEntities()
+    }
+
+    /// Runs whenever the Authentication Flow is completed successfully.
+    ///
+    func authenticatorWasDismissed() {
+        setupPushNotificationsManagerIfPossible()
+        RequirementsChecker.checkMinimumWooVersionForDefaultStore()
     }
 }

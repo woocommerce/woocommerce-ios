@@ -292,21 +292,21 @@ extension MoneyFormatterTests {
     ///
     func testStringReturnsDecimal() {
         let stringValue = "9.99"
-        let decimalValue = NSDecimalNumber(string: stringValue)
+        let expectedResult = NSDecimalNumber(string: stringValue)
 
         let converted = MoneyFormatter().convertToDecimal(from: stringValue)
 
         // check the formatted decimal exists
-        guard let convertedDecimal = converted else {
+        guard let actualResult = converted else {
             XCTFail()
             return
         }
 
         // check the decimal type
-        XCTAssertTrue(convertedDecimal.isKind(of: NSDecimalNumber.self))
+        XCTAssertTrue(actualResult.isKind(of: NSDecimalNumber.self))
 
         // check the decimal value
-        XCTAssertEqual(decimalValue, convertedDecimal)
+        XCTAssertEqual(expectedResult, actualResult)
     }
 
 
@@ -317,12 +317,12 @@ extension MoneyFormatterTests {
 
     /// Testing that the formatted decimal value is NOT rounded.
     ///
-    func testStringValueIsNotRoundedDecimalUnlessSpecified() {
+    func testStringValueIsNotRoundedDecimal() {
         let stringValue = "9.9999"
-        let decimalValue = NSDecimalNumber(string: stringValue)
+        let expectedResult = NSDecimalNumber(string: stringValue)
 
-        let convertedDecimal = MoneyFormatter().convertToDecimal(from: stringValue)
-        XCTAssertEqual(decimalValue, convertedDecimal)
+        let actualResult = MoneyFormatter().convertToDecimal(from: stringValue)
+        XCTAssertEqual(expectedResult, actualResult)
     }
 
     /// Testing that the decimal separator is localized
@@ -330,6 +330,7 @@ extension MoneyFormatterTests {
     func testDecimalSeparatorIsLocalized() {
         let separator = ","
         let stringValue = "1.17"
+        let expectedResult = "1,17"
         let converted = MoneyFormatter().convertToDecimal(from: stringValue)
 
         guard let convertedDecimal = converted else {
@@ -337,9 +338,9 @@ extension MoneyFormatterTests {
             return
         }
 
-        let formattedString = MoneyFormatter().localizeDecimal(convertedDecimal, with: separator)
+        let actualResult = MoneyFormatter().localizeDecimal(convertedDecimal, with: separator)
 
-        XCTAssertEqual("1,17", formattedString)
+        XCTAssertEqual(expectedResult, actualResult)
     }
 }
 
@@ -350,8 +351,7 @@ extension MoneyFormatterTests {
     func testThousandSeparatorIsLocalizedToComma() {
         let comma = ","
         let stringValue = "1204.67"
-        let decimalValue = NSDecimalNumber(string: stringValue)
-        let stringResult = formatDecimalIntoThousands(decimalValue, separator: comma)
+        let expectedResult = "1,204.67"
 
         // set up the functions to test
         let convertedDecimal = MoneyFormatter().convertToDecimal(from: stringValue)
@@ -361,25 +361,12 @@ extension MoneyFormatterTests {
             return
         }
 
-        let formattedString = MoneyFormatter().localizeThousands(decimal, with: comma)
-        XCTAssertEqual(stringResult, formattedString)
-    }
+        let formattedString = MoneyFormatter().localizeThousand(decimal, with: comma)
+        guard let actualResult = formattedString else {
+            XCTFail()
+            return
+        }
 
-
-    // MARK: - private methods
-
-    /// Number formatter to add thousand separator to an NSDecimalNumber
-    ///
-    func formatDecimalIntoThousands(_ decimal: NSDecimalNumber, separator: String) -> String {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.usesGroupingSeparator = true
-        numberFormatter.groupingSeparator = separator
-        numberFormatter.groupingSize = 3
-        numberFormatter.formatterBehavior = .behavior10_4
-        numberFormatter.numberStyle = .decimal
-
-        let stringResult = numberFormatter.string(from: decimal)
-
-        return stringResult
+        XCTAssertEqual(expectedResult, actualResult)
     }
 }

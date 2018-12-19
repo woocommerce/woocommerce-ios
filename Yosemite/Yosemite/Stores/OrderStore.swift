@@ -79,9 +79,7 @@ private extension OrderStore {
 
         remote.loadOrder(for: siteID, orderID: orderID) { [weak self] (order, error) in
             guard let order = order else {
-                /// TODO: Improve this. Implement a cool ResultType, and turn this entire closure into a single level Switch.
-                ///
-                if (error as? NetworkError) == .notFound {
+                if case NetworkError.notFound? = error {
                     self?.deleteStoredOrder(orderID: orderID)
                 }
                 onCompletion(nil, error)

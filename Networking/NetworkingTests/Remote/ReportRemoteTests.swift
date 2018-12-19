@@ -53,10 +53,14 @@ class ReportRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "generic_error")
         remote.loadOrderTotals(for: sampleSiteID) { (reportTotals, error) in
+            guard let error = error as? DotcomError else {
+                XCTFail()
+                return
+            }
+
+            XCTAssert(error == .unauthorized)
             XCTAssertNil(reportTotals)
-            XCTAssertNotNil(error)
-            let error = error as? DotcomError
-            XCTAssertEqual(error?.code, "unknown_token")
+
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: Constants.expectationTimeout)

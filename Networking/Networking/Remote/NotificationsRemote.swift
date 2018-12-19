@@ -68,7 +68,7 @@ public class NotificationsRemote: Remote {
 
         enqueue(request, mapper: mapper) { (success, error) in
             guard success == true else {
-                completion(error ?? DotcomError.unknown)
+                completion(error ?? DotcomError.empty)
                 return
             }
 
@@ -93,7 +93,7 @@ public class NotificationsRemote: Remote {
 
         enqueue(request, mapper: mapper) { (success, error) in
             guard success == true else {
-                completion(error ?? DotcomError.unknown)
+                completion(error ?? DotcomError.empty)
                 return
             }
 

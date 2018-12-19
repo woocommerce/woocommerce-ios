@@ -324,4 +324,21 @@ extension MoneyFormatterTests {
         let formattedDecimal = MoneyFormatter().formatDecimal(from: stringValue)
         XCTAssertEqual(decimalValue, formattedDecimal)
     }
+
+    /// Testing that the decimal separator is localized
+    ///
+    func testDecimalIsInCorrectLocation() {
+        let localizedSeparator = ","
+        let stringValue = "1.17"
+        let decimalValue = MoneyFormatter().formatDecimal(from: stringValue)
+
+        guard let formattedDecimal = decimalValue else {
+            XCTFail()
+            return
+        }
+
+        let formattedString = MoneyFormatter().formatLocalizedDecimal(formattedDecimal, with: localizedSeparator)
+
+        XCTAssertEqual("1,17", formattedString)
+    }
 }

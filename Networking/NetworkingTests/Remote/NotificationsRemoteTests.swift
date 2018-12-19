@@ -82,8 +82,12 @@ class NotificationsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "notifications/seen", filename: "generic_error")
 
         remote.updateLastSeen("") { error in
-            let error = error as? DotcomError
-            XCTAssertEqual(error?.code, "unknown_token")
+            guard let error = error as? DotcomError else {
+                XCTFail()
+                return
+            }
+
+            XCTAssert(error == .unauthorized)
             expectation.fulfill()
         }
 
@@ -115,8 +119,13 @@ class NotificationsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_error")
 
         remote.updateReadStatus(noteIds: [], read: true) { error in
-            let error = error as? DotcomError
-            XCTAssertEqual(error?.code, "unknown_token")
+            guard let error = error as? DotcomError else {
+                XCTFail()
+                return
+            }
+
+            XCTAssert(error == .unauthorized)
+
             expectation.fulfill()
         }
 

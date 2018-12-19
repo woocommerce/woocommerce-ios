@@ -91,12 +91,27 @@ extension MoneyFormatter {
         return decimalValue
     }
 
-    /// Return a string formatted with the local currency's decimal separator
+    /// Return a string formatted with the specified decimal separator
     ///
     func localizeDecimal(_ decimal: NSDecimalNumber, with separator: String) -> String {
         let stringValue = decimal.stringValue
         let formattedString = stringValue.replacingOccurrences(of: ".", with: separator)
 
         return formattedString
+    }
+
+    /// Return a string formatted with the specified thousand separator
+    ///
+    func localizeThousand(_ decimal: NSDecimalNumber, with separator: String) -> String? {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.usesGroupingSeparator = true
+        numberFormatter.groupingSeparator = separator
+        numberFormatter.groupingSize = 3
+        numberFormatter.formatterBehavior = .behavior10_4
+        numberFormatter.numberStyle = .decimal
+
+        let stringResult = numberFormatter.string(from: decimal)
+
+        return stringResult
     }
 }

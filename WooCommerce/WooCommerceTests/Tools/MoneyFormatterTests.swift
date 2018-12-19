@@ -294,23 +294,23 @@ extension MoneyFormatterTests {
         let stringValue = "9.99"
         let decimalValue = NSDecimalNumber(string: stringValue)
 
-        let decimalFormat = MoneyFormatter().formatDecimal(from: stringValue)
+        let converted = MoneyFormatter().convertToDecimal(from: stringValue)
 
         // check the formatted decimal exists
-        guard let formattedDecimal = decimalFormat else {
+        guard let convertedDecimal = converted else {
             XCTFail()
             return
         }
 
         // check the decimal type
-        XCTAssertTrue(formattedDecimal.isKind(of: NSDecimalNumber.self))
+        XCTAssertTrue(convertedDecimal.isKind(of: NSDecimalNumber.self))
 
         // check the decimal value
-        XCTAssertEqual(decimalValue, formattedDecimal)
+        XCTAssertEqual(decimalValue, convertedDecimal)
     }
 
 
-    /// This is where a float to decimal unit test would go.
+    /// This is where a float-to-decimal unit test would go.
     /// It's not here because we don't allow using floats for currency.
     /// https://storedev.wordpress.com/2018/02/21/lets-talk-about-floating-point/
 
@@ -321,23 +321,23 @@ extension MoneyFormatterTests {
         let stringValue = "9.9999"
         let decimalValue = NSDecimalNumber(string: stringValue)
 
-        let formattedDecimal = MoneyFormatter().formatDecimal(from: stringValue)
-        XCTAssertEqual(decimalValue, formattedDecimal)
+        let convertedDecimal = MoneyFormatter().convertToDecimal(from: stringValue)
+        XCTAssertEqual(decimalValue, convertedDecimal)
     }
 
     /// Testing that the decimal separator is localized
     ///
-    func testDecimalIsInCorrectLocation() {
-        let localizedSeparator = ","
+    func testDecimalSeparatorIsLocalized() {
+        let separator = ","
         let stringValue = "1.17"
-        let decimalValue = MoneyFormatter().formatDecimal(from: stringValue)
+        let converted = MoneyFormatter().convertToDecimal(from: stringValue)
 
-        guard let formattedDecimal = decimalValue else {
+        guard let convertedDecimal = converted else {
             XCTFail()
             return
         }
 
-        let formattedString = MoneyFormatter().formatLocalizedDecimal(formattedDecimal, with: localizedSeparator)
+        let formattedString = MoneyFormatter().localizeDecimal(convertedDecimal, with: separator)
 
         XCTAssertEqual("1,17", formattedString)
     }

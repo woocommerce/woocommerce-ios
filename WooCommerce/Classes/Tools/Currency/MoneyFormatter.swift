@@ -76,11 +76,11 @@ public class MoneyFormatter {
 // MARK: - Manual currency formatting
 //
 extension MoneyFormatter {
-    /// Returns a formatted decimal value from a given string.
+    /// Returns a decimal value from a given string.
     /// - Parameters:
     ///   - stringValue: the string received from the API
     ///
-    func formatDecimal(from stringValue: String) -> NSDecimalNumber? {
+    func convertToDecimal(from stringValue: String) -> NSDecimalNumber? {
         let decimalValue = NSDecimalNumber(string: stringValue)
 
         guard decimalValue != NSDecimalNumber.notANumber else {
@@ -89,5 +89,14 @@ extension MoneyFormatter {
         }
 
         return decimalValue
+    }
+
+    /// Return a string formatted with the local currency's decimal separator
+    ///
+    func localizeDecimal(_ decimal: NSDecimalNumber, with separator: String) -> String {
+        let stringValue = decimal.stringValue
+        let formattedString = stringValue.replacingOccurrences(of: ".", with: separator)
+
+        return formattedString
     }
 }

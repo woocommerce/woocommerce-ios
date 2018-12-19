@@ -353,7 +353,6 @@ extension MoneyFormatterTests {
         let stringValue = "1204.67"
         let expectedResult = "1,204.67"
 
-        // set up the functions to test
         let convertedDecimal = MoneyFormatter().convertToDecimal(from: stringValue)
 
         guard let decimal = convertedDecimal else {

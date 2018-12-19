@@ -11,21 +11,6 @@ public class MoneyFormatter {
     }()
 
 
-    /// Returns a formatted decimal value from a given string.
-    /// - Parameters:
-    ///   - stringValue: the string received from the API
-    ///
-    func formatDecimal(from stringValue: String) -> NSDecimalNumber? {
-        let decimalValue = NSDecimalNumber(string: stringValue)
-
-        guard decimalValue != NSDecimalNumber.notANumber else {
-            DDLogError("Error: string input is not a number: \(stringValue)")
-            return nil
-        }
-
-        return decimalValue
-    }
-
     /// Returns a localized and formatted currency string, including zero values.
     ///
     func format(value: String, currencyCode: String, locale: Locale = .current) -> String? {
@@ -84,5 +69,25 @@ public class MoneyFormatter {
         currencyFormatter.currencyCode = currencyCode
 
         return currencyFormatter.currencySymbol
+    }
+}
+
+
+// MARK: - Manual currency formatting
+//
+extension MoneyFormatter {
+    /// Returns a formatted decimal value from a given string.
+    /// - Parameters:
+    ///   - stringValue: the string received from the API
+    ///
+    func formatDecimal(from stringValue: String) -> NSDecimalNumber? {
+        let decimalValue = NSDecimalNumber(string: stringValue)
+
+        guard decimalValue != NSDecimalNumber.notANumber else {
+            DDLogError("Error: string input is not a number: \(stringValue)")
+            return nil
+        }
+
+        return decimalValue
     }
 }

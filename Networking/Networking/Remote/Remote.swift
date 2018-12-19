@@ -2,6 +2,7 @@ import Foundation
 import Alamofire
 import CocoaLumberjack
 
+
 /// Represents a collection of Remote Endpoints
 ///
 public class Remote {
@@ -29,13 +30,24 @@ public class Remote {
     ///     - completion: Closure to be executed upon completion. Will receive the JSON Parsed Response (if successful)
     ///
     func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
-        network.responseJSON(for: request) { (payload, error) in
-            guard let payload = payload else {
-                completion(nil, error)
+        network.responseData(for: request) { (data, networError) in
+            guard let data = data else {
+                completion(nil, networError)
                 return
             }
 
-            completion(payload, error)
+            if let dotcomError = DotcomValidator.error(from: data) {
+                self.dotcomErrorWasReceived(error: dotcomError, for: request)
+                completion(nil, dotcomError)
+                return
+            }
+
+            do {
+                let document = try JSONSerialization.jsonObject(with: data, options: [])
+                completion(document, nil)
+            } catch {
+                completion(nil, error)
+            }
         }
     }
 
@@ -51,14 +63,15 @@ public class Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M, completion: @escaping (M.Output?, Error?) -> Void) {
-        network.responseData(for: request) { (data, error) in
+        network.responseData(for: request) { (data, networkError) in
             guard let data = data else {
-                completion(nil, error)
+                completion(nil, networkError)
                 return
             }
 
-            if let error = DotcomValidator.error(from: data) {
-                completion(nil, error)
+            if let dotcomError = DotcomValidator.error(from: data) {
+                self.dotcomErrorWasReceived(error: dotcomError, for: request)
+                completion(nil, dotcomError)
                 return
             }
 
@@ -71,4 +84,54 @@ public class Remote {
             }
         }
     }
+}
+
+
+// MARK: - Private Methods
+//
+private extension Remote {
+
+    /// Handles *all* of the DotcomError(s) that are successfully parsed.
+    ///
+    func dotcomErrorWasReceived(error: Error, for request: URLRequestConvertible) {
+        guard let dotcomError = error as? DotcomError else {
+            return
+        }
+
+        switch dotcomError {
+        case .requestFailed where request is JetpackRequest:
+            publishJetpackTimeoutNotification(error: dotcomError)
+        case .invalidToken:
+            publishInvalidTokenNotification(error: dotcomError)
+        default:
+            break
+        }
+    }
+
+
+    /// Publishes a `Jetpack Timeout` Notification.
+    ///
+    private func publishJetpackTimeoutNotification(error: DotcomError) {
+        NotificationCenter.default.post(name: .RemoteDidReceiveJetpackTimeoutError, object: error, userInfo: nil)
+    }
+
+    /// Publishes an `Invalid Token` Notification.
+    ///
+    private func publishInvalidTokenNotification(error: DotcomError) {
+        NotificationCenter.default.post(name: .RemoteDidReceiveInvalidTokenError, object: error, userInfo: nil)
+    }
+}
+
+
+// MARK: - Remote Notifications
+//
+public extension NSNotification.Name {
+
+    /// Posted whenever an Invalid Token Error is received.
+    ///
+    public static let RemoteDidReceiveInvalidTokenError = NSNotification.Name(rawValue: "RemoteDidReceiveInvalidTokenError")
+
+    /// Posted whenever a Jetpack Timeout is received.
+    ///
+    public static let RemoteDidReceiveJetpackTimeoutError = NSNotification.Name(rawValue: "RemoteDidReceiveJetpackTimeoutError")
 }

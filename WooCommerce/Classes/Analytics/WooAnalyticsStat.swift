@@ -97,20 +97,20 @@ public enum WooAnalyticsStat: String {
 
     // Settings View Events
     //
-    case settingsTapped                     = "main_menu_settings_tapped"
-    case settingsContactSupportTapped       = "main_menu_contact_support_tapped"
+    case settingsTapped                         = "main_menu_settings_tapped"
+    case settingsContactSupportTapped           = "main_menu_contact_support_tapped"
 
-    case settingsPrivacySettingsTapped      = "settings_privacy_settings_tapped"
-    case settingsCollectInfoToggled         = "settings_privacy_settings_collect_info_toggled"
-    case settingsReportCrashesToggled       = "settings_privacy_settings_report_crashes_toggled"
-    case settingsPrivacyPolicyTapped        = "settings_privacy_settings_privacy_policy_link_tapped"
-    case settingsShareInfoLearnMoreTapped   = "settings_privacy_settings_share_info_link_tapped"
-    case settingsThirdPartyLearnMoreTapped  = "settings_privacy_settings_third_party_tracking_info_link_tapped"
-    case settingsLicensesLinkTapped         = "settings_about_open_source_licenses_link_tapped"
-    case settingsAboutLinkTapped            = "settings_about_woocommerce_link_tapped"
+    case settingsPrivacySettingsTapped          = "settings_privacy_settings_tapped"
+    case settingsCollectInfoToggled             = "settings_privacy_settings_collect_info_toggled"
+    case settingsReportCrashesToggled           = "settings_privacy_settings_report_crashes_toggled"
+    case settingsPrivacyPolicyTapped            = "settings_privacy_settings_privacy_policy_link_tapped"
+    case settingsShareInfoLearnMoreTapped       = "settings_privacy_settings_share_info_link_tapped"
+    case settingsThirdPartyLearnMoreTapped      = "settings_privacy_settings_third_party_tracking_info_link_tapped"
+    case settingsLicensesLinkTapped             = "settings_about_open_source_licenses_link_tapped"
+    case settingsAboutLinkTapped                = "settings_about_woocommerce_link_tapped"
 
-    case settingsLogoutTapped               = "settings_logout_button_tapped"
-    case settingsLogoutConfirmation         = "settings_logout_confirmation_dialog_result"
+    case settingsLogoutTapped                   = "settings_logout_button_tapped"
+    case settingsLogoutConfirmation             = "settings_logout_confirmation_dialog_result"
 
     // Order View Events
     //
@@ -178,6 +178,10 @@ public enum WooAnalyticsStat: String {
     case notificationReviewActionSuccess        = "review_action_success"
     case notificationReviewActionFailed         = "review_action_failed"
     case notificationReviewActionUndo           = "review_action_undo"
+
+    // Jetpack Tunnel Events
+    //
+    case jetpackTunnelTimeout                   = "jetpack_tunnel_timeout"
 }
 
 public extension WooAnalyticsStat {

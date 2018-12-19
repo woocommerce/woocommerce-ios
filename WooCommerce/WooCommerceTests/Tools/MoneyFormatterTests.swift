@@ -283,15 +283,27 @@ class MoneyFormatterTests: XCTestCase {
         XCTAssertEqual(formattedDecimal, "619\u{00a0}¥")
     }
 
+
     // MARK: - Decimal Unit Testing
 
     /// Testing string value returns as accurate decimal value.
     ///
     func testStringReturnsDecimal() {
         let stringValue = "9.99"
-        let decimalValue = Decimal(string: stringValue)
+        let decimalValue = NSDecimalNumber(string: stringValue)
 
-        let formattedDecimal = MoneyFormatter().formatDecimal(from: stringValue)
+        let decimalFormat = MoneyFormatter().formatDecimal(from: stringValue)
+
+        // check the formatted decimal exists
+        guard let formattedDecimal = decimalFormat else {
+            XCTFail()
+            return
+        }
+
+        // check the decimal type
+        XCTAssertTrue(formattedDecimal.isKind(of: NSDecimalNumber.self))
+
+        // check the decimal value
         XCTAssertEqual(decimalValue, formattedDecimal)
     }
 
@@ -301,31 +313,31 @@ class MoneyFormatterTests: XCTestCase {
     /// https://storedev.wordpress.com/2018/02/21/lets-talk-about-floating-point/
 
 
-    /// Testing that the formatted decimal value is not rounded.
+    /// Testing that the formatted decimal value is NOT rounded by default.
     ///
-    func testStringValueIsNotRoundedWhenFormattedAsDecimal() {
+    func testStringValueIsNotRoundedDecimalUnlessSpecified() {
         let stringValue = "9.9999"
-        let decimalValue = Decimal(string: stringValue)
+        let decimalValue = NSDecimalNumber(string: stringValue)
 
         let formattedDecimal = MoneyFormatter().formatDecimal(from: stringValue)
         XCTAssertEqual(decimalValue, formattedDecimal)
     }
 
-    /// Testing that the default decimal point is 2 when not specified.
+    /// Testing that decimal points default to 2 when rounding is in place.
     ///
-    func testDefaultDecimalPointIsTwoWhenUnspecified() {
+    func testDefaultDecimalPointIsTwoWhenRounded() {
         let stringValue = "9.9911"
         let decimalValue = NSDecimalNumber(string: stringValue)
 
         let roundingBehavior = NSDecimalNumberHandler(roundingMode: .plain,
-                                                      scale: 2,
+                                                      scale: 2, // this value sets the place
                                                       raiseOnExactness: false,
                                                       raiseOnOverflow: false,
                                                       raiseOnUnderflow: false,
                                                       raiseOnDivideByZero: false)
         let truncatedDecimal = decimalValue.rounding(accordingToBehavior: roundingBehavior)
 
-        let formattedDecimal = MoneyFormatter().formatDecimal(from: stringValue)
+        let formattedDecimal = MoneyFormatter().formatDecimal(from: stringValue, isRounded: true)
 
         XCTAssertEqual(truncatedDecimal, formattedDecimal)
     }

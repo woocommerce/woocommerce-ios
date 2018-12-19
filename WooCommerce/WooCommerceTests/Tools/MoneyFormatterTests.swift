@@ -282,9 +282,11 @@ class MoneyFormatterTests: XCTestCase {
         // Therefore, there are no decimal values for this currency.
         XCTAssertEqual(formattedDecimal, "619\u{00a0}¥")
     }
+}
 
 
-    // MARK: - Decimal Unit Testing
+// MARK: - Decimal Unit Testing
+extension MoneyFormatterTests {
 
     /// Testing string value returns an accurate decimal value.
     ///

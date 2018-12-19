@@ -342,3 +342,44 @@ extension MoneyFormatterTests {
         XCTAssertEqual("1,17", formattedString)
     }
 }
+
+// MARK: - Thousand Separator Unit Testing
+extension MoneyFormatterTests {
+    /// Test thousand separator is localized to a comma
+    ///
+    func testThousandSeparatorIsLocalizedToComma() {
+        let comma = ","
+        let stringValue = "1204.67"
+        let decimalValue = NSDecimalNumber(string: stringValue)
+        let stringResult = formatDecimalIntoThousands(decimalValue, separator: comma)
+
+        // set up the functions to test
+        let convertedDecimal = MoneyFormatter().convertToDecimal(from: stringValue)
+
+        guard let decimal = convertedDecimal else {
+            XCTFail()
+            return
+        }
+
+        let formattedString = MoneyFormatter().localizeThousands(decimal, with: comma)
+        XCTAssertEqual(stringResult, formattedString)
+    }
+
+
+    // MARK: - private methods
+
+    /// Number formatter to add thousand separator to an NSDecimalNumber
+    ///
+    func formatDecimalIntoThousands(_ decimal: NSDecimalNumber, separator: String) -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.usesGroupingSeparator = true
+        numberFormatter.groupingSeparator = separator
+        numberFormatter.groupingSize = 3
+        numberFormatter.formatterBehavior = .behavior10_4
+        numberFormatter.numberStyle = .decimal
+
+        let stringResult = numberFormatter.string(from: decimal)
+
+        return stringResult
+    }
+}

@@ -286,7 +286,7 @@ class MoneyFormatterTests: XCTestCase {
 
     // MARK: - Decimal Unit Testing
 
-    /// Testing string value returns as accurate decimal value.
+    /// Testing string value returns an accurate decimal value.
     ///
     func testStringReturnsDecimal() {
         let stringValue = "9.99"

@@ -12,11 +12,28 @@ public class MoneyFormatter {
 
 
     /// Returns a formatted decimal value from a given string.
-    ///
-    func formatDecimal(from stringValue: String) -> Decimal? {
-        guard let decimalValue = Decimal(string: stringValue) else {
+    /// - Parameters:
+    ///   - stringValue: the string received from the API
+    ///   - isRounded: rounds a decimal value
+    ///   - scale: the number of decimal points to display
+    func formatDecimal(from stringValue: String, isRounded: Bool = false, with scale: Int16 = 2) -> NSDecimalNumber? {
+        let decimalValue = NSDecimalNumber(string: stringValue)
+
+        guard decimalValue != NSDecimalNumber.notANumber else {
             DDLogError("Error: string value could not be converted to decimal: \(stringValue)")
             return nil
+        }
+
+        if isRounded == true {
+            let roundingBehavior = NSDecimalNumberHandler(roundingMode: .plain,
+                                                          scale: scale,
+                                                          raiseOnExactness: false,
+                                                          raiseOnOverflow: false,
+                                                          raiseOnUnderflow: false,
+                                                          raiseOnDivideByZero: false)
+            let roundedDecimal = decimalValue.rounding(accordingToBehavior: roundingBehavior)
+
+            return roundedDecimal
         }
 
         return decimalValue

@@ -1,6 +1,8 @@
 import XCTest
 @testable import WooCommerce
 
+/// Money Formatter Tests
+///
 class MoneyFormatterTests: XCTestCase {
 
     /// Testing zero value string

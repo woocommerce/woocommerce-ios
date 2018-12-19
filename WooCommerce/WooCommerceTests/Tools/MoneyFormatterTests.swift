@@ -313,7 +313,7 @@ class MoneyFormatterTests: XCTestCase {
     /// https://storedev.wordpress.com/2018/02/21/lets-talk-about-floating-point/
 
 
-    /// Testing that the formatted decimal value is NOT rounded by default.
+    /// Testing that the formatted decimal value is NOT rounded.
     ///
     func testStringValueIsNotRoundedDecimalUnlessSpecified() {
         let stringValue = "9.9999"
@@ -321,24 +321,5 @@ class MoneyFormatterTests: XCTestCase {
 
         let formattedDecimal = MoneyFormatter().formatDecimal(from: stringValue)
         XCTAssertEqual(decimalValue, formattedDecimal)
-    }
-
-    /// Testing that decimal points default to 2 when rounding is in place.
-    ///
-    func testDefaultDecimalPointIsTwoWhenRounded() {
-        let stringValue = "9.9911"
-        let decimalValue = NSDecimalNumber(string: stringValue)
-
-        let roundingBehavior = NSDecimalNumberHandler(roundingMode: .plain,
-                                                      scale: 2, // this value sets the place
-                                                      raiseOnExactness: false,
-                                                      raiseOnOverflow: false,
-                                                      raiseOnUnderflow: false,
-                                                      raiseOnDivideByZero: false)
-        let truncatedDecimal = decimalValue.rounding(accordingToBehavior: roundingBehavior)
-
-        let formattedDecimal = MoneyFormatter().formatDecimal(from: stringValue, isRounded: true)
-
-        XCTAssertEqual(truncatedDecimal, formattedDecimal)
     }
 }

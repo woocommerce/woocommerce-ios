@@ -141,10 +141,14 @@ class CommentRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "generic_error")
         remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .untrash) { (updatedStatus, error) in
+            guard let error = error as? DotcomError else {
+                XCTFail()
+                return
+            }
+
+            XCTAssert(error == .unauthorized)
             XCTAssertNil(updatedStatus)
-            XCTAssertNotNil(error)
-            let error = error as? DotcomError
-            XCTAssertEqual(error?.code, "unknown_token")
+
             expectation.fulfill()
         }
 

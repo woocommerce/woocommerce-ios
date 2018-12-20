@@ -10,7 +10,8 @@ struct Money {
     let currency: Currency
 
     var symbol: String {
-        // HTML entities and currency codes pulled from WC
+        // HTML entities and currency codes pulled from WC:
+        // https://docs.woocommerce.com/wc-apidocs/source-function-get_woocommerce_currency.html#473
         switch currency {
         case .AED:
             return "&#x62f;.&#x625;".strippedHTML

@@ -476,7 +476,7 @@ extension MoneyFormatter {
         let decimalSeparator = ","
         let thousandSeparator = "."
         let decimalPosition = 3
-        let currencyPosition = "right_space"
+        let currencyPosition = Currency.Position.rightSpace
         let currencyCode = Currency.Code.JOD
         let stringAmount = "-7867818684.64"
         let expectedResult = "-7.867.818.684,640 د.ا"
@@ -499,7 +499,7 @@ extension MoneyFormatter {
         }
 
         let formattedAmount = MoneyFormatter().formatCurrency(using: localizedAmount,
-                                                              positionedAt: currencyPosition,
+                                                              at: currencyPosition,
                                                               with: currencyCode)
 
         guard let actualResult = formattedAmount else {

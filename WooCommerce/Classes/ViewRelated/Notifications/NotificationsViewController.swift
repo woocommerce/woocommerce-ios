@@ -544,6 +544,7 @@ private extension NotificationsViewController {
 
         cell.read = note.read
         cell.noticon = note.noticon
+        cell.noticonColor = note.noticonTintColor
         cell.attributedSubject = renderSubject(note: note)
         cell.attributedSnippet = renderSnippet(note: note)
         cell.starRating = note.starRating

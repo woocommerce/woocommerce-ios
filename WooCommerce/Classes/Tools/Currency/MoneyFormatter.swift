@@ -93,9 +93,20 @@ extension MoneyFormatter {
 
     /// Return a string formatted with the specified decimal separator
     ///
-    func localizeDecimal(_ decimal: NSDecimalNumber, with separator: String) -> String {
-        let stringValue = decimal.stringValue
-        let formattedString = stringValue.replacingOccurrences(of: ".", with: separator)
+    func localizeDecimal(from string: String, with separator: String) -> String {
+        let defaultDecimalPlaces = 2
+        let totalCharacters = string.characterCount
+        var allCharacters = string.map { String($0) }
+        let decimalIndex = totalCharacters - defaultDecimalPlaces - 1
+
+        for (index, char) in string.enumerated() {
+            if index == decimalIndex && char == "." {
+                allCharacters[index] = separator
+                break;
+            }
+        }
+
+        let formattedString = allCharacters.joined()
 
         return formattedString
     }

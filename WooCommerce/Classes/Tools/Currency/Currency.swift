@@ -12,7 +12,7 @@ struct Currency {
         case rightSpace = "right_space"
     }
 
-    var amount: NSDecimalNumber
+    var amount: String?
 
     let code: Code
 

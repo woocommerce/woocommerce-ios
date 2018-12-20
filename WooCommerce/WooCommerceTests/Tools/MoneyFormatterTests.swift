@@ -390,4 +390,27 @@ extension MoneyFormatterTests {
 
         XCTAssertEqual(expectedResult, actualResult)
     }
+
+    /// Verifies that the result string is accurate when a blank string is entered for the thousand separator
+    ///
+    func testThousandSeparatorIsLocalizedToBlankString() {
+        let blankString = ""
+        let stringValue = "1204.67"
+        let expectedResult = "1204.67"
+
+        let convertedDecimal = MoneyFormatter().convertToDecimal(from: stringValue)
+
+        guard let decimal = convertedDecimal else {
+            XCTFail()
+            return
+        }
+
+        let formattedString = MoneyFormatter().localizeThousand(decimal, with: blankString)
+        guard let actualResult = formattedString else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(expectedResult, actualResult)
+    }
 }

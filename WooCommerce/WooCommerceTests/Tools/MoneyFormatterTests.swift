@@ -340,8 +340,7 @@ extension MoneyFormatterTests {
             return
         }
 
-        let decimalToString = convertedDecimal.stringValue
-        let actualResult = MoneyFormatter().localizeDecimal(from: decimalToString, with: separator)
+        let actualResult = MoneyFormatter().localizeAmount(decimal: convertedDecimal, decimalSeparator: separator)
 
         XCTAssertEqual(expectedResult, actualResult)
     }
@@ -383,7 +382,7 @@ extension MoneyFormatterTests {
             return
         }
 
-        let formattedString = MoneyFormatter().localizeThousand(decimal, with: comma)
+        let formattedString = MoneyFormatter().localizeAmount(decimal: decimal, thousandSeparator: comma)
         guard let actualResult = formattedString else {
             XCTFail()
             return
@@ -395,19 +394,22 @@ extension MoneyFormatterTests {
     /// Verifies that the result string is accurate when a blank string is entered for the thousand separator
     ///
     func testThousandSeparatorIsLocalizedToBlankString() {
-        let blankString = ""
+        let decimalSeparator = "."
+        let thousandSeparator = ""
         let stringValue = "1204.67"
         let expectedResult = "1204.67"
 
         let convertedDecimal = MoneyFormatter().convertToDecimal(from: stringValue)
-
         guard let decimal = convertedDecimal else {
             XCTFail()
             return
         }
 
-        let formattedString = MoneyFormatter().localizeThousand(decimal, with: blankString)
-        guard let actualResult = formattedString else {
+        let localizedAmount = MoneyFormatter().localizeAmount(decimal: decimal,
+                                                              decimalSeparator: decimalSeparator,
+                                                              thousandSeparator: thousandSeparator)
+
+        guard let actualResult = localizedAmount else {
             XCTFail()
             return
         }
@@ -428,14 +430,49 @@ extension MoneyFormatterTests {
             return
         }
 
-        let formattedThousand = MoneyFormatter().localizeThousand(convertedDecimal, with: separator)
-        guard let stringResult = formattedThousand else {
+        let localizedAmount = MoneyFormatter().localizeAmount(decimal: convertedDecimal, decimalSeparator: separator, decimalPosition: 2, thousandSeparator: separator)
+        guard let actualResult = localizedAmount else {
             XCTFail()
             return
         }
 
-        let actualResult = MoneyFormatter().localizeDecimal(from: stringResult, with: separator)
+        XCTAssertEqual(expectedResult, actualResult)
+    }
+
+    /// Verifies decimal places are correct after localize methods have been applied
+    ///
+    func testDecimalPlacesAfterLocalizeThousandAndLocalizeDecimalFormattingWasApplied() {
+        let decimalPosition = 3
+        let separator = ","
+        let stringValue = "45958320.97"
+        let expectedResult = "45,958,320,970"
+
+        let converted = MoneyFormatter().convertToDecimal(from: stringValue)
+        guard let convertedDecimal = converted else {
+            XCTFail()
+            return
+        }
+
+        let formattedAmount = MoneyFormatter().localizeAmount(decimal: convertedDecimal,
+                                                              decimalSeparator: separator,
+                                                              decimalPosition: decimalPosition,
+                                                              thousandSeparator: separator)
+
+        guard let actualResult = formattedAmount else {
+            XCTFail()
+            return
+        }
 
         XCTAssertEqual(expectedResult, actualResult)
+    }
+}
+
+
+// MARK: - Currency Formatting Unit Tests
+extension MoneyFormatter {
+    /// Verifies that user's full currency preferences are applied
+    ///
+    func testCompleteCurrencyFormattingRespectsUserRules() {
+
     }
 }

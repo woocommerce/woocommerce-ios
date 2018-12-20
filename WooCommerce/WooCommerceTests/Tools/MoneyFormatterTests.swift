@@ -290,7 +290,7 @@ class MoneyFormatterTests: XCTestCase {
 // MARK: - Decimal Unit Testing
 extension MoneyFormatterTests {
 
-    /// Testing string value returns an accurate decimal value.
+    /// Verifies that the string value returns an accurate decimal value
     ///
     func testStringReturnsDecimal() {
         let stringValue = "9.99"
@@ -317,7 +317,7 @@ extension MoneyFormatterTests {
     /// https://storedev.wordpress.com/2018/02/21/lets-talk-about-floating-point/
 
 
-    /// Testing that the formatted decimal value is NOT rounded.
+    /// Verifies that the formatted decimal value is NOT rounded
     ///
     func testStringValueIsNotRoundedDecimal() {
         let stringValue = "9.9999"
@@ -327,7 +327,7 @@ extension MoneyFormatterTests {
         XCTAssertEqual(expectedResult, actualResult)
     }
 
-    /// Testing that the decimal separator is localized
+    /// Verifies that the decimal separator is localized
     ///
     func testDecimalSeparatorIsLocalized() {
         let separator = ","
@@ -345,7 +345,7 @@ extension MoneyFormatterTests {
         XCTAssertEqual(expectedResult, actualResult)
     }
 
-    /// Test that bad data doesn't get converted into a decimal
+    /// Verifies that bad data doesn't get converted into a decimal
     ///
     func testBadDataInStringDoesNotConvertToDecimal() {
         let badInput = "~HUKh*(&Y3HkJ8"
@@ -354,7 +354,7 @@ extension MoneyFormatterTests {
         XCTAssertNil(actualResult)
     }
 
-    /// Test that negative numbers are successfully converted into a decimal
+    /// Verifies that negative numbers are successfully converted into a decimal
     ///
     func testNegativeNumbersSuccessfullyConvertToDecimal() {
         let negativeNumber = "-81346.45"
@@ -365,9 +365,10 @@ extension MoneyFormatterTests {
     }
 }
 
+
 // MARK: - Thousand Separator Unit Testing
 extension MoneyFormatterTests {
-    /// Test thousand separator is localized to a comma
+    /// Verifies that the thousand separator is localized to a comma
     ///
     func testThousandSeparatorIsLocalizedToComma() {
         let comma = ","

@@ -473,6 +473,33 @@ extension MoneyFormatter {
     /// Verifies that user's full currency preferences are applied
     ///
     func testCompleteCurrencyFormattingRespectsUserRules() {
+        let decimalSeparator = ","
+        let thousandSeparator = "."
+        let decimalPosition = 3
+        let currencyPosition = "right_space"
+        let currencyCode = Money.Currency.JOD
+        let stringAmount = "-7867818684.64"
+        let expectedResult = "-7.867.818.684,640 د.ا"
 
+        let decimalAmount = MoneyFormatter().convertToDecimal(from: stringAmount)
+        guard let decimal = decimalAmount else {
+            DDLogError("Error: invalid string amount. Cannot convert to decimal.")
+            XCTFail()
+        }
+
+        let localizedAmount = MoneyFormatter().localizeAmount(decimal: decimal,
+                                                             decimalSeparator: decimalSeparator,
+                                                             decimalPosition: decimalPosition,
+                                                             thousandSeparator: thousandSeparator)
+
+        let formattedAmount = MoneyFormatter().formatCurrency(using: localizedAmount,
+                                                              positionedAt: currencyPosition,
+                                                              with: currencyCode)
+
+        guard let actualResult = formattedAmount else {
+            XCTFail()
+        }
+
+        XCTAssertEqual(expectedResult, actualResult)
     }
 }

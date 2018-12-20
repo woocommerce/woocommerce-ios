@@ -733,7 +733,6 @@ private extension NotificationsViewController {
     ///
     func updateNavBarButtonsState(enabled: Bool) {
         leftBarButton.isEnabled = enabled
-        rightBarButton.isEnabled = enabled
     }
 }
 

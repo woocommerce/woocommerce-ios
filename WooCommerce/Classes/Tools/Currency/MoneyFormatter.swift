@@ -122,10 +122,22 @@ extension MoneyFormatter {
     ///     - localizedAmount: a formatted string returned from `localizeAmount()`
     ///     - currencyPosition: the currency position, either right, left, right_space, or left_space.
     ///     - currencyCode: the three-letter country code used for a currency, e.g. CAD.
+    func formatCurrency(using amount: String,
+                        at position: Currency.Position,
+                        with code: Currency.Code) -> String? {
+        let currency = Currency(amount: amount, code: code, position: position)
+        let symbol = currency.symbol
 
-    // -TODO: currency position should be an enum somewhere. Maybe in the Money struct?
-    func formatCurrency(using localizedAmount: String, positionedAt currencyPosition: String, with currencyCode: Currency.Code) -> String? {
-        return ""
+        switch position {
+        case .left:
+            return symbol + amount
+        case .right:
+            return amount + symbol
+        case .leftSpace:
+            return symbol + "\u{00a0}" + amount
+        case .rightSpace:
+            return amount + "\u{00a0}" + symbol
+        }
     }
 
 

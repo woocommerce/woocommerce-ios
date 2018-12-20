@@ -314,7 +314,7 @@ extension MoneyFormatterTests {
 
     /// This is where a float-to-decimal unit test would go.
     /// It's not here because we don't allow using floats for currency.
-    /// https://storedev.wordpress.com/2018/02/21/lets-talk-about-floating-point/
+    /// Be Responsible. Friends don't let friends use `float` or `double` for currency.
 
 
     /// Verifies that the formatted decimal value is NOT rounded

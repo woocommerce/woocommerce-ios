@@ -91,7 +91,14 @@ extension MoneyFormatter {
         return decimalValue
     }
 
-    /// Return a string formatted with the specified thousand separator
+    /// Returns a formatted string for the amount. Does not contain currency symbol.
+    /// - Parameters:
+    ///     - decimal: a valid NSDecimalNumber, preferably converted using `convertToDecimal()`
+    ///     - decimalSeparator: a string representing the user's preferred decimal symbol
+    ///     - decimalPosition: an int for positioning the decimal symbol
+    ///     - thousandSeparator: a string representing the user's preferred thousand symbol*
+    ///       *Assumes thousands grouped by 3, because a user can't indicate a preference and it's a majority default.
+    ///       Note this assumption will be wrong for India.
     ///
     func localizeAmount(decimal: NSDecimalNumber, decimalSeparator: String? = ".", decimalPosition: Int = 2, thousandSeparator: String? = ",") -> String? {
         let numberFormatter = NumberFormatter()

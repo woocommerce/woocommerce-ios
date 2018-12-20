@@ -1,6 +1,8 @@
 import XCTest
 @testable import WooCommerce
 
+/// Money Formatter Tests
+///
 class MoneyFormatterTests: XCTestCase {
 
     /// Testing zero value string
@@ -281,5 +283,91 @@ class MoneyFormatterTests: XCTestCase {
         // Fun fact: A Japanese Yen is the lowest value possible in Japanese currency.
         // Therefore, there are no decimal values for this currency.
         XCTAssertEqual(formattedDecimal, "619\u{00a0}¥")
+    }
+}
+
+
+// MARK: - Decimal Unit Testing
+extension MoneyFormatterTests {
+
+    /// Testing string value returns an accurate decimal value.
+    ///
+    func testStringReturnsDecimal() {
+        let stringValue = "9.99"
+        let expectedResult = NSDecimalNumber(string: stringValue)
+
+        let converted = MoneyFormatter().convertToDecimal(from: stringValue)
+
+        // check the formatted decimal exists
+        guard let actualResult = converted else {
+            XCTFail()
+            return
+        }
+
+        // check the decimal type
+        XCTAssertTrue(actualResult.isKind(of: NSDecimalNumber.self))
+
+        // check the decimal value
+        XCTAssertEqual(expectedResult, actualResult)
+    }
+
+
+    /// This is where a float-to-decimal unit test would go.
+    /// It's not here because we don't allow using floats for currency.
+    /// https://storedev.wordpress.com/2018/02/21/lets-talk-about-floating-point/
+
+
+    /// Testing that the formatted decimal value is NOT rounded.
+    ///
+    func testStringValueIsNotRoundedDecimal() {
+        let stringValue = "9.9999"
+        let expectedResult = NSDecimalNumber(string: stringValue)
+
+        let actualResult = MoneyFormatter().convertToDecimal(from: stringValue)
+        XCTAssertEqual(expectedResult, actualResult)
+    }
+
+    /// Testing that the decimal separator is localized
+    ///
+    func testDecimalSeparatorIsLocalized() {
+        let separator = ","
+        let stringValue = "1.17"
+        let expectedResult = "1,17"
+        let converted = MoneyFormatter().convertToDecimal(from: stringValue)
+
+        guard let convertedDecimal = converted else {
+            XCTFail()
+            return
+        }
+
+        let actualResult = MoneyFormatter().localizeDecimal(convertedDecimal, with: separator)
+
+        XCTAssertEqual(expectedResult, actualResult)
+    }
+}
+
+// MARK: - Thousand Separator Unit Testing
+extension MoneyFormatterTests {
+    /// Test thousand separator is localized to a comma
+    ///
+    func testThousandSeparatorIsLocalizedToComma() {
+        let comma = ","
+        let stringValue = "1204.67"
+        let expectedResult = "1,204.67"
+
+        let convertedDecimal = MoneyFormatter().convertToDecimal(from: stringValue)
+
+        guard let decimal = convertedDecimal else {
+            XCTFail()
+            return
+        }
+
+        let formattedString = MoneyFormatter().localizeThousand(decimal, with: comma)
+        guard let actualResult = formattedString else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(expectedResult, actualResult)
     }
 }

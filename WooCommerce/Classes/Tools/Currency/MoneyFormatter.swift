@@ -91,38 +91,49 @@ extension MoneyFormatter {
         return decimalValue
     }
 
-    /// Return a string formatted with the specified decimal separator
-    ///
-    func localizeDecimal(from string: String, with separator: String) -> String {
-        let defaultDecimalPlaces = 2
-        let totalCharacters = string.characterCount
-        var allCharacters = string.map { String($0) }
-        let decimalIndex = totalCharacters - defaultDecimalPlaces - 1
-
-        for (index, char) in string.enumerated() {
-            if index == decimalIndex && char == "." {
-                allCharacters[index] = separator
-                break;
-            }
-        }
-
-        let formattedString = allCharacters.joined()
-
-        return formattedString
-    }
-
     /// Return a string formatted with the specified thousand separator
     ///
-    func localizeThousand(_ decimal: NSDecimalNumber, with separator: String) -> String? {
+    func localizeAmount(decimal: NSDecimalNumber, decimalSeparator: String? = ".", decimalPosition: Int = 2, thousandSeparator: String? = ",") -> String? {
         let numberFormatter = NumberFormatter()
         numberFormatter.usesGroupingSeparator = true
-        numberFormatter.groupingSeparator = separator
+        numberFormatter.groupingSeparator = thousandSeparator
+        numberFormatter.decimalSeparator = decimalSeparator
         numberFormatter.groupingSize = 3
         numberFormatter.formatterBehavior = .behavior10_4
         numberFormatter.numberStyle = .decimal
+        numberFormatter.generatesDecimalNumbers = true
+        numberFormatter.minimumFractionDigits = decimalPosition
+        numberFormatter.maximumFractionDigits = decimalPosition
 
         let stringResult = numberFormatter.string(from: decimal)
 
         return stringResult
+    }
+
+
+    // MARK: - Helper methods
+
+    func stringFormatIsValid(_ stringValue: String, for decimalPlaces: Int = 2) -> Bool {
+        guard stringValue.characterCount >= 4 else {
+            DDLogError("Error: this method expects a string with a minimum of 4 characters.")
+            return false
+        }
+
+        let decimalIndex = stringValue.characterCount - decimalPlaces
+        var containsDecimal = false
+
+        for (index, char) in stringValue.enumerated() {
+            if index == decimalIndex && char == "." {
+                containsDecimal = true
+                break;
+            }
+        }
+
+        guard containsDecimal else {
+            DDLogError("Error: this method expects a decimal notation from the string parameter.")
+            return false
+        }
+
+        return true
     }
 }

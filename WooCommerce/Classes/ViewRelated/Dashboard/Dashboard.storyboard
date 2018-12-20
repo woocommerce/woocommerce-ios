@@ -318,13 +318,13 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="347" height="108"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" text="You have 10 orders to fulfill" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XgA-ra-emd" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="0.0" width="347" height="20.5"/>
+                                                        <rect key="frame" x="0.0" y="4" width="347" height="20.5"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Review, prepare, and ship these pending orders..." lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3ad-g9-Y4v" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="20.5" width="347" height="87.5"/>
+                                                        <rect key="frame" x="0.0" y="32.5" width="347" height="42.5"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -332,11 +332,11 @@
                                                 </subviews>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="bottom" secondItem="3ad-g9-Y4v" secondAttribute="bottom" id="Plf-SO-Ahp"/>
-                                                    <constraint firstItem="XgA-ra-emd" firstAttribute="top" secondItem="4WL-4h-7Za" secondAttribute="top" id="Zzh-mG-Qzz"/>
+                                                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="3ad-g9-Y4v" secondAttribute="bottom" id="Plf-SO-Ahp"/>
+                                                    <constraint firstItem="XgA-ra-emd" firstAttribute="top" secondItem="4WL-4h-7Za" secondAttribute="top" constant="4" id="Zzh-mG-Qzz"/>
                                                     <constraint firstItem="3ad-g9-Y4v" firstAttribute="leading" secondItem="4WL-4h-7Za" secondAttribute="leading" id="huZ-G2-7YY"/>
                                                     <constraint firstAttribute="trailing" secondItem="XgA-ra-emd" secondAttribute="trailing" id="rz7-pS-zpH"/>
-                                                    <constraint firstItem="3ad-g9-Y4v" firstAttribute="top" secondItem="XgA-ra-emd" secondAttribute="bottom" id="vaT-7D-i38"/>
+                                                    <constraint firstItem="3ad-g9-Y4v" firstAttribute="top" secondItem="XgA-ra-emd" secondAttribute="bottom" constant="8" id="vaT-7D-i38"/>
                                                     <constraint firstAttribute="trailing" secondItem="3ad-g9-Y4v" secondAttribute="trailing" id="vji-5F-RT1"/>
                                                     <constraint firstItem="XgA-ra-emd" firstAttribute="leading" secondItem="4WL-4h-7Za" secondAttribute="leading" id="xBw-l4-s7G"/>
                                                 </constraints>

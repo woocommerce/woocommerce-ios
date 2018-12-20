@@ -485,12 +485,18 @@ extension MoneyFormatter {
         guard let decimal = decimalAmount else {
             DDLogError("Error: invalid string amount. Cannot convert to decimal.")
             XCTFail()
+            return
         }
 
-        let localizedAmount = MoneyFormatter().localizeAmount(decimal: decimal,
+        let amount = MoneyFormatter().localizeAmount(decimal: decimal,
                                                              decimalSeparator: decimalSeparator,
                                                              decimalPosition: decimalPosition,
                                                              thousandSeparator: thousandSeparator)
+
+        guard let localizedAmount = amount else {
+            XCTFail()
+            return
+        }
 
         let formattedAmount = MoneyFormatter().formatCurrency(using: localizedAmount,
                                                               positionedAt: currencyPosition,
@@ -498,6 +504,7 @@ extension MoneyFormatter {
 
         guard let actualResult = formattedAmount else {
             XCTFail()
+            return
         }
 
         XCTAssertEqual(expectedResult, actualResult)

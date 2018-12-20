@@ -340,7 +340,8 @@ extension MoneyFormatterTests {
             return
         }
 
-        let actualResult = MoneyFormatter().localizeDecimal(convertedDecimal, with: separator)
+        let decimalToString = convertedDecimal.stringValue
+        let actualResult = MoneyFormatter().localizeDecimal(from: decimalToString, with: separator)
 
         XCTAssertEqual(expectedResult, actualResult)
     }
@@ -410,6 +411,30 @@ extension MoneyFormatterTests {
             XCTFail()
             return
         }
+
+        XCTAssertEqual(expectedResult, actualResult)
+    }
+
+    /// Verifies that the decimal separator is properly applied after thousands separator
+    ///
+    func testCommaDecimalSeparatorAfterCommaThousandSeparatorWasApplied() {
+        let separator = ","
+        let stringValue = "45958320.97"
+        let expectedResult = "45,958,320,97"
+
+        let converted = MoneyFormatter().convertToDecimal(from: stringValue)
+        guard let convertedDecimal = converted else {
+            XCTFail()
+            return
+        }
+
+        let formattedThousand = MoneyFormatter().localizeThousand(convertedDecimal, with: separator)
+        guard let stringResult = formattedThousand else {
+            XCTFail()
+            return
+        }
+
+        let actualResult = MoneyFormatter().localizeDecimal(from: stringResult, with: separator)
 
         XCTAssertEqual(expectedResult, actualResult)
     }

@@ -344,6 +344,25 @@ extension MoneyFormatterTests {
 
         XCTAssertEqual(expectedResult, actualResult)
     }
+
+    /// Test that bad data doesn't get converted into a decimal
+    ///
+    func testBadDataInStringDoesNotConvertToDecimal() {
+        let badInput = "~HUKh*(&Y3HkJ8"
+        let actualResult = MoneyFormatter().convertToDecimal(from: badInput)
+
+        XCTAssertNil(actualResult)
+    }
+
+    /// Test that negative numbers are successfully converted into a decimal
+    ///
+    func testNegativeNumbersSuccessfullyConvertToDecimal() {
+        let negativeNumber = "-81346.45"
+        let expectedResult = NSDecimalNumber(string: negativeNumber)
+        let actualResult = MoneyFormatter().convertToDecimal(from: negativeNumber)
+
+        XCTAssertEqual(expectedResult, actualResult)
+    }
 }
 
 // MARK: - Thousand Separator Unit Testing

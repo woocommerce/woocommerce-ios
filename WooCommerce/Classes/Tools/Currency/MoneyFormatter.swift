@@ -155,7 +155,7 @@ extension MoneyFormatter {
         for (index, char) in stringValue.enumerated() {
             if index == decimalIndex && char == "." {
                 containsDecimal = true
-                break;
+                break
             }
         }
 

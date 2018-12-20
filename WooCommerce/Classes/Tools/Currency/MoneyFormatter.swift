@@ -10,6 +10,7 @@ public class MoneyFormatter {
         return formatter
     }()
 
+
     /// Returns a localized and formatted currency string, including zero values.
     ///
     func format(value: String, currencyCode: String, locale: Locale = .current) -> String? {
@@ -68,5 +69,49 @@ public class MoneyFormatter {
         currencyFormatter.currencyCode = currencyCode
 
         return currencyFormatter.currencySymbol
+    }
+}
+
+
+// MARK: - Manual currency formatting
+//
+extension MoneyFormatter {
+    /// Returns a decimal value from a given string.
+    /// - Parameters:
+    ///   - stringValue: the string received from the API
+    ///
+    func convertToDecimal(from stringValue: String) -> NSDecimalNumber? {
+        let decimalValue = NSDecimalNumber(string: stringValue)
+
+        guard decimalValue != NSDecimalNumber.notANumber else {
+            DDLogError("Error: string input is not a number: \(stringValue)")
+            return nil
+        }
+
+        return decimalValue
+    }
+
+    /// Return a string formatted with the specified decimal separator
+    ///
+    func localizeDecimal(_ decimal: NSDecimalNumber, with separator: String) -> String {
+        let stringValue = decimal.stringValue
+        let formattedString = stringValue.replacingOccurrences(of: ".", with: separator)
+
+        return formattedString
+    }
+
+    /// Return a string formatted with the specified thousand separator
+    ///
+    func localizeThousand(_ decimal: NSDecimalNumber, with separator: String) -> String? {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.usesGroupingSeparator = true
+        numberFormatter.groupingSeparator = separator
+        numberFormatter.groupingSize = 3
+        numberFormatter.formatterBehavior = .behavior10_4
+        numberFormatter.numberStyle = .decimal
+
+        let stringResult = numberFormatter.string(from: decimal)
+
+        return stringResult
     }
 }

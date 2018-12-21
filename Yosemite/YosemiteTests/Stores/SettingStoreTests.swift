@@ -51,8 +51,7 @@ class SettingStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
 
-        let action = SettingAction.retrieveSiteSettings(siteID: sampleSiteID) { (settings, error) in
-            XCTAssertNotNil(settings)
+        let action = SettingAction.retrieveSiteSettings(siteID: sampleSiteID) { (error) in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 20)
 
@@ -80,8 +79,7 @@ class SettingStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
 
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general-alt")
-        let action = SettingAction.retrieveSiteSettings(siteID: sampleSiteID) { (settings, error) in
-            XCTAssertNotNil(settings)
+        let action = SettingAction.retrieveSiteSettings(siteID: sampleSiteID) { (error) in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 20)
 
@@ -104,8 +102,7 @@ class SettingStoreTests: XCTestCase {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "generic_error")
-        let action = SettingAction.retrieveSiteSettings(siteID: sampleSiteID) { (settings, error) in
-            XCTAssertNil(settings)
+        let action = SettingAction.retrieveSiteSettings(siteID: sampleSiteID) { (error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -120,8 +117,7 @@ class SettingStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve site settings empty response")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = SettingAction.retrieveSiteSettings(siteID: sampleSiteID) { (settings, error) in
-            XCTAssertNil(settings)
+        let action = SettingAction.retrieveSiteSettings(siteID: sampleSiteID) { (error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }

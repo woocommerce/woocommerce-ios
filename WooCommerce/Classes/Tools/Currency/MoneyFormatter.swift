@@ -1,5 +1,16 @@
 import Foundation
 
+public struct MoneyFormatSettings {
+    public enum CurrencyPosition {
+        case left, right, leftWithSpace, rightWithSpace
+    }
+
+    public let currencyPosition: CurrencyPosition
+    public let thousandsSeperator: String
+    public let decimalSeperator: String
+    public let numberOfDecimals: Int
+}
+
 public class MoneyFormatter {
 
     private lazy var currencyFormatter: NumberFormatter = {

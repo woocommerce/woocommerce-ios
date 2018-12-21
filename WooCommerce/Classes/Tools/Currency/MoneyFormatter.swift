@@ -1,7 +1,10 @@
 import Foundation
 import Yosemite
 
+/// Site-wide settings for displaying prices/money
 public struct MoneyFormatSettings {
+    /// Designates where the currency symbol is located on a formatted price
+    ///
     public enum CurrencyPosition: String {
         case left = "left"
         case right = "right"
@@ -14,6 +17,9 @@ public struct MoneyFormatSettings {
     public let decimalSeparator: String
     public let numberOfDecimals: Int
 
+    /// Designated Initializer:
+    /// Used primarily for testing and by the convenience initializers.
+    ///
     init(currencyPosition: CurrencyPosition, thousandSeparator: String, decimalSeparator: String, numberOfDecimals: Int) {
         self.currencyPosition = currencyPosition
         self.thousandSeparator = thousandSeparator
@@ -21,10 +27,17 @@ public struct MoneyFormatSettings {
         self.numberOfDecimals = numberOfDecimals
     }
 
+
+    /// Convenience Initializer:
+    /// Provides sane defaults for when site settings aren't available
+    ///
     init() {
         self.init(currencyPosition: .left, thousandSeparator: ",", decimalSeparator: ".", numberOfDecimals: 2)
     }
 
+    /// Convenience Initializer:
+    /// This is the preferred way to create an instance with the settings coming from the site.
+    ///
     init(siteSettings: [SiteSetting]) {
         guard let wooCurrencyPosition = siteSettings.first(where: { $0.settingID == "woocommerce_currency_pos" })?.value,
             let thousandSeparator = siteSettings.first(where: { $0.settingID == "woocommerce_price_thousand_sep" })?.value,

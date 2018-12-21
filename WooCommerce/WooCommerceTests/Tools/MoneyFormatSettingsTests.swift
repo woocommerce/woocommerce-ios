@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
-/// Money Formatter Tests
+/// MoneyFormatSettings Tests
 ///
 class MoneyFormatSettingsTests: XCTestCase {
     func testInitDefault() {

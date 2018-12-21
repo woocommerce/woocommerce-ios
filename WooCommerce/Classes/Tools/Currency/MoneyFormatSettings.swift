@@ -92,10 +92,10 @@ public class MoneyFormatSettings {
 
 private extension MoneyFormatSettings {
     enum Constants {
-        static let currencyPositionKey: String = "woocommerce_currency_pos"
-        static let thousandSeparatorKey: String = "woocommerce_price_thousand_sep"
-        static let decimalSeparatorKey: String = "woocommerce_price_decimal_sep"
-        static let numberOfDecimalsKey: String = "woocommerce_price_num_decimals"
+        static let currencyPositionKey = "woocommerce_currency_pos"
+        static let thousandSeparatorKey = "woocommerce_price_thousand_sep"
+        static let decimalSeparatorKey = "woocommerce_price_decimal_sep"
+        static let numberOfDecimalsKey = "woocommerce_price_num_decimals"
 
         static let defaultCurrencyPosition = CurrencyPosition.left
         static let defaultThousandSeparator = ","

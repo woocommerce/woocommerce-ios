@@ -219,6 +219,21 @@
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Don't have an account? _Sign up_";
 
+/* WordPress.com (unmapped!) error */
+"Dotcom Error: [\(code)] \(theMessage)" = "Dotcom Error: [\(code)] \(theMessage)";
+
+/* WordPress.com Missing Token */
+"Dotcom Missing Token" = "Dotcom Missing Token";
+
+/* WordPress.com Request Failure */
+"Dotcom Request Failed" = "Dotcom Request Failed";
+
+/* WordPress.com Error thrown when the response body is empty */
+"Dotcom Response Empty" = "Dotcom Response Empty";
+
+/* WordPress.com Invalid Token */
+"Dotcom Token Invalid" = "Dotcom Token Invalid";
+
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "Double tap to dismiss";
 
@@ -316,7 +331,7 @@
 "Help & Support" = "Help & Support";
 
 /* My Store > Settings > Privacy settings section */
-"HELP IMPROVE THE APP" = "HELP IMPROVE THE APP";
+"Help Improve The App" = "Help Improve The App";
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "Hide billing";
@@ -328,7 +343,7 @@
 "HOW CAN WE HELP?" = "HOW CAN WE HELP?";
 
 /* Detail label for yes/no switch. */
-"If disabled will add the note as private." = "If disabled will add the note as private.";
+"If disabled the note will be private" = "If disabled the note will be private";
 
 /* Application's Inactive State */
 "Inactive" = "Inactive";
@@ -496,7 +511,8 @@
 /* Empty Notifications List Message */
 "No Notifications Yet!" = "No Notifications Yet!";
 
-/* Orders List (Empty State + Filters) */
+/* Notifications List (Empty State + Filters)
+   Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "No results for the selected criteria";
 
 /* Notification status description for 'unspam' (opposite of spam) */
@@ -540,6 +556,9 @@
 /* On Hold Order Status */
 "On Hold" = "On Hold";
 
+/* Opens iOS's Device Settings for the app */
+"Open device settings" = "Open device settings";
+
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Open Mail";
 
@@ -560,11 +579,15 @@
 "Order Notes" = "Order Notes";
 
 /* Orders filter title
+   Orders stat label on dashboard - should be plural.
    Orders Title */
 "Orders" = "Orders";
 
 /* Orders Title */
 "Orders: \(filter)" = "Orders: \(filter)";
+
+/* My Store > Settings > Other app section */
+"Other" = "Other";
 
 /* Login dialog password placeholder
    Password placeholder */
@@ -613,7 +636,7 @@
 "Please open your email app and look for an email from WordPress.com." = "Please open your email app and look for an email from WordPress.com.";
 
 /* My Store > Settings > Primary Store information section */
-"PRIMARY STORE" = "PRIMARY STORE";
+"Primary Store" = "Primary Store";
 
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Privacy Policy";
@@ -664,7 +687,8 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Registered Domain";
 
-/* Action: Opens the Store in a browser */
+/* Action: Opens the Store in a browser
+   Action: removes the current filters from the notifications list */
 "Remove Filters" = "Remove Filters";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
@@ -673,6 +697,9 @@
 /* Retry Action
    Retry the last action */
 "Retry" = "Retry";
+
+/* Revenue stat label on dashboard. */
+"Revenue" = "Revenue";
 
 /* Review moderation success notice message */
 "Review marked %@" = "Review marked %@";
@@ -1006,6 +1033,9 @@
 
 /* User role badge */
 "Viewer" = "Viewer";
+
+/* Visitors stat label on dashboard - should be plural. */
+"Visitors" = "Visitors";
 
 /* Orders List (Empty State / No Filters) */
 "Waiting for Customers" = "Waiting for Customers";

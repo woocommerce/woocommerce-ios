@@ -1,18 +1,27 @@
 import Foundation
 
-struct Money {
-    enum Currency: String {
+struct Currency {
+    enum Code: String {
         case AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BHD, BIF, BMD, BND, BOB, BRL, BSD, BTC, BTN, BWP, BYR, BYN, BZD, CAD, CDF, CHF, CLP, CNY, COP, CRC, CUC, CUP, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ERN, ETB, EUR, FJD, FKP, GBP, GEL, GGP, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, IMP, INR, IQD, IRR, IRT, ISK, JEP, JMD, JOD, JPY, KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT, LAK, LBP, LKR, LRD, LSL, LYD, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, OMR, PAB, PEN, PGK, PHP, PKR, PLN, PRB, PYG, QAR, RMB, RON, RSD, RUB, RWF, SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLL, SOS, SRD, SSP, STD, SYP, SZL, THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VEF, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
     }
 
-    var amount: NSDecimalNumber
+    enum Position: String {
+        case left = "left"
+        case right = "right"
+        case leftSpace = "left_space"
+        case rightSpace = "right_space"
+    }
 
-    let currency: Currency
+    var amount: String?
+
+    let code: Code
+
+    let position: Position
 
     var symbol: String {
         // HTML entities and currency codes pulled from WC:
         // https://docs.woocommerce.com/wc-apidocs/source-function-get_woocommerce_currency.html#473
-        switch currency {
+        switch code {
         case .AED:
             return "&#x62f;.&#x625;".strippedHTML
         case .AFN:

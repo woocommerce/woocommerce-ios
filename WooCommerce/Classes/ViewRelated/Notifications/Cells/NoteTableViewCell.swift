@@ -46,6 +46,17 @@ class NoteTableViewCell: UITableViewCell {
         }
     }
 
+    /// Icon Color property.
+    ///
+    var noticonColor: UIColor? {
+        get {
+            return noticonLabel.textColor
+        }
+        set {
+            noticonLabel.textColor = newValue
+        }
+    }
+
     /// Attributed Subject
     ///
     var attributedSubject: NSAttributedString? {
@@ -113,7 +124,6 @@ private extension NoteTableViewCell {
     ///
     func refreshColors() {
         sidebarView.backgroundColor = read ? UIColor.clear : StyleManager.wooAccent
-        noticonLabel.textColor = read ? StyleManager.wooGreyMid : StyleManager.wooAccent
     }
 
     func configureStarView() {

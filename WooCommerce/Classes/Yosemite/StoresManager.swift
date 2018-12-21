@@ -196,6 +196,9 @@ private extension StoresManager {
             // Just return if the siteID == 0 so we are not making extra requests
             return
         }
+
+        MoneyFormatSettings.shared.beginListeningToSiteSettingsUpdates()
+        
         let action = SettingAction.retrieveSiteSettings(siteID: siteID) { error in
             if let error = error {
                 DDLogError("⛔️ Could not successfully fetch settings for siteID \(siteID): \(error)")

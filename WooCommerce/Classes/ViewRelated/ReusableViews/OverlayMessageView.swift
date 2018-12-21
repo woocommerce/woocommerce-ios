@@ -62,6 +62,12 @@ class OverlayMessageView: UIView {
         }
     }
 
+    /// Action button view (get only) — needed typically for the sharing popover on iPads.
+    ///
+    var actionButtonView: UIView {
+        return actionButton
+    }
+
 
     /// Closure to be executed whenever the Action Button is pressed.
     ///

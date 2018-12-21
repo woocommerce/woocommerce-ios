@@ -389,7 +389,18 @@ private extension OrdersViewController {
         overlayView.messageText = NSLocalizedString("Waiting for Customers", comment: "Orders List (Empty State / No Filters)")
         overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
         overlayView.onAction = { [weak self] in
-            self?.displayDefaultSite()
+            guard let `self` = self else {
+                return
+            }
+            guard let site = StoresManager.shared.sessionManager.defaultSite else {
+                return
+            }
+            guard let url = URL(string: site.url) else {
+                return
+            }
+
+            WooAnalytics.shared.track(.orderShareStoreButtonTapped)
+            SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
         }
 
         overlayView.attach(to: view)
@@ -415,18 +426,6 @@ private extension OrdersViewController {
         for subview in view.subviews where subview is OverlayMessageView {
             subview.removeFromSuperview()
         }
-    }
-
-    /// Displays the Default Site in a WebView.
-    ///
-    func displayDefaultSite() {
-        guard let urlAsString = StoresManager.shared.sessionManager.defaultSite?.url, let siteURL = URL(string: urlAsString) else {
-            return
-        }
-
-        let safariViewController = SFSafariViewController(url: siteURL)
-        safariViewController.modalPresentationStyle = .pageSheet
-        present(safariViewController, animated: true, completion: nil)
     }
 }
 

@@ -628,7 +628,17 @@ private extension NotificationsViewController {
         overlayView.messageText = NSLocalizedString("No Notifications Yet!", comment: "Empty Notifications List Message")
         overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
         overlayView.onAction = { [weak self] in
-            self?.displayDefaultSite()
+            guard let `self` = self else {
+                return
+            }
+            guard let site = StoresManager.shared.sessionManager.defaultSite else {
+                return
+            }
+            guard let url = URL(string: site.url) else {
+                return
+            }
+
+            SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
         }
 
         overlayView.attach(to: view)

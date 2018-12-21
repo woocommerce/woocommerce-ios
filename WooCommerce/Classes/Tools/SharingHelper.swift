@@ -48,7 +48,7 @@ class SharingHelper {
 private extension SharingHelper {
 
     static func createActivityVC(title: String? = nil, url: URL? = nil) -> UIActivityViewController? {
-        guard (title != nil || url != nil) else {
+        guard title != nil || url != nil else {
             DDLogWarn("⚠ Cannot create sharing activity — both title AND URL are nil.")
             return nil
         }

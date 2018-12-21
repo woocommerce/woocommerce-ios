@@ -715,14 +715,13 @@ private extension NotificationsViewController {
             displayEmptyUnfilteredOverlay()
             updateNavBarButtonsState(enabled: false)
         case .emptyFiltered:
-            displayEmptyUnfilteredOverlay()
+            displayEmptyFilteredOverlay()
             updateNavBarButtonsState(enabled: true)
         case .results:
-            displayEmptyUnfilteredOverlay()
             updateNavBarButtonsState(enabled: true)
             break
         case .syncing:
-            displayEmptyUnfilteredOverlay()
+            displayPlaceholderNotes()
             updateNavBarButtonsState(enabled: false)
         }
     }

@@ -198,7 +198,7 @@ private extension StoresManager {
         }
 
         MoneyFormatSettings.shared.beginListeningToSiteSettingsUpdates()
-        
+
         let action = SettingAction.retrieveSiteSettings(siteID: siteID) { error in
             if let error = error {
                 DDLogError("⛔️ Could not successfully fetch settings for siteID \(siteID): \(error)")

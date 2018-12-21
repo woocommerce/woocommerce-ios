@@ -168,5 +168,3 @@ extension MoneyFormatter {
         return true
     }
 }
-
-

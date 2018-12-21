@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 public class MoneyFormatter {
 

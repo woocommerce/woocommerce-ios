@@ -399,6 +399,7 @@ private extension OrdersViewController {
                 return
             }
 
+            WooAnalytics.shared.track(.orderShareStoreButtonTapped)
             SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
         }
 

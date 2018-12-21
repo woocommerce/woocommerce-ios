@@ -638,6 +638,7 @@ private extension NotificationsViewController {
                 return
             }
 
+            WooAnalytics.shared.track(.notificationShareStoreButtonTapped)
             SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
         }
 

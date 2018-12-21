@@ -200,6 +200,11 @@ private extension StoresManager {
             if let error = error {
                 DDLogError("⛔️ Could not successfully fetch settings for siteID \(siteID): \(error)")
             }
+
+            if let settings = settings {
+                let moneyFormatSettings = MoneyFormatSettings(siteSettings: settings)
+                self.sessionManager.defaultSiteMoneyFormat = moneyFormatSettings
+            }
         }
         dispatch(action)
     }

@@ -96,9 +96,12 @@ struct SessionManager {
         }
     }
 
-    /// Default Store Website
+    /// Default Store Site
     ///
     var defaultSite: Yosemite.Site?
+    
+    /// Default Store Currency
+    var defaultSiteMoneyFormat: MoneyFormatSettings?
 
     /// Designated Initializer.
     ///

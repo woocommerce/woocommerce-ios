@@ -100,9 +100,6 @@ struct SessionManager {
     ///
     var defaultSite: Yosemite.Site?
 
-    /// Default Store Currency
-    var defaultSiteMoneyFormat = MoneyFormatSettings()
-
     /// Designated Initializer.
     ///
     init(defaults: UserDefaults, keychainServiceName: String) {

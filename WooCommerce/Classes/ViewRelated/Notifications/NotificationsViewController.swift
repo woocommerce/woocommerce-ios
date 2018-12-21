@@ -652,18 +652,6 @@ private extension NotificationsViewController {
             subview.removeFromSuperview()
         }
     }
-
-    /// Displays the Default Site in a WebView.
-    ///
-    func displayDefaultSite() {
-        guard let urlAsString = StoresManager.shared.sessionManager.defaultSite?.url, let siteURL = URL(string: urlAsString) else {
-            return
-        }
-
-        let safariViewController = SFSafariViewController(url: siteURL)
-        safariViewController.modalPresentationStyle = .pageSheet
-        present(safariViewController, animated: true, completion: nil)
-    }
 }
 
 

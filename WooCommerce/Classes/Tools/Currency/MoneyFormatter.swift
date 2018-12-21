@@ -3,6 +3,10 @@ import Yosemite
 
 /// Site-wide settings for displaying prices/money
 public struct MoneyFormatSettings {
+    /// Shared Instance
+    ///
+    static var shared = MoneyFormatSettings()
+
     /// Designates where the currency symbol is located on a formatted price
     ///
     public enum CurrencyPosition: String {
@@ -12,10 +16,25 @@ public struct MoneyFormatSettings {
         case rightSpace = "right_space"
     }
 
-    public let currencyPosition: CurrencyPosition
-    public let thousandSeparator: String
-    public let decimalSeparator: String
-    public let numberOfDecimals: Int
+    public private(set) var currencyPosition: CurrencyPosition
+    public private(set) var thousandSeparator: String
+    public private(set) var decimalSeparator: String
+    public private(set) var numberOfDecimals: Int
+
+    /// ResultsController: Whenever settings change, I will change. We both change. The world changes.
+    ///
+    private lazy var resultsController: ResultsController<StorageSiteSetting> = {
+        let storageManager = AppDelegate.shared.storageManager
+
+        let resultsController = ResultsController<StorageSiteSetting>(storageManager: storageManager, sectionNameKeyPath: nil, sortedBy: [])
+
+        //public var onDidChangeObject: ((_ object: T.ReadOnlyType, _ indexPath: IndexPath?, _ type: ChangeType, _ newIndexPath: IndexPath?) -> Void)?
+        resultsController.onDidChangeObject = { (object, indexPath, type, newIndexPath) in
+
+        }
+
+        return resultsController
+    }()
 
     /// Designated Initializer:
     /// Used primarily for testing and by the convenience initializers.
@@ -39,18 +58,33 @@ public struct MoneyFormatSettings {
     /// This is the preferred way to create an instance with the settings coming from the site.
     ///
     init(siteSettings: [SiteSetting]) {
-        guard let wooCurrencyPosition = siteSettings.first(where: { $0.settingID == "woocommerce_currency_pos" })?.value,
-            let thousandSeparator = siteSettings.first(where: { $0.settingID == "woocommerce_price_thousand_sep" })?.value,
-            let decimalSeparator = siteSettings.first(where: { $0.settingID == "woocommerce_price_decimal_sep" })?.value,
-            let wooNumberOfDecimals = siteSettings.first(where: { $0.settingID == "woocommerce_price_num_decimals" })?.value,
-            let numberOfDecimals = Int(wooNumberOfDecimals) else {
-                self.init()
-                return
+        self.init()
+
+        siteSettings.forEach { updateFormatSetting(with: $0) }
+    }
+
+    mutating func beginListeningToSiteSettingsUpdates() {
+        try? resultsController.performFetch()
+    }
+
+    mutating func updateFormatSetting(with siteSetting: SiteSetting) {
+        let value = siteSetting.value
+
+        switch siteSetting.settingID {
+        case "woocommerce_currency_pos":
+            let currencyPosition = MoneyFormatSettings.CurrencyPosition(rawValue: value) ?? .left
+            self.currencyPosition = currencyPosition
+        case "woocommerce_price_thousand_sep":
+            self.thousandSeparator = value
+        case "woocommerce_price_decimal_sep":
+            self.decimalSeparator = value
+            break
+        case "woocommerce_price_num_decimals":
+            let numberOfDecimals = Int(value) ?? 2
+            self.numberOfDecimals = numberOfDecimals
+        default:
+            break
         }
-
-        let currencyPosition = MoneyFormatSettings.CurrencyPosition(rawValue: wooCurrencyPosition) ?? .left
-
-        self.init(currencyPosition: currencyPosition, thousandSeparator: thousandSeparator, decimalSeparator: decimalSeparator, numberOfDecimals: numberOfDecimals)
     }
 }
 

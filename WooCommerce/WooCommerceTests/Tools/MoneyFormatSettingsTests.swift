@@ -57,10 +57,10 @@ class MoneyFormatSettingsTests: XCTestCase {
         let siteSettings = [wooCurrencyPosition, thousandsSeparator, decimalSeparator]
         let moneyFormat = MoneyFormatSettings(siteSettings: siteSettings)
 
-        XCTAssertEqual(.left, moneyFormat.currencyPosition)
-        XCTAssertEqual(".", moneyFormat.decimalSeparator)
+        XCTAssertEqual(.right, moneyFormat.currencyPosition)
+        XCTAssertEqual("Y", moneyFormat.decimalSeparator)
         XCTAssertEqual(2, moneyFormat.numberOfDecimals)
-        XCTAssertEqual(",", moneyFormat.thousandSeparator)
+        XCTAssertEqual("X", moneyFormat.thousandSeparator)
     }
 
 }

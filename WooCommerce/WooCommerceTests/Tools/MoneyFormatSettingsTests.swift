@@ -11,16 +11,16 @@ class MoneyFormatSettingsTests: XCTestCase {
         XCTAssertEqual(.left, moneyFormat.currencyPosition)
         XCTAssertEqual(".", moneyFormat.decimalSeparator)
         XCTAssertEqual(2, moneyFormat.numberOfDecimals)
-        XCTAssertEqual(",", moneyFormat.thousandsSeparator)
+        XCTAssertEqual(",", moneyFormat.thousandSeparator)
     }
 
     func testInitWithIndividualParameters() {
-        let moneyFormat = MoneyFormatSettings(currencyPosition: .right, thousandsSeparator: "M", decimalSeparator: "X", numberOfDecimals: 10)
+        let moneyFormat = MoneyFormatSettings(currencyPosition: .right, thousandSeparator: "M", decimalSeparator: "X", numberOfDecimals: 10)
 
         XCTAssertEqual(.right, moneyFormat.currencyPosition)
         XCTAssertEqual("X", moneyFormat.decimalSeparator)
         XCTAssertEqual(10, moneyFormat.numberOfDecimals)
-        XCTAssertEqual("M", moneyFormat.thousandsSeparator)
+        XCTAssertEqual("M", moneyFormat.thousandSeparator)
     }
 
     func testInitWithSiteSettingsEmptyArray() {
@@ -30,7 +30,7 @@ class MoneyFormatSettingsTests: XCTestCase {
         XCTAssertEqual(.left, moneyFormat.currencyPosition)
         XCTAssertEqual(".", moneyFormat.decimalSeparator)
         XCTAssertEqual(2, moneyFormat.numberOfDecimals)
-        XCTAssertEqual(",", moneyFormat.thousandsSeparator)
+        XCTAssertEqual(",", moneyFormat.thousandSeparator)
     }
 
     func testInitWithSiteSettings() {
@@ -45,7 +45,7 @@ class MoneyFormatSettingsTests: XCTestCase {
         XCTAssertEqual(.right, moneyFormat.currencyPosition)
         XCTAssertEqual("Y", moneyFormat.decimalSeparator)
         XCTAssertEqual(3, moneyFormat.numberOfDecimals)
-        XCTAssertEqual("X", moneyFormat.thousandsSeparator)
+        XCTAssertEqual("X", moneyFormat.thousandSeparator)
     }
 
     func testInitWithIncompleteSiteSettings() {
@@ -60,7 +60,7 @@ class MoneyFormatSettingsTests: XCTestCase {
         XCTAssertEqual(.left, moneyFormat.currencyPosition)
         XCTAssertEqual(".", moneyFormat.decimalSeparator)
         XCTAssertEqual(2, moneyFormat.numberOfDecimals)
-        XCTAssertEqual(",", moneyFormat.thousandsSeparator)
+        XCTAssertEqual(",", moneyFormat.thousandSeparator)
     }
 
 }

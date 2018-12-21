@@ -66,6 +66,7 @@ public enum WooAnalyticsStat: String {
     case dashboardReselected                    = "main_tab_dashboard_reselected"
     case dashboardPulledToRefresh               = "dashboard_pulled_to_refresh"
     case dashboardNewOrdersButtonTapped         = "dashboard_unfulfilled_orders_button_tapped"
+    case dashboardShareStoreButtonTapped        = "dashboard_share_your_store_button_tapped"
 
     // Dashboard Data/Action Events
     //
@@ -133,6 +134,7 @@ public enum WooAnalyticsStat: String {
     case orderDetailProductDetailTapped         = "order_detail_product_detail_button_tapped"
     case orderFulfillmentCompleteButtonTapped   = "order_fulfillment_mark_order_complete_button_tapped"
     case orderMarkedCompleteUndoButtonTapped    = "snack_order_marked_complete_undo_button_tapped"
+    case orderShareStoreButtonTapped            = "orders_list_share_your_store_button_tapped"
 
     // Order Data/Action Events
     //
@@ -169,6 +171,7 @@ public enum WooAnalyticsStat: String {
     case notificationReviewApprovedTapped       = "review_detail_approve_button_tapped"
     case notificationReviewTrashTapped          = "review_detail_trash_button_tapped"
     case notificationReviewSpamTapped           = "review_detail_spam_button_tapped"
+    case notificationShareStoreButtonTapped     = "notifications_share_your_store_button_tapped"
 
     // Notification Data/Action Events
     //

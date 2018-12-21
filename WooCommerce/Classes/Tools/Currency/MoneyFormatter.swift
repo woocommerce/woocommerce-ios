@@ -1,14 +1,44 @@
 import Foundation
+import Yosemite
 
 public struct MoneyFormatSettings {
-    public enum CurrencyPosition {
-        case left, right, leftWithSpace, rightWithSpace
+    public enum CurrencyPosition: String {
+        case left = "left"
+        case right = "right"
+        case leftSpace = "left_space"
+        case rightSpace = "right_space"
     }
 
     public let currencyPosition: CurrencyPosition
-    public let thousandsSeperator: String
-    public let decimalSeperator: String
+    public let thousandsSeparator: String
+    public let decimalSeparator: String
     public let numberOfDecimals: Int
+
+    init(currencyPosition: CurrencyPosition, thousandsSeparator: String, decimalSeparator: String, numberOfDecimals: Int) {
+        self.currencyPosition = currencyPosition
+        self.thousandsSeparator = thousandsSeparator
+        self.decimalSeparator = decimalSeparator
+        self.numberOfDecimals = numberOfDecimals
+    }
+
+    init() {
+        self.init(currencyPosition: .left, thousandsSeparator: ",", decimalSeparator: ".", numberOfDecimals: 2)
+    }
+
+    init(siteSettings: [SiteSetting]) {
+        guard let wooCurrencyPosition = siteSettings.first(where: { $0.settingID == "woocommerce_currency_pos" })?.value,
+            let thousandsSeparator = siteSettings.first(where: { $0.settingID == "woocommerce_price_thousand_sep" })?.value,
+            let decimalSeparator = siteSettings.first(where: { $0.settingID == "woocommerce_price_decimal_sep" })?.value,
+            let wooNumberOfDecimals = siteSettings.first(where: { $0.settingID == "woocommerce_price_num_decimals" })?.value,
+            let numberOfDecimals = Int(wooNumberOfDecimals) else {
+                self.init()
+                return
+        }
+
+        let currencyPosition = MoneyFormatSettings.CurrencyPosition(rawValue: wooCurrencyPosition) ?? .left
+
+        self.init(currencyPosition: currencyPosition, thousandsSeparator: thousandsSeparator, decimalSeparator: decimalSeparator, numberOfDecimals: numberOfDecimals)
+    }
 }
 
 public class MoneyFormatter {

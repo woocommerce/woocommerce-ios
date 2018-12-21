@@ -552,11 +552,11 @@ private extension OrdersViewController {
         case .emptyUnfiltered:
             displayEmptyUnfilteredOverlay()
         case .emptyFiltered:
-            displayEmptyFilteredOverlay()
+            displayEmptyUnfilteredOverlay()
         case .placeholder:
-            displayPlaceholderOrders()
+            displayEmptyUnfilteredOverlay()
         case .syncing:
-            ensureFooterSpinnerIsStarted()
+            displayEmptyUnfilteredOverlay()
         case .results:
             break
         }

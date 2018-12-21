@@ -22,6 +22,15 @@ extension Note {
         return snippet
     }
 
+    /// Returns the icon tint color to be used for this note
+    ///
+    var noticonTintColor: UIColor {
+        guard kind == .storeOrder else {
+            return StyleManager.wooGreyMid
+        }
+        return StyleManager.wooAccent
+    }
+
     /// Returns the number of stars for a review (or nil if the Note is not a review)
     ///
     var starRating: Int? {

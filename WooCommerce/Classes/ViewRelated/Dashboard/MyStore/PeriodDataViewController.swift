@@ -100,6 +100,9 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     init(granularity: StatGranularity) {
         self.granularity = granularity
         super.init(nibName: type(of: self).nibName, bundle: nil)
+
+        // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
+        self.configureResultsControllers()
     }
 
     /// NSCoder Conformance
@@ -112,9 +115,8 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureView()
-        configureResultsControllers()
-        configureBarChart()
+        self.configureView()
+        self.configureBarChart()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -212,8 +214,11 @@ private extension PeriodDataViewController {
         borderView.backgroundColor = StyleManager.wooGreyBorder
 
         // Titles
+        visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
         visitorsTitle.applyFootnoteStyle()
+        ordersTitle.text = NSLocalizedString("Orders", comment: "Orders stat label on dashboard - should be plural.")
         ordersTitle.applyFootnoteStyle()
+        revenueTitle.text = NSLocalizedString("Revenue", comment: "Revenue stat label on dashboard.")
         revenueTitle.applyFootnoteStyle()
 
         // Data

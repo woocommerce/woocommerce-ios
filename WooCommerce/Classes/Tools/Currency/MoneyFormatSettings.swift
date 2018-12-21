@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 
 /// Site-wide settings for displaying prices/money
+///
 public class MoneyFormatSettings {
     /// Shared Instance
     ///
@@ -28,7 +29,6 @@ public class MoneyFormatSettings {
 
         let resultsController = ResultsController<StorageSiteSetting>(storageManager: storageManager, sectionNameKeyPath: nil, sortedBy: [])
 
-        //public var onDidChangeObject: ((_ object: T.ReadOnlyType, _ indexPath: IndexPath?, _ type: ChangeType, _ newIndexPath: IndexPath?) -> Void)?
         resultsController.onDidChangeObject = { [weak self] (object, indexPath, type, newIndexPath) in
             self?.updateFormatSetting(with: object)
         }
@@ -51,7 +51,10 @@ public class MoneyFormatSettings {
     /// Provides sane defaults for when site settings aren't available
     ///
     convenience init() {
-        self.init(currencyPosition: .left, thousandSeparator: ",", decimalSeparator: ".", numberOfDecimals: 2)
+        self.init(currencyPosition: Constants.defaultCurrencyPosition,
+                  thousandSeparator: Constants.defaultThousandSeparator,
+                  decimalSeparator: Constants.defaultDecimalSeparator,
+                  numberOfDecimals: Constants.defaultNumberOfDecimals)
     }
 
     /// Convenience Initializer:
@@ -78,9 +81,8 @@ public class MoneyFormatSettings {
             self.thousandSeparator = value
         case Constants.decimalSeparatorKey:
             self.decimalSeparator = value
-            break
         case Constants.numberOfDecimalsKey:
-            let numberOfDecimals = Int(value) ?? 2
+            let numberOfDecimals = Int(value) ?? Constants.defaultNumberOfDecimals
             self.numberOfDecimals = numberOfDecimals
         default:
             break
@@ -94,5 +96,10 @@ private extension MoneyFormatSettings {
         static let thousandSeparatorKey: String = "woocommerce_price_thousand_sep"
         static let decimalSeparatorKey: String = "woocommerce_price_decimal_sep"
         static let numberOfDecimalsKey: String = "woocommerce_price_num_decimals"
+
+        static let defaultCurrencyPosition = CurrencyPosition.left
+        static let defaultThousandSeparator = ","
+        static let defaultDecimalSeparator = "."
+        static let defaultNumberOfDecimals = 2
     }
 }

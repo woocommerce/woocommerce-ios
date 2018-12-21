@@ -4,13 +4,13 @@ import XCTest
 
 /// Money Tests
 ///
-class MoneyTests: XCTestCase {
+class CurrencyTests: XCTestCase {
 
     /// Test currency symbol lookup returns correctly encoded symbol.
     ///
     func testCurrencySymbol() {
-        let money = Money(amount: 0.00, currency: .AED)
-        let symbol = money.symbol
+        let currency = Currency(amount: "0.00", code: .AED, position: .left)
+        let symbol = currency.symbol
         XCTAssertEqual("د.إ", symbol)
     }
 }

@@ -196,7 +196,7 @@ private extension StoresManager {
             // Just return if the siteID == 0 so we are not making extra requests
             return
         }
-        let action = SettingAction.retrieveSiteSettings(siteID: siteID) { error in
+        let action = SettingAction.retrieveSiteSettings(siteID: siteID) { settings, error in
             if let error = error {
                 DDLogError("⛔️ Could not successfully fetch settings for siteID \(siteID): \(error)")
             }

@@ -38,16 +38,16 @@ private extension SettingStore {
 
     /// Retrieves the site settings associated with the provided Site ID (if any!).
     ///
-    func retrieveSiteSettings(siteID: Int, onCompletion: @escaping (Error?) -> Void) {
+    func retrieveSiteSettings(siteID: Int, onCompletion: @escaping ([SiteSetting]?, Error?) -> Void) {
         let remote = SiteSettingsRemote(network: network)
         remote.loadGeneralSettings(for: siteID) { [weak self] (settings, error) in
             guard let settings = settings else {
-                onCompletion(error)
+                onCompletion(nil, error)
                 return
             }
 
             self?.upsertStoredSiteSettings(siteID: siteID, readOnlySiteSettings: settings)
-            onCompletion(nil)
+            onCompletion(settings, nil)
         }
     }
 

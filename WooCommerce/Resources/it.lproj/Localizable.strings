@@ -336,6 +336,9 @@
 /* Application's Inactive State */
 "Inactive" = "Inactive";
 
+/* Application's Inactive State */
+"Inactive" = "Inactive";
+
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Inattivo, Aggiornamenti automatici disattivati";
 

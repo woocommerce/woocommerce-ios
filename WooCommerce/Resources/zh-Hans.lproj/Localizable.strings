@@ -213,6 +213,21 @@
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "还没有帐户？_注册_";
 
+/* WordPress.com (unmapped!) error */
+"Dotcom Error: [(code)] (theMessage)" = "Dotcom Error: [(code)] (theMessage)";
+
+/* WordPress.com Missing Token */
+"Dotcom Missing Token" = "Dotcom Missing Token";
+
+/* WordPress.com Request Failure */
+"Dotcom Request Failed" = "Dotcom Request Failed";
+
+/* WordPress.com Error thrown when the response body is empty */
+"Dotcom Response Empty" = "Dotcom Response Empty";
+
+/* WordPress.com Invalid Token */
+"Dotcom Token Invalid" = "Dotcom Token Invalid";
+
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "轻点两次即可退出";
 
@@ -297,9 +312,6 @@
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google 注册失败。";
 
-/* My Store > Settings > Privacy settings section */
-"HELP IMPROVE THE APP" = "帮助改进应用程序";
-
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "您希望我们如何为您提供帮助？";
 
@@ -309,6 +321,9 @@
 /* Contact Support Action */
 "Help & Support" = "帮助与支持";
 
+/* My Store > Settings > Privacy settings section */
+"Help Improve The App" = "Help Improve The App";
+
 /* Footer text to hide the billing cell */
 "Hide billing" = "隐藏账单";
 
@@ -316,7 +331,10 @@
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "此 URL 可能并未指向 WordPress 站点。请仔细检查拼写，然后重试。";
 
 /* Detail label for yes/no switch. */
-"If disabled will add the note as private." = "如果禁用，系统会将备注添加为私人备注。";
+"If disabled the note will be private" = "If disabled the note will be private";
+
+/* Application's Inactive State */
+"Inactive" = "Inactive";
 
 /* Application's Inactive State */
 "Inactive" = "Inactive";
@@ -477,7 +495,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "无可用数据";
 
-/* Orders List (Empty State + Filters) */
+/* No comment provided by engineer. */
 "No results for the selected criteria" = "没有符合所选条件的结果";
 
 /* No comment provided by engineer. */
@@ -513,6 +531,9 @@
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "打开邮件";
 
+/* Opens iOS's Device Settings for the app */
+"Open device settings" = "Open device settings";
+
 /* Navigates to open source licenses screen */
 "Open source licenses" = "Open source licenses";
 
@@ -534,8 +555,8 @@
 /* Orders Title */
 "Orders: (filter)" = "订单：（过滤器）";
 
-/* My Store > Settings > Primary Store information section */
-"PRIMARY STORE" = "主要商店";
+/* My Store > Settings > Other app section */
+"Other" = "Other";
 
 /* Product section title */
 "PRODUCT" = "产品";
@@ -585,6 +606,9 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "请打开电子邮件应用程序，查找来自 WordPress.com 的电子邮件。";
 
+/* My Store > Settings > Primary Store information section */
+"Primary Store" = "Primary Store";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Privacy Policy";
 
@@ -627,7 +651,7 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "已注册的域";
 
-/* Action: Opens the Store in a browser */
+/* No comment provided by engineer. */
 "Remove Filters" = "删除过滤器";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
@@ -635,6 +659,9 @@
 
 /* No comment provided by engineer. */
 "Retry" = "重试";
+
+/* Revenue stat label on dashboard. */
+"Revenue" = "Revenue";
 
 /* Review moderation success notice message */
 "Review marked %@" = "Review marked %@";
@@ -950,6 +977,9 @@
 
 /* User role badge */
 "Viewer" = "查看者";
+
+/* Visitors stat label on dashboard - should be plural. */
+"Visitors" = "Visitors";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "写备注";

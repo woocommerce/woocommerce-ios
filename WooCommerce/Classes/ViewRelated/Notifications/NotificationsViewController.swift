@@ -291,6 +291,7 @@ private extension NotificationsViewController {
 
         // Filter right away the cached orders
         refreshResultsPredicate()
+        transitionToResultsUpdatedState()
     }
 }
 
@@ -544,6 +545,7 @@ private extension NotificationsViewController {
 
         cell.read = note.read
         cell.noticon = note.noticon
+        cell.noticonColor = note.noticonTintColor
         cell.attributedSubject = renderSubject(note: note)
         cell.attributedSnippet = renderSnippet(note: note)
         cell.starRating = note.starRating
@@ -603,9 +605,24 @@ private extension NotificationsViewController {
         resultsController.startForwardingEvents(to: self.tableView)
     }
 
+
+    /// Displays the Empty State (with filters applied!) Overlay.
+    ///
+    func displayEmptyFilteredOverlay() {
+        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
+        overlayView.messageImage = .waitingForCustomersImage
+        overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Notifications List (Empty State + Filters)")
+        overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: removes the current filters from the notifications list")
+        overlayView.onAction = { [weak self] in
+            self?.currentTypeFilter = .all
+        }
+
+        overlayView.attach(to: view)
+    }
+
     /// Displays the Empty State Overlay.
     ///
-    func displayEmptyNotesOverlay() {
+    func displayEmptyUnfilteredOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("No Notifications Yet!", comment: "Empty Notifications List Message")
@@ -683,9 +700,12 @@ private extension NotificationsViewController {
     ///
     func didEnter(state: State) {
         switch state {
-        case .empty:
-            displayEmptyNotesOverlay()
+        case .emptyUnfiltered:
+            displayEmptyUnfilteredOverlay()
             updateNavBarButtonsState(enabled: false)
+        case .emptyFiltered:
+            displayEmptyFilteredOverlay()
+            updateNavBarButtonsState(enabled: true)
         case .results:
             updateNavBarButtonsState(enabled: true)
             break
@@ -699,7 +719,9 @@ private extension NotificationsViewController {
     ///
     func didLeave(state: State) {
         switch state {
-        case .empty:
+        case .emptyFiltered:
+            removeAllOverlays()
+        case .emptyUnfiltered:
             removeAllOverlays()
         case .results:
             break
@@ -714,10 +736,21 @@ private extension NotificationsViewController {
         state = isEmpty ? .syncing : .results
     }
 
-    /// Should be called after Sync'ing wraps up: Transitions to .empty / .results
+    /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
+    /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
     ///
     func transitionToResultsUpdatedState() {
-        state = isEmpty ? .empty : .results
+        if isEmpty == false {
+            state = .results
+            return
+        }
+
+        if currentTypeFilter != .all {
+            state = .emptyFiltered
+            return
+        }
+
+        state = .emptyUnfiltered
     }
 }
 
@@ -770,7 +803,8 @@ private extension NotificationsViewController {
     }
 
     enum State {
-        case empty
+        case emptyUnfiltered
+        case emptyFiltered
         case results
         case syncing
     }

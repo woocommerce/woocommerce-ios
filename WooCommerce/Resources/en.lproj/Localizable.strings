@@ -7,6 +7,15 @@
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "A verification code will only contain numbers.";
 
+/* About this app (information page title) */
+"About" = "About";
+
+/* My Store > Settings > About app section */
+"About the app" = "About the app";
+
+/* Application's Active State */
+"Active" = "Active";
+
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "Active, Autoupdates off";
 
@@ -79,6 +88,9 @@
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Back";
 
+/* Application's Background State */
+"Background" = "Background";
+
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Bar number %1$i, %2$@, ";
 
@@ -104,6 +116,9 @@
 
 /* Cancelled Order Status */
 "Canceled" = "Canceled";
+
+/* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
+"Cannot connect to %@" = "Cannot connect to %@";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Catch up with your favorite sites and join the conversation anywhere, any time.";
@@ -159,6 +174,12 @@
 /* Error message informing the user that there was a problem unsubscribing to a site or feed. */
 "Could not unfollow the site at the address specified." = "Could not unfollow the site at the address specified.";
 
+/* Error message shown a URL points to a valid site but not a WordPress site. */
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
+
+/* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
+
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
 "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
@@ -198,6 +219,21 @@
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Don't have an account? _Sign up_";
 
+/* WordPress.com (unmapped!) error */
+"Dotcom Error: [\(code)] \(theMessage)" = "Dotcom Error: [\(code)] \(theMessage)";
+
+/* WordPress.com Missing Token */
+"Dotcom Missing Token" = "Dotcom Missing Token";
+
+/* WordPress.com Request Failure */
+"Dotcom Request Failed" = "Dotcom Request Failed";
+
+/* WordPress.com Error thrown when the response body is empty */
+"Dotcom Response Empty" = "Dotcom Response Empty";
+
+/* WordPress.com Invalid Token */
+"Dotcom Token Invalid" = "Dotcom Token Invalid";
+
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "Double tap to dismiss";
 
@@ -235,6 +271,10 @@
    Title of a button.  */
 "Enter your password instead." = "Enter your password instead.";
 
+/* Review error notice title
+   Site Picker error notice title */
+"Error" = "Error";
+
 /* Site Address placeholder */
 "example.wordpress.com" = "example.wordpress.com";
 
@@ -243,6 +283,9 @@
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Failed to serialize request to the REST API.";
+
+/* Navigates to the feature request screen */
+"Feature Request" = "Feature Request";
 
 /* Accessibility label for the Filter notifications button. */
 "Filter notifications" = "Filter notifications";
@@ -288,7 +331,7 @@
 "Help & Support" = "Help & Support";
 
 /* My Store > Settings > Privacy settings section */
-"HELP IMPROVE THE APP" = "HELP IMPROVE THE APP";
+"Help Improve The App" = "Help Improve The App";
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "Hide billing";
@@ -300,7 +343,10 @@
 "HOW CAN WE HELP?" = "HOW CAN WE HELP?";
 
 /* Detail label for yes/no switch. */
-"If disabled will add the note as private." = "If disabled will add the note as private.";
+"If disabled the note will be private" = "If disabled the note will be private";
+
+/* Application's Inactive State */
+"Inactive" = "Inactive";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Inactive, Autoupdates off";
@@ -340,6 +386,9 @@
 
 /* Settings > Privacy Settings. A text link to the cookie policy. */
 "Learn more" = "Learn more";
+
+/* Licenses (information page title) */
+"Licenses" = "Licenses";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support.";
@@ -462,7 +511,8 @@
 /* Empty Notifications List Message */
 "No Notifications Yet!" = "No Notifications Yet!";
 
-/* Orders List (Empty State + Filters) */
+/* Notifications List (Empty State + Filters)
+   Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "No results for the selected criteria";
 
 /* Notification status description for 'unspam' (opposite of spam) */
@@ -474,16 +524,6 @@
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Note to customer";
-
-/* Deleted Notification's Title
-   Notification notice title */
-"Notification" = "Notification";
-
-/* Notification error notice title */
-"Notification Error" = "Notification Error";
-
-/* Notification moderation success notice message */
-"Notification marked as %@" = "Notification marked as %@";
 
 /* Notifications tab title
    Notifications title */
@@ -516,8 +556,14 @@
 /* On Hold Order Status */
 "On Hold" = "On Hold";
 
+/* Opens iOS's Device Settings for the app */
+"Open device settings" = "Open device settings";
+
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Open Mail";
+
+/* Navigates to open source licenses screen */
+"Open source licenses" = "Open source licenses";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Optional Tracking Information";
@@ -533,11 +579,15 @@
 "Order Notes" = "Order Notes";
 
 /* Orders filter title
+   Orders stat label on dashboard - should be plural.
    Orders Title */
 "Orders" = "Orders";
 
 /* Orders Title */
 "Orders: \(filter)" = "Orders: \(filter)";
+
+/* My Store > Settings > Other app section */
+"Other" = "Other";
 
 /* Login dialog password placeholder
    Password placeholder */
@@ -573,8 +623,11 @@
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Please enter your credentials";
 
+/* Instructions for alert asking for email and name. */
+"Please enter your email address and username:" = "Please enter your email address and username:";
+
 /* Instructions for alert asking for email. */
-"Please enter your email address." = "Please enter your email address.";
+"Please enter your email address:" = "Please enter your email address:";
 
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "Please fill out all the fields";
@@ -583,7 +636,10 @@
 "Please open your email app and look for an email from WordPress.com." = "Please open your email app and look for an email from WordPress.com.";
 
 /* My Store > Settings > Primary Store information section */
-"PRIMARY STORE" = "PRIMARY STORE";
+"Primary Store" = "Primary Store";
+
+/* Opens the Privacy Policy web page */
+"Privacy Policy" = "Privacy Policy";
 
 /* Navigates to Privacy Settings screen */
 "Privacy Settings" = "Privacy Settings";
@@ -631,7 +687,8 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Registered Domain";
 
-/* Action: Opens the Store in a browser */
+/* Action: Opens the Store in a browser
+   Action: removes the current filters from the notifications list */
 "Remove Filters" = "Remove Filters";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
@@ -640,6 +697,12 @@
 /* Retry Action
    Retry the last action */
 "Retry" = "Retry";
+
+/* Revenue stat label on dashboard. */
+"Revenue" = "Revenue";
+
+/* Review moderation success notice message */
+"Review marked %@" = "Review marked %@";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Review, prepare, and ship these pending orders";
@@ -765,11 +828,17 @@
 /* Subtotal label for payment view */
 "Subtotal" = "Subtotal";
 
+/* Labels an order note to let user know it's a system status message */
+"System status" = "System status";
+
 /* Tax label for total taxes line */
 "Tax:" = "Tax:";
 
 /* Taxes label for payment view */
 "Taxes" = "Taxes";
+
+/* Opens the Terms of Service web page */
+"Terms of Service" = "Terms of Service";
 
 /* Button title */
 "Text me a code instead" = "Text me a code instead";
@@ -849,9 +918,6 @@
 /* Top Performers section title - this year */
 "This Year" = "This Year";
 
-/* Instructions for alert asking for email and name. */
-"To continue please enter your email address and name." = "To continue please enter your email address and name.";
-
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "To create your new WordPress.com account, please enter your email address.";
 
@@ -907,8 +973,8 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "Unable to find WooCommerce stores connected to this account";
 
-/* Notification error notice message */
-"Unable to mark the notification as %@" = "Unable to mark the notification as %@";
+/* Review error notice message */
+"Unable to mark review %@" = "Unable to mark review %@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ.";
@@ -927,6 +993,9 @@
 
 /* Undo Action */
 "Undo" = "Undo";
+
+/* Unknown Application State */
+"Unknown" = "Unknown";
 
 /* No comment provided by engineer. */
 "Unknown error" = "Unknown error";
@@ -956,11 +1025,17 @@
 /* App version label */
 "Version" = "Version";
 
+/* Displays the version of the App */
+"Version %@" = "Version %@";
+
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "View previously submitted support tickets";
 
 /* User role badge */
 "Viewer" = "Viewer";
+
+/* Visitors stat label on dashboard - should be plural. */
+"Visitors" = "Visitors";
 
 /* Orders List (Empty State / No Filters) */
 "Waiting for Customers" = "Waiting for Customers";
@@ -986,9 +1061,6 @@
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance.";
 
-/* Error message shown a URL points to a valid site but not a WordPress site. */
-"We're sure this is a great site - but it's not a WordPress site, so you can't connect to it with this app." = "We're sure this is a great site - but it's not a WordPress site, so you can't connect to it with this app.";
-
 /* Statistical unit - a single week */
 "Week" = "Week";
 
@@ -1003,6 +1075,9 @@
 
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!";
+
+/* Navigates to about WooCommerce app screen */
+"WooCommerce" = "WooCommerce";
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "WooCommerce for iOS Support";
@@ -1045,4 +1120,7 @@
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Log in with Google.";
+
+/* About View's Footer Text. The variable is the current year */
+"© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
 

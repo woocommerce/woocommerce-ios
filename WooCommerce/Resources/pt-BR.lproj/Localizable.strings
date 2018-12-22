@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-12-10 19:54:02+0000 */
+/* Translation-Revision-Date: 2018-12-21 14:44:46+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -213,6 +213,21 @@
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Não tem uma conta? _Cadastre-se_";
 
+/* WordPress.com (unmapped!) error */
+"Dotcom Error: [(code)] (theMessage)" = "Dotcom Error: [(code)] (theMessage)";
+
+/* WordPress.com Missing Token */
+"Dotcom Missing Token" = "Dotcom Missing Token";
+
+/* WordPress.com Request Failure */
+"Dotcom Request Failed" = "Dotcom Request Failed";
+
+/* WordPress.com Error thrown when the response body is empty */
+"Dotcom Response Empty" = "Dotcom Response Empty";
+
+/* WordPress.com Invalid Token */
+"Dotcom Token Invalid" = "Dotcom Token Invalid";
+
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "Clique duas vezes para dispensar";
 
@@ -297,9 +312,6 @@
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "O cadastro com o Google falhou.";
 
-/* My Store > Settings > Privacy settings section */
-"HELP IMPROVE THE APP" = "AJUDE A MELHORAR O APLICATIVO";
-
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "COMO PODEMOS AJUDAR?";
 
@@ -309,6 +321,9 @@
 /* Contact Support Action */
 "Help & Support" = "Ajuda e suporte";
 
+/* My Store > Settings > Privacy settings section */
+"Help Improve The App" = "Help Improve The App";
+
 /* Footer text to hide the billing cell */
 "Hide billing" = "Ocultar cobrança";
 
@@ -316,7 +331,10 @@
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Ei... Parece que não há um site WordPress nesse URL. Verifique se há erros de digitação e tente novamente.";
 
 /* Detail label for yes/no switch. */
-"If disabled will add the note as private." = "Se estiver desativada, a nota será adicionada como privada.";
+"If disabled the note will be private" = "If disabled the note will be private";
+
+/* Application's Inactive State */
+"Inactive" = "Inactive";
 
 /* Application's Inactive State */
 "Inactive" = "Inactive";
@@ -477,7 +495,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Não há dados disponíveis";
 
-/* Orders List (Empty State + Filters) */
+/* No comment provided by engineer. */
 "No results for the selected criteria" = "Nenhum resultado referente aos critérios selecionados";
 
 /* No comment provided by engineer. */
@@ -513,6 +531,9 @@
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Abrir o Mail";
 
+/* Opens iOS's Device Settings for the app */
+"Open device settings" = "Open device settings";
+
 /* Navigates to open source licenses screen */
 "Open source licenses" = "Open source licenses";
 
@@ -534,8 +555,8 @@
 /* Orders Title */
 "Orders: (filter)" = "Pedidos: (filtrar)";
 
-/* My Store > Settings > Primary Store information section */
-"PRIMARY STORE" = "LOJA PRINCIPAL";
+/* My Store > Settings > Other app section */
+"Other" = "Other";
 
 /* Product section title */
 "PRODUCT" = "PRODUTO";
@@ -585,6 +606,9 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Acesse seu aplicativo de e-mails e procure por um e-mail do WordPress.com.";
 
+/* My Store > Settings > Primary Store information section */
+"Primary Store" = "Primary Store";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Privacy Policy";
 
@@ -627,7 +651,7 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Domínio registrado";
 
-/* Action: Opens the Store in a browser */
+/* No comment provided by engineer. */
 "Remove Filters" = "Remover filtros";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
@@ -635,6 +659,9 @@
 
 /* No comment provided by engineer. */
 "Retry" = "Tentar novamente";
+
+/* Revenue stat label on dashboard. */
+"Revenue" = "Revenue";
 
 /* Review moderation success notice message */
 "Review marked %@" = "Review marked %@";
@@ -950,6 +977,9 @@
 
 /* User role badge */
 "Viewer" = "Leitor";
+
+/* Visitors stat label on dashboard - should be plural. */
+"Visitors" = "Visitantes";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "ESCREVER NOTA";

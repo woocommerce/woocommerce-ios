@@ -64,6 +64,35 @@ public class OrdersRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Retrieves all of the `Orders` available.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch remote orders.
+    ///     - keyword: Search string that should be matched by the orders.
+    ///     - pageNumber: Number of page that should be retrieved.
+    ///     - pageSize: Number of Orders to be retrieved per page.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func searchOrders(for siteID: Int,
+                             keyword: String,
+                             pageNumber: Int = Defaults.pageNumber,
+                             pageSize: Int = Defaults.pageSize,
+                             completion: @escaping ([Order]?, Error?) -> Void)
+    {
+        let parameters = [
+            ParameterKeys.keyword: keyword,
+            ParameterKeys.page: String(pageNumber),
+            ParameterKeys.perPage: String(pageSize),
+            ParameterKeys.status: Defaults.statusAny
+        ]
+
+        let path = Constants.ordersPath
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let mapper = OrderListMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Updates the `OrderStatus` of a given Order.
     ///
     /// - Parameters:
@@ -121,6 +150,7 @@ public extension OrdersRemote {
     private enum ParameterKeys {
         static let addedByUser: String      = "added_by_user"
         static let customerNote: String     = "customer_note"
+        static let keyword: String          = "search"
         static let note: String             = "note"
         static let page: String             = "page"
         static let perPage: String          = "per_page"

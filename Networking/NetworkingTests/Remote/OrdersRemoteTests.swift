@@ -108,6 +108,42 @@ class OrdersRemoteTests: XCTestCase {
     }
 
 
+    // MARK: - Search Orders
+
+    /// Verifies that searchOrders properly parses the `orders-load-all` sample response.
+    ///
+    func testSearchOrdersProperlyReturnsParsedOrders() {
+        let remote = OrdersRemote(network: network)
+        let expectation = self.expectation(description: "Load All Orders")
+
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+
+        remote.searchOrders(for: sampleSiteID, keyword: String()) { (orders, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(orders)
+            XCTAssert(orders!.count == 3)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that searchOrders properly relays Networking Layer errors.
+    ///
+    func testSearchOrdersProperlyRelaysNetwokingErrors() {
+        let remote = OrdersRemote(network: network)
+        let expectation = self.expectation(description: "Load All Orders")
+
+        remote.searchOrders(for: sampleSiteID, keyword: String()) { (orders, error) in
+            XCTAssertNil(orders)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
     // MARK: - Update Orders Tests
 
     /// Verifies that updateOrder properly parses the `order` sample response.

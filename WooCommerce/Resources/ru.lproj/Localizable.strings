@@ -213,6 +213,21 @@
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Нет учетной записи? _Зарегистрироваться_";
 
+/* WordPress.com (unmapped!) error */
+"Dotcom Error: [(code)] (theMessage)" = "Dotcom Error: [(code)] (theMessage)";
+
+/* WordPress.com Missing Token */
+"Dotcom Missing Token" = "Dotcom Missing Token";
+
+/* WordPress.com Request Failure */
+"Dotcom Request Failed" = "Dotcom Request Failed";
+
+/* WordPress.com Error thrown when the response body is empty */
+"Dotcom Response Empty" = "Dotcom Response Empty";
+
+/* WordPress.com Invalid Token */
+"Dotcom Token Invalid" = "Dotcom Token Invalid";
+
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "Дважды коснитесь, чтобы отключить";
 
@@ -297,9 +312,6 @@
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Регистрация в Google не удалась.";
 
-/* My Store > Settings > Privacy settings section */
-"HELP IMPROVE THE APP" = "ПОМОГИТЕ УЛУЧШИТЬ ПРИЛОЖЕНИЕ";
-
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "ЧЕМ ВАМ ПОМОЧЬ?";
 
@@ -309,6 +321,9 @@
 /* Contact Support Action */
 "Help & Support" = "Помощь и техническая поддержка";
 
+/* My Store > Settings > Privacy settings section */
+"Help Improve The App" = "Help Improve The App";
+
 /* Footer text to hide the billing cell */
 "Hide billing" = "Скрыть платёжные сведения";
 
@@ -316,7 +331,10 @@
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Похоже, сайта WordPress с таким URL-адресом не существует. Проверьте правильность написания и повторите попытку.";
 
 /* Detail label for yes/no switch. */
-"If disabled will add the note as private." = "Если параметр отключен, примечание будет добавлено как конфиденциальное";
+"If disabled the note will be private" = "If disabled the note will be private";
+
+/* Application's Inactive State */
+"Inactive" = "Inactive";
 
 /* Application's Inactive State */
 "Inactive" = "Inactive";
@@ -477,7 +495,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Данные недоступны";
 
-/* Orders List (Empty State + Filters) */
+/* No comment provided by engineer. */
 "No results for the selected criteria" = "Нет результатов по выбранным критериям";
 
 /* No comment provided by engineer. */
@@ -513,6 +531,9 @@
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Открыть почту";
 
+/* Opens iOS's Device Settings for the app */
+"Open device settings" = "Open device settings";
+
 /* Navigates to open source licenses screen */
 "Open source licenses" = "Open source licenses";
 
@@ -534,8 +555,8 @@
 /* Orders Title */
 "Orders: (filter)" = "Заказы: (фильтр)";
 
-/* My Store > Settings > Primary Store information section */
-"PRIMARY STORE" = "ОСНОВНОЙ МАГАЗИН";
+/* My Store > Settings > Other app section */
+"Other" = "Other";
 
 /* Product section title */
 "PRODUCT" = "ТОВАР";
@@ -585,6 +606,9 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Пожалуйста, откройте ваше приложение email и найдите сообщение от WordPress.com.";
 
+/* My Store > Settings > Primary Store information section */
+"Primary Store" = "Primary Store";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Privacy Policy";
 
@@ -627,7 +651,7 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Зарегистрированный домен";
 
-/* Action: Opens the Store in a browser */
+/* No comment provided by engineer. */
 "Remove Filters" = "Удалить фильтры";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
@@ -635,6 +659,9 @@
 
 /* No comment provided by engineer. */
 "Retry" = "Повторить";
+
+/* Revenue stat label on dashboard. */
+"Revenue" = "Revenue";
 
 /* Review moderation success notice message */
 "Review marked %@" = "Review marked %@";
@@ -950,6 +977,9 @@
 
 /* User role badge */
 "Viewer" = "Обозреватель";
+
+/* Visitors stat label on dashboard - should be plural. */
+"Visitors" = "Visitors";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "НАПИСАТЬ ПРИМЕЧАНИЕ";

@@ -39,7 +39,7 @@
                     </connections>
                 </button>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="y9n-QI-xEB">
-                    <rect key="frame" x="0.0" y="70" width="375" height="597"/>
+                    <rect key="frame" x="0.0" y="71" width="375" height="596"/>
                     <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                 </tableView>
             </subviews>
@@ -48,7 +48,7 @@
                 <constraint firstItem="y9n-QI-xEB" firstAttribute="leading" secondItem="l4O-t2-oPf" secondAttribute="leading" id="CiP-i6-rg3"/>
                 <constraint firstItem="l4O-t2-oPf" firstAttribute="trailing" secondItem="YBC-g3-0LP" secondAttribute="trailing" constant="16" id="Dvf-RD-FUS"/>
                 <constraint firstItem="YBC-g3-0LP" firstAttribute="centerY" secondItem="cOC-iR-MJr" secondAttribute="centerY" constant="-1" id="JLs-22-kWd"/>
-                <constraint firstItem="y9n-QI-xEB" firstAttribute="top" secondItem="cOC-iR-MJr" secondAttribute="bottom" id="QMH-4a-wFC"/>
+                <constraint firstItem="y9n-QI-xEB" firstAttribute="top" secondItem="cOC-iR-MJr" secondAttribute="bottom" constant="1" id="QMH-4a-wFC"/>
                 <constraint firstItem="l4O-t2-oPf" firstAttribute="trailing" secondItem="y9n-QI-xEB" secondAttribute="trailing" id="VSS-q1-BvR"/>
                 <constraint firstItem="cOC-iR-MJr" firstAttribute="top" secondItem="l4O-t2-oPf" secondAttribute="top" constant="-6" id="c7h-ay-W2D"/>
                 <constraint firstItem="YBC-g3-0LP" firstAttribute="leading" secondItem="cOC-iR-MJr" secondAttribute="trailing" constant="3" id="nSK-Od-9bp"/>

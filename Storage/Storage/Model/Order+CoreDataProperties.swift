@@ -48,9 +48,12 @@ extension Order {
     @NSManaged public var status: String
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
+    @NSManaged public var exclusiveForSeach: Bool
     @NSManaged public var coupons: Set<OrderCoupon>?
     @NSManaged public var items: Set<OrderItem>?
     @NSManaged public var notes: Set<OrderNote>?
+    @NSManaged public var searchResults: Set<OrderSearchResults>?
+
 }
 
 // MARK: Generated accessors for coupons
@@ -101,5 +104,22 @@ extension Order {
 
     @objc(removeNotes:)
     @NSManaged public func removeFromNotes(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for lookups
+extension Order {
+
+    @objc(addSearchResultsObject:)
+    @NSManaged public func addToSearchResults(_ value: OrderSearchResults)
+
+    @objc(removeSearchResultsObject:)
+    @NSManaged public func removeFromSearchResults(_ value: OrderSearchResults)
+
+    @objc(addSearchResults:)
+    @NSManaged public func addToSearchResults(_ values: NSSet)
+
+    @objc(removeSearchResults:)
+    @NSManaged public func removeFromSearchResults(_ values: NSSet)
 
 }

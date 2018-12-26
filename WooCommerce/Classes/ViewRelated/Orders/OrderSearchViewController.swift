@@ -28,6 +28,8 @@ class OrderSearchViewController: UIViewController {
         configureTableView()
         configureSearchBar()
         configureActions()
+
+        registerTableViewCells()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -69,12 +71,26 @@ private extension OrderSearchViewController {
         cancelButton.setTitle(title, for: .normal)
         cancelButton.titleLabel?.font = UIFont.body
     }
+
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells() {
+        let cells = [ OrderTableViewCell.self ]
+
+        for cell in cells {
+            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        }
+    }
 }
 
 
 // MARK: - UISearchBarDelegate Conformance
 //
 extension OrderSearchViewController: UISearchBarDelegate {
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+
+    }
 
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         return true

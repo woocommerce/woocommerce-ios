@@ -117,40 +117,6 @@
             </objects>
             <point key="canvasLocation" x="3686" y="303"/>
         </scene>
-        <!--Add A Note View Controller-->
-        <scene sceneID="xbB-4Q-1Uq">
-            <objects>
-                <viewController storyboardIdentifier="AddANoteViewController" id="qPs-Ss-Al5" userLabel="Add A Note View Controller" customClass="AddANoteViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="93f-jo-mSM">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="p7n-VP-qSC">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="qPs-Ss-Al5" id="Mqs-IG-crG"/>
-                                    <outlet property="delegate" destination="qPs-Ss-Al5" id="4fH-Ph-tNQ"/>
-                                </connections>
-                            </tableView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="p7n-VP-qSC" firstAttribute="leading" secondItem="dvk-OD-hZr" secondAttribute="leading" id="8ig-vz-m7L"/>
-                            <constraint firstItem="p7n-VP-qSC" firstAttribute="top" secondItem="dvk-OD-hZr" secondAttribute="top" id="M4R-qh-5Qi"/>
-                            <constraint firstItem="dvk-OD-hZr" firstAttribute="bottom" secondItem="p7n-VP-qSC" secondAttribute="bottom" id="lGc-gJ-fav"/>
-                            <constraint firstItem="dvk-OD-hZr" firstAttribute="trailing" secondItem="p7n-VP-qSC" secondAttribute="trailing" id="mbu-yK-1GE"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="dvk-OD-hZr"/>
-                    </view>
-                    <connections>
-                        <outlet property="tableView" destination="p7n-VP-qSC" id="YfH-Za-w0s"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="u1U-Mh-tIr" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3686" y="1031"/>
-        </scene>
         <!--Orders-->
         <scene sceneID="KDy-5N-CLG">
             <objects>

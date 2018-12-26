@@ -1129,6 +1129,8 @@
 				CE1CCB4A20570B1F000EE3AC /* OrderTableViewCell.swift */,
 				B5A82EE121025C450053ADC8 /* FulfillViewController.swift */,
 				B5A82EE421025E550053ADC8 /* FulfillViewController.xib */,
+				CE583A0321076C0100D73C1C /* NewNoteViewController.swift */,
+				B5FD111121D3CE7700560344 /* NewNoteViewController.xib */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -1197,15 +1199,6 @@
 				CE27257B21924A8C002B22EB /* HelpAndSupportViewController.swift */,
 			);
 			path = Help;
-			sourceTree = "<group>";
-		};
-		CE583A0221076BBE00D73C1C /* AddNote */ = {
-			isa = PBXGroup;
-			children = (
-				CE583A0321076C0100D73C1C /* NewNoteViewController.swift */,
-				B5FD111121D3CE7700560344 /* NewNoteViewController.xib */,
-			);
-			path = AddNote;
 			sourceTree = "<group>";
 		};
 		CE85535B209B5B6A00938BDC /* ViewModels */ = {
@@ -1286,7 +1279,6 @@
 		CEE006022077D0F80079161F /* OrderDetails */ = {
 			isa = PBXGroup;
 			children = (
-				CE583A0221076BBE00D73C1C /* AddNote */,
 				CE17C2E020ACA06800AFBD20 /* BillingDetailsTableViewCell.swift */,
 				CE17C2E120ACA06800AFBD20 /* BillingDetailsTableViewCell.xib */,
 				CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */,

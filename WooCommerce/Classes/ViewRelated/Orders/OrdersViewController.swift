@@ -251,7 +251,11 @@ extension OrdersViewController {
 extension OrdersViewController {
 
     @IBAction func displaySearchOrders() {
-        let searchViewController = OrderSearchViewController()
+        guard let storeID = StoresManager.shared.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let searchViewController = OrderSearchViewController(storeID: storeID)
         let navigationController = UINavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)

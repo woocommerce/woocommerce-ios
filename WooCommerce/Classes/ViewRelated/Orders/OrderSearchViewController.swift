@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Yosemite
 
 
 /// OrderSearchViewController: Displays the "Search Orders" Interface
@@ -18,6 +19,25 @@ class OrderSearchViewController: UIViewController {
     ///
     @IBOutlet var tableView: UITableView!
 
+    /// Search Store ID
+    ///
+    private let storeID: Int
+
+
+
+    /// Designated Initializer
+    ///
+    init(storeID: Int) {
+        self.storeID = storeID
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    /// Unsupported: NSCoder
+    ///
+    required init?(coder aDecoder: NSCoder) {
+        assertionFailure()
+        return nil
+    }
 
 
     // MARK: - View Lifecycle

@@ -1127,8 +1127,6 @@
 				B53B3F36219C75AC00DF1EB6 /* OrderLoaderViewController.swift */,
 				B5F355EE21CD500200A7077A /* OrderSearchViewController.swift */,
 				B5F355F021CD504400A7077A /* OrderSearchViewController.xib */,
-				B5FD110D21D3CB8500560344 /* OrderTableViewCell.xib */,
-				CE1CCB4A20570B1F000EE3AC /* OrderTableViewCell.swift */,
 				B5A82EE121025C450053ADC8 /* FulfillViewController.swift */,
 				B5A82EE421025E550053ADC8 /* FulfillViewController.xib */,
 				CE583A0321076C0100D73C1C /* NewNoteViewController.swift */,
@@ -1281,6 +1279,8 @@
 		CEE006022077D0F80079161F /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				B5FD110D21D3CB8500560344 /* OrderTableViewCell.xib */,
+				CE1CCB4A20570B1F000EE3AC /* OrderTableViewCell.swift */,
 				CE17C2E020ACA06800AFBD20 /* BillingDetailsTableViewCell.swift */,
 				CE17C2E120ACA06800AFBD20 /* BillingDetailsTableViewCell.xib */,
 				CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */,

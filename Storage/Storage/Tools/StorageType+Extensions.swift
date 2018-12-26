@@ -26,6 +26,13 @@ public extension StorageType {
         return firstObject(ofType: Order.self, matching: predicate)
     }
 
+    /// Retrieves the Stored Order Lookup.
+    ///
+    public func loadOrderSearchResults(keyword: String) -> OrderSearchResults? {
+        let predicate = NSPredicate(format: "keyword = %@", keyword)
+        return firstObject(ofType: OrderSearchResults.self, matching: predicate)
+    }
+
     /// Retrieves the Stored Order Item.
     ///
     public func loadOrderItem(itemID: Int) -> OrderItem? {

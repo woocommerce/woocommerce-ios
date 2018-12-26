@@ -1120,9 +1120,11 @@
 		CE1CCB4920570B05000EE3AC /* Orders */ = {
 			isa = PBXGroup;
 			children = (
-				CEE006022077D0F80079161F /* OrderDetails */,
+				CEE006022077D0F80079161F /* Cells */,
 				CEE005F52076C4040079161F /* Orders.storyboard */,
 				B509112E2049E27A007D25DC /* OrdersViewController.swift */,
+				CEE006072077D14C0079161F /* OrderDetailsViewController.swift */,
+				B53B3F36219C75AC00DF1EB6 /* OrderLoaderViewController.swift */,
 				B5F355EE21CD500200A7077A /* OrderSearchViewController.swift */,
 				B5F355F021CD504400A7077A /* OrderSearchViewController.xib */,
 				B5FD110D21D3CB8500560344 /* OrderTableViewCell.xib */,
@@ -1276,7 +1278,7 @@
 			path = ReusableViews;
 			sourceTree = "<group>";
 		};
-		CEE006022077D0F80079161F /* OrderDetails */ = {
+		CEE006022077D0F80079161F /* Cells */ = {
 			isa = PBXGroup;
 			children = (
 				CE17C2E020ACA06800AFBD20 /* BillingDetailsTableViewCell.swift */,
@@ -1285,8 +1287,6 @@
 				CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */,
 				B557DA1320979904005962F4 /* CustomerNoteTableViewCell.swift */,
 				B557DA1420979904005962F4 /* CustomerNoteTableViewCell.xib */,
-				CEE006072077D14C0079161F /* OrderDetailsViewController.swift */,
-				B53B3F36219C75AC00DF1EB6 /* OrderLoaderViewController.swift */,
 				CE1EC8EF20B8A408009762BF /* OrderNoteTableViewCell.swift */,
 				CE1EC8EE20B8A408009762BF /* OrderNoteTableViewCell.xib */,
 				CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */,
@@ -1301,7 +1301,7 @@
 				CEE006032077D1280079161F /* SummaryTableViewCell.swift */,
 				CEE006042077D1280079161F /* SummaryTableViewCell.xib */,
 			);
-			path = OrderDetails;
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		F4B77A83B2A3D94EA331691B /* Pods */ = {

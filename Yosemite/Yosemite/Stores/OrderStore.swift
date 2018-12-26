@@ -28,12 +28,14 @@ public class OrderStore: Store {
         }
 
         switch action {
-        case .synchronizeOrders(let siteID, let status, let pageNumber, let pageSize, let onCompletion):
-            synchronizeOrders(siteID: siteID, status: status, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .resetStoredOrders(let onCompletion):
             resetStoredOrders(onCompletion: onCompletion)
         case .retrieveOrder(let siteID, let orderID, let onCompletion):
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+        case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
+            searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .synchronizeOrders(let siteID, let status, let pageNumber, let pageSize, let onCompletion):
+            synchronizeOrders(siteID: siteID, status: status, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .updateOrder(let siteID, let orderID, let status, let onCompletion):
             updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: onCompletion)
         }

@@ -146,18 +146,41 @@ private extension OrdersViewController {
     }
 
     func configureNavigation() {
-        let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(displayFiltersAlert))
-        rightBarButton.tintColor = .white
-        rightBarButton.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
-        rightBarButton.accessibilityTraits = .button
-        rightBarButton.accessibilityHint = NSLocalizedString("Filters the order list by payment status.", comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list.")
-        navigationItem.rightBarButtonItem = rightBarButton
+        navigationItem.leftBarButtonItem = {
+            let button = UIBarButtonItem(image: Gridicon.iconOfType(.search),
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(displaySearchOrders))
+            button.tintColor = .white
+            button.accessibilityTraits = .button
+            button.accessibilityLabel = NSLocalizedString("Search orders", comment: "Search Orders")
+            button.accessibilityHint = NSLocalizedString("Retrieves a list of orders that contain a given keyword.", comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders.")
+            return button
+        }()
+
+        navigationItem.rightBarButtonItem = {
+            let button = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
+                                                 style: .plain,
+                                                 target: self,
+                                                 action: #selector(displayFiltersAlert))
+            button.tintColor = .white
+            button.accessibilityTraits = .button
+            button.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
+            button.accessibilityHint = NSLocalizedString("Filters the order list by payment status.", comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list.")
+            return button
+        }()
 
         // Don't show the Order title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+    }
+
+    func configureResultsController() {
+        resultsController.startForwardingEvents(to: tableView)
+        try? resultsController.performFetch()
+    }
+
+    func configureSyncingCoordinator() {
+        syncingCoordinator.delegate = self
     }
 
     func configureTabBarItem() {
@@ -169,15 +192,6 @@ private extension OrdersViewController {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
-    }
-
-    func configureResultsController() {
-        resultsController.startForwardingEvents(to: tableView)
-        try? resultsController.performFetch()
-    }
-
-    func configureSyncingCoordinator() {
-        syncingCoordinator.delegate = self
     }
 }
 
@@ -210,6 +224,13 @@ extension OrdersViewController {
 // MARK: - Actions
 //
 extension OrdersViewController {
+
+    @IBAction func displaySearchOrders() {
+        let searchViewController = OrderSearchViewController()
+        let navigationController = UINavigationController(rootViewController: searchViewController)
+
+        present(navigationController, animated: true, completion: nil)
+    }
 
     @IBAction func displayFiltersAlert() {
         WooAnalytics.shared.track(.ordersListFilterTapped)

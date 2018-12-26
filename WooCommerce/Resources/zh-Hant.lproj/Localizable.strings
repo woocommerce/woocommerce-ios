@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-12-11 08:54:02+0000 */
+/* Translation-Revision-Date: 2018-12-21 14:44:46+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -213,6 +213,21 @@
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "還沒有帳號？_註冊_";
 
+/* WordPress.com (unmapped!) error */
+"Dotcom Error: [(code)] (theMessage)" = "Dotcom Error: [(code)] (theMessage)";
+
+/* WordPress.com Missing Token */
+"Dotcom Missing Token" = "Dotcom Missing Token";
+
+/* WordPress.com Request Failure */
+"Dotcom Request Failed" = "Dotcom Request Failed";
+
+/* WordPress.com Error thrown when the response body is empty */
+"Dotcom Response Empty" = "Dotcom Response Empty";
+
+/* WordPress.com Invalid Token */
+"Dotcom Token Invalid" = "Dotcom Token Invalid";
+
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "點選兩下將其關閉";
 
@@ -297,9 +312,6 @@
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google 註冊失敗。";
 
-/* My Store > Settings > Privacy settings section */
-"HELP IMPROVE THE APP" = "協助改善應用程式";
-
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "需要哪方面的協助呢？";
 
@@ -309,6 +321,9 @@
 /* Contact Support Action */
 "Help & Support" = "說明與支援";
 
+/* My Store > Settings > Privacy settings section */
+"Help Improve The App" = "Help Improve The App";
+
 /* Footer text to hide the billing cell */
 "Hide billing" = "隱藏帳單";
 
@@ -316,7 +331,7 @@
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "很抱歉，這個 URL 似乎不是 WordPress 網站。請重新檢查拼法是否正確，然後再試一次。";
 
 /* Detail label for yes/no switch. */
-"If disabled will add the note as private." = "如果停用，會將此備註新增為私人備註。";
+"If disabled the note will be private" = "If disabled the note will be private";
 
 /* Application's Inactive State */
 "Inactive" = "Inactive";
@@ -477,7 +492,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "目前沒有資料";
 
-/* Orders List (Empty State + Filters) */
+/* No comment provided by engineer. */
 "No results for the selected criteria" = "找不到與指定條件相符的結果";
 
 /* No comment provided by engineer. */
@@ -513,6 +528,9 @@
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "開啟郵件";
 
+/* Opens iOS's Device Settings for the app */
+"Open device settings" = "Open device settings";
+
 /* Navigates to open source licenses screen */
 "Open source licenses" = "Open source licenses";
 
@@ -534,8 +552,8 @@
 /* Orders Title */
 "Orders: (filter)" = "訂單：(篩選條件)";
 
-/* My Store > Settings > Primary Store information section */
-"PRIMARY STORE" = "主要商店";
+/* My Store > Settings > Other app section */
+"Other" = "Other";
 
 /* Product section title */
 "PRODUCT" = "產品";
@@ -585,6 +603,9 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "請開啟電子郵件應用程式，找到 WordPress.com 傳送的電子郵件。";
 
+/* My Store > Settings > Primary Store information section */
+"Primary Store" = "Primary Store";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Privacy Policy";
 
@@ -627,7 +648,7 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "已註冊的網域";
 
-/* Action: Opens the Store in a browser */
+/* No comment provided by engineer. */
 "Remove Filters" = "移除篩選條件";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
@@ -635,6 +656,9 @@
 
 /* No comment provided by engineer. */
 "Retry" = "重試";
+
+/* Revenue stat label on dashboard. */
+"Revenue" = "Revenue";
 
 /* Review moderation success notice message */
 "Review marked %@" = "Review marked %@";
@@ -950,6 +974,9 @@
 
 /* User role badge */
 "Viewer" = "讀者";
+
+/* Visitors stat label on dashboard - should be plural. */
+"Visitors" = "訪客";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "撰寫備註";

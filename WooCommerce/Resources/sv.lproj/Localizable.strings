@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-12-11 08:54:02+0000 */
+/* Translation-Revision-Date: 2018-12-21 14:44:46+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -213,6 +213,21 @@
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Har du inget konto? _Registrera dig_";
 
+/* WordPress.com (unmapped!) error */
+"Dotcom Error: [(code)] (theMessage)" = "Dotcom Error: [(code)] (theMessage)";
+
+/* WordPress.com Missing Token */
+"Dotcom Missing Token" = "Dotcom Missing Token";
+
+/* WordPress.com Request Failure */
+"Dotcom Request Failed" = "Dotcom Request Failed";
+
+/* WordPress.com Error thrown when the response body is empty */
+"Dotcom Response Empty" = "Dotcom Response Empty";
+
+/* WordPress.com Invalid Token */
+"Dotcom Token Invalid" = "Dotcom Token Invalid";
+
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "Dubbelknacka för att stänga";
 
@@ -297,9 +312,6 @@
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Registrering via Google misslyckades.";
 
-/* My Store > Settings > Privacy settings section */
-"HELP IMPROVE THE APP" = "HJÄLP TILL ATT FÖRBÄTTRA APPEN";
-
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "HUR KAN VI HJÄLPA TILL?";
 
@@ -309,6 +321,9 @@
 /* Contact Support Action */
 "Help & Support" = "Hjälp och support";
 
+/* My Store > Settings > Privacy settings section */
+"Help Improve The App" = "Help Improve The App";
+
 /* Footer text to hide the billing cell */
 "Hide billing" = "Dölj fakturering";
 
@@ -316,7 +331,7 @@
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hmm. Det verkar inte finnas någon WordPress-webbplats på denna URL. Kolla stavningen och försök igen.";
 
 /* Detail label for yes/no switch. */
-"If disabled will add the note as private." = "Om detta inaktiveras läggs noteringen till som privat.";
+"If disabled the note will be private" = "If disabled the note will be private";
 
 /* Application's Inactive State */
 "Inactive" = "Inactive";
@@ -477,7 +492,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Inga data tillgängliga";
 
-/* Orders List (Empty State + Filters) */
+/* No comment provided by engineer. */
 "No results for the selected criteria" = "Inga resultat för de valda kriterierna";
 
 /* No comment provided by engineer. */
@@ -513,6 +528,9 @@
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Öppna Mail";
 
+/* Opens iOS's Device Settings for the app */
+"Open device settings" = "Open device settings";
+
 /* Navigates to open source licenses screen */
 "Open source licenses" = "Open source licenses";
 
@@ -534,8 +552,8 @@
 /* Orders Title */
 "Orders: (filter)" = "Ordrar: (filtrera)";
 
-/* My Store > Settings > Primary Store information section */
-"PRIMARY STORE" = "PRIMÄR BUTIK";
+/* My Store > Settings > Other app section */
+"Other" = "Other";
 
 /* Product section title */
 "PRODUCT" = "PRODUKT";
@@ -585,6 +603,9 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Öppna ditt e-postprogram och hitta ett brev från WordPress.com.";
 
+/* My Store > Settings > Primary Store information section */
+"Primary Store" = "Primary Store";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Privacy Policy";
 
@@ -627,7 +648,7 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Registrerad domän";
 
-/* Action: Opens the Store in a browser */
+/* No comment provided by engineer. */
 "Remove Filters" = "Ta bort filter";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
@@ -635,6 +656,9 @@
 
 /* No comment provided by engineer. */
 "Retry" = "Försök igen";
+
+/* Revenue stat label on dashboard. */
+"Revenue" = "Revenue";
 
 /* Review moderation success notice message */
 "Review marked %@" = "Review marked %@";
@@ -950,6 +974,9 @@
 
 /* User role badge */
 "Viewer" = "Läsare";
+
+/* Visitors stat label on dashboard - should be plural. */
+"Visitors" = "Besökare";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "SKRIV NOTERING";

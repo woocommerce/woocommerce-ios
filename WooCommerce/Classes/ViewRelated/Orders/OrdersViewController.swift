@@ -108,6 +108,7 @@ class OrdersViewController: UIViewController {
 
         refreshTitle()
         refreshResultsPredicate()
+        registerTableViewCells()
 
         configureSyncingCoordinator()
         configureNavigation()
@@ -130,6 +131,8 @@ class OrdersViewController: UIViewController {
 //
 private extension OrdersViewController {
 
+    /// Setup: Title
+    ///
     func refreshTitle() {
         guard let filter = statusFilter?.rawValue.capitalized else {
             navigationItem.title = NSLocalizedString("Orders", comment: "Orders Title")
@@ -139,12 +142,16 @@ private extension OrdersViewController {
         navigationItem.title = NSLocalizedString("Orders: \(filter)", comment: "Orders Title")
     }
 
+    /// Setup: Filtering
+    ///
     func refreshResultsPredicate() {
         resultsController.predicate = statusFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }
 
+    /// Setup: Navigation Item
+    ///
     func configureNavigation() {
         navigationItem.leftBarButtonItem = {
             let button = UIBarButtonItem(image: Gridicon.iconOfType(.search),
@@ -174,24 +181,42 @@ private extension OrdersViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
+    /// Setup: Results Controller
+    ///
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
         try? resultsController.performFetch()
     }
 
+    /// Setup: Sync'ing Coordinator
+    ///
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
     }
 
+    /// Setup: TabBar Item
+    ///
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Orders", comment: "Orders Title")
     }
 
+    /// Setup: TableView
+    ///
     func configureTableView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
+    }
+
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells() {
+        let cells = [ OrderTableViewCell.self ]
+
+        for cell in cells {
+            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        }
     }
 }
 
@@ -376,7 +401,7 @@ private extension OrdersViewController {
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderOrders() {
-        let options = GhostOptions(reuseIdentifier: OrderListCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
+        let options = GhostOptions(reuseIdentifier: OrderTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
 
         resultsController.stopForwardingEvents()
@@ -475,7 +500,7 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as? OrderListCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderTableViewCell.reuseIdentifier, for: indexPath) as? OrderTableViewCell else {
             fatalError()
         }
 

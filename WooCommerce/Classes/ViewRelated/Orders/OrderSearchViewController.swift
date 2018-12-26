@@ -89,7 +89,7 @@ private extension OrderSearchViewController {
 extension OrderSearchViewController: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-
+        // TODO: Wire Me!
     }
 
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {

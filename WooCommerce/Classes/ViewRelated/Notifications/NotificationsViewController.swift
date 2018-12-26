@@ -291,6 +291,7 @@ private extension NotificationsViewController {
 
         // Filter right away the cached orders
         refreshResultsPredicate()
+        transitionToResultsUpdatedState()
     }
 }
 
@@ -604,15 +605,41 @@ private extension NotificationsViewController {
         resultsController.startForwardingEvents(to: self.tableView)
     }
 
+
+    /// Displays the Empty State (with filters applied!) Overlay.
+    ///
+    func displayEmptyFilteredOverlay() {
+        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
+        overlayView.messageImage = .waitingForCustomersImage
+        overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Notifications List (Empty State + Filters)")
+        overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: removes the current filters from the notifications list")
+        overlayView.onAction = { [weak self] in
+            self?.currentTypeFilter = .all
+        }
+
+        overlayView.attach(to: view)
+    }
+
     /// Displays the Empty State Overlay.
     ///
-    func displayEmptyNotesOverlay() {
+    func displayEmptyUnfilteredOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("No Notifications Yet!", comment: "Empty Notifications List Message")
         overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
         overlayView.onAction = { [weak self] in
-            self?.displayDefaultSite()
+            guard let `self` = self else {
+                return
+            }
+            guard let site = StoresManager.shared.sessionManager.defaultSite else {
+                return
+            }
+            guard let url = URL(string: site.url) else {
+                return
+            }
+
+            WooAnalytics.shared.track(.notificationShareStoreButtonTapped)
+            SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
         }
 
         overlayView.attach(to: view)
@@ -624,18 +651,6 @@ private extension NotificationsViewController {
         for subview in view.subviews where subview is OverlayMessageView {
             subview.removeFromSuperview()
         }
-    }
-
-    /// Displays the Default Site in a WebView.
-    ///
-    func displayDefaultSite() {
-        guard let urlAsString = StoresManager.shared.sessionManager.defaultSite?.url, let siteURL = URL(string: urlAsString) else {
-            return
-        }
-
-        let safariViewController = SFSafariViewController(url: siteURL)
-        safariViewController.modalPresentationStyle = .pageSheet
-        present(safariViewController, animated: true, completion: nil)
     }
 }
 
@@ -684,9 +699,12 @@ private extension NotificationsViewController {
     ///
     func didEnter(state: State) {
         switch state {
-        case .empty:
-            displayEmptyNotesOverlay()
+        case .emptyUnfiltered:
+            displayEmptyUnfilteredOverlay()
             updateNavBarButtonsState(enabled: false)
+        case .emptyFiltered:
+            displayEmptyFilteredOverlay()
+            updateNavBarButtonsState(enabled: true)
         case .results:
             updateNavBarButtonsState(enabled: true)
             break
@@ -700,7 +718,9 @@ private extension NotificationsViewController {
     ///
     func didLeave(state: State) {
         switch state {
-        case .empty:
+        case .emptyFiltered:
+            removeAllOverlays()
+        case .emptyUnfiltered:
             removeAllOverlays()
         case .results:
             break
@@ -715,10 +735,21 @@ private extension NotificationsViewController {
         state = isEmpty ? .syncing : .results
     }
 
-    /// Should be called after Sync'ing wraps up: Transitions to .empty / .results
+    /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
+    /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
     ///
     func transitionToResultsUpdatedState() {
-        state = isEmpty ? .empty : .results
+        if isEmpty == false {
+            state = .results
+            return
+        }
+
+        if currentTypeFilter != .all {
+            state = .emptyFiltered
+            return
+        }
+
+        state = .emptyUnfiltered
     }
 }
 
@@ -771,7 +802,8 @@ private extension NotificationsViewController {
     }
 
     enum State {
-        case empty
+        case emptyUnfiltered
+        case emptyFiltered
         case results
         case syncing
     }

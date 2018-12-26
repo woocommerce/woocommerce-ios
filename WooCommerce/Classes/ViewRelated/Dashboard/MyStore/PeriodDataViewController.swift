@@ -214,8 +214,11 @@ private extension PeriodDataViewController {
         borderView.backgroundColor = StyleManager.wooGreyBorder
 
         // Titles
+        visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
         visitorsTitle.applyFootnoteStyle()
+        ordersTitle.text = NSLocalizedString("Orders", comment: "Orders stat label on dashboard - should be plural.")
         ordersTitle.applyFootnoteStyle()
+        revenueTitle.text = NSLocalizedString("Revenue", comment: "Revenue stat label on dashboard.")
         revenueTitle.applyFootnoteStyle()
 
         // Data

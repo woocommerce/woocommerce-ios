@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 9 (Release 0.15)
+- @jleandroperez 2018-12-26
+    - New `Order.exclusiveForSeach` property
+    - New `OrderSearchResults` entity
+
 ## Model 8 (Release 0.13)
 - @jleandroperez 2018-12-14
     - Removed  `Site.isJetpackInstalled` attribute.

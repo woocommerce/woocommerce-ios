@@ -42,6 +42,10 @@ class OrderStoreTests: XCTestCase {
     ///
     private let defaultPageSize = 75
 
+    /// Testing Search Keyword
+    ///
+    private let defaultSearchKeyword = "gooooooooogol"
+
 
 
     // MARK: - Overridden Methods
@@ -53,9 +57,9 @@ class OrderStoreTests: XCTestCase {
         network = MockupNetwork()
     }
 
-    // MARK: - OrderAction.retrieveOrders
+    // MARK: - OrderAction.synchronizeOrders
 
-    /// Verifies that OrderAction.retrieveOrders returns the expected Orders.
+    /// Verifies that OrderAction.synchronizeOrders returns the expected Orders.
     ///
     func testRetrieveOrdersReturnsExpectedFields() {
         let expectation = self.expectation(description: "Retrieve order list")
@@ -73,7 +77,7 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `OrderAction.retrieveOrders` effectively persists any retrieved orders.
+    /// Verifies that `OrderAction.synchronizeOrders` effectively persists any retrieved orders.
     ///
     func testRetrieveOrdersEffectivelyPersistsRetrievedOrders() {
         let expectation = self.expectation(description: "Persist order list")
@@ -93,7 +97,7 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `OrderAction.retrieveOrders` effectively persists all of the order fields correctly across all of the related Order objects (items, coupons, etc).
+    /// Verifies that `OrderAction.synchronizeOrders` effectively persists all of the order fields correctly across all of the related Order objects (items, coupons, etc).
     ///
     func testRetrieveOrdersEffectivelyPersistsOrderFieldsAndRelatedObjects() {
         let expectation = self.expectation(description: "Persist order list")
@@ -120,7 +124,7 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `OrderAction.retrieveOrders` can properly process the document `broken-orders-mark-2`.
+    /// Verifies that `OrderAction.synchronizeOrders` can properly process the document `broken-orders-mark-2`.
     ///
     /// Ref. Issue: https://github.com/woocommerce/woocommerce-ios/issues/221
     ///
@@ -175,7 +179,86 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    
+
+    // MARK: - OrderAction.searchOrders
+
+    /// Verifies that `OrderAction.searchOrder` effectively persists the retrieved orders.
+    ///
+    func testSearchOrdersEffectivelyPersistsRetrievedSearchOrders() {
+        let expectation = self.expectation(description: "Search Persists Orders")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectedOrder = sampleOrder()
+
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+
+        let action = OrderAction.searchOrders(siteID: sampleSiteID, keyword: defaultSearchKeyword, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+            let readOnlyOrder = self.viewStorage.loadOrder(orderID: expectedOrder.orderID)?.toReadOnly()
+            XCTAssertEqual(readOnlyOrder, expectedOrder)
+            XCTAssertNil(error)
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `OrderAction.searchOrders` effectively upserts the `OrderSearchResults` entity.
+    ///
+    func testSearchOrdersEffectivelyPersistsSearchResultsEntity() {
+        let expectation = self.expectation(description: "Search Persists Results")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+
+        let action = OrderAction.searchOrders(siteID: sampleSiteID, keyword: defaultSearchKeyword, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+            let searchResults = self.viewStorage.loadOrderSearchResults(keyword: self.defaultSearchKeyword)
+
+            XCTAssertEqual(searchResults?.keyword, self.defaultSearchKeyword)
+            XCTAssertEqual(searchResults?.orders?.count, self.viewStorage.countObjects(ofType: Storage.Order.self))
+            XCTAssertNil(error)
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `OrderAction.searchOrders` does not result in duplicated entries in the OrderSearchResults entity.
+    ///
+    func testSearchOrdersDoesNotProduceDuplicatedReferences() {
+        let expectation = self.expectation(description: "Search Doesnt Duplicate References")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let context = self.viewStorage
+
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+
+        let nestedAction = OrderAction.searchOrders(siteID: sampleSiteID, keyword: defaultSearchKeyword, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+            let orders = context.allObjects(ofType: Storage.Order.self, matching: nil, sortedBy: nil)
+            for order in orders {
+                XCTAssertEqual(order.searchResults?.count, 1)
+                XCTAssertEqual(order.searchResults?.first?.keyword, self.defaultSearchKeyword)
+            }
+
+            XCTAssertEqual(context.firstObject(ofType: OrderSearchResults.self)?.orders?.count, 3)
+            XCTAssertEqual(context.countObjects(ofType: OrderSearchResults.self), 1)
+            XCTAssertNil(error)
+
+            expectation.fulfill()
+        }
+
+        let firstAction = OrderAction.searchOrders(siteID: sampleSiteID, keyword: defaultSearchKeyword, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+            orderStore.onAction(nestedAction)
+        }
+
+        orderStore.onAction(firstAction)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
     // MARK: - OrderAction.retrieveOrder
 
     /// Verifies that OrderAction.retrieveOrder returns the expected Order.
@@ -225,6 +308,9 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+
+    // MARK: - OrderStore.upsertStoredOrder
+
     /// Verifies that `upsertStoredOrder` does not produce duplicate entries.
     ///
     func testUpdateStoredOrderEffectivelyUpdatesPreexistantOrder() {
@@ -266,6 +352,9 @@ class OrderStoreTests: XCTestCase {
         let storageOrder = viewStorage.loadOrder(orderID: remoteOrder.orderID)
         XCTAssertEqual(storageOrder?.toReadOnly(), remoteOrder)
     }
+
+
+    // MARK: - OrderAction.retrieveOrder
 
     /// Verifies that OrderAction.retrieveOrder returns an error whenever there is an error response from the backend.
     ///
@@ -325,6 +414,9 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+
+    // MARK: - OrderAction.updateOrder
+
     /// Verifies that an Order's .status field gets effectively updated during `updateOrder`'s response processing.
     ///
     func testUpdateOrderEffectivelyChangesAffectedOrderStatusField() {
@@ -373,6 +465,9 @@ class OrderStoreTests: XCTestCase {
         orderStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+
+    // MARK: - OrderAction.resetStoredOrders
 
     /// Verifies that `resetStoredOrders` nukes the Orders Cache.
     ///

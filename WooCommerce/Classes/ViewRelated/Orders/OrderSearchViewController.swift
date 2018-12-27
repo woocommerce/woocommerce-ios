@@ -83,7 +83,7 @@ class OrderSearchViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.setNavigationBarHidden(true, animated: true)
         searchBar.becomeFirstResponder()
     }
 
@@ -281,6 +281,7 @@ extension OrderSearchViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        presentOrderDetails(for: detailsViewModel(at: indexPath))
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -308,6 +309,17 @@ extension OrderSearchViewController {
     @IBAction func dismissWasPressed() {
         view.endEditing(true)
         dismiss(animated: true, completion: nil)
+    }
+
+    private func presentOrderDetails(for order: OrderDetailsViewModel) {
+        let identifier = OrderDetailsViewController.classNameWithoutNamespaces
+        guard let detailsViewController = UIStoryboard.orders.instantiateViewController(withIdentifier: identifier) as? OrderDetailsViewController else {
+            fatalError()
+        }
+
+        detailsViewController.viewModel = order
+
+        navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }
 

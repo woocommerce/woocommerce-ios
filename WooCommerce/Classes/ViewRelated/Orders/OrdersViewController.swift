@@ -263,7 +263,7 @@ extension OrdersViewController {
         }
 
         let searchViewController = OrderSearchViewController(storeID: storeID)
-        let navigationController = UINavigationController(rootViewController: searchViewController)
+        let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)
     }

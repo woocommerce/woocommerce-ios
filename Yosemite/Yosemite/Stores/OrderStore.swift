@@ -194,7 +194,11 @@ extension OrderStore {
         searchResults.keyword = keyword
 
         for readOnlyOrder in readOnlyOrders {
-            storage.loadOrder(orderID: readOnlyOrder.orderID)?.addToSearchResults(searchResults)
+            guard let storedOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) else {
+                continue
+            }
+
+            storedOrder.addToSearchResults(searchResults)
         }
     }
 }

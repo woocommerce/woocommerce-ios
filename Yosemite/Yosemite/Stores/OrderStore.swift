@@ -169,11 +169,29 @@ extension OrderStore {
 }
 
 
-// MARK: - Storage: Search Results
+// MARK: - Unit Testing Helpers
 //
 extension OrderStore {
 
-    /// Upserts the Orders, and associates them to the Search Results Entity (in Background)
+    /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Order in a given Storage Layer.
+    ///
+    func upsertStoredOrder(readOnlyOrder: Networking.Order, insertingSearchResults: Bool = false, in storage: StorageType) {
+        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], insertingSearchResults: insertingSearchResults, in: storage)
+    }
+
+    /// Unit Testing Helper: Updates or Inserts a given Search Results page
+    ///
+    func upsertStoredResults(keyword: String, readOnlyOrder: Networking.Order, in storage: StorageType) {
+        upsertStoredResults(keyword: keyword, readOnlyOrders: [readOnlyOrder], in: storage)
+    }
+}
+
+
+// MARK: - Storage: Search Results
+//
+private extension OrderStore {
+
+    /// Upserts the Orders, and associates them to the SearchResults Entity (in Background)
     ///
     private func upsertSearchResultsInBackground(keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
@@ -206,13 +224,7 @@ extension OrderStore {
 
 // MARK: - Storage: Orders
 //
-extension OrderStore {
-
-    /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Order in a given Storage Layer.
-    ///
-    func upsertStoredOrder(readOnlyOrder: Networking.Order, insertingSearchResults: Bool = false, in storage: StorageType) {
-        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], insertingSearchResults: insertingSearchResults, in: storage)
-    }
+private extension OrderStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*. onCompletion will be called
     /// on the main thread!

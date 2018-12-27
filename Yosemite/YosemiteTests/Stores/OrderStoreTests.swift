@@ -402,6 +402,27 @@ class OrderStoreTests: XCTestCase {
     }
 
 
+    // MARK: - OrderAction.upsertStoredResults
+
+    /// Verifies that `upsertStoredResults` inserts new OrderSearchResults entities, and links them to a given Order.
+    ///
+    func testUpsertStoredSearchResultsEffectivelyInsertsNewSearchResultsEntitiesAndLinkThemToOrders() {
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteOrder = sampleOrder()
+
+        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: true, in: viewStorage)
+        orderStore.upsertStoredResults(keyword: defaultSearchKeyword, readOnlyOrder: remoteOrder, in: viewStorage)
+
+        let storageSearchResults = viewStorage.loadOrderSearchResults(keyword: defaultSearchKeyword)
+        let storageOrder = viewStorage.loadOrder(orderID: remoteOrder.orderID)
+
+        XCTAssertEqual(storageSearchResults?.keyword, defaultSearchKeyword)
+        XCTAssertEqual(storageSearchResults?.orders?.count, 1)
+        XCTAssertEqual(storageSearchResults?.orders?.first?.orderID, Int64(remoteOrder.orderID))
+        XCTAssertEqual(storageOrder?.searchResults?.first?.keyword, defaultSearchKeyword)
+    }
+
+
     // MARK: - OrderAction.retrieveOrder
 
     /// Verifies that OrderAction.retrieveOrder returns an error whenever there is an error response from the backend.

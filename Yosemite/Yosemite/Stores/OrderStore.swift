@@ -178,7 +178,7 @@ extension OrderStore {
     private func upsertSearchResultsInBackground(keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
-            self.upsertStoredOrders(readOnlyOrders: readOnlyOrders, insertedAreSearchResults: true, in: derivedStorage)
+            self.upsertStoredOrders(readOnlyOrders: readOnlyOrders, insertingSearchResults: true, in: derivedStorage)
             self.upsertStoredResults(keyword: keyword, readOnlyOrders: readOnlyOrders, in: derivedStorage)
         }
 
@@ -210,8 +210,8 @@ extension OrderStore {
 
     /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Order in a given Storage Layer.
     ///
-    func upsertStoredOrder(readOnlyOrder: Networking.Order, in storage: StorageType) {
-        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], in: storage)
+    func upsertStoredOrder(readOnlyOrder: Networking.Order, insertingSearchResults: Bool = false, in storage: StorageType) {
+        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], insertingSearchResults: insertingSearchResults, in: storage)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*. onCompletion will be called
@@ -232,11 +232,11 @@ extension OrderStore {
     ///
     /// - Parameters:
     ///     - readOnlyOrders: Remote Orders to be persisted.
-    ///     - insertedAreSearchResults: Indicates if the "Newly Inserted Entities" should be marked as "Search Results Only"
+    ///     - insertingSearchResults: Indicates if the "Newly Inserted Entities" should be marked as "Search Results Only"
     ///     - storage: Where we should save all the things!
     ///
     private func upsertStoredOrders(readOnlyOrders: [Networking.Order],
-                                    insertedAreSearchResults: Bool = false,
+                                    insertingSearchResults: Bool = false,
                                     in storage: StorageType) {
 
         for readOnlyOrder in readOnlyOrders {
@@ -244,7 +244,7 @@ extension OrderStore {
             storageOrder.update(with: readOnlyOrder)
 
             // Are we caching Search Results? Did this order exist before?
-            storageOrder.exclusiveForSearch = insertedAreSearchResults && storageOrder.isInserted
+            storageOrder.exclusiveForSearch = insertingSearchResults && (storageOrder.isInserted || storageOrder.exclusiveForSearch)
 
             handleOrderItems(readOnlyOrder, storageOrder, storage)
             handleOrderCoupons(readOnlyOrder, storageOrder, storage)

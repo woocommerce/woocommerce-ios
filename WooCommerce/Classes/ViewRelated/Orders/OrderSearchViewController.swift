@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
+import WordPressUI
 
 
 /// OrderSearchViewController: Displays the "Search Orders" Interface
@@ -10,6 +11,10 @@ class OrderSearchViewController: UIViewController {
     /// Dismiss Action
     ///
     @IBOutlet private var cancelButton: UIButton!
+
+    /// Empty State Legend
+    ///
+    @IBOutlet private var emptyStateLabel: UILabel!
 
     /// Main SearchBar
     ///
@@ -40,6 +45,26 @@ class OrderSearchViewController: UIViewController {
     ///
     private let storeID: Int
 
+    /// Indicates if there are no results onscreen.
+    ///
+    private var isEmpty: Bool {
+        return resultsController.isEmpty
+    }
+
+    /// Returns the active Keyword
+    ///
+    private var keyword: String {
+        return searchBar.text ?? String()
+    }
+
+    /// UI Active State
+    ///
+    private var state: State = .results {
+        didSet {
+            didLeave(state: oldValue)
+            didEnter(state: state)
+        }
+    }
 
 
     /// Deinitializer
@@ -72,6 +97,7 @@ class OrderSearchViewController: UIViewController {
 
         configureSyncingCoordinator()
         configureActions()
+        configureEmptyStateLabel()
         configureMainView()
         configureSearchBar()
         configureTableView()
@@ -127,6 +153,14 @@ private extension OrderSearchViewController {
         let title = NSLocalizedString("Cancel", comment: "")
         cancelButton.setTitle(title, for: .normal)
         cancelButton.titleLabel?.font = UIFont.body
+    }
+
+    /// Setup: No Results
+    ///
+    func configureEmptyStateLabel() {
+        emptyStateLabel.text = NSLocalizedString("No Orders found", comment: "Search Orders (Empty State)")
+        emptyStateLabel.textColor = StyleManager.wooGreyMid
+        emptyStateLabel.font = .headline
     }
 
     /// Setup: Results Controller
@@ -212,7 +246,6 @@ extension OrderSearchViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Orders for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
-        let keyword = searchBar.text ?? String()
         synchronizeOrders(keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
     }
 }
@@ -236,14 +269,20 @@ private extension OrderSearchViewController {
     /// Synchronizes the Orders matching a given Keyword
     ///
     func synchronizeOrders(keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
-        let action = OrderAction.searchOrders(siteID: storeID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize) { error in
+        let action = OrderAction.searchOrders(siteID: storeID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
             if let error = error {
                 DDLogError("☠️ Order Search Failure! \(error)")
+            }
+
+            // Disregard OPs that don't really match the latest keyword
+            if keyword == self?.keyword {
+                self?.transitionToResultsUpdatedState()
             }
 
             onCompletion?(error == nil)
         }
 
+        transitionToSyncingState()
         StoresManager.shared.dispatch(action)
         DDLogInfo("🔍 Searching for Orders: [\(keyword)]...")
     }
@@ -324,9 +363,108 @@ extension OrderSearchViewController {
 }
 
 
-// MARK: - Private Types
+// MARK: - Spinner Helpers
+//
+extension OrderSearchViewController {
+
+    /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
+    ///
+    private func ensureFooterSpinnerIsStarted() {
+        guard mustStartFooterSpinner() else {
+            return
+        }
+
+        footerSpinnerView.startAnimating()
+    }
+
+    /// Whenever we're sync'ing an Orders Page that's beyond what we're currently displaying, this method will return *true*.
+    ///
+    private func mustStartFooterSpinner() -> Bool {
+        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
+            return false
+        }
+
+        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > resultsController.numberOfObjects
+    }
+
+    /// Stops animating the Footer Spinner.
+    ///
+    private func ensureFooterSpinnerIsStopped() {
+        footerSpinnerView.stopAnimating()
+    }
+}
+
+
+// MARK: - Placeholders
+//
+private extension OrderSearchViewController {
+
+    /// Displays the Empty State Legend.
+    ///
+    func displayEmptyState() {
+        emptyStateLabel.isHidden = false
+    }
+
+    /// Removes the Empty State Legend.
+    ///
+    func removeEmptyState() {
+        emptyStateLabel.isHidden = true
+    }
+}
+
+
+// MARK: - FSM
+//
+private extension OrderSearchViewController {
+
+    func didEnter(state: State) {
+        switch state {
+        case .empty:
+            displayEmptyState()
+        case .syncing:
+            ensureFooterSpinnerIsStarted()
+        case .results:
+            break
+        }
+    }
+
+    func didLeave(state: State) {
+        switch state {
+        case .empty:
+            removeEmptyState()
+        case .syncing:
+            ensureFooterSpinnerIsStopped()
+        case .results:
+            break
+        }
+    }
+
+    /// Should be called before Sync'ing. Transitions to either `results` state.
+    ///
+    func transitionToSyncingState() {
+        state = .syncing
+    }
+
+    /// Should be called whenever new results have been retrieved. Transitions to `.results` / `.empty` accordingly.
+    ///
+    func transitionToResultsUpdatedState() {
+        state = isEmpty ? .empty : .results
+    }
+}
+
+
+// MARK: - Private Settings
 //
 private enum Settings {
     static let estimatedHeaderHeight = CGFloat(43)
     static let estimatedRowHeight = CGFloat(86)
+}
+
+
+// MARK: - FSM States
+//
+private enum State {
+    case syncing
+    case results
+    case empty
 }

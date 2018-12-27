@@ -145,7 +145,14 @@ private extension OrdersViewController {
     /// Setup: Filtering
     ///
     func refreshResultsPredicate() {
-        resultsController.predicate = statusFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
+        resultsController.predicate = {
+            let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
+            let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
+            let predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
+
+            return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        }()
+
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }

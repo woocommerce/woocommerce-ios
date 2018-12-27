@@ -4,7 +4,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 
 ## Model 9 (Release 0.15)
 - @jleandroperez 2018-12-26
-    - New `Order.exclusiveForSeach` property
+    - New `Order.exclusiveForSearch` property
     - New `OrderSearchResults` entity
 
 ## Model 8 (Release 0.13)

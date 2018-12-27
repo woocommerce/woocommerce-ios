@@ -48,7 +48,7 @@ extension Order {
     @NSManaged public var status: String
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
-    @NSManaged public var exclusiveForSeach: Bool
+    @NSManaged public var exclusiveForSearch: Bool
     @NSManaged public var coupons: Set<OrderCoupon>?
     @NSManaged public var items: Set<OrderItem>?
     @NSManaged public var notes: Set<OrderNote>?

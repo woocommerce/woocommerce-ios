@@ -353,6 +353,54 @@ class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.toReadOnly(), remoteOrder)
     }
 
+    /// Verifies that `upsertStoredOrder` doesnt mark a Pre Existant order as "Search Results" (since it's been already
+    /// retrieved for "Regular Scroll" display).
+    ///
+    func testUpsertStoredOrderDoesntMarkPreExistantOrdersAsSearchResults() {
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteOrder = sampleOrder()
+
+        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: false, in: viewStorage)
+        viewStorage.saveIfNeeded()
+
+        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: true, in: viewStorage)
+
+        let storageOrder = viewStorage.loadOrder(orderID: remoteOrder.orderID)
+        XCTAssert(storageOrder?.exclusiveForSearch == false)
+    }
+
+    /// Verifies that `upsertStoredOrder` keeps the "Search Results" flag whenever the same order is upserted more than once.
+    ///
+    func testUpsertStoredOrderPreservesPreExistantSearchResults() {
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteOrder = sampleOrder()
+
+        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: true, in: viewStorage)
+        viewStorage.saveIfNeeded()
+
+        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: true, in: viewStorage)
+        viewStorage.saveIfNeeded()
+
+        let storageOrder = viewStorage.loadOrder(orderID: remoteOrder.orderID)
+        XCTAssert(storageOrder?.exclusiveForSearch == true)
+    }
+
+    /// Verifies that `upsertStoredOrder` unmarks "Search Results Cached Orders" whenever we're storing "regular scroll" Orders.
+    ///
+    func testUpsertStoredOrderUnmarksSearchResultsWhenUpsertingRegularPagingResults() {
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteOrder = sampleOrder()
+
+        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: true, in: viewStorage)
+        viewStorage.saveIfNeeded()
+
+        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: false, in: viewStorage)
+        viewStorage.saveIfNeeded()
+
+        let storageOrder = viewStorage.loadOrder(orderID: remoteOrder.orderID)
+        XCTAssert(storageOrder?.exclusiveForSearch == false)
+    }
+
 
     // MARK: - OrderAction.retrieveOrder
 

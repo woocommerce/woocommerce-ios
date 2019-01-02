@@ -28,12 +28,14 @@ public class OrderStore: Store {
         }
 
         switch action {
-        case .synchronizeOrders(let siteID, let status, let pageNumber, let pageSize, let onCompletion):
-            synchronizeOrders(siteID: siteID, status: status, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .resetStoredOrders(let onCompletion):
             resetStoredOrders(onCompletion: onCompletion)
         case .retrieveOrder(let siteID, let orderID, let onCompletion):
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+        case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
+            searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .synchronizeOrders(let siteID, let status, let pageNumber, let pageSize, let onCompletion):
+            synchronizeOrders(siteID: siteID, status: status, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .updateOrder(let siteID, let orderID, let status, let onCompletion):
             updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: onCompletion)
         }
@@ -53,6 +55,23 @@ private extension OrderStore {
         storage.saveIfNeeded()
 
         onCompletion()
+    }
+
+    /// Searches all of the orders that contain a given Keyword.
+    ///
+    func searchOrders(siteID: Int, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+        let remote = OrdersRemote(network: network)
+
+        remote.searchOrders(for: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (orders, error) in
+            guard let orders = orders else {
+                onCompletion(error)
+                return
+            }
+
+            self?.upsertSearchResultsInBackground(keyword: keyword, readOnlyOrders: orders) {
+                onCompletion(nil)
+            }
+        }
     }
 
     /// Retrieves the orders associated with a given Site ID (if any!).
@@ -114,7 +133,7 @@ private extension OrderStore {
 }
 
 
-// MARK: - Persistence
+// MARK: - Storage
 //
 extension OrderStore {
 
@@ -147,36 +166,98 @@ extension OrderStore {
 
         return oldStatus
     }
+}
 
-    /// Unit Testing Helper:
-    /// Updates or Inserts the specified ReadOnly Order in a given Storage Layer.
+
+// MARK: - Unit Testing Helpers
+//
+extension OrderStore {
+
+    /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Order in a given Storage Layer.
     ///
-    func upsertStoredOrder(readOnlyOrder: Networking.Order, in storage: StorageType) {
-        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], in: storage)
+    func upsertStoredOrder(readOnlyOrder: Networking.Order, insertingSearchResults: Bool = false, in storage: StorageType) {
+        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], insertingSearchResults: insertingSearchResults, in: storage)
     }
+
+    /// Unit Testing Helper: Updates or Inserts a given Search Results page
+    ///
+    func upsertStoredResults(keyword: String, readOnlyOrder: Networking.Order, in storage: StorageType) {
+        upsertStoredResults(keyword: keyword, readOnlyOrders: [readOnlyOrder], in: storage)
+    }
+}
+
+
+// MARK: - Storage: Search Results
+//
+private extension OrderStore {
+
+    /// Upserts the Orders, and associates them to the SearchResults Entity (in Background)
+    ///
+    private func upsertSearchResultsInBackground(keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.upsertStoredOrders(readOnlyOrders: readOnlyOrders, insertingSearchResults: true, in: derivedStorage)
+            self.upsertStoredResults(keyword: keyword, readOnlyOrders: readOnlyOrders, in: derivedStorage)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Upserts the Orders, and associates them to the Search Results Entity (in the specified Storage)
+    ///
+    private func upsertStoredResults(keyword: String, readOnlyOrders: [Networking.Order], in storage: StorageType) {
+        let searchResults = storage.loadOrderSearchResults(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.OrderSearchResults.self)
+        searchResults.keyword = keyword
+
+        for readOnlyOrder in readOnlyOrders {
+            guard let storedOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) else {
+                continue
+            }
+
+            storedOrder.addToSearchResults(searchResults)
+        }
+    }
+}
+
+
+// MARK: - Storage: Orders
+//
+private extension OrderStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
     ///
-    private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order], onCompletion: (() -> Void)? = nil) {
+    private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             self.upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async {
-                onCompletion?()
-            }
+            DispatchQueue.main.async(execute: onCompletion)
         }
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Order Entities into the Storage Layer.
     ///
-    private func upsertStoredOrders(readOnlyOrders: [Networking.Order], in storage: StorageType) {
+    /// - Parameters:
+    ///     - readOnlyOrders: Remote Orders to be persisted.
+    ///     - insertingSearchResults: Indicates if the "Newly Inserted Entities" should be marked as "Search Results Only"
+    ///     - storage: Where we should save all the things!
+    ///
+    private func upsertStoredOrders(readOnlyOrders: [Networking.Order],
+                                    insertingSearchResults: Bool = false,
+                                    in storage: StorageType) {
+
         for readOnlyOrder in readOnlyOrders {
             let storageOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) ?? storage.insertNewObject(ofType: Storage.Order.self)
             storageOrder.update(with: readOnlyOrder)
+
+            // Are we caching Search Results? Did this order exist before?
+            storageOrder.exclusiveForSearch = insertingSearchResults && (storageOrder.isInserted || storageOrder.exclusiveForSearch)
+
             handleOrderItems(readOnlyOrder, storageOrder, storage)
             handleOrderCoupons(readOnlyOrder, storageOrder, storage)
         }

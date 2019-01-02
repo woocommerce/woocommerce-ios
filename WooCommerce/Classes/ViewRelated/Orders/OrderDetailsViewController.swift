@@ -596,9 +596,11 @@ extension OrderDetailsViewController: UITableViewDelegate {
         switch sections[indexPath.section].rows[indexPath.row] {
         case .addOrderNote:
             WooAnalytics.shared.track(.orderDetailAddNoteButtonTapped)
-            let addANoteViewController = self.storyboard!.instantiateViewController(withIdentifier: Constants.noteViewController) as! AddANoteViewController
-            addANoteViewController.viewModel = viewModel
-            let navController = WooNavigationController(rootViewController: addANoteViewController)
+
+            let newNoteViewController = NewNoteViewController()
+            newNoteViewController.viewModel = viewModel
+
+            let navController = WooNavigationController(rootViewController: newNoteViewController)
             present(navController, animated: true, completion: nil)
         case .productDetails:
             WooAnalytics.shared.track(.orderDetailProductDetailTapped)
@@ -744,7 +746,6 @@ private extension OrderDetailsViewController {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
         static let productDetailsSegue = "ShowProductListViewController"
-        static let noteViewController = "AddANoteViewController"
     }
 
     enum Title {

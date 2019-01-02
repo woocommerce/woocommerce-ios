@@ -108,6 +108,7 @@ class OrdersViewController: UIViewController {
 
         refreshTitle()
         refreshResultsPredicate()
+        registerTableViewCells()
 
         configureSyncingCoordinator()
         configureNavigation()
@@ -130,6 +131,8 @@ class OrdersViewController: UIViewController {
 //
 private extension OrdersViewController {
 
+    /// Setup: Title
+    ///
     func refreshTitle() {
         guard let filter = statusFilter?.rawValue.capitalized else {
             navigationItem.title = NSLocalizedString("Orders", comment: "Orders Title")
@@ -139,31 +142,66 @@ private extension OrdersViewController {
         navigationItem.title = NSLocalizedString("Orders: \(filter)", comment: "Orders Title")
     }
 
+    /// Setup: Filtering
+    ///
     func refreshResultsPredicate() {
         resultsController.predicate = statusFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }
 
+    /// Setup: Navigation Item
+    ///
     func configureNavigation() {
-        let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(displayFiltersAlert))
-        rightBarButton.tintColor = .white
-        rightBarButton.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
-        rightBarButton.accessibilityTraits = .button
-        rightBarButton.accessibilityHint = NSLocalizedString("Filters the order list by payment status.", comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list.")
-        navigationItem.rightBarButtonItem = rightBarButton
+        navigationItem.leftBarButtonItem = {
+            let button = UIBarButtonItem(image: Gridicon.iconOfType(.search),
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(displaySearchOrders))
+            button.tintColor = .white
+            button.accessibilityTraits = .button
+            button.accessibilityLabel = NSLocalizedString("Search orders", comment: "Search Orders")
+            button.accessibilityHint = NSLocalizedString("Retrieves a list of orders that contain a given keyword.", comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders.")
+            return button
+        }()
+
+        navigationItem.rightBarButtonItem = {
+            let button = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
+                                                 style: .plain,
+                                                 target: self,
+                                                 action: #selector(displayFiltersAlert))
+            button.tintColor = .white
+            button.accessibilityTraits = .button
+            button.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
+            button.accessibilityHint = NSLocalizedString("Filters the order list by payment status.", comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list.")
+            return button
+        }()
 
         // Don't show the Order title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
+    /// Setup: Results Controller
+    ///
+    func configureResultsController() {
+        resultsController.startForwardingEvents(to: tableView)
+        try? resultsController.performFetch()
+    }
+
+    /// Setup: Sync'ing Coordinator
+    ///
+    func configureSyncingCoordinator() {
+        syncingCoordinator.delegate = self
+    }
+
+    /// Setup: TabBar Item
+    ///
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Orders", comment: "Orders Title")
     }
 
+    /// Setup: TableView
+    ///
     func configureTableView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
@@ -171,13 +209,14 @@ private extension OrdersViewController {
         tableView.tableFooterView = footerSpinnerView
     }
 
-    func configureResultsController() {
-        resultsController.startForwardingEvents(to: tableView)
-        try? resultsController.performFetch()
-    }
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells() {
+        let cells = [ OrderTableViewCell.self ]
 
-    func configureSyncingCoordinator() {
-        syncingCoordinator.delegate = self
+        for cell in cells {
+            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        }
     }
 }
 
@@ -210,6 +249,17 @@ extension OrdersViewController {
 // MARK: - Actions
 //
 extension OrdersViewController {
+
+    @IBAction func displaySearchOrders() {
+        guard let storeID = StoresManager.shared.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let searchViewController = OrderSearchViewController(storeID: storeID)
+        let navigationController = UINavigationController(rootViewController: searchViewController)
+
+        present(navigationController, animated: true, completion: nil)
+    }
 
     @IBAction func displayFiltersAlert() {
         WooAnalytics.shared.track(.ordersListFilterTapped)
@@ -355,7 +405,7 @@ private extension OrdersViewController {
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderOrders() {
-        let options = GhostOptions(reuseIdentifier: OrderListCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
+        let options = GhostOptions(reuseIdentifier: OrderTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
 
         resultsController.stopForwardingEvents()
@@ -454,7 +504,7 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderListCell.reuseIdentifier, for: indexPath) as? OrderListCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderTableViewCell.reuseIdentifier, for: indexPath) as? OrderTableViewCell else {
             fatalError()
         }
 

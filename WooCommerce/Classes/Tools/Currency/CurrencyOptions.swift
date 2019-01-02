@@ -17,6 +17,7 @@ public class CurrencyOptions {
         case rightSpace = "right_space"
     }
 
+    public private(set) var currencyCode: String
     public private(set) var currencyPosition: CurrencyPosition
     public private(set) var thousandSeparator: String
     public private(set) var decimalSeparator: String
@@ -40,6 +41,7 @@ public class CurrencyOptions {
     /// Used primarily for testing and by the convenience initializers.
     ///
     init(currencyCode: String, currencyPosition: CurrencyPosition, thousandSeparator: String, decimalSeparator: String, numberOfDecimals: Int) {
+        self.currencyCode = currencyCode
         self.currencyPosition = currencyPosition
         self.thousandSeparator = thousandSeparator
         self.decimalSeparator = decimalSeparator
@@ -51,7 +53,8 @@ public class CurrencyOptions {
     /// Provides sane defaults for when site settings aren't available
     ///
     convenience init() {
-        self.init(currencyPosition: Constants.defaultCurrencyPosition,
+        self.init(currencyCode: Constants.defaultCurrencyCode,
+                  currencyPosition: Constants.defaultCurrencyPosition,
                   thousandSeparator: Constants.defaultThousandSeparator,
                   decimalSeparator: Constants.defaultDecimalSeparator,
                   numberOfDecimals: Constants.defaultNumberOfDecimals)
@@ -74,6 +77,8 @@ public class CurrencyOptions {
         let value = siteSetting.value
 
         switch siteSetting.settingID {
+        case Constants.currencyCodeKey:
+            self.currencyCode = value
         case Constants.currencyPositionKey:
             let currencyPosition = CurrencyOptions.CurrencyPosition(rawValue: value) ?? .left
             self.currencyPosition = currencyPosition
@@ -92,11 +97,13 @@ public class CurrencyOptions {
 
 private extension CurrencyOptions {
     enum Constants {
+        static let currencyCodeKey = "woocommerce_currency"
         static let currencyPositionKey = "woocommerce_currency_pos"
         static let thousandSeparatorKey = "woocommerce_price_thousand_sep"
         static let decimalSeparatorKey = "woocommerce_price_decimal_sep"
         static let numberOfDecimalsKey = "woocommerce_price_num_decimals"
 
+        static let defaultCurrencyCode = "USD"
         static let defaultCurrencyPosition = CurrencyPosition.left
         static let defaultThousandSeparator = ","
         static let defaultDecimalSeparator = "."

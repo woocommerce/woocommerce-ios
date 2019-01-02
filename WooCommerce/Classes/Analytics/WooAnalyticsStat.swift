@@ -119,6 +119,7 @@ public enum WooAnalyticsStat: String {
     case ordersReselected                       = "main_tab_orders_reselected"
     case ordersListPulledToRefresh              = "orders_list_pulled_to_refresh"
     case ordersListFilterTapped                 = "orders_list_menu_filter_tapped"
+    case ordersListSearchTapped                 = "orders_list_menu_search_tapped"
     case filterOrdersOptionSelected             = "filter_orders_by_status_dialog_option_selected"
     case orderDetailAddNoteButtonTapped         = "order_detail_add_note_button_tapped"
     case orderDetailPulledToRefresh             = "order_detail_pulled_to_refresh"

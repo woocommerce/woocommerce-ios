@@ -1,9 +1,9 @@
 import UIKit
 
 
-// MARK: - OrderListCell
+// MARK: - OrderTableViewCell
 //
-class OrderListCell: UITableViewCell {
+class OrderTableViewCell: UITableViewCell {
 
     /// Order's Title
     ///
@@ -58,7 +58,7 @@ class OrderListCell: UITableViewCell {
 
 // MARK: - Private
 //
-private extension OrderListCell {
+private extension OrderTableViewCell {
 
     /// Preserves the current Payment BG Color
     ///

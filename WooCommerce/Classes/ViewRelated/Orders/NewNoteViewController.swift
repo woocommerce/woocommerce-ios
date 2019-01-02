@@ -3,7 +3,7 @@ import Yosemite
 import Gridicons
 import CocoaLumberjack
 
-class AddANoteViewController: UIViewController {
+class NewNoteViewController: UIViewController {
 
     // MARK: - Properties
 
@@ -88,7 +88,7 @@ class AddANoteViewController: UIViewController {
 
 // MARK: - TableView Configuration
 //
-private extension AddANoteViewController {
+private extension NewNoteViewController {
     /// Setup: TableView
     ///
     private func configureTableView() {
@@ -184,7 +184,7 @@ private extension AddANoteViewController {
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension AddANoteViewController: UITableViewDataSource {
+extension NewNoteViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
     }
@@ -212,7 +212,7 @@ extension AddANoteViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate Conformance
 //
-extension AddANoteViewController: UITableViewDelegate {
+extension NewNoteViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectSelectedRowWithAnimation(true)
     }
@@ -220,7 +220,7 @@ extension AddANoteViewController: UITableViewDelegate {
 
 // MARK: - Constants
 //
-private extension AddANoteViewController {
+private extension NewNoteViewController {
     struct Constants {
         static let rowHeight = CGFloat(44)
     }

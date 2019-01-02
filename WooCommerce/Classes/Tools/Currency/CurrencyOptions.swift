@@ -3,10 +3,10 @@ import Yosemite
 
 /// Site-wide settings for displaying prices/money
 ///
-public class MoneyFormatSettings {
+public class CurrencyOptions {
     /// Shared Instance
     ///
-    static var shared = MoneyFormatSettings()
+    static var shared = CurrencyOptions()
 
     /// Designates where the currency symbol is located on a formatted price
     ///
@@ -30,7 +30,7 @@ public class MoneyFormatSettings {
         let resultsController = ResultsController<StorageSiteSetting>(storageManager: storageManager, sectionNameKeyPath: nil, sortedBy: [])
 
         resultsController.onDidChangeObject = { [weak self] (object, indexPath, type, newIndexPath) in
-            self?.updateFormatSetting(with: object)
+            self?.updateCurrencyOptions(with: object)
         }
 
         return resultsController
@@ -39,7 +39,7 @@ public class MoneyFormatSettings {
     /// Designated Initializer:
     /// Used primarily for testing and by the convenience initializers.
     ///
-    init(currencyPosition: CurrencyPosition, thousandSeparator: String, decimalSeparator: String, numberOfDecimals: Int) {
+    init(currencyCode: String, currencyPosition: CurrencyPosition, thousandSeparator: String, decimalSeparator: String, numberOfDecimals: Int) {
         self.currencyPosition = currencyPosition
         self.thousandSeparator = thousandSeparator
         self.decimalSeparator = decimalSeparator
@@ -63,19 +63,19 @@ public class MoneyFormatSettings {
     convenience init(siteSettings: [SiteSetting]) {
         self.init()
 
-        siteSettings.forEach { updateFormatSetting(with: $0) }
+        siteSettings.forEach { updateCurrencyOptions(with: $0) }
     }
 
     func beginListeningToSiteSettingsUpdates() {
         try? resultsController.performFetch()
     }
 
-    func updateFormatSetting(with siteSetting: SiteSetting) {
+    func updateCurrencyOptions(with siteSetting: SiteSetting) {
         let value = siteSetting.value
 
         switch siteSetting.settingID {
         case Constants.currencyPositionKey:
-            let currencyPosition = MoneyFormatSettings.CurrencyPosition(rawValue: value) ?? .left
+            let currencyPosition = CurrencyOptions.CurrencyPosition(rawValue: value) ?? .left
             self.currencyPosition = currencyPosition
         case Constants.thousandSeparatorKey:
             self.thousandSeparator = value
@@ -90,7 +90,7 @@ public class MoneyFormatSettings {
     }
 }
 
-private extension MoneyFormatSettings {
+private extension CurrencyOptions {
     enum Constants {
         static let currencyPositionKey = "woocommerce_currency_pos"
         static let thousandSeparatorKey = "woocommerce_price_thousand_sep"

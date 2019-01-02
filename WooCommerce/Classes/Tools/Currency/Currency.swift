@@ -384,3 +384,13 @@ public struct Currency {
         }
     }
 }
+
+public extension Currency {
+    public enum Default {
+        static let code = Currency.Code.USD
+        static let position = Currency.Position.left
+        static let thousandSeparator = ","
+        static let decimalSeparator = "."
+        static let decimalPosition = 2
+    }
+}

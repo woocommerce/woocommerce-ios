@@ -2,12 +2,13 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
-/// MoneyFormatSettings Tests
+/// CurrencySettings Tests
 ///
-class MoneyFormatSettingsTests: XCTestCase {
+class CurrencySettingsTests: XCTestCase {
     func testInitDefault() {
         let moneyFormat = CurrencySettings()
 
+        XCTAssertEqual(.USD, moneyFormat.currencyCode)
         XCTAssertEqual(.left, moneyFormat.currencyPosition)
         XCTAssertEqual(".", moneyFormat.decimalSeparator)
         XCTAssertEqual(2, moneyFormat.numberOfDecimals)
@@ -15,8 +16,9 @@ class MoneyFormatSettingsTests: XCTestCase {
     }
 
     func testInitWithIndividualParameters() {
-        let moneyFormat = CurrencySettings(currencyPosition: .right, thousandSeparator: "M", decimalSeparator: "X", numberOfDecimals: 10)
+        let moneyFormat = CurrencySettings(currencyCode: Currency.Code.USD, currencyPosition: .right, thousandSeparator: "M", decimalSeparator: "X", numberOfDecimals: 10)
 
+        XCTAssertEqual(.USD, moneyFormat.currencyCode)
         XCTAssertEqual(.right, moneyFormat.currencyPosition)
         XCTAssertEqual("X", moneyFormat.decimalSeparator)
         XCTAssertEqual(10, moneyFormat.numberOfDecimals)
@@ -27,6 +29,7 @@ class MoneyFormatSettingsTests: XCTestCase {
         let siteSettings: [SiteSetting] = []
         let moneyFormat = CurrencySettings(siteSettings: siteSettings)
 
+        XCTAssertEqual(.USD, moneyFormat.currencyCode)
         XCTAssertEqual(.left, moneyFormat.currencyPosition)
         XCTAssertEqual(".", moneyFormat.decimalSeparator)
         XCTAssertEqual(2, moneyFormat.numberOfDecimals)
@@ -34,14 +37,16 @@ class MoneyFormatSettingsTests: XCTestCase {
     }
 
     func testInitWithSiteSettings() {
+        let wooCurrencyCode = SiteSetting(siteID: 1, settingID: "woocommerce_currency", label: "", description: "", value: "SHP")
         let wooCurrencyPosition = SiteSetting(siteID: 1, settingID: "woocommerce_currency_pos", label: "", description: "", value: "right")
         let thousandsSeparator = SiteSetting(siteID: 1, settingID: "woocommerce_price_thousand_sep", label: "", description: "", value: "X")
         let decimalSeparator = SiteSetting(siteID: 1, settingID: "woocommerce_price_decimal_sep", label: "", description: "", value: "Y")
         let numberOfDecimals = SiteSetting(siteID: 1, settingID: "woocommerce_price_num_decimals", label: "", description: "", value: "3")
 
-        let siteSettings = [wooCurrencyPosition, thousandsSeparator, decimalSeparator, numberOfDecimals]
+        let siteSettings = [wooCurrencyCode, wooCurrencyPosition, thousandsSeparator, decimalSeparator, numberOfDecimals]
         let moneyFormat = CurrencySettings(siteSettings: siteSettings)
 
+        XCTAssertEqual(.SHP, moneyFormat.currencyCode)
         XCTAssertEqual(.right, moneyFormat.currencyPosition)
         XCTAssertEqual("Y", moneyFormat.decimalSeparator)
         XCTAssertEqual(3, moneyFormat.numberOfDecimals)
@@ -49,14 +54,16 @@ class MoneyFormatSettingsTests: XCTestCase {
     }
 
     func testInitWithIncompleteSiteSettings() {
+        let wooCurrencyCode = SiteSetting(siteID: 1, settingID: "woocommerce_currency", label: "", description: "", value: "SHP")
         let wooCurrencyPosition = SiteSetting(siteID: 1, settingID: "woocommerce_currency_pos", label: "", description: "", value: "right")
         let thousandsSeparator = SiteSetting(siteID: 1, settingID: "woocommerce_price_thousand_sep", label: "", description: "", value: "X")
         let decimalSeparator = SiteSetting(siteID: 1, settingID: "woocommerce_price_decimal_sep", label: "", description: "", value: "Y")
         // Missing number of decimals; should default to MoneyFormatSettings()
 
-        let siteSettings = [wooCurrencyPosition, thousandsSeparator, decimalSeparator]
+        let siteSettings = [wooCurrencyCode, wooCurrencyPosition, thousandsSeparator, decimalSeparator]
         let moneyFormat = CurrencySettings(siteSettings: siteSettings)
 
+        XCTAssertEqual(.SHP, moneyFormat.currencyCode)
         XCTAssertEqual(.right, moneyFormat.currencyPosition)
         XCTAssertEqual("Y", moneyFormat.decimalSeparator)
         XCTAssertEqual(2, moneyFormat.numberOfDecimals)

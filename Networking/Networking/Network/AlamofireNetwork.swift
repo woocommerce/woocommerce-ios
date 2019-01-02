@@ -48,7 +48,10 @@ public class AlamofireNetwork: Network {
 ///
 private extension Alamofire.DataResponse {
 
-    /// Returns the Networking Layer Error (if any): Whenever the statusCode is not within the [200, 300) range.
+    /// Returns the Networking Layer Error (if any):
+    ///
+    ///     -   Whenever the statusCode is not within the [200, 300) range.
+    ///     -   Whenever there's a `NSURLErrorDomain` error: Bad Certificate, Unreachable, Cancelled (and few others!)
     ///
     /// NOTE: that we're not doing the standard Alamofire Validation, because the stock routine, on error, will never relay
     /// back the response body. And since the Jetpack Tunneling API does not relay the proper statusCodes, we're left in
@@ -57,6 +60,12 @@ private extension Alamofire.DataResponse {
     /// Precisely: Request Timeout should be a 408, but we just get a 400, with the details in the response's body.
     ///
     var networkingError: Error? {
+
+        // Passthru URL Errors: These are right there, even without calling Alamofire's validation.
+        if let error = error as NSError?, error.domain == NSURLErrorDomain {
+            return error
+        }
+
         return response.flatMap { response in
             NetworkError(from: response.statusCode)
         }

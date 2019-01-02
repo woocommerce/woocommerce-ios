@@ -174,10 +174,9 @@ private extension NotificationDetailsViewController {
     /// Displays the Error Notice.
     ///
     static func displayModerationErrorNotice(failedStatus: CommentStatus) {
-        let title = NSLocalizedString("Error", comment: "Review error notice title")
-        let message = String.localizedStringWithFormat(NSLocalizedString("Unable to mark review %@",
-                                                                         comment: "Review error notice message"), failedStatus.description)
-        let notice = Notice(title: title, message: message, feedbackType: .error)
+        let message = String.localizedStringWithFormat(NSLocalizedString("Unable to mark review as %@",
+                                                                         comment: "Review error notice message. It reads: Unable to mark review as {attempted status}"), failedStatus.description)
+        let notice = Notice(title: message, feedbackType: .error)
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
@@ -189,10 +188,10 @@ private extension NotificationDetailsViewController {
             return
         }
 
-        let title = String.localizedStringWithFormat(NSLocalizedString("Review marked %@",
-                                                                       comment: "Review moderation success notice message"), newStatus.description)
+        let message = String.localizedStringWithFormat(NSLocalizedString("Review marked as %@",
+                                                                         comment: "Review moderation success notice message. It reads: Review marked as {new status}"), newStatus.description)
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
-        let notice = Notice(title: title, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
+        let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }

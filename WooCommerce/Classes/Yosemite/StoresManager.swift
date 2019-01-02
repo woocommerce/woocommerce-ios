@@ -197,7 +197,7 @@ private extension StoresManager {
             return
         }
 
-        CurrencyOptions.shared.beginListeningToSiteSettingsUpdates()
+        CurrencySettings.shared.beginListeningToSiteSettingsUpdates()
 
         let action = SettingAction.retrieveSiteSettings(siteID: siteID) { error in
             if let error = error {

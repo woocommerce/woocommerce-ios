@@ -101,7 +101,11 @@ extension MoneyFormatter {
     ///       *Assumes thousands grouped by 3, because a user can't indicate a preference and it's a majority default.
     ///       Note this assumption will be wrong for India.
     ///
-    func localizeAmount(decimal: NSDecimalNumber, decimalSeparator: String? = ".", decimalPosition: Int = 2, thousandSeparator: String? = ",") -> String? {
+    func localize(_ decimalAmount: NSDecimalNumber,
+                  with decimalSeparator: String? = ".",
+                  in decimalPosition: Int = 2,
+                  including thousandSeparator: String? = ",") -> String? {
+
         let numberFormatter = NumberFormatter()
         numberFormatter.usesGroupingSeparator = true
         numberFormatter.groupingSeparator = thousandSeparator
@@ -113,7 +117,7 @@ extension MoneyFormatter {
         numberFormatter.minimumFractionDigits = decimalPosition
         numberFormatter.maximumFractionDigits = decimalPosition
 
-        let stringResult = numberFormatter.string(from: decimal)
+        let stringResult = numberFormatter.string(from: decimalAmount)
 
         return stringResult
     }
@@ -123,12 +127,7 @@ extension MoneyFormatter {
     ///     - localizedAmount: a formatted string returned from `localizeAmount()`
     ///     - currencyPosition: the currency position, either right, left, right_space, or left_space.
     ///     - currencyCode: the three-letter country code used for a currency, e.g. CAD.
-    func formatCurrency(using amount: String,
-                        at position: Currency.Position,
-                        with code: Currency.Code) -> String? {
-        let currency = Currency(amount: amount, code: code, position: position)
-        let symbol = currency.symbol
-
+    func formatCurrency(using amount: String, at position: Currency.Position, with symbol: String) -> String? {
         switch position {
         case .left:
             return symbol + amount
@@ -141,6 +140,34 @@ extension MoneyFormatter {
         }
     }
 
+    /// Pull it all together! Applies currency option settings to the amount for the given currency.
+    /// - Parameters:
+    ///     - amount: a raw string representation of the amount, from the API, with no formatting applied. e.g. "19.87"
+    ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
+    func formatAmount(_ amount: String, with currency: String = CurrencySettings.shared.currencyCode.rawValue) -> String? {
+        guard let decimalAmount = convertToDecimal(from: amount) else {
+            return nil
+        }
+
+        // Grab the shared currency options. These are set by the user in Site > Settings.
+        let separator = CurrencySettings.shared.decimalSeparator
+        let position = CurrencySettings.shared.numberOfDecimals
+        let thousandSeparator = CurrencySettings.shared.thousandSeparator
+
+        let localized = localize(decimalAmount, with: separator, in: position, including: thousandSeparator)
+
+        guard let localizedAmount = localized else {
+            return nil
+        }
+
+        // If no country code was specified or it was not found, assume the user wants to use the default.
+        let code = Currency.Code(rawValue: currency) ?? CurrencySettings.shared.currencyCode
+        let currencySymbol = Currency().symbol(from: code)
+        let currencyPosition = CurrencySettings.shared.currencyPosition
+        let formattedAmount = formatCurrency(using: localizedAmount, at: currencyPosition, with: currencySymbol)
+
+        return formattedAmount
+    }
 
     // MARK: - Helper methods
 

@@ -287,8 +287,8 @@ class MoneyFormatterTests: XCTestCase {
 }
 
 
-// MARK: - Decimal Unit Testing
-extension MoneyFormatterTests {
+// MARK: - Currency Formatting: Decimal Unit Testing
+class CurrencyFormatterTests: XCTestCase {
 
     /// Verifies that the string value returns an accurate decimal value
     ///
@@ -296,7 +296,7 @@ extension MoneyFormatterTests {
         let stringValue = "9.99"
         let expectedResult = NSDecimalNumber(string: stringValue)
 
-        let converted = MoneyFormatter().convertToDecimal(from: stringValue)
+        let converted = CurrencyFormatter().convertToDecimal(from: stringValue)
 
         // check the formatted decimal exists
         guard let actualResult = converted else {
@@ -323,7 +323,7 @@ extension MoneyFormatterTests {
         let stringValue = "9.9999"
         let expectedResult = NSDecimalNumber(string: stringValue)
 
-        let actualResult = MoneyFormatter().convertToDecimal(from: stringValue)
+        let actualResult = CurrencyFormatter().convertToDecimal(from: stringValue)
         XCTAssertEqual(expectedResult, actualResult)
     }
 
@@ -333,14 +333,14 @@ extension MoneyFormatterTests {
         let separator = ","
         let stringValue = "1.17"
         let expectedResult = "1,17"
-        let converted = MoneyFormatter().convertToDecimal(from: stringValue)
+        let converted = CurrencyFormatter().convertToDecimal(from: stringValue)
 
         guard let convertedDecimal = converted else {
             XCTFail()
             return
         }
 
-        let actualResult = MoneyFormatter().localizeAmount(decimal: convertedDecimal, decimalSeparator: separator)
+        let actualResult = CurrencyFormatter().localize(convertedDecimal, with: separator)
 
         XCTAssertEqual(expectedResult, actualResult)
     }
@@ -349,7 +349,7 @@ extension MoneyFormatterTests {
     ///
     func testBadDataInStringDoesNotConvertToDecimal() {
         let badInput = "~HUKh*(&Y3HkJ8"
-        let actualResult = MoneyFormatter().convertToDecimal(from: badInput)
+        let actualResult = CurrencyFormatter().convertToDecimal(from: badInput)
 
         XCTAssertNil(actualResult)
     }
@@ -359,7 +359,7 @@ extension MoneyFormatterTests {
     func testNegativeNumbersSuccessfullyConvertToDecimal() {
         let negativeNumber = "-81346.45"
         let expectedResult = NSDecimalNumber(string: negativeNumber)
-        let actualResult = MoneyFormatter().convertToDecimal(from: negativeNumber)
+        let actualResult = CurrencyFormatter().convertToDecimal(from: negativeNumber)
 
         XCTAssertEqual(expectedResult, actualResult)
     }
@@ -367,7 +367,7 @@ extension MoneyFormatterTests {
 
 
 // MARK: - Thousand Separator Unit Testing
-extension MoneyFormatterTests {
+extension CurrencyFormatterTests {
     /// Verifies that the thousand separator is localized to a comma
     ///
     func testThousandSeparatorIsLocalizedToComma() {
@@ -375,14 +375,14 @@ extension MoneyFormatterTests {
         let stringValue = "1204.67"
         let expectedResult = "1,204.67"
 
-        let convertedDecimal = MoneyFormatter().convertToDecimal(from: stringValue)
+        let convertedDecimal = CurrencyFormatter().convertToDecimal(from: stringValue)
 
         guard let decimal = convertedDecimal else {
             XCTFail()
             return
         }
 
-        let formattedString = MoneyFormatter().localizeAmount(decimal: decimal, thousandSeparator: comma)
+        let formattedString = CurrencyFormatter().localize(decimal, including: comma)
         guard let actualResult = formattedString else {
             XCTFail()
             return
@@ -399,15 +399,13 @@ extension MoneyFormatterTests {
         let stringValue = "1204.67"
         let expectedResult = "1204.67"
 
-        let convertedDecimal = MoneyFormatter().convertToDecimal(from: stringValue)
+        let convertedDecimal = CurrencyFormatter().convertToDecimal(from: stringValue)
         guard let decimal = convertedDecimal else {
             XCTFail()
             return
         }
 
-        let localizedAmount = MoneyFormatter().localizeAmount(decimal: decimal,
-                                                              decimalSeparator: decimalSeparator,
-                                                              thousandSeparator: thousandSeparator)
+        let localizedAmount = CurrencyFormatter().localize(decimal, with: decimalSeparator, including: thousandSeparator)
 
         guard let actualResult = localizedAmount else {
             XCTFail()
@@ -424,13 +422,14 @@ extension MoneyFormatterTests {
         let stringValue = "45958320.97"
         let expectedResult = "45,958,320,97"
 
-        let converted = MoneyFormatter().convertToDecimal(from: stringValue)
+        let converted = CurrencyFormatter().convertToDecimal(from: stringValue)
         guard let convertedDecimal = converted else {
             XCTFail()
             return
         }
 
-        let localizedAmount = MoneyFormatter().localizeAmount(decimal: convertedDecimal, decimalSeparator: separator, decimalPosition: 2, thousandSeparator: separator)
+        let position = 2
+        let localizedAmount = CurrencyFormatter().localize(convertedDecimal, with: separator, in: position, including: separator)
         guard let actualResult = localizedAmount else {
             XCTFail()
             return
@@ -442,21 +441,21 @@ extension MoneyFormatterTests {
     /// Verifies decimal places are correct after localize methods have been applied
     ///
     func testDecimalPlacesAfterLocalizeThousandAndLocalizeDecimalFormattingWasApplied() {
-        let decimalPosition = 3
+        let position = 3
         let separator = ","
         let stringValue = "45958320.97"
         let expectedResult = "45,958,320,970"
 
-        let converted = MoneyFormatter().convertToDecimal(from: stringValue)
+        let converted = CurrencyFormatter().convertToDecimal(from: stringValue)
         guard let convertedDecimal = converted else {
             XCTFail()
             return
         }
 
-        let formattedAmount = MoneyFormatter().localizeAmount(decimal: convertedDecimal,
-                                                              decimalSeparator: separator,
-                                                              decimalPosition: decimalPosition,
-                                                              thousandSeparator: separator)
+        let formattedAmount = CurrencyFormatter().localize(convertedDecimal,
+                                                           with: separator,
+                                                           in: position,
+                                                           including: separator)
 
         guard let actualResult = formattedAmount else {
             XCTFail()
@@ -469,7 +468,7 @@ extension MoneyFormatterTests {
 
 
 // MARK: - Currency Formatting Unit Tests
-extension MoneyFormatter {
+extension CurrencyFormatter {
     /// Verifies that user's full currency preferences are applied
     ///
     func testCompleteCurrencyFormattingRespectsUserRules() {
@@ -481,26 +480,27 @@ extension MoneyFormatter {
         let stringAmount = "-7867818684.64"
         let expectedResult = "-7.867.818.684,640 د.ا"
 
-        let decimalAmount = MoneyFormatter().convertToDecimal(from: stringAmount)
-        guard let decimal = decimalAmount else {
+        let decimal = CurrencyFormatter().convertToDecimal(from: stringAmount)
+        guard let decimalAmount = decimal else {
             DDLogError("Error: invalid string amount. Cannot convert to decimal.")
             XCTFail()
             return
         }
 
-        let amount = MoneyFormatter().localizeAmount(decimal: decimal,
-                                                             decimalSeparator: decimalSeparator,
-                                                             decimalPosition: decimalPosition,
-                                                             thousandSeparator: thousandSeparator)
+        let amount = CurrencyFormatter().localize(decimalAmount,
+                                                  with: decimalSeparator,
+                                                  in: decimalPosition,
+                                                  including: thousandSeparator)
 
         guard let localizedAmount = amount else {
             XCTFail()
             return
         }
 
-        let formattedAmount = MoneyFormatter().formatCurrency(using: localizedAmount,
-                                                              at: currencyPosition,
-                                                              with: currencyCode)
+        let symbol = Currency().symbol(from: currencyCode)
+        let formattedAmount = CurrencyFormatter().formatCurrency(using: localizedAmount,
+                                                                 at: currencyPosition,
+                                                                 with: symbol)
 
         guard let actualResult = formattedAmount else {
             XCTFail()

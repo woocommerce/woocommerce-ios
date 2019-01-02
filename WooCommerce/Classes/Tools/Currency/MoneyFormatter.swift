@@ -76,7 +76,7 @@ public class MoneyFormatter {
 
 // MARK: - Manual currency formatting
 //
-extension MoneyFormatter {
+public class CurrencyFormatter {
     /// Returns a decimal value from a given string.
     /// - Parameters:
     ///   - stringValue: the string received from the API
@@ -149,10 +149,10 @@ extension MoneyFormatter {
             return nil
         }
 
-        // Grab the shared currency options. These are set by the user in Site > Settings.
-        let separator = CurrencySettings.shared.decimalSeparator
-        let position = CurrencySettings.shared.numberOfDecimals
-        let thousandSeparator = CurrencySettings.shared.thousandSeparator
+        // Grab the read-only currency options. These are set by the user in Site > Settings.
+        let separator = Currency().decimalSeparator
+        let position = Currency().decimalPosition
+        let thousandSeparator = Currency().thousandSeparator
 
         let localized = localize(decimalAmount, with: separator, in: position, including: thousandSeparator)
 
@@ -161,9 +161,9 @@ extension MoneyFormatter {
         }
 
         // If no country code was specified or it was not found, assume the user wants to use the default.
-        let code = Currency.Code(rawValue: currency) ?? CurrencySettings.shared.currencyCode
+        let code = Currency.Code(rawValue: currency) ?? Currency().code
         let currencySymbol = Currency().symbol(from: code)
-        let currencyPosition = CurrencySettings.shared.currencyPosition
+        let currencyPosition = Currency().position
         let formattedAmount = formatCurrency(using: localizedAmount, at: currencyPosition, with: currencySymbol)
 
         return formattedAmount

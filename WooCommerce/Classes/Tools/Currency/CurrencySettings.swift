@@ -46,11 +46,11 @@ public class CurrencySettings {
     /// Provides sane defaults for when site settings aren't available
     ///
     convenience init() {
-        self.init(currencyCode: Constants.defaultCurrencyCode,
-                  currencyPosition: Constants.defaultCurrencyPosition,
-                  thousandSeparator: Constants.defaultThousandSeparator,
-                  decimalSeparator: Constants.defaultDecimalSeparator,
-                  numberOfDecimals: Constants.defaultNumberOfDecimals)
+        self.init(currencyCode: Currency.Default.code,
+                  currencyPosition: Currency.Default.position,
+                  thousandSeparator: Currency.Default.thousandSeparator,
+                  decimalSeparator: Currency.Default.decimalSeparator,
+                  numberOfDecimals: Currency.Default.decimalPosition)
     }
 
     /// Convenience Initializer:
@@ -81,7 +81,7 @@ public class CurrencySettings {
         case Constants.decimalSeparatorKey:
             self.decimalSeparator = value
         case Constants.numberOfDecimalsKey:
-            let numberOfDecimals = Int(value) ?? Constants.defaultNumberOfDecimals
+            let numberOfDecimals = Int(value) ?? Currency.Default.decimalPosition
             self.numberOfDecimals = numberOfDecimals
         default:
             break
@@ -96,11 +96,5 @@ private extension CurrencySettings {
         static let thousandSeparatorKey = "woocommerce_price_thousand_sep"
         static let decimalSeparatorKey = "woocommerce_price_decimal_sep"
         static let numberOfDecimalsKey = "woocommerce_price_num_decimals"
-
-        static let defaultCurrencyCode = Currency.Code.USD
-        static let defaultCurrencyPosition = Currency.Position.left
-        static let defaultThousandSeparator = ","
-        static let defaultDecimalSeparator = "."
-        static let defaultNumberOfDecimals = 2
     }
 }

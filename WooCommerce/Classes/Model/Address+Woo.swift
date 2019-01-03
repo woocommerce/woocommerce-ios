@@ -13,6 +13,22 @@ extension Address {
         return firstName + " " + lastName
     }
 
+    /// Returns the `fullName` and `company` (on a new line). If either the `fullname` or `company` is empty,
+    /// then a single line is returned containing the other value.
+    ///
+    var fullNameWithCompany: String {
+        var output: [String] = []
+
+        if fullName.isEmpty == false {
+            output.append(fullName)
+        }
+        if let company = company, company.isEmpty == false {
+            output.append(company)
+        }
+
+        return output.joined(separator: "\n")
+    }
+
     /// Returns the Postal Address, formated and ready for display.
     ///
     var formattedPostalAddress: String? {

@@ -214,14 +214,9 @@ extension CurrencyFormatter {
         }
 
         let symbol = Currency.symbol(from: currencyCode)
-        let formattedAmount = CurrencyFormatter().formatCurrency(using: localizedAmount,
-                                                                 at: currencyPosition,
-                                                                 with: symbol)
-
-        guard let actualResult = formattedAmount else {
-            XCTFail()
-            return
-        }
+        let actualResult = CurrencyFormatter().formatCurrency(using: localizedAmount,
+                                                              at: currencyPosition,
+                                                              with: symbol)
 
         XCTAssertEqual(expectedResult, actualResult)
     }

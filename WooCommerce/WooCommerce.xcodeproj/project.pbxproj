@@ -280,8 +280,6 @@
 		CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE006032077D1280079161F /* SummaryTableViewCell.swift */; };
 		CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEE006042077D1280079161F /* SummaryTableViewCell.xib */; };
 		CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE006072077D14C0079161F /* OrderDetailsViewController.swift */; };
-		CEFE5874214AE0E0007B9808 /* MoneyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE5873214AE0E0007B9808 /* MoneyFormatter.swift */; };
-		CEFE5876214AFAFC007B9808 /* MoneyFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE5875214AFAFC007B9808 /* MoneyFormatterTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -605,8 +603,6 @@
 		CEE006032077D1280079161F /* SummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCell.swift; sourceTree = "<group>"; };
 		CEE006042077D1280079161F /* SummaryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SummaryTableViewCell.xib; sourceTree = "<group>"; };
 		CEE006072077D14C0079161F /* OrderDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewController.swift; sourceTree = "<group>"; };
-		CEFE5873214AE0E0007B9808 /* MoneyFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyFormatter.swift; sourceTree = "<group>"; };
-		CEFE5875214AFAFC007B9808 /* MoneyFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyFormatterTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -731,7 +727,6 @@
 			isa = PBXGroup;
 			children = (
 				93FA787121CD2A1A00B663E5 /* CurrencySettingsTests.swift */,
-				CEFE5875214AFAFC007B9808 /* MoneyFormatterTests.swift */,
 				B53A569621123D3B000776C9 /* ResultsControllerUIKitTests.swift */,
 				B517EA19218B2D2600730EC4 /* StringFormatterTests.swift */,
 				B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */,
@@ -1257,7 +1252,6 @@
 			children = (
 				CE9B7E3121C949D2000F971C /* Currency.swift */,
 				93FA787321CD7E9E00B663E5 /* CurrencySettings.swift */,
-				CEFE5873214AE0E0007B9808 /* MoneyFormatter.swift */,
 				CE4DA5C521DD755E00074607 /* CurrencyFormatter.swift */,
 			);
 			path = Currency;
@@ -1795,7 +1789,6 @@
 				B58B4AB82108F14700076FDD /* NoticeNotificationInfo.swift in Sources */,
 				CE24BCD8212F25D4001CD12E /* StorageOrder+Woo.swift in Sources */,
 				B557DA1520979904005962F4 /* CustomerNoteTableViewCell.swift in Sources */,
-				CEFE5874214AE0E0007B9808 /* MoneyFormatter.swift in Sources */,
 				CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */,
 				748D34E12148291E00E21A2F /* TopPerformerDataViewController.swift in Sources */,
 				B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */,
@@ -1893,7 +1886,6 @@
 				B53A569B21123E8E000776C9 /* MockupTableView.swift in Sources */,
 				B509FED521C052D1000076A9 /* MockupSupportManager.swift in Sources */,
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,
-				CEFE5876214AFAFC007B9808 /* MoneyFormatterTests.swift in Sources */,
 				746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */,
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,
 				B541B2132189E7FD008FE7C1 /* ScannerWooTests.swift in Sources */,

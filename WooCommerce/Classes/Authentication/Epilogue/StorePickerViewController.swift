@@ -304,10 +304,9 @@ private extension StorePickerViewController {
     /// Displays the Error Notice for the version check.
     ///
     func displayVersionCheckErrorNotice(siteID: Int, siteName: String) {
-        let title = NSLocalizedString("Error", comment: "Site Picker error notice title")
         let message = String.localizedStringWithFormat(NSLocalizedString("Cannot connect to %@", comment: "Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name}"), siteName)
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+        let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.displaySiteWCRequirementWarningIfNeeded(siteID: siteID, siteName: siteName)
         }
 

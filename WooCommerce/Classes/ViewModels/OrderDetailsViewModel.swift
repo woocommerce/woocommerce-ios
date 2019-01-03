@@ -5,12 +5,12 @@ import Yosemite
 
 class OrderDetailsViewModel {
     let order: Order
-    let moneyFormatter: MoneyFormatter
+    let currencyFormatter: CurrencyFormatter
     let couponLines: [OrderCouponLine]?
 
     init(order: Order) {
         self.order = order
-        self.moneyFormatter = MoneyFormatter()
+        self.currencyFormatter = CurrencyFormatter()
         self.couponLines = order.coupons
     }
 
@@ -65,26 +65,24 @@ class OrderDetailsViewModel {
     }
 
     var subtotalValue: String {
-        return moneyFormatter.format(value: subtotal, currencyCode: order.currency) ?? String()
+        let subAmount = NSDecimalNumber(decimal: subtotal).stringValue
+
+        return CurrencyFormatter().formatAmount(subAmount, with: order.currency) ?? String()
     }
 
     /// Discounts
-    /// - returns: 'Discount' label and a list of discount codes, or nil if nonexistent.
+    /// - returns: 'Discount' label and a list of discount codes, or nil if zero.
     ///
     var discountLabel: String? {
         return summarizeCoupons(from: couponLines)
     }
 
     var discountValue: String? {
-        guard let discount = Decimal(string: order.discountTotal) else {
+        guard let discount = currencyFormatter.convertToDecimal(from: order.discountTotal), discount.isZero() == false else {
             return nil
         }
 
-        if discount.isZero {
-            return nil
-        }
-
-        guard let formattedDiscount = moneyFormatter.format(value: discount, currencyCode: order.currency) else {
+        guard let formattedDiscount = currencyFormatter.formatAmount(order.discountTotal, with: order.currency) else {
             return nil
         }
 
@@ -97,30 +95,26 @@ class OrderDetailsViewModel {
     let shippingLabel = NSLocalizedString("Shipping", comment: "Shipping label for payment view")
 
     var shippingValue: String {
-        if let shippingTotal = Decimal(string: order.shippingTotal) {
-            return moneyFormatter.format(value: shippingTotal, currencyCode: order.currency) ?? String()
-        }
-
-        return moneyFormatter.format(value: "0.00", currencyCode: order.currency) ?? String()
+        return currencyFormatter.formatAmount(order.shippingTotal, with: order.currency) ?? String()
     }
 
     /// Taxes
-    /// - returns: 'Taxes' label and total taxes, or nil if nonexistent.
+    /// - returns: 'Taxes' label and total taxes, or nil if zero.
     ///
     var taxesLabel: String? {
-        if Decimal(string: order.totalTax) != nil {
-            return NSLocalizedString("Taxes", comment: "Taxes label for payment view")
+        guard let total = currencyFormatter.convertToDecimal(from: order.totalTax), total.isZero() == false else {
+            return nil
         }
 
-        return nil
+        return NSLocalizedString("Taxes", comment: "Taxes label for payment view")
     }
 
     var taxesValue: String? {
-        if let totalTax = Decimal(string: order.totalTax) {
-            return moneyFormatter.formatIfNonZero(value: totalTax, currencyCode: order.currency)
+        guard let total = currencyFormatter.convertToDecimal(from: order.totalTax), total.isZero() == false else {
+            return nil
         }
 
-        return nil
+        return currencyFormatter.formatAmount(order.totalTax, with: order.currency)
     }
 
     /// Total
@@ -129,10 +123,10 @@ class OrderDetailsViewModel {
     let totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
 
     var totalValue: String {
-        return moneyFormatter.format(value: order.total, currencyCode: order.currency) ?? String()
+        return currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
     }
 
-    // FIXME: This is not correctly formatted currency.
+    // FIXME: This code uses `double` instead of `NSDecimalNumber` for the currency amount.
     /// Anything above 999.99 or below -999.99 should display a truncated amount
     ///
     var totalFriendlyString: String? {
@@ -140,8 +134,9 @@ class OrderDetailsViewModel {
         let totalDouble = totalString.doubleValue
         if totalDouble >= 1000.0 || totalDouble <= -1000.0 {
             let totalRounded = totalDouble.friendlyString()
-            let symbol = moneyFormatter.currencySymbol(currencyCode: order.currency) ?? String()
-            return symbol + totalRounded
+            let code = Currency.Code(rawValue: order.currency) ?? Currency.code
+            let symbol = Currency.symbol(from: code)
+            return currencyFormatter.formatCurrency(using: totalRounded, at: Currency.position, with: symbol)
         }
 
         return totalValue

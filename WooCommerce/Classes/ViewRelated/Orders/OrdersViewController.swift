@@ -262,6 +262,7 @@ extension OrdersViewController {
             return
         }
 
+        WooAnalytics.shared.track(.ordersListSearchTapped)
         let searchViewController = OrderSearchViewController(storeID: storeID)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 

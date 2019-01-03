@@ -123,4 +123,3 @@ public class CurrencyFormatter {
         return true
     }
 }
-

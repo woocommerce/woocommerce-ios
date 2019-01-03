@@ -213,7 +213,7 @@ extension CurrencyFormatter {
             return
         }
 
-        let symbol = Currency().symbol(from: currencyCode)
+        let symbol = Currency.symbol(from: currencyCode)
         let formattedAmount = CurrencyFormatter().formatCurrency(using: localizedAmount,
                                                                  at: currencyPosition,
                                                                  with: symbol)

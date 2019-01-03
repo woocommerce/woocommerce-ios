@@ -171,10 +171,9 @@ extension FulfillViewController {
     /// Displays the `Order Fulfilled` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
     ///
     private func displayOrderCompleteNotice(onUndoAction: @escaping () -> Void) {
-        let title = NSLocalizedString("Fulfillment", comment: "Fulfill Notice Title")
-        let message = NSLocalizedString("Order Marked as Complete!", comment: "Fulfill Notice Message")
+        let message = NSLocalizedString("Order marked as fulfilled", comment: "Order fulfillment success notice")
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
-        let notice = Notice(title: title, message: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
+        let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }

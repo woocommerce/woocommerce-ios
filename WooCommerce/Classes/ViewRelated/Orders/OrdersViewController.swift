@@ -429,10 +429,9 @@ private extension OrdersViewController {
     /// Displays the Error Notice.
     ///
     func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int) {
-        let title = NSLocalizedString("Orders", comment: "Orders Title")
         let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+        let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.sync(pageNumber: pageNumber, pageSize: pageSize)
         }
 

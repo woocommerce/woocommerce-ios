@@ -240,11 +240,10 @@ private extension OrderDetailsViewController {
     /// Displays a Notice onscreen, indicating that the current Order has been deleted from the Store.
     ///
     func displayOrderDeletedNotice() {
-        let title = NSLocalizedString("Deleted: Order #\(viewModel.order.number)", comment: "Order Notice")
-        let message = NSLocalizedString("The order has been deleted from your Store!",
-                                        comment: "Displayed whenever the Details for an Order that just got deleted was onscreen.")
+        let message = String.localizedStringWithFormat(NSLocalizedString("Order %@ has been deleted from your store",
+                                                                         comment: "Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store"), viewModel.order.number)
 
-        let notice = Notice(title: title, message: message, feedbackType: .error)
+        let notice = Notice(title: message, feedbackType: .error)
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 }

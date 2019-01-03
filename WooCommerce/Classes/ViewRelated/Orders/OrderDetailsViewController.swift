@@ -309,7 +309,7 @@ private extension OrderDetailsViewController {
         let billingAddress = viewModel.order.billingAddress
 
         cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
-        cell.name = billingAddress?.fullName
+        cell.name = billingAddress?.fullNameWithCompany
         cell.address = billingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > billing details. This is where the address would normally display.")
     }
 
@@ -427,7 +427,7 @@ private extension OrderDetailsViewController {
         let shippingAddress = viewModel.order.shippingAddress
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
-        cell.name = shippingAddress?.fullName
+        cell.name = shippingAddress?.fullNameWithCompany
         cell.address = shippingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
     }
 

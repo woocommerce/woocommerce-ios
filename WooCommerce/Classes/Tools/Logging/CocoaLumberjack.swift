@@ -23,9 +23,6 @@ import CocoaLumberjack
 // * Neither the name of Deusty nor the names of its contributors may be used
 //   to endorse or promote products derived from this software without specific
 //   prior written permission of Deusty, LLC.
-
-import Foundation
-
 extension DDLogFlag {
     static func from(_ logLevel: DDLogLevel) -> DDLogFlag {
         return DDLogFlag(rawValue: logLevel.rawValue)

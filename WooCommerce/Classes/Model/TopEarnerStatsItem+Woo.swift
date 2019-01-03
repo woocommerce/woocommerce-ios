@@ -12,12 +12,19 @@ extension TopEarnerStatsItem {
         guard !currency.isEmpty else {
             return String()
         }
-        return MoneyFormatter().currencySymbol(currencyCode: currency) ?? String()
+
+        guard let code = Currency.Code(rawValue: currency) else {
+            return String()
+        }
+
+        return Currency.symbol(from: code)
     }
 
     /// Returns a friendly-formatted total string including the currency symbol
     ///
     var formattedTotalString: String {
-        return currencySymbol + total.friendlyString()
+        return CurrencyFormatter().formatCurrency(using: total.friendlyString(),
+                                                  at: Currency.position,
+                                                  with: currencySymbol)
     }
 }

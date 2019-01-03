@@ -54,7 +54,7 @@ public class CurrencyFormatter {
     ///     - position: the currency position enum, either right, left, right_space, or left_space.
     ///     - symbol: the currency symbol as a string, to be used with the amount.
     ///
-    func formatCurrency(using amount: String, at position: Currency.Position, with symbol: String) -> String? {
+    func formatCurrency(using amount: String, at position: Currency.Position, with symbol: String) -> String {
         let space = "\u{00a0}" // unicode equivalent of &nbsp;
         switch position {
         case .left:

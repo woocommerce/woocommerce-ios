@@ -230,6 +230,7 @@ private extension AppDelegate {
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
 
         DDLog.add(DDOSLogger.sharedInstance)
+        DDLog.add(CrashlyticsLogger.shared)
         DDLog.add(fileLogger)
     }
 

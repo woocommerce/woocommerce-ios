@@ -20,9 +20,9 @@ struct OrderItemViewModel {
         return item.name
     }
 
-    /// Money Formatter
+    /// Currency Formatter
     ///
-    let moneyFormatter: MoneyFormatter
+    let currencyFormatter: CurrencyFormatter
 
     /// Item's Quantity
     ///
@@ -35,11 +35,11 @@ struct OrderItemViewModel {
     ///
     var price: String {
         guard item.quantity > 1 else {
-            return moneyFormatter.format(value: item.total, currencyCode: currency) ?? String()
+            return currencyFormatter.formatAmount(item.total, with: currency) ?? String()
         }
 
-        let itemTotal = moneyFormatter.format(value: item.total, currencyCode: currency) ?? String()
-        let itemSubtotal = moneyFormatter.format(value: item.subtotal, currencyCode: currency) ?? String()
+        let itemTotal = currencyFormatter.formatAmount(item.total, with: currency) ?? String()
+        let itemSubtotal = currencyFormatter.formatAmount(item.subtotal, with: currency) ?? String()
 
         return itemTotal + " (" + itemSubtotal + " × " + quantity + ")"
     }
@@ -48,12 +48,12 @@ struct OrderItemViewModel {
     /// Not all items have a tax. Return nil if amount is zero, so labels will hide.
     ///
     var tax: String? {
-        guard item.totalTax.isEmpty == false else {
+        guard let decimalAmount = currencyFormatter.convertToDecimal(from: item.totalTax), decimalAmount.isZero() == false else {
             return nil
         }
 
         let prefix = NSLocalizedString("Tax:", comment: "Tax label for total taxes line")
-        let totalTax = moneyFormatter.format(value: item.totalTax, currencyCode: currency) ?? String()
+        let totalTax = currencyFormatter.formatAmount(item.totalTax, with: currency) ?? String()
         return prefix + " " + totalTax
     }
 
@@ -68,9 +68,9 @@ struct OrderItemViewModel {
         return prefix + " " + sku
     }
 
-    init(item: OrderItem, currency: String, money: MoneyFormatter = MoneyFormatter()) {
+    init(item: OrderItem, currency: String, formatter: CurrencyFormatter = CurrencyFormatter()) {
         self.item = item
         self.currency = currency
-        self.moneyFormatter = money
+        self.currencyFormatter = formatter
     }
 }

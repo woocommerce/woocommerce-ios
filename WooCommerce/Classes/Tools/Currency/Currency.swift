@@ -21,37 +21,37 @@ public struct Currency {
 
     /// Read-only. Retrieves the user's country code from Currency Options.
     ///
-    public var code: Currency.Code {
+    public static var code: Currency.Code {
         return CurrencySettings.shared.currencyCode
     }
 
     /// Read-only. Retrieves the user's decimal position from Currency Options.
     ///
-    public var decimalPosition: Int {
+    public static var decimalPosition: Int {
         return CurrencySettings.shared.numberOfDecimals
     }
 
     /// Read-only. Retrieves the user's decimal separator symbol from Currency Options.
     ///
-    public var decimalSeparator: String {
+    public static var decimalSeparator: String {
         return CurrencySettings.shared.decimalSeparator
     }
 
     /// Read-only. Retrieves the user's currency position from Currency Options.
     ///
-    public var position: Position {
+    public static var position: Position {
         return CurrencySettings.shared.currencyPosition
     }
 
     /// Read-only. Retrieves the user's thousand separator symbol from Currency Options.
     ///
-    public var thousandSeparator: String {
+    public static var thousandSeparator: String {
         return CurrencySettings.shared.thousandSeparator
     }
 
     /// Returns the currency symbol associated with the specified country code.
     ///
-    public func symbol(from code: Currency.Code) -> String {
+    public static func symbol(from code: Currency.Code) -> String {
         // HTML entities and currency codes pulled from WC:
         // https://docs.woocommerce.com/wc-apidocs/source-function-get_woocommerce_currency.html#473
         switch code {

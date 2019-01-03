@@ -45,26 +45,26 @@ public class CurrencyFormatter {
         numberFormatter.minimumFractionDigits = decimalPosition
         numberFormatter.maximumFractionDigits = decimalPosition
 
-        let stringResult = numberFormatter.string(from: decimalAmount)
-
-        return stringResult
+        return numberFormatter.string(from: decimalAmount)
     }
 
     /// Returns a string that displays the amount using all of the specified currency settings
     /// - Parameters:
-    ///     - localizedAmount: a formatted string returned from `localizeAmount()`
-    ///     - currencyPosition: the currency position, either right, left, right_space, or left_space.
-    ///     - currencyCode: the three-letter country code used for a currency, e.g. CAD.
+    ///     - amount: a formatted string, preferably converted using `localize(_:in:with:including:)`.
+    ///     - position: the currency position enum, either right, left, right_space, or left_space.
+    ///     - symbol: the currency symbol as a string, to be used with the amount.
+    ///
     func formatCurrency(using amount: String, at position: Currency.Position, with symbol: String) -> String? {
+        let space = "\u{00a0}" // unicode equivalent of &nbsp;
         switch position {
         case .left:
             return symbol + amount
         case .right:
             return amount + symbol
         case .leftSpace:
-            return symbol + "\u{00a0}" + amount
+            return symbol + space + amount
         case .rightSpace:
-            return amount + "\u{00a0}" + symbol
+            return amount + space + symbol
         }
     }
 
@@ -72,15 +72,16 @@ public class CurrencyFormatter {
     /// - Parameters:
     ///     - amount: a raw string representation of the amount, from the API, with no formatting applied. e.g. "19.87"
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
+    ///
     func formatAmount(_ amount: String, with currency: String = CurrencySettings.shared.currencyCode.rawValue) -> String? {
         guard let decimalAmount = convertToDecimal(from: amount) else {
             return nil
         }
 
         // Grab the read-only currency options. These are set by the user in Site > Settings.
-        let separator = Currency().decimalSeparator
-        let position = Currency().decimalPosition
-        let thousandSeparator = Currency().thousandSeparator
+        let separator = Currency.decimalSeparator
+        let position = Currency.decimalPosition
+        let thousandSeparator = Currency.thousandSeparator
 
         let localized = localize(decimalAmount, with: separator, in: position, including: thousandSeparator)
 
@@ -89,37 +90,11 @@ public class CurrencyFormatter {
         }
 
         // If no country code was specified or it was not found, assume the user wants to use the default.
-        let code = Currency.Code(rawValue: currency) ?? Currency().code
-        let currencySymbol = Currency().symbol(from: code)
-        let currencyPosition = Currency().position
+        let code = Currency.Code(rawValue: currency) ?? Currency.code
+        let currencySymbol = Currency.symbol(from: code)
+        let currencyPosition = Currency.position
         let formattedAmount = formatCurrency(using: localizedAmount, at: currencyPosition, with: currencySymbol)
 
         return formattedAmount
-    }
-
-    // MARK: - Helper methods
-
-    func stringFormatIsValid(_ stringValue: String, for decimalPlaces: Int = 2) -> Bool {
-        guard stringValue.characterCount >= 4 else {
-            DDLogError("Error: this method expects a string with a minimum of 4 characters.")
-            return false
-        }
-
-        let decimalIndex = stringValue.characterCount - decimalPlaces
-        var containsDecimal = false
-
-        for (index, char) in stringValue.enumerated() {
-            if index == decimalIndex && char == "." {
-                containsDecimal = true
-                break
-            }
-        }
-
-        guard containsDecimal else {
-            DDLogError("Error: this method expects a decimal notation from the string parameter.")
-            return false
-        }
-
-        return true
     }
 }

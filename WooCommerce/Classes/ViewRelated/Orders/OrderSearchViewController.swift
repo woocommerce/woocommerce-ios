@@ -284,7 +284,7 @@ private extension OrderSearchViewController {
 
         transitionToSyncingState()
         StoresManager.shared.dispatch(action)
-        DDLogInfo("🔍 Searching for Orders: [\(keyword)]...")
+        WooAnalytics.shared.track(.ordersListFilterOrSearch, withProperties: ["filter": "", "search": "\(keyword)"])
     }
 }
 

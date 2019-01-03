@@ -285,7 +285,7 @@ private extension FulfillViewController {
         }
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
-        cell.name = address.fullName
+        cell.name = address.fullNameWithCompany
         cell.address = address.formattedPostalAddress
     }
 

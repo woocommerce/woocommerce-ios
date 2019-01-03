@@ -3,21 +3,15 @@ import Yosemite
 
 /// Site-wide settings for displaying prices/money
 ///
-public class MoneyFormatSettings {
+public class CurrencySettings {
     /// Shared Instance
     ///
-    static var shared = MoneyFormatSettings()
+    static var shared = CurrencySettings()
 
-    /// Designates where the currency symbol is located on a formatted price
+    /// Public variables, privately set
     ///
-    public enum CurrencyPosition: String {
-        case left = "left"
-        case right = "right"
-        case leftSpace = "left_space"
-        case rightSpace = "right_space"
-    }
-
-    public private(set) var currencyPosition: CurrencyPosition
+    public private(set) var currencyCode: Currency.Code
+    public private(set) var currencyPosition: Currency.Position
     public private(set) var thousandSeparator: String
     public private(set) var decimalSeparator: String
     public private(set) var numberOfDecimals: Int
@@ -30,7 +24,7 @@ public class MoneyFormatSettings {
         let resultsController = ResultsController<StorageSiteSetting>(storageManager: storageManager, sectionNameKeyPath: nil, sortedBy: [])
 
         resultsController.onDidChangeObject = { [weak self] (object, indexPath, type, newIndexPath) in
-            self?.updateFormatSetting(with: object)
+            self?.updateCurrencyOptions(with: object)
         }
 
         return resultsController
@@ -39,7 +33,8 @@ public class MoneyFormatSettings {
     /// Designated Initializer:
     /// Used primarily for testing and by the convenience initializers.
     ///
-    init(currencyPosition: CurrencyPosition, thousandSeparator: String, decimalSeparator: String, numberOfDecimals: Int) {
+    init(currencyCode: Currency.Code, currencyPosition: Currency.Position, thousandSeparator: String, decimalSeparator: String, numberOfDecimals: Int) {
+        self.currencyCode = currencyCode
         self.currencyPosition = currencyPosition
         self.thousandSeparator = thousandSeparator
         self.decimalSeparator = decimalSeparator
@@ -51,10 +46,11 @@ public class MoneyFormatSettings {
     /// Provides sane defaults for when site settings aren't available
     ///
     convenience init() {
-        self.init(currencyPosition: Constants.defaultCurrencyPosition,
-                  thousandSeparator: Constants.defaultThousandSeparator,
-                  decimalSeparator: Constants.defaultDecimalSeparator,
-                  numberOfDecimals: Constants.defaultNumberOfDecimals)
+        self.init(currencyCode: Currency.Default.code,
+                  currencyPosition: Currency.Default.position,
+                  thousandSeparator: Currency.Default.thousandSeparator,
+                  decimalSeparator: Currency.Default.decimalSeparator,
+                  numberOfDecimals: Currency.Default.decimalPosition)
     }
 
     /// Convenience Initializer:
@@ -63,26 +59,29 @@ public class MoneyFormatSettings {
     convenience init(siteSettings: [SiteSetting]) {
         self.init()
 
-        siteSettings.forEach { updateFormatSetting(with: $0) }
+        siteSettings.forEach { updateCurrencyOptions(with: $0) }
     }
 
     func beginListeningToSiteSettingsUpdates() {
         try? resultsController.performFetch()
     }
 
-    func updateFormatSetting(with siteSetting: SiteSetting) {
+    func updateCurrencyOptions(with siteSetting: SiteSetting) {
         let value = siteSetting.value
 
         switch siteSetting.settingID {
+        case Constants.currencyCodeKey:
+            let currencyCode = Currency.Code(rawValue: value) ?? .USD
+            self.currencyCode = currencyCode
         case Constants.currencyPositionKey:
-            let currencyPosition = MoneyFormatSettings.CurrencyPosition(rawValue: value) ?? .left
+            let currencyPosition = Currency.Position(rawValue: value) ?? .left
             self.currencyPosition = currencyPosition
         case Constants.thousandSeparatorKey:
             self.thousandSeparator = value
         case Constants.decimalSeparatorKey:
             self.decimalSeparator = value
         case Constants.numberOfDecimalsKey:
-            let numberOfDecimals = Int(value) ?? Constants.defaultNumberOfDecimals
+            let numberOfDecimals = Int(value) ?? Currency.Default.decimalPosition
             self.numberOfDecimals = numberOfDecimals
         default:
             break
@@ -90,16 +89,12 @@ public class MoneyFormatSettings {
     }
 }
 
-private extension MoneyFormatSettings {
+private extension CurrencySettings {
     enum Constants {
+        static let currencyCodeKey = "woocommerce_currency"
         static let currencyPositionKey = "woocommerce_currency_pos"
         static let thousandSeparatorKey = "woocommerce_price_thousand_sep"
         static let decimalSeparatorKey = "woocommerce_price_decimal_sep"
         static let numberOfDecimalsKey = "woocommerce_price_num_decimals"
-
-        static let defaultCurrencyPosition = CurrencyPosition.left
-        static let defaultThousandSeparator = ","
-        static let defaultDecimalSeparator = "."
-        static let defaultNumberOfDecimals = 2
     }
 }

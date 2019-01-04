@@ -17,7 +17,7 @@ extension TopEarnerStatsItem {
             return String()
         }
 
-        return CurrencySettings().symbol(from: code)
+        return CurrencySettings.shared.symbol(from: code)
     }
 
     /// Returns a friendly-formatted total string including the currency symbol

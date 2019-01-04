@@ -91,7 +91,7 @@ public class CurrencyFormatter {
 
         // If no country code was specified or it was not found, assume the user wants to use the default.
         let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? CurrencySettings.shared.currencyCode
-        let currencySymbol = CurrencySettings().symbol(from: code)
+        let currencySymbol = CurrencySettings.shared.symbol(from: code)
         let currencyPosition = CurrencySettings.shared.currencyPosition
         let formattedAmount = formatCurrency(using: localizedAmount, at: currencyPosition, with: currencySymbol)
 

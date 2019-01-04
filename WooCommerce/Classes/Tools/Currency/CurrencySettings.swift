@@ -6,7 +6,7 @@ import Yosemite
 public class CurrencySettings {
     /// Shared Instance
     ///
-    static var shared = CurrencySettings()
+    static let shared = CurrencySettings()
 
     // MARK: - Enums
 

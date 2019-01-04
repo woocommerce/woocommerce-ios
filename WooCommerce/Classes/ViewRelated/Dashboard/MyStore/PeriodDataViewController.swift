@@ -68,11 +68,11 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
             return String()
         }
 
-        guard let code = Currency.Code(rawValue: rawCode) else {
+        guard let code = CurrencySettings.CurrencyCode(rawValue: rawCode) else {
             return String()
         }
 
-        return Currency.symbol(from: code)
+        return CurrencySettings().symbol(from: code)
     }
 
     private var summaryDateUpdated: String {
@@ -347,7 +347,7 @@ extension PeriodDataViewController: IAxisValueFormatter {
             } else {
                 yAxisMaximum = value.friendlyString()
                 return CurrencyFormatter().formatCurrency(using: yAxisMaximum,
-                                                          at: Currency.position,
+                                                          at: CurrencySettings.shared.currencyPosition,
                                                           with: currencySymbol)
             }
         }
@@ -446,7 +446,7 @@ private extension PeriodDataViewController {
             totalOrdersText = Double(orderStats.totalOrders).friendlyString()
             let totalRevenue = orderStats.totalSales.friendlyString()
             totalRevenueText = CurrencyFormatter().formatCurrency(using: totalRevenue,
-                                                                  at: Currency.position,
+                                                                  at: CurrencySettings.shared.currencyPosition,
                                                                   with: currencySymbol)
         }
         ordersData.text = totalOrdersText
@@ -497,7 +497,7 @@ private extension PeriodDataViewController {
         statItems.forEach { (item) in
             let entry = BarChartDataEntry(x: Double(barCount), y: item.totalSales)
             let formattedAmount = CurrencyFormatter().formatCurrency(using: item.totalSales.friendlyString(),
-                                                                     at: Currency.position,
+                                                                     at: CurrencySettings.shared.currencyPosition,
                                                                      with: currencySymbol)
             entry.accessibilityValue = "\(item.period): \(formattedAmount)"
             barColors.append(barColor(for: item.period))

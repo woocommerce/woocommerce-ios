@@ -134,9 +134,9 @@ class OrderDetailsViewModel {
         let totalDouble = totalString.doubleValue
         if totalDouble >= 1000.0 || totalDouble <= -1000.0 {
             let totalRounded = totalDouble.friendlyString()
-            let code = Currency.Code(rawValue: order.currency) ?? Currency.code
-            let symbol = Currency.symbol(from: code)
-            return currencyFormatter.formatCurrency(using: totalRounded, at: Currency.position, with: symbol)
+            let code = CurrencySettings.CurrencyCode(rawValue: order.currency) ?? CurrencySettings.shared.currencyCode
+            let symbol = CurrencySettings.shared.symbol(from: code)
+            return currencyFormatter.formatCurrency(using: totalRounded, at: CurrencySettings.shared.currencyPosition, with: symbol)
         }
 
         return totalValue

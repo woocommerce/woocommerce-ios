@@ -54,7 +54,7 @@ public class CurrencyFormatter {
     ///     - position: the currency position enum, either right, left, right_space, or left_space.
     ///     - symbol: the currency symbol as a string, to be used with the amount.
     ///
-    func formatCurrency(using amount: String, at position: Currency.Position, with symbol: String) -> String {
+    func formatCurrency(using amount: String, at position: CurrencySettings.CurrencyPosition, with symbol: String) -> String {
         let space = "\u{00a0}" // unicode equivalent of &nbsp;
         switch position {
         case .left:
@@ -79,9 +79,9 @@ public class CurrencyFormatter {
         }
 
         // Grab the read-only currency options. These are set by the user in Site > Settings.
-        let separator = Currency.decimalSeparator
-        let position = Currency.decimalPosition
-        let thousandSeparator = Currency.thousandSeparator
+        let separator = CurrencySettings.shared.decimalSeparator
+        let position = CurrencySettings.shared.numberOfDecimals
+        let thousandSeparator = CurrencySettings.shared.thousandSeparator
 
         let localized = localize(decimalAmount, with: separator, in: position, including: thousandSeparator)
 
@@ -90,9 +90,9 @@ public class CurrencyFormatter {
         }
 
         // If no country code was specified or it was not found, assume the user wants to use the default.
-        let code = Currency.Code(rawValue: currency) ?? Currency.code
-        let currencySymbol = Currency.symbol(from: code)
-        let currencyPosition = Currency.position
+        let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? CurrencySettings.shared.currencyCode
+        let currencySymbol = CurrencySettings().symbol(from: code)
+        let currencyPosition = CurrencySettings.shared.currencyPosition
         let formattedAmount = formatCurrency(using: localizedAmount, at: currencyPosition, with: currencySymbol)
 
         return formattedAmount

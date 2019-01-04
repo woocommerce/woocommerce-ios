@@ -499,7 +499,7 @@ private extension PeriodDataViewController {
             let formattedAmount = CurrencyFormatter().formatCurrency(using: item.totalSales.friendlyString(),
                                                                      at: Currency.position,
                                                                      with: currencySymbol)
-            entry.accessibilityValue = "\(item.period): \(formattedAmount))"
+            entry.accessibilityValue = "\(item.period): \(formattedAmount)"
             barColors.append(barColor(for: item.period))
             dataEntries.append(entry)
             barCount += 1

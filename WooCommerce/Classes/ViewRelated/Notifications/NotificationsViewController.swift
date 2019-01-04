@@ -697,7 +697,7 @@ private extension NotificationsViewController {
 //
 private extension NotificationsViewController {
 
-    /// Runs whenever the prior to the FSM entering a new state.
+    /// Runs prior to the FSM entering a new state.
     ///
     /// Note: Just because this func runs does not guarantee `didEnter()` or `didLeave()` will run as well.
     ///

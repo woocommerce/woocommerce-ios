@@ -191,8 +191,8 @@ extension CurrencyFormatter {
         let decimalSeparator = ","
         let thousandSeparator = "."
         let decimalPosition = 3
-        let currencyPosition = Currency.Position.rightSpace
-        let currencyCode = Currency.Code.JOD
+        let currencyPosition = CurrencySettings.CurrencyPosition.rightSpace
+        let currencyCode = CurrencySettings.CurrencyCode.JOD
         let stringAmount = "-7867818684.64"
         let expectedResult = "-7.867.818.684,640 د.ا"
 
@@ -213,7 +213,7 @@ extension CurrencyFormatter {
             return
         }
 
-        let symbol = Currency.symbol(from: currencyCode)
+        let symbol = CurrencySettings.shared.symbol(from: currencyCode)
         let actualResult = CurrencyFormatter().formatCurrency(using: localizedAmount,
                                                               at: currencyPosition,
                                                               with: symbol)

@@ -72,7 +72,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
             return String()
         }
 
-        return CurrencySettings().symbol(from: code)
+        return CurrencySettings.shared.symbol(from: code)
     }
 
     private var summaryDateUpdated: String {

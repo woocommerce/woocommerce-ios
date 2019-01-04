@@ -13,18 +13,18 @@ extension TopEarnerStatsItem {
             return String()
         }
 
-        guard let code = Currency.Code(rawValue: currency) else {
+        guard let code = CurrencySettings.CurrencyCode(rawValue: currency) else {
             return String()
         }
 
-        return Currency.symbol(from: code)
+        return CurrencySettings().symbol(from: code)
     }
 
     /// Returns a friendly-formatted total string including the currency symbol
     ///
     var formattedTotalString: String {
         return CurrencyFormatter().formatCurrency(using: total.friendlyString(),
-                                                  at: Currency.position,
+                                                  at: CurrencySettings.shared.currencyPosition,
                                                   with: currencySymbol)
     }
 }

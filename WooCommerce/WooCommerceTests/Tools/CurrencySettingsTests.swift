@@ -70,4 +70,10 @@ class CurrencySettingsTests: XCTestCase {
         XCTAssertEqual("X", moneyFormat.thousandSeparator)
     }
 
+    /// Test currency symbol lookup returns correctly encoded symbol.
+    ///
+    func testCurrencySymbol() {
+        let symbol = CurrencySettings().symbol(from: .AED)
+        XCTAssertEqual("د.إ", symbol)
+    }
 }

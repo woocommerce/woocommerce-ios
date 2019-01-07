@@ -89,10 +89,11 @@ class NotificationsViewController: UIViewController {
     ///
     private var state: State = .results {
         didSet {
+            willEnter(state: state)
+
             guard oldValue != state else {
                 return
             }
-
             didLeave(state: oldValue)
             didEnter(state: state)
         }
@@ -347,10 +348,11 @@ private extension NotificationsViewController {
     ///
     func markAsRead(notes: [Note]) {
         let identifiers = notes.map { $0.noteId }
-        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { error in
+        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { [weak self] error in
             if let error = error {
                 DDLogError("⛔️ Error marking notifications as read: \(error)")
             }
+            self?.updateMarkAllReadButtonState()
         }
 
         StoresManager.shared.dispatch(action)
@@ -695,22 +697,35 @@ private extension NotificationsViewController {
 //
 private extension NotificationsViewController {
 
+    /// Runs prior to the FSM entering a new state.
+    ///
+    /// Note: Just because this func runs does not guarantee `didEnter()` or `didLeave()` will run as well.
+    ///
+    func willEnter(state: State) {
+        switch state {
+        case .emptyUnfiltered:
+            updateNavBarButtonsState(filterEnabled: false)
+        case .emptyFiltered:
+            updateNavBarButtonsState(filterEnabled: true)
+        case .results:
+            updateNavBarButtonsState(filterEnabled: true)
+        case .syncing:
+            updateNavBarButtonsState(filterEnabled: false)
+        }
+    }
+
     /// Runs whenever the FSM enters a State.
     ///
     func didEnter(state: State) {
         switch state {
         case .emptyUnfiltered:
             displayEmptyUnfilteredOverlay()
-            updateNavBarButtonsState(enabled: false)
         case .emptyFiltered:
             displayEmptyFilteredOverlay()
-            updateNavBarButtonsState(enabled: true)
         case .results:
-            updateNavBarButtonsState(enabled: true)
             break
         case .syncing:
             displayPlaceholderNotes()
-            updateNavBarButtonsState(enabled: false)
         }
     }
 
@@ -760,11 +775,15 @@ private extension NotificationsViewController {
 
     /// Enables/disables the navbar buttons if needed
     ///
-    /// - Parameter enabled: If true, navbar buttons are enabled; if false, they are disabled
+    /// - Parameter filterEnabled: If true, the filter navbar buttons is enabled; if false, it's disabled
     ///
-    func updateNavBarButtonsState(enabled: Bool) {
-        leftBarButton.isEnabled = enabled
-        rightBarButton.isEnabled = enabled
+    func updateNavBarButtonsState(filterEnabled: Bool) {
+        rightBarButton.isEnabled = filterEnabled
+        updateMarkAllReadButtonState()
+    }
+
+    func updateMarkAllReadButtonState() {
+        leftBarButton.isEnabled = !unreadNotes.isEmpty
     }
 }
 

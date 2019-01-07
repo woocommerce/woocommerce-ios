@@ -43,6 +43,11 @@ msgstr ""
 
 msgctxt "v1.0-whats-new"
 msgid ""
-"First public release.\n"
+"With the WooCommerce mobile app, you’ve got your online store in your pocket: manage orders, receive sales notifications, and view key metrics on the go.\n"
+"\n"
+"Drumroll, please: it’s our very first public release! We’re looking forward to iterating early and often and we can’t wait to hear your feedback and improvement suggestions.\n"
+"Get in touch via “Support” in the app or at ideas.woocommerce.com.\n"
+"\n"
+"Thank you to everyone involved in development and early testing!\n"
 msgstr ""
 

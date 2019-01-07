@@ -137,7 +137,7 @@ public class CurrencySettings {
         case .AMD:
             return "AMD"
         case .ANG:
-            return "&fnof;".strippedHTML
+            return "\u{0192}"
         case .AOA:
             return "Kz"
         case .ARS:
@@ -191,7 +191,7 @@ public class CurrencySettings {
         case .CLP:
             return "\u{0024}"
         case .CNY:
-            return "&yen;".strippedHTML
+            return "\u{00A5}"
         case .COP:
             return "\u{0024}"
         case .CRC:
@@ -219,7 +219,7 @@ public class CurrencySettings {
         case .ETB:
             return "Br"
         case .EUR:
-            return "&euro;".strippedHTML
+            return "\u{20AC}"
         case .FJD:
             return "\u{0024}"
         case .FKP:
@@ -275,7 +275,7 @@ public class CurrencySettings {
         case .JOD:
             return "&#x62f;.&#x627;".strippedHTML
         case .JPY:
-            return "&yen;".strippedHTML
+            return "\u{00A5}"
         case .KES:
             return "KSh"
         case .KGS:
@@ -367,7 +367,7 @@ public class CurrencySettings {
         case .QAR:
             return "&#x631;.&#x642;".strippedHTML
         case .RMB:
-            return "&yen;".strippedHTML
+            return "\u{00A5}"
         case .RON:
             return "lei"
         case .RSD:

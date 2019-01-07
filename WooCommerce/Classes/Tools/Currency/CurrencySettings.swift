@@ -8,12 +8,12 @@ public class CurrencySettings {
     ///
     static let shared = CurrencySettings()
 
-    // MARK: - Enums
 
+    // MARK: - Enums
 
     /// The 3-letter country code for supported currencies
     ///
-    public enum CurrencyCode: String {
+    public enum CurrencyCode: String, CaseIterable {
         case AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BHD, BIF, BMD, BND, BOB, BRL, BSD, BTC, BTN, BWP, BYR, BYN, BZD, CAD, CDF, CHF, CLP, CNY, COP, CRC, CUC, CUP, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ERN, ETB, EUR, FJD, FKP, GBP, GEL, GGP, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, IMP, INR, IQD, IRR, IRT, ISK, JEP, JMD, JOD, JPY, KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT, LAK, LBP, LKR, LRD, LSL, LYD, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, OMR, PAB, PEN, PGK, PHP, PKR, PLN, PRB, PYG, QAR, RMB, RON, RSD, RUB, RWF, SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLL, SOS, SRD, SSP, STD, SYP, SZL, THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VEF, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
     }
 
@@ -125,7 +125,7 @@ public class CurrencySettings {
     /// Returns the currency symbol associated with the specified country code.
     ///
     func symbol(from code: CurrencyCode) -> String {
-        // HTML entities and currency codes pulled from WC:
+        // Currency codes pulled from WC:
         // https://docs.woocommerce.com/wc-apidocs/source-function-get_woocommerce_currency.html#473
         switch code {
         case .AED:
@@ -133,25 +133,25 @@ public class CurrencySettings {
         case .AFN:
             return "&#x60b;".strippedHTML
         case .ALL:
-            return "L".strippedHTML
+            return "L"
         case .AMD:
-            return "AMD".strippedHTML
+            return "AMD"
         case .ANG:
             return "&fnof;".strippedHTML
         case .AOA:
-            return "Kz".strippedHTML
+            return "Kz"
         case .ARS:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .AUD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .AWG:
-            return "Afl.".strippedHTML
+            return "Afl."
         case .AZN:
-            return "AZN".strippedHTML
+            return "AZN"
         case .BAM:
-            return "KM".strippedHTML
+            return "KM"
         case .BBD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .BDT:
             return "&#2547;&nbsp;".strippedHTML
         case .BGN:
@@ -159,81 +159,81 @@ public class CurrencySettings {
         case .BHD:
             return ".&#x62f;.&#x628;".strippedHTML
         case .BIF:
-            return "Fr".strippedHTML
+            return "Fr"
         case .BMD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .BND:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .BOB:
-            return "Bs.".strippedHTML
+            return "Bs."
         case .BRL:
             return "&#82;&#36;".strippedHTML
         case .BSD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .BTC:
             return "&#3647;".strippedHTML
         case .BTN:
-            return "Nu.".strippedHTML
+            return "Nu."
         case .BWP:
-            return "P".strippedHTML
+            return "P"
         case .BYR:
-            return "Br".strippedHTML
+            return "Br"
         case .BYN:
-            return "Br".strippedHTML
+            return "Br"
         case .BZD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .CAD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .CDF:
-            return "Fr".strippedHTML
+            return "Fr"
         case .CHF:
             return "&#67;&#72;&#70;".strippedHTML
         case .CLP:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .CNY:
             return "&yen;".strippedHTML
         case .COP:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .CRC:
             return "&#x20a1;".strippedHTML
         case .CUC:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .CUP:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .CVE:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .CZK:
             return "&#75;&#269;".strippedHTML
         case .DJF:
-            return "Fr".strippedHTML
+            return "Fr"
         case .DKK:
-            return "DKK".strippedHTML
+            return "DKK"
         case .DOP:
-            return "RD&#36;".strippedHTML
+            return "RD\u{0024}".strippedHTML
         case .DZD:
             return "&#x62f;.&#x62c;".strippedHTML
         case .EGP:
-            return "EGP".strippedHTML
+            return "EGP"
         case .ERN:
-            return "Nfk".strippedHTML
+            return "Nfk"
         case .ETB:
-            return "Br".strippedHTML
+            return "Br"
         case .EUR:
             return "&euro;".strippedHTML
         case .FJD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .FKP:
-            return "&pound;".strippedHTML
+            return "\u{00A3}"
         case .GBP:
-            return "&pound;".strippedHTML
+            return "\u{00A3}"
         case .GEL:
             return "&#x10da;".strippedHTML
         case .GGP:
-            return "&pound;".strippedHTML
+            return "\u{00A3}"
         case .GHS:
             return "&#x20b5;".strippedHTML
         case .GIP:
-            return "&pound;".strippedHTML
+            return "\u{00A3}"
         case .GMD:
             return "D".strippedHTML
         case .GNF:
@@ -241,23 +241,23 @@ public class CurrencySettings {
         case .GTQ:
             return "Q".strippedHTML
         case .GYD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .HKD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .HNL:
-            return "L".strippedHTML
+            return "L"
         case .HRK:
-            return "Kn".strippedHTML
+            return "Kn"
         case .HTG:
-            return "G".strippedHTML
+            return "G"
         case .HUF:
             return "&#70;&#116;".strippedHTML
         case .IDR:
-            return "Rp".strippedHTML
+            return "Rp"
         case .ILS:
             return "&#8362;".strippedHTML
         case .IMP:
-            return "&pound;".strippedHTML
+            return "\u{00A3}"
         case .INR:
             return "&#8377;".strippedHTML
         case .IQD:
@@ -267,23 +267,23 @@ public class CurrencySettings {
         case .IRT:
             return "&#x062A;&#x0648;&#x0645;&#x0627;&#x0646;".strippedHTML
         case .ISK:
-            return "kr.".strippedHTML
+            return "kr."
         case .JEP:
-            return "&pound;".strippedHTML
+            return "\u{00A3}"
         case .JMD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .JOD:
             return "&#x62f;.&#x627;".strippedHTML
         case .JPY:
             return "&yen;".strippedHTML
         case .KES:
-            return "KSh".strippedHTML
+            return "KSh"
         case .KGS:
             return "&#x441;&#x43e;&#x43c;".strippedHTML
         case .KHR:
             return "&#x17db;".strippedHTML
         case .KMF:
-            return "Fr".strippedHTML
+            return "Fr"
         case .KPW:
             return "&#x20a9;".strippedHTML
         case .KRW:
@@ -291,9 +291,9 @@ public class CurrencySettings {
         case .KWD:
             return "&#x62f;.&#x643;".strippedHTML
         case .KYD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .KZT:
-            return "KZT".strippedHTML
+            return "KZT"
         case .LAK:
             return "&#8365;".strippedHTML
         case .LBP:
@@ -301,51 +301,51 @@ public class CurrencySettings {
         case .LKR:
             return "&#xdbb;&#xdd4;".strippedHTML
         case .LRD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .LSL:
-            return "L".strippedHTML
+            return "L"
         case .LYD:
             return "&#x644;.&#x62f;".strippedHTML
         case .MAD:
             return "&#x62f;.&#x645;.".strippedHTML
         case .MDL:
-            return "MDL".strippedHTML
+            return "MDL"
         case .MGA:
-            return "Ar".strippedHTML
+            return "Ar"
         case .MKD:
             return "&#x434;&#x435;&#x43d;".strippedHTML
         case .MMK:
-            return "Ks".strippedHTML
+            return "Ks"
         case .MNT:
             return "&#x20ae;".strippedHTML
         case .MOP:
-            return "P".strippedHTML
+            return "P"
         case .MRO:
-            return "UM".strippedHTML
+            return "UM"
         case .MUR:
             return "&#x20a8;".strippedHTML
         case .MVR:
             return ".&#x783;".strippedHTML
         case .MWK:
-            return "MK".strippedHTML
+            return "MK"
         case .MXN:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .MYR:
             return "&#82;&#77;".strippedHTML
         case .MZN:
-            return "MT".strippedHTML
+            return "MT"
         case .NAD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .NGN:
             return "&#8358;".strippedHTML
         case .NIO:
-            return "C&#36;".strippedHTML
+            return "C\u{0024}".strippedHTML
         case .NOK:
             return "&#107;&#114;".strippedHTML
         case .NPR:
             return "&#8360;".strippedHTML
         case .NZD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .OMR:
             return "&#x631;.&#x639;.".strippedHTML
         case .PAB:
@@ -369,17 +369,17 @@ public class CurrencySettings {
         case .RMB:
             return "&yen;".strippedHTML
         case .RON:
-            return "lei".strippedHTML
+            return "lei"
         case .RSD:
             return "&#x434;&#x438;&#x43d;.".strippedHTML
         case .RUB:
             return "&#8381;".strippedHTML
         case .RWF:
-            return "Fr".strippedHTML
+            return "Fr"
         case .SAR:
             return "&#x631;.&#x633;".strippedHTML
         case .SBD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .SCR:
             return "&#x20a8;".strippedHTML
         case .SDG:
@@ -387,73 +387,73 @@ public class CurrencySettings {
         case .SEK:
             return "&#107;&#114;".strippedHTML
         case .SGD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .SHP:
-            return "&pound;".strippedHTML
+            return "\u{00A3}"
         case .SLL:
-            return "Le".strippedHTML
+            return "Le"
         case .SOS:
-            return "Sh".strippedHTML
+            return "Sh"
         case .SRD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .SSP:
-            return "&pound;".strippedHTML
+            return "\u{00A3}"
         case .STD:
-            return "Db".strippedHTML
+            return "Db"
         case .SYP:
             return "&#x644;.&#x633;".strippedHTML
         case .SZL:
-            return "L".strippedHTML
+            return "L"
         case .THB:
             return "&#3647;".strippedHTML
         case .TJS:
             return "&#x405;&#x41c;".strippedHTML
         case .TMT:
-            return "m".strippedHTML
+            return "m"
         case .TND:
             return "&#x62f;.&#x62a;".strippedHTML
         case .TOP:
-            return "T&#36;".strippedHTML
+            return "T\u{0024}".strippedHTML
         case .TRY:
             return "&#8378;".strippedHTML
         case .TTD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .TWD:
             return "&#78;&#84;&#36;".strippedHTML
         case .TZS:
-            return "Sh".strippedHTML
+            return "Sh"
         case .UAH:
             return "&#8372;".strippedHTML
         case .UGX:
-            return "UGX".strippedHTML
+            return "UGX"
         case .USD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .UYU:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .UZS:
-            return "UZS".strippedHTML
+            return "UZS"
         case .VEF:
-            return "Bs F".strippedHTML
+            return "Bs F"
         case .VND:
             return "&#8363;".strippedHTML
         case .VUV:
-            return "Vt".strippedHTML
+            return "Vt"
         case .WST:
-            return "T".strippedHTML
+            return "T"
         case .XAF:
-            return "CFA".strippedHTML
+            return "CFA"
         case .XCD:
-            return "&#36;".strippedHTML
+            return "\u{0024}"
         case .XOF:
-            return "CFA".strippedHTML
+            return "CFA"
         case .XPF:
-            return "Fr".strippedHTML
+            return "Fr"
         case .YER:
             return "&#xfdfc;".strippedHTML
         case .ZAR:
             return "&#82;".strippedHTML
         case .ZMW:
-            return "ZK".strippedHTML
+            return "ZK"
         }
     }
 }

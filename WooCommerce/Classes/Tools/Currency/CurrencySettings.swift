@@ -129,9 +129,9 @@ public class CurrencySettings {
         // https://docs.woocommerce.com/wc-apidocs/source-function-get_woocommerce_currency.html#473
         switch code {
         case .AED:
-            return "&#x62f;.&#x625;".strippedHTML
+            return "\u{62f}.\u{625}"
         case .AFN:
-            return "&#x60b;".strippedHTML
+            return "\u{60b}"
         case .ALL:
             return "L"
         case .AMD:
@@ -153,11 +153,11 @@ public class CurrencySettings {
         case .BBD:
             return "\u{0024}"
         case .BDT:
-            return "&#2547;&nbsp;".strippedHTML
+            return "\u{2547}\u{00A0}"
         case .BGN:
-            return "&#1083;&#1074;.".strippedHTML
+            return "\u{43b}\u{432}."
         case .BHD:
-            return ".&#x62f;.&#x628;".strippedHTML
+            return ".\u{62f}.\u{628}"
         case .BIF:
             return "Fr"
         case .BMD:
@@ -167,7 +167,7 @@ public class CurrencySettings {
         case .BOB:
             return "Bs."
         case .BRL:
-            return "&#82;&#36;".strippedHTML
+            return "\u{52}\u{24}"
         case .BSD:
             return "\u{0024}"
         case .BTC:
@@ -195,7 +195,7 @@ public class CurrencySettings {
         case .COP:
             return "\u{0024}"
         case .CRC:
-            return "&#x20a1;".strippedHTML
+            return "\u{20a1}"
         case .CUC:
             return "\u{0024}"
         case .CUP:
@@ -209,9 +209,9 @@ public class CurrencySettings {
         case .DKK:
             return "DKK"
         case .DOP:
-            return "RD\u{0024}".strippedHTML
+            return "RD\u{0024}"
         case .DZD:
-            return "&#x62f;.&#x62c;".strippedHTML
+            return "\u{62f}.\u{62c}"
         case .EGP:
             return "EGP"
         case .ERN:
@@ -227,19 +227,19 @@ public class CurrencySettings {
         case .GBP:
             return "\u{00A3}"
         case .GEL:
-            return "&#x10da;".strippedHTML
+            return "\u{10da}"
         case .GGP:
             return "\u{00A3}"
         case .GHS:
-            return "&#x20b5;".strippedHTML
+            return "\u{20b5}"
         case .GIP:
             return "\u{00A3}"
         case .GMD:
-            return "D".strippedHTML
+            return "D"
         case .GNF:
-            return "Fr".strippedHTML
+            return "Fr"
         case .GTQ:
-            return "Q".strippedHTML
+            return "Q"
         case .GYD:
             return "\u{0024}"
         case .HKD:
@@ -261,11 +261,11 @@ public class CurrencySettings {
         case .INR:
             return "&#8377;".strippedHTML
         case .IQD:
-            return "&#x639;.&#x62f;".strippedHTML
+            return "\u{639}.\u{62f}"
         case .IRR:
-            return "&#xfdfc;".strippedHTML
+            return "\u{fdfc}"
         case .IRT:
-            return "&#x062A;&#x0648;&#x0645;&#x0627;&#x0646;".strippedHTML
+            return "\u{062A}\u{0648}\u{0645}\u{0627}\u{0646}"
         case .ISK:
             return "kr."
         case .JEP:
@@ -273,23 +273,23 @@ public class CurrencySettings {
         case .JMD:
             return "\u{0024}"
         case .JOD:
-            return "&#x62f;.&#x627;".strippedHTML
+            return "\u{62f}.\u{627}"
         case .JPY:
             return "\u{00A5}"
         case .KES:
             return "KSh"
         case .KGS:
-            return "&#x441;&#x43e;&#x43c;".strippedHTML
+            return "\u{441}\u{43e}\u{43c}"
         case .KHR:
-            return "&#x17db;".strippedHTML
+            return "\u{17db}"
         case .KMF:
             return "Fr"
         case .KPW:
-            return "&#x20a9;".strippedHTML
+            return "\u{20a9}"
         case .KRW:
             return "&#8361;".strippedHTML
         case .KWD:
-            return "&#x62f;.&#x643;".strippedHTML
+            return "\u{62f}.\u{643}"
         case .KYD:
             return "\u{0024}"
         case .KZT:
@@ -297,35 +297,35 @@ public class CurrencySettings {
         case .LAK:
             return "&#8365;".strippedHTML
         case .LBP:
-            return "&#x644;.&#x644;".strippedHTML
+            return "\u{644}.\u{644}"
         case .LKR:
-            return "&#xdbb;&#xdd4;".strippedHTML
+            return "\u{dbb}\u{dd4}"
         case .LRD:
             return "\u{0024}"
         case .LSL:
             return "L"
         case .LYD:
-            return "&#x644;.&#x62f;".strippedHTML
+            return "\u{644}.\u{62f}"
         case .MAD:
-            return "&#x62f;.&#x645;.".strippedHTML
+            return "\u{62f}.\u{645}."
         case .MDL:
             return "MDL"
         case .MGA:
             return "Ar"
         case .MKD:
-            return "&#x434;&#x435;&#x43d;".strippedHTML
+            return "\u{434}\u{435}\u{43d}"
         case .MMK:
             return "Ks"
         case .MNT:
-            return "&#x20ae;".strippedHTML
+            return "\u{20ae}"
         case .MOP:
             return "P"
         case .MRO:
             return "UM"
         case .MUR:
-            return "&#x20a8;".strippedHTML
+            return "\u{20a8}"
         case .MVR:
-            return ".&#x783;".strippedHTML
+            return ".\u{783}"
         case .MWK:
             return "MK"
         case .MXN:
@@ -339,7 +339,7 @@ public class CurrencySettings {
         case .NGN:
             return "&#8358;".strippedHTML
         case .NIO:
-            return "C\u{0024}".strippedHTML
+            return "C\u{0024}"
         case .NOK:
             return "&#107;&#114;".strippedHTML
         case .NPR:
@@ -347,13 +347,13 @@ public class CurrencySettings {
         case .NZD:
             return "\u{0024}"
         case .OMR:
-            return "&#x631;.&#x639;.".strippedHTML
+            return "\u{631}.\u{639}."
         case .PAB:
-            return "B/.".strippedHTML
+            return "B/."
         case .PEN:
-            return "S/.".strippedHTML
+            return "S/."
         case .PGK:
-            return "K".strippedHTML
+            return "K"
         case .PHP:
             return "&#8369;".strippedHTML
         case .PKR:
@@ -361,29 +361,29 @@ public class CurrencySettings {
         case .PLN:
             return "&#122;&#322;".strippedHTML
         case .PRB:
-            return "&#x440;.".strippedHTML
+            return "\u{440}."
         case .PYG:
             return "&#8370;".strippedHTML
         case .QAR:
-            return "&#x631;.&#x642;".strippedHTML
+            return "\u{631}.\u{642}"
         case .RMB:
             return "\u{00A5}"
         case .RON:
             return "lei"
         case .RSD:
-            return "&#x434;&#x438;&#x43d;.".strippedHTML
+            return "\u{434}\u{438}\u{43d}."
         case .RUB:
             return "&#8381;".strippedHTML
         case .RWF:
             return "Fr"
         case .SAR:
-            return "&#x631;.&#x633;".strippedHTML
+            return "\u{631}.\u{633}"
         case .SBD:
             return "\u{0024}"
         case .SCR:
-            return "&#x20a8;".strippedHTML
+            return "\u{20a8}"
         case .SDG:
-            return "&#x62c;.&#x633;.".strippedHTML
+            return "\u{62c}.\u{633}."
         case .SEK:
             return "&#107;&#114;".strippedHTML
         case .SGD:
@@ -401,19 +401,19 @@ public class CurrencySettings {
         case .STD:
             return "Db"
         case .SYP:
-            return "&#x644;.&#x633;".strippedHTML
+            return "\u{644}.\u{633}"
         case .SZL:
             return "L"
         case .THB:
             return "&#3647;".strippedHTML
         case .TJS:
-            return "&#x405;&#x41c;".strippedHTML
+            return "\u{405}\u{41c}"
         case .TMT:
             return "m"
         case .TND:
-            return "&#x62f;.&#x62a;".strippedHTML
+            return "\u{62f}.\u{62a}"
         case .TOP:
-            return "T\u{0024}".strippedHTML
+            return "T\u{0024}"
         case .TRY:
             return "&#8378;".strippedHTML
         case .TTD:
@@ -449,7 +449,7 @@ public class CurrencySettings {
         case .XPF:
             return "Fr"
         case .YER:
-            return "&#xfdfc;".strippedHTML
+            return "\u{fdfc}"
         case .ZAR:
             return "&#82;".strippedHTML
         case .ZMW:

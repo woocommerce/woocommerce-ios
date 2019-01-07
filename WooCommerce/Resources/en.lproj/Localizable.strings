@@ -200,9 +200,6 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Days";
 
-/* Order Notice */
-"Deleted: Order #\(viewModel.order.number)" = "Deleted: Order #\(viewModel.order.number)";
-
 /* The row label to tap for a detailed product list */
 "Details" = "Details";
 
@@ -271,10 +268,6 @@
    Title of a button.  */
 "Enter your password instead." = "Enter your password instead.";
 
-/* Review error notice title
-   Site Picker error notice title */
-"Error" = "Error";
-
 /* Site Address placeholder */
 "example.wordpress.com" = "example.wordpress.com";
 
@@ -307,9 +300,6 @@
 
 /* Order Fulfillment Title */
 "Fulfill Order #\(order.number)" = "Fulfill Order #\(order.number)";
-
-/* Fulfill Notice Title */
-"Fulfillment" = "Fulfillment";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Gain insights into how products are performing on your store";
@@ -511,6 +501,9 @@
 /* Empty Notifications List Message */
 "No Notifications Yet!" = "No Notifications Yet!";
 
+/* Search Orders (Empty State) */
+"No Orders found" = "No Orders found";
+
 /* Notifications List (Empty State + Filters)
    Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "No results for the selected criteria";
@@ -572,8 +565,11 @@
    Order number title */
 "Order #\(viewModel.order.number)" = "Order #\(viewModel.order.number)";
 
-/* Fulfill Notice Message */
-"Order Marked as Complete!" = "Order Marked as Complete!";
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+"Order %@ has been deleted from your store" = "Order %@ has been deleted from your store";
+
+/* Order fulfillment success notice */
+"Order marked as fulfilled" = "Order marked as fulfilled";
 
 /* Order notes section title */
 "Order Notes" = "Order Notes";
@@ -694,6 +690,9 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "Report crashes";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
+"Retrieves a list of orders that contain a given keyword." = "Retrieves a list of orders that contain a given keyword.";
+
 /* Retry Action
    Retry the last action */
 "Retry" = "Retry";
@@ -701,14 +700,20 @@
 /* Revenue stat label on dashboard. */
 "Revenue" = "Revenue";
 
-/* Review moderation success notice message */
-"Review marked %@" = "Review marked %@";
+/* Review moderation success notice message. It reads: Review marked as {new status} */
+"Review marked as %@" = "Review marked as %@";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Review, prepare, and ship these pending orders";
 
 /* Reviews filter title */
 "Reviews" = "Reviews";
+
+/* Orders Search Placeholder */
+"Search all orders" = "Search all orders";
+
+/* Search Orders */
+"Search orders" = "Search orders";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "Send Link";
@@ -876,9 +881,6 @@
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "The Order couldn't be loaded!";
 
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. */
-"The order has been deleted from your Store!" = "The order has been deleted from your Store!";
-
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "The server returned an empty response. This usually means you need to increase the memory limit for your site.";
 
@@ -973,8 +975,8 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "Unable to find WooCommerce stores connected to this account";
 
-/* Review error notice message */
-"Unable to mark review %@" = "Unable to mark review %@";
+/* Review error notice message. It reads: Unable to mark review as {attempted status} */
+"Unable to mark review as %@" = "Unable to mark review as %@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ.";

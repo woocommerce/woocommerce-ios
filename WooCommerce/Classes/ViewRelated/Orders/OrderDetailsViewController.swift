@@ -4,7 +4,7 @@ import Contacts
 import MessageUI
 import Yosemite
 import CocoaLumberjack
-
+import WordPressUI
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
@@ -494,11 +494,15 @@ private extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
 
-    func toggleBillingFooter() {
+    func toggleBillingFooter(for view: UIView, in sections: IndexSet) {
         displaysBillingDetails = !displaysBillingDetails
         if displaysBillingDetails {
+            applyUnhideAnimation(for: view, in: sections)
+            tableView.reloadSections(sections, with: .none)
             WooAnalytics.shared.track(.orderDetailShowBillingTapped)
         } else {
+            applyHideAnimation(for: view, in: sections)
+            tableView.reloadSections(sections, with: .automatic)
             WooAnalytics.shared.track(.orderDetailHideBillingTapped)
         }
     }
@@ -577,8 +581,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
             }
 
             let sections = IndexSet(integer: section)
-            self.toggleBillingFooter()
-            self.tableView.reloadSections(sections, with: .fade)
+            self.toggleBillingFooter(for: cell.contentView, in: sections)
         }
 
         return cell
@@ -613,6 +616,35 @@ extension OrderDetailsViewController: UITableViewDelegate {
         if let productListViewController = segue.destination as? ProductListViewController {
             productListViewController.viewModel = viewModel
         }
+    }
+
+    /// Animation for showing a view
+    ///
+    func applyUnhideAnimation(for view: UIView, in section: IndexSet) {
+        UIView.animate(withDuration: Constants.showAnimationDuration,
+                       delay: 0,
+                       usingSpringWithDamping: Constants.showSpringDamping,
+                       initialSpringVelocity: Constants.showSpringVelocity,
+                       options: .curveEaseOut,
+                       animations: {
+                        view.isHidden = false
+                        view.alpha = UIKitConstants.alphaFull
+        }) { _ in
+            view.isHidden = false
+            view.alpha = UIKitConstants.alphaFull
+        }
+    }
+
+    /// Animation for hiding a view
+    ///
+    func applyHideAnimation(for view: UIView, in section: IndexSet) {
+        UIView.animate(withDuration: Constants.hideAnimationDuration, animations: {
+            view.isHidden = true
+            view.alpha = UIKitConstants.alphaZero
+        }, completion: { _ in
+            view.isHidden = true
+            view.alpha = UIKitConstants.alphaZero
+        })
     }
 }
 
@@ -742,9 +774,13 @@ private extension OrderDetailsViewController {
     }
 
     enum Constants {
-        static let rowHeight = CGFloat(38)
-        static let sectionHeight = CGFloat(44)
-        static let productDetailsSegue = "ShowProductListViewController"
+        static let rowHeight: CGFloat                   = 38.0
+        static let sectionHeight: CGFloat               = 44.0
+        static let productDetailsSegue                  = "ShowProductListViewController"
+        static let hideAnimationDuration: TimeInterval  = 0.25
+        static let showAnimationDuration: TimeInterval  = 0.50
+        static let showSpringDamping: CGFloat           = 0.7
+        static let showSpringVelocity: CGFloat          = 0.0
     }
 
     enum Title {

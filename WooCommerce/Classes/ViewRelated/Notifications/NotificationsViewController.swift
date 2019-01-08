@@ -122,6 +122,17 @@ class NotificationsViewController: UIViewController {
         }
     }
 
+    /// The number of times the "Mark all as read" button was tapped
+    ///
+    private var markAsReadCount: Int {
+        get {
+            return UserDefaults.standard.integer(forKey: UserDefaults.Key.notificationsMarkAsReadCount.rawValue)
+        }
+        set {
+            return UserDefaults.standard[.notificationsMarkAsReadCount] = newValue
+        }
+    }
+
     // MARK: - View Lifecycle
 
     deinit {
@@ -353,6 +364,7 @@ private extension NotificationsViewController {
                 DDLogError("⛔️ Error marking notifications as read: \(error)")
             }
             self?.updateMarkAllReadButtonState()
+            self?.displayMarkAllAsReadNoticeIfNeeded()
         }
 
         StoresManager.shared.dispatch(action)
@@ -785,6 +797,20 @@ private extension NotificationsViewController {
     func updateMarkAllReadButtonState() {
         leftBarButton.isEnabled = !unreadNotes.isEmpty
     }
+
+    /// Displays the `Mark all as read` Notice if the number of times it was previously displayed is lower than the
+    /// `Settings.markAllAsReadNoticeMaxViews` value.
+    ///
+    func displayMarkAllAsReadNoticeIfNeeded() {
+        guard markAsReadCount < Settings.markAllAsReadNoticeMaxViews else {
+            return
+        }
+
+        markAsReadCount += 1
+        let message = NSLocalizedString("All notifications marked as read", comment: "Mark all notifications as read notice")
+        let notice = Notice(title: message, feedbackType: .success)
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
 }
 
 
@@ -816,8 +842,9 @@ private extension NotificationsViewController {
     }
 
     enum Settings {
-        static let estimatedRowHeight = CGFloat(88)
-        static let placeholderRowsPerSection = [3]
+        static let estimatedRowHeight             = CGFloat(88)
+        static let placeholderRowsPerSection      = [3]
+        static let markAllAsReadNoticeMaxViews    = 2
     }
 
     enum State {

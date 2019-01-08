@@ -263,7 +263,6 @@ private extension NotificationsViewController {
         }
 
         markAsRead(notes: unreadNotes)
-        hapticGenerator.notificationOccurred(.success)
     }
 
     @IBAction func displayFiltersAlert() {
@@ -361,10 +360,13 @@ private extension NotificationsViewController {
         let identifiers = notes.map { $0.noteId }
         let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { [weak self] error in
             if let error = error {
-                DDLogError("⛔️ Error marking notifications as read: \(error)")
+                DDLogError("⛔️ Error marking multiple notifications as read: \(error)")
+                self?.hapticGenerator.notificationOccurred(.error)
+            } else {
+                self?.hapticGenerator.notificationOccurred(.success)
+                self?.displayMarkAllAsReadNoticeIfNeeded()
             }
             self?.updateMarkAllReadButtonState()
-            self?.displayMarkAllAsReadNoticeIfNeeded()
         }
 
         StoresManager.shared.dispatch(action)

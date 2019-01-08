@@ -87,7 +87,7 @@ class OrderListMapperTests: XCTestCase {
         XCTAssertEqual(firstItem.itemID, 890)
         XCTAssertEqual(firstItem.name, "Fruits Basket (Mix & Match Product)")
         XCTAssertEqual(firstItem.productID, 52)
-        XCTAssertEqual(firstItem.quantity, 1)
+        XCTAssertEqual(firstItem.quantity, 2)
         XCTAssertEqual(firstItem.sku, "")
         XCTAssertEqual(firstItem.subtotal, "50.00")
         XCTAssertEqual(firstItem.subtotalTax, "2.00")

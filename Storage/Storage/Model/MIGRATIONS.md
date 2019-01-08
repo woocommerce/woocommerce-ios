@@ -3,6 +3,9 @@
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
 ## Model 9 (Release 0.15)
+- @bummytime 2019-01-08
+    - Added `price` attribute on `OrderItem` entity
+
 - @jleandroperez 2018-12-26
     - New `Order.exclusiveForSearch` property
     - New `OrderSearchResults` entity

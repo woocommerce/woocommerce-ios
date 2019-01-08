@@ -79,7 +79,7 @@ class OrderMapperTests: XCTestCase {
         XCTAssertEqual(firstItem.name, "Fruits Basket (Mix & Match Product)")
         XCTAssertEqual(firstItem.productID, 52)
         XCTAssertEqual(firstItem.quantity, 2)
-        XCTAssertEqual(firstItem.price, 25.0)
+        XCTAssertEqual(firstItem.price, NSDecimalNumber(integerLiteral: 30))
         XCTAssertEqual(firstItem.sku, "")
         XCTAssertEqual(firstItem.subtotal, "50.00")
         XCTAssertEqual(firstItem.subtotalTax, "2.00")

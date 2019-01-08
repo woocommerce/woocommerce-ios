@@ -12,6 +12,7 @@ extension Storage.OrderItem: ReadOnlyConvertible {
         itemID = Int64(orderItem.itemID)
         name = orderItem.name
         quantity = Int64(orderItem.quantity)
+        price = orderItem.price
         productID = Int64(orderItem.productID)
         sku = orderItem.sku
         subtotal = orderItem.subtotal
@@ -29,8 +30,8 @@ extension Storage.OrderItem: ReadOnlyConvertible {
                          name: name ?? "",
                          productID: Int(productID),
                          quantity: Int(quantity),
-                         price: 0.0,
-                         sku: sku ?? "",
+                         price: price ?? NSDecimalNumber(integerLiteral: 0),
+                         sku: sku,
                          subtotal: subtotal ?? "",
                          subtotalTax: subtotalTax ?? "",
                          taxClass: taxClass ?? "",

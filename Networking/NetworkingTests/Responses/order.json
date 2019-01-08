@@ -101,7 +101,7 @@
                                  ],
                        "meta_data": [],
                        "sku": "",
-                       "price": 25
+                       "price": 30
                        },
                        {
                        "id": 891,
@@ -123,7 +123,7 @@
                                  ],
                        "meta_data": [],
                        "sku": "5555-A",
-                       "price": 5.00
+                       "price": 0.00
                        }
                        ],
         "tax_lines": [

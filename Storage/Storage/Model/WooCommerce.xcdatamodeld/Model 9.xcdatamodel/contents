@@ -82,6 +82,7 @@
     <entity name="OrderItem" representedClassName="OrderItem" syncable="YES">
         <attribute name="itemID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="price" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
         <attribute name="productID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="quantity" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="sku" optional="YES" attributeType="String" syncable="YES"/>
@@ -187,7 +188,7 @@
         <element name="Note" positionX="-162" positionY="180" width="128" height="285"/>
         <element name="Order" positionX="-20" positionY="27" width="128" height="720"/>
         <element name="OrderCoupon" positionX="-206.01953125" positionY="379.74609375" width="128" height="120"/>
-        <element name="OrderItem" positionX="-364.890625" positionY="379.453125" width="128" height="225"/>
+        <element name="OrderItem" positionX="-364.890625" positionY="379.453125" width="128" height="240"/>
         <element name="OrderNote" positionX="-365.16796875" positionY="630.2109375" width="128" height="135"/>
         <element name="OrderSearchResults" positionX="-153" positionY="189" width="128" height="75"/>
         <element name="OrderStats" positionX="137.859375" positionY="388.33203125" width="128" height="225"/>

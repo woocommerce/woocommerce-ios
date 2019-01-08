@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Storage/Storage/Model/OrderItem+CoreDataProperties.swift">
+   </FileRef>
+   <FileRef
       location = "group:WooCommerce/WooCommerce.xcodeproj">
    </FileRef>
    <FileRef

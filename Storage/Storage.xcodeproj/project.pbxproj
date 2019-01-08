@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		68BC97FB41770051C287D1A8 /* Pods_StorageTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */; };
 		7028A41485A08AC748206184 /* Pods_Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */; };
-		7410FB0B21E53DE60045F9C3 /* OrderItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7410FB0A21E53DE60045F9C3 /* OrderItem+CoreDataProperties.swift */; };
 		7426A04720F68F27002A4E07 /* Order+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426A04320F68F27002A4E07 /* Order+CoreDataClass.swift */; };
 		7426A04820F68F27002A4E07 /* Order+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426A04420F68F27002A4E07 /* Order+CoreDataProperties.swift */; };
 		7426A05020F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426A04E20F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift */; };
@@ -73,7 +72,6 @@
 /* Begin PBXFileReference section */
 		47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StorageTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D12CAE2D0EA6AB66F162FF9 /* Pods-StorageTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.debug.xcconfig"; sourceTree = "<group>"; };
-		7410FB0A21E53DE60045F9C3 /* OrderItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "OrderItem+CoreDataProperties.swift"; path = "/Users/bummytime/Projects/woocommerce-ios/Storage/Storage/Model/OrderItem+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		7426A04320F68F27002A4E07 /* Order+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+CoreDataClass.swift"; sourceTree = "<group>"; };
 		7426A04420F68F27002A4E07 /* Order+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7426A04E20F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCoupon+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -319,7 +317,6 @@
 				7426A04F20F69D00002A4E07 /* OrderCoupon+CoreDataProperties.swift */,
 				7426A05220F69DA4002A4E07 /* OrderItem+CoreDataClass.swift */,
 				7426A05320F69DA4002A4E07 /* OrderItem+CoreDataProperties.swift */,
-				7410FB0A21E53DE60045F9C3 /* OrderItem+CoreDataProperties.swift */,
 				74B7D6AB20F90CBB002667AC /* OrderNote+CoreDataClass.swift */,
 				74B7D6AC20F90CBB002667AC /* OrderNote+CoreDataProperties.swift */,
 				B5B914C320EFF03500F2F832 /* Site+CoreDataClass.swift */,
@@ -541,7 +538,6 @@
 				7471A517216CF0FE00219F7E /* SiteVisitStats+CoreDataProperties.swift in Sources */,
 				7426A05420F69DA4002A4E07 /* OrderItem+CoreDataClass.swift in Sources */,
 				7492FAD6217FA9C100ED2C69 /* SiteSetting+CoreDataClass.swift in Sources */,
-				7410FB0B21E53DE60045F9C3 /* OrderItem+CoreDataProperties.swift in Sources */,
 				B505F6E020BEEA8100BB1B69 /* StorageType.swift in Sources */,
 				746A9D22214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift in Sources */,
 				74F009C12183B99B002B4566 /* Note+CoreDataProperties.swift in Sources */,

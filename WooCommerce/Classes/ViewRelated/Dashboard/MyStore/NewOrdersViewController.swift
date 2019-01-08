@@ -16,6 +16,7 @@ class NewOrdersViewController: UIViewController {
     @IBOutlet private weak var descriptionLabel: PaddedLabel!
     @IBOutlet private weak var chevronImageView: UIImageView!
     @IBOutlet private weak var actionButton: UIButton!
+    @IBOutlet private weak var bottomSpacerView: UIView!
 
     // MARK: - Public Properties
 
@@ -67,6 +68,7 @@ extension NewOrdersViewController {
 private extension NewOrdersViewController {
 
     func configureView() {
+        bottomSpacerView.backgroundColor = StyleManager.tableViewBackgroundColor
         topBorder.backgroundColor = StyleManager.wooGreyBorder
         bottomBorder.backgroundColor = StyleManager.wooGreyBorder
         titleLabel.applyHeadlineStyle()
@@ -163,11 +165,6 @@ private extension NewOrdersViewController {
 
     enum Constants {
         static let newOrdersTitleLabelInsets = UIEdgeInsets(top: 14, left: 14, bottom: 0, right: 4)
-        static let newOrdersDescriptionLabelInsets = UIEdgeInsets(top: 4, left: 14, bottom: 0, right: 4)
-    }
-
-    enum Syncing {
-        static let pageNumber = 1
-        static let pageSize = 25
+        static let newOrdersDescriptionLabelInsets = UIEdgeInsets(top: 0, left: 14, bottom: 0, right: 4)
     }
 }

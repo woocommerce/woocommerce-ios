@@ -64,10 +64,15 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     // MARK: - Computed Properties
 
     private var currencySymbol: String {
-        guard let code = orderStats?.currencyCode else {
+        guard let rawCode = orderStats?.currencyCode else {
             return String()
         }
-        return MoneyFormatter().currencySymbol(currencyCode: code) ?? String()
+
+        guard let code = CurrencySettings.CurrencyCode(rawValue: rawCode) else {
+            return String()
+        }
+
+        return CurrencySettings.shared.symbol(from: code)
     }
 
     private var summaryDateUpdated: String {
@@ -341,7 +346,9 @@ extension PeriodDataViewController: IAxisValueFormatter {
                 return ""
             } else {
                 yAxisMaximum = value.friendlyString()
-                return currencySymbol + yAxisMaximum
+                return CurrencyFormatter().formatCurrency(using: yAxisMaximum,
+                                                          at: CurrencySettings.shared.currencyPosition,
+                                                          with: currencySymbol)
             }
         }
     }
@@ -438,7 +445,9 @@ private extension PeriodDataViewController {
         if let orderStats = orderStats {
             totalOrdersText = Double(orderStats.totalOrders).friendlyString()
             let totalRevenue = orderStats.totalSales.friendlyString()
-            totalRevenueText = currencySymbol + totalRevenue
+            totalRevenueText = CurrencyFormatter().formatCurrency(using: totalRevenue,
+                                                                  at: CurrencySettings.shared.currencyPosition,
+                                                                  with: currencySymbol)
         }
         ordersData.text = totalOrdersText
         revenueData.text = totalRevenueText
@@ -487,7 +496,10 @@ private extension PeriodDataViewController {
         var dataEntries: [BarChartDataEntry] = []
         statItems.forEach { (item) in
             let entry = BarChartDataEntry(x: Double(barCount), y: item.totalSales)
-            entry.accessibilityValue = "\(item.period): \(currencySymbol)\(item.totalSales.friendlyString())"
+            let formattedAmount = CurrencyFormatter().formatCurrency(using: item.totalSales.friendlyString(),
+                                                                     at: CurrencySettings.shared.currencyPosition,
+                                                                     with: currencySymbol)
+            entry.accessibilityValue = "\(item.period): \(formattedAmount)"
             barColors.append(barColor(for: item.period))
             dataEntries.append(entry)
             barCount += 1

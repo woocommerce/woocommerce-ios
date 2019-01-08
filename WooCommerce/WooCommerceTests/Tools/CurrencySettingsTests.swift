@@ -16,7 +16,7 @@ class CurrencySettingsTests: XCTestCase {
     }
 
     func testInitWithIndividualParameters() {
-        let moneyFormat = CurrencySettings(currencyCode: Currency.Code.USD, currencyPosition: .right, thousandSeparator: "M", decimalSeparator: "X", numberOfDecimals: 10)
+        let moneyFormat = CurrencySettings(currencyCode: .USD, currencyPosition: .right, thousandSeparator: "M", decimalSeparator: "X", numberOfDecimals: 10)
 
         XCTAssertEqual(.USD, moneyFormat.currencyCode)
         XCTAssertEqual(.right, moneyFormat.currencyPosition)
@@ -70,4 +70,10 @@ class CurrencySettingsTests: XCTestCase {
         XCTAssertEqual("X", moneyFormat.thousandSeparator)
     }
 
+    /// Test currency symbol lookup returns correctly encoded symbol.
+    ///
+    func testCurrencySymbol() {
+        let symbol = CurrencySettings.shared.symbol(from: CurrencySettings.CurrencyCode.AED)
+        XCTAssertEqual("د.إ", symbol)
+    }
 }

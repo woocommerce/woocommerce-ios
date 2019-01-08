@@ -1,11 +1,13 @@
 import Foundation
 
 
-///// String: HTML Stripping
+/// String: HTML Stripping
 ///
 extension String {
 
     /// Returns the HTML Stripped version of the receiver.
+    ///
+    /// NOTE: I can be very slow ⏳ — please be careful when using me (i.e. tableview cells are probably a bad idea).
     ///
     var strippedHTML: String {
         guard let data = data(using: .utf8) else {

@@ -29,6 +29,7 @@ extension Storage.OrderItem: ReadOnlyConvertible {
                          name: name ?? "",
                          productID: Int(productID),
                          quantity: Int(quantity),
+                         price: 0.0,
                          sku: sku ?? "",
                          subtotal: subtotal ?? "",
                          subtotalTax: subtotalTax ?? "",

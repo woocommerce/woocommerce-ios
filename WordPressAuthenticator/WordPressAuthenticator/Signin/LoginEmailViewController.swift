@@ -12,6 +12,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     @IBOutlet open var verticalCenterConstraint: NSLayoutConstraint?
     @IBOutlet var inputStack: UIStackView?
     @IBOutlet var alternativeLoginLabel: UILabel?
+    @IBOutlet var hiddenPasswordField: WPWalkthroughTextField?
 
     var googleLoginButton: UIButton?
     var selfHostedLoginButton: UIButton?
@@ -217,6 +218,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         emailTextField.contentInsets = WPStyleGuide.edgeInsetForLoginTextFields()
         emailTextField.text = loginFields.username
         emailTextField.adjustsFontForContentSizeCategory = true
+        hiddenPasswordField?.isAccessibilityElement = false
     }
 
     private func configureAlternativeLabel() {
@@ -333,6 +335,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     func validateForm() {
         loginFields.meta.socialService = nil
         displayError(message: "")
+
         guard EmailFormatValidator.validate(string: loginFields.username) else {
             assertionFailure("Form should not be submitted unless there is a valid looking email entered.")
             return
@@ -363,6 +366,15 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
                                             strongSelf.displayError(error as NSError, sourceTag: strongSelf.sourceTag)
                                         }
         })
+    }
+
+    /// When password autofill has entered a password on this screen, attempt to login immediately
+    func attemptAutofillLogin() {
+        loginFields.password = hiddenPasswordField?.text ?? ""
+        loginFields.meta.socialService = nil
+        displayError(message: "")
+
+        loginWithUsernamePassword(immediately: true)
     }
 
     override open func displayRemoteError(_ error: Error) {
@@ -450,8 +462,15 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
 
     @IBAction func handleTextFieldDidChange(_ sender: UITextField) {
-        loginFields.username = emailTextField.nonNilTrimmedText()
-        configureSubmitButton()
+        switch sender {
+        case emailTextField:
+            loginFields.username = emailTextField.nonNilTrimmedText()
+            configureSubmitButton()
+        case hiddenPasswordField:
+            attemptAutofillLogin()
+        default:
+            break
+        }
     }
 
 

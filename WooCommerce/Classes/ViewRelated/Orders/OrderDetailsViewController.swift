@@ -695,7 +695,7 @@ private extension OrderDetailsViewController {
     /// - Parameter text: string value to send to the pasteboard
     ///
     func sendToPasteboard(_ text: String?) {
-        guard let text = text else {
+        guard let text = text, text.isEmpty == false else {
             return
         }
 

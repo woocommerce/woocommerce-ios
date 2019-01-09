@@ -514,28 +514,6 @@ extension OrderDetailsViewController: UITableViewDataSource {
         return sections[section].rows.count
     }
 
-    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let row = rowAtIndexPath(indexPath)
-        guard [Row.shippingAddress.reuseIdentifier, Row.billingAddress.reuseIdentifier].contains(row.reuseIdentifier) else {
-            // Only allow the leading swipe action on the address rows
-            return UISwipeActionsConfiguration(actions: [])
-        }
-
-        let copyActionTitle = NSLocalizedString("Copy", comment: "Copy table cell text button title")
-        let copyAction = UIContextualAction(style: .normal, title: copyActionTitle) { [weak self] (action, view, success) in
-            self?.copyText(at: row)
-            success(true)
-        }
-        copyAction.backgroundColor = StyleManager.wooCommerceBrandColor
-
-        return UISwipeActionsConfiguration(actions: [copyAction])
-    }
-
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        // No trailing action on any cell
-        return UISwipeActionsConfiguration(actions: [])
-    }
-
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
@@ -603,6 +581,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension OrderDetailsViewController: UITableViewDelegate {
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -622,6 +601,52 @@ extension OrderDetailsViewController: UITableViewDelegate {
             break
         }
     }
+
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let row = rowAtIndexPath(indexPath)
+        guard [Row.shippingAddress.reuseIdentifier, Row.billingAddress.reuseIdentifier].contains(row.reuseIdentifier) else {
+            // Only allow the leading swipe action on the address rows
+            return UISwipeActionsConfiguration(actions: [])
+        }
+
+        let copyActionTitle = NSLocalizedString("Copy", comment: "Copy table cell text button title")
+        let copyAction = UIContextualAction(style: .normal, title: copyActionTitle) { [weak self] (action, view, success) in
+            self?.copyText(at: row)
+            success(true)
+        }
+        copyAction.backgroundColor = StyleManager.wooCommerceBrandColor
+
+        return UISwipeActionsConfiguration(actions: [copyAction])
+    }
+
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        // No trailing action on any cell
+        return UISwipeActionsConfiguration(actions: [])
+    }
+
+    func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
+        let row = rowAtIndexPath(indexPath)
+        return [Row.shippingAddress.reuseIdentifier, Row.billingAddress.reuseIdentifier].contains(row.reuseIdentifier)
+    }
+
+    func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
+        return action == #selector(copy(_:))
+    }
+
+    func tableView(_ tableView: UITableView, performAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) {
+        guard action == #selector(copy(_:)) else {
+            return
+        }
+
+        let row = rowAtIndexPath(indexPath)
+        copyText(at: row)
+    }
+}
+
+
+// MARK: - Segues
+//
+extension OrderDetailsViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let productListViewController = segue.destination as? ProductListViewController {

@@ -95,7 +95,7 @@ private extension SettingsViewController {
             Section(title: primaryStoreTitle, rows: [.primaryStore], footerHeight: CGFloat.leastNonzeroMagnitude),
             Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
             Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
-            Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
+            Section(title: aboutSettingsTitle, rows: [.about, .licenses, .appRating], footerHeight: UITableView.automaticDimension),
             Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
             Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
         ]
@@ -123,6 +123,8 @@ private extension SettingsViewController {
             configureAbout(cell: cell)
         case let cell as BasicTableViewCell where row == .licenses:
             configureLicenses(cell: cell)
+        case let cell as BasicTableViewCell where row == .appRating:
+            configureAppRating(cell: cell)
         case let cell as BasicTableViewCell where row == .appSettings:
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
@@ -166,6 +168,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Open source licenses", comment: "Navigates to open source licenses screen")
+    }
+
+    func configureAppRating(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Rate us on the App Store", comment: "Presents a prompt to let the user rate us on the app store.")
     }
 
     func configureAppSettings(cell: BasicTableViewCell) {
@@ -353,6 +361,7 @@ private enum Row: CaseIterable {
     case featureRequest
     case about
     case licenses
+    case appRating
     case appSettings
 
     var type: UITableViewCell.Type {
@@ -370,6 +379,8 @@ private enum Row: CaseIterable {
         case .about:
             return BasicTableViewCell.self
         case .licenses:
+            return BasicTableViewCell.self
+        case .appRating:
             return BasicTableViewCell.self
         case .appSettings:
             return BasicTableViewCell.self

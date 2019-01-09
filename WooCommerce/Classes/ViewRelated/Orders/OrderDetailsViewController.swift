@@ -58,6 +58,10 @@ class OrderDetailsViewController: UIViewController {
         }
     }
 
+    /// Haptic Feedback!
+    ///
+    private let hapticGenerator = UINotificationFeedbackGenerator()
+
 
     // MARK: - View Lifecycle
 
@@ -437,18 +441,6 @@ private extension OrderDetailsViewController {
 
         cell.display(orderStatus: viewModel.order.status)
     }
-
-    // MARK: - Get order note
-    //
-    func note(at indexPath: IndexPath) -> OrderNote? {
-        // We need to subtract 1 here because the first order note row is the "Add Order" cell
-        let noteIndex = indexPath.row - 1
-        guard orderNotes.indices.contains(noteIndex) else {
-            return nil
-        }
-
-        return orderNotes[noteIndex]
-    }
 }
 
 
@@ -520,6 +512,28 @@ extension OrderDetailsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return sections[section].rows.count
+    }
+
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let row = rowAtIndexPath(indexPath)
+        guard [Row.shippingAddress.reuseIdentifier, Row.billingAddress.reuseIdentifier].contains(row.reuseIdentifier) else {
+            // Only allow the leading swipe action on the address rows
+            return UISwipeActionsConfiguration(actions: [])
+        }
+
+        let copyActionTitle = NSLocalizedString("Copy", comment: "Copy table cell text button title")
+        let copyAction = UIContextualAction(style: .normal, title: copyActionTitle) { [weak self] (action, view, success) in
+            self?.copyText(at: row)
+            success(true)
+        }
+        copyAction.backgroundColor = StyleManager.wooCommerceBrandColor
+
+        return UISwipeActionsConfiguration(actions: [copyAction])
+    }
+
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        // No trailing action on any cell
+        return UISwipeActionsConfiguration(actions: [])
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -613,6 +627,55 @@ extension OrderDetailsViewController: UITableViewDelegate {
         if let productListViewController = segue.destination as? ProductListViewController {
             productListViewController.viewModel = viewModel
         }
+    }
+}
+
+
+// MARK: - Convenience Methods
+//
+private extension OrderDetailsViewController {
+
+    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
+        return sections[indexPath.section].rows[indexPath.row]
+    }
+
+    func note(at indexPath: IndexPath) -> OrderNote? {
+        // We need to subtract 1 here because the first order note row is the "Add Order" cell
+        let noteIndex = indexPath.row - 1
+        guard orderNotes.indices.contains(noteIndex) else {
+            return nil
+        }
+
+        return orderNotes[noteIndex]
+    }
+
+    /// Sends the provided Row's text data to the pasteboard
+    ///
+    /// - Parameter row: Row to copy text data from
+    ///
+    func copyText(at row: Row) {
+        switch row {
+        case .billingAddress:
+            sendToPasteboard(viewModel.order.billingAddress?.fullNameWithCompanyAndAddress)
+        case .shippingAddress:
+            sendToPasteboard(viewModel.order.shippingAddress?.fullNameWithCompanyAndAddress)
+        default:
+            break // We only send text to the pasteboard from the address rows right meow
+        }
+    }
+
+    /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
+    /// is nil, nothing is sent to the pasteboard.
+    ///
+    /// - Parameter text: string value to send to the pasteboard
+    ///
+    func sendToPasteboard(_ text: String?) {
+        guard let text = text else {
+            return
+        }
+
+        UIPasteboard.general.string = text
+        hapticGenerator.notificationOccurred(.success)
     }
 }
 

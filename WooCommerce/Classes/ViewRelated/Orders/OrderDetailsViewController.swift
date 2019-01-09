@@ -609,7 +609,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
             return UISwipeActionsConfiguration(actions: [])
         }
 
-        let copyActionTitle = NSLocalizedString("Copy", comment: "Copy table cell text button title")
+        let copyActionTitle = NSLocalizedString("Copy", comment: "Copy address text button title — should be one word and as short as possible.")
         let copyAction = UIContextualAction(style: .normal, title: copyActionTitle) { [weak self] (action, view, success) in
             self?.copyText(at: row)
             success(true)

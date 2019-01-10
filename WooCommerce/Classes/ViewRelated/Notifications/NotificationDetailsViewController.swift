@@ -457,7 +457,7 @@ private extension NotificationDetailsViewController {
 
 // MARK: - Nested Types
 //
-private extension NotificationsViewController {
+private extension NotificationDetailsViewController {
     struct Constants {
         static let section = "notifications"
     }

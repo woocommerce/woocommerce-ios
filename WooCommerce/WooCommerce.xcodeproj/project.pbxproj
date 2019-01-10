@@ -282,6 +282,7 @@
 		CEEC9B5C21E79B3E0055EEF0 /* FeatureFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B5B21E79B3E0055EEF0 /* FeatureFlag.swift */; };
 		CEEC9B5E21E79C330055EEF0 /* BuildConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B5D21E79C330055EEF0 /* BuildConfiguration.swift */; };
 		CEEC9B6021E79CAA0055EEF0 /* FeatureFlagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */; };
+		CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -607,6 +608,7 @@
 		CEEC9B5B21E79B3E0055EEF0 /* FeatureFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlag.swift; sourceTree = "<group>"; };
 		CEEC9B5D21E79C330055EEF0 /* BuildConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildConfiguration.swift; sourceTree = "<group>"; };
 		CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagTests.swift; sourceTree = "<group>"; };
+		CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -796,6 +798,7 @@
 		B55D4C2220B716CE00D7A50F /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				CEEC9B6121E79EBF0055EEF0 /* AppRatings */,
 				CE9B7E3021C94685000F971C /* Currency */,
 				B541B2182189F387008FE7C1 /* StringFormatter */,
 				B5A03699214C0E7000774E2C /* Logging */,
@@ -1324,6 +1327,14 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
+		CEEC9B6121E79EBF0055EEF0 /* AppRatings */ = {
+			isa = PBXGroup;
+			children = (
+				CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */,
+			);
+			path = AppRatings;
+			sourceTree = "<group>";
+		};
 		F4B77A83B2A3D94EA331691B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -1837,6 +1848,7 @@
 				B55401692170D5E10067DC90 /* ChartPlaceholderView.swift in Sources */,
 				B5290ED9219B3FA900A6AF7F /* Date+Woo.swift in Sources */,
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
+				CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */,
 				B5F04D952194F2A300501EE1 /* NoteDetailsRow.swift in Sources */,
 				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
 				CEEC9B5C21E79B3E0055EEF0 /* FeatureFlag.swift in Sources */,

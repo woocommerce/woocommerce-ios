@@ -21,4 +21,3 @@ class FeatureFlagTests: XCTestCase {
         }
     }
 }
-

@@ -71,6 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupLogLevel(.verbose)
         setupNoticePresenter()
         setupPushNotificationsManagerIfPossible()
+        setupAppRatingManager()
 
         // Display the Authentication UI
         displayAuthenticatorIfNeeded()
@@ -263,6 +264,20 @@ private extension AppDelegate {
             pushNotesManager.registerForRemoteNotifications()
             pushNotesManager.ensureAuthorizationIsRequested()
         #endif
+    }
+
+    ///
+    ///
+    func setupAppRatingManager() {
+        guard let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else {
+            DDLogError("No CFBundleShortVersionString found in Info.plist")
+            return
+        }
+
+        let appRating = AppRatingManager.shared
+        appRating.register(section: "notifications", significantEventCount: 5)
+        appRating.systemWideSignificantEventCountRequiredForPrompt = 10
+        appRating.setVersion(version)
     }
 }
 

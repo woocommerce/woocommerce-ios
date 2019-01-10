@@ -58,6 +58,10 @@ class OrderDetailsViewController: UIViewController {
         }
     }
 
+    /// Haptic Feedback!
+    ///
+    private let hapticGenerator = UINotificationFeedbackGenerator()
+
 
     // MARK: - View Lifecycle
 
@@ -437,18 +441,6 @@ private extension OrderDetailsViewController {
 
         cell.display(orderStatus: viewModel.order.status)
     }
-
-    // MARK: - Get order note
-    //
-    func note(at indexPath: IndexPath) -> OrderNote? {
-        // We need to subtract 1 here because the first order note row is the "Add Order" cell
-        let noteIndex = indexPath.row - 1
-        guard orderNotes.indices.contains(noteIndex) else {
-            return nil
-        }
-
-        return orderNotes[noteIndex]
-    }
 }
 
 
@@ -589,6 +581,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension OrderDetailsViewController: UITableViewDelegate {
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -609,10 +602,128 @@ extension OrderDetailsViewController: UITableViewDelegate {
         }
     }
 
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard checkIfCopyingIsAllowed(for: indexPath) else {
+            // Only allow the leading swipe action on the address rows
+            return UISwipeActionsConfiguration(actions: [])
+        }
+
+        let row = rowAtIndexPath(indexPath)
+        let copyActionTitle = NSLocalizedString("Copy", comment: "Copy address text button title — should be one word and as short as possible.")
+        let copyAction = UIContextualAction(style: .normal, title: copyActionTitle) { [weak self] (action, view, success) in
+            self?.copyText(at: row)
+            success(true)
+        }
+        copyAction.backgroundColor = StyleManager.wooCommerceBrandColor
+
+        return UISwipeActionsConfiguration(actions: [copyAction])
+    }
+
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        // No trailing action on any cell
+        return UISwipeActionsConfiguration(actions: [])
+    }
+
+    func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
+        return checkIfCopyingIsAllowed(for: indexPath)
+    }
+
+    func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
+        return action == #selector(copy(_:))
+    }
+
+    func tableView(_ tableView: UITableView, performAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) {
+        guard action == #selector(copy(_:)) else {
+            return
+        }
+
+        let row = rowAtIndexPath(indexPath)
+        copyText(at: row)
+    }
+}
+
+
+// MARK: - Segues
+//
+extension OrderDetailsViewController {
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let productListViewController = segue.destination as? ProductListViewController {
             productListViewController.viewModel = viewModel
         }
+    }
+}
+
+
+// MARK: - Convenience Methods
+//
+private extension OrderDetailsViewController {
+
+    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
+        return sections[indexPath.section].rows[indexPath.row]
+    }
+
+    func note(at indexPath: IndexPath) -> OrderNote? {
+        // We need to subtract 1 here because the first order note row is the "Add Order" cell
+        let noteIndex = indexPath.row - 1
+        guard orderNotes.indices.contains(noteIndex) else {
+            return nil
+        }
+
+        return orderNotes[noteIndex]
+    }
+
+    /// Checks if copying the row data at the provided indexPath is allowed
+    ///
+    /// - Parameter indexPath: indexpath of the row to check
+    /// - Returns: true is copying is allowed, false otherwise
+    ///
+    func checkIfCopyingIsAllowed(for indexPath: IndexPath) -> Bool {
+        let row = rowAtIndexPath(indexPath)
+        switch row {
+        case .billingAddress:
+            if let _ = viewModel.order.billingAddress {
+                return true
+            }
+        case .shippingAddress:
+            if let _ = viewModel.order.shippingAddress {
+                return true
+            }
+        default:
+            break
+        }
+
+        return false
+    }
+
+    /// Sends the provided Row's text data to the pasteboard
+    ///
+    /// - Parameter row: Row to copy text data from
+    ///
+    func copyText(at row: Row) {
+        switch row {
+        case .billingAddress:
+            sendToPasteboard(viewModel.order.billingAddress?.fullNameWithCompanyAndAddress)
+        case .shippingAddress:
+            sendToPasteboard(viewModel.order.shippingAddress?.fullNameWithCompanyAndAddress)
+        default:
+            break // We only send text to the pasteboard from the address rows right meow
+        }
+    }
+
+    /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
+    /// is nil, nothing is sent to the pasteboard.
+    ///
+    /// - Parameter text: string value to send to the pasteboard
+    ///
+    func sendToPasteboard(_ text: String?) {
+        guard let text = text, text.isEmpty == false else {
+            return
+        }
+
+        // Insert an extra newline to make life easier when pasting
+        UIPasteboard.general.string = text + "\n"
+        hapticGenerator.notificationOccurred(.success)
     }
 }
 

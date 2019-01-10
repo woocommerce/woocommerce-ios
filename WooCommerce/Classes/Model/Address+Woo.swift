@@ -35,6 +35,19 @@ extension Address {
         return postalAddress.formatted(as: .mailingAddress)
     }
 
+    /// Returns the `fullName`, `company`, and `address`. Basically this var combines the
+    /// `fullNameWithCompany` & `formattedPostalAddress` vars.
+    ///
+    var fullNameWithCompanyAndAddress: String {
+        var output: [String] = [fullNameWithCompany]
+
+        if let formattedPostalAddress = formattedPostalAddress, formattedPostalAddress.isEmpty == false {
+            output.append(formattedPostalAddress)
+        }
+
+        return output.joined(separator: "\n")
+    }
+
     /// Returns the (clean) Phone number: contains only decimal digits.
     ///
     var cleanedPhoneNumber: String? {

@@ -212,4 +212,3 @@ class AppRatingManagerTests: XCTestCase {
         self.manager.incrementSignificantEvent()
     }
 }
-

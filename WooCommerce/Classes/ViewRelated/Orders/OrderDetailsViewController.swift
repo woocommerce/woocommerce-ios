@@ -699,7 +699,8 @@ private extension OrderDetailsViewController {
             return
         }
 
-        UIPasteboard.general.string = text
+        // Insert an extra newline to make life easier when pasting
+        UIPasteboard.general.string = text + "\n"
         hapticGenerator.notificationOccurred(.success)
     }
 }

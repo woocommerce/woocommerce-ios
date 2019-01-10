@@ -603,12 +603,12 @@ extension OrderDetailsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let row = rowAtIndexPath(indexPath)
-        guard [Row.shippingAddress.reuseIdentifier, Row.billingAddress.reuseIdentifier].contains(row.reuseIdentifier) else {
+        guard checkIfCopyingIsAllowed(for: indexPath) else {
             // Only allow the leading swipe action on the address rows
             return UISwipeActionsConfiguration(actions: [])
         }
 
+        let row = rowAtIndexPath(indexPath)
         let copyActionTitle = NSLocalizedString("Copy", comment: "Copy address text button title — should be one word and as short as possible.")
         let copyAction = UIContextualAction(style: .normal, title: copyActionTitle) { [weak self] (action, view, success) in
             self?.copyText(at: row)
@@ -625,8 +625,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
-        let row = rowAtIndexPath(indexPath)
-        return [Row.shippingAddress.reuseIdentifier, Row.billingAddress.reuseIdentifier].contains(row.reuseIdentifier)
+        return checkIfCopyingIsAllowed(for: indexPath)
     }
 
     func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
@@ -672,6 +671,29 @@ private extension OrderDetailsViewController {
         }
 
         return orderNotes[noteIndex]
+    }
+
+    /// Checks if copying the row data at the provided indexPath is allowed
+    ///
+    /// - Parameter indexPath: indexpath of the row to check
+    /// - Returns: true is copying is allowed, false otherwise
+    ///
+    func checkIfCopyingIsAllowed(for indexPath: IndexPath) -> Bool {
+        let row = rowAtIndexPath(indexPath)
+        switch row {
+        case .billingAddress:
+            if let _ = viewModel.order.billingAddress {
+                return true
+            }
+        case .shippingAddress:
+            if let _ = viewModel.order.shippingAddress {
+                return true
+            }
+        default:
+            break
+        }
+
+        return false
     }
 
     /// Sends the provided Row's text data to the pasteboard

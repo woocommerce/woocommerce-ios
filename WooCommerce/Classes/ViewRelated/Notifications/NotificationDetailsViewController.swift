@@ -65,6 +65,7 @@ class NotificationDetailsViewController: UIViewController {
         configureMainView()
         configureTableView()
         configureEntityListener()
+        configureAppRatingEvent()
 
         registerTableViewCells()
         reloadInterface()
@@ -110,6 +111,12 @@ private extension NotificationDetailsViewController {
             self?.navigationController?.popToRootViewController(animated: true)
             self?.displayNoteDeletedNotice()
         }
+    }
+
+    /// Reports a significant event to the App Rating Manager
+    ///
+    func configureAppRatingEvent() {
+        AppRatingManager.shared.incrementSignificantEvent(section: Constants.section)
     }
 
     /// Registers all of the available TableViewCells.
@@ -445,5 +452,13 @@ private extension NotificationDetailsViewController {
         let safariViewController = SFSafariViewController(url: url)
         safariViewController.modalPresentationStyle = .pageSheet
         present(safariViewController, animated: true, completion: nil)
+    }
+}
+
+// MARK: - Nested Types
+//
+private extension NotificationsViewController {
+    struct Constants {
+        static let section = "notifications"
     }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-12-11 14:54:02+0000 */
+/* Translation-Revision-Date: 2019-01-09 14:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -13,13 +13,13 @@
 "A verification code will only contain numbers." = "Bir doğrulama kodu yalnızca sayı içerecektir.";
 
 /* About this app (information page title) */
-"About" = "About";
+"About" = "Hakkında";
 
 /* My Store > Settings > About app section */
-"About the app" = "About the app";
+"About the app" = "Uygulama hakkında";
 
 /* Application's Active State */
-"Active" = "Active";
+"Active" = "Etkin";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "Etkin, otomatik güncellemeler kapalı";
@@ -91,7 +91,7 @@
 "Back" = "Geri";
 
 /* Application's Background State */
-"Background" = "Background";
+"Background" = "Arka plan";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "Barkod numarası %1$i, %2$@, ";
@@ -118,7 +118,7 @@
 "Canceled" = "İptal edildi";
 
 /* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
-"Cannot connect to %@" = "Cannot connect to %@";
+"Cannot connect to %@" = "%@ ile bağlantı kurulamıyor";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Her an, her yerde sevdiğiniz siteleri kontrol edip sohbetin bir parçası olun.";
@@ -172,10 +172,10 @@
 "Could not unfollow the site at the address specified." = "Belirtilen adresteki site takipten çıkarılamadı.";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
-"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "WordPress sitesine bağlanılamadı. Bu adreste geçerli WordPress sitesi yok. Girdiğiniz site adresini (URL) kontrol edin.";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "Bağlantı kurulamadı. Gerekli XML-RPC yordamları sunucuda bulunmuyor.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
 "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Bağlantı kurulamadı. Sitenizin XMLRPC uç noktasına erişmeye çalışırken 403 hatası aldık. Uygulama, sitenizle bağlantı kurabilmek için buna gereksinim duyuyor. Bu sorunu gidermek için sunucunuzla iletişim kurun.";
@@ -195,9 +195,6 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Günler";
 
-/* Order Notice */
-"Deleted: Order #(viewModel.order.number)" = "Silindi: (viewModel.order.number) Numaralı Sipariş";
-
 /* The row label to tap for a detailed product list */
 "Details" = "Detaylar";
 
@@ -214,19 +211,19 @@
 "Don't have an account? _Sign up_" = "Hesabınız yok mu? _Kaydol_";
 
 /* WordPress.com (unmapped!) error */
-"Dotcom Error: [(code)] (theMessage)" = "Dotcom Error: [(code)] (theMessage)";
+"Dotcom Error: [(code)] (theMessage)" = "Dotcom Hatası: [(code)] (theMessage)";
 
 /* WordPress.com Missing Token */
-"Dotcom Missing Token" = "Dotcom Missing Token";
+"Dotcom Missing Token" = "Dotcom Belirteci Eksik";
 
 /* WordPress.com Request Failure */
-"Dotcom Request Failed" = "Dotcom Request Failed";
+"Dotcom Request Failed" = "Dotcom İsteği Başarısız Oldu";
 
 /* WordPress.com Error thrown when the response body is empty */
-"Dotcom Response Empty" = "Dotcom Response Empty";
+"Dotcom Response Empty" = "Dotcom Yanıtı Boş";
 
 /* WordPress.com Invalid Token */
-"Dotcom Token Invalid" = "Dotcom Token Invalid";
+"Dotcom Token Invalid" = "Dotcom Belirteci Geçersiz";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "Kapatmak için çift dokunun";
@@ -264,9 +261,6 @@
 /* No comment provided by engineer. */
 "Enter your password instead." = "Bunun yerine parolanızı girin.";
 
-/* No comment provided by engineer. */
-"Error" = "Error";
-
 /* Failed Order Status */
 "Failed" = "Başarısız";
 
@@ -274,7 +268,7 @@
 "Failed to serialize request to the REST API." = "REST API isteği serileştirmesi başarısız oldu.";
 
 /* Navigates to the feature request screen */
-"Feature Request" = "Feature Request";
+"Feature Request" = "Özellik İsteği";
 
 /* Accessibility label for the Filter notifications button. */
 "Filter notifications" = "Bildirimleri filtrele";
@@ -296,9 +290,6 @@
 
 /* Fulfill order button title */
 "Fulfill order" = "Siparişi yerine getir";
-
-/* Fulfill Notice Title */
-"Fulfillment" = "Yerine getirme";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Ürünlerin mağazanızdaki performansına dair içgörüler edinin";
@@ -322,7 +313,7 @@
 "Help & Support" = "Yardım ve Destek";
 
 /* My Store > Settings > Privacy settings section */
-"Help Improve The App" = "Help Improve The App";
+"Help Improve The App" = "Uygulamayı İyileştirmemize Yardımcı Olun";
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "Faturayı saklayın";
@@ -331,10 +322,10 @@
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hımm, bu URL’de bir WordPress sitesi varmış gibi görünmüyor. Yazımı tekrar kontrol edip yeniden deneyin.";
 
 /* Detail label for yes/no switch. */
-"If disabled the note will be private" = "If disabled the note will be private";
+"If disabled the note will be private" = "Devre dışıysa not gizli olur";
 
 /* Application's Inactive State */
-"Inactive" = "Inactive";
+"Inactive" = "Etkin değil";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Etkin değil, otomatik güncellemeler kapalı";
@@ -373,7 +364,7 @@
 "Learn more" = "Daha fazlasını öğrenin";
 
 /* Licenses (information page title) */
-"Licenses" = "Licenses";
+"Licenses" = "Lisanslar";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limite ulaşıldı. Bir dakika içinde tekrar deneyebilirsiniz. Bundan önceki denemeler, sadece engellemenin kalkması için beklemeniz gereken süreyi arttıracaktır. Eğer bunun bir hata olduğunu düşünüyorsanız destek ile iletişime geçin. ";
@@ -483,6 +474,9 @@
 /* Empty Notifications List Message */
 "No Notifications Yet!" = "Henüz Bildirim Yok!";
 
+/* Search Orders (Empty State) */
+"No Orders found" = "Sipariş bulunamadı";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Bu dönemde hiç etkinlik yok";
 
@@ -529,10 +523,10 @@
 "Open Mail" = "Postayı Aç";
 
 /* Opens iOS's Device Settings for the app */
-"Open device settings" = "Open device settings";
+"Open device settings" = "Cihaz ayarlarını aç";
 
 /* Navigates to open source licenses screen */
-"Open source licenses" = "Open source licenses";
+"Open source licenses" = "Açık kaynak lisanslar";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "İsteğe Bağlı Takip Bilgileri";
@@ -540,11 +534,14 @@
 /* No comment provided by engineer. */
 "Order #(viewModel.order.number)" = "(viewModel.order.number) Numaralı Sipariş";
 
-/* Fulfill Notice Message */
-"Order Marked as Complete!" = "Sipariş Tamamlanmış Olarak İşaretlendi!";
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+"Order %@ has been deleted from your store" = "%@ numaralı sipariş mağazanızdan silindi";
 
 /* Order notes section title */
 "Order Notes" = "Sipariş Notları";
+
+/* Order fulfillment success notice */
+"Order marked as fulfilled" = "Sipariş, yerine getirildi olarak işaretlendi";
 
 /* No comment provided by engineer. */
 "Orders" = "Siparişler";
@@ -553,7 +550,7 @@
 "Orders: (filter)" = "Siparişler: (filtre)";
 
 /* My Store > Settings > Other app section */
-"Other" = "Other";
+"Other" = "Diğer";
 
 /* Product section title */
 "PRODUCT" = "ÜRÜN";
@@ -592,7 +589,7 @@
 "Please enter your credentials" = "Lütfen giriş bilgilerinizi girin";
 
 /* Instructions for alert asking for email and name. */
-"Please enter your email address and username:" = "Please enter your email address and username:";
+"Please enter your email address and username:" = "Lütfen e-posta adresinizi ve kullanıcı adınızı girin:";
 
 /* Instructions for alert asking for email. */
 "Please enter your email address:" = "Lütfen e-posta adresinizi girin";
@@ -604,10 +601,10 @@
 "Please open your email app and look for an email from WordPress.com." = "Lütfen e-posta uygulamanızı açın ve WordPress.com’dan gelen e-postayı arayın.";
 
 /* My Store > Settings > Primary Store information section */
-"Primary Store" = "Primary Store";
+"Primary Store" = "Birincil Mağaza";
 
 /* Opens the Privacy Policy web page */
-"Privacy Policy" = "Privacy Policy";
+"Privacy Policy" = "Gizlilik Politikası";
 
 /* Navigates to Privacy Settings screen */
 "Privacy Settings" = "Gizlilik Ayarları";
@@ -654,14 +651,17 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "Çökmeleri bildirin";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
+"Retrieves a list of orders that contain a given keyword." = "Belirli bir anahtar sözcüğü içeren siparişlerin bir listesini alır.";
+
 /* No comment provided by engineer. */
 "Retry" = "Tekrar";
 
 /* Revenue stat label on dashboard. */
-"Revenue" = "Revenue";
+"Revenue" = "Kazanç";
 
-/* Review moderation success notice message */
-"Review marked %@" = "Review marked %@";
+/* Review moderation success notice message. It reads: Review marked as {new status} */
+"Review marked as %@" = "Review marked as %@";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Bu bekleyen siparişleri inceleyin, hazırlayın ve gönderin";
@@ -674,6 +674,12 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS Gönderildi";
+
+/* Orders Search Placeholder */
+"Search all orders" = "Tüm siparişleri ara";
+
+/* Search Orders */
+"Search orders" = "Siparişleri ara";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "Bağlantı Gönder";
@@ -784,7 +790,7 @@
 "Subtotal" = "Ara Toplam";
 
 /* Labels an order note to let user know it's a system status message */
-"System status" = "System status";
+"System status" = "Sistem durumu";
 
 /* Tax label for total taxes line */
 "Tax:" = "Vergi:";
@@ -793,7 +799,7 @@
 "Taxes" = "Vergiler";
 
 /* Opens the Terms of Service web page */
-"Terms of Service" = "Terms of Service";
+"Terms of Service" = "Hizmet Koşulları";
 
 /* Button title */
 "Text me a code instead" = "Bunun yerine bana kodu mesaj olarak gönderin";
@@ -833,9 +839,6 @@
 
 /* Displayed whenever a Notification that was onscreen got deleted. */
 "The notification has been removed" = "Bildirim kaldırıldı!";
-
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. */
-"The order has been deleted from your Store!" = "Sipariş Mağazanızdan silindi!";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Sunucu boş bir yanıt döndü. Bu genellikle sitenizin hafıza limitini arttırmanız gerektiği anlamına gelir.";
@@ -921,8 +924,8 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "Bu hesaba bağlı WooCommerce mağazası bulunamadı";
 
-/* Review error notice message */
-"Unable to mark review %@" = "Unable to mark review %@";
+/* Review error notice message. It reads: Unable to mark review as {attempted status} */
+"Unable to mark review as %@" = "Unable to mark review as %@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Belirtilen adresteki WordPress sitesi okunamadı. 'Yardım lazım mı?' tuşuna tıklayarak SSS'i görüntüleyebilirsiniz.";
@@ -940,7 +943,7 @@
 "Undo" = "Geri al";
 
 /* Unknown Application State */
-"Unknown" = "Unknown";
+"Unknown" = "Bilinmiyor";
 
 /* No comment provided by engineer. */
 "Unknown Search Terms" = "Bilinmeyen Arama Terimleri";
@@ -967,7 +970,7 @@
 "Version" = "Sürüm";
 
 /* Displays the version of the App */
-"Version %@" = "Version %@";
+"Version %@" = "Sürüm %@";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Daha önce verilen destek biletlerini görüntüleyin";
@@ -976,7 +979,7 @@
 "Viewer" = "İzleyici";
 
 /* Visitors stat label on dashboard - should be plural. */
-"Visitors" = "Visitors";
+"Visitors" = "Ziyaretçiler";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "NOT YAZIN";

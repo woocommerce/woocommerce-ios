@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-12-11 07:54:02+0000 */
+/* Translation-Revision-Date: 2019-01-09 13:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -13,13 +13,13 @@
 "A verification code will only contain numbers." = "Kode verifikasi hanya berisi angka.";
 
 /* About this app (information page title) */
-"About" = "About";
+"About" = "Tentang";
 
 /* My Store > Settings > About app section */
-"About the app" = "About the app";
+"About the app" = "Tentang aplikasi";
 
 /* Application's Active State */
-"Active" = "Active";
+"Active" = "Aktif";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "Aktif, Pembaruan Otomatis tidak aktif";
@@ -91,7 +91,7 @@
 "Back" = "Kembali";
 
 /* Application's Background State */
-"Background" = "Background";
+"Background" = "Latar Belakang";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "Nomor bar %1$i, %2$@, ";
@@ -118,7 +118,7 @@
 "Canceled" = "Dibatalkan";
 
 /* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
-"Cannot connect to %@" = "Cannot connect to %@";
+"Cannot connect to %@" = "Tidak dapat terhubung ke %@";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Dapatkan kabar terbaru dari situs favorit Anda dan bergabung dalam percakapan di mana pun, kapan pun.";
@@ -172,10 +172,10 @@
 "Could not unfollow the site at the address specified." = "Tidak dapat membatalkan mengikuti situs pada alamat yang ditetapkan.";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
-"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Tidak dapat terhubung ke situs WordPress. Tidak ada situs WordPress yang valid di alamat ini. Periksa alamat situs (URL) yang Anda masukkan.";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "Tidak dapat terhubung. Metode XML-RPC yang diperlukan tidak ditemukan di server.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
 "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Tidak dapat terhubung. Kami menerima error 403 saat mencoba mengakses titik akhir XMLRPC situs Anda. Aplikasi ini memerlukannya agar dapat berkomunikasi dengan situs Anda. Hubungi host Anda untuk mengatasi masalah ini.";
@@ -194,9 +194,6 @@
 
 /* Plural of 'day' — a statistical unit */
 "Days" = "Hari";
-
-/* Order Notice */
-"Deleted: Order #(viewModel.order.number)" = "Dihapus: Pesanan #(viewModel.order.number)";
 
 /* The row label to tap for a detailed product list */
 "Details" = "Rincian";
@@ -217,16 +214,16 @@
 "Dotcom Error: [(code)] (theMessage)" = "Dotcom Error: [(code)] (theMessage)";
 
 /* WordPress.com Missing Token */
-"Dotcom Missing Token" = "Dotcom Missing Token";
+"Dotcom Missing Token" = "Dotcom Token Tidak Ada";
 
 /* WordPress.com Request Failure */
-"Dotcom Request Failed" = "Dotcom Request Failed";
+"Dotcom Request Failed" = "Dotcom Permintaan Gagal";
 
 /* WordPress.com Error thrown when the response body is empty */
-"Dotcom Response Empty" = "Dotcom Response Empty";
+"Dotcom Response Empty" = "Dotcom Respons Kosong";
 
 /* WordPress.com Invalid Token */
-"Dotcom Token Invalid" = "Dotcom Token Invalid";
+"Dotcom Token Invalid" = "Dotcom Token Tidak Valid";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "Ketuk dua kali untuk menutup";
@@ -264,9 +261,6 @@
 /* No comment provided by engineer. */
 "Enter your password instead." = "Masukkan kata sandi saja.";
 
-/* No comment provided by engineer. */
-"Error" = "Error";
-
 /* Failed Order Status */
 "Failed" = "Gagal";
 
@@ -274,7 +268,7 @@
 "Failed to serialize request to the REST API." = "Gagal menyambungkan permintaan ke REST API.";
 
 /* Navigates to the feature request screen */
-"Feature Request" = "Feature Request";
+"Feature Request" = "Permintaan Fitur";
 
 /* Accessibility label for the Filter notifications button. */
 "Filter notifications" = "Saring pemberitahuan";
@@ -296,9 +290,6 @@
 
 /* Fulfill order button title */
 "Fulfill order" = "Penuhi pesanan";
-
-/* Fulfill Notice Title */
-"Fulfillment" = "Pemenuhan";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Dapatkan informasi mengenai performa produk di toko Anda";
@@ -322,7 +313,7 @@
 "Help & Support" = "Bantuan & Dukungan";
 
 /* My Store > Settings > Privacy settings section */
-"Help Improve The App" = "Help Improve The App";
+"Help Improve The App" = "Bantu Meningkatkan Kualitas Aplikasi";
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "Sembunyikan tagihan";
@@ -331,10 +322,10 @@
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hmm, sepertinya tidak ada situs WordPress di URL ini. Periksa lagi ejaannya dan coba lagi.";
 
 /* Detail label for yes/no switch. */
-"If disabled the note will be private" = "If disabled the note will be private";
+"If disabled the note will be private" = "Jika dinonaktifkan, catatan akan diatur sebagai pribadi";
 
 /* Application's Inactive State */
-"Inactive" = "Inactive";
+"Inactive" = "Nonaktif";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Tidak aktif, Pembaruan Otomatis tidak aktif";
@@ -373,7 +364,7 @@
 "Learn more" = "Pelajari lebih lanjut";
 
 /* Licenses (information page title) */
-"Licenses" = "Licenses";
+"Licenses" = "Lisensi";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Melampaui Batas. Anda dapat coba lagi semenit kemudian. Mencoba sebelum semenit akan menambah waktu Anda harus menunggu sebelum ban dicabut. Jika Anda merasa ini sebuah kesalahan, silahkan kontak support.";
@@ -483,6 +474,9 @@
 /* Empty Notifications List Message */
 "No Notifications Yet!" = "Belum Ada Pemberitahuan!";
 
+/* Search Orders (Empty State) */
+"No Orders found" = "Tidak Ada Pesanan yang ditemukan";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Tidak ada aktivitas dalam periode ini";
 
@@ -529,10 +523,10 @@
 "Open Mail" = "Buka Email";
 
 /* Opens iOS's Device Settings for the app */
-"Open device settings" = "Open device settings";
+"Open device settings" = "Buka pengaturan perangkat";
 
 /* Navigates to open source licenses screen */
-"Open source licenses" = "Open source licenses";
+"Open source licenses" = "Lisensi sumber terbuka";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Informasi Pelacakan Opsional";
@@ -540,11 +534,14 @@
 /* No comment provided by engineer. */
 "Order #(viewModel.order.number)" = "Pesanan #(viewModel.order.number)";
 
-/* Fulfill Notice Message */
-"Order Marked as Complete!" = "Pesanan Ditandai Selesai!";
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+"Order %@ has been deleted from your store" = "Pesanan %@ telah dihapus dari toko Anda";
 
 /* Order notes section title */
 "Order Notes" = "Catatan Pesanan";
+
+/* Order fulfillment success notice */
+"Order marked as fulfilled" = "Pesanan ditandai sudah dipenuhi";
 
 /* No comment provided by engineer. */
 "Orders" = "Pesanan";
@@ -553,7 +550,7 @@
 "Orders: (filter)" = "Pesanan: (penyaring)";
 
 /* My Store > Settings > Other app section */
-"Other" = "Other";
+"Other" = "Lainnya";
 
 /* Product section title */
 "PRODUCT" = "PRODUK";
@@ -592,7 +589,7 @@
 "Please enter your credentials" = "Masukkan kredensial Anda";
 
 /* Instructions for alert asking for email and name. */
-"Please enter your email address and username:" = "Please enter your email address and username:";
+"Please enter your email address and username:" = "Masukkan alamat email dan nama pengguna Anda:";
 
 /* Instructions for alert asking for email. */
 "Please enter your email address:" = "Masukkan alamat email Anda.";
@@ -604,10 +601,10 @@
 "Please open your email app and look for an email from WordPress.com." = "Buka aplikasi email Anda dan cari email dari WordPress.com";
 
 /* My Store > Settings > Primary Store information section */
-"Primary Store" = "Primary Store";
+"Primary Store" = "Toko Utama";
 
 /* Opens the Privacy Policy web page */
-"Privacy Policy" = "Privacy Policy";
+"Privacy Policy" = "Kebijakan Privasi";
 
 /* Navigates to Privacy Settings screen */
 "Privacy Settings" = "Pengaturan Privasi";
@@ -654,14 +651,17 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "Laporkan masalah crash";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
+"Retrieves a list of orders that contain a given keyword." = "Menerima daftar pesanan yang mengandung kata kunci tertentu.";
+
 /* No comment provided by engineer. */
 "Retry" = "Coba Lagi";
 
 /* Revenue stat label on dashboard. */
-"Revenue" = "Revenue";
+"Revenue" = "Pendapatan";
 
-/* Review moderation success notice message */
-"Review marked %@" = "Review marked %@";
+/* Review moderation success notice message. It reads: Review marked as {new status} */
+"Review marked as %@" = "Review marked as %@";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Tinjau, siapkan, dan kirimkan pesanan yang tertunda ini";
@@ -674,6 +674,12 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS Terkirim";
+
+/* Orders Search Placeholder */
+"Search all orders" = "Cari semua pesanan";
+
+/* Search Orders */
+"Search orders" = "Cari pesanan";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "Kirim Tautan";
@@ -784,7 +790,7 @@
 "Subtotal" = "Subtotal";
 
 /* Labels an order note to let user know it's a system status message */
-"System status" = "System status";
+"System status" = "Status sistem";
 
 /* Tax label for total taxes line */
 "Tax:" = "Pajak:";
@@ -793,7 +799,7 @@
 "Taxes" = "Pajak";
 
 /* Opens the Terms of Service web page */
-"Terms of Service" = "Terms of Service";
+"Terms of Service" = "Ketentuan Layanan";
 
 /* Button title */
 "Text me a code instead" = "Kirimi saya kode saja";
@@ -833,9 +839,6 @@
 
 /* Displayed whenever a Notification that was onscreen got deleted. */
 "The notification has been removed" = "Pemberitahuan telah dihapus!";
-
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. */
-"The order has been deleted from your Store!" = "Pesanan yang telah dihapus dari Toko Anda!";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Server memberi respon kosong. Biasanya ini berarti Anda perlu meningkatkan batas memori situs Anda.";
@@ -921,8 +924,8 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "Tidak dapat menemukan toko WooCommerce yang terhubung ke akun ini";
 
-/* Review error notice message */
-"Unable to mark review %@" = "Unable to mark review %@";
+/* Review error notice message. It reads: Unable to mark review as {attempted status} */
+"Unable to mark review as %@" = "Unable to mark review as %@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Tidak dapat membaca situs WordPress dalam URL tersebut. Ketuk 'Butuh Bantuan?' untuk melihat FAQ.";
@@ -940,7 +943,7 @@
 "Undo" = "Urungkan";
 
 /* Unknown Application State */
-"Unknown" = "Unknown";
+"Unknown" = "Tidak diketahui";
 
 /* No comment provided by engineer. */
 "Unknown Search Terms" = "Istilah Pencarian Tidak Diketahui";
@@ -967,7 +970,7 @@
 "Version" = "Versi";
 
 /* Displays the version of the App */
-"Version %@" = "Version %@";
+"Version %@" = "Versi %@";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Lihat tiket dukungan yang dikirimkan sebelumnya";
@@ -976,7 +979,7 @@
 "Viewer" = "Pemirsa";
 
 /* Visitors stat label on dashboard - should be plural. */
-"Visitors" = "Visitors";
+"Visitors" = "Pengunjung";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "TULIS CATATAN";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-12-21 14:44:46+0000 */
+/* Translation-Revision-Date: 2019-01-08 08:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -13,13 +13,13 @@
 "A verification code will only contain numbers." = "Verifieringskoden innehåller endast siffror.";
 
 /* About this app (information page title) */
-"About" = "About";
+"About" = "Om";
 
 /* My Store > Settings > About app section */
-"About the app" = "About the app";
+"About the app" = "Om appen";
 
 /* Application's Active State */
-"Active" = "Active";
+"Active" = "Aktiv";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "Aktiv, automatiska uppdateringar avstängda";
@@ -91,7 +91,7 @@
 "Back" = "Tillbaka";
 
 /* Application's Background State */
-"Background" = "Background";
+"Background" = "Bakgrund";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "Fältnummer %1$i, %2$@, ";
@@ -118,7 +118,7 @@
 "Canceled" = "Avbruten";
 
 /* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
-"Cannot connect to %@" = "Cannot connect to %@";
+"Cannot connect to %@" = "Kan inte ansluta till %@";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Håll koll på dina favoritwebbplatser och delta i diskussionen varsomhelt, närsomhelst.";
@@ -172,10 +172,10 @@
 "Could not unfollow the site at the address specified." = "Det gick inte att sluta följa webbplatsen på angiven adress.";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
-"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Det gick inte att ansluta till WordPress-webbplatsen. Det finns ingen giltig WordPress-webbplats på den här adressen. Kontrollera webbplatsadressen (URL:en) som du angav.";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "Kunde inte ansluta. XML-RPC-metoder som krävs saknas på servern.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
 "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Det gick inte att ansluta. När vi försökte ansluta till XMLRPC-ändpunkten för din webbplats fick vi felkod 403. Appen behöver detta för att kommunicera med webbplatsen. Kontakta webbhotellet för att lösa problemet.";
@@ -195,9 +195,6 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Dagar";
 
-/* Order Notice */
-"Deleted: Order #(viewModel.order.number)" = "Borttagen: Order med nummer (viewModel.order.number)";
-
 /* The row label to tap for a detailed product list */
 "Details" = "Detaljer";
 
@@ -214,19 +211,19 @@
 "Don't have an account? _Sign up_" = "Har du inget konto? _Registrera dig_";
 
 /* WordPress.com (unmapped!) error */
-"Dotcom Error: [(code)] (theMessage)" = "Dotcom Error: [(code)] (theMessage)";
+"Dotcom Error: [(code)] (theMessage)" = "Dotcom-fel: [(code)] (theMessage)";
 
 /* WordPress.com Missing Token */
-"Dotcom Missing Token" = "Dotcom Missing Token";
+"Dotcom Missing Token" = "Dotcom-token saknas";
 
 /* WordPress.com Request Failure */
-"Dotcom Request Failed" = "Dotcom Request Failed";
+"Dotcom Request Failed" = "Dotcom-förfrågan misslyckades";
 
 /* WordPress.com Error thrown when the response body is empty */
-"Dotcom Response Empty" = "Dotcom Response Empty";
+"Dotcom Response Empty" = "Dotcom-svar tomt";
 
 /* WordPress.com Invalid Token */
-"Dotcom Token Invalid" = "Dotcom Token Invalid";
+"Dotcom Token Invalid" = "Dotcom-token ogiltig";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "Dubbelknacka för att stänga";
@@ -264,9 +261,6 @@
 /* No comment provided by engineer. */
 "Enter your password instead." = "Skriv in ditt lösenord istället.";
 
-/* No comment provided by engineer. */
-"Error" = "Error";
-
 /* Failed Order Status */
 "Failed" = "Misslyckades";
 
@@ -274,7 +268,7 @@
 "Failed to serialize request to the REST API." = "Det gick inte att serialisera förfrågan till REST API.";
 
 /* Navigates to the feature request screen */
-"Feature Request" = "Feature Request";
+"Feature Request" = "Funktionsförfrågan";
 
 /* Accessibility label for the Filter notifications button. */
 "Filter notifications" = "Filtrera aviseringar";
@@ -296,9 +290,6 @@
 
 /* Fulfill order button title */
 "Fulfill order" = "Fullfölj order";
-
-/* Fulfill Notice Title */
-"Fulfillment" = "Fullföljande";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Få insikt i hur produkter presterar i din butik";
@@ -322,7 +313,7 @@
 "Help & Support" = "Hjälp och support";
 
 /* My Store > Settings > Privacy settings section */
-"Help Improve The App" = "Help Improve The App";
+"Help Improve The App" = "Hjälp till att förbättra appen";
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "Dölj fakturering";
@@ -331,10 +322,10 @@
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hmm. Det verkar inte finnas någon WordPress-webbplats på denna URL. Kolla stavningen och försök igen.";
 
 /* Detail label for yes/no switch. */
-"If disabled the note will be private" = "If disabled the note will be private";
+"If disabled the note will be private" = "Om detta inaktiveras kommer noteringen att vara privat";
 
 /* Application's Inactive State */
-"Inactive" = "Inactive";
+"Inactive" = "Inaktiv";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Inaktiv, automatiska uppdateringar avstängda";
@@ -373,7 +364,7 @@
 "Learn more" = "Läs mer";
 
 /* Licenses (information page title) */
-"Licenses" = "Licenses";
+"Licenses" = "Licenser";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Gräns nådd. Du kan försöka igen om 1 minut. Att försöka igen innan kommer bara öka tiden du måste vänta innan förbudet är upphävt. Vänligen kontakta support om du tror detta är ett fel.";
@@ -483,6 +474,9 @@
 /* Empty Notifications List Message */
 "No Notifications Yet!" = "Inga aviseringar än!";
 
+/* Search Orders (Empty State) */
+"No Orders found" = "Inga ordrar hittades";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Ingen aktivitet den här perioden";
 
@@ -529,10 +523,10 @@
 "Open Mail" = "Öppna Mail";
 
 /* Opens iOS's Device Settings for the app */
-"Open device settings" = "Open device settings";
+"Open device settings" = "Öppna enhetsinställningar";
 
 /* Navigates to open source licenses screen */
-"Open source licenses" = "Open source licenses";
+"Open source licenses" = "Öppen källkodslicens";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Valfri spårningsinformation";
@@ -540,11 +534,14 @@
 /* No comment provided by engineer. */
 "Order #(viewModel.order.number)" = "Order med nummer (viewModel.order.number)";
 
-/* Fulfill Notice Message */
-"Order Marked as Complete!" = "Ordern har markerats som slutförd!";
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+"Order %@ has been deleted from your store" = "Order %@ har tagits bort från din butik";
 
 /* Order notes section title */
 "Order Notes" = "Ordernoteringar";
+
+/* Order fulfillment success notice */
+"Order marked as fulfilled" = "Ordern har markerats som genomförd";
 
 /* No comment provided by engineer. */
 "Orders" = "Ordrar";
@@ -553,7 +550,7 @@
 "Orders: (filter)" = "Ordrar: (filtrera)";
 
 /* My Store > Settings > Other app section */
-"Other" = "Other";
+"Other" = "Andra";
 
 /* Product section title */
 "PRODUCT" = "PRODUKT";
@@ -592,7 +589,7 @@
 "Please enter your credentials" = "Fyll i dina användaruppgifter";
 
 /* Instructions for alert asking for email and name. */
-"Please enter your email address and username:" = "Please enter your email address and username:";
+"Please enter your email address and username:" = "Skriv in din e-postadress och ditt användarnamn:";
 
 /* Instructions for alert asking for email. */
 "Please enter your email address:" = "Skriv in din e-postadress.";
@@ -604,10 +601,10 @@
 "Please open your email app and look for an email from WordPress.com." = "Öppna ditt e-postprogram och hitta ett brev från WordPress.com.";
 
 /* My Store > Settings > Primary Store information section */
-"Primary Store" = "Primary Store";
+"Primary Store" = "Primär butik";
 
 /* Opens the Privacy Policy web page */
-"Privacy Policy" = "Privacy Policy";
+"Privacy Policy" = "Integritetspolicy";
 
 /* Navigates to Privacy Settings screen */
 "Privacy Settings" = "Inställningar för integritet";
@@ -654,14 +651,17 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "Rapportera krascher";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
+"Retrieves a list of orders that contain a given keyword." = "Hämtar en lista på ordrar som innehåller ett visst nyckelord.";
+
 /* No comment provided by engineer. */
 "Retry" = "Försök igen";
 
 /* Revenue stat label on dashboard. */
-"Revenue" = "Revenue";
+"Revenue" = "Inkomster";
 
-/* Review moderation success notice message */
-"Review marked %@" = "Review marked %@";
+/* Review moderation success notice message. It reads: Review marked as {new status} */
+"Review marked as %@" = "Review marked as %@";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Granska, förbered och skicka dessa väntande ordrar";
@@ -674,6 +674,12 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS skickat";
+
+/* Orders Search Placeholder */
+"Search all orders" = "Sök alla ordrar";
+
+/* Search Orders */
+"Search orders" = "Sök ordrar";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "Skicka länk";
@@ -784,7 +790,7 @@
 "Subtotal" = "Delsumma";
 
 /* Labels an order note to let user know it's a system status message */
-"System status" = "System status";
+"System status" = "Systemstatus";
 
 /* Tax label for total taxes line */
 "Tax:" = "Moms:";
@@ -793,7 +799,7 @@
 "Taxes" = "Skatter";
 
 /* Opens the Terms of Service web page */
-"Terms of Service" = "Terms of Service";
+"Terms of Service" = "Användarvillkor";
 
 /* Button title */
 "Text me a code instead" = "Skicka mig en kod via SMS i stället";
@@ -833,9 +839,6 @@
 
 /* Displayed whenever a Notification that was onscreen got deleted. */
 "The notification has been removed" = "Meddelandet har tagits bort!";
-
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. */
-"The order has been deleted from your Store!" = "Ordern har tagits bort från din butik!";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Servern skickade tillbaka ett tomt svar. Detta betyder vanligtvis att du behöver öka minnesgränsen för din webbplats.";
@@ -921,8 +924,8 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "Kunde inte hitta WooCommerce-butiker anslutna till det här kontot";
 
-/* Review error notice message */
-"Unable to mark review %@" = "Unable to mark review %@";
+/* Review error notice message. It reads: Unable to mark review as {attempted status} */
+"Unable to mark review as %@" = "Unable to mark review as %@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Kunde inte läsa WordPress-webbplatsen på denna URL. Ttryck på \"Behöver du hjälp?\" för att se FAQ.";
@@ -940,7 +943,7 @@
 "Undo" = "Ångra";
 
 /* Unknown Application State */
-"Unknown" = "Unknown";
+"Unknown" = "Okänd";
 
 /* No comment provided by engineer. */
 "Unknown Search Terms" = "Okända söktermer";

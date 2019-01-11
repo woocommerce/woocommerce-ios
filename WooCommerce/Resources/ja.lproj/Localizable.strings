@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-12-21 14:44:46+0000 */
+/* Translation-Revision-Date: 2019-01-09 06:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -13,13 +13,13 @@
 "A verification code will only contain numbers." = "認証コードは数字だけで構成されます。";
 
 /* About this app (information page title) */
-"About" = "About";
+"About" = "このサイトについて";
 
 /* My Store > Settings > About app section */
-"About the app" = "About the app";
+"About the app" = "このアプリについて";
 
 /* Application's Active State */
-"Active" = "Active";
+"Active" = "有効";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "プラグイン有効化中。自動更新オフ。";
@@ -91,7 +91,7 @@
 "Back" = "戻る";
 
 /* Application's Background State */
-"Background" = "Background";
+"Background" = "背景";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "バー番号%1$i、%2$@、";
@@ -118,7 +118,7 @@
 "Canceled" = "キャンセル";
 
 /* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
-"Cannot connect to %@" = "Cannot connect to %@";
+"Cannot connect to %@" = "%@ に接続できません";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "お気に入りのサイトをいつでもチェックし、いつでもどこからでもコメントできます。";
@@ -172,10 +172,10 @@
 "Could not unfollow the site at the address specified." = "指定されたアドレスのサイトをフォロー解除できませんでした。";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
-"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "WordPress サイトに接続できませんでした。有効な WordPress サイトはこのアドレスにありません。入力したサイトアドレス (URL) を確認してください。";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "接続できませんでした。必要な XML-RPC メソッドがサーバーにありません。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
 "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "接続できませんでした。あなたのサイトの XMLRPC エンドポイントにアクセスする際に、403エラーが発生しました。これは、アプリからあなたのサイトと通信するために必要です。ホスティングサービスに連絡して、この問題を解決してください。";
@@ -195,9 +195,6 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "日";
 
-/* Order Notice */
-"Deleted: Order #(viewModel.order.number)" = "削除済み:注文番号 (viewModel.order.number)";
-
 /* The row label to tap for a detailed product list */
 "Details" = "詳細";
 
@@ -214,19 +211,19 @@
 "Don't have an account? _Sign up_" = "アカウントをお持ちでない場合は_登録_してください。";
 
 /* WordPress.com (unmapped!) error */
-"Dotcom Error: [(code)] (theMessage)" = "Dotcom Error: [(code)] (theMessage)";
+"Dotcom Error: [(code)] (theMessage)" = "Dotcom エラー:[(code)] (theMessage)";
 
 /* WordPress.com Missing Token */
-"Dotcom Missing Token" = "Dotcom Missing Token";
+"Dotcom Missing Token" = "Dotcom トークンがありません";
 
 /* WordPress.com Request Failure */
-"Dotcom Request Failed" = "Dotcom Request Failed";
+"Dotcom Request Failed" = "Dotcom のリクエストに失敗しました";
 
 /* WordPress.com Error thrown when the response body is empty */
-"Dotcom Response Empty" = "Dotcom Response Empty";
+"Dotcom Response Empty" = "Dotcom のレスポンスがありません";
 
 /* WordPress.com Invalid Token */
-"Dotcom Token Invalid" = "Dotcom Token Invalid";
+"Dotcom Token Invalid" = "Dotcom トークンが無効です";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "ダブルタップして非表示";
@@ -264,9 +261,6 @@
 /* No comment provided by engineer. */
 "Enter your password instead." = "代わりにパスワードを入力してください。";
 
-/* No comment provided by engineer. */
-"Error" = "Error";
-
 /* Failed Order Status */
 "Failed" = "失敗しました";
 
@@ -274,7 +268,7 @@
 "Failed to serialize request to the REST API." = "REST API へのリクエストをシリアライズできませんでした。";
 
 /* Navigates to the feature request screen */
-"Feature Request" = "Feature Request";
+"Feature Request" = "機能のリクエスト";
 
 /* Accessibility label for the Filter notifications button. */
 "Filter notifications" = "Filter notifications";
@@ -296,9 +290,6 @@
 
 /* Fulfill order button title */
 "Fulfill order" = "注文を履行";
-
-/* Fulfill Notice Title */
-"Fulfillment" = "履行";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "ストアでの商品売り上げ状況に関する統計概要を得られます";
@@ -322,7 +313,7 @@
 "Help & Support" = "ヘルプ & サポート";
 
 /* My Store > Settings > Privacy settings section */
-"Help Improve The App" = "Help Improve The App";
+"Help Improve The App" = "アプリの改善にご協力ください";
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "課金を非表示";
@@ -334,7 +325,7 @@
 "If disabled the note will be private" = "If disabled the note will be private";
 
 /* Application's Inactive State */
-"Inactive" = "Inactive";
+"Inactive" = "停止中";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "プラグイン無効化中。自動更新オフ。";
@@ -373,7 +364,7 @@
 "Learn more" = "さらに詳しく";
 
 /* Licenses (information page title) */
-"Licenses" = "Licenses";
+"Licenses" = "ライセンス";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "ログイン試行の上限に達しました。1分後にもう一度お試しいただけます。それ以前にログインしようとした場合、制限解除までの時間がさらに延長されます。エラーだと思われる場合はサポートにご連絡ください。";
@@ -483,6 +474,9 @@
 /* Empty Notifications List Message */
 "No Notifications Yet!" = "No Notifications Yet!";
 
+/* Search Orders (Empty State) */
+"No Orders found" = "No Orders found";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "この期間のアクティビティはありません";
 
@@ -529,10 +523,10 @@
 "Open Mail" = "メールを開く";
 
 /* Opens iOS's Device Settings for the app */
-"Open device settings" = "Open device settings";
+"Open device settings" = "デバイス設定を開く";
 
 /* Navigates to open source licenses screen */
-"Open source licenses" = "Open source licenses";
+"Open source licenses" = "オープンソースライセンス";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "オプションのトラッキング情報";
@@ -540,11 +534,14 @@
 /* No comment provided by engineer. */
 "Order #(viewModel.order.number)" = "注文番号 (viewModel.order.number)";
 
-/* Fulfill Notice Message */
-"Order Marked as Complete!" = "注文が完了としてマークされました。";
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+"Order %@ has been deleted from your store" = "Order %@ has been deleted from your store";
 
 /* Order notes section title */
 "Order Notes" = "注文メモ";
+
+/* Order fulfillment success notice */
+"Order marked as fulfilled" = "Order marked as fulfilled";
 
 /* No comment provided by engineer. */
 "Orders" = "注文";
@@ -553,7 +550,7 @@
 "Orders: (filter)" = "注文:(フィルター)";
 
 /* My Store > Settings > Other app section */
-"Other" = "Other";
+"Other" = "その他";
 
 /* Product section title */
 "PRODUCT" = "商品";
@@ -592,7 +589,7 @@
 "Please enter your credentials" = "ログイン情報を入力してください。";
 
 /* Instructions for alert asking for email and name. */
-"Please enter your email address and username:" = "Please enter your email address and username:";
+"Please enter your email address and username:" = "メールアドレスとユーザー名を入力してください:";
 
 /* Instructions for alert asking for email. */
 "Please enter your email address:" = "メールアドレスを入力してください。";
@@ -604,10 +601,10 @@
 "Please open your email app and look for an email from WordPress.com." = "メールアプリを開いて、WordPress.com からのメールを探してください。";
 
 /* My Store > Settings > Primary Store information section */
-"Primary Store" = "Primary Store";
+"Primary Store" = "プライマリストア";
 
 /* Opens the Privacy Policy web page */
-"Privacy Policy" = "Privacy Policy";
+"Privacy Policy" = "個人情報保護方針";
 
 /* Navigates to Privacy Settings screen */
 "Privacy Settings" = "プライバシー設定";
@@ -654,14 +651,17 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "クラッシュをレポート";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
+"Retrieves a list of orders that contain a given keyword." = "Retrieves a list of orders that contain a given keyword.";
+
 /* No comment provided by engineer. */
 "Retry" = "再度試す";
 
 /* Revenue stat label on dashboard. */
-"Revenue" = "Revenue";
+"Revenue" = "収益";
 
-/* Review moderation success notice message */
-"Review marked %@" = "Review marked %@";
+/* Review moderation success notice message. It reads: Review marked as {new status} */
+"Review marked as %@" = "Review marked as %@";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "これらの保留中の注文を確認して準備し、配送してください";
@@ -674,6 +674,12 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS 送信完了";
+
+/* Orders Search Placeholder */
+"Search all orders" = "Search all orders";
+
+/* Search Orders */
+"Search orders" = "Search orders";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "リンクを送信";
@@ -784,7 +790,7 @@
 "Subtotal" = "小計";
 
 /* Labels an order note to let user know it's a system status message */
-"System status" = "System status";
+"System status" = "システム状況";
 
 /* Tax label for total taxes line */
 "Tax:" = "税:";
@@ -793,7 +799,7 @@
 "Taxes" = "税";
 
 /* Opens the Terms of Service web page */
-"Terms of Service" = "Terms of Service";
+"Terms of Service" = "利用規約";
 
 /* Button title */
 "Text me a code instead" = "代わりに SMS でコードを送信する";
@@ -833,9 +839,6 @@
 
 /* Displayed whenever a Notification that was onscreen got deleted. */
 "The notification has been removed" = "The notification has been removed!";
-
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. */
-"The order has been deleted from your Store!" = "この注文はストアから削除されました。";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "サーバーが空のレスポンスを返しました。これは通常、サイトのメモリ上限を上げる必要があることを意味しています。";
@@ -921,8 +924,8 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "このアカウントに連携している WooCommerce ストアが見つかりません";
 
-/* Review error notice message */
-"Unable to mark review %@" = "Unable to mark review %@";
+/* Review error notice message. It reads: Unable to mark review as {attempted status} */
+"Unable to mark review as %@" = "Unable to mark review as %@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "ご指定の URL に WordPress サイトが見つかりませんでした。「ヘルプ !」をタップしてよくある質問をご覧ください。";
@@ -940,7 +943,7 @@
 "Undo" = "元に戻す";
 
 /* Unknown Application State */
-"Unknown" = "Unknown";
+"Unknown" = "不明";
 
 /* No comment provided by engineer. */
 "Unknown Search Terms" = "不明な検索キーワード";
@@ -967,7 +970,7 @@
 "Version" = "バージョン";
 
 /* Displays the version of the App */
-"Version %@" = "Version %@";
+"Version %@" = "バージョン %@";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "送信済みのサポートチケットを表示";

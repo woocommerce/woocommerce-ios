@@ -87,7 +87,8 @@
                             "name": "Fruits Basket (Mix & Match Product)",
                             "product_id": 52,
                             "variation_id": 0,
-                            "quantity": 1,
+                            "quantity": 2,
+                            "price": 30.00,
                             "tax_class": "",
                             "subtotal": "50.00",
                             "subtotal_tax": "2.00",
@@ -101,8 +102,7 @@
                                       }
                                       ],
                             "meta_data": [],
-                            "sku": "",
-                            "price": 30
+                            "sku": ""
                             },
                             {
                             "id": 891,

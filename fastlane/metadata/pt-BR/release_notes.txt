@@ -1,0 +1,6 @@
+Com o aplicativo móvel do WooCommerce, você terá a sua loja online de bolso: gerencie pedidos, receba notificações de vendas e visualize as principais métricas do seu site onde você estiver.
+
+Que rufem os tambores: essa é a nossa primeira versão pública! Estamos ansiosos pelas iterações frequentes que teremos. Queremos saber qual é o seu feedback e ouvir suas sugestões de melhorias.
+Entre em contato, por meio do “Suporte” do aplicativo ou do site ideas.woocommerce.com.
+
+Obrigado a todos os envolvidos na criação e nos testes prévios!

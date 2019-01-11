@@ -1,0 +1,6 @@
+Con la aplicación móvil de WooCommerce, tendrás tu tienda en el bolsillo: gestiona los pedidos, recibe notificaciones de venta y consulta las métricas clave en cualquier lugar.
+
+¡Un redoble, por favor! Es nuestro primer lanzamiento al público. Deseamos poder repetirlo pronto (y hacerlo a menudo) y esperamos recibir tus comentarios y sugerencias de mejora.
+Contacta con nosotros a través del apartado de soporte de la aplicación o en ideas.woocommerce.com.
+
+Muchas gracias a todas las personas que han participado en el desarrollo y el periodo de pruebas.

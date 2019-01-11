@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-12-11 06:54:02+0000 */
+/* Translation-Revision-Date: 2019-01-08 16:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -13,13 +13,13 @@
 "A verification code will only contain numbers." = "קוד אימות מכיל מספרים בלבד.";
 
 /* About this app (information page title) */
-"About" = "About";
+"About" = "אודות";
 
 /* My Store > Settings > About app section */
-"About the app" = "About the app";
+"About the app" = "מידע על האפליקציה";
 
 /* Application's Active State */
-"Active" = "Active";
+"Active" = "פעיל";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "פעיל, עדכונים אוטומטיים מושבתים";
@@ -91,7 +91,7 @@
 "Back" = "חזרה";
 
 /* Application's Background State */
-"Background" = "Background";
+"Background" = "רקע";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "עמודה מספר %1$i, %2$@, ";
@@ -118,7 +118,7 @@
 "Canceled" = "בוטל";
 
 /* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
-"Cannot connect to %@" = "Cannot connect to %@";
+"Cannot connect to %@" = "לא ניתן להתחבר אל %@";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "אפשר לבדוק את העדכונים באתרים המועדפים עליך ולהצטרף לשיחה בכל מקום ובכל זמן.";
@@ -172,10 +172,10 @@
 "Could not unfollow the site at the address specified." = "אי אפשר לבטל את המעקב אחר האתר בכתובת שצוינה.";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
-"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "לא ניתן היה להתחבר לאתר WordPress. אין אתר WordPress תקף בכתובת זו. בדוק את כתובת האתר (URL) שהזנת.";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "לא ניתן להתחבר. שיטות XML-RPC נדרשות חסרות בשרת.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
 "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "לא ניתן להתחבר. קיבלנו שגיאת 403 בעת ניסיון לגשת לנקודת הקצה XMLRPC באתר שלך. כדי שהאפליקציה תוכל לבצע התקשרות עם האתר שלך, יש להפעיל אפשרות זו. יש ליצור קשר עם חברת האחסון שלך כדי לפתור בעיה זו.";
@@ -195,9 +195,6 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "ימים";
 
-/* Order Notice */
-"Deleted: Order #(viewModel.order.number)" = "נמחק: הזמנה ‎#‎(viewModel.order.number)‎";
-
 /* The row label to tap for a detailed product list */
 "Details" = "פרטים";
 
@@ -214,19 +211,19 @@
 "Don't have an account? _Sign up_" = "אין לך חשבון עדיין? _הרשמה_";
 
 /* WordPress.com (unmapped!) error */
-"Dotcom Error: [(code)] (theMessage)" = "Dotcom Error: [(code)] (theMessage)";
+"Dotcom Error: [(code)] (theMessage)" = "שגיאת Dotcom: [(code)] (theMessage)";
 
 /* WordPress.com Missing Token */
-"Dotcom Missing Token" = "Dotcom Missing Token";
+"Dotcom Missing Token" = "לפריט Dotcom חסר אסימון";
 
 /* WordPress.com Request Failure */
-"Dotcom Request Failed" = "Dotcom Request Failed";
+"Dotcom Request Failed" = "הבקשה של Dotcom נכשלה";
 
 /* WordPress.com Error thrown when the response body is empty */
-"Dotcom Response Empty" = "Dotcom Response Empty";
+"Dotcom Response Empty" = "התגובה של Dotcom ריקה";
 
 /* WordPress.com Invalid Token */
-"Dotcom Token Invalid" = "Dotcom Token Invalid";
+"Dotcom Token Invalid" = "האסימון Dotcom לא תקף";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "יש להקיש פעמיים כדי להתעלם";
@@ -264,9 +261,6 @@
 /* No comment provided by engineer. */
 "Enter your password instead." = "במקום זאת יש להזין סיסמה.";
 
-/* No comment provided by engineer. */
-"Error" = "Error";
-
 /* Failed Order Status */
 "Failed" = "נכשל";
 
@@ -274,7 +268,7 @@
 "Failed to serialize request to the REST API." = "לא הצלחנו לערוך בסדרה בקשה אל REST API.";
 
 /* Navigates to the feature request screen */
-"Feature Request" = "Feature Request";
+"Feature Request" = "בקשת תכונה";
 
 /* Accessibility label for the Filter notifications button. */
 "Filter notifications" = "סינון הודעות";
@@ -296,9 +290,6 @@
 
 /* Fulfill order button title */
 "Fulfill order" = "השלמת הזמנה";
-
-/* Fulfill Notice Title */
-"Fulfillment" = "השלמה";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "קבלת תובנות על ביצועי המוצרים בחנות שלך";
@@ -322,7 +313,7 @@
 "Help & Support" = "עזרה ותמיכה";
 
 /* My Store > Settings > Privacy settings section */
-"Help Improve The App" = "Help Improve The App";
+"Help Improve The App" = "נשמח לעזרה בשיפור האפליקציה";
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "הסתרת חיוב";
@@ -331,10 +322,10 @@
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "כנראה שאין אתר וורדפרס בכתובת זו. יש לבדוק שנית את האיות ולנסות שוב.";
 
 /* Detail label for yes/no switch. */
-"If disabled the note will be private" = "If disabled the note will be private";
+"If disabled the note will be private" = "אם האפשרות מושבתת, הפתק יהיה פרטי";
 
 /* Application's Inactive State */
-"Inactive" = "Inactive";
+"Inactive" = "לא פעיל";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "לא פעיל, עדכונים אוטומטיים מושבתים";
@@ -373,7 +364,7 @@
 "Learn more" = "מידע נוסף";
 
 /* Licenses (information page title) */
-"Licenses" = "Licenses";
+"Licenses" = "רישיונות";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "מגבלת זיכרון. ניתן לנסות שוב בעוד דקה. אם תנסה שוב לפני כן, הדבר רק יגביר את הזמן שאתה צריך לחכות לפני שהאיסור יוסר. אם אתה חושב שמדובר בשגיאה, פנה לתמיכה.";
@@ -483,6 +474,9 @@
 /* Empty Notifications List Message */
 "No Notifications Yet!" = "אין עדיין הודעות!";
 
+/* Search Orders (Empty State) */
+"No Orders found" = "לא נמצאו הזמנות";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "אין פעילות בפרק זמן זה";
 
@@ -529,10 +523,10 @@
 "Open Mail" = "פתיחת דואר";
 
 /* Opens iOS's Device Settings for the app */
-"Open device settings" = "Open device settings";
+"Open device settings" = "יש לפתוח את הגדרות המכשיר";
 
 /* Navigates to open source licenses screen */
-"Open source licenses" = "Open source licenses";
+"Open source licenses" = "רישיונות קוד פתוח";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "מידע על מעקב אופציונלי";
@@ -540,11 +534,14 @@
 /* No comment provided by engineer. */
 "Order #(viewModel.order.number)" = "הזמנה ‎#‎(viewModel.order.number)‎";
 
-/* Fulfill Notice Message */
-"Order Marked as Complete!" = "ההזמנה סומנה שהושלמה!";
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+"Order %@ has been deleted from your store" = "ההזמנה %@ נמחקה מהחנות שלך";
 
 /* Order notes section title */
 "Order Notes" = "הערות להזמנה";
+
+/* Order fulfillment success notice */
+"Order marked as fulfilled" = "הזמנות שסומנו כ'הושלם'";
 
 /* No comment provided by engineer. */
 "Orders" = "הזמנות";
@@ -553,7 +550,7 @@
 "Orders: (filter)" = "הזמנות: (filter)";
 
 /* My Store > Settings > Other app section */
-"Other" = "Other";
+"Other" = "אחר";
 
 /* Product section title */
 "PRODUCT" = "מוצר";
@@ -592,7 +589,7 @@
 "Please enter your credentials" = "הזינו את הפרטים";
 
 /* Instructions for alert asking for email and name. */
-"Please enter your email address and username:" = "Please enter your email address and username:";
+"Please enter your email address and username:" = "יש להזין את כתובת האימייל ואת שם המשתמש שלך:";
 
 /* Instructions for alert asking for email. */
 "Please enter your email address:" = "יש להזין את כתובת האימייל שלך.";
@@ -604,10 +601,10 @@
 "Please open your email app and look for an email from WordPress.com." = "יש לפתוח את אפליקציית האימייל שלך ולחפש את ההודעה שנשלחה מ-WordPress.com.";
 
 /* My Store > Settings > Primary Store information section */
-"Primary Store" = "Primary Store";
+"Primary Store" = "חנות ראשית";
 
 /* Opens the Privacy Policy web page */
-"Privacy Policy" = "Privacy Policy";
+"Privacy Policy" = "מדיניות פרטיות";
 
 /* Navigates to Privacy Settings screen */
 "Privacy Settings" = "הגדרות פרטיות";
@@ -654,14 +651,17 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "דיווח על קריסות";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
+"Retrieves a list of orders that contain a given keyword." = "הפעולה מאחזרת רשימה של כל ההזמנות שכוללות מילת מפתח מסוימת.";
+
 /* No comment provided by engineer. */
 "Retry" = "נסה שנית";
 
 /* Revenue stat label on dashboard. */
-"Revenue" = "Revenue";
+"Revenue" = "הכנסה";
 
-/* Review moderation success notice message */
-"Review marked %@" = "Review marked %@";
+/* Review moderation success notice message. It reads: Review marked as {new status} */
+"Review marked as %@" = "Review marked as %@";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "בדיקה, הכנה ומשלוח של ההזמנות שבהמתנה";
@@ -674,6 +674,12 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS נשלח";
+
+/* Orders Search Placeholder */
+"Search all orders" = "חיפוש בכל ההזמנות";
+
+/* Search Orders */
+"Search orders" = "חיפוש הזמנות";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "שליחת קישור";
@@ -784,7 +790,7 @@
 "Subtotal" = "סכום ביניים";
 
 /* Labels an order note to let user know it's a system status message */
-"System status" = "System status";
+"System status" = "מצב מערכת";
 
 /* Tax label for total taxes line */
 "Tax:" = "מס:";
@@ -793,7 +799,7 @@
 "Taxes" = "מיסים";
 
 /* Opens the Terms of Service web page */
-"Terms of Service" = "Terms of Service";
+"Terms of Service" = "תנאי השירות";
 
 /* Button title */
 "Text me a code instead" = "שליחת קוד במקום";
@@ -833,9 +839,6 @@
 
 /* Displayed whenever a Notification that was onscreen got deleted. */
 "The notification has been removed" = "ההודעה הזו הוסרה!";
-
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. */
-"The order has been deleted from your Store!" = "ההזמנה נמחקה מהחנות שלך!";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "השרת החזיר תשובה ריקה. בדרך כלל הדבר אומר שצריך להגדיל את מגבלת הזיכרון לאתר.";
@@ -921,8 +924,8 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "אין אפשרות למצוא חנויות של WooCommerce שמקושרות לחשבון זה";
 
-/* Review error notice message */
-"Unable to mark review %@" = "Unable to mark review %@";
+/* Review error notice message. It reads: Unable to mark review as {attempted status} */
+"Unable to mark review as %@" = "Unable to mark review as %@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "לא ניתן לקרוא את אתר WordPress בכתובת URL זו. יש להקיש על 'דרושה עזרה?' כדי להציג את השאלות הנפוצות.";
@@ -940,7 +943,7 @@
 "Undo" = "ביטול פעולה אחרונה";
 
 /* Unknown Application State */
-"Unknown" = "Unknown";
+"Unknown" = "לא ידוע";
 
 /* No comment provided by engineer. */
 "Unknown Search Terms" = "מונחי חיפוש לא ידועים";
@@ -967,7 +970,7 @@
 "Version" = "גרסה";
 
 /* Displays the version of the App */
-"Version %@" = "Version %@";
+"Version %@" = "גרסה %@";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "הצגה של קריאות תמיכה שנשלחו בעבר";
@@ -976,7 +979,7 @@
 "Viewer" = "צופה";
 
 /* Visitors stat label on dashboard - should be plural. */
-"Visitors" = "Visitors";
+"Visitors" = "מבקרים";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "כתיבת הערה";
@@ -1096,5 +1099,5 @@
 "{G} Log in with Google." = "{G} התחברות עם Google.";
 
 /* About View's Footer Text. The variable is the current year */
-"© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
+"© %@ Automattic, Inc." = "‎‎© %@ Automattic, Inc.‎‎‎";
 

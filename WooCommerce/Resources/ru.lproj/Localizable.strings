@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-12-13 07:54:02+0000 */
+/* Translation-Revision-Date: 2019-01-09 11:54:02+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -13,13 +13,13 @@
 "A verification code will only contain numbers." = "Код проверки будет содержать только цифры.";
 
 /* About this app (information page title) */
-"About" = "About";
+"About" = "О нас";
 
 /* My Store > Settings > About app section */
-"About the app" = "About the app";
+"About the app" = "О приложении";
 
 /* Application's Active State */
-"Active" = "Active";
+"Active" = "Активно";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "Активен, автообновление выключено";
@@ -91,7 +91,7 @@
 "Back" = "Назад";
 
 /* Application's Background State */
-"Background" = "Background";
+"Background" = "Фон";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "Номер столбца %1$i, %2$@, ";
@@ -118,7 +118,7 @@
 "Canceled" = "Отменён";
 
 /* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
-"Cannot connect to %@" = "Cannot connect to %@";
+"Cannot connect to %@" = "Не удалось подключиться к %@";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Следите за обновлениями любимых сайтов и присоединяйтесь к беседе в любом месте и в любое время.";
@@ -172,10 +172,10 @@
 "Could not unfollow the site at the address specified." = "Не удалось отменить подписку на веб-сайт по указанному адресу.";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
-"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Не удалось подключиться к сайту WordPress. По указанному адресу нет действующего сайта WordPress. Проверьте адрес сайта (URL-адрес).";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "Не удалось подключиться. На сервере отсутствуют необходимые методы XML-RPC.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
 "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Невозможно подключиться. Получена ошибка 403 при подключении к XMLRPC вашего сайта. Обратитесь в тех.поддержку хостинга.";
@@ -195,9 +195,6 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Дни";
 
-/* Order Notice */
-"Deleted: Order #(viewModel.order.number)" = "Удалено: заказ №(viewModel.order.number)";
-
 /* The row label to tap for a detailed product list */
 "Details" = "Подробности";
 
@@ -214,19 +211,19 @@
 "Don't have an account? _Sign up_" = "Нет учетной записи? _Зарегистрироваться_";
 
 /* WordPress.com (unmapped!) error */
-"Dotcom Error: [(code)] (theMessage)" = "Dotcom Error: [(code)] (theMessage)";
+"Dotcom Error: [(code)] (theMessage)" = "Ошибка интернет-сервиса: [(code)] (theMessage)";
 
 /* WordPress.com Missing Token */
-"Dotcom Missing Token" = "Dotcom Missing Token";
+"Dotcom Missing Token" = "Отсутствует токен интернет-сервиса";
 
 /* WordPress.com Request Failure */
-"Dotcom Request Failed" = "Dotcom Request Failed";
+"Dotcom Request Failed" = "Ошибка запроса интернет-сервиса";
 
 /* WordPress.com Error thrown when the response body is empty */
-"Dotcom Response Empty" = "Dotcom Response Empty";
+"Dotcom Response Empty" = "Пустой ответ интернет-сервиса";
 
 /* WordPress.com Invalid Token */
-"Dotcom Token Invalid" = "Dotcom Token Invalid";
+"Dotcom Token Invalid" = "Недопустимый токен интернет-сервиса";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "Дважды коснитесь, чтобы отключить";
@@ -264,9 +261,6 @@
 /* No comment provided by engineer. */
 "Enter your password instead." = "Введите пароль.";
 
-/* No comment provided by engineer. */
-"Error" = "Error";
-
 /* Failed Order Status */
 "Failed" = "Произошла ошибка";
 
@@ -274,7 +268,7 @@
 "Failed to serialize request to the REST API." = "Не удалось сериализировать запрос в API-интерфейс REST.";
 
 /* Navigates to the feature request screen */
-"Feature Request" = "Feature Request";
+"Feature Request" = "Запрос функции";
 
 /* Accessibility label for the Filter notifications button. */
 "Filter notifications" = "Фильтровать уведомления";
@@ -296,9 +290,6 @@
 
 /* Fulfill order button title */
 "Fulfill order" = "Выполнить заказ";
-
-/* Fulfill Notice Title */
-"Fulfillment" = "Выполнение";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Получайте информацию об эффективности продаж различных продуктов в вашем магазине";
@@ -322,7 +313,7 @@
 "Help & Support" = "Помощь и техническая поддержка";
 
 /* My Store > Settings > Privacy settings section */
-"Help Improve The App" = "Help Improve The App";
+"Help Improve The App" = "Помогите улучшить приложение";
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "Скрыть платёжные сведения";
@@ -331,10 +322,10 @@
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Похоже, сайта WordPress с таким URL-адресом не существует. Проверьте правильность написания и повторите попытку.";
 
 /* Detail label for yes/no switch. */
-"If disabled the note will be private" = "If disabled the note will be private";
+"If disabled the note will be private" = "При отключении примечание будет закрытым";
 
 /* Application's Inactive State */
-"Inactive" = "Inactive";
+"Inactive" = "Неактивно";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Неактивен, автообновления выключено";
@@ -373,7 +364,7 @@
 "Learn more" = "Подробнее";
 
 /* Licenses (information page title) */
-"Licenses" = "Licenses";
+"Licenses" = "Лицензии";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Достигнут лимит попыток. Вы можете попробовать снова через 1 минуту. Если вы попытаетесь подключиться раньше, время ожидания только увеличится. Если вы считаете, что произошла ошибка, обратитесь в службу поддержки.";
@@ -483,6 +474,9 @@
 /* Empty Notifications List Message */
 "No Notifications Yet!" = "Пока нет уведомлений";
 
+/* Search Orders (Empty State) */
+"No Orders found" = "Заказы не найдены";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Активность за этот период отсутствует";
 
@@ -529,10 +523,10 @@
 "Open Mail" = "Открыть почту";
 
 /* Opens iOS's Device Settings for the app */
-"Open device settings" = "Open device settings";
+"Open device settings" = "Открыть настройки устройства";
 
 /* Navigates to open source licenses screen */
-"Open source licenses" = "Open source licenses";
+"Open source licenses" = "Лицензии на ПО с открытым исходным кодом";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Дополнительная информация об отслеживании";
@@ -540,11 +534,14 @@
 /* No comment provided by engineer. */
 "Order #(viewModel.order.number)" = "Заказ №(viewModel.order.number)";
 
-/* Fulfill Notice Message */
-"Order Marked as Complete!" = "Заказ отмечен как выполненный!";
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+"Order %@ has been deleted from your store" = "Заказ %@ удалён из вашего магазина";
 
 /* Order notes section title */
 "Order Notes" = "Примечания к заказу";
+
+/* Order fulfillment success notice */
+"Order marked as fulfilled" = "Заказ отмечен как выполненный";
 
 /* No comment provided by engineer. */
 "Orders" = "Заказы";
@@ -553,7 +550,7 @@
 "Orders: (filter)" = "Заказы: (фильтр)";
 
 /* My Store > Settings > Other app section */
-"Other" = "Other";
+"Other" = "Прочее";
 
 /* Product section title */
 "PRODUCT" = "ТОВАР";
@@ -592,7 +589,7 @@
 "Please enter your credentials" = "Пожалуйста, введите ваши учётные данные";
 
 /* Instructions for alert asking for email and name. */
-"Please enter your email address and username:" = "Please enter your email address and username:";
+"Please enter your email address and username:" = "Укажите адрес электронной почты и имя пользователя:";
 
 /* Instructions for alert asking for email. */
 "Please enter your email address:" = "Пожауйста, введите ваш адрес email.";
@@ -604,10 +601,10 @@
 "Please open your email app and look for an email from WordPress.com." = "Пожалуйста, откройте ваше приложение email и найдите сообщение от WordPress.com.";
 
 /* My Store > Settings > Primary Store information section */
-"Primary Store" = "Primary Store";
+"Primary Store" = "Основной магазин";
 
 /* Opens the Privacy Policy web page */
-"Privacy Policy" = "Privacy Policy";
+"Privacy Policy" = "Политика конфиденциальности";
 
 /* Navigates to Privacy Settings screen */
 "Privacy Settings" = "Настройки конфиденциальности";
@@ -654,14 +651,17 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "Сообщить об отказах";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
+"Retrieves a list of orders that contain a given keyword." = "Получение списка заказов, содержащих ключевое слово.";
+
 /* No comment provided by engineer. */
 "Retry" = "Повторить";
 
 /* Revenue stat label on dashboard. */
-"Revenue" = "Revenue";
+"Revenue" = "Доход";
 
-/* Review moderation success notice message */
-"Review marked %@" = "Review marked %@";
+/* Review moderation success notice message. It reads: Review marked as {new status} */
+"Review marked as %@" = "Review marked as %@";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Просмотреть, подготовить и отправить эти ожидающие заказы";
@@ -674,6 +674,12 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS отправлено";
+
+/* Orders Search Placeholder */
+"Search all orders" = "Поиск по всем заказам";
+
+/* Search Orders */
+"Search orders" = "Поиск по заказам";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "Отправить ссылку";
@@ -784,7 +790,7 @@
 "Subtotal" = "Подытог";
 
 /* Labels an order note to let user know it's a system status message */
-"System status" = "System status";
+"System status" = "Состояние системы";
 
 /* Tax label for total taxes line */
 "Tax:" = "Налог:";
@@ -793,7 +799,7 @@
 "Taxes" = "Налоги";
 
 /* Opens the Terms of Service web page */
-"Terms of Service" = "Terms of Service";
+"Terms of Service" = "Условия предоставления услуг";
 
 /* Button title */
 "Text me a code instead" = "Пришлите мне сообщение с кодом";
@@ -833,9 +839,6 @@
 
 /* Displayed whenever a Notification that was onscreen got deleted. */
 "The notification has been removed" = "Уведомление удалено!";
-
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. */
-"The order has been deleted from your Store!" = "Заказ удалён из вашего магазина!";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Сервером был дан пустой ответ. Обычно это означает, что необходимо повысить лимит памяти для сайта. Сервером был дан пустой ответ. Обычно это означает, что необходимо повысить лимит памяти для сайта.";
@@ -921,8 +924,8 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "Не удалось найти магазины WooCommerce, подключенные к этой учётной записи";
 
-/* Review error notice message */
-"Unable to mark review %@" = "Unable to mark review %@";
+/* Review error notice message. It reads: Unable to mark review as {attempted status} */
+"Unable to mark review as %@" = "Unable to mark review as %@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Не удалось найти веб-сайт WordPress по этому URL-адресу. Нажмите кнопку «Нужна помощь?», чтобы просмотреть ответы на часто задаваемые вопросы.";
@@ -940,7 +943,7 @@
 "Undo" = "Назад";
 
 /* Unknown Application State */
-"Unknown" = "Unknown";
+"Unknown" = "Неизвестно";
 
 /* No comment provided by engineer. */
 "Unknown Search Terms" = "Неизвестные поисковые запросы";
@@ -967,7 +970,7 @@
 "Version" = "Версия";
 
 /* Displays the version of the App */
-"Version %@" = "Version %@";
+"Version %@" = "Версия %@";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Посмотреть ранее отправленные запросы в службу поддержки";
@@ -976,7 +979,7 @@
 "Viewer" = "Обозреватель";
 
 /* Visitors stat label on dashboard - should be plural. */
-"Visitors" = "Visitors";
+"Visitors" = "Посетители";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "НАПИСАТЬ ПРИМЕЧАНИЕ";

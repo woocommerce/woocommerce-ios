@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-12-21 14:44:46+0000 */
+/* Translation-Revision-Date: 2019-01-09 09:54:02+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -13,13 +13,13 @@
 "A verification code will only contain numbers." = "驗證碼僅包含數字。";
 
 /* About this app (information page title) */
-"About" = "About";
+"About" = "關於";
 
 /* My Store > Settings > About app section */
-"About the app" = "About the app";
+"About the app" = "關於此應用程式";
 
 /* Application's Active State */
-"Active" = "Active";
+"Active" = "啟用";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "已啟用，關閉自動更新";
@@ -91,7 +91,7 @@
 "Back" = "上一步";
 
 /* Application's Background State */
-"Background" = "Background";
+"Background" = "背景";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "長條數目 %1$i, %2$@,";
@@ -118,7 +118,7 @@
 "Canceled" = "已取消";
 
 /* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
-"Cannot connect to %@" = "Cannot connect to %@";
+"Cannot connect to %@" = "無法連線至 %@";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "隨時隨地掌握最愛網站的最新動態並加入討論。";
@@ -172,10 +172,10 @@
 "Could not unfollow the site at the address specified." = "無法取消關注指定位址的網站。";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
-"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "無法連線至 WordPress 網站。此地址沒有有效的 WordPress 網站。請檢查你輸入的網站位址 (URL)。";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "無法連線。伺服器缺少必要的 XML-RPC 方法。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
 "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "無法連結。嘗試存取網站的 XMLRPC 終端時發生 403 錯誤。此應用程式需要 XMLRPC 終端才能與你的網站通訊。請聯絡你的主機服務提供者，以解決此問題。";
@@ -195,9 +195,6 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "天";
 
-/* Order Notice */
-"Deleted: Order #(viewModel.order.number)" = "已刪除：訂單編號 (viewModel.order.number)";
-
 /* The row label to tap for a detailed product list */
 "Details" = "詳細資料";
 
@@ -214,19 +211,19 @@
 "Don't have an account? _Sign up_" = "還沒有帳號？_註冊_";
 
 /* WordPress.com (unmapped!) error */
-"Dotcom Error: [(code)] (theMessage)" = "Dotcom Error: [(code)] (theMessage)";
+"Dotcom Error: [(code)] (theMessage)" = "Dotcom 錯誤：[(code)] (theMessage)";
 
 /* WordPress.com Missing Token */
-"Dotcom Missing Token" = "Dotcom Missing Token";
+"Dotcom Missing Token" = "Dotcom 缺少 Token";
 
 /* WordPress.com Request Failure */
-"Dotcom Request Failed" = "Dotcom Request Failed";
+"Dotcom Request Failed" = "Dotcom 要求失敗";
 
 /* WordPress.com Error thrown when the response body is empty */
-"Dotcom Response Empty" = "Dotcom Response Empty";
+"Dotcom Response Empty" = "Dotcom 回應為空白";
 
 /* WordPress.com Invalid Token */
-"Dotcom Token Invalid" = "Dotcom Token Invalid";
+"Dotcom Token Invalid" = "Dotcom Token 無效";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "點選兩下將其關閉";
@@ -264,9 +261,6 @@
 /* No comment provided by engineer. */
 "Enter your password instead." = "請改為輸入你的密碼。";
 
-/* No comment provided by engineer. */
-"Error" = "Error";
-
 /* Failed Order Status */
 "Failed" = "失敗";
 
@@ -274,7 +268,7 @@
 "Failed to serialize request to the REST API." = "REST API 無法序列化要求。";
 
 /* Navigates to the feature request screen */
-"Feature Request" = "Feature Request";
+"Feature Request" = "功能要求";
 
 /* Accessibility label for the Filter notifications button. */
 "Filter notifications" = "篩選通知";
@@ -296,9 +290,6 @@
 
 /* Fulfill order button title */
 "Fulfill order" = "履行訂單";
-
-/* Fulfill Notice Title */
-"Fulfillment" = "履行";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "深入瞭解產品在商店上的成效";
@@ -322,7 +313,7 @@
 "Help & Support" = "說明與支援";
 
 /* My Store > Settings > Privacy settings section */
-"Help Improve The App" = "Help Improve The App";
+"Help Improve The App" = "協助改善應用程式";
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "隱藏帳單";
@@ -331,10 +322,10 @@
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "很抱歉，這個 URL 似乎不是 WordPress 網站。請重新檢查拼法是否正確，然後再試一次。";
 
 /* Detail label for yes/no switch. */
-"If disabled the note will be private" = "If disabled the note will be private";
+"If disabled the note will be private" = "若停用，此備註將變成私人狀態";
 
 /* Application's Inactive State */
-"Inactive" = "Inactive";
+"Inactive" = "未啟用";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "未啟用，關閉自動更新";
@@ -373,7 +364,7 @@
 "Learn more" = "瞭解更多";
 
 /* Licenses (information page title) */
-"Licenses" = "Licenses";
+"Licenses" = "授權";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "已達限制。你可以在 1 分鐘後再試一次。如果在 1 分鐘不到之前重試，只會延長你必須等候繼續進行的時間。如果你覺得這是錯誤，請聯絡支援團隊。";
@@ -483,6 +474,9 @@
 /* Empty Notifications List Message */
 "No Notifications Yet!" = "尚未有任何通知！";
 
+/* Search Orders (Empty State) */
+"No Orders found" = "找不到訂單";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "此期間沒有任何活動";
 
@@ -499,7 +493,7 @@
 "Note to customer" = "給顧客的備註";
 
 /* No comment provided by engineer. */
-"Notifications" = "Notifications";
+"Notifications" = "通知";
 
 /* Notifications filtered title */
 "Notifications: (currentTypeFilter.description)" = "通知：(currentTypeFilter.description)";
@@ -529,10 +523,10 @@
 "Open Mail" = "開啟郵件";
 
 /* Opens iOS's Device Settings for the app */
-"Open device settings" = "Open device settings";
+"Open device settings" = "開啟裝置設定";
 
 /* Navigates to open source licenses screen */
-"Open source licenses" = "Open source licenses";
+"Open source licenses" = "開放原始碼授權";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "選用追蹤資訊";
@@ -540,11 +534,14 @@
 /* No comment provided by engineer. */
 "Order #(viewModel.order.number)" = "訂單編號 (viewModel.order.number)";
 
-/* Fulfill Notice Message */
-"Order Marked as Complete!" = "標示為「完成！」的訂單";
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+"Order %@ has been deleted from your store" = "已從你的商店刪除訂單　%@";
 
 /* Order notes section title */
 "Order Notes" = "訂單備註";
+
+/* Order fulfillment success notice */
+"Order marked as fulfilled" = "訂單標示為已履行";
 
 /* No comment provided by engineer. */
 "Orders" = "訂單";
@@ -553,7 +550,7 @@
 "Orders: (filter)" = "訂單：(篩選條件)";
 
 /* My Store > Settings > Other app section */
-"Other" = "Other";
+"Other" = "其他";
 
 /* Product section title */
 "PRODUCT" = "產品";
@@ -592,7 +589,7 @@
 "Please enter your credentials" = "請輸入你的密碼";
 
 /* Instructions for alert asking for email and name. */
-"Please enter your email address and username:" = "Please enter your email address and username:";
+"Please enter your email address and username:" = "請輸入電子郵件地址及使用者名稱：";
 
 /* Instructions for alert asking for email. */
 "Please enter your email address:" = "請輸入你的電子郵件地址。";
@@ -604,10 +601,10 @@
 "Please open your email app and look for an email from WordPress.com." = "請開啟電子郵件應用程式，找到 WordPress.com 傳送的電子郵件。";
 
 /* My Store > Settings > Primary Store information section */
-"Primary Store" = "Primary Store";
+"Primary Store" = "主要商店";
 
 /* Opens the Privacy Policy web page */
-"Privacy Policy" = "Privacy Policy";
+"Privacy Policy" = "隱私權政策";
 
 /* Navigates to Privacy Settings screen */
 "Privacy Settings" = "隱私權設定";
@@ -654,14 +651,17 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "報告當機";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
+"Retrieves a list of orders that contain a given keyword." = "擷取內含指定關鍵字的訂單清單。";
+
 /* No comment provided by engineer. */
 "Retry" = "重試";
 
 /* Revenue stat label on dashboard. */
-"Revenue" = "Revenue";
+"Revenue" = "收益";
 
-/* Review moderation success notice message */
-"Review marked %@" = "Review marked %@";
+/* Review moderation success notice message. It reads: Review marked as {new status} */
+"Review marked as %@" = "Review marked as %@";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "檢視、準備和運送這些待處理訂單";
@@ -674,6 +674,12 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "簡訊已傳送";
+
+/* Orders Search Placeholder */
+"Search all orders" = "搜尋全部訂單";
+
+/* Search Orders */
+"Search orders" = "搜尋訂單";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "傳送連結";
@@ -784,7 +790,7 @@
 "Subtotal" = "小計";
 
 /* Labels an order note to let user know it's a system status message */
-"System status" = "System status";
+"System status" = "系統狀態";
 
 /* Tax label for total taxes line */
 "Tax:" = "稅金：";
@@ -793,7 +799,7 @@
 "Taxes" = "稅金";
 
 /* Opens the Terms of Service web page */
-"Terms of Service" = "Terms of Service";
+"Terms of Service" = "服務條款";
 
 /* Button title */
 "Text me a code instead" = "請改用簡訊傳送驗證碼給我";
@@ -833,9 +839,6 @@
 
 /* Displayed whenever a Notification that was onscreen got deleted. */
 "The notification has been removed" = "通知已移除！";
-
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. */
-"The order has been deleted from your Store!" = "已從你的商店刪除此訂單！";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "伺服器傳回空白回應。這通常代表你必須增加網站的記憶體限制。";
@@ -921,8 +924,8 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "找不到與此帳號連結的 WooCommerce 商店";
 
-/* Review error notice message */
-"Unable to mark review %@" = "Unable to mark review %@";
+/* Review error notice message. It reads: Unable to mark review as {attempted status} */
+"Unable to mark review as %@" = "Unable to mark review as %@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "無法透過該 URL 讀取 WordPress 網站。點選「需要說明？」即可檢視常見問題集。";
@@ -940,7 +943,7 @@
 "Undo" = "復原";
 
 /* Unknown Application State */
-"Unknown" = "Unknown";
+"Unknown" = "不明";
 
 /* No comment provided by engineer. */
 "Unknown Search Terms" = "不明搜尋字詞";
@@ -967,7 +970,7 @@
 "Version" = "版本";
 
 /* Displays the version of the App */
-"Version %@" = "Version %@";
+"Version %@" = "版本 %@";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "檢視先前提交的支援票證";

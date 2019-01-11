@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2018-12-11 08:54:02+0000 */
+/* Translation-Revision-Date: 2019-01-09 09:54:02+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -13,13 +13,13 @@
 "A verification code will only contain numbers." = "확인 코드에는 숫자만 사용할 수 있습니다.";
 
 /* About this app (information page title) */
-"About" = "About";
+"About" = "정보";
 
 /* My Store > Settings > About app section */
-"About the app" = "About the app";
+"About the app" = "앱 정보";
 
 /* Application's Active State */
-"Active" = "Active";
+"Active" = "활성";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "활성화, 자동 업데이트 끄기";
@@ -91,7 +91,7 @@
 "Back" = "뒤로";
 
 /* Application's Background State */
-"Background" = "Background";
+"Background" = "배경";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "표시줄 번호 %1$i, %2$@, ";
@@ -118,7 +118,7 @@
 "Canceled" = "취소됨";
 
 /* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
-"Cannot connect to %@" = "Cannot connect to %@";
+"Cannot connect to %@" = "%@에 연결할 수 없습니다";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "언제, 어디서든지 즐겨 찾는 사이트의 최신 소식을 확인하고 대화에 참여하세요.";
@@ -172,10 +172,10 @@
 "Could not unfollow the site at the address specified." = "지정된 주소의 사이트에 대한 팔로우를 취소할 수 없습니다.";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
-"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "워드프레스 사이트에 연결할 수 없습니다. 이 주소에 유효한 워드프레스 사이트가 없습니다. 입력한 사이트 주소(URL)를 확인하세요.";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "연결할 수 없습니다. 필수 XML-RPC 함수가 서버에 없습니다.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
 "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "연결할 수 없습니다. 회원님의 사이트 XMLRPC 엔드포인트에 액세스하려고 할 때 403 오류가 발생했습니다. 사이트와 통신하려면 이 앱에 해당 요청이 필요합니다. 호스트에 문의하여 이 문제를 해결하세요.";
@@ -195,9 +195,6 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "일";
 
-/* Order Notice */
-"Deleted: Order #(viewModel.order.number)" = "삭제됨: 주문 #(viewModel.order.number)";
-
 /* The row label to tap for a detailed product list */
 "Details" = "세부사항";
 
@@ -214,19 +211,19 @@
 "Don't have an account? _Sign up_" = "아직 계정이 없으신가요? _가입_";
 
 /* WordPress.com (unmapped!) error */
-"Dotcom Error: [(code)] (theMessage)" = "Dotcom Error: [(code)] (theMessage)";
+"Dotcom Error: [(code)] (theMessage)" = "닷컴 오류: [(code)] (theMessage)";
 
 /* WordPress.com Missing Token */
-"Dotcom Missing Token" = "Dotcom Missing Token";
+"Dotcom Missing Token" = "닷컴 토큰 누락";
 
 /* WordPress.com Request Failure */
-"Dotcom Request Failed" = "Dotcom Request Failed";
+"Dotcom Request Failed" = "닷컴 요청 실패";
 
 /* WordPress.com Error thrown when the response body is empty */
-"Dotcom Response Empty" = "Dotcom Response Empty";
+"Dotcom Response Empty" = "닷컴 응답이 비어 있습니다";
 
 /* WordPress.com Invalid Token */
-"Dotcom Token Invalid" = "Dotcom Token Invalid";
+"Dotcom Token Invalid" = "닷컴 토큰이 잘못되었습니다";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "두 번 눌러 무시하기";
@@ -264,9 +261,6 @@
 /* No comment provided by engineer. */
 "Enter your password instead." = "비밀번호를 입력하세요.";
 
-/* No comment provided by engineer. */
-"Error" = "Error";
-
 /* Failed Order Status */
 "Failed" = "실패함";
 
@@ -274,7 +268,7 @@
 "Failed to serialize request to the REST API." = "REST API에 요청을 일련화할 수 없습니다.";
 
 /* Navigates to the feature request screen */
-"Feature Request" = "Feature Request";
+"Feature Request" = "기능 요청";
 
 /* Accessibility label for the Filter notifications button. */
 "Filter notifications" = "알림 필터링";
@@ -296,9 +290,6 @@
 
 /* Fulfill order button title */
 "Fulfill order" = "주문 처리";
-
-/* Fulfill Notice Title */
-"Fulfillment" = "처리";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "스토어의 상품 실적에 대한 인사이트 확인";
@@ -322,7 +313,7 @@
 "Help & Support" = "도움 및 지원";
 
 /* My Store > Settings > Privacy settings section */
-"Help Improve The App" = "Help Improve The App";
+"Help Improve The App" = "앱 개선 지원";
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "청구 숨기기";
@@ -331,10 +322,10 @@
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "이 URL에는 워드프레스 사이트가 없는 것 같습니다. 맞춤법을 확인하고 다시 시도하세요.";
 
 /* Detail label for yes/no switch. */
-"If disabled the note will be private" = "If disabled the note will be private";
+"If disabled the note will be private" = "해제된 경우 메모는 비공개가 됩니다.";
 
 /* Application's Inactive State */
-"Inactive" = "Inactive";
+"Inactive" = "비활성";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "비활성화, 자동 업데이트 끄기";
@@ -373,7 +364,7 @@
 "Learn more" = "더 알아보기";
 
 /* Licenses (information page title) */
-"Licenses" = "Licenses";
+"Licenses" = "라이선스";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "한계에 이르렀습니다. 1분 후에 다시 할 수 있습니다. 제한이 해제 되기까지 기다리는 시간을 증가시키기 전에 다시 해보세요. 이것이 에러라면 지원 센터에 연락하세요. ";
@@ -483,6 +474,9 @@
 /* Empty Notifications List Message */
 "No Notifications Yet!" = "아직 알림이 없습니다!";
 
+/* Search Orders (Empty State) */
+"No Orders found" = "주문을 찾을 수 없습니다.";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "이 기간에 활동이 없음";
 
@@ -529,10 +523,10 @@
 "Open Mail" = "메일 열기";
 
 /* Opens iOS's Device Settings for the app */
-"Open device settings" = "Open device settings";
+"Open device settings" = "기기 설정 열기";
 
 /* Navigates to open source licenses screen */
-"Open source licenses" = "Open source licenses";
+"Open source licenses" = "오픈 소스 라이선스";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "선택적 추적 정보";
@@ -540,11 +534,14 @@
 /* No comment provided by engineer. */
 "Order #(viewModel.order.number)" = "주문 #(viewModel.order.number)";
 
-/* Fulfill Notice Message */
-"Order Marked as Complete!" = "주문이 완료로 표시되었습니다!";
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+"Order %@ has been deleted from your store" = "스토어에서 %@ 주문이 삭제되었습니다.";
 
 /* Order notes section title */
 "Order Notes" = "주문 메모";
+
+/* Order fulfillment success notice */
+"Order marked as fulfilled" = "주문이 이행됨으로 표시됨";
 
 /* No comment provided by engineer. */
 "Orders" = "주문";
@@ -553,7 +550,7 @@
 "Orders: (filter)" = "주문: (필터)";
 
 /* My Store > Settings > Other app section */
-"Other" = "Other";
+"Other" = "기타";
 
 /* Product section title */
 "PRODUCT" = "상품";
@@ -592,7 +589,7 @@
 "Please enter your credentials" = "자격을 입력하세요";
 
 /* Instructions for alert asking for email and name. */
-"Please enter your email address and username:" = "Please enter your email address and username:";
+"Please enter your email address and username:" = "이메일 주소 및 사용자명 입력:";
 
 /* Instructions for alert asking for email. */
 "Please enter your email address:" = "이메일 주소를 입력하세요.";
@@ -604,10 +601,10 @@
 "Please open your email app and look for an email from WordPress.com." = "이메일 앱을 열고 워드프레스닷컴에서 보낸 이메일을 찾으세요.";
 
 /* My Store > Settings > Primary Store information section */
-"Primary Store" = "Primary Store";
+"Primary Store" = "기본 스토어";
 
 /* Opens the Privacy Policy web page */
-"Privacy Policy" = "Privacy Policy";
+"Privacy Policy" = "개인정보 취급방침";
 
 /* Navigates to Privacy Settings screen */
 "Privacy Settings" = "개인 정보 설정";
@@ -654,14 +651,17 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
 "Report crashes" = "충돌 보고";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
+"Retrieves a list of orders that contain a given keyword." = "지정된 키워드가 있는 주문 목록을 검색합니다.";
+
 /* No comment provided by engineer. */
 "Retry" = "재실행";
 
 /* Revenue stat label on dashboard. */
-"Revenue" = "Revenue";
+"Revenue" = "수익";
 
-/* Review moderation success notice message */
-"Review marked %@" = "Review marked %@";
+/* Review moderation success notice message. It reads: Review marked as {new status} */
+"Review marked as %@" = "Review marked as %@";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "대기 중인 주문 검토, 준비 및 배송";
@@ -674,6 +674,12 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS 전송됨";
+
+/* Orders Search Placeholder */
+"Search all orders" = "모든 주문 검색";
+
+/* Search Orders */
+"Search orders" = "주문 검색";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "링크 전송";
@@ -784,7 +790,7 @@
 "Subtotal" = "소계";
 
 /* Labels an order note to let user know it's a system status message */
-"System status" = "System status";
+"System status" = "시스템 상태";
 
 /* Tax label for total taxes line */
 "Tax:" = "세금:";
@@ -793,7 +799,7 @@
 "Taxes" = "세금";
 
 /* Opens the Terms of Service web page */
-"Terms of Service" = "Terms of Service";
+"Terms of Service" = "서비스 약관";
 
 /* Button title */
 "Text me a code instead" = "코드를 문자로 대신 받기";
@@ -833,9 +839,6 @@
 
 /* Displayed whenever a Notification that was onscreen got deleted. */
 "The notification has been removed" = "알림이 제거되었습니다!";
-
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. */
-"The order has been deleted from your Store!" = "스토어에서 주문이 삭제되었습니다!";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "서버에서 응답이 없습니다. 이는 일반적으로 사이트에 대한 메모리 제한을 늘려야 한다는 뜻입니다.";
@@ -921,8 +924,8 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "이 계정에 연결된 우커머스 스토어를 찾을 수 없음";
 
-/* Review error notice message */
-"Unable to mark review %@" = "Unable to mark review %@";
+/* Review error notice message. It reads: Unable to mark review as {attempted status} */
+"Unable to mark review as %@" = "Unable to mark review as %@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "해당 URL에서 워드프레스 사이트를 읽을 수 없습니다. '도움이 필요하세요?'를 눌러 FAQ를 보세요.";
@@ -940,7 +943,7 @@
 "Undo" = "실행 취소";
 
 /* Unknown Application State */
-"Unknown" = "Unknown";
+"Unknown" = "알 수 없음";
 
 /* No comment provided by engineer. */
 "Unknown Search Terms" = "알 수 없는 검색어";
@@ -967,7 +970,7 @@
 "Version" = "버전";
 
 /* Displays the version of the App */
-"Version %@" = "Version %@";
+"Version %@" = "버전 %@";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "이전에 제출한 지원 티켓 보기";
@@ -976,7 +979,7 @@
 "Viewer" = "독자";
 
 /* Visitors stat label on dashboard - should be plural. */
-"Visitors" = "Visitors";
+"Visitors" = "방문자";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "메모 작성";

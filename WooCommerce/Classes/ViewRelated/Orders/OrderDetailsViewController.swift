@@ -405,6 +405,7 @@ private extension OrderDetailsViewController {
     func configureProductDetails(cell: BasicTableViewCell) {
         cell.textLabel?.text = viewModel.productDetails
         cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
     }
 
     func configureProductList(cell: ProductListTableViewCell) {

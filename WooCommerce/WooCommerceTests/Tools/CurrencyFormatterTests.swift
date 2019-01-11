@@ -79,11 +79,11 @@ class CurrencyFormatterTests: XCTestCase {
 
         XCTAssertEqual(expectedResult, actualResult)
     }
-}
 
 
-// MARK: - Thousand Separator Unit Tests
-extension CurrencyFormatterTests {
+    // MARK: - Thousand Separator Unit Tests
+
+
     /// Verifies that the thousand separator is localized to a comma
     ///
     func testThousandSeparatorIsLocalizedToComma() {
@@ -180,21 +180,21 @@ extension CurrencyFormatterTests {
 
         XCTAssertEqual(expectedResult, actualResult)
     }
-}
 
 
-// MARK: - Currency Formatting Unit Tests
-extension CurrencyFormatter {
-    /// Verifies that user's full currency preferences are applied
+    // MARK: - Currency Formatting Unit Tests
+
+
+    /// Verifies that user's full currency preferences are applied using a string as the raw value
     ///
-    func testCompleteCurrencyFormattingRespectsUserRules() {
+    func testCompleteCurrencyFormattingRespectsUserRulesUsingStringValue() {
         let decimalSeparator = ","
         let thousandSeparator = "."
         let decimalPosition = 3
         let currencyPosition = CurrencySettings.CurrencyPosition.rightSpace
-        let currencyCode = CurrencySettings.CurrencyCode.JOD
+        let currencyCode = CurrencySettings.CurrencyCode.GBP
         let stringAmount = "-7867818684.64"
-        let expectedResult = "-7.867.818.684,640 د.ا"
+        let expectedResult = "-7.867.818.684,640 £"
 
         let decimal = CurrencyFormatter().convertToDecimal(from: stringAmount)
         guard let decimalAmount = decimal else {
@@ -202,6 +202,35 @@ extension CurrencyFormatter {
             XCTFail()
             return
         }
+
+        let amount = CurrencyFormatter().localize(decimalAmount,
+                                                  with: decimalSeparator,
+                                                  in: decimalPosition,
+                                                  including: thousandSeparator)
+
+        guard let localizedAmount = amount else {
+            XCTFail()
+            return
+        }
+
+        let symbol = CurrencySettings.shared.symbol(from: currencyCode)
+        let actualResult = CurrencyFormatter().formatCurrency(using: localizedAmount,
+                                                              at: currencyPosition,
+                                                              with: symbol)
+
+        XCTAssertEqual(expectedResult, actualResult)
+    }
+
+    /// Verifies that user's full currency preferences are applied using a NSDecimalNumber as the raw value
+    ///
+    func testCompleteCurrencyFormattingRespectsUserRulesUsingDecimalValue() {
+        let decimalSeparator = ","
+        let thousandSeparator = "."
+        let decimalPosition = 3
+        let currencyPosition = CurrencySettings.CurrencyPosition.rightSpace
+        let currencyCode = CurrencySettings.CurrencyCode.GBP
+        let decimalAmount = NSDecimalNumber(floatLiteral: -7867818684.64)
+        let expectedResult = "-7.867.818.684,640 £"
 
         let amount = CurrencyFormatter().localize(decimalAmount,
                                                   with: decimalSeparator,

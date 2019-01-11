@@ -39,7 +39,7 @@ struct OrderItemViewModel {
         }
 
         let itemTotal = currencyFormatter.formatAmount(item.total, with: currency) ?? String()
-        let itemSubtotal = currencyFormatter.formatAmount(item.subtotal, with: currency) ?? String()
+        let itemSubtotal = currencyFormatter.formatAmount(item.price, with: currency) ?? String()
 
         return itemTotal + " (" + itemSubtotal + " × " + quantity + ")"
     }

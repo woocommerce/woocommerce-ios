@@ -266,7 +266,7 @@ private extension AppDelegate {
         #endif
     }
 
-    ///
+    /// Set up app review prompt
     ///
     func setupAppRatingManager() {
         guard let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else {

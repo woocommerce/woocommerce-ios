@@ -27,7 +27,9 @@ A clear and concise description of what you expected to happen.
 
 **Mobile Environment**
 Please include:
-iOS version
+- Device: 
+- iOS version: 
+- WooCommerce iOS version: 
 
 **WordPress Environment**
 <details>

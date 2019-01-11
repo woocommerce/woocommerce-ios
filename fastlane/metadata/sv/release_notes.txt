@@ -1,0 +1,6 @@
+Med mobilappen WooCommerce, har du din online-butik i din ficka: hantera ordrar, ta emot notifieringar om försäljning, och titta på nyckeltal i farten.
+
+Trumvirvel, tack: det är vår allra första publika lansering! Vi ser fram emot att iterera tidigt och ofta och vi vill gärna höra feedback och förbättringsförslag från dig.
+Kontakta oss via “Support” i appen eller på ideas.woocommerce.com.
+
+Tack till alla som var involverade i utvecklingen och den tidiga testningen!

@@ -1,0 +1,6 @@
+WooCommerce mobil uygulamasıyla çevrimiçi mağazanız cebinizde: Hareket halindeyken siparişleri yönetebilir, satış bildirimlerini alabilir ve ana metrikleri görüntüleyebilirsiniz.
+
+Sıkı durun: Bu bizim ilk halka açık sürümümüz! Hem erkenden hem de sık sık yenileme yapmayı düşünüyoruz ve geri bildirimleriniz ile iyileştirme önerilerinizi duymak için sabırsızlanıyoruz.
+Uygulamanın “Destek” bölümünden veya ideas.woocommerce.com üzerinden iletişime geçebilirsiniz.
+
+Geliştirme ve ilk test süreçlerine katılan herkese teşekkür ederiz!

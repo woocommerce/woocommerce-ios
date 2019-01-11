@@ -165,6 +165,9 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Continue reading";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"Copy" = "Copy";
+
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "Could not check site purchases.";
 

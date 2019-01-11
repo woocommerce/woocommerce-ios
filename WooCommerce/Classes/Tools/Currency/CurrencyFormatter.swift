@@ -78,6 +78,15 @@ public class CurrencyFormatter {
             return nil
         }
 
+        return formatAmount(decimalAmount, with: currency)
+    }
+
+    /// Applies currency option settings to the amount for the given currency.
+    /// - Parameters:
+    ///     - amount: a NSDecimalNumber representation of the amount, from the API, with no formatting applied. e.g. "19.87"
+    ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
+    ///
+    func formatAmount(_ decimalAmount: NSDecimalNumber, with currency: String = CurrencySettings.shared.currencyCode.rawValue) -> String? {
         // Grab the read-only currency options. These are set by the user in Site > Settings.
         let separator = CurrencySettings.shared.decimalSeparator
         let position = CurrencySettings.shared.numberOfDecimals

@@ -376,7 +376,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     /// error message when the new view controller appears.
     ///
     @objc func showSelfHostedUsernamePasswordAndError(_ error: Error) {
-        loginFields.siteAddress = "http://wordpress.com"
+        loginFields.siteAddress = "https://wordpress.com"
         errorToPresent = error
         performSegue(withIdentifier: .showURLUsernamePassword, sender: self)
     }

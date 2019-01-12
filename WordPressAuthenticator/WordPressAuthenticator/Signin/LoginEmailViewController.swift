@@ -355,14 +355,30 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
                                         strongSelf.configureViewLoading(false)
 
                                         let userInfo = (error as NSError).userInfo
-                                        if let errorCode = userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String, errorCode == "unknown_user" {
+                                        let errorCode = userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
+                                        if errorCode == "unknown_user" {
                                             let msg = NSLocalizedString("This email address is not registered on WordPress.com.",
                                                                         comment: "An error message informing the user the email address they entered did not match a WordPress.com account.")
-                                            self?.displayError(message: msg)
+                                            strongSelf.displayError(message: msg)
+                                        } else if errorCode == "email_login_not_allowed" {
+                                                // If we get this error, we know we have a WordPress.com user but their
+                                                // email address is flagged as suspicious.  They need to login via their
+                                                // username instead.
+                                                strongSelf.showSelfHostedUsernamePasswordAndError(error)
                                         } else {
                                             strongSelf.displayError(error as NSError, sourceTag: strongSelf.sourceTag)
                                         }
         })
+    }
+
+    /// Configures loginFields to log into wordpress.com and
+    /// navigates to the selfhosted username/password form. Displays the specified
+    /// error message when the new view controller appears.
+    ///
+    @objc func showSelfHostedUsernamePasswordAndError(_ error: Error) {
+        loginFields.siteAddress = "https://wordpress.com"
+        errorToPresent = error
+        performSegue(withIdentifier: .showURLUsernamePassword, sender: self)
     }
 
     override open func displayRemoteError(_ error: Error) {

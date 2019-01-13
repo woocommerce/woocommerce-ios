@@ -383,7 +383,8 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         displayError(message: "")
 
         loginWithUsernamePassword(immediately: true)
-
+    }
+    
     /// Configures loginFields to log into wordpress.com and
     /// navigates to the selfhosted username/password form. Displays the specified
     /// error message when the new view controller appears.

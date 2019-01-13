@@ -367,6 +367,7 @@
                         <segue destination="IwV-3R-6dB" kind="presentation" identifier="showSignupMethod" id="EmH-Av-vhT"/>
                         <segue destination="T5n-nb-cOW" kind="show" identifier="showSigninV2" id="sIC-Hv-FJw"/>
                         <segue destination="MEg-KS-Afs" kind="show" identifier="showGoogle" id="HMT-Z5-QHr"/>
+                        <segue destination="SZS-o3-1P7" kind="show" identifier="showURLUsernamePassword" id="4SK-mG-U33"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wWl-qb-1Yp" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1188,12 +1189,5 @@
         <image name="icon-username-field" width="18" height="18"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="kRR-qz-Hu2"/>
-        <segue reference="ySQ-EM-6JI"/>
-        <segue reference="sIC-Hv-FJw"/>
-        <segue reference="D3h-Su-Jwk"/>
-        <segue reference="swV-lc-6gI"/>
-        <segue reference="EmH-Av-vhT"/>
-        <segue reference="HMT-Z5-QHr"/>
     </inferredMetricsTieBreakers>
 </document>

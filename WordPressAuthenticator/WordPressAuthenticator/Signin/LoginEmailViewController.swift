@@ -78,6 +78,8 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
 
         WordPressAuthenticator.track(.loginEmailFormViewed)
+
+        hiddenPasswordField?.text = nil
     }
 
 

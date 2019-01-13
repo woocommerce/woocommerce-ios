@@ -43,6 +43,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
         if let error = errorToPresent {
             displayRemoteError(error)
+            errorToPresent = nil
         }
     }
 

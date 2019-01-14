@@ -22,7 +22,8 @@ target 'WooCommerce' do
   pod 'Automattic-Tracks-iOS', '0.2.4'
 
 
-  pod 'Gridicons', '0.16'
+  # pod 'Gridicons', '~> 0.18-beta'
+  pod 'Gridicons', :git => 'https://github.com/Automattic/Gridicons-iOS.git', :branch => 'feature/filter-icon-update'
   
   # allow pod to pick up beta versions, such as 1.1.7-beta.1
   pod 'WordPressAuthenticator', '~> 1.1-beta'

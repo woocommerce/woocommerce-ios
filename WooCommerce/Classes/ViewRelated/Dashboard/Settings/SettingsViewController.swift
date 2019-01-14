@@ -32,7 +32,6 @@ class SettingsViewController: UIViewController {
 
 
     // MARK: - Overridden Methods
-
     override func viewDidLoad() {
         super.viewDidLoad()
 

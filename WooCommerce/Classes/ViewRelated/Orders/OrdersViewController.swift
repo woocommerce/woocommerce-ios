@@ -4,6 +4,7 @@ import Yosemite
 import WordPressUI
 import CocoaLumberjack
 import SafariServices
+import StoreKit
 
 
 /// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
@@ -123,6 +124,9 @@ class OrdersViewController: UIViewController {
         super.viewWillAppear(animated)
 
         syncingCoordinator.synchronizeFirstPage()
+        if AppRatingManager.shared.shouldPromptForAppReview() {
+            displayRatingPrompt()
+        }
     }
 }
 
@@ -483,6 +487,24 @@ private extension OrdersViewController {
         for subview in view.subviews where subview is OverlayMessageView {
             subview.removeFromSuperview()
         }
+    }
+}
+
+// MARK: - App Store Review Prompt
+//
+private extension OrdersViewController {
+    func displayRatingPrompt() {
+        defer {
+            if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
+                WooAnalytics.shared.track(wooEvent)
+            }
+        }
+
+        // Show the app store ratings alert
+        // Note: Optimistically assuming our prompting succeeds since we try to stay
+        // in line and not prompt more than two times a year
+        AppRatingManager.shared.ratedCurrentVersion()
+        SKStoreReviewController.requestReview()
     }
 }
 

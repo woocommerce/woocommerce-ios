@@ -4,6 +4,7 @@ import Yosemite
 import WordPressUI
 import SafariServices
 import Gridicons
+import StoreKit
 
 
 // MARK: - NotificationsViewController
@@ -169,6 +170,10 @@ class NotificationsViewController: UIViewController {
             // See this issue for more deets: https://github.com/woocommerce/woocommerce-ios/issues/469
             //
             //self?.updateLastSeenTime()
+        }
+
+        if AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section) {
+            displayRatingPrompt()
         }
     }
 }
@@ -391,6 +396,23 @@ private extension NotificationsViewController {
     }
 }
 
+// MARK: - App Store Review Prompt
+//
+private extension NotificationsViewController {
+    func displayRatingPrompt() {
+        defer {
+            if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
+                WooAnalytics.shared.track(wooEvent)
+            }
+        }
+
+        // Show the app store ratings alert
+        // Note: Optimistically assuming our prompting succeeds since we try to stay
+        // in line and not prompt more than two times a year
+        AppRatingManager.shared.ratedCurrentVersion()
+        SKStoreReviewController.requestReview()
+    }
+}
 
 // MARK: - ResultsController
 //
@@ -854,5 +876,9 @@ private extension NotificationsViewController {
         case emptyFiltered
         case results
         case syncing
+    }
+
+    struct Constants {
+        static let section = "notifications"
     }
 }

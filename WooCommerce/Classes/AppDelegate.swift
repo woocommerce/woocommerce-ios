@@ -275,8 +275,8 @@ private extension AppDelegate {
         }
 
         let appRating = AppRatingManager.shared
-        appRating.register(section: "notifications", significantEventCount: 5)
-        appRating.systemWideSignificantEventCountRequiredForPrompt = 10
+        appRating.register(section: "notifications", significantEventCount: WooConstants.notificationEventCount)
+        appRating.systemWideSignificantEventCountRequiredForPrompt = WooConstants.systemEventCount
         appRating.setVersion(version)
     }
 }

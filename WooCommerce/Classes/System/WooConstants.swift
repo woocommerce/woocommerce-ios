@@ -44,4 +44,13 @@ enum WooConstants {
     /// Feature Request URL
     ///
     static let featureRequestURL = URL(string: "http://ideas.woocommerce.com/forums/133476-woocommerce?category_id=84283")!
+
+    /// Number of section events required before an app review prompt appears
+    ///
+    static let notificationEventCount = 5
+
+    /// Number of system-wide significant events required
+    /// before an app review prompt appears
+    ///
+    static let systemEventCount = 10
 }

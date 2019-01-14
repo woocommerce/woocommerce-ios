@@ -176,7 +176,7 @@ private extension HelpAndSupportViewController {
     func configureContactSupport(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Contact support", comment: "Contact support title")
+        cell.textLabel?.text = NSLocalizedString("Contact Support", comment: "Contact Support title")
         cell.detailTextLabel?.text = NSLocalizedString("Reach our happiness engineers who can help answer tough questions", comment: "Subtitle for Contact Support")
     }
 
@@ -185,8 +185,8 @@ private extension HelpAndSupportViewController {
     func configureMyTickets(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("My tickets", comment: "My tickets title")
-        cell.detailTextLabel?.text = NSLocalizedString("View previously submitted support tickets", comment: "subtitle for My tickets")
+        cell.textLabel?.text = NSLocalizedString("My Tickets", comment: "My Tickets title")
+        cell.detailTextLabel?.text = NSLocalizedString("View previously submitted support tickets", comment: "subtitle for My Tickets")
     }
 
     /// Contact Email cell.
@@ -194,7 +194,7 @@ private extension HelpAndSupportViewController {
     func configureMyContactEmail(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Contact email", comment: "Contact email title")
+        cell.textLabel?.text = NSLocalizedString("Contact Email", comment: "Contact Email title")
         cell.detailTextLabel?.text = accountEmail
     }
 }

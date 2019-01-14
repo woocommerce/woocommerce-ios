@@ -80,6 +80,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         WordPressAuthenticator.track(.loginEmailFormViewed)
 
         hiddenPasswordField?.text = nil
+        errorToPresent = nil
     }
 
 

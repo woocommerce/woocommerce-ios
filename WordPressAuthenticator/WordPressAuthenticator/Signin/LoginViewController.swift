@@ -85,6 +85,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         }
         errorLabel?.isHidden = false
         errorLabel?.text = message
+        errorToPresent = nil
     }
 
     private func mustShowLoginEpilogue() -> Bool {

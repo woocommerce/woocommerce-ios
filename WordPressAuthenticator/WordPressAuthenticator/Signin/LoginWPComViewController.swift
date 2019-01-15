@@ -10,7 +10,7 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
     @IBOutlet weak var bottomContentConstraint: NSLayoutConstraint?
     @IBOutlet weak var verticalCenterConstraint: NSLayoutConstraint?
     @objc var onePasswordButton: UIButton!
-    @IBOutlet var emailLabel: UILabel?
+    @IBOutlet var emailLabel: UITextField?
     @IBOutlet var emailStackView: UIStackView?
     override var sourceTag: WordPressSupportSourceTag {
         get {
@@ -152,11 +152,14 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
     // MARK: - Actions
 
     @IBAction func handleTextFieldDidChange(_ sender: UITextField) {
-        guard let passwordField = passwordField else {
-                return
+        switch sender {
+        case passwordField:
+            loginFields.password = sender.nonNilTrimmedText()
+        case emailLabel:
+            loginFields.username = sender.nonNilTrimmedText()
+        default:
+            break
         }
-
-        loginFields.password = passwordField.nonNilTrimmedText()
 
         configureSubmitButton(animating: false)
     }

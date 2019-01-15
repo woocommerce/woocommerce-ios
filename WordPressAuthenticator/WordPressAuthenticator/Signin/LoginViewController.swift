@@ -43,6 +43,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
         if let error = errorToPresent {
             displayRemoteError(error)
+            errorToPresent = nil
         }
     }
 
@@ -84,6 +85,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         }
         errorLabel?.isHidden = false
         errorLabel?.text = message
+        errorToPresent = nil
     }
 
     private func mustShowLoginEpilogue() -> Bool {

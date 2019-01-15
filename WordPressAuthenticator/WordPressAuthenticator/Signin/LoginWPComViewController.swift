@@ -161,8 +161,6 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
             break
         }
 
-//        loginFields.password = passwordField.nonNilTrimmedText()
-
         configureSubmitButton(animating: false)
     }
 

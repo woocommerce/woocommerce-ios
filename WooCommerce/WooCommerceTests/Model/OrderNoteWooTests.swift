@@ -18,7 +18,7 @@ class OrderNoteWooTests: XCTestCase {
     ///
     func testIsSystemNoteCalculatedPropertyReturnsTrueForSystemAuthors() {
         for orderNote in sampleOrderNotes where orderNote.author == "system" {
-            XCTAssertTrue(orderNote.isSystemNote)
+            XCTAssertTrue(orderNote.isSystemAuthor)
         }
     }
 
@@ -26,7 +26,7 @@ class OrderNoteWooTests: XCTestCase {
     ///
     func testIsSystemNoteCalculatedPropertyReturnsFalseForNonSystemAuthors() {
         for orderNote in sampleOrderNotes where orderNote.author != "system" {
-            XCTAssertFalse(orderNote.isSystemNote)
+            XCTAssertFalse(orderNote.isSystemAuthor)
         }
     }
 }

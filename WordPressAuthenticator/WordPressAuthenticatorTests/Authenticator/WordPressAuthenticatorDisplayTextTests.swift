@@ -6,8 +6,8 @@ import XCTest
 class WordPressAuthenticatorDisplayTextTests: XCTestCase {
     /// Default display text instance
     ///
-    let displayTextDefaults = WordPressAuthenticatorDisplayStrings.defaultText
-
+    let displayTextDefaults = WordPressAuthenticatorDisplayStrings.defaultStrings
+    
     /// Verifies that values in defaultText are not nil
     ///
     func testThatDefaultTextValuesAreNotNil() {

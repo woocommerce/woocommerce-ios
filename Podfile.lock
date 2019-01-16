@@ -82,7 +82,7 @@ DEPENDENCIES:
   - Charts (~> 3.2)
   - CocoaLumberjack (~> 3.4)
   - Crashlytics (~> 3.10)
-  - Gridicons (from `https://github.com/Automattic/Gridicons-iOS.git`, branch `feature/filter-icon-update`)
+  - Gridicons (~> 0.18-beta)
   - KeychainAccess (~> 3.1)
   - WordPressAuthenticator (~> 1.1-beta)
   - WordPressShared (~> 1.1)
@@ -102,6 +102,7 @@ SPEC REPOS:
     - FormatterKit
     - GoogleSignInRepacked
     - GoogleToolboxForMac
+    - Gridicons
     - KeychainAccess
     - lottie-ios
     - NSObject-SafeExpectations
@@ -116,16 +117,6 @@ SPEC REPOS:
     - wpxmlrpc
     - XLPagerTabStrip
     - ZendeskSDK
-
-EXTERNAL SOURCES:
-  Gridicons:
-    :branch: feature/filter-icon-update
-    :git: https://github.com/Automattic/Gridicons-iOS.git
-
-CHECKOUT OPTIONS:
-  Gridicons:
-    :commit: af9ba1b48de0149e5aeb2897c6322f89dd17c641
-    :git: https://github.com/Automattic/Gridicons-iOS.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
@@ -154,6 +145,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 22d4c58200d7c105e0e407ab6bfd01a5d85014be
   ZendeskSDK: af6509ad7968d367f95b2645713802712152f879
 
-PODFILE CHECKSUM: d911e7f4902eefe2a0395e50ca16b0894f75f968
+PODFILE CHECKSUM: 8ef4c97eb133dc1f2e258ced7df0eff00031d890
 
 COCOAPODS: 1.5.3

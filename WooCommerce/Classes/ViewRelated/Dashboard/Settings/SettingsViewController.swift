@@ -164,13 +164,13 @@ private extension SettingsViewController {
     func configureLicenses(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Open source licenses", comment: "Navigates to open source licenses screen")
+        cell.textLabel?.text = NSLocalizedString("Open Source Licenses", comment: "Navigates to open source licenses screen")
     }
 
     func configureAppSettings(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Open device settings", comment: "Opens iOS's Device Settings for the app")
+        cell.textLabel?.text = NSLocalizedString("Open Device Settings", comment: "Opens iOS's Device Settings for the app")
     }
 
     func configureLogout(cell: BasicTableViewCell) {

@@ -33,11 +33,7 @@ class OrdersViewController: UIViewController {
         let storageManager = AppDelegate.shared.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
-        var dayComponent = DateComponents()
-        dayComponent.day = 1
-        let calendar = Calendar.current
-        let today = Date()
-        let futureDate = calendar.date(byAdding: dayComponent, to: today)
+        let futureDate = getTomorrow()
 
         if let tomorrow = futureDate {
             let predicate = NSPredicate(format: "dateCreated < %@", tomorrow as NSDate)
@@ -164,12 +160,7 @@ private extension OrdersViewController {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
 
-            var dayComponent = DateComponents()
-            dayComponent.day = 1
-            let calendar = Calendar.current
-            let today = Date()
-            let futureDate = calendar.date(byAdding: dayComponent, to: today)
-
+            let futureDate = getTomorrow()
             var predicates: [NSPredicate]
             
             if let tomorrow = futureDate {

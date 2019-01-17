@@ -33,6 +33,17 @@ class OrdersViewController: UIViewController {
         let storageManager = AppDelegate.shared.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
+        var dayComponent = DateComponents()
+        dayComponent.day = 1
+        let calendar = Calendar.current
+        let today = Date()
+        let futureDate = calendar.date(byAdding: dayComponent, to: today)
+
+        if let tomorrow = futureDate {
+            let predicate = NSPredicate(format: "dateCreated < %@", tomorrow as NSDate)
+            return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", matching: predicate, sortedBy: [descriptor])
+        }
+
         return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
@@ -152,7 +163,21 @@ private extension OrdersViewController {
         resultsController.predicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
-            let predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
+
+            var dayComponent = DateComponents()
+            dayComponent.day = 1
+            let calendar = Calendar.current
+            let today = Date()
+            let futureDate = calendar.date(byAdding: dayComponent, to: today)
+
+            var predicates: [NSPredicate]
+            
+            if let tomorrow = futureDate {
+                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", tomorrow as NSDate)
+                predicates = [ excludeSearchCache, excludeNonMatchingStatus, dateSubPredicate ].compactMap { $0 }
+            } else {
+                predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
+            }
 
             return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         }()
@@ -516,6 +541,15 @@ private extension OrdersViewController {
     func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
         let order = resultsController.object(at: indexPath)
         return OrderDetailsViewModel(order: order)
+    }
+
+    func getTomorrow() -> Date? {
+        var dayComponent = DateComponents()
+        dayComponent.day = 1
+        let calendar = Calendar.current
+        let today = Date()
+
+        return calendar.date(byAdding: dayComponent, to: today)
     }
 }
 

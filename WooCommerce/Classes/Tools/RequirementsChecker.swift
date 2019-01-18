@@ -57,7 +57,7 @@ class RequirementsChecker {
             case .invalidWCVersion:
                 displayWCVersionAlert()
             default:
-                break            
+                break
             }
         }
     }

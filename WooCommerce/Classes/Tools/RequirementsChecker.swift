@@ -16,7 +16,7 @@ enum RequirementCheckResult: Int, CaseIterable {
     ///
     case invalidWCVersion
 
-    /// The response returned from the server successful however it was empty (or missing information)
+    /// The response returned from the server successfully however it was empty or missing information
     /// that prevents us from verifing the WC version
     ///
     case empty
@@ -27,7 +27,7 @@ enum RequirementCheckResult: Int, CaseIterable {
 }
 
 
-/// Responsible for checking the minimum requirements for the app and it's features!
+/// Responsible for checking the minimum requirements for the app and its features!
 ///
 class RequirementsChecker {
 
@@ -39,7 +39,7 @@ class RequirementsChecker {
     /// This function checks the default site's API version and then displays a warning if the
     /// site's WC version is not valid.
     ///
-    /// NOTE: When checking the default site's WC version if 1) an error occurs or 2) the server response is invalid,
+    /// NOTE: When checking the default site's WC version, if 1) an error occurs or 2) the server response is invalid,
     ///       the WC version alert will *not* be displayed.
     ///
     static func checkMinimumWooVersionForDefaultStore() {

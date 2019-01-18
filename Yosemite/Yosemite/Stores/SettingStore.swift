@@ -57,7 +57,11 @@ private extension SettingStore {
     func retrieveSiteAPI(siteID: Int, onCompletion: @escaping (SiteAPI?, Error?) -> Void) {
         let remote = SiteAPIRemote(network: network)
         remote.loadAPIInformation(for: siteID) { (siteAPI, error) in            
-            onCompletion(siteAPI, error)
+            // Commenting out the following line for testing the PR!
+            //onCompletion(siteAPI, error)
+
+            // This completion handler is called to test a successful server response that is empty
+            onCompletion(nil, nil)
         }
     }
 }

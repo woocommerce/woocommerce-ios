@@ -56,7 +56,6 @@ class RequirementsChecker {
             switch result {
             case .invalidWCVersion:
                 displayWCVersionAlert()
-                return
             default:
                 break            
             }
@@ -100,7 +99,7 @@ private extension RequirementsChecker {
                 return
             }
             guard let siteAPI = siteAPI else {
-                DDLogWarn("⚠️ Empty or invalid response while fetching API info for siteID \(siteID): \(String(describing: error))")
+                DDLogWarn("⚠️ Empty or invalid response while fetching API info for siteID \(siteID))")
                 onCompletion?(.empty, nil)
                 return
             }

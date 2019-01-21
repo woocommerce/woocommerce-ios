@@ -187,7 +187,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             let service = WordPressComBlogService()
             service.fetchSiteInfo(for: siteAddress, success: { [weak self] siteInfo in
                 self?.loginFields.meta.siteInfo = siteInfo
-                if WordPressAuthenticator.shared.delegate?.defaultWordPressComAccountExists == true {
+                if WordPressAuthenticator.shared.delegate?.allowWPComLogin == false {
                     self?.promptUserToLogoutBeforeConnectingWPComSite()
                     self?.configureViewLoading(false)
                 } else {
@@ -235,7 +235,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
 
     @objc private func promptUserToLogoutBeforeConnectingWPComSite() {
         let acceptActionTitle = NSLocalizedString("OK", comment: "Alert dismissal title")
-        let message = NSLocalizedString("Please logout before connecting to a different wordpress.com site", comment: "Message for alert to prompt user to logout before connecting to a different wxordpress.com site")
+        let message = NSLocalizedString("Please log out before connecting to a different wordpress.com site", comment: "Message for alert to prompt user to logout before connecting to a different wordpress.com site.")
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         alertController.addDefaultActionWithTitle(acceptActionTitle)
         present(alertController, animated: true)

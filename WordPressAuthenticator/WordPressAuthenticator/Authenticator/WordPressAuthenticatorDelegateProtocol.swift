@@ -20,8 +20,8 @@ public protocol WordPressAuthenticatorDelegate: class {
     ///
     var supportEnabled: Bool { get }
 
-    /// Returns true if there is a default WordPress.com account in the app./
-    var defaultWordPressComAccountExists: Bool { get }
+    /// Returns true if there isn't a default WordPress.com account connected in the app.
+    var allowWPComLogin: Bool { get }
 
     /// Signals the Host App that a new WordPress.com account has just been created.
     ///

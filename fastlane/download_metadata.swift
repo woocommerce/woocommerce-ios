@@ -6,6 +6,7 @@ let glotPressSubtitleKey = "app_store_subtitle"
 let glotPressWhatsNewKey = "v1.0-whats-new"
 let glotPressDescriptionKey = "app_store_desc"
 let glotPressKeywordsKey = "app_store_keywords"
+let glotPressPromoTextKey = "app_store_promo_text"
 let baseFolder = "./metadata"
 
 // iTunes Connect language code: GlotPress code
@@ -61,6 +62,7 @@ func downloadTranslation(languageCode: String, folderName: String) {
         var whatsNew: String?
         var keywords: String?
         var storeDescription: String?
+        var promoText: String?
 
         jsonDict.forEach({ (key: String, value: Any) in
 
@@ -89,6 +91,8 @@ func downloadTranslation(languageCode: String, folderName: String) {
                 whatsNew = translation
             case glotPressDescriptionKey:
                 storeDescription = translation
+            case glotPressPromoTextKey:
+                promoText = translation
             default:
                 print("  Unknown key: \(keyFirstPart)")
             }
@@ -109,6 +113,7 @@ func downloadTranslation(languageCode: String, folderName: String) {
             try whatsNew?.write(toFile: "\(languageFolder)/release_notes.txt", atomically: true, encoding: .utf8)
             try keywords?.write(toFile: "\(languageFolder)/keywords.txt", atomically: true, encoding: .utf8)
             try storeDescription?.write(toFile: "\(languageFolder)/description.txt", atomically: true, encoding: .utf8)
+            try promoText?.write(toFile: "\(languageFolder)/promotional_text.txt", atomically: true, encoding: .utf8)
 
             // Don't add the marketing URL unless there's other metadata that's been downloaded
             if try fileManager.contentsOfDirectory(atPath: languageFolder).count > 0 {
@@ -131,7 +136,7 @@ func deleteExistingMetadata() {
 }
 
 
-deleteExistingMetadata()
+//deleteExistingMetadata()
 
 languages.forEach( { (key: String, value: String) in
     downloadTranslation(languageCode: value, folderName: key)

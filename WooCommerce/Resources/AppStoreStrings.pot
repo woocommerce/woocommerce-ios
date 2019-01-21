@@ -41,6 +41,12 @@ msgctxt "app_store_keywords"
 msgid "Woocommerce, woocommerce app, woocommerce mobile, woo app, woocommerce order alert, wordpress, eComm\n"
 msgstr ""
 
+#. translators: Multi-paragraph text used to display in the Apple App Store.
+#. Limit to 170 characters including spaces and commas.
+msgctxt "app_store_promo_text"
+msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews.\n"
+msgstr ""
+
 msgctxt "v1.0-whats-new"
 msgid ""
 "With the WooCommerce mobile app, you’ve got your online store in your pocket: manage orders, receive sales notifications, and view key metrics on the go.\n"
@@ -50,4 +56,5 @@ msgid ""
 "\n"
 "Thank you to everyone involved in development and early testing!\n"
 msgstr ""
+
 

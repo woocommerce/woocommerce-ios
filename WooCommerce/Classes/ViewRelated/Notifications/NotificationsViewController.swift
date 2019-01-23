@@ -142,6 +142,8 @@ class NotificationsViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+
+        // This 👇 should be called in init so the tab is correctly localized when the app launches
         configureTabBarItem()
     }
 
@@ -186,7 +188,7 @@ private extension NotificationsViewController {
     /// Setup: TabBar
     ///
     func configureTabBarItem() {
-        tabBarItem.title = NSLocalizedString("Notifications", comment: "Notifications tab title")
+        tabBarItem.title = NSLocalizedString("Notifications", comment: "Title of the Notifications tab — plural form of Notification")
         tabBarItem.image = Gridicon.iconOfType(.bell)
     }
 
@@ -240,11 +242,14 @@ private extension NotificationsViewController {
 
     func refreshTitle() {
         guard currentTypeFilter != .all else {
-            navigationItem.title = NSLocalizedString("Notifications", comment: "Notifications title")
+            navigationItem.title = NSLocalizedString("Notifications",
+                                                     comment: "Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification).")
             return
         }
 
-        navigationItem.title = NSLocalizedString("Notifications: \(currentTypeFilter.description)", comment: "Notifications filtered title")
+        let title = String.localizedStringWithFormat(NSLocalizedString("Notifications: %@",
+                                                                       comment: "Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter}"), currentTypeFilter.description.capitalized)
+        navigationItem.title = title
     }
 }
 
@@ -856,11 +861,11 @@ private extension NotificationsViewController {
         var description: String {
             switch self {
             case .all:
-                return NSLocalizedString("All", comment: "All filter title")
+                return NSLocalizedString("All", comment: "Name of the All filter on the Notifications screen - it means all notifications will be displayed.")
             case .orders:
-                return NSLocalizedString("Orders", comment: "Orders filter title")
+                return NSLocalizedString("Orders", comment: "Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.")
             case .reviews:
-                return NSLocalizedString("Reviews", comment: "Reviews filter title")
+                return NSLocalizedString("Reviews", comment: "Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.")
             }
         }
     }

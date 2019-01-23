@@ -153,7 +153,7 @@ private extension OrdersViewController {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
 
-            let futureDate = getTomorrow()
+            let futureDate = Date.tomorrow()
             var predicates: [NSPredicate]
 
             if let tomorrow = futureDate {
@@ -525,15 +525,6 @@ private extension OrdersViewController {
     func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
         let order = resultsController.object(at: indexPath)
         return OrderDetailsViewModel(order: order)
-    }
-
-    func getTomorrow() -> Date? {
-        var dayComponent = DateComponents()
-        dayComponent.day = 1
-        let calendar = Calendar.current
-        let today = Date()
-
-        return calendar.date(byAdding: dayComponent, to: today)
     }
 }
 

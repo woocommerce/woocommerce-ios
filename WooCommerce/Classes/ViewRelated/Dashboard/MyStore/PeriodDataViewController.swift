@@ -88,14 +88,14 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         guard let item = orderStats?.items?.first else {
             return ""
         }
-        return formattedPeriodString(for: item)
+        return formattedAxisPeriodString(for: item)
     }
 
     private var xAxisMaximum: String {
         guard let item = orderStats?.items?.last else {
             return ""
         }
-        return formattedPeriodString(for: item)
+        return formattedAxisPeriodString(for: item)
     }
 
     // MARK: - Initialization
@@ -336,7 +336,7 @@ extension PeriodDataViewController: IAxisValueFormatter {
 
         if axis is XAxis {
             if let item = orderStats.items?[Int(value)] {
-                return formattedPeriodString(for: item)
+                return formattedAxisPeriodString(for: item)
             } else {
                 return ""
             }
@@ -499,7 +499,7 @@ private extension PeriodDataViewController {
             let formattedAmount = CurrencyFormatter().formatCurrency(using: item.totalSales.friendlyString(),
                                                                      at: CurrencySettings.shared.currencyPosition,
                                                                      with: currencySymbol)
-            entry.accessibilityValue = "\(item.period): \(formattedAmount)"
+            entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
             barColors.append(barColor(for: item.period))
             dataEntries.append(entry)
             barCount += 1
@@ -514,24 +514,47 @@ private extension PeriodDataViewController {
         return BarChartData(dataSet: dataSet)
     }
 
-    func formattedPeriodString(for item: OrderStatsItem) -> String {
+    func formattedAxisPeriodString(for item: OrderStatsItem) -> String {
         var dateString = ""
         switch granularity {
         case .day:
             if let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: item.period) {
-                dateString = DateFormatter.Charts.chartsDayFormatter.string(from: periodDate)
+                dateString = DateFormatter.Charts.chartAxisDayFormatter.string(from: periodDate)
             }
         case .week:
             if let periodDate = DateFormatter.Stats.statsWeekFormatter.date(from: item.period) {
-                dateString = DateFormatter.Charts.chartsWeekFormatter.string(from: periodDate)
+                dateString = DateFormatter.Charts.chartAxisWeekFormatter.string(from: periodDate)
             }
         case .month:
             if let periodDate = DateFormatter.Stats.statsMonthFormatter.date(from: item.period) {
-                dateString = DateFormatter.Charts.chartsMonthFormatter.string(from: periodDate)
+                dateString = DateFormatter.Charts.chartAxisMonthFormatter.string(from: periodDate)
             }
         case .year:
             if let periodDate = DateFormatter.Stats.statsYearFormatter.date(from: item.period) {
-                dateString = DateFormatter.Charts.chartsYearFormatter.string(from: periodDate)
+                dateString = DateFormatter.Charts.chartAxisYearFormatter.string(from: periodDate)
+            }
+        }
+        return dateString
+    }
+
+    func formattedChartMarkerPeriodString(for item: OrderStatsItem) -> String {
+        var dateString = ""
+        switch granularity {
+        case .day:
+            if let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: item.period) {
+                dateString = DateFormatter.Charts.chartAxisDayFormatter.string(from: periodDate)
+            }
+        case .week:
+            if let periodDate = DateFormatter.Stats.statsWeekFormatter.date(from: item.period) {
+                dateString = DateFormatter.Charts.chartAxisWeekFormatter.string(from: periodDate)
+            }
+        case .month:
+            if let periodDate = DateFormatter.Stats.statsMonthFormatter.date(from: item.period) {
+                dateString = DateFormatter.Charts.chartAxisMonthFormatter.string(from: periodDate)
+            }
+        case .year:
+            if let periodDate = DateFormatter.Stats.statsYearFormatter.date(from: item.period) {
+                dateString = DateFormatter.Charts.chartAxisYearFormatter.string(from: periodDate)
             }
         }
         return dateString

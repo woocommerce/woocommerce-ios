@@ -33,13 +33,6 @@ class OrdersViewController: UIViewController {
         let storageManager = AppDelegate.shared.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
-        let futureDate = getTomorrow()
-
-        if let tomorrow = futureDate {
-            let predicate = NSPredicate(format: "dateCreated < %@", tomorrow as NSDate)
-            return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", matching: predicate, sortedBy: [descriptor])
-        }
-
         return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
@@ -162,7 +155,7 @@ private extension OrdersViewController {
 
             let futureDate = getTomorrow()
             var predicates: [NSPredicate]
-            
+
             if let tomorrow = futureDate {
                 let dateSubPredicate = NSPredicate(format: "dateCreated < %@", tomorrow as NSDate)
                 predicates = [ excludeSearchCache, excludeNonMatchingStatus, dateSubPredicate ].compactMap { $0 }

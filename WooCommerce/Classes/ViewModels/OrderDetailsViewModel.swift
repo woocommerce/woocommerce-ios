@@ -145,7 +145,11 @@ class OrderDetailsViewModel {
     /// Payment Summary
     /// - returns: A full sentence summary of how much was paid and using what method.
     ///
-    var paymentSummary: String {
+    var paymentSummary: String? {
+        if order.paymentMethodTitle.isEmpty {
+            return nil
+        }
+
         return NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
     }
 

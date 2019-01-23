@@ -1,2 +1,5 @@
+1.1 Release
 - bugfix: Improved localization support on the charts in "My Store"
-- bugfix: Hide orders that have a created date listed in the future. (They no longer display under the "Today" section of an order list)
+
+- bugfix: hide orders that have a created date listed in the future. (They no longer display under the "Today" section of an order list).
+- Bugfix: remove the payment method summary in the payment section when the no payment has been received.

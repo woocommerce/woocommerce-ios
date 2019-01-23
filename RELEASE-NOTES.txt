@@ -1,1 +1,2 @@
-* Improved localization support on the charts in "My Store".
+- bugfix: Improved localization support on the charts in "My Store"
+- bugfix: Hide orders that have a created date listed in the future. (They no longer display under the "Today" section of an order list)

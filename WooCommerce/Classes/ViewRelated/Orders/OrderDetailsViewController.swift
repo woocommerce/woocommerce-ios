@@ -396,10 +396,13 @@ private extension OrderDetailsViewController {
         cell.totalLabel.text = viewModel.totalLabel
         cell.totalValue.text = viewModel.totalValue
 
-        cell.separatorLine.backgroundColor = StyleManager.cellSeparatorColor
-        cell.footerValue.text = viewModel.paymentSummary
+        cell.footerText = viewModel.paymentSummary
 
-        cell.accessibilityElements = [cell.subtotalLabel, cell.subtotalValue, cell.discountLabel, cell.discountValue, cell.shippingLabel, cell.shippingValue, cell.taxesLabel, cell.taxesValue, cell.totalLabel, cell.totalValue, cell.footerValue]
+        cell.accessibilityElements = [cell.subtotalLabel, cell.subtotalValue, cell.discountLabel, cell.discountValue, cell.shippingLabel, cell.shippingValue, cell.taxesLabel, cell.taxesValue, cell.totalLabel, cell.totalValue]
+
+        if let footerText = cell.footerText {
+            cell.accessibilityElements?.append(footerText)
+        }
     }
 
     func configureProductDetails(cell: BasicTableViewCell) {

@@ -22,10 +22,26 @@ class PaymentTableViewCell: UITableViewCell {
     @IBOutlet public weak var totalLabel: UILabel!
     @IBOutlet public weak var totalValue: UILabel!
 
-    @IBOutlet var footerView: UIView!
-    @IBOutlet public weak var separatorLine: UIView!
-    @IBOutlet public weak var footerValue: UILabel!
+    @IBOutlet private var footerView: UIView?
+    @IBOutlet private weak var separatorLine: UIView?
+    @IBOutlet private weak var footerLabel: UILabel?
+    @IBOutlet private weak var totalBottomConstraint: NSLayoutConstraint?
 
+    public var footerText: String? {
+        get {
+            return footerLabel?.text
+        }
+        set {
+            guard newValue != nil, newValue?.isEmpty == false else {
+                separatorLine?.removeFromSuperview()
+                footerLabel?.removeFromSuperview()
+                footerView?.removeFromSuperview()
+                totalBottomConstraint?.constant = 0
+                return
+            }
+            footerLabel?.text = newValue
+        }
+    }
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -39,6 +55,9 @@ class PaymentTableViewCell: UITableViewCell {
         taxesValue.applyBodyStyle()
         totalLabel.applyHeadlineStyle()
         totalValue.applyHeadlineStyle()
-        footerValue.applyFootnoteStyle()
+
+        footerLabel?.text = nil
+        footerLabel?.applyFootnoteStyle()
+        separatorLine?.backgroundColor = StyleManager.cellSeparatorColor
     }
 }

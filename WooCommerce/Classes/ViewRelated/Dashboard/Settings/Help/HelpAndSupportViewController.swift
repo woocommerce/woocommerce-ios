@@ -45,7 +45,6 @@ class HelpAndSupportViewController: UIViewController {
         configureMainView()
         configureSections()
         configureTableView()
-        configureTableViewFooter()
         registerTableViewCells()
         warnDeveloperIfNeeded()
     }
@@ -86,23 +85,6 @@ private extension HelpAndSupportViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
-    }
-
-    /// Display the version number in the footer.
-    ///
-    func configureTableViewFooter() {
-        let versionLabel = NSLocalizedString("Version", comment: "App version label")
-        let appVersion = UserAgent.bundleShortVersion
-        let versionSummary = versionLabel + " " + appVersion
-
-        /// `tableView.tableFooterView` can't handle a footerView that uses autolayout only.
-        /// Hence the container view with a defined frame.
-        let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Constants.footerHeight))
-        let footerView = TableFooterView.instantiateFromNib() as TableFooterView
-        footerView.footnoteText = versionSummary
-        footerView.footnoteColor = StyleManager.wooGreyMid
-        tableView.tableFooterView = footerContainer
-        footerContainer.addSubview(footerView)
     }
 
     /// Disable Zendesk if configuration on ZD init fails.

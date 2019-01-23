@@ -542,19 +542,19 @@ private extension PeriodDataViewController {
         switch granularity {
         case .day:
             if let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: item.period) {
-                dateString = DateFormatter.Charts.chartAxisDayFormatter.string(from: periodDate)
+                dateString = DateFormatter.Charts.chartMarkerDayFormatter.string(from: periodDate)
             }
         case .week:
             if let periodDate = DateFormatter.Stats.statsWeekFormatter.date(from: item.period) {
-                dateString = DateFormatter.Charts.chartAxisWeekFormatter.string(from: periodDate)
+                dateString = DateFormatter.Charts.chartMarkerWeekFormatter.string(from: periodDate)
             }
         case .month:
             if let periodDate = DateFormatter.Stats.statsMonthFormatter.date(from: item.period) {
-                dateString = DateFormatter.Charts.chartAxisMonthFormatter.string(from: periodDate)
+                dateString = DateFormatter.Charts.chartMarkerMonthFormatter.string(from: periodDate)
             }
         case .year:
             if let periodDate = DateFormatter.Stats.statsYearFormatter.date(from: item.period) {
-                dateString = DateFormatter.Charts.chartAxisYearFormatter.string(from: periodDate)
+                dateString = DateFormatter.Charts.chartMarkerYearFormatter.string(from: periodDate)
             }
         }
         return dateString

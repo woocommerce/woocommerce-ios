@@ -153,14 +153,10 @@ private extension OrdersViewController {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
 
-            let futureDate = Date.tomorrow()
-            var predicates: [NSPredicate]
-
-            if let tomorrow = futureDate {
+            var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
+            if let tomorrow = Date.tomorrow() {
                 let dateSubPredicate = NSPredicate(format: "dateCreated < %@", tomorrow as NSDate)
-                predicates = [ excludeSearchCache, excludeNonMatchingStatus, dateSubPredicate ].compactMap { $0 }
-            } else {
-                predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
+                predicates.append(dateSubPredicate)
             }
 
             return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)

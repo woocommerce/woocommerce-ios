@@ -8,43 +8,82 @@ extension DateFormatter {
     ///
     struct Charts {
 
+        // MARK: - Chark axis formatters
+
         /// Date formatter used for creating the date displayed on a chart axis for **day** granularity.
         ///
-        public static let chartsDayFormatter: DateFormatter = {
+        public static let chartAxisDayFormatter: DateFormatter = {
             let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(identifier: "GMT")
-            formatter.dateFormat = "MMM d"
+            formatter.setLocalizedDateFormatFromTemplate("MMM d")
             return formatter
         }()
 
         /// Date formatter used for creating the date displayed on a chart axis for **week** granularity.
         ///
-        public static let chartsWeekFormatter: DateFormatter = {
+        public static let chartAxisWeekFormatter: DateFormatter = {
             let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(identifier: "GMT")
-            formatter.dateFormat = "MMM d"
+            formatter.setLocalizedDateFormatFromTemplate("MMM d")
             return formatter
         }()
 
         /// Date formatter used for creating the date displayed on a chart axis for **month** granularity.
         ///
-        public static let chartsMonthFormatter: DateFormatter = {
+        public static let chartAxisMonthFormatter: DateFormatter = {
             let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(identifier: "GMT")
-            formatter.dateFormat = "MMM"
+            formatter.setLocalizedDateFormatFromTemplate("MMM")
             return formatter
         }()
 
         /// Date formatter used for creating the date displayed on a chart axis for **year** granularity.
         ///
-        public static let chartsYearFormatter: DateFormatter = {
+        public static let chartAxisYearFormatter: DateFormatter = {
             let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(identifier: "GMT")
-            formatter.dateFormat = "yyyy"
+            formatter.setLocalizedDateFormatFromTemplate("yyyy")
+            return formatter
+        }()
+
+
+        // MARK: - Chark marker formatters
+
+        /// Date formatter used for creating a **localized** date string displayed on a chart marker for **day** granularity.
+        ///
+        /// Example Output: "Dec 30" or "12月30日"
+        ///
+        public static let chartMarkerDayFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.setLocalizedDateFormatFromTemplate("MMM d")
+            return formatter
+        }()
+
+        /// Date formatter used for creating a **localized** date string displayed on a chart marker for **week** granularity.
+        ///
+        /// Example Output: "1" or "23" (week number)
+        ///
+        public static let chartMarkerWeekFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            // Note: Passing "w Y" into `setLocalizedDateFormatFromTemplate()` will result in an empty string, however
+            // simply passing in "w" works. So that is what we have to unfortunately do here.
+            formatter.setLocalizedDateFormatFromTemplate("w")
+            return formatter
+        }()
+
+        /// Date formatter used for creating a **localized** date string displayed on a chart marker for **month** granularity.
+        ///
+        /// Example Output: "Jan 2018" or "2018年1月"
+        ///
+        public static let chartMarkerMonthFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.setLocalizedDateFormatFromTemplate("MMM yyyy")
+            return formatter
+        }()
+
+        /// Date formatter used for creating a **localized** date string displayed on a chart marker for **year** granularity.
+        ///
+        /// Example Output: "2018" or "2017"
+        ///
+        public static let chartMarkerYearFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.setLocalizedDateFormatFromTemplate("yyyy")
             return formatter
         }()
     }

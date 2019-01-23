@@ -12,9 +12,7 @@ extension DateFormatter {
         ///
         public static let chartsDayFormatter: DateFormatter = {
             let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(identifier: "GMT")
-            formatter.dateFormat = "MMM d"
+            formatter.setLocalizedDateFormatFromTemplate("MMM d")
             return formatter
         }()
 
@@ -22,9 +20,7 @@ extension DateFormatter {
         ///
         public static let chartsWeekFormatter: DateFormatter = {
             let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(identifier: "GMT")
-            formatter.dateFormat = "MMM d"
+            formatter.setLocalizedDateFormatFromTemplate("MMM d")
             return formatter
         }()
 
@@ -32,9 +28,7 @@ extension DateFormatter {
         ///
         public static let chartsMonthFormatter: DateFormatter = {
             let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(identifier: "GMT")
-            formatter.dateFormat = "MMM"
+            formatter.setLocalizedDateFormatFromTemplate("MMM")
             return formatter
         }()
 
@@ -42,9 +36,7 @@ extension DateFormatter {
         ///
         public static let chartsYearFormatter: DateFormatter = {
             let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(identifier: "GMT")
-            formatter.dateFormat = "yyyy"
+            formatter.setLocalizedDateFormatFromTemplate("yyyy")
             return formatter
         }()
     }

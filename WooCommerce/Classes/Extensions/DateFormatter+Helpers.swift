@@ -45,7 +45,9 @@ extension DateFormatter {
 
         // MARK: - Chark marker formatters
 
-        /// Date formatter used for creating the date displayed on a chart marker for **day** granularity.
+        /// Date formatter used for creating a **localized** date string displayed on a chart marker for **day** granularity.
+        ///
+        /// Example Output: "Dec 30" or "12月30日"
         ///
         public static let chartMarkerDayFormatter: DateFormatter = {
             let formatter = DateFormatter()
@@ -53,7 +55,9 @@ extension DateFormatter {
             return formatter
         }()
 
-        /// Date formatter used for creating the date displayed on a chart marker for **week** granularity.
+        /// Date formatter used for creating a **localized** date string displayed on a chart marker for **week** granularity.
+        ///
+        /// Example Output: "1" or "23" (week number)
         ///
         public static let chartMarkerWeekFormatter: DateFormatter = {
             let formatter = DateFormatter()
@@ -63,7 +67,9 @@ extension DateFormatter {
             return formatter
         }()
 
-        /// Date formatter used for creating the date displayed on a chart marker for **month** granularity.
+        /// Date formatter used for creating a **localized** date string displayed on a chart marker for **month** granularity.
+        ///
+        /// Example Output: "Jan 2018" or "2018年1月"
         ///
         public static let chartMarkerMonthFormatter: DateFormatter = {
             let formatter = DateFormatter()
@@ -71,7 +77,9 @@ extension DateFormatter {
             return formatter
         }()
 
-        /// Date formatter used for creating the date displayed on a chart marker for **year** granularity.
+        /// Date formatter used for creating a **localized** date string displayed on a chart marker for **year** granularity.
+        ///
+        /// Example Output: "2018" or "2017"
         ///
         public static let chartMarkerYearFormatter: DateFormatter = {
             let formatter = DateFormatter()

@@ -1610,6 +1610,8 @@
 				"$(SRCROOT)/Credentials/ApiCredentials.tpl",
 				"$(SRCROOT)/Credentials/InfoPlist.tpl",
 				"~/.mobile-secrets/iOS/WCiOS/woo_app_credentials.json",
+				"$(SRCROOT)/Credentials/Templates/APICredentials-Template.swift",
+				"$(SRCROOT)/Credentials/Templates/InfoPlist-Template.h",
 			);
 			outputPaths = (
 				"$(SRCROOT)/DerivedSources/ApiCredentials.swift",
@@ -1617,7 +1619,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DERIVED_PATH=${SOURCE_ROOT}/DerivedSources\nSCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb\n\nCREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl\nCREDS_OUTPUT_PATH=${DERIVED_PATH}/ApiCredentials.swift\n\nPLIST_INPUT_PATH=${SOURCE_ROOT}/Credentials/InfoPlist.tpl\nPLIST_OUTPUT_PATH=${DERIVED_PATH}/InfoPlist.h\n\nBASH_INPUT_PATH=${SOURCE_ROOT}/Credentials/bash_secrets.tpl\nBASH_OUTPUT_PATH=${DERIVED_PATH}/bash_secrets\n\n## Validate Secrets!\n##\nif [ ! -f $SECRETS_PATH ]\nthen\n    echo \">> Missing Secrets ${SECRETS_PATH}\"\n    exit -1\nfi\n\necho \">> Loading Secrets ${SECRETS_PATH}\"\n\n## Generate the Derived Folder. If needed\n##\nmkdir -p ${DERIVED_PATH}\n\n## Generate ApiCredentials.swift\n##\necho \">> Generating Credentials ${CREDS_OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${CREDS_INPUT_PATH} -s ${SECRETS_PATH} > ${CREDS_OUTPUT_PATH}\n\n## Generate InfoPlist.h\n##\necho \">> Generating Credentials ${PLIST_OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${PLIST_INPUT_PATH} -s ${SECRETS_PATH} > ${PLIST_OUTPUT_PATH}\n\n## Generate bash_secrets\n##\necho \">> Generating Credentials ${BASH_OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${BASH_INPUT_PATH} -s ${SECRETS_PATH} > ${BASH_OUTPUT_PATH}\n";
+			shellScript = "$SRCROOT/../Scripts/build-phases/generate-credentials.sh\n";
 		};
 		B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

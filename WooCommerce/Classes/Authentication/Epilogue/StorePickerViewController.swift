@@ -271,21 +271,16 @@ private extension StorePickerViewController {
     ///
     func displaySiteWCRequirementWarningIfNeeded(siteID: Int, siteName: String) {
         updateActionButtonAndTableState(animating: true, enabled: false)
-        RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] (isValidWCVersion, error) in
-            self?.updateActionButtonAndTableState(animating: false, enabled: isValidWCVersion)
-            guard error == nil else {
-                // If there is an error display a notice to the user
+        RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] (result, error) in
+            switch result {
+            case .validWCVersion:
+                self?.updateActionButtonAndTableState(animating: false, enabled: true)
+            case .invalidWCVersion:
+                self?.updateActionButtonAndTableState(animating: false, enabled: false)
+                self?.displayFancyWCRequirementAlert(siteName: siteName)
+            case .empty, .error:
+                self?.updateActionButtonAndTableState(animating: false, enabled: false)
                 self?.displayVersionCheckErrorNotice(siteID: siteID, siteName: siteName)
-                return
-            }
-
-
-            if isValidWCVersion == false {
-                // Display a warning to the user about the site version
-                let fancyAlert = FancyAlertViewController.makewWooUpgradeAlertControllerForSitePicker(siteName: siteName)
-                fancyAlert.modalPresentationStyle = .custom
-                fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
-                self?.present(fancyAlert, animated: true)
             }
         }
     }
@@ -304,13 +299,23 @@ private extension StorePickerViewController {
     /// Displays the Error Notice for the version check.
     ///
     func displayVersionCheckErrorNotice(siteID: Int, siteName: String) {
-        let message = String.localizedStringWithFormat(NSLocalizedString("Cannot connect to %@", comment: "Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name}"), siteName)
+        let message = String.localizedStringWithFormat(NSLocalizedString("Unable to successfully connect to %@",
+                                                                         comment: "On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name}"), siteName)
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.displaySiteWCRequirementWarningIfNeeded(siteID: siteID, siteName: siteName)
         }
 
         noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Displays the Fancy Alert notice for a failed WC requirement check
+    ///
+    func displayFancyWCRequirementAlert(siteName: String) {
+        let fancyAlert = FancyAlertViewController.makewWooUpgradeAlertControllerForSitePicker(siteName: siteName)
+        fancyAlert.modalPresentationStyle = .custom
+        fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
+        present(fancyAlert, animated: true)
     }
 }
 

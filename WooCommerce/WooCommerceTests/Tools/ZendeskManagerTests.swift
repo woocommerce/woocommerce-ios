@@ -10,19 +10,9 @@ class ZendeskManagerTests: XCTestCase {
     ///
     private var zendesk: ZendeskManager!
 
-    /// The Zendesk web portal URL.
-    ///
-    private let zdUrl = "https://automattic.zendesk.com"
-
     /// Default ticket tags.
     ///
     private let zdTags = ["iOS", "woo-mobile-sdk", "jetpack"]
-
-    /// Ensure the Zendesk URL is set to the parent brand.
-    ///
-    func testZendeskUrl() {
-        XCTAssertEqual(ApiCredentials.zendeskUrl, zdUrl)
-    }
 
     /// Test default tags return as expected.
     ///

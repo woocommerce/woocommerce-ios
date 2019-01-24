@@ -45,13 +45,9 @@ struct OrderItemViewModel {
     }
 
     /// Item's Tax
-    /// Not all items have a tax. Return nil if amount is zero, so labels will hide.
+    /// Return $0.00 if there is no tax.
     ///
     var tax: String? {
-        guard let decimalAmount = currencyFormatter.convertToDecimal(from: item.totalTax), decimalAmount.isZero() == false else {
-            return nil
-        }
-
         let prefix = NSLocalizedString("Tax:", comment: "Tax label for total taxes line")
         let totalTax = currencyFormatter.formatAmount(item.totalTax, with: currency) ?? String()
         return prefix + " " + totalTax

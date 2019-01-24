@@ -111,6 +111,7 @@ class StoresManager {
 
         sessionManager.reset()
         WooAnalytics.shared.refreshUserData()
+        ZendeskManager.shared.reset()
         AppDelegate.shared.storageManager.reset()
 
         return self

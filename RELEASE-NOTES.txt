@@ -2,5 +2,6 @@
 - bugfix: improved localization support on My Store charts
 - bugfix: improved localization support on the Orders & Notifications screens
 - bugfix: hide orders that have a created date listed in the future. (They no longer display under the "Today" section of an order list).
-- Bugfix: remove the payment method summary in the payment section when the no payment has been received.
+- bugfix: remove the payment method summary in the payment section when the no payment has been received.
+- bugfix: logging out resets Zendesk username / email
 - bugfix: display Taxes line to payment and product details, including when amount is zero.

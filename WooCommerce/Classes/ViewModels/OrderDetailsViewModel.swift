@@ -99,21 +99,13 @@ class OrderDetailsViewModel {
     }
 
     /// Taxes
-    /// - returns: 'Taxes' label and total taxes, or nil if zero.
+    /// - returns: 'Taxes' label and total taxes, including zero amounts.
     ///
     var taxesLabel: String? {
-        guard let total = currencyFormatter.convertToDecimal(from: order.totalTax), total.isZero() == false else {
-            return nil
-        }
-
         return NSLocalizedString("Taxes", comment: "Taxes label for payment view")
     }
 
     var taxesValue: String? {
-        guard let total = currencyFormatter.convertToDecimal(from: order.totalTax), total.isZero() == false else {
-            return nil
-        }
-
         return currencyFormatter.formatAmount(order.totalTax, with: order.currency)
     }
 

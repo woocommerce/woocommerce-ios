@@ -100,8 +100,8 @@ class OrdersViewController: UIViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
 
-        tabBarItem.title = NSLocalizedString("Orders", comment: "Orders Title")
-        tabBarItem.image = Gridicon.iconOfType(.pages)
+        // This 👇 should be called in init so the tab is correctly localized when the app launches
+        configureTabBarItem()
     }
 
     override func viewDidLoad() {
@@ -113,7 +113,6 @@ class OrdersViewController: UIViewController {
 
         configureSyncingCoordinator()
         configureNavigation()
-        configureTabBarItem()
         configureTableView()
         configureResultsController()
 
@@ -138,12 +137,13 @@ private extension OrdersViewController {
     /// Setup: Title
     ///
     func refreshTitle() {
-        guard let filter = statusFilter?.rawValue.capitalized else {
-            navigationItem.title = NSLocalizedString("Orders", comment: "Orders Title")
+        guard let filter = statusFilter?.description.capitalized else {
+            navigationItem.title = NSLocalizedString("Orders", comment: "Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order).")
             return
         }
 
-        navigationItem.title = NSLocalizedString("Orders: \(filter)", comment: "Orders Title")
+        let title = String.localizedStringWithFormat(NSLocalizedString("Orders: %@", comment: "Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter}"), filter)
+        navigationItem.title = title
     }
 
     /// Setup: Filtering
@@ -213,7 +213,8 @@ private extension OrdersViewController {
     /// Setup: TabBar Item
     ///
     func configureTabBarItem() {
-        tabBarItem.title = NSLocalizedString("Orders", comment: "Orders Title")
+        tabBarItem.title = NSLocalizedString("Orders", comment: "Title of the Orders tab — plural form of Order")
+        tabBarItem.image = Gridicon.iconOfType(.pages)
     }
 
     /// Setup: TableView
@@ -681,7 +682,7 @@ private extension OrdersViewController {
 
     enum FilterAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
-        static let displayAll = NSLocalizedString("All", comment: "All filter title")
+        static let displayAll = NSLocalizedString("All", comment: "Name of the All filter on the Order List screen - it means all orders will be displayed.")
     }
 
     enum Settings {

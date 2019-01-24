@@ -30,6 +30,17 @@ class AccountHeaderView: UIView {
             usernameLabel.textColor = StyleManager.wooGreyTextMin
         }
     }
+
+    /// Help Button
+    ///
+    @IBOutlet private weak var helpButton: UIButton!
+
+    // MARK: - Overridden Methods
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        setupHelpButton()
+    }
 }
 
 
@@ -63,5 +74,28 @@ extension AccountHeaderView {
     ///
     func downloadGravatar(with email: String) {
         gravatarImageView.downloadGravatarWithEmail(email)
+    }
+}
+
+
+// MARK: - Private Methods
+//
+private extension AccountHeaderView {
+
+    func setupHelpButton() {
+        let helpButtonTitle = NSLocalizedString("Help", comment: "Help button on store picker screen.")
+        helpButton.setTitle(helpButtonTitle, for: .normal)
+        helpButton.setTitle(helpButtonTitle, for: .highlighted)
+        helpButton.setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
+        helpButton.setTitleColor(StyleManager.wooGreyMid, for: .highlighted)
+        helpButton.on(.touchUpInside) { [weak self] control in
+            self?.handleHelpButtonTapped(control)
+        }
+    }
+
+    /// Handle the help button being tapped
+    ///
+    func handleHelpButtonTapped(_ sender: AnyObject) {
+        //TODO: Imp the help on the picker screen
     }
 }

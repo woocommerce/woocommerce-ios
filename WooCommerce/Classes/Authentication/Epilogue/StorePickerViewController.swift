@@ -146,6 +146,9 @@ private extension StorePickerViewController {
         accountHeaderView.username = "@" + defaultAccount.username
         accountHeaderView.fullname = defaultAccount.displayName
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
+        accountHeaderView.onHelpRequested = {
+            AppDelegate.shared.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
+        }
     }
 
     func refreshResults() {

@@ -1,6 +1,7 @@
-With the WooCommerce mobile app, you’ve got your online store in your pocket: manage orders, receive sales notifications, and view key metrics on the go.
-
-Drumroll, please: it’s our very first public release! We’re looking forward to iterating early and often and we can’t wait to hear your feedback and improvement suggestions.
-Get in touch via “Support” in the app or at ideas.woocommerce.com.
-
-Thank you to everyone involved in development and early testing!
+1.1 Release
+- bugfix: improved localization support on My Store charts
+- bugfix: improved localization support on the Orders & Notifications screens
+- bugfix: hide orders that have a created date listed in the future. (They no longer display under the "Today" section of an order list).
+- bugfix: remove the payment method summary in the payment section when the no payment has been received.
+- bugfix: logging out resets Zendesk username / email
+- bugfix: display Taxes line to payment and product details, including when amount is zero.

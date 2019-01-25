@@ -78,7 +78,7 @@ public enum WooAnalyticsStat: String {
 
     // Help & Support Events
     //
-    case supportBrowseOurFaqTapped              = "support_browse_our_faq_tapped"
+    case supportBrowseOurFaqTapped              = "support_browse_faq_button_tapped"
     case supportNewRequestViewed                = "support_new_request_viewed"
     case supportNewRequestCreated               = "support_new_request_created"
     case supportNewRequestFailed                = "support_new_request_failed"

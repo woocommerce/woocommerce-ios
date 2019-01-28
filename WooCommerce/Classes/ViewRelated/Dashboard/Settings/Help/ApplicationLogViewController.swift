@@ -1,30 +1,19 @@
-//
-//  ApplicationLogViewController.swift
-//  WooCommerce
-//
-//  Created by Thuy Copeland on 1/28/19.
-//  Copyright © 2019 Automattic. All rights reserved.
-//
-
 import UIKit
 
+// MARK: - ApplicationLogViewController
+//
 class ApplicationLogViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        configureNavigation()
     }
-    
 
-    /*
-    // MARK: - Navigation
+    func configureNavigation() {
+        title = NSLocalizedString("Activity Log", comment: "Activity Log navigation bar title")
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        // Don't show the Help & Support title in the next-view's back button
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
-    */
-
 }

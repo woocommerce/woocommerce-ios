@@ -152,28 +152,19 @@ private extension LoginPrologueViewController {
     /// Returns the Disclaimer Attributed Text (which contains a link to the Jetpack Setup URL).
     ///
     var disclaimerAttributedText: NSAttributedString {
-        let disclaimerText = NSLocalizedString("This app requires Jetpack to connect to your Store. Read the ", comment: "Login Disclaimer Text and Jetpack config instructions")
+        let disclaimerText = NSLocalizedString("This app requires Jetpack to connect to your Store. Read the <a href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>.", comment: "Login Disclaimer Text and Jetpack config instructions")
         let disclaimerAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.font(forStyle: .caption1, weight: .thin),
             .foregroundColor: UIColor.white
         ]
 
-        let readText = NSLocalizedString("configuration instructions", comment: "Login Disclaimer Linked Text")
-        let readAttributes: [NSAttributedString.Key: Any] = [
-            .link: URL(string: WooConstants.jetpackSetupUrl) as Any,
-            .font: UIFont.font(forStyle: .caption1, weight: .thin)
-        ]
+        guard let disclaimerAttrText = disclaimerText.htmlToAttributedString else {
+            return NSAttributedString()
+        }
 
-        let readAttrText = NSMutableAttributedString(string: readText, attributes: readAttributes)
+        disclaimerAttrText.addAttributes(disclaimerAttributes, range: NSRange(location: 0, length: disclaimerAttrText.length))
 
-        let endSentenceText = "."
-        let endSentenceAttrText = NSMutableAttributedString(string: endSentenceText, attributes: disclaimerAttributes)
-
-        let disclaimerAttrText = NSMutableAttributedString(string: disclaimerText, attributes: disclaimerAttributes)
-        disclaimerAttrText.append(readAttrText)
-        disclaimerAttrText.append(endSentenceAttrText)
-
-        return disclaimerAttrText
+        return disclaimerAttrText as NSAttributedString
     }
 }
 

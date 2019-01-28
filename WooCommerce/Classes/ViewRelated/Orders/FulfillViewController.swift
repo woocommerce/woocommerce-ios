@@ -281,7 +281,7 @@ private extension FulfillViewController {
 
         guard let address = order.shippingAddress ?? order.billingAddress else {
             cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
-            cell.address = NSLocalizedString("No address specified.", comment: "Fulfill order > customer info > where the address would normally display.")
+            cell.address = NSLocalizedString("No address specified.", comment: "Fulfill order > customer info > where the physical shipping address would normally display.")
             return
         }
 

@@ -246,9 +246,28 @@
                     <view key="view" contentMode="scaleToFill" id="kTI-Ip-3qK">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="pYs-VV-dST">
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="cZP-lH-gTc" id="elE-X0-kT3"/>
+                                    <outlet property="delegate" destination="cZP-lH-gTc" id="Pq1-iP-TpG"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="qMn-MK-zzV" firstAttribute="trailing" secondItem="pYs-VV-dST" secondAttribute="trailing" id="9bn-9p-K1Z"/>
+                            <constraint firstItem="pYs-VV-dST" firstAttribute="leading" secondItem="qMn-MK-zzV" secondAttribute="leading" id="OUm-VB-DJ3"/>
+                            <constraint firstItem="pYs-VV-dST" firstAttribute="top" secondItem="qMn-MK-zzV" secondAttribute="top" id="nJg-fe-Omp"/>
+                            <constraint firstItem="qMn-MK-zzV" firstAttribute="bottom" secondItem="pYs-VV-dST" secondAttribute="bottom" id="o10-zc-2HE"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="qMn-MK-zzV"/>
                     </view>
+                    <connections>
+                        <outlet property="tableView" destination="pYs-VV-dST" id="Cqx-Lg-UJh"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fOe-oS-ZTi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

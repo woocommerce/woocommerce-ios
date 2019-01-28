@@ -239,6 +239,21 @@
             </objects>
             <point key="canvasLocation" x="1388" y="2389.6551724137935"/>
         </scene>
+        <!--Application Log View Controller-->
+        <scene sceneID="bod-JW-RLg">
+            <objects>
+                <viewController id="cZP-lH-gTc" customClass="ApplicationLogViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="kTI-Ip-3qK">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="qMn-MK-zzV"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fOe-oS-ZTi" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2356" y="811"/>
+        </scene>
         <!--Help And Support View Controller-->
         <scene sceneID="k0p-fl-BDY">
             <objects>
@@ -267,11 +282,12 @@
                     </view>
                     <connections>
                         <outlet property="tableView" destination="egg-mo-Y4S" id="Q6m-Fm-qjc"/>
+                        <segue destination="cZP-lH-gTc" kind="show" identifier="ShowApplicationLogViewController" id="C0s-Ys-0iv"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FQx-lA-JpF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1388" y="1584.5577211394304"/>
+            <point key="canvasLocation" x="1342" y="1036"/>
         </scene>
         <!--Dashboard-->
         <scene sceneID="GIl-fY-LQR">

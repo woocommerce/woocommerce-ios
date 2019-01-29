@@ -186,8 +186,6 @@ private extension ApplicationLogViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = indexPath.row == 0 ? NSLocalizedString("Current", comment:"Cell title: the current date.") : dateFormatter.string(from: logFileInfo.creationDate)
-        print(logFileInfo.creationDate)
-        print(dateFormatter.string(from: logFileInfo.creationDate))
     }
 
     /// Clear application logs cell.

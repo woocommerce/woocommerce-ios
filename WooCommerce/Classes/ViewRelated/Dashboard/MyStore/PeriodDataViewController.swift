@@ -77,8 +77,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
     private var summaryDateUpdated: String {
         if let lastUpdatedDate = lastUpdatedDate {
-            return String.localizedStringWithFormat(NSLocalizedString("Updated %@",
-                                                                      comment: "Stats summary date. Examples: Updated just now. Updated 1 second ago. Updated 5 minutes ago."), lastUpdatedDate.mediumString())
+            return lastUpdatedDate.relativelyFormattedUpdateString
         } else {
             return ""
         }

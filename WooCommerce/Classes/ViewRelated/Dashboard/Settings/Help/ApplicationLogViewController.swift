@@ -47,6 +47,20 @@ class ApplicationLogViewController: UIViewController {
         registerTableViewCells()
     }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let vc = segue.destination as? ApplicationLogDetailViewController, segue.identifier == Segues.detailSegue {
+            let logFileInfo = sender as! DDLogFileInfo
+            do {
+                let contents = try String(contentsOfFile: logFileInfo.filePath)
+                let date = dateFormatter.string(from: logFileInfo.creationDate)
+                vc.logText = contents
+                vc.logDate = date
+            } catch {
+                DDLogError("Error: attempted to get contents of logFileInfo. Contents not found.")
+            }
+        }
+    }
+
     /// Style the back button, add the title to nav bar.
     ///
     func configureNavigation() {
@@ -204,14 +218,7 @@ private extension ApplicationLogViewController {
     ///
     func logFileWasPressed(in row: Int) {
         let logFileInfo = logFiles[row]
-        do {
-            let contents = try String(contentsOfFile: logFileInfo.filePath)
-            let date = dateFormatter.string(from: logFileInfo.creationDate)
-            let detailVC = ApplicationLogDetailViewController(with: contents, for: date)
-            navigationController?.pushViewController(detailVC, animated: true)
-        } catch {
-            DDLogError("Error: attempted to get contents of logFileInfo. Contents not found.")
-        }
+        performSegue(withIdentifier: Segues.detailSegue, sender: logFileInfo)
     }
 
     /// Clear old logs action
@@ -250,4 +257,8 @@ private enum Row: CaseIterable {
     var reuseIdentifier: String {
         return type.reuseIdentifier
     }
+}
+
+private struct Segues {
+    static let detailSegue = "ShowApplicationLogDetailViewController"
 }

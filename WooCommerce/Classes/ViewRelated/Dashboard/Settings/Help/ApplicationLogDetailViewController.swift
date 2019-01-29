@@ -4,11 +4,11 @@ class ApplicationLogDetailViewController: UIViewController {
 
     /// The contents of the log file.
     ///
-    let logText: String
+    var logText: String
 
     /// The log file's creation date as a formatted string.
     ///
-    let logDate: String
+    var logDate: String
 
     /// The textview for displaying the log data
     ///
@@ -24,14 +24,13 @@ class ApplicationLogDetailViewController: UIViewController {
         self.logText = contents
         self.logDate = date
 
-        super.init(nibName: nil, bundle: nil)
+        super.init(nibName: "ApplicationLogDetailViewController", bundle: Bundle.main)
     }
 
-    /// Unsupported: NSCoder
-    ///
     required init?(coder aDecoder: NSCoder) {
-        assertionFailure()
-        return nil
+        self.logText = ""
+        self.logDate = ""
+        super.init(coder: aDecoder)
     }
 
     override func viewDidLoad() {
@@ -39,12 +38,13 @@ class ApplicationLogDetailViewController: UIViewController {
 
         configureNavigation()
         configureMainView()
+        textview.text = logText
     }
 
     /// Add styles and buttons to nav bar
     ///
     func configureNavigation() {
-        title = NSLocalizedString("Application Log", comment: "Application Log navigation bar title - this screen is where users view a single log file.")
+        title = logDate
 
         // Don't show the Application Log title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)

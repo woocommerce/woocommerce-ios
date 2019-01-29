@@ -152,7 +152,7 @@ private extension LoginPrologueViewController {
     /// Returns the Disclaimer Attributed Text (which contains a link to the Jetpack Setup URL).
     ///
     var disclaimerAttributedText: NSAttributedString {
-        let disclaimerText = NSLocalizedString("This app requires Jetpack to connect to your Store. Read the <a href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>.", comment: "Login Disclaimer Text and Jetpack config instructions")
+        let disclaimerText = NSLocalizedString("This app requires Jetpack to connect to your Store. <br /> Read the <a href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>.", comment: "Login Disclaimer Text and Jetpack config instructions")
         let disclaimerAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.font(forStyle: .caption1, weight: .thin),
             .foregroundColor: UIColor.white

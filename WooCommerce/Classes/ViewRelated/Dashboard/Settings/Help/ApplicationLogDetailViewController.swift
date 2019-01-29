@@ -10,6 +10,10 @@ class ApplicationLogDetailViewController: UIViewController {
     ///
     let logDate: String
 
+    /// The textview for displaying the log data
+    ///
+    @IBOutlet private var textview: UITextView!
+
 
     // MARK: - Overridden Methods
     //

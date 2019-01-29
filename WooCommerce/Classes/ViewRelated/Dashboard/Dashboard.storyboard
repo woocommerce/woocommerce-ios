@@ -281,9 +281,27 @@
                     <view key="view" contentMode="scaleToFill" id="TC5-cg-3Zt">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="VZ4-xD-33I">
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="qu3-Gh-sHY" firstAttribute="trailing" secondItem="VZ4-xD-33I" secondAttribute="trailing" id="8wA-JR-wkn"/>
+                            <constraint firstItem="qu3-Gh-sHY" firstAttribute="bottom" secondItem="VZ4-xD-33I" secondAttribute="bottom" id="IXk-tT-3gh"/>
+                            <constraint firstItem="VZ4-xD-33I" firstAttribute="leading" secondItem="qu3-Gh-sHY" secondAttribute="leading" id="cqp-3w-94p"/>
+                            <constraint firstItem="VZ4-xD-33I" firstAttribute="top" secondItem="qu3-Gh-sHY" secondAttribute="top" id="vvb-90-1BA"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="qu3-Gh-sHY"/>
                     </view>
+                    <connections>
+                        <outlet property="textview" destination="VZ4-xD-33I" id="02L-PL-IgW"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gfH-Fa-ysG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

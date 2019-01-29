@@ -57,7 +57,6 @@ class ZendeskManager: NSObject {
     }
 
 
-
     /// Deinitializer
     ///
     deinit {
@@ -89,6 +88,13 @@ class ZendeskManager: NSObject {
 
         haveUserIdentity = getUserProfile()
         zendeskEnabled = true
+    }
+
+    /// Deletes all known user default keys
+    ///
+    func reset() {
+        removeUserProfile()
+        removeUnreadCount()
     }
 
 
@@ -494,6 +500,14 @@ private extension ZendeskManager {
 
     func saveUnreadCount() {
         UserDefaults.standard.set(unreadNotificationsCount, forKey: Constants.unreadNotificationsKey)
+    }
+
+    func removeUserProfile() {
+        UserDefaults.standard.removeObject(forKey: Constants.zendeskProfileUDKey)
+    }
+
+    func removeUnreadCount() {
+        UserDefaults.standard.removeObject(forKey: Constants.unreadNotificationsKey)
     }
 
 

@@ -59,6 +59,7 @@
 		74F9E9CD214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */; };
 		74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */; };
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
+		8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */; };
 		9324401421DE99FC0067CD83 /* CrashlyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9324401321DE99FC0067CD83 /* CrashlyticsLogger.swift */; };
 		93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */; };
 		93FA787221CD2A1A00B663E5 /* CurrencySettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93FA787121CD2A1A00B663E5 /* CurrencySettingsTests.swift */; };
@@ -179,7 +180,6 @@
 		B5BBD6DE21B1703700E3207E /* PushNotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BBD6DD21B1703600E3207E /* PushNotificationsManager.swift */; };
 		B5BE75DB213F1D1E00909A14 /* OverlayMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BE75DA213F1D1E00909A14 /* OverlayMessageView.swift */; };
 		B5BE75DD213F1D3D00909A14 /* OverlayMessageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5BE75DC213F1D3D00909A14 /* OverlayMessageView.xib */; };
-		B5C3876221C3FD29006CE970 /* RELEASE-NOTES.md in Resources */ = {isa = PBXBuildFile; fileRef = B5C3876121C3FD29006CE970 /* RELEASE-NOTES.md */; };
 		B5C3876421C41B9F006CE970 /* UIApplication+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C3876321C41B9F006CE970 /* UIApplication+Woo.swift */; };
 		B5C3B5E320D189E60072CB9D /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E220D189E60072CB9D /* Networking.framework */; };
 		B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E420D189EA0072CB9D /* Storage.framework */; };
@@ -279,6 +279,11 @@
 		CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE006032077D1280079161F /* SummaryTableViewCell.swift */; };
 		CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEE006042077D1280079161F /* SummaryTableViewCell.xib */; };
 		CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE006072077D14C0079161F /* OrderDetailsViewController.swift */; };
+		CEEC9B5C21E79B3E0055EEF0 /* FeatureFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B5B21E79B3E0055EEF0 /* FeatureFlag.swift */; };
+		CEEC9B5E21E79C330055EEF0 /* BuildConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B5D21E79C330055EEF0 /* BuildConfiguration.swift */; };
+		CEEC9B6021E79CAA0055EEF0 /* FeatureFlagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */; };
+		CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */; };
+		CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -355,6 +360,7 @@
 		74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoPeriodDataTableViewCell.xib; sourceTree = "<group>"; };
 		74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoPeriodDataTableViewCell.swift; sourceTree = "<group>"; };
 		8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release.xcconfig"; sourceTree = "<group>"; };
+		8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "RELEASE-NOTES.txt"; path = "../RELEASE-NOTES.txt"; sourceTree = "<group>"; };
 		90AC1C0B391E04A837BDC64E /* Pods-WooCommerce.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.debug.xcconfig"; sourceTree = "<group>"; };
 		9324401321DE99FC0067CD83 /* CrashlyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashlyticsLogger.swift; sourceTree = "<group>"; };
 		93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bash_secrets.tpl; sourceTree = "<group>"; };
@@ -503,7 +509,6 @@
 		B5BBD6DD21B1703600E3207E /* PushNotificationsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsManager.swift; sourceTree = "<group>"; };
 		B5BE75DA213F1D1E00909A14 /* OverlayMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayMessageView.swift; sourceTree = "<group>"; };
 		B5BE75DC213F1D3D00909A14 /* OverlayMessageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OverlayMessageView.xib; sourceTree = "<group>"; };
-		B5C3876121C3FD29006CE970 /* RELEASE-NOTES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "RELEASE-NOTES.md"; sourceTree = "<group>"; };
 		B5C3876321C41B9F006CE970 /* UIApplication+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Woo.swift"; sourceTree = "<group>"; };
 		B5C3B5E220D189E60072CB9D /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C3B5E420D189EA0072CB9D /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -601,6 +606,11 @@
 		CEE006032077D1280079161F /* SummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCell.swift; sourceTree = "<group>"; };
 		CEE006042077D1280079161F /* SummaryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SummaryTableViewCell.xib; sourceTree = "<group>"; };
 		CEE006072077D14C0079161F /* OrderDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewController.swift; sourceTree = "<group>"; };
+		CEEC9B5B21E79B3E0055EEF0 /* FeatureFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlag.swift; sourceTree = "<group>"; };
+		CEEC9B5D21E79C330055EEF0 /* BuildConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildConfiguration.swift; sourceTree = "<group>"; };
+		CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagTests.swift; sourceTree = "<group>"; };
+		CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManager.swift; sourceTree = "<group>"; };
+		CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManagerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -730,6 +740,7 @@
 				B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */,
 				CE50345621B1F26C007573C6 /* ZendeskManagerTests.swift */,
 				CE4DA5C721DD759400074607 /* CurrencyFormatterTests.swift */,
+				CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -739,6 +750,7 @@
 			children = (
 				B53B898820D450AF00EDB467 /* SessionManagerTests.swift */,
 				746791622108D7C0007CF1DC /* WooAnalyticsTests.swift */,
+				CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -789,6 +801,7 @@
 		B55D4C2220B716CE00D7A50F /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				CEEC9B6121E79EBF0055EEF0 /* AppRatings */,
 				CE9B7E3021C94685000F971C /* Currency */,
 				B541B2182189F387008FE7C1 /* StringFormatter */,
 				B5A03699214C0E7000774E2C /* Logging */,
@@ -814,7 +827,7 @@
 				B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */,
 				88A44ABE866401E6DB03AC60 /* Frameworks */,
 				B56DB3C72049BFAA00D4AA8E /* Products */,
-				B5C3876121C3FD29006CE970 /* RELEASE-NOTES.md */,
+				8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */,
 				B559EBAD20A0BF8E00836CD4 /* README.md */,
 				B597D0BE212476E100577E35 /* ARCHITECTURE.md */,
 				B559EBAE20A0BF8F00836CD4 /* LICENSE */,
@@ -1042,6 +1055,8 @@
 				B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */,
 				CECA64B020D9990E005A44C4 /* WooCommerce-Bridging-Header.h */,
 				CE2409F0215D12D30091F887 /* WooNavigationController.swift */,
+				CEEC9B5B21E79B3E0055EEF0 /* FeatureFlag.swift */,
+				CEEC9B5D21E79C330055EEF0 /* BuildConfiguration.swift */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -1315,6 +1330,14 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
+		CEEC9B6121E79EBF0055EEF0 /* AppRatings */ = {
+			isa = PBXGroup;
+			children = (
+				CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */,
+			);
+			path = AppRatings;
+			sourceTree = "<group>";
+		};
 		F4B77A83B2A3D94EA331691B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -1469,6 +1492,7 @@
 				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,
 				CE583A082107849F00D73C1C /* SwitchTableViewCell.xib in Resources */,
 				CE22571B20E16FBC0037F478 /* LeftImageTableViewCell.xib in Resources */,
+				8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */,
 				B5F8B7E5219478FA00DAB7E2 /* NotificationDetailsViewController.xib in Resources */,
 				B5FD111221D3CE7700560344 /* NewNoteViewController.xib in Resources */,
 				CE22E3FC21714776005A6BEF /* TopLeftImageTableViewCell.xib in Resources */,
@@ -1492,7 +1516,6 @@
 				B5FD110E21D3CB8500560344 /* OrderTableViewCell.xib in Resources */,
 				B59D1EE121907304009D1978 /* NoteTableViewCell.xib in Resources */,
 				B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */,
-				B5C3876221C3FD29006CE970 /* RELEASE-NOTES.md in Resources */,
 				B560D6882195BCC70027BB7E /* NoteDetailsHeaderTableViewCell.xib in Resources */,
 				CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */,
 				CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */,
@@ -1587,6 +1610,8 @@
 				"$(SRCROOT)/Credentials/ApiCredentials.tpl",
 				"$(SRCROOT)/Credentials/InfoPlist.tpl",
 				"~/.mobile-secrets/iOS/WCiOS/woo_app_credentials.json",
+				"$(SRCROOT)/Credentials/Templates/APICredentials-Template.swift",
+				"$(SRCROOT)/Credentials/Templates/InfoPlist-Template.h",
 			);
 			outputPaths = (
 				"$(SRCROOT)/DerivedSources/ApiCredentials.swift",
@@ -1594,7 +1619,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DERIVED_PATH=${SOURCE_ROOT}/DerivedSources\nSCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb\n\nCREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl\nCREDS_OUTPUT_PATH=${DERIVED_PATH}/ApiCredentials.swift\n\nPLIST_INPUT_PATH=${SOURCE_ROOT}/Credentials/InfoPlist.tpl\nPLIST_OUTPUT_PATH=${DERIVED_PATH}/InfoPlist.h\n\nBASH_INPUT_PATH=${SOURCE_ROOT}/Credentials/bash_secrets.tpl\nBASH_OUTPUT_PATH=${DERIVED_PATH}/bash_secrets\n\n## Validate Secrets!\n##\nif [ ! -f $SECRETS_PATH ]\nthen\n    echo \">> Missing Secrets ${SECRETS_PATH}\"\n    exit -1\nfi\n\necho \">> Loading Secrets ${SECRETS_PATH}\"\n\n## Generate the Derived Folder. If needed\n##\nmkdir -p ${DERIVED_PATH}\n\n## Generate ApiCredentials.swift\n##\necho \">> Generating Credentials ${CREDS_OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${CREDS_INPUT_PATH} -s ${SECRETS_PATH} > ${CREDS_OUTPUT_PATH}\n\n## Generate InfoPlist.h\n##\necho \">> Generating Credentials ${PLIST_OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${PLIST_INPUT_PATH} -s ${SECRETS_PATH} > ${PLIST_OUTPUT_PATH}\n\n## Generate bash_secrets\n##\necho \">> Generating Credentials ${BASH_OUTPUT_PATH}\"\nruby ${SCRIPT_PATH} -i ${BASH_INPUT_PATH} -s ${SECRETS_PATH} > ${BASH_OUTPUT_PATH}\n";
+			shellScript = "$SRCROOT/../Scripts/build-phases/generate-credentials.sh\n";
 		};
 		B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1828,8 +1853,10 @@
 				B55401692170D5E10067DC90 /* ChartPlaceholderView.swift in Sources */,
 				B5290ED9219B3FA900A6AF7F /* Date+Woo.swift in Sources */,
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
+				CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */,
 				B5F04D952194F2A300501EE1 /* NoteDetailsRow.swift in Sources */,
 				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
+				CEEC9B5C21E79B3E0055EEF0 /* FeatureFlag.swift in Sources */,
 				74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */,
 				744F00D221B582A9007EFA93 /* StarRatingView.swift in Sources */,
 				74AFF2EA211B9B1B0038153A /* StoreStatsViewController.swift in Sources */,
@@ -1845,6 +1872,7 @@
 				B57B678E21078C5400AF8905 /* OrderItemViewModel.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,
 				B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */,
+				CEEC9B5E21E79C330055EEF0 /* BuildConfiguration.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderTableViewCell.swift in Sources */,
 				748AD087219F481B00023535 /* UIView+Animation.swift in Sources */,
 				748D34DF214828DD00E21A2F /* TopPerformersViewController.swift in Sources */,
@@ -1872,6 +1900,7 @@
 				B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */,
 				7435E59021C0162C00216F0F /* OrderNoteWooTests.swift in Sources */,
 				B555531321B57E8800449E71 /* MockupUserNotificationsCenterAdapter.swift in Sources */,
+				CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */,
 				B555531121B57E6F00449E71 /* MockupApplicationAdapter.swift in Sources */,
 				CE4DA5C821DD759400074607 /* CurrencyFormatterTests.swift in Sources */,
 				B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */,
@@ -1879,6 +1908,7 @@
 				B57C5C9E21B80E8300FF82B2 /* SessionManager+Internal.swift in Sources */,
 				B55BC1F321A8790F0011A0C0 /* StringHTMLTests.swift in Sources */,
 				B5980A6721AC91AA00EBF596 /* BundleWooTests.swift in Sources */,
+				CEEC9B6021E79CAA0055EEF0 /* FeatureFlagTests.swift in Sources */,
 				B53A569B21123E8E000776C9 /* MockupTableView.swift in Sources */,
 				B509FED521C052D1000076A9 /* MockupSupportManager.swift in Sources */,
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,

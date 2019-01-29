@@ -1,0 +1,2 @@
+- bugfix: add help button to store picker screen
+- bugfix: on the store picker, don't allow the tableview cell to be selected if there only is a single store

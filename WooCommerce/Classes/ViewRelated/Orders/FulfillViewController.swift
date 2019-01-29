@@ -151,6 +151,7 @@ extension FulfillViewController {
             StoresManager.shared.dispatch(undo)
         }
 
+        AppRatingManager.shared.incrementSignificantEvent()
         navigationController?.popViewController(animated: true)
     }
 

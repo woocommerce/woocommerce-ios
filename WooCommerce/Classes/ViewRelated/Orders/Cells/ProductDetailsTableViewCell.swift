@@ -87,8 +87,6 @@ class ProductDetailsTableViewCell: UITableViewCell {
         }
     }
 
-
-
     // MARK: - Overridden Methods
 
     override func awakeFromNib() {
@@ -100,6 +98,7 @@ class ProductDetailsTableViewCell: UITableViewCell {
         priceLabel.applyFootnoteStyle()
         taxLabel.applyFootnoteStyle()
         skuLabel.applyFootnoteStyle()
+        selectionStyle = .none
     }
 }
 

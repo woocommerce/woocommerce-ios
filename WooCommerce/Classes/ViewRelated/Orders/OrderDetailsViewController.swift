@@ -372,7 +372,7 @@ private extension OrderDetailsViewController {
             return
         }
 
-        cell.isSystemNote = note.isSystemNote
+        cell.isSystemAuthor = note.isSystemAuthor
         cell.isCustomerNote = note.isCustomerNote
         cell.dateCreated = note.dateCreated.toString(dateStyle: .medium, timeStyle: .short)
         cell.contents = note.note.strippedHTML
@@ -396,15 +396,19 @@ private extension OrderDetailsViewController {
         cell.totalLabel.text = viewModel.totalLabel
         cell.totalValue.text = viewModel.totalValue
 
-        cell.separatorLine.backgroundColor = StyleManager.cellSeparatorColor
-        cell.footerValue.text = viewModel.paymentSummary
+        cell.footerText = viewModel.paymentSummary
 
-        cell.accessibilityElements = [cell.subtotalLabel, cell.subtotalValue, cell.discountLabel, cell.discountValue, cell.shippingLabel, cell.shippingValue, cell.taxesLabel, cell.taxesValue, cell.totalLabel, cell.totalValue, cell.footerValue]
+        cell.accessibilityElements = [cell.subtotalLabel, cell.subtotalValue, cell.discountLabel, cell.discountValue, cell.shippingLabel, cell.shippingValue, cell.taxesLabel, cell.taxesValue, cell.totalLabel, cell.totalValue]
+
+        if let footerText = cell.footerText {
+            cell.accessibilityElements?.append(footerText)
+        }
     }
 
     func configureProductDetails(cell: BasicTableViewCell) {
         cell.textLabel?.text = viewModel.productDetails
         cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
     }
 
     func configureProductList(cell: ProductListTableViewCell) {

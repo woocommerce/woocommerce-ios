@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -227,7 +227,6 @@
                             <constraint firstItem="K4G-Fo-ooM" firstAttribute="leading" secondItem="QyU-yD-WDZ" secondAttribute="leading" id="qpJ-Mq-2TX"/>
                             <constraint firstAttribute="trailing" secondItem="BAA-Mv-unS" secondAttribute="trailing" priority="800" id="rHo-rR-9g9"/>
                             <constraint firstAttribute="bottom" secondItem="bJ7-xj-eoW" secondAttribute="bottom" id="x7r-6M-kgO"/>
-                            <constraint firstItem="bJ7-xj-eoW" firstAttribute="top" secondItem="K4G-Fo-ooM" secondAttribute="bottom" constant="4" id="yNc-0h-tOe"/>
                         </constraints>
                     </stackView>
                 </subviews>
@@ -243,7 +242,7 @@
                 <outlet property="discountLabel" destination="LgV-BP-GFN" id="bcG-pd-fZY"/>
                 <outlet property="discountValue" destination="f7h-H4-cVj" id="nXU-Ma-GQu"/>
                 <outlet property="discountView" destination="Q5b-zU-7fY" id="ROH-sd-az8"/>
-                <outlet property="footerValue" destination="ejg-uy-1nm" id="sjM-vT-Nu3"/>
+                <outlet property="footerLabel" destination="ejg-uy-1nm" id="MvN-KA-CyB"/>
                 <outlet property="footerView" destination="bJ7-xj-eoW" id="x60-fi-vtR"/>
                 <outlet property="separatorLine" destination="AAH-DG-Pee" id="ClZ-K6-poD"/>
                 <outlet property="shippingLabel" destination="gTx-ab-CBl" id="vFS-6X-myF"/>
@@ -255,6 +254,7 @@
                 <outlet property="taxesLabel" destination="z9r-YA-aG9" id="wEN-D1-H8l"/>
                 <outlet property="taxesValue" destination="pCA-4f-cjt" id="kP4-iN-Nx0"/>
                 <outlet property="taxesView" destination="BAA-Mv-unS" id="wOK-9o-G7C"/>
+                <outlet property="totalBottomConstraint" destination="D0q-sd-BVi" id="PVk-MW-JHQ"/>
                 <outlet property="totalLabel" destination="6Pa-jd-Tcj" id="Ebx-MN-9VH"/>
                 <outlet property="totalValue" destination="awb-Pi-AeE" id="rSC-nG-idX"/>
                 <outlet property="totalView" destination="K4G-Fo-ooM" id="TjD-wt-oyz"/>

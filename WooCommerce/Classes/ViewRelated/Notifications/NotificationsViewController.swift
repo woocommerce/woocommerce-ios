@@ -4,6 +4,7 @@ import Yosemite
 import WordPressUI
 import SafariServices
 import Gridicons
+import StoreKit
 
 
 // MARK: - NotificationsViewController
@@ -141,6 +142,8 @@ class NotificationsViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+
+        // This 👇 should be called in init so the tab is correctly localized when the app launches
         configureTabBarItem()
     }
 
@@ -170,6 +173,10 @@ class NotificationsViewController: UIViewController {
             //
             //self?.updateLastSeenTime()
         }
+
+        if AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section) {
+            displayRatingPrompt()
+        }
     }
 }
 
@@ -181,7 +188,7 @@ private extension NotificationsViewController {
     /// Setup: TabBar
     ///
     func configureTabBarItem() {
-        tabBarItem.title = NSLocalizedString("Notifications", comment: "Notifications tab title")
+        tabBarItem.title = NSLocalizedString("Notifications", comment: "Title of the Notifications tab — plural form of Notification")
         tabBarItem.image = Gridicon.iconOfType(.bell)
     }
 
@@ -235,11 +242,14 @@ private extension NotificationsViewController {
 
     func refreshTitle() {
         guard currentTypeFilter != .all else {
-            navigationItem.title = NSLocalizedString("Notifications", comment: "Notifications title")
+            navigationItem.title = NSLocalizedString("Notifications",
+                                                     comment: "Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification).")
             return
         }
 
-        navigationItem.title = NSLocalizedString("Notifications: \(currentTypeFilter.description)", comment: "Notifications filtered title")
+        let title = String.localizedStringWithFormat(NSLocalizedString("Notifications: %@",
+                                                                       comment: "Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter}"), currentTypeFilter.description.capitalized)
+        navigationItem.title = title
     }
 }
 
@@ -391,6 +401,23 @@ private extension NotificationsViewController {
     }
 }
 
+// MARK: - App Store Review Prompt
+//
+private extension NotificationsViewController {
+    func displayRatingPrompt() {
+        defer {
+            if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
+                WooAnalytics.shared.track(wooEvent)
+            }
+        }
+
+        // Show the app store ratings alert
+        // Note: Optimistically assuming our prompting succeeds since we try to stay
+        // in line and not prompt more than two times a year
+        AppRatingManager.shared.ratedCurrentVersion()
+        SKStoreReviewController.requestReview()
+    }
+}
 
 // MARK: - ResultsController
 //
@@ -834,11 +861,11 @@ private extension NotificationsViewController {
         var description: String {
             switch self {
             case .all:
-                return NSLocalizedString("All", comment: "All filter title")
+                return NSLocalizedString("All", comment: "Name of the All filter on the Notifications screen - it means all notifications will be displayed.")
             case .orders:
-                return NSLocalizedString("Orders", comment: "Orders filter title")
+                return NSLocalizedString("Orders", comment: "Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.")
             case .reviews:
-                return NSLocalizedString("Reviews", comment: "Reviews filter title")
+                return NSLocalizedString("Reviews", comment: "Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.")
             }
         }
     }
@@ -854,5 +881,9 @@ private extension NotificationsViewController {
         case emptyFiltered
         case results
         case syncing
+    }
+
+    struct Constants {
+        static let section = "notifications"
     }
 }

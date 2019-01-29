@@ -31,7 +31,7 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.1.4)
     - "GoogleToolboxForMac/NSString+URLArguments (= 2.1.4)"
   - "GoogleToolboxForMac/NSString+URLArguments (2.1.4)"
-  - Gridicons (0.16)
+  - Gridicons (0.18)
   - KeychainAccess (3.1.2)
   - lottie-ios (2.5.0)
   - NSObject-SafeExpectations (0.0.3)
@@ -82,7 +82,7 @@ DEPENDENCIES:
   - Charts (~> 3.2)
   - CocoaLumberjack (~> 3.4)
   - Crashlytics (~> 3.10)
-  - Gridicons (= 0.16)
+  - Gridicons (~> 0.18-beta)
   - KeychainAccess (~> 3.1)
   - WordPressAuthenticator (~> 1.1-beta)
   - WordPressShared (~> 1.1)
@@ -129,7 +129,7 @@ SPEC CHECKSUMS:
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
   GoogleSignInRepacked: d357702618c555f38923576924661325eb1ef22b
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
-  Gridicons: 8cc5cb666d5ad8b8f1771d3c7a93d27ae25b7c2e
+  Gridicons: 04261236382e9c62c62c9a104f2f532c1bdf6a78
   KeychainAccess: b3816fddcf28aa29d94b10ec305cd52be14c472b
   lottie-ios: d699fdee68d7b63e721d949388b015fef1aaa4ac
   NSObject-SafeExpectations: b989b68a8a9b7b9f2b264a8b52ba9d7aab8f3129
@@ -145,6 +145,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 22d4c58200d7c105e0e407ab6bfd01a5d85014be
   ZendeskSDK: af6509ad7968d367f95b2645713802712152f879
 
-PODFILE CHECKSUM: 880d8baedc29161687f4027d119a56f685385f1f
+PODFILE CHECKSUM: 8ef4c97eb133dc1f2e258ced7df0eff00031d890
 
 COCOAPODS: 1.5.3

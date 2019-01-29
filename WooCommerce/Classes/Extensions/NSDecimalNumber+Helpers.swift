@@ -1,10 +1,11 @@
 import Foundation
 
 extension NSDecimalNumber {
-    func isZero() -> Bool {
-        let zeroValue = NSDecimalNumber.zero
 
-        if zeroValue.compare(self) == .orderedSame {
+    /// Returns true if the receiver is equal to zero, false otherwise.
+    ///
+    func isZero() -> Bool {
+        if NSDecimalNumber.zero.compare(self) == .orderedSame {
             return true
         }
 

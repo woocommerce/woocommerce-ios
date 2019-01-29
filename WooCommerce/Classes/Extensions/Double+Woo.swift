@@ -22,26 +22,53 @@ extension Double {
     /// This helper function does work with negative values as well.
     ///
     func humanReadableString() -> String {
-        var num = Double(self)
-        let sign = ((num < 0) ? "-" : "" )
-        num = fabs(num)
-        if -1000.0..<1000.0 ~= num {
-            let intNum = Int(num)
-            if intNum == 0 {
-                return "\(Int(num))"
-            }
-            return "\(sign)\(Int(num))"
+        let num = Double(self)
+
+        guard (-999.99999999..<1000.0 ~= num) == false else {
+            // If the starting value is between -1000 and 1000, just return the rounded Int version
+            return "\(Int(num.rounded(.towardZero)))"
         }
 
-        let exp = Int(log10(num) / 3.0 ) // log10(1000)
-        let units = ["k", "m", "b", "t"]
-        let roundedNum: Double = Foundation.round(10 * num / pow(1000.0, Double(exp))) / 10
-
-        if roundedNum == 1000.0 {
-            return "\(sign)\(1.0)\(units[exp])"
-        } else {
-            return "\(sign)\(roundedNum)\(units[exp-1])"
-        }
+        return abbreviatedString(for: num)
     }
 
+}
+
+
+// MARK: - Private helpers
+//
+private extension Double {
+
+    func abbreviatedString(for number: Double) -> String {
+        typealias Abbrevation = (threshold: Double, divisor: Double, suffix: String)
+        let abbreviations: [Abbrevation] = [(0, 1, ""),
+                                           (1_000.0, 1_000.0, "k"),
+                                           (1_000_000.0, 1_000_000.0, "m"),
+                                           (1_000_000_000.0, 1_000_000_000.0, "b"),
+                                           (1_000_000_000_000.0, 1_000_000_000_000.0, "t")]
+
+        let absNumber = fabs(number)
+        let abbreviation: Abbrevation = {
+            var prevAbbreviation = abbreviations[0]
+            for tmpAbbreviation in abbreviations {
+                if (absNumber < tmpAbbreviation.threshold) {
+                    break
+                }
+                prevAbbreviation = tmpAbbreviation
+            }
+            return prevAbbreviation
+        } ()
+
+        let value = number / abbreviation.divisor
+        let numFormatter = NumberFormatter()
+        numFormatter.positiveSuffix = abbreviation.suffix
+        numFormatter.negativeSuffix = abbreviation.suffix
+        numFormatter.allowsFloats = true
+        numFormatter.minimumIntegerDigits = 1
+        numFormatter.minimumFractionDigits = 1
+        numFormatter.maximumFractionDigits = 1
+
+        let finalValue = NSNumber(value:value)
+        return numFormatter.string(from: finalValue) ?? "0"
+    }
 }

@@ -16,7 +16,9 @@ class DoubleWooTests: XCTestCase {
     func testHumanReadableStringWorksWithPositiveValuesUnderOneThousand() {
         XCTAssertEqual(Double(1).humanReadableString(), "1")
         XCTAssertEqual(Double(10).humanReadableString(), "10")
-        XCTAssertEqual(Double(199).humanReadableString(), "199")
+        XCTAssertEqual(Double(198).humanReadableString(), "198")
+        XCTAssertEqual(Double(198.44).humanReadableString(), "198")
+        XCTAssertEqual(Double(198.44).humanReadableString(), "198")
         XCTAssertEqual(Double(199.99).humanReadableString(), "199")
         XCTAssertEqual(Double(999).humanReadableString(), "999")
         XCTAssertEqual(Double(999.99).humanReadableString(), "999")
@@ -28,6 +30,7 @@ class DoubleWooTests: XCTestCase {
     func testHumanReadableStringWorksWithNegativeValuesUnderOneThousand() {
         XCTAssertEqual(Double(-1).humanReadableString(), "-1")
         XCTAssertEqual(Double(-10).humanReadableString(), "-10")
+        XCTAssertEqual(Double(-198.44).humanReadableString(), "-198")
         XCTAssertEqual(Double(-199).humanReadableString(), "-199")
         XCTAssertEqual(Double(-199.99).humanReadableString(), "-199")
         XCTAssertEqual(Double(-999).humanReadableString(), "-999")
@@ -52,6 +55,8 @@ class DoubleWooTests: XCTestCase {
 
         XCTAssertEqual(Double(9880).humanReadableString(), "9.9k")
         XCTAssertEqual(Double(9999).humanReadableString(), "10.0k")
+        XCTAssertEqual(Double(44999).humanReadableString(), "45.0k")
+        XCTAssertEqual(Double(77164).humanReadableString(), "77.2k")
         XCTAssertEqual(Double(100101).humanReadableString(), "100.1k")
         XCTAssertEqual(Double(110099).humanReadableString(), "110.1k")
         XCTAssertEqual(Double(9899999).humanReadableString(), "9.9m")
@@ -74,6 +79,8 @@ class DoubleWooTests: XCTestCase {
 
         XCTAssertEqual(Double(-9880).humanReadableString(), "-9.9k")
         XCTAssertEqual(Double(-9999).humanReadableString(), "-10.0k")
+        XCTAssertEqual(Double(-44999).humanReadableString(), "-45.0k")
+        XCTAssertEqual(Double(-77164).humanReadableString(), "-77.2k")
         XCTAssertEqual(Double(-100101).humanReadableString(), "-100.1k")
         XCTAssertEqual(Double(-110099).humanReadableString(), "-110.1k")
         XCTAssertEqual(Double(-9899999).humanReadableString(), "-9.9m")

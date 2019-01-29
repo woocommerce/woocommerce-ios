@@ -1,1 +1,2 @@
 - bugfix: add help button to store picker screen
+- bugfix: updated logic that determines "last update date" for store stats

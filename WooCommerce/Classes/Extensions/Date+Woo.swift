@@ -24,7 +24,7 @@ extension Date {
     /// - Example: Updated 55 minutes ago
     /// - Example: Updated 1 hour ago
     /// - Example: Updated 14 hours ago
-    /// - Example: Updated Jan 28, 2019 at 5:17 PM
+    /// - Example: Updated on Jan 28, 2019 at 5:17 PM
     ///
     var relativelyFormattedUpdateString: String {
         let now = Date()
@@ -77,6 +77,6 @@ private extension Date {
         static let pluralMinuteUpdateStatment   = NSLocalizedString("Updated %ld minutes ago", comment: "Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago")
         static let singularHourUpdateStatment   = NSLocalizedString("Updated %ld hour ago", comment: "Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago")
         static let pluralHourUpdateStatment     = NSLocalizedString("Updated %ld hours ago", comment: "Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago")
-        static let longFormUpdateStatement      = NSLocalizedString("Updated %@", comment: "A specific date and time string which represents when the data was last updated. Usage example: Updated Jan 22, 2019 3:31PM")
+        static let longFormUpdateStatement      = NSLocalizedString("Updated on %@", comment: "A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM")
     }
 }

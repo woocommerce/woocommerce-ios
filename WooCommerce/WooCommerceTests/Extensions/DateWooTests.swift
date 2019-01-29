@@ -63,12 +63,12 @@ class DateWooTests: XCTestCase {
         // Oct 10,2018
         let dateComponents1 = DateComponents(calendar: Calendar.current, year: 2018, month: 10, day: 10)
         let specificPastDate1 = Calendar.current.date(from: dateComponents1)!
-        XCTAssertTrue(specificPastDate1.relativelyFormattedUpdateString.contains("Updated Oct 10, 2018"))
+        XCTAssertTrue(specificPastDate1.relativelyFormattedUpdateString.contains("Updated on Oct 10, 2018"))
 
         // Feb 2, 2016
         let dateComponents2 = DateComponents(calendar: Calendar.current, year: 2016, month: 2, day: 2)
         let specificPastDate2 = Calendar.current.date(from: dateComponents2)!
-        XCTAssertTrue(specificPastDate2.relativelyFormattedUpdateString.contains("Updated Feb 2, 2016"))
+        XCTAssertTrue(specificPastDate2.relativelyFormattedUpdateString.contains("Updated on Feb 2, 2016"))
     }
 
     func testUpdateStringWorksForFutureIntervals() {

@@ -18,6 +18,8 @@ extension Date {
     /// Returns a localized update string relative to the receiver if it's within one day of now *or*
     /// a medium datestyle + short timestyle string otherwise.
     ///
+    /// *Note:* if the receiver is a future date, "Updated moments ago" will be returned
+    ///
     /// - Example: Updated moments ago
     /// - Example: Updated 55 minutes ago
     /// - Example: Updated 1 hour ago

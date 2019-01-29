@@ -42,9 +42,7 @@ class ApplicationLogViewController: UIViewController {
         configureNavigation()
         configureMainView()
         configureTableView()
-
         loadLogFiles()
-
         configureSections()
         registerTableViewCells()
     }
@@ -52,7 +50,7 @@ class ApplicationLogViewController: UIViewController {
     /// Style the back button, add the title to nav bar.
     ///
     func configureNavigation() {
-        title = NSLocalizedString("Activity Logs", comment: "Activity Log navigation bar title")
+        title = NSLocalizedString("Application Logs", comment: "Application Logs navigation bar title - this screen is where users view the list of application logs available to them.")
 
         // Don't show the Help & Support title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
@@ -150,7 +148,7 @@ extension ApplicationLogViewController: UITableViewDelegate {
 
         switch rowAtIndexPath(indexPath) {
         case .logFile:
-            logFileWasPressed()
+            logFileWasPressed(in: indexPath.row)
         case .clearLogs:
             clearLogsWasPressed()
         }
@@ -204,8 +202,16 @@ private extension ApplicationLogViewController {
 
     /// View log file action
     ///
-    func logFileWasPressed() {
-
+    func logFileWasPressed(in row: Int) {
+        let logFileInfo = logFiles[row]
+        do {
+            let contents = try String(contentsOfFile: logFileInfo.filePath)
+            let date = dateFormatter.string(from: logFileInfo.creationDate)
+            let detailVC = ApplicationLogDetailViewController(with: contents, for: date)
+            navigationController?.pushViewController(detailVC, animated: true)
+        } catch {
+            DDLogError("Error: attempted to get contents of logFileInfo. Contents not found.")
+        }
     }
 
     /// Clear old logs action

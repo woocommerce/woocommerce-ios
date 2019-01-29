@@ -48,7 +48,7 @@ class PrivacySettingsViewController: UIViewController {
 private extension PrivacySettingsViewController {
 
     func configureNavigation() {
-        title = NSLocalizedString("Privacy settings", comment: "Privacy settings screen title")
+        title = NSLocalizedString("Privacy Settings", comment: "Privacy settings screen title")
 
         // Don't show the Settings title in the next-view's back button
         let backButton = UIBarButtonItem(title: String(),
@@ -115,7 +115,7 @@ private extension PrivacySettingsViewController {
         cell.imageView?.tintColor = StyleManager.defaultTextColor
 
         // text
-        cell.title = NSLocalizedString("Collect information", comment: "Settings > Privacy Settings > collect info section. Label the `Collect information` toggle.")
+        cell.title = NSLocalizedString("Collect Information", comment: "Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle.")
 
         // switch
         cell.isOn = collectInfo
@@ -167,7 +167,7 @@ private extension PrivacySettingsViewController {
         cell.imageView?.tintColor = StyleManager.defaultTextColor
 
         // text
-        cell.title = NSLocalizedString("Report crashes", comment: "Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle.")
+        cell.title = NSLocalizedString("Report Crashes", comment: "Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle.")
 
         // switch
         cell.isOn = reportCrashes

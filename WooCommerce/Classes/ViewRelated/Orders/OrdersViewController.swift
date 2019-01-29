@@ -4,6 +4,7 @@ import Yosemite
 import WordPressUI
 import CocoaLumberjack
 import SafariServices
+import StoreKit
 
 
 /// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
@@ -99,8 +100,8 @@ class OrdersViewController: UIViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
 
-        tabBarItem.title = NSLocalizedString("Orders", comment: "Orders Title")
-        tabBarItem.image = Gridicon.iconOfType(.pages)
+        // This 👇 should be called in init so the tab is correctly localized when the app launches
+        configureTabBarItem()
     }
 
     override func viewDidLoad() {
@@ -112,7 +113,6 @@ class OrdersViewController: UIViewController {
 
         configureSyncingCoordinator()
         configureNavigation()
-        configureTabBarItem()
         configureTableView()
         configureResultsController()
 
@@ -123,6 +123,9 @@ class OrdersViewController: UIViewController {
         super.viewWillAppear(animated)
 
         syncingCoordinator.synchronizeFirstPage()
+        if AppRatingManager.shared.shouldPromptForAppReview() {
+            displayRatingPrompt()
+        }
     }
 }
 
@@ -134,12 +137,13 @@ private extension OrdersViewController {
     /// Setup: Title
     ///
     func refreshTitle() {
-        guard let filter = statusFilter?.rawValue.capitalized else {
-            navigationItem.title = NSLocalizedString("Orders", comment: "Orders Title")
+        guard let filter = statusFilter?.description.capitalized else {
+            navigationItem.title = NSLocalizedString("Orders", comment: "Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order).")
             return
         }
 
-        navigationItem.title = NSLocalizedString("Orders: \(filter)", comment: "Orders Title")
+        let title = String.localizedStringWithFormat(NSLocalizedString("Orders: %@", comment: "Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter}"), filter)
+        navigationItem.title = title
     }
 
     /// Setup: Filtering
@@ -148,7 +152,12 @@ private extension OrdersViewController {
         resultsController.predicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
-            let predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
+
+            var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
+            if let tomorrow = Date.tomorrow() {
+                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", tomorrow as NSDate)
+                predicates.append(dateSubPredicate)
+            }
 
             return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         }()
@@ -173,7 +182,7 @@ private extension OrdersViewController {
         }()
 
         navigationItem.rightBarButtonItem = {
-            let button = UIBarButtonItem(image: Gridicon.iconOfType(.menus),
+            let button = UIBarButtonItem(image: Gridicon.iconOfType(.filter),
                                                  style: .plain,
                                                  target: self,
                                                  action: #selector(displayFiltersAlert))
@@ -204,7 +213,8 @@ private extension OrdersViewController {
     /// Setup: TabBar Item
     ///
     func configureTabBarItem() {
-        tabBarItem.title = NSLocalizedString("Orders", comment: "Orders Title")
+        tabBarItem.title = NSLocalizedString("Orders", comment: "Title of the Orders tab — plural form of Order")
+        tabBarItem.image = Gridicon.iconOfType(.pages)
     }
 
     /// Setup: TableView
@@ -486,6 +496,24 @@ private extension OrdersViewController {
     }
 }
 
+// MARK: - App Store Review Prompt
+//
+private extension OrdersViewController {
+    func displayRatingPrompt() {
+        defer {
+            if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
+                WooAnalytics.shared.track(wooEvent)
+            }
+        }
+
+        // Show the app store ratings alert
+        // Note: Optimistically assuming our prompting succeeds since we try to stay
+        // in line and not prompt more than two times a year
+        AppRatingManager.shared.ratedCurrentVersion()
+        SKStoreReviewController.requestReview()
+    }
+}
+
 
 // MARK: - Convenience Methods
 //
@@ -654,7 +682,7 @@ private extension OrdersViewController {
 
     enum FilterAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
-        static let displayAll = NSLocalizedString("All", comment: "All filter title")
+        static let displayAll = NSLocalizedString("All", comment: "Name of the All filter on the Order List screen - it means all orders will be displayed.")
     }
 
     enum Settings {

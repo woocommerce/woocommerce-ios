@@ -63,7 +63,7 @@ langs.each do |code,local|
   puts "Updating #{code}"
   system "mkdir -p #{lang_dir}"
   system "if [ -e #{lang_dir}/Localizable.strings ]; then cp #{lang_dir}/Localizable.strings #{lang_dir}/Localizable.strings.bak; fi"
-  system "curl -fso #{lang_dir}/Localizable.strings 'https://translate.wordpress.com/projects/woocommerce%2Fwoocommerce-ios/#{code}/default/export-translations?format=strings'" or begin
+  system "curl -sSfL --globoff -o #{lang_dir}/Localizable.strings https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/#{code}/default/export-translations?format=strings" or begin
     puts "Error downloading #{code}"
   end
   system "./Scripts/fix-translation #{lang_dir}/Localizable.strings"

@@ -396,6 +396,14 @@ extension StorePickerViewController: UITableViewDelegate {
         return UITableView.automaticDimension
     }
 
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        guard state.multipleStoresAvailable else {
+            // If we only have a single store available, don't allow the row to be selected
+            return false
+        }
+        return true
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let site = state.site(at: indexPath) else {
             tableView.deselectRow(at: indexPath, animated: true)

@@ -21,7 +21,7 @@ extension Double {
     ///
     /// This helper function does work with negative values as well.
     ///
-    func friendlyString() -> String {
+    func humanReadableString() -> String {
         var num = Double(self)
         let sign = ((num < 0) ? "-" : "" )
         num = fabs(num)

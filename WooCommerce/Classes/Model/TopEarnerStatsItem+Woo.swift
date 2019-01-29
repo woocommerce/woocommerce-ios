@@ -23,7 +23,7 @@ extension TopEarnerStatsItem {
     /// Returns a friendly-formatted total string including the currency symbol
     ///
     var formattedTotalString: String {
-        return CurrencyFormatter().formatCurrency(using: total.friendlyString(),
+        return CurrencyFormatter().formatCurrency(using: total.humanReadableString(),
                                                   at: CurrencySettings.shared.currencyPosition,
                                                   with: currencySymbol)
     }

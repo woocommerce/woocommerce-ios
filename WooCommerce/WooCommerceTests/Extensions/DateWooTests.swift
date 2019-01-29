@@ -32,8 +32,12 @@ class DateWooTests: XCTestCase {
         XCTAssertEqual(twoMinutesAgo.relativelyFormattedUpdateString, "Updated 2 minutes ago")
 
         // 2 minutes, 3 seconds
-        let twoPlusMinutesAgo = Calendar.current.date(byAdding: .minute, value: -2, to: Date())!
+        let twoPlusMinutesAgo = Calendar.current.date(byAdding: .second, value: -123, to: Date())!
         XCTAssertEqual(twoPlusMinutesAgo.relativelyFormattedUpdateString, "Updated 2 minutes ago")
+
+        // 59 minutes
+        let twoFiftyNineMinutesAgo = Calendar.current.date(byAdding: .minute, value: -59, to: Date())!
+        XCTAssertEqual(twoFiftyNineMinutesAgo.relativelyFormattedUpdateString, "Updated 59 minutes ago")
 
         // 1 hour
         let oneHourAgo = Calendar.current.date(byAdding: .hour, value: -1, to: Date())!
@@ -42,6 +46,10 @@ class DateWooTests: XCTestCase {
         /// 9 hours
         let nineHoursAgo = Calendar.current.date(byAdding: .hour, value: -9, to: Date())!
         XCTAssertEqual(nineHoursAgo.relativelyFormattedUpdateString, "Updated 9 hours ago")
+
+        /// 23 hours, 59 minutes
+        let underOneDayAgo = Calendar.current.date(byAdding: .minute, value: -1439, to: Date())!
+        XCTAssertEqual(underOneDayAgo.relativelyFormattedUpdateString, "Updated 23 hours ago")
 
         // 1 day
         let oneDayAgo = Calendar.current.date(byAdding: .day, value: -1, to: Date())!

@@ -28,27 +28,18 @@ extension Date {
     ///
     var relativelyFormattedUpdateString: String {
         let now = Date()
-        let longFormDate = self.toString(dateStyle: .medium, timeStyle: .short)
         let components = Calendar.current.dateComponents(
             [.year, .month, .weekOfYear, .day, .hour, .minute, .second],
             from: self,
             to: now
         )
 
-        if let years = components.year, years > 0 {
-            return String.localizedStringWithFormat(Strings.longFormUpdateStatement, longFormDate)
-        }
-
-        if let months = components.month, months > 0 {
-            return String.localizedStringWithFormat(Strings.longFormUpdateStatement, longFormDate)
-        }
-
-        if let weeks = components.weekOfYear, weeks > 0 {
-            return String.localizedStringWithFormat(Strings.longFormUpdateStatement, longFormDate)
-        }
-
-        if let days = components.day, days > 0 {
-            return String.localizedStringWithFormat(Strings.longFormUpdateStatement, longFormDate)
+        guard let years = components.year, years < 1,
+            let months = components.month, months < 1,
+            let weeks = components.weekOfYear, weeks < 1,
+            let days = components.day, days < 1 else {
+                let longFormDate = self.toString(dateStyle: .medium, timeStyle: .short)
+                return String.localizedStringWithFormat(Strings.longFormUpdateStatement, longFormDate)
         }
 
         if let hours = components.hour, hours > 0 {

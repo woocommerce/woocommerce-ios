@@ -267,11 +267,27 @@
                     </view>
                     <connections>
                         <outlet property="tableView" destination="pYs-VV-dST" id="Cqx-Lg-UJh"/>
+                        <segue destination="dyy-ah-iUY" kind="show" identifier="ShowApplicationLogDetailViewController" id="Ws4-zy-SlV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fOe-oS-ZTi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2356" y="811"/>
+        </scene>
+        <!--Application Log Detail View Controller-->
+        <scene sceneID="EFa-xb-BCc">
+            <objects>
+                <viewController id="dyy-ah-iUY" customClass="ApplicationLogDetailViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="TC5-cg-3Zt">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="qu3-Gh-sHY"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gfH-Fa-ysG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3385" y="811"/>
         </scene>
         <!--Help And Support View Controller-->
         <scene sceneID="k0p-fl-BDY">

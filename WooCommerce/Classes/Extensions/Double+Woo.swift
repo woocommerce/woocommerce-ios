@@ -26,14 +26,10 @@ extension Double {
     func humanReadableString() -> String {
         let num = Double(self)
 
+        // If the starting value is between -1000 and 1000, return the rounded Int version
         guard (-999.99999999..<1000.0 ~= num) == false else {
-            // If the starting value is between -1000 and 1000, return the rounded Int version
-            let numFormatter = NumberFormatter()
-            numFormatter.allowsFloats = true
-            numFormatter.minimumIntegerDigits = 1
-            numFormatter.maximumFractionDigits = 0
-            numFormatter.roundingMode = .down
-            let returnString = numFormatter.string(from: NSNumber(value: num)) ?? Constants.zeroString
+
+            let returnString = Formatters.smallNumberFormatter.string(from: NSNumber(value: num)) ?? Constants.zeroString
 
             // We need to check for a -0 value here before returning the string
             return returnString == Constants.negativeZeroString ? Constants.zeroString : returnString
@@ -62,13 +58,9 @@ private extension Double {
         } ()
 
         let value = number / abbreviation.divisor
-        let numFormatter = NumberFormatter()
+        let numFormatter = Formatters.largeNumberFormatter
         numFormatter.positiveSuffix = abbreviation.suffix
         numFormatter.negativeSuffix = abbreviation.suffix
-        numFormatter.allowsFloats = true
-        numFormatter.minimumIntegerDigits = 1
-        numFormatter.minimumFractionDigits = 1
-        numFormatter.maximumFractionDigits = 1
 
         let finalValue = NSNumber(value: value)
         return numFormatter.string(from: finalValue) ?? Constants.zeroString
@@ -91,5 +83,30 @@ private extension Double {
                                                    (999_999.0, 1_000_000.0, "m"),
                                                    (999_999_999.0, 1_000_000_000.0, "b"),
                                                    (999_999_999_999.0, 1_000_000_000_000.0, "t")]
+    }
+
+    enum Formatters {
+
+        /// Formatter used for numbers between -1000 and 1000 (exclusive)
+        ///
+        public static let smallNumberFormatter: NumberFormatter = {
+            let numFormatter = NumberFormatter()
+            numFormatter.allowsFloats = true
+            numFormatter.minimumIntegerDigits = 1
+            numFormatter.maximumFractionDigits = 0
+            numFormatter.roundingMode = .down
+            return numFormatter
+        }()
+
+        /// Formatter used for numbers greater than -1000 and greater that 1000 (inclusive)
+        ///
+        public static var largeNumberFormatter: NumberFormatter {
+            let numFormatter = NumberFormatter()
+            numFormatter.allowsFloats = true
+            numFormatter.minimumIntegerDigits = 1
+            numFormatter.minimumFractionDigits = 1
+            numFormatter.maximumFractionDigits = 1
+            return numFormatter
+        }
     }
 }

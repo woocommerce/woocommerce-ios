@@ -5,7 +5,9 @@ extension Double {
 
     /// Provides a short, friendly, and *localized* representation of the receiver.
     ///
-    /// Discussion: If the receiver value is between -1000 & 1000, the value is rounded to the nearest Int with
+    /// - Returns: a human readable string value
+    ///
+    /// If the receiver value is between -1000 & 1000, the value is rounded to the nearest Int with
     /// a "toward zero" rounding strategy. If the value is above 1000 or below -1000, the value is rounded
     /// to the nearest tenth and the appropriate abbreviation will be appended (k, m, b, t).
     ///

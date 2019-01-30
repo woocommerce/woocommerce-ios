@@ -42,10 +42,10 @@ private extension Double {
     func abbreviatedString(for number: Double) -> String {
         typealias Abbrevation = (threshold: Double, divisor: Double, suffix: String)
         let abbreviations: [Abbrevation] = [(0, 1, ""),
-                                           (1_000.0, 1_000.0, "k"),
-                                           (1_000_000.0, 1_000_000.0, "m"),
-                                           (1_000_000_000.0, 1_000_000_000.0, "b"),
-                                           (1_000_000_000_000.0, 1_000_000_000_000.0, "t")]
+                                           (999.0, 1_000.0, "k"),
+                                           (999_999.0, 1_000_000.0, "m"),
+                                           (999_999_999.0, 1_000_000_000.0, "b"),
+                                           (999_999_999_999.0, 1_000_000_000_000.0, "t")]
 
         let absNumber = fabs(number)
         let abbreviation: Abbrevation = {

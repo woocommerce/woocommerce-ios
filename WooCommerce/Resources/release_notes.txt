@@ -1,7 +1,6 @@
-1.1 Release
-- bugfix: improved localization support on My Store charts
-- bugfix: improved localization support on the Orders & Notifications screens
-- bugfix: hide orders that have a created date listed in the future. (They no longer display under the "Today" section of an order list).
-- bugfix: remove the payment method summary in the payment section when the no payment has been received.
-- bugfix: logging out resets Zendesk username / email
-- bugfix: display Taxes line to payment and product details, including when amount is zero.
+- This update is all about improved reliability and fixes:
+- Improved localization support on My Store charts and on the Orders & Notifications screens.
+- The app now hides orders that have a created date listed in the future. (They no longer display under the “Today” section of an order list.)
+- We’ve removed the payment method summary in the payment section when no payment has been received.
+- Taxes line is now shown in payments and product details even when the amount to show is zero.
+- When logging out, the app now resets the credential used with support requests.

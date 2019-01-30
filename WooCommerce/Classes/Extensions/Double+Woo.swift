@@ -4,13 +4,14 @@ import Foundation
 extension Double {
 
     /// Provides a short, friendly representation of the current Double value. If the value is
-    /// below 1000, the decimal is stripped and the string returned will look like an Int. If the value
-    /// is above 1000, the value is rounded to the nearest tenth and the appropriate abbreviation
-    /// will be appended (k, m, b, t).
+    /// between -1000 & 1000, the value is rounded to the nearest Int with a "toward zero" rounding
+    /// strategy. If the value is above 1000 or below -1000, the value is rounded to the nearest
+    /// tenth and the appropriate abbreviation will be appended (k, m, b, t).
     ///
     /// Examples:
     ///  - 0 becomes "0"
     ///  - 198.44 becomes "198"
+    ///  - 198.88 becomes "198"
     ///  - 999 becomes "999"
     ///  - 1000 becomes "1.0k"
     ///  - 999999 becomes "1.0m"

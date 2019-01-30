@@ -32,7 +32,6 @@ extension Double {
 
         return abbreviatedString(for: num)
     }
-
 }
 
 
@@ -52,7 +51,7 @@ private extension Double {
         let abbreviation: Abbrevation = {
             var prevAbbreviation = abbreviations[0]
             for tmpAbbreviation in abbreviations {
-                if (absNumber < tmpAbbreviation.threshold) {
+                if absNumber < tmpAbbreviation.threshold {
                     break
                 }
                 prevAbbreviation = tmpAbbreviation
@@ -69,7 +68,7 @@ private extension Double {
         numFormatter.minimumFractionDigits = 1
         numFormatter.maximumFractionDigits = 1
 
-        let finalValue = NSNumber(value:value)
+        let finalValue = NSNumber(value: value)
         return numFormatter.string(from: finalValue) ?? "0"
     }
 }

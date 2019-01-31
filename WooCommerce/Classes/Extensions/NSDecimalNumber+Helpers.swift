@@ -53,7 +53,7 @@ extension NSDecimalNumber {
             return self.doubleValue.humanReadableString()
         }
 
-        // If the receiver value is in-between the lower and upper limits return it, otherwise
+        // If the receiver value is in-between the lower and upper limits return the value passed in, otherwise
         // send back the friendly (large) number
         if self.compare(Constants.upperSmallNumberLimit) == .orderedAscending &&
             self.compare(Constants.lowerSmallNumberLimit) == .orderedDescending {

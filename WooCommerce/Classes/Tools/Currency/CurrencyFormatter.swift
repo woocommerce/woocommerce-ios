@@ -81,6 +81,23 @@ public class CurrencyFormatter {
         return formatAmount(decimalAmount, with: currency)
     }
 
+
+    func formatHumanReadableAmount(_ amount: String, with currency: String = CurrencySettings.shared.currencyCode.rawValue, roundSmallNumbers: Bool = true) -> String? {
+        guard let decimalAmount = convertToDecimal(from: amount) else {
+            return nil
+        }
+
+        let humanReadableAmount = decimalAmount.humanReadableString(roundSmallNumbers: roundSmallNumbers)
+        guard humanReadableAmount != amount else {
+            // The truncated version of amount is the same as the param value, so just format the value like normal
+            return formatAmount(decimalAmount, with: currency)
+        }
+
+        let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? CurrencySettings.shared.currencyCode
+        let symbol = CurrencySettings.shared.symbol(from: code)
+        return formatCurrency(using: humanReadableAmount, at: CurrencySettings.shared.currencyPosition, with: symbol)
+    }
+
     /// Applies currency option settings to the amount for the given currency.
     /// - Parameters:
     ///     - amount: a NSDecimalNumber representation of the amount, from the API, with no formatting applied. e.g. "19.87"

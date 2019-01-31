@@ -224,15 +224,14 @@ private extension ApplicationLogViewController {
     /// Clear old logs action
     ///
     func clearLogsWasPressed() {
-        for logFileInfo in logFiles {
-            if logFileInfo.isArchived {
-                try? FileManager.default.removeItem(atPath: logFileInfo.filePath)
-            }
+        for logFileInfo in logFiles where logFileInfo.isArchived {
+            try? FileManager.default.removeItem(atPath: logFileInfo.filePath)
         }
 
         DDLogWarn("⚠️ All archived log files erased.")
 
         loadLogFiles()
+        configureSections()
         tableView.reloadData()
     }
 }

@@ -92,13 +92,16 @@ public class CurrencyFormatter {
     ///   - roundSmallNumbers: if `true`, small numbers are rounded, if `false`, no rounding occurs (defaults to true)
     /// - Returns: a formatted ammount string
     ///
-    /// - Note: This func leverages the formatter from our `NSDecimalNumber` esxtension. See: [NSDecimalNumber+Helpers.swift](https://github.com/woocommerce/woocommerce-ios/blob/develop/WooCommerce/Classes/Extensions/NSDecimalNumber%2BHelpers.swift) for more details.
+    /// For our purposes here, a "small number" is anything < 1000.
+    ///
+    /// - Note: This func leverages the formatter from our `NSDecimalNumber` esxtension.
+    ///         See: [NSDecimalNumber+Helpers.swift](https://github.com/woocommerce/woocommerce-ios/blob/develop/WooCommerce/Classes/Extensions/NSDecimalNumber%2BHelpers.swift) for more details.
     ///
     /// Examples with currency code of "USD" (`roundSmallNumbers` is set to `true`):
     ///  - 0 becomes "$0"
-    ///  - 198.44 becomes "$198.00"
-    ///  - 198.88 becomes "$198.00"
-    ///  - 999 becomes "$999.00"
+    ///  - 198.44 becomes "$198"
+    ///  - 198.88 becomes "$198"
+    ///  - 999 becomes "$999"
     ///  - 1000 becomes "$1.0k"
     ///  - 5800199.56 becomes "$5.8m"
     ///
@@ -110,21 +113,20 @@ public class CurrencyFormatter {
     ///  - 1000 becomes "$1.0k"
     ///  - 5800199.56 becomes "$5.8m"
     ///
-    ///
     func formatHumanReadableAmount(_ amount: String, with currency: String = CurrencySettings.shared.currencyCode.rawValue, roundSmallNumbers: Bool = true) -> String? {
         guard let decimalAmount = convertToDecimal(from: amount) else {
             return nil
         }
 
         let humanReadableAmount = decimalAmount.humanReadableString(roundSmallNumbers: roundSmallNumbers)
-        guard humanReadableAmount != decimalAmount.stringValue else {
+        if humanReadableAmount == decimalAmount.stringValue, roundSmallNumbers == false {
             // The human readable version of amount is the same as the converted param value which means this is a "small"
-            // number — format it normally.
+            // number — format it normally *without* rounding.
             return formatAmount(decimalAmount, with: currency)
         }
 
-        // If we are here, the human readable version of the amount param is a "large" number so let's just put the currency code on the
-        // correct side of the string (based on the site settings).
+        // If we are here, the human readable version of the amount param is a "large" number *OR* a small number but rounding has been requested,
+        // so let's just put the currency code on the correct side of the string (based on the site settings).
         let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? CurrencySettings.shared.currencyCode
         let symbol = CurrencySettings.shared.symbol(from: code)
         return formatCurrency(using: humanReadableAmount, at: CurrencySettings.shared.currencyPosition, with: symbol)

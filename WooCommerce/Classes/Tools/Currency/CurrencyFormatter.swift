@@ -90,9 +90,9 @@ public class CurrencyFormatter {
     ///   - amount: a raw string representation of the amount, from the API, with no formatting applied. e.g. "19.87"
     ///   - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///   - roundSmallNumbers: if `true`, small numbers are rounded, if `false`, no rounding occurs (defaults to true)
-    /// - Returns: a formatted ammount string
+    /// - Returns: a formatted amount string
     ///
-    /// For our purposes here, a "small number" is anything < 1000.
+    /// For our purposes here, a "small number" is anything in-between -1000 and 1000 (exclusive).
     ///
     /// - Note: This func leverages the formatter from our `NSDecimalNumber` esxtension.
     ///         See: [NSDecimalNumber+Helpers.swift](https://github.com/woocommerce/woocommerce-ios/blob/develop/WooCommerce/Classes/Extensions/NSDecimalNumber%2BHelpers.swift) for more details.
@@ -126,7 +126,7 @@ public class CurrencyFormatter {
         }
 
         // If we are here, the human readable version of the amount param is a "large" number *OR* a small number but rounding has been requested,
-        // so let's just put the currency code on the correct side of the string (based on the site settings).
+        // so let's just put the currency symbol on the correct side of the string with proper spacing (based on the site settings).
         let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? CurrencySettings.shared.currencyCode
         let symbol = CurrencySettings.shared.symbol(from: code)
         return formatCurrency(using: humanReadableAmount, at: CurrencySettings.shared.currencyPosition, with: symbol)

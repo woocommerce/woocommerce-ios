@@ -121,7 +121,7 @@ class OrderDetailsViewModel {
     /// Anything above 999.99 or below -999.99 should display a truncated amount
     ///
     var totalFriendlyString: String? {
-        return currencyFormatter.formatHumanReadableAmount(order.total, with: order.currency, roundSmallNumbers: false) ?? String()        
+        return currencyFormatter.formatHumanReadableAmount(order.total, with: order.currency, roundSmallNumbers: false) ?? String()
     }
 
     /// Payment Summary

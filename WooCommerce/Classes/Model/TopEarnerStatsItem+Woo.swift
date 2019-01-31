@@ -6,25 +6,9 @@ import Yosemite
 //
 extension TopEarnerStatsItem {
 
-    /// Returns the Currency Symbol associated with the current TopEarnerStatsItem.
-    ///
-    var currencySymbol: String {
-        guard !currency.isEmpty else {
-            return String()
-        }
-
-        guard let code = CurrencySettings.CurrencyCode(rawValue: currency) else {
-            return String()
-        }
-
-        return CurrencySettings.shared.symbol(from: code)
-    }
-
     /// Returns a friendly-formatted total string including the currency symbol
     ///
     var formattedTotalString: String {
-        return CurrencyFormatter().formatCurrency(using: total.humanReadableString(),
-                                                  at: CurrencySettings.shared.currencyPosition,
-                                                  with: currencySymbol)
+        return CurrencyFormatter().formatHumanReadableAmount(String(total), with: currency, roundSmallNumbers: false) ?? String()
     }
 }

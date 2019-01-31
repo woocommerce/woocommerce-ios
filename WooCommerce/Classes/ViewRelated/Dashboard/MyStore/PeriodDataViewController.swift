@@ -443,10 +443,7 @@ private extension PeriodDataViewController {
         var totalRevenueText = Constants.placeholderText
         if let orderStats = orderStats {
             totalOrdersText = Double(orderStats.totalOrders).humanReadableString()
-            let totalRevenue = orderStats.totalSales.humanReadableString()
-            totalRevenueText = CurrencyFormatter().formatCurrency(using: totalRevenue,
-                                                                  at: CurrencySettings.shared.currencyPosition,
-                                                                  with: currencySymbol)
+            totalRevenueText = CurrencyFormatter().formatHumanReadableAmount(String(orderStats.totalSales), with: orderStats.currencyCode) ?? String()
         }
         ordersData.text = totalOrdersText
         revenueData.text = totalRevenueText
@@ -495,9 +492,7 @@ private extension PeriodDataViewController {
         var dataEntries: [BarChartDataEntry] = []
         statItems.forEach { (item) in
             let entry = BarChartDataEntry(x: Double(barCount), y: item.totalSales)
-            let formattedAmount = CurrencyFormatter().formatCurrency(using: item.totalSales.humanReadableString(),
-                                                                     at: CurrencySettings.shared.currencyPosition,
-                                                                     with: currencySymbol)
+            let formattedAmount = CurrencyFormatter().formatHumanReadableAmount(String(item.totalSales), with: orderStats.currencyCode, roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
             barColors.append(barColor(for: item.period))
             dataEntries.append(entry)

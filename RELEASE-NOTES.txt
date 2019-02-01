@@ -1,0 +1,2 @@
+1.1
+- Bugfix: Sales totals on dashboard weren't matching gross sales totals from the web in all cases.

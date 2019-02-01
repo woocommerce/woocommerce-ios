@@ -94,7 +94,7 @@ public class CurrencyFormatter {
     ///
     /// For our purposes here, a "small number" is anything in-between -1000 and 1000 (exclusive).
     ///
-    /// - Note: This func leverages the formatter from our `NSDecimalNumber` esxtension.
+    /// - Note: This func leverages the formatter from our `NSDecimalNumber` extension.
     ///         See: [NSDecimalNumber+Helpers.swift](https://github.com/woocommerce/woocommerce-ios/blob/develop/WooCommerce/Classes/Extensions/NSDecimalNumber%2BHelpers.swift) for more details.
     ///
     /// Examples with currency code of "USD" (`roundSmallNumbers` is set to `true`):

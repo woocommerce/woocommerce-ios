@@ -7,6 +7,10 @@ extension Double {
     ///
     /// - Returns: a human readable string value
     ///
+    /// **WARNING:** If you are considering formatting currency values, please do **NOT** use this function —
+    /// check out `CurrencyFormatter.formatHumanReadableAmount()` instead! If you **still** decide to use this
+    /// function, Thuy will hunt you down 🔪.
+    ///
     /// If the receiver value is between -1000 & 1000, the value is rounded to the nearest Int with
     /// a "toward zero" rounding strategy. If the value is above 1000 or below -1000, the value is rounded
     /// to the nearest tenth and the appropriate abbreviation will be appended (k, m, b, t).

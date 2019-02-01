@@ -73,7 +73,7 @@ class ApplicationLogDetailViewController: UIViewController {
 
     /// Specifies the activity types that should be excluded.
     /// - returns: all unsupported types
-    /// Preserves support only for `.copyToPasteboard` and `.mail`
+    /// Preserves support for `.copyToPasteboard`, `.mail`, and `.airDrop`
     ///
     func assembleExcludedSupportTypes() -> [UIActivity.ActivityType] {
         let activityTypes = NSMutableSet(array: SharingHelper.allActivityTypes())
@@ -83,7 +83,8 @@ class ApplicationLogDetailViewController: UIViewController {
          * which would be wrong, because the allActivityTypes listed above are stored as enum types.
          */
         let supportedTypes = NSSet(objects: UIActivity.ActivityType.copyToPasteboard,
-                                            UIActivity.ActivityType.mail)
+                                            UIActivity.ActivityType.mail,
+                                            UIActivity.ActivityType.airDrop)
 
         // Now you can downcast to Set, because the type was preserved on init of the NSSet.
         activityTypes.minus(supportedTypes as! Set<AnyHashable>)

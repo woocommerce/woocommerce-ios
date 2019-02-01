@@ -40,6 +40,28 @@ class SharingHelper {
 
         viewController.present(avc, animated: true)
     }
+
+    /// List all activity types.
+    /// UIActivity.ActivityType is not CaseIterable. :sadface:
+    ///
+    static func allActivityTypes() -> [UIActivity.ActivityType] {
+        return [.postToFacebook,
+                .postToTwitter,
+                .postToWeibo,
+                .message,
+                .mail,
+                .print,
+                .copyToPasteboard,
+                .assignToContact,
+                .saveToCameraRoll,
+                .addToReadingList,
+                .postToFlickr,
+                .postToVimeo,
+                .postToTencentWeibo,
+                .airDrop,
+                .openInIBooks,
+                .markupAsPDF]
+    }
 }
 
 

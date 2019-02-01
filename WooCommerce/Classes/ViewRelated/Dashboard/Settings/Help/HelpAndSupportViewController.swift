@@ -101,7 +101,8 @@ private extension HelpAndSupportViewController {
             Section(title: helpAndSupportTitle, rows: [.browseFaq,
                                                        .contactSupport,
                                                        .myTickets,
-                                                       .contactEmail])
+                                                       .contactEmail,
+                                                       .applicationLog])
         ]
     }
 
@@ -139,6 +140,8 @@ private extension HelpAndSupportViewController {
             configureMyTickets(cell: cell)
         case let cell as ValueOneTableViewCell where row == .contactEmail:
             configureMyContactEmail(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .applicationLog:
+            configureApplicationLog(cell: cell)
         default:
             fatalError()
         }
@@ -178,6 +181,15 @@ private extension HelpAndSupportViewController {
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Contact Email", comment: "Contact Email title")
         cell.detailTextLabel?.text = accountEmail
+    }
+
+    /// Application Log cell.
+    ///
+    func configureApplicationLog(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("View Application Log", comment: "View application log cell title")
+        cell.detailTextLabel?.text = NSLocalizedString("Advanced tool to review the app status", comment: "Cell subtitle explaining why you might want to navigate to view the application log.")
     }
 }
 
@@ -238,6 +250,12 @@ private extension HelpAndSupportViewController {
         }
     }
 
+    /// View application log action
+    ///
+    func applicationLogWasPressed() {
+        performSegue(withIdentifier: Constants.appLogSegue, sender: nil)
+    }
+
     @objc func dismissWasPressed() {
         dismiss(animated: true, completion: nil)
     }
@@ -288,6 +306,8 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             myTicketsWasPressed()
         case .contactEmail:
             contactEmailWasPressed()
+        case .applicationLog:
+            applicationLogWasPressed()
         }
     }
 }
@@ -299,6 +319,7 @@ private struct Constants {
     static let rowHeight = CGFloat(44)
     static let footerHeight = 44
     static let devEmail = "@automattic.com"
+    static let appLogSegue = "ShowApplicationLogViewController"
 }
 
 private struct Section {
@@ -311,6 +332,7 @@ private enum Row: CaseIterable {
     case contactSupport
     case myTickets
     case contactEmail
+    case applicationLog
 
     var type: UITableViewCell.Type {
         switch self {
@@ -321,6 +343,8 @@ private enum Row: CaseIterable {
         case .myTickets:
             return ValueOneTableViewCell.self
         case .contactEmail:
+            return ValueOneTableViewCell.self
+        case .applicationLog:
             return ValueOneTableViewCell.self
         }
     }

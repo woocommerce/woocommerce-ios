@@ -218,9 +218,11 @@
 		B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */; };
 		CE021535215BE3AB00C19555 /* LoginNavigationController+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE021534215BE3AB00C19555 /* LoginNavigationController+Woo.swift */; };
 		CE14452E2188C11700A991D8 /* ZendeskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE14452D2188C11700A991D8 /* ZendeskManager.swift */; };
+		CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE15524921FFB10100EAA690 /* ApplicationLogViewController.swift */; };
 		CE16177A21B7192A00B82A47 /* AuthenticationConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */; };
 		CE17C2E220ACA06800AFBD20 /* BillingDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE17C2E020ACA06800AFBD20 /* BillingDetailsTableViewCell.swift */; };
 		CE17C2E320ACA06800AFBD20 /* BillingDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE17C2E120ACA06800AFBD20 /* BillingDetailsTableViewCell.xib */; };
+		CE1AFE622200B1BD00432745 /* ApplicationLogDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1AFE612200B1BD00432745 /* ApplicationLogDetailViewController.swift */; };
 		CE1CCB402056F21C000EE3AC /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* Style.swift */; };
 		CE1CCB4B20570B1F000EE3AC /* OrderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4A20570B1F000EE3AC /* OrderTableViewCell.swift */; };
 		CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */; };
@@ -546,9 +548,11 @@
 		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE021534215BE3AB00C19555 /* LoginNavigationController+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginNavigationController+Woo.swift"; sourceTree = "<group>"; };
 		CE14452D2188C11700A991D8 /* ZendeskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZendeskManager.swift; sourceTree = "<group>"; };
+		CE15524921FFB10100EAA690 /* ApplicationLogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogViewController.swift; sourceTree = "<group>"; };
 		CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationConstants.swift; sourceTree = "<group>"; };
 		CE17C2E020ACA06800AFBD20 /* BillingDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		CE17C2E120ACA06800AFBD20 /* BillingDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BillingDetailsTableViewCell.xib; sourceTree = "<group>"; };
+		CE1AFE612200B1BD00432745 /* ApplicationLogDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogDetailViewController.swift; sourceTree = "<group>"; };
 		CE1CCB3F2056F21C000EE3AC /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		CE1CCB4A20570B1F000EE3AC /* OrderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTableViewCell.swift; sourceTree = "<group>"; };
 		CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTableViewCell.swift; sourceTree = "<group>"; };
@@ -1231,6 +1235,8 @@
 			isa = PBXGroup;
 			children = (
 				CE27257B21924A8C002B22EB /* HelpAndSupportViewController.swift */,
+				CE15524921FFB10100EAA690 /* ApplicationLogViewController.swift */,
+				CE1AFE612200B1BD00432745 /* ApplicationLogDetailViewController.swift */,
 			);
 			path = Help;
 			sourceTree = "<group>";
@@ -1738,6 +1744,7 @@
 				B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */,
 				B5DB01B52114AB2D00A4F797 /* FabricManager.swift in Sources */,
 				7459A6C621B0680300F83A78 /* RequirementsChecker.swift in Sources */,
+				CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */,
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
 				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
@@ -1783,6 +1790,7 @@
 				748C7780211E18A600814F2C /* OrderStats+Woo.swift in Sources */,
 				CE4DA5C621DD755E00074607 /* CurrencyFormatter.swift in Sources */,
 				B59C09D92188CBB100AB41D6 /* Array+Notes.swift in Sources */,
+				CE1AFE622200B1BD00432745 /* ApplicationLogDetailViewController.swift in Sources */,
 				CE4DDB7B20DD312400D32EC8 /* DateFormatter+Helpers.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
 				B5E96B3821137AA100DF68D0 /* OrderStatus+Woo.swift in Sources */,

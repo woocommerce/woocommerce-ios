@@ -249,4 +249,92 @@ class CurrencyFormatterTests: XCTestCase {
 
         XCTAssertEqual(expectedResult, actualResult)
     }
+
+
+    // MARK: - Human readable formatter tests
+
+
+    func testFormatHumanReadableWithRoundingWorksUsingSmallDecimalValue() {
+        let inputValue = "97.64"
+        let expectedResult = "$97"
+        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue)
+        XCTAssertEqual(amount, expectedResult)
+    }
+
+    func testFormatHumanReadableWorksUsingSmallDecimalValue() {
+        let inputValue = "97.64"
+        let expectedResult = "$97.64"
+        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue, roundSmallNumbers: false)
+        XCTAssertEqual(amount, expectedResult)
+    }
+
+    func testFormatHumanReadableWithRoundingWorksUsingSmallDecimalValueAndSpecificCountryCode() {
+        let inputValue = "97.64"
+        let expectedResult = "£97"
+        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue, with: "GBP")
+        XCTAssertEqual(amount, expectedResult)
+    }
+
+    func testFormatHumanReadableWorksUsingSmallDecimalValueAndSpecificCountryCode() {
+        let inputValue = "97.64"
+        let expectedResult = "£97.64"
+        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue, with: "GBP", roundSmallNumbers: false)
+        XCTAssertEqual(amount, expectedResult)
+    }
+
+    func testFormatHumanReadableWithRoundingWorksUsingSmallNegativeDecimalValue() {
+        let inputValue = "-7.64"
+        let expectedResult = "$-7"
+        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue)
+        XCTAssertEqual(amount, expectedResult)
+    }
+
+    func testFormatHumanReadableWorksUsingSmallNegativeDecimalValue() {
+        let inputValue = "-7.64"
+        let expectedResult = "$-7.64"
+        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue, roundSmallNumbers: false)
+        XCTAssertEqual(amount, expectedResult)
+    }
+
+    func testFormatHumanReadableWithRoundingWorksUsingSmallNegativeDecimalValueAndSpecificCountryCode() {
+        let inputValue = "-7.64"
+        let expectedResult = "£-7"
+        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue, with: "GBP")
+        XCTAssertEqual(amount, expectedResult)
+    }
+
+    func testFormatHumanReadableWorksUsingSmallNegativeDecimalValueAndSpecificCountryCode() {
+        let inputValue = "-7.64"
+        let expectedResult = "£-7.64"
+        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue, with: "GBP", roundSmallNumbers: false)
+        XCTAssertEqual(amount, expectedResult)
+    }
+
+    func testFormatHumanReadableWorksUsingLargeDecimalValue() {
+        let inputValue = "7867818684.64"
+        let expectedResult = "$7.9b"
+        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue)
+        XCTAssertEqual(amount, expectedResult)
+    }
+
+    func testFormatHumanReadableWorksUsingLargeNegativeDecimalValue() {
+        let inputValue = "-7867818684.64"
+        let expectedResult = "$-7.9b"
+        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue)
+        XCTAssertEqual(amount, expectedResult)
+    }
+
+    func testFormatHumanReadableWorksUsingLargeDecimalValueAndSpecificCountryCode() {
+        let inputValue = "7867818684.64"
+        let expectedResult = "£7.9b"
+        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue, with: "GBP")
+        XCTAssertEqual(amount, expectedResult)
+    }
+
+    func testFormatHumanReadableWorksUsingLargeNegativeDecimalValueAndSpecificCountryCode() {
+        let inputValue = "-7867818684.64"
+        let expectedResult = "£-7.9b"
+        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue, with: "GBP")
+        XCTAssertEqual(amount, expectedResult)
+    }
 }

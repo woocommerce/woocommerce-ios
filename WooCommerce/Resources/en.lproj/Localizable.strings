@@ -114,7 +114,6 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label
    Cancel prompt for user information. */
 "Cancel" = "Cancel";
 
@@ -495,7 +494,6 @@
 "No activity this period" = "No activity this period";
 
 /* Fulfill order > customer info > where the address would normally display.
-   Order details > customer info > billing details. This is where the address would normally display.
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "No address specified.";
 
@@ -533,8 +531,6 @@
 "Off" = "Off";
 
 /* Button title. An acknowledgement of the message displayed in a prompt.
-   Dismisses the alert
-   Ok button for dismissing alert helping users understand their site address
    Submit button on prompt for user information. */
 "OK" = "OK";
 
@@ -579,8 +575,6 @@
 "Order Notes" = "Order Notes";
 
 /* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Orders stat label on dashboard - should be plural.
-   Title of the Orders tab — plural form of Order
    Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Orders";
 
@@ -654,7 +648,6 @@
 "Processing" = "Processing";
 
 /* Description for Top Performers left column header
-   Product section title
    Section header title for the product */
 "Product" = "Product";
 

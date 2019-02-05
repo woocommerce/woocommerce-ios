@@ -223,11 +223,7 @@ private extension SettingsViewController {
         let pickerVC = StorePickerViewController()
         let loginNavController = LoginNavigationController(rootViewController: pickerVC)
 
-        present(loginNavController, animated: true) {
-            // popping the VC here is really jarring. Users would expect to navigate back from settings to My store gracefully.
-            self.navigationController?.popToRootViewController(animated: true)
-        }
-//        present(loginNavController, animated: true, completion: nil)
+        present(loginNavController, animated: true, completion: nil)
     }
 
     func supportWasPressed() {

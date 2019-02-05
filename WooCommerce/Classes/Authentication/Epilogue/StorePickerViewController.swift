@@ -343,7 +343,14 @@ extension StorePickerViewController {
 
             dismiss(animated: true) {
                 AppDelegate.shared.authenticatorWasDismissed()
-                // Detect if loaded VC is Settings. Navigate to My store if true.
+
+                // grab the tab bar
+                guard let tabBar = AppDelegate.shared.tabBarController else {
+                    return
+                }
+
+                // select My Store
+                tabBar.navigateTo(.myStore, animated: true)
             }
         }
     }

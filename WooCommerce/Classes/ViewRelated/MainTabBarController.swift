@@ -81,10 +81,10 @@ class MainTabBarController: UITabBarController {
 
     /// Switches the TabBarcController to the specified Tab
     ///
-    func navigateTo(_ tab: WooTab) {
+    func navigateTo(_ tab: WooTab, animated: Bool = false) {
         selectedIndex = tab.rawValue
         if let navController = selectedViewController as? UINavigationController {
-            navController.popToRootViewController(animated: false)
+            navController.popToRootViewController(animated: animated)
         }
     }
 }

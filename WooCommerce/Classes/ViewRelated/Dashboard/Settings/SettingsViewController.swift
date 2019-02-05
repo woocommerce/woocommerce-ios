@@ -3,6 +3,7 @@ import Yosemite
 import MessageUI
 import Gridicons
 import SafariServices
+import WordPressAuthenticator
 
 
 // MARK: - SettingsViewController
@@ -216,6 +217,19 @@ private extension SettingsViewController {
         present(alertController, animated: true)
     }
 
+    func changeStoreWasPressed() {
+        StoresManager.shared.resetAuthentication()
+
+        let pickerVC = StorePickerViewController()
+        let loginNavController = LoginNavigationController(rootViewController: pickerVC)
+
+        present(loginNavController, animated: true) {
+            // popping the VC here is really jarring. Users would expect to navigate back from settings to My store gracefully.
+            self.navigationController?.popToRootViewController(animated: true)
+        }
+//        present(loginNavController, animated: true, completion: nil)
+    }
+
     func supportWasPressed() {
         WooAnalytics.shared.track(.settingsContactSupportTapped)
         performSegue(withIdentifier: Segues.helpSupportSegue, sender: nil)
@@ -310,6 +324,8 @@ extension SettingsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch rowAtIndexPath(indexPath) {
+        case .primaryStore:
+            changeStoreWasPressed()
         case .logout:
             logoutWasPressed()
         case .support:
@@ -324,8 +340,6 @@ extension SettingsViewController: UITableViewDelegate {
             aboutWasPressed()
         case .appSettings:
             appSettingsWasPressed()
-        default:
-            break
         }
     }
 }

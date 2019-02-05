@@ -57,6 +57,7 @@
 		74C6FEA521C2F1FA009286B6 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C6FEA421C2F1FA009286B6 /* AboutViewController.swift */; };
 		74D0A5302139CF1300E2919F /* String+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D0A52F2139CF1300E2919F /* String+Helpers.swift */; };
 		74E0F441211C9AE600A79CCE /* PeriodDataViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74E0F440211C9AE600A79CCE /* PeriodDataViewController.xib */; };
+		74F3015A2200EC0800931B9E /* NSDecimalNumberWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F301592200EC0800931B9E /* NSDecimalNumberWooTests.swift */; };
 		74F9E9CD214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */; };
 		74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */; };
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
@@ -361,6 +362,7 @@
 		74C6FEA421C2F1FA009286B6 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		74D0A52F2139CF1300E2919F /* String+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Helpers.swift"; sourceTree = "<group>"; };
 		74E0F440211C9AE600A79CCE /* PeriodDataViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PeriodDataViewController.xib; sourceTree = "<group>"; };
+		74F301592200EC0800931B9E /* NSDecimalNumberWooTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSDecimalNumberWooTests.swift; sourceTree = "<group>"; };
 		74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoPeriodDataTableViewCell.xib; sourceTree = "<group>"; };
 		74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoPeriodDataTableViewCell.swift; sourceTree = "<group>"; };
 		8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -960,11 +962,12 @@
 				746FC23C2200A62B00C3096C /* DateWooTests.swift */,
 				B57C5C9721B80E7100FF82B2 /* DictionaryWooTests.swift */,
 				748C7783211E2D8400814F2C /* DoubleWooTests.swift */,
-				B5980A6421AC905C00EBF596 /* UIDeviceWooTests.swift */,
-				B57C745020F56EE900EEFC87 /* UITableViewCellHelpersTests.swift */,
+				B5C6CE602190D28E00515926 /* NSAttributedStringHelperTests.swift */,
+				74F301592200EC0800931B9E /* NSDecimalNumberWooTests.swift */,
 				B541B2122189E7FD008FE7C1 /* ScannerWooTests.swift */,
 				B55BC1F221A8790F0011A0C0 /* StringHTMLTests.swift */,
-				B5C6CE602190D28E00515926 /* NSAttributedStringHelperTests.swift */,
+				B5980A6421AC905C00EBF596 /* UIDeviceWooTests.swift */,
+				B57C745020F56EE900EEFC87 /* UITableViewCellHelpersTests.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1924,6 +1927,7 @@
 				B509FED521C052D1000076A9 /* MockupSupportManager.swift in Sources */,
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,
 				746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */,
+				74F3015A2200EC0800931B9E /* NSDecimalNumberWooTests.swift in Sources */,
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,
 				746FC23D2200A62B00C3096C /* DateWooTests.swift in Sources */,
 				B541B2132189E7FD008FE7C1 /* ScannerWooTests.swift in Sources */,

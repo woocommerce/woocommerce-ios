@@ -85,6 +85,10 @@ class OrdersViewController: UIViewController {
         }
     }
 
+    /// Suppress error warnings when refreshing data in the background
+    ///
+    private var suppressErrorWarning: Bool = false
+
 
 
     // MARK: - View Lifecycle
@@ -122,6 +126,9 @@ class OrdersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        // reset any suppressed error warnings
+        suppressErrorWarning = false
+
         syncingCoordinator.synchronizeFirstPage()
         if AppRatingManager.shared.shouldPromptForAppReview() {
             displayRatingPrompt()
@@ -144,19 +151,6 @@ private extension OrdersViewController {
 
         let title = String.localizedStringWithFormat(NSLocalizedString("Orders: %@", comment: "Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter}"), filter)
         navigationItem.title = title
-    }
-
-    /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
-    ///
-    func reloadResultsController() {
-        refreshResultsPredicate()
-
-        // Drop Cache (If Needed) + Re-Sync First Page
-        ensureStoredOrdersAreReset { [weak self] in
-            self?.syncingCoordinator.resynchronize()
-        }
-
-        tableView.reloadData()
     }
 
     /// Setup: Filtering
@@ -278,10 +272,25 @@ extension OrdersViewController {
     /// Default Site Updated Handler
     ///
     @objc func defaultSiteWasUpdated() {
-        // dump old orders cache
-        syncingCoordinator.resynchronize()
-        // reload the results controller
-        reloadResultsController()
+        // suppress errors on data sync refresh because this view is in the background
+        // and showing the error will only confuse the user
+        suppressErrorWarning = true
+
+        // reset filtering
+        if isFiltered == true {
+            statusFilter = nil
+        }
+
+        // Drop Cache + Re-Sync First Page
+        if StoresManager.shared.sessionManager.defaultStoreID != nil {
+            // Drop Cache (If Needed) + Re-Sync First Page
+            ensureStoredOrdersAreReset { [weak self] in
+                self?.syncingCoordinator.synchronizeFirstPage()
+            }
+        }
+
+        // reloads the results controller + table data
+        refreshResultsPredicate()
     }
 }
 
@@ -392,6 +401,10 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
             }
 
             if let error = error {
+                guard self.suppressErrorWarning == false else {
+                    return
+                }
+
                 DDLogError("⛔️ Error synchronizing orders: \(error)")
                 self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
             } else {

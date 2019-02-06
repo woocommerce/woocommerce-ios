@@ -146,6 +146,19 @@ private extension OrdersViewController {
         navigationItem.title = title
     }
 
+    /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
+    ///
+    func reloadResultsController() {
+        refreshResultsPredicate()
+
+        // Drop Cache (If Needed) + Re-Sync First Page
+        ensureStoredOrdersAreReset { [weak self] in
+            self?.syncingCoordinator.resynchronize()
+        }
+
+        tableView.reloadData()
+    }
+
     /// Setup: Filtering
     ///
     func refreshResultsPredicate() {
@@ -247,6 +260,7 @@ extension OrdersViewController {
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
+        nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
     }
 
     /// Stops listening to all related Notifications
@@ -259,6 +273,15 @@ extension OrdersViewController {
     ///
     @objc func defaultAccountWasUpdated() {
         syncingCoordinator.resetInternalState()
+    }
+
+    /// Default Site Updated Handler
+    ///
+    @objc func defaultSiteWasUpdated() {
+        // dump old orders cache
+        syncingCoordinator.resynchronize()
+        // reload the results controller
+        reloadResultsController()
     }
 }
 

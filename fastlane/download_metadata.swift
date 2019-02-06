@@ -136,7 +136,7 @@ func deleteExistingMetadata() {
 }
 
 
-//deleteExistingMetadata()
+deleteExistingMetadata()
 
 languages.forEach( { (key: String, value: String) in
     downloadTranslation(languageCode: value, folderName: key)

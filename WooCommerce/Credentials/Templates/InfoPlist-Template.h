@@ -7,12 +7,12 @@
 
 /// Google Auth Callback Scheme
 ///
-#define GOOGLE_AUTH_SCHEME <#Google Auth Scheme#>
+#define GOOGLE_AUTH_SCHEME com.googleusercontent.apps.AUTH_SCHEME
 
 /// WordPress.com Auth Callback Scheme (AKA Magic Link!)
 ///
-#define DOTCOM_AUTH_SCHEME <#Wordpress.com Auth Scheme#>
+#define DOTCOM_AUTH_SCHEME dotcom_auth_scheme
 
 /// Fabric / Crashlytics API key
 ///
-#define FABRIC_API_KEY <#Fabric API Key#>
+#define FABRIC_API_KEY fabric_api_key

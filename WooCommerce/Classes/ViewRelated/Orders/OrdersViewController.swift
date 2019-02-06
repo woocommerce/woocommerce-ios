@@ -285,7 +285,7 @@ extension OrdersViewController {
         if StoresManager.shared.sessionManager.defaultStoreID != nil {
             // Drop Cache (If Needed) + Re-Sync First Page
             ensureStoredOrdersAreReset { [weak self] in
-                self?.syncingCoordinator.synchronizeFirstPage()
+                self?.syncingCoordinator.resynchronize()
             }
         }
 

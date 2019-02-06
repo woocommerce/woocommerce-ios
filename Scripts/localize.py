@@ -34,7 +34,17 @@ class LocalizedString():
         self.key, self.value = re_translation.match(self.translation).groups()
 
     def __unicode__(self):
-        return u'%s%s\n' % (u''.join(self.comments), self.translation)
+        try:
+            for idx, val in enumerate(self.comments):
+                if (idx > 0) and (idx < (len(self.comments) - 1)):
+                    self.comments[idx] = self.comments[idx].replace('\n',' - ')
+                    self.comments[idx + 1] = self.comments[idx + 1].lstrip()
+        except:
+            exit(-1)
+            print "Couldn't strip comments"
+
+        joined_comments = u''.join(self.comments)
+        return u'%s%s\n' % (joined_comments, self.translation)
 
 class LocalizedFile():
     def __init__(self, fname=None, auto_read=False):

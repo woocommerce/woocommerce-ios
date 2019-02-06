@@ -343,14 +343,7 @@ extension StorePickerViewController {
 
             dismiss(animated: true) {
                 AppDelegate.shared.authenticatorWasDismissed()
-
-                // grab the tab bar
-                guard let tabBar = AppDelegate.shared.tabBarController else {
-                    return
-                }
-
-                // select My Store
-                tabBar.navigateTo(.myStore, animated: true)
+                MainTabBarController.switchToMyStoreTab(animated: true)
             }
         }
     }

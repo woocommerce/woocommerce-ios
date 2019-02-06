@@ -106,8 +106,14 @@ class StoresManager {
     /// Switches the primary store and remains Authenticated.
     ///
     func resetAuthentication() {
+        // refresh tracks
         WooAnalytics.shared.refreshUserData()
+        // reset zendesk
         ZendeskManager.shared.reset()
+        // reset the default Store ID
+        sessionManager.defaultStoreID = nil
+        // show the store picker
+        AppDelegate.shared.displayStorePickerIfNeeded()
     }
 
     /// Switches the state to a Deauthenticated one.

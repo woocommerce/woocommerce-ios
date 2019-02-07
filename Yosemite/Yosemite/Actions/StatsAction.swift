@@ -6,6 +6,10 @@ import Networking
 //
 public enum StatsAction: Action {
 
+    /// Clears all of the stats data.
+    ///
+    case resetStoredStats(onCompletion: () -> Void)
+
     /// Synchronizes `OrderStats` for the provided siteID, StatGranularity, and date.
     ///
     case retrieveOrderStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: (Error?) -> Void)

@@ -86,13 +86,13 @@ private extension SettingsViewController {
     }
 
     func configureSections() {
-        let primaryStoreTitle = NSLocalizedString("Primary Store", comment: "My Store > Settings > Primary Store information section").uppercased()
+        let selectedStoreTitle = NSLocalizedString("Selected Store", comment: "My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username.").uppercased()
         let improveTheAppTitle = NSLocalizedString("Help Improve The App", comment: "My Store > Settings > Privacy settings section").uppercased()
         let aboutSettingsTitle = NSLocalizedString("About the app", comment: "My Store > Settings > About app section").uppercased()
         let otherTitle = NSLocalizedString("Other", comment: "My Store > Settings > Other app section").uppercased()
 
         sections = [
-            Section(title: primaryStoreTitle, rows: [.primaryStore], footerHeight: CGFloat.leastNonzeroMagnitude),
+            Section(title: selectedStoreTitle, rows: [.selectedStore, .switchStore], footerHeight: CGFloat.leastNonzeroMagnitude),
             Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
             Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
             Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
@@ -111,8 +111,10 @@ private extension SettingsViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as HeadlineLabelTableViewCell where row == .primaryStore:
-            configurePrimaryStore(cell: cell)
+        case let cell as HeadlineLabelTableViewCell where row == .selectedStore:
+            configureSelectedStore(cell: cell)
+        case let cell as BasicTableViewCell where row == .switchStore:
+            configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
@@ -132,10 +134,16 @@ private extension SettingsViewController {
         }
     }
 
-    func configurePrimaryStore(cell: HeadlineLabelTableViewCell) {
+    func configureSelectedStore(cell: HeadlineLabelTableViewCell) {
         cell.headline = siteUrl
         cell.body = accountName
         cell.selectionStyle = .none
+    }
+
+    func configureSwitchStore(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Switch Store", comment: "This action allows the user to change stores without logging out and logging back in again.")
     }
 
     func configureSupport(cell: BasicTableViewCell) {
@@ -217,7 +225,7 @@ private extension SettingsViewController {
         present(alertController, animated: true)
     }
 
-    func changeStoreWasPressed() {
+    func switchStoreWasPressed() {
         StoresManager.shared.resetAuthentication()
 
         let pickerVC = StorePickerViewController()
@@ -319,23 +327,26 @@ extension SettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
+        // listed in the order they are displayed
         switch rowAtIndexPath(indexPath) {
-        case .primaryStore:
-            changeStoreWasPressed()
-        case .logout:
-            logoutWasPressed()
+        case .switchStore:
+            switchStoreWasPressed()
         case .support:
             supportWasPressed()
         case .privacy:
             privacyWasPressed()
         case .featureRequest:
             featureRequestWasPressed()
-        case .licenses:
-            licensesWasPressed()
         case .about:
             aboutWasPressed()
+        case .licenses:
+            licensesWasPressed()
         case .appSettings:
             appSettingsWasPressed()
+        case .logout:
+            logoutWasPressed()
+        default:
+            break
         }
     }
 }
@@ -355,7 +366,8 @@ private struct Section {
 }
 
 private enum Row: CaseIterable {
-    case primaryStore
+    case selectedStore
+    case switchStore
     case support
     case logout
     case privacy
@@ -366,8 +378,10 @@ private enum Row: CaseIterable {
 
     var type: UITableViewCell.Type {
         switch self {
-        case .primaryStore:
+        case .selectedStore:
             return HeadlineLabelTableViewCell.self
+        case .switchStore:
+            return BasicTableViewCell.self
         case .support:
             return BasicTableViewCell.self
         case .logout:

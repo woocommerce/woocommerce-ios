@@ -85,11 +85,6 @@ class OrdersViewController: UIViewController {
         }
     }
 
-    /// Suppress error warnings when refreshing data in the background
-    ///
-    private var suppressErrorWarning: Bool = false
-
-
 
     // MARK: - View Lifecycle
 
@@ -125,9 +120,6 @@ class OrdersViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        // reset any suppressed error warnings
-        suppressErrorWarning = false
 
         syncingCoordinator.synchronizeFirstPage()
         if AppRatingManager.shared.shouldPromptForAppReview() {
@@ -254,7 +246,6 @@ extension OrdersViewController {
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
-        nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
     }
 
     /// Stops listening to all related Notifications
@@ -267,30 +258,6 @@ extension OrdersViewController {
     ///
     @objc func defaultAccountWasUpdated() {
         syncingCoordinator.resetInternalState()
-    }
-
-    /// Default Site Updated Handler
-    ///
-    @objc func defaultSiteWasUpdated() {
-        // suppress errors on data sync refresh because this view is in the background
-        // and showing the error will only confuse the user
-        suppressErrorWarning = true
-
-        // reset filtering
-        if isFiltered == true {
-            statusFilter = nil
-        }
-
-        // Drop Cache + Re-Sync First Page
-        if StoresManager.shared.sessionManager.defaultStoreID != nil {
-            // Drop Cache (If Needed) + Re-Sync First Page
-            ensureStoredOrdersAreReset { [weak self] in
-                self?.syncingCoordinator.resynchronize()
-            }
-        }
-
-        // reloads the results controller + table data
-        refreshResultsPredicate()
     }
 }
 
@@ -401,10 +368,6 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
             }
 
             if let error = error {
-                guard self.suppressErrorWarning == false else {
-                    return
-                }
-
                 DDLogError("⛔️ Error synchronizing orders: \(error)")
                 self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
             } else {

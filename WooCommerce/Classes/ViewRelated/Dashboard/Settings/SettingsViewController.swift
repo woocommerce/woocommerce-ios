@@ -231,20 +231,16 @@ private extension SettingsViewController {
         let group = DispatchGroup()
 
         group.enter()
-        let _ = StatsAction.resetStoredStats {
+        let statsAction = StatsAction.resetStoredStats {
             group.leave()
         }
+        StoresManager.shared.dispatch(statsAction)
 
         group.enter()
-        let _ = OrderAction.resetStoredOrders {
+        let orderAction = OrderAction.resetStoredOrders {
             group.leave()
         }
-
-        // reset push notifications
-        let pushNotesManager = AppDelegate.shared.pushNotesManager
-        pushNotesManager.unregisterForRemoteNotifications()
-        pushNotesManager.resetBadgeCount()
-        pushNotesManager.registerForRemoteNotifications()
+        StoresManager.shared.dispatch(orderAction)
 
         group.notify(queue: .main) {
             let pickerVC = StorePickerViewController()

@@ -228,10 +228,29 @@ private extension SettingsViewController {
     func switchStoreWasPressed() {
         StoresManager.shared.resetAuthentication()
 
-        let pickerVC = StorePickerViewController()
-        let loginNavController = LoginNavigationController(rootViewController: pickerVC)
+        let group = DispatchGroup()
 
-        present(loginNavController, animated: true, completion: nil)
+        group.enter()
+        let _ = StatsAction.resetStoredStats {
+            group.leave()
+        }
+
+        group.enter()
+        let _ = OrderAction.resetStoredOrders {
+            group.leave()
+        }
+
+        // reset push notifications
+        let pushNotesManager = AppDelegate.shared.pushNotesManager
+        pushNotesManager.unregisterForRemoteNotifications()
+        pushNotesManager.resetBadgeCount()
+        pushNotesManager.registerForRemoteNotifications()
+
+        group.notify(queue: .main) {
+            let pickerVC = StorePickerViewController()
+            let loginNavController = LoginNavigationController(rootViewController: pickerVC)
+            self.present(loginNavController, animated: true, completion: nil)
+        }
     }
 
     func supportWasPressed() {

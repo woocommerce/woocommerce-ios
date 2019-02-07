@@ -70,6 +70,7 @@ private extension StatsStore  {
         storage.deleteAllObjects(ofType: Storage.SiteVisitStats.self)
         storage.deleteAllObjects(ofType: Storage.TopEarnerStats.self)
         storage.saveIfNeeded()
+        DDLogDebug("Stats deleted")
 
         onCompletion()
     }

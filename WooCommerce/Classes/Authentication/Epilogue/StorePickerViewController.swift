@@ -211,7 +211,7 @@ private extension StorePickerViewController {
         if let site = StoresManager.shared.sessionManager.defaultSite {
             displaySiteWCRequirementWarningIfNeeded(siteID: site.siteID, siteName: site.name)
             StoresManager.shared.updateDefaultStore(storeID: site.siteID)
-            return 
+            return
         }
 
         displaySiteWCRequirementWarningIfNeeded(siteID: firstSite.siteID, siteName: firstSite.name)

@@ -146,7 +146,7 @@ public class CoreDataManager: StorageManagerType {
         DDLogWarn("⚠️ [CoreDataManager] Migration required for persistent store")
 
         // Extract model names
-        let versionPath = modelURL.appendingPathComponent("VersionList.plist").path
+        let versionPath = modelURL.appendingPathComponent("VersionInfo.plist").path
         guard let versionInfo = NSDictionary.init(contentsOfFile: versionPath),
             let modelNames = versionInfo["NSManagedObjectModel_VersionHashes"] as? NSDictionary,
             let allKeys = modelNames.allKeys as? [String],

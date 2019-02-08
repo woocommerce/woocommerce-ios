@@ -32,6 +32,8 @@ public class CoreDataManager: StorageManagerType {
     /// Persistent Container: Holds the full CoreData Stack
     ///
     public lazy var persistentContainer: NSPersistentContainer = {
+        migrateDataModelIfNecessary()
+
         let container = NSPersistentContainer(name: name, managedObjectModel: managedModel)
         container.persistentStoreDescriptions = [storeDescription]
 
@@ -39,6 +41,7 @@ public class CoreDataManager: StorageManagerType {
             guard let `self` = self, let error = error else {
                 return
             }
+
 
             DDLogError("⛔️ [CoreDataManager] loadPersistentStore failed. Attempting to recover... \(error)")
 
@@ -120,8 +123,48 @@ public class CoreDataManager: StorageManagerType {
                 fatalError("☠️ [CoreDataManager] Unable to regenerate Persistent Store! \(error)")
             }
 
-            NSLog("💣 [CoreDataManager] Stack Destroyed!")
+            DDLogVerbose("💣 [CoreDataManager] Stack Destroyed!")
             NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+        }
+    }
+
+    private func migrateDataModelIfNecessary() {
+        guard FileManager.default.fileExists(atPath: storeURL.path) else {
+            DDLogInfo("No store exists at URL \(storeURL).  Skipping migration.")
+            return
+        }
+
+        guard let metadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType, at: storeURL, options: nil) else {
+            return
+        }
+
+        guard managedModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata) == false else {
+            // Configuration is compatible, no migration necessary.
+            return
+        }
+
+        DDLogWarn("⚠️ [CoreDataManager] Migration required for persistent store")
+
+        // Extract model names
+        let versionPath = modelURL.appendingPathComponent("VersionList.plist").path
+        guard let versionInfo = NSDictionary.init(contentsOfFile: versionPath),
+            let modelNames = versionInfo["NSManagedObjectModel_VersionHashes"] as? NSDictionary,
+            let allKeys = modelNames.allKeys as? [String],
+            let objectModel = NSManagedObjectModel(contentsOf: modelURL) else {
+            return
+        }
+
+        let sortedKeys = allKeys.sorted { (string1, string2) -> Bool in
+            return string1.compare(string2, options: [String.CompareOptions.numeric], range: nil, locale: nil) == ComparisonResult.orderedAscending
+        }
+
+        do {
+            let migrateResult = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: storeURL, storeType: NSSQLiteStoreType, to: objectModel, using: sortedKeys)
+            if migrateResult == false {
+                DDLogError("☠️ [CoreDataManager] Unable to migrate store.")
+            }
+        } catch {
+            DDLogError("☠️ [CoreDataManager] Unable to migrate store with error: \(error)")
         }
     }
 }

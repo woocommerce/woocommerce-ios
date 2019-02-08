@@ -18,7 +18,7 @@ public struct CoreDataIterativeMigrator {
     static func iterativeMigrate(sourceStore: URL, storeType: String, to targetModel:NSManagedObjectModel, using modelNames: [String]) throws -> Bool {
         // If the persistent store does not exist at the given URL,
         // assume that it hasn't yet been created and return success immediately.
-        guard FileManager.default.fileExists(atPath: sourceStore.path) == false else {
+        guard FileManager.default.fileExists(atPath: sourceStore.path) == true else {
             return true
         }
 
@@ -30,7 +30,7 @@ public struct CoreDataIterativeMigrator {
 
         // Check whether the final model is already compatible with the store.
         // If it is, no migration is necessary.
-        guard targetModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: sourceMetadata) == true else {
+        guard targetModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: sourceMetadata) == false else {
             return true
         }
 
@@ -74,7 +74,7 @@ public struct CoreDataIterativeMigrator {
         }
 
         // Migrate through the list
-        for index in 0...(modelsToMigrate.count - 1) {
+        for index in 0...(modelsToMigrate.count - 2) {
             let modelFrom = modelsToMigrate[index]
             let modelTo = modelsToMigrate[index + 1]
 
@@ -85,7 +85,7 @@ public struct CoreDataIterativeMigrator {
             }
 
             // Migrate the model to the next step
-            DDLogInfo("Attempting migration from \(modelNames[index]) to \(modelNames[index + 1])")
+            DDLogWarn("Attempting migration from \(modelNames[index]) to \(modelNames[index + 1])")
             
             guard migrateStore(at: sourceStore, storeType: storeType, fromModel: modelFrom, toModel: modelTo, with: migrateWithModel) == true else {
                 return false
@@ -101,6 +101,7 @@ extension CoreDataIterativeMigrator {
         // Build a temporary path to write the migrated store.
         let fileManager = FileManager.default
         let tempDestinationURL = url.deletingLastPathComponent().appendingPathComponent("migration").appendingPathComponent(url.lastPathComponent)
+        try? fileManager.removeItem(at: tempDestinationURL.deletingLastPathComponent())
         try? fileManager.createDirectory(at: tempDestinationURL.deletingLastPathComponent(), withIntermediateDirectories: false, attributes: nil)
 
         // Migrate from the source model to the target model using the mapping,
@@ -113,14 +114,15 @@ extension CoreDataIterativeMigrator {
         }
 
         // Move the original source store to a backup location.
-        let backupPath = url.deletingLastPathComponent().appendingPathComponent("backup").path
-        try? fileManager.createDirectory(atPath: backupPath, withIntermediateDirectories: false, attributes: nil)
+        let backupURL = url.deletingLastPathComponent().appendingPathComponent("backup")
+        try? fileManager.removeItem(at: backupURL)
+        try? fileManager.createDirectory(atPath: backupURL.path, withIntermediateDirectories: false, attributes: nil)
         do {
             let files = try fileManager.contentsOfDirectory(atPath: url.deletingLastPathComponent().path)
             try files.forEach { (file) in
                 if file.hasPrefix(url.lastPathComponent) {
                     let fullPath = url.deletingLastPathComponent().appendingPathComponent(file).path
-                    let toPath = URL(fileURLWithPath: backupPath).appendingPathComponent(file).path
+                    let toPath = URL(fileURLWithPath: backupURL.path).appendingPathComponent(file).path
                     try fileManager.moveItem(atPath: fullPath, toPath: toPath)
                 }
             }
@@ -137,7 +139,7 @@ extension CoreDataIterativeMigrator {
                 if file.hasPrefix(tempDestinationURL.lastPathComponent) {
                     let fullPath = tempDestinationURL.deletingLastPathComponent().appendingPathComponent(file).path
                     let toPath = url.deletingLastPathComponent().appendingPathComponent(file).path
-                    try fileManager.removeItem(atPath: toPath)
+                    try? fileManager.removeItem(atPath: toPath)
                     try fileManager.moveItem(atPath: fullPath, toPath: toPath)
                 }
             }
@@ -149,9 +151,9 @@ extension CoreDataIterativeMigrator {
 
         // Delete backup copies of the original file before migration
         do {
-            let files = try fileManager.contentsOfDirectory(atPath: backupPath)
+            let files = try fileManager.contentsOfDirectory(atPath: backupURL.path)
             try files.forEach { (file) in
-                let fullPath = URL(fileURLWithPath: backupPath).appendingPathComponent(file).path
+                let fullPath = URL(fileURLWithPath: backupURL.path).appendingPathComponent(file).path
                 try fileManager.removeItem(atPath: fullPath)
             }
         } catch {
@@ -174,8 +176,8 @@ extension CoreDataIterativeMigrator {
     }
 
     private static func model(for metadata: [String : Any]) throws -> NSManagedObjectModel? {
-
-        guard let sourceModel = NSManagedObjectModel.mergedModel(from: nil, forStoreMetadata: metadata) else {
+        let bundle = Bundle(for: CoreDataManager.self)
+        guard let sourceModel = NSManagedObjectModel.mergedModel(from: [bundle], forStoreMetadata: metadata) else {
             let description = "Failed to find source model for metadata: \(metadata)"
             throw NSError(domain: "IterativeMigrator", code: 100, userInfo: [NSLocalizedDescriptionKey : description])
         }
@@ -198,18 +200,19 @@ extension CoreDataIterativeMigrator {
     }
 
     private static func urlForModel(name: String, in directory: String?) -> URL? {
-        var url = Bundle.main.url(forResource: name, withExtension: "mom", subdirectory: directory)
+        let bundle = Bundle(for: CoreDataManager.self)
+        var url = bundle.url(forResource: name, withExtension: "mom", subdirectory: directory)
 
         if url != nil {
             return url
         }
 
-        let momdPaths = Bundle.main.paths(forResourcesOfType: "momd", inDirectory: directory)
+        let momdPaths = bundle.paths(forResourcesOfType: "momd", inDirectory: directory)
         momdPaths.forEach { (path) in
             if url != nil {
                 return
             }
-            url = Bundle.main.url(forResource: name, withExtension: "mom", subdirectory: URL(fileURLWithPath: path).lastPathComponent)
+            url = bundle.url(forResource: name, withExtension: "mom", subdirectory: URL(fileURLWithPath: path).lastPathComponent)
         }
 
         return url

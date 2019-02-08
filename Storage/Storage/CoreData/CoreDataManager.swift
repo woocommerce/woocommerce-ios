@@ -42,7 +42,6 @@ public class CoreDataManager: StorageManagerType {
                 return
             }
 
-
             DDLogError("⛔️ [CoreDataManager] loadPersistentStore failed. Attempting to recover... \(error)")
 
             /// Backup the old Store
@@ -189,7 +188,7 @@ extension CoreDataManager {
     var storeDescription: NSPersistentStoreDescription {
         let description = NSPersistentStoreDescription(url: storeURL)
         description.shouldAddStoreAsynchronously = false
-        description.shouldMigrateStoreAutomatically = true
+        description.shouldMigrateStoreAutomatically = false
         return description
     }
 }

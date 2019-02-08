@@ -110,14 +110,14 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             instructionLabel?.text = WordPressAuthenticator.shared.displayStrings.emailLoginInstructions
         }
         emailTextField.placeholder = NSLocalizedString("Email address", comment: "Placeholder for a textfield. The user may enter their email address.")
-        emailTextField.accessibilityIdentifier = "Email address"
+        emailTextField.accessibilityIdentifier = "Login Email Address"
 
         alternativeLoginLabel?.text = NSLocalizedString("Alternatively:", comment: "String displayed before offering alternative login methods")
 
         let submitButtonTitle = NSLocalizedString("Next", comment: "Title of a button. The text should be capitalized.").localizedCapitalized
         submitButton?.setTitle(submitButtonTitle, for: .normal)
         submitButton?.setTitle(submitButtonTitle, for: .highlighted)
-        submitButton?.accessibilityIdentifier = "Next Button"
+        submitButton?.accessibilityIdentifier = "Login Email Next Button"
     }
 
 

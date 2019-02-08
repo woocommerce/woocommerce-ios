@@ -74,7 +74,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         let submitButtonTitle = NSLocalizedString("Next", comment: "Title of a button. The text should be capitalized.").localizedCapitalized
         submitButton?.setTitle(submitButtonTitle, for: .normal)
         submitButton?.setTitle(submitButtonTitle, for: .highlighted)
-        submitButton?.accessibilityIdentifier = "Next Button"
+        submitButton?.accessibilityIdentifier = "Site Address Next Button"
 
         let siteAddressHelpTitle = NSLocalizedString("Need help finding your site address?", comment: "A button title.")
         siteAddressHelpButton.setTitle(siteAddressHelpTitle, for: .normal)

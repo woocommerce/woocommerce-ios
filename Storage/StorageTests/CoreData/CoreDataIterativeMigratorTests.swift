@@ -19,16 +19,18 @@ class CoreDataIterativeMigratorTests: XCTestCase {
         let storeURL = urlForStore(withName: "Woo Test 10", deleteIfExists: true)
         let options = [NSInferMappingModelAutomaticallyOption : false, NSMigratePersistentStoresAutomaticallyOption : false]
 
-        var model = NSManagedObjectModel(contentsOf: model0URL)!
-        var psc = NSPersistentStoreCoordinator(managedObjectModel: model)
+        var model = NSManagedObjectModel(contentsOf: model0URL)
+        XCTAssertNotNil(model)
+        var psc = NSPersistentStoreCoordinator(managedObjectModel: model!)
         var ps = try? psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
 
         XCTAssertNotNil(ps)
 
         try psc.remove(ps!)
 
-        model = NSManagedObjectModel(contentsOf: model10URL)!
-        psc = NSPersistentStoreCoordinator(managedObjectModel: model)
+        model = NSManagedObjectModel(contentsOf: model10URL)
+        XCTAssertNotNil(model)
+        psc = NSPersistentStoreCoordinator(managedObjectModel: model!)
 
         ps = try? psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
 
@@ -41,24 +43,26 @@ class CoreDataIterativeMigratorTests: XCTestCase {
         let storeURL = urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
         let options = [NSInferMappingModelAutomaticallyOption : false, NSMigratePersistentStoresAutomaticallyOption : false]
 
-        var model = NSManagedObjectModel(contentsOf: model0URL)!
-        var psc = NSPersistentStoreCoordinator(managedObjectModel: model)
+        var model = NSManagedObjectModel(contentsOf: model0URL)
+        XCTAssertNotNil(model)
+        var psc = NSPersistentStoreCoordinator(managedObjectModel: model!)
         var ps = try? psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
 
         XCTAssertNotNil(ps)
 
         try psc.remove(ps!)
 
-        model = NSManagedObjectModel(contentsOf: model10URL)!
+        model = NSManagedObjectModel(contentsOf: model10URL)
+        XCTAssertNotNil(model)
 
         do {
-            let result = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: storeURL, storeType: NSSQLiteStoreType, to: model, using: ["Model", "Model 2", "Model 3", "Model 4", "Model 5", "Model 6", "Model 7", "Model 8", "Model 9", "Model 10"])
+            let result = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: storeURL, storeType: NSSQLiteStoreType, to: model!, using: ["Model", "Model 2", "Model 3", "Model 4", "Model 5", "Model 6", "Model 7", "Model 8", "Model 9", "Model 10"])
             XCTAssertTrue(result)
         } catch {
             XCTFail("Error when attempting to migrate: \(error)")
         }
 
-        psc = NSPersistentStoreCoordinator(managedObjectModel: model)
+        psc = NSPersistentStoreCoordinator(managedObjectModel: model!)
 
         ps = try? psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
 

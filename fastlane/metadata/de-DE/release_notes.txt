@@ -1,4 +1,4 @@
-- Bei diesem Update dreht sich alles um verbesserte Zuverlässigkeit und Fehlerbehebungen:
+Bei diesem Update dreht sich alles um verbesserte Zuverlässigkeit und Fehlerbehebungen:
 - Verbesserte Lokalisierungsunterstützung in Mein Shop-Diagrammen und auf den Bildschirmen für Bestellungen und Benachrichtigungen.
 - Die App blendet nun Aufträge aus, bei denen ein Erstellungsdatum in der Zukunft angegeben ist. (Sie werden nicht mehr im dem Abschnitt „Heute“ einer Bestellliste angezeigt.)
 - Wir haben die Zusammenfassung der Zahlungsmethode im Zahlungsabschnitt entfernt, wenn keine Zahlung eingegangen ist.

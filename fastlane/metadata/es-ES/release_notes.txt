@@ -1,4 +1,4 @@
-- Esta actualización se centra en mejorar la fiabilidad y corregir errores:
+Esta actualización se centra en mejorar la fiabilidad y corregir errores:
 - Soporte de localización mejorado en los gráficos de Mi tienda y en las pantallas Pedidos y Notificaciones.
 - Ahora, la aplicación oculta los pedidos que tienen una fecha de creación posterior a la actual (ya no se muestran en la sección “Hoy” de las listas de pedidos).
 - Hemos eliminado el resumen del método de pago en la sección de pago cuando no se recibe ningún pago.

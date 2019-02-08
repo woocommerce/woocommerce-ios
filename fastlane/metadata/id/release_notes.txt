@@ -1,4 +1,4 @@
-- Pembaruan ini berfokus pada peningkatan keandalan dan perbaikan:
+Pembaruan ini berfokus pada peningkatan keandalan dan perbaikan:
 - Penyempurnaan dukungan pelokalan bagan Toko Saya dan layar Pesanan & Pemberitahuan.
 - Kini aplikasi menyembunyikan pesanan yang mencantumkan tanggal pembuatan di waktu mendatang. (Pesanan tersebut tidak lagi ditampilkan di bagian “Hari Ini” pada daftar pesanan.)
 - Kami meniadakan ringkasan metode pembayaran di bagian pembayaran saat tidak ada pembayaran yang diterima.

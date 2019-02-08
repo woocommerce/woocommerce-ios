@@ -1,4 +1,4 @@
-- Bu güncelleme, geliştirilmiş güvenilirlik özellikleri ve düzeltmelerle dolu:
+Bu güncelleme, geliştirilmiş güvenilirlik özellikleri ve düzeltmelerle dolu:
 - Mağazam grafiklerinde ve Siparişler ve Bildirimler ekranlarında artık daha fazla yerelleştirme desteği sunuluyor.
 - Uygulama artık oluşturulma tarihi gelecek bir tarih olan siparişleri gizliyor. (Bu siparişler artık bir sipariş listesinin “Bugün” bölümünde görüntülenmiyor.)
 - Ödeme alınmadığı durumda ödeme bölümünde artık ödeme yöntemi özeti görüntülenmiyor.

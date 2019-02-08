@@ -1,4 +1,4 @@
-- Cette mise à jour vise à améliorer la fiabilité et à résoudre des problèmes :
+Cette mise à jour vise à améliorer la fiabilité et à résoudre des problèmes :
 - Amélioration de la prise en charge de la localisation dans les tableaux Ma boutique et sur les écrans Commandes et Notifications.
 - L'application masque désormais les commandes pour lesquelles la date de création figure dans le futur. (Elles n'apparaissent plus dans la section « Aujourd'hui » d'une liste de commandes.)
 - Nous avons supprimé le récapitulatif du moyen de paiement dans la section des paiements en l'absence de paiement reçu.

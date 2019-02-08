@@ -1,4 +1,4 @@
-- Questo aggiornamento è relativo alla migliorata affidabilità e alle correzioni:
+Questo aggiornamento è relativo alla migliorata affidabilità e alle correzioni:
 - Supporto di localizzazione migliorato sui grafici Il mio negozio e sulla schermata relativa agli ordini e alle notifiche.
 - L'app ora nasconde gli ordini che hanno una data di creazione elencata in futuro. (Non verranno più visualizzati nella sezione "Oggi" di un elenco dell'ordine.)
 - Abbiamo rimosso il riepilogo del metodo di pagamento nella relativa sezione quando non viene ricevuto un pagamento.

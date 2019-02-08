@@ -1,4 +1,4 @@
-- Esta atualização traz reparos e segurança aprimorada:
+Esta atualização traz reparos e segurança aprimorada:
 - Suporte de localização aprimorado nos gráficos da Minha loja e nas telas de Pedidos e Notificações.
 - Agora, o aplicativo oculta pedidos que têm uma data de criação futura. Eles não são mais exibidos abaixo da seção “Hoje” das listas de pedido.
 - Removemos o resumo da forma de pagamento na seção de pagamentos quando nenhum valor é recebido.

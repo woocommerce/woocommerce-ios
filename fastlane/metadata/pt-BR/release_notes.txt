@@ -1,6 +1,6 @@
-Com o aplicativo móvel do WooCommerce, você terá a sua loja online de bolso: gerencie pedidos, receba notificações de vendas e visualize as principais métricas do seu site onde você estiver.
-
-Que rufem os tambores: essa é a nossa primeira versão pública! Estamos ansiosos pelas iterações frequentes que teremos. Queremos saber qual é o seu feedback e ouvir suas sugestões de melhorias.
-Entre em contato, por meio do “Suporte” do aplicativo ou do site ideas.woocommerce.com.
-
-Obrigado a todos os envolvidos na criação e nos testes prévios!
+Esta atualização traz reparos e segurança aprimorada:
+- Suporte de localização aprimorado nos gráficos da Minha loja e nas telas de Pedidos e Notificações.
+- Agora, o aplicativo oculta pedidos que têm uma data de criação futura. Eles não são mais exibidos abaixo da seção “Hoje” das listas de pedido.
+- Removemos o resumo da forma de pagamento na seção de pagamentos quando nenhum valor é recebido.
+- Agora, a linha de taxas é exibida nos detalhes de produto e pagamentos mesmo se o valor for zero.
+- Agora, o aplicativo redefine a credencial usada nas solicitações de suporte durante o logout.

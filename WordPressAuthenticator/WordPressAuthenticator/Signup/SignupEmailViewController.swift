@@ -74,13 +74,13 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
         instructionLabel?.text = NSLocalizedString("To create your new WordPress.com account, please enter your email address.", comment: "Text instructing the user to enter their email address.")
 
         emailField.placeholder = NSLocalizedString("Email address", comment: "Placeholder for a textfield. The user may enter their email address.")
-        emailField.accessibilityIdentifier = "Email address"
+        emailField.accessibilityIdentifier = "Signup Email Address"
         emailField.contentInsets = WPStyleGuide.edgeInsetForLoginTextFields()
 
         let submitButtonTitle = NSLocalizedString("Next", comment: "Title of a button. The text should be capitalized.").localizedCapitalized
         submitButton?.setTitle(submitButtonTitle, for: .normal)
         submitButton?.setTitle(submitButtonTitle, for: .highlighted)
-        submitButton?.accessibilityIdentifier = "Next Button"
+        submitButton?.accessibilityIdentifier = "Signup Email Next Button"
     }
 
     /// Configure the view for an editing state. Should only be called from viewWillAppear

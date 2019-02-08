@@ -63,7 +63,7 @@ class LoginPrologueViewController: LoginViewController {
         let loginTitle = NSLocalizedString("Log In", comment: "Button title.  Tapping takes the user to the login form.")
         let createTitle = NSLocalizedString("Sign up for WordPress.com", comment: "Button title. Tapping begins the process of creating a WordPress.com account.")
 
-        buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Log In Button") { [weak self] in
+        buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Log In Button") { [weak self] in
             self?.loginTapped()
         }
         buttonViewController.setupBottomButton(title: createTitle, isPrimary: false) { [weak self] in

@@ -226,6 +226,7 @@ private extension SettingsViewController {
     }
 
     func switchStoreWasPressed() {
+        WooAnalytics.shared.track(.settingsSelectedStoreTapped)
         StoresManager.shared.resetAuthentication()
 
         let group = DispatchGroup()

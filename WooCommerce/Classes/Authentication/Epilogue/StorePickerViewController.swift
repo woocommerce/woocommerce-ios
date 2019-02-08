@@ -153,7 +153,7 @@ private extension StorePickerViewController {
 
     func refreshResults() {
         try? resultsController.performFetch()
-        WooAnalytics.shared.track(.loginEpilogueStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
+        WooAnalytics.shared.track(.sitePickerStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
         state = StorePickerState(sites: resultsController.fetchedObjects)
     }
 
@@ -344,7 +344,7 @@ extension StorePickerViewController {
             // We need to call refreshUserData() here because the user selected
             // their default store and tracks should to know about it.
             WooAnalytics.shared.refreshUserData()
-            WooAnalytics.shared.track(.loginEpilogueContinueTapped,
+            WooAnalytics.shared.track(.sitePickerContinueTapped,
                                       withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? String()])
 
             dismiss(animated: true) {

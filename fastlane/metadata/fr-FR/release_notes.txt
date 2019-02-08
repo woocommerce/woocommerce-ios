@@ -1,6 +1,6 @@
-Grâce à l'application mobile WooCommerce, votre boutique en ligne est toujours à portée de main : gérez vos commandes, recevez des notifications de vente et consultez vos chiffres clés où que vous soyez.
-
-Roulement de tambours : voici notre toute première publication publique ! Nous avons hâte de réitérer aussi souvent que possible et sommes impatients de recevoir vos commentaires et vos suggestions d'amélioration.
-Contactez notre « Assistance » via l'application ou sur ideas.woocommerce.com.
-
-Merci à toutes les personnes impliquées dans le développement et les tests préliminaires !
+Cette mise à jour vise à améliorer la fiabilité et à résoudre des problèmes :
+- Amélioration de la prise en charge de la localisation dans les tableaux Ma boutique et sur les écrans Commandes et Notifications.
+- L'application masque désormais les commandes pour lesquelles la date de création figure dans le futur. (Elles n'apparaissent plus dans la section « Aujourd'hui » d'une liste de commandes.)
+- Nous avons supprimé le récapitulatif du moyen de paiement dans la section des paiements en l'absence de paiement reçu.
+- La ligne Taxes apparaît désormais dans les paiements et les détails sur les produits lorsque le montant à afficher est égal à zéro.
+- Lorsque vous vous déconnectez, l'application réinitialise désormais les identifiants utilisés avec les demandes d'assistance.

@@ -1,6 +1,6 @@
-Met de mobiele WooCommerce-app heb je je webwinkel in je broekzak: Beheer je bestellingen, ontvang verkoopmeldingen en bekijk de belangrijkste meetwaarden van je winkel terwijl je onderweg bent.
-
-Mag ik een applaus: dit is onze allereerste publicatie! We zien ernaar uit om herhaaldelijk iets te plaatsen en kunnen niet wachten om je opmerkingen en verbeteringsvoorstellen te horen.
-Je kunt ons bereiken via 'Ondersteuning' in de app of op ideas.woocommerce.com.
-
-Iedereen die betrokken was bij de ontwikkeling en het eerste testen, bedankt!
+Deze update draait om verbeterde betrouwbaarheid en bugfixes:
+- Verbeterde ondersteuning van lokalisatie voor de grafieken van Mijn winkel en de schermen Bestellingen en Meldingen.
+- De app verbergt nu bestellingen die een toekomstige aanmaakdatum bevatten. (Ze worden niet meer weergegeven in het gedeelte 'Vandaag' van een bestellijst.)
+- We hebben het overzicht van de betaalmethode verwijderd uit het gedeelte Betalingen wanneer er geen betaling is ontvangen.
+- De regel Belastingen wordt nu weergegeven in betalingen en productgegevens, zelfs wanneer het bedrag nul is.
+- Bij het uitloggen stelt de app nu de inloggegevens die voor ondersteuningsverzoeken worden gebruikt opnieuw in.

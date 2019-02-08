@@ -1,6 +1,6 @@
-WooCommerce mobil uygulamasıyla çevrimiçi mağazanız cebinizde: Hareket halindeyken siparişleri yönetebilir, satış bildirimlerini alabilir ve ana metrikleri görüntüleyebilirsiniz.
-
-Sıkı durun: Bu bizim ilk halka açık sürümümüz! Hem erkenden hem de sık sık yenileme yapmayı düşünüyoruz ve geri bildirimleriniz ile iyileştirme önerilerinizi duymak için sabırsızlanıyoruz.
-Uygulamanın “Destek” bölümünden veya ideas.woocommerce.com üzerinden iletişime geçebilirsiniz.
-
-Geliştirme ve ilk test süreçlerine katılan herkese teşekkür ederiz!
+Bu güncelleme, geliştirilmiş güvenilirlik özellikleri ve düzeltmelerle dolu:
+- Mağazam grafiklerinde ve Siparişler ve Bildirimler ekranlarında artık daha fazla yerelleştirme desteği sunuluyor.
+- Uygulama artık oluşturulma tarihi gelecek bir tarih olan siparişleri gizliyor. (Bu siparişler artık bir sipariş listesinin “Bugün” bölümünde görüntülenmiyor.)
+- Ödeme alınmadığı durumda ödeme bölümünde artık ödeme yöntemi özeti görüntülenmiyor.
+- Ödemeler ve ürün ayrıntılarında artık görüntülenecek miktar sıfır olsa bile Vergiler satırı görüntüleniyor.
+- Oturum kapatılırken uygulama artık destek isteklerinde kullanılan kimlik bilgisini sıfırlıyor.

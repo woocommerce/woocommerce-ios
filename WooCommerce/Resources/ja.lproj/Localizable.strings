@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-01-09 06:54:05+0000 */
+/* Translation-Revision-Date: 2019-02-06 08:54:02+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -42,8 +42,12 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "注文にメモを追加します";
 
-/* All filter title */
+/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
+   Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "すべて";
+
+/* Mark all notifications as read notice */
+"All notifications marked as read" = "すべての通知が既読としてマークされました";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "もう少しで完了です。認証アプリから認証コードを入力してください。";
@@ -70,10 +74,10 @@
 "Approve" = "承認";
 
 /* Unapprove a comment */
-"Approved" = "Approved";
+"Approved" = "承認済み";
 
 /* Approves a comment. Spoken Hint. */
-"Approves the comment" = "Approves the comment";
+"Approves the comment" = "コメントを承認する";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "アカウント %@ からログアウトしてもよいですか ?";
@@ -111,14 +115,12 @@
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "リンクをリクエストできません";
 
-/* No comment provided by engineer. */
+/* Button title. Tapping it cancels the login flow.
+   Cancel prompt for user information. */
 "Cancel" = "キャンセル";
 
 /* Cancelled Order Status */
 "Canceled" = "キャンセル";
-
-/* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
-"Cannot connect to %@" = "%@ に接続できません";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "お気に入りのサイトをいつでもチェックし、いつでもどこからでもコメントできます。";
@@ -126,8 +128,8 @@
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "証明書エラー";
 
-/* Settings > Privacy Settings > collect info section. Label the `Collect information` toggle. */
-"Collect information" = "情報を収集";
+/* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
+"Collect Information" = "情報を収集";
 
 /* Completed Order Status */
 "Completed" = "完了";
@@ -162,6 +164,9 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "続きを読む";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"Copy" = "コピー";
+
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "サイトで購入した内容を確認できませんでした。";
 
@@ -183,10 +188,12 @@
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "接続できませんでした。ご利用のホスティングサービスは POST 要求をブロックしていますが、アプリはあなたのサイトとの通信に POST 要求を必要としています。ホスティングサービスに連絡して、この問題を解決してください。";
 
-/* No comment provided by engineer. */
+/* Customer info section title
+   Section title for the customer's billing and shipping address */
 "Customer Information" = "顧客情報";
 
-/* No comment provided by engineer. */
+/* Customer note section title
+   Section title for a note from the customer */
 "Customer Provided Note" = "顧客提供メモ";
 
 /* Statistical unit - a single day */
@@ -204,14 +211,15 @@
 /* Discount label for payment view */
 "Discount" = "割引";
 
-/* No comment provided by engineer. */
-"Dismiss" = "非表示にする";
+/* Add a note screen - button title for closing the view
+   Dismiss the action sheet */
+"Dismiss" = "非表示";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "アカウントをお持ちでない場合は_登録_してください。";
 
 /* WordPress.com (unmapped!) error */
-"Dotcom Error: [(code)] (theMessage)" = "Dotcom エラー:[(code)] (theMessage)";
+"Dotcom Error: [(code)] (theMessage)" = "Dotcom エラー: [(code)] (theMessage)";
 
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "Dotcom トークンがありません";
@@ -258,11 +266,12 @@
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "WordPress.com アカウント用のパスワードを入力します。";
 
-/* No comment provided by engineer. */
+/* Title of a button on the magic link screen.
+   Title of a button. */
 "Enter your password instead." = "代わりにパスワードを入力してください。";
 
 /* Failed Order Status */
-"Failed" = "失敗しました";
+"Failed" = "失敗";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API へのリクエストをシリアライズできませんでした。";
@@ -271,13 +280,13 @@
 "Feature Request" = "機能のリクエスト";
 
 /* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "Filter notifications";
+"Filter notifications" = "通知をフィルター";
 
 /* Filter the orders list. */
 "Filter orders" = "注文を絞り込み";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "Filters the notifications list by notification type.";
+"Filters the notifications list by notification type." = "種類によって通知一覧をフィルターします。";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "支払いステータスで注文リストを絞り込みます。";
@@ -292,7 +301,7 @@
 "Fulfill order" = "注文を履行";
 
 /* Description for Top Performers section of My Store tab. */
-"Gain insights into how products are performing on your store" = "ストアでの商品売り上げ状況に関する統計概要を得られます";
+"Gain insights into how products are performing on your store" = "ストアでの商品売り上げ状況の統計概要をチェック";
 
 /* Subtitle for Browse our FAQ */
 "Get answers to questions you have" = "不明な点について問い合わせます";
@@ -306,7 +315,8 @@
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "どのようなサポートをお求めですか ?";
 
-/* No comment provided by engineer. */
+/* Help and Support navigation title
+   Help button */
 "Help" = "ヘルプ";
 
 /* Contact Support Action */
@@ -316,13 +326,13 @@
 "Help Improve The App" = "アプリの改善にご協力ください";
 
 /* Footer text to hide the billing cell */
-"Hide billing" = "課金を非表示";
+"Hide billing" = "請求情報を非表示";
 
 /* Error message shown a URL does not point to an existing site. */
 "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "この URL の WordPress サイトはないようです。綴りをもう一度確認してから、やり直してください。";
 
 /* Detail label for yes/no switch. */
-"If disabled the note will be private" = "If disabled the note will be private";
+"If disabled the note will be private" = "無効の場合はメモが非公開になります";
 
 /* Application's Inactive State */
 "Inactive" = "停止中";
@@ -370,9 +380,10 @@
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "ログイン試行の上限に達しました。1分後にもう一度お試しいただけます。それ以前にログインしようとした場合、制限解除までの時間がさらに延長されます。エラーだと思われる場合はサポートにご連絡ください。";
 
 /* Displayed when an Order is being retrieved */
-"Loading Order" = "Loading Order";
+"Loading Order" = "注文を読み込み中";
 
-/* No comment provided by engineer. */
+/* Button title.  Tapping takes the user to the login form.
+   Log In button label. */
 "Log In" = "ログイン";
 
 /* Alert button title - confirms and logs out the user */
@@ -396,8 +407,8 @@
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "WooCommerce ストアを管理するには、WordPress.com アカウントのメールアドレスを使用してログインします。";
 
-/* Logout Action */
-"Logout account" = "アカウントからログアウト";
+/* Log out button title */
+"Log out account" = "アカウントからログアウト";
 
 /* Title of a button. */
 "Lost your password?" = "パスワードをお忘れですか ?";
@@ -418,13 +429,13 @@
 "Mapped Domain" = "マッピング済みドメイン";
 
 /* Accessibility label for the Mark All Notifications as Read Button */
-"Mark All as Read" = "Mark All as Read";
+"Mark All as Read" = "すべて既読にする";
 
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "注文を完了としてマーク";
 
 /* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
-"Marks Every Notification as Read" = "Marks Every Notification as Read";
+"Marks Every Notification as Read" = "すべての通知を既読にする";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "メディアにはアップロードする関連したファイルはありません。";
@@ -442,10 +453,10 @@
 "Months" = "月";
 
 /* Spam Action Spoken hint. */
-"Moves a comment to Spam" = "Moves a comment to Spam";
+"Moves a comment to Spam" = "コメントをスパムに移動する";
 
 /* Trash Action Spoken hint */
-"Moves the comment to Trash" = "Moves the comment to Trash";
+"Moves the comment to Trash" = "コメントをゴミ箱に移動する";
 
 /* My Tickets title */
 "My Tickets" = "自分のチケット";
@@ -468,37 +479,43 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "問題が解決しない場合";
 
-/* No comment provided by engineer. */
+/* Title of a button.
+   Title of a button. The text should be capitalized. */
 "Next" = "次へ";
 
 /* Empty Notifications List Message */
-"No Notifications Yet!" = "No Notifications Yet!";
+"No Notifications Yet!" = "まだ通知はありません。";
 
 /* Search Orders (Empty State) */
-"No Orders found" = "No Orders found";
+"No Orders found" = "注文が見つかりません";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "この期間のアクティビティはありません";
 
-/* No comment provided by engineer. */
-"No address specified." = "アドレスが指定されていません。";
+/* Fulfill order > customer info > where the address would normally display.
+   Order details > customer info > shipping details. This is where the address would normally display. */
+"No address specified." = "住所が指定されていません。";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "使用可能なデータがありません";
 
-/* No comment provided by engineer. */
+/* Notifications List (Empty State + Filters)
+   Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "選択した基準と一致する結果はありません";
 
-/* No comment provided by engineer. */
+/* Labels an order note to let user know it's visible to the customer
+   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "お客様への通知";
 
-/* No comment provided by engineer. */
-"Notifications" = "Notifications";
+/* Title of the Notifications tab — plural form of Notification
+   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
+"Notifications" = "通知";
 
-/* Notifications filtered title */
-"Notifications: (currentTypeFilter.description)" = "通知:(currentTypeFilter.description)";
+/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
+"Notifications: %@" = "通知:%@";
 
-/* No comment provided by engineer. */
+/* Button title. An acknowledgement of the message displayed in a prompt.
+   Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -519,35 +536,37 @@
 /* On Hold Order Status */
 "On Hold" = "保留中";
 
+/* Opens iOS's Device Settings for the app */
+"Open Device Settings" = "デバイス設定を開く";
+
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "メールを開く";
 
-/* Opens iOS's Device Settings for the app */
-"Open device settings" = "デバイス設定を開く";
-
 /* Navigates to open source licenses screen */
-"Open source licenses" = "オープンソースライセンス";
+"Open Source Licenses" = "オープンソースライセンス";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "オプションのトラッキング情報";
 
-/* No comment provided by engineer. */
+/* Add a note screen - title. Example: Order #15
+   Order number title */
 "Order #(viewModel.order.number)" = "注文番号 (viewModel.order.number)";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
-"Order %@ has been deleted from your store" = "Order %@ has been deleted from your store";
+"Order %@ has been deleted from your store" = "注文%@をストアから削除しました";
 
 /* Order notes section title */
 "Order Notes" = "注文メモ";
 
 /* Order fulfillment success notice */
-"Order marked as fulfilled" = "Order marked as fulfilled";
+"Order marked as fulfilled" = "注文を処理済みにしました";
 
-/* No comment provided by engineer. */
+/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
+   Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "注文";
 
-/* Orders Title */
-"Orders: (filter)" = "注文:(フィルター)";
+/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
+"Orders: %@" = "注文:%@";
 
 /* My Store > Settings > Other app section */
 "Other" = "その他";
@@ -555,20 +574,21 @@
 /* Product section title */
 "PRODUCT" = "商品";
 
-/* No comment provided by engineer. */
+/* Login dialog password placeholder
+   Password placeholder */
 "Password" = "パスワード";
 
 /* Payment section title */
 "Payment" = "決済";
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (totalValue) received via (order.paymentMethodTitle)" = "(totalValue) の支払いを (order.paymentMethodTitle) から受領しました";
+"Payment of (totalValue) received via (order.paymentMethodTitle)" = "Payment of (totalValue) received via (order.paymentMethodTitle)";
 
 /* Pending Order Status */
 "Pending" = "承認待ち";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
-"Phone number: %@" = "電話番号:%@";
+"Phone number: %@" = "電話番号: %@";
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "連携するストアを選択";
@@ -606,19 +626,19 @@
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "個人情報保護方針";
 
-/* Navigates to Privacy Settings screen */
+/* Navigates to Privacy Settings screen
+   Privacy settings screen title */
 "Privacy Settings" = "プライバシー設定";
 
-/* Privacy settings screen title */
-"Privacy settings" = "プライバシー設定";
-
-/* No comment provided by engineer. */
+/* Labels an order note to let the user know it's private and not seen by the customer
+   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "プライベートメモ";
 
 /* Processing Order Status */
 "Processing" = "処理中";
 
-/* No comment provided by engineer. */
+/* Description for Top Performers left column header
+   Section header title for the product */
 "Product" = "商品";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
@@ -630,7 +650,8 @@
 /* Quantity abbreviation for section title */
 "QTY" = "数量";
 
-/* No comment provided by engineer. */
+/* Quantity abbreviation for section title
+   Section header title - abbreviation for quantity */
 "Qty" = "数量";
 
 /* Subtitle for Contact Support */
@@ -645,28 +666,30 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "登録済みドメイン";
 
-/* No comment provided by engineer. */
+/* Action: Opens the Store in a browser
+   Action: removes the current filters from the notifications list */
 "Remove Filters" = "フィルターを削除";
 
-/* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
-"Report crashes" = "クラッシュをレポート";
+/* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
+"Report Crashes" = "クラッシュをレポート";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
-"Retrieves a list of orders that contain a given keyword." = "Retrieves a list of orders that contain a given keyword.";
+"Retrieves a list of orders that contain a given keyword." = "特定のキーワードを含む注文一覧を取得します。";
 
-/* No comment provided by engineer. */
+/* Retry Action
+   Retry the last action */
 "Retry" = "再度試す";
 
 /* Revenue stat label on dashboard. */
 "Revenue" = "収益";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
-"Review marked as %@" = "Review marked as %@";
+"Review marked as %@" = "レビューを%@にしました";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
-"Review, prepare, and ship these pending orders" = "これらの保留中の注文を確認して準備し、配送してください";
+"Review, prepare, and ship these pending orders" = "保留中の注文を確認して準備し、配送してください";
 
-/* Reviews filter title */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
 "Reviews" = "レビュー";
 
 /* SKU label */
@@ -676,10 +699,10 @@
 "SMS Sent" = "SMS 送信完了";
 
 /* Orders Search Placeholder */
-"Search all orders" = "Search all orders";
+"Search all orders" = "すべての注文を検索";
 
 /* Search Orders */
-"Search orders" = "Search orders";
+"Search orders" = "注文を検索";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "リンクを送信";
@@ -687,7 +710,8 @@
 /* Tells user to set an email that support can use for replies */
 "Set email" = "メールを設定";
 
-/* No comment provided by engineer. */
+/* Accessibility label for the Settings button.
+   Settings navigation title */
 "Settings" = "設定";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -703,7 +727,7 @@
 "Shipping details" = "配送詳細";
 
 /* Footer text to show the billing cell */
-"Show billing" = "課金を表示";
+"Show billing" = "請求情報を表示";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "登録";
@@ -781,10 +805,10 @@
 "Store revenue chart %@" = "ストアの収益グラフ %@";
 
 /* VoiceOver accessibility label for the store revenue chart's X-axis. */
-"Store revenue chart: X Axis" = "ストアの収益グラフ:X 軸";
+"Store revenue chart: X Axis" = "ストアの収益グラフ: X 軸";
 
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
-"Store revenue chart: Y Axis" = "ストアの収益グラフ:Y 軸";
+"Store revenue chart: Y Axis" = "ストアの収益グラフ: Y 軸";
 
 /* Subtotal label for payment view */
 "Subtotal" = "小計";
@@ -829,7 +853,7 @@
 "The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "Google アカウント \"(loginFields.username)\" が WordPress.com 上のアカウントと一致しません";
 
 /* Fetching an Order Failed */
-"The Order couldn't be loaded!" = "The Order couldn't be loaded!";
+"The Order couldn't be loaded!" = "注文を読み込めません。";
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "この URL には有効なホストがありません。";
@@ -838,7 +862,7 @@
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "このサーバーの証明書が無効です。「%@」を偽装しているサーバーに接続中の可能性があるため、機密情報が危険にさらされる恐れがあります。\n\nこの証明書をそのまま信頼しますか ?";
 
 /* Displayed whenever a Notification that was onscreen got deleted. */
-"The notification has been removed" = "The notification has been removed!";
+"The notification has been removed" = "通知は削除済みです";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "サーバーが空のレスポンスを返しました。これは通常、サイトのメモリ上限を上げる必要があることを意味しています。";
@@ -868,7 +892,7 @@
 "This Year" = "今年";
 
 /* Login Disclaimer Text and Jetpack config instructions */
-"This app requires Jetpack to connect to your Store. Read the " = "このアプリを使用するには、Jetpack をストアに連携させる必要があります。参照先";
+"This app requires Jetpack to connect to your Store. Read the " = "このアプリを使用するには、Jetpack をストアに連携させる必要があります。参照:";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "このメールアドレスは WordPress.com に登録されていません。";
@@ -885,11 +909,12 @@
 /* No comment provided by engineer. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "この Google アカウントで先に進むには、最初に WordPress.com パスワードを使用してログインしてください。これは一度しか尋ねられません。";
 
-/* No comment provided by engineer. */
+/* Today Section Header
+   Top Performers section title - today */
 "Today" = "今日";
 
 /* Header label for Top Performers section of My Store tab. */
-"Top Performers" = "成績優秀者";
+"Top Performers" = "上位パフォーマンス";
 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "次の ID に該当するトピックは見つかりませんでした:";
@@ -898,7 +923,7 @@
 "Total" = "合計:";
 
 /* Top performers — label for the total number of products ordered */
-"Total Product Order: %ld" = "商品注文の合計:%ld";
+"Total Product Order: %ld" = "商品注文の合計: %ld";
 
 /* Description for Top Performers right column header */
 "Total Spend" = "支払い合計額";
@@ -925,13 +950,16 @@
 "Unable to find WooCommerce stores connected to this account" = "このアカウントに連携している WooCommerce ストアが見つかりません";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
-"Unable to mark review as %@" = "Unable to mark review as %@";
+"Unable to mark review as %@" = "レビューを%@に変更できませんでした";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "ご指定の URL に WordPress サイトが見つかりませんでした。「ヘルプ !」をタップしてよくある質問をご覧ください。";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "リストを更新できません";
+
+/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
+"Unable to successfully connect to %@" = "%@ に接続できませんでした";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "メールアドレスを検証できません。後ほど、もう一度お試しください。";
@@ -952,12 +980,13 @@
 "Unknown error" = "不明なエラー";
 
 /* Stats summary date */
-"Updated %@" = "%@を更新しました";
+"Updated %@" = "更新: %@";
 
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
-"Updated %1$@ at %2$@" = "%2$@に%1$@を更新しました";
+"Updated %1$@ at %2$@" = "%1$@の%2$@に更新";
 
-/* No comment provided by engineer. */
+/* Login dialog username placeholder
+   Username placeholder */
 "Username" = "ユーザー名";
 
 /* No comment provided by engineer. */
@@ -965,9 +994,6 @@
 
 /* two factor code placeholder */
 "Verification code" = "認証コード";
-
-/* App version label */
-"Version" = "バージョン";
 
 /* Displays the version of the App */
 "Version %@" = "バージョン %@";
@@ -985,7 +1011,7 @@
 "WRITE NOTE" = "メモを入力";
 
 /* Orders List (Empty State / No Filters) */
-"Waiting for Customers" = "顧客待ち";
+"Waiting for Customers" = "お客様が来るのを待っています";
 
 /* Message shown on screen while waiting for Google to finish its signup process. */
 "Waiting for Google to complete…" = "Google が完了するのを待機しています…";
@@ -1045,10 +1071,10 @@
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "ご指定のメールアドレスはアカウント登録にご利用いただけません。このメールプロバイダによって、こちらから送信するメールがブロックされる問題が発生することがあるためです。恐れ入りますが、他のメールプロバイダのアドレスをお使いください。";
 
 /* Title text used on the My Store UI when a user has a _single_ pending order to process. */
-"You have %ld order to fulfill" = "履行する注文が%ld件あります";
+"You have %ld order to fulfill" = "対応が必要な注文が%ld件あります";
 
 /* Title text used on the My Store UI when a user has _multiple_ pending orders to process. */
-"You have %ld orders to fulfill" = "履行する注文が%ld件あります";
+"You have %ld orders to fulfill" = "対応が必要な注文が%ld件あります";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "アプリがブログに接続するのを防止するモバイルプラグインが DudaMobile からインストールされたようです。";

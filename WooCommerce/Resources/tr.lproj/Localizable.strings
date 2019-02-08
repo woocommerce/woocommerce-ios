@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-01-09 14:54:02+0000 */
+/* Translation-Revision-Date: 2019-02-05 09:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -42,8 +42,12 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Siparişe not ekler";
 
-/* All filter title */
+/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
+   Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "Tümü";
+
+/* Mark all notifications as read notice */
+"All notifications marked as read" = "Tüm bildirimler okundu olarak işaretlendi";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Neredeyse bitiyor! Lütfen doğrulama uygulamanızdan edindiğiniz doğrulama kodunu girin.";
@@ -111,14 +115,12 @@
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Bağlantı istenemiyor";
 
-/* No comment provided by engineer. */
+/* Button title. Tapping it cancels the login flow.
+   Cancel prompt for user information. */
 "Cancel" = "İptal";
 
 /* Cancelled Order Status */
 "Canceled" = "İptal edildi";
-
-/* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
-"Cannot connect to %@" = "%@ ile bağlantı kurulamıyor";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Her an, her yerde sevdiğiniz siteleri kontrol edip sohbetin bir parçası olun.";
@@ -126,8 +128,8 @@
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Sertifika hatası";
 
-/* Settings > Privacy Settings > collect info section. Label the `Collect information` toggle. */
-"Collect information" = "Bilgi topla";
+/* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
+"Collect Information" = "Bilgi topla";
 
 /* Completed Order Status */
 "Completed" = "Tamamlandı";
@@ -162,6 +164,9 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Okumaya devam et";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"Copy" = "Kopyala";
+
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "Site alımları kontrol edilemiyor.";
 
@@ -183,10 +188,12 @@
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Bağlantı kurulamadı. Sunucunuz POST isteklerini engelliyor ve uygulama sitenizle iletişim kurmak için buna gereksinim duyuyor. Bu sorunu gidermek için sunucunuzla iletişim kurun.";
 
-/* No comment provided by engineer. */
+/* Customer info section title
+   Section title for the customer's billing and shipping address */
 "Customer Information" = "Müşteri Bilgileri";
 
-/* No comment provided by engineer. */
+/* Customer note section title
+   Section title for a note from the customer */
 "Customer Provided Note" = "Müşterinin Verdiği Not";
 
 /* Statistical unit - a single day */
@@ -204,7 +211,8 @@
 /* Discount label for payment view */
 "Discount" = "İndirim";
 
-/* No comment provided by engineer. */
+/* Add a note screen - button title for closing the view
+   Dismiss the action sheet */
 "Dismiss" = "Kapat";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -258,7 +266,8 @@
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "WordPress.com hesabınız için parola girin.";
 
-/* No comment provided by engineer. */
+/* Title of a button on the magic link screen.
+   Title of a button. */
 "Enter your password instead." = "Bunun yerine parolanızı girin.";
 
 /* Failed Order Status */
@@ -306,7 +315,8 @@
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "NASIL YARDIMCI OLABİLİRİZ?";
 
-/* No comment provided by engineer. */
+/* Help and Support navigation title
+   Help button */
 "Help" = "Yardım";
 
 /* Contact Support Action */
@@ -372,7 +382,8 @@
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Sipariş Yükleniyor";
 
-/* No comment provided by engineer. */
+/* Button title.  Tapping takes the user to the login form.
+   Log In button label. */
 "Log In" = "Giriş yap";
 
 /* Alert button title - confirms and logs out the user */
@@ -396,8 +407,8 @@
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "WooCommerce mağazalarınızı yönetmek için WordPress.com hesabınızın e-posta adresi ile oturum açın.";
 
-/* Logout Action */
-"Logout account" = "Hesaptan çıkış yap";
+/* Log out button title */
+"Log out account" = "Hesaptan çıkış yap";
 
 /* Title of a button. */
 "Lost your password?" = "Parolanızı mı unuttunuz?";
@@ -468,7 +479,8 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "Daha fazla yardım mı gerekli?";
 
-/* No comment provided by engineer. */
+/* Title of a button.
+   Title of a button. The text should be capitalized. */
 "Next" = "Sonraki";
 
 /* Empty Notifications List Message */
@@ -480,25 +492,30 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Bu dönemde hiç etkinlik yok";
 
-/* No comment provided by engineer. */
+/* Fulfill order > customer info > where the address would normally display.
+   Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "Adres belirtilmedi.";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Veri bulunmuyor";
 
-/* No comment provided by engineer. */
+/* Notifications List (Empty State + Filters)
+   Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Seçilen kriter için sonuç yok";
 
-/* No comment provided by engineer. */
+/* Labels an order note to let user know it's visible to the customer
+   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Müşteriye not";
 
-/* No comment provided by engineer. */
+/* Title of the Notifications tab — plural form of Notification
+   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
 "Notifications" = "Notifications";
 
-/* Notifications filtered title */
-"Notifications: (currentTypeFilter.description)" = "Bildirimler: (currentTypeFilter.description)";
+/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
+"Notifications: %@" = "Bildirimler: %@";
 
-/* No comment provided by engineer. */
+/* Button title. An acknowledgement of the message displayed in a prompt.
+   Submit button on prompt for user information. */
 "OK" = "Tamam";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -519,19 +536,20 @@
 /* On Hold Order Status */
 "On Hold" = "Beklemede";
 
+/* Opens iOS's Device Settings for the app */
+"Open Device Settings" = "Cihaz ayarlarını aç";
+
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Postayı Aç";
 
-/* Opens iOS's Device Settings for the app */
-"Open device settings" = "Cihaz ayarlarını aç";
-
 /* Navigates to open source licenses screen */
-"Open source licenses" = "Açık kaynak lisanslar";
+"Open Source Licenses" = "Açık kaynak lisanslar";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "İsteğe Bağlı Takip Bilgileri";
 
-/* No comment provided by engineer. */
+/* Add a note screen - title. Example: Order #15
+   Order number title */
 "Order #(viewModel.order.number)" = "(viewModel.order.number) Numaralı Sipariş";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
@@ -543,11 +561,12 @@
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "Sipariş, yerine getirildi olarak işaretlendi";
 
-/* No comment provided by engineer. */
+/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
+   Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Siparişler";
 
-/* Orders Title */
-"Orders: (filter)" = "Siparişler: (filtre)";
+/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
+"Orders: %@" = "Siparişler: %@";
 
 /* My Store > Settings > Other app section */
 "Other" = "Diğer";
@@ -555,7 +574,8 @@
 /* Product section title */
 "PRODUCT" = "ÜRÜN";
 
-/* No comment provided by engineer. */
+/* Login dialog password placeholder
+   Password placeholder */
 "Password" = "Parola";
 
 /* Payment section title */
@@ -606,19 +626,19 @@
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Gizlilik Politikası";
 
-/* Navigates to Privacy Settings screen */
+/* Navigates to Privacy Settings screen
+   Privacy settings screen title */
 "Privacy Settings" = "Gizlilik Ayarları";
 
-/* Privacy settings screen title */
-"Privacy settings" = "Gizlilik ayarları";
-
-/* No comment provided by engineer. */
+/* Labels an order note to let the user know it's private and not seen by the customer
+   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Özel not";
 
 /* Processing Order Status */
 "Processing" = "İşlemde";
 
-/* No comment provided by engineer. */
+/* Description for Top Performers left column header
+   Section header title for the product */
 "Product" = "Ürün";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
@@ -630,7 +650,8 @@
 /* Quantity abbreviation for section title */
 "QTY" = "QTY";
 
-/* No comment provided by engineer. */
+/* Quantity abbreviation for section title
+   Section header title - abbreviation for quantity */
 "Qty" = "Qty";
 
 /* Subtitle for Contact Support */
@@ -645,16 +666,18 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Kayıtlı alan adı";
 
-/* No comment provided by engineer. */
+/* Action: Opens the Store in a browser
+   Action: removes the current filters from the notifications list */
 "Remove Filters" = "Filtreleri Kaldır";
 
-/* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
-"Report crashes" = "Çökmeleri bildirin";
+/* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
+"Report Crashes" = "Çökmeleri bildirin";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Belirli bir anahtar sözcüğü içeren siparişlerin bir listesini alır.";
 
-/* No comment provided by engineer. */
+/* Retry Action
+   Retry the last action */
 "Retry" = "Tekrar";
 
 /* Revenue stat label on dashboard. */
@@ -666,7 +689,7 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Bu bekleyen siparişleri inceleyin, hazırlayın ve gönderin";
 
-/* Reviews filter title */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
 "Reviews" = "İncelemeler";
 
 /* SKU label */
@@ -687,7 +710,8 @@
 /* Tells user to set an email that support can use for replies */
 "Set email" = "E-postayı belirleyin";
 
-/* No comment provided by engineer. */
+/* Accessibility label for the Settings button.
+   Settings navigation title */
 "Settings" = "Ayarlar";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -885,7 +909,8 @@
 /* No comment provided by engineer. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Bu Google hesabı ile devam etmek için lütfen ilk önce WordPress.com parolanızla giriş yapın. Bu sadece bir kez sorulacak.";
 
-/* No comment provided by engineer. */
+/* Today Section Header
+   Top Performers section title - today */
 "Today" = "Bugün";
 
 /* Header label for Top Performers section of My Store tab. */
@@ -933,6 +958,9 @@
 /* Refresh Action Failed */
 "Unable to refresh list" = "Liste yenilenemedi";
 
+/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
+"Unable to successfully connect to %@" = "%@ adlı siteye başarıyla bağlanılamıyor";
+
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "E-posta adresi doğrulanamıyor. Lütfen daha sonra tekrar deneyin.";
 
@@ -957,7 +985,8 @@
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "%1$@ tarihinde %2$@ saatinde güncellendi";
 
-/* No comment provided by engineer. */
+/* Login dialog username placeholder
+   Username placeholder */
 "Username" = "Kullanıcı adı";
 
 /* No comment provided by engineer. */
@@ -965,9 +994,6 @@
 
 /* two factor code placeholder */
 "Verification code" = "Doğrulama kodu";
-
-/* App version label */
-"Version" = "Sürüm";
 
 /* Displays the version of the App */
 "Version %@" = "Sürüm %@";

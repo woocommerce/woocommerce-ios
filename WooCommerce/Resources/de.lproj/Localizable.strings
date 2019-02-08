@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-01-11 11:54:02+0000 */
+/* Translation-Revision-Date: 2019-02-05 16:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -42,8 +42,12 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Fügt einen Hinweis zu einer Bestellung hinzu";
 
-/* All filter title */
+/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
+   Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "Alle";
+
+/* Mark all notifications as read notice */
+"All notifications marked as read" = "Alle Benachrichtigungen als gelesen markiert";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Fast geschafft! Gib bitte den Verifizierungscode aus deiner Authenticator-App ein.";
@@ -111,14 +115,12 @@
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Kann den Link nicht anfordern.";
 
-/* No comment provided by engineer. */
+/* Button title. Tapping it cancels the login flow.
+   Cancel prompt for user information. */
 "Cancel" = "Abbrechen";
 
 /* Cancelled Order Status */
 "Canceled" = "Abgebrochen";
-
-/* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
-"Cannot connect to %@" = "Verbindung zu %@ kann nicht hergestellt werden";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Du kannst überall und jederzeit deine bevorzugten Websites verfolgen und an der Unterhaltung teilnehmen.";
@@ -126,8 +128,8 @@
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Zertifikatsfehler";
 
-/* Settings > Privacy Settings > collect info section. Label the `Collect information` toggle. */
-"Collect information" = "Informationen erfassen";
+/* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
+"Collect Information" = "Informationen erfassen";
 
 /* Completed Order Status */
 "Completed" = "Abgeschlossen";
@@ -162,6 +164,9 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Weiterlesen";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"Copy" = "Kopieren";
+
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "Die Käufe konnten nicht überprüft werden.";
 
@@ -183,10 +188,12 @@
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Verbindung fehlgeschlagen. Dein Host blockiert POST-Anforderungen und die App benötigt diese, um mit deiner Website zu kommunizieren. Kontaktiere deinen Host, um dieses Problem zu beheben.";
 
-/* No comment provided by engineer. */
+/* Customer info section title
+   Section title for the customer's billing and shipping address */
 "Customer Information" = "Kundeninformationen";
 
-/* No comment provided by engineer. */
+/* Customer note section title
+   Section title for a note from the customer */
 "Customer Provided Note" = "Vom Kunden angegebener Hinweis";
 
 /* Statistical unit - a single day */
@@ -204,14 +211,15 @@
 /* Discount label for payment view */
 "Discount" = "Rabatt";
 
-/* No comment provided by engineer. */
+/* Add a note screen - button title for closing the view
+   Dismiss the action sheet */
 "Dismiss" = "Überspringen";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Du hast noch kein Konto? _Registrieren_";
 
 /* WordPress.com (unmapped!) error */
-"Dotcom Error: [(code)] (theMessage)" = "Dotcom-Fehler: [(Code)] (dieMeldung)";
+"Dotcom Error: [(code)] (theMessage)" = "Dotcom-Fehler: [(code)] (theMessage)";
 
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "Fehlender Dotcom-Token";
@@ -258,7 +266,8 @@
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Gib das Passwort für dein WordPress.com-Konto ein.";
 
-/* No comment provided by engineer. */
+/* Title of a button on the magic link screen.
+   Title of a button. */
 "Enter your password instead." = "Gib stattdessen dein Passwort ein.";
 
 /* Failed Order Status */
@@ -268,7 +277,7 @@
 "Failed to serialize request to the REST API." = "Fehler beim Serialisieren der Anforderung an die REST API.";
 
 /* Navigates to the feature request screen */
-"Feature Request" = "Funktionsanfrage";
+"Feature Request" = "Feature-Request";
 
 /* Accessibility label for the Filter notifications button. */
 "Filter notifications" = "Benachrichtigungen filtern";
@@ -306,7 +315,8 @@
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "WIE KÖNNEN WIR HELFEN?";
 
-/* No comment provided by engineer. */
+/* Help and Support navigation title
+   Help button */
 "Help" = "Hilfe";
 
 /* Contact Support Action */
@@ -372,7 +382,8 @@
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Bestellung wird geladen";
 
-/* No comment provided by engineer. */
+/* Button title.  Tapping takes the user to the login form.
+   Log In button label. */
 "Log In" = "Anmelden";
 
 /* Alert button title - confirms and logs out the user */
@@ -396,8 +407,8 @@
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Melde dich mit der E-Mail-Adresse deines WordPress.com-Kontos an, um deine WooCommerce-Shops zu verwalten.";
 
-/* Logout Action */
-"Logout account" = "Von Konto abmelden";
+/* Log out button title */
+"Log out account" = "Von Konto abmelden";
 
 /* Title of a button. */
 "Lost your password?" = "Passwort vergessen?";
@@ -468,7 +479,8 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "Brauchst du weitere Hilfe?";
 
-/* No comment provided by engineer. */
+/* Title of a button.
+   Title of a button. The text should be capitalized. */
 "Next" = "Weiter";
 
 /* Empty Notifications List Message */
@@ -480,25 +492,30 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Keine Aktivitäten in diesem Zeitraum";
 
-/* No comment provided by engineer. */
+/* Fulfill order > customer info > where the address would normally display.
+   Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "Keine Adresse angegeben.";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Keine Daten verfügbar";
 
-/* No comment provided by engineer. */
+/* Notifications List (Empty State + Filters)
+   Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Keine Ergebnisse für die ausgewählten Kriterien";
 
-/* No comment provided by engineer. */
+/* Labels an order note to let user know it's visible to the customer
+   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Hinweis an Kunden";
 
-/* No comment provided by engineer. */
+/* Title of the Notifications tab — plural form of Notification
+   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
 "Notifications" = "Notifications";
 
-/* Notifications filtered title */
-"Notifications: (currentTypeFilter.description)" = "Benachrichtigungen: (currentTypeFilter.description)";
+/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
+"Notifications: %@" = "Benachrichtigungen: %@";
 
-/* No comment provided by engineer. */
+/* Button title. An acknowledgement of the message displayed in a prompt.
+   Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -519,19 +536,20 @@
 /* On Hold Order Status */
 "On Hold" = "Angehalten";
 
+/* Opens iOS's Device Settings for the app */
+"Open Device Settings" = "Geräte-Einstellungen öffnen";
+
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Mail öffnen";
 
-/* Opens iOS's Device Settings for the app */
-"Open device settings" = "Geräte-Einstellungen öffnen";
-
 /* Navigates to open source licenses screen */
-"Open source licenses" = "Open-Source-Lizenzen";
+"Open Source Licenses" = "Open-Source-Lizenzen";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Optionale Verfolgungsinformationen";
 
-/* No comment provided by engineer. */
+/* Add a note screen - title. Example: Order #15
+   Order number title */
 "Order #(viewModel.order.number)" = "Bestellnr. (viewModel.order.number)";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
@@ -543,11 +561,12 @@
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "Bestellung als abgeschlossen markiert";
 
-/* No comment provided by engineer. */
+/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
+   Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Bestellungen";
 
-/* Orders Title */
-"Orders: (filter)" = "Bestellungen: (Filter)";
+/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
+"Orders: %@" = "Bestellungen: %@";
 
 /* My Store > Settings > Other app section */
 "Other" = "Andere";
@@ -555,7 +574,8 @@
 /* Product section title */
 "PRODUCT" = "PRODUKT";
 
-/* No comment provided by engineer. */
+/* Login dialog password placeholder
+   Password placeholder */
 "Password" = "Passwort";
 
 /* Payment section title */
@@ -601,24 +621,24 @@
 "Please open your email app and look for an email from WordPress.com." = "Bitte öffne deine E-Mail-App und suche nach einer E-Mail von WordPress.com.";
 
 /* My Store > Settings > Primary Store information section */
-"Primary Store" = "Primärer Shop";
+"Primary Store" = "Hauptshop";
 
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Datenschutzerklärung";
 
-/* Navigates to Privacy Settings screen */
+/* Navigates to Privacy Settings screen
+   Privacy settings screen title */
 "Privacy Settings" = "Datenschutzeinstellungen";
 
-/* Privacy settings screen title */
-"Privacy settings" = "Datenschutzeinstellungen";
-
-/* No comment provided by engineer. */
+/* Labels an order note to let the user know it's private and not seen by the customer
+   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Privater Hinweis";
 
 /* Processing Order Status */
 "Processing" = "In Bearbeitung";
 
-/* No comment provided by engineer. */
+/* Description for Top Performers left column header
+   Section header title for the product */
 "Product" = "Produkt";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
@@ -630,7 +650,8 @@
 /* Quantity abbreviation for section title */
 "QTY" = "MGE";
 
-/* No comment provided by engineer. */
+/* Quantity abbreviation for section title
+   Section header title - abbreviation for quantity */
 "Qty" = "Mge";
 
 /* Subtitle for Contact Support */
@@ -645,16 +666,18 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Registrierte Domain";
 
-/* No comment provided by engineer. */
+/* Action: Opens the Store in a browser
+   Action: removes the current filters from the notifications list */
 "Remove Filters" = "Filter entfernen";
 
-/* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
-"Report crashes" = "Abstürze melden";
+/* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
+"Report Crashes" = "Abstürze melden";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Ruft eine Liste von Bestellungen mit einem bestimmten Stichwort ab";
 
-/* No comment provided by engineer. */
+/* Retry Action
+   Retry the last action */
 "Retry" = "Erneut versuchen";
 
 /* Revenue stat label on dashboard. */
@@ -666,7 +689,7 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Diese ausstehenden Bestellungen prüfen, vorbereiten und versenden";
 
-/* Reviews filter title */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
 "Reviews" = "Rezensionen";
 
 /* SKU label */
@@ -687,7 +710,8 @@
 /* Tells user to set an email that support can use for replies */
 "Set email" = "E-Mail festlegen";
 
-/* No comment provided by engineer. */
+/* Accessibility label for the Settings button.
+   Settings navigation title */
 "Settings" = "Einstellungen";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -885,7 +909,8 @@
 /* No comment provided by engineer. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Um mit diesem Google-Konto fortzufahren, melde dich bitte zuerst mit deinem WordPress.com-Passwort an. Dies wird nur einmal nachgefragt.";
 
-/* No comment provided by engineer. */
+/* Today Section Header
+   Top Performers section title - today */
 "Today" = "Heute";
 
 /* Header label for Top Performers section of My Store tab. */
@@ -933,6 +958,9 @@
 /* Refresh Action Failed */
 "Unable to refresh list" = "Liste kann nicht aktualisiert werden";
 
+/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
+"Unable to successfully connect to %@" = "Die Verbindung zu %@ konnte nicht erfolgreich hergestellt werden";
+
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Die E-Mail-Adresse konnte nicht überprüft werden. Versuche es später erneut.";
 
@@ -957,7 +985,8 @@
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "Aktualisiert am %1$@ um %2$@";
 
-/* No comment provided by engineer. */
+/* Login dialog username placeholder
+   Username placeholder */
 "Username" = "Benutzername";
 
 /* No comment provided by engineer. */
@@ -965,9 +994,6 @@
 
 /* two factor code placeholder */
 "Verification code" = "Verifizierungscode";
-
-/* App version label */
-"Version" = "Version";
 
 /* Displays the version of the App */
 "Version %@" = "Version %@";

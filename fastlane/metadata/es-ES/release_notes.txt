@@ -1,6 +1,6 @@
-Con la aplicación móvil de WooCommerce, tendrás tu tienda en el bolsillo: gestiona los pedidos, recibe notificaciones de venta y consulta las métricas clave en cualquier lugar.
-
-¡Un redoble, por favor! Es nuestro primer lanzamiento al público. Deseamos poder repetirlo pronto (y hacerlo a menudo) y esperamos recibir tus comentarios y sugerencias de mejora.
-Contacta con nosotros a través del apartado de soporte de la aplicación o en ideas.woocommerce.com.
-
-Muchas gracias a todas las personas que han participado en el desarrollo y el periodo de pruebas.
+- Esta actualización se centra en mejorar la fiabilidad y corregir errores:
+- Soporte de localización mejorado en los gráficos de Mi tienda y en las pantallas Pedidos y Notificaciones.
+- Ahora, la aplicación oculta los pedidos que tienen una fecha de creación posterior a la actual (ya no se muestran en la sección “Hoy” de las listas de pedidos).
+- Hemos eliminado el resumen del método de pago en la sección de pago cuando no se recibe ningún pago.
+- Ahora, la línea de impuestos se muestra en los detalles del producto y del pago aunque el importe a mostrar sea cero.
+- Ahora, al cerrar la sesión, la aplicación restablece la credencial utilizada con las solicitudes de soporte.

@@ -1,6 +1,6 @@
-Dengan aplikasi seluler WooCommerce, bawa toko online Anda ke mana saja: kelola pesanan, terima pemberitahuan penjualan, dan lihat metriks utama di mana saja.
-
-Tabuh genderangnya: ini adalah rilis publik perdana kami! Kami menantikan iterasi yang cepat dan kerap, dan kami tidak sabar mendengar masukan dan saran untuk peningkatan dari Anda.
-Hubungi kami melalui “Dukungan” di aplikasi atau di ideas.woocommerce.com.
-
-Terima kasih kepada semua yang terlibat dalam pengembangan dan pengujian awal!
+- Pembaruan ini berfokus pada peningkatan keandalan dan perbaikan:
+- Penyempurnaan dukungan pelokalan bagan Toko Saya dan layar Pesanan & Pemberitahuan.
+- Kini aplikasi menyembunyikan pesanan yang mencantumkan tanggal pembuatan di waktu mendatang. (Pesanan tersebut tidak lagi ditampilkan di bagian “Hari Ini” pada daftar pesanan.)
+- Kami meniadakan ringkasan metode pembayaran di bagian pembayaran saat tidak ada pembayaran yang diterima.
+- Baris pajak kini ditampilkan di bagian pembayaran dan detail produk walaupun jumlah yang akan ditampilkan adalah nol.
+- Saat logout, kini aplikasi mengatur ulang kredensial yang digunakan dengan permintaan dukungan.

@@ -1,6 +1,6 @@
-Mit der mobilen WooCommerce-App hast du überall Zugriff auf deinen Online-Shop: So kannst du auch unterwegs Bestellungen verwalten, Verkaufsbenachrichtigungen empfangen und wichtige Kennzahlen einsehen.
-
-Trommelwirbel für unsere allererste Veröffentlichung! Wir freuen uns bereits auf häufige Beiträge in Kürze. Gerne kannst du uns Feedback und Verbesserungsvorschläge geben.
-Du erreichst uns über den „Support“ in der App oder kontaktiere uns unter ideas.woocommerce.com.
-
-Ein Dankeschön an alle, die an der Entwicklung und den Frühtests mitgewirkt haben!
+- Bei diesem Update dreht sich alles um verbesserte Zuverlässigkeit und Fehlerbehebungen:
+- Verbesserte Lokalisierungsunterstützung in Mein Shop-Diagrammen und auf den Bildschirmen für Bestellungen und Benachrichtigungen.
+- Die App blendet nun Aufträge aus, bei denen ein Erstellungsdatum in der Zukunft angegeben ist. (Sie werden nicht mehr im dem Abschnitt „Heute“ einer Bestellliste angezeigt.)
+- Wir haben die Zusammenfassung der Zahlungsmethode im Zahlungsabschnitt entfernt, wenn keine Zahlung eingegangen ist.
+- Die Steuerzeile wird nun auch dann in Zahlungen und Produktdetails angezeigt, wenn der auszuweisende Betrag Null ist.
+- Beim Abmelden setzt die App nun die bei Supportanfragen verwendeten Anmeldedaten zurück.

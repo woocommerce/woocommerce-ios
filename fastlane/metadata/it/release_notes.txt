@@ -1,6 +1,6 @@
-Con l'app per dispositivi mobili WooCommerce, hai il tuo negozio online in tasca: gestisci gli ordini, ricevi le notifiche di vendita e visualizzi le metriche chiave mentre sei in movimento.
-
-Rullo di tamburi per favore: è il nostro primissimo rilascio pubblico! Non vediamo l'ora di rifarlo presto e spesso e di ascoltare i tuoi commenti e i tuoi suggerimenti su come migliorarlo.
-Rimaniamo in contatto tramite il "Supporto" presente nell'app o su ideas.woocommerce.com.
-
-Grazie a tutti quelli coinvolti nello sviluppo e nella prima prova!
+- Questo aggiornamento è relativo alla migliorata affidabilità e alle correzioni:
+- Supporto di localizzazione migliorato sui grafici Il mio negozio e sulla schermata relativa agli ordini e alle notifiche.
+- L'app ora nasconde gli ordini che hanno una data di creazione elencata in futuro. (Non verranno più visualizzati nella sezione "Oggi" di un elenco dell'ordine.)
+- Abbiamo rimosso il riepilogo del metodo di pagamento nella relativa sezione quando non viene ricevuto un pagamento.
+- La riga delle tasse viene mostrata ora nei dettagli dei pagamenti e del prodotto anche quando l'importo mostrato è zero.
+- Quando ti disconnetti, l'app ora ripristina le credenziali usate con le richieste di supporto.

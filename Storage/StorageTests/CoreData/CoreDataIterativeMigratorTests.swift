@@ -16,7 +16,7 @@ class CoreDataIterativeMigratorTests: XCTestCase {
     func testModel0to10MigrationFails() throws {
         let model0URL = urlForModel(name: "Model")
         let model10URL = urlForModel(name: "Model 10")
-        let storeURL = urlForStore(withName: "Woo Test 10", deleteIfExists: true)
+        let storeURL = urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
         let options = [NSInferMappingModelAutomaticallyOption : false, NSMigratePersistentStoresAutomaticallyOption : false]
 
         var model = NSManagedObjectModel(contentsOf: model0URL)
@@ -64,7 +64,7 @@ class CoreDataIterativeMigratorTests: XCTestCase {
 
         psc = NSPersistentStoreCoordinator(managedObjectModel: model!)
 
-        ps = try? psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
+        ps = try psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
 
         XCTAssertNotNil(ps)
     }
@@ -91,6 +91,8 @@ extension CoreDataIterativeMigratorTests {
         if deleteIfExists {
             try? FileManager.default.removeItem(at: storeURL)
         }
+        
+        try? FileManager.default.createDirectory(at: URL(fileURLWithPath: documentsDirectory), withIntermediateDirectories: true, attributes: nil)
 
         return storeURL
     }

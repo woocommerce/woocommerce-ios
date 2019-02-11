@@ -145,9 +145,9 @@ public class CoreDataManager: StorageManagerType {
         DDLogWarn("⚠️ [CoreDataManager] Migration required for persistent store")
 
         // Extract model names
-        let versionPath = modelURL.appendingPathComponent("VersionInfo.plist").path
+        let versionPath = modelURL.appendingPathComponent(Constants.versionInfoPlist).path
         guard let versionInfo = NSDictionary.init(contentsOfFile: versionPath),
-            let modelNames = versionInfo["NSManagedObjectModel_VersionHashes"] as? NSDictionary,
+            let modelNames = versionInfo[Constants.versionHashesKey] as? NSDictionary,
             let allKeys = modelNames.allKeys as? [String],
             let objectModel = NSManagedObjectModel(contentsOf: modelURL) else {
             return
@@ -217,5 +217,16 @@ extension CoreDataManager {
         }
 
         return url.appendingPathComponent(name + ".sqlite")
+    }
+}
+
+
+// MARK: - Constants!
+//
+private extension CoreDataManager {
+
+    enum Constants {
+        static let versionInfoPlist = "VersionInfo.plist"
+        static let versionHashesKey = "NSManagedObjectModel_VersionHashes"
     }
 }

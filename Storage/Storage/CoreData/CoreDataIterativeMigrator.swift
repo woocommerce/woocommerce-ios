@@ -99,8 +99,8 @@ public struct CoreDataIterativeMigrator {
     }
 }
 
-extension CoreDataIterativeMigrator {
-    private static func migrateStore(at url: URL, storeType: String, fromModel: NSManagedObjectModel, toModel: NSManagedObjectModel, with mappingModel: NSMappingModel) -> Bool {
+private extension CoreDataIterativeMigrator {
+    static func migrateStore(at url: URL, storeType: String, fromModel: NSManagedObjectModel, toModel: NSManagedObjectModel, with mappingModel: NSMappingModel) -> Bool {
         // Build a temporary path to write the migrated store.
         let fileManager = FileManager.default
         let tempDestinationURL = url.deletingLastPathComponent().appendingPathComponent("migration").appendingPathComponent(url.lastPathComponent)
@@ -168,7 +168,7 @@ extension CoreDataIterativeMigrator {
         return true
     }
 
-    private static func metadataForPersistentStore(storeType: String, at url: URL) throws -> [String : Any]? {
+    static func metadataForPersistentStore(storeType: String, at url: URL) throws -> [String : Any]? {
 
         guard let sourceMetadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: storeType, at: url, options: nil) else {
             let description = "Failed to find source metadata for store: \(url)"
@@ -178,7 +178,7 @@ extension CoreDataIterativeMigrator {
         return sourceMetadata
     }
 
-    private static func model(for metadata: [String : Any]) throws -> NSManagedObjectModel? {
+    static func model(for metadata: [String : Any]) throws -> NSManagedObjectModel? {
         let bundle = Bundle(for: CoreDataManager.self)
         guard let sourceModel = NSManagedObjectModel.mergedModel(from: [bundle], forStoreMetadata: metadata) else {
             let description = "Failed to find source model for metadata: \(metadata)"
@@ -188,7 +188,7 @@ extension CoreDataIterativeMigrator {
         return sourceModel
     }
 
-    private static func models(for names: [String]) throws -> [NSManagedObjectModel] {
+    static func models(for names: [String]) throws -> [NSManagedObjectModel] {
         let models = try names.map { (name) -> NSManagedObjectModel in
             guard let url = urlForModel(name: name, in: nil),
                 let model = NSManagedObjectModel(contentsOf: url) else {
@@ -202,7 +202,7 @@ extension CoreDataIterativeMigrator {
         return models
     }
 
-    private static func urlForModel(name: String, in directory: String?) -> URL? {
+    static func urlForModel(name: String, in directory: String?) -> URL? {
         let bundle = Bundle(for: CoreDataManager.self)
         var url = bundle.url(forResource: name, withExtension: "mom", subdirectory: directory)
 

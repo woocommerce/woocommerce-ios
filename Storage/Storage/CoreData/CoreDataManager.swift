@@ -154,7 +154,7 @@ public class CoreDataManager: StorageManagerType {
         }
 
         let sortedKeys = allKeys.sorted { (string1, string2) -> Bool in
-            return string1.compare(string2, options: [String.CompareOptions.numeric], range: nil, locale: nil) == ComparisonResult.orderedAscending
+            return string1.compare(string2, options: [.numeric], range: nil, locale: nil) == .orderedAscending
         }
 
         do {

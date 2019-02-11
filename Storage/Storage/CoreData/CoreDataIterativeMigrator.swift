@@ -129,7 +129,7 @@ extension CoreDataIterativeMigrator {
                 }
             }
         } catch {
-            DDLogError("Error while moving original source store to a backup location: \(error)")
+            DDLogError("⛔️ Error while moving original source store to a backup location: \(error)")
 
             return false
         }
@@ -146,7 +146,7 @@ extension CoreDataIterativeMigrator {
                 }
             }
         } catch {
-            DDLogError("Error while copying migrated over the original files: \(error)")
+            DDLogError("⛔️ Error while copying migrated over the original files: \(error)")
 
             return false
         }
@@ -159,7 +159,7 @@ extension CoreDataIterativeMigrator {
                 try fileManager.removeItem(atPath: fullPath)
             }
         } catch {
-            DDLogError("Error while deleting backup copies of the original file before migration: \(error)")
+            DDLogError("⛔️ Error while deleting backup copies of the original file before migration: \(error)")
 
             return false
         }

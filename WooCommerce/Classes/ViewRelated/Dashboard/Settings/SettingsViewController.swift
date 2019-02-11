@@ -31,6 +31,20 @@ class SettingsViewController: UIViewController {
         return urlAsString?.hostname() ?? String()
     }
 
+    /// ResultsController: Loads Sites from the Storage Layer.
+    ///
+    private let resultsController: ResultsController<StorageSite> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "isWooCommerceActive == YES")
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    /// Sites pulled from the results controlelr
+    ///
+    private var sites = [Yosemite.Site]()
+
 
     // MARK: - Overridden Methods
     override func viewDidLoad() {
@@ -42,6 +56,7 @@ class SettingsViewController: UIViewController {
         configureTableView()
         configureTableViewFooter()
         registerTableViewCells()
+        refreshResultsController()
     }
 }
 
@@ -71,6 +86,11 @@ private extension SettingsViewController {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
+    func refreshResultsController() {
+        try? resultsController.performFetch()
+        sites = resultsController.fetchedObjects
+    }
+
     func configureTableViewFooter() {
         // `tableView.tableFooterView` can't handle a footerView that uses autolayout only.
         // Hence the container view with a defined frame.
@@ -91,8 +111,11 @@ private extension SettingsViewController {
         let aboutSettingsTitle = NSLocalizedString("About the app", comment: "My Store > Settings > About app section").uppercased()
         let otherTitle = NSLocalizedString("Other", comment: "My Store > Settings > Other app section").uppercased()
 
+        let storeRows: [Row] = sites.count > 1 ?
+            [.selectedStore, .switchStore] : [.selectedStore]
+
         sections = [
-            Section(title: selectedStoreTitle, rows: [.selectedStore, .switchStore], footerHeight: CGFloat.leastNonzeroMagnitude),
+            Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
             Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
             Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
             Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),

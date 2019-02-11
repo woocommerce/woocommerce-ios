@@ -146,7 +146,7 @@ public class CoreDataManager: StorageManagerType {
 
         // Extract model names
         let versionPath = modelURL.appendingPathComponent(Constants.versionInfoPlist).path
-        guard let versionInfo = NSDictionary.init(contentsOfFile: versionPath),
+        guard let versionInfo = NSDictionary(contentsOfFile: versionPath),
             let modelNames = versionInfo[Constants.versionHashesKey] as? NSDictionary,
             let allKeys = modelNames.allKeys as? [String],
             let objectModel = NSManagedObjectModel(contentsOf: modelURL) else {

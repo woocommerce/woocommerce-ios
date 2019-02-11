@@ -75,7 +75,8 @@ public struct CoreDataIterativeMigrator {
             modelsToMigrate = modelsToMigrate.reversed()
         }
 
-        // Migrate through the list
+        // Migrate between each model. Count - 2 because of zero-based index and we want
+        // to stop at the last pair (you can't migrate the last model to nothingness).
         for index in 0...(modelsToMigrate.count - 2) {
             let modelFrom = modelsToMigrate[index]
             let modelTo = modelsToMigrate[index + 1]

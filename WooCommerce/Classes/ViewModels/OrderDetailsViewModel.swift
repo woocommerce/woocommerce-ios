@@ -99,21 +99,13 @@ class OrderDetailsViewModel {
     }
 
     /// Taxes
-    /// - returns: 'Taxes' label and total taxes, or nil if zero.
+    /// - returns: 'Taxes' label and total taxes, including zero amounts.
     ///
     var taxesLabel: String? {
-        guard let total = currencyFormatter.convertToDecimal(from: order.totalTax), total.isZero() == false else {
-            return nil
-        }
-
         return NSLocalizedString("Taxes", comment: "Taxes label for payment view")
     }
 
     var taxesValue: String? {
-        guard let total = currencyFormatter.convertToDecimal(from: order.totalTax), total.isZero() == false else {
-            return nil
-        }
-
         return currencyFormatter.formatAmount(order.totalTax, with: order.currency)
     }
 
@@ -145,7 +137,11 @@ class OrderDetailsViewModel {
     /// Payment Summary
     /// - returns: A full sentence summary of how much was paid and using what method.
     ///
-    var paymentSummary: String {
+    var paymentSummary: String? {
+        if order.paymentMethodTitle.isEmpty {
+            return nil
+        }
+
         return NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
     }
 

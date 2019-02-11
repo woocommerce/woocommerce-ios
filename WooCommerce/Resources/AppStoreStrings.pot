@@ -32,22 +32,94 @@ msgid ""
 "\n"
 "WooCommerce is the most customizable eCommerce platform for building your online business. Built on WordPress, it is integrated with the world’s best content management tools. From coffee subscriptions to Spanish lessons to gym memberships to complex enterprise-level eCommerce – visit WooCommerce.com/start to launch a new store and ship your idea.\n"
 "\n"
-"Requirements: WooCommerce v3.5+, the Jetpack plugin.\n"
+"Requirements: WooCommerce v3.5+, the Jetpack plugin."
 msgstr ""
 
 #. translators: Keywords used in the App Store search engine to find the app.
 #. Delimit with a comma between each keyword. Limit to 100 characters including spaces and commas.
 msgctxt "app_store_keywords"
-msgid "Woocommerce, woocommerce app, woocommerce mobile, woo app, woocommerce order alert, wordpress, eComm\n"
+msgid "Woocommerce, woocommerce app, woocommerce mobile, woo app, woocommerce order alert, wordpress, eComm"
 msgstr ""
 
-msgctxt "v1.0-whats-new"
+#. translators: Multi-paragraph text used to display in the Apple App Store.
+#. Limit to 170 characters including spaces and commas.
+msgctxt "app_store_promo_text"
+msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
+msgstr ""
+
+msgctxt "v1.1-whats-new"
 msgid ""
-"With the WooCommerce mobile app, you’ve got your online store in your pocket: manage orders, receive sales notifications, and view key metrics on the go.\n"
-"\n"
-"Drumroll, please: it’s our very first public release! We’re looking forward to iterating early and often and we can’t wait to hear your feedback and improvement suggestions.\n"
-"Get in touch via “Support” in the app or at ideas.woocommerce.com.\n"
-"\n"
-"Thank you to everyone involved in development and early testing!\n"
+"- This update is all about improved reliability and fixes:\n"
+"- Improved localization support on My Store charts and on the Orders & Notifications screens.\n"
+"- The app now hides orders that have a created date listed in the future. (They no longer display under the “Today” section of an order list.)\n"
+"- We’ve removed the payment method summary in the payment section when no payment has been received.\n"
+"- Taxes line is now shown in payments and product details even when the amount to show is zero.\n"
+"- When logging out, the app now resets the credential used with support requests.\n"
+msgstr ""
+
+#. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
+#. No specified characters limit here, but try to keep as short as the source one. 
+msgctxt "app_store_screenshot-1"
+msgid ""
+"Your Store\n"
+"in Your Pocket"
+msgstr ""
+
+#. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
+#. No specified characters limit here, but try to keep as short as the source one. 
+msgctxt "app_store_screenshot-1_b"
+msgid ""
+"Made with\n"
+"at Automattic"
+msgstr ""
+
+#. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
+#. No specified characters limit here, but try to keep as short as the source one. 
+msgctxt "app_store_screenshot-2"
+msgid "View and manage orders"
+msgstr ""
+
+#. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
+#. No specified characters limit here, but try to keep as short as the source one. 
+msgctxt "app_store_screenshot-3"
+msgid "Get real-time order alerts"
+msgstr ""
+
+#. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
+#. No specified characters limit here, but try to keep as short as the source one. 
+msgctxt "app_store_screenshot-4"
+msgid "Track order status"
+msgstr ""
+
+#. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
+#. No specified characters limit here, but try to keep as short as the source one. 
+msgctxt "app_store_screenshot-5"
+msgid ""
+"Scroll through, filter,\n"
+"or look up specific orders"
+msgstr ""
+
+#. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
+#. No specified characters limit here, but try to keep as short as the source one. 
+msgctxt "app_store_screenshot-6"
+msgid ""
+"View store data by week,\n"
+"month, and year"
+msgstr ""
+
+#. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
+#. No specified characters limit here, but try to keep as short as the source one. 
+msgctxt "app_store_screenshot-7"
+msgid ""
+"Check which products are\n"
+"performing best"
+msgstr ""
+
+#. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
+#. No specified characters limit here, but try to keep as short as the source one. 
+msgctxt "app_store_screenshot-8"
+msgid ""
+"Get notified about new\n"
+"customer reviews"
 msgstr ""
 

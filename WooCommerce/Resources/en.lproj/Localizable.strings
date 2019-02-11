@@ -37,8 +37,12 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Adds a note to an order";
 
-/* All filter title */
+/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
+   Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "All";
+
+/* Mark all notifications as read notice */
+"All notifications marked as read" = "All notifications marked as read";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Almost there! Please enter the verification code from your authenticator app.";
@@ -110,15 +114,11 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label
    Cancel prompt for user information. */
 "Cancel" = "Cancel";
 
 /* Cancelled Order Status */
 "Canceled" = "Canceled";
-
-/* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
-"Cannot connect to %@" = "Cannot connect to %@";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Catch up with your favorite sites and join the conversation anywhere, any time.";
@@ -126,8 +126,8 @@
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Certificate error";
 
-/* Settings > Privacy Settings > collect info section. Label the `Collect information` toggle. */
-"Collect information" = "Collect information";
+/* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
+"Collect Information" = "Collect Information";
 
 /* Completed Order Status */
 "Completed" = "Completed";
@@ -414,8 +414,8 @@
 /* Alert button title - confirms and logs out the user */
 "Log Out" = "Log Out";
 
-/* Logout Action */
-"Logout account" = "Logout account";
+/* Log out button title */
+"Log out account" = "Log out account";
 
 /* Title of a button.  */
 "Lost your password?" = "Lost your password?";
@@ -494,7 +494,6 @@
 "No activity this period" = "No activity this period";
 
 /* Fulfill order > customer info > where the address would normally display.
-   Order details > customer info > billing details. This is where the address would normally display.
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "No address specified.";
 
@@ -521,19 +520,17 @@
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Note to customer";
 
-/* Notifications tab title
-   Notifications title */
+/* Title of the Notifications tab — plural form of Notification
+   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
 "Notifications" = "Notifications";
 
-/* Notifications filtered title */
-"Notifications: \(currentTypeFilter.description)" = "Notifications: \(currentTypeFilter.description)";
+/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
+"Notifications: %@" = "Notifications: %@";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "Off";
 
 /* Button title. An acknowledgement of the message displayed in a prompt.
-   Dismisses the alert
-   Ok button for dismissing alert helping users understand their site address
    Submit button on prompt for user information. */
 "OK" = "OK";
 
@@ -553,13 +550,13 @@
 "On Hold" = "On Hold";
 
 /* Opens iOS's Device Settings for the app */
-"Open device settings" = "Open device settings";
+"Open Device Settings" = "Open Device Settings";
 
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Open Mail";
 
 /* Navigates to open source licenses screen */
-"Open source licenses" = "Open source licenses";
+"Open Source Licenses" = "Open Source Licenses";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Optional Tracking Information";
@@ -577,13 +574,12 @@
 /* Order notes section title */
 "Order Notes" = "Order Notes";
 
-/* Orders filter title
-   Orders stat label on dashboard - should be plural.
-   Orders Title */
+/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
+   Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Orders";
 
-/* Orders Title */
-"Orders: \(filter)" = "Orders: \(filter)";
+/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
+"Orders: %@" = "Orders: %@";
 
 /* My Store > Settings > Other app section */
 "Other" = "Other";
@@ -640,11 +636,9 @@
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Privacy Policy";
 
-/* Navigates to Privacy Settings screen */
+/* Navigates to Privacy Settings screen
+   Privacy settings screen title */
 "Privacy Settings" = "Privacy Settings";
-
-/* Privacy settings screen title */
-"Privacy settings" = "Privacy settings";
 
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
@@ -654,7 +648,6 @@
 "Processing" = "Processing";
 
 /* Description for Top Performers left column header
-   Product section title
    Section header title for the product */
 "Product" = "Product";
 
@@ -690,8 +683,8 @@
    Action: removes the current filters from the notifications list */
 "Remove Filters" = "Remove Filters";
 
-/* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
-"Report crashes" = "Report crashes";
+/* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
+"Report Crashes" = "Report Crashes";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Retrieves a list of orders that contain a given keyword.";
@@ -709,7 +702,7 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Review, prepare, and ship these pending orders";
 
-/* Reviews filter title */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
 "Reviews" = "Reviews";
 
 /* Orders Search Placeholder */
@@ -987,6 +980,9 @@
 /* Refresh Action Failed */
 "Unable to refresh list" = "Unable to refresh list";
 
+/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
+"Unable to successfully connect to %@" = "Unable to successfully connect to %@";
+
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Unable to verify the email address. Please try again later.";
 
@@ -1026,9 +1022,6 @@
 
 /* two factor code placeholder */
 "Verification code" = "Verification code";
-
-/* App version label */
-"Version" = "Version";
 
 /* Displays the version of the App */
 "Version %@" = "Version %@";

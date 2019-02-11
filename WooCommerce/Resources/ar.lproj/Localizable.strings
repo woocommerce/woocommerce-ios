@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-01-08 12:54:02+0000 */
+/* Translation-Revision-Date: 2019-02-05 14:54:01+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -42,8 +42,12 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "إضافة ملاحظة إلى طلب";
 
-/* All filter title */
+/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
+   Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "الكل";
+
+/* Mark all notifications as read notice */
+"All notifications marked as read" = "تم وسم جميع التنبيهات كمقروءة";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "تقريبًا هناك! يرجى إدخال رمز التحقق من تطبيق الموثق الخاص بك.";
@@ -111,14 +115,12 @@
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "يتعذر طلب رابط";
 
-/* No comment provided by engineer. */
+/* Button title. Tapping it cancels the login flow.
+   Cancel prompt for user information. */
 "Cancel" = "إلغاء";
 
 /* Cancelled Order Status */
 "Canceled" = "تم الإلغاء";
-
-/* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
-"Cannot connect to %@" = "يتعذر الاتصال بـ %@";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "حافظ على مواقعك المفضلة وانضم إلى المحادثة أينما كنت ووقتما تشاء.";
@@ -126,8 +128,8 @@
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "خطأ في الشهادة";
 
-/* Settings > Privacy Settings > collect info section. Label the `Collect information` toggle. */
-"Collect information" = "جمع المعلومات";
+/* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
+"Collect Information" = "جمع المعلومات";
 
 /* Completed Order Status */
 "Completed" = "اكتمال";
@@ -162,6 +164,9 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "الاستمرار بالقراءة";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"Copy" = "نسخ";
+
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "تعذر التحقق من عمليات شراء الموقع.";
 
@@ -183,10 +188,12 @@
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "تعذر الاتصال. يحظر مضيفك طلبات POST، ويحتاج التطبيق إلى ذلك للاتصال بموقعك. يُرجى الاتصال بالمضيف لحل هذه المشكلة.";
 
-/* No comment provided by engineer. */
+/* Customer info section title
+   Section title for the customer's billing and shipping address */
 "Customer Information" = "معلومات العميل";
 
-/* No comment provided by engineer. */
+/* Customer note section title
+   Section title for a note from the customer */
 "Customer Provided Note" = "الملاحظة المقدمة إلى العميل";
 
 /* Statistical unit - a single day */
@@ -204,7 +211,8 @@
 /* Discount label for payment view */
 "Discount" = "خصم";
 
-/* No comment provided by engineer. */
+/* Add a note screen - button title for closing the view
+   Dismiss the action sheet */
 "Dismiss" = "رفض";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -258,7 +266,8 @@
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "أدخل كلمة مرور حساب وردبرس.كوم الخاص بك.";
 
-/* No comment provided by engineer. */
+/* Title of a button on the magic link screen.
+   Title of a button. */
 "Enter your password instead." = "بدلاً من ذلك، أدخل كلمة المرور.";
 
 /* Failed Order Status */
@@ -306,7 +315,8 @@
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "كيف نساعدك؟";
 
-/* No comment provided by engineer. */
+/* Help and Support navigation title
+   Help button */
 "Help" = "مساعدة";
 
 /* Contact Support Action */
@@ -372,7 +382,8 @@
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "تحميل الطلب";
 
-/* No comment provided by engineer. */
+/* Button title.  Tapping takes the user to the login form.
+   Log In button label. */
 "Log In" = "تسجيل الدخول";
 
 /* Alert button title - confirms and logs out the user */
@@ -396,8 +407,8 @@
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "سجِّل الدخول باستخدام عنوان البريد الإلكتروني لحساب وردبرس.كوم الخاص بك لإدارة متاجر WooCommerce الخاصة بك.";
 
-/* Logout Action */
-"Logout account" = "تسجيل الخروج من الحساب";
+/* Log out button title */
+"Log out account" = "تسجيل الخروج من الحساب";
 
 /* Title of a button. */
 "Lost your password?" = "هل فقدت كلمة مرورك؟";
@@ -468,7 +479,8 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "هل تحتاج إلى مزيد من المساعدة؟";
 
-/* No comment provided by engineer. */
+/* Title of a button.
+   Title of a button. The text should be capitalized. */
 "Next" = "التالي";
 
 /* Empty Notifications List Message */
@@ -480,25 +492,30 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "لا يوجد أي نشاط في هذه الفترة";
 
-/* No comment provided by engineer. */
+/* Fulfill order > customer info > where the address would normally display.
+   Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "لا يوجد عنوان محدد.";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "لا توجد بيانات متاحة";
 
-/* No comment provided by engineer. */
+/* Notifications List (Empty State + Filters)
+   Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "لا توجد نتائج للمعايير المحددة";
 
-/* No comment provided by engineer. */
+/* Labels an order note to let user know it's visible to the customer
+   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "ملاحظة إلى العميل";
 
-/* No comment provided by engineer. */
+/* Title of the Notifications tab — plural form of Notification
+   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
 "Notifications" = "Notifications";
 
-/* Notifications filtered title */
-"Notifications: (currentTypeFilter.description)" = "التنبيهات: (currentTypeFilter.description)";
+/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
+"Notifications: %@" = "التنبيهات: %@";
 
-/* No comment provided by engineer. */
+/* Button title. An acknowledgement of the message displayed in a prompt.
+   Submit button on prompt for user information. */
 "OK" = "موافق";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -519,19 +536,20 @@
 /* On Hold Order Status */
 "On Hold" = "موقوف";
 
+/* Opens iOS's Device Settings for the app */
+"Open Device Settings" = "فتح إعدادات الجهاز";
+
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "فتح البريد";
 
-/* Opens iOS's Device Settings for the app */
-"Open device settings" = "فتح إعدادات الجهاز";
-
 /* Navigates to open source licenses screen */
-"Open source licenses" = "تراخيص المصدر المفتوحة";
+"Open Source Licenses" = "تراخيص المصدر المفتوحة";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "معلومات التعقب الاختيارية";
 
-/* No comment provided by engineer. */
+/* Add a note screen - title. Example: Order #15
+   Order number title */
 "Order #(viewModel.order.number)" = "طلب رقم #(viewModel.order.number)";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
@@ -543,11 +561,12 @@
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "تم وسم الطلب كمُنجز";
 
-/* No comment provided by engineer. */
+/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
+   Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "الطلبات";
 
-/* Orders Title */
-"Orders: (filter)" = "الطلبات: (التصفية)";
+/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
+"Orders: %@" = "الطلبات: %@";
 
 /* My Store > Settings > Other app section */
 "Other" = "أخرى";
@@ -555,7 +574,8 @@
 /* Product section title */
 "PRODUCT" = "المنتج";
 
-/* No comment provided by engineer. */
+/* Login dialog password placeholder
+   Password placeholder */
 "Password" = "كلمة المرور";
 
 /* Payment section title */
@@ -606,19 +626,19 @@
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "سياسة الخصوصية";
 
-/* Navigates to Privacy Settings screen */
+/* Navigates to Privacy Settings screen
+   Privacy settings screen title */
 "Privacy Settings" = "إعدادات الخصوصية";
 
-/* Privacy settings screen title */
-"Privacy settings" = "إعدادات الخصوصية";
-
-/* No comment provided by engineer. */
+/* Labels an order note to let the user know it's private and not seen by the customer
+   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "ملاحظة خاصة";
 
 /* Processing Order Status */
 "Processing" = "قيد المعالجة";
 
-/* No comment provided by engineer. */
+/* Description for Top Performers left column header
+   Section header title for the product */
 "Product" = "المنتج";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
@@ -630,7 +650,8 @@
 /* Quantity abbreviation for section title */
 "QTY" = "الكمية";
 
-/* No comment provided by engineer. */
+/* Quantity abbreviation for section title
+   Section header title - abbreviation for quantity */
 "Qty" = "الكمية";
 
 /* Subtitle for Contact Support */
@@ -645,16 +666,18 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "النطاق المُسجل";
 
-/* No comment provided by engineer. */
+/* Action: Opens the Store in a browser
+   Action: removes the current filters from the notifications list */
 "Remove Filters" = "حذف عوامل التصفية";
 
-/* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
-"Report crashes" = "الإبلاغ عن الأعطال";
+/* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
+"Report Crashes" = "الإبلاغ عن الأعطال";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "يسترد قائمة الطلبات التي تحتوي على كلمة أساسية معيّنة.";
 
-/* No comment provided by engineer. */
+/* Retry Action
+   Retry the last action */
 "Retry" = "إعادة المحاولة";
 
 /* Revenue stat label on dashboard. */
@@ -666,7 +689,7 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "مراجعة هذه الطلبات المُعلّقة وإعدادها وشحنها";
 
-/* Reviews filter title */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
 "Reviews" = "مراجعات";
 
 /* SKU label */
@@ -687,7 +710,8 @@
 /* Tells user to set an email that support can use for replies */
 "Set email" = "تعيين البريد الإلكتروني";
 
-/* No comment provided by engineer. */
+/* Accessibility label for the Settings button.
+   Settings navigation title */
 "Settings" = "إعدادات";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -885,7 +909,8 @@
 /* No comment provided by engineer. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "للاستمرار باستخدام حساب Google هذا، يُرجى تسجيل الدخول أولاً باستخدام كلمة مرور وردبرس.كوم. سيُطلب منك هذا مرة واحدة فقط.";
 
-/* No comment provided by engineer. */
+/* Today Section Header
+   Top Performers section title - today */
 "Today" = "اليوم";
 
 /* Header label for Top Performers section of My Store tab. */
@@ -933,6 +958,9 @@
 /* Refresh Action Failed */
 "Unable to refresh list" = "يتعذر تحديث القائمة";
 
+/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
+"Unable to successfully connect to %@" = "تعذر الاتصال بـ %@ بنجاح";
+
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "تعذر التحقق من عنوان البريد الإلكتروني. يُرجى إعادة المحاولة لاحقًا.";
 
@@ -957,7 +985,8 @@
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "تم تحديث %1$@ في %2$@";
 
-/* No comment provided by engineer. */
+/* Login dialog username placeholder
+   Username placeholder */
 "Username" = "اسم المستخدم";
 
 /* No comment provided by engineer. */
@@ -965,9 +994,6 @@
 
 /* two factor code placeholder */
 "Verification code" = "رمز التحقق";
-
-/* App version label */
-"Version" = "النسخة";
 
 /* Displays the version of the App */
 "Version %@" = "الإصدار %@";

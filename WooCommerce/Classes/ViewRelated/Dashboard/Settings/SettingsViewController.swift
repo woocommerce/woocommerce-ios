@@ -32,7 +32,6 @@ class SettingsViewController: UIViewController {
 
 
     // MARK: - Overridden Methods
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -165,20 +164,20 @@ private extension SettingsViewController {
     func configureLicenses(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Open source licenses", comment: "Navigates to open source licenses screen")
+        cell.textLabel?.text = NSLocalizedString("Open Source Licenses", comment: "Navigates to open source licenses screen")
     }
 
     func configureAppSettings(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Open device settings", comment: "Opens iOS's Device Settings for the app")
+        cell.textLabel?.text = NSLocalizedString("Open Device Settings", comment: "Opens iOS's Device Settings for the app")
     }
 
     func configureLogout(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = StyleManager.destructiveActionColor
-        cell.textLabel?.text = NSLocalizedString("Logout account", comment: "Logout Action")
+        cell.textLabel?.text = NSLocalizedString("Log out account", comment: "Log out button title")
     }
 }
 

@@ -1,0 +1,6 @@
+- This update is all about improved reliability and fixes:
+- Improved localization support on My Store charts and on the Orders & Notifications screens.
+- The app now hides orders that have a created date listed in the future. (They no longer display under the “Today” section of an order list.)
+- We’ve removed the payment method summary in the payment section when no payment has been received.
+- Taxes line is now shown in payments and product details even when the amount to show is zero.
+- When logging out, the app now resets the credential used with support requests.

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-01-09 09:54:02+0000 */
+/* Translation-Revision-Date: 2019-02-08 07:54:02+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -42,8 +42,12 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "주문에 메모 추가";
 
-/* All filter title */
+/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
+   Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "모든";
+
+/* Mark all notifications as read notice */
+"All notifications marked as read" = "모든 알림이 읽음으로 표시됨";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "마지막 부분입니다! 인증 앱의 확인 코드를 입력하세요.";
@@ -111,14 +115,12 @@
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "링크를 요청할 수 없음";
 
-/* No comment provided by engineer. */
+/* Button title. Tapping it cancels the login flow.
+   Cancel prompt for user information. */
 "Cancel" = "취소";
 
 /* Cancelled Order Status */
 "Canceled" = "취소됨";
-
-/* Error displayed when trying to access a site on the site picker screen. It reads: Cannot connect to {site name} */
-"Cannot connect to %@" = "%@에 연결할 수 없습니다";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "언제, 어디서든지 즐겨 찾는 사이트의 최신 소식을 확인하고 대화에 참여하세요.";
@@ -126,8 +128,8 @@
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "인증서 오류";
 
-/* Settings > Privacy Settings > collect info section. Label the `Collect information` toggle. */
-"Collect information" = "정보 수집";
+/* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
+"Collect Information" = "정보 수집";
 
 /* Completed Order Status */
 "Completed" = "완료";
@@ -162,6 +164,9 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "계속 읽기";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"Copy" = "복사";
+
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "사이트 구매를 확인할 수 없습니다.";
 
@@ -183,10 +188,12 @@
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "연결할 수 없습니다. 호스트에서 POST 요청을 차단하고 있으나 앱에서 회원님의 사이트와 통신하려면 이 요청이 필요합니다. 호스트에 문의하여 이 문제를 해결하세요.";
 
-/* No comment provided by engineer. */
+/* Customer info section title
+   Section title for the customer's billing and shipping address */
 "Customer Information" = "고객 정보";
 
-/* No comment provided by engineer. */
+/* Customer note section title
+   Section title for a note from the customer */
 "Customer Provided Note" = "고객이 남긴 메모";
 
 /* Statistical unit - a single day */
@@ -204,7 +211,8 @@
 /* Discount label for payment view */
 "Discount" = "할인";
 
-/* No comment provided by engineer. */
+/* Add a note screen - button title for closing the view
+   Dismiss the action sheet */
 "Dismiss" = "무시";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -258,7 +266,8 @@
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "워드프레스닷컴 계정에 대한 비밀번호를 입력합니다.";
 
-/* No comment provided by engineer. */
+/* Title of a button on the magic link screen.
+   Title of a button. */
 "Enter your password instead." = "비밀번호를 입력하세요.";
 
 /* Failed Order Status */
@@ -306,7 +315,8 @@
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "어떻게 도와드릴까요?";
 
-/* No comment provided by engineer. */
+/* Help and Support navigation title
+   Help button */
 "Help" = "도움말";
 
 /* Contact Support Action */
@@ -372,7 +382,8 @@
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "주문 로드 중";
 
-/* No comment provided by engineer. */
+/* Button title.  Tapping takes the user to the login form.
+   Log In button label. */
 "Log In" = "로그인";
 
 /* Alert button title - confirms and logs out the user */
@@ -396,8 +407,8 @@
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "WooCommerce 스토어를 관리하려면 워드프레스닷컴 계정 이메일 주소로 로그인합니다.";
 
-/* Logout Action */
-"Logout account" = "로그아웃 계정";
+/* Log out button title */
+"Log out account" = "로그아웃 계정";
 
 /* Title of a button. */
 "Lost your password?" = "비밀번호 분실?";
@@ -468,7 +479,8 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "더 많은 도움이 필요하세요?";
 
-/* No comment provided by engineer. */
+/* Title of a button.
+   Title of a button. The text should be capitalized. */
 "Next" = "다음";
 
 /* Empty Notifications List Message */
@@ -480,25 +492,30 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "이 기간에 활동이 없음";
 
-/* No comment provided by engineer. */
+/* Fulfill order > customer info > where the address would normally display.
+   Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "주소가 지정되지 않았습니다.";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "사용 가능한 데이터 없음";
 
-/* No comment provided by engineer. */
+/* Notifications List (Empty State + Filters)
+   Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "선택한 기준에 맞는 결과가 없음";
 
-/* No comment provided by engineer. */
+/* Labels an order note to let user know it's visible to the customer
+   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "고객에게 남길 메모";
 
-/* No comment provided by engineer. */
+/* Title of the Notifications tab — plural form of Notification
+   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
 "Notifications" = "Notifications";
 
-/* Notifications filtered title */
-"Notifications: (currentTypeFilter.description)" = "알림: (currentTypeFilter.description)";
+/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
+"Notifications: %@" = "알림: %@";
 
-/* No comment provided by engineer. */
+/* Button title. An acknowledgement of the message displayed in a prompt.
+   Submit button on prompt for user information. */
 "OK" = "확인";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -519,19 +536,20 @@
 /* On Hold Order Status */
 "On Hold" = "보류됨";
 
+/* Opens iOS's Device Settings for the app */
+"Open Device Settings" = "기기 설정 열기";
+
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "메일 열기";
 
-/* Opens iOS's Device Settings for the app */
-"Open device settings" = "기기 설정 열기";
-
 /* Navigates to open source licenses screen */
-"Open source licenses" = "오픈 소스 라이선스";
+"Open Source Licenses" = "오픈 소스 라이선스";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "선택적 추적 정보";
 
-/* No comment provided by engineer. */
+/* Add a note screen - title. Example: Order #15
+   Order number title */
 "Order #(viewModel.order.number)" = "주문 #(viewModel.order.number)";
 
 /* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
@@ -543,11 +561,12 @@
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "주문이 이행됨으로 표시됨";
 
-/* No comment provided by engineer. */
+/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
+   Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "주문";
 
-/* Orders Title */
-"Orders: (filter)" = "주문: (필터)";
+/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
+"Orders: %@" = "주문: %@";
 
 /* My Store > Settings > Other app section */
 "Other" = "기타";
@@ -555,7 +574,8 @@
 /* Product section title */
 "PRODUCT" = "상품";
 
-/* No comment provided by engineer. */
+/* Login dialog password placeholder
+   Password placeholder */
 "Password" = "비밀번호";
 
 /* Payment section title */
@@ -606,19 +626,19 @@
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "개인정보 취급방침";
 
-/* Navigates to Privacy Settings screen */
+/* Navigates to Privacy Settings screen
+   Privacy settings screen title */
 "Privacy Settings" = "개인 정보 설정";
 
-/* Privacy settings screen title */
-"Privacy settings" = "프라이버시 설정";
-
-/* No comment provided by engineer. */
+/* Labels an order note to let the user know it's private and not seen by the customer
+   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "비공개 메모";
 
 /* Processing Order Status */
 "Processing" = "처리 중";
 
-/* No comment provided by engineer. */
+/* Description for Top Performers left column header
+   Section header title for the product */
 "Product" = "상품";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
@@ -630,7 +650,8 @@
 /* Quantity abbreviation for section title */
 "QTY" = "수량";
 
-/* No comment provided by engineer. */
+/* Quantity abbreviation for section title
+   Section header title - abbreviation for quantity */
 "Qty" = "수량";
 
 /* Subtitle for Contact Support */
@@ -645,16 +666,18 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "등록된 도메인";
 
-/* No comment provided by engineer. */
+/* Action: Opens the Store in a browser
+   Action: removes the current filters from the notifications list */
 "Remove Filters" = "필터 제거";
 
-/* Settings > Privacy Settings > report crashes section. Label for the `Report crashes` toggle. */
-"Report crashes" = "충돌 보고";
+/* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
+"Report Crashes" = "충돌 보고";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "지정된 키워드가 있는 주문 목록을 검색합니다.";
 
-/* No comment provided by engineer. */
+/* Retry Action
+   Retry the last action */
 "Retry" = "재실행";
 
 /* Revenue stat label on dashboard. */
@@ -666,7 +689,7 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "대기 중인 주문 검토, 준비 및 배송";
 
-/* Reviews filter title */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
 "Reviews" = "검토";
 
 /* SKU label */
@@ -687,7 +710,8 @@
 /* Tells user to set an email that support can use for replies */
 "Set email" = "이메일 설정";
 
-/* No comment provided by engineer. */
+/* Accessibility label for the Settings button.
+   Settings navigation title */
 "Settings" = "설정";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -885,7 +909,8 @@
 /* No comment provided by engineer. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "이 Google 계정을 진행하려면 먼저 워드프레스닷컴 비밀번호로 로그인하세요. 이 메시지는 한 번만 표시됩니다.";
 
-/* No comment provided by engineer. */
+/* Today Section Header
+   Top Performers section title - today */
 "Today" = "오늘";
 
 /* Header label for Top Performers section of My Store tab. */
@@ -933,6 +958,9 @@
 /* Refresh Action Failed */
 "Unable to refresh list" = "목록을 새로 고칠 수 없음";
 
+/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
+"Unable to successfully connect to %@" = "%@에 연결할 수 없습니다.";
+
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "이메일 주소를 확인할 수 없습니다. 나중에 다시 시도하세요.";
 
@@ -957,7 +985,8 @@
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "%2$@에 %1$@ 업데이트";
 
-/* No comment provided by engineer. */
+/* Login dialog username placeholder
+   Username placeholder */
 "Username" = "사용자명";
 
 /* No comment provided by engineer. */
@@ -965,9 +994,6 @@
 
 /* two factor code placeholder */
 "Verification code" = "확인 코드";
-
-/* App version label */
-"Version" = "버전";
 
 /* Displays the version of the App */
 "Version %@" = "버전 %@";

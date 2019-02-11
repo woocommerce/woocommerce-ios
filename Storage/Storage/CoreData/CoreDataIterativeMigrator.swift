@@ -13,6 +13,8 @@ public struct CoreDataIterativeMigrator {
     ///     - to: The target/most current model the migrator should migrate to.
     ///     - using: List of models on disk, sorted in migration order, that should include the to: model.
     ///
+    /// - Returns: True if the process succeeded and didn't run into any errors. False if there was any problem and the store was left untouched.
+    ///
     /// - Throws: A whole bunch of crap is possible to be thrown between Core Data and FileManager.
     ///
     static func iterativeMigrate(sourceStore: URL, storeType: String, to targetModel:NSManagedObjectModel, using modelNames: [String]) throws -> Bool {

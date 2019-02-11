@@ -87,7 +87,7 @@ public struct CoreDataIterativeMigrator {
             }
 
             // Migrate the model to the next step
-            DDLogWarn("Attempting migration from \(modelNames[index]) to \(modelNames[index + 1])")
+            DDLogWarn("⚠️ Attempting migration from \(modelNames[index]) to \(modelNames[index + 1])")
             
             guard migrateStore(at: sourceStore, storeType: storeType, fromModel: modelFrom, toModel: modelTo, with: migrateWithModel) == true else {
                 return false

@@ -105,7 +105,7 @@ class StoresManager {
 
     /// Prepares for changing the selected store and remains Authenticated.
     ///
-    func resetAuthentication() {
+    func removeDefaultStore() {
         WooAnalytics.shared.refreshUserData()
         ZendeskManager.shared.reset()
         AppDelegate.shared.pushNotesManager.unregisterForRemoteNotifications()

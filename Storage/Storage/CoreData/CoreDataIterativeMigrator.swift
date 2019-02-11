@@ -101,11 +101,7 @@ public struct CoreDataIterativeMigrator {
 
 private extension CoreDataIterativeMigrator {
     static func migrateStore(at url: URL, storeType: String, fromModel: NSManagedObjectModel, toModel: NSManagedObjectModel, with mappingModel: NSMappingModel) -> Bool {
-        // Build a temporary path to write the migrated store.
-        let fileManager = FileManager.default
-        let tempDestinationURL = url.deletingLastPathComponent().appendingPathComponent("migration").appendingPathComponent(url.lastPathComponent)
-        try? fileManager.removeItem(at: tempDestinationURL.deletingLastPathComponent())
-        try? fileManager.createDirectory(at: tempDestinationURL.deletingLastPathComponent(), withIntermediateDirectories: false, attributes: nil)
+        let tempDestinationURL = createTemporaryFolder(at: url)
 
         // Migrate from the source model to the target model using the mapping,
         // and store the resulting data at the temporary path.
@@ -116,44 +112,74 @@ private extension CoreDataIterativeMigrator {
             return false
         }
 
+        do {
+            let backupURL = try makeBackup(at: url)
+            try copyMigratedOverOriginal(from: tempDestinationURL, to: url)
+            try deleteBackupCopies(at: backupURL)
+        } catch {
+            return false
+        }
+
+
+        return true
+    }
+
+    static func createTemporaryFolder(at storeURL: URL) -> URL {
+        // Build a temporary path to write the migrated store.
+        let fileManager = FileManager.default
+        let tempDestinationURL = storeURL.deletingLastPathComponent().appendingPathComponent("migration").appendingPathComponent(storeURL.lastPathComponent)
+        try? fileManager.removeItem(at: tempDestinationURL.deletingLastPathComponent())
+        try? fileManager.createDirectory(at: tempDestinationURL.deletingLastPathComponent(), withIntermediateDirectories: false, attributes: nil)
+
+        return tempDestinationURL
+    }
+
+    static func makeBackup(at storeURL: URL) throws -> URL {
         // Move the original source store to a backup location.
-        let backupURL = url.deletingLastPathComponent().appendingPathComponent("backup")
+        let fileManager = FileManager.default
+        let backupURL = storeURL.deletingLastPathComponent().appendingPathComponent("backup")
         try? fileManager.removeItem(at: backupURL)
         try? fileManager.createDirectory(atPath: backupURL.path, withIntermediateDirectories: false, attributes: nil)
         do {
-            let files = try fileManager.contentsOfDirectory(atPath: url.deletingLastPathComponent().path)
+            let files = try fileManager.contentsOfDirectory(atPath: storeURL.deletingLastPathComponent().path)
             try files.forEach { (file) in
-                if file.hasPrefix(url.lastPathComponent) {
-                    let fullPath = url.deletingLastPathComponent().appendingPathComponent(file).path
+                if file.hasPrefix(storeURL.lastPathComponent) {
+                    let fullPath = storeURL.deletingLastPathComponent().appendingPathComponent(file).path
                     let toPath = URL(fileURLWithPath: backupURL.path).appendingPathComponent(file).path
                     try fileManager.moveItem(atPath: fullPath, toPath: toPath)
                 }
             }
         } catch {
             DDLogError("⛔️ Error while moving original source store to a backup location: \(error)")
-
-            return false
+            throw error
         }
 
+        return backupURL
+    }
+
+    static func copyMigratedOverOriginal(from tempDestinationURL: URL, to storeURL: URL) throws {
         // Copy migrated over the original files
         do {
+            let fileManager = FileManager.default
             let files = try fileManager.contentsOfDirectory(atPath: tempDestinationURL.deletingLastPathComponent().path)
             try files.forEach { (file) in
                 if file.hasPrefix(tempDestinationURL.lastPathComponent) {
                     let fullPath = tempDestinationURL.deletingLastPathComponent().appendingPathComponent(file).path
-                    let toPath = url.deletingLastPathComponent().appendingPathComponent(file).path
+                    let toPath = storeURL.deletingLastPathComponent().appendingPathComponent(file).path
                     try? fileManager.removeItem(atPath: toPath)
                     try fileManager.moveItem(atPath: fullPath, toPath: toPath)
                 }
             }
         } catch {
             DDLogError("⛔️ Error while copying migrated over the original files: \(error)")
-
-            return false
+            throw error
         }
+    }
 
+    static func deleteBackupCopies(at backupURL: URL) throws {
         // Delete backup copies of the original file before migration
         do {
+            let fileManager = FileManager.default
             let files = try fileManager.contentsOfDirectory(atPath: backupURL.path)
             try files.forEach { (file) in
                 let fullPath = URL(fileURLWithPath: backupURL.path).appendingPathComponent(file).path
@@ -161,13 +187,14 @@ private extension CoreDataIterativeMigrator {
             }
         } catch {
             DDLogError("⛔️ Error while deleting backup copies of the original file before migration: \(error)")
-
-            return false
+            throw error
         }
-
-        return true
     }
+}
 
+/// Helper functions
+///
+private extension CoreDataIterativeMigrator {
     static func metadataForPersistentStore(storeType: String, at url: URL) throws -> [String : Any]? {
 
         guard let sourceMetadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: storeType, at: url, options: nil) else {

@@ -24,6 +24,17 @@ extension NSParagraphStyle {
         return NSMutableParagraphStyle(standardLineHeightUsingFont: UIFont.footnote)
     }
 
+    /// Returns a ParagraphStyle with it's minimum Line Height set to accomodate `UIFont.footnote` and a `lineBreakMode` set to `.byTruncatingTail`
+    ///
+    static var truncatingTailFootnote: NSParagraphStyle {
+        guard let baseStyle = footnote as? NSMutableParagraphStyle else {
+            return footnote
+        }
+        baseStyle.lineBreakMode = .byTruncatingTail
+
+        return baseStyle
+    }
+
     /// Returns a ParagraphStyle with it's minimum Line Height set to accomodate `UIFont.body` / Centered
     ///
     static var badge: NSParagraphStyle {

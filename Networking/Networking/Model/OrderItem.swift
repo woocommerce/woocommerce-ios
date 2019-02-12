@@ -7,7 +7,7 @@ public struct OrderItem: Decodable {
     public let itemID: Int
     public let name: String
     public let productID: Int
-    public let quantity: Int
+    public let quantity: NSDecimalNumber
     public let price: NSDecimalNumber
     public let sku: String?
     public let subtotal: String
@@ -19,7 +19,7 @@ public struct OrderItem: Decodable {
 
     /// OrderItem struct initializer.
     ///
-    public init(itemID: Int, name: String, productID: Int, quantity: Int, price: NSDecimalNumber, sku: String?, subtotal: String, subtotalTax: String, taxClass: String, total: String, totalTax: String, variationID: Int) {
+    public init(itemID: Int, name: String, productID: Int, quantity: NSDecimalNumber, price: NSDecimalNumber, sku: String?, subtotal: String, subtotalTax: String, taxClass: String, total: String, totalTax: String, variationID: Int) {
         self.itemID = itemID
         self.name = name
         self.productID = productID
@@ -41,7 +41,8 @@ public struct OrderItem: Decodable {
         let itemID = try container.decode(Int.self, forKey: .itemID)
         let name = try container.decode(String.self, forKey: .name)
         let productID = try container.decode(Int.self, forKey: .productID)
-        let quantity = try container.decode(Int.self, forKey: .quantity)
+        let decimalQuantity = try container.decode(Decimal.self, forKey: .quantity)
+        let quantity = NSDecimalNumber(decimal: decimalQuantity)
         let decimalPrice = try container.decodeIfPresent(Decimal.self, forKey: .price) ?? Decimal(0)
         let price = NSDecimalNumber(decimal: decimalPrice)
         let sku = try container.decodeIfPresent(String.self, forKey: .sku)

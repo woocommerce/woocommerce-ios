@@ -50,13 +50,13 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        refreshResultsController()
         configureNavigation()
         configureMainView()
         configureSections()
         configureTableView()
         configureTableViewFooter()
         registerTableViewCells()
-        refreshResultsController()
     }
 }
 

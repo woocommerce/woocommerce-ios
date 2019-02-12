@@ -38,8 +38,6 @@ public enum WooAnalyticsStat: String {
     case loginUsernamePasswordFormViewed        = "login_username_password_form_viewed"
     case loginTwoFactorFormViewed               = "login_two_factor_form_viewed"
     case loginEpilogueViewed                    = "login_epilogue_viewed"
-    case loginEpilogueStoresShown               = "login_epilogue_stores_shown"
-    case loginEpilogueContinueTapped            = "login_epilogue_store_picker_continue_tapped"
     case loginProloguePaged                     = "login_prologue_paged"
     case loginPrologueViewed                    = "login_prologue_viewed"
     case loginPrologueContinueTapped            = "login_prologue_jetpack_login_button_tapped"
@@ -76,6 +74,12 @@ public enum WooAnalyticsStat: String {
     case dashboardTopPerformersLoaded           = "dashboard_top_performers_loaded"
     case dashboardUnfulfilledOrdersLoaded       = "dashboard_unfulfilled_orders_loaded"
 
+    // Site picker. Can be triggered by login epilogue or settings.
+    //
+    case sitePickerContinueTapped               = "site_picker_continue_tapped"
+    case sitePickerStoresShown                  = "site_picker_stores_shown"
+    case sitePickerHelpButtonTapped             = "site_picker_help_button_tapped"
+
     // Help & Support Events
     //
     case supportBrowseOurFaqTapped              = "support_faq_viewed"
@@ -99,6 +103,7 @@ public enum WooAnalyticsStat: String {
     // Settings View Events
     //
     case settingsTapped                         = "main_menu_settings_tapped"
+    case settingsSelectedStoreTapped            = "settings_selected_store_tapped"
     case settingsContactSupportTapped           = "main_menu_contact_support_tapped"
 
     case settingsPrivacySettingsTapped          = "settings_privacy_settings_tapped"
@@ -208,7 +213,7 @@ public extension WooAnalyticsStat {
              .loginMagicLinkRequestFormViewed, .loginMagicLinkExited, .loginMagicLinkFailed, .loginMagicLinkOpened,
              .loginMagicLinkRequested, .loginMagicLinkSucceeded, .loginPasswordFormViewed, .loginURLFormViewed,
              .loginURLHelpScreenViewed, .loginUsernamePasswordFormViewed, .loginTwoFactorFormViewed, .loginEpilogueViewed,
-             .loginEpilogueStoresShown, .loginEpilogueContinueTapped, .loginProloguePaged, .loginPrologueViewed,
+             .loginProloguePaged, .loginPrologueViewed,
              .loginPrologueContinueTapped, .loginPrologueJetpackInstructions, .loginForgotPasswordClicked, .loginSocialButtonClick,
              .loginSocialButtonFailure, .loginSocialConnectSuccess, .loginSocialConnectFailure, .loginSocialSuccess,
              .loginSocialFailure, .loginSocial2faNeeded, .loginSocialAccountsNeedConnecting, .loginSocialErrorUnknownUser,

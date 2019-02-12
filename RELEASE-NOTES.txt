@@ -1,1 +1,2 @@
 - bugfix: Allows for decimal quantities which some extensions have
+- new feature: quick site select. Navigate to Settings > select row with store website.

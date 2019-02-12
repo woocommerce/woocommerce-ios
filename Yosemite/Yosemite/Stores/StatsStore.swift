@@ -22,6 +22,8 @@ public class StatsStore: Store {
         }
 
         switch action {
+        case .resetStoredStats(let onCompletion):
+            resetStoredStats(onCompletion: onCompletion)
         case .retrieveOrderStats(let siteID, let granularity, let latestDateToInclude, let quantity, let onCompletion):
             retrieveOrderStats(siteID: siteID, granularity: granularity, latestDateToInclude: latestDateToInclude,  quantity: quantity, onCompletion: onCompletion)
         case .retrieveSiteVisitStats(let siteID, let granularity, let latestDateToInclude, let quantity, let onCompletion):
@@ -39,7 +41,7 @@ public class StatsStore: Store {
 //
 public extension StatsStore  {
 
-    /// Converts a Date into the appropriatly formatted string based on the `OrderStatGranularity`
+    /// Converts a Date into the appropriately formatted string based on the `OrderStatGranularity`
     ///
     static func buildDateString(from date: Date, with granularity: StatGranularity) -> String {
         switch granularity {
@@ -59,6 +61,19 @@ public extension StatsStore  {
 // MARK: - Services!
 //
 private extension StatsStore  {
+
+    /// Deletes all of the Stats data.
+    ///
+    func resetStoredStats(onCompletion: () -> Void) {
+        let storage = storageManager.viewStorage
+        storage.deleteAllObjects(ofType: Storage.OrderStats.self)
+        storage.deleteAllObjects(ofType: Storage.SiteVisitStats.self)
+        storage.deleteAllObjects(ofType: Storage.TopEarnerStats.self)
+        storage.saveIfNeeded()
+        DDLogDebug("Stats deleted")
+
+        onCompletion()
+    }
 
     /// Retrieves the order stats associated with the provided Site ID (if any!).
     ///

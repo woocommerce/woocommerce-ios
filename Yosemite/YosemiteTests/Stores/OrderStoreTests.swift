@@ -738,7 +738,7 @@ private extension OrderStoreTests {
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle",
                               productID: 234,
-                              quantity: 1,
+                              quantity: NSDecimalNumber(decimal: 1.5),
                               price: NSDecimalNumber(integerLiteral: 0),
                               sku: "5555-A",
                               subtotal: "10.00",

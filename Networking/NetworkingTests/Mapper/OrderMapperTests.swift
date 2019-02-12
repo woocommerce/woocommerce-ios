@@ -89,6 +89,19 @@ class OrderMapperTests: XCTestCase {
         XCTAssertEqual(firstItem.variationID, 0)
     }
 
+    /// Verifies that Order Items with a decimal quantity are parsed properly
+    ///
+    func testOrderItemsWithDecimalQuantityAreCorrectlyParsed() {
+        guard let order = mapLoadOrderResponse() else {
+            XCTFail()
+            return
+        }
+
+        let secondItem = order.items[1]
+        XCTAssertEqual(secondItem.itemID, 891)
+        XCTAssertEqual(secondItem.quantity, NSDecimalNumber(decimal: 1.5))
+    }
+
     /// Verifies that an Order in a broken state does [gets default values] | [gets skipped while parsing]
     ///
     func testOrderHasDefaultDateCreatedWhenNullDateReceived() {

@@ -30,7 +30,7 @@ extension NSParagraphStyle {
         let style = NSMutableParagraphStyle()
         style.setParagraphStyle(footnote)
         style.lineBreakMode = .byTruncatingTail
-        
+
         return style
     }
 

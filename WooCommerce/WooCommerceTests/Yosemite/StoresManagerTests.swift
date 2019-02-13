@@ -65,6 +65,31 @@ class StoresManagerTests: XCTestCase {
         let session = SessionManager.testingInstance
         XCTAssertEqual(session.defaultCredentials, SessionSettings.credentials)
     }
+
+    /// Verifies the user remains authenticated after site switching
+    ///
+    func testRemoveDefaultStoreLeavesUserAuthenticated() {
+        let manager = StoresManager.testingInstance
+        manager.authenticate(credentials: SessionSettings.credentials)
+        manager.removeDefaultStore()
+
+        XCTAssertTrue(manager.isAuthenticated)
+    }
+
+    /// Verify the session manager resets properties after site switching
+    ///
+    func testRemoveDefaultStoreDeletesSessionManagerDefaultsExceptCredentials() {
+        let manager = StoresManager.testingInstance
+        manager.authenticate(credentials: SessionSettings.credentials)
+
+        let session = SessionManager.testingInstance
+        manager.removeDefaultStore()
+
+        XCTAssertNotNil(session.defaultCredentials)
+        XCTAssertNil(session.defaultAccount)
+        XCTAssertNil(session.defaultStoreID)
+        XCTAssertNil(session.defaultSite)
+    }
 }
 
 

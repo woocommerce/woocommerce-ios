@@ -92,6 +92,7 @@ private extension AccountHeaderView {
         helpButton.setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
         helpButton.setTitleColor(StyleManager.wooGreyMid, for: .highlighted)
         helpButton.on(.touchUpInside) { [weak self] control in
+            WooAnalytics.shared.track(.sitePickerHelpButtonTapped)
             self?.handleHelpButtonTapped(control)
         }
     }

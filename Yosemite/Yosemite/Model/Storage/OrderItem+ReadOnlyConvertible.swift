@@ -11,7 +11,7 @@ extension Storage.OrderItem: ReadOnlyConvertible {
     public func update(with orderItem: Yosemite.OrderItem) {
         itemID = Int64(orderItem.itemID)
         name = orderItem.name
-        quantity = Int64(orderItem.quantity)
+        quantity = orderItem.quantity
         price = orderItem.price
         productID = Int64(orderItem.productID)
         sku = orderItem.sku
@@ -29,7 +29,7 @@ extension Storage.OrderItem: ReadOnlyConvertible {
         return OrderItem(itemID: Int(itemID),
                          name: name ?? "",
                          productID: Int(productID),
-                         quantity: Int(quantity),
+                         quantity: quantity,
                          price: price ?? NSDecimalNumber(integerLiteral: 0),
                          sku: sku,
                          subtotal: subtotal ?? "",

@@ -109,7 +109,7 @@
                             "name": "Fruits Bundle",
                             "product_id": 234,
                             "variation_id": 0,
-                            "quantity": 1,
+                            "quantity": 1.5,
                             "tax_class": "",
                             "subtotal": "10.00",
                             "subtotal_tax": "0.40",

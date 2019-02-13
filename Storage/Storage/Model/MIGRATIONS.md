@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 10 (Release 1.3.0.0)
+- @astralbodies 2019-02-08
+    - Changes `quantity` attribute on `OrderItem` from Int64 to Decimal
+
 ## Model 9 (Release 1.0.0.1) 
 - @bummytime 2019-01-11
     - Added `price` attribute on `OrderItem` entity

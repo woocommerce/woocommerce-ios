@@ -53,6 +53,7 @@ private extension OrderStore {
         let storage = storageManager.viewStorage
         storage.deleteAllObjects(ofType: Storage.Order.self)
         storage.saveIfNeeded()
+        DDLogDebug("Orders deleted")
 
         onCompletion()
     }

@@ -87,9 +87,9 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
 //
 extension TopPerformerDataViewController {
 
-    func syncTopPerformers(onCompletion: (() -> Void)? = nil) {
+    func syncTopPerformers(onCompletion: ((Error?) -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            onCompletion?()
+            onCompletion?(nil)
             return
         }
 
@@ -106,7 +106,7 @@ extension TopPerformerDataViewController {
             } else {
                 WooAnalytics.shared.track(.dashboardTopPerformersLoaded, withProperties: ["granularity": self.granularity.rawValue])
             }
-            onCompletion?()
+            onCompletion?(error)
         }
 
         StoresManager.shared.dispatch(action)

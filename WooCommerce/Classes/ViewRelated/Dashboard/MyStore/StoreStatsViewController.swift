@@ -66,28 +66,39 @@ extension StoreStatsViewController {
         }
     }
 
-    func syncAllStats(onCompletion: (() -> Void)? = nil) {
+    func syncAllStats(onCompletion: ((Error?) -> Void)? = nil) {
         let group = DispatchGroup()
+
+        var syncError: Error? = nil
 
         ensureGhostContentIsDisplayed()
 
         periodVCs.forEach { (vc) in
             group.enter()
 
-            syncOrderStats(for: vc.granularity) { _ in
-                WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": vc.granularity.rawValue])
+            syncOrderStats(for: vc.granularity) { error in
+                if let error = error {
+                    DDLogError("⛔️ Error synchronizing order stats: \(error)")
+                    syncError = error
+                } else {
+                    WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": vc.granularity.rawValue])
+                }
                 group.leave()
             }
 
             group.enter()
-            syncVisitorStats(for: vc.granularity) { _ in
+            syncVisitorStats(for: vc.granularity) { error in
+                if let error = error {
+                    DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
+                    syncError = error
+                }
                 group.leave()
             }
         }
 
         group.notify(queue: .main) { [weak self] in
             self?.removeGhostContent()
-            onCompletion?()
+            onCompletion?(syncError)
         }
     }
 }

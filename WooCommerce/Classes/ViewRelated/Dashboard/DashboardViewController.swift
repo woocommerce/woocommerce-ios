@@ -165,23 +165,39 @@ private extension DashboardViewController {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
         let group = DispatchGroup()
 
+        var reloadError: Error? = nil
+
         group.enter()
-        storeStatsViewController.syncAllStats() {
+        storeStatsViewController.syncAllStats() { error in
+            if let error = error {
+                reloadError = error
+            }
             group.leave()
         }
 
         group.enter()
-        newOrdersViewController.syncNewOrders() {
+        newOrdersViewController.syncNewOrders() { error in
+            if let error = error {
+                reloadError = error
+            }
             group.leave()
         }
 
         group.enter()
-        topPerformersViewController.syncTopPerformers() {
+        topPerformersViewController.syncTopPerformers() { error in
+            if let error = error {
+                reloadError = error
+            }
             group.leave()
         }
 
         group.notify(queue: .main) { [weak self] in
             self?.refreshControl.endRefreshing()
+
+            if let error = reloadError {
+                DDLogError("⛔️ Error loading dashboard: \(error)")
+                self?.displaySyncingErrorNotice()
+            }
         }
     }
 
@@ -208,6 +224,18 @@ private extension DashboardViewController {
             view.isHidden = true
             view.alpha = UIKitConstants.alphaZero
         })
+    }
+
+    private func displaySyncingErrorNotice() {
+        let title = NSLocalizedString("My store", comment: "My Store Notice Title for loading error")
+        let message = NSLocalizedString("Unable to load content", comment: "Load Action Failed")
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.refreshControl.beginRefreshing()
+            self?.reloadData()
+        }
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 }
 

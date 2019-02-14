@@ -59,21 +59,26 @@ class TopPerformersViewController: ButtonBarPagerTabStripViewController {
 //
 extension TopPerformersViewController {
 
-    func syncTopPerformers(onCompletion: (() -> Void)? = nil) {
+    func syncTopPerformers(onCompletion: ((Error?) -> Void)? = nil) {
         let group = DispatchGroup()
+
+        var syncError: Error? = nil
 
         ensureGhostContentIsDisplayed()
 
         dataVCs.forEach { vc in
             group.enter()
-            vc.syncTopPerformers() {
+            vc.syncTopPerformers() { error in
+                if let error = error {
+                    syncError = error
+                }
                 group.leave()
             }
         }
 
         group.notify(queue: .main) { [weak self] in
             self?.removeGhostContent()
-            onCompletion?()
+            onCompletion?(syncError)
         }
     }
 }

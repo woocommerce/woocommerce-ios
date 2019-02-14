@@ -494,7 +494,7 @@ private extension PeriodDataViewController {
             let entry = BarChartDataEntry(x: Double(barCount), y: item.grossSales)
             let formattedAmount = CurrencyFormatter().formatHumanReadableAmount(String(item.grossSales), with: orderStats.currencyCode, roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
-            barColors.append(barColor(for: item.period))
+            barColors.append(StyleManager.wooGreyMid)
             dataEntries.append(entry)
             barCount += 1
         }
@@ -502,7 +502,7 @@ private extension PeriodDataViewController {
         let dataSet =  BarChartDataSet(values: dataEntries, label: "Data")
         dataSet.colors = barColors
         dataSet.highlightEnabled = true
-        dataSet.highlightColor = StyleManager.wooAccent
+        dataSet.highlightColor = StyleManager.wooCommerceBrandColor
         dataSet.highlightAlpha = Constants.chartHighlightAlpha
         dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
         return BarChartData(dataSet: dataSet)
@@ -552,16 +552,6 @@ private extension PeriodDataViewController {
             }
         }
         return dateString
-    }
-
-    func barColor(for period: String) -> UIColor {
-        guard granularity == .day,
-            let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: period),
-            Calendar.current.isDateInWeekend(periodDate) else {
-                return StyleManager.wooCommerceBrandColor
-        }
-
-        return StyleManager.wooGreyMid
     }
 }
 

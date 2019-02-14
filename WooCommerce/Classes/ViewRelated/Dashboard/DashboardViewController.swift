@@ -135,6 +135,14 @@ extension DashboardViewController {
     }
 }
 
+// MARK: - Public API
+//
+extension DashboardViewController {
+    func presentSettings() {
+        settingsTapped()
+    }
+}
+
 
 // MARK: - Action Handlers
 //

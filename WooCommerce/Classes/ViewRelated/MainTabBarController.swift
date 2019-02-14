@@ -217,6 +217,18 @@ extension MainTabBarController {
 
         notificationsViewController.presentDetails(for: noteID)
     }
+
+    /// Switches to the My Store Tab, and presents the Settings .
+    ///
+    static func presentSettings() {
+        switchToMyStoreTab(animated: false)
+
+        guard let dashBoard: DashboardViewController = childViewController() else {
+            return
+        }
+
+        dashBoard.presentSettings()
+    }
 }
 
 

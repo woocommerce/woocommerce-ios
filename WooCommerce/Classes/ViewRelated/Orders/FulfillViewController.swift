@@ -166,6 +166,8 @@ extension FulfillViewController {
 
             WooAnalytics.shared.track(.orderStatusChangeFailed, withError: error)
             DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(status.rawValue)]. Error: \(error)")
+
+            self.displayErrorNotice(orderID: orderID)
         })
     }
 
@@ -175,6 +177,18 @@ extension FulfillViewController {
         let message = NSLocalizedString("Order marked as fulfilled", comment: "Order fulfillment success notice")
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
         let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Displays the `Unable to Fulfill Order` Notice.
+    ///
+    func displayErrorNotice(orderID: Int) {
+        let title = NSLocalizedString("Unable to fulfill order #\(orderID)", comment: "Content of error presented when Fullfill Order Action Failed")
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.fulfillWasPressed()
+        }
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }

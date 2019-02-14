@@ -265,12 +265,14 @@ private extension StorePickerViewController {
         tableView.reloadRows(at: rowsToReload, with: .none)
     }
 
-    /// Re-initializes the Login Flow. This may be required if the WordPress.com Account has no Stores available.
+    /// Re-initializes the Login Flow, forcing a logout. This may be required if the WordPress.com Account has no Stores available.
     ///
     func restartAuthentication() {
         guard StoresManager.shared.needsDefaultStore, let navigationController = navigationController else {
             return
         }
+
+        StoresManager.shared.deauthenticate()
 
         let loginViewController = AppDelegate.shared.authenticationManager.loginForWordPressDotCom()
         navigationController.setViewControllers([loginViewController], animated: true)

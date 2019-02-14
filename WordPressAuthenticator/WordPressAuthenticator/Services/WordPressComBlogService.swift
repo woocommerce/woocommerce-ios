@@ -33,6 +33,22 @@ class WordPressComBlogService {
             failure(result)
         })
     }
+    
+     func fetchUnauthenticatedSiteInfoForAddress(for address: String, success: @escaping (WordPressComSiteInfo) -> Void, failure: @escaping (Error) -> Void) {
+        let remote = BlogServiceRemoteREST(wordPressComRestApi: anonymousAPI, siteID: 0)
+        remote.fetchUnauthenticatedSiteInfo(forAddress: address, success: { response in
+            guard let response = response else {
+                failure(ServiceError.unknown)
+                return
+            }
+            
+            let site = WordPressComSiteInfo(remote: response)
+            success(site)
+        }, failure: { error in
+            let result = error ?? ServiceError.unknown
+            failure(result)
+        }) 
+    }
 }
 
 

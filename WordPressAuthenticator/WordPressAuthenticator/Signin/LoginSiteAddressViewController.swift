@@ -181,21 +181,29 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
 
 
     @objc func fetchSiteInfo() {
-        let baseSiteUrl = WordPressAuthenticator.baseSiteURL(string: loginFields.siteAddress) as NSString
+        let baseSiteUrl = WordPressAuthenticator.baseSiteURL(string: loginFields.siteAddress)
+        let successBlock: (WordPressComSiteInfo) -> Void = { [weak self] siteInfo in
+            self?.loginFields.meta.siteInfo = siteInfo
+            if WordPressAuthenticator.shared.delegate?.allowWPComLogin == false {
+                self?.promptUserToLogoutBeforeConnectingWPComSite()
+                self?.configureViewLoading(false)
+            } else {
+                self?.showSelfHostedUsernamePassword()
+            }
+        }
         if let siteAddress = baseSiteUrl.components(separatedBy: "://").last {
-
             let service = WordPressComBlogService()
-            service.fetchSiteInfo(for: siteAddress, success: { [weak self] siteInfo in
-                self?.loginFields.meta.siteInfo = siteInfo
-                if WordPressAuthenticator.shared.delegate?.allowWPComLogin == false {
-                    self?.promptUserToLogoutBeforeConnectingWPComSite()
-                    self?.configureViewLoading(false)
+            service.fetchSiteInfo(for: siteAddress, success: successBlock, failure: { [weak self] (error) in
+                // If fetchSiteInfo failed due to the site is being private (errorCode == .authorizationRequired) we try to fetch the site info with a call to connect/site-info endpoint. If this call succeeds we check if login allowed
+                let originalError = error as NSError
+                let errorCode = WordPressComRestApiError(rawValue: originalError.code)
+                if errorCode == .authorizationRequired {
+                    service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { error in
+                        self?.showSelfHostedUsernamePassword()
+                    })
                 } else {
                     self?.showSelfHostedUsernamePassword()
                 }
-                
-            }, failure: { [weak self] (error) in
-                self?.showSelfHostedUsernamePassword()
             })
 
         } else {

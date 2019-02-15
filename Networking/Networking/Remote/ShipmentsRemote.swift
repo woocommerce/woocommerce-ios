@@ -14,7 +14,7 @@ public class ShipmentsRemote: Remote {
     ///   - completion: Closure to be executed upon completion
     ///
     public func loadShipmentTrackings(for siteID: Int, orderID: Int, completion: @escaping ([ShipmentTracking]?, Error?) -> Void) {
-        let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)"
+        let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/"
 
         // 2019-2-15 — We are using the v2 endpoint here because this endpoint does not support v3 yet
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)

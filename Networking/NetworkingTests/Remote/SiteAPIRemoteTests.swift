@@ -40,7 +40,7 @@ class SiteAPIRemoteTests: XCTestCase {
 
     /// Verifies that loadAPIInformation properly relays Networking Layer errors.
     ///
-    func testLoadGeneralSettingsProperlyRelaysNetwokingErrors() {
+    func testLoadGeneralSettingsProperlyRelaysNetworkingErrors() {
         let remote = SiteAPIRemote(network: network)
         let expectation = self.expectation(description: "Load site API information contains errors")
 

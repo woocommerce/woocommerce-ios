@@ -184,7 +184,7 @@ extension FulfillViewController {
     /// Displays the `Unable to Fulfill Order` Notice.
     ///
     func displayErrorNotice(orderID: Int) {
-        let title = NSLocalizedString("Unable to fulfill order #\(orderID)", comment: "Content of error presented when Fullfill Order Action Failed")
+        let title = NSLocalizedString("Unable to fulfill order #\(orderID)", comment: "Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.fulfillWasPressed()

@@ -231,7 +231,7 @@ extension NewNoteViewController: UITableViewDelegate {
 //
 private extension NewNoteViewController {
     func displayErrorNotice() {
-        let title = NSLocalizedString("Unable to add note to order #\(viewModel.order.orderID)", comment: "Content of error presented when Add Note Action Failed")
+        let title = NSLocalizedString("Unable to add note to order #\(viewModel.order.orderID)", comment: "Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.addButtonTapped()

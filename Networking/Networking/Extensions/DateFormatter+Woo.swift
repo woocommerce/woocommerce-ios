@@ -19,6 +19,15 @@ public extension DateFormatter {
             return formatter
         }()
 
+        /// Date And Time Formatter for simple dates — e.g. `2019-02-01` or `2019-11-28`
+        ///
+        public static let simpleDateTimeFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.dateFormat = "yyyy'-'MM'-'DD'"
+            return formatter
+        }()
+
         /// ISO8601 DateFormatter
         ///
         public static let iso8601: DateFormatter = {

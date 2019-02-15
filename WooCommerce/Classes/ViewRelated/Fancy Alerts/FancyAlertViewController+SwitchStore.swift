@@ -94,4 +94,3 @@ private extension FancyAlertViewController {
         static let tryNowButtonText = NSLocalizedString("Try It Now", comment: "Primary button in alert informing users that it is possible to switch stores in settings and inviting them to do so.")
     }
 }
-

@@ -88,7 +88,7 @@ class ShipmentsRemoteTests: XCTestCase {
                 XCTFail()
                 return
             }
-            XCTAssertTrue(dotComError == DotcomError.unknown(code: "rest_no_route", message: "No route was found matching the URL and request method"))
+            XCTAssertTrue(dotComError == .noRestRoute)
             expectation.fulfill()
         })
 

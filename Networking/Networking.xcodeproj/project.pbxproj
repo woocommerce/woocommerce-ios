@@ -41,6 +41,7 @@
 		743E84F622172D3E00FAC9D7 /* shipment_tracking_single.json in Resources */ = {isa = PBXBuildFile; fileRef = 743E84F522172D3E00FAC9D7 /* shipment_tracking_single.json */; };
 		743E84F822172E1F00FAC9D7 /* ShipmentTrackingsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743E84F722172E1F00FAC9D7 /* ShipmentTrackingsMapperTests.swift */; };
 		743E84FA221742E300FAC9D7 /* ShipmentsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743E84F9221742E300FAC9D7 /* ShipmentsRemoteTests.swift */; };
+		743E84FC22174CE100FAC9D7 /* restnoroute_error.json in Resources */ = {isa = PBXBuildFile; fileRef = 743E84FB22174CE000FAC9D7 /* restnoroute_error.json */; };
 		743FDB9C210FB36900AC737F /* order-stats-month.json in Resources */ = {isa = PBXBuildFile; fileRef = 743FDB99210FB36900AC737F /* order-stats-month.json */; };
 		743FDB9D210FB36900AC737F /* order-stats-year.json in Resources */ = {isa = PBXBuildFile; fileRef = 743FDB9A210FB36900AC737F /* order-stats-year.json */; };
 		743FDB9E210FB36900AC737F /* order-stats-week.json in Resources */ = {isa = PBXBuildFile; fileRef = 743FDB9B210FB36900AC737F /* order-stats-week.json */; };
@@ -225,6 +226,7 @@
 		743E84F522172D3E00FAC9D7 /* shipment_tracking_single.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = shipment_tracking_single.json; sourceTree = "<group>"; };
 		743E84F722172E1F00FAC9D7 /* ShipmentTrackingsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTrackingsMapperTests.swift; sourceTree = "<group>"; };
 		743E84F9221742E300FAC9D7 /* ShipmentsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentsRemoteTests.swift; sourceTree = "<group>"; };
+		743E84FB22174CE000FAC9D7 /* restnoroute_error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = restnoroute_error.json; sourceTree = "<group>"; };
 		743FDB99210FB36900AC737F /* order-stats-month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-month.json"; sourceTree = "<group>"; };
 		743FDB9A210FB36900AC737F /* order-stats-year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-year.json"; sourceTree = "<group>"; };
 		743FDB9B210FB36900AC737F /* order-stats-week.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-week.json"; sourceTree = "<group>"; };
@@ -632,6 +634,7 @@
 				B58D10C72114D21C00107ED4 /* generic_error.json */,
 				B53EF53521813681003E146F /* generic_success.json */,
 				B57B1E6B21C94C9F0046E764 /* timeout_error.json */,
+				743E84FB22174CE000FAC9D7 /* restnoroute_error.json */,
 				74C9477F2193A6C60024CB60 /* comment-moderate-approved.json */,
 				74C9477E2193A6C60024CB60 /* comment-moderate-trash.json */,
 				74C947812193A6C70024CB60 /* comment-moderate-unapproved.json */,
@@ -888,6 +891,7 @@
 				B5A2417B217F98FC00595DEF /* broken-notifications.json in Resources */,
 				74A7B4BE217A841400E85A8B /* broken-settings-general.json in Resources */,
 				B5A24179217F98F600595DEF /* notifications-load-all.json in Resources */,
+				743E84FC22174CE100FAC9D7 /* restnoroute_error.json in Resources */,
 				CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */,
 				740211DF2193985A002248DA /* comment-moderate-spam.json in Resources */,
 				B5147876211B9227007562E5 /* broken-orders-mark-2.json in Resources */,

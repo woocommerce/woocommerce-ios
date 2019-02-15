@@ -1,6 +1,8 @@
 - bugfix: Allows for decimal quantities which some extensions have
 - new feature: quick site select. Navigate to Settings > select row with store website.
 - improvement: Updated the colors of the bars in the charts for better readability
+- improvement: Present an error message with an option to retry when adding a note to an order fails
+- improvement: Present an error message with an option to retry when fulfilling an order fails
 - bugfix: Log out of the current account right after selecting "Try another account" in store picker
 - improvement: Use the store name for the title of the view in "My store" tab
 - improvement: Add analert to let the user know about our new store switcher

@@ -1,5 +1,8 @@
 import WordPressUI
 
+/// Encapsulates the logic that decides when the fancy alert informing that users can switch stores is presented.
+/// The fancy alert will be presented only once.
+///
 final class SwitchStoreAlertLauncher {
     func displayStoreSwitcherAlertIfNeeded() {
         guard shouldPresentStoreSwitcher() else {

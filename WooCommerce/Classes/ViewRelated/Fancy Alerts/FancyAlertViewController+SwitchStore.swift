@@ -17,7 +17,7 @@ final class SwitchStoreAlertLauncher {
             return false
         }
 
-        let alertPresented = UserDefaults.standard[.storeSwitcherAlertPresented] as? Bool
+        let alertPresented = UserDefaults.standard[.storeSwitcherAlertPresented] as? Bool ?? false
 
         return alertPresented == false
     }

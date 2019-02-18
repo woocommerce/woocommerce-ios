@@ -21,7 +21,7 @@ struct ShipmentTrackingsMapper: Mapper {
     ///
     func map(response: Data) throws -> [ShipmentTracking] {
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.simpleDateTimeFormatter)
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.yearMonthDayDateFormatter)
         decoder.userInfo = [
             .siteID: siteID,
             .orderID: orderID

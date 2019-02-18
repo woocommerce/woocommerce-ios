@@ -21,7 +21,7 @@ class ShipmentTrackingsMapperTests: XCTestCase {
         XCTAssertEqual(shipmentTrackings.count, 4)
 
         let firstTracking = shipmentTrackings.first
-        let firstTrackingShipDate = DateFormatter.Defaults.simpleDateTimeFormatter.date(from: "2019-02-15")
+        let firstTrackingShipDate = DateFormatter.Defaults.yearMonthDayDateFormatter.date(from: "2019-02-15")
         XCTAssertEqual(firstTracking?.siteID, dummySiteID)
         XCTAssertEqual(firstTracking?.orderID, dummyOrderID)
         XCTAssertEqual(firstTracking?.trackingID, "b1b94eecb1eb1c1edf3fa041efffd015")
@@ -47,7 +47,7 @@ class ShipmentTrackingsMapperTests: XCTestCase {
         XCTAssertEqual(shipmentTrackings.count, 1)
 
         let firstTracking = shipmentTrackings.first
-        let firstTrackingShipDate = DateFormatter.Defaults.simpleDateTimeFormatter.date(from: "2019-12-31")
+        let firstTrackingShipDate = DateFormatter.Defaults.yearMonthDayDateFormatter.date(from: "2019-12-31")
         XCTAssertEqual(firstTracking?.siteID, dummySiteID)
         XCTAssertEqual(firstTracking?.orderID, dummyOrderID)
         XCTAssertEqual(firstTracking?.trackingID, "sdfgdfgdfsg34534525")

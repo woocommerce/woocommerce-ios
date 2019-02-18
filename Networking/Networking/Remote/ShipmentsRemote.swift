@@ -4,7 +4,7 @@ import Alamofire
 
 /// ShipmentsRemote: Remote Endpoints
 ///
-public class ShipmentsRemote: Remote {
+public final class ShipmentsRemote: Remote {
 
     /// Retrieves all of the shipment tracking info for a given order.
     ///

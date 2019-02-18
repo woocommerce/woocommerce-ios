@@ -24,17 +24,19 @@ final class SwitchStoreAlertLauncher {
     }
 
     private func shouldPresentStoreSwitcher() -> Bool {
-        guard StoresManager.shared.isAuthenticated else {
-            return false
-        }
+//        guard StoresManager.shared.isAuthenticated else {
+//            return false
+//        }
+//
+//        guard userHasMultipleStores() else {
+//            return false
+//        }
+//
+//        let alertPresented = UserDefaults.standard[.storeSwitcherAlertPresented] as? Bool ?? false
+//
+//        return alertPresented == false
 
-        guard userHasMultipleStores() else {
-            return false
-        }
-
-        let alertPresented = UserDefaults.standard[.storeSwitcherAlertPresented] as? Bool ?? false
-
-        return alertPresented == false
+        return true
     }
 
     private func userHasMultipleStores() -> Bool {
@@ -63,13 +65,23 @@ public extension FancyAlertViewController {
 
         let defaultButton = makePrimaryButton()
         let dismissButton = makeSecondaryButton()
+
+        let image = UIImage(named: "woo-store-switcher")
+//        let config = FancyAlertViewController.Config(titleText: Strings.titleText,
+//                                                     bodyText: Strings.bodyText,
+//                                                     headerImage: image,
+//                                                     dividerPosition: .bottom,
+//                                                     defaultButton: defaultButton,
+//                                                     cancelButton: dismissButton,
+//                                                     neverButton: nil,
+//                                                     appearAction: {},
+//                                                     dismissAction: {})
         let config = FancyAlertViewController.Config(titleText: Strings.titleText,
                                                      bodyText: Strings.bodyText,
-                                                     headerImage: nil,
+                                                     headerImage: image,
                                                      dividerPosition: .bottom,
                                                      defaultButton: defaultButton,
                                                      cancelButton: dismissButton,
-                                                     moreInfoButton: nil,
                                                      dismissAction: {})
 
         let controller = FancyAlertViewController.controllerWithConfiguration(configuration: config)

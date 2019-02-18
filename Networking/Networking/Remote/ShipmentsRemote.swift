@@ -18,7 +18,7 @@ public final class ShipmentsRemote: Remote {
 
         // 2019-2-15 — We are using the v2 endpoint here because this endpoint does not support v3 yet
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
-        let mapper = ShipmentTrackingsMapper(siteID: siteID, orderID: orderID)
+        let mapper = ShipmentTrackingListMapper(siteID: siteID, orderID: orderID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

@@ -2,9 +2,9 @@ import XCTest
 @testable import Networking
 
 
-/// ShipmentTrackingsMapper Unit Tests
+/// ShipmentTrackingListMapper Unit Tests
 ///
-class ShipmentTrackingsMapperTests: XCTestCase {
+class ShipmentTrackingListMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
@@ -68,7 +68,7 @@ class ShipmentTrackingsMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension ShipmentTrackingsMapperTests {
+private extension ShipmentTrackingListMapperTests {
 
     /// Returns the ShipmentTrackingsMapper output upon receiving `filename` (Data Encoded)
     ///
@@ -77,7 +77,7 @@ private extension ShipmentTrackingsMapperTests {
             return []
         }
 
-        return try! ShipmentTrackingsMapper(siteID: dummySiteID, orderID: dummyOrderID).map(response: response)
+        return try! ShipmentTrackingListMapper(siteID: dummySiteID, orderID: dummyOrderID).map(response: response)
     }
 
     /// Returns the ShipmentTrackingsMapper output upon receiving `shipment_tracking_single`

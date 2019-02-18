@@ -191,6 +191,7 @@ private extension AppDelegate {
         appearance.actionFont = UIFont.headline
         appearance.infoFont = UIFont.subheadline
         appearance.infoTintColor = StyleManager.wooCommerceBrandColor
+        appearance.headerBackgroundColor = StyleManager.wooGreyLight
     }
 
     /// Sets up FancyButton's UIAppearance.

@@ -24,19 +24,17 @@ final class SwitchStoreAlertLauncher {
     }
 
     private func shouldPresentStoreSwitcher() -> Bool {
-//        guard StoresManager.shared.isAuthenticated else {
-//            return false
-//        }
-//
-//        guard userHasMultipleStores() else {
-//            return false
-//        }
-//
-//        let alertPresented = UserDefaults.standard[.storeSwitcherAlertPresented] as? Bool ?? false
-//
-//        return alertPresented == false
+        guard StoresManager.shared.isAuthenticated else {
+            return false
+        }
 
-        return true
+        guard userHasMultipleStores() else {
+            return false
+        }
+
+        let alertPresented = UserDefaults.standard[.storeSwitcherAlertPresented] as? Bool ?? false
+
+        return alertPresented == false
     }
 
     private func userHasMultipleStores() -> Bool {
@@ -67,15 +65,7 @@ public extension FancyAlertViewController {
         let dismissButton = makeSecondaryButton()
 
         let image = UIImage(named: "woo-store-switcher")
-//        let config = FancyAlertViewController.Config(titleText: Strings.titleText,
-//                                                     bodyText: Strings.bodyText,
-//                                                     headerImage: image,
-//                                                     dividerPosition: .bottom,
-//                                                     defaultButton: defaultButton,
-//                                                     cancelButton: dismissButton,
-//                                                     neverButton: nil,
-//                                                     appearAction: {},
-//                                                     dismissAction: {})
+
         let config = FancyAlertViewController.Config(titleText: Strings.titleText,
                                                      bodyText: Strings.bodyText,
                                                      headerImage: image,

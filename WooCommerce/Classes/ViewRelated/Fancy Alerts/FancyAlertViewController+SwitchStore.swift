@@ -17,9 +17,17 @@ final class SwitchStoreAlertLauncher {
             return false
         }
 
+        guard userHasMultipleStores() else {
+            return false
+        }
+
         let alertPresented = UserDefaults.standard[.storeSwitcherAlertPresented] as? Bool ?? false
 
         return alertPresented == false
+    }
+
+    private func userHasMultipleStores() -> Bool {
+        return true
     }
 
     private func displayStoreSwitcherAlert() {
@@ -83,10 +91,10 @@ private extension FancyAlertViewController {
 
     struct Strings {
         // Title
-        static let titleText = NSLocalizedString("Switch between stores",
+        static let titleText = NSLocalizedString("Running multiple stores?",
                                                           comment: "Title of alert informing users that it is possible to switch stores in Settings.")
         // Body
-        static let bodyText = NSLocalizedString("You can now easily switch between stores by tapping on the selected store in Settings.",
+        static let bodyText = NSLocalizedString("You can now switch between stores by tapping the selected store in Settings.",
                                                           comment: "Body text of alert informing users that it is possible to switch stores in Settings.")
 
         // UI Elements

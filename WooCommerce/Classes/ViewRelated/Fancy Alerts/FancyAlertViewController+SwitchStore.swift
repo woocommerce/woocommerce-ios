@@ -1,9 +1,20 @@
 import WordPressUI
+import Yosemite
 
 /// Encapsulates the logic that decides when the fancy alert informing that users can switch stores is presented.
 /// The fancy alert will be presented only once.
 ///
 final class SwitchStoreAlertLauncher {
+    /// ResultsController: Loads Sites from the Storage Layer.
+    ///
+    private let resultsController: ResultsController<StorageSite> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "isWooCommerceActive == YES")
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     func displayStoreSwitcherAlertIfNeeded() {
         guard shouldPresentStoreSwitcher() else {
             return
@@ -27,7 +38,8 @@ final class SwitchStoreAlertLauncher {
     }
 
     private func userHasMultipleStores() -> Bool {
-        return true
+        try? resultsController.performFetch()
+        return resultsController.fetchedObjects.count > 1
     }
 
     private func displayStoreSwitcherAlert() {

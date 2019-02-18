@@ -19,6 +19,17 @@ public extension DateFormatter {
             return formatter
         }()
 
+        /// Year-Month-Day date formatter with en_US_POSIX locale
+        ///
+        /// Example output: `2019-02-01` or `2019-11-28`
+        ///
+        public static let yearMonthDayDateFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.dateFormat = "yyyy'-'MM'-'DD'"
+            return formatter
+        }()
+
         /// ISO8601 DateFormatter
         ///
         public static let iso8601: DateFormatter = {

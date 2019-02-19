@@ -5,6 +5,7 @@ import CoreData
 /// This was derived from ALIterativeMigrator originally used in the WordPress app.
 ///
 public struct CoreDataIterativeMigrator {
+
     /// Migrates a store to a particular model using the list of models to do it iteratively, if required.
     ///
     /// - Parameters:
@@ -78,23 +79,21 @@ public struct CoreDataIterativeMigrator {
         // Migrate between each model. Count - 2 because of zero-based index and we want
         // to stop at the last pair (you can't migrate the last model to nothingness).
         let upperBound = modelsToMigrate.count - 2
-        if upperBound > 0 {
-            for index in 0...upperBound {
-                let modelFrom = modelsToMigrate[index]
-                let modelTo = modelsToMigrate[index + 1]
+        for index in 0...upperBound {
+            let modelFrom = modelsToMigrate[index]
+            let modelTo = modelsToMigrate[index + 1]
 
-                // Check whether a custom mapping model exists.
-                guard let migrateWithModel = NSMappingModel(from: nil, forSourceModel: modelFrom, destinationModel: modelTo) ??
-                    (try? NSMappingModel.inferredMappingModel(forSourceModel: modelFrom, destinationModel: modelTo)) else {
-                        return false
-                }
-
-                // Migrate the model to the next step
-                DDLogWarn("⚠️ Attempting migration from \(modelNames[index]) to \(modelNames[index + 1])")
-
-                guard migrateStore(at: sourceStore, storeType: storeType, fromModel: modelFrom, toModel: modelTo, with: migrateWithModel) == true else {
+            // Check whether a custom mapping model exists.
+            guard let migrateWithModel = NSMappingModel(from: nil, forSourceModel: modelFrom, destinationModel: modelTo) ??
+                (try? NSMappingModel.inferredMappingModel(forSourceModel: modelFrom, destinationModel: modelTo)) else {
                     return false
-                }
+            }
+
+            // Migrate the model to the next step
+            DDLogWarn("⚠️ Attempting migration from \(modelNames[index]) to \(modelNames[index + 1])")
+
+            guard migrateStore(at: sourceStore, storeType: storeType, fromModel: modelFrom, toModel: modelTo, with: migrateWithModel) == true else {
+                return false
             }
         }
 
@@ -102,30 +101,10 @@ public struct CoreDataIterativeMigrator {
     }
 }
 
+
+// MARK: - File helpers
+//
 private extension CoreDataIterativeMigrator {
-    static func migrateStore(at url: URL, storeType: String, fromModel: NSManagedObjectModel, toModel: NSManagedObjectModel, with mappingModel: NSMappingModel) -> Bool {
-        let tempDestinationURL = createTemporaryFolder(at: url)
-
-        // Migrate from the source model to the target model using the mapping,
-        // and store the resulting data at the temporary path.
-        let migrator = NSMigrationManager(sourceModel: fromModel, destinationModel: toModel)
-        do {
-            try migrator.migrateStore(from: url, sourceType: storeType, options: nil, with: mappingModel, toDestinationURL: tempDestinationURL, destinationType: storeType, destinationOptions: nil)
-        } catch {
-            return false
-        }
-
-        do {
-            let backupURL = try makeBackup(at: url)
-            try copyMigratedOverOriginal(from: tempDestinationURL, to: url)
-            try deleteBackupCopies(at: backupURL)
-        } catch {
-            return false
-        }
-
-
-        return true
-    }
 
     /// Build a temporary path to write the migrated store.
     ///
@@ -199,9 +178,34 @@ private extension CoreDataIterativeMigrator {
     }
 }
 
-/// Helper functions
-///
+
+// MARK: - Private helper functions
+//
 private extension CoreDataIterativeMigrator {
+
+    static func migrateStore(at url: URL, storeType: String, fromModel: NSManagedObjectModel, toModel: NSManagedObjectModel, with mappingModel: NSMappingModel) -> Bool {
+        let tempDestinationURL = createTemporaryFolder(at: url)
+
+        // Migrate from the source model to the target model using the mapping,
+        // and store the resulting data at the temporary path.
+        let migrator = NSMigrationManager(sourceModel: fromModel, destinationModel: toModel)
+        do {
+            try migrator.migrateStore(from: url, sourceType: storeType, options: nil, with: mappingModel, toDestinationURL: tempDestinationURL, destinationType: storeType, destinationOptions: nil)
+        } catch {
+            return false
+        }
+
+        do {
+            let backupURL = try makeBackup(at: url)
+            try copyMigratedOverOriginal(from: tempDestinationURL, to: url)
+            try deleteBackupCopies(at: backupURL)
+        } catch {
+            return false
+        }
+
+        return true
+    }
+
     static func metadataForPersistentStore(storeType: String, at url: URL) throws -> [String : Any]? {
 
         guard let sourceMetadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: storeType, at: url, options: nil) else {

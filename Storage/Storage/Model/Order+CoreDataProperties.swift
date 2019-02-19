@@ -45,7 +45,6 @@ extension Order {
     @NSManaged public var shippingState: String?
     @NSManaged public var shippingTax: String?
     @NSManaged public var shippingTotal: String?
-    @NSManaged public var status: String
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
     @NSManaged public var exclusiveForSearch: Bool
@@ -53,7 +52,7 @@ extension Order {
     @NSManaged public var items: Set<OrderItem>?
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?
-
+    @NSManaged public var status: String?
 }
 
 // MARK: Generated accessors for coupons

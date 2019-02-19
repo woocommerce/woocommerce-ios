@@ -33,10 +33,10 @@
 		7499FA45221C7A60004EC0B4 /* ShipmentTracking+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7499FA43221C7A60004EC0B4 /* ShipmentTracking+CoreDataProperties.swift */; };
 		74B7D6AD20F90CBB002667AC /* OrderNote+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B7D6AB20F90CBB002667AC /* OrderNote+CoreDataClass.swift */; };
 		74B7D6AE20F90CBB002667AC /* OrderNote+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B7D6AC20F90CBB002667AC /* OrderNote+CoreDataProperties.swift */; };
+		74D42DB8221C923200B4977D /* WooCommerceModelV9toV10.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 74D42DB7221C923200B4977D /* WooCommerceModelV9toV10.xcmappingmodel */; };
 		74F009C02183B99B002B4566 /* Note+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F009BE2183B99B002B4566 /* Note+CoreDataClass.swift */; };
 		74F009C12183B99B002B4566 /* Note+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F009BF2183B99B002B4566 /* Note+CoreDataProperties.swift */; };
 		9302E3A6220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9302E3A5220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift */; };
-		9302E3AA220DC80B00DA5018 /* Model 9 to Model 10.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9302E3A9220DC80B00DA5018 /* Model 9 to Model 10.xcmappingmodel */; };
 		9302E3AC220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9302E3AB220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift */; };
 		B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505255320EE6914008090F5 /* StorageType+Extensions.swift */; };
 		B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6D820BEEA3100BB1B69 /* Account+CoreDataProperties.swift */; };
@@ -108,12 +108,12 @@
 		74B053702153090F0068EB85 /* Model 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 3.xcdatamodel"; sourceTree = "<group>"; };
 		74B7D6AB20F90CBB002667AC /* OrderNote+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderNote+CoreDataClass.swift"; sourceTree = "<group>"; };
 		74B7D6AC20F90CBB002667AC /* OrderNote+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderNote+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		74D42DB7221C923200B4977D /* WooCommerceModelV9toV10.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV9toV10.xcmappingmodel; sourceTree = "<group>"; };
 		74F009BE2183B99B002B4566 /* Note+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataClass.swift"; sourceTree = "<group>"; };
 		74F009BF2183B99B002B4566 /* Note+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7C81935EDD982072BBDCC837 /* Pods-Storage.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.release.xcconfig"; sourceTree = "<group>"; };
 		9302E3A5220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataIterativeMigrator.swift; sourceTree = "<group>"; };
 		9302E3A7220DC69400DA5018 /* Model 10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 10.xcdatamodel"; sourceTree = "<group>"; };
-		9302E3A9220DC80B00DA5018 /* Model 9 to Model 10.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = "Model 9 to Model 10.xcmappingmodel"; sourceTree = "<group>"; };
 		9302E3AB220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataIterativeMigratorTests.swift; sourceTree = "<group>"; };
 		A3821B262583F14863740A37 /* Pods-Storage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.debug.xcconfig"; sourceTree = "<group>"; };
 		B505255320EE6914008090F5 /* StorageType+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageType+Extensions.swift"; sourceTree = "<group>"; };
@@ -204,7 +204,7 @@
 		9302E3A8220DC7DF00DA5018 /* Mapping Models */ = {
 			isa = PBXGroup;
 			children = (
-				9302E3A9220DC80B00DA5018 /* Model 9 to Model 10.xcmappingmodel */,
+				74D42DB7221C923200B4977D /* WooCommerceModelV9toV10.xcmappingmodel */,
 			);
 			name = "Mapping Models";
 			sourceTree = "<group>";
@@ -561,6 +561,7 @@
 				74B7D6AD20F90CBB002667AC /* OrderNote+CoreDataClass.swift in Sources */,
 				B52B0F7920AA287C00477698 /* StorageManagerType.swift in Sources */,
 				7471A517216CF0FE00219F7E /* SiteVisitStats+CoreDataProperties.swift in Sources */,
+				74D42DB8221C923200B4977D /* WooCommerceModelV9toV10.xcmappingmodel in Sources */,
 				7426A05420F69DA4002A4E07 /* OrderItem+CoreDataClass.swift in Sources */,
 				7492FAD6217FA9C100ED2C69 /* SiteSetting+CoreDataClass.swift in Sources */,
 				B505F6E020BEEA8100BB1B69 /* StorageType.swift in Sources */,
@@ -571,7 +572,6 @@
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,
 				74B7D6AE20F90CBB002667AC /* OrderNote+CoreDataProperties.swift in Sources */,
 				B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */,
-				9302E3AA220DC80B00DA5018 /* Model 9 to Model 10.xcmappingmodel in Sources */,
 				B52B0F7B20AA28A800477698 /* Object.swift in Sources */,
 				7426A05020F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift in Sources */,
 				746A9D23214078080013F6FF /* TopEarnerStatsItem+CoreDataClass.swift in Sources */,

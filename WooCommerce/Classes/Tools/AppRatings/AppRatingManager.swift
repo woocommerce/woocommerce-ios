@@ -25,9 +25,7 @@ public class AppRatingManager {
 
     private let defaults: UserDefaults
     private var sections = [String: Section]()
-    private var promptingDisabledViaFeatureFlag: Bool {
-        return FeatureFlag.appReviewPrompt.enabled == false
-    }
+
     /// Don't prompt for reviews for internal builds
     /// http://stackoverflow.com/questions/26081543/how-to-tell-at-runtime-whether-an-ios-app-is-running-through-a-testflight-beta-i?noredirect=1&lq=1
     ///
@@ -39,7 +37,7 @@ public class AppRatingManager {
     }()
 
     private var promptingDisabled: Bool {
-        return promptingDisabledViaFeatureFlag || promptingDisabledLocal
+        return promptingDisabledLocal
     }
 
     static let shared = AppRatingManager(defaults: .standard)

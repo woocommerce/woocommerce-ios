@@ -27,7 +27,7 @@ target 'WooCommerce' do
   pod 'WordPressAuthenticator', '~> 1.1-beta'
 
   pod 'WordPressShared', '~> 1.1'
-  pod 'WordPressUI', '~> 1.1'
+  pod 'WordPressUI', '~> 1.2'
 
 
   # External Libraries

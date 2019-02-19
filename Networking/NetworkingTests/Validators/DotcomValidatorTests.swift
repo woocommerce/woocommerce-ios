@@ -18,4 +18,17 @@ class DotcomValidatorTests: XCTestCase {
 
         XCTAssert(dotcomError == .unauthorized)
     }
+
+    /// Verifies that the DotcomValidator successfully extracts the rest_no_route Dotcom Error contained within a `Data` instance.
+    ///
+    func testRestNoRouteErrorIsProperlyExtractedFromData() {
+        guard let payloadAsData = Loader.contentsOf("restnoroute_error", extension: "json"),
+            let dotcomError = DotcomValidator.error(from: payloadAsData) as? DotcomError
+            else {
+                XCTFail()
+                return
+        }
+
+        XCTAssert(dotcomError == .noRestRoute)
+    }
 }

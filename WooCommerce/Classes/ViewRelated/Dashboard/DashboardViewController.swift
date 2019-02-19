@@ -44,6 +44,8 @@ class DashboardViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        // Reset title to prevent it from being empty right after login
+        configureTitle()
         reloadData()
     }
 
@@ -73,7 +75,16 @@ private extension DashboardViewController {
     }
 
     func configureNavigation() {
-        title = NSLocalizedString("My store", comment: "Dashboard navigation title")
+        configureTitle()
+        configureNavigationItem()
+    }
+
+    private func configureTitle() {
+        title = StoresManager.shared.sessionManager.defaultSite?.name
+        tabBarItem.title = NSLocalizedString("My store", comment: "Title of the bottom tab item that presents the user's store dashboard")
+    }
+
+    private func configureNavigationItem() {
         let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.cog),
                                              style: .plain,
                                              target: self,
@@ -121,6 +132,14 @@ extension DashboardViewController {
 
         storeStatsViewController.clearAllFields()
         applyHideAnimation(for: newOrdersContainerView)
+    }
+}
+
+// MARK: - Public API
+//
+extension DashboardViewController {
+    func presentSettings() {
+        settingsTapped()
     }
 }
 

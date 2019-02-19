@@ -86,6 +86,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Upgrade check...
         checkForUpgrades()
 
+        // Store switcher alert
+        displayStoreSwitcherAlertIfNeeded()
+
         return true
     }
 
@@ -188,6 +191,7 @@ private extension AppDelegate {
         appearance.actionFont = UIFont.headline
         appearance.infoFont = UIFont.subheadline
         appearance.infoTintColor = StyleManager.wooCommerceBrandColor
+        appearance.headerBackgroundColor = StyleManager.wooGreyLight
     }
 
     /// Sets up FancyButton's UIAppearance.
@@ -360,5 +364,11 @@ extension AppDelegate {
     func authenticatorWasDismissed() {
         setupPushNotificationsManagerIfPossible()
         RequirementsChecker.checkMinimumWooVersionForDefaultStore()
+    }
+}
+
+private extension AppDelegate {
+    private func displayStoreSwitcherAlertIfNeeded() {
+        SwitchStoreAlertLauncher().displayStoreSwitcherAlertIfNeeded()
     }
 }

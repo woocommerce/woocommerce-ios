@@ -92,10 +92,6 @@ class StorePickerViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
-    deinit {
-        stopListeningToNotifications()
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -115,6 +111,14 @@ class StorePickerViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         onDismiss?()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        // This should be called here to address this issue:
+        // https://github.com/woocommerce/woocommerce-ios/issues/693
+        stopListeningToNotifications()
     }
 }
 

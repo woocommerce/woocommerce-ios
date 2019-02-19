@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 11 (Release 1.3.0.0)
+- @mindgraffiti 2019-02-19
+    - Deletes `status` attribute from `Order` entity.
+    - Adds `OrderStatus` relationship to `Order` entity.
+
 ## Model 10 (Release 1.3.0.0)
 - @astralbodies 2019-02-08
     - Changes `quantity` attribute on `OrderItem` from Int64 to Decimal

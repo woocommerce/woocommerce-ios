@@ -77,21 +77,24 @@ public struct CoreDataIterativeMigrator {
 
         // Migrate between each model. Count - 2 because of zero-based index and we want
         // to stop at the last pair (you can't migrate the last model to nothingness).
-        for index in 0...(modelsToMigrate.count - 2) {
-            let modelFrom = modelsToMigrate[index]
-            let modelTo = modelsToMigrate[index + 1]
+        let upperBound = modelsToMigrate.count - 2
+        if upperBound > 0 {
+            for index in 0...upperBound {
+                let modelFrom = modelsToMigrate[index]
+                let modelTo = modelsToMigrate[index + 1]
 
-            // Check whether a custom mapping model exists.
-            guard let migrateWithModel = NSMappingModel(from: nil, forSourceModel: modelFrom, destinationModel: modelTo) ??
-                (try? NSMappingModel.inferredMappingModel(forSourceModel: modelFrom, destinationModel: modelTo)) else {
+                // Check whether a custom mapping model exists.
+                guard let migrateWithModel = NSMappingModel(from: nil, forSourceModel: modelFrom, destinationModel: modelTo) ??
+                    (try? NSMappingModel.inferredMappingModel(forSourceModel: modelFrom, destinationModel: modelTo)) else {
+                        return false
+                }
+
+                // Migrate the model to the next step
+                DDLogWarn("⚠️ Attempting migration from \(modelNames[index]) to \(modelNames[index + 1])")
+
+                guard migrateStore(at: sourceStore, storeType: storeType, fromModel: modelFrom, toModel: modelTo, with: migrateWithModel) == true else {
                     return false
-            }
-
-            // Migrate the model to the next step
-            DDLogWarn("⚠️ Attempting migration from \(modelNames[index]) to \(modelNames[index + 1])")
-            
-            guard migrateStore(at: sourceStore, storeType: storeType, fromModel: modelFrom, toModel: modelTo, with: migrateWithModel) == true else {
-                return false
+                }
             }
         }
 

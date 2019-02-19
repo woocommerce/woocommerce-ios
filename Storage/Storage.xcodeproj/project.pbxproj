@@ -29,6 +29,8 @@
 		74938EC9216FA9B200540BA1 /* OrderStatsItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74938EC5216FA9B200540BA1 /* OrderStatsItem+CoreDataProperties.swift */; };
 		74938ECA216FA9B200540BA1 /* OrderStats+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74938EC6216FA9B200540BA1 /* OrderStats+CoreDataClass.swift */; };
 		74938ECB216FA9B200540BA1 /* OrderStats+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74938EC7216FA9B200540BA1 /* OrderStats+CoreDataProperties.swift */; };
+		7499FA44221C7A60004EC0B4 /* ShipmentTracking+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7499FA42221C7A60004EC0B4 /* ShipmentTracking+CoreDataClass.swift */; };
+		7499FA45221C7A60004EC0B4 /* ShipmentTracking+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7499FA43221C7A60004EC0B4 /* ShipmentTracking+CoreDataProperties.swift */; };
 		74B7D6AD20F90CBB002667AC /* OrderNote+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B7D6AB20F90CBB002667AC /* OrderNote+CoreDataClass.swift */; };
 		74B7D6AE20F90CBB002667AC /* OrderNote+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B7D6AC20F90CBB002667AC /* OrderNote+CoreDataProperties.swift */; };
 		74F009C02183B99B002B4566 /* Note+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F009BE2183B99B002B4566 /* Note+CoreDataClass.swift */; };
@@ -101,6 +103,8 @@
 		74938EC5216FA9B200540BA1 /* OrderStatsItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		74938EC6216FA9B200540BA1 /* OrderStats+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStats+CoreDataClass.swift"; sourceTree = "<group>"; };
 		74938EC7216FA9B200540BA1 /* OrderStats+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStats+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		7499FA42221C7A60004EC0B4 /* ShipmentTracking+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTracking+CoreDataClass.swift"; sourceTree = "<group>"; };
+		7499FA43221C7A60004EC0B4 /* ShipmentTracking+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTracking+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		74B053702153090F0068EB85 /* Model 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 3.xcdatamodel"; sourceTree = "<group>"; };
 		74B7D6AB20F90CBB002667AC /* OrderNote+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderNote+CoreDataClass.swift"; sourceTree = "<group>"; };
 		74B7D6AC20F90CBB002667AC /* OrderNote+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderNote+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -336,6 +340,8 @@
 				7426A05320F69DA4002A4E07 /* OrderItem+CoreDataProperties.swift */,
 				74B7D6AB20F90CBB002667AC /* OrderNote+CoreDataClass.swift */,
 				74B7D6AC20F90CBB002667AC /* OrderNote+CoreDataProperties.swift */,
+				7499FA42221C7A60004EC0B4 /* ShipmentTracking+CoreDataClass.swift */,
+				7499FA43221C7A60004EC0B4 /* ShipmentTracking+CoreDataProperties.swift */,
 				B5B914C320EFF03500F2F832 /* Site+CoreDataClass.swift */,
 				B5B914C420EFF03500F2F832 /* Site+CoreDataProperties.swift */,
 				7492FAD4217FA9C100ED2C69 /* SiteSetting+CoreDataClass.swift */,
@@ -547,6 +553,7 @@
 				7426A05520F69DA4002A4E07 /* OrderItem+CoreDataProperties.swift in Sources */,
 				74938EC8216FA9B200540BA1 /* OrderStatsItem+CoreDataClass.swift in Sources */,
 				7426A04720F68F27002A4E07 /* Order+CoreDataClass.swift in Sources */,
+				7499FA45221C7A60004EC0B4 /* ShipmentTracking+CoreDataProperties.swift in Sources */,
 				B5FD111E21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift in Sources */,
 				7471A515216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataProperties.swift in Sources */,
 				B54CA5BD20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift in Sources */,
@@ -569,6 +576,7 @@
 				7426A05020F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift in Sources */,
 				746A9D23214078080013F6FF /* TopEarnerStatsItem+CoreDataClass.swift in Sources */,
 				74F009C02183B99B002B4566 /* Note+CoreDataClass.swift in Sources */,
+				7499FA44221C7A60004EC0B4 /* ShipmentTracking+CoreDataClass.swift in Sources */,
 				B505F6DE20BEEA4F00BB1B69 /* CoreDataManager.swift in Sources */,
 				7492FAD7217FA9C100ED2C69 /* SiteSetting+CoreDataProperties.swift in Sources */,
 				B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */,

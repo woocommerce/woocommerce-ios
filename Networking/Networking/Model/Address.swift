@@ -16,13 +16,6 @@ public struct Address: Decodable {
     public let phone: String?
     public let email: String?
 
-    /// Make Address conform to Error protocol.
-    ///
-    enum AddressParseError: Error {
-        case missingCountry
-    }
-
-
     /// Designated Initializer.
     ///
     public init(firstName: String, lastName: String, company: String?, address1: String, address2: String?, city: String, state: String, postcode: String, country: String, phone: String?, email: String?) {
@@ -53,12 +46,6 @@ public struct Address: Decodable {
         let country = try container.decode(String.self, forKey: .country)
         let phone = try container.decodeIfPresent(String.self, forKey: .phone)
         let email = try container.decodeIfPresent(String.self, forKey: .email)
-
-        // Check for an empty country, because on Android that's how
-        // we determine if the shipping address should be considered empty.
-        if country.isEmpty {
-            throw AddressParseError.missingCountry
-        }
 
         self.init(firstName: firstName, lastName: lastName, company: company, address1: address1, address2: address2, city: city, state: state, postcode: postcode, country: country, phone: phone, email: email)
     }

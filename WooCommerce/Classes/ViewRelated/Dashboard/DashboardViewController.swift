@@ -130,6 +130,8 @@ extension DashboardViewController {
             return
         }
 
+        configureTitle()
+
         storeStatsViewController.clearAllFields()
         applyHideAnimation(for: newOrdersContainerView)
     }

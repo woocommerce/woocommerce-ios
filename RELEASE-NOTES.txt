@@ -8,3 +8,4 @@
 - bugfix: Log out of the current account right after selecting "Try another account" in store picker
 - improvement: Use the store name for the title of the view in "My store" tab
 - improvement: Add an alert to let the user know about our new store switcher
+- improvement: Display Address in Order Details screen unless every field is empty

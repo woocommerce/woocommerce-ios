@@ -214,6 +214,7 @@ private extension DashboardViewController {
 
         group.notify(queue: .main) { [weak self] in
             self?.refreshControl.endRefreshing()
+            self?.configureTitle()
 
             if let error = reloadError {
                 DDLogError("⛔️ Error loading dashboard: \(error)")

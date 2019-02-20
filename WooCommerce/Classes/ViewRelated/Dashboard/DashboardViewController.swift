@@ -80,8 +80,9 @@ private extension DashboardViewController {
     }
 
     private func configureTitle() {
-        title = StoresManager.shared.sessionManager.defaultSite?.name
-        tabBarItem.title = NSLocalizedString("My store", comment: "Title of the bottom tab item that presents the user's store dashboard")
+        let myStore = NSLocalizedString("My store", comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard")
+        title = StoresManager.shared.sessionManager.defaultSite?.name ?? myStore
+        tabBarItem.title = myStore
     }
 
     private func configureNavigationItem() {

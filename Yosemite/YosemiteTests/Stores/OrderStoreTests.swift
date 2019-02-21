@@ -502,7 +502,7 @@ class OrderStoreTests: XCTestCase {
             XCTAssertNil(error)
 
             let storageOrder = self.storageManager.viewStorage.loadOrder(orderID: self.sampleOrderID)
-            XCTAssert(storageOrder?.status == OrderStatus.processing.rawValue)
+            XCTAssert(storageOrder?.statusKey == OrderStatus.processing.rawValue)
 
             expectation.fulfill()
         }
@@ -526,7 +526,7 @@ class OrderStoreTests: XCTestCase {
             XCTAssertNotNil(error)
 
             let storageOrder = self.storageManager.viewStorage.loadOrder(orderID: self.sampleOrderID)
-            XCTAssert(storageOrder?.status == OrderStatus.completed.rawValue)
+            XCTAssert(storageOrder?.statusKey == OrderStatus.completed.rawValue)
 
             expectation.fulfill()
         }
@@ -619,7 +619,7 @@ private extension OrderStoreTests {
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     status: .processing,
+                     statusKey: .processing,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),
@@ -644,7 +644,7 @@ private extension OrderStoreTests {
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     status: .completed,
+                     statusKey: .completed,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),
@@ -669,7 +669,7 @@ private extension OrderStoreTests {
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     status: .completed,
+                     statusKey: .completed,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),

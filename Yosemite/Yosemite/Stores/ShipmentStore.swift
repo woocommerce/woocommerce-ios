@@ -8,4 +8,5 @@ import CocoaLumberjack
 //
 public class ShipmentStore: Store {
 
+
 }

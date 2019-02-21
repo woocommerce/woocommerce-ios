@@ -8,7 +8,7 @@ import CocoaLumberjack
 //
 public class ShipmentStore: Store {
 
-    /// Shared private StorageType for use during then entire OrderNotes sync process
+    /// Shared private StorageType for use during then entire ShipmentStore sync process
     ///
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
@@ -30,7 +30,7 @@ public class ShipmentStore: Store {
 
         switch action {
         case .synchronizeShipmentTrackingData(let siteID, let orderID, let onCompletion):
-            retrieveShipmentTrackingData(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+            synchronizeShipmentTrackingData(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         }
     }
 }
@@ -40,7 +40,7 @@ public class ShipmentStore: Store {
 //
 private extension ShipmentStore {
 
-    func retrieveShipmentTrackingData(siteID: Int, orderID: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeShipmentTrackingData(siteID: Int, orderID: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ShipmentsRemote(network: network)
         remote.loadShipmentTrackings(for: siteID, orderID: orderID) { [weak self] (shipmentTrackingData, error) in
             guard let readOnlyShipmentTrackingData = shipmentTrackingData else {

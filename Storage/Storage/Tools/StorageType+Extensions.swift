@@ -110,4 +110,19 @@ public extension StorageType {
         let predicate = NSPredicate(format: "noteID = %ld AND noteHash = %ld", noteID, noteHash)
         return firstObject(ofType: Note.self, matching: predicate)
     }
+
+    /// Retrieves a specific stored ShipmentTracking entity.
+    ///
+    public func loadShipmentTracking(siteID: Int64, orderID: Int64, trackingID: String) -> ShipmentTracking? {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld AND trackingID ==[c] %@", siteID, orderID, trackingID)
+        return firstObject(ofType: ShipmentTracking.self, matching: predicate)
+    }
+
+    /// Retrieves all of the stored ShipmentTracking entities for the provided siteID and orderID.
+    ///
+    public func loadShipmentTrackingList(siteID: Int64, orderID: Int64) -> [ShipmentTracking]? {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", siteID, orderID)
+        let descriptor = NSSortDescriptor(keyPath: \ShipmentTracking.orderID, ascending: false)
+        return allObjects(ofType: ShipmentTracking.self, matching: predicate, sortedBy: [descriptor])
+    }
 }

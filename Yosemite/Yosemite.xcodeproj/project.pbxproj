@@ -45,6 +45,7 @@
 		74D42DBA221C978D00B4977D /* ShipmentTracking+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D42DB9221C978D00B4977D /* ShipmentTracking+ReadOnlyType.swift */; };
 		74D42DBC221C983F00B4977D /* ShipmentTracking+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D42DBB221C983F00B4977D /* ShipmentTracking+ReadOnlyConvertible.swift */; };
 		74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */; };
+		74D7FFFA221F01E90008CC0E /* ShipmentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D7FFF9221F01E90008CC0E /* ShipmentStore.swift */; };
 		74FD596B216FB65900A5AE83 /* OrderStats+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FD596A216FB65900A5AE83 /* OrderStats+ReadOnlyType.swift */; };
 		74FD596E216FB6ED00A5AE83 /* OrderStats+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FD596C216FB6ED00A5AE83 /* OrderStats+ReadOnlyConvertible.swift */; };
 		74FD596F216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FD596D216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift */; };
@@ -132,6 +133,7 @@
 		74D42DB9221C978D00B4977D /* ShipmentTracking+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTracking+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		74D42DBB221C983F00B4977D /* ShipmentTracking+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTracking+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Order+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		74D7FFF9221F01E90008CC0E /* ShipmentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentStore.swift; sourceTree = "<group>"; };
 		74FD596A216FB65900A5AE83 /* OrderStats+ReadOnlyType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderStats+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		74FD596C216FB6ED00A5AE83 /* OrderStats+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderStats+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		74FD596D216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderStatsItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -283,6 +285,7 @@
 				74A7688B20D45EBA00F9D437 /* OrderStore.swift */,
 				7499936520EFBC7200CF01CD /* OrderNoteStore.swift */,
 				7492FADC217FAF5C00ED2C69 /* SettingStore.swift */,
+				74D7FFF9221F01E90008CC0E /* ShipmentStore.swift */,
 				74A18C552113827E00DCF8A8 /* StatsStore.swift */,
 			);
 			path = Stores;
@@ -660,6 +663,7 @@
 				7455D4672141B57600FA8C1F /* TopEarnerStats+ReadOnlyConvertible.swift in Sources */,
 				B56C1EBE20EABD2B00D749F9 /* ResultsController.swift in Sources */,
 				B5EED1A820F4F3CF00652449 /* Account+ReadOnlyConvertible.swift in Sources */,
+				74D7FFFA221F01E90008CC0E /* ShipmentStore.swift in Sources */,
 				74FD596B216FB65900A5AE83 /* OrderStats+ReadOnlyType.swift in Sources */,
 				B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */,
 				7492FADF217FB11D00ED2C69 /* SettingAction.swift in Sources */,

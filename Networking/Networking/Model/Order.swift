@@ -10,7 +10,7 @@ public struct Order: Decodable {
     public let customerID: Int
 
     public let number: String
-    public let status: OrderStatus
+    public let statusKey: OrderStatus
     public let currency: String
     public let customerNote: String?
 
@@ -38,7 +38,7 @@ public struct Order: Decodable {
                 parentID: Int,
                 customerID: Int,
                 number: String,
-                status: OrderStatus,
+                statusKey: OrderStatus,
                 currency: String,
                 customerNote: String?,
                 dateCreated: Date,
@@ -62,7 +62,7 @@ public struct Order: Decodable {
         self.customerID = customerID
 
         self.number = number
-        self.status = status
+        self.statusKey = statusKey
         self.currency = currency
         self.customerNote = customerNote
 
@@ -99,7 +99,7 @@ public struct Order: Decodable {
         let customerID = try container.decode(Int.self, forKey: .customerID)
 
         let number = try container.decode(String.self, forKey: .number)
-        let status = try container.decode(OrderStatus.self, forKey: .status)
+        let statusKey = try container.decode(OrderStatus.self, forKey: .status)
         let currency = try container.decode(String.self, forKey: .currency)
         let customerNote = try container.decode(String.self, forKey: .customerNote)
 
@@ -122,7 +122,7 @@ public struct Order: Decodable {
 
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
 
-        self.init(siteID: siteID, orderID: orderID, parentID: parentID, customerID: customerID, number: number, status: status, currency: currency, customerNote: customerNote, dateCreated: dateCreated, dateModified: dateModified, datePaid: datePaid, discountTotal: discountTotal, discountTax: discountTax, shippingTotal: shippingTotal, shippingTax: shippingTax, total: total, totalTax: totalTax, paymentMethodTitle: paymentMethodTitle, items: items, billingAddress: billingAddress, shippingAddress: shippingAddress, coupons: coupons)
+        self.init(siteID: siteID, orderID: orderID, parentID: parentID, customerID: customerID, number: number, statusKey: statusKey, currency: currency, customerNote: customerNote, dateCreated: dateCreated, dateModified: dateModified, datePaid: datePaid, discountTotal: discountTotal, discountTax: discountTax, shippingTotal: shippingTotal, shippingTax: shippingTax, total: total, totalTax: totalTax, paymentMethodTitle: paymentMethodTitle, items: items, billingAddress: billingAddress, shippingAddress: shippingAddress, coupons: coupons)
     }
 }
 
@@ -170,7 +170,7 @@ extension Order: Comparable {
             lhs.parentID == rhs.parentID &&
             lhs.customerID == rhs.customerID &&
             lhs.number == rhs.number &&
-            lhs.status == rhs.status &&
+            lhs.statusKey == rhs.statusKey &&
             lhs.dateCreated == rhs.dateCreated &&
             lhs.dateModified == rhs.dateModified &&
             lhs.datePaid == rhs.datePaid &&

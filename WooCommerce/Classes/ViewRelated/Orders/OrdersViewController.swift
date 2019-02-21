@@ -609,7 +609,7 @@ extension OrdersViewController {
         }
 
         WooAnalytics.shared.track(.orderOpen, withProperties: ["id": viewModel.order.orderID,
-                                                               "status": viewModel.order.status.rawValue])
+                                                               "status": viewModel.order.statusKey.rawValue])
         singleOrderViewController.viewModel = viewModel
     }
 }

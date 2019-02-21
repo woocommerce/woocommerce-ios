@@ -131,14 +131,14 @@ extension FulfillViewController {
         // Capture these values for the undo closure
         let orderID = order.orderID
         let doneStatus = OrderStatus.completed
-        let undoStatus = order.status
+        let undoStatus = order.statusKey
 
         let done = updateOrderAction(siteID: order.siteID, orderID: orderID, status: doneStatus)
         let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, status: undoStatus)
 
         WooAnalytics.shared.track(.orderFulfillmentCompleteButtonTapped)
         WooAnalytics.shared.track(.orderStatusChange, withProperties: ["id": order.orderID,
-                                                                       "from": order.status.rawValue,
+                                                                       "from": order.statusKey.rawValue,
                                                                        "to": OrderStatus.completed.rawValue])
         StoresManager.shared.dispatch(done)
 

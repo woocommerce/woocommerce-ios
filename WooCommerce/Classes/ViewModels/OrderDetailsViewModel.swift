@@ -37,7 +37,7 @@ class OrderDetailsViewModel {
     let fulfillTitle = NSLocalizedString("Fulfill order", comment: "Fulfill order button title")
 
     var isProcessingPayment: Bool {
-        return order.status == .processing
+        return order.statusKey == .processing
     }
 
     let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")

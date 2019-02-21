@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="18D109" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="18C54" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
@@ -64,7 +64,7 @@
         <attribute name="shippingTax" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="shippingTotal" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="siteID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="status" attributeType="String" syncable="YES"/>
+        <attribute name="statusKey" attributeType="String" syncable="YES"/>
         <attribute name="total" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="totalTax" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="coupons" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderCoupon" inverseName="order" inverseEntity="OrderCoupon" syncable="YES"/>
@@ -202,12 +202,12 @@
         <element name="OrderSearchResults" positionX="144.44140625" positionY="743.43359375" width="128" height="75"/>
         <element name="OrderStats" positionX="137.859375" positionY="388.33203125" width="128" height="225"/>
         <element name="OrderStatsItem" positionX="321.74609375" positionY="425.51171875" width="128" height="330"/>
+        <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="150"/>
         <element name="SiteSetting" positionX="-362.54296875" positionY="217.9921875" width="128" height="120"/>
         <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="90"/>
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
     </elements>
 </model>

@@ -161,8 +161,8 @@ extension OrderStore {
             return status
         }
 
-        let oldStatus = OrderStatus(rawValue: order.status)
-        order.status = status.rawValue
+        let oldStatus = OrderStatus(rawValue: order.statusKey)
+        order.statusKey = status.rawValue
         storage.saveIfNeeded()
 
         return oldStatus

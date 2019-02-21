@@ -443,7 +443,7 @@ private extension OrderDetailsViewController {
         cell.title = viewModel.summaryTitle
         cell.dateCreated = viewModel.summaryDateCreated
 
-        cell.display(orderStatus: viewModel.order.status)
+        cell.display(orderStatus: viewModel.order.statusKey)
     }
 }
 
@@ -775,7 +775,7 @@ private extension OrderDetailsViewController {
 
         UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
         WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": self.viewModel.order.orderID,
-                                                                        "status": self.viewModel.order.status.rawValue,
+                                                                        "status": self.viewModel.order.statusKey.rawValue,
                                                                         "type": "call"])
 
     }
@@ -794,7 +794,7 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
 
         displayMessageComposer(for: phoneNumber)
         WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
-                                                                        "status": viewModel.order.status.rawValue,
+                                                                        "status": viewModel.order.statusKey.rawValue,
                                                                         "type": "sms"])
     }
 
@@ -821,7 +821,7 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
 
         displayEmailComposer(for: email)
         WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
-                                                                        "status": viewModel.order.status.rawValue,
+                                                                        "status": viewModel.order.statusKey.rawValue,
                                                                         "type": "email"])
     }
 

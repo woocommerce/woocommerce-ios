@@ -4,7 +4,7 @@ import Foundation
 /// Represents an OrderStatus Entity.
 ///
 public struct OrderStatus: Decodable {
-    public let name: String
+    public var name: String
     public let siteID: Int
     public let slug: String
 
@@ -52,7 +52,7 @@ extension OrderStatus: Comparable {
 
     public static func < (lhs: OrderStatus, rhs: OrderStatus) -> Bool {
         return lhs.siteID < rhs.siteID ||
-            (lhs.siteID == rhs.siteID && lhs.name < rhs.name) ||
+            (lhs.siteID == rhs.siteID && lhs.name == rhs.name) ||
             (lhs.siteID == rhs.siteID && lhs.slug == rhs.slug)
     }
 }

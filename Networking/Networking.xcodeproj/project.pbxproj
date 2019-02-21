@@ -166,7 +166,7 @@
 		B5A2417D217F9ECC00595DEF /* MetaContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A2417C217F9ECC00595DEF /* MetaContainer.swift */; };
 		B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */; };
 		B5BB1D1020A237FB00112D92 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0F20A237FB00112D92 /* Address.swift */; };
-		B5BB1D1220A255EC00112D92 /* OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D1120A255EC00112D92 /* OrderStatus.swift */; };
+		B5BB1D1220A255EC00112D92 /* OrderStatusKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D1120A255EC00112D92 /* OrderStatusKey.swift */; };
 		B5C151BB217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C151BA217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift */; };
 		B5C151C0217EE3FB00C7BDC1 /* NoteListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C151BF217EE3FB00C7BDC1 /* NoteListMapperTests.swift */; };
 		B5C6FCC820A32E4800A4F8E4 /* DateFormatterWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6FCC720A32E4800A4F8E4 /* DateFormatterWooTests.swift */; };
@@ -355,7 +355,7 @@
 		B5A2417C217F9ECC00595DEF /* MetaContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaContainer.swift; sourceTree = "<group>"; };
 		B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Woo.swift"; sourceTree = "<group>"; };
 		B5BB1D0F20A237FB00112D92 /* Address.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
-		B5BB1D1120A255EC00112D92 /* OrderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatus.swift; sourceTree = "<group>"; };
+		B5BB1D1120A255EC00112D92 /* OrderStatusKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusKey.swift; sourceTree = "<group>"; };
 		B5C151BA217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyedDecodingContainer+Woo.swift"; sourceTree = "<group>"; };
 		B5C151BF217EE3FB00C7BDC1 /* NoteListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteListMapperTests.swift; sourceTree = "<group>"; };
 		B5C6FCC720A32E4800A4F8E4 /* DateFormatterWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatterWooTests.swift; sourceTree = "<group>"; };
@@ -612,7 +612,7 @@
 				741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */,
 				B5C6FCCE20A3592900A4F8E4 /* OrderItem.swift */,
 				74C8F06320EEB44800B6EDC9 /* OrderNote.swift */,
-				B5BB1D1120A255EC00112D92 /* OrderStatus.swift */,
+				B5BB1D1120A255EC00112D92 /* OrderStatusKey.swift */,
 				743E84EB22171F4600FAC9D7 /* ShipmentTracking.swift */,
 				B56C1EB720EA76F500D749F9 /* Site.swift */,
 				7426CA0E21AF2C90004E9FFC /* SiteAPI.swift */,
@@ -1071,7 +1071,7 @@
 				74A1D26B21189B8100931DFA /* SiteVisitStatsItem.swift in Sources */,
 				B505F6EC20BEFDC200BB1B69 /* Loader.swift in Sources */,
 				74D3BD142114FE6900A6E85E /* MIContainer.swift in Sources */,
-				B5BB1D1220A255EC00112D92 /* OrderStatus.swift in Sources */,
+				B5BB1D1220A255EC00112D92 /* OrderStatusKey.swift in Sources */,
 				B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */,
 				74C8F06820EEB7BD00B6EDC9 /* OrderNotesMapper.swift in Sources */,
 				B53EF5342180F646003E146F /* DotcomValidator.swift in Sources */,

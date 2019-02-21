@@ -443,7 +443,7 @@ private extension OrderDetailsViewController {
         cell.title = viewModel.summaryTitle
         cell.dateCreated = viewModel.summaryDateCreated
 
-        cell.display(orderStatus: viewModel.order.statusKey)
+        cell.display(orderStatusKey: viewModel.order.statusKey)
     }
 }
 

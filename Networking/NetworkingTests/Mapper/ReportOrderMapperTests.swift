@@ -26,7 +26,7 @@ class ReportOrderMapperTests: XCTestCase {
         XCTAssertEqual(reportTotals?[.cancelled], 7)
         XCTAssertEqual(reportTotals?[.refunded], 8)
         XCTAssertEqual(reportTotals?[.failed], 9)
-        XCTAssertEqual(reportTotals?[OrderStatus(rawValue: "cia-investigation")], 10)
+        XCTAssertEqual(reportTotals?[OrderStatusKey(rawValue: "cia-investigation")], 10)
     }
 }
 
@@ -37,7 +37,7 @@ private extension ReportOrderMapperTests {
 
     /// Returns the ReportOrderMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrderStatusResult(from filename: String) throws -> [OrderStatus: Int] {
+    func mapOrderStatusResult(from filename: String) throws -> [OrderStatusKey: Int] {
         let response = Loader.contentsOf(filename)!
         let mapper = ReportOrderTotalsMapper()
         return try mapper.map(response: response)
@@ -45,13 +45,13 @@ private extension ReportOrderMapperTests {
 
     /// Returns the ReportOrderMapper output upon receiving data from the endpoint
     ///
-    func mapSuccessfulResponse() throws -> [OrderStatus: Int] {
+    func mapSuccessfulResponse() throws -> [OrderStatusKey: Int] {
         return try mapOrderStatusResult(from: "report-orders")
     }
 
     /// Returns the ReportOrderMapper output upon receiving a broken response.
     ///
-    func mapLoadBrokenResponse() throws -> [OrderStatus: Int] {
+    func mapLoadBrokenResponse() throws -> [OrderStatusKey: Int] {
         return try mapOrderStatusResult(from: "generic_error")
     }
 }

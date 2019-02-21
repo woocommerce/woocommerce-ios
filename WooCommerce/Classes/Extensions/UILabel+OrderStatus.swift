@@ -9,10 +9,10 @@ extension UILabel {
 
     /// Applies the appropriate Style for a given OrderStatus
     ///
-    func applyStyle(for status: OrderStatus) {
+    func applyStyle(for statusKey: OrderStatusKey) {
         applyFootnoteStyle()
         applyLayerSettings()
-        applyBackground(for: status)
+        applyBackground(for: statusKey)
     }
 
     /// Setup: Layer
@@ -24,8 +24,8 @@ extension UILabel {
 
     /// Setup: Background Color
     ///
-    private func applyBackground(for status: OrderStatus) {
-        switch status {
+    private func applyBackground(for statusKey: OrderStatusKey) {
+        switch statusKey {
         case .processing:
             fallthrough
         case .pending:

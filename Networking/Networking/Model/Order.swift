@@ -10,7 +10,7 @@ public struct Order: Decodable {
     public let customerID: Int
 
     public let number: String
-    public let statusKey: OrderStatus
+    public let statusKey: OrderStatusKey
     public let currency: String
     public let customerNote: String?
 
@@ -38,7 +38,7 @@ public struct Order: Decodable {
                 parentID: Int,
                 customerID: Int,
                 number: String,
-                statusKey: OrderStatus,
+                statusKey: OrderStatusKey,
                 currency: String,
                 customerNote: String?,
                 dateCreated: Date,
@@ -99,7 +99,7 @@ public struct Order: Decodable {
         let customerID = try container.decode(Int.self, forKey: .customerID)
 
         let number = try container.decode(String.self, forKey: .number)
-        let statusKey = try container.decode(OrderStatus.self, forKey: .status)
+        let statusKey = try container.decode(OrderStatusKey.self, forKey: .status)
         let currency = try container.decode(String.self, forKey: .currency)
         let customerNote = try container.decode(String.self, forKey: .customerNote)
 

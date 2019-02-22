@@ -63,7 +63,7 @@
 		CE12FBCF221F0E1A00C59248 /* Order+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBCD221F0E1A00C59248 /* Order+CoreDataProperties.swift */; };
 		CE12FBD2221F140900C59248 /* OrderStatus+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBD0221F140900C59248 /* OrderStatus+CoreDataClass.swift */; };
 		CE12FBD3221F140900C59248 /* OrderStatus+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBD1221F140900C59248 /* OrderStatus+CoreDataProperties.swift */; };
-		CE12FBD5221F160D00C59248 /* WooCommerceModelV9toV10.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBD4221F160D00C59248 /* WooCommerceModelV9toV10.xcmappingmodel */; };
+		CE12FBE32220515600C59248 /* WooCommerceModelV9toV10.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBE22220515600C59248 /* WooCommerceModelV9toV10.xcmappingmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -149,7 +149,7 @@
 		CE12FBCD221F0E1A00C59248 /* Order+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CE12FBD0221F140900C59248 /* OrderStatus+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CE12FBD1221F140900C59248 /* OrderStatus+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		CE12FBD4221F160D00C59248 /* WooCommerceModelV9toV10.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV9toV10.xcmappingmodel; sourceTree = "<group>"; };
+		CE12FBE22220515600C59248 /* WooCommerceModelV9toV10.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV9toV10.xcmappingmodel; sourceTree = "<group>"; };
 		DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -208,7 +208,7 @@
 		9302E3A8220DC7DF00DA5018 /* Mapping Models */ = {
 			isa = PBXGroup;
 			children = (
-				CE12FBD4221F160D00C59248 /* WooCommerceModelV9toV10.xcmappingmodel */,
+				CE12FBE22220515600C59248 /* WooCommerceModelV9toV10.xcmappingmodel */,
 			);
 			name = "Mapping Models";
 			sourceTree = "<group>";
@@ -571,7 +571,7 @@
 				B505F6E020BEEA8100BB1B69 /* StorageType.swift in Sources */,
 				746A9D22214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift in Sources */,
 				74F009C12183B99B002B4566 /* Note+CoreDataProperties.swift in Sources */,
-				CE12FBD5221F160D00C59248 /* WooCommerceModelV9toV10.xcmappingmodel in Sources */,
+				CE12FBE32220515600C59248 /* WooCommerceModelV9toV10.xcmappingmodel in Sources */,
 				B54CA5C920A4C17800F38CD1 /* NSObject+Storage.swift in Sources */,
 				7471A516216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataClass.swift in Sources */,
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,

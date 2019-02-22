@@ -1,6 +1,3 @@
-Cette mise à jour vise à améliorer la fiabilité et à résoudre des problèmes :
-- Amélioration de la prise en charge de la localisation dans les tableaux Ma boutique et sur les écrans Commandes et Notifications.
-- L'application masque désormais les commandes pour lesquelles la date de création figure dans le futur. (Elles n'apparaissent plus dans la section « Aujourd'hui » d'une liste de commandes.)
-- Nous avons supprimé le récapitulatif du moyen de paiement dans la section des paiements en l'absence de paiement reçu.
-- La ligne Taxes apparaît désormais dans les paiements et les détails sur les produits lorsque le montant à afficher est égal à zéro.
-- Lorsque vous vous déconnectez, l'application réinitialise désormais les identifiants utilisés avec les demandes d'assistance.
+- Les statistiques de la boutique n'étaient parfois pas cohérentes d'un écran à l'autre. Vos statistiques doivent être fiables. C'est désormais le cas grâce à des améliorations apportées à leur affichage.
+- Pouvoir accéder facilement à l'aide quand on en a besoin est le plus efficace. C'est pourquoi, nous avons ajouté un bouton d'aide sur l'écran Sélecteur de boutique.
+- Vous pouvez désormais voir et partager les journaux d'application. Les journaux permettent de suivre les problèmes rencontrés et nous permettent de garantir une utilisation fluide et sans bug de l'application.

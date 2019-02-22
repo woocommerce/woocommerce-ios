@@ -72,15 +72,15 @@ extension ShipmentStore {
                                                                           trackingID: readOnlyTracking.trackingID) ?? derivedStorage.insertNewObject(ofType: Storage.ShipmentTracking.self)
                 storageTracking.update(with: readOnlyTracking)
             }
-        }
 
-        // Now, remove any objects that exist in storage but not in readOnlyShipmentTrackingData
-        if let storageTrackings = derivedStorage.loadShipmentTrackingList(siteID: siteID, orderID: orderID) {
-            storageTrackings.forEach({ storageTracking in
-                if readOnlyShipmentTrackingData.first(where: { $0.trackingID == storageTracking.trackingID } ) == nil {
-                    derivedStorage.deleteObject(storageTracking)
-                }
-            })
+            // Now, remove any objects that exist in storage but not in readOnlyShipmentTrackingData
+            if let storageTrackings = derivedStorage.loadShipmentTrackingList(siteID: siteID, orderID: orderID) {
+                storageTrackings.forEach({ storageTracking in
+                    if readOnlyShipmentTrackingData.first(where: { $0.trackingID == storageTracking.trackingID } ) == nil {
+                        derivedStorage.deleteObject(storageTracking)
+                    }
+                })
+            }
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {

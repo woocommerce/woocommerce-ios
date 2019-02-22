@@ -116,9 +116,76 @@ class ShipmentStoreTests: XCTestCase {
         shipmentStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that `upsertShipmentTrackingDataInBackground` does not produce duplicate entries.
+    ///
+    func testUpdateRetrieveShipmentTrackingListEffectivelyUpdatesPreexistantShipmentTrackingData() {
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 0)
+
+        let group = DispatchGroup()
+
+        group.enter()
+        shipmentStore.upsertShipmentTrackingDataInBackground(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingData: sampleShipmentTrackingList()) {
+            XCTAssertTrue(Thread.isMainThread)
+            group.leave()
+        }
+
+        group.enter()
+        shipmentStore.upsertShipmentTrackingDataInBackground(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingData: sampleShipmentTrackingListMutated()) {
+            XCTAssertTrue(Thread.isMainThread)
+            group.leave()
+        }
+
+        let expectation = self.expectation(description: "Update shipment tracking list")
+        group.notify(queue: .main) {
+            let originalShipmentTracking = self.sampleShipmentTracking1()
+            let expectedShipmentTracking = self.sampleShipmentTracking1Mutated()
+            let storageShipmentTracking = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID, orderID: self.sampleOrderID, trackingID: expectedShipmentTracking.trackingID)
+            XCTAssertNotEqual(storageShipmentTracking?.toReadOnly(), originalShipmentTracking)
+            XCTAssertEqual(storageShipmentTracking?.toReadOnly(), expectedShipmentTracking)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 4)
+
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `upsertShipmentTrackingDataInBackground` removes deleted entities.
+    ///
+    func testUpdateRetrieveShipmentTrackingListEffectivelyRemovesDeletedShipmentTrackingData() {
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 0)
+
+        let group = DispatchGroup()
+
+        group.enter()
+        shipmentStore.upsertShipmentTrackingDataInBackground(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingData: sampleShipmentTrackingList()) {
+            XCTAssertTrue(Thread.isMainThread)
+            group.leave()
+        }
+
+        group.enter()
+        shipmentStore.upsertShipmentTrackingDataInBackground(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingData: sampleShipmentTrackingListDeleted()) {
+            XCTAssertTrue(Thread.isMainThread)
+            group.leave()
+        }
+
+        let expectation = self.expectation(description: "Delete item from shipment tracking list")
+        group.notify(queue: .main) {
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 3)
+            XCTAssertNil(self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID, orderID: self.sampleOrderID, trackingID: self.sampleShipmentTracking3().trackingID))
+
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
-// MARK: - Private Methods
+
+// MARK: - Sample Data
 //
 private extension ShipmentStoreTests {
 
@@ -164,7 +231,25 @@ private extension ShipmentStoreTests {
                                 dateShipped: nil)
     }
 
+    func sampleShipmentTracking1Mutated() -> Networking.ShipmentTracking {
+        return ShipmentTracking(siteID: sampleSiteID,
+                                orderID: sampleOrderID,
+                                trackingID: "b1b94eecb1eb1c1edf3fa041efffd015",
+                                trackingNumber: "5678567ujfgh",
+                                trackingProvider: "dfggter454",
+                                trackingURL: "https://google.com",
+                                dateShipped: DateFormatter.Defaults.yearMonthDayDateFormatter.date(from: "2019-01-01"))
+    }
+
     func sampleShipmentTrackingList() -> [Networking.ShipmentTracking] {
         return [sampleShipmentTracking1(), sampleShipmentTracking2(), sampleShipmentTracking3(), sampleShipmentTracking4()]
+    }
+
+    func sampleShipmentTrackingListMutated() -> [Networking.ShipmentTracking] {
+        return [sampleShipmentTracking1Mutated(), sampleShipmentTracking2(), sampleShipmentTracking3(), sampleShipmentTracking4()]
+    }
+
+    func sampleShipmentTrackingListDeleted() -> [Networking.ShipmentTracking] {
+        return [sampleShipmentTracking1Mutated(), sampleShipmentTracking2(), sampleShipmentTracking4()]
     }
 }

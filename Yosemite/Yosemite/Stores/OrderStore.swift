@@ -34,10 +34,10 @@ public class OrderStore: Store {
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .synchronizeOrders(let siteID, let status, let pageNumber, let pageSize, let onCompletion):
-            synchronizeOrders(siteID: siteID, status: status, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .updateOrder(let siteID, let orderID, let status, let onCompletion):
-            updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: onCompletion)
+        case .synchronizeOrders(let siteID, let statusKey, let pageNumber, let pageSize, let onCompletion):
+            synchronizeOrders(siteID: siteID, statusKey: statusKey, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .updateOrder(let siteID, let orderID, let statusKey, let onCompletion):
+            updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: onCompletion)
         }
     }
 }
@@ -77,10 +77,10 @@ private extension OrderStore {
 
     /// Retrieves the orders associated with a given Site ID (if any!).
     ///
-    func synchronizeOrders(siteID: Int, status: OrderStatus?, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeOrders(siteID: Int, statusKey: OrderStatusKey?, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
-        remote.loadAllOrders(for: siteID, status: status?.rawValue, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (orders, error) in
+        remote.loadAllOrders(for: siteID, statusKey: statusKey?.rawValue, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (orders, error) in
             guard let orders = orders else {
                 onCompletion(error)
                 return
@@ -114,12 +114,12 @@ private extension OrderStore {
 
     /// Updates an Order with the specified Status.
     ///
-    func updateOrder(siteID: Int, orderID: Int, status: OrderStatus, onCompletion: @escaping (Error?) -> Void) {
+    func updateOrder(siteID: Int, orderID: Int, statusKey: OrderStatusKey, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically update the Status
-        let oldStatus = updateOrderStatus(orderID: orderID, status: status)
+        let oldStatus = updateOrderStatus(orderID: orderID, statusKey: statusKey)
 
         let remote = OrdersRemote(network: network)
-        remote.updateOrder(from: siteID, orderID: orderID, status: status.rawValue) { [weak self] (order, error) in
+        remote.updateOrder(from: siteID, orderID: orderID, statusKey: statusKey.rawValue) { [weak self] (order, error) in
             guard let error = error else {
                 // NOTE: We're *not* actually updating the whole entity here. Reason: Prevent UI inconsistencies!!
                 onCompletion(nil)
@@ -127,7 +127,7 @@ private extension OrderStore {
             }
 
             /// Revert Optimistic Update
-            self?.updateOrderStatus(orderID: orderID, status: oldStatus)
+            self?.updateOrderStatus(orderID: orderID, statusKey: oldStatus)
             onCompletion(error)
         }
     }
@@ -155,14 +155,14 @@ extension OrderStore {
     /// - Returns: Status, prior to performing the Update OP.
     ///
     @discardableResult
-    func updateOrderStatus(orderID: Int, status: OrderStatus) -> OrderStatus {
+    func updateOrderStatus(orderID: Int, statusKey: OrderStatusKey) -> OrderStatusKey {
         let storage = storageManager.viewStorage
         guard let order = storage.loadOrder(orderID: orderID) else {
-            return status
+            return statusKey
         }
 
-        let oldStatus = OrderStatus(rawValue: order.status)
-        order.status = status.rawValue
+        let oldStatus = OrderStatusKey(rawValue: order.statusKey)
+        order.statusKey = statusKey.rawValue
         storage.saveIfNeeded()
 
         return oldStatus

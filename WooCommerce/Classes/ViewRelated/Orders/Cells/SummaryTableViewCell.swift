@@ -42,9 +42,9 @@ class SummaryTableViewCell: UITableViewCell {
 
     /// Displays the specified OrderStatus, and applies the right Label Style
     ///
-    func display(orderStatus: OrderStatus) {
-        paymentStatusLabel.text = orderStatus.description
-        paymentStatusLabel.applyStyle(for: orderStatus)
+    func display(orderStatusKey: OrderStatusKey) {
+        paymentStatusLabel.text = orderStatusKey.description
+        paymentStatusLabel.applyStyle(for: orderStatusKey)
     }
 
 

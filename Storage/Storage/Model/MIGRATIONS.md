@@ -10,6 +10,10 @@ Used mapping model: `WooCommerceModelV9toV10.xcmappingmodel`
 
 - @bummytime 2019-02-19
     - New `ShipmentTracking` entity
+    
+- @mindgraffiti 2019-02-21
+    - Changes `status` attribute on `Order` to `statusKey`
+    - New `OrderStatus` entity
 
 ## Model 9 (Release 1.0.0.1) 
 - @bummytime 2019-01-11

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-02-05 14:54:01+0000 */
+/* Translation-Revision-Date: 2019-02-18 23:54:02+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -42,6 +42,9 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "إضافة ملاحظة إلى طلب";
 
+/* Cell subtitle explaining why you might want to navigate to view the application log. */
+"Advanced tool to review the app status" = "أداة متقدِّمة لمراجعة حالة التطبيق";
+
 /* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
    Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "الكل";
@@ -69,6 +72,9 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "حدث خطأ أثناء معالجة طلبك: ";
+
+/* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
+"Application Logs" = "سجلات التطبيق";
 
 /* Approve a comment */
 "Approve" = "موافقة";
@@ -116,7 +122,7 @@
 "Can Not Request Link" = "يتعذر طلب رابط";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel prompt for user information. */
+   Cancel button label - Cancel prompt for user information. */
 "Cancel" = "إلغاء";
 
 /* Cancelled Order Status */
@@ -127,6 +133,9 @@
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "خطأ في الشهادة";
+
+/* Deletes all activity logs except for the marked 'Current'. */
+"Clear old activity logs" = "مسح سجلات النشاط القديمة";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "جمع المعلومات";
@@ -187,6 +196,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "تعذر الاتصال. يحظر مضيفك طلبات POST، ويحتاج التطبيق إلى ذلك للاتصال بموقعك. يُرجى الاتصال بالمضيف لحل هذه المشكلة.";
+
+/* Cell title: the current date. */
+"Current" = "الحالي";
 
 /* Customer info section title
    Section title for the customer's billing and shipping address */
@@ -316,7 +328,7 @@
 "HOW CAN WE HELP?" = "كيف نساعدك؟";
 
 /* Help and Support navigation title
-   Help button */
+   Help button - Help button on store picker screen. */
 "Help" = "مساعدة";
 
 /* Contact Support Action */
@@ -388,6 +400,9 @@
 
 /* Alert button title - confirms and logs out the user */
 "Log Out" = "تسجيل الخروج";
+
+/* Explains that the files are sorted by LIFO date: most recent day listed first. */
+"Log files by created date" = "تسجيل الملفات حسب تاريخ إنشائها";
 
 /* Label for button to log in using your site address. */
 "Log in by entering your site address." = "قم بتسجيل الدخول عن طريق إدخال عنوان الموقع.";
@@ -492,8 +507,8 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "لا يوجد أي نشاط في هذه الفترة";
 
-/* Fulfill order > customer info > where the address would normally display.
-   Order details > customer info > shipping details. This is where the address would normally display. */
+/* Fulfill order > customer info > where the physical shipping address would normally display.
+   Order details > customer info > billing details. This is where the address would normally display. - Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "لا يوجد عنوان محدد.";
 
 /* Text displayed when no data is available for revenue chart. */
@@ -515,7 +530,7 @@
 "Notifications: %@" = "التنبيهات: %@";
 
 /* Button title. An acknowledgement of the message displayed in a prompt.
-   Submit button on prompt for user information. */
+   Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "موافق";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -562,7 +577,7 @@
 "Order marked as fulfilled" = "تم وسم الطلب كمُنجز";
 
 /* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "الطلبات";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -638,7 +653,7 @@
 "Processing" = "قيد المعالجة";
 
 /* Description for Top Performers left column header
-   Section header title for the product */
+   Product section title - Section header title for the product */
 "Product" = "المنتج";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
@@ -891,8 +906,8 @@
 /* Top Performers section title - this year */
 "This Year" = "هذا العام";
 
-/* Login Disclaimer Text and Jetpack config instructions */
-"This app requires Jetpack to connect to your Store. Read the " = "يتطلب هذا التطبيق اتصال Jetpack بمتجرك. اقرأ ";
+/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
+"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "يتطلب هذا التطبيق ربط Jetpack بمتجرك. <br \/> اقرأ <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">إرشادات التكوين<\/a>.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "عنوان البريد الإلكتروني هذا غير مسجَّل على وردبرس. كوم.";
@@ -979,11 +994,29 @@
 /* No comment provided by engineer. */
 "Unknown error" = "خطأ غير معروف";
 
-/* Stats summary date */
-"Updated %@" = "تم تحديث %@";
+/* Footer text below the list of logs explaining the maximum number of logs saved. */
+"Up to seven days՚ worth of logs are saved." = "تم حفظ ما يصل إلى سبعة أيام من مجموعة السجلات.";
 
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "تم تحديث %1$@ في %2$@";
+
+/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+"Updated %ld hour ago" = "تم التحديث منذ %ld مضت من الساعات";
+
+/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+"Updated %ld hours ago" = "تم التحديث منذ %ld مضت من الساعات";
+
+/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
+"Updated %ld minute ago" = "تم التحديث منذ %ld مضت من الدقائق";
+
+/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+"Updated %ld minutes ago" = "تم التحديث منذ %ld مضت من الدقائق";
+
+/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
+"Updated moments ago" = "تم التحديث منذ لحظات";
+
+/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
+"Updated on %@" = "تم التحديث في %@";
 
 /* Login dialog username placeholder
    Username placeholder */
@@ -997,6 +1030,9 @@
 
 /* Displays the version of the App */
 "Version %@" = "الإصدار %@";
+
+/* View application log cell title */
+"View Application Log" = "عرض سجل التطبيق";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "عرض تذاكر الدعم التي تم إرسالها مسبقًا";
@@ -1090,9 +1126,6 @@
 
 /* Notification status description for 'approved' */
 "approved" = "تمت الموافقة عليها";
-
-/* Login Disclaimer Linked Text */
-"configuration instructions" = "تعليمات التكوين";
 
 /* Site Address placeholder */
 "example.wordpress.com" = "example.wordress.com";

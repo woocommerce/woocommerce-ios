@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-02-06 09:54:02+0000 */
+/* Translation-Revision-Date: 2019-02-19 13:54:02+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -42,6 +42,9 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Добавить примечание к заказу";
 
+/* Cell subtitle explaining why you might want to navigate to view the application log. */
+"Advanced tool to review the app status" = "Специальный инструмент для анализа состояния приложения";
+
 /* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
    Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "Все";
@@ -69,6 +72,9 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Возникла ошибка при обработке вашего запроса:";
+
+/* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
+"Application Logs" = "Журналы приложения";
 
 /* Approve a comment */
 "Approve" = "Одобрить";
@@ -116,7 +122,7 @@
 "Can Not Request Link" = "Не удаётся запросить ссылку.";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel prompt for user information. */
+   Cancel button label - Cancel prompt for user information. */
 "Cancel" = "Отмена";
 
 /* Cancelled Order Status */
@@ -127,6 +133,9 @@
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Ошибка сертификата";
+
+/* Deletes all activity logs except for the marked 'Current'. */
+"Clear old activity logs" = "Очистить старые журналы активности";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Сбор информации";
@@ -187,6 +196,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Невозможно подключиться. Ваш хостинг блокирует POST-запросы XML-RPC, они требуются для обмена информацией с вашим сайтом. Обратитесь в тех. поддержку хостинга.";
+
+/* Cell title: the current date. */
+"Current" = "Текущая дата";
 
 /* Customer info section title
    Section title for the customer's billing and shipping address */
@@ -316,7 +328,7 @@
 "HOW CAN WE HELP?" = "ЧЕМ ВАМ ПОМОЧЬ?";
 
 /* Help and Support navigation title
-   Help button */
+   Help button - Help button on store picker screen. */
 "Help" = "Помощь";
 
 /* Contact Support Action */
@@ -388,6 +400,9 @@
 
 /* Alert button title - confirms and logs out the user */
 "Log Out" = "Выйти";
+
+/* Explains that the files are sorted by LIFO date: most recent day listed first. */
+"Log files by created date" = "Файлы журнала по дате создания";
 
 /* Label for button to log in using your site address. */
 "Log in by entering your site address." = "Войдите введя адрес вашего сайта.";
@@ -492,8 +507,8 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Активность за этот период отсутствует";
 
-/* Fulfill order > customer info > where the address would normally display.
-   Order details > customer info > shipping details. This is where the address would normally display. */
+/* Fulfill order > customer info > where the physical shipping address would normally display.
+   Order details > customer info > billing details. This is where the address would normally display. - Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "Адрес не указан.";
 
 /* Text displayed when no data is available for revenue chart. */
@@ -509,13 +524,13 @@
 
 /* Title of the Notifications tab — plural form of Notification
    Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "Notifications";
+"Notifications" = "Уведомления";
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
 "Notifications: %@" = "Уведомления: %@";
 
 /* Button title. An acknowledgement of the message displayed in a prompt.
-   Submit button on prompt for user information. */
+   Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "Хорошо";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -562,7 +577,7 @@
 "Order marked as fulfilled" = "Заказ отмечен как выполненный";
 
 /* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Заказы";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -638,7 +653,7 @@
 "Processing" = "В обработке";
 
 /* Description for Top Performers left column header
-   Section header title for the product */
+   Product section title - Section header title for the product */
 "Product" = "Товар";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
@@ -684,7 +699,7 @@
 "Revenue" = "Доход";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
-"Review marked as %@" = "Review marked as %@";
+"Review marked as %@" = "Обзор помечен как %@";
 
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Просмотреть, подготовить и отправить эти ожидающие заказы";
@@ -891,8 +906,8 @@
 /* Top Performers section title - this year */
 "This Year" = "В этом году";
 
-/* Login Disclaimer Text and Jetpack config instructions */
-"This app requires Jetpack to connect to your Store. Read the " = "Для подключения к вашему магазину этому приложению требуется Jetpack. Ознакомьтесь с ";
+/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
+"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "Для подключения к вашему магазину приложению требуется Jetpack. <br \/> См. <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">инструкции по настройке<\/a>.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Этот адрес электронной почты не зарегистрирован на WordPress.com.";
@@ -979,11 +994,29 @@
 /* No comment provided by engineer. */
 "Unknown error" = "Неизвестная ошибка";
 
-/* Stats summary date */
-"Updated %@" = "Обновлено %@";
+/* Footer text below the list of logs explaining the maximum number of logs saved. */
+"Up to seven days՚ worth of logs are saved." = "Журналы хранятся в течение 7 дней.";
 
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "Обновлено %1$@ в %2$@";
+
+/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+"Updated %ld hour ago" = "Обновлено %ld час назад";
+
+/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+"Updated %ld hours ago" = "Обновлено %ld ч. назад";
+
+/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
+"Updated %ld minute ago" = "Обновлено %ld минуту назад";
+
+/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+"Updated %ld minutes ago" = "Обновлено %ld мин. назад";
+
+/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
+"Updated moments ago" = "Обновлено только что";
+
+/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
+"Updated on %@" = "Обновлено %@";
 
 /* Login dialog username placeholder
    Username placeholder */
@@ -997,6 +1030,9 @@
 
 /* Displays the version of the App */
 "Version %@" = "Версия %@";
+
+/* View application log cell title */
+"View Application Log" = "Просмотр журнала приложения";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Посмотреть ранее отправленные запросы в службу поддержки";
@@ -1090,9 +1126,6 @@
 
 /* Notification status description for 'approved' */
 "approved" = "одобрено";
-
-/* Login Disclaimer Linked Text */
-"configuration instructions" = "инструкции по настройке";
 
 /* Site Address placeholder */
 "example.wordpress.com" = "example.wordress.com";

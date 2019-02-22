@@ -1,6 +1,3 @@
-Bei diesem Update dreht sich alles um verbesserte Zuverlässigkeit und Fehlerbehebungen:
-- Verbesserte Lokalisierungsunterstützung in Mein Shop-Diagrammen und auf den Bildschirmen für Bestellungen und Benachrichtigungen.
-- Die App blendet nun Aufträge aus, bei denen ein Erstellungsdatum in der Zukunft angegeben ist. (Sie werden nicht mehr im dem Abschnitt „Heute“ einer Bestellliste angezeigt.)
-- Wir haben die Zusammenfassung der Zahlungsmethode im Zahlungsabschnitt entfernt, wenn keine Zahlung eingegangen ist.
-- Die Steuerzeile wird nun auch dann in Zahlungen und Produktdetails angezeigt, wenn der auszuweisende Betrag Null ist.
-- Beim Abmelden setzt die App nun die bei Supportanfragen verwendeten Anmeldedaten zurück.
+- Die Shop-Statistiken waren auf verschiedenen Bildschirmen manchmal nicht einheitlich. Ihre Statistiken sollten vertrauenswürdig sein, und jetzt sind sie es auch – dank der Verbesserungen an der Anzeige der Shop-Statistiken.
+- Hilfe ist dann am besten, wenn sie direkt zur Hand ist. Darum haben wir auf dem Store Picker-Bildschirm einen Hilfe-Button hinzugefügt.
+- Du kannst dir Anwendungsprotokolle jetzt anzeigen lassen und sie teilen. Die Protokolle helfen uns dabei, ggf. auftretende Probleme nachzuverfolgen. So können wir dafür sorgen, dass die Nutzung der App einwandfrei abläuft.

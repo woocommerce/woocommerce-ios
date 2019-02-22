@@ -1,6 +1,3 @@
-Bu güncelleme, geliştirilmiş güvenilirlik özellikleri ve düzeltmelerle dolu:
-- Mağazam grafiklerinde ve Siparişler ve Bildirimler ekranlarında artık daha fazla yerelleştirme desteği sunuluyor.
-- Uygulama artık oluşturulma tarihi gelecek bir tarih olan siparişleri gizliyor. (Bu siparişler artık bir sipariş listesinin “Bugün” bölümünde görüntülenmiyor.)
-- Ödeme alınmadığı durumda ödeme bölümünde artık ödeme yöntemi özeti görüntülenmiyor.
-- Ödemeler ve ürün ayrıntılarında artık görüntülenecek miktar sıfır olsa bile Vergiler satırı görüntüleniyor.
-- Oturum kapatılırken uygulama artık destek isteklerinde kullanılan kimlik bilgisini sıfırlıyor.
+- Bazı durumlarda mağaza istatistikleri farklı ekranlarda tutarsızlık gösteriyordu. İstatistikleriniz her zaman güvenilir olmalıdır. Mağaza istatistiklerinin nasıl görüntülenmesi gerektiğine ilişkin yapılan iyileştirmelerle birlikte artık bu güvenilirlik sağlandı.
+- En iyi yardım, ihtiyaç duyduğunuzda ulaşabileceğiniz yardımdır. Bu nedenle Mağaza Seçimi ekranına sizin için bir yardım düğmesi ekledik.
+- Artık uygulama günlüklerini görüntüleyebilir ve paylaşabilirsiniz. Günlükler, karşılaşabileceğiniz sorunları tespit etmemize yardımcı olur. Böylece uygulamanın sorunsuz ve hatasız kullanıldığından emin olabiliriz.

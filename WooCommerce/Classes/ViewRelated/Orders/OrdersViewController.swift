@@ -150,7 +150,7 @@ private extension OrdersViewController {
     func refreshResultsPredicate() {
         resultsController.predicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
-            let excludeNonMatchingStatus = statusKeyFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
+            let excludeNonMatchingStatus = statusKeyFilter.map { NSPredicate(format: "statusKey = %@", $0.rawValue) }
 
             var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
             if let tomorrow = Date.tomorrow() {

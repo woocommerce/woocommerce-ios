@@ -1,3 +1,0 @@
-- A veces, las estadísticas de la tienda no son coherentes en las distintas pantallas. Tus estadísticas deben ser fiables, y ahora lo son, porque se ha mejorado la forma en que se muestran.
-- La ayuda más útil es aquella que recibes cuando la necesitas, así que hemos añadido un botón de ayuda a la pantalla del selector de tiendas.
-- Ahora puedes ver y compartir los registros de la aplicación. Con ellos, podemos controlar más fácilmente los posibles errores que te puedas encontrar, de modo que ofrecemos una experiencia de usuario de calidad y sin errores.

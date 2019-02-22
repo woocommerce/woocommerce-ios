@@ -1,3 +1,0 @@
-- Sometimes store stats were inconsistent across different screens. Your stats should be trustworthy, and now they are, with improvements to how store stats they’re displayed.
-- The best help is help that’s there when you need it, so we added a help button to the Store Picker screen.
-- You can now view and share application logs. The logs help us track down any issues you might run into, so we can ensure that using the app is smooth and bug-free.

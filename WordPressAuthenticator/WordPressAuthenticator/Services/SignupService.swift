@@ -21,10 +21,8 @@ class SignupService {
                                    failure: @escaping (_ error: Error) -> Void) {
 
         let remote = WordPressComServiceRemote(wordPressComRestApi: anonymousAPI)
-        let locale = WordPressComLanguageDatabase().deviceLanguage.slug
 
         remote.createWPComAccount(withGoogle: token,
-                                  andLocale: locale,
                                   andClientID: configuration.wpcomClientId,
                                   andClientSecret: configuration.wpcomSecret,
                                   success: { response in

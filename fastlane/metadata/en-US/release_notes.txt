@@ -1,7 +1,3 @@
-This update is all about improved reliability and fixes:
-- Improved localization support on My Store charts and on the Orders & Notifications screens.
-- The app now hides orders that have a created date listed in the future. (They no longer display under the “Today” section of an order list.)
-- We’ve removed the payment method summary in the payment section when no payment has been received.
-- Taxes line is now shown in payments and product details even when the amount to show is zero.
-- When logging out, the app now resets the credential used with support requests.
-- Bugfix: Sales totals on dashboard weren't matching gross sales totals from the web in all cases.
+- Sometimes store stats were inconsistent across different screens. Your stats should be trustworthy, and now they are, with improvements to how store stats they’re displayed.
+- The best help is help that’s there when you need it, so we added a help button to the Store Picker screen.
+- You can now view and share application logs. The logs help us track down any issues you might run into, so we can ensure that using the app is smooth and bug-free.

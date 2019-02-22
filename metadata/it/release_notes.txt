@@ -1,0 +1,3 @@
+- A volte le statistiche del negozio erano incoerenti su diverse schermate. Le tue statistiche devono essere affidabili e ora lo sono, con miglioramenti alla modalità di visualizzazione delle statistiche del negozio.
+- L'aiuto migliore è quello disponibile all'occorrenza, quindi abbiamo aggiunto un pulsante di aiuto alla schermata Selezionatore negozio.
+- Ora puoi visualizzare e condividere log applicazione. I log ci aiutano a monitorare eventuali problemi che potresti riscontrare, così possiamo garantire che l'uso dell'app è semplice e privo di bug.

@@ -1,0 +1,3 @@
+- Les statistiques de la boutique n'étaient parfois pas cohérentes d'un écran à l'autre. Vos statistiques doivent être fiables. C'est désormais le cas grâce à des améliorations apportées à leur affichage.
+- Pouvoir accéder facilement à l'aide quand on en a besoin est le plus efficace. C'est pourquoi, nous avons ajouté un bouton d'aide sur l'écran Sélecteur de boutique.
+- Vous pouvez désormais voir et partager les journaux d'application. Les journaux permettent de suivre les problèmes rencontrés et nous permettent de garantir une utilisation fluide et sans bug de l'application.

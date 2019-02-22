@@ -1,0 +1,3 @@
+- Às vezes, as estatísticas da loja apareciam inconsistentes em telas diferentes. A estatísticas de sua loja devem ser confiáveis e, a partir de agora, elas são, pois contêm melhorias na exibição delas.
+- A melhor ajuda é aquela que chega quando precisamos. Sendo assim, incluímos um botão de ajuda na tela Seletor de lojas.
+- A partir de agora, você poderá visualizar e compartilhar logs de aplicativos. Os logs nos auxiliam no acompanhamento de possíveis problemas, para que possamos garantir que a utilização do aplicativo ocorre sem dificuldades e bugs.

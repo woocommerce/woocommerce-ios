@@ -1,0 +1,3 @@
+- Bazı durumlarda mağaza istatistikleri farklı ekranlarda tutarsızlık gösteriyordu. İstatistikleriniz her zaman güvenilir olmalıdır. Mağaza istatistiklerinin nasıl görüntülenmesi gerektiğine ilişkin yapılan iyileştirmelerle birlikte artık bu güvenilirlik sağlandı.
+- En iyi yardım, ihtiyaç duyduğunuzda ulaşabileceğiniz yardımdır. Bu nedenle Mağaza Seçimi ekranına sizin için bir yardım düğmesi ekledik.
+- Artık uygulama günlüklerini görüntüleyebilir ve paylaşabilirsiniz. Günlükler, karşılaşabileceğiniz sorunları tespit etmemize yardımcı olur. Böylece uygulamanın sorunsuz ve hatasız kullanıldığından emin olabiliriz.

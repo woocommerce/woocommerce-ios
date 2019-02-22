@@ -1,0 +1,3 @@
+– ibland var butiksstatistik inkosekvent mellan olika skärmar. Du ska kunna lita på din statistik och nu kan du det med förbättringar i hur butiksstatistik visas.
+– den bästa hjälpen är den som finns där när du behöver den så vi har lagt till en hjälpknapp i Butiksväljaren-skärmen.
+– du kan nu visa och dela programloggar. Loggarna hjälper oss att spåra problem som du kan stöta på så att vi kan se till att appen är smidig och felfri att använda.

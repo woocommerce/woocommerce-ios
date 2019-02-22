@@ -1,0 +1,3 @@
+- Terkadang statistik toko tidak konsisten di berbagai layar. Statistik Anda harus dapat dipercaya, dan dengan perbaikan cara menyimpan statistik yang ditampilkan saat ini.
+- Bantuan terbaik adalah bantuan yang tersedia saat Anda membutuhkannya, jadi kami menambahkan tombol bantuan ke layar Pemilih Toko.
+- Sekarang Anda dapat melihat dan berbagi log aplikasi. Log membantu kami melacak setiap masalah yang mungkin Anda hadapi, sehingga kami dapat memastikan bahwa penggunaan aplikasi berjalan lancar dan bebas dari bug.

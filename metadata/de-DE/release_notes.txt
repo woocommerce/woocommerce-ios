@@ -1,0 +1,3 @@
+- Die Shop-Statistiken waren auf verschiedenen Bildschirmen manchmal nicht einheitlich. Ihre Statistiken sollten vertrauenswürdig sein, und jetzt sind sie es auch – dank der Verbesserungen an der Anzeige der Shop-Statistiken.
+- Hilfe ist dann am besten, wenn sie direkt zur Hand ist. Darum haben wir auf dem Store Picker-Bildschirm einen Hilfe-Button hinzugefügt.
+- Du kannst dir Anwendungsprotokolle jetzt anzeigen lassen und sie teilen. Die Protokolle helfen uns dabei, ggf. auftretende Probleme nachzuverfolgen. So können wir dafür sorgen, dass die Nutzung der App einwandfrei abläuft.

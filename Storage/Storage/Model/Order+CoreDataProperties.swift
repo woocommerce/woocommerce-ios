@@ -27,10 +27,10 @@ extension Order {
     @NSManaged public var datePaid: Date?
     @NSManaged public var discountTax: String?
     @NSManaged public var discountTotal: String?
+    @NSManaged public var exclusiveForSearch: Bool
     @NSManaged public var number: String?
     @NSManaged public var orderID: Int64
     @NSManaged public var parentID: Int64
-    @NSManaged public var siteID: Int64
     @NSManaged public var paymentMethodTitle: String?
     @NSManaged public var shippingAddress1: String?
     @NSManaged public var shippingAddress2: String?
@@ -45,14 +45,15 @@ extension Order {
     @NSManaged public var shippingState: String?
     @NSManaged public var shippingTax: String?
     @NSManaged public var shippingTotal: String?
-    @NSManaged public var status: String
+    @NSManaged public var siteID: Int64
+    @NSManaged public var statusKey: String
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
-    @NSManaged public var exclusiveForSearch: Bool
     @NSManaged public var coupons: Set<OrderCoupon>?
     @NSManaged public var items: Set<OrderItem>?
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?
+    @NSManaged public var status: OrderStatus?
 
 }
 
@@ -107,7 +108,7 @@ extension Order {
 
 }
 
-// MARK: Generated accessors for lookups
+// MARK: Generated accessors for searchResults
 extension Order {
 
     @objc(addSearchResultsObject:)

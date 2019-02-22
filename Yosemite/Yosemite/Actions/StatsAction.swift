@@ -25,5 +25,5 @@ public enum StatsAction: Action {
     /// Retrieves the current order count for a specifc `OrderStatus` from the server. By design, the server response is *not*
     /// persisted in the Storage framework but is instead returned within the completion closure.
     ///
-    case retrieveOrderTotals(siteID: Int, status: OrderStatus, onCompletion: (Int?, Error?) -> Void)
+    case retrieveOrderTotals(siteID: Int, status: OrderStatusKey, onCompletion: (Int?, Error?) -> Void)
 }

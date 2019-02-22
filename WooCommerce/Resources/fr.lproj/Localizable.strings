@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-02-05 14:54:01+0000 */
+/* Translation-Revision-Date: 2019-02-19 15:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -42,6 +42,9 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Ajoute une note à une commande";
 
+/* Cell subtitle explaining why you might want to navigate to view the application log. */
+"Advanced tool to review the app status" = "Outil avancé de contrôle de l'état de l'application";
+
 /* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
    Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "Toutes";
@@ -69,6 +72,9 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Une erreur est survenue lors de l’exécution de votre demande :";
+
+/* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
+"Application Logs" = "Journaux d'application";
 
 /* Approve a comment */
 "Approve" = "Approuver";
@@ -116,7 +122,7 @@
 "Can Not Request Link" = "Impossible de faire une requête sur le lien";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel prompt for user information. */
+   Cancel button label - Cancel prompt for user information. */
 "Cancel" = "Annuler";
 
 /* Cancelled Order Status */
@@ -127,6 +133,9 @@
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Erreur de certificat";
+
+/* Deletes all activity logs except for the marked 'Current'. */
+"Clear old activity logs" = "Effacer vos anciens journaux d'activités";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Recueil d’information";
@@ -187,6 +196,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Impossible de se connecter. Votre hébergeur bloque les requêtes POST et l’app a besoin de cela pour communiquer avec votre site. Contactez votre hébergeur pour résoudre ce problème.";
+
+/* Cell title: the current date. */
+"Current" = "Actuel";
 
 /* Customer info section title
    Section title for the customer's billing and shipping address */
@@ -316,7 +328,7 @@
 "HOW CAN WE HELP?" = "COMMENT POUVONS-NOUS VOUS AIDER ?";
 
 /* Help and Support navigation title
-   Help button */
+   Help button - Help button on store picker screen. */
 "Help" = "Aide";
 
 /* Contact Support Action */
@@ -388,6 +400,9 @@
 
 /* Alert button title - confirms and logs out the user */
 "Log Out" = "Se déconnecter";
+
+/* Explains that the files are sorted by LIFO date: most recent day listed first. */
+"Log files by created date" = "Fichiers journaux par date de création";
 
 /* Label for button to log in using your site address. */
 "Log in by entering your site address." = "Connectez-vous en saisissant l'adresse de votre site.";
@@ -492,8 +507,8 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Aucune activité sur cette période";
 
-/* Fulfill order > customer info > where the address would normally display.
-   Order details > customer info > shipping details. This is where the address would normally display. */
+/* Fulfill order > customer info > where the physical shipping address would normally display.
+   Order details > customer info > billing details. This is where the address would normally display. - Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "Aucune adresse spécifiée.";
 
 /* Text displayed when no data is available for revenue chart. */
@@ -515,7 +530,7 @@
 "Notifications: %@" = "Notifications : %@";
 
 /* Button title. An acknowledgement of the message displayed in a prompt.
-   Submit button on prompt for user information. */
+   Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -562,7 +577,7 @@
 "Order marked as fulfilled" = "Commande marquée comme exécutée";
 
 /* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Commandes";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -638,7 +653,7 @@
 "Processing" = "En cours";
 
 /* Description for Top Performers left column header
-   Section header title for the product */
+   Product section title - Section header title for the product */
 "Product" = "Produit";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
@@ -891,8 +906,8 @@
 /* Top Performers section title - this year */
 "This Year" = "Cette année";
 
-/* Login Disclaimer Text and Jetpack config instructions */
-"This app requires Jetpack to connect to your Store. Read the " = "Cette application nécessite de connecter Jetpack à votre boutique. Lire ";
+/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
+"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "Cette application nécessite de connecter Jetpack à votre boutique.<br \/> Lisez les <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">instructions de configuration<\/a>.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Cette adresse e-mail n’est pas enregistrée sur WordPress.com.";
@@ -979,11 +994,29 @@
 /* No comment provided by engineer. */
 "Unknown error" = "Erreur inconnue";
 
-/* Stats summary date */
-"Updated %@" = "%@ mise à jour";
+/* Footer text below the list of logs explaining the maximum number of logs saved. */
+"Up to seven days՚ worth of logs are saved." = "Enregistre jusqu'à sept jours de rapports de bugs.";
 
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "%1$@ remplacée par %2$@";
+
+/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+"Updated %ld hour ago" = "Mises à jour il y a %ld heure";
+
+/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+"Updated %ld hours ago" = "Mises à jour il y a %ld heures";
+
+/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
+"Updated %ld minute ago" = "Mises à jour il y a %ld minute";
+
+/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+"Updated %ld minutes ago" = "Mises à jour il y a %ld minutes";
+
+/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
+"Updated moments ago" = "Mises à jour il y a quelques instants";
+
+/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
+"Updated on %@" = "Mises à jour le %@";
 
 /* Login dialog username placeholder
    Username placeholder */
@@ -997,6 +1030,9 @@
 
 /* Displays the version of the App */
 "Version %@" = "Version %@";
+
+/* View application log cell title */
+"View Application Log" = "Voir le journal d'application";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Voir les précédents tickets de support envoyés";
@@ -1090,9 +1126,6 @@
 
 /* Notification status description for 'approved' */
 "approved" = "approuvé";
-
-/* Login Disclaimer Linked Text */
-"configuration instructions" = "instructions d’installation";
 
 /* Site Address placeholder */
 "example.wordpress.com" = "example.wordress.com";

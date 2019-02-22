@@ -75,7 +75,7 @@ class NewNoteViewController: UIViewController {
 
         WooAnalytics.shared.track(.orderNoteAddButtonTapped)
         WooAnalytics.shared.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
-                                                                  "status": viewModel.order.status.rawValue,
+                                                                  "status": viewModel.order.statusKey.rawValue,
                                                                   "type": isCustomerNote ? "customer" : "private"])
 
         let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, isCustomerNote: isCustomerNote, note: noteText) { [weak self] (orderNote, error) in

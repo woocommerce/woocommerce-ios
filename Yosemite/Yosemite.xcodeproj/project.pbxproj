@@ -48,6 +48,7 @@
 		74FD596B216FB65900A5AE83 /* OrderStats+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FD596A216FB65900A5AE83 /* OrderStats+ReadOnlyType.swift */; };
 		74FD596E216FB6ED00A5AE83 /* OrderStats+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FD596C216FB6ED00A5AE83 /* OrderStats+ReadOnlyConvertible.swift */; };
 		74FD596F216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FD596D216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift */; };
+		933A27352222352500C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A27342222352500C2143A /* Logging.swift */; };
 		B505254C20EE6491008090F5 /* Site+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */; };
 		B52E002B2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */; };
 		B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002D211A3F5500700FDE /* ReadOnlyType.swift */; };
@@ -62,7 +63,6 @@
 		B56C1EBE20EABD2B00D749F9 /* ResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C1EBD20EABD2B00D749F9 /* ResultsController.swift */; };
 		B56C1EC220EAE2E500D749F9 /* ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C1EC120EAE2E500D749F9 /* ReadOnlyConvertible.swift */; };
 		B5A01CA120D19C4700E3207E /* MockupStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A01CA020D19C4700E3207E /* MockupStorage.swift */; };
-		B5A0369E214C0F0900774E2C /* CocoaLumberjack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A0369D214C0F0900774E2C /* CocoaLumberjack.swift */; };
 		B5B19DE020E6A45900899568 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B19DDF20E6A45900899568 /* Storage.framework */; };
 		B5B19DE220E6A45E00899568 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B19DE120E6A45E00899568 /* Networking.framework */; };
 		B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B5C796208E49B600642956 /* Action+Internal.swift */; };
@@ -137,6 +137,7 @@
 		74FD596D216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderStatsItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		79402E7AD394EEB60C39A4B8 /* Pods-YosemiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7F47E19203B04CF6BB5EA659 /* Pods-Yosemite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.debug.xcconfig"; sourceTree = "<group>"; };
+		933A27342222352500C2143A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		93D120F57D5D14A10B3AFFFD /* Pods-Yosemite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release.xcconfig"; sourceTree = "<group>"; };
 		991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YosemiteTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABE0D84C5393D9EE2CCF2B7E /* Pods-YosemiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -154,7 +155,6 @@
 		B56C1EBD20EABD2B00D749F9 /* ResultsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsController.swift; sourceTree = "<group>"; };
 		B56C1EC120EAE2E500D749F9 /* ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadOnlyConvertible.swift; sourceTree = "<group>"; };
 		B5A01CA020D19C4700E3207E /* MockupStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupStorage.swift; sourceTree = "<group>"; };
-		B5A0369D214C0F0900774E2C /* CocoaLumberjack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaLumberjack.swift; path = ../../../WooCommerce/Classes/Tools/Logging/CocoaLumberjack.swift; sourceTree = "<group>"; };
 		B5B19DDF20E6A45900899568 /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5B19DE120E6A45E00899568 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5B5C796208E49B600642956 /* Action+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Action+Internal.swift"; sourceTree = "<group>"; };
@@ -382,9 +382,9 @@
 		B5C9DE132087FF0E006B910A /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				B5C9DE142087FF0E006B910A /* Assert.swift */,
 				B5B5C796208E49B600642956 /* Action+Internal.swift */,
-				B5A0369D214C0F0900774E2C /* CocoaLumberjack.swift */,
+				B5C9DE142087FF0E006B910A /* Assert.swift */,
+				933A27342222352500C2143A /* Logging.swift */,
 				743057B2218B69D100441A76 /* Queue.swift */,
 			);
 			path = Internal;
@@ -581,7 +581,7 @@
 			inputPaths = (
 				"${SRCROOT}/../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack-Default-Swift/CocoaLumberjack.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -645,6 +645,7 @@
 				B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */,
 				74A7688C20D45EBA00F9D437 /* OrderStore.swift in Sources */,
 				B53D89E520E6C22B00F90866 /* Model.swift in Sources */,
+				933A27352222352500C2143A /* Logging.swift in Sources */,
 				74685D5020F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift in Sources */,
 				74A7689020D45F9300F9D437 /* OrderAction.swift in Sources */,
 				74FD596E216FB6ED00A5AE83 /* OrderStats+ReadOnlyConvertible.swift in Sources */,
@@ -653,7 +654,6 @@
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,
 				74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */,
 				B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */,
-				B5A0369E214C0F0900774E2C /* CocoaLumberjack.swift in Sources */,
 				B5C9DE162087FF0E006B910A /* Store.swift in Sources */,
 				B52E0034211A449600700FDE /* Site+ReadOnlyType.swift in Sources */,
 				74D42DBC221C983F00B4977D /* ShipmentTracking+ReadOnlyConvertible.swift in Sources */,

@@ -6,7 +6,7 @@ import Networking
 //
 public enum ShipmentAction: Action {
 
-    /// Synchronizes the all of the shipment tracking associated with the provided `siteID` and `orderID`
+    /// Synchronizes all the shipment tracking data associated with the provided `siteID` and `orderID`
     ///
     case synchronizeShipmentTrackingData(siteID: Int, orderID: Int, onCompletion: (Error?) -> Void)
 }

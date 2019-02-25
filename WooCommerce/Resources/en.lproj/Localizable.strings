@@ -231,6 +231,9 @@
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [\(code)] \(theMessage)" = "Dotcom Error: [\(code)] \(theMessage)";
 
+/* WordPress.com error thrown when the the request REST API url is invalid. */
+"Dotcom Invalid REST Route" = "Dotcom Invalid REST Route";
+
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "Dotcom Missing Token";
 
@@ -477,7 +480,8 @@
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "Moves the comment to Trash";
 
-/* Dashboard navigation title */
+/* My Store Notice Title for loading error
+   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "My store";
 
 /* My Tickets title */
@@ -642,9 +646,6 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Please open your email app and look for an email from WordPress.com.";
 
-/* My Store > Settings > Primary Store information section */
-"Primary Store" = "Primary Store";
-
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Privacy Policy";
 
@@ -722,6 +723,9 @@
 
 /* Search Orders */
 "Search orders" = "Search orders";
+
+/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
+"Selected Store" = "Selected Store";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "Send Link";
@@ -840,6 +844,9 @@
 
 /* Subtotal label for payment view */
 "Subtotal" = "Subtotal";
+
+/* This action allows the user to change stores without logging out and logging back in again. */
+"Switch Store" = "Switch Store";
 
 /* Labels an order note to let user know it's a system status message */
 "System status" = "System status";
@@ -977,11 +984,20 @@
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "Try with the site address";
 
+/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
+"Unable to add note to order #\(viewModel.order.orderID)" = "Unable to add note to order #\(viewModel.order.orderID)";
+
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "Unable To Connect";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "Unable to find WooCommerce stores connected to this account";
+
+/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
+"Unable to fulfill order #\(orderID)" = "Unable to fulfill order #\(orderID)";
+
+/* Load Action Failed */
+"Unable to load content" = "Unable to load content";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Unable to mark review as %@";

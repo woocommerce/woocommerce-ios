@@ -70,7 +70,6 @@ extension Storage.Order: ReadOnlyConvertible {
                      parentID: Int(parentID),
                      customerID: Int(customerID),
                      number: number ?? "",
-                     status: OrderStatus(name: String(), siteID: Int(siteID), slug: statusKey),
                      statusKey: OrderStatusKey(rawValue: statusKey),
                      currency: currency ?? "",
                      customerNote: customerNote ?? "",

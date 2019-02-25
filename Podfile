@@ -36,7 +36,7 @@ target 'WooCommerce' do
   pod 'Alamofire', '~> 4.7'
   pod 'Crashlytics', '~> 3.10'
   pod 'KeychainAccess', '~> 3.1'
-  pod 'CocoaLumberjack', '~> 3.4'
+  pod 'CocoaLumberjack/Swift', '~> 3.4'
   pod 'XLPagerTabStrip', '~> 8.1'
   pod 'Charts', '~> 3.2'
   pod 'ZendeskSDK', '~> 2.2'
@@ -62,7 +62,7 @@ target 'Yosemite' do
   # ==================
   #
   pod 'Alamofire', '~> 4.7'
-  pod 'CocoaLumberjack', '~> 3.4'
+  pod 'CocoaLumberjack/Swift', '~> 3.4'
 
   # Unit Tests
   # ==========
@@ -86,7 +86,7 @@ target 'Networking' do
   # ==================
   #
   pod 'Alamofire', '~> 4.7'
-  pod 'CocoaLumberjack', '~> 3.4'
+  pod 'CocoaLumberjack/Swift', '~> 3.4'
 
 
   # Unit Tests
@@ -107,7 +107,7 @@ target 'Storage' do
   # External Libraries
   # ==================
   #
-  pod 'CocoaLumberjack', '~> 3.4'
+  pod 'CocoaLumberjack/Swift', '~> 3.4'
 
 
   # Unit Tests

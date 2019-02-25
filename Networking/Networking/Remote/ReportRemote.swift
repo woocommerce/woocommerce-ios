@@ -14,11 +14,15 @@ public class ReportRemote: Remote {
     ///   - siteID: Site for which we'll fetch the order totals.
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadOrderTotals(for siteID: Int, completion: @escaping ([OrderStatusKey: Int]?, Error?) -> Void) {
+    public func loadOrderTotals(for siteID: Int, completion: @escaping ([OrderStatusKey: Int]?, [OrderStatus]?, Error?) -> Void) {
         let path = Constants.orderTotalsPath
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = ReportOrderTotalsMapper()
-        enqueue(request, mapper: mapper, completion: completion)
+        enqueue(request, mapper: mapper) { (allItems, error) in
+            let orderTotals = allItems?[Constants.reportKey] as? [OrderStatusKey: Int]
+            let orderStatuses = allItems?[Constants.statusKey] as? [OrderStatus]
+            completion(orderTotals, orderStatuses, error)
+        }
     }
 }
 
@@ -28,5 +32,7 @@ public class ReportRemote: Remote {
 private extension ReportRemote {
     enum Constants {
         static let orderTotalsPath = "reports/orders/totals"
+        static let reportKey = "report"
+        static let statusKey = "status"
     }
 }

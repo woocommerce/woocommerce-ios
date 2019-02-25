@@ -39,6 +39,11 @@
             "slug": "cia-investigation",
             "name": "CIA Investigation",
             "total": 10
+        },
+        {
+            "slug": "pre-ordered",
+            "name": "Pre ordered",
+            "total": 1
         }
     ]
 }

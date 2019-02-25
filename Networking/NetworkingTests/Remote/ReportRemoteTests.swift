@@ -28,10 +28,10 @@ class ReportRemoteTests: XCTestCase {
         let remote = ReportRemote(network: network)
 
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "report-orders")
-        remote.loadOrderTotals(for: sampleSiteID) { (reportTotals, error) in
+        remote.loadOrderTotals(for: sampleSiteID) { (reportTotals, orderStatuses, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(reportTotals)
-            XCTAssertEqual(reportTotals?.count, 8)
+            XCTAssertEqual(reportTotals?.count, 9)
             XCTAssertEqual(reportTotals?[.pending], 123)
             XCTAssertEqual(reportTotals?[.processing], 4)
             XCTAssertEqual(reportTotals?[.onHold], 5)
@@ -52,7 +52,7 @@ class ReportRemoteTests: XCTestCase {
         let remote = ReportRemote(network: network)
 
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "generic_error")
-        remote.loadOrderTotals(for: sampleSiteID) { (reportTotals, error) in
+        remote.loadOrderTotals(for: sampleSiteID) { (reportTotals, orderStatuses, error) in
             guard let error = error as? DotcomError else {
                 XCTFail()
                 return

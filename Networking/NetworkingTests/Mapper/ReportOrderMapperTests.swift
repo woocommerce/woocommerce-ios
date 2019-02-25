@@ -16,9 +16,16 @@ class ReportOrderMapperTests: XCTestCase {
     /// Verifies that a valid report totals response is properly parsed (YAY!).
     ///
     func testSampleResponseLoaded() {
-        let reportTotals = try? mapSuccessfulResponse()
+        guard let results = try? mapSuccessfulResponse() else {
+            XCTFail()
+            return
+        }
+
+        let reportTotals = results[Constants.reportKey] as? [OrderStatusKey: Int]
+        let orderStatuses = results[Constants.statusKey] as? [OrderStatus]
+
         XCTAssertNotNil(reportTotals)
-        XCTAssertEqual(reportTotals?.count, 8)
+        XCTAssertEqual(reportTotals?.count, 9)
         XCTAssertEqual(reportTotals?[.pending], 123)
         XCTAssertEqual(reportTotals?[.processing], 4)
         XCTAssertEqual(reportTotals?[.onHold], 5)
@@ -27,6 +34,49 @@ class ReportOrderMapperTests: XCTestCase {
         XCTAssertEqual(reportTotals?[.refunded], 8)
         XCTAssertEqual(reportTotals?[.failed], 9)
         XCTAssertEqual(reportTotals?[OrderStatusKey(rawValue: "cia-investigation")], 10)
+        XCTAssertEqual(reportTotals?[OrderStatusKey(rawValue: "pre-ordered")], 1)
+
+        XCTAssertNotNil(orderStatuses)
+        XCTAssertEqual(orderStatuses?.count, 9)
+
+        let ciaOrderStatus = OrderStatus(name: "CIA Investigation", slug: "cia-investigation")
+        let preorderedOrderStatus = OrderStatus(name: "Pre ordered", slug: "pre-ordered")
+
+        XCTAssertEqual(orderStatuses?[0].slug, "pending")
+        XCTAssertEqual(orderStatuses?[0].name, "Pending payment")
+        XCTAssertEqual(orderStatuses?[0].status, .pending)
+
+        XCTAssertEqual(orderStatuses?[1].slug, "processing")
+        XCTAssertEqual(orderStatuses?[1].name, "Processing")
+        XCTAssertEqual(orderStatuses?[1].status, .processing)
+
+        XCTAssertEqual(orderStatuses?[2].slug, "on-hold")
+        XCTAssertEqual(orderStatuses?[2].name, "On hold")
+        XCTAssertEqual(orderStatuses?[2].status, .onHold)
+
+        XCTAssertEqual(orderStatuses?[3].slug, "completed")
+        XCTAssertEqual(orderStatuses?[3].name, "Completed")
+        XCTAssertEqual(orderStatuses?[3].status, .completed)
+
+        XCTAssertEqual(orderStatuses?[4].slug, "cancelled")
+        XCTAssertEqual(orderStatuses?[4].name, "Cancelled")
+        XCTAssertEqual(orderStatuses?[4].status, .cancelled)
+
+        XCTAssertEqual(orderStatuses?[5].slug, "refunded")
+        XCTAssertEqual(orderStatuses?[5].name, "Refunded")
+        XCTAssertEqual(orderStatuses?[5].status, .refunded)
+
+        XCTAssertEqual(orderStatuses?[6].slug, "failed")
+        XCTAssertEqual(orderStatuses?[6].name, "Failed")
+        XCTAssertEqual(orderStatuses?[6].status, .failed)
+
+        XCTAssertEqual(orderStatuses?[7].slug, "cia-investigation")
+        XCTAssertEqual(orderStatuses?[7].name, "CIA Investigation")
+        XCTAssertEqual(orderStatuses?[7].status, ciaOrderStatus.status)
+
+        XCTAssertEqual(orderStatuses?[8].slug, "pre-ordered")
+        XCTAssertEqual(orderStatuses?[8].name, "Pre ordered")
+        XCTAssertEqual(orderStatuses?[8].status, preorderedOrderStatus.status)
     }
 }
 
@@ -37,7 +87,7 @@ private extension ReportOrderMapperTests {
 
     /// Returns the ReportOrderMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrderStatusResult(from filename: String) throws -> [OrderStatusKey: Int] {
+    func mapOrderStatusResult(from filename: String) throws -> [String: Any] {
         let response = Loader.contentsOf(filename)!
         let mapper = ReportOrderTotalsMapper()
         return try mapper.map(response: response)
@@ -45,13 +95,20 @@ private extension ReportOrderMapperTests {
 
     /// Returns the ReportOrderMapper output upon receiving data from the endpoint
     ///
-    func mapSuccessfulResponse() throws -> [OrderStatusKey: Int] {
+    func mapSuccessfulResponse() throws -> [String: Any] {
         return try mapOrderStatusResult(from: "report-orders")
     }
 
     /// Returns the ReportOrderMapper output upon receiving a broken response.
     ///
-    func mapLoadBrokenResponse() throws -> [OrderStatusKey: Int] {
+    func mapLoadBrokenResponse() throws -> [String: Any] {
         return try mapOrderStatusResult(from: "generic_error")
+    }
+
+    /// Constants
+    ///
+    enum Constants {
+        static let reportKey = "report"
+        static let statusKey = "status"
     }
 }

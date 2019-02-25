@@ -177,6 +177,7 @@
 		B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */; };
 		CE12FBD7221F39E100C59248 /* OrderStatusMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBD6221F39E100C59248 /* OrderStatusMapper.swift */; };
 		CE12FBD9221F3A6F00C59248 /* OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */; };
+		CE19CB0D22247B1C00E8AF7A /* OrderStatusRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE19CB0C22247B1C00E8AF7A /* OrderStatusRemote.swift */; };
 		CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */ = {isa = PBXBuildFile; fileRef = CE20179220E3EFA7005B4C18 /* broken-orders.json */; };
 		CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345D21B571A7007573C6 /* SitePlanMapper.swift */; };
 		CE50346021B5799F007573C6 /* SitePlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345F21B5799F007573C6 /* SitePlan.swift */; };
@@ -370,6 +371,7 @@
 		C8F9A8CC6F90A8C9B5EF2EE2 /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
 		CE12FBD6221F39E100C59248 /* OrderStatusMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusMapper.swift; sourceTree = "<group>"; };
 		CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatus.swift; sourceTree = "<group>"; };
+		CE19CB0C22247B1C00E8AF7A /* OrderStatusRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusRemote.swift; sourceTree = "<group>"; };
 		CE20179220E3EFA7005B4C18 /* broken-orders.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "broken-orders.json"; sourceTree = "<group>"; };
 		CE50345D21B571A7007573C6 /* SitePlanMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlanMapper.swift; sourceTree = "<group>"; };
 		CE50345F21B5799F007573C6 /* SitePlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlan.swift; sourceTree = "<group>"; };
@@ -567,6 +569,7 @@
 				B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */,
 				B557DA0120975500005962F4 /* OrdersRemote.swift */,
 				748D4247210F89ED00CF7D1B /* OrderStatsRemote.swift */,
+				CE19CB0C22247B1C00E8AF7A /* OrderStatusRemote.swift */,
 				7412A8E921B6E192005D182A /* ReportRemote.swift */,
 				743E84E922171C5800FAC9D7 /* ShipmentsRemote.swift */,
 				7426CA0C21AF27B9004E9FFC /* SiteAPIRemote.swift */,
@@ -1088,6 +1091,7 @@
 				B524194121AC60A700D6FC0A /* DotcomDevice.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
 				B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */,
+				CE19CB0D22247B1C00E8AF7A /* OrderStatusRemote.swift in Sources */,
 				B557DA0F20975E07005962F4 /* DotcomRequest.swift in Sources */,
 				740211E321939C84002248DA /* CommentResultMapper.swift in Sources */,
 				B557DA0B20975D7E005962F4 /* WooAPIVersion.swift in Sources */,

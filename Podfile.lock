@@ -14,6 +14,8 @@ PODS:
   - CocoaLumberjack/Default (3.4.2)
   - CocoaLumberjack/Extensions (3.4.2):
     - CocoaLumberjack/Default
+  - CocoaLumberjack/Swift (3.4.2):
+    - CocoaLumberjack/Default
   - Crashlytics (3.12.0):
     - Fabric (~> 1.9.0)
   - Fabric (1.9.0)
@@ -80,7 +82,7 @@ DEPENDENCIES:
   - Alamofire (~> 4.7)
   - Automattic-Tracks-iOS (= 0.2.4)
   - Charts (~> 3.2)
-  - CocoaLumberjack (~> 3.4)
+  - CocoaLumberjack/Swift (~> 3.4)
   - Crashlytics (~> 3.10)
   - Gridicons (~> 0.18-beta)
   - KeychainAccess (~> 3.1)
@@ -145,6 +147,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 22d4c58200d7c105e0e407ab6bfd01a5d85014be
   ZendeskSDK: af6509ad7968d367f95b2645713802712152f879
 
-PODFILE CHECKSUM: 7367372cf135def51f6eec0914c0a7e2423d750b
+PODFILE CHECKSUM: bdc38e652c093973c639f51205241e2c3cdd7946
 
 COCOAPODS: 1.5.3

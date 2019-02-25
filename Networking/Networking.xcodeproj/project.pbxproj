@@ -95,6 +95,7 @@
 		74D522B62113607F00042831 /* StatGranularity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D522B52113607F00042831 /* StatGranularity.swift */; };
 		74D5BECE217E0F98007B0348 /* SiteSettingsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D5BECD217E0F98007B0348 /* SiteSettingsRemoteTests.swift */; };
 		74E30951216E8DCE00ABCE4C /* site-visits-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = 74E30950216E8DCE00ABCE4C /* site-visits-alt.json */; };
+		933A2732222234F800C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A2731222234F800C2143A /* Logging.swift */; };
 		B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */; };
 		B505F6CF20BEE38B00BB1B69 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6CE20BEE38B00BB1B69 /* Account.swift */; };
 		B505F6D120BEE39600BB1B69 /* AccountRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6D020BEE39600BB1B69 /* AccountRemote.swift */; };
@@ -160,7 +161,6 @@
 		B59325D4217E4206000B0E8E /* NoteBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325D0217E4206000B0E8E /* NoteBlock.swift */; };
 		B59325D5217E4206000B0E8E /* NoteRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325D1217E4206000B0E8E /* NoteRange.swift */; };
 		B5969E1520A47F99005E9DF1 /* RemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5969E1420A47F99005E9DF1 /* RemoteTests.swift */; };
-		B5A036A1214C0F5400774E2C /* CocoaLumberjack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A036A0214C0F5400774E2C /* CocoaLumberjack.swift */; };
 		B5A24179217F98F600595DEF /* notifications-load-all.json in Resources */ = {isa = PBXBuildFile; fileRef = B5A24178217F98F600595DEF /* notifications-load-all.json */; };
 		B5A2417B217F98FC00595DEF /* broken-notifications.json in Resources */ = {isa = PBXBuildFile; fileRef = B5A2417A217F98FC00595DEF /* broken-notifications.json */; };
 		B5A2417D217F9ECC00595DEF /* MetaContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A2417C217F9ECC00595DEF /* MetaContainer.swift */; };
@@ -281,6 +281,7 @@
 		74D5BECD217E0F98007B0348 /* SiteSettingsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteSettingsRemoteTests.swift; sourceTree = "<group>"; };
 		74E30950216E8DCE00ABCE4C /* site-visits-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-visits-alt.json"; sourceTree = "<group>"; };
 		753D6504FF01F09F6A33B73E /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
+		933A2731222234F800C2143A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountMapper.swift; sourceTree = "<group>"; };
 		B505F6CE20BEE38B00BB1B69 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		B505F6D020BEE39600BB1B69 /* AccountRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountRemote.swift; sourceTree = "<group>"; };
@@ -349,7 +350,6 @@
 		B59325D0217E4206000B0E8E /* NoteBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteBlock.swift; sourceTree = "<group>"; };
 		B59325D1217E4206000B0E8E /* NoteRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteRange.swift; sourceTree = "<group>"; };
 		B5969E1420A47F99005E9DF1 /* RemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteTests.swift; sourceTree = "<group>"; };
-		B5A036A0214C0F5400774E2C /* CocoaLumberjack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaLumberjack.swift; path = ../../WooCommerce/Classes/Tools/Logging/CocoaLumberjack.swift; sourceTree = "<group>"; };
 		B5A24178217F98F600595DEF /* notifications-load-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "notifications-load-all.json"; sourceTree = "<group>"; };
 		B5A2417A217F98FC00595DEF /* broken-notifications.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "broken-notifications.json"; sourceTree = "<group>"; };
 		B5A2417C217F9ECC00595DEF /* MetaContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaContainer.swift; sourceTree = "<group>"; };
@@ -726,7 +726,7 @@
 			isa = PBXGroup;
 			children = (
 				743057B4218B6ACD00441A76 /* Queue.swift */,
-				B5A036A0214C0F5400774E2C /* CocoaLumberjack.swift */,
+				933A2731222234F800C2143A /* Logging.swift */,
 			);
 			name = Internal;
 			sourceTree = "<group>";
@@ -950,7 +950,7 @@
 			inputPaths = (
 				"${SRCROOT}/../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack-Default-Swift/CocoaLumberjack.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -1036,6 +1036,7 @@
 				B5A2417D217F9ECC00595DEF /* MetaContainer.swift in Sources */,
 				B53EF53821813806003E146F /* DotcomError.swift in Sources */,
 				B5C151BB217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift in Sources */,
+				933A2732222234F800C2143A /* Logging.swift in Sources */,
 				CE50346021B5799F007573C6 /* SitePlan.swift in Sources */,
 				B59325CC217E2B4C000B0E8E /* NoteListMapper.swift in Sources */,
 				B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */,
@@ -1052,7 +1053,6 @@
 				B53EF53C21814900003E146F /* SuccessResultMapper.swift in Sources */,
 				B554FA912180BCFC00C54DFF /* NoteHash.swift in Sources */,
 				7452387321124B7700A973CD /* AnyCodable.swift in Sources */,
-				B5A036A1214C0F5400774E2C /* CocoaLumberjack.swift in Sources */,
 				B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */,
 				CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */,
 				7426CA0F21AF2C90004E9FFC /* SiteAPI.swift in Sources */,

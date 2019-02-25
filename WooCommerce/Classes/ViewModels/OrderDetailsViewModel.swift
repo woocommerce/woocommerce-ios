@@ -118,20 +118,10 @@ class OrderDetailsViewModel {
         return currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
     }
 
-    // FIXME: This code uses `double` instead of `NSDecimalNumber` for the currency amount.
     /// Anything above 999.99 or below -999.99 should display a truncated amount
     ///
     var totalFriendlyString: String? {
-        let totalString = NSString(string: order.total)
-        let totalDouble = totalString.doubleValue
-        if totalDouble >= 1000.0 || totalDouble <= -1000.0 {
-            let totalRounded = totalDouble.friendlyString()
-            let code = CurrencySettings.CurrencyCode(rawValue: order.currency) ?? CurrencySettings.shared.currencyCode
-            let symbol = CurrencySettings.shared.symbol(from: code)
-            return currencyFormatter.formatCurrency(using: totalRounded, at: CurrencySettings.shared.currencyPosition, with: symbol)
-        }
-
-        return totalValue
+        return currencyFormatter.formatHumanReadableAmount(order.total, with: order.currency, roundSmallNumbers: false) ?? String()
     }
 
     /// Payment Summary

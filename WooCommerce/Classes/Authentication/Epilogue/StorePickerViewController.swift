@@ -146,6 +146,9 @@ private extension StorePickerViewController {
         accountHeaderView.username = "@" + defaultAccount.username
         accountHeaderView.fullname = defaultAccount.displayName
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
+        accountHeaderView.onHelpRequested = {
+            AppDelegate.shared.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
+        }
     }
 
     func refreshResults() {
@@ -391,6 +394,14 @@ extension StorePickerViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        guard state.multipleStoresAvailable else {
+            // If we only have a single store available, don't allow the row to be selected
+            return false
+        }
+        return true
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

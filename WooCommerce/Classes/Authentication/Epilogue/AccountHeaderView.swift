@@ -30,6 +30,21 @@ class AccountHeaderView: UIView {
             usernameLabel.textColor = StyleManager.wooGreyTextMin
         }
     }
+
+    /// Help Button
+    ///
+    @IBOutlet private weak var helpButton: UIButton!
+
+    /// Closure to be executed whenever the help button is pressed
+    ///
+    var onHelpRequested: (() -> Void)?
+
+    // MARK: - Overridden Methods
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        setupHelpButton()
+    }
 }
 
 
@@ -63,5 +78,37 @@ extension AccountHeaderView {
     ///
     func downloadGravatar(with email: String) {
         gravatarImageView.downloadGravatarWithEmail(email)
+    }
+}
+
+
+// MARK: - Private Methods
+//
+private extension AccountHeaderView {
+
+    func setupHelpButton() {
+        helpButton.setTitle(Strings.helpButtonTitle, for: .normal)
+        helpButton.setTitle(Strings.helpButtonTitle, for: .highlighted)
+        helpButton.setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
+        helpButton.setTitleColor(StyleManager.wooGreyMid, for: .highlighted)
+        helpButton.on(.touchUpInside) { [weak self] control in
+            self?.handleHelpButtonTapped(control)
+        }
+    }
+
+    /// Handle the help button being tapped
+    ///
+    func handleHelpButtonTapped(_ sender: AnyObject) {
+        onHelpRequested?()
+    }
+}
+
+
+// MARK: - Constants!
+//
+private extension AccountHeaderView {
+
+    enum Strings {
+        static let helpButtonTitle = NSLocalizedString("Help", comment: "Help button on store picker screen.")
     }
 }

@@ -68,7 +68,8 @@ public class CurrencyFormatter {
         }
     }
 
-    /// Pull it all together! Applies currency option settings to the amount for the given currency.
+    /// Applies currency option settings to the amount for the given currency.
+    ///
     /// - Parameters:
     ///     - amount: a raw string representation of the amount, from the API, with no formatting applied. e.g. "19.87"
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
@@ -79,6 +80,56 @@ public class CurrencyFormatter {
         }
 
         return formatAmount(decimalAmount, with: currency)
+    }
+
+
+    /// Formats the provided `amount` param into a human readable value and applies the currency option
+    /// settings for the given currency.
+    ///
+    /// - Parameters:
+    ///   - amount: a raw string representation of the amount, from the API, with no formatting applied. e.g. "19.87"
+    ///   - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
+    ///   - roundSmallNumbers: if `true`, small numbers are rounded, if `false`, no rounding occurs (defaults to true)
+    /// - Returns: a formatted amount string
+    ///
+    /// For our purposes here, a "small number" is anything in-between -1000 and 1000 (exclusive).
+    ///
+    /// - Note: This func leverages the formatter from our `NSDecimalNumber` extension.
+    ///         See: [NSDecimalNumber+Helpers.swift](https://github.com/woocommerce/woocommerce-ios/blob/develop/WooCommerce/Classes/Extensions/NSDecimalNumber%2BHelpers.swift) for more details.
+    ///
+    /// Examples with currency code of "USD" (`roundSmallNumbers` is set to `true`):
+    ///  - 0 becomes "$0"
+    ///  - 198.44 becomes "$198"
+    ///  - 198.88 becomes "$198"
+    ///  - 999 becomes "$999"
+    ///  - 1000 becomes "$1.0k"
+    ///  - 5800199.56 becomes "$5.8m"
+    ///
+    /// Examples with currency code of "USD" (`roundSmallNumbers` is set to `false`):
+    ///  - 0 becomes "$0.00"
+    ///  - 198.44 becomes "$198.44"
+    ///  - 198.88 becomes "$198.88"
+    ///  - 999 becomes "$999.00"
+    ///  - 1000 becomes "$1.0k"
+    ///  - 5800199.56 becomes "$5.8m"
+    ///
+    func formatHumanReadableAmount(_ amount: String, with currency: String = CurrencySettings.shared.currencyCode.rawValue, roundSmallNumbers: Bool = true) -> String? {
+        guard let decimalAmount = convertToDecimal(from: amount) else {
+            return nil
+        }
+
+        let humanReadableAmount = decimalAmount.humanReadableString(roundSmallNumbers: roundSmallNumbers)
+        if humanReadableAmount == decimalAmount.stringValue, roundSmallNumbers == false {
+            // The human readable version of amount is the same as the converted param value which means this is a "small"
+            // number — format it normally *without* rounding.
+            return formatAmount(decimalAmount, with: currency)
+        }
+
+        // If we are here, the human readable version of the amount param is a "large" number *OR* a small number but rounding has been requested,
+        // so let's just put the currency symbol on the correct side of the string with proper spacing (based on the site settings).
+        let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? CurrencySettings.shared.currencyCode
+        let symbol = CurrencySettings.shared.symbol(from: code)
+        return formatCurrency(using: humanReadableAmount, at: CurrencySettings.shared.currencyPosition, with: symbol)
     }
 
     /// Applies currency option settings to the amount for the given currency.

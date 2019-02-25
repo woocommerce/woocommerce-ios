@@ -1,6 +1,3 @@
-Pembaruan ini berfokus pada peningkatan keandalan dan perbaikan:
-- Penyempurnaan dukungan pelokalan bagan Toko Saya dan layar Pesanan & Pemberitahuan.
-- Kini aplikasi menyembunyikan pesanan yang mencantumkan tanggal pembuatan di waktu mendatang. (Pesanan tersebut tidak lagi ditampilkan di bagian “Hari Ini” pada daftar pesanan.)
-- Kami meniadakan ringkasan metode pembayaran di bagian pembayaran saat tidak ada pembayaran yang diterima.
-- Baris pajak kini ditampilkan di bagian pembayaran dan detail produk walaupun jumlah yang akan ditampilkan adalah nol.
-- Saat logout, kini aplikasi mengatur ulang kredensial yang digunakan dengan permintaan dukungan.
+- Terkadang statistik toko tidak konsisten di berbagai layar. Statistik Anda harus dapat dipercaya, dan dengan perbaikan cara menyimpan statistik yang ditampilkan saat ini.
+- Bantuan terbaik adalah bantuan yang tersedia saat Anda membutuhkannya, jadi kami menambahkan tombol bantuan ke layar Pemilih Toko.
+- Sekarang Anda dapat melihat dan berbagi log aplikasi. Log membantu kami melacak setiap masalah yang mungkin Anda hadapi, sehingga kami dapat memastikan bahwa penggunaan aplikasi berjalan lancar dan bebas dari bug.

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-02-08 07:54:02+0000 */
+/* Translation-Revision-Date: 2019-02-20 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -42,6 +42,9 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "주문에 메모 추가";
 
+/* Cell subtitle explaining why you might want to navigate to view the application log. */
+"Advanced tool to review the app status" = "앱 상태를 검토하는 고급 도구";
+
 /* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
    Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "모든";
@@ -69,6 +72,9 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "요청을 처리하는 동안 다음 오류가 발생했습니다. ";
+
+/* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
+"Application Logs" = "애플리케이션 로그";
 
 /* Approve a comment */
 "Approve" = "승인하기";
@@ -116,7 +122,7 @@
 "Can Not Request Link" = "링크를 요청할 수 없음";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel prompt for user information. */
+   Cancel button label - Cancel prompt for user information. */
 "Cancel" = "취소";
 
 /* Cancelled Order Status */
@@ -127,6 +133,9 @@
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "인증서 오류";
+
+/* Deletes all activity logs except for the marked 'Current'. */
+"Clear old activity logs" = "이전 활동 기록 지우기";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "정보 수집";
@@ -187,6 +196,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "연결할 수 없습니다. 호스트에서 POST 요청을 차단하고 있으나 앱에서 회원님의 사이트와 통신하려면 이 요청이 필요합니다. 호스트에 문의하여 이 문제를 해결하세요.";
+
+/* Cell title: the current date. */
+"Current" = "현재";
 
 /* Customer info section title
    Section title for the customer's billing and shipping address */
@@ -316,7 +328,7 @@
 "HOW CAN WE HELP?" = "어떻게 도와드릴까요?";
 
 /* Help and Support navigation title
-   Help button */
+   Help button - Help button on store picker screen. */
 "Help" = "도움말";
 
 /* Contact Support Action */
@@ -388,6 +400,9 @@
 
 /* Alert button title - confirms and logs out the user */
 "Log Out" = "로그아웃";
+
+/* Explains that the files are sorted by LIFO date: most recent day listed first. */
+"Log files by created date" = "생성 일자별 로그 파일";
 
 /* Label for button to log in using your site address. */
 "Log in by entering your site address." = "사이트 주소를 입력하여 로그인하세요.";
@@ -492,8 +507,8 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "이 기간에 활동이 없음";
 
-/* Fulfill order > customer info > where the address would normally display.
-   Order details > customer info > shipping details. This is where the address would normally display. */
+/* Fulfill order > customer info > where the physical shipping address would normally display.
+   Order details > customer info > billing details. This is where the address would normally display. - Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "주소가 지정되지 않았습니다.";
 
 /* Text displayed when no data is available for revenue chart. */
@@ -515,7 +530,7 @@
 "Notifications: %@" = "알림: %@";
 
 /* Button title. An acknowledgement of the message displayed in a prompt.
-   Submit button on prompt for user information. */
+   Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "확인";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -562,7 +577,7 @@
 "Order marked as fulfilled" = "주문이 이행됨으로 표시됨";
 
 /* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "주문";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -638,7 +653,7 @@
 "Processing" = "처리 중";
 
 /* Description for Top Performers left column header
-   Section header title for the product */
+   Product section title - Section header title for the product */
 "Product" = "상품";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
@@ -891,8 +906,8 @@
 /* Top Performers section title - this year */
 "This Year" = "올해";
 
-/* Login Disclaimer Text and Jetpack config instructions */
-"This app requires Jetpack to connect to your Store. Read the " = "이 앱에서 회원님의 스토어에 연결하려면 젯팩이 있어야 합니다. 다음 정보를 읽어보세요. ";
+/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
+"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "이 앱에서 회원님의 스토어에 연결하려면 젯팩이 있어야 합니다. <br \/> <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">구성 지침<\/a>을 읽어보세요.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "이 이메일 주소는 워드프레스닷컴에 등록되어 있지 않습니다.";
@@ -979,11 +994,29 @@
 /* No comment provided by engineer. */
 "Unknown error" = "알려지지 않은 에러";
 
-/* Stats summary date */
-"Updated %@" = "%@ 업데이트";
+/* Footer text below the list of logs explaining the maximum number of logs saved. */
+"Up to seven days՚ worth of logs are saved." = "최대 7일 상당의 로그가 저장됩니다.";
 
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "%2$@에 %1$@ 업데이트";
+
+/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+"Updated %ld hour ago" = "%ld시간 전에 업데이트됨";
+
+/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+"Updated %ld hours ago" = "%ld시간 전에 업데이트됨";
+
+/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
+"Updated %ld minute ago" = "%ld분 전에 업데이트됨";
+
+/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+"Updated %ld minutes ago" = "%ld분 전에 업데이트됨";
+
+/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
+"Updated moments ago" = "방금 업데이트됨";
+
+/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
+"Updated on %@" = "%@에 업데이트";
 
 /* Login dialog username placeholder
    Username placeholder */
@@ -997,6 +1030,9 @@
 
 /* Displays the version of the App */
 "Version %@" = "버전 %@";
+
+/* View application log cell title */
+"View Application Log" = "애플리케이션 로그 보기";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "이전에 제출한 지원 티켓 보기";
@@ -1090,9 +1126,6 @@
 
 /* Notification status description for 'approved' */
 "approved" = "승인됨";
-
-/* Login Disclaimer Linked Text */
-"configuration instructions" = "구성 지침";
 
 /* Site Address placeholder */
 "example.wordpress.com" = "example.wordress.com";

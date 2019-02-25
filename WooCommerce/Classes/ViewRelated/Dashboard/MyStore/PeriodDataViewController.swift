@@ -33,7 +33,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     @IBOutlet private weak var chartAccessibilityView: UIView!
 
     private var lastUpdatedDate: Date?
-    private var yAxisMinimum: String = Constants.chartYAxisMinimum.friendlyString()
+    private var yAxisMinimum: String = Constants.chartYAxisMinimum.humanReadableString()
     private var yAxisMaximum: String = ""
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
@@ -77,8 +77,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
     private var summaryDateUpdated: String {
         if let lastUpdatedDate = lastUpdatedDate {
-            return String.localizedStringWithFormat(NSLocalizedString("Updated %@",
-                                                                      comment: "Stats summary date"), lastUpdatedDate.mediumString())
+            return lastUpdatedDate.relativelyFormattedUpdateString
         } else {
             return ""
         }
@@ -345,7 +344,7 @@ extension PeriodDataViewController: IAxisValueFormatter {
                 // Do not show the "0" label on the Y axis
                 return ""
             } else {
-                yAxisMaximum = value.friendlyString()
+                yAxisMaximum = value.humanReadableString()
                 return CurrencyFormatter().formatCurrency(using: yAxisMaximum,
                                                           at: CurrencySettings.shared.currencyPosition,
                                                           with: currencySymbol)
@@ -443,11 +442,8 @@ private extension PeriodDataViewController {
         var totalOrdersText = Constants.placeholderText
         var totalRevenueText = Constants.placeholderText
         if let orderStats = orderStats {
-            totalOrdersText = Double(orderStats.totalOrders).friendlyString()
-            let totalRevenue = orderStats.totalGrossSales.friendlyString()
-            totalRevenueText = CurrencyFormatter().formatCurrency(using: totalRevenue,
-                                                                  at: CurrencySettings.shared.currencyPosition,
-                                                                  with: currencySymbol)
+            totalOrdersText = Double(orderStats.totalOrders).humanReadableString()
+            totalRevenueText = CurrencyFormatter().formatHumanReadableAmount(String(orderStats.totalGrossSales), with: orderStats.currencyCode) ?? String()
         }
         ordersData.text = totalOrdersText
         revenueData.text = totalRevenueText
@@ -460,7 +456,7 @@ private extension PeriodDataViewController {
 
         var visitorsText = Constants.placeholderText
         if let siteStats = siteStats {
-            visitorsText = Double(siteStats.totalVisitors).friendlyString()
+            visitorsText = Double(siteStats.totalVisitors).humanReadableString()
         }
         visitorsData.text = visitorsText
     }
@@ -496,9 +492,7 @@ private extension PeriodDataViewController {
         var dataEntries: [BarChartDataEntry] = []
         statItems.forEach { (item) in
             let entry = BarChartDataEntry(x: Double(barCount), y: item.grossSales)
-            let formattedAmount = CurrencyFormatter().formatCurrency(using: item.grossSales.friendlyString(),
-                                                                     at: CurrencySettings.shared.currencyPosition,
-                                                                     with: currencySymbol)
+            let formattedAmount = CurrencyFormatter().formatHumanReadableAmount(String(item.grossSales), with: orderStats.currencyCode, roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
             barColors.append(barColor(for: item.period))
             dataEntries.append(entry)

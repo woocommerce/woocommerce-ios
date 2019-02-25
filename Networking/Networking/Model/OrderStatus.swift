@@ -7,6 +7,10 @@ public struct OrderStatus: Decodable {
     public var name: String
     public let slug: String
 
+    public var status: OrderStatusKey {
+        return OrderStatusKey(rawValue: slug)
+    }
+
     /// OrderStatus struct initializer.
     ///
     public init(name: String, slug: String) {

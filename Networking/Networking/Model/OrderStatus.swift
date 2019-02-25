@@ -5,14 +5,12 @@ import Foundation
 ///
 public struct OrderStatus: Decodable {
     public var name: String
-    public let siteID: Int
     public let slug: String
 
     /// OrderStatus struct initializer.
     ///
-    public init(name: String, siteID: Int, slug: String) {
+    public init(name: String, slug: String) {
         self.name = name
-        self.siteID = siteID
         self.slug = slug
     }
 
@@ -21,10 +19,9 @@ public struct OrderStatus: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let name = try container.decode(String.self, forKey: .name)
-        let siteID = try container.decode(Int.self, forKey: .siteID)
         let slug = try container.decode(String.self, forKey: .slug)
 
-        self.init(name: name, siteID: siteID, slug: slug) // initialize the struct
+        self.init(name: name, slug: slug) // initialize the struct
     }
 }
 
@@ -35,7 +32,6 @@ private extension OrderStatus {
 
     enum CodingKeys: String, CodingKey {
         case name   = "name"
-        case siteID = "site_id"
         case slug   = "slug"
     }
 }
@@ -45,14 +41,12 @@ private extension OrderStatus {
 //
 extension OrderStatus: Comparable {
     public static func == (lhs: OrderStatus, rhs: OrderStatus) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.name == rhs.name &&
+        return lhs.name == rhs.name &&
             lhs.slug == rhs.slug
     }
 
     public static func < (lhs: OrderStatus, rhs: OrderStatus) -> Bool {
-        return lhs.siteID < rhs.siteID ||
-            (lhs.siteID == rhs.siteID && lhs.name == rhs.name) ||
-            (lhs.siteID == rhs.siteID && lhs.slug == rhs.slug)
+        return lhs.name < rhs.name ||
+            (lhs.name == rhs.name && lhs.slug < rhs.slug)
     }
 }

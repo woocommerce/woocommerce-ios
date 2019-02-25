@@ -9,7 +9,7 @@ public final class OrderStatusRemote: Remote {
     /// Retrieves all order statuses (including custom statuses!) for a given site.
     ///
     /// - Parameters:
-    ///   - siteID: site for which we'll fetch the list of order statuses.
+    ///   - siteID: the site for which we'll fetch the list of order statuses.
     ///   - completion: Closure to be executed upon completion.
     ///
     func loadOrderStatuses(for siteID: Int, completion: @escaping ([OrderStatus]?, Error?) -> Void) {

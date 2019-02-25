@@ -26,7 +26,7 @@ public struct OrderStatus: Decodable {
 }
 
 
-/// Defines all of the OrderNote's CodingKeys.
+/// Defines all of the OrderStatus's CodingKeys.
 ///
 private extension OrderStatus {
 

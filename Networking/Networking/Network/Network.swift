@@ -20,5 +20,5 @@ public protocol Network {
     ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion.
     ///
-    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void)
+    func responseData(for request: WooURLRequestConvertable, completion: @escaping (Data?, Error?) -> Void)
 }

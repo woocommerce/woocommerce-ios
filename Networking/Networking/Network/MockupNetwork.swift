@@ -51,7 +51,7 @@ class MockupNetwork: Network {
     /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the specified response file, loaded as *Data*.
     /// Otherwise, an error will be relayed back (.notFound!).
     ///
-    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
+    func responseData(for request: WooURLRequestConvertable, completion: @escaping (Data?, Error?) -> Void) {
         requestsForResponseData.append(request)
 
         if let error = error(for: request) {

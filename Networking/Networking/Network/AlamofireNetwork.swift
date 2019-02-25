@@ -33,10 +33,14 @@ public class AlamofireNetwork: Network {
     ///       the upper layers can properly detect "Jetpack Tunnel" Errors.
     ///     - Yes. We do the above because the Jetpack Tunnel endpoint doesn't properly relay the correct statusCode.
     ///
-    public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
+    public func responseData(for request: WooURLRequestConvertable, completion: @escaping (Data?, Error?) -> Void) {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
+        let sessionManager = Alamofire.SessionManager.default
 
-        Alamofire.request(authenticated)
+        if request.retryAttempts > 0 {
+            sessionManager.retrier = NetworkRequestRetrier(maximumRetryAttempts: request.retryAttempts)
+        }
+        sessionManager.request(authenticated)
             .responseData { response in
                 completion(response.value, response.networkingError)
             }
@@ -69,5 +73,59 @@ private extension Alamofire.DataResponse {
         return response.flatMap { response in
             NetworkError(from: response.statusCode)
         }
+    }
+}
+
+
+// MARK: - Alamofire.NetworkRequestRetrier
+//
+class NetworkRequestRetrier: RequestRetrier {
+
+    // [Request url: Number of times retried]
+    private var retriedRequests: [String: Int] = [:]
+    private var maximumRetryAttempts: Int = 0
+
+    /// Designated Initializer
+    ///
+    init(maximumRetryAttempts: Int) {
+        self.maximumRetryAttempts = maximumRetryAttempts
+    }
+
+    internal func should(_ manager: SessionManager,
+                         retry request: Request,
+                         with error: Error,
+                         completion: @escaping RequestRetryCompletion) {
+
+        guard maximumRetryAttempts > 0 else {
+            completion(false, 0.0) // don't retry
+            return
+        }
+        guard request.task?.response == nil, let urlString = request.request?.url?.absoluteString else {
+                removeCachedUrlRequest(url: request.request?.url?.absoluteString)
+                completion(false, 0.0) // don't retry
+                return
+        }
+        guard let retryCount = retriedRequests[urlString] else {
+            retriedRequests[urlString] = 1
+            completion(true, 1.0) // retry after 1 second
+            return
+        }
+
+        if retryCount <= maximumRetryAttempts {
+            retriedRequests[urlString] = retryCount + 1
+            completion(true, 1.0) // retry after 1 second
+            DDLogInfo("⌛️ Retrying network request.")
+        } else {
+            removeCachedUrlRequest(url: urlString)
+            completion(false, 0.0) // don't retry
+        }
+    }
+
+    private func removeCachedUrlRequest(url: String?) {
+        guard let url = url else {
+            return
+        }
+
+        retriedRequests.removeValue(forKey: url)
     }
 }

@@ -29,7 +29,7 @@ public class Remote {
     ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion. Will receive the JSON Parsed Response (if successful)
     ///
-    func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
+    func enqueue(_ request: WooURLRequestConvertable, completion: @escaping (Any?, Error?) -> Void) {
         network.responseData(for: request) { (data, networError) in
             guard let data = data else {
                 completion(nil, networError)
@@ -62,7 +62,7 @@ public class Remote {
     ///     - mapper: Mapper entitity that will be used to attempt to parse the Backend's Response.
     ///     - completion: Closure to be executed upon completion.
     ///
-    func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M, completion: @escaping (M.Output?, Error?) -> Void) {
+    func enqueue<M: Mapper>(_ request: WooURLRequestConvertable, mapper: M, completion: @escaping (M.Output?, Error?) -> Void) {
         network.responseData(for: request) { (data, networkError) in
             guard let data = data else {
                 completion(nil, networkError)

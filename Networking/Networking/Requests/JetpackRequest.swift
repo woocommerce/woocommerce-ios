@@ -4,7 +4,7 @@ import Alamofire
 
 /// Represents a Jetpack-Tunneled WordPress.com Endpoint
 ///
-struct JetpackRequest: URLRequestConvertible {
+struct JetpackRequest: WooURLRequestConvertable {
 
     /// WordPress.com API Version: By Default, we'll go thru Mark 1.1.
     ///
@@ -30,6 +30,9 @@ struct JetpackRequest: URLRequestConvertible {
     ///
     let parameters: [String: String]
 
+    /// WooURLRequestConvertable conformance — number of retry attempts upon error. Defaults to 2
+    ///
+    var retryAttempts: Int = 2
 
     /// Designated Initializer.
     ///

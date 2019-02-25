@@ -4,7 +4,7 @@ import Alamofire
 
 /// Represents a WordPress.com Request
 ///
-struct DotcomRequest: URLRequestConvertible {
+struct DotcomRequest: WooURLRequestConvertable {
 
     /// WordPress.com Base URL
     ///
@@ -26,6 +26,9 @@ struct DotcomRequest: URLRequestConvertible {
     ///
     let parameters: [String: Any]?
 
+    /// WooURLRequestConvertable conformance — number of retry attempts upon error. Defaults to 0
+    ///
+    var retryAttempts: Int = 0
 
     /// Designated Initializer.
     ///

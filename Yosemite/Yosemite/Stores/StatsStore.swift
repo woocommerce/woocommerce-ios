@@ -133,7 +133,7 @@ private extension StatsStore  {
     ///
     func retrieveOrderTotals(siteID: Int, status: OrderStatusKey, onCompletion: @escaping (Int?, Error?) -> Void) {
         let remote = ReportRemote(network: network)
-        remote.loadOrderTotals(for: siteID) { (orderTotals, error) in
+        remote.loadOrderTotals(for: siteID) { (orderTotals, orderStatuses, error) in
             onCompletion(orderTotals?[status], error)
         }
     }

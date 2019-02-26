@@ -10,6 +10,7 @@ extension Storage.OrderStatus: ReadOnlyConvertible {
     ///
     public func update(with orderStatus: Yosemite.OrderStatus) {
         name = orderStatus.name
+        siteID = Int64(orderStatus.siteID)
         slug = orderStatus.slug
         total = Int64(orderStatus.total)
     }
@@ -17,7 +18,7 @@ extension Storage.OrderStatus: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.OrderStatus {
-        return OrderStatus(name: name, slug: slug, total: Int(total))
+        return OrderStatus(name: name, siteID: Int(siteID), slug: slug, total: Int(total))
     }
 }
 

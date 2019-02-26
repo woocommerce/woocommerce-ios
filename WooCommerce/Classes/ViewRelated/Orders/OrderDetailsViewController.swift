@@ -67,6 +67,15 @@ class OrderDetailsViewController: UIViewController {
         }
     }
 
+    /// Order Tracking
+    ///
+    private var orderTracking: [ShipmentTracking] = [] {
+        didSet {
+            reloadSections()
+            reloadTableViewIfPossible()
+        }
+    }
+
     /// Haptic Feedback!
     ///
     private let hapticGenerator = UINotificationFeedbackGenerator()
@@ -144,9 +153,7 @@ private extension OrderDetailsViewController {
 //        resultsController.startForwardingEvents(to: tableView)
 //        try? resultsController.performFetch()
         resultsController.onDidChangeContent = { [weak self] in
-            print("===== resultscontroller did change content ====")
-            print(" tracking ", self?.resultsController.fetchedObjects )
-            print("///// resultscontroller did change content ====")
+            self?.orderTracking = self?.resultsController.fetchedObjects ?? []
         }
 
         try? resultsController.performFetch()
@@ -223,6 +230,9 @@ private extension OrderDetailsViewController {
 
         let tracking: Section? = {
             // return nil if not tracking in viewmodel
+            guard orderTracking.count > 0 else {
+                return nil
+            }
 
             return Section(title: Title.tracking, row: .tracking)
         }()

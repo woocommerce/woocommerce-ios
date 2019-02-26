@@ -11,12 +11,13 @@ extension Storage.OrderStatus: ReadOnlyConvertible {
     public func update(with orderStatus: Yosemite.OrderStatus) {
         name = orderStatus.name
         slug = orderStatus.slug
+        total = Int64(orderStatus.total)
     }
 
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.OrderStatus {
-        return OrderStatus(name: name, slug: slug)
+        return OrderStatus(name: name, slug: slug, total: Int(total))
     }
 }
 

@@ -4,7 +4,7 @@ import Foundation
 /// Represents an OrderStatus Entity.
 ///
 public struct OrderStatus: Decodable {
-    public let name: String
+    public let name: String?
     public let slug: String
     public let total: Int
 
@@ -14,7 +14,7 @@ public struct OrderStatus: Decodable {
 
     /// OrderStatus struct initializer.
     ///
-    public init(name: String, slug: String, total: Int) {
+    public init(name: String?, slug: String, total: Int) {
         self.name = name
         self.slug = slug
         self.total = total
@@ -55,8 +55,7 @@ extension OrderStatus: Comparable {
     }
 
     public static func < (lhs: OrderStatus, rhs: OrderStatus) -> Bool {
-        return lhs.name < rhs.name ||
-            (lhs.name == rhs.name && lhs.slug < rhs.slug) ||
-            (lhs.name == rhs.name && lhs.slug == rhs.slug && lhs.total < rhs.total)
+        return lhs.total < rhs.total ||
+            (lhs.total == rhs.total && lhs.slug < rhs.slug)
     }
 }

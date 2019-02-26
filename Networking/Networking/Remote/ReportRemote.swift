@@ -38,7 +38,7 @@ public class ReportRemote: Remote {
     private func loadReportOrderTotals(for siteID: Int, completion: @escaping ([OrderStatus]?, Error?) -> Void) {
         let path = Constants.orderTotalsPath
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
-        let mapper = ReportOrderTotalsMapper()
+        let mapper = ReportOrderTotalsMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -50,7 +50,5 @@ public class ReportRemote: Remote {
 private extension ReportRemote {
     enum Constants {
         static let orderTotalsPath = "reports/orders/totals"
-        static let reportKey = "report"
-        static let statusKey = "status"
     }
 }

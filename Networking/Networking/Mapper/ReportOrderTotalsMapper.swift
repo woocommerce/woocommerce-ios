@@ -5,10 +5,20 @@ import Foundation
 ///
 struct ReportOrderTotalsMapper: Mapper {
 
+    /// Site Identifier associated to the settings that will be parsed.
+    /// We're injecting this field via `JSONDecoder.userInfo` because
+    /// the remote endpoints don't really return the SiteID in any of the
+    /// settings endpoints.
+    ///
+    let siteID: Int
+
     /// (Attempts) to extract order totals report from a given JSON Encoded response.
     ///
     func map(response: Data) throws -> [OrderStatus] {
         let decoder = JSONDecoder()
+        decoder.userInfo = [
+            .siteID: siteID
+        ]
         return try decoder.decode(ReportOrderTotalsEnvelope.self, from: response).data
     }
 }

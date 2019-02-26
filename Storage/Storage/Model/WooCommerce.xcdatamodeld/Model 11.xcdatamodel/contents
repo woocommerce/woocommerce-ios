@@ -143,6 +143,7 @@
     </entity>
     <entity name="OrderStatus" representedClassName="OrderStatus" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="slug" attributeType="String" syncable="YES"/>
         <attribute name="total" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
@@ -207,7 +208,7 @@
         <element name="OrderSearchResults" positionX="144.44140625" positionY="743.43359375" width="128" height="75"/>
         <element name="OrderStats" positionX="137.859375" positionY="388.33203125" width="128" height="225"/>
         <element name="OrderStatsItem" positionX="321.74609375" positionY="425.51171875" width="128" height="330"/>
-        <element name="OrderStatus" positionX="-162" positionY="45" width="128" height="90"/>
+        <element name="OrderStatus" positionX="-162" positionY="45" width="128" height="105"/>
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="150"/>
         <element name="SiteSetting" positionX="-362.54296875" positionY="217.9921875" width="128" height="120"/>

@@ -9,6 +9,7 @@ extension OrderStatus {
     }
 
     @NSManaged public var name: String?
+    @NSManaged public var siteID: Int64
     @NSManaged public var slug: String
     @NSManaged public var total: Int64
 

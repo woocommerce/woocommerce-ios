@@ -7,6 +7,7 @@ import Alamofire
 public class ReportRemote: Remote {
 
     /// Retrieves all of the order totals for a given site.
+    /// Wraps the API request.
     ///
     /// *Note:* This is a Woo REST API v3 endpoint! It will not work on any Woo site under v3.5.
     ///
@@ -25,6 +26,12 @@ public class ReportRemote: Remote {
         }
     }
 
+    /// Retrieves all known order statuses.
+    /// Wraps the API request.
+    ///
+    public func loadOrderStatuses(for siteID: Int, completion: @escaping ([OrderStatus]?, Error?) -> Void) {
+        loadReportOrderTotals(for: siteID, completion: completion)
+    }
 
     /// Retrieves an order totals report
     ///

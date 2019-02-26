@@ -14,15 +14,26 @@ public class ReportRemote: Remote {
     ///   - siteID: Site for which we'll fetch the order totals.
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadOrderTotals(for siteID: Int, completion: @escaping ([OrderStatusKey: Int]?, [OrderStatus]?, Error?) -> Void) {
+    public func loadOrderTotals(for siteID: Int, completion: @escaping ([OrderStatusKey: Int]?, Error?) -> Void) {
+        loadReportOrderTotals(for: siteID) { (orderStatuses, error) in
+            var returnDict = [OrderStatusKey: Int]()
+            orderStatuses?.forEach({ (orderStatus) in
+                let status = OrderStatusKey(rawValue: orderStatus.slug)
+                returnDict[status] = orderStatus.total
+            })
+            completion(returnDict, error)
+        }
+    }
+
+
+    /// Retrieves an order totals report
+    ///
+    private func loadReportOrderTotals(for siteID: Int, completion: @escaping ([OrderStatus]?, Error?) -> Void) {
         let path = Constants.orderTotalsPath
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = ReportOrderTotalsMapper()
-        enqueue(request, mapper: mapper) { (allItems, error) in
-            let orderTotals = allItems?[Constants.reportKey] as? [OrderStatusKey: Int]
-            let orderStatuses = allItems?[Constants.statusKey] as? [OrderStatus]
-            completion(orderTotals, orderStatuses, error)
-        }
+
+        enqueue(request, mapper: mapper, completion: completion)
     }
 }
 

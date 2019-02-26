@@ -4,6 +4,7 @@ import Contacts
 import MessageUI
 import Yosemite
 import CocoaLumberjack
+import SafariServices
 
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
@@ -495,6 +496,7 @@ private extension OrderDetailsViewController {
             cell.verticalStackView.insertArrangedSubview(itemView, at: index)
         }
 
+        cell.actionContainerView.isHidden = ( orderTracking.first?.trackingURL == nil )
         cell.trackButton.setTitle(viewModel.trackTitle, for: .normal)
         cell.onTrackTouchUp = { [weak self] in
             self?.trackWasPressed()
@@ -589,7 +591,16 @@ private extension OrderDetailsViewController {
     }
 
     func trackWasPressed() {
-        print("==== let's track this thing ===")
+        guard let trackingURL = orderTracking.first?.trackingURL, let url = URL(string: trackingURL) else {
+            return
+        }
+
+        displayWebView(url: url)
+    }
+
+    func displayWebView(url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        present(safariViewController, animated: true, completion: nil)
     }
 }
 

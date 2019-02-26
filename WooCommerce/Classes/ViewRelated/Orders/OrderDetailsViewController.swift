@@ -196,6 +196,12 @@ private extension OrderDetailsViewController {
             return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
         }()
 
+        let tracking: Section? = {
+            // return nil if not tracking in viewmodel
+
+            return Section(title: Title.tracking, row: .tracking)
+        }()
+
         let customerNote: Section? = {
             guard viewModel.customerNote.isEmpty == false else {
                 return nil
@@ -232,7 +238,7 @@ private extension OrderDetailsViewController {
             return Section(title: Title.notes, rows: rows)
         }()
 
-        sections = [summary, products, customerNote, customerInformation, payment, notes].compactMap { $0 }
+        sections = [summary, products, tracking, customerNote, customerInformation, payment, notes].compactMap { $0 }
     }
 }
 
@@ -865,6 +871,7 @@ private extension OrderDetailsViewController {
     enum Title {
         static let product = NSLocalizedString("Product", comment: "Product section title")
         static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
+        static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
         static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
         static let information = NSLocalizedString("Customer Information", comment: "Customer info section title")
         static let payment = NSLocalizedString("Payment", comment: "Payment section title")
@@ -898,6 +905,7 @@ private extension OrderDetailsViewController {
         case summary
         case productList
         case productDetails
+        case tracking
         case customerNote
         case shippingAddress
         case billingAddress
@@ -915,6 +923,9 @@ private extension OrderDetailsViewController {
                 return ProductListTableViewCell.reuseIdentifier
             case .productDetails:
                 return BasicTableViewCell.reuseIdentifier
+            case .tracking:
+                // TODO CeSAR. Change cell
+                return ProductListTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:

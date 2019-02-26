@@ -22,6 +22,15 @@ class OrderDetailsViewController: UIViewController {
         return refreshControl
     }()
 
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
+    ///
+    private lazy var resultsController: ResultsController<StorageShipmentTracking> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)
+
+        return ResultsController<StorageShipmentTracking>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
+    }()
+
     /// Indicates if the Billing details should be rendered.
     ///
     private var displaysBillingDetails = false {
@@ -69,6 +78,7 @@ class OrderDetailsViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
+        configureResultsController()
         configureEntityListener()
         registerTableViewCells()
         registerTableViewHeaderFooters()
@@ -77,6 +87,7 @@ class OrderDetailsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         syncNotes()
+        syncTracking()
     }
 }
 
@@ -125,6 +136,20 @@ private extension OrderDetailsViewController {
             self.navigationController?.popViewController(animated: true)
             self.displayOrderDeletedNotice()
         }
+    }
+
+    /// Setup: Results Controller
+    ///
+    func configureResultsController() {
+//        resultsController.startForwardingEvents(to: tableView)
+//        try? resultsController.performFetch()
+        resultsController.onDidChangeContent = { [weak self] in
+            print("===== resultscontroller did change content ====")
+            print(" tracking ", self?.resultsController.fetchedObjects )
+            print("///// resultscontroller did change content ====")
+        }
+
+        try? resultsController.performFetch()
     }
 
     /// Reloads the tableView, granted that the view has been effectively loaded.
@@ -466,6 +491,19 @@ private extension OrderDetailsViewController {
             }
 
             self.viewModel = OrderDetailsViewModel(order: order)
+            onCompletion?(nil)
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
+    func syncTracking(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (error) in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
+                onCompletion?(error)
+                return
+            }
             onCompletion?(nil)
         }
 

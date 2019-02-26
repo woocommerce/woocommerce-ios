@@ -28,7 +28,7 @@ class ReportRemoteTests: XCTestCase {
         let remote = ReportRemote(network: network)
 
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "report-orders")
-        remote.loadOrderTotals(for: sampleSiteID) { (reportTotals, orderStatuses, error) in
+        remote.loadOrderTotals(for: sampleSiteID) { (reportTotals, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(reportTotals)
             XCTAssertEqual(reportTotals?.count, 9)
@@ -52,14 +52,14 @@ class ReportRemoteTests: XCTestCase {
         let remote = ReportRemote(network: network)
 
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "generic_error")
-        remote.loadOrderTotals(for: sampleSiteID) { (reportTotals, orderStatuses, error) in
+        remote.loadOrderTotals(for: sampleSiteID) { (reportTotals, error) in
             guard let error = error as? DotcomError else {
                 XCTFail()
                 return
             }
 
             XCTAssert(error == .unauthorized)
-            XCTAssertNil(reportTotals)
+            XCTAssertEqual(reportTotals?.isEmpty, true)
 
             expectation.fulfill()
         }

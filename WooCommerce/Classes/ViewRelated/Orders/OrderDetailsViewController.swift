@@ -152,6 +152,13 @@ private extension OrderDetailsViewController {
     func configureResultsController() {
 //        resultsController.startForwardingEvents(to: tableView)
 //        try? resultsController.performFetch()
+        guard let shadowVM = viewModel else {
+            return
+        }
+
+        let mockTracking = ShipmentTracking(siteID: shadowVM.order.siteID, orderID: shadowVM.order.orderID, trackingID: "mock-tracking-id", trackingNumber: "XXX_YYY_ZZZ", trackingProvider: "HK POST", trackingURL: "http://automattic.com", dateShipped: nil)
+        orderTracking = [mockTracking]
+
         resultsController.onDidChangeContent = { [weak self] in
             self?.orderTracking = self?.resultsController.fetchedObjects ?? []
         }
@@ -181,6 +188,7 @@ private extension OrderDetailsViewController {
             OrderNoteTableViewCell.self,
             PaymentTableViewCell.self,
             ProductListTableViewCell.self,
+            OrderTrackingTableViewCell.self,
             SummaryTableViewCell.self
         ]
 
@@ -229,8 +237,7 @@ private extension OrderDetailsViewController {
         }()
 
         let tracking: Section? = {
-            // return nil if not tracking in viewmodel
-            guard orderTracking.count > 0 else {
+            guard viewModel.isProcessingPayment == false, orderTracking.count > 0 else {
                 return nil
             }
 
@@ -343,6 +350,8 @@ private extension OrderDetailsViewController {
             configurePayment(cell: cell)
         case let cell as ProductListTableViewCell:
             configureProductList(cell: cell)
+        case let cell as OrderTrackingTableViewCell:
+            configureTracking(cell: cell)
         case let cell as SummaryTableViewCell:
             configureSummary(cell: cell)
         default:
@@ -472,6 +481,26 @@ private extension OrderDetailsViewController {
         }
     }
 
+    func configureTracking(cell: OrderTrackingTableViewCell) {
+        for subView in cell.verticalStackView.arrangedSubviews {
+            subView.removeFromSuperview()
+        }
+
+        for (index, item) in orderTracking.enumerated() {
+            let itemView = TwoLineLabelView.makeFromNib()
+            itemView.topText = item.trackingProvider
+            itemView.bottomText = item.trackingNumber
+
+            cell.verticalStackView.backgroundColor = .red
+            cell.verticalStackView.insertArrangedSubview(itemView, at: index)
+        }
+
+        cell.trackButton.setTitle(viewModel.trackTitle, for: .normal)
+        cell.onTrackTouchUp = { [weak self] in
+            self?.trackWasPressed()
+        }
+    }
+
     func configureShippingAddress(cell: CustomerInfoTableViewCell) {
         let shippingAddress = viewModel.order.shippingAddress
 
@@ -557,6 +586,10 @@ private extension OrderDetailsViewController {
         WooAnalytics.shared.track(.orderDetailFulfillButtonTapped)
         let fulfillViewController = FulfillViewController(order: viewModel.order)
         navigationController?.pushViewController(fulfillViewController, animated: true)
+    }
+
+    func trackWasPressed() {
+        print("==== let's track this thing ===")
     }
 }
 
@@ -972,8 +1005,7 @@ private extension OrderDetailsViewController {
             case .productDetails:
                 return BasicTableViewCell.reuseIdentifier
             case .tracking:
-                // TODO CeSAR. Change cell
-                return ProductListTableViewCell.reuseIdentifier
+                return OrderTrackingTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:

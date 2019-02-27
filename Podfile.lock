@@ -87,7 +87,7 @@ DEPENDENCIES:
   - Gridicons (~> 0.18-beta)
   - KeychainAccess (~> 3.1)
   - WordPressAuthenticator (~> 1.1-beta)
-  - WordPressShared (~> 1.1)
+  - WordPressShared (from `https://github.com/wordpress-mobile/WordPress-iOS-Shared.git`, commit `da98a4f748389e7ebf52c9f42c9af7c41f8d92d8`)
   - WordPressUI (~> 1.2)
   - XLPagerTabStrip (~> 8.1)
   - ZendeskSDK (~> 2.2)
@@ -114,11 +114,20 @@ SPEC REPOS:
     - UIDeviceIdentifier
     - WordPressAuthenticator
     - WordPressKit
-    - WordPressShared
     - WordPressUI
     - wpxmlrpc
     - XLPagerTabStrip
     - ZendeskSDK
+
+EXTERNAL SOURCES:
+  WordPressShared:
+    :commit: da98a4f748389e7ebf52c9f42c9af7c41f8d92d8
+    :git: https://github.com/wordpress-mobile/WordPress-iOS-Shared.git
+
+CHECKOUT OPTIONS:
+  WordPressShared:
+    :commit: da98a4f748389e7ebf52c9f42c9af7c41f8d92d8
+    :git: https://github.com/wordpress-mobile/WordPress-iOS-Shared.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
@@ -147,6 +156,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 22d4c58200d7c105e0e407ab6bfd01a5d85014be
   ZendeskSDK: af6509ad7968d367f95b2645713802712152f879
 
-PODFILE CHECKSUM: bdc38e652c093973c639f51205241e2c3cdd7946
+PODFILE CHECKSUM: 9b716d85727ff812dd8dbc208820fa8d87cc0efa
 
 COCOAPODS: 1.5.3

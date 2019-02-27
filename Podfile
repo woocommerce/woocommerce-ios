@@ -26,7 +26,7 @@ target 'WooCommerce' do
   # allow pod to pick up beta versions, such as 1.1.7-beta.1
   pod 'WordPressAuthenticator', '~> 1.1-beta'
 
-  pod 'WordPressShared', '~> 1.1'
+  pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :commit => 'da98a4f748389e7ebf52c9f42c9af7c41f8d92d8'
   pod 'WordPressUI', '~> 1.2'
 
 

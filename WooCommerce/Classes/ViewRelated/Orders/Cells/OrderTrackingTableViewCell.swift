@@ -1,6 +1,6 @@
 import UIKit
 
-/// Displays tracking information associated to an Order.
+/// Displays shipment tracking information associated to an Order.
 ///
 final class OrderTrackingTableViewCell: UITableViewCell {
     @IBOutlet private var topLine: UILabel!
@@ -16,6 +16,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
         }
         set {
             topLine.text = newValue
+            configureTopLineForVoiceOver()
         }
     }
 
@@ -25,6 +26,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
         }
         set {
             bottomLine.text = newValue
+            configureBottonLineForVoiceOver()
         }
     }
 
@@ -34,7 +36,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
         }
         set {
             actionButton.setTitle(newValue, for: .normal)
-            actionButton.accessibilityLabel = newValue
+            configureActionButtonForVoiceOver()
         }
     }
 
@@ -68,7 +70,16 @@ extension OrderTrackingTableViewCell {
 /// Accessibility
 ///
 private extension OrderTrackingTableViewCell {
+    func configureTopLineForVoiceOver() {
+        topLine.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Shipment Company %@", comment: "Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS"), topText ?? "")
+    }
+
+    func configureBottonLineForVoiceOver() {
+        bottomLine.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Tracking number %@", comment: "Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890"), bottomText ?? "")
+    }
+
     func configureActionButtonForVoiceOver() {
+        actionButton.accessibilityLabel = actionButtonNormalText
         actionButton.accessibilityTraits = .button
         actionButton.accessibilityHint = NSLocalizedString("Tracks a shipment.", comment: "Accessibility hint for Track Package button in Order details screen")
     }

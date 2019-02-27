@@ -157,15 +157,14 @@ private extension OrderDetailsViewController {
             return
         }
 
+        ///  To be removed when I figure out why some data requests are failing
         let mockTracking1 = ShipmentTracking(siteID: shadowVM.order.siteID, orderID: shadowVM.order.orderID, trackingID: "mock-tracking-id", trackingNumber: "XXX_YYY_ZZZ", trackingProvider: "HK POST", trackingURL: "http://automattic.com", dateShipped: nil)
 
         let mockTracking2 = ShipmentTracking(siteID: shadowVM.order.siteID, orderID: shadowVM.order.orderID, trackingID: "mock-tracking-id", trackingNumber: "111_222_333", trackingProvider: "USPS WOO", trackingURL: "https://woocommerce.com", dateShipped: nil)
         orderTracking = [mockTracking1, mockTracking2]
 
         resultsController.onDidChangeContent = { [weak self] in
-            print("===== fetched objects ====")
-            print(self?.resultsController.fetchedObjects)
-            print("///// fetched objects ====")
+            /// Failing for orders that have been fulfilled
             self?.orderTracking = self?.resultsController.fetchedObjects ?? []
         }
 

@@ -289,6 +289,7 @@
 		CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */; };
 		CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */; };
 		D8023EE3221547D400D2DC30 /* FancyAlertViewController+SwitchStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8023EE2221547D400D2DC30 /* FancyAlertViewController+SwitchStore.swift */; };
+		D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D816DDBB22265DA300903E59 /* OrderTrackingTableViewCellTests.swift */; };
 		D83C129F22250BF0004CA04C /* OrderTrackingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D83C129D22250BEF004CA04C /* OrderTrackingTableViewCell.xib */; };
 		D83C12A022250BF0004CA04C /* OrderTrackingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83C129E22250BEF004CA04C /* OrderTrackingTableViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -626,6 +627,7 @@
 		CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManager.swift; sourceTree = "<group>"; };
 		CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManagerTests.swift; sourceTree = "<group>"; };
 		D8023EE2221547D400D2DC30 /* FancyAlertViewController+SwitchStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FancyAlertViewController+SwitchStore.swift"; sourceTree = "<group>"; };
+		D816DDBB22265DA300903E59 /* OrderTrackingTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTrackingTableViewCellTests.swift; sourceTree = "<group>"; };
 		D83C129D22250BEF004CA04C /* OrderTrackingTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderTrackingTableViewCell.xib; sourceTree = "<group>"; };
 		D83C129E22250BEF004CA04C /* OrderTrackingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderTrackingTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -877,6 +879,7 @@
 		B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */ = {
 			isa = PBXGroup;
 			children = (
+				D816DDBA22265D8000903E59 /* ViewRelated */,
 				B5F571A821BEECA50010D1B8 /* Responses */,
 				B57C744F20F56ED300EEFC87 /* Extensions */,
 				B57C5C9B21B80E8200FF82B2 /* Internal */,
@@ -1372,6 +1375,14 @@
 				CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */,
 			);
 			path = AppRatings;
+			sourceTree = "<group>";
+		};
+		D816DDBA22265D8000903E59 /* ViewRelated */ = {
+			isa = PBXGroup;
+			children = (
+				D816DDBB22265DA300903E59 /* OrderTrackingTableViewCellTests.swift */,
+			);
+			path = ViewRelated;
 			sourceTree = "<group>";
 		};
 		F4B77A83B2A3D94EA331691B /* Pods */ = {
@@ -1973,6 +1984,7 @@
 				B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */,
 				B53A569721123D3B000776C9 /* ResultsControllerUIKitTests.swift in Sources */,
 				B57C5C9921B80E7100FF82B2 /* DictionaryWooTests.swift in Sources */,
+				D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

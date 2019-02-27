@@ -1,13 +1,12 @@
 import UIKit
 
-
-/// Displays the list of Products associated to an Order.
+/// Displays tracking information associated to an Order.
 ///
 final class OrderTrackingTableViewCell: UITableViewCell {
-    @IBOutlet weak var topLine: UILabel!
-    @IBOutlet weak var bottomLine: UILabel!
+    @IBOutlet private var topLine: UILabel!
+    @IBOutlet private var bottomLine: UILabel!
 
-    @IBOutlet weak var actionButton: UIButton!
+    @IBOutlet private var actionButton: UIButton!
 
     var onActionTouchUp: (() -> Void)?
 
@@ -35,6 +34,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
         }
         set {
             actionButton.setTitle(newValue, for: .normal)
+            actionButton.accessibilityLabel = newValue
         }
     }
 
@@ -55,11 +55,37 @@ final class OrderTrackingTableViewCell: UITableViewCell {
 
     private func configureActionButton() {
         actionButton.applySecondaryButtonStyle()
+        configureActionButtonForVoiceOver()
     }
 }
 
 extension OrderTrackingTableViewCell {
     @IBAction func actionButtonPressed(_ sender: Any) {
         onActionTouchUp?()
+    }
+}
+
+/// Accessibility
+///
+private extension OrderTrackingTableViewCell {
+    func configureActionButtonForVoiceOver() {
+        actionButton.accessibilityTraits = .button
+        actionButton.accessibilityHint = NSLocalizedString("Tracks a shipment.", comment: "Accessibility hint for Track Package button in Order details screen")
+    }
+}
+
+/// Expose private outlets for tests
+///
+extension OrderTrackingTableViewCell {
+    func getTopLabel() -> UILabel {
+        return topLine
+    }
+
+    func getBottomLabel() -> UILabel {
+        return bottomLine
+    }
+
+    func getActionButton() -> UIButton {
+        return actionButton
     }
 }

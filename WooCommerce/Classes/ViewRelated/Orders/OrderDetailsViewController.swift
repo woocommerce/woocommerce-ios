@@ -29,7 +29,7 @@ class OrderDetailsViewController: UIViewController {
         let storageManager = AppDelegate.shared.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)
 
-        return ResultsController<StorageShipmentTracking>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
+        return ResultsController<StorageShipmentTracking>(storageManager: storageManager, sectionNameKeyPath: "dateShipped", sortedBy: [descriptor])
     }()
 
     /// Indicates if the Billing details should be rendered.
@@ -158,9 +158,12 @@ private extension OrderDetailsViewController {
         }
 
         let mockTracking = ShipmentTracking(siteID: shadowVM.order.siteID, orderID: shadowVM.order.orderID, trackingID: "mock-tracking-id", trackingNumber: "XXX_YYY_ZZZ", trackingProvider: "HK POST", trackingURL: "http://automattic.com", dateShipped: nil)
-        orderTracking = [mockTracking]
+        orderTracking = [mockTracking, mockTracking]
 
         resultsController.onDidChangeContent = { [weak self] in
+            print("===== fetched objects ====")
+            print(self?.resultsController.fetchedObjects)
+            print("///// fetched objects ====")
             self?.orderTracking = self?.resultsController.fetchedObjects ?? []
         }
 
@@ -491,16 +494,20 @@ private extension OrderDetailsViewController {
             let itemView = TwoLineLabelView.makeFromNib()
             itemView.topText = item.trackingProvider
             itemView.bottomText = item.trackingNumber
+            itemView.actionButtonNormalText = viewModel.trackTitle
 
-            cell.verticalStackView.backgroundColor = .red
+            itemView.onActionTouchUp = { [weak self] in
+                self?.trackWasPressed(index)
+            }
+
             cell.verticalStackView.insertArrangedSubview(itemView, at: index)
         }
 
-        cell.actionContainerView.isHidden = ( orderTracking.first?.trackingURL == nil )
-        cell.trackButton.setTitle(viewModel.trackTitle, for: .normal)
-        cell.onTrackTouchUp = { [weak self] in
-            self?.trackWasPressed()
-        }
+//        cell.actionContainerView.isHidden = ( orderTracking.first?.trackingURL == nil )
+//        cell.trackButton.setTitle(viewModel.trackTitle, for: .normal)
+//        cell.onTrackTouchUp = { [weak self] in
+//            self?.trackWasPressed()
+//        }
     }
 
     func configureShippingAddress(cell: CustomerInfoTableViewCell) {
@@ -590,8 +597,12 @@ private extension OrderDetailsViewController {
         navigationController?.pushViewController(fulfillViewController, animated: true)
     }
 
-    func trackWasPressed() {
-        guard let trackingURL = orderTracking.first?.trackingURL, let url = URL(string: trackingURL) else {
+    func trackWasPressed(_ index: Int) {
+        guard index < orderTracking.count else {
+            return
+        }
+
+        guard let trackingURL = orderTracking[index].trackingURL, let url = URL(string: trackingURL) else {
             return
         }
 

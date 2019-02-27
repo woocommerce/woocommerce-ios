@@ -12,44 +12,48 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="188" id="KGk-i7-Jjw" customClass="OrderTrackingTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="OrderTrackingTableViewCell" rowHeight="188" id="KGk-i7-Jjw" customClass="OrderTrackingTableViewCell" customModule="WooCommerce" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="331" height="142"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
                 <rect key="frame" x="0.0" y="0.0" width="331" height="141.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kb4-pd-pEb">
-                        <rect key="frame" x="16" y="8" width="299" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q04-tu-Hwj">
-                        <rect key="frame" x="16" y="63" width="299" height="70"/>
-                        <state key="normal" title="Button"/>
-                        <connections>
-                            <action selector="actionButtonPressed:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="vJf-Pe-OWy"/>
-                        </connections>
-                    </button>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Tp-fv-Tte">
-                        <rect key="frame" x="16" y="37" width="299" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="nKR-kp-PKq">
+                        <rect key="frame" x="16" y="9" width="299" height="123.5"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="MBb-Vp-3eh">
+                                <rect key="frame" x="0.0" y="0.0" width="299" height="45"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kb4-pd-pEb">
+                                        <rect key="frame" x="0.0" y="0.0" width="299" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Tp-fv-Tte">
+                                        <rect key="frame" x="0.0" y="24.5" width="299" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q04-tu-Hwj">
+                                <rect key="frame" x="0.0" y="53" width="299" height="70.5"/>
+                                <state key="normal" title="Button"/>
+                                <connections>
+                                    <action selector="actionButtonPressed:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="vJf-Pe-OWy"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                    </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="5Tp-fv-Tte" firstAttribute="top" secondItem="kb4-pd-pEb" secondAttribute="bottom" constant="8" id="2cK-8W-y1H"/>
-                    <constraint firstItem="5Tp-fv-Tte" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="4Jy-2O-zNL"/>
-                    <constraint firstItem="kb4-pd-pEb" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="5ks-bg-P4U"/>
-                    <constraint firstAttribute="trailing" secondItem="5Tp-fv-Tte" secondAttribute="trailing" constant="16" id="KFg-sL-g39"/>
-                    <constraint firstItem="q04-tu-Hwj" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="Ocs-VK-1Cw"/>
-                    <constraint firstItem="q04-tu-Hwj" firstAttribute="top" secondItem="5Tp-fv-Tte" secondAttribute="bottom" constant="5" id="QLS-Yr-HGk"/>
-                    <constraint firstAttribute="trailing" secondItem="kb4-pd-pEb" secondAttribute="trailing" constant="16" id="f0f-P8-QnX"/>
-                    <constraint firstAttribute="trailing" secondItem="q04-tu-Hwj" secondAttribute="trailing" constant="16" id="qfe-h5-QTj"/>
-                    <constraint firstItem="kb4-pd-pEb" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="qlg-b9-xYQ"/>
-                    <constraint firstAttribute="bottom" secondItem="q04-tu-Hwj" secondAttribute="bottom" constant="8" id="rTX-tE-hM3"/>
+                    <constraint firstAttribute="bottom" secondItem="nKR-kp-PKq" secondAttribute="bottom" constant="9" id="OVJ-2E-eJY"/>
+                    <constraint firstItem="nKR-kp-PKq" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Tkb-Wi-nOp"/>
+                    <constraint firstItem="nKR-kp-PKq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="9" id="cF4-8H-16y"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="nKR-kp-PKq" secondAttribute="trailing" id="fA5-E1-lrn"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

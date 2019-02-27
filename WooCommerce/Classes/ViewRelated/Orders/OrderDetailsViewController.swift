@@ -157,8 +157,10 @@ private extension OrderDetailsViewController {
             return
         }
 
-        let mockTracking = ShipmentTracking(siteID: shadowVM.order.siteID, orderID: shadowVM.order.orderID, trackingID: "mock-tracking-id", trackingNumber: "XXX_YYY_ZZZ", trackingProvider: "HK POST", trackingURL: "http://automattic.com", dateShipped: nil)
-        orderTracking = [mockTracking, mockTracking]
+        let mockTracking1 = ShipmentTracking(siteID: shadowVM.order.siteID, orderID: shadowVM.order.orderID, trackingID: "mock-tracking-id", trackingNumber: "XXX_YYY_ZZZ", trackingProvider: "HK POST", trackingURL: "http://automattic.com", dateShipped: nil)
+
+        let mockTracking2 = ShipmentTracking(siteID: shadowVM.order.siteID, orderID: shadowVM.order.orderID, trackingID: "mock-tracking-id", trackingNumber: "111_222_333", trackingProvider: "USPS WOO", trackingURL: "https://woocommerce.com", dateShipped: nil)
+        orderTracking = [mockTracking1, mockTracking2]
 
         resultsController.onDidChangeContent = { [weak self] in
             print("===== fetched objects ====")
@@ -245,7 +247,8 @@ private extension OrderDetailsViewController {
                 return nil
             }
 
-            return Section(title: Title.tracking, row: .tracking)
+            let rows: [Row] = Array(repeating: .tracking, count: orderTracking.count)
+            return Section(title: Title.tracking, rows: rows)
         }()
 
         let customerNote: Section? = {
@@ -355,7 +358,7 @@ private extension OrderDetailsViewController {
         case let cell as ProductListTableViewCell:
             configureProductList(cell: cell)
         case let cell as OrderTrackingTableViewCell:
-            configureTracking(cell: cell)
+            configureTracking(cell: cell, at: indexPath)
         case let cell as SummaryTableViewCell:
             configureSummary(cell: cell)
         default:
@@ -485,29 +488,18 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func configureTracking(cell: OrderTrackingTableViewCell) {
-        for subView in cell.verticalStackView.arrangedSubviews {
-            subView.removeFromSuperview()
+    func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
+        guard let tracking = orderTracking(at: indexPath) else {
+            return
         }
 
-        for (index, item) in orderTracking.enumerated() {
-            let itemView = TwoLineLabelView.makeFromNib()
-            itemView.topText = item.trackingProvider
-            itemView.bottomText = item.trackingNumber
-            itemView.actionButtonNormalText = viewModel.trackTitle
+        cell.topText = tracking.trackingProvider
+        cell.bottomText = tracking.trackingNumber
+        cell.actionButtonNormalText = viewModel.trackTitle
 
-            itemView.onActionTouchUp = { [weak self] in
-                self?.trackWasPressed(index)
-            }
-
-            cell.verticalStackView.insertArrangedSubview(itemView, at: index)
+        cell.onActionTouchUp = { [ weak self ] in
+            self?.trackWasPressed(indexPath.row)
         }
-
-//        cell.actionContainerView.isHidden = ( orderTracking.first?.trackingURL == nil )
-//        cell.trackButton.setTitle(viewModel.trackTitle, for: .normal)
-//        cell.onTrackTouchUp = { [weak self] in
-//            self?.trackWasPressed()
-//        }
     }
 
     func configureShippingAddress(cell: CustomerInfoTableViewCell) {
@@ -784,6 +776,15 @@ private extension OrderDetailsViewController {
         }
 
         return orderNotes[noteIndex]
+    }
+
+    func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
+        let orderIndex = indexPath.row
+        guard orderTracking.indices.contains(orderIndex) else {
+            return nil
+        }
+
+        return orderTracking[orderIndex]
     }
 
     /// Checks if copying the row data at the provided indexPath is allowed

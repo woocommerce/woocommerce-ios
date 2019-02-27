@@ -103,7 +103,7 @@ class ApplicationLogViewController: UIViewController {
 
         sections = [
             Section(title: logFileTitle, footer: logFileFooter, rows: logFileRows),
-            Section(title: nil, footer:nil, rows:[.clearLogs])
+            Section(title: nil, footer: nil, rows: [.clearLogs])
         ]
     }
 
@@ -197,7 +197,7 @@ private extension ApplicationLogViewController {
         let logFileInfo: DDLogFileInfo = logFiles[indexPath.row]
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = indexPath.row == 0 ? NSLocalizedString("Current", comment:"Cell title: the current date.") : dateFormatter.string(from: logFileInfo.creationDate)
+        cell.textLabel?.text = indexPath.row == 0 ? NSLocalizedString("Current", comment: "Cell title: the current date.") : dateFormatter.string(from: logFileInfo.creationDate)
     }
 
     /// Clear application logs cell.

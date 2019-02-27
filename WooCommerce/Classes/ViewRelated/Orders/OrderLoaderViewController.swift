@@ -220,7 +220,7 @@ private extension OrderLoaderViewController {
         switch state {
         case .loading:
             stopSpinner()
-        case .success(_):
+        case .success:
             detachChildrenViewControllers()
         case .failure:
             removeAllOverlays()

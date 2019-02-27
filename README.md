@@ -1,5 +1,6 @@
 
 [![CircleCI](https://circleci.com/gh/woocommerce/woocommerce-ios.svg?style=svg)](https://circleci.com/gh/woocommerce/woocommerce-ios)
+[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
 # woocommerce-ios
 A Jetpack-powered companion app for WooCommerce.
@@ -21,6 +22,6 @@ We use a few tools to help with development. To install or update the required d
 The woocommerce-ios project uses [CocoaPods](http://cocoapods.org/) to manage third party libraries.  
 Third party libraries and resources managed by CocoaPods will be installed by the `rake dependencies` command above.
 
-#### Dangerbot
+#### Peril
 
-The woocommerce-ios project uses [Danger](https://danger.systems/swift/) to enforce Swift linting styles.
+The woocommerce-ios project uses [Peril](https://danger.systems/js/guides/peril.html) to enforce Pull Request guidelines.

@@ -44,9 +44,9 @@ public struct OrderStatus: Decodable {
 private extension OrderStatus {
 
     enum CodingKeys: String, CodingKey {
-        case name  = "name"
-        case slug  = "slug"
-        case total = "total"
+        case name
+        case slug
+        case total
     }
 }
 

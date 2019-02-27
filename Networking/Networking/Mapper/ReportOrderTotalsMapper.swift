@@ -30,6 +30,6 @@ private struct ReportOrderTotalsEnvelope: Decodable {
     let data: [OrderStatus]
 
     private enum CodingKeys: String, CodingKey {
-        case data = "data"
+        case data
     }
 }

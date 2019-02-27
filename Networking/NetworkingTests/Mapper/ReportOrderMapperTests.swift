@@ -21,7 +21,7 @@ class ReportOrderMapperTests: XCTestCase {
     ///
     func testSampleResponseLoaded() {
         guard let results = try? mapSuccessfulResponse() else {
-            XCTFail()
+            XCTFail("Sample order report totals didn't load.")
             return
         }
 

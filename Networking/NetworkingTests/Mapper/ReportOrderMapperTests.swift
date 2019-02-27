@@ -6,6 +6,10 @@ import XCTest
 ///
 class ReportOrderMapperTests: XCTestCase {
 
+    /// Sample SiteID
+    ///
+    let siteID = 1234
+
     /// Verifies that the broken response causes the mapper to return an unknown status
     ///
     func testBrokenResponseReturnsUnknownStatus() {
@@ -43,8 +47,8 @@ class ReportOrderMapperTests: XCTestCase {
         XCTAssertNotNil(orderStatuses)
         XCTAssertEqual(orderStatuses.count, 9)
 
-        let ciaOrderStatus = OrderStatus(name: "CIA Investigation", slug: "cia-investigation", total: 10)
-        let preorderedOrderStatus = OrderStatus(name: "Pre ordered", slug: "pre-ordered", total: 1)
+        let ciaOrderStatus = OrderStatus(name: "CIA Investigation", siteID: 1234, slug: "cia-investigation", total: 10)
+        let preorderedOrderStatus = OrderStatus(name: "Pre ordered", siteID: 1234, slug: "pre-ordered", total: 1)
 
         XCTAssertEqual(orderStatuses[0].slug, "pending")
         XCTAssertEqual(orderStatuses[0].name, "Pending payment")
@@ -93,7 +97,7 @@ private extension ReportOrderMapperTests {
     ///
     func mapOrderStatusResult(from filename: String) throws -> [OrderStatus] {
         let response = Loader.contentsOf(filename)!
-        let mapper = ReportOrderTotalsMapper()
+        let mapper = ReportOrderTotalsMapper(siteID: 1234)
         return try mapper.map(response: response)
     }
 

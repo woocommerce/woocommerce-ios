@@ -23,8 +23,6 @@ class OrderDetailsViewController: UIViewController {
         return refreshControl
     }()
 
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
-    ///
     private lazy var resultsController: ResultsController<StorageShipmentTracking> = {
         let storageManager = AppDelegate.shared.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)

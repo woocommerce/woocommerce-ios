@@ -270,7 +270,7 @@ extension ZendeskManager: SupportManagerAdapter {
 
     /// This handles Zendesk push notifications.
     ///
-    func displaySupportRequest(using userInfo: [AnyHashable: Any]) {
+    func displaySupportRequest(using userInfo: [AnyHashable : Any]) {
         guard zendeskEnabled == true,
             let requestId = userInfo[PushKey.requestID] as? String else {
                 DDLogInfo("Zendesk push notification payload is invalid.")

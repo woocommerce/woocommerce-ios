@@ -75,7 +75,8 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
     func testTopLabelAccessibilityLabelMatchesExpectation() {
         populateCell()
 
-        let expectedLabel = String.localizedStringWithFormat(NSLocalizedString("Shipment Company %@",
+        let expectedLabel = String.localizedStringWithFormat(
+            NSLocalizedString("Shipment Company %@",
                                                                                comment: "Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS"),
                                                              MockData.tracking.trackingProvider ?? "")
 
@@ -85,7 +86,8 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
     func testBottomLabelAccessibilityLabelMatchesExpectation() {
         populateCell()
 
-        let expectedLabel = String.localizedStringWithFormat(NSLocalizedString("Tracking number %@",
+        let expectedLabel = String.localizedStringWithFormat(
+            NSLocalizedString("Tracking number %@",
                                                                                comment: "Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890"),
                                                              MockData.tracking.trackingNumber)
 
@@ -102,7 +104,6 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
         populateCell()
 
         let expectedHint = NSLocalizedString("Tracks a shipment.",
-
                                              comment: "Accessibility hint for Track Package button in Order details screen")
 
         XCTAssertEqual(cell?.getActionButton().accessibilityHint, expectedHint)

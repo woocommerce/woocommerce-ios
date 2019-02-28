@@ -67,12 +67,14 @@ extension OrderTrackingTableViewCell {
     }
 }
 
-
 /// MARK: - Accessibility
 ///
 private extension OrderTrackingTableViewCell {
     func configureTopLineForVoiceOver() {
-        topLine.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Shipment Company %@", comment: "Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS"), topText ?? "")
+        topLine.accessibilityLabel = String.localizedStringWithFormat(
+            NSLocalizedString("Shipment Company %@",
+                              comment: "Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS"),
+            topText ?? "")
     }
 
     func configureBottomLineForVoiceOver() {

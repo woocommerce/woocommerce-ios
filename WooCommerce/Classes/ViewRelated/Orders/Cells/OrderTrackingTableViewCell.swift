@@ -81,10 +81,10 @@ private extension OrderTrackingTableViewCell {
     func configureBottonLineForVoiceOver() {
         bottomLine.accessibilityLabel = String.localizedStringWithFormat(
             NSLocalizedString("Tracking number %@",
-                                                                                           comment: "Accessibility label for Shipment tracking number "
-                                                                                            + "in Order details screen. "
-                                                                                            + "Reads like: Tracking Number 1AZ234567890"),
-                                                                         bottomText ?? "")
+                              comment: "Accessibility label for Shipment tracking number "
+                                + "in Order details screen. "
+                                + "Reads like: Tracking Number 1AZ234567890"),
+            bottomText ?? "")
     }
 
     func configureActionButtonForVoiceOver() {

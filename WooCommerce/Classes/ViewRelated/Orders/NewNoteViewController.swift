@@ -220,7 +220,6 @@ private extension NewNoteViewController {
     }
 }
 
-
 // MARK: - Navigation bar
 //
 private extension NewNoteViewController {
@@ -231,11 +230,13 @@ private extension NewNoteViewController {
     }
 
     func configureTitle() {
-        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Add a note screen - title. Example: Order #15")
+        title = NSLocalizedString("Order #\(viewModel.order.number)",
+            comment: "Add a note screen - title. Example: Order #15")
     }
 
     func configureDismissButton() {
-        let dismissButtonTitle = NSLocalizedString("Dismiss", comment: "Add a note screen - button title for closing the view")
+        let dismissButtonTitle = NSLocalizedString("Dismiss",
+                                                   comment: "Add a note screen - button title for closing the view")
         let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,
                                             style: .plain,
                                             target: self,
@@ -245,7 +246,8 @@ private extension NewNoteViewController {
     }
 
     func configureRightButtonItemAsAdd() {
-        let addButtonTitle = NSLocalizedString("Add", comment: "Add a note screen - button title to send the note")
+        let addButtonTitle = NSLocalizedString("Add",
+                                               comment: "Add a note screen - button title to send the note")
         let rightBarButton = UIBarButtonItem(title: addButtonTitle,
                                              style: .done,
                                              target: self,

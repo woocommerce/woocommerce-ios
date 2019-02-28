@@ -23,7 +23,7 @@ class OrderDetailsViewController: UIViewController {
         return refreshControl
     }()
 
-    private lazy var resultsController: ResultsController<StorageShipmentTracking> = {
+    private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
         let storageManager = AppDelegate.shared.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)
 
@@ -161,12 +161,12 @@ private extension OrderDetailsViewController {
         let mockTracking2 = ShipmentTracking(siteID: shadowVM.order.siteID, orderID: shadowVM.order.orderID, trackingID: "mock-tracking-id", trackingNumber: "111_222_333", trackingProvider: "USPS WOO", trackingURL: "https://woocommerce.com", dateShipped: nil)
         orderTracking = [mockTracking1, mockTracking2]
 
-        resultsController.onDidChangeContent = { [weak self] in
+        trackingResultsController.onDidChangeContent = { [weak self] in
             /// Failing for orders that have been fulfilled
-            self?.orderTracking = self?.resultsController.fetchedObjects ?? []
+            self?.orderTracking = self?.trackingResultsController.fetchedObjects ?? []
         }
 
-        try? resultsController.performFetch()
+        try? trackingResultsController.performFetch()
     }
 
     /// Reloads the tableView, granted that the view has been effectively loaded.

@@ -67,7 +67,8 @@ extension OrderTrackingTableViewCell {
     }
 }
 
-/// Accessibility
+
+/// MARK: - Accessibility
 ///
 private extension OrderTrackingTableViewCell {
     func configureTopLineForVoiceOver() {
@@ -85,7 +86,8 @@ private extension OrderTrackingTableViewCell {
     }
 }
 
-/// Expose private outlets for tests
+
+/// MARK: - Expose private outlets for tests
 ///
 extension OrderTrackingTableViewCell {
     func getTopLabel() -> UILabel {

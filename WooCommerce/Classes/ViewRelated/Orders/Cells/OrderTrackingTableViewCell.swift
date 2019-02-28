@@ -26,7 +26,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
         }
         set {
             bottomLine.text = newValue
-            configureBottomLineForVoiceOver()
+            configureBottonLineForVoiceOver()
         }
     }
 
@@ -73,14 +73,16 @@ private extension OrderTrackingTableViewCell {
     func configureTopLineForVoiceOver() {
         topLine.accessibilityLabel = String.localizedStringWithFormat(
             NSLocalizedString("Shipment Company %@",
-                              comment: "Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS"),
+                              comment: "Accessibility label for Shipment tracking company in Order details screen." +
+                " Reads like: Shipment Company USPS"),
             topText ?? "")
     }
 
-    func configureBottomLineForVoiceOver() {
+    func configureBottonLineForVoiceOver() {
         bottomLine.accessibilityLabel = String.localizedStringWithFormat(
             NSLocalizedString("Tracking number %@",
-                                                                                           comment: "Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890"),
+                                                                                           comment: "Accessibility label for Shipment tracking number in Order details screen. "
+                                                                                            + "Reads like: Tracking Number 1AZ234567890"),
                                                                          bottomText ?? "")
     }
 

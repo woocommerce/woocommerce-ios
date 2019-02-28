@@ -53,8 +53,7 @@ class OrderDetailsViewController: UIViewController {
     ///
     var viewModel: OrderDetailsViewModel! {
         didSet {
-            reloadSections()
-            reloadTableViewIfPossible()
+            reloadTableViewSectionsAndData()
         }
     }
 
@@ -62,20 +61,16 @@ class OrderDetailsViewController: UIViewController {
     ///
     private var orderNotes: [OrderNote] = [] {
         didSet {
-            reloadSections()
-            reloadTableViewIfPossible()
+            reloadTableViewSectionsAndData()
         }
     }
 
-    /// Order Tracking
+    /// Order shipment tracking list
     ///
-    private var orderTracking: [ShipmentTracking] = [] {
-        didSet {
-            reloadSections()
-            reloadTableViewIfPossible()
-        }
+    private var orderTracking: [ShipmentTracking] {
+        return trackingResultsController.fetchedObjects
     }
-
+    
     /// Haptic Feedback!
     ///
     private let hapticGenerator = UINotificationFeedbackGenerator()
@@ -87,10 +82,12 @@ class OrderDetailsViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
-        configureResultsController()
+        configureTrackingResultsController()
         configureEntityListener()
         registerTableViewCells()
         registerTableViewHeaderFooters()
+        configureEntityListener()
+        configureTrackingResultsController()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -149,35 +146,33 @@ private extension OrderDetailsViewController {
 
     /// Setup: Results Controller
     ///
-    func configureResultsController() {
-//        resultsController.startForwardingEvents(to: tableView)
-//        try? resultsController.performFetch()
-        guard let shadowVM = viewModel else {
-            return
+    func configureTrackingResultsController() {
+        trackingResultsController.onDidChangeContent = { [weak self] in
+            self?.reloadTableViewSectionsAndData()
         }
 
-        ///  To be removed when I figure out why some data requests are failing
-        let mockTracking1 = ShipmentTracking(siteID: shadowVM.order.siteID, orderID: shadowVM.order.orderID, trackingID: "mock-tracking-id", trackingNumber: "XXX_YYY_ZZZ", trackingProvider: "HK POST", trackingURL: "http://automattic.com", dateShipped: nil)
-
-        let mockTracking2 = ShipmentTracking(siteID: shadowVM.order.siteID, orderID: shadowVM.order.orderID, trackingID: "mock-tracking-id", trackingNumber: "111_222_333", trackingProvider: "USPS WOO", trackingURL: "https://woocommerce.com", dateShipped: nil)
-        orderTracking = [mockTracking1, mockTracking2]
-
-        trackingResultsController.onDidChangeContent = { [weak self] in
-            /// Failing for orders that have been fulfilled
-            self?.orderTracking = self?.trackingResultsController.fetchedObjects ?? []
+        trackingResultsController.onDidResetContent = { [weak self] in
+            self?.reloadTableViewSectionsAndData()
         }
 
         try? trackingResultsController.performFetch()
     }
 
-    /// Reloads the tableView, granted that the view has been effectively loaded.
+    /// Reloads the tableView's data, assuming the view has been loaded.
     ///
-    func reloadTableViewIfPossible() {
+    func reloadTableViewDataIfPossible() {
         guard isViewLoaded else {
             return
         }
 
         tableView.reloadData()
+    }
+
+    /// Reloads the tableView's sections and data.
+    ///
+    func reloadTableViewSectionsAndData() {
+        reloadSections()
+        reloadTableViewDataIfPossible()
     }
 
     /// Registers all of the available TableViewCells
@@ -320,6 +315,11 @@ extension OrderDetailsViewController {
 
         group.enter()
         syncNotes { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncTracking() { _ in
             group.leave()
         }
 
@@ -787,7 +787,7 @@ private extension OrderDetailsViewController {
 
     /// Checks if copying the row data at the provided indexPath is allowed
     ///
-    /// - Parameter indexPath: indexpath of the row to check
+    /// - Parameter indexPath: index path of the row to check
     /// - Returns: true is copying is allowed, false otherwise
     ///
     func checkIfCopyingIsAllowed(for indexPath: IndexPath) -> Bool {

@@ -20,7 +20,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="nKR-kp-PKq">
-                        <rect key="frame" x="16" y="9" width="299" height="123.5"/>
+                        <rect key="frame" x="16" y="16" width="299" height="109.5"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="MBb-Vp-3eh">
                                 <rect key="frame" x="0.0" y="0.0" width="299" height="45"/>
@@ -40,7 +40,7 @@
                                 </subviews>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q04-tu-Hwj">
-                                <rect key="frame" x="0.0" y="53" width="299" height="70.5"/>
+                                <rect key="frame" x="0.0" y="53" width="299" height="56.5"/>
                                 <state key="normal" title="Button"/>
                                 <connections>
                                     <action selector="actionButtonPressed:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="vJf-Pe-OWy"/>
@@ -50,9 +50,9 @@
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="nKR-kp-PKq" secondAttribute="bottom" constant="9" id="OVJ-2E-eJY"/>
+                    <constraint firstAttribute="bottom" secondItem="nKR-kp-PKq" secondAttribute="bottom" constant="16" id="OVJ-2E-eJY"/>
                     <constraint firstItem="nKR-kp-PKq" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Tkb-Wi-nOp"/>
-                    <constraint firstItem="nKR-kp-PKq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="9" id="cF4-8H-16y"/>
+                    <constraint firstItem="nKR-kp-PKq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="cF4-8H-16y"/>
                     <constraint firstAttribute="trailingMargin" secondItem="nKR-kp-PKq" secondAttribute="trailing" id="fA5-E1-lrn"/>
                 </constraints>
             </tableViewCellContentView>

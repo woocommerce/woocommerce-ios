@@ -87,7 +87,6 @@ private extension OrderTrackingTableViewCell {
             bottomText ?? "")
     }
 
-    //
     func configureActionButtonForVoiceOver() {
         actionButton.accessibilityLabel = actionButtonNormalText
         actionButton.accessibilityTraits = .button
@@ -96,7 +95,6 @@ private extension OrderTrackingTableViewCell {
             "Accessibility hint for Track Package button in Order details screen")
     }
 }
-
 
 /// MARK: - Expose private outlets for tests
 ///

@@ -495,7 +495,7 @@ private extension OrderDetailsViewController {
         cell.actionButtonNormalText = viewModel.trackTitle
 
         cell.onActionTouchUp = { [ weak self ] in
-            self?.trackWasPressed(indexPath.row)
+            self?.trackingWasPressed(at: indexPath)
         }
     }
 
@@ -586,12 +586,12 @@ private extension OrderDetailsViewController {
         navigationController?.pushViewController(fulfillViewController, animated: true)
     }
 
-    func trackWasPressed(_ index: Int) {
-        guard index < orderTracking.count else {
+    func trackingWasPressed(at indexPath: IndexPath) {
+        guard let tracking = orderTracking(at: indexPath) else {
             return
         }
 
-        guard let trackingURL = orderTracking[index].trackingURL, let url = URL(string: trackingURL) else {
+        guard let trackingURL = tracking.trackingURL, let url = URL(string: trackingURL) else {
             return
         }
 

@@ -423,7 +423,7 @@
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "WooCommerce mağazalarınızı yönetmek için WordPress.com hesabınızın e-posta adresi ile oturum açın.";
 
 /* Log out button title */
-"Log out account" = "Hesaptan çıkış yap";
+"Log Out" = "Hesaptan çıkış yap";
 
 /* Title of a button. */
 "Lost your password?" = "Parolanızı mı unuttunuz?";

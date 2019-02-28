@@ -36,10 +36,10 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
     }
 
     func testActionButtonExecutesCallback() {
-        let expec = expectation(description: "The action assigned to the cell gets called when the cell button is tapped")
+        let expect = expectation(description: "The action assigned to the cell gets called when the cell button is tapped")
 
         cell?.onActionTouchUp = {
-            expec.fulfill()
+            expect.fulfill()
         }
 
         cell?.getActionButton().sendActions(for: .touchUpInside)

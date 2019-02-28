@@ -240,7 +240,7 @@ private extension OrderDetailsViewController {
         }()
 
         let tracking: Section? = {
-            guard viewModel.isProcessingPayment == false, orderTracking.count > 0 else {
+            guard orderTracking.count > 0 else {
                 return nil
             }
 

@@ -25,7 +25,9 @@ class OrderDetailsViewController: UIViewController {
 
     private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", viewModel.order.siteID, viewModel.order.orderID)
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
+                                    viewModel.order.siteID,
+                                    viewModel.order.orderID)
         let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)
 
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -70,7 +72,7 @@ class OrderDetailsViewController: UIViewController {
     private var orderTracking: [ShipmentTracking] {
         return trackingResultsController.fetchedObjects
     }
-    
+
     /// Haptic Feedback!
     ///
     private let hapticGenerator = UINotificationFeedbackGenerator()
@@ -319,7 +321,7 @@ extension OrderDetailsViewController {
         }
 
         group.enter()
-        syncTracking() { _ in
+        syncTracking { _ in
             group.leave()
         }
 
@@ -535,8 +537,9 @@ private extension OrderDetailsViewController {
         StoresManager.shared.dispatch(action)
     }
 
-    func syncTracking(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { error in
+    func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
+        let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: viewModel.order.siteID,
+                                                                    orderID: viewModel.order.orderID) { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
                 onCompletion?(error)

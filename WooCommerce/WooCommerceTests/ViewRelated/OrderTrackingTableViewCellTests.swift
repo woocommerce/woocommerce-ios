@@ -72,6 +72,21 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
         XCTAssertEqual(cellLabel?.textColor, mockLabel.textColor)
     }
 
+    func testActionButtonHasSecondaryButtonStyle() {
+        let mockButton = UIButton()
+        mockButton.applySecondaryButtonStyle()
+
+        let cellButton = cell?.getActionButton()
+
+        XCTAssertEqual(cellButton?.backgroundColor, mockButton.backgroundColor)
+        XCTAssertEqual(cellButton?.contentEdgeInsets, mockButton.contentEdgeInsets)
+        XCTAssertEqual(cellButton?.tintColor, mockButton.tintColor)
+        XCTAssertEqual(cellButton?.layer.borderWidth, mockButton.layer.borderWidth)
+        XCTAssertEqual(cellButton?.layer.cornerRadius, mockButton.layer.cornerRadius)
+
+        XCTAssertEqual(cellButton?.titleLabel?.font, mockButton.titleLabel?.font)
+    }
+
     func testTopLabelAccessibilityLabelMatchesExpectation() {
         populateCell()
 

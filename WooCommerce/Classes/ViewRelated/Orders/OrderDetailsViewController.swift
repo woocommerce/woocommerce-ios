@@ -25,9 +25,10 @@ class OrderDetailsViewController: UIViewController {
 
     private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
         let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", viewModel.order.siteID, viewModel.order.orderID)
         let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)
 
-        return ResultsController<StorageShipmentTracking>(storageManager: storageManager, sectionNameKeyPath: "dateShipped", sortedBy: [descriptor])
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
     /// Indicates if the Billing details should be rendered.

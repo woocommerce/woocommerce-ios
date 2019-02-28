@@ -46,8 +46,16 @@ class NewNoteViewController: UIViewController {
     }
 
     func configureNavigation() {
-        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Add a note screen - title. Example: Order #15")
+        configureTitle()
+        configureDismissButton()
+        configureAddButton()
+    }
 
+    private func configureTitle() {
+        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Add a note screen - title. Example: Order #15")
+    }
+
+    private func configureDismissButton() {
         let dismissButtonTitle = NSLocalizedString("Dismiss", comment: "Add a note screen - button title for closing the view")
         let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,
                                             style: .plain,
@@ -55,7 +63,9 @@ class NewNoteViewController: UIViewController {
                                             action: #selector(dismissButtonTapped))
         leftBarButton.tintColor = .white
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
+    }
 
+    private func configureAddButton() {
         let addButtonTitle = NSLocalizedString("Add", comment: "Add a note screen - button title to send the note")
         let rightBarButton = UIBarButtonItem(title: addButtonTitle,
                                              style: .done,

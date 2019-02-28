@@ -47,11 +47,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v1.2-whats-new"
+msgctxt "v1.3-whats-new"
 msgid ""
-"- Sometimes store stats were inconsistent across different screens. Your stats should be trustworthy, and now they are, with improvements to how store stats they’re displayed.\n"
-"- The best help is help that’s there when you need it, so we added a help button to the Store Picker screen.\n"
-"- You can now view and share application logs. The logs help us track down any issues you might run into, so we can ensure that using the app is smooth and bug-free.\n"
+"- Manage more than one store? You can switch sites without logging in and out: head to Settings and tap on Switch Store. The name of the active store displays on the “My Store” tab.\n"
+"- When adding a note or fulfilling an order fails, the message box now shows a “Retry” option so you can give it another go.\n"
+"- You don’t only take payments in round numbers, so orders can now have decimal quantities.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

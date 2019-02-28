@@ -535,7 +535,7 @@ private extension OrderDetailsViewController {
     }
 
     func syncTracking(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (error) in
+        let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
                 onCompletion?(error)

@@ -123,9 +123,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, onDismiss: @escaping () -> Void) {
-        let pickerViewController = StorePickerViewController()
-        pickerViewController.onDismiss = onDismiss
-        navigationController.pushViewController(pickerViewController, animated: true)
+        let coordinator = StorePickerCoordinator(navigationController, config: .login)
+        coordinator.onDismiss = onDismiss
+        coordinator.start()
     }
 
     /// Presents the Signup Epilogue, in the specified NavigationController.

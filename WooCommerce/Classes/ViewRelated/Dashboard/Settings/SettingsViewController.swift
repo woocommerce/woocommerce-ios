@@ -250,26 +250,9 @@ private extension SettingsViewController {
 
     func switchStoreWasPressed() {
         WooAnalytics.shared.track(.settingsSelectedStoreTapped)
-        StoresManager.shared.removeDefaultStore()
-
-        let group = DispatchGroup()
-
-        group.enter()
-        let statsAction = StatsAction.resetStoredStats {
-            group.leave()
-        }
-        StoresManager.shared.dispatch(statsAction)
-
-        group.enter()
-        let orderAction = OrderAction.resetStoredOrders {
-            group.leave()
-        }
-        StoresManager.shared.dispatch(orderAction)
-
-        group.notify(queue: .main) { [weak self] in
-            let pickerVC = StorePickerViewController()
-            let loginNavController = LoginNavigationController(rootViewController: pickerVC)
-            self?.present(loginNavController, animated: true, completion: nil)
+        if let navigationController = navigationController {
+            let coordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
+            coordinator.start()
         }
     }
 

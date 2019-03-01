@@ -74,7 +74,7 @@ extension OrderStatusStore {
         // Now, remove any objects that exist in storageOrderStatuses but not in readOnlyOrderStatuses
         if let storageOrderStatuses = storage.loadOrderStatuses(siteID: siteID) {
             storageOrderStatuses.forEach({ storageItem in
-                if readOnlyOrderStatuses.first(where: { $0.slug == storageItem.slug } ) == nil {
+                if readOnlyOrderStatuses.first(where: { $0.slug == storageItem.slug }) == nil {
                     storage.deleteObject(storageItem)
                 }
             })

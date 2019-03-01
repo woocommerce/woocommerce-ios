@@ -7,7 +7,7 @@ import Storage
 //
 public class OrderStore: Store {
 
-    /// Shared private StorageType for use during then entire Orders sync process
+    /// Shared private StorageType for use during the entire Orders sync process
     ///
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()

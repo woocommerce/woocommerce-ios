@@ -69,7 +69,7 @@ whitelist_rules:
   # - legacy_constructor
 
   # Lines should not span too many characters.
-  # - line_length
+  - line_length
 
   # MARK comment should be in valid format.
   - mark
@@ -98,6 +98,9 @@ whitelist_rules:
 
   # TODOs and FIXMEs should be avoided.
   # - todo
+
+  # Limit vertical whitespace to a three empty lines (rule configuration is below)
+  - vertical_whitespace
 
   # Files should have a single trailing newline.
   - trailing_newline
@@ -129,8 +132,14 @@ whitelist_rules:
 
 # Rules configuration
 
-control_statement: 
-  severity: error 
+vertical_whitespace:
+  max_empty_lines: 3
+  severity: error
+
+line_length: 160
+
+control_statement:
+  severity: error
 
 custom_rules:
 

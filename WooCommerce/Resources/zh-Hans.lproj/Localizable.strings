@@ -423,7 +423,7 @@
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "使用您的 WordPress.com 帐户电子邮件地址登录，管理您的 WooCommerce 商店。";
 
 /* Log out button title */
-"Log out account" = "注销帐户";
+"Log Out" = "注销帐户";
 
 /* Title of a button. */
 "Lost your password?" = "忘记密码？";

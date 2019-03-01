@@ -53,7 +53,6 @@ extension Order {
     @NSManaged public var items: Set<OrderItem>?
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?
-    @NSManaged public var status: OrderStatus?
 
 }
 

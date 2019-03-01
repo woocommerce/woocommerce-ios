@@ -8,6 +8,12 @@ import CocoaLumberjack
 //
 public class OrderStatusStore: Store {
 
+    /// Shared private StorageType for use during then entire Orders sync process
+    ///
+    private lazy var sharedDerivedStorage: StorageType = {
+        return storageManager.newDerivedStorage()
+    }()
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -44,8 +50,9 @@ private extension OrderStatusStore {
                 return
             }
 
-            self?.upsertStoredOrderStatuses(siteID: siteID, readOnlyOrderStatuses: orderStatuses)
-            onCompletion(orderStatuses, nil)
+            self?.upsertStoredOrdersInBackground(siteID: siteID, readOnlyOrderStatuses: orderStatuses, onCompletion: {
+                onCompletion(orderStatuses, nil)
+            })
         }
     }
 }
@@ -53,33 +60,24 @@ private extension OrderStatusStore {
 
 // MARK: - Persistence
 //
-extension OrderStatusStore {
+private extension OrderStatusStore {
 
-    /// Updates (OR Inserts) the specified ReadOnly OrderStatus Entities into the Storage Layer.
+    /// Updates (OR Inserts) the specified ReadOnly Order Status Entities
+    /// *in a background thread*. onCompletion will be called on the main thread!
     ///
-    func upsertStoredOrderStatuses(siteID: Int, readOnlyOrderStatuses: [Networking.OrderStatus]) {
-        assert(Thread.isMainThread)
-        let storage = storageManager.viewStorage
-
-        // Upsert the settings from the read-only site settings
-        for readOnlyItem in readOnlyOrderStatuses {
-            if let existingStorageItem = storage.loadOrderStatus(siteID: siteID, slug: readOnlyItem.slug) {
-                existingStorageItem.update(with: readOnlyItem)
-            } else {
-                let newStorageItem = storage.insertNewObject(ofType: Storage.OrderStatus.self)
-                newStorageItem.update(with: readOnlyItem)
+    private func upsertStoredOrdersInBackground(siteID: Int,
+                                                readOnlyOrderStatuses: [Networking.OrderStatus],
+                                                onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            for readOnlyItem in readOnlyOrderStatuses {
+                let storageStatusItem = derivedStorage.loadOrderStatus(siteID: readOnlyItem.siteID, slug: readOnlyItem.slug) ?? derivedStorage.insertNewObject(ofType: Storage.OrderStatus.self)
+                storageStatusItem.update(with: readOnlyItem)
             }
         }
 
-        // Now, remove any objects that exist in storageOrderStatuses but not in readOnlyOrderStatuses
-        if let storageOrderStatuses = storage.loadOrderStatuses(siteID: siteID) {
-            storageOrderStatuses.forEach({ storageItem in
-                if readOnlyOrderStatuses.first(where: { $0.slug == storageItem.slug }) == nil {
-                    storage.deleteObject(storageItem)
-                }
-            })
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
         }
-
-        storage.saveIfNeeded()
     }
 }

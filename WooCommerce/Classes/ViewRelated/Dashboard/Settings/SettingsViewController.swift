@@ -209,7 +209,7 @@ private extension SettingsViewController {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = StyleManager.destructiveActionColor
-        cell.textLabel?.text = NSLocalizedString("Log out account", comment: "Log out button title")
+        cell.textLabel?.text = NSLocalizedString("Log Out", comment: "Log out button title")
     }
 }
 

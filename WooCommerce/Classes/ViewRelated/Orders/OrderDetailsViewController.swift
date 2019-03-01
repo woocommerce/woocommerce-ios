@@ -84,8 +84,6 @@ class OrderDetailsViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
-        configureTrackingResultsController()
-        configureEntityListener()
         registerTableViewCells()
         registerTableViewHeaderFooters()
         configureEntityListener()

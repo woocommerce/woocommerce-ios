@@ -536,13 +536,16 @@ private extension OrderDetailsViewController {
     }
 
     func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
+        let orderID = viewModel.order.orderID
         let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: viewModel.order.siteID,
-                                                                    orderID: viewModel.order.orderID) { error in
+                                                                    orderID: orderID) { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
                 onCompletion?(error)
                 return
             }
+
+            WooAnalytics.shared.track(.orderTrackingLoaded, withProperties: ["id": orderID])
             onCompletion?(nil)
         }
 

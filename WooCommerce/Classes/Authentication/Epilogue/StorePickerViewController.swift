@@ -5,42 +5,32 @@ import WordPressUI
 import Yosemite
 
 
+/// StorePickerViewControllerDelegate: the interface with operations related to the store picker
+///
+protocol StorePickerViewControllerDelegate: class {
+
+    /// Asks the delegate if it's ok to continue with the selected store
+    ///
+    /// - Parameter storeID: The ID of the store selected by the user
+    /// - Returns: `true` if the store picker should
+    ///
+    func shouldProceed(with storeID: Int) -> Bool
+
+    /// Notifies the delegate that the store selection is complete
+    ///
+    func didCompleteStoreSelection()
+}
+
 
 /// Allows the user to pick which WordPress.com (OR) Jetpack-Connected-Store we should set up as the Main Store.
 ///
 class StorePickerViewController: UIViewController {
 
-    /// Represents the internal StorePicker State
+    /// StorePickerViewController Delegate
     ///
-    private var state: StorePickerState = .empty {
-        didSet {
-            stateWasUpdated()
-        }
-    }
+    weak var delegate: StorePickerViewControllerDelegate?
 
-    /// Header View: Displays all of the Account Details
-    ///
-    private let accountHeaderView: AccountHeaderView = {
-        return AccountHeaderView.instantiateFromNib()
-    }()
-
-    /// Site Picker's dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
-    ///
-    private lazy var noticePresenter: NoticePresenter = {
-        let noticePresenter = NoticePresenter()
-        noticePresenter.presentingViewController = self
-        return noticePresenter
-    }()
-
-    /// ResultsController: Loads Sites from the Storage Layer.
-    ///
-    private let resultsController: ResultsController<StorageSite> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "isWooCommerceActive == YES")
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
+    // MARK: - Private Properties
 
     /// White-Background View, to be placed surrounding the bottom area.
     ///
@@ -81,14 +71,41 @@ class StorePickerViewController: UIViewController {
         }
     }
 
+    /// Represents the internal StorePicker State
+    ///
+    private var state: StorePickerState = .empty {
+        didSet {
+            stateWasUpdated()
+        }
+    }
+
+    /// Header View: Displays all of the Account Details
+    ///
+    private let accountHeaderView: AccountHeaderView = {
+        return AccountHeaderView.instantiateFromNib()
+    }()
+
+    /// Site Picker's dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
+    ///
+    private lazy var noticePresenter: NoticePresenter = {
+        let noticePresenter = NoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
+    /// ResultsController: Loads Sites from the Storage Layer.
+    ///
+    private let resultsController: ResultsController<StorageSite> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "isWooCommerceActive == YES")
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
     ///
     private var estimatedRowHeights = [IndexPath: CGFloat]()
-
-    /// Closure to be executed upon dismissal.
-    ///
-    var onDismiss: (() -> Void)?
-
 
     // MARK: - View Lifecycle
 
@@ -110,7 +127,7 @@ class StorePickerViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        onDismiss?()
+        delegate?.didCompleteStoreSelection()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -436,7 +453,7 @@ extension StorePickerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 
         // Preserve the Cell Height
-        // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
+        // Why: Because Autosizing Cells, upon reload, will need to be laid you yet again. This might cause
         // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
         // the actual value. AKA no flicker!
         //

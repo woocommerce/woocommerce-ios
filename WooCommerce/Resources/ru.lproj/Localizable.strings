@@ -423,7 +423,7 @@
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Для управления магазинами WooCommerce выполните вход, указав адрес электронной почты своей учетной записи WordPress.com.";
 
 /* Log out button title */
-"Log out account" = "Выйти из учётной записи";
+"Log Out" = "Выйти из учётной записи";
 
 /* Title of a button. */
 "Lost your password?" = "Забыли пароль?";

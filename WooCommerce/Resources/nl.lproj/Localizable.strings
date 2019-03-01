@@ -423,7 +423,7 @@
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Log in met het e-mailadres van je WordPress.com-account om je WooCommerce-winkels te beheren.";
 
 /* Log out button title */
-"Log out account" = "Account uitloggen";
+"Log Out" = "Account uitloggen";
 
 /* Title of a button. */
 "Lost your password?" = "Wachtwoord vergeten?";

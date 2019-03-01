@@ -600,6 +600,7 @@ private extension OrderDetailsViewController {
             return
         }
 
+        WooAnalytics.shared.track(.orderDetailTrackPackageButtonTapped)
         displayWebView(url: url)
     }
 

@@ -2,6 +2,12 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 11 (Release 1.4.0.0)
+
+- @mindgraffiti  2019-02-27
+- Adds  `siteID` and `total` attributes to `OrderStatus` 
+- Changes `name` and `total` on `OrderStatus` to be optional
+
 ## Model 10 (Release 1.3.0.0)
 Used mapping model: `WooCommerceModelV9toV10.xcmappingmodel`
 

@@ -1,4 +1,4 @@
-﻿/* Title for an untitled post, should match WP core */
+/* Title for an untitled post, should match WP core */
 "(no title)" = "(no title)";
 
 /* An error message. */
@@ -430,7 +430,7 @@
 "Log Out" = "Log Out";
 
 /* Log out button title */
-"Log out account" = "Log out account";
+"Log Out" = "Log Out";
 
 /* Title of a button.  */
 "Lost your password?" = "Lost your password?";

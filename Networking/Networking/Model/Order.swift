@@ -100,6 +100,7 @@ public struct Order: Decodable {
 
         let number = try container.decode(String.self, forKey: .number)
         let statusKey = try container.decode(OrderStatusKey.self, forKey: .status)
+
         let currency = try container.decode(String.self, forKey: .currency)
         let customerNote = try container.decode(String.self, forKey: .customerNote)
 

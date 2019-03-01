@@ -31,7 +31,7 @@ class ReportRemoteTests: XCTestCase {
         remote.loadOrderTotals(for: sampleSiteID) { (reportTotals, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(reportTotals)
-            XCTAssertEqual(reportTotals?.count, 8)
+            XCTAssertEqual(reportTotals?.count, 9)
             XCTAssertEqual(reportTotals?[.pending], 123)
             XCTAssertEqual(reportTotals?[.processing], 4)
             XCTAssertEqual(reportTotals?[.onHold], 5)
@@ -59,7 +59,7 @@ class ReportRemoteTests: XCTestCase {
             }
 
             XCTAssert(error == .unauthorized)
-            XCTAssertNil(reportTotals)
+            XCTAssertEqual(reportTotals?.isEmpty, true)
 
             expectation.fulfill()
         }

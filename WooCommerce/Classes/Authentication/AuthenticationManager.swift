@@ -4,10 +4,13 @@ import WordPressUI
 import Yosemite
 
 
-
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
 class AuthenticationManager {
+
+    /// Store Picker Coordinator
+    ///
+    private var storePickerCoordinator: StorePickerCoordinator?
 
     /// Initializes the WordPress Authenticator.
     ///
@@ -123,9 +126,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, onDismiss: @escaping () -> Void) {
-        let coordinator = StorePickerCoordinator(navigationController, config: .login)
-        coordinator.onDismiss = onDismiss
-        coordinator.start()
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
+        storePickerCoordinator?.onDismiss = onDismiss
+        storePickerCoordinator?.start()
     }
 
     /// Presents the Signup Epilogue, in the specified NavigationController.

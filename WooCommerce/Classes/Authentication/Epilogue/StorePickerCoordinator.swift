@@ -3,20 +3,6 @@ import UIKit
 import Yosemite
 
 
-/// Configuration option enum for the StorePicker
-///
-enum StorePickerConfiguration {
-
-    /// Setup the store picker for use in the login flow
-    ///
-    case login
-
-    /// Setup the store picker for use in the store switching flow
-    ///
-    case switchingStores
-}
-
-
 /// Simplifies and decouples the store picker from the caller
 ///
 final class StorePickerCoordinator: Coordinator {
@@ -25,7 +11,7 @@ final class StorePickerCoordinator: Coordinator {
 
     /// Determines how the store picker should initialized
     ///
-    var config: StorePickerConfiguration
+    var selectedConfiguration: StorePickerConfiguration
 
     /// Closure to be executed upon dismissal of the store picker
     ///
@@ -36,12 +22,13 @@ final class StorePickerCoordinator: Coordinator {
     private lazy var storePicker: StorePickerViewController = {
         let pickerVC = StorePickerViewController()
         pickerVC.delegate = self
+        pickerVC.configuration = selectedConfiguration
         return pickerVC
     }()
 
     init(_ navigationController: UINavigationController, config: StorePickerConfiguration) {
         self.navigationController = navigationController
-        self.config = config
+        self.selectedConfiguration = config
     }
 
     func start() {
@@ -50,19 +37,22 @@ final class StorePickerCoordinator: Coordinator {
 }
 
 
-// MARK: - Private Helpers
+// MARK: - StorePickerViewControllerDelegate Conformance
 //
 extension StorePickerCoordinator: StorePickerViewControllerDelegate {
-    func shouldProceed(with storeID: Int) -> Bool {
-        guard config == .switchingStores else {
-            return true
+
+    func willSelectStore(with storeID: Int, onCompletion: @escaping SelectStoreClosure) {
+        guard selectedConfiguration == .switchingStores else {
+            onCompletion()
+            return
         }
 
-        logOutOfCurrentStore()
-        return true
+        logOutOfCurrentStore(onCompletion: onCompletion)
     }
 
-    func didCompleteStoreSelection() {
+    func didSelectStore() {
+        finalizeStoreSelection()
+        // FIXME: pop the picker VC here!
         onDismiss?()
     }
 }
@@ -72,25 +62,10 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 private extension StorePickerCoordinator {
 
     func showStorePicker() {
-        navigationController.pushViewController(setupStorePicker(), animated: true)
+        navigationController.pushViewController(storePicker, animated: true)
     }
 
-    func setupStorePicker() -> StorePickerViewController {
-        let pickerVC = storePicker
-
-        switch config {
-        case .login:
-            // TODO: Setup the store picker for login
-            break
-        case .switchingStores:
-            // TODO: Setup the store picker for switching stores
-            break
-        }
-
-        return pickerVC
-    }
-
-    func logOutOfCurrentStore(onCompletion: (() -> Void)? = nil) {
+    func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {
         StoresManager.shared.removeDefaultStore()
 
         let group = DispatchGroup()
@@ -108,7 +83,19 @@ private extension StorePickerCoordinator {
         StoresManager.shared.dispatch(orderAction)
 
         group.notify(queue: .main) {
-            onCompletion?()
+            onCompletion()
+        }
+    }
+
+    func finalizeStoreSelection() {
+        // We need to call refreshUserData() here because the user selected
+        // their default store and tracks should to know about it.
+        WooAnalytics.shared.refreshUserData()
+        WooAnalytics.shared.track(.sitePickerContinueTapped, withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? String()])
+
+        AppDelegate.shared.authenticatorWasDismissed()
+        if selectedConfiguration == .login {
+            MainTabBarController.switchToMyStoreTab(animated: true)
         }
     }
 }

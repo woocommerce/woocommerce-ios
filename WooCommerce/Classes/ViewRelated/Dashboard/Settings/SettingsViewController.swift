@@ -45,8 +45,12 @@ class SettingsViewController: UIViewController {
     ///
     private var sites = [Yosemite.Site]()
 
+    /// Store Picker Coordinator
+    ///
+    private var storePickerCoordinator: StorePickerCoordinator?
 
     // MARK: - Overridden Methods
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -251,8 +255,8 @@ private extension SettingsViewController {
     func switchStoreWasPressed() {
         WooAnalytics.shared.track(.settingsSelectedStoreTapped)
         if let navigationController = navigationController {
-            let coordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
-            coordinator.start()
+            storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
+            storePickerCoordinator?.start()
         }
     }
 

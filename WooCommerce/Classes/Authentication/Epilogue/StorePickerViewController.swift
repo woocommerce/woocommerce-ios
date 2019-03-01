@@ -5,20 +5,37 @@ import WordPressUI
 import Yosemite
 
 
+typealias SelectStoreClosure = () -> Void
+
+
 /// StorePickerViewControllerDelegate: the interface with operations related to the store picker
 ///
 protocol StorePickerViewControllerDelegate: class {
 
-    /// Asks the delegate if it's ok to continue with the selected store
+    /// Notifies the delegate that a store is about to be picked.
     ///
-    /// - Parameter storeID: The ID of the store selected by the user
-    /// - Returns: `true` if the store picker should
+    /// - Parameter storeID: ID of the store selected by the user
+    /// - Returns: a closure to be executed prior to store selection
     ///
-    func shouldProceed(with storeID: Int) -> Bool
+    func willSelectStore(with storeID: Int, onCompletion: @escaping SelectStoreClosure)
 
     /// Notifies the delegate that the store selection is complete
     ///
-    func didCompleteStoreSelection()
+    func didSelectStore()
+}
+
+
+/// Configuration option enum for the StorePickerViewController
+///
+enum StorePickerConfiguration {
+
+    /// Setup the store picker for use in the login flow
+    ///
+    case login
+
+    /// Setup the store picker for use in the store switching flow
+    ///
+    case switchingStores
 }
 
 
@@ -29,6 +46,10 @@ class StorePickerViewController: UIViewController {
     /// StorePickerViewController Delegate
     ///
     weak var delegate: StorePickerViewControllerDelegate?
+
+    /// Selected configuration for the store picker
+    ///
+    var configuration: StorePickerConfiguration = .login
 
     // MARK: - Private Properties
 
@@ -117,25 +138,27 @@ class StorePickerViewController: UIViewController {
         setupTableView()
         refreshResults()
 
-        startListeningToNotifications()
+        if configuration == .login {
+            startListeningToNotifications()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(true, animated: animated)
-    }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        delegate?.didCompleteStoreSelection()
+        if configuration == .login {
+            navigationController?.setNavigationBarHidden(true, animated: animated)
+        }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        // This should be called here to address this issue:
-        // https://github.com/woocommerce/woocommerce-ios/issues/693
-        stopListeningToNotifications()
+        if configuration == .login {
+            // This should be called here to address this issue:
+            // https://github.com/woocommerce/woocommerce-ios/issues/693
+            stopListeningToNotifications()
+        }
     }
 }
 
@@ -364,15 +387,13 @@ extension StorePickerViewController {
         case .empty:
             restartAuthentication()
         default:
-            // We need to call refreshUserData() here because the user selected
-            // their default store and tracks should to know about it.
-            WooAnalytics.shared.refreshUserData()
-            WooAnalytics.shared.track(.sitePickerContinueTapped,
-                                      withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? String()])
+            guard let delegate = delegate else {
+                return
+            }
 
-            dismiss(animated: true) {
-                AppDelegate.shared.authenticatorWasDismissed()
-                MainTabBarController.switchToMyStoreTab(animated: true)
+            // FIXME: Need a better way to stash the currently selected store 👇
+            delegate.willSelectStore(with: StoresManager.shared.sessionManager.defaultStoreID ?? 0) { [weak self] in
+                self?.delegate?.didSelectStore()
             }
         }
     }
@@ -443,6 +464,7 @@ extension StorePickerViewController: UITableViewDelegate {
         displaySiteWCRequirementWarningIfNeeded(siteID: site.siteID, siteName: site.name)
 
         reloadDefaultStoreAndSelectedStoreRows {
+            // FIXME: This should not be here!
             StoresManager.shared.updateDefaultStore(storeID: site.siteID)
         }
 

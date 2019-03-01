@@ -343,6 +343,7 @@ extension AppDelegate {
     /// Displays the Woo Store Picker.
     ///
     func displayStorePicker() {
+        // FIXME: This will not work with the new StorePickerCoordinator
         let pickerViewController = StorePickerViewController()
         let navigationController = UINavigationController(rootViewController: pickerViewController)
 

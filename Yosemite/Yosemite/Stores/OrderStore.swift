@@ -77,10 +77,10 @@ private extension OrderStore {
 
     /// Retrieves the orders associated with a given Site ID (if any!).
     ///
-    func synchronizeOrders(siteID: Int, statusKey: OrderStatusKey?, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeOrders(siteID: Int, statusKey: String?, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
-        remote.loadAllOrders(for: siteID, statusKey: statusKey?.rawValue, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (orders, error) in
+        remote.loadAllOrders(for: siteID, statusKey: statusKey, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (orders, error) in
             guard let orders = orders else {
                 onCompletion(error)
                 return
@@ -114,12 +114,12 @@ private extension OrderStore {
 
     /// Updates an Order with the specified Status.
     ///
-    func updateOrder(siteID: Int, orderID: Int, statusKey: OrderStatusKey, onCompletion: @escaping (Error?) -> Void) {
+    func updateOrder(siteID: Int, orderID: Int, statusKey: String, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically update the Status
         let oldStatus = updateOrderStatus(orderID: orderID, statusKey: statusKey)
 
         let remote = OrdersRemote(network: network)
-        remote.updateOrder(from: siteID, orderID: orderID, statusKey: statusKey.rawValue) { [weak self] (order, error) in
+        remote.updateOrder(from: siteID, orderID: orderID, statusKey: statusKey) { [weak self] (order, error) in
             guard let error = error else {
                 // NOTE: We're *not* actually updating the whole entity here. Reason: Prevent UI inconsistencies!!
                 onCompletion(nil)
@@ -155,14 +155,14 @@ extension OrderStore {
     /// - Returns: Status, prior to performing the Update OP.
     ///
     @discardableResult
-    func updateOrderStatus(orderID: Int, statusKey: OrderStatusKey) -> OrderStatusKey {
+    func updateOrderStatus(orderID: Int, statusKey: String) -> String {
         let storage = storageManager.viewStorage
         guard let order = storage.loadOrder(orderID: orderID) else {
             return statusKey
         }
 
-        let oldStatus = OrderStatusKey(rawValue: order.statusKey)
-        order.statusKey = statusKey.rawValue
+        let oldStatus = order.statusKey
+        order.statusKey = statusKey
         storage.saveIfNeeded()
 
         return oldStatus

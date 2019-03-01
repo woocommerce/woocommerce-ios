@@ -50,7 +50,9 @@ private extension OrderStatusStore {
                 return
             }
 
-            self?.upsertStoredOrdersInBackground(siteID: siteID, readOnlyOrderStatuses: orderStatuses, onCompletion: {
+            self?.upsertStoredOrdersInBackground(siteID: siteID,
+                                                 readOnlyOrderStatuses: orderStatuses,
+                                                 onCompletion: {
                 onCompletion(orderStatuses, nil)
             })
         }

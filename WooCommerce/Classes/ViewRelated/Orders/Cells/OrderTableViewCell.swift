@@ -25,8 +25,10 @@ class OrderTableViewCell: UITableViewCell {
 
         totalLabel.text = viewModel.totalFriendlyString
 
-        paymentStatusLabel.text = viewModel.order.statusKey.description
-        paymentStatusLabel.applyStyle(for: viewModel.order.statusKey)
+        paymentStatusLabel.text = viewModel.orderStatus?.name
+        if let orderStatus = viewModel.orderStatus {
+            paymentStatusLabel.applyStyle(for: orderStatus.status)
+        }
     }
 
 

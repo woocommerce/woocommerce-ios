@@ -2,13 +2,13 @@ import Foundation
 import Yosemite
 
 
-// MARK: - OrderStatusKey Helper Methods
+// MARK: - OrderStatusEnum Helper Methods
 //
-extension OrderStatusKey {
+extension OrderStatusEnum {
 
     /// Returns a collection of all of the known Order Status
     ///
-    static var knownStatus: [OrderStatusKey] {
+    static var knownStatus: [OrderStatusEnum] {
         return [.pending, .processing, .onHold, .failed, .cancelled, .completed, .refunded]
     }
 }

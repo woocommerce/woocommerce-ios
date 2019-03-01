@@ -443,7 +443,9 @@ private extension OrderDetailsViewController {
         cell.title = viewModel.summaryTitle
         cell.dateCreated = viewModel.summaryDateCreated
 
-        cell.display(orderStatusKey: viewModel.order.statusKey)
+        if let orderStatus = viewModel.orderStatus {
+            cell.display(orderStatus: orderStatus)
+        }
     }
 }
 
@@ -459,7 +461,7 @@ private extension OrderDetailsViewController {
                 return
             }
 
-            self.viewModel = OrderDetailsViewModel(order: order)
+            self.viewModel = OrderDetailsViewModel(order: order, orderStatus: nil)
             onCompletion?(nil)
         }
 
@@ -775,7 +777,7 @@ private extension OrderDetailsViewController {
 
         UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
         WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": self.viewModel.order.orderID,
-                                                                        "status": self.viewModel.order.statusKey.rawValue,
+                                                                        "status": self.viewModel.order.statusKey,
                                                                         "type": "call"])
 
     }
@@ -794,7 +796,7 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
 
         displayMessageComposer(for: phoneNumber)
         WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
-                                                                        "status": viewModel.order.statusKey.rawValue,
+                                                                        "status": viewModel.order.statusKey,
                                                                         "type": "sms"])
     }
 
@@ -821,7 +823,7 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
 
         displayEmailComposer(for: email)
         WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
-                                                                        "status": viewModel.order.statusKey.rawValue,
+                                                                        "status": viewModel.order.statusKey,
                                                                         "type": "email"])
     }
 

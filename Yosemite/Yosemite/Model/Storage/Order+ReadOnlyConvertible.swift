@@ -14,7 +14,7 @@ extension Storage.Order: ReadOnlyConvertible {
         parentID = Int64(order.parentID)
         customerID = Int64(order.customerID)
         number = order.number
-        statusKey = order.statusKey.rawValue
+        statusKey = order.statusKey
         currency = order.currency
         customerNote = order.customerNote
 
@@ -70,7 +70,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      parentID: Int(parentID),
                      customerID: Int(customerID),
                      number: number ?? "",
-                     statusKey: OrderStatusKey(rawValue: statusKey),
+                     statusKey: statusKey,
                      currency: currency ?? "",
                      customerNote: customerNote ?? "",
                      dateCreated: dateCreated ?? Date(),

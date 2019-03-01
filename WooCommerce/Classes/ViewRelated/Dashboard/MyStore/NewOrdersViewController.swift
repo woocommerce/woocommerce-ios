@@ -60,6 +60,22 @@ extension NewOrdersViewController {
 
         StoresManager.shared.dispatch(action)
     }
+
+    func syncOrderStatus(onCompletion: ((Error?) -> Void)? = nil) {
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            onCompletion?(nil)
+            return
+        }
+
+        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { (orderStatuses, error) in
+            if let error = error {
+                DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing order statuses: \(error)")
+            }
+            onCompletion?(error)
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
 }
 
 

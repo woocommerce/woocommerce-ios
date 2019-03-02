@@ -50,8 +50,8 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
         logOutOfCurrentStore(onCompletion: onCompletion)
     }
 
-    func didSelectStore() {
-        finalizeStoreSelection()
+    func didSelectStore(with siteID: Int) {
+        finalizeStoreSelection(siteID)
         // FIXME: pop the picker VC here!
         onDismiss?()
     }
@@ -87,7 +87,9 @@ private extension StorePickerCoordinator {
         }
     }
 
-    func finalizeStoreSelection() {
+    func finalizeStoreSelection(_ siteID: Int) {
+        StoresManager.shared.updateDefaultStore(storeID: siteID)
+
         // We need to call refreshUserData() here because the user selected
         // their default store and tracks should to know about it.
         WooAnalytics.shared.refreshUserData()

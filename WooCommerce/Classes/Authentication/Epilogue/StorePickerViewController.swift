@@ -7,7 +7,6 @@ import Yosemite
 
 typealias SelectStoreClosure = () -> Void
 
-
 /// StorePickerViewControllerDelegate: the interface with operations related to the store picker
 ///
 protocol StorePickerViewControllerDelegate: class {
@@ -21,7 +20,7 @@ protocol StorePickerViewControllerDelegate: class {
 
     /// Notifies the delegate that the store selection is complete
     ///
-    func didSelectStore()
+    func didSelectStore(with storeID: Int)
 }
 
 
@@ -128,6 +127,18 @@ class StorePickerViewController: UIViewController {
     ///
     private var estimatedRowHeights = [IndexPath: CGFloat]()
 
+    /// The currently selected site on this screen (NOT the current default site for the app).
+    ///
+    private var currentlySelectedSite: Site? {
+        didSet {
+            guard let site = currentlySelectedSite else {
+                return
+            }
+
+            displaySiteWCRequirementWarningIfNeeded(siteID: site.siteID, siteName: site.name)
+        }
+    }
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -202,7 +213,7 @@ private extension StorePickerViewController {
     }
 
     func stateWasUpdated() {
-        preselectDefaultStoreIfPossible()
+        preselectStoreIfPossible()
         reloadInterface()
     }
 }
@@ -247,35 +258,22 @@ private extension StorePickerViewController {
 
     /// Sets the first available Store as the default one. If possible!
     ///
-    func preselectDefaultStoreIfPossible() {
+    func preselectStoreIfPossible() {
         guard case let .available(sites) = state, let firstSite = sites.first else {
             return
         }
-
-        if let site = StoresManager.shared.sessionManager.defaultSite {
-            displaySiteWCRequirementWarningIfNeeded(siteID: site.siteID, siteName: site.name)
-            StoresManager.shared.updateDefaultStore(storeID: site.siteID)
+        guard currentlySelectedSite == nil else {
             return
         }
 
-        displaySiteWCRequirementWarningIfNeeded(siteID: firstSite.siteID, siteName: firstSite.name)
-        StoresManager.shared.updateDefaultStore(storeID: firstSite.siteID)
-    }
-
-    /// Indicates if a Store is set as the Default one.
-    ///
-    func isDefaultStore(site: Yosemite.Site) -> Bool {
-        return site.siteID == StoresManager.shared.sessionManager.defaultStoreID
-    }
-
-    /// Returns the IndexPath for the DefaultStore, if any.
-    ///
-    func indexPathForDefaultStore() -> IndexPath? {
-        guard let defaultStoreID = StoresManager.shared.sessionManager.defaultStoreID else {
-            return nil
+        // If there is a defaultSite already set, select it
+        if let site = StoresManager.shared.sessionManager.defaultSite {
+            currentlySelectedSite = site
+            return
         }
 
-        return state.indexPath(for: defaultStoreID)
+        // Otherwise select the first site in the list
+        currentlySelectedSite = firstSite
     }
 
     /// Reloads the UI.
@@ -286,13 +284,15 @@ private extension StorePickerViewController {
         tableView.reloadData()
     }
 
-    /// This method will reload both, the [Default Site's Row] and the [Selected Row] after running the specified closure
+    /// This method will reload the [Selected Row]
     ///
-    func reloadDefaultStoreAndSelectedStoreRows(afterRunning block: () -> Void) {
+    func reloadSelectedStoreRows(afterRunning block: () -> Void) {
         /// Preserve: Selected and Checked Rows
         ///
         var rowsToReload = [IndexPath]()
-        if let oldCheckedRow = indexPathForDefaultStore() {
+
+        if let oldSiteID = currentlySelectedSite?.siteID,
+            let oldCheckedRow = state.indexPath(for: oldSiteID) {
             rowsToReload.append(oldCheckedRow)
         }
 
@@ -303,6 +303,11 @@ private extension StorePickerViewController {
         /// Update the Default Store
         ///
         block()
+
+        if let newSiteID = currentlySelectedSite?.siteID,
+            let selectedRow = state.indexPath(for: newSiteID) {
+            rowsToReload.append(selectedRow)
+        }
 
         /// Refresh: Selected and Checked Rows
         ///
@@ -390,10 +395,12 @@ extension StorePickerViewController {
             guard let delegate = delegate else {
                 return
             }
+            guard let site = currentlySelectedSite else {
+                return
+            }
 
-            // FIXME: Need a better way to stash the currently selected store 👇
-            delegate.willSelectStore(with: StoresManager.shared.sessionManager.defaultStoreID ?? 0) { [weak self] in
-                self?.delegate?.didSelectStore()
+            delegate.willSelectStore(with: site.siteID) { [weak self] in
+                self?.delegate?.didSelectStore(with: site.siteID)
             }
         }
     }
@@ -420,7 +427,6 @@ extension StorePickerViewController: UITableViewDataSource {
         guard let site = state.site(at: indexPath) else {
             return tableView.dequeueReusableCell(withIdentifier: EmptyStoresTableViewCell.reuseIdentifier, for: indexPath)
         }
-
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreTableViewCell.reuseIdentifier, for: indexPath) as? StoreTableViewCell else {
             fatalError()
         }
@@ -428,7 +434,7 @@ extension StorePickerViewController: UITableViewDataSource {
         cell.name = site.name
         cell.url = site.url
         cell.allowsCheckmark = state.multipleStoresAvailable
-        cell.displaysCheckmark = isDefaultStore(site: site)
+        cell.displaysCheckmark = currentlySelectedSite == site
 
         return cell
     }
@@ -461,11 +467,8 @@ extension StorePickerViewController: UITableViewDelegate {
             return
         }
 
-        displaySiteWCRequirementWarningIfNeeded(siteID: site.siteID, siteName: site.name)
-
-        reloadDefaultStoreAndSelectedStoreRows {
-            // FIXME: This should not be here!
-            StoresManager.shared.updateDefaultStore(storeID: site.siteID)
+        reloadSelectedStoreRows() {
+            currentlySelectedSite = site
         }
 
         tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)

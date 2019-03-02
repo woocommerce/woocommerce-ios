@@ -284,6 +284,20 @@ private extension StorePickerViewController {
         tableView.reloadData()
     }
 
+    /// Dismiss this VC
+    ///
+    func cleanupAndDismiss() {
+        if let siteID = currentlySelectedSite?.siteID {
+            delegate?.didSelectStore(with: siteID)
+        }
+
+        if configuration == .login {
+            dismiss(animated: true)
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
+    }
+
     /// This method will reload the [Selected Row]
     ///
     func reloadSelectedStoreRows(afterRunning block: () -> Void) {
@@ -400,7 +414,7 @@ extension StorePickerViewController {
             }
 
             delegate.willSelectStore(with: site.siteID) { [weak self] in
-                self?.delegate?.didSelectStore(with: site.siteID)
+                self?.cleanupAndDismiss()
             }
         }
     }

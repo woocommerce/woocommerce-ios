@@ -52,7 +52,6 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
     func didSelectStore(with siteID: Int) {
         finalizeStoreSelection(siteID)
-        // FIXME: pop the picker VC here!
         onDismiss?()
     }
 }

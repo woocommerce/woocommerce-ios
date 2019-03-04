@@ -95,7 +95,7 @@ public class CurrencyFormatter {
     /// For our purposes here, a "small number" is anything in-between -1000 and 1000 (exclusive).
     ///
     /// - Note: This func leverages the formatter from our `NSDecimalNumber` extension.
-    ///         See: [NSDecimalNumber+Helpers.swift](https://github.com/woocommerce/woocommerce-ios/blob/develop/WooCommerce/Classes/Extensions/NSDecimalNumber%2BHelpers.swift) for more details.
+    ///         See: `NSDecimalNumber+Helpers.swift` for more details.
     ///
     /// Examples with currency code of "USD" (`roundSmallNumbers` is set to `true`):
     ///  - 0 becomes "$0"
@@ -113,7 +113,9 @@ public class CurrencyFormatter {
     ///  - 1000 becomes "$1.0k"
     ///  - 5800199.56 becomes "$5.8m"
     ///
-    func formatHumanReadableAmount(_ amount: String, with currency: String = CurrencySettings.shared.currencyCode.rawValue, roundSmallNumbers: Bool = true) -> String? {
+    func formatHumanReadableAmount(_ amount: String,
+                                   with currency: String = CurrencySettings.shared.currencyCode.rawValue,
+                                   roundSmallNumbers: Bool = true) -> String? {
         guard let decimalAmount = convertToDecimal(from: amount) else {
             return nil
         }

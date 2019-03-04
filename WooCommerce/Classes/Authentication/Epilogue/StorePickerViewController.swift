@@ -353,11 +353,26 @@ extension StorePickerViewController {
             WooAnalytics.shared.track(.sitePickerContinueTapped,
                                       withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? String()])
 
+            presentStoreSwitchedNotice()
+
             dismiss(animated: true) {
                 AppDelegate.shared.authenticatorWasDismissed()
                 MainTabBarController.switchToMyStoreTab(animated: true)
             }
         }
+    }
+
+    private func presentStoreSwitchedNotice() {
+        guard let newStoreName = StoresManager.shared.sessionManager.defaultSite?.name else {
+            return
+        }
+        let message = NSLocalizedString("Now you will only receive notifications related to \(newStoreName)",
+            comment: "Message presented after users switch to a new store. "
+                + " Reads like: Now you will only receive notifications related to A Store")
+
+        let notice = Notice(title: message, feedbackType: .success)
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 }
 

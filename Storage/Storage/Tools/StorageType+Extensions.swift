@@ -82,6 +82,21 @@ public extension StorageType {
         return firstObject(ofType: OrderStatsItem.self, matching: predicate)
     }
 
+    /// Retrieves all of the Stores OrderStatuses for the provided siteID.
+    ///
+    public func loadOrderStatuses(siteID: Int) -> [OrderStatus]? {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        let descriptor = NSSortDescriptor(keyPath: \OrderStatus.name, ascending: false)
+        return allObjects(ofType: OrderStatus.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Retrieves the Stored OrderStatus
+    ///
+    public func loadOrderStatus(siteID: Int, slug: String) -> OrderStatus? {
+        let predicate = NSPredicate(format: "siteID = %ld AND slug ==[c] %@", siteID, slug)
+        return firstObject(ofType: OrderStatus.self, matching: predicate)
+    }
+
     /// Retrieves all of the Stored SiteSettings for the provided siteID.
     ///
     public func loadSiteSettings(siteID: Int) -> [SiteSetting]? {

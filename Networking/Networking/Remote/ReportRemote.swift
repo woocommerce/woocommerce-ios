@@ -7,6 +7,7 @@ import Alamofire
 public class ReportRemote: Remote {
 
     /// Retrieves all of the order totals for a given site.
+    /// Wraps the API request.
     ///
     /// *Note:* This is a Woo REST API v3 endpoint! It will not work on any Woo site under v3.5.
     ///
@@ -15,9 +16,30 @@ public class ReportRemote: Remote {
     ///   - completion: Closure to be executed upon completion.
     ///
     public func loadOrderTotals(for siteID: Int, completion: @escaping ([OrderStatusKey: Int]?, Error?) -> Void) {
+        loadReportOrderTotals(for: siteID) { (orderStatuses, error) in
+            var returnDict = [OrderStatusKey: Int]()
+            orderStatuses?.forEach({ (orderStatus) in
+                let status = OrderStatusKey(rawValue: orderStatus.slug)
+                returnDict[status] = orderStatus.total
+            })
+            completion(returnDict, error)
+        }
+    }
+
+    /// Retrieves all known order statuses.
+    /// Wraps the API request.
+    ///
+    public func loadOrderStatuses(for siteID: Int, completion: @escaping ([OrderStatus]?, Error?) -> Void) {
+        loadReportOrderTotals(for: siteID, completion: completion)
+    }
+
+    /// Retrieves an order totals report
+    ///
+    private func loadReportOrderTotals(for siteID: Int, completion: @escaping ([OrderStatus]?, Error?) -> Void) {
         let path = Constants.orderTotalsPath
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
-        let mapper = ReportOrderTotalsMapper()
+        let mapper = ReportOrderTotalsMapper(siteID: siteID)
+
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

@@ -366,10 +366,10 @@ extension StorePickerViewController {
         guard let newStoreName = StoresManager.shared.sessionManager.defaultSite?.name else {
             return
         }
-        let message = NSLocalizedString("Now you will only receive notifications related to \(newStoreName)",
-            comment: "Message presented after users switch to a new store. "
-                + " Reads like: Now you will only receive notifications related to A Store")
 
+        let message = NSLocalizedString("Switched to \(newStoreName). You will only receive notifications from this store.",
+            comment: "Message presented after users switch to a new store. "
+                + "Reads like: Switched to {store name}. You will only receive notifications from this store.")
         let notice = Notice(title: message, feedbackType: .success)
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)

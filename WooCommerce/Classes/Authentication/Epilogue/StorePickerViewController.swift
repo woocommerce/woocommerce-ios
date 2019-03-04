@@ -157,9 +157,7 @@ class StorePickerViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if configuration == .login {
-            navigationController?.setNavigationBarHidden(true, animated: animated)
-        }
+        setupViewForCurrentConfiguration()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -201,8 +199,32 @@ private extension StorePickerViewController {
         accountHeaderView.username = "@" + defaultAccount.username
         accountHeaderView.fullname = defaultAccount.displayName
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
-        accountHeaderView.onHelpRequested = {
-            AppDelegate.shared.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
+        accountHeaderView.isHelpButtonEnabled = configuration == .login
+        accountHeaderView.onHelpRequested = { AppDelegate.shared.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin) }
+    }
+
+    func setupNavigation() {
+        title = NSLocalizedString("Select Store", comment: "Page title for the select a different store screen")
+        // Don't show the previous VC's title in the next-view's back button
+        let backButton = UIBarButtonItem(title: String(),
+                                         style: .plain,
+                                         target: nil,
+                                         action: nil)
+
+        navigationItem.backBarButtonItem = backButton
+    }
+
+    func setupViewForCurrentConfiguration() {
+        guard isViewLoaded else {
+            return
+        }
+
+        switch configuration {
+        case .login:
+            navigationController?.setNavigationBarHidden(true, animated: true)
+        case .switchingStores:
+            setupNavigation()
+            break
         }
     }
 

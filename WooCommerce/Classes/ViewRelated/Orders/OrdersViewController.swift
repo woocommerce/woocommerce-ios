@@ -532,16 +532,14 @@ private extension OrdersViewController {
     func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
         let order = resultsController.object(at: indexPath)
         let orderStatus = lookUpOrderStatus(for: order)
-        
+
         return OrderDetailsViewModel(order: order, orderStatus: orderStatus)
     }
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
         let listAll = statusResultsController.fetchedObjects
-        for orderStatus in listAll {
-            if orderStatus.slug == order.statusKey {
-                return orderStatus
-            }
+        for orderStatus in listAll where orderStatus.slug == order.statusKey {
+            return orderStatus
         }
 
         return nil

@@ -17,4 +17,3 @@ extension Yosemite.OrderStatus: ReadOnlyType {
             storageOrderStatus.slug == slug
     }
 }
-

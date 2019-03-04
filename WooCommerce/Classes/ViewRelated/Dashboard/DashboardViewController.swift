@@ -212,7 +212,7 @@ private extension DashboardViewController {
         }
 
         group.enter()
-        newOrdersViewController.syncOrderStatus() { error in
+        newOrdersViewController.syncOrderStatus() { _ in
             // don't bubble up error to user
             group.leave()
         }

@@ -119,7 +119,7 @@ private extension OrderStore {
         let oldStatus = updateOrderStatus(orderID: orderID, statusKey: statusKey)
 
         let remote = OrdersRemote(network: network)
-        remote.updateOrder(from: siteID, orderID: orderID, statusKey: statusKey) { [weak self] (order, error) in
+        remote.updateOrder(from: siteID, orderID: orderID, statusKey: statusKey) { [weak self] (_, error) in
             guard let error = error else {
                 // NOTE: We're *not* actually updating the whole entity here. Reason: Prevent UI inconsistencies!!
                 onCompletion(nil)

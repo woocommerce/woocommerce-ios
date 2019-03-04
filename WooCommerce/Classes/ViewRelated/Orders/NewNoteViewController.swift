@@ -45,33 +45,12 @@ class NewNoteViewController: UIViewController {
         view.endEditing(true)
     }
 
-    func configureNavigation() {
-        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Add a note screen - title. Example: Order #15")
-
-        let dismissButtonTitle = NSLocalizedString("Dismiss", comment: "Add a note screen - button title for closing the view")
-        let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,
-                                            style: .plain,
-                                            target: self,
-                                            action: #selector(dismissButtonTapped))
-        leftBarButton.tintColor = .white
-        navigationItem.setLeftBarButton(leftBarButton, animated: false)
-
-        let addButtonTitle = NSLocalizedString("Add", comment: "Add a note screen - button title to send the note")
-        let rightBarButton = UIBarButtonItem(title: addButtonTitle,
-                                             style: .done,
-                                             target: self,
-                                             action: #selector(addButtonTapped))
-        rightBarButton.tintColor = .white
-        navigationItem.setRightBarButton(rightBarButton, animated: false)
-        navigationItem.rightBarButtonItem?.isEnabled = false
-    }
-
     @objc func dismissButtonTapped() {
         dismiss(animated: true, completion: nil)
     }
 
     @objc func addButtonTapped() {
-        navigationItem.rightBarButtonItem?.isEnabled = false
+        switchRightButtonToProgressIndicator()
 
         WooAnalytics.shared.track(.orderNoteAddButtonTapped)
         WooAnalytics.shared.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
@@ -84,7 +63,7 @@ class NewNoteViewController: UIViewController {
                 WooAnalytics.shared.track(.orderNoteAddFailed, withError: error)
 
                 self?.displayErrorNotice()
-                self?.navigationItem.rightBarButtonItem?.isEnabled = true
+                self?.switchRightButtonToAddButton()
                 return
             }
             WooAnalytics.shared.track(.orderNoteAddSuccess)
@@ -238,6 +217,64 @@ private extension NewNoteViewController {
         }
 
         noticePresenter.enqueue(notice: notice)
+    }
+}
+
+// MARK: - Navigation bar
+//
+private extension NewNoteViewController {
+    func configureNavigation() {
+        configureTitle()
+        configureDismissButton()
+        configureRightButtonItemAsAdd()
+    }
+
+    func configureTitle() {
+        title = NSLocalizedString("Order #\(viewModel.order.number)",
+            comment: "Add a note screen - title. Example: Order #15")
+    }
+
+    func configureDismissButton() {
+        let dismissButtonTitle = NSLocalizedString("Dismiss",
+                                                   comment: "Add a note screen - button title for closing the view")
+        let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,
+                                            style: .plain,
+                                            target: self,
+                                            action: #selector(dismissButtonTapped))
+        leftBarButton.tintColor = .white
+        navigationItem.setLeftBarButton(leftBarButton, animated: false)
+    }
+
+    func configureRightButtonItemAsAdd() {
+        let addButtonTitle = NSLocalizedString("Add",
+                                               comment: "Add a note screen - button title to send the note")
+        let rightBarButton = UIBarButtonItem(title: addButtonTitle,
+                                             style: .done,
+                                             target: self,
+                                             action: #selector(addButtonTapped))
+        rightBarButton.tintColor = .white
+        navigationItem.setRightBarButton(rightBarButton, animated: false)
+        navigationItem.rightBarButtonItem?.isEnabled = false
+    }
+
+    func switchRightButtonToProgressIndicator() {
+        configureRightButtonItemAsSpinner()
+        navigationItem.rightBarButtonItem?.isEnabled = false
+    }
+
+    func configureRightButtonItemAsSpinner() {
+        let activityIndicator = UIActivityIndicatorView(style: .white)
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.startAnimating()
+
+        let rightBarButton = UIBarButtonItem(customView: activityIndicator)
+
+        navigationItem.setRightBarButton(rightBarButton, animated: true)
+    }
+
+    func switchRightButtonToAddButton() {
+        configureRightButtonItemAsAdd()
+        navigationItem.rightBarButtonItem?.isEnabled = true
     }
 }
 

@@ -299,9 +299,9 @@ extension OrdersViewController {
             self?.statusKeyFilter = nil
         }
 
-        for knownStatus in OrderStatusEnum.knownStatus {
-            actionSheet.addDefaultActionWithTitle(knownStatus.rawValue) { [weak self] _ in
-                self?.statusKeyFilter = knownStatus.rawValue
+        for orderStatus in statusResultsController.fetchedObjects {
+            actionSheet.addDefaultActionWithTitle(orderStatus.name) { [weak self] _ in
+                self?.statusKeyFilter = orderStatus.slug
             }
         }
 

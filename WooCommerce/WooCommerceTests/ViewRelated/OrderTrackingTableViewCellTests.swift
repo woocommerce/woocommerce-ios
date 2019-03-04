@@ -6,13 +6,14 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
     private var cell: OrderTrackingTableViewCell?
 
     private struct MockData {
+        static let localizedShipmentDate = Date(timeIntervalSince1970: 0).toString(dateStyle: .medium, timeStyle: .none)
         static let tracking = ShipmentTracking(siteID: 0,
                                                orderID: 0,
                                                trackingID: "mock-tracking-id",
                                                trackingNumber: "XXX_YYY_ZZZ",
                                                trackingProvider: "HK POST",
                                                trackingURL: "http://automattic.com",
-                                               dateShipped: nil)
+                                               dateShipped: Date(timeIntervalSince1970: 0))
 
         static let buttonTitle = "Track shipment"
     }
@@ -34,10 +35,16 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
         XCTAssertEqual(cell?.getTopLabel().text, MockData.tracking.trackingProvider)
     }
 
-    func testBottomLineTextMatchesTrackingNumber() {
+    func testMiddleLineTextMatchesTrackingNumber() {
         populateCell()
 
-        XCTAssertEqual(cell?.getBottomLabel().text, MockData.tracking.trackingNumber)
+        XCTAssertEqual(cell?.getMiddleLabel().text, MockData.tracking.trackingNumber)
+    }
+
+    func testBottomLineTextMatchesShipmentDate() {
+        populateCell()
+
+        XCTAssertEqual(cell?.getBottomLabel().text, MockData.localizedShipmentDate)
     }
 
     func testActionButtonExecutesCallback() {
@@ -52,11 +59,21 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
         waitForExpectations(timeout: 1, handler: nil)
     }
 
-    func testTopLabelHasHeadlineStyle() {
+    func testTopLabelHasSubheadlineStyle() {
+        let mockLabel = UILabel()
+        mockLabel.applySubheadlineStyle()
+
+        let cellLabel = cell?.getTopLabel()
+
+        XCTAssertEqual(cellLabel?.font, mockLabel.font)
+        XCTAssertEqual(cellLabel?.textColor, mockLabel.textColor)
+    }
+
+    func testMiddleLabelHasHeadlineStyle() {
         let mockLabel = UILabel()
         mockLabel.applyHeadlineStyle()
 
-        let cellLabel = cell?.getTopLabel()
+        let cellLabel = cell?.getMiddleLabel()
 
         XCTAssertEqual(cellLabel?.font, mockLabel.font)
         XCTAssertEqual(cellLabel?.textColor, mockLabel.textColor)
@@ -74,7 +91,7 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
 
     func testActionButtonHasSecondaryButtonStyle() {
         let mockButton = UIButton()
-        mockButton.applySecondaryButtonStyle()
+        mockButton.applyTertiaryButtonStyle()
 
         let cellButton = cell?.getActionButton()
 
@@ -96,13 +113,13 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
         XCTAssertEqual(cell?.getTopLabel().accessibilityLabel, expectedLabel)
     }
 
-    func testBottomLabelAccessibilityLabelMatchesExpectation() {
+    func testMiddleLabelAccessibilityLabelMatchesExpectation() {
         populateCell()
 
         let expectedLabel = String.localizedStringWithFormat("Tracking number %@",
                                                              MockData.tracking.trackingNumber)
 
-        XCTAssertEqual(cell?.getBottomLabel().accessibilityLabel, expectedLabel)
+        XCTAssertEqual(cell?.getMiddleLabel().accessibilityLabel, expectedLabel)
     }
 
     func testButtonAccessibilityLabelMatchesExpectation() {
@@ -121,7 +138,8 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
 
     private func populateCell() {
         cell?.topText = MockData.tracking.trackingProvider
-        cell?.bottomText = MockData.tracking.trackingNumber
+        cell?.middleText = MockData.tracking.trackingNumber
+        cell?.bottomText = MockData.localizedShipmentDate
         cell?.actionButtonNormalText = MockData.buttonTitle
     }
 }

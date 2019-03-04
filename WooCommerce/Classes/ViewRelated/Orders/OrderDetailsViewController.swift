@@ -492,7 +492,18 @@ private extension OrderDetailsViewController {
         }
 
         cell.topText = tracking.trackingProvider
-        cell.bottomText = tracking.trackingNumber
+        cell.middleText = tracking.trackingNumber
+
+        if let dateShipped = tracking.dateShipped?.toString(dateStyle: .medium, timeStyle: .none) {
+            cell.bottomText = String.localizedStringWithFormat(
+                NSLocalizedString("Shipped %@",
+                                  comment: "Date an item was shipped"),
+                                  dateShipped)
+        } else {
+            cell.bottomText = NSLocalizedString("Not shipped yet",
+                                                comment: "Order details > tracking. This is where the shipping date would normally display.")
+        }
+
         cell.actionButtonNormalText = viewModel.trackTitle
 
         cell.onActionTouchUp = { [ weak self ] in

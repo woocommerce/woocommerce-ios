@@ -4,8 +4,9 @@ import UIKit
 ///
 final class OrderTrackingTableViewCell: UITableViewCell {
     @IBOutlet private var topLine: UILabel!
+    @IBOutlet private var middleLine: UILabel!
     @IBOutlet private var bottomLine: UILabel!
-
+    @IBOutlet private var topBorder: UIView!
     @IBOutlet private var actionButton: UIButton!
 
     var onActionTouchUp: (() -> Void)?
@@ -17,6 +18,16 @@ final class OrderTrackingTableViewCell: UITableViewCell {
         set {
             topLine.text = newValue
             configureTopLineForVoiceOver()
+        }
+    }
+
+    var middleText: String? {
+        get {
+            return middleLine.text
+        }
+        set {
+            middleLine.text = newValue
+            configureMiddleLineForVoiceOver()
         }
     }
 
@@ -42,13 +53,23 @@ final class OrderTrackingTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureButtonSeparator()
         configureTopLine()
+        configureMiddleLine()
         configureBottomLine()
         configureActionButton()
     }
 
+    private func configureButtonSeparator() {
+        topBorder.backgroundColor = StyleManager.wooGreyBorder
+    }
+
     private func configureTopLine() {
-        topLine.applyHeadlineStyle()
+        topLine.applySubheadlineStyle()
+    }
+
+    private func configureMiddleLine() {
+        middleLine.applyHeadlineStyle()
     }
 
     private func configureBottomLine() {
@@ -56,7 +77,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
     }
 
     private func configureActionButton() {
-        actionButton.applySecondaryButtonStyle()
+        actionButton.applyTertiaryButtonStyle()
         configureActionButtonForVoiceOver()
     }
 }
@@ -78,12 +99,21 @@ private extension OrderTrackingTableViewCell {
             topText ?? "")
     }
 
-    func configureBottonLineForVoiceOver() {
-        bottomLine.accessibilityLabel = String.localizedStringWithFormat(
+    func configureMiddleLineForVoiceOver() {
+        middleLine.accessibilityLabel = String.localizedStringWithFormat(
             NSLocalizedString("Tracking number %@",
                               comment: "Accessibility label for Shipment tracking number "
                                 + "in Order details screen. "
                                 + "Reads like: Tracking Number 1AZ234567890"),
+            middleText ?? "")
+    }
+
+    func configureBottonLineForVoiceOver() {
+        bottomLine.accessibilityLabel = String.localizedStringWithFormat(
+            NSLocalizedString("Shipped %@",
+                              comment: "Accessibility label for Shipment date "
+                                + "in Order details screen. "
+                                + "Shipped: February 27, 2018."),
             bottomText ?? "")
     }
 
@@ -101,6 +131,10 @@ private extension OrderTrackingTableViewCell {
 extension OrderTrackingTableViewCell {
     func getTopLabel() -> UILabel {
         return topLine
+    }
+
+    func getMiddleLabel() -> UILabel {
+        return middleLine
     }
 
     func getBottomLabel() -> UILabel {

@@ -17,7 +17,7 @@ extension UIButton {
         titleLabel?.applyHeadlineStyle()
     }
 
-    /// Applies the Primary Button Style: Clear BG / Bordered Outline
+    /// Applies the Secondary Button Style: Clear BG / Bordered Outline
     ///
     func applySecondaryButtonStyle() {
         backgroundColor = .clear
@@ -27,6 +27,17 @@ extension UIButton {
         layer.borderWidth = Style.defaultBorderWidth
         layer.cornerRadius = Style.defaultCornerRadius
         titleLabel?.applyHeadlineStyle()
+    }
+
+    /// Applies the Terciary Button Style: Clear BG / Top Outline
+    ///
+    func applyTertiaryButtonStyle() {
+        backgroundColor = .clear
+        contentEdgeInsets = Style.noMargingEdgeInsets
+        tintColor = StyleManager.wooCommerceBrandColor
+        layer.borderColor = StyleManager.wooCommerceBrandColor.cgColor
+        titleLabel?.applySubheadlineStyle()
+        titleLabel?.textAlignment = .natural
     }
 }
 
@@ -39,5 +50,6 @@ private extension UIButton {
         static let defaultCornerRadius = CGFloat(8.0)
         static let defaultBorderWidth = CGFloat(1.0)
         static let defaultEdgeInsets = UIEdgeInsets(top: 12, left: 22, bottom: 12, right: 22)
+        static let noMargingEdgeInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
 }

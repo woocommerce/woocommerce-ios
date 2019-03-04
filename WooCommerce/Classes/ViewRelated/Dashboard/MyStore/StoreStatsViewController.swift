@@ -181,7 +181,7 @@ private extension StoreStatsViewController {
             progressPercentage: CGFloat,
             changeCurrentIndex: Bool,
             animated: Bool) -> Void in
-            
+
             guard changeCurrentIndex == true else { return }
             oldCell?.label.textColor = StyleManager.defaultTextColor
             newCell?.label.textColor = StyleManager.wooCommerceBrandColor

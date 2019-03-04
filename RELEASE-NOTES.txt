@@ -1,5 +1,6 @@
 1.4
 -----
+- bugfix: correctly flips chevron on Dashboard > New Orders, to support RTL languages.
 
 1.3
 -----

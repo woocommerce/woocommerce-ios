@@ -22,12 +22,11 @@ class OrderTableViewCell: UITableViewCell {
     ///
     func configureCell(viewModel: OrderDetailsViewModel) {
         titleLabel.text = viewModel.summaryTitle
-
         totalLabel.text = viewModel.totalFriendlyString
 
-        paymentStatusLabel.text = viewModel.orderStatus?.name
         if let orderStatus = viewModel.orderStatus {
             paymentStatusLabel.applyStyle(for: orderStatus.status)
+            paymentStatusLabel.text = orderStatus.name
         }
     }
 
@@ -53,7 +52,6 @@ class OrderTableViewCell: UITableViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        paymentStatusLabel.layer.borderColor = UIColor.clear.cgColor
     }
 }
 

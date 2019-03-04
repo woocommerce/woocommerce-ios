@@ -73,7 +73,8 @@ private extension OrderStatusStore {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             for readOnlyItem in readOnlyOrderStatuses {
-                let storageStatusItem = derivedStorage.loadOrderStatus(siteID: readOnlyItem.siteID, slug: readOnlyItem.slug) ?? derivedStorage.insertNewObject(ofType: Storage.OrderStatus.self)
+                let storageStatusItem = derivedStorage.loadOrderStatus(siteID: readOnlyItem.siteID, slug: readOnlyItem.slug) ??
+                                        derivedStorage.insertNewObject(ofType: Storage.OrderStatus.self)
                 storageStatusItem.update(with: readOnlyItem)
             }
         }

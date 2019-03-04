@@ -184,7 +184,10 @@ extension FulfillViewController {
     /// Displays the `Unable to Fulfill Order` Notice.
     ///
     func displayErrorNotice(orderID: Int) {
-        let title = NSLocalizedString("Unable to fulfill order #\(orderID)", comment: "Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}")
+        let title = NSLocalizedString(
+            "Unable to fulfill order #\(orderID)",
+            comment: "Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}"
+        )
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.fulfillWasPressed()
@@ -223,7 +226,8 @@ extension FulfillViewController: UITableViewDataSource {
             return nil
         }
 
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
+        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
             fatalError()
         }
 
@@ -281,7 +285,12 @@ private extension FulfillViewController {
         cell.labelText = note
 
         cell.isAccessibilityElement = true
-        cell.accessibilityHint = NSLocalizedString("Adds a note to an order", comment: "VoiceOver accessibility hint, informing the user that the button can be used to add an order note.")
+
+        cell.accessibilityHint = NSLocalizedString(
+            "Adds a note to an order",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to add an order note."
+        )
+
         cell.accessibilityLabel = note
         cell.accessibilityTraits = .button
     }
@@ -295,7 +304,11 @@ private extension FulfillViewController {
 
         guard let address = order.shippingAddress ?? order.billingAddress else {
             cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
-            cell.address = NSLocalizedString("No address specified.", comment: "Fulfill order > customer info > where the physical shipping address would normally display.")
+            cell.address = NSLocalizedString(
+                "No address specified.",
+                comment: "Fulfill order > customer info > where the physical shipping address would normally display."
+            )
+            
             return
         }
 

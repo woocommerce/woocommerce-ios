@@ -148,13 +148,25 @@ private extension WooAnalytics {
             return
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationOpened), name: UIApplication.didBecomeActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(trackApplicationClosed), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(trackApplicationOpened),
+                                               name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(trackApplicationClosed),
+                                               name: UIApplication.didEnterBackgroundNotification,
+                                               object: nil)
     }
 
     func stopObservingNotifications() {
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.removeObserver(self,
+                                                  name: UIApplication.didBecomeActiveNotification,
+                                                  object: nil)
+
+        NotificationCenter.default.removeObserver(self,
+                                                  name: UIApplication.didEnterBackgroundNotification,
+                                                  object: nil)
     }
 
     @objc func trackApplicationOpened() {

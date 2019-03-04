@@ -17,8 +17,14 @@ class AboutViewController: UIViewController {
     ///
     private lazy var footerTitleText: String = {
         let year = Calendar.current.component(.year, from: Date()).description
-        let localizedTitleTextLine1 = String.localizedStringWithFormat(NSLocalizedString("Version %@", comment: "Displays the version of the App"), Bundle.main.detailedVersionNumber())
-        let localizedTitleTextLine2 = String.localizedStringWithFormat(NSLocalizedString("© %@ Automattic, Inc.", comment: "About View's Footer Text. The variable is the current year"), year)
+        let localizedTitleTextLine1 = String.localizedStringWithFormat(
+            NSLocalizedString("Version %@", comment: "Displays the version of the App"),
+            Bundle.main.detailedVersionNumber()
+        )
+        let localizedTitleTextLine2 = String.localizedStringWithFormat(
+            NSLocalizedString("© %@ Automattic, Inc.", comment: "About View's Footer Text. The variable is the current year"),
+            year
+        )
         return String(format: localizedTitleTextLine1, year) + "\n" + localizedTitleTextLine2
     }()
 

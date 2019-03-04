@@ -80,13 +80,19 @@ private extension DashboardViewController {
     }
 
     private func configureTitle() {
-        let myStore = NSLocalizedString("My store", comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard")
+        let myStore = NSLocalizedString(
+            "My store",
+            comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
+        )
         title = StoresManager.shared.sessionManager.defaultSite?.name ?? myStore
         tabBarItem.title = myStore
     }
 
     private func resetTitle() {
-        let myStore = NSLocalizedString("My store", comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard")
+        let myStore = NSLocalizedString(
+            "My store",
+            comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
+        )
         title = myStore
         tabBarItem.title = myStore
     }
@@ -99,7 +105,10 @@ private extension DashboardViewController {
         rightBarButton.tintColor = .white
         rightBarButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
         rightBarButton.accessibilityTraits = .button
-        rightBarButton.accessibilityHint = NSLocalizedString("Navigates to Settings.", comment: "VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen.")
+        rightBarButton.accessibilityHint = NSLocalizedString(
+            "Navigates to Settings.",
+            comment: "VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen."
+        )
         navigationItem.setRightBarButton(rightBarButton, animated: false)
 
         // Don't show the Dashboard title in the next-view's back button

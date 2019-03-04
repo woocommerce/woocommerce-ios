@@ -66,7 +66,7 @@ class NSDecimalNumberWooTests: XCTestCase {
     }
 
     func testRoundedHumanReadableStringWorksWithPositiveValuesAboveOneThousand() {
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000).humanReadableString(), expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000).humanReadableString(),expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
         XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
         XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000)) //"1.0m"
         XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000)) // "1.0m"

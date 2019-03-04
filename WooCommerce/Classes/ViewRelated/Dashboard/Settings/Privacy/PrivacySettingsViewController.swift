@@ -115,7 +115,10 @@ private extension PrivacySettingsViewController {
         cell.imageView?.tintColor = StyleManager.defaultTextColor
 
         // text
-        cell.title = NSLocalizedString("Collect Information", comment: "Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle.")
+        cell.title = NSLocalizedString(
+            "Collect Information",
+            comment: "Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle."
+        )
 
         // switch
         cell.isOn = collectInfo
@@ -128,7 +131,10 @@ private extension PrivacySettingsViewController {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = Gridicon.iconOfType(.image)
         cell.imageView?.tintColor = .white
-        cell.textLabel?.text = NSLocalizedString("Share information with our analytics tool about your use of services while logged in to your WordPress.com account.", comment: "Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting")
+        cell.textLabel?.text = NSLocalizedString(
+            "Share information with our analytics tool about your use of services while logged in to your WordPress.com account.",
+            comment: "Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting"
+        )
     }
 
     func configureCookiePolicy(cell: BasicTableViewCell) {
@@ -143,14 +149,20 @@ private extension PrivacySettingsViewController {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = Gridicon.iconOfType(.image)
         cell.imageView?.tintColor = .white
-        cell.textLabel?.text = NSLocalizedString("This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.", comment: "Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect.")
+        cell.textLabel?.text = NSLocalizedString(
+            "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.",
+            comment: "Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect."
+        )
     }
 
     func configurePrivacyPolicy(cell: BasicTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = Gridicon.iconOfType(.image)
         cell.imageView?.tintColor = .white
-        cell.textLabel?.text = NSLocalizedString("Read privacy policy", comment: "Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy.")
+        cell.textLabel?.text = NSLocalizedString(
+            "Read privacy policy",
+            comment: "Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy."
+        )
         cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
     }
 
@@ -158,7 +170,10 @@ private extension PrivacySettingsViewController {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = Gridicon.iconOfType(.image)
         cell.imageView?.tintColor = .white
-        cell.textLabel?.text = NSLocalizedString("We use other tracking tools, including some from third parties. Read about these and how to control them.", comment: "Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect.")
+        cell.textLabel?.text = NSLocalizedString(
+            "We use other tracking tools, including some from third parties. Read about these and how to control them.",
+            comment: "Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect."
+        )
     }
 
     func configureReportCrashes(cell: SwitchTableViewCell) {
@@ -167,7 +182,10 @@ private extension PrivacySettingsViewController {
         cell.imageView?.tintColor = StyleManager.defaultTextColor
 
         // text
-        cell.title = NSLocalizedString("Report Crashes", comment: "Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle.")
+        cell.title = NSLocalizedString(
+            "Report Crashes",
+            comment: "Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle."
+        )
 
         // switch
         cell.isOn = reportCrashes
@@ -180,7 +198,10 @@ private extension PrivacySettingsViewController {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = Gridicon.iconOfType(.image)
         cell.imageView?.tintColor = .white
-        cell.textLabel?.text = NSLocalizedString("To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.", comment: "Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does")
+        cell.textLabel?.text = NSLocalizedString(
+            "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.",
+            comment: "Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does"
+        )
     }
 
 

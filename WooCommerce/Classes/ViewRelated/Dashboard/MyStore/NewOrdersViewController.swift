@@ -75,8 +75,10 @@ private extension NewOrdersViewController {
         titleLabel.textInsets = Constants.newOrdersTitleLabelInsets
         descriptionLabel.applyBodyStyle()
         descriptionLabel.textInsets = Constants.newOrdersDescriptionLabelInsets
-        descriptionLabel.text = NSLocalizedString("Review, prepare, and ship these pending orders",
-                                                  comment: "Description text used on the UI element displayed when a user has pending orders to process.")
+        descriptionLabel.text = NSLocalizedString(
+            "Review, prepare, and ship these pending orders",
+            comment: "Description text used on the UI element displayed when a user has pending orders to process."
+        )
         chevronImageView.image = UIImage.chevronImage
     }
 }
@@ -151,9 +153,15 @@ private extension UIButton {
 private extension NewOrdersViewController {
 
     func updateNewOrdersIfNeeded(orderCount: Int) {
-        titleLabel.text = String.pluralize(orderCount,
-                                           singular: NSLocalizedString("You have %ld order to fulfill", comment: "Title text used on the My Store UI when a user has a _single_ pending order to process."),
-                                           plural: NSLocalizedString("You have %ld orders to fulfill", comment: "Title text used on the My Store UI when a user has _multiple_ pending orders to process."))
+        let singular = NSLocalizedString(
+            "You have %ld order to fulfill",
+            comment: "Title text used on the My Store UI when a user has a _single_ pending order to process."
+        )
+        let plural = NSLocalizedString(
+            "You have %ld orders to fulfill",
+            comment: "Title text used on the My Store UI when a user has _multiple_ pending orders to process."
+        )
+        titleLabel.text = String.pluralize(orderCount, singular: singular, plural: plural)
         delegate?.didUpdateNewOrdersData(hasNewOrders: orderCount > 0)
     }
 }

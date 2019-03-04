@@ -59,31 +59,6 @@ extension OrderStatusEnum: RawRepresentable {
 }
 
 
-///// StringConvertible Conformance
-/////
-//extension OrderStatusEnum: CustomStringConvertible {
-//
-//    /// Returns a string describing the current OrderStatus Instance
-//    /// Custom doesn't return a localized string because the payload arrives at runtime, not buildtime.
-//    ///
-//    public var description: String {
-//        switch self {
-//        case .pending:              return NSLocalizedString("Pending", comment: "Pending Order Status")
-//        case .processing:           return NSLocalizedString("Processing", comment: "Processing Order Status")
-//        case .onHold:               return NSLocalizedString("On Hold", comment: "On Hold Order Status")
-//        case .failed:               return NSLocalizedString("Failed", comment: "Failed Order Status")
-//        case .cancelled:            return NSLocalizedString("Canceled", comment: "Cancelled Order Status")
-//        case .completed:            return NSLocalizedString("Completed", comment: "Completed Order Status")
-//        case .refunded:             return NSLocalizedString("Refunded", comment: "Refunded Order Status")
-//        case .custom(let payload):
-//            return payload
-//                .replacingOccurrences(of: "-", with: " ")
-//                .capitalized
-//        }
-//    }
-//}
-
-
 /// Enum containing the 'Known' OrderStatus Keys
 ///
 private enum Keys {

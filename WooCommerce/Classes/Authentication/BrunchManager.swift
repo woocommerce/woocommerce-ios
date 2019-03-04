@@ -138,9 +138,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
         let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
-        guard let supportViewController = UIStoryboard.dashboard.instantiateViewController(withIdentifier: identifier) as? HelpAndSupportViewController else {
-            return
-        }
+        guard let supportViewController = UIStoryboard.dashboard.instantiateViewController(withIdentifier: identifier) as? HelpAndSupportViewController else { return }
 
         supportViewController.displaysDismissAction = true
 

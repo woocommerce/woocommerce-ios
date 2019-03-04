@@ -54,6 +54,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return window?.rootViewController as? MainTabBarController
     }
 
+    /// Store Picker Coordinator
+    ///
+    private var storePickerCoordinator: StorePickerCoordinator?
+
 
     // MARK: - AppDelegate Methods
 
@@ -336,18 +340,14 @@ extension AppDelegate {
         guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore else {
             return
         }
+        guard let tabBar = AppDelegate.shared.tabBarController,
+            let navigationController = tabBar.selectedViewController as? UINavigationController else {
+                DDLogError("⛔️ Unable to locate navigationController in order to launch the store picker.")
+            return
+        }
 
-        displayStorePicker()
-    }
-
-    /// Displays the Woo Store Picker.
-    ///
-    func displayStorePicker() {
-        // FIXME: This will not work with the new StorePickerCoordinator
-        let pickerViewController = StorePickerViewController()
-        let navigationController = UINavigationController(rootViewController: pickerViewController)
-
-        window?.rootViewController?.present(navigationController, animated: true, completion: nil)
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .standard)
+        storePickerCoordinator?.start()
     }
 
     /// Whenever we're in an Authenticated state, let's Sync all of the WC-Y entities.

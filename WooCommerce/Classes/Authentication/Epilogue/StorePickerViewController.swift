@@ -35,6 +35,10 @@ enum StorePickerConfiguration {
     /// Setup the store picker for use in the store switching flow
     ///
     case switchingStores
+
+    /// Setup the store picker for use as a basic modal in app
+    ///
+    case standard
 }
 
 
@@ -220,11 +224,10 @@ private extension StorePickerViewController {
         }
 
         switch configuration {
-        case .login:
-            navigationController?.setNavigationBarHidden(true, animated: true)
         case .switchingStores:
             setupNavigation()
-            break
+        default:
+            navigationController?.setNavigationBarHidden(true, animated: true)
         }
     }
 
@@ -313,10 +316,11 @@ private extension StorePickerViewController {
             delegate?.didSelectStore(with: siteID)
         }
 
-        if configuration == .login {
-            dismiss(animated: true)
-        } else {
+        switch configuration {
+        case .switchingStores:
             navigationController?.popViewController(animated: true)
+        default:
+            dismiss(animated: true)
         }
     }
 

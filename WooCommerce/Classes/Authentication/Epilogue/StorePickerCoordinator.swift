@@ -61,7 +61,11 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 private extension StorePickerCoordinator {
 
     func showStorePicker() {
-        navigationController.pushViewController(storePicker, animated: true)
+        if selectedConfiguration == .standard {
+            navigationController.present(storePicker, animated: true)
+        } else {
+            navigationController.pushViewController(storePicker, animated: true)
+        }
     }
 
     func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {

@@ -52,6 +52,7 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
     func didSelectStore(with siteID: Int) {
         finalizeStoreSelection(siteID)
+        presentStoreSwitchedNotice()
         onDismiss?()
     }
 }
@@ -66,6 +67,22 @@ private extension StorePickerCoordinator {
         } else {
             navigationController.pushViewController(storePicker, animated: true)
         }
+    }
+
+    func presentStoreSwitchedNotice() {
+        guard selectedConfiguration == .switchingStores else {
+            return
+        }
+        guard let newStoreName = StoresManager.shared.sessionManager.defaultSite?.name else {
+            return
+        }
+
+        let message = NSLocalizedString("Switched to \(newStoreName). You will only receive notifications from this store.",
+            comment: "Message presented after users switch to a new store. "
+                + "Reads like: Switched to {store name}. You will only receive notifications from this store.")
+        let notice = Notice(title: message, feedbackType: .success)
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 
     func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {

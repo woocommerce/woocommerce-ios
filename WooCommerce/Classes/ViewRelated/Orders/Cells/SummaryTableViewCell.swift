@@ -66,6 +66,11 @@ class SummaryTableViewCell: UITableViewCell {
             super.setHighlighted(highlighted, animated: animated)
         }
     }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        paymentStatusLabel.layer.borderColor = UIColor.clear.cgColor
+    }
 }
 
 
@@ -77,10 +82,12 @@ private extension SummaryTableViewCell {
     ///
     func preserveLabelColors(action: () -> Void) {
         let paymentColor = paymentStatusLabel.backgroundColor
+        let borderColor = paymentStatusLabel.layer.borderColor
 
         action()
 
         paymentStatusLabel.backgroundColor = paymentColor
+        paymentStatusLabel.layer.borderColor = borderColor
     }
 
     /// Setup: Labels

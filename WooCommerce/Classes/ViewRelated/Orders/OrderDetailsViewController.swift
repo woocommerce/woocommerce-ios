@@ -501,7 +501,8 @@ private extension OrderDetailsViewController {
                                   dateShipped)
         } else {
             cell.bottomText = NSLocalizedString("Not shipped yet",
-                                                comment: "Order details > tracking. This is where the shipping date would normally display.")
+                                                comment: "Order details > tracking. " +
+                " This is where the shipping date would normally display.")
         }
 
         cell.actionButtonNormalText = viewModel.trackTitle

@@ -147,11 +147,20 @@ private extension OrdersViewController {
     ///
     func refreshTitle() {
         guard let filterName = statusFilter?.name else {
-            navigationItem.title = NSLocalizedString("Orders", comment: "Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order).")
+            navigationItem.title = NSLocalizedString(
+                "Orders",
+                comment: "Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order)."
+            )
             return
         }
 
-        let title = String.localizedStringWithFormat(NSLocalizedString("Orders: %@", comment: "Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter}"), filterName)
+        let title = String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Orders: %@",
+                comment: "Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter}"
+            ),
+            filterName
+        )
         navigationItem.title = title
     }
 
@@ -381,7 +390,10 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
         transitionToSyncingState()
 
-        let action = OrderAction.synchronizeOrders(siteID: siteID, statusKey: statusFilter?.slug, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
+        let action = OrderAction.synchronizeOrders(siteID: siteID,
+                                                   statusKey: statusFilter?.slug,
+                                                   pageNumber: pageNumber,
+                                                   pageSize: pageSize) { [weak self] error in
             guard let `self` = self else {
                 return
             }

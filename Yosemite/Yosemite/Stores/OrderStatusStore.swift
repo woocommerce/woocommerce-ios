@@ -31,6 +31,8 @@ public class OrderStatusStore: Store {
         switch action {
         case .retrieveOrderStatuses(let siteID, let onCompletion):
             retrieveOrderStatuses(siteID: siteID, onCompletion: onCompletion)
+        case .resetStoredOrderStatuses(let onCompletion):
+            resetStoredOrderStatuses(onCompletion: onCompletion)
         }
     }
 }
@@ -56,6 +58,17 @@ private extension OrderStatusStore {
                 onCompletion(orderStatuses, nil)
             })
         }
+    }
+
+    /// Nukes all of the Stored OrderStatuses.
+    ///
+    func resetStoredOrderStatuses(onCompletion: () -> Void) {
+        let storage = storageManager.viewStorage
+        storage.deleteAllObjects(ofType: Storage.OrderStatus.self)
+        storage.saveIfNeeded()
+        DDLogDebug("OrderStatuses deleted")
+
+        onCompletion()
     }
 }
 

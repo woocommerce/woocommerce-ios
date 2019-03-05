@@ -1,5 +1,6 @@
 1.4
 -----
+- improvement: The store switcher now allows you to go back to the previous screen without logging you out
 
 1.3
 -----

@@ -137,11 +137,22 @@ private extension OrdersViewController {
     ///
     func refreshTitle() {
         guard let filter = statusKeyFilter?.description.capitalized else {
-            navigationItem.title = NSLocalizedString("Orders", comment: "Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order).")
+            navigationItem.title = NSLocalizedString(
+                "Orders",
+                comment: "Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order)."
+            )
+
             return
         }
 
-        let title = String.localizedStringWithFormat(NSLocalizedString("Orders: %@", comment: "Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter}"), filter)
+        let title = String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Orders: %@",
+                comment: "Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter}"
+            ),
+            filter
+        )
+
         navigationItem.title = title
     }
 
@@ -176,7 +187,11 @@ private extension OrdersViewController {
             button.tintColor = .white
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Search orders", comment: "Search Orders")
-            button.accessibilityHint = NSLocalizedString("Retrieves a list of orders that contain a given keyword.", comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders.")
+            button.accessibilityHint = NSLocalizedString(
+                "Retrieves a list of orders that contain a given keyword.",
+                comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
+            )
+
             return button
         }()
 
@@ -188,7 +203,11 @@ private extension OrdersViewController {
             button.tintColor = .white
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
-            button.accessibilityHint = NSLocalizedString("Filters the order list by payment status.", comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list.")
+            button.accessibilityHint = NSLocalizedString(
+                "Filters the order list by payment status.",
+                comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list."
+            )
+
             return button
         }()
 
@@ -362,7 +381,10 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
         transitionToSyncingState()
 
-        let action = OrderAction.synchronizeOrders(siteID: siteID, statusKey: statusKeyFilter, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
+        let action = OrderAction.synchronizeOrders(siteID: siteID,
+                                                   statusKey: statusKeyFilter,
+                                                   pageNumber: pageNumber,
+                                                   pageSize: pageSize) { [weak self] error in
             guard let `self` = self else {
                 return
             }
@@ -681,7 +703,10 @@ private extension OrdersViewController {
 
     enum FilterAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
-        static let displayAll = NSLocalizedString("All", comment: "Name of the All filter on the Order List screen - it means all orders will be displayed.")
+        static let displayAll = NSLocalizedString(
+            "All",
+            comment: "Name of the All filter on the Order List screen - it means all orders will be displayed."
+        )
     }
 
     enum Settings {

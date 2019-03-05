@@ -217,6 +217,23 @@ private extension StoresManager {
         dispatch(action)
     }
 
+    /// Synchronizes the order statuses, if possible.
+    ///
+    func retrieveOrderStatus(with siteID: Int) {
+        guard siteID != 0 else {
+            // Just return if the siteID == 0 so we are not making extra requests
+            return
+        }
+
+        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { (_, error) in
+            if let error = error {
+                DDLogError("⛔️ Could not successfully fetch order statuses for siteID \(siteID): \(error)")
+            }
+        }
+
+        dispatch(action)
+    }
+
     /// Loads the Default Site into the current Session, if possible.
     ///
     func restoreSessionSiteIfPossible() {
@@ -226,6 +243,7 @@ private extension StoresManager {
 
         restoreSessionSite(with: siteID)
         fetchSiteSettings(with: siteID)
+        retrieveOrderStatus(with: siteID)
     }
 
     /// Loads the specified siteID into the Session, if possible.

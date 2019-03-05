@@ -18,6 +18,8 @@ class NewOrdersViewController: UIViewController {
     @IBOutlet private weak var actionButton: UIButton!
     @IBOutlet private weak var bottomSpacerView: UIView!
 
+    private var orderStatuses: [OrderStatus]?
+
     // MARK: - Public Properties
 
     public var delegate: NewOrdersDelegate?
@@ -67,10 +69,13 @@ extension NewOrdersViewController {
             return
         }
 
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { (orderStatuses, error) in
+        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { [weak self] (orderStatuses, error) in
             if let error = error {
                 DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing order statuses: \(error)")
             }
+
+            self?.orderStatuses = orderStatuses
+
             onCompletion?(error)
         }
 
@@ -105,7 +110,15 @@ private extension NewOrdersViewController {
     @IBAction func buttonTouchUpInside(_ sender: UIButton) {
         sender.fadeOutSelectedBackground {
             WooAnalytics.shared.track(.dashboardNewOrdersButtonTapped)
-            MainTabBarController.presentOrders(statusKeyFilter: OrderStatusEnum.processing.rawValue)
+
+            guard let statuses = self.orderStatuses else {
+                DDLogError("Error: missing list of order statuses. Cannot present new orders list.")
+                return
+            }
+
+            for filterStatus in statuses where filterStatus.slug == OrderStatusEnum.processing.rawValue {
+                MainTabBarController.presentOrders(statusFilter: filterStatus)
+            }
         }
     }
 

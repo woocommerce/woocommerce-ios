@@ -28,6 +28,14 @@ final class OrderStatusListViewController: UIViewController {
     ///
     private lazy var footerSpinnerView = FooterSpinnerView()
 
+    /// Order Status list
+    ///
+//    private var statuses: [OrderStatus] = [] {
+//        didSet {
+//            reloadData()
+//        }
+//    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         registerTableViewCells()
@@ -40,8 +48,19 @@ final class OrderStatusListViewController: UIViewController {
     /// Setup: Results Controller
     ///
     private func configureResultsController() {
-        statusResultsController.startForwardingEvents(to: tableView)
+        statusResultsController.onDidChangeContent = { [weak self] in
+            self?.reloadData()
+        }
+
+        statusResultsController.onDidResetContent = { [weak self] in
+            self?.reloadData()
+        }
+
         try? statusResultsController.performFetch()
+    }
+
+    private func reloadData() {
+        tableView.reloadData()
     }
 
     /// Registers all of the available TableViewCells

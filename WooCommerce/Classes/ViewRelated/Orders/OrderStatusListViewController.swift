@@ -28,14 +28,6 @@ final class OrderStatusListViewController: UIViewController {
     ///
     private lazy var footerSpinnerView = FooterSpinnerView()
 
-    /// Order Status list
-    ///
-//    private var statuses: [OrderStatus] = [] {
-//        didSet {
-//            reloadData()
-//        }
-//    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         registerTableViewCells()
@@ -48,14 +40,7 @@ final class OrderStatusListViewController: UIViewController {
     /// Setup: Results Controller
     ///
     private func configureResultsController() {
-        statusResultsController.onDidChangeContent = { [weak self] in
-            self?.reloadData()
-        }
-
-        statusResultsController.onDidResetContent = { [weak self] in
-            self?.reloadData()
-        }
-
+        statusResultsController.startForwardingEvents(to: tableView)
         try? statusResultsController.performFetch()
     }
 
@@ -80,6 +65,8 @@ final class OrderStatusListViewController: UIViewController {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
+
+        tableView.dataSource = self
     }
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {

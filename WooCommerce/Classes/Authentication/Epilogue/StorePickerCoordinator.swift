@@ -121,7 +121,8 @@ private extension StorePickerCoordinator {
         // We need to call refreshUserData() here because the user selected
         // their default store and tracks should to know about it.
         WooAnalytics.shared.refreshUserData()
-        WooAnalytics.shared.track(.sitePickerContinueTapped, withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? String()])
+        WooAnalytics.shared.track(.sitePickerContinueTapped,
+                                  withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? String()])
 
         AppDelegate.shared.authenticatorWasDismissed()
         if selectedConfiguration == .login {

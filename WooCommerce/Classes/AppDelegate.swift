@@ -346,6 +346,7 @@ extension AppDelegate {
             return
         }
 
+        DDLogInfo("💬 Authenticated user does not have default store — launching store picker.")
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .standard)
         storePickerCoordinator?.start()
     }

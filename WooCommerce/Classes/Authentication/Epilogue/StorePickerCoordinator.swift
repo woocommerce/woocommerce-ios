@@ -46,12 +46,23 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
             onCompletion()
             return
         }
+        guard storeID != StoresManager.shared.sessionManager.defaultStoreID else {
+            onCompletion()
+            return
+        }
 
         logOutOfCurrentStore(onCompletion: onCompletion)
     }
 
-    func didSelectStore(with siteID: Int) {
-        finalizeStoreSelection(siteID)
+    func didSelectStore(with storeID: Int) {
+        guard selectedConfiguration == .switchingStores else {
+            return
+        }
+        guard storeID != StoresManager.shared.sessionManager.defaultStoreID else {
+            return
+        }
+
+        finalizeStoreSelection(storeID)
         presentStoreSwitchedNotice()
         onDismiss?()
     }
@@ -107,8 +118,8 @@ private extension StorePickerCoordinator {
         }
     }
 
-    func finalizeStoreSelection(_ siteID: Int) {
-        StoresManager.shared.updateDefaultStore(storeID: siteID)
+    func finalizeStoreSelection(_ storeID: Int) {
+        StoresManager.shared.updateDefaultStore(storeID: storeID)
 
         // We need to call refreshUserData() here because the user selected
         // their default store and tracks should to know about it.

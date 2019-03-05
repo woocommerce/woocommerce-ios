@@ -1,6 +1,7 @@
 1.4
 -----
 - improvement: The store switcher now allows you to go back to the previous screen without logging you out
+- bugfix: correctly flips chevron on Dashboard > New Orders, to support RTL languages.
 
 1.3
 -----

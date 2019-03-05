@@ -105,14 +105,26 @@ private extension FancyAlertViewController {
 
     struct Strings {
         // Title
-        static let titleText = NSLocalizedString("Running multiple stores?",
-                                                          comment: "Title of alert informing users that it is possible to switch stores in Settings.")
+        static let titleText = NSLocalizedString(
+            "Running multiple stores?",
+            comment: "Title of alert informing users that it is possible to switch stores in Settings."
+        )
+
         // Body
-        static let bodyText = NSLocalizedString("You can now switch between stores by tapping the selected store in Settings.",
-                                                          comment: "Body text of alert informing users that it is possible to switch stores in Settings.")
+        static let bodyText = NSLocalizedString(
+            "You can now switch between stores by tapping the selected store in Settings.",
+            comment: "Body text of alert informing users that it is possible to switch stores in Settings."
+        )
 
         // UI Elements
-        static let dismissButtonText = NSLocalizedString("Got It", comment: "Dismiss button in alert informing users that it is possible to switch stores in settings.")
-        static let tryNowButtonText = NSLocalizedString("Try It Now", comment: "Primary button in alert informing users that it is possible to switch stores in settings and inviting them to do so.")
+        static let dismissButtonText = NSLocalizedString(
+            "Got It",
+            comment: "Dismiss button in alert informing users that it is possible to switch stores in settings."
+        )
+
+        static let tryNowButtonText = NSLocalizedString(
+            "Try It Now",
+            comment: "Primary button in alert informing users that it is possible to switch stores in settings and inviting them to do so."
+        )
     }
 }

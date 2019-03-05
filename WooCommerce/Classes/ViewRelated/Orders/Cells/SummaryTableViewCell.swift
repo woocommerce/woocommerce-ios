@@ -45,6 +45,10 @@ final class SummaryTableViewCell: UITableViewCell {
         }
     }
 
+    /// Closure to be executed whenever the pencil button is pressed.
+    ///
+    var onPencilTouchUp: (() -> Void)?
+
     /// Displays the specified OrderStatus, and applies the right Label Style
     ///
     func display(orderStatus: OrderStatus) {
@@ -115,5 +119,6 @@ private extension SummaryTableViewCell {
 
     @objc func editWasTapped() {
         print("===== edit was tapped ===")
+        onPencilTouchUp?()
     }
 }

@@ -442,6 +442,9 @@ private extension OrderDetailsViewController {
     func configureSummary(cell: SummaryTableViewCell) {
         cell.title = viewModel.summaryTitle
         cell.dateCreated = viewModel.summaryDateCreated
+        cell.onPencilTouchUp = { [weak self] in
+            self?.displayOrderStatusList()
+        }
 
         if let orderStatus = viewModel.orderStatus {
             cell.display(orderStatus: orderStatus)
@@ -784,6 +787,18 @@ private extension OrderDetailsViewController {
 }
 
 
+// MARK: - Present Order Status List
+//
+private extension OrderDetailsViewController {
+    private func displayOrderStatusList() {
+        let statusList = OrderStatusListViewController()
+        let navigationController = UINavigationController(rootViewController: statusList)
+
+        present(navigationController, animated: true)
+    }
+}
+
+
 // MARK: - MFMessageComposeViewControllerDelegate Conformance
 //
 extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
@@ -862,6 +877,7 @@ private extension OrderDetailsViewController {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
         static let productDetailsSegue = "ShowProductListViewController"
+        static let orderStatusListSegue = "ShowOrderStatusListViewController"
     }
 
     enum Title {

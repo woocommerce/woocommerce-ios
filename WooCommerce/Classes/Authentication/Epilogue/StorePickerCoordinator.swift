@@ -55,9 +55,6 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
     }
 
     func didSelectStore(with storeID: Int) {
-        guard selectedConfiguration == .switchingStores else {
-            return
-        }
         guard storeID != StoresManager.shared.sessionManager.defaultStoreID else {
             return
         }

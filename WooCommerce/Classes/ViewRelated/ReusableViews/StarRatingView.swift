@@ -90,15 +90,48 @@ class RatingView: UIView {
 
             if lastStarView != nil {
                 let relationalConstraints = [
-                    NSLayoutConstraint(item: starView, attribute: .left, relatedBy: .equal, toItem: lastStarView, attribute: .right, multiplier: 1.0, constant: Defaults.padding),
-                    NSLayoutConstraint(item: starView, attribute: .top, relatedBy: .equal, toItem: lastStarView, attribute: .top, multiplier: 1.0, constant: 0.0),
-                    NSLayoutConstraint(item: starView, attribute: .width, relatedBy: .equal, toItem: lastStarView, attribute: .width, multiplier: 1.0, constant: 0.0),
+                    NSLayoutConstraint(item: starView,
+                                       attribute: .left,
+                                       relatedBy: .equal,
+                                       toItem: lastStarView,
+                                       attribute: .right,
+                                       multiplier: 1.0,
+                                       constant: Defaults.padding),
+
+                    NSLayoutConstraint(item: starView,
+                                       attribute: .top,
+                                       relatedBy: .equal,
+                                       toItem: lastStarView,
+                                       attribute: .top,
+                                       multiplier: 1.0,
+                                       constant: 0.0),
+
+                    NSLayoutConstraint(item: starView,
+                                       attribute: .width,
+                                       relatedBy: .equal,
+                                       toItem: lastStarView,
+                                       attribute: .width,
+                                       multiplier: 1.0,
+                                       constant: 0.0),
                     ]
                 NSLayoutConstraint.activate(relationalConstraints)
             } else {
                 let leftEdgeConstraints = [
-                    NSLayoutConstraint(item: starView, attribute: .left, relatedBy: .equal, toItem: self, attribute: .left, multiplier: 1.0, constant: 0.0),
-                    NSLayoutConstraint(item: starView, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1.0, constant: 0.0),
+                    NSLayoutConstraint(item: starView,
+                                       attribute: .left,
+                                       relatedBy: .equal,
+                                       toItem: self,
+                                       attribute: .left,
+                                       multiplier: 1.0,
+                                       constant: 0.0),
+
+                    NSLayoutConstraint(item: starView,
+                                       attribute: .top,
+                                       relatedBy: .equal,
+                                       toItem: self,
+                                       attribute: .top,
+                                       multiplier: 1.0,
+                                       constant: 0.0),
                     ]
                 NSLayoutConstraint.activate(leftEdgeConstraints)
             }

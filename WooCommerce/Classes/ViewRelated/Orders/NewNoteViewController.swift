@@ -37,7 +37,7 @@ class NewNoteViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        tableView.firstSubview(ofType: UITextView.self)?.becomeFirstResponder()
+        showKeyboard()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -50,20 +50,23 @@ class NewNoteViewController: UIViewController {
     }
 
     @objc func addButtonTapped() {
-        switchRightButtonToProgressIndicator()
+        configureForCommittingNote()
 
         WooAnalytics.shared.track(.orderNoteAddButtonTapped)
         WooAnalytics.shared.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
                                                                   "status": viewModel.order.statusKey,
                                                                   "type": isCustomerNote ? "customer" : "private"])
 
-        let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, isCustomerNote: isCustomerNote, note: noteText) { [weak self] (orderNote, error) in
+        let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID,
+                                                  orderID: viewModel.order.orderID,
+                                                  isCustomerNote: isCustomerNote,
+                                                  note: noteText) { [weak self] (orderNote, error) in
             if let error = error {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
                 WooAnalytics.shared.track(.orderNoteAddFailed, withError: error)
 
                 self?.displayErrorNotice()
-                self?.switchRightButtonToAddButton()
+                self?.configureForEditingNote()
                 return
             }
             WooAnalytics.shared.track(.orderNoteAddSuccess)
@@ -127,7 +130,11 @@ private extension NewNoteViewController {
 
         cell.iconImage = Gridicon.iconOfType(.aside)
         cell.iconTint = isCustomerNote ? StyleManager.statusPrimaryBoldColor : StyleManager.wooGreyMid
-        cell.iconImage?.accessibilityLabel = isCustomerNote ? NSLocalizedString("Note to customer", comment: "Spoken accessibility label for an icon image that indicates it's a note to the customer.") :  NSLocalizedString("Private note", comment: "Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer.")
+        cell.iconImage?.accessibilityLabel = isCustomerNote ?
+            NSLocalizedString("Note to customer",
+                              comment: "Spoken accessibility label for an icon image that indicates it's a note to the customer.") :
+            NSLocalizedString("Private note",
+                              comment: "Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer.")
 
         cell.onTextChange = { [weak self] (text) in
             self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
@@ -143,8 +150,16 @@ private extension NewNoteViewController {
         cell.title = NSLocalizedString("Email note to customer", comment: "Label for yes/no switch - emailing the note to customer.")
         cell.subtitle = NSLocalizedString("If disabled the note will be private", comment: "Detail label for yes/no switch.")
         cell.accessibilityTraits = .button
-        cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email note to customer %@", comment: ""), isCustomerNote ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off."))
-        cell.accessibilityHint = NSLocalizedString("Double tap to toggle setting.", comment: "VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on.")
+        cell.accessibilityLabel = String.localizedStringWithFormat(
+            NSLocalizedString("Email note to customer %@", comment: ""),
+            isCustomerNote ?
+                NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") :
+                NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off.")
+        )
+        cell.accessibilityHint = NSLocalizedString(
+            "Double tap to toggle setting.",
+            comment: "VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on."
+        )
 
         cell.onChange = { [weak self] newValue in
             guard let `self` = self else {
@@ -154,7 +169,12 @@ private extension NewNoteViewController {
             self.isCustomerNote = newValue
             self.refreshTextViewCell()
 
-            cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email note to customer %@", comment: ""), newValue ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off."))
+            cell.accessibilityLabel = String.localizedStringWithFormat(
+                NSLocalizedString("Email note to customer %@", comment: ""),
+                newValue ?
+                    NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") :
+                    NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off.")
+            )
 
             let stateValue = newValue ? "on" : "off"
             WooAnalytics.shared.track(.orderNoteEmailCustomerToggled, withProperties: ["state": stateValue])
@@ -210,7 +230,11 @@ extension NewNoteViewController: UITableViewDelegate {
 //
 private extension NewNoteViewController {
     func displayErrorNotice() {
-        let title = NSLocalizedString("Unable to add note to order #\(viewModel.order.orderID)", comment: "Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}")
+        let title = NSLocalizedString(
+            "Unable to add note to order #\(viewModel.order.orderID)",
+            comment: "Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}"
+        )
+
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.addButtonTapped()
@@ -257,7 +281,8 @@ private extension NewNoteViewController {
         navigationItem.rightBarButtonItem?.isEnabled = false
     }
 
-    func switchRightButtonToProgressIndicator() {
+    func configureForCommittingNote() {
+        hideKeyboard()
         configureRightButtonItemAsSpinner()
         navigationItem.rightBarButtonItem?.isEnabled = false
     }
@@ -272,9 +297,17 @@ private extension NewNoteViewController {
         navigationItem.setRightBarButton(rightBarButton, animated: true)
     }
 
-    func switchRightButtonToAddButton() {
+    func configureForEditingNote() {
         configureRightButtonItemAsAdd()
         navigationItem.rightBarButtonItem?.isEnabled = true
+    }
+
+    func showKeyboard() {
+        tableView.firstSubview(ofType: UITextView.self)?.becomeFirstResponder()
+    }
+
+    func hideKeyboard() {
+        tableView.firstSubview(ofType: UITextView.self)?.resignFirstResponder()
     }
 }
 

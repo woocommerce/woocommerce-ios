@@ -101,13 +101,31 @@ extension StringStyles {
     /// Styles: Notification Defailts / Body Blocks
     ///
     static let body: StringStyles = {
-        let regular: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
-        let bold: Style         = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold, .foregroundColor: StyleManager.defaultTextColor]
-        let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics, .foregroundColor: StyleManager.defaultTextColor]
-        let match: Style        = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold, .foregroundColor: StyleManager.defaultTextColor]
-        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.noticon(forStyle: .body), .foregroundColor: StyleManager.defaultTextColor]
-        let italic: Style       = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics, .foregroundColor: StyleManager.defaultTextColor]
-        let link: Style         = [.foregroundColor: StyleManager.wooCommerceBrandColor]
+        let regular: Style = [.paragraphStyle: NSParagraphStyle.body,
+                              .font: UIFont.body,
+                              .foregroundColor: StyleManager.defaultTextColor]
+
+        let bold: Style = [.paragraphStyle: NSParagraphStyle.body,
+                           .font: UIFont.body.bold,
+                           .foregroundColor: StyleManager.defaultTextColor]
+
+        let blockquote: Style = [.paragraphStyle: NSParagraphStyle.body,
+                                 .font: UIFont.body.italics,
+                                 .foregroundColor: StyleManager.defaultTextColor]
+
+        let match: Style = [.paragraphStyle: NSParagraphStyle.body,
+                            .font: UIFont.body.bold,
+                            .foregroundColor: StyleManager.defaultTextColor]
+
+        let noticon: Style = [.paragraphStyle: NSParagraphStyle.body,
+                              .font: UIFont.noticon(forStyle: .body),
+                              .foregroundColor: StyleManager.defaultTextColor]
+
+        let italic: Style = [.paragraphStyle: NSParagraphStyle.body,
+                             .font: UIFont.body.italics,
+                             .foregroundColor: StyleManager.defaultTextColor]
+
+        let link: Style = [.foregroundColor: StyleManager.wooCommerceBrandColor]
 
         return StringStyles(regular: regular, bold: bold, blockquote: blockquote, match: match, noticon: noticon, link: link)
     }()

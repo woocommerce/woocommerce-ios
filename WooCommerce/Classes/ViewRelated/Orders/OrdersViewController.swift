@@ -186,7 +186,11 @@ private extension OrdersViewController {
             button.tintColor = .white
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Search orders", comment: "Search Orders")
-            button.accessibilityHint = NSLocalizedString("Retrieves a list of orders that contain a given keyword.", comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders.")
+            button.accessibilityHint = NSLocalizedString(
+                "Retrieves a list of orders that contain a given keyword.",
+                comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
+            )
+
             return button
         }()
 
@@ -198,7 +202,11 @@ private extension OrdersViewController {
             button.tintColor = .white
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
-            button.accessibilityHint = NSLocalizedString("Filters the order list by payment status.", comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list.")
+            button.accessibilityHint = NSLocalizedString(
+                "Filters the order list by payment status.",
+                comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list."
+            )
+
             return button
         }()
 
@@ -703,7 +711,10 @@ private extension OrdersViewController {
 
     enum FilterAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
-        static let displayAll = NSLocalizedString("All", comment: "Name of the All filter on the Order List screen - it means all orders will be displayed.")
+        static let displayAll = NSLocalizedString(
+            "All",
+            comment: "Name of the All filter on the Order List screen - it means all orders will be displayed."
+        )
     }
 
     enum Settings {

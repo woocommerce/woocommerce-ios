@@ -93,7 +93,9 @@ class MainTabBarController: UITabBarController {
 // MARK: - UIViewControllerTransitioningDelegate
 //
 extension MainTabBarController: UIViewControllerTransitioningDelegate {
-    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+    func presentationController(forPresented presented: UIViewController,
+                                presenting: UIViewController?,
+                                source: UIViewController) -> UIPresentationController? {
         guard presented is FancyAlertViewController else {
             return nil
         }

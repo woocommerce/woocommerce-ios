@@ -314,8 +314,13 @@ private extension StorePickerViewController {
     /// Displays the Error Notice for the version check.
     ///
     func displayVersionCheckErrorNotice(siteID: Int, siteName: String) {
-        let message = String.localizedStringWithFormat(NSLocalizedString("Unable to successfully connect to %@",
-                                                                         comment: "On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name}"), siteName)
+        let message = String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Unable to successfully connect to %@",
+                comment: "On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name}"
+            ),
+            siteName
+        )
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.displaySiteWCRequirementWarningIfNeeded(siteID: siteID, siteName: siteName)
@@ -353,11 +358,26 @@ extension StorePickerViewController {
             WooAnalytics.shared.track(.sitePickerContinueTapped,
                                       withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? String()])
 
+            presentStoreSwitchedNotice()
+
             dismiss(animated: true) {
                 AppDelegate.shared.authenticatorWasDismissed()
                 MainTabBarController.switchToMyStoreTab(animated: true)
             }
         }
+    }
+
+    private func presentStoreSwitchedNotice() {
+        guard let newStoreName = StoresManager.shared.sessionManager.defaultSite?.name else {
+            return
+        }
+
+        let message = NSLocalizedString("Switched to \(newStoreName). You will only receive notifications from this store.",
+            comment: "Message presented after users switch to a new store. "
+                + "Reads like: Switched to {store name}. You will only receive notifications from this store.")
+        let notice = Notice(title: message, feedbackType: .success)
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 }
 

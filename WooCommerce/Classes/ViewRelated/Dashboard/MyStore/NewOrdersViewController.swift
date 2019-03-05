@@ -79,7 +79,7 @@ private extension NewOrdersViewController {
             "Review, prepare, and ship these pending orders",
             comment: "Description text used on the UI element displayed when a user has pending orders to process."
         )
-        chevronImageView.image = UIImage.chevronImage
+        chevronImageView.image = UIImage.chevronImage.imageFlippedForRightToLeftLayoutDirection()
     }
 }
 

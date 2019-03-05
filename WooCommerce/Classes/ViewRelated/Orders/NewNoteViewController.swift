@@ -37,7 +37,7 @@ class NewNoteViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        tableView.firstSubview(ofType: UITextView.self)?.becomeFirstResponder()
+        showKeyboard()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -50,7 +50,7 @@ class NewNoteViewController: UIViewController {
     }
 
     @objc func addButtonTapped() {
-        switchRightButtonToProgressIndicator()
+        configureForCommittingNote()
 
         WooAnalytics.shared.track(.orderNoteAddButtonTapped)
         WooAnalytics.shared.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
@@ -66,7 +66,7 @@ class NewNoteViewController: UIViewController {
                 WooAnalytics.shared.track(.orderNoteAddFailed, withError: error)
 
                 self?.displayErrorNotice()
-                self?.switchRightButtonToAddButton()
+                self?.configureForEditingNote()
                 return
             }
             WooAnalytics.shared.track(.orderNoteAddSuccess)
@@ -281,7 +281,8 @@ private extension NewNoteViewController {
         navigationItem.rightBarButtonItem?.isEnabled = false
     }
 
-    func switchRightButtonToProgressIndicator() {
+    func configureForCommittingNote() {
+        hideKeyboard()
         configureRightButtonItemAsSpinner()
         navigationItem.rightBarButtonItem?.isEnabled = false
     }
@@ -296,9 +297,17 @@ private extension NewNoteViewController {
         navigationItem.setRightBarButton(rightBarButton, animated: true)
     }
 
-    func switchRightButtonToAddButton() {
+    func configureForEditingNote() {
         configureRightButtonItemAsAdd()
         navigationItem.rightBarButtonItem?.isEnabled = true
+    }
+
+    func showKeyboard() {
+        tableView.firstSubview(ofType: UITextView.self)?.becomeFirstResponder()
+    }
+
+    func hideKeyboard() {
+        tableView.firstSubview(ofType: UITextView.self)?.resignFirstResponder()
     }
 }
 

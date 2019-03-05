@@ -1,10 +1,11 @@
 import UIKit
 import Yosemite
+import Gridicons
 
 
 // MARK: - SummaryTableViewCell
 //
-class SummaryTableViewCell: UITableViewCell {
+final class SummaryTableViewCell: UITableViewCell {
 
     /// Label: Title
     ///
@@ -17,6 +18,10 @@ class SummaryTableViewCell: UITableViewCell {
     /// Label: Payment Status
     ///
     @IBOutlet private weak var paymentStatusLabel: PaddedLabel!
+
+    /// Button: Update Order Status
+    ///
+    @IBOutlet private var updateStatusButton: UIButton!
 
     /// Title
     ///
@@ -53,6 +58,7 @@ class SummaryTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         configureLabels()
+        configureIcon()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -96,5 +102,18 @@ private extension SummaryTableViewCell {
         titleLabel.applyHeadlineStyle()
         createdLabel.applyFootnoteStyle()
         paymentStatusLabel.applyPaddedLabelDefaultStyles()
+    }
+
+    func configureIcon() {
+        let pencilIcon = Gridicon.iconOfType(.pencil)
+            .imageWithTintColor(tintColor)?
+            .imageFlippedForRightToLeftLayoutDirection()
+        updateStatusButton.setImage(pencilIcon, for: .normal)
+
+        updateStatusButton.addTarget(self, action: #selector(editWasTapped), for: .touchUpInside)
+    }
+
+    @objc func editWasTapped() {
+        print("===== edit was tapped ===")
     }
 }

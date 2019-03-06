@@ -36,6 +36,19 @@ final class OrderStatusListViewController: UIViewController {
     ///
     private lazy var footerSpinnerView = FooterSpinnerView()
 
+    /// Order to be provided with a new status
+    ///
+    private let order: Order
+
+    init(order: Order) {
+        self.order = order
+        super.init(nibName: type(of: self).nibName, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         registerTableViewCells()
@@ -130,7 +143,7 @@ extension OrderStatusListViewController {
     }
 
     @objc func applyButtonTapped() {
-        print("==== apply button tapped ====")
+        
     }
 }
 

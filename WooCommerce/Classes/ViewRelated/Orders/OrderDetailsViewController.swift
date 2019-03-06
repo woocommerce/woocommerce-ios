@@ -837,7 +837,7 @@ private extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
     private func displayOrderStatusList() {
-        let statusList = OrderStatusListViewController()
+        let statusList = OrderStatusListViewController(order: viewModel.order)
         let navigationController = UINavigationController(rootViewController: statusList)
 
         present(navigationController, animated: true)

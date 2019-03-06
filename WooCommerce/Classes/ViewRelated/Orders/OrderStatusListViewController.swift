@@ -51,7 +51,7 @@ final class OrderStatusListViewController: UIViewController {
     /// Registers all of the available TableViewCells
     ///
     private func registerTableViewCells() {
-        let cells = [BasicTableViewCell.self]
+        let cells = [CheckmarkOnSelectionTableViewCell.self]
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
@@ -122,25 +122,28 @@ extension OrderStatusListViewController {
 }
 
 
-/// MARK: - UITableViewDatasource coformance
+/// MARK: - UITableViewDatasource conformance
 extension OrderStatusListViewController: UITableViewDataSource {
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return statusResultsController.sections.count
-//    }
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return statusResultsController.sections[section].numberOfObjects
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: BasicTableViewCell.reuseIdentifier, for: indexPath) as? BasicTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CheckmarkOnSelectionTableViewCell.reuseIdentifier, for: indexPath) as? CheckmarkOnSelectionTableViewCell else {
             fatalError()
         }
 
-        //let viewModel = detailsViewModel(at: indexPath)
         let status = statusResultsController.object(at: indexPath)
         cell.textLabel?.text = status.name
 
         return cell
+    }
+}
+
+
+/// MARK: - UITableViewDelegate conformance
+extension OrderStatusListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //
     }
 }

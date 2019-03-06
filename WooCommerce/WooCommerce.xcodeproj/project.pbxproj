@@ -290,6 +290,8 @@
 		D8023EE3221547D400D2DC30 /* FancyAlertViewController+SwitchStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8023EE2221547D400D2DC30 /* FancyAlertViewController+SwitchStore.swift */; };
 		D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */; };
 		D81D9229222E7F0800FFA585 /* OrderStatusListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */; };
+		D85B8333222FABD1002168F3 /* CheckmarkOnSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8331222FABD1002168F3 /* CheckmarkOnSelectionTableViewCell.swift */; };
+		D85B8334222FABD1002168F3 /* CheckmarkOnSelectionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D85B8332222FABD1002168F3 /* CheckmarkOnSelectionTableViewCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -626,6 +628,8 @@
 		D8023EE2221547D400D2DC30 /* FancyAlertViewController+SwitchStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FancyAlertViewController+SwitchStore.swift"; sourceTree = "<group>"; };
 		D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListViewController.swift; sourceTree = "<group>"; };
 		D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderStatusListViewController.xib; sourceTree = "<group>"; };
+		D85B8331222FABD1002168F3 /* CheckmarkOnSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkOnSelectionTableViewCell.swift; sourceTree = "<group>"; };
+		D85B8332222FABD1002168F3 /* CheckmarkOnSelectionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CheckmarkOnSelectionTableViewCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1333,6 +1337,8 @@
 				CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */,
 				CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */,
 				B5A56BEF219F2CE90065A902 /* VerticalButton.swift */,
+				D85B8331222FABD1002168F3 /* CheckmarkOnSelectionTableViewCell.swift */,
+				D85B8332222FABD1002168F3 /* CheckmarkOnSelectionTableViewCell.xib */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -1534,6 +1540,7 @@
 				CE85FD5C20F7A7740080B73E /* TableFooterView.xib in Resources */,
 				B57C744C20F564B400EEFC87 /* EmptyStoresTableViewCell.xib in Resources */,
 				B59C09DC2188D70200AB41D6 /* Notifications.storyboard in Resources */,
+				D85B8334222FABD1002168F3 /* CheckmarkOnSelectionTableViewCell.xib in Resources */,
 				CE855367209BA6A700938BDC /* ShowHideSectionFooter.xib in Resources */,
 				B5F571A621BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib in Resources */,
 				B5F355F121CD504400A7077A /* OrderSearchViewController.xib in Resources */,
@@ -1794,6 +1801,7 @@
 				B5F355EF21CD500200A7077A /* OrderSearchViewController.swift in Sources */,
 				B55D4C2720B717C000D7A50F /* UserAgent.swift in Sources */,
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
+				D85B8333222FABD1002168F3 /* CheckmarkOnSelectionTableViewCell.swift in Sources */,
 				CE22E3F72170E23C005A6BEF /* PrivacySettingsViewController.swift in Sources */,
 				B58B4AB32108F01700076FDD /* NoticePresenter.swift in Sources */,
 				CE21B3D720FE669A00A259D5 /* BasicTableViewCell.swift in Sources */,

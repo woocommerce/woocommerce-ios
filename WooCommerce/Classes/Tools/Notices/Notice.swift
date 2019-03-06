@@ -34,7 +34,12 @@ struct Notice {
 
     /// Designated Initializer
     ///
-    init(title: String, message: String? = nil, feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil, notificationInfo: NoticeNotificationInfo? = nil, actionTitle: String? = nil, actionHandler: ((() -> Void))? = nil) {
+    init(title: String,
+         message: String? = nil,
+         feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil,
+         notificationInfo: NoticeNotificationInfo? = nil,
+         actionTitle: String? = nil,
+         actionHandler: ((() -> Void))? = nil) {
         self.title = title
         self.message = message
         self.feedbackType = feedbackType

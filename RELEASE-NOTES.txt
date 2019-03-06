@@ -1,6 +1,7 @@
 1.4
 -----
 - improvement: Add shipment tracking to Order Details screen
+- bugfix: correctly flips chevron on Dashboard > New Orders, to support RTL languages.
 
 1.3
 -----

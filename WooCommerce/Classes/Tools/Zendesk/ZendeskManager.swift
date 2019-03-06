@@ -292,10 +292,13 @@ extension ZendeskManager: SupportManagerAdapter {
         }
 
         // navigate thru the stack
-        let settingsVC = UIStoryboard.dashboard.instantiateViewController(withIdentifier: SettingsViewController.classNameWithoutNamespaces) as! SettingsViewController
+        let dashboard = UIStoryboard.dashboard
+        let settingsID = SettingsViewController.classNameWithoutNamespaces
+        let settingsVC = dashboard.instantiateViewController(withIdentifier: settingsID) as! SettingsViewController
         navController.pushViewController(settingsVC, animated: false)
 
-        let helpAndSupportVC = UIStoryboard.dashboard.instantiateViewController(withIdentifier: HelpAndSupportViewController.classNameWithoutNamespaces) as! HelpAndSupportViewController
+        let helpID = HelpAndSupportViewController.classNameWithoutNamespaces
+        let helpAndSupportVC = dashboard.instantiateViewController(withIdentifier: helpID) as! HelpAndSupportViewController
         navController.pushViewController(helpAndSupportVC, animated: false)
 
         // show the single ticket view instead of the ticket list
@@ -793,7 +796,10 @@ private extension ZendeskManager {
         static let articleLabel = "iOS"
         static let platformTag = "iOS"
         static let sdkTag = "woo-mobile-sdk"
-        static let ticketSubject = NSLocalizedString("WooCommerce for iOS Support", comment: "Subject of new Zendesk ticket.")
+        static let ticketSubject = NSLocalizedString(
+            "WooCommerce for iOS Support",
+            comment: "Subject of new Zendesk ticket."
+        )
         static let blogSeperator = "\n----------\n"
         static let jetpackTag = "jetpack"
         static let wpComTag = "wpcom"
@@ -827,12 +833,30 @@ private extension ZendeskManager {
     }
 
     struct LocalizedText {
-        static let alertMessageWithName = NSLocalizedString("Please enter your email address and username:", comment: "Instructions for alert asking for email and name.")
-        static let alertMessage = NSLocalizedString("Please enter your email address:", comment: "Instructions for alert asking for email.")
-        static let alertSubmit = NSLocalizedString("OK", comment: "Submit button on prompt for user information.")
-        static let alertCancel = NSLocalizedString("Cancel", comment: "Cancel prompt for user information.")
-        static let emailPlaceholder = NSLocalizedString("Email", comment: "Email address text field placeholder")
-        static let namePlaceholder = NSLocalizedString("Name", comment: "Name text field placeholder")
+        static let alertMessageWithName = NSLocalizedString(
+            "Please enter your email address and username:",
+            comment: "Instructions for alert asking for email and name."
+        )
+        static let alertMessage = NSLocalizedString(
+            "Please enter your email address:",
+            comment: "Instructions for alert asking for email."
+        )
+        static let alertSubmit = NSLocalizedString(
+            "OK",
+            comment: "Submit button on prompt for user information."
+        )
+        static let alertCancel = NSLocalizedString(
+            "Cancel",
+            comment: "Cancel prompt for user information."
+        )
+        static let emailPlaceholder = NSLocalizedString(
+            "Email",
+            comment: "Email address text field placeholder"
+        )
+        static let namePlaceholder = NSLocalizedString(
+            "Name",
+            comment: "Name text field placeholder"
+        )
     }
 
     struct PushKey {

@@ -293,8 +293,13 @@ private extension OrderDetailsViewController {
     /// Displays a Notice onscreen, indicating that the current Order has been deleted from the Store.
     ///
     func displayOrderDeletedNotice() {
-        let message = String.localizedStringWithFormat(NSLocalizedString("Order %@ has been deleted from your store",
-                                                                         comment: "Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store"), viewModel.order.number)
+        let message = String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Order %@ has been deleted from your store",
+                comment: "Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store"
+            ),
+            viewModel.order.number
+        )
 
         let notice = Notice(title: message, feedbackType: .error)
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
@@ -370,7 +375,9 @@ private extension OrderDetailsViewController {
 
         cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
         cell.name = billingAddress?.fullNameWithCompany
-        cell.address = billingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > billing details. This is where the address would normally display.")
+        cell.address = billingAddress?.formattedPostalAddress ??
+            NSLocalizedString("No address specified.",
+                              comment: "Order details > customer info > billing details. This is where the address would normally display.")
     }
 
     func configureBillingEmail(cell: BillingDetailsTableViewCell) {
@@ -388,8 +395,16 @@ private extension OrderDetailsViewController {
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button
-        cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email: %@", comment: "Accessibility label that lets the user know the billing customer's email address"), email)
-        cell.accessibilityHint = NSLocalizedString("Composes a new email message to the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear.")
+        cell.accessibilityLabel = String.localizedStringWithFormat(
+            NSLocalizedString("Email: %@",
+                              comment: "Accessibility label that lets the user know the billing customer's email address"),
+            email
+        )
+
+        cell.accessibilityHint = NSLocalizedString(
+            "Composes a new email message to the billing customer.",
+            comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear."
+        )
     }
 
     func configureBillingPhone(cell: BillingDetailsTableViewCell) {
@@ -406,8 +421,18 @@ private extension OrderDetailsViewController {
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button
-        cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Phone number: %@", comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."), phoneNumber)
-        cell.accessibilityHint = NSLocalizedString("Prompts with the option to call or message the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer.")
+        cell.accessibilityLabel = String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Phone number: %@",
+                comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."
+            ),
+            phoneNumber
+        )
+
+        cell.accessibilityHint = NSLocalizedString(
+            "Prompts with the option to call or message the billing customer.",
+            comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer."
+        )
     }
 
     func configureCustomerNote(cell: CustomerNoteTableViewCell) {
@@ -419,8 +444,15 @@ private extension OrderDetailsViewController {
         cell.labelText = viewModel.addNoteText
 
         cell.accessibilityTraits = .button
-        cell.accessibilityLabel = NSLocalizedString("Add a note button", comment: "Accessibility label for the 'Add a note' button")
-        cell.accessibilityHint = NSLocalizedString("Composes a new order note.", comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note.")
+        cell.accessibilityLabel = NSLocalizedString(
+            "Add a note button",
+            comment: "Accessibility label for the 'Add a note' button"
+        )
+
+        cell.accessibilityHint = NSLocalizedString(
+            "Composes a new order note.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note."
+        )
     }
 
     func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
@@ -454,7 +486,16 @@ private extension OrderDetailsViewController {
 
         cell.footerText = viewModel.paymentSummary
 
-        cell.accessibilityElements = [cell.subtotalLabel, cell.subtotalValue, cell.discountLabel, cell.discountValue, cell.shippingLabel, cell.shippingValue, cell.taxesLabel, cell.taxesValue, cell.totalLabel, cell.totalValue]
+        cell.accessibilityElements = [cell.subtotalLabel,
+                                      cell.subtotalValue,
+                                      cell.discountLabel,
+                                      cell.discountValue,
+                                      cell.shippingLabel,
+                                      cell.shippingValue,
+                                      cell.taxesLabel,
+                                      cell.taxesValue,
+                                      cell.totalLabel,
+                                      cell.totalValue]
 
         if let footerText = cell.footerText {
             cell.accessibilityElements?.append(footerText)
@@ -518,7 +559,11 @@ private extension OrderDetailsViewController {
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
         cell.name = shippingAddress?.fullNameWithCompany
-        cell.address = shippingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
+        cell.address = shippingAddress?.formattedPostalAddress ??
+            NSLocalizedString(
+                "No address specified.",
+                comment: "Order details > customer info > shipping details. This is where the address would normally display."
+        )
     }
 
     func configureSummary(cell: SummaryTableViewCell) {
@@ -656,7 +701,8 @@ extension OrderDetailsViewController: UITableViewDataSource {
             return nil
         }
 
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
+        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
             fatalError()
         }
 

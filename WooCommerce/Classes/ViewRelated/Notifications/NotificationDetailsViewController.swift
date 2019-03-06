@@ -181,8 +181,13 @@ private extension NotificationDetailsViewController {
     /// Displays the Error Notice.
     ///
     static func displayModerationErrorNotice(failedStatus: CommentStatus) {
-        let message = String.localizedStringWithFormat(NSLocalizedString("Unable to mark review as %@",
-                                                                         comment: "Review error notice message. It reads: Unable to mark review as {attempted status}"), failedStatus.description)
+        let message = String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Unable to mark review as %@",
+                comment: "Review error notice message. It reads: Unable to mark review as {attempted status}"
+            ),
+            failedStatus.description
+        )
         let notice = Notice(title: message, feedbackType: .error)
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
@@ -195,8 +200,13 @@ private extension NotificationDetailsViewController {
             return
         }
 
-        let message = String.localizedStringWithFormat(NSLocalizedString("Review marked as %@",
-                                                                         comment: "Review moderation success notice message. It reads: Review marked as {new status}"), newStatus.description)
+        let message = String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Review marked as %@",
+                comment: "Review moderation success notice message. It reads: Review marked as {new status}"
+            ),
+            newStatus.description
+        )
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
         let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
 
@@ -408,21 +418,39 @@ private extension NotificationDetailsViewController {
 
         switch status {
         case .approved:
-            return [CommentAction.updateApprovalStatus(siteID: siteID, commentID: commentID, isApproved: true, onCompletion: { (_, error) in onCompletion(error) })]
+            return [CommentAction.updateApprovalStatus(siteID: siteID,
+                                                       commentID: commentID,
+                                                       isApproved: true,
+                                                       onCompletion: { (_, error) in onCompletion(error) })]
         case .unapproved:
-            return [CommentAction.updateApprovalStatus(siteID: siteID, commentID: commentID, isApproved: false, onCompletion: { (_, error) in onCompletion(error) })]
+            return [CommentAction.updateApprovalStatus(siteID: siteID,
+                                                       commentID: commentID,
+                                                       isApproved: false,
+                                                       onCompletion: { (_, error) in onCompletion(error) })]
         case .spam:
             return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: true),
-                    CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: true, onCompletion: { (_, error) in onCompletion(error) })]
+                    CommentAction.updateSpamStatus(siteID: siteID,
+                                                   commentID: commentID,
+                                                   isSpam: true,
+                                                   onCompletion: { (_, error) in onCompletion(error) })]
         case .unspam:
             return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: false),
-                    CommentAction.updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: false, onCompletion: { (_, error) in onCompletion(error) })]
+                    CommentAction.updateSpamStatus(siteID: siteID,
+                                                   commentID: commentID,
+                                                   isSpam: false,
+                                                   onCompletion: { (_, error) in onCompletion(error) })]
         case .trash:
             return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: true),
-                    CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: true, onCompletion: { (_, error) in onCompletion(error) })]
+                    CommentAction.updateTrashStatus(siteID: siteID,
+                                                    commentID: commentID,
+                                                    isTrash: true,
+                                                    onCompletion: { (_, error) in onCompletion(error) })]
         case .untrash:
             return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: false),
-                    CommentAction.updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: false, onCompletion: { (_, error) in onCompletion(error) })]
+                    CommentAction.updateTrashStatus(siteID: siteID,
+                                                    commentID: commentID,
+                                                    isTrash: false,
+                                                    onCompletion: { (_, error) in onCompletion(error) })]
         case .unknown:
             DDLogError("⛔️ Comment moderation failure: attempted to update comment with unknown status.")
             return nil

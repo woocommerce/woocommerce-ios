@@ -26,8 +26,12 @@ class OrderDetailsViewModel {
         shortFormat.dateFormat = "HH:mm:ss"
         shortFormat.timeStyle = .short
         let time = shortFormat.string(from: order.dateModified)
-        return String.localizedStringWithFormat(NSLocalizedString("Updated %@ at %@",
-                                                                  comment: "Order updated summary date. It reads: Updated {medium formatted date} at {short style time}"), order.dateModified.mediumString(), time)
+        return String.localizedStringWithFormat(
+            NSLocalizedString("Updated %@ at %@",
+                              comment: "Order updated summary date. It reads: Updated {medium formatted date} at {short style time}"),
+            order.dateModified.mediumString(),
+            time
+        )
     }
 
     var items: [OrderItem] {
@@ -134,7 +138,10 @@ class OrderDetailsViewModel {
             return nil
         }
 
-        return NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
+        return NSLocalizedString(
+            "Payment of \(totalValue) received via \(order.paymentMethodTitle)",
+            comment: "Payment of <currency symbol><payment total> received via (payment method title)"
+        )
     }
 
     /// Order Notes Button

@@ -143,7 +143,39 @@ extension OrderStatusListViewController {
     }
 
     @objc func applyButtonTapped() {
-        
+        guard let newStatusName = selectedStatus?.name else {
+            return
+        }
+
+        let orderID = order.orderID
+        let undoStatus = order.statusKey
+
+        let done = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: newStatusName)
+        let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)
+
+        StoresManager.shared.dispatch(done)
+
+        displayOrderUpdatedNotice {
+            StoresManager.shared.dispatch(undo)
+        }
+
+        dismiss(animated: true, completion: nil)
+    }
+
+    /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
+    ///
+    private func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
+        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
+            guard let error = error else {
+                WooAnalytics.shared.track(.orderStatusChangeSuccess)
+                return
+            }
+
+            WooAnalytics.shared.track(.orderStatusChangeFailed, withError: error)
+            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(statusKey)]. Error: \(error)")
+
+            self.displayErrorNotice(orderID: orderID)
+        })
     }
 }
 
@@ -171,5 +203,33 @@ extension OrderStatusListViewController: UITableViewDataSource {
 extension OrderStatusListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedStatus = statusResultsController.object(at: indexPath)
+    }
+}
+
+
+/// MARK: - Error handling
+extension OrderStatusListViewController {
+    /// Displays the `Order Updated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
+    ///
+    private func displayOrderUpdatedNotice(onUndoAction: @escaping () -> Void) {
+        let message = NSLocalizedString("Order status updated", comment: "Order status update success notice")
+        let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
+        let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+    /// Displays the `Unable to Change Status of Order` Notice.
+    ///
+    func displayErrorNotice(orderID: Int) {
+        let title = NSLocalizedString(
+            "Unable to change status of order #\(orderID)",
+            comment: "Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}"
+        )
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.applyButtonTapped()
+        }
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 }

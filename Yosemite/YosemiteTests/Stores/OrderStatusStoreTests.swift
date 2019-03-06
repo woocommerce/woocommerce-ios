@@ -39,6 +39,36 @@ class OrderStatusStoreTests: XCTestCase {
         network = MockupNetwork()
     }
 
+    // MARK: - OrderStatusAction.resetStoredOrderStatuses
+
+    /// Verifies that OrderStatusAction.resetStoredOrderStatuses nukes the Orders Cache.
+    ///
+    func testResetStoredOrderStatusesEffectivelyNukesTheStoredOrderStatuses() {
+        let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
+
+        let group = DispatchGroup()
+
+        group.enter()
+        orderStatusStore.upsertStatusesInBackground(siteID: sampleSiteID, readOnlyOrderStatuses: sampleOrderStatuses()) {
+            XCTAssertTrue(Thread.isMainThread)
+            group.leave()
+        }
+
+        let expectation = self.expectation(description: "Order Statii Reset")
+        group.notify(queue: .main) {
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatus.self), 9)
+            let action = OrderStatusAction.resetStoredOrderStatuses() {
+                XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
+                expectation.fulfill()
+            }
+            orderStatusStore.onAction(action)
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     // MARK: - OrderStatusAction.retrieveOrderStatuses
 
     /// Verifies that OrderStatusAction.retrieveOrderStatuses returns the expected statuses.

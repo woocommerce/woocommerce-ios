@@ -245,12 +245,6 @@ private extension OrdersViewController {
         try? resultsController.performFetch()
 
         // Order status FRC
-        statusResultsController.onDidChangeContent = { [weak self] in
-            self?.statusFilter = nil
-        }
-        statusResultsController.onDidResetContent = { [weak self] in
-            self?.statusFilter = nil
-        }
         try? statusResultsController.performFetch()
     }
 

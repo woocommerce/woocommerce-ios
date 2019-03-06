@@ -18,7 +18,17 @@ class NewOrdersViewController: UIViewController {
     @IBOutlet private weak var actionButton: UIButton!
     @IBOutlet private weak var bottomSpacerView: UIView!
 
-    private var orderStatuses: [OrderStatus]?
+    private var orderStatuses: [OrderStatus]? {
+        didSet {
+            updateNewOrdersIfNeeded(orderCount: totalPendingOrders)
+        }
+    }
+
+    /// Total number of pending server-side orders
+    ///
+    private var totalPendingOrders: Int {
+        return orderStatuses?.filter({ $0.slug == OrderStatusEnum.processing.rawValue }).map({ $0.total }).reduce(0, +) ?? 0
+    }
 
     // MARK: - Public Properties
 
@@ -47,35 +57,12 @@ extension NewOrdersViewController {
             return
         }
 
-        let action = StatsAction.retrieveOrderTotals(siteID: siteID, status: .processing) { [weak self] (processingOrderCount, error) in
-            guard let `self` = self, let processingOrderCount = processingOrderCount else {
-                if let error = error {
-                    DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing pending orders: \(error)")
-                }
-                onCompletion?(error)
-                return
-            }
-
-            self.updateNewOrdersIfNeeded(orderCount: processingOrderCount)
-            onCompletion?(nil)
-        }
-
-        StoresManager.shared.dispatch(action)
-    }
-
-    func syncOrderStatus(onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            onCompletion?(nil)
-            return
-        }
-
         let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { [weak self] (orderStatuses, error) in
             if let error = error {
                 DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing order statuses: \(error)")
             }
 
             self?.orderStatuses = orderStatuses
-
             onCompletion?(error)
         }
 
@@ -110,18 +97,14 @@ private extension NewOrdersViewController {
 private extension NewOrdersViewController {
 
     @IBAction func buttonTouchUpInside(_ sender: UIButton) {
-        sender.fadeOutSelectedBackground {
-            WooAnalytics.shared.track(.dashboardNewOrdersButtonTapped)
-
-            guard let statuses = self.orderStatuses else {
-                DDLogError("Error: missing list of order statuses. Cannot present new orders list.")
-                return
-            }
-
-            for filterStatus in statuses where filterStatus.slug == OrderStatusEnum.processing.rawValue {
-                MainTabBarController.presentOrders(statusFilter: filterStatus)
-            }
+        sender.fadeOutSelectedBackground()
+        guard let pendingStatus = orderStatuses?.first(where: { $0.slug == OrderStatusEnum.processing.rawValue }) else {
+            DDLogError("⛔️ Unable to display pending orders list — unable to locate pending status for current site.")
+            return
         }
+
+       WooAnalytics.shared.track(.dashboardNewOrdersButtonTapped)
+       MainTabBarController.presentOrders(statusFilter: pendingStatus)
     }
 
     @IBAction func buttonTouchUpOutside(_ sender: UIButton) {

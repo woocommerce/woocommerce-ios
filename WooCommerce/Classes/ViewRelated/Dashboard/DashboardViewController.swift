@@ -221,12 +221,6 @@ private extension DashboardViewController {
         }
 
         group.enter()
-        newOrdersViewController.syncOrderStatus() { _ in
-            // don't bubble up error to user
-            group.leave()
-        }
-
-        group.enter()
         topPerformersViewController.syncTopPerformers() { error in
             if let error = error {
                 reloadError = error

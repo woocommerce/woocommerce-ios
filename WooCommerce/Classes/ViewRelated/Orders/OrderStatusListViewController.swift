@@ -40,17 +40,17 @@ final class OrderStatusListViewController: UIViewController {
         self.order = order
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         registerTableViewCells()
         configureNavigationBar()
         configureTableView()
-        
+
         configureResultsController()
     }
 
@@ -200,7 +200,8 @@ extension OrderStatusListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: StatusListTableViewCell.reuseIdentifier, for: indexPath) as? StatusListTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: StatusListTableViewCell.reuseIdentifier,
+                                                       for: indexPath) as? StatusListTableViewCell else {
             fatalError()
         }
 

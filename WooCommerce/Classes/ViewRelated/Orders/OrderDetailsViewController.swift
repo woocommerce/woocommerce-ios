@@ -864,7 +864,8 @@ private extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
     private func displayOrderStatusList() {
-        WooAnalytics.shared.track(.orderDetailOrderStatusEditButtonTapped)
+        WooAnalytics.shared.track(.orderDetailOrderStatusEditButtonTapped,
+                                  withProperties: ["status": viewModel.order.statusKey])
         let statusList = OrderStatusListViewController(order: viewModel.order)
         let navigationController = UINavigationController(rootViewController: statusList)
 

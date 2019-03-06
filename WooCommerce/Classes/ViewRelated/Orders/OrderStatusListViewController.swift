@@ -143,14 +143,14 @@ extension OrderStatusListViewController {
     }
 
     @objc func applyButtonTapped() {
-        guard let newStatusName = selectedStatus?.name else {
+        guard let newStatus = selectedStatus?.status.rawValue else {
             return
         }
 
         let orderID = order.orderID
         let undoStatus = order.statusKey
 
-        let done = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: newStatusName)
+        let done = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: newStatus)
         let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)
 
         StoresManager.shared.dispatch(done)

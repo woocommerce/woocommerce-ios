@@ -192,7 +192,7 @@ class OrderStatusStoreTests: XCTestCase {
 }
 
 
-//  MARK: - OrderStatus Samples
+// MARK: - OrderStatus Samples
 //
 private extension OrderStatusStoreTests {
 

@@ -135,7 +135,7 @@
 "Certificate error" = "Errore di certificato";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "Cancella i log delle vecchie attività";
+"Reset Activity Log" = "Cancella i log delle vecchie attività";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Raccogli informazioni";

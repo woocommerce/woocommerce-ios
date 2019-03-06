@@ -135,7 +135,7 @@
 "Certificate error" = "証明書エラー";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "古いアクティビティログをクリア";
+"Reset Activity Log" = "古いアクティビティログをクリア";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "情報を収集";

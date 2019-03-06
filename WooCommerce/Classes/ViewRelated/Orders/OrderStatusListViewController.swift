@@ -16,6 +16,14 @@ final class OrderStatusListViewController: UIViewController {
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    /// The status selected
+    ///
+    private var selectedStatus: OrderStatus? {
+        didSet {
+            activateApplyButton()
+        }
+    }
+
     /// Pull To Refresh Support.
     ///
     private lazy var refreshControl: UIRefreshControl = {
@@ -67,6 +75,7 @@ final class OrderStatusListViewController: UIViewController {
         tableView.tableFooterView = footerSpinnerView
 
         tableView.dataSource = self
+        tableView.delegate = self
     }
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
@@ -110,6 +119,15 @@ extension OrderStatusListViewController {
                                              action: #selector(applyButtonTapped))
         rightBarButton.tintColor = .white
         navigationItem.setRightBarButton(rightBarButton, animated: false)
+        deActivateApplyButton()
+    }
+
+    func activateApplyButton() {
+        navigationItem.rightBarButtonItem?.isEnabled = true
+    }
+
+    func deActivateApplyButton() {
+        navigationItem.rightBarButtonItem?.isEnabled = false
     }
 
     @objc func dismissButtonTapped() {
@@ -144,6 +162,6 @@ extension OrderStatusListViewController: UITableViewDataSource {
 /// MARK: - UITableViewDelegate conformance
 extension OrderStatusListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //
+        selectedStatus = statusResultsController.object(at: indexPath)
     }
 }

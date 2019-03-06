@@ -118,7 +118,6 @@ private extension SummaryTableViewCell {
     }
 
     @objc func editWasTapped() {
-        print("===== edit was tapped ===")
         onPencilTouchUp?()
     }
 }

@@ -143,6 +143,18 @@ extension OrderStatusListViewController {
     }
 
     @objc func applyButtonTapped() {
+        updateOrderStatus()
+        dismiss(animated: true, completion: nil)
+    }
+}
+
+
+/// MARK: - Update the Order status
+///
+private extension OrderStatusListViewController {
+    /// Dispatches an Action to update the order status
+    ///
+    private func updateOrderStatus() {
         guard let newStatus = selectedStatus?.status.rawValue else {
             return
         }
@@ -161,8 +173,6 @@ extension OrderStatusListViewController {
         displayOrderUpdatedNotice {
             StoresManager.shared.dispatch(undo)
         }
-
-        dismiss(animated: true, completion: nil)
     }
 
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.

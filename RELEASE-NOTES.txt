@@ -1,5 +1,6 @@
 1.4
 -----
+- improvement: Add shipment tracking to Order Details screen
 
 1.3
 -----

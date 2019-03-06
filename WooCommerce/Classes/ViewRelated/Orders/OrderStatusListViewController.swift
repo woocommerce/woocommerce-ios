@@ -32,10 +32,6 @@ final class OrderStatusListViewController: UIViewController {
         return refreshControl
     }()
 
-    /// Footer "Loading More" Spinner.
-    ///
-    private lazy var footerSpinnerView = FooterSpinnerView()
-
     /// Order to be provided with a new status
     ///
     private let order: Order
@@ -81,16 +77,20 @@ final class OrderStatusListViewController: UIViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
-        tableView.tableFooterView = footerSpinnerView
 
         tableView.dataSource = self
         tableView.delegate = self
     }
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-//        syncingCoordinator.synchronizeFirstPage {
-//            sender.endRefreshing()
-//        }
+        reload {
+            sender.endRefreshing()
+        }
+    }
+
+    private func reload(completion: () -> Void) {
+        configureResultsController()
+        completion()
     }
 }
 

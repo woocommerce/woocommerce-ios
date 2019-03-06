@@ -8,6 +8,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
     @IBOutlet private var bottomLine: UILabel!
     @IBOutlet private var topBorder: UIView!
     @IBOutlet private var actionButton: UIButton!
+    @IBOutlet private var internalSeparator: UIView!
 
     var onActionTouchUp: (() -> Void)?
 
@@ -49,6 +50,16 @@ final class OrderTrackingTableViewCell: UITableViewCell {
             actionButton.setTitle(newValue, for: .normal)
             configureActionButtonForVoiceOver()
         }
+    }
+
+    func showActionButton() {
+        actionButton.isHidden = false
+        internalSeparator.isHidden = false
+    }
+
+    func hideActionButton() {
+        actionButton.isHidden = true
+        internalSeparator.isHidden = true
     }
 
     override func awakeFromNib() {

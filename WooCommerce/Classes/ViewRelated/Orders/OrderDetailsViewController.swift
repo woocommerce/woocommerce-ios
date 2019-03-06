@@ -547,6 +547,12 @@ private extension OrderDetailsViewController {
                 " This is where the shipping date would normally display.")
         }
 
+        guard let url = tracking.trackingURL, url.isEmpty == false else {
+            cell.hideActionButton()
+            return
+        }
+
+        cell.showActionButton()
         cell.actionButtonNormalText = viewModel.trackTitle
 
         cell.onActionTouchUp = { [ weak self ] in

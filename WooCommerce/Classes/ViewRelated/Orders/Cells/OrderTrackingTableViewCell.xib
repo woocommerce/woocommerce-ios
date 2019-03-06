@@ -78,6 +78,7 @@
             <connections>
                 <outlet property="actionButton" destination="q04-tu-Hwj" id="yfI-P3-JyX"/>
                 <outlet property="bottomLine" destination="QPn-Oj-khc" id="TQ5-DT-vlI"/>
+                <outlet property="internalSeparator" destination="Mav-Sc-Nqa" id="Tu8-Dw-dRl"/>
                 <outlet property="middleLine" destination="5Tp-fv-Tte" id="0Kp-r9-HEk"/>
                 <outlet property="topBorder" destination="Mav-Sc-Nqa" id="fen-Nr-OeV"/>
                 <outlet property="topLine" destination="kb4-pd-pEb" id="eC2-Xc-JAH"/>

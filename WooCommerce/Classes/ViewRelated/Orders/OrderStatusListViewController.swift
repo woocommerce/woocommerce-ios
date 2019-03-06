@@ -52,10 +52,6 @@ final class OrderStatusListViewController: UIViewController {
         try? statusResultsController.performFetch()
     }
 
-    private func reloadData() {
-        tableView.reloadData()
-    }
-
     /// Registers all of the available TableViewCells
     ///
     private func registerTableViewCells() {
@@ -79,7 +75,6 @@ final class OrderStatusListViewController: UIViewController {
     }
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-//        WooAnalytics.shared.track(.ordersListPulledToRefresh)
 //        syncingCoordinator.synchronizeFirstPage {
 //            sender.endRefreshing()
 //        }

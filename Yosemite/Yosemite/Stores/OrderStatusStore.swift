@@ -52,11 +52,9 @@ private extension OrderStatusStore {
                 return
             }
 
-            self?.upsertStoredStatusesInBackground(siteID: siteID,
-                                                 readOnlyOrderStatuses: orderStatuses,
-                                                 onCompletion: {
+            self?.upsertStatusesInBackground(siteID: siteID, readOnlyOrderStatuses: orderStatuses) {
                 onCompletion(orderStatuses, nil)
-            })
+            }
         }
     }
 
@@ -80,9 +78,7 @@ extension OrderStatusStore {
     /// Updates (OR Inserts) the specified ReadOnly Order Status Entities
     /// *in a background thread*. onCompletion will be called on the main thread!
     ///
-    func upsertStoredStatusesInBackground(siteID: Int,
-                                                  readOnlyOrderStatuses: [Networking.OrderStatus],
-                                                  onCompletion: @escaping () -> Void) {
+    func upsertStatusesInBackground(siteID: Int, readOnlyOrderStatuses: [Networking.OrderStatus], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             for readOnlyItem in readOnlyOrderStatuses {

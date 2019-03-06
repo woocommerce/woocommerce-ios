@@ -64,7 +64,10 @@ class ApplicationLogViewController: UIViewController {
     /// Style the back button, add the title to nav bar.
     ///
     func configureNavigation() {
-        title = NSLocalizedString("Application Logs", comment: "Application Logs navigation bar title - this screen is where users view the list of application logs available to them.")
+        title = NSLocalizedString(
+            "Application Logs",
+            comment: "Application Logs navigation bar title - this screen is where users view the list of application logs available to them."
+        )
 
         // Don't show the Help & Support title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
@@ -93,8 +96,14 @@ class ApplicationLogViewController: UIViewController {
     /// Define section data.
     ///
     func configureSections() {
-        let logFileTitle = NSLocalizedString("Log files by created date", comment: "Explains that the files are sorted by LIFO date: most recent day listed first.")
-        let logFileFooter = NSLocalizedString("Up to seven days՚ worth of logs are saved.", comment: "Footer text below the list of logs explaining the maximum number of logs saved.")
+        let logFileTitle = NSLocalizedString(
+            "Log files by created date",
+            comment: "Explains that the files are sorted by LIFO date: most recent day listed first."
+        )
+        let logFileFooter = NSLocalizedString(
+            "Up to seven days՚ worth of logs are saved.",
+            comment: "Footer text below the list of logs explaining the maximum number of logs saved."
+        )
 
         var logFileRows = [Row]()
         for _ in logFiles {
@@ -197,7 +206,8 @@ private extension ApplicationLogViewController {
         let logFileInfo: DDLogFileInfo = logFiles[indexPath.row]
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = indexPath.row == 0 ? NSLocalizedString("Current", comment: "Cell title: the current date.") : dateFormatter.string(from: logFileInfo.creationDate)
+        cell.textLabel?.text = indexPath.row == 0 ?
+            NSLocalizedString("Current", comment: "Cell title: the current date.") : dateFormatter.string(from: logFileInfo.creationDate)
     }
 
     /// Clear application logs cell.

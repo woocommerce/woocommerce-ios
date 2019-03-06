@@ -121,7 +121,9 @@ private extension HelpAndSupportViewController {
             return
         }
 
-        let alert = UIAlertController(title: "Warning", message: "Developer email account detected. Please log in with a non-Automattic email to submit or view support tickets.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Warning",
+                                      message: "Developer email account detected. Please log in with a non-Automattic email to submit or view support tickets.",
+                                      preferredStyle: .alert)
         let cancel = UIAlertAction(title: "Dismiss", style: .cancel, handler: nil)
         alert.addAction(cancel)
 
@@ -162,7 +164,10 @@ private extension HelpAndSupportViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Contact Support", comment: "Contact Support title")
-        cell.detailTextLabel?.text = NSLocalizedString("Reach our happiness engineers who can help answer tough questions", comment: "Subtitle for Contact Support")
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "Reach our happiness engineers who can help answer tough questions",
+            comment: "Subtitle for Contact Support"
+        )
     }
 
     /// My Tickets cell.
@@ -189,7 +194,10 @@ private extension HelpAndSupportViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("View Application Log", comment: "View application log cell title")
-        cell.detailTextLabel?.text = NSLocalizedString("Advanced tool to review the app status", comment: "Cell subtitle explaining why you might want to navigate to view the application log.")
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "Advanced tool to review the app status",
+            comment: "Cell subtitle explaining why you might want to navigate to view the application log."
+        )
     }
 }
 

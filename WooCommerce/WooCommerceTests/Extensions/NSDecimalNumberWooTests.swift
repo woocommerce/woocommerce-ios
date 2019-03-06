@@ -48,8 +48,12 @@ class NSDecimalNumberWooTests: XCTestCase {
         XCTAssertEqual(NSDecimalNumber(floatLiteral: 999).humanReadableString(), "999")
         XCTAssertEqual(NSDecimalNumber(floatLiteral: 999.99).humanReadableString(), "999")
         XCTAssertEqual(NSDecimalNumber(floatLiteral: 999.99999).humanReadableString(), "999")
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000).humanReadableString(), expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000.00001).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
     }
 
     func testRoundedHumanReadableStringWorksWithNegativeValuesUnderOneThousand() {
@@ -61,69 +65,175 @@ class NSDecimalNumberWooTests: XCTestCase {
         XCTAssertEqual(NSDecimalNumber(floatLiteral: -999).humanReadableString(), "-999")
         XCTAssertEqual(NSDecimalNumber(floatLiteral: -999.99).humanReadableString(), "-999")
         XCTAssertEqual(NSDecimalNumber(floatLiteral: -999.99999).humanReadableString(), "-999")
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000).humanReadableString(), expectedLocalizedAbbreviation(for: -1000)) //"-1.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: -1000)) //"-1.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1000)) //"-1.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000.00001).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1000)) //"-1.0k"
     }
 
     func testRoundedHumanReadableStringWorksWithPositiveValuesAboveOneThousand() {
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000).humanReadableString(), expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000)) //"1.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000)) // "1.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000)) // "1.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999_999).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000_000).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000_000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // // "1.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_000_000_000_000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: 999_000_000_000_000)) // // "999.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9_000_000_000_000_000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: 9000_000_000_000_000)) // // "9000.0t"
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
 
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9880).humanReadableString(), expectedLocalizedAbbreviation(for: 9_900)) // "9.9k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9999).humanReadableString(), expectedLocalizedAbbreviation(for: 10_000)) // "10.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 44_999).humanReadableString(), expectedLocalizedAbbreviation(for: 45_000)) // "45.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 77_164).humanReadableString(), expectedLocalizedAbbreviation(for: 77_200)) // "77.2k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 100_101).humanReadableString(), expectedLocalizedAbbreviation(for: 100_100)) // "100.1k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 110_099).humanReadableString(), expectedLocalizedAbbreviation(for: 110_100)) // "110.1k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9_899_999).humanReadableString(), expectedLocalizedAbbreviation(for: 9_900_000)) // "9.9m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 5_800_199).humanReadableString(), expectedLocalizedAbbreviation(for: 5_800_000)) // "5.8m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 998_999_999).humanReadableString(), expectedLocalizedAbbreviation(for: 999_000_000)) // "999.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999.9999).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 99_899_999_999).humanReadableString(), expectedLocalizedAbbreviation(for: 99_900_000_000)) // "99.9b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999_999).humanReadableString(), expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000.00001).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1_000_000)) //"1.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1_000_000)) // "1.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000.00001).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1_000_000)) // "1.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000.00001).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000_000).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000_000.00001).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_000_000_000_000.00001).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 999_000_000_000_000)) // "999.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9_000_000_000_000_000.00001).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 9000_000_000_000_000)) // "9000.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9880).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 9_900)) // "9.9k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 10_000)) // "10.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 44_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 45_000)) // "45.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 77_164).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 77_200)) // "77.2k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 100_101).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 100_100)) // "100.1k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 110_099).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 110_100)) // "110.1k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9_899_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 9_900_000)) // "9.9m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 5_800_199).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 5_800_000)) // "5.8m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 998_999_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 999_000_000)) // "999.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999.9999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 99_899_999_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 99_900_000_000)) // "99.9b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
     }
 
     func testRoundedHumanReadableStringWorksWithNegativeValuesAboveOneThousand() {
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000).humanReadableString(), expectedLocalizedAbbreviation(for: -1000)) // "-1.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: -1000)) // "-1.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999).humanReadableString(), expectedLocalizedAbbreviation(for: -1_000_000)) // "-1.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000).humanReadableString(), expectedLocalizedAbbreviation(for: -1_000_000)) // "-1.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: -1_000_000)) // "-1.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999).humanReadableString(), expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000).humanReadableString(), expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999_999).humanReadableString(), expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000_000).humanReadableString(), expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000_000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1000)) // "-1.0k"
 
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_880).humanReadableString(), expectedLocalizedAbbreviation(for: -9_900)) // "-9.9k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_999).humanReadableString(), expectedLocalizedAbbreviation(for: -10_000)) // "-10.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -44_999).humanReadableString(), expectedLocalizedAbbreviation(for: -45_000)) // "-45.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -77_164).humanReadableString(), expectedLocalizedAbbreviation(for: -77_200)) // "-77.2k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -100_101).humanReadableString(), expectedLocalizedAbbreviation(for: -100_100)) // "-100.1k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -110_099).humanReadableString(), expectedLocalizedAbbreviation(for: -110_100)) // "-110.1k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_899_999).humanReadableString(), expectedLocalizedAbbreviation(for: -9_900_000)) // "-9.9m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -5_800_199).humanReadableString(), expectedLocalizedAbbreviation(for: -5_800_000)) // "-5.8m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -998_999_999).humanReadableString(), expectedLocalizedAbbreviation(for: -999_000_000)) // "-999.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999).humanReadableString(), expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000).humanReadableString(), expectedLocalizedAbbreviation(for: -1_000_000_000))// "-1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -99_899_999_999).humanReadableString(), expectedLocalizedAbbreviation(for: -99_900_000_000)) // "-99.9b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999_999).humanReadableString(), expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_000_000_000_000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: -999_000_000_000_000)) // "-999.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_000_000_000_000_000.00001).humanReadableString(), expectedLocalizedAbbreviation(for: -9_000_000_000_000_000)) // "-9000.0t"
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000.00001).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1000)) // "-1.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1_000_000)) // "-1.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1_000_000)) // "-1.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000.00001).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1_000_000)) // "-1.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000.00001).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000_000).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000_000.00001).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_880).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -9_900)) // "-9.9k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -10_000)) // "-10.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -44_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -45_000)) // "-45.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -77_164).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -77_200)) // "-77.2k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -100_101).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -100_100)) // "-100.1k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -110_099).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -110_100)) // "-110.1k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_899_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -9_900_000)) // "-9.9m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -5_800_199).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -5_800_000)) // "-5.8m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -998_999_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -999_000_000)) // "-999.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000))// "-1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -99_899_999_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -99_900_000_000)) // "-99.9b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999_999).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_000_000_000_000.00001).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -999_000_000_000_000)) // "-999.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_000_000_000_000_000.00001).humanReadableString(),
+                       expectedLocalizedAbbreviation(for: -9_000_000_000_000_000)) // "-9000.0t"
     }
 
 
@@ -146,8 +256,11 @@ class NSDecimalNumberWooTests: XCTestCase {
         XCTAssertEqual(NSDecimalNumber(floatLiteral: 999).humanReadableString(roundSmallNumbers: false), "999")
         XCTAssertEqual(NSDecimalNumber(floatLiteral: 999.99).humanReadableString(roundSmallNumbers: false), "999.99")
         XCTAssertEqual(NSDecimalNumber(floatLiteral: 999.99999).humanReadableString(roundSmallNumbers: false), "999.99999")
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000.00001).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000.00001).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1000)) //"1.0k"
     }
 
     func testHumanReadableStringWorksWithNegativeValuesUnderOneThousand() {
@@ -159,69 +272,174 @@ class NSDecimalNumberWooTests: XCTestCase {
         XCTAssertEqual(NSDecimalNumber(floatLiteral: -999).humanReadableString(roundSmallNumbers: false), "-999")
         XCTAssertEqual(NSDecimalNumber(floatLiteral: -999.99).humanReadableString(roundSmallNumbers: false), "-999.99")
         XCTAssertEqual(NSDecimalNumber(floatLiteral: -999.99999).humanReadableString(roundSmallNumbers: false), "-999.99999")
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1000)) // "-1.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000.00001).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1000)) // "-1.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1000)) // "-1.0k"
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000.00001).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1000)) // "-1.0k"
     }
 
     func testHumanReadableStringWorksWithPositiveValuesAboveOneThousand() {
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1000)) // "1.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000.00001).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1000)) // "1.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1_000_000)) // "1.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1_000_000)) // "1.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000.00001).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1_000_000)) // "1.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000.00001).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000_000).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000_000.00001).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_000_000_000_000.00001).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 999_000_000_000_000)) // "999.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9_000_000_000_000_000.00001).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 9_000_000_000_000_000)) // "9000.0t"
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1000)) // "1.0k"
 
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9880).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 9_900)) // "9.9k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 10_000)) // "10.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 44_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 45_000)) // "45.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 77_164).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 77_200)) // "77.2k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 100_101).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 100_100)) // "100.1k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 110_099).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 110_100)) // "110.1k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9_899_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 9_900_000)) // "9.9m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 5_800_199).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 5_800_000)) // "5.8m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 998_999_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 999_000_000)) // "999.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999.9999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 99_899_999_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 99_900_000_000)) // "99.9b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1000.00001).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1000)) // "1.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1_000_000)) // "1.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1_000_000)) // "1.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000.00001).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1_000_000)) // "1.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000.00001).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000_000).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000_000.00001).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_000_000_000_000.00001).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 999_000_000_000_000)) // "999.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9_000_000_000_000_000.00001).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 9_000_000_000_000_000)) // "9000.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9880).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 9_900)) // "9.9k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 10_000)) // "10.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 44_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 45_000)) // "45.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 77_164).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 77_200)) // "77.2k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 100_101).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 100_100)) // "100.1k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 110_099).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 110_100)) // "110.1k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 9_899_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 9_900_000)) // "9.9m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 5_800_199).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 5_800_000)) // "5.8m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 998_999_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 999_000_000)) // "999.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999.9999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 1_000_000_000).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000)) // "1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 99_899_999_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 99_900_000_000)) // "99.9b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: 999_999_999_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: 1_000_000_000_000)) // "1.0t"
     }
 
     func testHumanReadableStringWorksWithNegativeValuesAboveOneThousand() {
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1000)) // "-1.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000.00001).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1000)) // "1.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1_000_000)) // "1.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1_000_000)) // "-1.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000.00001).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1_000_000)) // "-1.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000.00001).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000_000).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000_000.00001).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1000)) // "-1.0k"
 
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_880).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -9_900)) // "-9.9k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -10_000)) // "-10.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -44_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -45_000)) // "-45.0k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -77_164).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -77_200)) // "-77.2k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -100_101).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -100_100)) // "-100.1k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -110_099).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -110_100)) // "-110.1k"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_899_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -9_900_000)) // "-9.9m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -5_800_199).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -5_800_000)) // "-5.8m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -998_999_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -999_000_000)) // "-999.0m"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -99_899_999_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -99_900_000_000)) // "-99.9b"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999_999).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_000_000_000_000.00001).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -999_000_000_000_000)) // "-999.0t"
-        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_000_000_000_000_000.00001).humanReadableString(roundSmallNumbers: false), expectedLocalizedAbbreviation(for: -9_000_000_000_000_000)) // "-9000.0t"
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1000.00001).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1000)) // "1.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1_000_000)) // "1.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1_000_000)) // "-1.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000.00001).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1_000_000)) // "-1.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000.00001).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000_000).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000_000.00001).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_880).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -9_900)) // "-9.9k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -10_000)) // "-10.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -44_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -45_000)) // "-45.0k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -77_164).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -77_200)) // "-77.2k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -100_101).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -100_100)) // "-100.1k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -110_099).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -110_100)) // "-110.1k"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_899_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -9_900_000)) // "-9.9m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -5_800_199).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -5_800_000)) // "-5.8m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -998_999_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -999_000_000)) // "-999.0m"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -1_000_000_000).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000)) // "-1.0b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -99_899_999_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -99_900_000_000)) // "-99.9b"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_999_999_999).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -1_000_000_000_000)) // "-1.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -999_000_000_000_000.00001).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -999_000_000_000_000)) // "-999.0t"
+
+        XCTAssertEqual(NSDecimalNumber(floatLiteral: -9_000_000_000_000_000.00001).humanReadableString(roundSmallNumbers: false),
+                       expectedLocalizedAbbreviation(for: -9_000_000_000_000_000)) // "-9000.0t"
     }
 
     private func expectedLocalizedAbbreviation(for num: Double) -> String? {

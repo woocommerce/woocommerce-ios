@@ -48,7 +48,8 @@ extension ProductListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
         let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency)
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductDetailsTableViewCell.reuseIdentifier, for: indexPath) as? ProductDetailsTableViewCell else {
+        let cellID = ProductDetailsTableViewCell.reuseIdentifier
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? ProductDetailsTableViewCell else {
             fatalError()
         }
         cell.configure(item: itemViewModel, with: viewModel)
@@ -56,7 +57,8 @@ extension ProductListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
+        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
             fatalError()
         }
         headerView.leftText = viewModel.productLeftTitle

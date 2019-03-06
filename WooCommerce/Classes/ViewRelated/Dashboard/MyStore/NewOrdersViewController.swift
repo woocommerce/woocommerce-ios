@@ -18,6 +18,8 @@ class NewOrdersViewController: UIViewController {
     @IBOutlet private weak var actionButton: UIButton!
     @IBOutlet private weak var bottomSpacerView: UIView!
 
+    private var orderStatuses: [OrderStatus]?
+
     // MARK: - Public Properties
 
     public var delegate: NewOrdersDelegate?
@@ -67,10 +69,13 @@ extension NewOrdersViewController {
             return
         }
 
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { (orderStatuses, error) in
+        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { [weak self] (orderStatuses, error) in
             if let error = error {
                 DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing order statuses: \(error)")
             }
+
+            self?.orderStatuses = orderStatuses
+
             onCompletion?(error)
         }
 
@@ -91,9 +96,11 @@ private extension NewOrdersViewController {
         titleLabel.textInsets = Constants.newOrdersTitleLabelInsets
         descriptionLabel.applyBodyStyle()
         descriptionLabel.textInsets = Constants.newOrdersDescriptionLabelInsets
-        descriptionLabel.text = NSLocalizedString("Review, prepare, and ship these pending orders",
-                                                  comment: "Description text used on the UI element displayed when a user has pending orders to process.")
-        chevronImageView.image = UIImage.chevronImage
+        descriptionLabel.text = NSLocalizedString(
+            "Review, prepare, and ship these pending orders",
+            comment: "Description text used on the UI element displayed when a user has pending orders to process."
+        )
+        chevronImageView.image = UIImage.chevronImage.imageFlippedForRightToLeftLayoutDirection()
     }
 }
 
@@ -105,7 +112,15 @@ private extension NewOrdersViewController {
     @IBAction func buttonTouchUpInside(_ sender: UIButton) {
         sender.fadeOutSelectedBackground {
             WooAnalytics.shared.track(.dashboardNewOrdersButtonTapped)
-            MainTabBarController.presentOrders(statusKeyFilter: OrderStatusEnum.processing.rawValue)
+
+            guard let statuses = self.orderStatuses else {
+                DDLogError("Error: missing list of order statuses. Cannot present new orders list.")
+                return
+            }
+
+            for filterStatus in statuses where filterStatus.slug == OrderStatusEnum.processing.rawValue {
+                MainTabBarController.presentOrders(statusFilter: filterStatus)
+            }
         }
     }
 
@@ -167,9 +182,15 @@ private extension UIButton {
 private extension NewOrdersViewController {
 
     func updateNewOrdersIfNeeded(orderCount: Int) {
-        titleLabel.text = String.pluralize(orderCount,
-                                           singular: NSLocalizedString("You have %ld order to fulfill", comment: "Title text used on the My Store UI when a user has a _single_ pending order to process."),
-                                           plural: NSLocalizedString("You have %ld orders to fulfill", comment: "Title text used on the My Store UI when a user has _multiple_ pending orders to process."))
+        let singular = NSLocalizedString(
+            "You have %ld order to fulfill",
+            comment: "Title text used on the My Store UI when a user has a _single_ pending order to process."
+        )
+        let plural = NSLocalizedString(
+            "You have %ld orders to fulfill",
+            comment: "Title text used on the My Store UI when a user has _multiple_ pending orders to process."
+        )
+        titleLabel.text = String.pluralize(orderCount, singular: singular, plural: plural)
         delegate?.didUpdateNewOrdersData(hasNewOrders: orderCount > 0)
     }
 }

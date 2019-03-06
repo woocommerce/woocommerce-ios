@@ -36,6 +36,16 @@ class OrderDetailsViewController: UIViewController {
         return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: viewModel.order)
     }()
 
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     /// Sections to be rendered
     ///
     private var sections = [Section]()
@@ -70,6 +80,7 @@ class OrderDetailsViewController: UIViewController {
         configureNavigation()
         configureTableView()
         configureEntityListener()
+        configureResultsController()
         registerTableViewCells()
         registerTableViewHeaderFooters()
     }
@@ -114,7 +125,8 @@ private extension OrderDetailsViewController {
                 return
             }
 
-            self.viewModel = OrderDetailsViewModel(order: order)
+            let orderStatus = self.lookUpOrderStatus(for: order)
+            self.viewModel = OrderDetailsViewModel(order: order, orderStatus: orderStatus)
         }
 
         entityListener.onDelete = { [weak self] in
@@ -125,6 +137,12 @@ private extension OrderDetailsViewController {
             self.navigationController?.popViewController(animated: true)
             self.displayOrderDeletedNotice()
         }
+    }
+
+    /// Setup: Results Controller
+    ///
+    private func configureResultsController() {
+        try? statusResultsController.performFetch()
     }
 
     /// Reloads the tableView, granted that the view has been effectively loaded.
@@ -532,6 +550,15 @@ private extension OrderDetailsViewController {
         }
 
         StoresManager.shared.dispatch(action)
+    }
+
+    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
+        let listAll = statusResultsController.fetchedObjects
+        for orderStatus in listAll where orderStatus.slug == order.statusKey {
+            return orderStatus
+        }
+
+        return nil
     }
 }
 

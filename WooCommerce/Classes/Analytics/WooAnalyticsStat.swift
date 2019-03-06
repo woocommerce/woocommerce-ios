@@ -142,6 +142,7 @@ public enum WooAnalyticsStat: String {
     case orderFulfillmentCompleteButtonTapped   = "order_fulfillment_mark_order_complete_button_tapped"
     case orderMarkedCompleteUndoButtonTapped    = "snack_order_marked_complete_undo_button_tapped"
     case orderShareStoreButtonTapped            = "orders_list_share_your_store_button_tapped"
+    case orderStatusDialogApplyButtonTapped     = "set_order_status_dialog_apply_button_tapped"
 
     // Order Data/Action Events
     //

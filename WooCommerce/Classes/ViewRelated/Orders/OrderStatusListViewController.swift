@@ -147,6 +147,9 @@ extension OrderStatusListViewController {
             return
         }
 
+        WooAnalytics.shared.track(.orderDetailOrderStatusEditButtonTapped,
+                                  withProperties: ["status": newStatus])
+
         let orderID = order.orderID
         let undoStatus = order.statusKey
 

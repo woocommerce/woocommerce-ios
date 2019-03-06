@@ -33,7 +33,7 @@ extension UIButton {
     ///
     func applyTertiaryButtonStyle() {
         backgroundColor = .clear
-        contentEdgeInsets = Style.noMargingEdgeInsets
+        contentEdgeInsets = Style.noMarginEdgeInsets
         tintColor = StyleManager.wooCommerceBrandColor
         layer.borderColor = StyleManager.wooCommerceBrandColor.cgColor
         titleLabel?.applySubheadlineStyle()
@@ -50,6 +50,6 @@ private extension UIButton {
         static let defaultCornerRadius = CGFloat(8.0)
         static let defaultBorderWidth = CGFloat(1.0)
         static let defaultEdgeInsets = UIEdgeInsets(top: 12, left: 22, bottom: 12, right: 22)
-        static let noMargingEdgeInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        static let noMarginEdgeInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
 }

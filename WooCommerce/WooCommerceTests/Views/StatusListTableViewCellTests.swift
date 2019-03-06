@@ -1,13 +1,13 @@
 import XCTest
 @testable import WooCommerce
 
-final class CheckmarkOnSelectionTableViewCellTests: XCTestCase {
-    private var cell: CheckmarkOnSelectionTableViewCell?
+final class StatusListTableViewCellTests: XCTestCase {
+    private var cell: StatusListTableViewCell?
 
     override func setUp() {
         super.setUp()
-        let nib = Bundle.main.loadNibNamed("CheckmarkOnSelectionTableViewCell", owner: self, options: nil)
-        cell = nib?.first as? CheckmarkOnSelectionTableViewCell
+        let nib = Bundle.main.loadNibNamed("StatusListTableViewCell", owner: self, options: nil)
+        cell = nib?.first as? StatusListTableViewCell
     }
 
     override func tearDown() {

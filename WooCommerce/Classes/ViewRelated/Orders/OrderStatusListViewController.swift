@@ -64,7 +64,7 @@ final class OrderStatusListViewController: UIViewController {
     /// Registers all of the available TableViewCells
     ///
     private func registerTableViewCells() {
-        let cells = [CheckmarkOnSelectionTableViewCell.self]
+        let cells = [StatusListTableViewCell.self]
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
@@ -200,7 +200,7 @@ extension OrderStatusListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CheckmarkOnSelectionTableViewCell.reuseIdentifier, for: indexPath) as? CheckmarkOnSelectionTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: StatusListTableViewCell.reuseIdentifier, for: indexPath) as? StatusListTableViewCell else {
             fatalError()
         }
 

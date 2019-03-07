@@ -130,10 +130,10 @@ private extension SummaryTableViewCell {
 private extension SummaryTableViewCell {
     func configureIconForVoiceOver() {
         updateStatusButton.accessibilityLabel = NSLocalizedString("Update Order Status",
-                                                                  comment: "Accessibility label for the button that allows updating the order status in Order Details View ")
+                                                                  comment: "Accessibility label for the button to update the order status in Order Details View ")
         updateStatusButton.accessibilityTraits = .button
         updateStatusButton.accessibilityHint = NSLocalizedString("Opens a list of available statuses.",
-                                                                 comment: "Accessibility hint for the button that allows updating the order status in Order Details View")
+                                                                 comment: "Accessibility hint for the button tto update the order status")
     }
 }
 

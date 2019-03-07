@@ -660,7 +660,8 @@ private extension OrderDetailsViewController {
             return
         }
 
-        guard let trackingURL = tracking.trackingURL, let url = URL(string: trackingURL) else {
+        guard let trackingURL = tracking.trackingURL?.addHTTPSSchemeIfNecessary(),
+            let url = URL(string: trackingURL) else {
             return
         }
 

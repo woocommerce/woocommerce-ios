@@ -20,7 +20,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="nKR-kp-PKq">
-                        <rect key="frame" x="16" y="16" width="299" height="133.5"/>
+                        <rect key="frame" x="16" y="8" width="299" height="141.5"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="MBb-Vp-3eh">
                                 <rect key="frame" x="0.0" y="0.0" width="299" height="69.5"/>
@@ -46,7 +46,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="SIM-Wl-ZSt">
-                                <rect key="frame" x="0.0" y="77.5" width="299" height="56"/>
+                                <rect key="frame" x="0.0" y="77.5" width="299" height="64"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mav-Sc-Nqa">
                                         <rect key="frame" x="0.0" y="0.0" width="299" height="1"/>
@@ -56,7 +56,7 @@
                                         </constraints>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q04-tu-Hwj">
-                                        <rect key="frame" x="0.0" y="1" width="299" height="55"/>
+                                        <rect key="frame" x="0.0" y="1" width="299" height="63"/>
                                         <state key="normal" title="Button"/>
                                         <connections>
                                             <action selector="actionButtonPressed:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="vJf-Pe-OWy"/>
@@ -70,7 +70,7 @@
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="nKR-kp-PKq" secondAttribute="bottom" id="OVJ-2E-eJY"/>
                     <constraint firstItem="nKR-kp-PKq" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Tkb-Wi-nOp"/>
-                    <constraint firstItem="nKR-kp-PKq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="cF4-8H-16y"/>
+                    <constraint firstItem="nKR-kp-PKq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="cF4-8H-16y"/>
                     <constraint firstAttribute="trailingMargin" secondItem="nKR-kp-PKq" secondAttribute="trailing" id="fA5-E1-lrn"/>
                 </constraints>
             </tableViewCellContentView>

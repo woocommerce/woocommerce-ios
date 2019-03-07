@@ -25,9 +25,9 @@ class ReportOrderMapperTests: XCTestCase {
             return
         }
 
-        var reportTotals = [OrderStatusKey: Int]()
+        var reportTotals = [OrderStatusEnum: Int]()
         results.forEach({ (orderStatus) in
-            let status = OrderStatusKey(rawValue: orderStatus.slug)
+            let status = OrderStatusEnum(rawValue: orderStatus.slug)
             reportTotals[status] = orderStatus.total
         })
         let orderStatuses = results
@@ -41,8 +41,8 @@ class ReportOrderMapperTests: XCTestCase {
         XCTAssertEqual(reportTotals[.cancelled], 7)
         XCTAssertEqual(reportTotals[.refunded], 8)
         XCTAssertEqual(reportTotals[.failed], 9)
-        XCTAssertEqual(reportTotals[OrderStatusKey(rawValue: "cia-investigation")], 10)
-        XCTAssertEqual(reportTotals[OrderStatusKey(rawValue: "pre-ordered")], 1)
+        XCTAssertEqual(reportTotals[OrderStatusEnum(rawValue: "cia-investigation")], 10)
+        XCTAssertEqual(reportTotals[OrderStatusEnum(rawValue: "pre-ordered")], 1)
 
         XCTAssertNotNil(orderStatuses)
         XCTAssertEqual(orderStatuses.count, 9)

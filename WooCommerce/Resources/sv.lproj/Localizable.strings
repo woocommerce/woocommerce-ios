@@ -135,7 +135,7 @@
 "Certificate error" = "Certifikat-fel";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "Rensa gamla aktivitetsloggar";
+"Reset Activity Log" = "Rensa gamla aktivitetsloggar";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Samla in information";

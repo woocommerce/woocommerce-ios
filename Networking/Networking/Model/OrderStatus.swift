@@ -9,8 +9,8 @@ public struct OrderStatus: Decodable {
     public let slug: String
     public let total: Int
 
-    public var status: OrderStatusKey {
-        return OrderStatusKey(rawValue: slug)
+    public var status: OrderStatusEnum {
+        return OrderStatusEnum(rawValue: slug)
     }
 
     /// OrderStatus struct initializer.

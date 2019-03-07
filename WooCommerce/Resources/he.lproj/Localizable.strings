@@ -135,7 +135,7 @@
 "Certificate error" = "שגיאה בתעודה";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "ניקוי פעילויות ישנות";
+"Reset Activity Log" = "ניקוי פעילויות ישנות";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "איסוף מידע";

@@ -135,7 +135,7 @@
 "Certificate error" = "خطأ في الشهادة";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "مسح سجلات النشاط القديمة";
+"Reset Activity Log" = "مسح سجلات النشاط القديمة";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "جمع المعلومات";

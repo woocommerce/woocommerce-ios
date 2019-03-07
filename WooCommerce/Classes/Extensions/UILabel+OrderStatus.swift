@@ -7,12 +7,12 @@ import Yosemite
 //
 extension UILabel {
 
-    /// Applies the appropriate Style for a given OrderStatus
+    /// Applies the appropriate Style for a given OrderStatusEnum
     ///
-    func applyStyle(for statusKey: OrderStatusKey) {
+    func applyStyle(for statusEnum: OrderStatusEnum) {
         applyFootnoteStyle()
         applyLayerSettings()
-        applyBackground(for: statusKey)
+        applyBackground(for: statusEnum)
     }
 
     /// Setup: Layer
@@ -24,8 +24,8 @@ extension UILabel {
 
     /// Setup: Background Color
     ///
-    private func applyBackground(for statusKey: OrderStatusKey) {
-        switch statusKey {
+    private func applyBackground(for statusEnum: OrderStatusEnum) {
+        switch statusEnum {
         case .processing:
             fallthrough
         case .pending:

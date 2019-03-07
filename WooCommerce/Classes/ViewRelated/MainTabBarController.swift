@@ -198,14 +198,14 @@ extension MainTabBarController {
 
     /// Displays the Orders List with the specified Filter applied.
     ///
-    static func presentOrders(statusKeyFilter: OrderStatusKey) {
+    static func presentOrders(statusFilter: OrderStatus) {
         switchToOrdersTab()
 
         guard let ordersViewController: OrdersViewController = childViewController() else {
             return
         }
 
-        ordersViewController.statusKeyFilter = statusKeyFilter
+        ordersViewController.statusFilter = statusFilter
     }
 
     /// Switches to the Notifications Tab, and displays the details for the specified Notification ID.

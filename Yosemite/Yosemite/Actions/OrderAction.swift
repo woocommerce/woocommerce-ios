@@ -13,7 +13,7 @@ public enum OrderAction: Action {
 
     /// Synchronizes the Orders matching the specified criteria.
     ///
-    case synchronizeOrders(siteID: Int, statusKey: OrderStatusKey?, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
+    case synchronizeOrders(siteID: Int, statusKey: String?, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
 
     /// Nukes all of the cached orders.
     ///
@@ -25,5 +25,5 @@ public enum OrderAction: Action {
 
     /// Updates a given Order's Status.
     ///
-    case updateOrder(siteID: Int, orderID: Int, statusKey: OrderStatusKey, onCompletion: (Error?) -> Void)
+    case updateOrder(siteID: Int, orderID: Int, statusKey: String, onCompletion: (Error?) -> Void)
 }

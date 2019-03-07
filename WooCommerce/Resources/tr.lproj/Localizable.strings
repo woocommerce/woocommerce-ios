@@ -135,7 +135,7 @@
 "Certificate error" = "Sertifika hatası";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "Eski etkinlik günlüklerini temizle";
+"Reset Activity Log" = "Eski etkinlik günlüklerini temizle";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Bilgi topla";

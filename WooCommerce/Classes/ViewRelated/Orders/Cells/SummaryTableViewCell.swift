@@ -115,9 +115,24 @@ private extension SummaryTableViewCell {
         updateStatusButton.setImage(pencilIcon, for: .normal)
 
         updateStatusButton.addTarget(self, action: #selector(editWasTapped), for: .touchUpInside)
+
+        configureIconForVoiceOver()
     }
 
     @objc func editWasTapped() {
         onPencilTouchUp?()
+    }
+}
+
+
+/// MARK: - VoiceOver
+///
+private extension SummaryTableViewCell {
+    func configureIconForVoiceOver() {
+        updateStatusButton.accessibilityLabel = NSLocalizedString("Update Order Status",
+                                                                  comment: "Accessibility label for the button that allows updating the order status in Order Details View ")
+        updateStatusButton.accessibilityTraits = .button
+        updateStatusButton.accessibilityHint = NSLocalizedString("Opens a list of available statuses.",
+                                                                 comment: "Accessibility hint for the button that allows updating the order status in Order Details View")
     }
 }

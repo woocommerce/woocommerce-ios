@@ -42,6 +42,8 @@ class OrderDetailsViewModel {
 
     let fulfillTitle = NSLocalizedString("Fulfill order", comment: "Fulfill order button title")
 
+    let trackTitle = NSLocalizedString("Track package", comment: "Track package button title")
+
     var isProcessingPayment: Bool {
         return order.statusKey == OrderStatusEnum.processing.rawValue
     }

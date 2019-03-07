@@ -37,6 +37,16 @@ class OrderSearchViewController: UIViewController {
         return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
     }()
 
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
     private let syncingCoordinator = SyncingCoordinator()
@@ -168,6 +178,7 @@ private extension OrderSearchViewController {
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
         try? resultsController.performFetch()
+        try? statusResultsController.performFetch()
     }
 
     /// Setup: Sync'ing Coordinator
@@ -336,7 +347,18 @@ private extension OrderSearchViewController {
 
     func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
         let order = resultsController.object(at: indexPath)
-        return OrderDetailsViewModel(order: order)
+        let orderStatus = lookUpOrderStatus(for: order)
+
+        return OrderDetailsViewModel(order: order, orderStatus: orderStatus)
+    }
+
+    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
+        let listAll = statusResultsController.fetchedObjects
+        for orderStatus in listAll where orderStatus.slug == order.statusKey {
+            return orderStatus
+        }
+
+        return nil
     }
 }
 

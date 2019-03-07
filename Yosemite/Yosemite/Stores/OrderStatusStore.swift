@@ -8,6 +8,12 @@ import CocoaLumberjack
 //
 public class OrderStatusStore: Store {
 
+    /// Shared private StorageType for use during then entire Orders sync process
+    ///
+    private lazy var sharedDerivedStorage: StorageType = {
+        return storageManager.newDerivedStorage()
+    }()
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -25,6 +31,8 @@ public class OrderStatusStore: Store {
         switch action {
         case .retrieveOrderStatuses(let siteID, let onCompletion):
             retrieveOrderStatuses(siteID: siteID, onCompletion: onCompletion)
+        case .resetStoredOrderStatuses(let onCompletion):
+            resetStoredOrderStatuses(onCompletion: onCompletion)
         }
     }
 }
@@ -44,9 +52,21 @@ private extension OrderStatusStore {
                 return
             }
 
-            self?.upsertStoredOrderStatuses(siteID: siteID, readOnlyOrderStatuses: orderStatuses)
-            onCompletion(orderStatuses, nil)
+            self?.upsertStatusesInBackground(siteID: siteID, readOnlyOrderStatuses: orderStatuses) {
+                onCompletion(orderStatuses, nil)
+            }
         }
+    }
+
+    /// Nukes all of the Stored OrderStatuses.
+    ///
+    func resetStoredOrderStatuses(onCompletion: () -> Void) {
+        let storage = storageManager.viewStorage
+        storage.deleteAllObjects(ofType: Storage.OrderStatus.self)
+        storage.saveIfNeeded()
+        DDLogDebug("OrderStatuses deleted")
+
+        onCompletion()
     }
 }
 
@@ -55,31 +75,30 @@ private extension OrderStatusStore {
 //
 extension OrderStatusStore {
 
-    /// Updates (OR Inserts) the specified ReadOnly OrderStatus Entities into the Storage Layer.
+    /// Updates (OR Inserts) the specified ReadOnly Order Status Entities
+    /// *in a background thread*. onCompletion will be called on the main thread!
     ///
-    func upsertStoredOrderStatuses(siteID: Int, readOnlyOrderStatuses: [Networking.OrderStatus]) {
-        assert(Thread.isMainThread)
-        let storage = storageManager.viewStorage
+    func upsertStatusesInBackground(siteID: Int, readOnlyOrderStatuses: [Networking.OrderStatus], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            for readOnlyItem in readOnlyOrderStatuses {
+                let storageStatusItem = derivedStorage.loadOrderStatus(siteID: readOnlyItem.siteID, slug: readOnlyItem.slug) ??
+                                        derivedStorage.insertNewObject(ofType: Storage.OrderStatus.self)
+                storageStatusItem.update(with: readOnlyItem)
+            }
 
-        // Upsert the settings from the read-only site settings
-        for readOnlyItem in readOnlyOrderStatuses {
-            if let existingStorageItem = storage.loadOrderStatus(siteID: siteID, slug: readOnlyItem.slug) {
-                existingStorageItem.update(with: readOnlyItem)
-            } else {
-                let newStorageItem = storage.insertNewObject(ofType: Storage.OrderStatus.self)
-                newStorageItem.update(with: readOnlyItem)
+            // Now, remove any objects that exist in storage but not in readOnlyOrderStatuses
+            if let storageStatuses = derivedStorage.loadOrderStatuses(siteID: siteID) {
+                storageStatuses.forEach({ storageStatus in
+                    if readOnlyOrderStatuses.first(where: { $0.slug == storageStatus.slug } ) == nil {
+                        derivedStorage.deleteObject(storageStatus)
+                    }
+                })
             }
         }
 
-        // Now, remove any objects that exist in storageOrderStatuses but not in readOnlyOrderStatuses
-        if let storageOrderStatuses = storage.loadOrderStatuses(siteID: siteID) {
-            storageOrderStatuses.forEach({ storageItem in
-                if readOnlyOrderStatuses.first(where: { $0.slug == storageItem.slug }) == nil {
-                    storage.deleteObject(storageItem)
-                }
-            })
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
         }
-
-        storage.saveIfNeeded()
     }
 }

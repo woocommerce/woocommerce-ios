@@ -19,7 +19,7 @@ final class SummaryTableViewCell: UITableViewCell {
     ///
     @IBOutlet private weak var paymentStatusLabel: PaddedLabel!
 
-    /// Button: Update Order Status
+    /// Button: Manually Update Order Status
     ///
     @IBOutlet private var updateStatusButton: UIButton!
 
@@ -134,5 +134,25 @@ private extension SummaryTableViewCell {
         updateStatusButton.accessibilityTraits = .button
         updateStatusButton.accessibilityHint = NSLocalizedString("Opens a list of available statuses.",
                                                                  comment: "Accessibility hint for the button that allows updating the order status in Order Details View")
+    }
+}
+
+
+/// MARK: - Testability
+extension SummaryTableViewCell {
+    func getTitle() -> UILabel {
+        return titleLabel
+    }
+
+    func getCreatedLabel() -> UILabel {
+        return createdLabel
+    }
+
+    func getStatusLabel() -> UILabel {
+        return paymentStatusLabel
+    }
+
+    func getEditButton() -> UIButton {
+        return updateStatusButton
     }
 }

@@ -505,7 +505,7 @@ private extension OrderDetailsViewController {
     func configureSummary(cell: SummaryTableViewCell) {
         cell.title = viewModel.summaryTitle
         cell.dateCreated = viewModel.summaryDateCreated
-        cell.onPencilTouchUp = { [weak self] in
+        cell.onEditTouchUp = { [weak self] in
             self?.displayOrderStatusList()
         }
 

@@ -39,7 +39,7 @@ final class SummaryTableViewCellTests: XCTestCase {
 
     func testTappingButtonExecutesCallback() {
         let expect = expectation(description: "The action assigned gets called")
-        cell?.onPencilTouchUp = {
+        cell?.onEditTouchUp = {
             expect.fulfill()
         }
 

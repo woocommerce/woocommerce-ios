@@ -135,7 +135,7 @@
 "Certificate error" = "Certificaat fout";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "Oude activiteitenlogs wissen";
+"Reset Activity Log" = "Oude activiteitenlogs wissen";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Verzamel informatie";

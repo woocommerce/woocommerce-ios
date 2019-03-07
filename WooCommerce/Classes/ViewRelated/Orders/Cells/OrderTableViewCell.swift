@@ -22,11 +22,12 @@ class OrderTableViewCell: UITableViewCell {
     ///
     func configureCell(viewModel: OrderDetailsViewModel) {
         titleLabel.text = viewModel.summaryTitle
-
         totalLabel.text = viewModel.totalFriendlyString
 
-        paymentStatusLabel.text = viewModel.order.statusKey.description
-        paymentStatusLabel.applyStyle(for: viewModel.order.statusKey)
+        if let orderStatus = viewModel.orderStatus {
+            paymentStatusLabel.applyStyle(for: orderStatus.status)
+            paymentStatusLabel.text = orderStatus.name
+        }
     }
 
 
@@ -64,10 +65,12 @@ private extension OrderTableViewCell {
     ///
     func preserveLabelColors(action: () -> Void) {
         let paymentColor = paymentStatusLabel.backgroundColor
+        let borderColor = paymentStatusLabel.layer.borderColor
 
         action()
 
         paymentStatusLabel.backgroundColor = paymentColor
+        paymentStatusLabel.layer.borderColor = borderColor
     }
 
     /// Setup: Labels

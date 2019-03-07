@@ -32,6 +32,8 @@
 		743E272021AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743E271F21AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift */; };
 		743EDD9F214B05350039071B /* TopEarnerStatsItem+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743EDD9E214B05350039071B /* TopEarnerStatsItem+Woo.swift */; };
 		7441E1D221503F77004E6ECE /* IntrinsicTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7441E1D121503F77004E6ECE /* IntrinsicTableView.swift */; };
+		74460D4022289B7600D7316A /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74460D3F22289B7600D7316A /* Coordinator.swift */; };
+		74460D4222289C7A00D7316A /* StorePickerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74460D4122289C7A00D7316A /* StorePickerCoordinator.swift */; };
 		744F00D221B582A9007EFA93 /* StarRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744F00D121B582A9007EFA93 /* StarRatingView.swift */; };
 		7459A6C621B0680300F83A78 /* RequirementsChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7459A6C521B0680300F83A78 /* RequirementsChecker.swift */; };
 		746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746791622108D7C0007CF1DC /* WooAnalyticsTests.swift */; };
@@ -201,7 +203,6 @@
 		B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3C220E1484400B53AED /* StoresManagerTests.swift */; };
 		B5DBF3C520E148E000B53AED /* DeauthenticatedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3C420E148E000B53AED /* DeauthenticatedState.swift */; };
 		B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3CA20E149CC00B53AED /* AuthenticatedState.swift */; };
-		B5E96B3821137AA100DF68D0 /* OrderStatusKey+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E96B3721137AA100DF68D0 /* OrderStatusKey+Woo.swift */; };
 		B5F04D952194F2A300501EE1 /* NoteDetailsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F04D942194F2A300501EE1 /* NoteDetailsRow.swift */; };
 		B5F355EF21CD500200A7077A /* OrderSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F355EE21CD500200A7077A /* OrderSearchViewController.swift */; };
 		B5F355F121CD504400A7077A /* OrderSearchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F355F021CD504400A7077A /* OrderSearchViewController.xib */; };
@@ -342,6 +343,8 @@
 		743E271F21AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FancyAlertViewController+Upgrade.swift"; sourceTree = "<group>"; };
 		743EDD9E214B05350039071B /* TopEarnerStatsItem+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TopEarnerStatsItem+Woo.swift"; sourceTree = "<group>"; };
 		7441E1D121503F77004E6ECE /* IntrinsicTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntrinsicTableView.swift; sourceTree = "<group>"; };
+		74460D3F22289B7600D7316A /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		74460D4122289C7A00D7316A /* StorePickerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePickerCoordinator.swift; sourceTree = "<group>"; };
 		744F00D121B582A9007EFA93 /* StarRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarRatingView.swift; sourceTree = "<group>"; };
 		7459A6C521B0680300F83A78 /* RequirementsChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequirementsChecker.swift; sourceTree = "<group>"; };
 		746791622108D7C0007CF1DC /* WooAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalyticsTests.swift; sourceTree = "<group>"; };
@@ -539,7 +542,6 @@
 		B5DBF3C220E1484400B53AED /* StoresManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoresManagerTests.swift; sourceTree = "<group>"; };
 		B5DBF3C420E148E000B53AED /* DeauthenticatedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeauthenticatedState.swift; sourceTree = "<group>"; };
 		B5DBF3CA20E149CC00B53AED /* AuthenticatedState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedState.swift; sourceTree = "<group>"; };
-		B5E96B3721137AA100DF68D0 /* OrderStatusKey+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatusKey+Woo.swift"; sourceTree = "<group>"; };
 		B5F04D942194F2A300501EE1 /* NoteDetailsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailsRow.swift; sourceTree = "<group>"; };
 		B5F355EE21CD500200A7077A /* OrderSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchViewController.swift; sourceTree = "<group>"; };
 		B5F355F021CD504400A7077A /* OrderSearchViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderSearchViewController.xib; sourceTree = "<group>"; };
@@ -841,11 +843,12 @@
 				B5DB01B32114AB2D00A4F797 /* Fabric */,
 				B58B4ABC2108F7F800076FDD /* Notices */,
 				CE14452C2188C0EC00A991D8 /* Zendesk */,
-				B55D4C2620B717C000D7A50F /* UserAgent.swift */,
+				74460D3F22289B7600D7316A /* Coordinator.swift */,
 				B54FBE542111F70700390F57 /* ResultsController+UIKit.swift */,
 				7459A6C521B0680300F83A78 /* RequirementsChecker.swift */,
 				74B5713521CD7604008F9B8E /* SharingHelper.swift */,
 				B5D6DC53214802740003E48A /* SyncCoordinator.swift */,
+				B55D4C2620B717C000D7A50F /* UserAgent.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -964,7 +967,6 @@
 				B59D1EE4219080B4009D1978 /* Note+Woo.swift */,
 				7435E58D21C0151B00216F0F /* OrderNote+Woo.swift */,
 				748C777F211E18A600814F2C /* OrderStats+Woo.swift */,
-				B5E96B3721137AA100DF68D0 /* OrderStatusKey+Woo.swift */,
 				B59D1EE92190AE96009D1978 /* StorageNote+Woo.swift */,
 				CE24BCD7212F25D4001CD12E /* StorageOrder+Woo.swift */,
 				743EDD9E214B05350039071B /* TopEarnerStatsItem+Woo.swift */,
@@ -1110,6 +1112,7 @@
 				B557652C20F6827900185843 /* StoreTableViewCell.xib */,
 				B5D1AFC520BC7B7300DB0E8C /* StorePickerViewController.swift */,
 				B5D1AFC720BC7B9600DB0E8C /* StorePickerViewController.xib */,
+				74460D4122289C7A00D7316A /* StorePickerCoordinator.swift */,
 			);
 			path = Epilogue;
 			sourceTree = "<group>";
@@ -1214,6 +1217,7 @@
 				748C7781211E294000814F2C /* Double+Woo.swift */,
 				740987B221B87760000E4C80 /* FancyAnimatedButton+Woo.swift */,
 				B509FED021C041DF000076A9 /* Locale+Woo.swift */,
+				CE021534215BE3AB00C19555 /* LoginNavigationController+Woo.swift */,
 				B59D1EE221907C7B009D1978 /* NSAttributedString+Helpers.swift */,
 				CE4DA5C921DEA78E00074607 /* NSDecimalNumber+Helpers.swift */,
 				B5A56BF4219F5AB20065A902 /* NSNotificationName+Woo.swift */,
@@ -1243,7 +1247,6 @@
 				B57C744620F55BC800EEFC87 /* UIView+Helpers.swift */,
 				B5A82EE6210263460053ADC8 /* UIViewController+Helpers.swift */,
 				B5AA7B3E20ED81C2004DA14F /* UserDefaults+Woo.swift */,
-				CE021534215BE3AB00C19555 /* LoginNavigationController+Woo.swift */,
 				B59D49CC219B587E006BF0AD /* UILabel+OrderStatus.swift */,
 				B53B3F38219C817800DF1EB6 /* UIStoryboard+Woo.swift */,
 				B586906521A5F4B1001F1EFC /* UINavigationController+Woo.swift */,
@@ -1783,6 +1786,7 @@
 				B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */,
 				B5DB01B52114AB2D00A4F797 /* FabricManager.swift in Sources */,
 				7459A6C621B0680300F83A78 /* RequirementsChecker.swift in Sources */,
+				74460D4222289C7A00D7316A /* StorePickerCoordinator.swift in Sources */,
 				CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */,
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
@@ -1791,6 +1795,7 @@
 				B541B220218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift in Sources */,
 				CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */,
 				B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */,
+				74460D4022289B7600D7316A /* Coordinator.swift in Sources */,
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
 				B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */,
 				B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */,
@@ -1832,7 +1837,6 @@
 				CE1AFE622200B1BD00432745 /* ApplicationLogDetailViewController.swift in Sources */,
 				CE4DDB7B20DD312400D32EC8 /* DateFormatter+Helpers.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
-				B5E96B3821137AA100DF68D0 /* OrderStatusKey+Woo.swift in Sources */,
 				B541B226218A412C008FE7C1 /* UIFont+Woo.swift in Sources */,
 				B59D1EEC2190B08B009D1978 /* Age.swift in Sources */,
 				CE27257C21924A8C002B22EB /* HelpAndSupportViewController.swift in Sources */,

@@ -216,7 +216,7 @@ private extension ApplicationLogViewController {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = StyleManager.destructiveActionColor
-        cell.textLabel?.text = NSLocalizedString("Clear old activity logs", comment: "Deletes all activity logs except for the marked 'Current'.")
+        cell.textLabel?.text = NSLocalizedString("Reset Activity Log", comment: "Deletes all activity logs except for the marked 'Current'.")
     }
 }
 

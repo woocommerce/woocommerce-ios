@@ -74,6 +74,16 @@ extension AccountHeaderView {
         }
     }
 
+    var isHelpButtonEnabled: Bool {
+        set {
+            helpButton.isHidden = !newValue
+            helpButton.isEnabled = newValue
+        }
+        get {
+            return helpButton.isHidden
+        }
+    }
+
     /// Downloads (and displays) the Gravatar associated with the specified Email.
     ///
     func downloadGravatar(with email: String) {

@@ -15,11 +15,11 @@ public class ReportRemote: Remote {
     ///   - siteID: Site for which we'll fetch the order totals.
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadOrderTotals(for siteID: Int, completion: @escaping ([OrderStatusKey: Int]?, Error?) -> Void) {
+    public func loadOrderTotals(for siteID: Int, completion: @escaping ([OrderStatusEnum: Int]?, Error?) -> Void) {
         loadReportOrderTotals(for: siteID) { (orderStatuses, error) in
-            var returnDict = [OrderStatusKey: Int]()
+            var returnDict = [OrderStatusEnum: Int]()
             orderStatuses?.forEach({ (orderStatus) in
-                let status = OrderStatusKey(rawValue: orderStatus.slug)
+                let status = OrderStatusEnum(rawValue: orderStatus.slug)
                 returnDict[status] = orderStatus.total
             })
             completion(returnDict, error)

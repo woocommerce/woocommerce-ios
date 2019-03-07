@@ -135,7 +135,7 @@
 "Certificate error" = "Erreur de certificat";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "Effacer vos anciens journaux d'activités";
+"Reset Activity Log" = "Effacer vos anciens journaux d'activités";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Recueil d’information";

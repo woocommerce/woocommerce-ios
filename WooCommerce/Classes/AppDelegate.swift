@@ -353,7 +353,7 @@ extension AppDelegate {
             return
         }
 
-        DDLogInfo("💬 Authenticated user does not have default store — launching store picker.")
+        DDLogInfo("💬 Authenticated user does not have a Woo store selected — launching store picker.")
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .standard)
         storePickerCoordinator?.start()
     }

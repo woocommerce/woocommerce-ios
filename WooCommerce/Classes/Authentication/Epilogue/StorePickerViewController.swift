@@ -9,7 +9,7 @@ typealias SelectStoreClosure = () -> Void
 
 /// StorePickerViewControllerDelegate: the interface with operations related to the store picker
 ///
-protocol StorePickerViewControllerDelegate: class {
+protocol StorePickerViewControllerDelegate: AnyObject {
 
     /// Notifies the delegate that a store is about to be picked.
     ///
@@ -523,7 +523,7 @@ extension StorePickerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 
         // Preserve the Cell Height
-        // Why: Because Autosizing Cells, upon reload, will need to be laid you yet again. This might cause
+        // Why: Because Autosizing Cells, upon reload, will need to be laid out yet again. This might cause
         // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
         // the actual value. AKA no flicker!
         //

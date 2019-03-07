@@ -135,7 +135,7 @@
 "Certificate error" = "憑證錯誤";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "Clear old activity logs";
+"Reset Activity Log" = "Reset Activity Log";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "收集資訊";

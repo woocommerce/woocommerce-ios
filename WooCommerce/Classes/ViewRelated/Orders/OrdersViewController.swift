@@ -36,14 +36,13 @@ class OrdersViewController: UIViewController {
         return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
+    /// ResultsController: Handles all things order status
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
-        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, sortedBy: [descriptor])
     }()
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
@@ -64,6 +63,12 @@ class OrdersViewController: UIViewController {
 
             didChangeFilter(newFilter: statusFilter)
         }
+    }
+
+    /// The current list of order statuses for the default site
+    ///
+    private var currentSiteStatuses: [OrderStatus] {
+        return statusResultsController.fetchedObjects
     }
 
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
@@ -118,12 +123,13 @@ class OrdersViewController: UIViewController {
 
         refreshTitle()
         refreshResultsPredicate()
+        refreshStatusPredicate()
         registerTableViewCells()
 
         configureSyncingCoordinator()
         configureNavigation()
         configureTableView()
-        configureResultsController()
+        configureResultsControllers()
 
         startListeningToNotifications()
     }
@@ -131,6 +137,8 @@ class OrdersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        syncOrderStatus()
+        resetStatusFilterIfNeeded()
         syncingCoordinator.synchronizeFirstPage()
         if AppRatingManager.shared.shouldPromptForAppReview() {
             displayRatingPrompt()
@@ -164,7 +172,7 @@ private extension OrdersViewController {
         navigationItem.title = title
     }
 
-    /// Setup: Filtering
+    /// Setup: Order filtering
     ///
     func refreshResultsPredicate() {
         resultsController.predicate = {
@@ -182,6 +190,12 @@ private extension OrdersViewController {
 
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
+    }
+
+    /// Setup: Order status predicate
+    ///
+    func refreshStatusPredicate() {
+        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
     }
 
     /// Setup: Navigation Item
@@ -225,9 +239,12 @@ private extension OrdersViewController {
 
     /// Setup: Results Controller
     ///
-    func configureResultsController() {
+    func configureResultsControllers() {
+        // Orders FRC
         resultsController.startForwardingEvents(to: tableView)
         try? resultsController.performFetch()
+
+        // Order status FRC
         try? statusResultsController.performFetch()
     }
 
@@ -285,6 +302,8 @@ extension OrdersViewController {
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
+        statusFilter = nil
+        refreshStatusPredicate()
         syncingCoordinator.resetInternalState()
     }
 }
@@ -316,7 +335,7 @@ extension OrdersViewController {
             self?.statusFilter = nil
         }
 
-        for orderStatus in statusResultsController.fetchedObjects {
+        for orderStatus in currentSiteStatuses {
             actionSheet.addDefaultActionWithTitle(orderStatus.name) { [weak self] _ in
                 self?.statusFilter = orderStatus
             }
@@ -331,6 +350,7 @@ extension OrdersViewController {
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
         WooAnalytics.shared.track(.ordersListPulledToRefresh)
+        syncOrderStatus()
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
@@ -373,6 +393,24 @@ private extension OrdersViewController {
         let action = OrderAction.resetStoredOrders(onCompletion: onCompletion)
         StoresManager.shared.dispatch(action)
     }
+
+    /// Reset the current status filter if needed (e.g. when changing stores and the currently
+    /// selected filter does not exist in the new store)
+    ///
+    func resetStatusFilterIfNeeded() {
+        guard let statusFilter = statusFilter else {
+            // "All" is the current filter so bail
+            return
+        }
+        guard currentSiteStatuses.isEmpty == false else {
+            self.statusFilter = nil
+            return
+        }
+
+        if currentSiteStatuses.contains(statusFilter) == false {
+            self.statusFilter = nil
+        }
+    }
 }
 
 
@@ -407,6 +445,26 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
             self.transitionToResultsUpdatedState()
             onCompletion?(error == nil)
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
+    func syncOrderStatus(onCompletion: ((Error?) -> Void)? = nil) {
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            onCompletion?(nil)
+            return
+        }
+
+        // First, let's verify our FRC predicate is up to date
+        refreshStatusPredicate()
+
+        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { [weak self] (_, error) in
+            if let error = error {
+                DDLogError("⛔️ Order List — Error synchronizing order statuses: \(error)")
+            }
+            self?.resetStatusFilterIfNeeded()
+            onCompletion?(error)
         }
 
         StoresManager.shared.dispatch(action)
@@ -472,6 +530,7 @@ private extension OrdersViewController {
         let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.syncOrderStatus()
             self?.sync(pageNumber: pageNumber, pageSize: pageSize)
         }
 
@@ -557,8 +616,7 @@ private extension OrdersViewController {
     }
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        let listAll = statusResultsController.fetchedObjects
-        for orderStatus in listAll where orderStatus.slug == order.statusKey {
+        for orderStatus in currentSiteStatuses where orderStatus.slug == order.statusKey {
             return orderStatus
         }
 

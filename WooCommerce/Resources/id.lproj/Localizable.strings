@@ -135,7 +135,7 @@
 "Certificate error" = "Kesalahan sertifikat";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "Hapus log aktivitas lama";
+"Reset Activity Log" = "Hapus log aktivitas lama";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Kumpulkan informasi";

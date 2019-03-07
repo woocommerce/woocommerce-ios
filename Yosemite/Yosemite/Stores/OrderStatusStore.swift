@@ -52,11 +52,9 @@ private extension OrderStatusStore {
                 return
             }
 
-            self?.upsertStoredOrdersInBackground(siteID: siteID,
-                                                 readOnlyOrderStatuses: orderStatuses,
-                                                 onCompletion: {
+            self?.upsertStatusesInBackground(siteID: siteID, readOnlyOrderStatuses: orderStatuses) {
                 onCompletion(orderStatuses, nil)
-            })
+            }
         }
     }
 
@@ -75,20 +73,27 @@ private extension OrderStatusStore {
 
 // MARK: - Persistence
 //
-private extension OrderStatusStore {
+extension OrderStatusStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Order Status Entities
     /// *in a background thread*. onCompletion will be called on the main thread!
     ///
-    private func upsertStoredOrdersInBackground(siteID: Int,
-                                                readOnlyOrderStatuses: [Networking.OrderStatus],
-                                                onCompletion: @escaping () -> Void) {
+    func upsertStatusesInBackground(siteID: Int, readOnlyOrderStatuses: [Networking.OrderStatus], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             for readOnlyItem in readOnlyOrderStatuses {
                 let storageStatusItem = derivedStorage.loadOrderStatus(siteID: readOnlyItem.siteID, slug: readOnlyItem.slug) ??
                                         derivedStorage.insertNewObject(ofType: Storage.OrderStatus.self)
                 storageStatusItem.update(with: readOnlyItem)
+            }
+
+            // Now, remove any objects that exist in storage but not in readOnlyOrderStatuses
+            if let storageStatuses = derivedStorage.loadOrderStatuses(siteID: siteID) {
+                storageStatuses.forEach({ storageStatus in
+                    if readOnlyOrderStatuses.first(where: { $0.slug == storageStatus.slug } ) == nil {
+                        derivedStorage.deleteObject(storageStatus)
+                    }
+                })
             }
         }
 

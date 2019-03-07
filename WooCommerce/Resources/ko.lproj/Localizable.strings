@@ -135,7 +135,7 @@
 "Certificate error" = "인증서 오류";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "이전 활동 기록 지우기";
+"Reset Activity Log" = "이전 활동 기록 지우기";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "정보 수집";

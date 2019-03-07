@@ -135,7 +135,7 @@
 "Certificate error" = "Ошибка сертификата";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "Очистить старые журналы активности";
+"Reset Activity Log" = "Очистить старые журналы активности";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Сбор информации";

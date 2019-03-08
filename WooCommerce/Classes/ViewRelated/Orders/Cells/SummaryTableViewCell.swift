@@ -109,10 +109,7 @@ private extension SummaryTableViewCell {
     }
 
     func configureIcon() {
-        let pencilIcon = Gridicon.iconOfType(.pencil)
-            .imageWithTintColor(tintColor)?
-            .imageFlippedForRightToLeftLayoutDirection()
-        updateStatusButton.setImage(pencilIcon, for: .normal)
+        updateStatusButton.setImage(.pencilImage, for: .normal)
 
         updateStatusButton.addTarget(self, action: #selector(editWasTapped), for: .touchUpInside)
 

@@ -47,6 +47,16 @@ class OrderDetailsViewController: UIViewController {
         return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: viewModel.order)
     }()
 
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     /// Sections to be rendered
     ///
     private var sections = [Section]()
@@ -73,6 +83,12 @@ class OrderDetailsViewController: UIViewController {
         return trackingResultsController.fetchedObjects
     }
 
+    /// Order statuses list
+    ///
+    private var currentSiteStatuses: [OrderStatus] {
+        return statusResultsController.fetchedObjects
+    }
+
     /// Haptic Feedback!
     ///
     private let hapticGenerator = UINotificationFeedbackGenerator()
@@ -87,6 +103,7 @@ class OrderDetailsViewController: UIViewController {
         registerTableViewCells()
         registerTableViewHeaderFooters()
         configureEntityListener()
+        configureResultsController()
         configureTrackingResultsController()
     }
 
@@ -132,7 +149,8 @@ private extension OrderDetailsViewController {
                 return
             }
 
-            self.viewModel = OrderDetailsViewModel(order: order)
+            let orderStatus = self.lookUpOrderStatus(for: order)
+            self.viewModel = OrderDetailsViewModel(order: order, orderStatus: orderStatus)
         }
 
         entityListener.onDelete = { [weak self] in
@@ -147,6 +165,10 @@ private extension OrderDetailsViewController {
 
     /// Setup: Results Controller
     ///
+    private func configureResultsController() {
+        try? statusResultsController.performFetch()
+    }
+
     func configureTrackingResultsController() {
         trackingResultsController.onDidChangeContent = { [weak self] in
             self?.reloadTableViewSectionsAndData()
@@ -575,6 +597,9 @@ private extension OrderDetailsViewController {
     func configureSummary(cell: SummaryTableViewCell) {
         cell.title = viewModel.summaryTitle
         cell.dateCreated = viewModel.summaryDateCreated
+        cell.onEditTouchUp = { [weak self] in
+            self?.displayOrderStatusList()
+        }
 
         if let orderStatus = viewModel.orderStatus {
             cell.display(orderStatus: orderStatus)
@@ -634,6 +659,14 @@ private extension OrderDetailsViewController {
         }
 
         StoresManager.shared.dispatch(action)
+    }
+
+    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
+        for orderStatus in currentSiteStatuses where orderStatus.slug == order.statusKey {
+            return orderStatus
+        }
+
+        return nil
     }
 }
 
@@ -963,6 +996,20 @@ private extension OrderDetailsViewController {
 }
 
 
+// MARK: - Present Order Status List
+//
+private extension OrderDetailsViewController {
+    private func displayOrderStatusList() {
+        WooAnalytics.shared.track(.orderDetailOrderStatusEditButtonTapped,
+                                  withProperties: ["status": viewModel.order.statusKey])
+        let statusList = OrderStatusListViewController(order: viewModel.order)
+        let navigationController = UINavigationController(rootViewController: statusList)
+
+        present(navigationController, animated: true)
+    }
+}
+
+
 // MARK: - MFMessageComposeViewControllerDelegate Conformance
 //
 extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
@@ -1041,6 +1088,7 @@ private extension OrderDetailsViewController {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
         static let productDetailsSegue = "ShowProductListViewController"
+        static let orderStatusListSegue = "ShowOrderStatusListViewController"
     }
 
     enum Title {

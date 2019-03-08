@@ -5,6 +5,7 @@ import Foundation
 //
 public extension NSNotification.Name {
     public static let StorageManagerDidResetStorage = NSNotification.Name(rawValue: "StorageManagerDidResetStorage")
+    public static let LogOutEventReceived = NSNotification.Name(rawValue: "LogOutEventReceived")
 }
 
 

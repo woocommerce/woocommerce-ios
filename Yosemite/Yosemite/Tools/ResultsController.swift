@@ -229,6 +229,13 @@ public class ResultsController<T: ResultsControllerMutableType> {
     ///
     private func startListeningForStorageManagerNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(storageWasReset), name: .StorageManagerDidResetStorage, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(stopListeningForStorageManagerNotifications), name: .LogOutEventReceived, object: nil)
+    }
+
+    /// Stops listening for `StorageManagerDidResetStorage` Notifications
+    ///
+    @objc func stopListeningForStorageManagerNotifications() {
+        NotificationCenter.default.removeObserver(self)
     }
 
     /// Whenever the storage was reset, this method will refetch all of the contents, and call the `onDidResetContent` closure.

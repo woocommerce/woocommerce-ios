@@ -204,7 +204,7 @@ private extension OrdersViewController {
             StoresManager.shared.needsDefaultStore == false else {
                 return
         }
-        
+
         statusResultsController.predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
     }
 

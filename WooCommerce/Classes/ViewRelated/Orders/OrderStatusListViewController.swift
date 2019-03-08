@@ -98,9 +98,14 @@ final class OrderStatusListViewController: UIViewController {
 //
 extension OrderStatusListViewController {
     func configureNavigationBar() {
+        configureNavigationBarStyle()
         configureTitle()
         configureLeftButton()
         configureRightButton()
+    }
+
+    func configureNavigationBarStyle() {
+        navigationController?.navigationBar.barStyle = .black
     }
 
     func configureTitle() {
@@ -196,6 +201,10 @@ private extension OrderStatusListViewController {
 // MARK: - UITableViewDatasource conformance
 //
 extension OrderStatusListViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return statusResultsController.sections.count
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return statusResultsController.sections[section].numberOfObjects
     }
@@ -217,6 +226,11 @@ extension OrderStatusListViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate conformance
 //
 extension OrderStatusListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
+        return CGFloat.leastNonzeroMagnitude
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedStatus = statusResultsController.object(at: indexPath)
     }
@@ -235,6 +249,7 @@ extension OrderStatusListViewController {
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
+    
     /// Displays the `Unable to Change Status of Order` Notice.
     ///
     func displayErrorNotice(orderID: Int) {

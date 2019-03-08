@@ -94,8 +94,8 @@ final class OrderStatusListViewController: UIViewController {
     }
 }
 
-/// MARK: - Navigation bar
-///
+// MARK: - Navigation bar
+//
 extension OrderStatusListViewController {
     func configureNavigationBar() {
         configureTitle()
@@ -149,8 +149,8 @@ extension OrderStatusListViewController {
 }
 
 
-/// MARK: - Update the Order status
-///
+// MARK: - Update the Order status
+//
 private extension OrderStatusListViewController {
     /// Dispatches an Action to update the order status
     ///
@@ -193,7 +193,8 @@ private extension OrderStatusListViewController {
 }
 
 
-/// MARK: - UITableViewDatasource conformance
+// MARK: - UITableViewDatasource conformance
+//
 extension OrderStatusListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return statusResultsController.sections[section].numberOfObjects
@@ -213,7 +214,8 @@ extension OrderStatusListViewController: UITableViewDataSource {
 }
 
 
-/// MARK: - UITableViewDelegate conformance
+// MARK: - UITableViewDelegate conformance
+//
 extension OrderStatusListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedStatus = statusResultsController.object(at: indexPath)
@@ -221,7 +223,8 @@ extension OrderStatusListViewController: UITableViewDelegate {
 }
 
 
-/// MARK: - Error handling
+// MARK: - Error handling
+//
 extension OrderStatusListViewController {
     /// Displays the `Order Updated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
     ///

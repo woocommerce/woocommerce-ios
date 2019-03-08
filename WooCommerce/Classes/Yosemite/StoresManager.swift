@@ -123,6 +123,8 @@ class StoresManager {
         ZendeskManager.shared.reset()
         AppDelegate.shared.storageManager.reset()
 
+        NotificationCenter.default.post(name: .logOutEventReceived, object: nil)
+
         return self
     }
 

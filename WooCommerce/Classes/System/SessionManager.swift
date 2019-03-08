@@ -12,6 +12,10 @@ extension NSNotification.Name {
     ///
     public static let defaultAccountWasUpdated = Foundation.Notification.Name(rawValue: "DefaultAccountWasUpdated")
 
+    /// Posted after a Log out event happens.
+    ///
+    public static let logOutEventReceived = Foundation.Notification.Name(rawValue: "LogOutEventReceived")
+
     /// Posted whenever the app is about to terminate.
     ///
     public static let applicationTerminating = Foundation.Notification.Name(rawValue: "ApplicationTerminating")

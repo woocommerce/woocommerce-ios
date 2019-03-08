@@ -249,7 +249,7 @@ extension OrderStatusListViewController {
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
-    
+
     /// Displays the `Unable to Change Status of Order` Notice.
     ///
     func displayErrorNotice(orderID: Int) {

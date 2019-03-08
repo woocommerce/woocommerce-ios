@@ -116,6 +116,8 @@ class StoresManager {
     ///
     @discardableResult
     func deauthenticate() -> StoresManager {
+        NotificationCenter.default.post(name: .LogOutEventReceived, object: nil)
+        
         state = DeauthenticatedState()
 
         sessionManager.reset()

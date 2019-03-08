@@ -4,6 +4,7 @@
 - improvement: The store switcher now allows you to go back to the previous screen without logging you out
 - improvement: Custom order status labels are now supported! Instead of just displaying the order status slug and capitalizing the slug, the custom order status label will now be fetched from the server and properly displayed.
 - improvement: Filtering by custom order status now supported!
+- improvement: You can now manually change the status of an order on the order details screen
 - bugfix: correctly flips chevron on Dashboard > New Orders, to support RTL languages.
 
 1.3

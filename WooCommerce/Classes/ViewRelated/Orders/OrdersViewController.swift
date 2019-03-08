@@ -302,6 +302,16 @@ extension OrdersViewController {
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
+        // Bugfix for https://github.com/woocommerce/woocommerce-ios/issues/751.
+        // Because we are listening for default account changes,
+        // this will also fire upon logging out, when the account
+        // is set to nil. So let's protect against multi-threaded
+        // access attempts if the account is indeed nil.
+        guard StoresManager.shared.isAuthenticated,
+            StoresManager.shared.needsDefaultStore == false else {
+            return
+        }
+
         statusFilter = nil
         refreshStatusPredicate()
         syncingCoordinator.resetInternalState()

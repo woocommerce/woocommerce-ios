@@ -3,3 +3,1176 @@
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
 
+/* No comment provided by engineer. */
+"(no title)" = "(חסרה כותרת)";
+
+/* An error message. */
+"A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "דרושה כתובת אימייל תקפה כדי שנוכל לשלוח קישור לאימות. יש לחזור למסך הקודם ולהזין כתובת אימייל תקפה.";
+
+/* Shown when a user types a non-number into the two factor field. */
+"A verification code will only contain numbers." = "קוד אימות מכיל מספרים בלבד.";
+
+/* About this app (information page title) */
+"About" = "אודות";
+
+/* My Store > Settings > About app section */
+"About the app" = "מידע על האפליקציה";
+
+/* Application's Active State */
+"Active" = "פעיל";
+
+/* The plugin is active on the site and has not enabled automatic updates */
+"Active, Autoupdates off" = "פעיל, עדכונים אוטומטיים מושבתים";
+
+/* The plugin is active on the site and has enabled automatic updates */
+"Active, Autoupdates on" = "פעיל, עדכונים אוטומטיים מופעלים";
+
+/* Add a note screen - button title to send the note */
+"Add" = "הוספה";
+
+/* Add Tracking row label */
+"Add Tracking" = "הוספת מעקב";
+
+/* Button text for adding a new order note */
+"Add a note" = "הוספת הערה";
+
+/* Accessibility label for the 'Add a note' button */
+"Add a note button" = "הוספת של כפתור להערה";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
+"Adds a note to an order" = "הפעולה מוסיפה הערה להזמנה";
+
+/* Cell subtitle explaining why you might want to navigate to view the application log. */
+"Advanced tool to review the app status" = "כלי מתקדם לבדיקת מצב האפליקציה";
+
+/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
+   Name of the All filter on the Order List screen - it means all orders will be displayed. */
+"All" = "הכל";
+
+/* Mark all notifications as read notice */
+"All notifications marked as read" = "כל ההודעות מסומנות כ'נקרא'";
+
+/* Instructions for users with two-factor authentication enabled. */
+"Almost there! Please enter the verification code from your authenticator app." = "כמעט סיימת! יש להזין את קוד האימות מאפליקציית האימות.";
+
+/* String displayed before offering alternative login methods */
+"Alternatively:" = "לחלופין:";
+
+/* An error description explaining that a Menu could not be created. */
+"An error occurred creating the Menu." = "אירעה שגיאה בעת יצירת התפריט.";
+
+/* An error description explaining that a Menu could not be deleted. */
+"An error occurred deleting the Menu." = "אירעה שגיאה בעת מחיקת התפריט.";
+
+/* An error description explaining that Menus could not be fetched. */
+"An error occurred fetching the Menus." = "אירעה שגיאה בעת הבאת התפריטים.";
+
+/* An error description explaining that a Menu could not be updated. */
+"An error occurred updating the Menu." = "אירעה שגיאה בעת עדכון התפריט.";
+
+/* Used when a remote response doesn't have a specific message for a specific request */
+"An error occurred while processing your request: " = "אירעה שגיאה בעת עיבוד הבקשה שלך: ";
+
+/* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
+"Application Logs" = "יומני אפליקציה";
+
+/* Approve a comment */
+"Approve" = "אישור";
+
+/* Unapprove a comment */
+"Approved" = "מאושר";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "אישור התגובה";
+
+/* Alert message to confirm a user meant to log out. */
+"Are you sure you want to log out of the account %@?" = "האם ברצונך להתנתק מהחשבון %@?";
+
+/* No comment provided by engineer. */
+"Authenticating" = "מאמת";
+
+/* Popup title to ask for user credentials. */
+"Authentication required for host: %@" = "נדרש אימות עבור חברת האחסון: ‎%@";
+
+/* The plugin can not be manually updated or deactivated */
+"Auto-managed on this site" = "מנוהל באופן אוטומטי באתר זה";
+
+/* Alert button title - dismisses alert, which cancels the log out attempt */
+"Back" = "חזרה";
+
+/* Application's Background State */
+"Background" = "רקע";
+
+/* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+"Bar number %1$i, %2$@, " = "עמודה מספר %1$i, %2$@, ";
+
+/* Billing title for customer info cell */
+"Billing details" = "פרטי חיוב";
+
+/* Browse our FAQ title */
+"Browse our FAQ" = "לעיון בשאלות הנפוצות שלנו";
+
+/* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
+"By signing up, you agree to our _Terms of Service_." = "ביצוע ההרשמה מהווה את הסכמתך לתנאי השימוש שלנו.";
+
+/* Call phone number button title */
+"Call" = "להתקשר";
+
+/* Title of an alert letting the user know */
+"Can Not Request Link" = "לא ניתן לבקש קישור";
+
+/* Button title. Tapping it cancels the login flow.
+   Cancel button label - Cancel prompt for user information. */
+"Cancel" = "ביטול";
+
+/* Cancelled Order Status */
+"Canceled" = "בוטל";
+
+/* shown in promotional screens during first launch */
+"Catch up with your favorite sites and join the conversation anywhere, any time." = "אפשר לבדוק את העדכונים באתרים המועדפים עליך ולהצטרף לשיחה בכל מקום ובכל זמן.";
+
+/* Popup title for wrong SSL certificate. */
+"Certificate error" = "שגיאה בתעודה";
+
+/* Deletes all activity logs except for the marked 'Current'. */
+"Clear old activity logs" = "ניקוי פעילויות ישנות";
+
+/* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
+"Collect Information" = "איסוף מידע";
+
+/* Completed Order Status */
+"Completed" = "הושלמה";
+
+/* Shown while the app waits for the site creation process to complete. */
+"Completing Signup" = "משלים את ההרשמה";
+
+/* VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear. */
+"Composes a new email message to the billing customer." = "יצירת הודעת אימייל חדשה ללקוח המשלם.";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
+"Composes a new order note." = "יצירת הערה חדשה להזמנה.";
+
+/* Title shown when a user logs in with Google but no matching WordPress.com account is found */
+"Connected But…" = "מחובר, עם זאת...";
+
+/* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
+"Connected Store" = "חנות מחוברת";
+
+/* No comment provided by engineer. */
+"Connecting to WordPress.com" = "מתחבר לוורדפרס.קום";
+
+/* Contact Email title */
+"Contact Email" = "אימייל ליצירת קשר";
+
+/* Contact Support title */
+"Contact Support" = "ליצור קשר עם התמיכה";
+
+/* No comment provided by engineer. */
+"Continue" = "המשך";
+
+/* Part of a prompt suggesting that there is more content for the user to read. */
+"Continue reading" = "המשך קריאה";
+
+/* Copy address text button title — should be one word and as short as possible. */
+"Copy" = "העתק";
+
+/* Message shown when site purchases API failed */
+"Could not check site purchases." = "לא ניתן היה לבדוק רכישות באתר.";
+
+/* Error message informing the user that there was a problem subscribing to a site or feed. */
+"Could not follow the site at the address specified." = "אי אפשר לעקוב אחר האתר בכתובת שצוינה.";
+
+/* Error message informing the user that there was a problem unsubscribing to a site or feed. */
+"Could not unfollow the site at the address specified." = "אי אפשר לבטל את המעקב אחר האתר בכתובת שצוינה.";
+
+/* Error message shown a URL points to a valid site but not a WordPress site. */
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "לא ניתן היה להתחבר לאתר WordPress. אין אתר WordPress תקף בכתובת זו. בדוק את כתובת האתר (URL) שהזנת.";
+
+/* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "לא ניתן להתחבר. שיטות XML-RPC נדרשות חסרות בשרת.";
+
+/* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
+"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "לא ניתן להתחבר. קיבלנו שגיאת 403 בעת ניסיון לגשת לנקודת הקצה XMLRPC באתר שלך. כדי שהאפליקציה תוכל לבצע התקשרות עם האתר שלך, יש להפעיל אפשרות זו. יש ליצור קשר עם חברת האחסון שלך כדי לפתור בעיה זו.";
+
+/* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
+"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "לא ניתן להתחבר. חברת האחסון שלך חוסמת בקשות POST והאפליקציה דורשת את הפעלת האפשרות הזו כדי לבצע התקשרות עם האתר שלך. יש ליצור קשר עם חברת האחסון שלך כדי לפתור בעיה זו.";
+
+/* Cell title: the current date. */
+"Current" = "נוכחי";
+
+/* Customer info section title
+   Section title for the customer's billing and shipping address */
+"Customer Information" = "פרטי לקוח";
+
+/* Customer note section title
+   Section title for a note from the customer */
+"Customer Provided Note" = "הערה שסופקה על-ידי הלקוח";
+
+/* Statistical unit - a single day */
+"Day" = "יום";
+
+/* Plural of 'day' — a statistical unit */
+"Days" = "ימים";
+
+/* The row label to tap for a detailed product list */
+"Details" = "פרטים";
+
+/* Screen title: Details Order number (number) */
+"Details Order #(viewModel.order.number)" = "פרטי הזמנה ‎#‎(viewModel.order.number)‎";
+
+/* Discount label for payment view */
+"Discount" = "הנחה";
+
+/* Add a note screen - button title for closing the view
+   Dismiss the action sheet */
+"Dismiss" = "בטל";
+
+/* Label for button to log in using your site address. The underscores _..._ denote underline */
+"Don't have an account? _Sign up_" = "אין לך חשבון עדיין? _הרשמה_";
+
+/* WordPress.com (unmapped!) error */
+"Dotcom Error: [(code)] (theMessage)" = "שגיאת Dotcom: [(code)] (theMessage)";
+
+/* WordPress.com error thrown when the the request REST API url is invalid. */
+"Dotcom Invalid REST Route" = "Dotcom Invalid REST Route";
+
+/* WordPress.com Missing Token */
+"Dotcom Missing Token" = "לפריט Dotcom חסר אסימון";
+
+/* WordPress.com Request Failure */
+"Dotcom Request Failed" = "הבקשה של Dotcom נכשלה";
+
+/* WordPress.com Error thrown when the response body is empty */
+"Dotcom Response Empty" = "התגובה של Dotcom ריקה";
+
+/* WordPress.com Invalid Token */
+"Dotcom Token Invalid" = "האסימון Dotcom לא תקף";
+
+/* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
+"Double tap to dismiss" = "יש להקיש פעמיים כדי להתעלם";
+
+/* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
+"Double tap to toggle setting." = "יש להקיש פעמיים כדי לשנות את ההגדרות.";
+
+/* Email address text field placeholder */
+"Email" = "אימייל";
+
+/* Placeholder for a textfield. The user may enter their email address. */
+"Email address" = "כתובת אימייל";
+
+/* Label for yes/no switch - emailing the note to customer. */
+"Email note to customer" = "שליחת ההערה באימייל ללקוח";
+
+/* No comment provided by engineer. */
+"Email note to customer %@" = "שליחת ההערה באימייל ללקוח %@";
+
+/* Accessibility label that lets the user know the billing customer's email address */
+"Email: %@" = "אימייל: ‎%@";
+
+/* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
+"Empty URL" = "קישור ריק";
+
+/* Sign in instructions for logging in with a URL. */
+"Enter the address of your WooCommerce store you'd like to connect." = "יש להזין את הכתובת של חנות ה-WooCommerce שלך שאליה ברצונך להתחבר.";
+
+/* Instruction text on the login's site addresss screen. */
+"Enter the address of your WordPress site you'd like to connect." = "יש להזין את הכתובת של האתר שלך ב-WordPress אליו ברצונך להתחבר.";
+
+/* Instructional text shown when requesting the user's password for login. */
+"Enter the password for your WordPress.com account." = "יש להזין את הסיסמה לחשבון WordPress.com שלך.";
+
+/* Title of a button on the magic link screen.
+   Title of a button. */
+"Enter your password instead." = "במקום זאת יש להזין סיסמה.";
+
+/* Failed Order Status */
+"Failed" = "נכשל";
+
+/* Error message to show when wrong URL format is used to access the REST API */
+"Failed to serialize request to the REST API." = "לא הצלחנו לערוך בסדרה בקשה אל REST API.";
+
+/* Navigates to the feature request screen */
+"Feature Request" = "בקשת תכונה";
+
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "סינון הודעות";
+
+/* Filter the orders list. */
+"Filter orders" = "סינון הזמנות";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "סינון של רשימת ההודעות לפי סוג.";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
+"Filters the order list by payment status." = "הפעולה מסננת את רשימת ההזמנות לפי מצב התשלומים.";
+
+/* User role badge */
+"Follower" = "עוקב";
+
+/* Order Fulfillment Title */
+"Fulfill Order #(order.number)" = "השלמת הזמנה ‎#(order.number)‎";
+
+/* Fulfill order button title */
+"Fulfill order" = "השלמת הזמנה";
+
+/* Description for Top Performers section of My Store tab. */
+"Gain insights into how products are performing on your store" = "קבלת תובנות על ביצועי המוצרים בחנות שלך";
+
+/* Subtitle for Browse our FAQ */
+"Get answers to questions you have" = "קבלת מענה לשאלותיך";
+
+/* Alerts the user that wpcom account information is being retrieved. */
+"Getting account information" = "טוען פרטי חשבון";
+
+/* Message shown on screen after the Google sign up process failed. */
+"Google sign up failed." = "ההרשמה ל-Google נכשלה.";
+
+/* My Store > Settings > Help & Support section title */
+"HOW CAN WE HELP?" = "כיצד נוכל לעזור?";
+
+/* Help and Support navigation title
+   Help button - Help button on store picker screen. */
+"Help" = "עזרה";
+
+/* Contact Support Action */
+"Help & Support" = "עזרה ותמיכה";
+
+/* My Store > Settings > Privacy settings section */
+"Help Improve The App" = "נשמח לעזרה בשיפור האפליקציה";
+
+/* Footer text to hide the billing cell */
+"Hide billing" = "הסתרת חיוב";
+
+/* Error message shown a URL does not point to an existing site. */
+"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "כנראה שאין אתר וורדפרס בכתובת זו. יש לבדוק שנית את האיות ולנסות שוב.";
+
+/* Detail label for yes/no switch. */
+"If disabled the note will be private" = "אם האפשרות מושבתת, הפתק יהיה פרטי";
+
+/* Application's Inactive State */
+"Inactive" = "לא פעיל";
+
+/* The plugin is not active on the site and has not enabled automatic updates */
+"Inactive, Autoupdates off" = "לא פעיל, עדכונים אוטומטיים מושבתים";
+
+/* The plugin is not active on the site and has enabled automatic updates */
+"Inactive, Autoupdates on" = "לא פעיל, עדכונים אוטומטיים מופעלים";
+
+/* Describes a standard *.wordpress.com site domain */
+"Included with Site" = "כלול באתר";
+
+/* An error message shown when a user signed in with incorrect credentials. */
+"Incorrect username or password. Please try entering your login details again." = "שם משתמש או סיסמה לא נכונים. יש לנסות להזין שוב את פרטי ההתחברות.";
+
+/* No comment provided by engineer. */
+"Invalid Site Address" = "כתובת אתר לא תקנית";
+
+/* No comment provided by engineer. */
+"Invalid Site Title" = "כותרת אתר לא תקנית";
+
+/* Message to show to user when he tries to add a self-hosted site that isn't HTTP or HTTPS. */
+"Invalid URL scheme inserted, only HTTP and HTTPS are supported." = "פרוטוקול URL לא תקף הוזן, רק HTTP ו-HTTPS נתמכים.";
+
+/* Message to show to user when he tries to add a self-hosted site that isn't a valid URL. */
+"Invalid URL, please check if you wrote a valid site address." = "כתובת אתר לא תקפה, יש לבדוק שהזנת כתובת אתר תקפה.";
+
+/* No comment provided by engineer. */
+"Invalid username" = "שם המשתמש אינו תקין";
+
+/* An error message shown during log in when the username or password is incorrect. */
+"It looks like this username\/password isn't associated with this site." = "נראה ששם המשתמש או הסיסמה לא רשומים באתר זה.";
+
+/* An error message shown when a wpcom user provides the wrong password. */
+"It seems like you've entered an incorrect password. Want to give it another try?" = "כנראה שהזנת סיסמה שגויה. רוצה לנסות שוב?";
+
+/* Settings > Privacy Settings. A text link to the cookie policy. */
+"Learn more" = "מידע נוסף";
+
+/* Licenses (information page title) */
+"Licenses" = "רישיונות";
+
+/* Message to show when a request for a WP.com API endpoint is throttled */
+"Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "מגבלת זיכרון. ניתן לנסות שוב בעוד דקה. אם תנסה שוב לפני כן, הדבר רק יגביר את הזמן שאתה צריך לחכות לפני שהאיסור יוסר. אם אתה חושב שמדובר בשגיאה, פנה לתמיכה.";
+
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "טוען הזמנה";
+
+/* Button title.  Tapping takes the user to the login form.
+   Log In button label. */
+"Log In" = "התחבר";
+
+/* Alert button title - confirms and logs out the user */
+"Log Out" = "התנתקות";
+
+/* Explains that the files are sorted by LIFO date: most recent day listed first. */
+"Log files by created date" = "קובצי יומן לפי תאריך יצירה";
+
+/* Label for button to log in using your site address. */
+"Log in by entering your site address." = "התחברות באמצעות הזנת כתובת האתר.";
+
+/* A generic error message for a failed log in. */
+"Log in failed. Please try again." = "התחברות נכשלה. נא לנסות שנית.";
+
+/* Instruction text on the login's email address screen. */
+"Log in to WordPress.com using an email address to manage all your WordPress sites." = "התחברות ל-WordPress.com באמצעות כתובת אימייל כדי לנהל את האתרים שלך ב-WordPress.";
+
+/* Instruction text on the login's email address screen. */
+"Log in to the WordPress.com account you used to connect Jetpack." = "יש להיכנס לחשבון WordPress.com שדרכו חיברת את Jetpack.";
+
+/* Authentication Login Button */
+"Log in with Jetpack" = "התחברות באמצעות Jetpack";
+
+/* Sign in instructions on the 'log in using email' screen. */
+"Log in with your WordPress.com account email address to manage your WooCommerce stores." = "עליך להתחבר באמצעות כתובת האימייל של החשבון ב-WordPress.com כדי לנהל את החנויות שלך ב-WooCommerce.";
+
+/* Log out button title */
+"Log out account" = "ניתוק החשבון";
+
+/* Title of a button. */
+"Lost your password?" = "שחזור סיסמה";
+
+/* Tagline after the heart icon, displayed to the user */
+"Made with love by Automattic" = "נוצר באהבה על ידי Automattic";
+
+/* Login Prologue Legend */
+"Manage orders, track sales and monitor store activity with real-time alerts." = "ניהול הזמנות, מעקב אחר מכירות ואחר פעילות החנות באמצעות התראות בזמן אמת.";
+
+/* shown in promotional screens during first launch */
+"Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "ניהול אתרים שמופעלים על ידי Jetpack מכל מקום - השירות של וורדפרס תמיד בהישג יד.";
+
+/* Section name for manual offsets in time zone selector */
+"Manual Offsets" = "התאמות ידניות";
+
+/* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
+"Mapped Domain" = "דומיין ממופה";
+
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "סימון כל הפריטים כ'נקרא'";
+
+/* Fulfill Order Action Button */
+"Mark Order Complete" = "סימון הזמנה כ'הושלמה'";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "הפעולה מסמנת את כל ההודעות כהודעות שנקראו";
+
+/* Error message to show to users when trying to upload a media object with no local file associated */
+"Media doesn't have an associated file to upload." = "לפריט המדיה חסר קובץ מקושר להעלאה.";
+
+/* Message phone number button title */
+"Message" = "הודעה";
+
+/* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
+"Minimum value %1$@, maximum value %2$@" = "ערך מינימלי: %1$@, ערך מקסימלי: %2$@";
+
+/* Statistical unit - a single week */
+"Month" = "חודש";
+
+/* Plural of 'month' — a statistical unit */
+"Months" = "חודשים";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "העברת תגובה לתגובות הזבל";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "העברת התגובות לפח";
+
+/* My Tickets title */
+"My Tickets" = "הפנייה שלי";
+
+/* My Store Notice Title for loading error
+   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+"My store" = "החנות שלי";
+
+/* Name text field placeholder */
+"Name" = "שם";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
+"Navigates to Settings." = "העברה לעמוד 'הגדרות'.";
+
+/* A button title. */
+"Need help finding your site address?" = "צריך עזרה במציאת כתובת האתר שלך?";
+
+/* Takes the user to get help */
+"Need help?" = "דרושה עזרה?";
+
+/* Title of the more help button on alert helping users understand their site address */
+"Need more help?" = "צריכים עזרה נוספת?";
+
+/* Title of a button.
+   Title of a button. The text should be capitalized. */
+"Next" = "הבא";
+
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "אין עדיין הודעות!";
+
+/* Search Orders (Empty State) */
+"No Orders found" = "לא נמצאו הזמנות";
+
+/* Default text for Top Performers section when no data exists for a given period. */
+"No activity this period" = "אין פעילות בפרק זמן זה";
+
+/* Fulfill order > customer info > where the physical shipping address would normally display.
+   Order details > customer info > billing details. This is where the address would normally display. - Order details > customer info > shipping details. This is where the address would normally display. */
+"No address specified." = "לא צוינה כתובת.";
+
+/* Text displayed when no data is available for revenue chart. */
+"No data available" = "אין נתונים זמינים";
+
+/* Notifications List (Empty State + Filters)
+   Orders List (Empty State + Filters) */
+"No results for the selected criteria" = "לא נמצאו תוצאות לקריטריונים שנבחרו";
+
+/* Labels an order note to let user know it's visible to the customer
+   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
+"Note to customer" = "הערה ללקוח";
+
+/* Title of the Notifications tab — plural form of Notification
+   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
+"Notifications" = "Notifications";
+
+/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
+"Notifications: %@" = "הודעות: ‎%@";
+
+/* Button title. An acknowledgement of the message displayed in a prompt.
+   Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+"OK" = "אישור";
+
+/* Spoken label to indicate switch control is turned off. */
+"Off" = "כבוי";
+
+/* +2 Days Section Header */
+"Older than 2 days" = "בן יותר מיומיים";
+
+/* Months Section Header */
+"Older than a Month" = "בן יותר מחודש";
+
+/* Weeks Section Header */
+"Older than a Week" = "בן יותר משבוע";
+
+/* Spoken label to indicate switch control is turned on */
+"On" = "מופעל";
+
+/* On Hold Order Status */
+"On Hold" = "בהמתנה";
+
+/* Opens iOS's Device Settings for the app */
+"Open Device Settings" = "יש לפתוח את הגדרות המכשיר";
+
+/* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
+"Open Mail" = "פתיחת דואר";
+
+/* Navigates to open source licenses screen */
+"Open Source Licenses" = "רישיונות קוד פתוח";
+
+/* No comment provided by engineer. */
+"Optional Tracking Information" = "מידע על מעקב אופציונלי";
+
+/* Add a note screen - title. Example: Order #15
+   Order number title */
+"Order #(viewModel.order.number)" = "הזמנה ‎#‎(viewModel.order.number)‎";
+
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+"Order %@ has been deleted from your store" = "ההזמנה %@ נמחקה מהחנות שלך";
+
+/* Order notes section title */
+"Order Notes" = "הערות להזמנה";
+
+/* Order fulfillment success notice */
+"Order marked as fulfilled" = "הזמנות שסומנו כ'הושלם'";
+
+/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
+   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+"Orders" = "הזמנות";
+
+/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
+"Orders: %@" = "הזמנות: ‎%@";
+
+/* My Store > Settings > Other app section */
+"Other" = "אחר";
+
+/* Product section title */
+"PRODUCT" = "מוצר";
+
+/* Login dialog password placeholder
+   Password placeholder */
+"Password" = "סיסמה";
+
+/* Payment section title */
+"Payment" = "תשלום";
+
+/* Payment of <currency symbol><payment total> received via (payment method title) */
+"Payment of (totalValue) received via (order.paymentMethodTitle)" = "תשלום של (totalvalue) התקבל דרך (order.paymentMethodTitle)";
+
+/* Pending Order Status */
+"Pending" = "ממתין לאישור";
+
+/* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
+"Phone number: %@" = "מספר טלפון: ‎%@";
+
+/* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
+"Pick Store to Connect" = "בחירה בחנות לחיבור";
+
+/* Alert title for check your email during logIn/signUp. */
+"Please check your email" = "יש לבדוק את תיבת האימייל";
+
+/* No comment provided by engineer. */
+"Please enter a site address." = "נא להזין כתובת אתר.";
+
+/* No comment provided by engineer. */
+"Please enter a username." = "נא להזין שם משתמש.";
+
+/* Error message displayed when the user attempts use an invalid email address. */
+"Please enter a valid email address." = "נא להזין כתובת אימייל תקינה.";
+
+/* Popup message to ask for user credentials (fields shown below). */
+"Please enter your credentials" = "הזינו את הפרטים";
+
+/* Instructions for alert asking for email and name. */
+"Please enter your email address and username:" = "יש להזין את כתובת האימייל ואת שם המשתמש שלך:";
+
+/* Instructions for alert asking for email. */
+"Please enter your email address:" = "יש להזין את כתובת האימייל שלך.";
+
+/* A short prompt asking the user to properly fill out all login fields. */
+"Please fill out all the fields" = "נא למלא את כל השדות";
+
+/* Message to ask the user to check their email and look for a WordPress.com email. */
+"Please open your email app and look for an email from WordPress.com." = "יש לפתוח את אפליקציית האימייל שלך ולחפש את ההודעה שנשלחה מ-WordPress.com.";
+
+/* Opens the Privacy Policy web page */
+"Privacy Policy" = "מדיניות פרטיות";
+
+/* Navigates to Privacy Settings screen
+   Privacy settings screen title */
+"Privacy Settings" = "הגדרות פרטיות";
+
+/* Labels an order note to let the user know it's private and not seen by the customer
+   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
+"Private note" = "הערה פרטית";
+
+/* Processing Order Status */
+"Processing" = "בטיפול";
+
+/* Description for Top Performers left column header
+   Product section title - Section header title for the product */
+"Product" = "מוצר";
+
+/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
+"Prompts with the option to call or message the billing customer." = "הצגת האפשרות להתקשרות או לשליחת הודעה אל הלקוח המשלם.";
+
+/* shown in promotional screens during first launch */
+"Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "שליחה לפרסום כשנמצאים בפארק. כתיבת בלוג כשנוסעים באוטובוס. כתיבת תגובה כשיושבים בבית קפה. השירות של WordPress אתך בכל מקום.";
+
+/* Quantity abbreviation for section title */
+"QTY" = "כמות";
+
+/* Quantity abbreviation for section title
+   Section header title - abbreviation for quantity */
+"Qty" = "כמות";
+
+/* Subtitle for Contact Support */
+"Reach our happiness engineers who can help answer tough questions" = "יצירת קשר עם נציגי התמיכה שלנו שיכולים לענות על שאלות קשות";
+
+/* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
+"Read privacy policy" = "עיון במדיניות פרטיות";
+
+/* Refunded Order Status */
+"Refunded" = "הוחזר";
+
+/* Describes a domain that was registered with WordPress.com */
+"Registered Domain" = "דומיין רשום";
+
+/* Action: Opens the Store in a browser
+   Action: removes the current filters from the notifications list */
+"Remove Filters" = "הסרת מסננים";
+
+/* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
+"Report Crashes" = "דיווח על קריסות";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
+"Retrieves a list of orders that contain a given keyword." = "הפעולה מאחזרת רשימה של כל ההזמנות שכוללות מילת מפתח מסוימת.";
+
+/* Retry Action
+   Retry the last action */
+"Retry" = "נסה שנית";
+
+/* Revenue stat label on dashboard. */
+"Revenue" = "הכנסה";
+
+/* Review moderation success notice message. It reads: Review marked as {new status} */
+"Review marked as %@" = "Review marked as %@";
+
+/* Description text used on the UI element displayed when a user has pending orders to process. */
+"Review, prepare, and ship these pending orders" = "בדיקה, הכנה ומשלוח של ההזמנות שבהמתנה";
+
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+"Reviews" = "חוות דעת";
+
+/* SKU label */
+"SKU:" = "מק\"ט:";
+
+/* One Time Code has been sent via SMS */
+"SMS Sent" = "SMS נשלח";
+
+/* Orders Search Placeholder */
+"Search all orders" = "חיפוש בכל ההזמנות";
+
+/* Search Orders */
+"Search orders" = "חיפוש הזמנות";
+
+/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
+"Selected Store" = "Selected Store";
+
+/* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
+"Send Link" = "שליחת קישור";
+
+/* Tells user to set an email that support can use for replies */
+"Set email" = "הגדרת אימייל";
+
+/* Accessibility label for the Settings button.
+   Settings navigation title */
+"Settings" = "הגדרות";
+
+/* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
+"Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "שיתוף של פרטי השימוש שלך בשירותים השונים עם כלי הניתוח שלנו לאחר ההתחברות לחשבון שלך ב-WordPress.com.";
+
+/* Action: Opens the Store in a browser */
+"Share your Store" = "שיתוף החנות שלך";
+
+/* Shipping label for payment view */
+"Shipping" = "משלוח";
+
+/* Shipping title for customer info cell */
+"Shipping details" = "פרטי משלוח";
+
+/* Footer text to show the billing cell */
+"Show billing" = "הצגת חיוב";
+
+/* When social login fails, this button offers to let them signup for a new WordPress.com account */
+"Sign up" = "הרשמה";
+
+/* Button title. Tapping begins the process of creating a WordPress.com account. */
+"Sign up for WordPress.com" = "הרשמה ל-WordPress.com";
+
+/* Button title. Tapping begins our normal sign up process. */
+"Sign up with Email" = "הרשמה באמצעות אימייל";
+
+/* Button title. Tapping begins sign up using Google. */
+"Sign up with Google" = "הרשמה באמצעות Google";
+
+/* Describes a site redirect domain */
+"Site Redirect" = "Site Redirect";
+
+/* No comment provided by engineer. */
+"Site address must be at least 4 characters." = "כתובת אתר צריכה להכיל לפחות 4 תווים.";
+
+/* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
+"Sorry, but your username contains an invalid phrase%@." = "שם המשתמש מכיל ביטוי לא תקני %@.";
+
+/* No comment provided by engineer. */
+"Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "כתובת האתר יכולה להכיל רק אותיות קטנות (a-z) ומספרים.";
+
+/* No comment provided by engineer. */
+"Sorry, site addresses may not contain the character &#8220;_&#8221;!" = "כתובת האתר אינה יכולה להכיל את התו &#8220;_&#8221;!";
+
+/* No comment provided by engineer. */
+"Sorry, site addresses must have letters too!" = "כתובת האתר חייבת להכיל גם אותיות!";
+
+/* Error message displayed when the entered email is not available. */
+"Sorry, that email address is already being used!" = "כתובת המייל כבר נמצאת בשימוש!";
+
+/* No comment provided by engineer. */
+"Sorry, that email address is not allowed!" = "כתובת האימייל אסורה!";
+
+/* This error message occurs when a user tries to create an account with a weak password. */
+"Sorry, that password does not meet our security guidelines. Please choose a password with a minimum length of six characters, mixing uppercase letters, lowercase letters, numbers and symbols." = "מצטערים, הסיסמה אינה תואמת להנחיות האבטחה שלנו. יש לבחור סיסמה בת שישה תווים לפחות ושכוללת אותיות גדולות וקטנות, מספרים וסמלים.";
+
+/* No comment provided by engineer. */
+"Sorry, that site already exists!" = "האתר כבר קיים!";
+
+/* No comment provided by engineer. */
+"Sorry, that site is reserved!" = "האתר הזה שמור!";
+
+/* No comment provided by engineer. */
+"Sorry, that username already exists!" = "שם המשתמש כבר קיים!";
+
+/* No comment provided by engineer. */
+"Sorry, that username is unavailable." = "שם המשתמש אינו זמין.";
+
+/* No comment provided by engineer. */
+"Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "שם המשתמש יכול להכיל רק אותיות קטנות (a-z) ומספרים.";
+
+/* No comment provided by engineer. */
+"Sorry, usernames may not contain the character &#8220;_&#8221;!" = "שם המשתמש אינו יכול להכיל את התו &#8220;_&#8221;!";
+
+/* No comment provided by engineer. */
+"Sorry, usernames must have letters (a-z) too!" = "שם המשתמש חייב להכיל גם אותיות!";
+
+/* No comment provided by engineer. */
+"Sorry, you may not use that site address." = "לא ניתן להשתמש בכתובת את זו.";
+
+/* Verb, spam a comment */
+"Spam" = "תגובת זבל";
+
+/* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
+"Starting period %1$@, ending period %2$@" = "תקופת התחלה: %1$@, תקופת סיום: %2$@";
+
+/* VoiceOver accessibility label for the store revenue chart. */
+"Store revenue chart" = "טבלת רווחים בחנות";
+
+/* VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}. */
+"Store revenue chart %@" = "טבלת רווחים בחנות %@";
+
+/* VoiceOver accessibility label for the store revenue chart's X-axis. */
+"Store revenue chart: X Axis" = "טבלת רווחים בחנות: ציר X";
+
+/* VoiceOver accessibility label for the store revenue chart's Y-axis. */
+"Store revenue chart: Y Axis" = "טבלת רווחים בחנות: ציר Y";
+
+/* Subtotal label for payment view */
+"Subtotal" = "סכום ביניים";
+
+/* This action allows the user to change stores without logging out and logging back in again. */
+"Switch Store" = "Switch Store";
+
+/* Labels an order note to let user know it's a system status message */
+"System status" = "מצב מערכת";
+
+/* Tax label for total taxes line */
+"Tax:" = "מס:";
+
+/* Taxes label for payment view */
+"Taxes" = "מיסים";
+
+/* Opens the Terms of Service web page */
+"Terms of Service" = "תנאי השירות";
+
+/* Button title */
+"Text me a code instead" = "שליחת קוד במקום";
+
+/* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
+"That doesn't appear to be a valid verification code." = "נראה שזה לא קוד אימות חוקי.";
+
+/* Message to show to user when he tries to add a self-hosted site that isn't a WordPress site. */
+"That doesn't look like a WordPress site." = "זה לא נראה כמו אתר של WordPress.";
+
+/* No comment provided by engineer. */
+"That email address has already been used. Please check your inbox for an activation email. If you don't activate you can try again in a few days." = "כתובת אימייל זו כבר נמצאת בשימוש. יש בדוק את הודעת ההפעלה בתיבת הדואר הנכנס. אם פעולת ההפעלה טרם בוצעה, ניתן לנסות שוב בעוד מספר ימים.";
+
+/* No comment provided by engineer. */
+"That site address is not allowed." = "כתובת האתר לא תקינה.";
+
+/* No comment provided by engineer. */
+"That site is currently reserved but may be available in a couple days." = "האתר ששמור כיום אך הוא עשוי להיות זמין בעוד מספר ימים.";
+
+/* No comment provided by engineer. */
+"That username is currently reserved but may be available in a couple of days." = "שם משתמש זה ששמור כרגע, אך הוא עשוי להיות זמין תוך מספר ימים.";
+
+/* No comment provided by engineer. */
+"That username is not allowed." = "שם המשתמש אינו מורשה.";
+
+/* Description shown when a user logs in with Google but no matching WordPress.com account is found */
+"The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "חשבון ה-Google‏ \"(loginFields.username)\" לא תואם לשום חשבון ב-WordPress.com‏";
+
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "לא ניתן לטעון את ההזמנה!";
+
+/* Error message describing a problem with a URL. */
+"The URL is missing a valid host." = "בכתובת האינטרנט חסר מארח חוקי.";
+
+/* No comment provided by engineer. */
+"The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "האישור עבור שרת זה אינו חוקי. ייתכן שאתה מתחבר לשרת שמתחזה ל-&quot;%@&quot;, מה שעלול לסכן את המידע הסודי שלך.\n\nלבטוח באישור בכל מקרה?";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed" = "ההודעה הזו הוסרה!";
+
+/* No comment provided by engineer. */
+"The server returned an empty response. This usually means you need to increase the memory limit for your site." = "השרת החזיר תשובה ריקה. בדרך כלל הדבר אומר שצריך להגדיל את מגבלת הזיכרון לאתר.";
+
+/* No comment provided by engineer. */
+"The site address must be shorter than 64 characters." = "כתובת האתר צריכה להיות קצרה מ-64 תווים.";
+
+/* Message shown when site deletion API failed */
+"The site could not be deleted." = "לא ניתן למחוק את האתר.";
+
+/* Message shown when site export API failed */
+"The site could not be exported." = "לא ניתן היה לייצא את האתר.";
+
+/* Error message informing the user that there was a problem blocking posts from a site from their reader. */
+"There was a problem blocking posts from the specified site." = "אירעה בעיה בעת חסימת רשומות מהאתר שצוין.";
+
+/* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
+"There was a problem removing the block for specified site." = "אירעה בעיה בעת הסרת הבלוק עבור האתר שצוין.";
+
+/* Top Performers section title - this month */
+"This Month" = "החודש";
+
+/* Top Performers section title - this week */
+"This Week" = "השבוע";
+
+/* Top Performers section title - this year */
+"This Year" = "השנה";
+
+/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
+"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "אפליקציה זו דורשת Jetpack כדי לחבר אותך לחנות. <br \/> לקריאה של <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">הוראות ההגדרה<\/a>.";
+
+/* An error message informing the user the email address they entered did not match a WordPress.com account. */
+"This email address is not registered on WordPress.com." = "כתובת האימייל הזו לא רשומה ב-WordPress.com.";
+
+/* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
+"This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "המידע הזה עוזר לנו לשפר את המוצרים שלנו, להציג שיווק רלוונטי יותר, לספק לך חוויית שימוש אישית ב-WordPress.com ועוד, כפי שמפורט במדיניות הפרטיות שלנו.";
+
+/* Text instructing the user to enter their email address. */
+"To create your new WordPress.com account, please enter your email address." = "כדי ליצור חשבון WordPress.com חדש, יש להזין את כתובת האימייל שלך.";
+
+/* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
+"To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "כדי לעזור לנו לשפר את ביצועי האפליקציה ולתקן באגים מזדמנים, מומלץ להפעיל את דוחות הקריסה האוטומטיים.";
+
+/* No comment provided by engineer. */
+"To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "כדי להמשיך עם חשבון Google, ראשית יש להתחבר עם הסיסמה שלך ב-WordPress.com. נבקש את הנתון הזה פעם אחת בלבד.";
+
+/* Today Section Header
+   Top Performers section title - today */
+"Today" = "היום";
+
+/* Header label for Top Performers section of My Store tab. */
+"Top Performers" = "המבצעים הטובים ביותר";
+
+/* Used when a Reader Topic is not found for a specific id */
+"Topic not found for id:" = "נושא לא נמצא למזהה:";
+
+/* Total label for payment view */
+"Total" = "סך הכול";
+
+/* Top performers — label for the total number of products ordered */
+"Total Product Order: %ld" = "הזמנת מוצר כוללת: %ld";
+
+/* Description for Top Performers right column header */
+"Total Spend" = "הוצאה כוללת";
+
+/* Move a comment to the trash */
+"Trash" = "פח";
+
+/* Connect when the SSL certificate is invalid */
+"Trust" = "אמון";
+
+/* No comment provided by engineer. */
+"Try another account" = "יש לנסות חשבון אחר";
+
+/* When social login fails, this button offers to let the user try again with a differen email address */
+"Try with another email" = "ניתן לנסות באמצעות כתובת אימייל שונה";
+
+/* When social login fails, this button offers to let them try tp login using a URL */
+"Try with the site address" = "ניתן לנסות באמצעות כתובת האתר";
+
+/* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
+"Unable To Connect" = "אי אפשר להתחבר";
+
+/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
+"Unable to add note to order #(viewModel.order.orderID)" = "Unable to add note to order #(viewModel.order.orderID)";
+
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"Unable to find WooCommerce stores connected to this account" = "אין אפשרות למצוא חנויות של WooCommerce שמקושרות לחשבון זה";
+
+/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
+"Unable to fulfill order #(orderID)" = "Unable to fulfill order #(orderID)";
+
+/* Load Action Failed */
+"Unable to load content" = "Unable to load content";
+
+/* Review error notice message. It reads: Unable to mark review as {attempted status} */
+"Unable to mark review as %@" = "Unable to mark review as %@";
+
+/* No comment provided by engineer. */
+"Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "לא ניתן לקרוא את אתר WordPress בכתובת URL זו. יש להקיש על 'דרושה עזרה?' כדי להציג את השאלות הנפוצות.";
+
+/* Refresh Action Failed */
+"Unable to refresh list" = "אין אפשרות לרענן את הרשימה";
+
+/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
+"Unable to successfully connect to %@" = "אין אפשרות להתחבר אל %@ בהצלחה";
+
+/* Error message displayed when an error occurred checking for email availability. */
+"Unable to verify the email address. Please try again later." = "אין אפשרות לאמת את כתובת האימייל. יש לנסות שוב מאוחר יותר.";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "דחיית התגובה";
+
+/* Undo Action */
+"Undo" = "ביטול פעולה אחרונה";
+
+/* Unknown Application State */
+"Unknown" = "לא ידוע";
+
+/* No comment provided by engineer. */
+"Unknown Search Terms" = "מונחי חיפוש לא ידועים";
+
+/* No comment provided by engineer. */
+"Unknown error" = "שגיאה לא ידועה";
+
+/* Footer text below the list of logs explaining the maximum number of logs saved. */
+"Up to seven days՚ worth of logs are saved." = "אנחנו שומרים יומנים באורך של עד שבעה ימים.";
+
+/* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
+"Updated %1$@ at %2$@" = "%1$@ עודכן ב-%2$@";
+
+/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+"Updated %ld hour ago" = "עודכן לפני שעה %ld";
+
+/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+"Updated %ld hours ago" = "עודכן לפני %ld שעות";
+
+/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
+"Updated %ld minute ago" = "עודכן לפני דקה %ld";
+
+/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+"Updated %ld minutes ago" = "עודכן לפני %ld דקות";
+
+/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
+"Updated moments ago" = "עודכן לפני מספר רגעים";
+
+/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
+"Updated on %@" = "עודכן בתאריך %@";
+
+/* Login dialog username placeholder
+   Username placeholder */
+"Username" = "שם משתמש";
+
+/* No comment provided by engineer. */
+"Username must be at least 4 characters." = "שם המשתמש צריך להכיל 4 תווים לפחות.";
+
+/* two factor code placeholder */
+"Verification code" = "קוד אימות";
+
+/* Displays the version of the App */
+"Version %@" = "גרסה %@";
+
+/* View application log cell title */
+"View Application Log" = "צפייה ביומן של האפליקציה";
+
+/* subtitle for My Tickets */
+"View previously submitted support tickets" = "הצגה של קריאות תמיכה שנשלחו בעבר";
+
+/* User role badge */
+"Viewer" = "צופה";
+
+/* Visitors stat label on dashboard - should be plural. */
+"Visitors" = "מבקרים";
+
+/* Add a note screen - Write Note section title */
+"WRITE NOTE" = "כתיבת הערה";
+
+/* Orders List (Empty State / No Filters) */
+"Waiting for Customers" = "בהמתנה ללקוחות";
+
+/* Message shown on screen while waiting for Google to finish its signup process. */
+"Waiting for Google to complete…" = "ממתין להשלמת הפעולה על ידי Google...";
+
+/* shown in promotional screens during first launch */
+"Watch readers from around the world read and interact with your site — in real time." = "ניתן לראות את הפעולות של קוראים באתר שלך - בזמן אמת.";
+
+/* Instructional text on how to open the email containing a magic link. */
+"We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "שלחנו אליך קישור ישיר להרשמה! עליך לבדוק את האימייל ממכשיר זה ולהקיש על הקישור בהודעה שקיבלת כדי להשלים את ההרשמה.";
+
+/* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
+"We use other tracking tools, including some from third parties. Read about these and how to control them." = "אנחנו משתמשים בכלים למעקב, כולל כלים של צד שלישי. אפשר לקרוא פרטים על אלו על אלו ועל אופן השליטה בהם.";
+
+/* Error message displayed when an error occurred sending the magic link email. */
+"We were unable to send you an email at this time. Please try again later." = "לא הצלחנו לשלוח אליך אימייל בשלב זה. יש לנסות שוב מאוחר יותר.";
+
+/* Instructional text for the magic link login flow. */
+"We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "נשלח לך קישור מיוחד להתחברות מיידית, ללא צורך בסיסמה. לא צריך לחפש או לנחש!";
+
+/* Error message shown when having trouble connecting to a Jetpack site. */
+"We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "אין אפשרות להתחבר לאתר Jetpack בכתובת URL זו. יש ליצור אתנו קשר לעזרה.";
+
+/* Statistical unit - a single week */
+"Week" = "שבוע";
+
+/* Plural of 'week' — a statistical unit */
+"Weeks" = "שבועות";
+
+/* Title of alert helping users understand their site address */
+"What's my site address?" = "מה כתובת האתר שלי?";
+
+/* An error message shown when a wpcom user provides the wrong password. */
+"Whoops, something went wrong and we couldn't log you in. Please try again!" = "משהו השתבש ולא ניתן לבצע חיבור לחשבון. יש לנסות שוב!";
+
+/* Error message shown when an incorrect two factor code is provided. */
+"Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "הקוד לאימות דו-שלבי אינו תקף. יש לבדוק שוב את הקוד ולנסות שנית!";
+
+/* Navigates to about WooCommerce app screen */
+"WooCommerce" = "WooCommerce";
+
+/* Subject of new Zendesk ticket. */
+"WooCommerce for iOS Support" = "תמיכה ב-WooCommerce ל-iOS";
+
+/* No comment provided by engineer. */
+"WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "גרסת WordPress ישנה מדי. האתר %1$@ משתמש ב-WordPress בגרסה %2$@. מומלץ לשדרג לגרסה העדכנית ביותר, או לפחות לגרסה %3$@";
+
+/* Statistical unit - a single year */
+"Year" = "שנה";
+
+/* Plural of 'year' — a statistical unit */
+"Years" = "שנים";
+
+/* Yesterday Section Header */
+"Yesterday" = "אתמול";
+
+/* No comment provided by engineer. */
+"You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "לא ניתן להשתמש בכתובת אימייל זו להרשמה. ספק זה חוסם חלק מהאימיילים שלנו. יש להשתמש בספק אימייל אחר.";
+
+/* Title text used on the My Store UI when a user has a _single_ pending order to process. */
+"You have %ld order to fulfill" = "יש לך הזמנה %ld להשלמה";
+
+/* Title text used on the My Store UI when a user has _multiple_ pending orders to process. */
+"You have %ld orders to fulfill" = "יש לך %ld הזמנות להשלמה";
+
+/* No comment provided by engineer. */
+"You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "נראה שהתקנת תוסף למכשירים ניידים מ-DudaMobile שמונע מהאפליקציה להתחבר לבלוג שלך";
+
+/* Instructional text on how to open the email containing a magic link. */
+"Your magic link is on its way! Check your email on this device, and tap the link in the email you receive from WordPress.com" = "הקישור המיוחד שלך בדרך! עליך לבדוק את האימייל ממכשיר זה ולהקיש על הקישור בהודעה שקיבלת מ-WordPress.com";
+
+/* shown in promotional screens during first launch */
+"Your notifications travel with you — see comments and likes as they happen." = "ההודעות שלך אתך בכל מקום - אפשר לראות תגובות ולייקים בזמן אמת.";
+
+/* Body text of alert helping users understand their site address */
+"Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "עם הכניסה לאתר בדפדפן Safari, כתובת האתר תופיע בסרגל העליון של המסך.";
+
+/* Notification status description for 'approved' */
+"approved" = "אושר";
+
+/* Site Address placeholder */
+"example.wordpress.com" = "example.wordress.com";
+
+/* Later today */
+"later today" = "מאוחר יותר היום";
+
+/* Notification status description for 'unspam' (opposite of spam) */
+"not spam" = "לא תגובות זבל";
+
+/* Notification status description for 'untrash' (opposite of trash) */
+"not trash" = "לא להעביר לפח";
+
+/* Notification status description for 'spam' */
+"spam" = "תגובת זבל";
+
+/* Today */
+"today" = "היום";
+
+/* Notification status description for 'trash' */
+"trash" = "פח";
+
+/* Notification status description for 'unapproved' */
+"unapproved" = "לא אושר";
+
+/* Used when the response doesn't have a valid url to display */
+"unknown url" = "כתובת URL לא ידועה";
+
+/* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
+"{G} Log in with Google." = "{G} התחברות עם Google.";
+
+/* About View's Footer Text. The variable is the current year */
+"© %@ Automattic, Inc." = "‎‎© %@ Automattic, Inc.‎‎‎";
+

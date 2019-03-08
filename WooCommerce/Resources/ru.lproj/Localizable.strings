@@ -3,3 +3,1176 @@
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
 
+/* No comment provided by engineer. */
+"(no title)" = "(без заголовка)";
+
+/* An error message. */
+"A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Чтобы отправить ссылку для аутентификации, необходим действительный адрес эл. почты. Вернитесь на предыдущий экран и укажите действительный адрес эл. почты.";
+
+/* Shown when a user types a non-number into the two factor field. */
+"A verification code will only contain numbers." = "Код проверки будет содержать только цифры.";
+
+/* About this app (information page title) */
+"About" = "О нас";
+
+/* My Store > Settings > About app section */
+"About the app" = "О приложении";
+
+/* Application's Active State */
+"Active" = "Активно";
+
+/* The plugin is active on the site and has not enabled automatic updates */
+"Active, Autoupdates off" = "Активен, автообновление выключено";
+
+/* The plugin is active on the site and has enabled automatic updates */
+"Active, Autoupdates on" = "Активен, автообновление включено";
+
+/* Add a note screen - button title to send the note */
+"Add" = "Добавить";
+
+/* Add Tracking row label */
+"Add Tracking" = "Добавить отслеживание";
+
+/* Button text for adding a new order note */
+"Add a note" = "Добавить примечание";
+
+/* Accessibility label for the 'Add a note' button */
+"Add a note button" = "Кнопка \"Добавить примечание\"";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
+"Adds a note to an order" = "Добавить примечание к заказу";
+
+/* Cell subtitle explaining why you might want to navigate to view the application log. */
+"Advanced tool to review the app status" = "Специальный инструмент для анализа состояния приложения";
+
+/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
+   Name of the All filter on the Order List screen - it means all orders will be displayed. */
+"All" = "Все";
+
+/* Mark all notifications as read notice */
+"All notifications marked as read" = "Все уведомления помечены как прочитанные.";
+
+/* Instructions for users with two-factor authentication enabled. */
+"Almost there! Please enter the verification code from your authenticator app." = "Почти готово! Введите проверочный код из приложения Authenticator.";
+
+/* String displayed before offering alternative login methods */
+"Alternatively:" = "Альтернативно:";
+
+/* An error description explaining that a Menu could not be created. */
+"An error occurred creating the Menu." = "При создании меню произошла ошибка.";
+
+/* An error description explaining that a Menu could not be deleted. */
+"An error occurred deleting the Menu." = "При удалении меню произошла ошибка.";
+
+/* An error description explaining that Menus could not be fetched. */
+"An error occurred fetching the Menus." = "При получении меню произошла ошибка.";
+
+/* An error description explaining that a Menu could not be updated. */
+"An error occurred updating the Menu." = "При обновлении меню произошла ошибка.";
+
+/* Used when a remote response doesn't have a specific message for a specific request */
+"An error occurred while processing your request: " = "Возникла ошибка при обработке вашего запроса:";
+
+/* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
+"Application Logs" = "Журналы приложения";
+
+/* Approve a comment */
+"Approve" = "Одобрить";
+
+/* Unapprove a comment */
+"Approved" = "Одобрен";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "Одобрение комментария";
+
+/* Alert message to confirm a user meant to log out. */
+"Are you sure you want to log out of the account %@?" = "Вы уверены, что хотите выйти из учётной записи %@?";
+
+/* No comment provided by engineer. */
+"Authenticating" = "Идёт авторизация";
+
+/* Popup title to ask for user credentials. */
+"Authentication required for host: %@" = "Необходима авторизация для доступа к узлу: %@";
+
+/* The plugin can not be manually updated or deactivated */
+"Auto-managed on this site" = "Автоматически управляется на этом сайте";
+
+/* Alert button title - dismisses alert, which cancels the log out attempt */
+"Back" = "Назад";
+
+/* Application's Background State */
+"Background" = "Фон";
+
+/* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+"Bar number %1$i, %2$@, " = "Номер столбца %1$i, %2$@, ";
+
+/* Billing title for customer info cell */
+"Billing details" = "Платёжные сведения";
+
+/* Browse our FAQ title */
+"Browse our FAQ" = "Поиск в списке часто задаваемых вопросов";
+
+/* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
+"By signing up, you agree to our _Terms of Service_." = "Регистрируясь вы соглашаетесь с нашими _Правилами пользования_.";
+
+/* Call phone number button title */
+"Call" = "Вызов";
+
+/* Title of an alert letting the user know */
+"Can Not Request Link" = "Не удаётся запросить ссылку.";
+
+/* Button title. Tapping it cancels the login flow.
+   Cancel button label - Cancel prompt for user information. */
+"Cancel" = "Отмена";
+
+/* Cancelled Order Status */
+"Canceled" = "Отменён";
+
+/* shown in promotional screens during first launch */
+"Catch up with your favorite sites and join the conversation anywhere, any time." = "Следите за обновлениями любимых сайтов и присоединяйтесь к беседе в любом месте и в любое время.";
+
+/* Popup title for wrong SSL certificate. */
+"Certificate error" = "Ошибка сертификата";
+
+/* Deletes all activity logs except for the marked 'Current'. */
+"Clear old activity logs" = "Очистить старые журналы активности";
+
+/* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
+"Collect Information" = "Сбор информации";
+
+/* Completed Order Status */
+"Completed" = "Завершено";
+
+/* Shown while the app waits for the site creation process to complete. */
+"Completing Signup" = "Завершение регистрации";
+
+/* VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear. */
+"Composes a new email message to the billing customer." = "Составить новое электронное письмо для плательщика.";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
+"Composes a new order note." = "Составить новое примечание к заказу.";
+
+/* Title shown when a user logs in with Google but no matching WordPress.com account is found */
+"Connected But…" = "Подключено, но...";
+
+/* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
+"Connected Store" = "Подключенный магазин";
+
+/* No comment provided by engineer. */
+"Connecting to WordPress.com" = "Идёт подключение к WordPress.com";
+
+/* Contact Email title */
+"Contact Email" = "Контактный адрес эл.почты";
+
+/* Contact Support title */
+"Contact Support" = "Связаться со службой поддержки";
+
+/* No comment provided by engineer. */
+"Continue" = "Продолжить";
+
+/* Part of a prompt suggesting that there is more content for the user to read. */
+"Continue reading" = "Читать дальше";
+
+/* Copy address text button title — should be one word and as short as possible. */
+"Copy" = "Копировать";
+
+/* Message shown when site purchases API failed */
+"Could not check site purchases." = "Не удалось проверить покупки.";
+
+/* Error message informing the user that there was a problem subscribing to a site or feed. */
+"Could not follow the site at the address specified." = "Не удалось подписаться на веб-сайт по указанному адресу.";
+
+/* Error message informing the user that there was a problem unsubscribing to a site or feed. */
+"Could not unfollow the site at the address specified." = "Не удалось отменить подписку на веб-сайт по указанному адресу.";
+
+/* Error message shown a URL points to a valid site but not a WordPress site. */
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Не удалось подключиться к сайту WordPress. По указанному адресу нет действующего сайта WordPress. Проверьте адрес сайта (URL-адрес).";
+
+/* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "Не удалось подключиться. На сервере отсутствуют необходимые методы XML-RPC.";
+
+/* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
+"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Невозможно подключиться. Получена ошибка 403 при подключении к XMLRPC вашего сайта. Обратитесь в тех.поддержку хостинга.";
+
+/* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
+"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Невозможно подключиться. Ваш хостинг блокирует POST-запросы XML-RPC, они требуются для обмена информацией с вашим сайтом. Обратитесь в тех. поддержку хостинга.";
+
+/* Cell title: the current date. */
+"Current" = "Текущая дата";
+
+/* Customer info section title
+   Section title for the customer's billing and shipping address */
+"Customer Information" = "Информация о клиенте";
+
+/* Customer note section title
+   Section title for a note from the customer */
+"Customer Provided Note" = "Примечание клиента";
+
+/* Statistical unit - a single day */
+"Day" = "День";
+
+/* Plural of 'day' — a statistical unit */
+"Days" = "Дни";
+
+/* The row label to tap for a detailed product list */
+"Details" = "Подробности";
+
+/* Screen title: Details Order number (number) */
+"Details Order #(viewModel.order.number)" = "Сведения о заказе №(viewModel.order.number)";
+
+/* Discount label for payment view */
+"Discount" = "Скидка";
+
+/* Add a note screen - button title for closing the view
+   Dismiss the action sheet */
+"Dismiss" = "Игнорировать";
+
+/* Label for button to log in using your site address. The underscores _..._ denote underline */
+"Don't have an account? _Sign up_" = "Нет учетной записи? _Зарегистрироваться_";
+
+/* WordPress.com (unmapped!) error */
+"Dotcom Error: [(code)] (theMessage)" = "Ошибка интернет-сервиса: [(code)] (theMessage)";
+
+/* WordPress.com error thrown when the the request REST API url is invalid. */
+"Dotcom Invalid REST Route" = "Dotcom Invalid REST Route";
+
+/* WordPress.com Missing Token */
+"Dotcom Missing Token" = "Отсутствует токен интернет-сервиса";
+
+/* WordPress.com Request Failure */
+"Dotcom Request Failed" = "Ошибка запроса интернет-сервиса";
+
+/* WordPress.com Error thrown when the response body is empty */
+"Dotcom Response Empty" = "Пустой ответ интернет-сервиса";
+
+/* WordPress.com Invalid Token */
+"Dotcom Token Invalid" = "Недопустимый токен интернет-сервиса";
+
+/* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
+"Double tap to dismiss" = "Дважды коснитесь, чтобы отключить";
+
+/* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
+"Double tap to toggle setting." = "Коснитесь два раза, чтобы изменить настройку.";
+
+/* Email address text field placeholder */
+"Email" = "E-mail";
+
+/* Placeholder for a textfield. The user may enter their email address. */
+"Email address" = "Адрес e-mail";
+
+/* Label for yes/no switch - emailing the note to customer. */
+"Email note to customer" = "Отправить примечание клиенту по электронной почте";
+
+/* No comment provided by engineer. */
+"Email note to customer %@" = "Отправить по электронной почте примечание клиенту %@";
+
+/* Accessibility label that lets the user know the billing customer's email address */
+"Email: %@" = "Электронная почта: %@";
+
+/* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
+"Empty URL" = "Пустой URL-адрес";
+
+/* Sign in instructions for logging in with a URL. */
+"Enter the address of your WooCommerce store you'd like to connect." = "Введите адрес магазина WooCommerce, к которому требуется подключиться.";
+
+/* Instruction text on the login's site addresss screen. */
+"Enter the address of your WordPress site you'd like to connect." = "Введите адрес сайта WordPress, к которому требуется подключиться.";
+
+/* Instructional text shown when requesting the user's password for login. */
+"Enter the password for your WordPress.com account." = "Введите пароль вашей учетной записи WordPress.com.";
+
+/* Title of a button on the magic link screen.
+   Title of a button. */
+"Enter your password instead." = "Введите пароль.";
+
+/* Failed Order Status */
+"Failed" = "Произошла ошибка";
+
+/* Error message to show when wrong URL format is used to access the REST API */
+"Failed to serialize request to the REST API." = "Не удалось сериализировать запрос в API-интерфейс REST.";
+
+/* Navigates to the feature request screen */
+"Feature Request" = "Запрос функции";
+
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "Фильтровать уведомления";
+
+/* Filter the orders list. */
+"Filter orders" = "Фильтровать заказы";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "Фильтрование уведомлений по типу.";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
+"Filters the order list by payment status." = "Отфильтровать список заказов по статусу оплаты.";
+
+/* User role badge */
+"Follower" = "Читатель";
+
+/* Order Fulfillment Title */
+"Fulfill Order #(order.number)" = "Выполнить заказ №(order.number)";
+
+/* Fulfill order button title */
+"Fulfill order" = "Выполнить заказ";
+
+/* Description for Top Performers section of My Store tab. */
+"Gain insights into how products are performing on your store" = "Получайте информацию об эффективности продаж различных продуктов в вашем магазине";
+
+/* Subtitle for Browse our FAQ */
+"Get answers to questions you have" = "Получите ответы на возникшие вопросы";
+
+/* Alerts the user that wpcom account information is being retrieved. */
+"Getting account information" = "Получение информации об учетной записи";
+
+/* Message shown on screen after the Google sign up process failed. */
+"Google sign up failed." = "Регистрация в Google не удалась.";
+
+/* My Store > Settings > Help & Support section title */
+"HOW CAN WE HELP?" = "ЧЕМ ВАМ ПОМОЧЬ?";
+
+/* Help and Support navigation title
+   Help button - Help button on store picker screen. */
+"Help" = "Помощь";
+
+/* Contact Support Action */
+"Help & Support" = "Помощь и техническая поддержка";
+
+/* My Store > Settings > Privacy settings section */
+"Help Improve The App" = "Помогите улучшить приложение";
+
+/* Footer text to hide the billing cell */
+"Hide billing" = "Скрыть платёжные сведения";
+
+/* Error message shown a URL does not point to an existing site. */
+"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Похоже, сайта WordPress с таким URL-адресом не существует. Проверьте правильность написания и повторите попытку.";
+
+/* Detail label for yes/no switch. */
+"If disabled the note will be private" = "При отключении примечание будет закрытым";
+
+/* Application's Inactive State */
+"Inactive" = "Неактивно";
+
+/* The plugin is not active on the site and has not enabled automatic updates */
+"Inactive, Autoupdates off" = "Неактивен, автообновления выключено";
+
+/* The plugin is not active on the site and has enabled automatic updates */
+"Inactive, Autoupdates on" = "Неактивен, автообновление включено";
+
+/* Describes a standard *.wordpress.com site domain */
+"Included with Site" = "Предоставляется вместе с сайтом";
+
+/* An error message shown when a user signed in with incorrect credentials. */
+"Incorrect username or password. Please try entering your login details again." = "Неправильное имя пользователя или пароль. Попробуйте ввести учётные данные ещё раз.";
+
+/* No comment provided by engineer. */
+"Invalid Site Address" = "Неверный адрес сайта";
+
+/* No comment provided by engineer. */
+"Invalid Site Title" = "Неверный заголовок сайта";
+
+/* Message to show to user when he tries to add a self-hosted site that isn't HTTP or HTTPS. */
+"Invalid URL scheme inserted, only HTTP and HTTPS are supported." = "Недопустимая схема URL-адресов. Поддерживаются только протоколы HTTP и HTTPS.";
+
+/* Message to show to user when he tries to add a self-hosted site that isn't a valid URL. */
+"Invalid URL, please check if you wrote a valid site address." = "Недействительный URL-адрес, проверьте правильность адреса сайта.";
+
+/* No comment provided by engineer. */
+"Invalid username" = "Неверное имя пользователя";
+
+/* An error message shown during log in when the username or password is incorrect. */
+"It looks like this username\/password isn't associated with this site." = "Похоже, введённое имя пользователя или пароль не связаны с этим сайтом.";
+
+/* An error message shown when a wpcom user provides the wrong password. */
+"It seems like you've entered an incorrect password. Want to give it another try?" = "Похоже, вы ввели неправильный пароль. Хотите попытаться ещё раз?";
+
+/* Settings > Privacy Settings. A text link to the cookie policy. */
+"Learn more" = "Подробнее";
+
+/* Licenses (information page title) */
+"Licenses" = "Лицензии";
+
+/* Message to show when a request for a WP.com API endpoint is throttled */
+"Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Достигнут лимит попыток. Вы можете попробовать снова через 1 минуту. Если вы попытаетесь подключиться раньше, время ожидания только увеличится. Если вы считаете, что произошла ошибка, обратитесь в службу поддержки.";
+
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "Загрузка заказа";
+
+/* Button title.  Tapping takes the user to the login form.
+   Log In button label. */
+"Log In" = "Войти";
+
+/* Alert button title - confirms and logs out the user */
+"Log Out" = "Выйти";
+
+/* Explains that the files are sorted by LIFO date: most recent day listed first. */
+"Log files by created date" = "Файлы журнала по дате создания";
+
+/* Label for button to log in using your site address. */
+"Log in by entering your site address." = "Войдите введя адрес вашего сайта.";
+
+/* A generic error message for a failed log in. */
+"Log in failed. Please try again." = "Не удалось выполнить вход. Повторите попытку.";
+
+/* Instruction text on the login's email address screen. */
+"Log in to WordPress.com using an email address to manage all your WordPress sites." = "Для управления всеми своими сайтами WordPress войдите в систему WordPress.com с помощью адреса электронной почты.";
+
+/* Instruction text on the login's email address screen. */
+"Log in to the WordPress.com account you used to connect Jetpack." = "Войдите в учетную запись WordPress.com, через которую подключен Jetpack.";
+
+/* Authentication Login Button */
+"Log in with Jetpack" = "Войти с помощью Jetpack";
+
+/* Sign in instructions on the 'log in using email' screen. */
+"Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Для управления магазинами WooCommerce выполните вход, указав адрес электронной почты своей учетной записи WordPress.com.";
+
+/* Log out button title */
+"Log out account" = "Выйти из учётной записи";
+
+/* Title of a button. */
+"Lost your password?" = "Забыли пароль?";
+
+/* Tagline after the heart icon, displayed to the user */
+"Made with love by Automattic" = "Сделано с любовью компанией Automattic";
+
+/* Login Prologue Legend */
+"Manage orders, track sales and monitor store activity with real-time alerts." = "Управляйте заказами, следите за продажами и контролируйте работу магазина с помощью уведомлений в реальном времени.";
+
+/* shown in promotional screens during first launch */
+"Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "Управляйте сайтом, созданным с помощью Jetpack, где угодно — WordPress можно всегда носить с собой.";
+
+/* Section name for manual offsets in time zone selector */
+"Manual Offsets" = "Вручную";
+
+/* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
+"Mapped Domain" = "Привязанный домен";
+
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "Отметить все как прочитанные";
+
+/* Fulfill Order Action Button */
+"Mark Order Complete" = "Отметить заказ как выполненный";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "Отметить все уведомления как прочитанные";
+
+/* Error message to show to users when trying to upload a media object with no local file associated */
+"Media doesn't have an associated file to upload." = "Мультимедиа объект не имеет ассоциированного файла для загрузки.";
+
+/* Message phone number button title */
+"Message" = "Сообщение";
+
+/* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
+"Minimum value %1$@, maximum value %2$@" = "Минимальное значение — %1$@, максимальное значение — %2$@";
+
+/* Statistical unit - a single week */
+"Month" = "Месяц";
+
+/* Plural of 'month' — a statistical unit */
+"Months" = "Месяцы";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "Отправить комментарий в «Спам»";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "Отправить комментарий в Корзину";
+
+/* My Tickets title */
+"My Tickets" = "Мои обращения в поддержку";
+
+/* My Store Notice Title for loading error
+   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+"My store" = "Мой магазин";
+
+/* Name text field placeholder */
+"Name" = "Имя";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
+"Navigates to Settings." = "Переход к настройкам.";
+
+/* A button title. */
+"Need help finding your site address?" = "Как найти адрес своего сайта?";
+
+/* Takes the user to get help */
+"Need help?" = "Нужна помощь?";
+
+/* Title of the more help button on alert helping users understand their site address */
+"Need more help?" = "Нужна дополнительная помощь?";
+
+/* Title of a button.
+   Title of a button. The text should be capitalized. */
+"Next" = "Далее";
+
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "Пока нет уведомлений";
+
+/* Search Orders (Empty State) */
+"No Orders found" = "Заказы не найдены";
+
+/* Default text for Top Performers section when no data exists for a given period. */
+"No activity this period" = "Активность за этот период отсутствует";
+
+/* Fulfill order > customer info > where the physical shipping address would normally display.
+   Order details > customer info > billing details. This is where the address would normally display. - Order details > customer info > shipping details. This is where the address would normally display. */
+"No address specified." = "Адрес не указан.";
+
+/* Text displayed when no data is available for revenue chart. */
+"No data available" = "Данные недоступны";
+
+/* Notifications List (Empty State + Filters)
+   Orders List (Empty State + Filters) */
+"No results for the selected criteria" = "Нет результатов по выбранным критериям";
+
+/* Labels an order note to let user know it's visible to the customer
+   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
+"Note to customer" = "Примечание для клиента";
+
+/* Title of the Notifications tab — plural form of Notification
+   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
+"Notifications" = "Уведомления";
+
+/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
+"Notifications: %@" = "Уведомления: %@";
+
+/* Button title. An acknowledgement of the message displayed in a prompt.
+   Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+"OK" = "Хорошо";
+
+/* Spoken label to indicate switch control is turned off. */
+"Off" = "Выключить";
+
+/* +2 Days Section Header */
+"Older than 2 days" = "Старше двух дней";
+
+/* Months Section Header */
+"Older than a Month" = "Старше месяца";
+
+/* Weeks Section Header */
+"Older than a Week" = "Старше недели";
+
+/* Spoken label to indicate switch control is turned on */
+"On" = "Включить";
+
+/* On Hold Order Status */
+"On Hold" = "Отложен";
+
+/* Opens iOS's Device Settings for the app */
+"Open Device Settings" = "Открыть настройки устройства";
+
+/* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
+"Open Mail" = "Открыть почту";
+
+/* Navigates to open source licenses screen */
+"Open Source Licenses" = "Лицензии на ПО с открытым исходным кодом";
+
+/* No comment provided by engineer. */
+"Optional Tracking Information" = "Дополнительная информация об отслеживании";
+
+/* Add a note screen - title. Example: Order #15
+   Order number title */
+"Order #(viewModel.order.number)" = "Заказ №(viewModel.order.number)";
+
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+"Order %@ has been deleted from your store" = "Заказ %@ удалён из вашего магазина";
+
+/* Order notes section title */
+"Order Notes" = "Примечания к заказу";
+
+/* Order fulfillment success notice */
+"Order marked as fulfilled" = "Заказ отмечен как выполненный";
+
+/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
+   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+"Orders" = "Заказы";
+
+/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
+"Orders: %@" = "Заказы: %@";
+
+/* My Store > Settings > Other app section */
+"Other" = "Прочее";
+
+/* Product section title */
+"PRODUCT" = "ТОВАР";
+
+/* Login dialog password placeholder
+   Password placeholder */
+"Password" = "Пароль";
+
+/* Payment section title */
+"Payment" = "Оплата";
+
+/* Payment of <currency symbol><payment total> received via (payment method title) */
+"Payment of (totalValue) received via (order.paymentMethodTitle)" = "Платёж на сумму (totalValue) получен через (order.paymentMethodTitle)";
+
+/* Pending Order Status */
+"Pending" = "Ожидает проверки";
+
+/* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
+"Phone number: %@" = "Номер телефона: %@";
+
+/* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
+"Pick Store to Connect" = "Выберите магазин для подключения";
+
+/* Alert title for check your email during logIn/signUp. */
+"Please check your email" = "Проверьте вашу почту";
+
+/* No comment provided by engineer. */
+"Please enter a site address." = "Пожалуйста, введите адрес сайта.";
+
+/* No comment provided by engineer. */
+"Please enter a username." = "Пожалуйста, введите имя пользователя.";
+
+/* Error message displayed when the user attempts use an invalid email address. */
+"Please enter a valid email address." = "Пожалуйста, введите корректный адрес e-mail.";
+
+/* Popup message to ask for user credentials (fields shown below). */
+"Please enter your credentials" = "Пожалуйста, введите ваши учётные данные";
+
+/* Instructions for alert asking for email and name. */
+"Please enter your email address and username:" = "Укажите адрес электронной почты и имя пользователя:";
+
+/* Instructions for alert asking for email. */
+"Please enter your email address:" = "Пожауйста, введите ваш адрес email.";
+
+/* A short prompt asking the user to properly fill out all login fields. */
+"Please fill out all the fields" = "Пожалуйста, заполните все поля";
+
+/* Message to ask the user to check their email and look for a WordPress.com email. */
+"Please open your email app and look for an email from WordPress.com." = "Пожалуйста, откройте ваше приложение email и найдите сообщение от WordPress.com.";
+
+/* Opens the Privacy Policy web page */
+"Privacy Policy" = "Политика конфиденциальности";
+
+/* Navigates to Privacy Settings screen
+   Privacy settings screen title */
+"Privacy Settings" = "Настройки конфиденциальности";
+
+/* Labels an order note to let the user know it's private and not seen by the customer
+   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
+"Private note" = "Конфиденциальное примечание";
+
+/* Processing Order Status */
+"Processing" = "В обработке";
+
+/* Description for Top Performers left column header
+   Product section title - Section header title for the product */
+"Product" = "Товар";
+
+/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
+"Prompts with the option to call or message the billing customer." = "Позвонить или отправить сообщение плательщику.";
+
+/* shown in promotional screens during first launch */
+"Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Публикуйте записи, гуляя в парке. Ведите блог прямо из автобуса. Отправляйте комментарии из-за столика в кафе. WordPress можно брать с собой повсюду!";
+
+/* Quantity abbreviation for section title */
+"QTY" = "КОЛ-ВО";
+
+/* Quantity abbreviation for section title
+   Section header title - abbreviation for quantity */
+"Qty" = "Кол-во";
+
+/* Subtitle for Contact Support */
+"Reach our happiness engineers who can help answer tough questions" = "Обратитесь к инженерам поддержки за помощью при решении сложных вопросов";
+
+/* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
+"Read privacy policy" = "Прочитать политику конфиденциальности";
+
+/* Refunded Order Status */
+"Refunded" = "Средства возвращены";
+
+/* Describes a domain that was registered with WordPress.com */
+"Registered Domain" = "Зарегистрированный домен";
+
+/* Action: Opens the Store in a browser
+   Action: removes the current filters from the notifications list */
+"Remove Filters" = "Удалить фильтры";
+
+/* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
+"Report Crashes" = "Сообщить об отказах";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
+"Retrieves a list of orders that contain a given keyword." = "Получение списка заказов, содержащих ключевое слово.";
+
+/* Retry Action
+   Retry the last action */
+"Retry" = "Повторить";
+
+/* Revenue stat label on dashboard. */
+"Revenue" = "Доход";
+
+/* Review moderation success notice message. It reads: Review marked as {new status} */
+"Review marked as %@" = "Обзор помечен как %@";
+
+/* Description text used on the UI element displayed when a user has pending orders to process. */
+"Review, prepare, and ship these pending orders" = "Просмотреть, подготовить и отправить эти ожидающие заказы";
+
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+"Reviews" = "Обзоры";
+
+/* SKU label */
+"SKU:" = "АРТИКУЛ:";
+
+/* One Time Code has been sent via SMS */
+"SMS Sent" = "SMS отправлено";
+
+/* Orders Search Placeholder */
+"Search all orders" = "Поиск по всем заказам";
+
+/* Search Orders */
+"Search orders" = "Поиск по заказам";
+
+/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
+"Selected Store" = "Selected Store";
+
+/* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
+"Send Link" = "Отправить ссылку";
+
+/* Tells user to set an email that support can use for replies */
+"Set email" = "Указать электронную почту";
+
+/* Accessibility label for the Settings button.
+   Settings navigation title */
+"Settings" = "Настройки";
+
+/* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
+"Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Поделиться информацией с нашей аналитикой по использованию сервисов при входе в вашу учетную запись WordPress.";
+
+/* Action: Opens the Store in a browser */
+"Share your Store" = "Поделитесь адресом своего магазина";
+
+/* Shipping label for payment view */
+"Shipping" = "Доставка";
+
+/* Shipping title for customer info cell */
+"Shipping details" = "Сведения о доставке";
+
+/* Footer text to show the billing cell */
+"Show billing" = "Показать платёжные сведения";
+
+/* When social login fails, this button offers to let them signup for a new WordPress.com account */
+"Sign up" = "Зарегистрироваться";
+
+/* Button title. Tapping begins the process of creating a WordPress.com account. */
+"Sign up for WordPress.com" = "Зарегистрироваться на WordPress.com";
+
+/* Button title. Tapping begins our normal sign up process. */
+"Sign up with Email" = "Зарегистрироваться с адресом Email";
+
+/* Button title. Tapping begins sign up using Google. */
+"Sign up with Google" = "Зарегистрироваться через Google";
+
+/* Describes a site redirect domain */
+"Site Redirect" = "Перенаправление сайта";
+
+/* No comment provided by engineer. */
+"Site address must be at least 4 characters." = "Адрес сайта должен содержать не менее 4 символов.";
+
+/* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
+"Sorry, but your username contains an invalid phrase%@." = "Извините, но имя содержит недопустимую фразу%@.";
+
+/* No comment provided by engineer. */
+"Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "Извините, адрес сайта может содержать только строчные латинские буквы (a&#8212;z) и цифры.";
+
+/* No comment provided by engineer. */
+"Sorry, site addresses may not contain the character &#8220;_&#8221;!" = "Извините, адрес сайта не может содержать символ &laquo;_&raquo;!";
+
+/* No comment provided by engineer. */
+"Sorry, site addresses must have letters too!" = "Извините, адрес сайта должен содержать также и буквы!";
+
+/* Error message displayed when the entered email is not available. */
+"Sorry, that email address is already being used!" = "Извините, этот адрес e-mail уже используется!";
+
+/* No comment provided by engineer. */
+"Sorry, that email address is not allowed!" = "Извините, этот адрес e-mail недопустим!";
+
+/* This error message occurs when a user tries to create an account with a weak password. */
+"Sorry, that password does not meet our security guidelines. Please choose a password with a minimum length of six characters, mixing uppercase letters, lowercase letters, numbers and symbols." = "Введенный пароль не соответствует требованиям безопасности. Пароль должен содержать не менее 6 знаков и включать в себя строчные и прописные буквы, цифры и символы.";
+
+/* No comment provided by engineer. */
+"Sorry, that site already exists!" = "Извините, такой сайт уже существует!";
+
+/* No comment provided by engineer. */
+"Sorry, that site is reserved!" = "Извините, этот сайт зарезервирован!";
+
+/* No comment provided by engineer. */
+"Sorry, that username already exists!" = "Извините, это имя пользователя уже существует!";
+
+/* No comment provided by engineer. */
+"Sorry, that username is unavailable." = "Извините, это имя недоступно.";
+
+/* No comment provided by engineer. */
+"Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "Извините, имя пользователя может содержать только строчные латинские буквы (a&#8212;z) и цифры.";
+
+/* No comment provided by engineer. */
+"Sorry, usernames may not contain the character &#8220;_&#8221;!" = "Извините, имя пользователя не может содержать символ &laquo;_&raquo;!";
+
+/* No comment provided by engineer. */
+"Sorry, usernames must have letters (a-z) too!" = "Извините, имя пользователя должно содержать также и буквы (a&#8212;z)!";
+
+/* No comment provided by engineer. */
+"Sorry, you may not use that site address." = "Извините, этот адрес сайта нельзя использовать.";
+
+/* Verb, spam a comment */
+"Spam" = "Спамить";
+
+/* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
+"Starting period %1$@, ending period %2$@" = "Период начала — %1$@, период окончания — %2$@";
+
+/* VoiceOver accessibility label for the store revenue chart. */
+"Store revenue chart" = "График выручки магазина";
+
+/* VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}. */
+"Store revenue chart %@" = "График выручки магазина: %@";
+
+/* VoiceOver accessibility label for the store revenue chart's X-axis. */
+"Store revenue chart: X Axis" = "График выручки магазина: ось X";
+
+/* VoiceOver accessibility label for the store revenue chart's Y-axis. */
+"Store revenue chart: Y Axis" = "График выручки магазина: ось Y";
+
+/* Subtotal label for payment view */
+"Subtotal" = "Подытог";
+
+/* This action allows the user to change stores without logging out and logging back in again. */
+"Switch Store" = "Switch Store";
+
+/* Labels an order note to let user know it's a system status message */
+"System status" = "Состояние системы";
+
+/* Tax label for total taxes line */
+"Tax:" = "Налог:";
+
+/* Taxes label for payment view */
+"Taxes" = "Налоги";
+
+/* Opens the Terms of Service web page */
+"Terms of Service" = "Условия предоставления услуг";
+
+/* Button title */
+"Text me a code instead" = "Пришлите мне сообщение с кодом";
+
+/* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
+"That doesn't appear to be a valid verification code." = "Это не похоже на правильный код проверки.";
+
+/* Message to show to user when he tries to add a self-hosted site that isn't a WordPress site. */
+"That doesn't look like a WordPress site." = "Скорее всего, этот сайт размещён не на WordPress.";
+
+/* No comment provided by engineer. */
+"That email address has already been used. Please check your inbox for an activation email. If you don't activate you can try again in a few days." = "Этот адрес уже используется. Пожалуйста, поищите в своей почте письмо об активации. Если вы не активируете адрес сейчас, попробуйте ещё раз через несколько дней.";
+
+/* No comment provided by engineer. */
+"That site address is not allowed." = "Этот адрес сайта не разрешён.";
+
+/* No comment provided by engineer. */
+"That site is currently reserved but may be available in a couple days." = "Этот сайт в настоящее время зарезервирован, но может стать доступным через несколько дней.";
+
+/* No comment provided by engineer. */
+"That username is currently reserved but may be available in a couple of days." = "Это имя пользователя в настоящее время зарезервировано, но может стать доступным через несколько дней.";
+
+/* No comment provided by engineer. */
+"That username is not allowed." = "Это имя пользователя недопустимо.";
+
+/* Description shown when a user logs in with Google but no matching WordPress.com account is found */
+"The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "Учетная запись Google \"(loginFields.username)\" не соответствует ни одной учетной запись WordPress.com";
+
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "Невозможно загрузить заказ!";
+
+/* Error message describing a problem with a URL. */
+"The URL is missing a valid host." = "В URL-адресе отсутствует допустимый хост.";
+
+/* No comment provided by engineer. */
+"The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Сертификат для этого сервера недействителен. Возможно, вы пытаетесь подключиться к серверу, который имитирует «%@». Это может представлять риск для конфиденциальности вашей информации.\n\nДоверять этому сертификату?";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed" = "Уведомление удалено!";
+
+/* No comment provided by engineer. */
+"The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Сервером был дан пустой ответ. Обычно это означает, что необходимо повысить лимит памяти для сайта. Сервером был дан пустой ответ. Обычно это означает, что необходимо повысить лимит памяти для сайта.";
+
+/* No comment provided by engineer. */
+"The site address must be shorter than 64 characters." = "Адрес сайта должен быть короче 64 символов.";
+
+/* Message shown when site deletion API failed */
+"The site could not be deleted." = "Не удалось удалить сайт.";
+
+/* Message shown when site export API failed */
+"The site could not be exported." = "Не удалось экспортировать сайт.";
+
+/* Error message informing the user that there was a problem blocking posts from a site from their reader. */
+"There was a problem blocking posts from the specified site." = "При блокировке записей на указанном веб-сайте произошла ошибка.";
+
+/* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
+"There was a problem removing the block for specified site." = "При снятии блокировки для указанного веб-сайта произошла ошибка.";
+
+/* Top Performers section title - this month */
+"This Month" = "В этом месяце";
+
+/* Top Performers section title - this week */
+"This Week" = "На этой неделе";
+
+/* Top Performers section title - this year */
+"This Year" = "В этом году";
+
+/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
+"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "Для подключения к вашему магазину приложению требуется Jetpack. <br \/> См. <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">инструкции по настройке<\/a>.";
+
+/* An error message informing the user the email address they entered did not match a WordPress.com account. */
+"This email address is not registered on WordPress.com." = "Этот адрес электронной почты не зарегистрирован на WordPress.com.";
+
+/* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
+"This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "Эта информация позволит нам улушать наши продукты, уточнять маркетинг, персонализировать ваш опыт взаимодействия с WordPress.com, и далее как указано в нашей политике конфиденциальности.";
+
+/* Text instructing the user to enter their email address. */
+"To create your new WordPress.com account, please enter your email address." = "Для создания новой учетной записи WordPress.com, пожалуйста, введите ваш адрес эл.почты.";
+
+/* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
+"To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "Чтобы помочь нам повысить качество работы приложения и устранить возможные ошибки, включите автоматические отчёты об отказах.";
+
+/* No comment provided by engineer. */
+"To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Чтобы войти через эту учетную запись Google, пожалуйста войдите сначала с паролем WordPress.com. Это запрашивается только один раз.";
+
+/* Today Section Header
+   Top Performers section title - today */
+"Today" = "Сегодня";
+
+/* Header label for Top Performers section of My Store tab. */
+"Top Performers" = "Самые продаваемые";
+
+/* Used when a Reader Topic is not found for a specific id */
+"Topic not found for id:" = "Тема не найдена для id:";
+
+/* Total label for payment view */
+"Total" = "Итого";
+
+/* Top performers — label for the total number of products ordered */
+"Total Product Order: %ld" = "Общее число заказов продуктов: %ld";
+
+/* Description for Top Performers right column header */
+"Total Spend" = "Общий объём выручки";
+
+/* Move a comment to the trash */
+"Trash" = "Корзина";
+
+/* Connect when the SSL certificate is invalid */
+"Trust" = "Безопасность";
+
+/* No comment provided by engineer. */
+"Try another account" = "Попробовать другую учётную запись";
+
+/* When social login fails, this button offers to let the user try again with a differen email address */
+"Try with another email" = "Попробуйте с другим email";
+
+/* When social login fails, this button offers to let them try tp login using a URL */
+"Try with the site address" = "Попробуйте с адресом сайта";
+
+/* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
+"Unable To Connect" = "Невозможно подключиться";
+
+/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
+"Unable to add note to order #(viewModel.order.orderID)" = "Unable to add note to order #(viewModel.order.orderID)";
+
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"Unable to find WooCommerce stores connected to this account" = "Не удалось найти магазины WooCommerce, подключенные к этой учётной записи";
+
+/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
+"Unable to fulfill order #(orderID)" = "Unable to fulfill order #(orderID)";
+
+/* Load Action Failed */
+"Unable to load content" = "Unable to load content";
+
+/* Review error notice message. It reads: Unable to mark review as {attempted status} */
+"Unable to mark review as %@" = "Unable to mark review as %@";
+
+/* No comment provided by engineer. */
+"Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Не удалось найти веб-сайт WordPress по этому URL-адресу. Нажмите кнопку «Нужна помощь?», чтобы просмотреть ответы на часто задаваемые вопросы.";
+
+/* Refresh Action Failed */
+"Unable to refresh list" = "Не удалось обновить список";
+
+/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
+"Unable to successfully connect to %@" = "Не удалось подключиться к %@";
+
+/* Error message displayed when an error occurred checking for email availability. */
+"Unable to verify the email address. Please try again later." = "Невозможно проверить ваш электронный адрес. Попробуйте позже еще раз.";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "Отклонение комментария";
+
+/* Undo Action */
+"Undo" = "Назад";
+
+/* Unknown Application State */
+"Unknown" = "Неизвестно";
+
+/* No comment provided by engineer. */
+"Unknown Search Terms" = "Неизвестные поисковые запросы";
+
+/* No comment provided by engineer. */
+"Unknown error" = "Неизвестная ошибка";
+
+/* Footer text below the list of logs explaining the maximum number of logs saved. */
+"Up to seven days՚ worth of logs are saved." = "Журналы хранятся в течение 7 дней.";
+
+/* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
+"Updated %1$@ at %2$@" = "Обновлено %1$@ в %2$@";
+
+/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+"Updated %ld hour ago" = "Обновлено %ld час назад";
+
+/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+"Updated %ld hours ago" = "Обновлено %ld ч. назад";
+
+/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
+"Updated %ld minute ago" = "Обновлено %ld минуту назад";
+
+/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+"Updated %ld minutes ago" = "Обновлено %ld мин. назад";
+
+/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
+"Updated moments ago" = "Обновлено только что";
+
+/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
+"Updated on %@" = "Обновлено %@";
+
+/* Login dialog username placeholder
+   Username placeholder */
+"Username" = "Имя пользователя";
+
+/* No comment provided by engineer. */
+"Username must be at least 4 characters." = "Имя пользователя должно быть не короче 4 символов.";
+
+/* two factor code placeholder */
+"Verification code" = "Проверочный код";
+
+/* Displays the version of the App */
+"Version %@" = "Версия %@";
+
+/* View application log cell title */
+"View Application Log" = "Просмотр журнала приложения";
+
+/* subtitle for My Tickets */
+"View previously submitted support tickets" = "Посмотреть ранее отправленные запросы в службу поддержки";
+
+/* User role badge */
+"Viewer" = "Обозреватель";
+
+/* Visitors stat label on dashboard - should be plural. */
+"Visitors" = "Посетители";
+
+/* Add a note screen - Write Note section title */
+"WRITE NOTE" = "НАПИСАТЬ ПРИМЕЧАНИЕ";
+
+/* Orders List (Empty State / No Filters) */
+"Waiting for Customers" = "Ожидание клиентов";
+
+/* Message shown on screen while waiting for Google to finish its signup process. */
+"Waiting for Google to complete…" = "Ожидание Google...";
+
+/* shown in promotional screens during first launch */
+"Watch readers from around the world read and interact with your site — in real time." = "Наблюдайте, как пользователи со всего света читают ваш сайт и взаимодействуют с ним в реальном времени.";
+
+/* Instructional text on how to open the email containing a magic link. */
+"We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "Мы послали вам магическую ссылку для регистрации. Проверьте вашу почту и нажмите присланную ссылку для завершения регистрации.";
+
+/* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
+"We use other tracking tools, including some from third parties. Read about these and how to control them." = "Мы используем другие инструменты отслеживания, включая и инструменты третьих сторон. Прочитайте о них и как их контролировать.";
+
+/* Error message displayed when an error occurred sending the magic link email. */
+"We were unable to send you an email at this time. Please try again later." = "Мы не смогли отправить вам сообщение по эл.почте. Попробуйте еще раз позже.";
+
+/* Instructional text for the magic link login flow. */
+"We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "Мы отправим вам волшебную ссылку, по которой вы сможете сразу войти в систему без использования пароля. Не нужно больше тыкать по клавиатуре!";
+
+/* Error message shown when having trouble connecting to a Jetpack site. */
+"We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "Не удалось подключиться к сайту Jetpack по этому URL-адресу. Свяжитесь с нами, если потребуется помощь.";
+
+/* Statistical unit - a single week */
+"Week" = "Неделя";
+
+/* Plural of 'week' — a statistical unit */
+"Weeks" = "Недели";
+
+/* Title of alert helping users understand their site address */
+"What's my site address?" = "Какой адрес у моего сайта?";
+
+/* An error message shown when a wpcom user provides the wrong password. */
+"Whoops, something went wrong and we couldn't log you in. Please try again!" = "Произошла ошибка: не удалось выполнить вход. Повторите попытку.";
+
+/* Error message shown when an incorrect two factor code is provided. */
+"Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Проверочный код для двухфакторной аутентификации недействителен. Проверьте код и повторите попытку.";
+
+/* Navigates to about WooCommerce app screen */
+"WooCommerce" = "WooCommerce";
+
+/* Subject of new Zendesk ticket. */
+"WooCommerce for iOS Support" = "Поддержка WooCommerce для iOS";
+
+/* No comment provided by engineer. */
+"WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "Слишком старая версия WordPress. Веб-сайт по адресу %1$@ использует WordPress %2$@. Рекомендуем обновить его до текущей версии или хотя бы до версии %3$@.";
+
+/* Statistical unit - a single year */
+"Year" = "Год";
+
+/* Plural of 'year' — a statistical unit */
+"Years" = "Годы";
+
+/* Yesterday Section Header */
+"Yesterday" = "Вчера";
+
+/* No comment provided by engineer. */
+"You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Этот почтовый адрес нельзя использовать для регистрации. Некоторые из наших писем блокируются данной почтовой службой. Пожалуйста, используйте другую службу.";
+
+/* Title text used on the My Store UI when a user has a _single_ pending order to process. */
+"You have %ld order to fulfill" = "У вас есть %ld невыполненный заказ";
+
+/* Title text used on the My Store UI when a user has _multiple_ pending orders to process. */
+"You have %ld orders to fulfill" = "У вас есть невыполненные заказы (%ld)";
+
+/* No comment provided by engineer. */
+"You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Скорее всего, вы установили мобильный плагин DudaMobile, который не даёт приложению подключиться к вашему блогу";
+
+/* Instructional text on how to open the email containing a magic link. */
+"Your magic link is on its way! Check your email on this device, and tap the link in the email you receive from WordPress.com" = "Ваша волшебная ссылка уже в пути! Проверьте почту с этого устройства и нажмите ссылку в письме от WordPress.com";
+
+/* shown in promotional screens during first launch */
+"Your notifications travel with you — see comments and likes as they happen." = "Ваши уведомления путешествуют с вами — смотрите комментарии и отметки \"нравится\" в реальном времени.";
+
+/* Body text of alert helping users understand their site address */
+"Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "При открытии сайта в браузере Safari его адрес отображается в строке в верхней части экрана.";
+
+/* Notification status description for 'approved' */
+"approved" = "одобрено";
+
+/* Site Address placeholder */
+"example.wordpress.com" = "example.wordress.com";
+
+/* Later today */
+"later today" = "позже сегодня";
+
+/* Notification status description for 'unspam' (opposite of spam) */
+"not spam" = "не спам";
+
+/* Notification status description for 'untrash' (opposite of trash) */
+"not trash" = "не в корзине";
+
+/* Notification status description for 'spam' */
+"spam" = "спам";
+
+/* Today */
+"today" = "сегодня";
+
+/* Notification status description for 'trash' */
+"trash" = "корзина";
+
+/* Notification status description for 'unapproved' */
+"unapproved" = "не одобрено";
+
+/* Used when the response doesn't have a valid url to display */
+"unknown url" = "неизвестный URL";
+
+/* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
+"{G} Log in with Google." = "{G} Войти через Google.";
+
+/* About View's Footer Text. The variable is the current year */
+"© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
+

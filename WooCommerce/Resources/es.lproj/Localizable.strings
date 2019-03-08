@@ -3,3 +3,1176 @@
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
 
+/* No comment provided by engineer. */
+"(no title)" = "(sin título)";
+
+/* An error message. */
+"A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Se requiere una dirección de correo electrónico válida a la cual enviar un enlace de verificación. Vuelve a la pantalla anterior y proporciona una dirección de correo electrónico válida.";
+
+/* Shown when a user types a non-number into the two factor field. */
+"A verification code will only contain numbers." = "Un código de verificación solo contendrá números.";
+
+/* About this app (information page title) */
+"About" = "Acerca de";
+
+/* My Store > Settings > About app section */
+"About the app" = "Acerca de la aplicación";
+
+/* Application's Active State */
+"Active" = "Activo";
+
+/* The plugin is active on the site and has not enabled automatic updates */
+"Active, Autoupdates off" = "Activo, actualizaciones automáticas inactivas";
+
+/* The plugin is active on the site and has enabled automatic updates */
+"Active, Autoupdates on" = "Activo, actualizaciones automáticas activas";
+
+/* Add a note screen - button title to send the note */
+"Add" = "Añadir";
+
+/* Add Tracking row label */
+"Add Tracking" = "Añadir seguimiento";
+
+/* Button text for adding a new order note */
+"Add a note" = "Añadir una nota";
+
+/* Accessibility label for the 'Add a note' button */
+"Add a note button" = "Añadir un botón de nota";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
+"Adds a note to an order" = "Añade una nota a un pedido.";
+
+/* Cell subtitle explaining why you might want to navigate to view the application log. */
+"Advanced tool to review the app status" = "Herramienta avanzada para revisar el estado de la aplicación";
+
+/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
+   Name of the All filter on the Order List screen - it means all orders will be displayed. */
+"All" = "Todo";
+
+/* Mark all notifications as read notice */
+"All notifications marked as read" = "Se han marcado todas las notificaciones como leídas";
+
+/* Instructions for users with two-factor authentication enabled. */
+"Almost there! Please enter the verification code from your authenticator app." = "¡Ya falta poco! Por favor, introduce el código de verificación de tu aplicación authenticator.";
+
+/* String displayed before offering alternative login methods */
+"Alternatively:" = "Otras opciones:";
+
+/* An error description explaining that a Menu could not be created. */
+"An error occurred creating the Menu." = "Ha habido un error creando el menú.";
+
+/* An error description explaining that a Menu could not be deleted. */
+"An error occurred deleting the Menu." = "Ha habido un error eliminado el menú.";
+
+/* An error description explaining that Menus could not be fetched. */
+"An error occurred fetching the Menus." = "Se ha producido un error al recuperar los menús.";
+
+/* An error description explaining that a Menu could not be updated. */
+"An error occurred updating the Menu." = "Se ha producido un error al actualizar el Menú.";
+
+/* Used when a remote response doesn't have a specific message for a specific request */
+"An error occurred while processing your request: " = "Se produjo un error al procesar su solicitud:";
+
+/* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
+"Application Logs" = "Registros de la aplicación";
+
+/* Approve a comment */
+"Approve" = "Aprobar";
+
+/* Unapprove a comment */
+"Approved" = "Se ha aprobado";
+
+/* Approves a comment. Spoken Hint. */
+"Approves the comment" = "Aprueba el comentario";
+
+/* Alert message to confirm a user meant to log out. */
+"Are you sure you want to log out of the account %@?" = "¿Estás seguro que quieres salir de la cuenta %@?";
+
+/* No comment provided by engineer. */
+"Authenticating" = "Autenticando";
+
+/* Popup title to ask for user credentials. */
+"Authentication required for host: %@" = "Se requiere autenticación para el host: %@";
+
+/* The plugin can not be manually updated or deactivated */
+"Auto-managed on this site" = "Gestión automática de este sitio";
+
+/* Alert button title - dismisses alert, which cancels the log out attempt */
+"Back" = "Volver";
+
+/* Application's Background State */
+"Background" = "Fondo";
+
+/* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+"Bar number %1$i, %2$@, " = "Número de la barra %1$i, %2$@, ";
+
+/* Billing title for customer info cell */
+"Billing details" = "Detalles de la facturación";
+
+/* Browse our FAQ title */
+"Browse our FAQ" = "Explora nuestras Preguntas frecuentes";
+
+/* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
+"By signing up, you agree to our _Terms of Service_." = "Al registrarte aceptas nuestros _Términos del servicio_.";
+
+/* Call phone number button title */
+"Call" = "Llamar";
+
+/* Title of an alert letting the user know */
+"Can Not Request Link" = "No se puede solicitar el enlace";
+
+/* Button title. Tapping it cancels the login flow.
+   Cancel button label - Cancel prompt for user information. */
+"Cancel" = "Cancelar";
+
+/* Cancelled Order Status */
+"Canceled" = "Cancelado";
+
+/* shown in promotional screens during first launch */
+"Catch up with your favorite sites and join the conversation anywhere, any time." = "Ponte al día con tus sitios favoritos y únete a la conversación desde cualquier parte, en cualquier momento.";
+
+/* Popup title for wrong SSL certificate. */
+"Certificate error" = "Error del certificado";
+
+/* Deletes all activity logs except for the marked 'Current'. */
+"Clear old activity logs" = "Borrar registros de actividad antiguos";
+
+/* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
+"Collect Information" = "Recopilar información";
+
+/* Completed Order Status */
+"Completed" = "Completado";
+
+/* Shown while the app waits for the site creation process to complete. */
+"Completing Signup" = "Completando el registro";
+
+/* VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear. */
+"Composes a new email message to the billing customer." = "Redacta un nuevo mensaje de correo electrónico para el cliente de la facturación.";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
+"Composes a new order note." = "Redacta una nueva nota de pedido.";
+
+/* Title shown when a user logs in with Google but no matching WordPress.com account is found */
+"Connected But…" = "Conectado pero…";
+
+/* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
+"Connected Store" = "Tienda conectada";
+
+/* No comment provided by engineer. */
+"Connecting to WordPress.com" = "Conectando a WordPress.com";
+
+/* Contact Email title */
+"Contact Email" = "Correo electrónico de contacto";
+
+/* Contact Support title */
+"Contact Support" = "Contactar con el servicio de asistencia";
+
+/* No comment provided by engineer. */
+"Continue" = "Continuar";
+
+/* Part of a prompt suggesting that there is more content for the user to read. */
+"Continue reading" = "Continuar leyendo";
+
+/* Copy address text button title — should be one word and as short as possible. */
+"Copy" = "Copiar";
+
+/* Message shown when site purchases API failed */
+"Could not check site purchases." = "No se han podido comprobar las compras del sitio.";
+
+/* Error message informing the user that there was a problem subscribing to a site or feed. */
+"Could not follow the site at the address specified." = "No se pudo seguir el sitio en la dirección especificada.";
+
+/* Error message informing the user that there was a problem unsubscribing to a site or feed. */
+"Could not unfollow the site at the address specified." = "No se pudo dejar de seguir el sitio en la dirección especificada.";
+
+/* Error message shown a URL points to a valid site but not a WordPress site. */
+"Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "No se ha podido conectar con el sitio de WordPress. No hay ningún sitio de WordPress válido en esta dirección. Comprueba la dirección del sitio (URL) que has introducido.";
+
+/* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
+"Couldn't connect. Required XML-RPC methods are missing on the server." = "No se ha podido conectar. Los métodos XML-RPC necesarios no están disponibles en el servidor.";
+
+/* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
+"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "No se pudo conectar. Hemos recibido un error 403 al tratar de acceder a la variable XMLRPC de tu sitio. La aplicación lo necesita para poder comunicar con tu sitio. Contacta con tu alojamiento para resolver este problema.";
+
+/* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
+"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "No se pudo conectar. Tu alojamiento está bloqueando peticiones POST, y la aplicación lo necesita para poder comunicar con tu sitio. Contacta con tu alojamiento para resolver este problema.";
+
+/* Cell title: the current date. */
+"Current" = "Actual";
+
+/* Customer info section title
+   Section title for the customer's billing and shipping address */
+"Customer Information" = "Información del cliente";
+
+/* Customer note section title
+   Section title for a note from the customer */
+"Customer Provided Note" = "Nota proporcionada por el cliente";
+
+/* Statistical unit - a single day */
+"Day" = "Día";
+
+/* Plural of 'day' — a statistical unit */
+"Days" = "Días";
+
+/* The row label to tap for a detailed product list */
+"Details" = "Detalles";
+
+/* Screen title: Details Order number (number) */
+"Details Order #(viewModel.order.number)" = "Detalles del pedido núm. (viewModel.order.number)";
+
+/* Discount label for payment view */
+"Discount" = "Descuento";
+
+/* Add a note screen - button title for closing the view
+   Dismiss the action sheet */
+"Dismiss" = "Cancelar";
+
+/* Label for button to log in using your site address. The underscores _..._ denote underline */
+"Don't have an account? _Sign up_" = "¿No tienes una cuenta? _Regístrate_";
+
+/* WordPress.com (unmapped!) error */
+"Dotcom Error: [(code)] (theMessage)" = "Error de Dotcom: [(code)] (theMessage)";
+
+/* WordPress.com error thrown when the the request REST API url is invalid. */
+"Dotcom Invalid REST Route" = "Dotcom Invalid REST Route";
+
+/* WordPress.com Missing Token */
+"Dotcom Missing Token" = "Token Dotcom perdido";
+
+/* WordPress.com Request Failure */
+"Dotcom Request Failed" = "La solicitud de Dotcom ha fallado";
+
+/* WordPress.com Error thrown when the response body is empty */
+"Dotcom Response Empty" = "Respuesta Dotcom vacía";
+
+/* WordPress.com Invalid Token */
+"Dotcom Token Invalid" = "Token Dotcom no válido";
+
+/* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
+"Double tap to dismiss" = "Pulsa dos veces para descartar";
+
+/* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
+"Double tap to toggle setting." = "Toca dos veces para activar o desactivar la opción.";
+
+/* Email address text field placeholder */
+"Email" = "Correo electrónico";
+
+/* Placeholder for a textfield. The user may enter their email address. */
+"Email address" = "Dirección de correo electrónico";
+
+/* Label for yes/no switch - emailing the note to customer. */
+"Email note to customer" = "Enviar la nota por correo electrónico al cliente";
+
+/* No comment provided by engineer. */
+"Email note to customer %@" = "Enviar la nota por correo electrónico al cliente %@";
+
+/* Accessibility label that lets the user know the billing customer's email address */
+"Email: %@" = "Correo electrónico: %@";
+
+/* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
+"Empty URL" = "URL vacía";
+
+/* Sign in instructions for logging in with a URL. */
+"Enter the address of your WooCommerce store you'd like to connect." = "Introduce la dirección de la tienda de WooCommerce que quieres conectar.";
+
+/* Instruction text on the login's site addresss screen. */
+"Enter the address of your WordPress site you'd like to connect." = "Introduce la dirección de tu sitio WordPress con el que quieres conectar.";
+
+/* Instructional text shown when requesting the user's password for login. */
+"Enter the password for your WordPress.com account." = "Introduce la contraseña de tu cuenta en WordPress.com.";
+
+/* Title of a button on the magic link screen.
+   Title of a button. */
+"Enter your password instead." = "Introduce tu contraseña.";
+
+/* Failed Order Status */
+"Failed" = "Fallado";
+
+/* Error message to show when wrong URL format is used to access the REST API */
+"Failed to serialize request to the REST API." = "No se ha podido serializar la solicitud a la API REST.";
+
+/* Navigates to the feature request screen */
+"Feature Request" = "Solicitud de función";
+
+/* Accessibility label for the Filter notifications button. */
+"Filter notifications" = "Filtrar notificaciones";
+
+/* Filter the orders list. */
+"Filter orders" = "Filtrar pedidos";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+"Filters the notifications list by notification type." = "Filtra la lista de notificaciones por tipo de notificación.";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
+"Filters the order list by payment status." = "Filtra la lista de pedidos según el estado de los pagos.";
+
+/* User role badge */
+"Follower" = "Seguidor";
+
+/* Order Fulfillment Title */
+"Fulfill Order #(order.number)" = "Realizar el pedido núm. (order.number)";
+
+/* Fulfill order button title */
+"Fulfill order" = "Realizar pedido";
+
+/* Description for Top Performers section of My Store tab. */
+"Gain insights into how products are performing on your store" = "Obtén detalles sobre el rendimiento de los productos en tu tienda";
+
+/* Subtitle for Browse our FAQ */
+"Get answers to questions you have" = "Obtén respuestas a todas tus preguntas";
+
+/* Alerts the user that wpcom account information is being retrieved. */
+"Getting account information" = "Recuperando la información de la cuenta";
+
+/* Message shown on screen after the Google sign up process failed. */
+"Google sign up failed." = "Fallo en el registro en Google.";
+
+/* My Store > Settings > Help & Support section title */
+"HOW CAN WE HELP?" = "¿CÓMO PODEMOS AYUDARTE?";
+
+/* Help and Support navigation title
+   Help button - Help button on store picker screen. */
+"Help" = "Ayuda";
+
+/* Contact Support Action */
+"Help & Support" = "Ayuda y soporte";
+
+/* My Store > Settings > Privacy settings section */
+"Help Improve The App" = "Ayuda a mejorar la aplicación";
+
+/* Footer text to hide the billing cell */
+"Hide billing" = "Ocultar facturación";
+
+/* Error message shown a URL does not point to an existing site. */
+"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Umm, parece que no hay un sitio WordPress en esta URL. Vuelve a revisar el tecleo e inténtalo de nuevo.";
+
+/* Detail label for yes/no switch. */
+"If disabled the note will be private" = "Si se desactiva, la nota será privada";
+
+/* Application's Inactive State */
+"Inactive" = "Inactivo";
+
+/* The plugin is not active on the site and has not enabled automatic updates */
+"Inactive, Autoupdates off" = "Inactivo, actualizaciones automáticas inactivas";
+
+/* The plugin is not active on the site and has enabled automatic updates */
+"Inactive, Autoupdates on" = "Inactivo, actualizaciones automáticas activas";
+
+/* Describes a standard *.wordpress.com site domain */
+"Included with Site" = "Incluido con el sitio";
+
+/* An error message shown when a user signed in with incorrect credentials. */
+"Incorrect username or password. Please try entering your login details again." = "El nombre de usuario o la contraseña son incorrectos. Introduce de nuevo tus datos de acceso.";
+
+/* No comment provided by engineer. */
+"Invalid Site Address" = "Dirección del sitio inválida";
+
+/* No comment provided by engineer. */
+"Invalid Site Title" = "Título del sitio inválido";
+
+/* Message to show to user when he tries to add a self-hosted site that isn't HTTP or HTTPS. */
+"Invalid URL scheme inserted, only HTTP and HTTPS are supported." = "El esquema de URL que se ha insertado no es válido; solo se admiten los protocolos HTTP y HTTPS.";
+
+/* Message to show to user when he tries to add a self-hosted site that isn't a valid URL. */
+"Invalid URL, please check if you wrote a valid site address." = "URL no válida, por favor comprueba si has escrito una dirección de sitio válida.";
+
+/* No comment provided by engineer. */
+"Invalid username" = "Nombre de usuario inválido";
+
+/* An error message shown during log in when the username or password is incorrect. */
+"It looks like this username\/password isn't associated with this site." = "Parece que este usuario\/contraseña no está asociado con este sitio.";
+
+/* An error message shown when a wpcom user provides the wrong password. */
+"It seems like you've entered an incorrect password. Want to give it another try?" = "Parece que has introducido una contraseña incorrecta ¿Quieres intentarlo de nuevo?";
+
+/* Settings > Privacy Settings. A text link to the cookie policy. */
+"Learn more" = "Saber más";
+
+/* Licenses (information page title) */
+"Licenses" = "Licencias";
+
+/* Message to show when a request for a WP.com API endpoint is throttled */
+"Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Límite alcanzado. Puedes intentarlo de nuevo en 1 minuto. Intentarlo antes sólo incrementará el tiempo de espera. Si piensas que esto es un error, contacta con el soporte.";
+
+/* Displayed when an Order is being retrieved */
+"Loading Order" = "Cargando el pedido";
+
+/* Button title.  Tapping takes the user to the login form.
+   Log In button label. */
+"Log In" = "Acceder";
+
+/* Alert button title - confirms and logs out the user */
+"Log Out" = "Salir";
+
+/* Explains that the files are sorted by LIFO date: most recent day listed first. */
+"Log files by created date" = "Archivos de registro por fecha de creación";
+
+/* Label for button to log in using your site address. */
+"Log in by entering your site address." = "Accede introduciendo la dirección de tu sitio.";
+
+/* A generic error message for a failed log in. */
+"Log in failed. Please try again." = "Acceso fallido. Inténtalo otra vez.";
+
+/* Instruction text on the login's email address screen. */
+"Log in to WordPress.com using an email address to manage all your WordPress sites." = "Accede a WordPress.com usando una dirección de correo electrónico para gestionar todos tus sitios WordPress.";
+
+/* Instruction text on the login's email address screen. */
+"Log in to the WordPress.com account you used to connect Jetpack." = "Accede a la cuenta de WordPress.com que utilizaste para conectar a Jetpack.";
+
+/* Authentication Login Button */
+"Log in with Jetpack" = "Acceder con Jetpack";
+
+/* Sign in instructions on the 'log in using email' screen. */
+"Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Accede con la dirección de correo electrónico de tu cuenta de WordPress.com para gestionar tus tiendas de WooCommerce.";
+
+/* Log out button title */
+"Log out account" = "Salir de la cuenta";
+
+/* Title of a button. */
+"Lost your password?" = "¿Has perdido tu contraseña?";
+
+/* Tagline after the heart icon, displayed to the user */
+"Made with love by Automattic" = "Con mucho cariño, por la gente de Automattic";
+
+/* Login Prologue Legend */
+"Manage orders, track sales and monitor store activity with real-time alerts." = "Gestiona pedidos, controla las ventas y supervisa la actividad de la tienda con alertas en tiempo real.";
+
+/* shown in promotional screens during first launch */
+"Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "Gestiona en directo tu sitio impulsado con Jetpack - tienes WordPress en tu bolsillo.";
+
+/* Section name for manual offsets in time zone selector */
+"Manual Offsets" = "Compensaciones manuales";
+
+/* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
+"Mapped Domain" = "Dominio mapeado";
+
+/* Accessibility label for the Mark All Notifications as Read Button */
+"Mark All as Read" = "Marcar todo como leído";
+
+/* Fulfill Order Action Button */
+"Mark Order Complete" = "Marcar el pedido como completado";
+
+/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
+"Marks Every Notification as Read" = "Marca todas las notificaciones como leídas";
+
+/* Error message to show to users when trying to upload a media object with no local file associated */
+"Media doesn't have an associated file to upload." = "Los medios no están asociados a un archivo a subir.";
+
+/* Message phone number button title */
+"Message" = "Mensaje";
+
+/* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
+"Minimum value %1$@, maximum value %2$@" = "Valor mínimo: %1$@. Valor máximo: %2$@.";
+
+/* Statistical unit - a single week */
+"Month" = "Mes";
+
+/* Plural of 'month' — a statistical unit */
+"Months" = "Meses";
+
+/* Spam Action Spoken hint. */
+"Moves a comment to Spam" = "Traslada un comentario a spam";
+
+/* Trash Action Spoken hint */
+"Moves the comment to Trash" = "Traslada el comentario a la papelera";
+
+/* My Tickets title */
+"My Tickets" = "Mis tickets";
+
+/* My Store Notice Title for loading error
+   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+"My store" = "Mi tienda";
+
+/* Name text field placeholder */
+"Name" = "Nombre";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
+"Navigates to Settings." = "Accede a Configuración.";
+
+/* A button title. */
+"Need help finding your site address?" = "¿Necesitas ayuda para encontrar la dirección de tu sitio?";
+
+/* Takes the user to get help */
+"Need help?" = "¿Necesitas ayuda?";
+
+/* Title of the more help button on alert helping users understand their site address */
+"Need more help?" = "¿Necesitas más ayuda?";
+
+/* Title of a button.
+   Title of a button. The text should be capitalized. */
+"Next" = "Siguiente";
+
+/* Empty Notifications List Message */
+"No Notifications Yet!" = "Todavía no hay notificaciones.";
+
+/* Search Orders (Empty State) */
+"No Orders found" = "No se han encontrado pedidos";
+
+/* Default text for Top Performers section when no data exists for a given period. */
+"No activity this period" = "Sin actividad durante este periodo";
+
+/* Fulfill order > customer info > where the physical shipping address would normally display.
+   Order details > customer info > billing details. This is where the address would normally display. - Order details > customer info > shipping details. This is where the address would normally display. */
+"No address specified." = "No se ha indicado ninguna dirección.";
+
+/* Text displayed when no data is available for revenue chart. */
+"No data available" = "No hay datos disponibles.";
+
+/* Notifications List (Empty State + Filters)
+   Orders List (Empty State + Filters) */
+"No results for the selected criteria" = "No hay resultados para los criterios elegidos";
+
+/* Labels an order note to let user know it's visible to the customer
+   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
+"Note to customer" = "Enviar la nota al cliente";
+
+/* Title of the Notifications tab — plural form of Notification
+   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
+"Notifications" = "Notifications";
+
+/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
+"Notifications: %@" = "Notificaciones: %@";
+
+/* Button title. An acknowledgement of the message displayed in a prompt.
+   Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+"OK" = "OK";
+
+/* Spoken label to indicate switch control is turned off. */
+"Off" = "Apagado";
+
+/* +2 Days Section Header */
+"Older than 2 days" = "Hace más de 2 días";
+
+/* Months Section Header */
+"Older than a Month" = "Hace más de un mes";
+
+/* Weeks Section Header */
+"Older than a Week" = "Hace más de una semana";
+
+/* Spoken label to indicate switch control is turned on */
+"On" = "Encendido";
+
+/* On Hold Order Status */
+"On Hold" = "Suspendido";
+
+/* Opens iOS's Device Settings for the app */
+"Open Device Settings" = "Abrir ajustes del dispositivo";
+
+/* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
+"Open Mail" = "Abrir correo electrónico";
+
+/* Navigates to open source licenses screen */
+"Open Source Licenses" = "Abrir licencias de origen";
+
+/* No comment provided by engineer. */
+"Optional Tracking Information" = "Información de seguimiento opcional";
+
+/* Add a note screen - title. Example: Order #15
+   Order number title */
+"Order #(viewModel.order.number)" = "Pedido núm. (viewModel.order.number)";
+
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+"Order %@ has been deleted from your store" = "El pedido %@ se ha eliminado de tu tienda";
+
+/* Order notes section title */
+"Order Notes" = "Notas del pedido";
+
+/* Order fulfillment success notice */
+"Order marked as fulfilled" = "El pedido se ha marcado como completado";
+
+/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
+   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+"Orders" = "Pedidos";
+
+/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
+"Orders: %@" = "Pedidos: %@";
+
+/* My Store > Settings > Other app section */
+"Other" = "Otros";
+
+/* Product section title */
+"PRODUCT" = "PRODUCTO";
+
+/* Login dialog password placeholder
+   Password placeholder */
+"Password" = "Contraseña";
+
+/* Payment section title */
+"Payment" = "Pago";
+
+/* Payment of <currency symbol><payment total> received via (payment method title) */
+"Payment of (totalValue) received via (order.paymentMethodTitle)" = "Se ha recibido el pago de (totalValue) a través de (order.paymentMethodTitle)";
+
+/* Pending Order Status */
+"Pending" = "Pendiente";
+
+/* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
+"Phone number: %@" = "Número de teléfono: %@";
+
+/* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
+"Pick Store to Connect" = "Elegir tienda para realizar la conexión";
+
+/* Alert title for check your email during logIn/signUp. */
+"Please check your email" = "Por favor, revisa tu correo electrónico";
+
+/* No comment provided by engineer. */
+"Please enter a site address." = "Introduce una dirección para el sitio.";
+
+/* No comment provided by engineer. */
+"Please enter a username." = "Por favor escribe el nombre de usuario.";
+
+/* Error message displayed when the user attempts use an invalid email address. */
+"Please enter a valid email address." = "Introduce una dirección de correo válida.";
+
+/* Popup message to ask for user credentials (fields shown below). */
+"Please enter your credentials" = "Introduce tus credenciales";
+
+/* Instructions for alert asking for email and name. */
+"Please enter your email address and username:" = "Introduce tu dirección de correo electrónico y nombre de usuario:";
+
+/* Instructions for alert asking for email. */
+"Please enter your email address:" = "Por favor, introduce tu dirección de correo electrónico.";
+
+/* A short prompt asking the user to properly fill out all login fields. */
+"Please fill out all the fields" = "Rellena todos los campos";
+
+/* Message to ask the user to check their email and look for a WordPress.com email. */
+"Please open your email app and look for an email from WordPress.com." = "Por favor, abre tu aplicación de correo electrónico y busca un correo de WordPress.com.";
+
+/* Opens the Privacy Policy web page */
+"Privacy Policy" = "Política de privacidad";
+
+/* Navigates to Privacy Settings screen
+   Privacy settings screen title */
+"Privacy Settings" = "Ajustes de privacidad";
+
+/* Labels an order note to let the user know it's private and not seen by the customer
+   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
+"Private note" = "Nota privada";
+
+/* Processing Order Status */
+"Processing" = "Se está procesando";
+
+/* Description for Top Performers left column header
+   Product section title - Section header title for the product */
+"Product" = "Producto";
+
+/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
+"Prompts with the option to call or message the billing customer." = "Mensajes con la opción de llamar o enviar un mensaje al cliente de la facturación.";
+
+/* shown in promotional screens during first launch */
+"Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publica desde el parque. Bloguea desde el autobús. Comenta desde la cafetería. WordPress va donde tú vayas.";
+
+/* Quantity abbreviation for section title */
+"QTY" = "CANTIDAD";
+
+/* Quantity abbreviation for section title
+   Section header title - abbreviation for quantity */
+"Qty" = "Cantidad";
+
+/* Subtitle for Contact Support */
+"Reach our happiness engineers who can help answer tough questions" = "Ponte en contacto con nuestros Happiness Engineers y soluciona las cuestiones más complicadas.";
+
+/* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
+"Read privacy policy" = "Leer la política de privacidad";
+
+/* Refunded Order Status */
+"Refunded" = "Reembolsado";
+
+/* Describes a domain that was registered with WordPress.com */
+"Registered Domain" = "Dominio registrado";
+
+/* Action: Opens the Store in a browser
+   Action: removes the current filters from the notifications list */
+"Remove Filters" = "Eliminar filtros";
+
+/* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
+"Report Crashes" = "Informar de fallos";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
+"Retrieves a list of orders that contain a given keyword." = "Se obtiene una lista de los pedidos que contienen una palabra clave determinada.";
+
+/* Retry Action
+   Retry the last action */
+"Retry" = "Reintentar";
+
+/* Revenue stat label on dashboard. */
+"Revenue" = "Ingresos";
+
+/* Review moderation success notice message. It reads: Review marked as {new status} */
+"Review marked as %@" = "Review marked as %@";
+
+/* Description text used on the UI element displayed when a user has pending orders to process. */
+"Review, prepare, and ship these pending orders" = "Revisa, prepara y envía estos pedidos pendientes.";
+
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+"Reviews" = "Reseñas";
+
+/* SKU label */
+"SKU:" = "SKU:";
+
+/* One Time Code has been sent via SMS */
+"SMS Sent" = "Se ha enviado un SMS";
+
+/* Orders Search Placeholder */
+"Search all orders" = "Buscar en todos los pedidos";
+
+/* Search Orders */
+"Search orders" = "Buscar en pedidos";
+
+/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
+"Selected Store" = "Selected Store";
+
+/* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
+"Send Link" = "Enviar enlace";
+
+/* Tells user to set an email that support can use for replies */
+"Set email" = "Configurar correo electrónico";
+
+/* Accessibility label for the Settings button.
+   Settings navigation title */
+"Settings" = "Configuracion";
+
+/* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
+"Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Comparte información con nuestra herramienta de análisis acerca del uso que haces de los servicios mientras estás conectado a tu cuenta de WordPress.com.";
+
+/* Action: Opens the Store in a browser */
+"Share your Store" = "Comparte tu tienda";
+
+/* Shipping label for payment view */
+"Shipping" = "Envío";
+
+/* Shipping title for customer info cell */
+"Shipping details" = "Detalles del envío";
+
+/* Footer text to show the billing cell */
+"Show billing" = "Mostrar facturación";
+
+/* When social login fails, this button offers to let them signup for a new WordPress.com account */
+"Sign up" = "Crear Cuenta";
+
+/* Button title. Tapping begins the process of creating a WordPress.com account. */
+"Sign up for WordPress.com" = "Regístrate en WordPress.com";
+
+/* Button title. Tapping begins our normal sign up process. */
+"Sign up with Email" = "Registro con correo electrónico";
+
+/* Button title. Tapping begins sign up using Google. */
+"Sign up with Google" = "Registro con Google";
+
+/* Describes a site redirect domain */
+"Site Redirect" = "Redirección de sitio";
+
+/* No comment provided by engineer. */
+"Site address must be at least 4 characters." = "La dirección del sitio debe tener al menos 4 caracteres.";
+
+/* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
+"Sorry, but your username contains an invalid phrase%@." = "Lo sentimos, pero tu nombre de usuario contiene una frase no válida %@.";
+
+/* No comment provided by engineer. */
+"Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "La dirección sólo puede contenter letras minúsculas (a-z) y números.";
+
+/* No comment provided by engineer. */
+"Sorry, site addresses may not contain the character &#8220;_&#8221;!" = "La dirección del sitio no puede contener el caracter &#8220;_&#8221;";
+
+/* No comment provided by engineer. */
+"Sorry, site addresses must have letters too!" = "La dirección del sitio debe contener letras.";
+
+/* Error message displayed when the entered email is not available. */
+"Sorry, that email address is already being used!" = "El email ya se ha usado.";
+
+/* No comment provided by engineer. */
+"Sorry, that email address is not allowed!" = "Este correo electrónico no está permitido";
+
+/* This error message occurs when a user tries to create an account with a weak password. */
+"Sorry, that password does not meet our security guidelines. Please choose a password with a minimum length of six characters, mixing uppercase letters, lowercase letters, numbers and symbols." = "Lo sentimos, esa contraseña no cumple con nuestras directrices de seguridad. Por favor, elige una contraseña que contenga un mínimo de seis caracteres, mezcle mayúsculas y minúsculas, números y símbolos.";
+
+/* No comment provided by engineer. */
+"Sorry, that site already exists!" = "Este sitio ya existe.";
+
+/* No comment provided by engineer. */
+"Sorry, that site is reserved!" = "Este sitio está reservado";
+
+/* No comment provided by engineer. */
+"Sorry, that username already exists!" = "Este usuario ya existe.";
+
+/* No comment provided by engineer. */
+"Sorry, that username is unavailable." = "Lo sentimos, este nombre de usuario no está disponible";
+
+/* No comment provided by engineer. */
+"Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "El nombre de usuario sólo puede contenter letras minúsculas (a-z) y números.";
+
+/* No comment provided by engineer. */
+"Sorry, usernames may not contain the character &#8220;_&#8221;!" = "El nombre de usuario no puede contener el caracter &#8220;_&#8221;";
+
+/* No comment provided by engineer. */
+"Sorry, usernames must have letters (a-z) too!" = "Disculpa, el nombre de usuario, también debe contener letras.";
+
+/* No comment provided by engineer. */
+"Sorry, you may not use that site address." = "No puedes utilizar esta dirección para el sitio.";
+
+/* Verb, spam a comment */
+"Spam" = "Spam";
+
+/* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
+"Starting period %1$@, ending period %2$@" = "Periodo de inicio: %1$@. Periodo de finalización: %2$@.";
+
+/* VoiceOver accessibility label for the store revenue chart. */
+"Store revenue chart" = "Gráfico de ingresos de la tienda";
+
+/* VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}. */
+"Store revenue chart %@" = "Gráfico de ingresos de la tienda: %@";
+
+/* VoiceOver accessibility label for the store revenue chart's X-axis. */
+"Store revenue chart: X Axis" = "Gráfico de ingresos de la tienda: Eje X";
+
+/* VoiceOver accessibility label for the store revenue chart's Y-axis. */
+"Store revenue chart: Y Axis" = "Gráfico de ingresos de la tienda: Eje Y";
+
+/* Subtotal label for payment view */
+"Subtotal" = "Subtotal";
+
+/* This action allows the user to change stores without logging out and logging back in again. */
+"Switch Store" = "Switch Store";
+
+/* Labels an order note to let user know it's a system status message */
+"System status" = "Estado del sistema";
+
+/* Tax label for total taxes line */
+"Tax:" = "Impuesto:";
+
+/* Taxes label for payment view */
+"Taxes" = "Impuestos";
+
+/* Opens the Terms of Service web page */
+"Terms of Service" = "Condiciones del servicio";
+
+/* Button title */
+"Text me a code instead" = "Envía un código por mensaje de texto";
+
+/* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
+"That doesn't appear to be a valid verification code." = "No parece ser un código de verificación válido.";
+
+/* Message to show to user when he tries to add a self-hosted site that isn't a WordPress site. */
+"That doesn't look like a WordPress site." = "Eso no parece que sea un sitio WordPress.";
+
+/* No comment provided by engineer. */
+"That email address has already been used. Please check your inbox for an activation email. If you don't activate you can try again in a few days." = "Ese email ya se ha usado. Comprueba si hay un email de activación en tu bandeja de entrada. Si no se activa, puedes intentarlo dentro de unos días.";
+
+/* No comment provided by engineer. */
+"That site address is not allowed." = "Esta dirección del sitio no está permitida";
+
+/* No comment provided by engineer. */
+"That site is currently reserved but may be available in a couple days." = "Este sitio está reservado, pero puede estar libre en un par de días.";
+
+/* No comment provided by engineer. */
+"That username is currently reserved but may be available in a couple of days." = "Este nombre de usuario está reservado, pero podría estar libre en un par de días";
+
+/* No comment provided by engineer. */
+"That username is not allowed." = "Ese nombre de usuario no está permitido.";
+
+/* Description shown when a user logs in with Google but no matching WordPress.com account is found */
+"The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "La cuenta de Google \"(loginFields.username)\" no coincide con ninguna cuenta de WordPress.com";
+
+/* Fetching an Order Failed */
+"The Order couldn't be loaded!" = "No se ha podido cargar el pedido.";
+
+/* Error message describing a problem with a URL. */
+"The URL is missing a valid host." = "La URL no contiene un host válido.";
+
+/* No comment provided by engineer. */
+"The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "El certificado para este servidor no es válido. Puede que estés intentando conectar con un servidor que aparenta ser \"%@\", lo que podría poner en peligro tu información confidencial.\n\n¿Deseas confiar en el certificado de todos modos?";
+
+/* Displayed whenever a Notification that was onscreen got deleted. */
+"The notification has been removed" = "Se ha eliminado la notificación.";
+
+/* No comment provided by engineer. */
+"The server returned an empty response. This usually means you need to increase the memory limit for your site." = "El servidor ha enviado una respuesta vacía. Normalmente esto significa que tienes que ampliar el límite de memoria para tu sitio.";
+
+/* No comment provided by engineer. */
+"The site address must be shorter than 64 characters." = "La dirección del sitio debe tener menos de 64 caracteres.";
+
+/* Message shown when site deletion API failed */
+"The site could not be deleted." = "No se ha podido eliminar el sitio.";
+
+/* Message shown when site export API failed */
+"The site could not be exported." = "El sitio no puede ser exportado.";
+
+/* Error message informing the user that there was a problem blocking posts from a site from their reader. */
+"There was a problem blocking posts from the specified site." = "Ha habido un problema al bloquear las entradas del sitio especificado.";
+
+/* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
+"There was a problem removing the block for specified site." = "Ha habido un problema al suprimir el bloque para el sitio especificado.";
+
+/* Top Performers section title - this month */
+"This Month" = "Este mes";
+
+/* Top Performers section title - this week */
+"This Week" = "Esta semana";
+
+/* Top Performers section title - this year */
+"This Year" = "Este año";
+
+/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
+"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "Esta aplicación necesita que Jetpack se conecte con tu Tienda. <br \/> Lee las <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">instrucciones de configuración<\/a>.";
+
+/* An error message informing the user the email address they entered did not match a WordPress.com account. */
+"This email address is not registered on WordPress.com." = "Esta dirección de correo electrónico no está registrada en WordPress.com";
+
+/* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
+"This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "Esta información nos ayuda a mejorar nuestros productos, hacer que el marketing sea más relevante, personalizar tu experiencia en WordPress.com y más, tal como se detalla en nuestra política de privacidad.";
+
+/* Text instructing the user to enter their email address. */
+"To create your new WordPress.com account, please enter your email address." = "Para crear tu nueva cuenta de WordPress.com, por favor, introduce tu dirección de correo electrónico.";
+
+/* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
+"To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "Para mejorar el rendimiento de la aplicación y corregir errores puntuales, activa los informes automáticos sobre fallos.";
+
+/* No comment provided by engineer. */
+"To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Para seguir con esta cuenta de Google, por favor, primero accede con tu contraseña de WordPress.com. Esto solo se te pedirá una vez.";
+
+/* Today Section Header
+   Top Performers section title - today */
+"Today" = "Hoy";
+
+/* Header label for Top Performers section of My Store tab. */
+"Top Performers" = "Mejor rendimiento";
+
+/* Used when a Reader Topic is not found for a specific id */
+"Topic not found for id:" = "No se ha encontrado tema con id:";
+
+/* Total label for payment view */
+"Total" = "Total";
+
+/* Top performers — label for the total number of products ordered */
+"Total Product Order: %ld" = "Pedido de productos total: %ld";
+
+/* Description for Top Performers right column header */
+"Total Spend" = "Gasto total";
+
+/* Move a comment to the trash */
+"Trash" = "Papelera";
+
+/* Connect when the SSL certificate is invalid */
+"Trust" = "Confiar";
+
+/* No comment provided by engineer. */
+"Try another account" = "Probar con otra cuenta";
+
+/* When social login fails, this button offers to let the user try again with a differen email address */
+"Try with another email" = "Prueba con otro correo electrónico";
+
+/* When social login fails, this button offers to let them try tp login using a URL */
+"Try with the site address" = "Prueba con la dirección del sitio";
+
+/* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
+"Unable To Connect" = "No fue posible conectar";
+
+/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
+"Unable to add note to order #(viewModel.order.orderID)" = "Unable to add note to order #(viewModel.order.orderID)";
+
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"Unable to find WooCommerce stores connected to this account" = "No se han podido encontrar tiendas WooCommerce conectadas a esta cuenta";
+
+/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
+"Unable to fulfill order #(orderID)" = "Unable to fulfill order #(orderID)";
+
+/* Load Action Failed */
+"Unable to load content" = "Unable to load content";
+
+/* Review error notice message. It reads: Unable to mark review as {attempted status} */
+"Unable to mark review as %@" = "Unable to mark review as %@";
+
+/* No comment provided by engineer. */
+"Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "No ha sido posible leer el sitio de WordPress en esa dirección URL. Pulsa \"¿Necesitas ayuda?\" para ver las FAQ.";
+
+/* Refresh Action Failed */
+"Unable to refresh list" = "No se ha podido actualizar la lista.";
+
+/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
+"Unable to successfully connect to %@" = "No se ha podido conectar a %@";
+
+/* Error message displayed when an error occurred checking for email availability. */
+"Unable to verify the email address. Please try again later." = "No ha sido posible verificar la dirección de correo electrónico. Por favor, inténtalo de nuevo más tarde.";
+
+/* Unapproves a comment. Spoken Hint. */
+"Unapproves the comment" = "Elimina la aprobación del comentario";
+
+/* Undo Action */
+"Undo" = "Deshacer";
+
+/* Unknown Application State */
+"Unknown" = "Desconocido";
+
+/* No comment provided by engineer. */
+"Unknown Search Terms" = "Términos de búsqueda desconocidos";
+
+/* No comment provided by engineer. */
+"Unknown error" = "Error desconocido";
+
+/* Footer text below the list of logs explaining the maximum number of logs saved. */
+"Up to seven days՚ worth of logs are saved." = "Se guardan los registros con una antigüedad máxima de siete días.";
+
+/* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
+"Updated %1$@ at %2$@" = "Última actualización: el %1$@ a las %2$@";
+
+/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+"Updated %ld hour ago" = "Se ha actualizado hace %ld hora";
+
+/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+"Updated %ld hours ago" = "Se ha actualizado hace %ld horas";
+
+/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
+"Updated %ld minute ago" = "Se ha actualizado hace %ld minuto";
+
+/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+"Updated %ld minutes ago" = "Se ha actualizado hace %ld minutos";
+
+/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
+"Updated moments ago" = "Se ha actualizado hace unos instantes";
+
+/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
+"Updated on %@" = "Fecha de actualización: %@";
+
+/* Login dialog username placeholder
+   Username placeholder */
+"Username" = "Usuario";
+
+/* No comment provided by engineer. */
+"Username must be at least 4 characters." = "El nombre de usuario debe tener al menos 4 caracteres.";
+
+/* two factor code placeholder */
+"Verification code" = "Código de verificación";
+
+/* Displays the version of the App */
+"Version %@" = "Versión %@";
+
+/* View application log cell title */
+"View Application Log" = "Ver registro de la aplicación";
+
+/* subtitle for My Tickets */
+"View previously submitted support tickets" = "Consulta las peticiones de soporte enviadas previamente";
+
+/* User role badge */
+"Viewer" = "Lector";
+
+/* Visitors stat label on dashboard - should be plural. */
+"Visitors" = "Visitantes";
+
+/* Add a note screen - Write Note section title */
+"WRITE NOTE" = "ESCRIBIR NOTA";
+
+/* Orders List (Empty State / No Filters) */
+"Waiting for Customers" = "Esperando clientes";
+
+/* Message shown on screen while waiting for Google to finish its signup process. */
+"Waiting for Google to complete…" = "Esperando a que Google termine…";
+
+/* shown in promotional screens during first launch */
+"Watch readers from around the world read and interact with your site — in real time." = "Ve lo que lectores de todo el mundo leen e interactúa con tu sitio - en tiempo real.";
+
+/* Instructional text on how to open the email containing a magic link. */
+"We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "¡Te hemos enviado un enlace mágico de registro! Revisa tu correo en este dispositivo, y toca el enlace en el correo para finalizar el registro.";
+
+/* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
+"We use other tracking tools, including some from third parties. Read about these and how to control them." = "Utilizamos otras herramientas de seguimiento, incluyendo algunas de terceras partes. Lee acerca de ellas y cómo controlarlas.";
+
+/* Error message displayed when an error occurred sending the magic link email. */
+"We were unable to send you an email at this time. Please try again later." = "No hemos sido capaces de enviarte un correo electrónico en este momento. Por favor, inténtalo más tarde de nuevo.";
+
+/* Instructional text for the magic link login flow. */
+"We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "Te enviaremos por correo electrónico un enlace mágico que te registrará al instante, sin necesidad de contraseña. ¡Sin errores!";
+
+/* Error message shown when having trouble connecting to a Jetpack site. */
+"We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "No podemos conectar con el sitio Jetpack en esa URL. Contacta con nosotros para que te ayudemos.";
+
+/* Statistical unit - a single week */
+"Week" = "Semana";
+
+/* Plural of 'week' — a statistical unit */
+"Weeks" = "Semanas";
+
+/* Title of alert helping users understand their site address */
+"What's my site address?" = "¿Cuál es la dirección de mi sitio?";
+
+/* An error message shown when a wpcom user provides the wrong password. */
+"Whoops, something went wrong and we couldn't log you in. Please try again!" = "Vaya, algo salió mal y no pudimos conectarte. ¡Por favor, inténtalo de nuevo!";
+
+/* Error message shown when an incorrect two factor code is provided. */
+"Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Vaya, eso no es un código de verificación en dos pasos. ¡Vuelve a comprobar tu código e inténtalo de nuevo!";
+
+/* Navigates to about WooCommerce app screen */
+"WooCommerce" = "WooCommerce";
+
+/* Subject of new Zendesk ticket. */
+"WooCommerce for iOS Support" = "Servicio de soporte de WooCommerce para iOS";
+
+/* No comment provided by engineer. */
+"WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "La versión de WordPress es demasiado antigua. El sitio en %1$@ utiliza la versión %2$@ de WordPress. Recomendamos actualizarla a la versión más reciente o al menos a la %3$@";
+
+/* Statistical unit - a single year */
+"Year" = "Año";
+
+/* Plural of 'year' — a statistical unit */
+"Years" = "Años";
+
+/* Yesterday Section Header */
+"Yesterday" = "Ayer";
+
+/* No comment provided by engineer. */
+"You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "No puedes usar este correo electrónico para registrarte. Estamos teniendo problemas con él, bloquea nuestros correos electrónicos. Por favor, usa otro proveedor.";
+
+/* Title text used on the My Store UI when a user has a _single_ pending order to process. */
+"You have %ld order to fulfill" = "Tienes %ld pedido por realizar";
+
+/* Title text used on the My Store UI when a user has _multiple_ pending orders to process. */
+"You have %ld orders to fulfill" = "Tienes %ld pedidos por realizar";
+
+/* No comment provided by engineer. */
+"You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Parece que tienes instalado el plugin móvil de DudaMobile y está impidiendo a la aplicación conectarse a tu blog";
+
+/* Instructional text on how to open the email containing a magic link. */
+"Your magic link is on its way! Check your email on this device, and tap the link in the email you receive from WordPress.com" = "¡Tu enlace mágico está en marcha! Revisa tu correo electrónico en este dispositivo, y pulsa el enlace del correo electrónico que recibas de WordPress.com";
+
+/* shown in promotional screens during first launch */
+"Your notifications travel with you — see comments and likes as they happen." = "Tus avisos viajan contigo - ve los comentarios y me gusta a medida que ocurran.";
+
+/* Body text of alert helping users understand their site address */
+"Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "La dirección de tu sitio aparece en la barra de arriba de la pantalla cuando visitas tu sitio en Safari.";
+
+/* Notification status description for 'approved' */
+"approved" = "aprobada";
+
+/* Site Address placeholder */
+"example.wordpress.com" = "ejemplo.wordpress.com";
+
+/* Later today */
+"later today" = "más tarde hoy";
+
+/* Notification status description for 'unspam' (opposite of spam) */
+"not spam" = "sin spam";
+
+/* Notification status description for 'untrash' (opposite of trash) */
+"not trash" = "fuera de la papelera";
+
+/* Notification status description for 'spam' */
+"spam" = "spam";
+
+/* Today */
+"today" = "hoy";
+
+/* Notification status description for 'trash' */
+"trash" = "en la papelera";
+
+/* Notification status description for 'unapproved' */
+"unapproved" = "no aprobada";
+
+/* Used when the response doesn't have a valid url to display */
+"unknown url" = "url desconocida";
+
+/* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
+"{G} Log in with Google." = "{G} Acceder con Google.";
+
+/* About View's Footer Text. The variable is the current year */
+"© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
+

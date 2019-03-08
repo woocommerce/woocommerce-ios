@@ -83,6 +83,12 @@ class OrderDetailsViewController: UIViewController {
         return trackingResultsController.fetchedObjects
     }
 
+    /// Order statuses list
+    ///
+    private var currentSiteStatuses: [OrderStatus] {
+        return statusResultsController.fetchedObjects
+    }
+
     /// Haptic Feedback!
     ///
     private let hapticGenerator = UINotificationFeedbackGenerator()
@@ -656,8 +662,7 @@ private extension OrderDetailsViewController {
     }
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        let listAll = statusResultsController.fetchedObjects
-        for orderStatus in listAll where orderStatus.slug == order.statusKey {
+        for orderStatus in currentSiteStatuses where orderStatus.slug == order.statusKey {
             return orderStatus
         }
 

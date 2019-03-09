@@ -189,9 +189,10 @@ tool, which was designed to simulate Backend Responses.
 
 ## **Yosemite.framework**
 
-The Yosemite framework is the keystone of our architecture. Encapsulates all of the Business Logic of our app, and interacts with both, the Networking and
+The [Yosemite framework](./YOSEMITE.md) is the keystone of our architecture. Encapsulates all of the Business Logic of our app, and interacts with both, the Networking and
 Storage layers.
 
+More on [Yosemite](./YOSEMITE.md)
 
 
 ### Main Concepts

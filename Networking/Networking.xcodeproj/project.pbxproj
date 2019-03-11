@@ -182,6 +182,7 @@
 		CE50346021B5799F007573C6 /* SitePlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345F21B5799F007573C6 /* SitePlan.swift */; };
 		CE50346721B5DCBE007573C6 /* site-plan.json in Resources */ = {isa = PBXBuildFile; fileRef = CE50346621B5DCBE007573C6 /* site-plan.json */; };
 		CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */; };
+		CE6BFEE52236BF05005C79FB /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6BFEE42236BF05005C79FB /* Product.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -375,6 +376,7 @@
 		CE50345F21B5799F007573C6 /* SitePlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlan.swift; sourceTree = "<group>"; };
 		CE50346621B5DCBE007573C6 /* site-plan.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "site-plan.json"; sourceTree = "<group>"; };
 		CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteMapper.swift; sourceTree = "<group>"; };
+		CE6BFEE42236BF05005C79FB /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -602,6 +604,7 @@
 			isa = PBXGroup;
 			children = (
 				B50A583A21AD872E00617455 /* Devices */,
+				CE6BFEE62236CF0D005C79FB /* Product */,
 				74A1D26921189AC100931DFA /* Stats */,
 				B505F6CE20BEE38B00BB1B69 /* Account.swift */,
 				B5BB1D0F20A237FB00112D92 /* Address.swift */,
@@ -787,6 +790,15 @@
 				F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		CE6BFEE62236CF0D005C79FB /* Product */ = {
+			isa = PBXGroup;
+			children = (
+				CE6BFEE42236BF05005C79FB /* Product.swift */,
+				CE6BFEE92236E191005C79FB /* ProductType.swift */,
+			);
+			path = Product;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1031,6 +1043,7 @@
 				B567AF2520A0CCA300AB6C62 /* AuthenticatedRequest.swift in Sources */,
 				B505F6EA20BEFC3700BB1B69 /* MockupNetwork.swift in Sources */,
 				748D4248210F89ED00CF7D1B /* OrderStatsRemote.swift in Sources */,
+				CE6BFEE52236BF05005C79FB /* Product.swift in Sources */,
 				7452387221124B7700A973CD /* AnyEncodable.swift in Sources */,
 				740CF89921937A030023ED3A /* CommentRemote.swift in Sources */,
 				74ABA1CD213F1B6B00FFAD30 /* TopEarnerStats.swift in Sources */,

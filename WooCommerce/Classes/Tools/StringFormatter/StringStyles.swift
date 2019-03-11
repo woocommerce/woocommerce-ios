@@ -73,7 +73,7 @@ extension StringStyles {
     /// Styles: Notifications List / Snippet Block
     ///
     static let snippet: StringStyles = {
-        let regular: Style = [.paragraphStyle: NSParagraphStyle.footnote, .font: UIFont.footnote, .foregroundColor: StyleManager.defaultTextColor]
+        let regular: Style = [.paragraphStyle: NSParagraphStyle.truncatingTailFootnote, .font: UIFont.footnote, .foregroundColor: StyleManager.defaultTextColor]
         return StringStyles(regular: regular)
     }()
 

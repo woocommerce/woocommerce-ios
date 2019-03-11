@@ -13,7 +13,7 @@ extension UIFont {
     }
 
     static var title2: UIFont {
-        return .preferredFont(forTextStyle: .title2)
+        return font(forStyle: .title2, weight: .semibold)
     }
 
     static var title3: UIFont {

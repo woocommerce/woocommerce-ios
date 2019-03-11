@@ -16,7 +16,7 @@ public class OrdersRemote: Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllOrders(for siteID: Int,
-                              status: String? = nil,
+                              statusKey: String? = nil,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
                               completion: @escaping ([Order]?, Error?) -> Void)
@@ -24,7 +24,7 @@ public class OrdersRemote: Remote {
         let parameters = [
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
-            ParameterKeys.status: status ?? Defaults.statusAny
+            ParameterKeys.statusKey: statusKey ?? Defaults.statusAny
         ]
 
         let path = Constants.ordersPath
@@ -83,7 +83,7 @@ public class OrdersRemote: Remote {
             ParameterKeys.keyword: keyword,
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
-            ParameterKeys.status: Defaults.statusAny
+            ParameterKeys.statusKey: Defaults.statusAny
         ]
 
         let path = Constants.ordersPath
@@ -101,9 +101,9 @@ public class OrdersRemote: Remote {
     ///     - status: New Status to be set.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateOrder(from siteID: Int, orderID: Int, status: String, completion: @escaping (Order?, Error?) -> Void) {
+    public func updateOrder(from siteID: Int, orderID: Int, statusKey: String, completion: @escaping (Order?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID)
-        let parameters = [ParameterKeys.status: status]
+        let parameters = [ParameterKeys.statusKey: statusKey]
         let mapper = OrderMapper(siteID: siteID)
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
@@ -154,6 +154,6 @@ public extension OrdersRemote {
         static let note: String             = "note"
         static let page: String             = "page"
         static let perPage: String          = "per_page"
-        static let status: String           = "status"
+        static let statusKey: String        = "status"
     }
 }

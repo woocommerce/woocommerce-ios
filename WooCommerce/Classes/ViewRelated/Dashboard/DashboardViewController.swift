@@ -44,6 +44,8 @@ class DashboardViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        // Reset title to prevent it from being empty right after login
+        configureTitle()
         reloadData()
     }
 
@@ -73,7 +75,23 @@ private extension DashboardViewController {
     }
 
     func configureNavigation() {
-        title = NSLocalizedString("My store", comment: "Dashboard navigation title")
+        configureTitle()
+        configureNavigationItem()
+    }
+
+    private func configureTitle() {
+        let myStore = NSLocalizedString("My store", comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard")
+        title = StoresManager.shared.sessionManager.defaultSite?.name ?? myStore
+        tabBarItem.title = myStore
+    }
+
+    private func resetTitle() {
+        let myStore = NSLocalizedString("My store", comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard")
+        title = myStore
+        tabBarItem.title = myStore
+    }
+
+    private func configureNavigationItem() {
         let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.cog),
                                              style: .plain,
                                              target: self,
@@ -119,8 +137,18 @@ extension DashboardViewController {
             return
         }
 
+        resetTitle()
+
         storeStatsViewController.clearAllFields()
         applyHideAnimation(for: newOrdersContainerView)
+    }
+}
+
+// MARK: - Public API
+//
+extension DashboardViewController {
+    func presentSettings() {
+        settingsTapped()
     }
 }
 
@@ -165,23 +193,40 @@ private extension DashboardViewController {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
         let group = DispatchGroup()
 
+        var reloadError: Error? = nil
+
         group.enter()
-        storeStatsViewController.syncAllStats() {
+        storeStatsViewController.syncAllStats() { error in
+            if let error = error {
+                reloadError = error
+            }
             group.leave()
         }
 
         group.enter()
-        newOrdersViewController.syncNewOrders() {
+        newOrdersViewController.syncNewOrders() { error in
+            if let error = error {
+                reloadError = error
+            }
             group.leave()
         }
 
         group.enter()
-        topPerformersViewController.syncTopPerformers() {
+        topPerformersViewController.syncTopPerformers() { error in
+            if let error = error {
+                reloadError = error
+            }
             group.leave()
         }
 
         group.notify(queue: .main) { [weak self] in
             self?.refreshControl.endRefreshing()
+            self?.configureTitle()
+
+            if let error = reloadError {
+                DDLogError("⛔️ Error loading dashboard: \(error)")
+                self?.displaySyncingErrorNotice()
+            }
         }
     }
 
@@ -208,6 +253,18 @@ private extension DashboardViewController {
             view.isHidden = true
             view.alpha = UIKitConstants.alphaZero
         })
+    }
+
+    private func displaySyncingErrorNotice() {
+        let title = NSLocalizedString("My store", comment: "My Store Notice Title for loading error")
+        let message = NSLocalizedString("Unable to load content", comment: "Load Action Failed")
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.refreshControl.beginRefreshing()
+            self?.reloadData()
+        }
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 }
 

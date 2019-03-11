@@ -7,14 +7,14 @@ struct ReportOrderTotalsMapper: Mapper {
 
     /// (Attempts) to extract order totals report from a given JSON Encoded response.
     ///
-    func map(response: Data) throws -> [OrderStatus: Int] {
+    func map(response: Data) throws -> [OrderStatusKey: Int] {
         let totalsArray = try JSONDecoder().decode(ReportOrderTotalsEnvelope.self, from: response).totals
-        var returnDict = [OrderStatus: Int]()
+        var returnDict = [OrderStatusKey: Int]()
         totalsArray.forEach({ (totalResult) in
             guard let slug = totalResult[Constants.slugKey]?.value as? String, !slug.isEmpty else {
                 return
             }
-            let status = OrderStatus(rawValue: slug)
+            let status = OrderStatusKey(rawValue: slug)
             returnDict[status] = totalResult[Constants.totalKey]?.value as? Int ?? 0
         })
         return returnDict

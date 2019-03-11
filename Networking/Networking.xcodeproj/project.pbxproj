@@ -32,6 +32,16 @@
 		7426CA1321AF34A3004E9FFC /* site-api.json in Resources */ = {isa = PBXBuildFile; fileRef = 7426CA1221AF34A3004E9FFC /* site-api.json */; };
 		743057B5218B6ACD00441A76 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743057B4218B6ACD00441A76 /* Queue.swift */; };
 		743BF8BE21191B63008A9D87 /* site-visits.json in Resources */ = {isa = PBXBuildFile; fileRef = 743BF8BD21191B63008A9D87 /* site-visits.json */; };
+		743E84EA22171C5800FAC9D7 /* ShipmentsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743E84E922171C5800FAC9D7 /* ShipmentsRemote.swift */; };
+		743E84EC22171F4600FAC9D7 /* ShipmentTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743E84EB22171F4600FAC9D7 /* ShipmentTracking.swift */; };
+		743E84EE2217244C00FAC9D7 /* ShipmentTrackingListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743E84ED2217244C00FAC9D7 /* ShipmentTrackingListMapper.swift */; };
+		743E84F222172D0A00FAC9D7 /* shipment_tracking_plugin_not_active.json in Resources */ = {isa = PBXBuildFile; fileRef = 743E84EF22172D0900FAC9D7 /* shipment_tracking_plugin_not_active.json */; };
+		743E84F322172D0A00FAC9D7 /* shipment_tracking_empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 743E84F022172D0900FAC9D7 /* shipment_tracking_empty.json */; };
+		743E84F422172D0A00FAC9D7 /* shipment_tracking_multiple.json in Resources */ = {isa = PBXBuildFile; fileRef = 743E84F122172D0900FAC9D7 /* shipment_tracking_multiple.json */; };
+		743E84F622172D3E00FAC9D7 /* shipment_tracking_single.json in Resources */ = {isa = PBXBuildFile; fileRef = 743E84F522172D3E00FAC9D7 /* shipment_tracking_single.json */; };
+		743E84F822172E1F00FAC9D7 /* ShipmentTrackingListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743E84F722172E1F00FAC9D7 /* ShipmentTrackingListMapperTests.swift */; };
+		743E84FA221742E300FAC9D7 /* ShipmentsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743E84F9221742E300FAC9D7 /* ShipmentsRemoteTests.swift */; };
+		743E84FC22174CE100FAC9D7 /* restnoroute_error.json in Resources */ = {isa = PBXBuildFile; fileRef = 743E84FB22174CE000FAC9D7 /* restnoroute_error.json */; };
 		743FDB9C210FB36900AC737F /* order-stats-month.json in Resources */ = {isa = PBXBuildFile; fileRef = 743FDB99210FB36900AC737F /* order-stats-month.json */; };
 		743FDB9D210FB36900AC737F /* order-stats-year.json in Resources */ = {isa = PBXBuildFile; fileRef = 743FDB9A210FB36900AC737F /* order-stats-year.json */; };
 		743FDB9E210FB36900AC737F /* order-stats-week.json in Resources */ = {isa = PBXBuildFile; fileRef = 743FDB9B210FB36900AC737F /* order-stats-week.json */; };
@@ -156,7 +166,7 @@
 		B5A2417D217F9ECC00595DEF /* MetaContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A2417C217F9ECC00595DEF /* MetaContainer.swift */; };
 		B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */; };
 		B5BB1D1020A237FB00112D92 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D0F20A237FB00112D92 /* Address.swift */; };
-		B5BB1D1220A255EC00112D92 /* OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D1120A255EC00112D92 /* OrderStatus.swift */; };
+		B5BB1D1220A255EC00112D92 /* OrderStatusKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB1D1120A255EC00112D92 /* OrderStatusKey.swift */; };
 		B5C151BB217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C151BA217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift */; };
 		B5C151C0217EE3FB00C7BDC1 /* NoteListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C151BF217EE3FB00C7BDC1 /* NoteListMapperTests.swift */; };
 		B5C6FCC820A32E4800A4F8E4 /* DateFormatterWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6FCC720A32E4800A4F8E4 /* DateFormatterWooTests.swift */; };
@@ -207,6 +217,16 @@
 		7426CA1221AF34A3004E9FFC /* site-api.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-api.json"; sourceTree = "<group>"; };
 		743057B4218B6ACD00441A76 /* Queue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Queue.swift; path = ../../Yosemite/Yosemite/Internal/Queue.swift; sourceTree = "<group>"; };
 		743BF8BD21191B63008A9D87 /* site-visits.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-visits.json"; sourceTree = "<group>"; };
+		743E84E922171C5800FAC9D7 /* ShipmentsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentsRemote.swift; sourceTree = "<group>"; };
+		743E84EB22171F4600FAC9D7 /* ShipmentTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTracking.swift; sourceTree = "<group>"; };
+		743E84ED2217244C00FAC9D7 /* ShipmentTrackingListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTrackingListMapper.swift; sourceTree = "<group>"; };
+		743E84EF22172D0900FAC9D7 /* shipment_tracking_plugin_not_active.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = shipment_tracking_plugin_not_active.json; sourceTree = "<group>"; };
+		743E84F022172D0900FAC9D7 /* shipment_tracking_empty.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = shipment_tracking_empty.json; sourceTree = "<group>"; };
+		743E84F122172D0900FAC9D7 /* shipment_tracking_multiple.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = shipment_tracking_multiple.json; sourceTree = "<group>"; };
+		743E84F522172D3E00FAC9D7 /* shipment_tracking_single.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = shipment_tracking_single.json; sourceTree = "<group>"; };
+		743E84F722172E1F00FAC9D7 /* ShipmentTrackingListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTrackingListMapperTests.swift; sourceTree = "<group>"; };
+		743E84F9221742E300FAC9D7 /* ShipmentsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentsRemoteTests.swift; sourceTree = "<group>"; };
+		743E84FB22174CE000FAC9D7 /* restnoroute_error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = restnoroute_error.json; sourceTree = "<group>"; };
 		743FDB99210FB36900AC737F /* order-stats-month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-month.json"; sourceTree = "<group>"; };
 		743FDB9A210FB36900AC737F /* order-stats-year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-year.json"; sourceTree = "<group>"; };
 		743FDB9B210FB36900AC737F /* order-stats-week.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-week.json"; sourceTree = "<group>"; };
@@ -335,7 +355,7 @@
 		B5A2417C217F9ECC00595DEF /* MetaContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaContainer.swift; sourceTree = "<group>"; };
 		B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Woo.swift"; sourceTree = "<group>"; };
 		B5BB1D0F20A237FB00112D92 /* Address.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
-		B5BB1D1120A255EC00112D92 /* OrderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatus.swift; sourceTree = "<group>"; };
+		B5BB1D1120A255EC00112D92 /* OrderStatusKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusKey.swift; sourceTree = "<group>"; };
 		B5C151BA217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyedDecodingContainer+Woo.swift"; sourceTree = "<group>"; };
 		B5C151BF217EE3FB00C7BDC1 /* NoteListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteListMapperTests.swift; sourceTree = "<group>"; };
 		B5C6FCC720A32E4800A4F8E4 /* DateFormatterWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatterWooTests.swift; sourceTree = "<group>"; };
@@ -443,6 +463,7 @@
 				B518662920A09C6F00037A38 /* OrdersRemoteTests.swift */,
 				74AE244C2113704C00CA8C54 /* OrderStatsRemoteTests.swift */,
 				7412A8F121B6E47A005D182A /* ReportRemoteTests.swift */,
+				743E84F9221742E300FAC9D7 /* ShipmentsRemoteTests.swift */,
 				74AB5B5021AF426D00859C12 /* SiteAPIRemoteTests.swift */,
 				74D5BECD217E0F98007B0348 /* SiteSettingsRemoteTests.swift */,
 				74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */,
@@ -543,6 +564,7 @@
 				B557DA0120975500005962F4 /* OrdersRemote.swift */,
 				748D4247210F89ED00CF7D1B /* OrderStatsRemote.swift */,
 				7412A8E921B6E192005D182A /* ReportRemote.swift */,
+				743E84E922171C5800FAC9D7 /* ShipmentsRemote.swift */,
 				7426CA0C21AF27B9004E9FFC /* SiteAPIRemote.swift */,
 				74046E1A217A684D007DD7BF /* SiteSettingsRemote.swift */,
 				74A1D26E21189EA000931DFA /* SiteVisitStatsRemote.swift */,
@@ -590,7 +612,8 @@
 				741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */,
 				B5C6FCCE20A3592900A4F8E4 /* OrderItem.swift */,
 				74C8F06320EEB44800B6EDC9 /* OrderNote.swift */,
-				B5BB1D1120A255EC00112D92 /* OrderStatus.swift */,
+				B5BB1D1120A255EC00112D92 /* OrderStatusKey.swift */,
+				743E84EB22171F4600FAC9D7 /* ShipmentTracking.swift */,
 				B56C1EB720EA76F500D749F9 /* Site.swift */,
 				7426CA0E21AF2C90004E9FFC /* SiteAPI.swift */,
 				74046E1C217A6989007DD7BF /* SiteSetting.swift */,
@@ -611,6 +634,7 @@
 				B58D10C72114D21C00107ED4 /* generic_error.json */,
 				B53EF53521813681003E146F /* generic_success.json */,
 				B57B1E6B21C94C9F0046E764 /* timeout_error.json */,
+				743E84FB22174CE000FAC9D7 /* restnoroute_error.json */,
 				74C9477F2193A6C60024CB60 /* comment-moderate-approved.json */,
 				74C9477E2193A6C60024CB60 /* comment-moderate-trash.json */,
 				74C947812193A6C70024CB60 /* comment-moderate-unapproved.json */,
@@ -632,6 +656,10 @@
 				7412A8EF21B6E415005D182A /* report-orders.json */,
 				74046E20217A73D0007DD7BF /* settings-general.json */,
 				7492FAE2217FBDBC00ED2C69 /* settings-general-alt.json */,
+				743E84F022172D0900FAC9D7 /* shipment_tracking_empty.json */,
+				743E84F522172D3E00FAC9D7 /* shipment_tracking_single.json */,
+				743E84F122172D0900FAC9D7 /* shipment_tracking_multiple.json */,
+				743E84EF22172D0900FAC9D7 /* shipment_tracking_plugin_not_active.json */,
 				B56C1EB920EA7D2C00D749F9 /* sites.json */,
 				7426CA1221AF34A3004E9FFC /* site-api.json */,
 				74AB5B4E21AF3F0D00859C12 /* site-api-no-woo.json */,
@@ -666,6 +694,7 @@
 				CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */,
 				748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */,
 				7412A8EB21B6E286005D182A /* ReportOrderTotalsMapper.swift */,
+				743E84ED2217244C00FAC9D7 /* ShipmentTrackingListMapper.swift */,
 				7426CA1021AF30BD004E9FFC /* SiteAPIMapper.swift */,
 				B56C1EB520EA757B00D749F9 /* SiteListMapper.swift */,
 				CE50345D21B571A7007573C6 /* SitePlanMapper.swift */,
@@ -734,6 +763,7 @@
 				74C8F06D20EEC1E700B6EDC9 /* OrderNotesMapperTests.swift */,
 				743FDB9F210FB3E500AC737F /* OrderStatsMapperTests.swift */,
 				7412A8ED21B6E335005D182A /* ReportOrderMapperTests.swift */,
+				743E84F722172E1F00FAC9D7 /* ShipmentTrackingListMapperTests.swift */,
 				74AB5B4C21AF354E00859C12 /* SiteAPIMapperTests.swift */,
 				74A7B4BB217A807400E85A8B /* SiteSettingsMapperTests.swift */,
 				74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */,
@@ -861,12 +891,15 @@
 				B5A2417B217F98FC00595DEF /* broken-notifications.json in Resources */,
 				74A7B4BE217A841400E85A8B /* broken-settings-general.json in Resources */,
 				B5A24179217F98F600595DEF /* notifications-load-all.json in Resources */,
+				743E84FC22174CE100FAC9D7 /* restnoroute_error.json in Resources */,
 				CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */,
 				740211DF2193985A002248DA /* comment-moderate-spam.json in Resources */,
 				B5147876211B9227007562E5 /* broken-orders-mark-2.json in Resources */,
 				B58D10C82114D21D00107ED4 /* generic_error.json in Resources */,
 				CE50346721B5DCBE007573C6 /* site-plan.json in Resources */,
+				743E84F322172D0A00FAC9D7 /* shipment_tracking_empty.json in Resources */,
 				B505F6D520BEE4E700BB1B69 /* me.json in Resources */,
+				743E84F422172D0A00FAC9D7 /* shipment_tracking_multiple.json in Resources */,
 				74AB5B4F21AF3F0E00859C12 /* site-api-no-woo.json in Resources */,
 				74C947832193A6C70024CB60 /* comment-moderate-trash.json in Resources */,
 				B58D10CA2114D22E00107ED4 /* new-order-note.json in Resources */,
@@ -899,7 +932,9 @@
 				74ABA1CB213F19FE00FFAD30 /* top-performers-week.json in Resources */,
 				B524194721AC643900D6FC0A /* device-settings.json in Resources */,
 				7497376A2141F2BE0008C490 /* top-performers-week-alt.json in Resources */,
+				743E84F222172D0A00FAC9D7 /* shipment_tracking_plugin_not_active.json in Resources */,
 				74ABA1C9213F19FE00FFAD30 /* top-performers-month.json in Resources */,
+				743E84F622172D3E00FAC9D7 /* shipment_tracking_single.json in Resources */,
 				74ABA1CA213F19FE00FFAD30 /* top-performers-year.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -985,6 +1020,7 @@
 				74C8F06420EEB44800B6EDC9 /* OrderNote.swift in Sources */,
 				74ABA1D3213F25AE00FFAD30 /* TopEarnerStatsMapper.swift in Sources */,
 				B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */,
+				743E84EE2217244C00FAC9D7 /* ShipmentTrackingListMapper.swift in Sources */,
 				B567AF2520A0CCA300AB6C62 /* AuthenticatedRequest.swift in Sources */,
 				B505F6EA20BEFC3700BB1B69 /* MockupNetwork.swift in Sources */,
 				748D4248210F89ED00CF7D1B /* OrderStatsRemote.swift in Sources */,
@@ -994,6 +1030,7 @@
 				B557DA0220975500005962F4 /* JetpackRequest.swift in Sources */,
 				74046E1F217A6B70007DD7BF /* SiteSettingsMapper.swift in Sources */,
 				7426CA1121AF30BD004E9FFC /* SiteAPIMapper.swift in Sources */,
+				743E84EC22171F4600FAC9D7 /* ShipmentTracking.swift in Sources */,
 				B56C1EB820EA76F500D749F9 /* Site.swift in Sources */,
 				7412A8EA21B6E192005D182A /* ReportRemote.swift in Sources */,
 				B5A2417D217F9ECC00595DEF /* MetaContainer.swift in Sources */,
@@ -1034,7 +1071,7 @@
 				74A1D26B21189B8100931DFA /* SiteVisitStatsItem.swift in Sources */,
 				B505F6EC20BEFDC200BB1B69 /* Loader.swift in Sources */,
 				74D3BD142114FE6900A6E85E /* MIContainer.swift in Sources */,
-				B5BB1D1220A255EC00112D92 /* OrderStatus.swift in Sources */,
+				B5BB1D1220A255EC00112D92 /* OrderStatusKey.swift in Sources */,
 				B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */,
 				74C8F06820EEB7BD00B6EDC9 /* OrderNotesMapper.swift in Sources */,
 				B53EF5342180F646003E146F /* DotcomValidator.swift in Sources */,
@@ -1049,6 +1086,7 @@
 				B505F6D120BEE39600BB1B69 /* AccountRemote.swift in Sources */,
 				B567AF2B20A0FA4200AB6C62 /* OrderListMapper.swift in Sources */,
 				B505F6CF20BEE38B00BB1B69 /* Account.swift in Sources */,
+				743E84EA22171C5800FAC9D7 /* ShipmentsRemote.swift in Sources */,
 				B59325D5217E4206000B0E8E /* NoteRange.swift in Sources */,
 				B59325C7217E22FC000B0E8E /* Note.swift in Sources */,
 			);
@@ -1087,6 +1125,8 @@
 				74002D6C2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift in Sources */,
 				B554FA932180C17200C54DFF /* NoteHashListMapperTests.swift in Sources */,
 				74002D6A2118B26100A63C19 /* SiteVisitStatsMapperTests.swift in Sources */,
+				743E84FA221742E300FAC9D7 /* ShipmentsRemoteTests.swift in Sources */,
+				743E84F822172E1F00FAC9D7 /* ShipmentTrackingListMapperTests.swift in Sources */,
 				740211E121939908002248DA /* CommentRemoteTests.swift in Sources */,
 				B57B1E6A21C925280046E764 /* DotcomValidatorTests.swift in Sources */,
 				B567AF3020A0FB8F00AB6C62 /* DotcomRequestTests.swift in Sources */,

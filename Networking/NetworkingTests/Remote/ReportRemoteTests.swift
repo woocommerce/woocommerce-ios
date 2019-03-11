@@ -39,7 +39,7 @@ class ReportRemoteTests: XCTestCase {
             XCTAssertEqual(reportTotals?[.cancelled], 7)
             XCTAssertEqual(reportTotals?[.refunded], 8)
             XCTAssertEqual(reportTotals?[.failed], 9)
-            XCTAssertEqual(reportTotals?[OrderStatus(rawValue: "cia-investigation")], 10)
+            XCTAssertEqual(reportTotals?[OrderStatusKey(rawValue: "cia-investigation")], 10)
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: Constants.expectationTimeout)

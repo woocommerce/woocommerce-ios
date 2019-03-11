@@ -1,3 +1,3 @@
-- Het kwam wel eens voor dat winkelstatistieken er op verschillende schermen anders uitzagen. Jouw statistieken moeten betrouwbaar zijn, en nu zijn ze dat ook, en de manier waarop winkelstatistieken worden weergegeven is verbeterd.
-- De beste hulp die je je kan bedenken, is hulp die klaarstaat als je hem nodig hebt, dus we hebben een help-knop toegevoegd aan het scherm Kies winkel.
-- Je kunt nu toepassingslogs bekijken en delen. Met deze logs kunnen we problemen opsporen en verhelpen. We kunnen je dus verzekeren dat het gebruik van de app soepel en bug-vrij verloopt.
+- Beheer je meer dan één winkel? Je kunt omschakelen tussen sites door in en uit te loggen: ga naar Instellingen en tik op Omschakelen tussen winkels. De naam van de actieve winkel wordt weergegeven op het tabblad 'Mijn winkel'.
+- Wanneer het toevoegen van een opmerking of het verwerken van een bestelling mislukt, wordt in het berichtvenster nu een optie 'Opnieuw proberen' weergegeven, zodat je nog een poging kunt wagen.
+- Je neemt niet alleen bestellingen met ronde bedragen aan, dus kunnen bestellingen nu decimale bedragen bevatten.

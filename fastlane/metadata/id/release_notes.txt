@@ -1,3 +1,3 @@
-- Terkadang statistik toko tidak konsisten di berbagai layar. Statistik Anda harus dapat dipercaya, dan dengan perbaikan cara menyimpan statistik yang ditampilkan saat ini.
-- Bantuan terbaik adalah bantuan yang tersedia saat Anda membutuhkannya, jadi kami menambahkan tombol bantuan ke layar Pemilih Toko.
-- Sekarang Anda dapat melihat dan berbagi log aplikasi. Log membantu kami melacak setiap masalah yang mungkin Anda hadapi, sehingga kami dapat memastikan bahwa penggunaan aplikasi berjalan lancar dan bebas dari bug.
+- Mengelola lebih dari satu toko? Anda dapat beralih toko tanpa harus login dan logout: buka Pengaturan dan ketuk Beralih Toko. Nama toko yang aktif ditampilkan di tab “Toko Saya”.
+- Saat gagal menambahkan catatan atau memenuhi pesanan, kotak pesan kini menampilkan pilihan “Coba Lagi” sehingga Anda dapat mencoba melakukannya lagi.
+- Pembayaran yang Anda terima tidak selalu dalam angka bulat, jadi sekarang pesanan dapat menggunakan jumlah desimal.

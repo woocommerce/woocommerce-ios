@@ -81,10 +81,10 @@ class MainTabBarController: UITabBarController {
 
     /// Switches the TabBarcController to the specified Tab
     ///
-    func navigateTo(_ tab: WooTab) {
+    func navigateTo(_ tab: WooTab, animated: Bool = false) {
         selectedIndex = tab.rawValue
         if let navController = selectedViewController as? UINavigationController {
-            navController.popToRootViewController(animated: false)
+            navController.popToRootViewController(animated: animated)
         }
     }
 }
@@ -151,8 +151,8 @@ extension MainTabBarController {
 
     /// Switches to the My Store tab and pops to the root view controller
     ///
-    static func switchToMyStoreTab() {
-        navigateTo(.myStore)
+    static func switchToMyStoreTab(animated: Bool = false) {
+        navigateTo(.myStore, animated: animated)
     }
 
     /// Switches to the Orders tab and pops to the root view controller
@@ -169,12 +169,12 @@ extension MainTabBarController {
 
     /// Switches the TabBarController to the specified Tab
     ///
-    private static func navigateTo(_ tab: WooTab) {
+    private static func navigateTo(_ tab: WooTab, animated: Bool = false) {
         guard let tabBar = AppDelegate.shared.tabBarController else {
             return
         }
 
-        tabBar.navigateTo(tab)
+        tabBar.navigateTo(tab, animated: animated)
     }
 
     /// Returns the "Top Visible Child" of the specified type
@@ -196,14 +196,14 @@ extension MainTabBarController {
 
     /// Displays the Orders List with the specified Filter applied.
     ///
-    static func presentOrders(statusFilter: OrderStatus) {
+    static func presentOrders(statusKeyFilter: OrderStatusKey) {
         switchToOrdersTab()
 
         guard let ordersViewController: OrdersViewController = childViewController() else {
             return
         }
 
-        ordersViewController.statusFilter = statusFilter
+        ordersViewController.statusKeyFilter = statusKeyFilter
     }
 
     /// Switches to the Notifications Tab, and displays the details for the specified Notification ID.
@@ -216,6 +216,18 @@ extension MainTabBarController {
         }
 
         notificationsViewController.presentDetails(for: noteID)
+    }
+
+    /// Switches to the My Store Tab, and presents the Settings .
+    ///
+    static func presentSettings() {
+        switchToMyStoreTab(animated: false)
+
+        guard let dashBoard: DashboardViewController = childViewController() else {
+            return
+        }
+
+        dashBoard.presentSettings()
     }
 }
 

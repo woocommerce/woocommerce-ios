@@ -92,10 +92,6 @@ class StorePickerViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
-    deinit {
-        stopListeningToNotifications()
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -115,6 +111,14 @@ class StorePickerViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         onDismiss?()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        // This should be called here to address this issue:
+        // https://github.com/woocommerce/woocommerce-ios/issues/693
+        stopListeningToNotifications()
     }
 }
 
@@ -153,7 +157,7 @@ private extension StorePickerViewController {
 
     func refreshResults() {
         try? resultsController.performFetch()
-        WooAnalytics.shared.track(.loginEpilogueStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
+        WooAnalytics.shared.track(.sitePickerStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
         state = StorePickerState(sites: resultsController.fetchedObjects)
     }
 
@@ -208,6 +212,12 @@ private extension StorePickerViewController {
             return
         }
 
+        if let site = StoresManager.shared.sessionManager.defaultSite {
+            displaySiteWCRequirementWarningIfNeeded(siteID: site.siteID, siteName: site.name)
+            StoresManager.shared.updateDefaultStore(storeID: site.siteID)
+            return
+        }
+
         displaySiteWCRequirementWarningIfNeeded(siteID: firstSite.siteID, siteName: firstSite.name)
         StoresManager.shared.updateDefaultStore(storeID: firstSite.siteID)
     }
@@ -259,12 +269,14 @@ private extension StorePickerViewController {
         tableView.reloadRows(at: rowsToReload, with: .none)
     }
 
-    /// Re-initializes the Login Flow. This may be required if the WordPress.com Account has no Stores available.
+    /// Re-initializes the Login Flow, forcing a logout. This may be required if the WordPress.com Account has no Stores available.
     ///
     func restartAuthentication() {
         guard StoresManager.shared.needsDefaultStore, let navigationController = navigationController else {
             return
         }
+
+        StoresManager.shared.deauthenticate()
 
         let loginViewController = AppDelegate.shared.authenticationManager.loginForWordPressDotCom()
         navigationController.setViewControllers([loginViewController], animated: true)
@@ -338,11 +350,12 @@ extension StorePickerViewController {
             // We need to call refreshUserData() here because the user selected
             // their default store and tracks should to know about it.
             WooAnalytics.shared.refreshUserData()
-            WooAnalytics.shared.track(.loginEpilogueContinueTapped,
+            WooAnalytics.shared.track(.sitePickerContinueTapped,
                                       withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? String()])
 
             dismiss(animated: true) {
                 AppDelegate.shared.authenticatorWasDismissed()
+                MainTabBarController.switchToMyStoreTab(animated: true)
             }
         }
     }

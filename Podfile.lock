@@ -63,7 +63,7 @@ PODS:
   - WordPressShared (1.6.0):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
-  - WordPressUI (1.1.1)
+  - WordPressUI (1.2.0)
   - wpxmlrpc (0.8.3)
   - XLPagerTabStrip (8.1.0)
   - ZendeskSDK (2.3.0):
@@ -86,7 +86,7 @@ DEPENDENCIES:
   - KeychainAccess (~> 3.1)
   - WordPressAuthenticator (~> 1.1-beta)
   - WordPressShared (~> 1.1)
-  - WordPressUI (~> 1.1)
+  - WordPressUI (~> 1.2)
   - XLPagerTabStrip (~> 8.1)
   - ZendeskSDK (~> 2.2)
 
@@ -140,11 +140,11 @@ SPEC CHECKSUMS:
   WordPressAuthenticator: ef9169f1d8c7ee06c731c39c6acc9c015228b0bf
   WordPressKit: b0d9838a874a2ea126da17965d939f0422d94581
   WordPressShared: a2fc2db66c210a05d317ae9678b5823dd6a4d708
-  WordPressUI: 3c69543f0170e011226e48910b8c3071e5d400af
+  WordPressUI: 44fe43a9c5c504dfd534286e39e1ce6ebcd69ff5
   wpxmlrpc: bfc572f62ce7ee897f6f38b098d2ba08732ecef4
   XLPagerTabStrip: 22d4c58200d7c105e0e407ab6bfd01a5d85014be
   ZendeskSDK: af6509ad7968d367f95b2645713802712152f879
 
-PODFILE CHECKSUM: 8ef4c97eb133dc1f2e258ced7df0eff00031d890
+PODFILE CHECKSUM: 7367372cf135def51f6eec0914c0a7e2423d750b
 
 COCOAPODS: 1.5.3

@@ -21,6 +21,10 @@ public enum DotcomError: Error, Decodable {
     ///
     case requestFailed
 
+    /// No route was found matching the URL and request method
+    ///
+    case noRestRoute
+
     /// Unknown: Represents an unmapped remote error. Capisce?
     ///
     case unknown(code: String, message: String?)
@@ -40,6 +44,8 @@ public enum DotcomError: Error, Decodable {
             self = .requestFailed
         case Constants.unauthorized:
             self = .unauthorized
+        case Constants.noRestRoute:
+            self = .noRestRoute
         default:
             let message = try container.decodeIfPresent(String.self, forKey: .message)
             self = .unknown(code: error, message: message)
@@ -53,6 +59,7 @@ public enum DotcomError: Error, Decodable {
         static let unauthorized     = "unauthorized"
         static let invalidToken     = "invalid_token"
         static let requestFailed    = "http_request_failed"
+        static let noRestRoute      = "rest_no_route"
     }
 
     /// Coding Keys
@@ -78,6 +85,8 @@ extension DotcomError: CustomStringConvertible {
             return NSLocalizedString("Dotcom Request Failed", comment: "WordPress.com Request Failure")
         case .unauthorized:
             return NSLocalizedString("Dotcom Missing Token", comment: "WordPress.com Missing Token")
+        case .noRestRoute:
+            return NSLocalizedString("Dotcom Invalid REST Route", comment: "WordPress.com error thrown when the the request REST API url is invalid.")
         case .unknown(let code, let message):
             let theMessage = message ?? String()
             return NSLocalizedString("Dotcom Error: [\(code)] \(theMessage)", comment: "WordPress.com (unmapped!) error")
@@ -93,6 +102,8 @@ public func ==(lhs: DotcomError, rhs: DotcomError) -> Bool {
     case (.requestFailed, .requestFailed):
         return true
     case (.unauthorized, .unauthorized):
+        return true
+    case (.noRestRoute, .noRestRoute):
         return true
     case let (.unknown(codeLHS, _), .unknown(codeRHS, _)):
         return codeLHS == codeRHS

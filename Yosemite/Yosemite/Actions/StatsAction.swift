@@ -6,6 +6,10 @@ import Networking
 //
 public enum StatsAction: Action {
 
+    /// Clears all of the stats data.
+    ///
+    case resetStoredStats(onCompletion: () -> Void)
+
     /// Synchronizes `OrderStats` for the provided siteID, StatGranularity, and date.
     ///
     case retrieveOrderStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: (Error?) -> Void)
@@ -21,5 +25,5 @@ public enum StatsAction: Action {
     /// Retrieves the current order count for a specifc `OrderStatus` from the server. By design, the server response is *not*
     /// persisted in the Storage framework but is instead returned within the completion closure.
     ///
-    case retrieveOrderTotals(siteID: Int, status: OrderStatus, onCompletion: (Int?, Error?) -> Void)
+    case retrieveOrderTotals(siteID: Int, status: OrderStatusKey, onCompletion: (Int?, Error?) -> Void)
 }

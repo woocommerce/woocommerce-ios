@@ -103,6 +103,15 @@ class StoresManager {
         return self
     }
 
+    /// Prepares for changing the selected store and remains Authenticated.
+    ///
+    func removeDefaultStore() {
+        WooAnalytics.shared.refreshUserData()
+        ZendeskManager.shared.reset()
+        AppDelegate.shared.pushNotesManager.unregisterForRemoteNotifications()
+        AppDelegate.shared.pushNotesManager.resetBadgeCount()
+    }
+
     /// Switches the state to a Deauthenticated one.
     ///
     @discardableResult

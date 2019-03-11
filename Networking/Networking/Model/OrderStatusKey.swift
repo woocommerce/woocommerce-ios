@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents all of the possible Order Statuses
 ///
-public enum OrderStatus: Decodable, Hashable {
+public enum OrderStatusKey: Decodable, Hashable {
     case pending
     case processing
     case onHold
@@ -17,7 +17,7 @@ public enum OrderStatus: Decodable, Hashable {
 
 /// RawRepresentable Conformance
 ///
-extension OrderStatus: RawRepresentable {
+extension OrderStatusKey: RawRepresentable {
 
     /// Designated Initializer.
     ///
@@ -61,7 +61,7 @@ extension OrderStatus: RawRepresentable {
 
 /// StringConvertible Conformance
 ///
-extension OrderStatus: CustomStringConvertible {
+extension OrderStatusKey: CustomStringConvertible {
 
     /// Returns a string describing the current OrderStatus Instance
     /// Custom doesn't return a localized string because the payload arrives at runtime, not buildtime.

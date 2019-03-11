@@ -42,17 +42,17 @@ class OrdersViewController: UIViewController {
 
     /// OrderStatus that must be matched by retrieved orders.
     ///
-    var statusFilter: OrderStatus? {
+    var statusKeyFilter: OrderStatusKey? {
         didSet {
             guard isViewLoaded else {
                 return
             }
 
-            guard oldValue?.rawValue != statusFilter?.rawValue else {
+            guard oldValue?.rawValue != statusKeyFilter?.rawValue else {
                 return
             }
 
-            didChangeFilter(newFilter: statusFilter)
+            didChangeFilter(newFilter: statusKeyFilter)
         }
     }
 
@@ -69,7 +69,7 @@ class OrdersViewController: UIViewController {
     /// Indicates if there's a filter being applied.
     ///
     private var isFiltered: Bool {
-        return statusFilter != nil
+        return statusKeyFilter != nil
     }
 
     /// UI Active State
@@ -84,7 +84,6 @@ class OrdersViewController: UIViewController {
             didEnter(state: state)
         }
     }
-
 
 
     // MARK: - View Lifecycle
@@ -137,7 +136,7 @@ private extension OrdersViewController {
     /// Setup: Title
     ///
     func refreshTitle() {
-        guard let filter = statusFilter?.description.capitalized else {
+        guard let filter = statusKeyFilter?.description.capitalized else {
             navigationItem.title = NSLocalizedString("Orders", comment: "Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order).")
             return
         }
@@ -151,7 +150,7 @@ private extension OrdersViewController {
     func refreshResultsPredicate() {
         resultsController.predicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
-            let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "status = %@", $0.rawValue) }
+            let excludeNonMatchingStatus = statusKeyFilter.map { NSPredicate(format: "statusKey = %@", $0.rawValue) }
 
             var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
             if let tomorrow = Date.tomorrow() {
@@ -286,12 +285,12 @@ extension OrdersViewController {
 
         actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
         actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
-            self?.statusFilter = nil
+            self?.statusKeyFilter = nil
         }
 
-        for status in OrderStatus.knownStatus {
-            actionSheet.addDefaultActionWithTitle(status.description) { [weak self] _ in
-                self?.statusFilter = status
+        for statusKey in OrderStatusKey.knownStatus {
+            actionSheet.addDefaultActionWithTitle(statusKey.description) { [weak self] _ in
+                self?.statusKeyFilter = statusKey
             }
         }
 
@@ -315,7 +314,7 @@ extension OrdersViewController {
 //
 private extension OrdersViewController {
 
-    func didChangeFilter(newFilter: OrderStatus?) {
+    func didChangeFilter(newFilter: OrderStatusKey?) {
         WooAnalytics.shared.track(.filterOrdersOptionSelected,
                                   withProperties: ["status": newFilter?.rawValue ?? String()])
         WooAnalytics.shared.track(.ordersListFilterOrSearch,
@@ -363,7 +362,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
         transitionToSyncingState()
 
-        let action = OrderAction.synchronizeOrders(siteID: siteID, status: statusFilter, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
+        let action = OrderAction.synchronizeOrders(siteID: siteID, statusKey: statusKeyFilter, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
             guard let `self` = self else {
                 return
             }
@@ -372,7 +371,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
                 DDLogError("⛔️ Error synchronizing orders: \(error)")
                 self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
             } else {
-                WooAnalytics.shared.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.rawValue ?? String()])
+                WooAnalytics.shared.track(.ordersListLoaded, withProperties: ["status": self.statusKeyFilter?.rawValue ?? String()])
             }
 
             self.transitionToResultsUpdatedState()
@@ -481,7 +480,7 @@ private extension OrdersViewController {
         overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Orders List (Empty State + Filters)")
         overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: Opens the Store in a browser")
         overlayView.onAction = { [weak self] in
-            self?.statusFilter = nil
+            self?.statusKeyFilter = nil
         }
 
         overlayView.attach(to: view)
@@ -610,7 +609,7 @@ extension OrdersViewController {
         }
 
         WooAnalytics.shared.track(.orderOpen, withProperties: ["id": viewModel.order.orderID,
-                                                               "status": viewModel.order.status.rawValue])
+                                                               "status": viewModel.order.statusKey.rawValue])
         singleOrderViewController.viewModel = viewModel
     }
 }

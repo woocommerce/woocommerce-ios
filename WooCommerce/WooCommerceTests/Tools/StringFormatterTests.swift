@@ -15,6 +15,10 @@ class StringFormatterTests: XCTestCase {
     ///
     private let sampleQuotedText = "Something here \"and this should have a watermark style\" test wordpress.com"
 
+    /// Sample Long Text
+    ///
+    private let sampleLongText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+
     /// Sample URL
     ///
     private let sampleURL = NSURL(string: "wordpress.com")!
@@ -49,6 +53,23 @@ class StringFormatterTests: XCTestCase {
         let quotedRange = Scanner(string: sampleQuotedText).scanQuotedRanges().first!
 
         XCTAssertTrue(text.isAttributeContainedExclusively(in: quotedRange, key: .foregroundColor, value: sampleColor))
+    }
+
+    /// Verifies that Long Text with truncating tail footnote style will get the Truncating Tail paragraph style
+    ///
+    func testLongTextGetsTailTruncatedStyleApplied() {
+        let styles = StringStyles.snippet
+        let text = StringFormatter().format(text: sampleLongText, with: styles, using: [])
+
+        let textAttributes = text.attributes(at: 0, effectiveRange: nil)
+
+        let textAttributesContainsParagraphStyle = textAttributes.keys.contains(.paragraphStyle)
+        if textAttributesContainsParagraphStyle {
+            let paragraphStyle = textAttributes[.paragraphStyle] as? NSParagraphStyle
+            XCTAssertEqual(paragraphStyle, NSParagraphStyle.truncatingTailFootnote)
+        } else {
+            XCTFail()
+        }
     }
 
     /// Verifies that the Descriptor's Value gets injected in the target range.

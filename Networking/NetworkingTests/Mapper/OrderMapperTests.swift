@@ -28,7 +28,7 @@ class OrderMapperTests: XCTestCase {
         XCTAssertEqual(order.parentID, 0)
         XCTAssertEqual(order.customerID, 11)
         XCTAssertEqual(order.number, "963")
-        XCTAssert(order.status == .processing)
+        XCTAssert(order.statusKey == .processing)
         XCTAssertEqual(order.currency, "USD")
         XCTAssertEqual(order.customerNote, "")
         XCTAssertEqual(order.dateCreated, dateCreated)
@@ -87,6 +87,19 @@ class OrderMapperTests: XCTestCase {
         XCTAssertEqual(firstItem.total, "30.00")
         XCTAssertEqual(firstItem.totalTax, "1.20")
         XCTAssertEqual(firstItem.variationID, 0)
+    }
+
+    /// Verifies that Order Items with a decimal quantity are parsed properly
+    ///
+    func testOrderItemsWithDecimalQuantityAreCorrectlyParsed() {
+        guard let order = mapLoadOrderResponse() else {
+            XCTFail()
+            return
+        }
+
+        let secondItem = order.items[1]
+        XCTAssertEqual(secondItem.itemID, 891)
+        XCTAssertEqual(secondItem.quantity, NSDecimalNumber(decimal: 1.5))
     }
 
     /// Verifies that an Order in a broken state does [gets default values] | [gets skipped while parsing]

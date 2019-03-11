@@ -2,6 +2,19 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 10 (Release 1.3.0.0)
+Used mapping model: `WooCommerceModelV9toV10.xcmappingmodel`
+
+- @astralbodies 2019-02-08
+    - Changes `quantity` attribute on `OrderItem` from Int64 to Decimal
+
+- @bummytime 2019-02-19
+    - New `ShipmentTracking` entity
+    
+- @mindgraffiti 2019-02-21
+    - Changes `status` attribute on `Order` to `statusKey`
+    - New `OrderStatus` entity
+
 ## Model 9 (Release 1.0.0.1) 
 - @bummytime 2019-01-11
     - Added `price` attribute on `OrderItem` entity

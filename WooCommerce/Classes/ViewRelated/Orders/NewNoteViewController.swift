@@ -17,6 +17,14 @@ class NewNoteViewController: UIViewController {
 
     private var noteText: String = ""
 
+    /// Dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
+    ///
+    private lazy var noticePresenter: NoticePresenter = {
+        let noticePresenter = NoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -67,14 +75,15 @@ class NewNoteViewController: UIViewController {
 
         WooAnalytics.shared.track(.orderNoteAddButtonTapped)
         WooAnalytics.shared.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
-                                                                  "status": viewModel.order.status.rawValue,
+                                                                  "status": viewModel.order.statusKey.rawValue,
                                                                   "type": isCustomerNote ? "customer" : "private"])
 
         let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, isCustomerNote: isCustomerNote, note: noteText) { [weak self] (orderNote, error) in
             if let error = error {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
                 WooAnalytics.shared.track(.orderNoteAddFailed, withError: error)
-                // TODO: should this alert the user that there was an error?
+
+                self?.displayErrorNotice()
                 self?.navigationItem.rightBarButtonItem?.isEnabled = true
                 return
             }
@@ -215,6 +224,20 @@ extension NewNoteViewController: UITableViewDataSource {
 extension NewNoteViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectSelectedRowWithAnimation(true)
+    }
+}
+
+// MARK: - Error Notice
+//
+private extension NewNoteViewController {
+    func displayErrorNotice() {
+        let title = NSLocalizedString("Unable to add note to order #\(viewModel.order.orderID)", comment: "Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}")
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.addButtonTapped()
+        }
+
+        noticePresenter.enqueue(notice: notice)
     }
 }
 

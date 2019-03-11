@@ -113,6 +113,7 @@ struct SessionManager {
         defaultAccount = nil
         defaultCredentials = nil
         defaultStoreID = nil
+        defaultSite = nil
     }
 }
 

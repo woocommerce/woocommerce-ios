@@ -14,7 +14,7 @@ public class ReportRemote: Remote {
     ///   - siteID: Site for which we'll fetch the order totals.
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadOrderTotals(for siteID: Int, completion: @escaping ([OrderStatus: Int]?, Error?) -> Void) {
+    public func loadOrderTotals(for siteID: Int, completion: @escaping ([OrderStatusKey: Int]?, Error?) -> Void) {
         let path = Constants.orderTotalsPath
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = ReportOrderTotalsMapper()

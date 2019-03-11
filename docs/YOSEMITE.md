@@ -1,12 +1,13 @@
 # Yosemite
-> Encapsulates the business logic and interacts with the Networking and Storage layers.   
+> This module encapsulates the application business logic, and interacts with the Networking and Storage layers.   
+
+## High-level class diagram
+![Yosemite high level class diagram](images/yosemite_general.png)
 
 ## Application state. StoresManagerState
-Business logic is split in different subclasses of   `Store`   A `Store` encapsulates the business logic related to one of the domain level concerns (i.e. Notifications, Orders, Shipment…)
+Business logic is broken down into different subclasses of   `Store`   A `Store` encapsulates the business logic related to one and only one of the domain level concerns (i.e. Notifications, Orders, Shipment…)
 
-Some of these concerns require a valid user session (a user to be logged into the system) while some others don’t require a session. 
-
-To handle that, `Store`s are aggregated by a `StoresManager`.
+Some of these concerns require a valid user session (a user to be logged into the system) while some others don’t require a session.  To handle that, `Store`s are aggregated by a `StoresManager`.
 
 `StoresManager` is a state machine, that manages two states. Those states are implementations of the `StoresManagerState` protocol. Currently, we have two implementations, `AuthenticateState` and `DeauthenticateState`
 
@@ -59,6 +60,8 @@ All current implementations of the `Action` protocol are enumerations.
 
 `Action`s work in close cooperation with `Store`s. An `Action` declares a number of operations that the `Store` will implement.
 
+![Class diagram: Actions](images/yosemite_actions.png)
+
 ## Putting it all together. Executing an action to fetch data.
 To continue with the example of the statistics, let’s say we want to present the statistics related to the top earning products.
 
@@ -81,7 +84,7 @@ The full listing:
     }
 ```
 
-## Why?
+## Rationale
 Why did we implement it that way?
 
 We wanted the design to be highly cohesive and loosely coupled. We also wanted the design to be able to be capable of supporting adding new domain level concerns, without having to rewrite the pre-existing code.

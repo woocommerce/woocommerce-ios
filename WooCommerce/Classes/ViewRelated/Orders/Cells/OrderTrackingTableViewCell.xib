@@ -13,14 +13,14 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="OrderTrackingTableViewCell" rowHeight="188" id="KGk-i7-Jjw" customClass="OrderTrackingTableViewCell" customModule="WooCommerce" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="331" height="150"/>
+            <rect key="frame" x="0.0" y="0.0" width="331" height="154"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="331" height="149.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="331" height="153.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="nKR-kp-PKq">
-                        <rect key="frame" x="16" y="8" width="299" height="141.5"/>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="nKR-kp-PKq">
+                        <rect key="frame" x="16" y="16" width="299" height="133.5"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="MBb-Vp-3eh">
                                 <rect key="frame" x="0.0" y="0.0" width="299" height="69.5"/>
@@ -46,7 +46,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="SIM-Wl-ZSt">
-                                <rect key="frame" x="0.0" y="77.5" width="299" height="64"/>
+                                <rect key="frame" x="0.0" y="85.5" width="299" height="48"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mav-Sc-Nqa">
                                         <rect key="frame" x="0.0" y="0.0" width="299" height="1"/>
@@ -56,7 +56,7 @@
                                         </constraints>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q04-tu-Hwj">
-                                        <rect key="frame" x="0.0" y="1" width="299" height="63"/>
+                                        <rect key="frame" x="0.0" y="1" width="299" height="47"/>
                                         <state key="normal" title="Button"/>
                                         <connections>
                                             <action selector="actionButtonPressed:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="vJf-Pe-OWy"/>
@@ -68,9 +68,9 @@
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="nKR-kp-PKq" secondAttribute="bottom" id="OVJ-2E-eJY"/>
+                    <constraint firstAttribute="bottom" secondItem="nKR-kp-PKq" secondAttribute="bottom" constant="4" id="OVJ-2E-eJY"/>
                     <constraint firstItem="nKR-kp-PKq" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Tkb-Wi-nOp"/>
-                    <constraint firstItem="nKR-kp-PKq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="cF4-8H-16y"/>
+                    <constraint firstItem="nKR-kp-PKq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="cF4-8H-16y"/>
                     <constraint firstAttribute="trailingMargin" secondItem="nKR-kp-PKq" secondAttribute="trailing" id="fA5-E1-lrn"/>
                 </constraints>
             </tableViewCellContentView>

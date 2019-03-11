@@ -601,9 +601,7 @@ private extension OrderDetailsViewController {
             self?.displayOrderStatusList()
         }
 
-        if let orderStatus = viewModel.orderStatus {
-            cell.display(orderStatus: orderStatus)
-        }
+        cell.display(viewModel: viewModel)
     }
 }
 

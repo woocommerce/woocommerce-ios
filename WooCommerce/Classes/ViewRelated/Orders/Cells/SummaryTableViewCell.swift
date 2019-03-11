@@ -51,9 +51,18 @@ final class SummaryTableViewCell: UITableViewCell {
 
     /// Displays the specified OrderStatus, and applies the right Label Style
     ///
-    func display(orderStatus: OrderStatus) {
-        paymentStatusLabel.text = orderStatus.name
-        paymentStatusLabel.applyStyle(for: orderStatus.status)
+    func display(viewModel: OrderDetailsViewModel) {
+        if let orderStatus = viewModel.orderStatus {
+            paymentStatusLabel.applyStyle(for: orderStatus.status)
+            paymentStatusLabel.text = orderStatus.name
+        } else {
+            // There are unsupported extensions with even more statuses available.
+            // So let's use the order.statusKey to display those as slugs.
+            let statusKey = viewModel.order.statusKey
+            let statusEnum = OrderStatusEnum(rawValue: statusKey)
+            paymentStatusLabel.applyStyle(for: statusEnum)
+            paymentStatusLabel.text = viewModel.order.statusKey
+        }
     }
 
 

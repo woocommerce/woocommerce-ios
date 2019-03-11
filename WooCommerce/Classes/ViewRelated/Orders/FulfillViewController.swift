@@ -301,20 +301,15 @@ private extension FulfillViewController {
         guard let cell = cell as? CustomerInfoTableViewCell else {
             fatalError()
         }
-
-        guard let address = order.shippingAddress ?? order.billingAddress else {
-            cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
-            cell.address = NSLocalizedString(
-                "No address specified.",
-                comment: "Fulfill order > customer info > where the physical shipping address would normally display."
-            )
-
-            return
-        }
+        let shippingAddress = order.shippingAddress
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
-        cell.name = address.fullNameWithCompany
-        cell.address = address.formattedPostalAddress
+        cell.name = shippingAddress?.fullNameWithCompany
+        cell.address = shippingAddress?.formattedPostalAddress ??
+            NSLocalizedString(
+                "No address specified.",
+                comment: "Order details > customer info > shipping details. This is where the address would normally display."
+        )
     }
 
     /// Setup: Add Tracking Cell

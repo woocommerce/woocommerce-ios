@@ -957,7 +957,7 @@
 			inputPaths = (
 				"${SRCROOT}/../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack-Default-Swift/CocoaLumberjack.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (

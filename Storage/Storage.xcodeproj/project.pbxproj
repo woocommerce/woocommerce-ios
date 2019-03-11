@@ -510,7 +510,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack-Default-Swift/CocoaLumberjack.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (

@@ -1,6 +1,5 @@
 import Foundation
 import CoreData
-import CocoaLumberjack
 
 /// NSManagedObjectContext Storage Conformance
 ///

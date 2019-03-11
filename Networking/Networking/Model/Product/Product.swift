@@ -43,7 +43,7 @@ public struct Product: Decodable {
     public let backOrdered: Bool
     public let soldIndividually: Bool
     public let weight: String?
-    public let dimensions: Product.Dimension // struct
+    public let dimensions: Dimension // struct
     public let shippingRequired: Bool
     public let shippingTaxable: Bool
     public let shippingClass: String?

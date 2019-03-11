@@ -1,4 +1,4 @@
-/* Title for an untitled post, should match WP core */
+﻿/* Title for an untitled post, should match WP core */
 "(no title)" = "(no title)";
 
 /* An error message. */
@@ -133,7 +133,7 @@
 "Certificate error" = "Certificate error";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Reset Activity Log" = "Reset Activity Log";
+"Clear old activity logs" = "Clear old activity logs";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Collect Information";
@@ -430,7 +430,7 @@
 "Log Out" = "Log Out";
 
 /* Log out button title */
-"Log Out" = "Log Out";
+"Log out account" = "Log out account";
 
 /* Title of a button.  */
 "Lost your password?" = "Lost your password?";

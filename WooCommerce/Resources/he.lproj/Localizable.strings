@@ -135,7 +135,7 @@
 "Certificate error" = "שגיאה בתעודה";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Reset Activity Log" = "ניקוי פעילויות ישנות";
+"Clear old activity logs" = "ניקוי פעילויות ישנות";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "איסוף מידע";
@@ -232,9 +232,6 @@
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "שגיאת Dotcom: [(code)] (theMessage)";
-
-/* WordPress.com error thrown when the the request REST API url is invalid. */
-"Dotcom Invalid REST Route" = "Dotcom Invalid REST Route";
 
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "לפריט Dotcom חסר אסימון";
@@ -426,7 +423,7 @@
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "עליך להתחבר באמצעות כתובת האימייל של החשבון ב-WordPress.com כדי לנהל את החנויות שלך ב-WooCommerce.";
 
 /* Log out button title */
-"Log Out" = "ניתוק החשבון";
+"Log out account" = "ניתוק החשבון";
 
 /* Title of a button. */
 "Lost your password?" = "שחזור סיסמה";
@@ -479,8 +476,7 @@
 /* My Tickets title */
 "My Tickets" = "הפנייה שלי";
 
-/* My Store Notice Title for loading error
-   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+/* Dashboard navigation title */
 "My store" = "החנות שלי";
 
 /* Name text field placeholder */
@@ -639,6 +635,9 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "יש לפתוח את אפליקציית האימייל שלך ולחפש את ההודעה שנשלחה מ-WordPress.com.";
 
+/* My Store > Settings > Primary Store information section */
+"Primary Store" = "חנות ראשית";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "מדיניות פרטיות";
 
@@ -719,9 +718,6 @@
 
 /* Search Orders */
 "Search orders" = "חיפוש הזמנות";
-
-/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
-"Selected Store" = "Selected Store";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "שליחת קישור";
@@ -831,9 +827,6 @@
 
 /* Subtotal label for payment view */
 "Subtotal" = "סכום ביניים";
-
-/* This action allows the user to change stores without logging out and logging back in again. */
-"Switch Store" = "Switch Store";
 
 /* Labels an order note to let user know it's a system status message */
 "System status" = "מצב מערכת";
@@ -968,17 +961,8 @@
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "אי אפשר להתחבר";
 
-/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
-"Unable to add note to order #(viewModel.order.orderID)" = "Unable to add note to order #(viewModel.order.orderID)";
-
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "אין אפשרות למצוא חנויות של WooCommerce שמקושרות לחשבון זה";
-
-/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
-"Unable to fulfill order #(orderID)" = "Unable to fulfill order #(orderID)";
-
-/* Load Action Failed */
-"Unable to load content" = "Unable to load content";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Unable to mark review as %@";

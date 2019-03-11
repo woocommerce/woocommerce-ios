@@ -1,6 +1,5 @@
 import UIKit
 import Gridicons
-import CocoaLumberjack
 import WordPressUI
 import Yosemite
 

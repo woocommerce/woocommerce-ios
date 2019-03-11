@@ -2,7 +2,6 @@ import UIKit
 import Yosemite
 import Charts
 import XLPagerTabStrip
-import CocoaLumberjack
 import WordPressUI
 
 

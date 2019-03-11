@@ -185,6 +185,7 @@
 		CE6BFEE52236BF05005C79FB /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6BFEE42236BF05005C79FB /* Product.swift */; };
 		CE6BFEE82236D133005C79FB /* Dimension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6BFEE72236D133005C79FB /* Dimension.swift */; };
 		CE6BFEEA2236E191005C79FB /* ProductType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6BFEE92236E191005C79FB /* ProductType.swift */; };
+		CE6BFEEC2236EC36005C79FB /* ProductStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6BFEEB2236EC36005C79FB /* ProductStatus.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -381,6 +382,7 @@
 		CE6BFEE42236BF05005C79FB /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		CE6BFEE72236D133005C79FB /* Dimension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dimension.swift; sourceTree = "<group>"; };
 		CE6BFEE92236E191005C79FB /* ProductType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductType.swift; sourceTree = "<group>"; };
+		CE6BFEEB2236EC36005C79FB /* ProductStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatus.swift; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -801,6 +803,7 @@
 			isa = PBXGroup;
 			children = (
 				CE6BFEE42236BF05005C79FB /* Product.swift */,
+				CE6BFEEB2236EC36005C79FB /* ProductStatus.swift */,
 				CE6BFEE92236E191005C79FB /* ProductType.swift */,
 			);
 			path = Product;
@@ -1055,6 +1058,7 @@
 				B557DA0220975500005962F4 /* JetpackRequest.swift in Sources */,
 				74046E1F217A6B70007DD7BF /* SiteSettingsMapper.swift in Sources */,
 				CE12FBD9221F3A6F00C59248 /* OrderStatus.swift in Sources */,
+				CE6BFEEC2236EC36005C79FB /* ProductStatus.swift in Sources */,
 				7426CA1121AF30BD004E9FFC /* SiteAPIMapper.swift in Sources */,
 				743E84EC22171F4600FAC9D7 /* ShipmentTracking.swift in Sources */,
 				B56C1EB820EA76F500D749F9 /* Site.swift in Sources */,

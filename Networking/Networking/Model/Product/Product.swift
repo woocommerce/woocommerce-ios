@@ -11,7 +11,7 @@ public struct Product: Decodable {
     public let dateCreated: Date       // gmt
     public let dateModified: Date?     // gmt
     public let productType: ProductType
-    public let status: Product.Status
+    public let status: ProductStatus
     public let featured: Bool
     public let catalogVisibility: Product.Visibility
     public let description: String?
@@ -75,7 +75,7 @@ public struct Product: Decodable {
                 dateCreated: Date,      // gmt
                 dateModified: Date?,    // gmt
                 productType: ProductType,
-                status: Product.Status,
+                status: ProductStatus,
                 featured: Bool,
                 catalogVisibility: Product.Visibility,
                 description: String?,

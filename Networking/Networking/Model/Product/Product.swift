@@ -10,10 +10,10 @@ public struct Product: Decodable {
     public let permalink: String
     public let dateCreated: Date       // gmt
     public let dateModified: Date?     // gmt
-    public let productType: ProductType
-    public let status: ProductStatus
+    public let productTypeKey: String
+    public let statusKey: String
     public let featured: Bool
-    public let catalogVisibility: Product.Visibility
+    public let catalogVisibility: String // convert to enum ProductVisibility?
     public let description: String?
     public let shortDescription: String?
     public let sku: String?
@@ -28,17 +28,17 @@ public struct Product: Decodable {
     public let totalSales: Int
     public let virtual: Bool
     public let downloadable: Bool
-    public let downloads: [Download?]
+    public let downloads: [ProductDownload?]
     public let downloadLimit: Int     // defaults to -1
     public let downloadExpiry: Int    // defaults to -1
     public let externalURL: String?
     public let buttonText: String?
-    public let taxStatus: Product.TaxStatus
+    public let taxStatusKey: String   // convert to enum? ProductTaxStatus
     public let taxClass: String?
     public let manageStock: Bool
     public let stockQuantity: Int?   // API reports Int or null
-    public let stockStatus: Product.StockStatus
-    public let backOrders: Product.BackOrders
+    public let stockStatusKey: String   // convert to enum ProductStockStatus?
+    public let backOrdersKey: String    // convert to enum ProductBackOrders?
     public let backOrdersAllowed: Bool
     public let backOrdered: Bool
     public let soldIndividually: Bool
@@ -66,6 +66,16 @@ public struct Product: Decodable {
     public let menuOrder: Int
     public let metaData: [ProductMetaData?]
 
+    /// Computed Properties
+    ///
+    public var productType: ProductType {
+        return ProductType(rawValue: productTypeKey)
+    }
+
+    public var status: ProductStatus {
+        return ProductStatus(rawValue: statusKey)
+    }
+
     /// Product struct initializer.
     ///
     public init(productID: Int,
@@ -74,10 +84,10 @@ public struct Product: Decodable {
                 permalink: String,
                 dateCreated: Date,      // gmt
                 dateModified: Date?,    // gmt
-                productType: ProductType,
-                status: ProductStatus,
+                productTypeKey: String,
+                statusKey: String,
                 featured: Bool,
-                catalogVisibility: Product.Visibility,
+                catalogVisibility: String,
                 description: String?,
                 shortDescription: String?,
                 sku: String?,
@@ -97,12 +107,12 @@ public struct Product: Decodable {
                 downloadExpiry: Int,   // defaults to -1
                 externalURL: String?,
                 buttonText: String?,
-                taxStatus: Product.TaxStatus,
+                taxStatusKey: String,
                 taxClass: String?,
                 manageStock: Bool,
                 stockQuantity: Int?,  // API reports Int or null
-                stockStatus: Product.StockStatus,
-                backOrders: Product.BackOrders,
+                stockStatusKey: String,
+                backOrdersKey: String,
                 backOrdersAllowed: Bool,
                 backOrdered: Bool,
                 soldIndividually: Bool,
@@ -135,8 +145,8 @@ public struct Product: Decodable {
         self.permalink = permalink
         self.dateCreated = dateCreated
         self.dateModified = dateModified
-        self.productType = productType
-        self.status = status
+        self.productTypeKey = productTypeKey
+        self.statusKey = statusKey
         self.featured = featured
         self.catalogVisibility = catalogVisibility
         self.description = description
@@ -158,12 +168,12 @@ public struct Product: Decodable {
         self.downloadExpiry = downloadExpiry
         self.externalURL = externalURL
         self.buttonText = buttonText
-        self.taxStatus = taxStatus
+        self.taxStatusKey = taxStatusKey
         self.taxClass = taxClass
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
-        self.stockStatus = stockStatus
-        self.backOrders = backOrders
+        self.stockStatusKey = stockStatusKey
+        self.backOrdersKey = backOrdersKey
         self.backOrdersAllowed = backOrdersAllowed
         self.backOrdered = backOrdered
         self.soldIndividually = soldIndividually

@@ -8,15 +8,19 @@ public struct Product: Decodable {
     public let name: String
     public let slug: String
     public let permalink: String
+
     public let dateCreated: Date       // gmt
     public let dateModified: Date?     // gmt
+
     public let productTypeKey: String
     public let statusKey: String
     public let featured: Bool
     public let catalogVisibility: String // convert to enum ProductVisibility?
+
     public let description: String?
     public let shortDescription: String?
     public let sku: String?
+
     public let price: String
     public let regularPrice: String?
     public let salePrice: String?
@@ -24,37 +28,47 @@ public struct Product: Decodable {
     public let dateOnSaleTo: Date?     // gmt
     public let priceHTML: String?
     public let onSale: Bool
+
     public let purchasable: Bool
     public let totalSales: Int
     public let virtual: Bool
+
     public let downloadable: Bool
     public let downloads: [ProductDownload?]
     public let downloadLimit: Int     // defaults to -1
     public let downloadExpiry: Int    // defaults to -1
+
     public let externalURL: String?
     public let buttonText: String?
+
     public let taxStatusKey: String   // convert to enum? ProductTaxStatus
     public let taxClass: String?
+
     public let manageStock: Bool
     public let stockQuantity: Int?   // API reports Int or null
     public let stockStatusKey: String   // convert to enum ProductStockStatus?
     public let backOrdersKey: String    // convert to enum ProductBackOrders?
     public let backOrdersAllowed: Bool
     public let backOrdered: Bool
+
     public let soldIndividually: Bool
     public let weight: String?
     public let dimensions: Dimension // struct
+
     public let shippingRequired: Bool
     public let shippingTaxable: Bool
     public let shippingClass: String?
     public let shippingClassID: Int
+
     public let reviewsAllowed: Bool
     public let averageRating: String
     public let ratingCount: Int
+
     public let relatedIDs: [Int?]
     public let upsellIDs: [Int?]
     public let crossSellIDs: [Int?]
     public let parentID: Int
+
     public let purchaseNote: String?
     public let categories: [ProductCategory?]
     public let tags: [ProductTag?]
@@ -63,6 +77,7 @@ public struct Product: Decodable {
     public let defaultAttributes: [ProductDefaultAttribute?]
     public let variations: [Int?]
     public let groupedProducts: [Int?]
+
     public let menuOrder: Int
     public let metaData: [ProductMetaData?]
 
@@ -102,7 +117,7 @@ public struct Product: Decodable {
                 totalSales: Int,
                 virtual: Bool,
                 downloadable: Bool,
-                downloads: [Download?],
+                downloads: [ProductDownload?],
                 downloadLimit: Int,    // defaults to -1
                 downloadExpiry: Int,   // defaults to -1
                 externalURL: String?,

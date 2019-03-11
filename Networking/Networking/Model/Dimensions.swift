@@ -1,9 +1,9 @@
 import Foundation
 
 
-/// Represents a Dimension Entity.
+/// Represents a Dimensions Entity.
 ///
-public struct Dimension: Decodable {
+public struct Dimensions: Decodable {
     public let length: String
     public let width: String
     public let height: String
@@ -19,9 +19,9 @@ public struct Dimension: Decodable {
     }
 }
 
-/// Defines all of the Dimension CodingKeys
+/// Defines all of the Dimensions CodingKeys
 ///
-private extension Dimension {
+private extension Dimensions {
 
     enum CodingKeys: String, CodingKey {
         case length

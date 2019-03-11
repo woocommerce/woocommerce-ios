@@ -15,7 +15,7 @@ public struct Product: Decodable {
     public let productTypeKey: String
     public let statusKey: String
     public let featured: Bool
-    public let catalogVisibility: String // convert to enum ProductVisibility?
+    public let catalogVisibilityKey: String // convert to enum ProductVisibility?
 
     public let description: String?
     public let shortDescription: String?
@@ -47,9 +47,9 @@ public struct Product: Decodable {
     public let manageStock: Bool
     public let stockQuantity: Int?   // API reports Int or null
     public let stockStatusKey: String   // convert to enum ProductStockStatus?
-    public let backOrdersKey: String    // convert to enum ProductBackOrders?
-    public let backOrdersAllowed: Bool
-    public let backOrdered: Bool
+    public let backordersKey: String    // convert to enum ProductBackOrders?
+    public let backordersAllowed: Bool
+    public let backordered: Bool
 
     public let soldIndividually: Bool
     public let weight: String?
@@ -70,16 +70,16 @@ public struct Product: Decodable {
     public let parentID: Int
 
     public let purchaseNote: String?
-    public let categories: [ProductCategory?]
-    public let tags: [ProductTag?]
-    public let images: [ProductImage?]
-    public let attributes: [ProductAttribute?]
-    public let defaultAttributes: [ProductDefaultAttribute?]
+    public let categories: [String: Any?]
+    public let tags: [String: Any?]
+    public let images: [String: Any?]
+    public let attributes: [String: Any?]
+    public let defaultAttributes: [String: Any?]
     public let variations: [Int?]
     public let groupedProducts: [Int?]
 
     public let menuOrder: Int
-    public let metaData: [ProductMetaData?]
+    public let metaData: [String: Any?]
 
     /// Computed Properties
     ///
@@ -102,7 +102,7 @@ public struct Product: Decodable {
                 productTypeKey: String,
                 statusKey: String,
                 featured: Bool,
-                catalogVisibility: String,
+                catalogVisibilityKey: String,
                 description: String?,
                 shortDescription: String?,
                 sku: String?,
@@ -127,9 +127,9 @@ public struct Product: Decodable {
                 manageStock: Bool,
                 stockQuantity: Int?,  // API reports Int or null
                 stockStatusKey: String,
-                backOrdersKey: String,
-                backOrdersAllowed: Bool,
-                backOrdered: Bool,
+                backordersKey: String,
+                backordersAllowed: Bool,
+                backordered: Bool,
                 soldIndividually: Bool,
                 weight: String?,
                 dimensions: Dimensions, // struct
@@ -145,15 +145,15 @@ public struct Product: Decodable {
                 crossSellIDs: [Int?],
                 parentID: Int,
                 purchaseNote: String?,
-                categories: [ProductCategory?],
-                tags: [ProductTag?],
-                images: [ProductImage?],
-                attributes: [ProductAttribute?],
-                defaultAttributes: [ProductDefaultAttribute?],
+                categories: [String: Any?],
+                tags: [String: Any?],
+                images: [String: Any?],
+                attributes: [String: Any?],
+                defaultAttributes: [String: Any?],
                 variations: [Int?],
                 groupedProducts: [Int?],
                 menuOrder: Int,
-                metaData: [ProductMetaData?]) {
+                metaData: [String: Any?]) {
         self.productID = productID
         self.name = name
         self.slug = slug
@@ -163,7 +163,7 @@ public struct Product: Decodable {
         self.productTypeKey = productTypeKey
         self.statusKey = statusKey
         self.featured = featured
-        self.catalogVisibility = catalogVisibility
+        self.catalogVisibilityKey = catalogVisibilityKey
         self.description = description
         self.shortDescription = shortDescription
         self.sku = sku
@@ -188,9 +188,9 @@ public struct Product: Decodable {
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
         self.stockStatusKey = stockStatusKey
-        self.backOrdersKey = backOrdersKey
-        self.backOrdersAllowed = backOrdersAllowed
-        self.backOrdered = backOrdered
+        self.backordersKey = backordersKey
+        self.backordersAllowed = backordersAllowed
+        self.backordered = backordered
         self.soldIndividually = soldIndividually
         self.weight = weight
         self.dimensions = dimensions
@@ -220,7 +220,63 @@ public struct Product: Decodable {
     /// The public initializer for Product.
     ///
     public init(from decoder: Decoder) throws {
-        // to do
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let productID = try container.decode(Int.self, forKey: .productID)
+        let name = try container.decode(String.self, forKey: .name)
+        let slug = try container.decode(String.self, forKey: .slug)
+        let permalink = try container.decode(String.self, forKey: .permalink)
+        let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
+        let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified) ?? Date()
+        let productTypeKey = try container.decode(String.self, forKey: .productTypeKey)
+        let statusKey = try container.decode(String.self, forKey: .statusKey)
+        let featured = try container.decode(Bool.self, forKey: .featured)
+        let catalogVisibilityKey = try container.decode(String.self, forKey: .catalogVisibilityKey)
+        let description = try container.decode(String.self, forKey: .description)
+        let shortDescription = try container.decode(String.self, forKey: .shortDescription)
+        let sku = try container.decode(String.self, forKey: .sku)
+        let price = try container.decode(String.self, forKey: .price)
+        let regularPrice = try container.decode(String.self, forKey: .regularPrice)
+        let salePrice = try container.decode(String.self, forKey: .salePrice)
+        let dateOnSaleFrom = try container.decode(Date.self, forKey: .dateOnSaleFrom) ?? Date()
+        let dateOnSaleTo = try container.decode(Date.self, forKey: .dateOnSaleTo) ?? Date()
+        let priceHTML = try container.decode(String.self, forKey: .priceHTML)
+        let onSale = try container.decode(Bool.self, forKey: .onSale)
+        let purchasable = try container.decode(Bool.self, forKey: .purchasable)
+        let totalSales = try container.decode(Int.self, forKey: .totalSales)
+        let virtual = try container.decode(Bool.self, forKey: .virtual)
+        let downloadable = try container.decode(Bool.self, forKey: .downloadable)
+        let downloads = try container.decode([ProductDownload].self, forKey: .downloads)
+        let downloadLimit = try container.decode(Int.self, forKey: .downloadLimit)
+        let downloadExpiry = try container.decode(Int.self, forKey: .downloadExpiry)
+        let externalURL = try container.decode(String.self, forKey: .externalURL)
+        let buttonText = try container.decode(String.self, forKey: .buttonText)
+        let taxStatusKey = try container.decode(String.self, forKey: .taxStatusKey)
+        let taxClass = try container.decode(String.self, forKey: .taxClass)
+        let manageStock = try container.decode(Bool.self, forKey: .manageStock)
+        let stockQuantity = try container.decode(Int.self, forKey: .stockQuantity)
+        let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
+        let backordersKey = try container.decode(String.self, forKey: .backordersKey)
+        let backordersAllowed = try container.decode(Bool.self, forKey: .backordersAllowed)
+        let backordered = try container.decode(Bool.self, forKey: .backordered)
+        let soldIndividuallly = try container.decode(Bool.self, forKey: .soldIndividually)
+        let weight = try container.decode(String.self, forKey: .weight)
+        let dimensions = try container.decode(Dimensions.self, forKey: .dimensions)
+        let shippingRequired = try container.decode(Bool.self, forKey: .shippingRequired)
+        let shippingTaxable = try container.decode(Bool.self, forKey: .shippingTaxable)
+        let shippingClass = try container.decode(String.self, forKey: .shippingClass)
+        let shippingClassID = try container.decode(Int.self, forKey: .shippingClassID)
+        let reviewsAllowed = try container.decode(Bool.self, forKey: .reviewsAllowed)
+        let averageRating = try container.decode(String.self, forKey: .averageRating)
+        let ratingCount = try container.decode(Int.self, forKey: .ratingCount)
+        let relatedIDs = try container.decodeIfPresent([Int].self, forKey: .relatedIDs)
+        let upsellIDs = try container.decodeIfPresent([Int].self, forKey: .upsellIDs)
+        let crossSellIDs = try container.decodeIfPresent([Int].self, forKey: .crossSellIDs)
+        let parentID = try container.decode(Int.self, forKey: .parentID)
+        let purchaseNote = try container.decodeIfPresent(String.self, forKey: .purchaseNote)
+//        let categories: [Dictionary<String, Any>] = try container.decode([Dictionary<String, Any>].self, forKey: .categories)
+//        let tags: [String: Any] = try container.decodeIfPresent([String: Any].self, forKey: .tags)
+//        let images: [String: Any] = try container.decode([String: Any?].self, forKey: .images)
     }
 }
 
@@ -236,9 +292,10 @@ private extension Product {
         case permalink
         case dateCreated = "date_created_gmt"
         case dateModified = "date_modified_gmt"
-        case status
+        case productTypeKey = "type"
+        case statusKey = "status"
         case featured
-        case catalogVisibility = "catalog_visibility"
+        case catalogVisibilityKey = "catalog_visibility"
         case description
         case shortDescription = "short_description"
         case sku
@@ -258,12 +315,13 @@ private extension Product {
         case downloadExpiry = "download_expiry"
         case externalURL = "external_url"
         case buttonText = "button_text"
-        case taxStatus = "tax_status"
+        case taxStatusKey = "tax_status"
         case taxClass = "tax_class"
         case manageStock = "manage_stock"
         case stockQuantity = "stock_quantity"
-        case backorders
-        case backOrdersAllowed = "backorders_allowed"
+        case stockStatusKey = "stock_status"
+        case backordersKey = "backorders"
+        case backordersAllowed = "backorders_allowed"
         case backordered
         case soldIndividually = "sold_individually"
         case weight

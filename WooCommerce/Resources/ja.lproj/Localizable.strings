@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-02-20 09:54:02+0000 */
+/* Translation-Revision-Date: 2019-02-25 11:54:06+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -43,7 +43,7 @@
 "Adds a note to an order" = "注文にメモを追加します";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
-"Advanced tool to review the app status" = "アプリのステータスを確認するための高度なツール";
+"Advanced tool to review the app status" = "Advanced tool to review the app status";
 
 /* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
    Name of the All filter on the Order List screen - it means all orders will be displayed. */
@@ -198,7 +198,7 @@
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "接続できませんでした。ご利用のホスティングサービスは POST 要求をブロックしていますが、アプリはあなたのサイトとの通信に POST 要求を必要としています。ホスティングサービスに連絡して、この問題を解決してください。";
 
 /* Cell title: the current date. */
-"Current" = "現在";
+"Current" = "Current";
 
 /* Customer info section title
    Section title for the customer's billing and shipping address */
@@ -232,6 +232,9 @@
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "Dotcom エラー: [(code)] (theMessage)";
+
+/* WordPress.com error thrown when the the request REST API url is invalid. */
+"Dotcom Invalid REST Route" = "Dotcom Invalid REST Route";
 
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "Dotcom トークンがありません";
@@ -476,7 +479,8 @@
 /* My Tickets title */
 "My Tickets" = "自分のチケット";
 
-/* Dashboard navigation title */
+/* My Store Notice Title for loading error
+   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "自分のストア";
 
 /* Name text field placeholder */
@@ -635,9 +639,6 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "メールアプリを開いて、WordPress.com からのメールを探してください。";
 
-/* My Store > Settings > Primary Store information section */
-"Primary Store" = "プライマリストア";
-
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "個人情報保護方針";
 
@@ -718,6 +719,9 @@
 
 /* Search Orders */
 "Search orders" = "注文を検索";
+
+/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
+"Selected Store" = "Selected Store";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "リンクを送信";
@@ -827,6 +831,9 @@
 
 /* Subtotal label for payment view */
 "Subtotal" = "小計";
+
+/* This action allows the user to change stores without logging out and logging back in again. */
+"Switch Store" = "Switch Store";
 
 /* Labels an order note to let user know it's a system status message */
 "System status" = "システム状況";
@@ -961,8 +968,17 @@
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "接続できない";
 
+/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
+"Unable to add note to order #(viewModel.order.orderID)" = "Unable to add note to order #(viewModel.order.orderID)";
+
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "このアカウントに連携している WooCommerce ストアが見つかりません";
+
+/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
+"Unable to fulfill order #(orderID)" = "Unable to fulfill order #(orderID)";
+
+/* Load Action Failed */
+"Unable to load content" = "Unable to load content";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "レビューを%@に変更できませんでした";
@@ -1013,7 +1029,7 @@
 "Updated %ld minutes ago" = "%ld分前に更新";
 
 /* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
-"Updated moments ago" = "少し前に更新";
+"Updated moments ago" = "Updated moments ago";
 
 /* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
 "Updated on %@" = "%@ に更新";

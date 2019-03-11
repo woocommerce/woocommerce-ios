@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-01-09 09:54:02+0000 */
+/* Translation-Revision-Date: 2019-02-26 15:54:07+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -43,7 +43,7 @@
 "Adds a note to an order" = "在訂單中新增備註";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
-"Advanced tool to review the app status" = "Advanced tool to review the app status";
+"Advanced tool to review the app status" = "檢視應用程式狀態的進階工具";
 
 /* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
    Name of the All filter on the Order List screen - it means all orders will be displayed. */
@@ -74,7 +74,7 @@
 "An error occurred while processing your request: " = "處理要求時發生錯誤：";
 
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
-"Application Logs" = "Application Logs";
+"Application Logs" = "應用程式記錄檔";
 
 /* Approve a comment */
 "Approve" = "核准";
@@ -198,7 +198,7 @@
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "無法連結。你的主機服務提供者封鎖了 POST 請求，但此應用程式需要使用 POST 請求才能與你的網站通訊。請聯絡你的主機服務提供者，以解決此問題。";
 
 /* Cell title: the current date. */
-"Current" = "Current";
+"Current" = "最新";
 
 /* Customer info section title
    Section title for the customer's billing and shipping address */
@@ -232,6 +232,9 @@
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "Dotcom 錯誤：[(code)] (theMessage)";
+
+/* WordPress.com error thrown when the the request REST API url is invalid. */
+"Dotcom Invalid REST Route" = "Dotcom Invalid REST Route";
 
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "Dotcom 缺少 Token";
@@ -402,7 +405,7 @@
 "Log Out" = "登出";
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
-"Log files by created date" = "Log files by created date";
+"Log files by created date" = "依建立日期排列記錄檔案";
 
 /* Label for button to log in using your site address. */
 "Log in by entering your site address." = "藉由輸入你的網站位址來登入。";
@@ -476,7 +479,8 @@
 /* My Tickets title */
 "My Tickets" = "我的票證";
 
-/* Dashboard navigation title */
+/* My Store Notice Title for loading error
+   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "我的商店";
 
 /* Name text field placeholder */
@@ -635,9 +639,6 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "請開啟電子郵件應用程式，找到 WordPress.com 傳送的電子郵件。";
 
-/* My Store > Settings > Primary Store information section */
-"Primary Store" = "主要商店";
-
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "隱私權政策";
 
@@ -718,6 +719,9 @@
 
 /* Search Orders */
 "Search orders" = "搜尋訂單";
+
+/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
+"Selected Store" = "Selected Store";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "傳送連結";
@@ -828,6 +832,9 @@
 /* Subtotal label for payment view */
 "Subtotal" = "小計";
 
+/* This action allows the user to change stores without logging out and logging back in again. */
+"Switch Store" = "Switch Store";
+
 /* Labels an order note to let user know it's a system status message */
 "System status" = "系統狀態";
 
@@ -907,7 +914,7 @@
 "This Year" = "今年";
 
 /* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
-"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>.";
+"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "此應用程式需要 Jetpack 才能連結至你的商店。<br \/>請閱讀<a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">設定說明<\/a>。";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "這個電子郵件地址沒有在 WordPress.com 上註冊。";
@@ -961,8 +968,17 @@
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "無法連線";
 
+/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
+"Unable to add note to order #(viewModel.order.orderID)" = "Unable to add note to order #(viewModel.order.orderID)";
+
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "找不到與此帳號連結的 WooCommerce 商店";
+
+/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
+"Unable to fulfill order #(orderID)" = "Unable to fulfill order #(orderID)";
+
+/* Load Action Failed */
+"Unable to load content" = "Unable to load content";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Unable to mark review as %@";
@@ -995,28 +1011,28 @@
 "Unknown error" = "發生未知的錯誤";
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
-"Up to seven days՚ worth of logs are saved." = "Up to seven days՚ worth of logs are saved.";
+"Up to seven days՚ worth of logs are saved." = "可儲存最多七天的記錄。";
 
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "已於 %1$@ %2$@ 更新";
 
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
-"Updated %ld hour ago" = "Updated %ld hour ago";
+"Updated %ld hour ago" = "%ld 小時前已更新";
 
 /* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
-"Updated %ld hours ago" = "Updated %ld hours ago";
+"Updated %ld hours ago" = "%ld 小時前已更新";
 
 /* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
-"Updated %ld minute ago" = "Updated %ld minute ago";
+"Updated %ld minute ago" = "%ld 分鐘前已更新";
 
 /* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
-"Updated %ld minutes ago" = "Updated %ld minutes ago";
+"Updated %ld minutes ago" = "%ld 分鐘前已更新";
 
 /* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
-"Updated moments ago" = "Updated moments ago";
+"Updated moments ago" = "不久前已更新";
 
 /* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
-"Updated on %@" = "Updated on %@";
+"Updated on %@" = "更新日期：%@";
 
 /* Login dialog username placeholder
    Username placeholder */
@@ -1032,7 +1048,7 @@
 "Version %@" = "版本 %@";
 
 /* View application log cell title */
-"View Application Log" = "View Application Log";
+"View Application Log" = "檢視應用程式記錄檔";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "檢視先前提交的支援票證";

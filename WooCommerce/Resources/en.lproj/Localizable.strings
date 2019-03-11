@@ -1004,7 +1004,7 @@
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
 "Unable to add note to order #\(viewModel.order.orderID)" = "Unable to add note to order #\(viewModel.order.orderID)";
 
-/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
+/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order  */
 "Unable to change status of order #\(orderID)" = "Unable to change status of order #\(orderID)";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */

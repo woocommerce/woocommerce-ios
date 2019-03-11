@@ -135,7 +135,7 @@
 "Certificate error" = "Certifikat-fel";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Reset Activity Log" = "Rensa gamla aktivitetsloggar";
+"Clear old activity logs" = "Rensa gamla aktivitetsloggar";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Samla in information";
@@ -423,7 +423,7 @@
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Logga in med e-postadressen för ditt WordPress.com-konto för att hantera dina WooCommerce-butiker.";
 
 /* Log out button title */
-"Log Out" = "Logga ut konto";
+"Log out account" = "Logga ut konto";
 
 /* Title of a button. */
 "Lost your password?" = "Glömt ditt lösenord?";

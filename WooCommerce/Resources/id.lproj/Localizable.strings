@@ -135,7 +135,7 @@
 "Certificate error" = "Kesalahan sertifikat";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Reset Activity Log" = "Hapus log aktivitas lama";
+"Clear old activity logs" = "Hapus log aktivitas lama";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Kumpulkan informasi";
@@ -423,7 +423,7 @@
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Login dengan alamat email akun WordPress.com Anda untuk mengelola toko WooCommerce.";
 
 /* Log out button title */
-"Log Out" = "Logout dari akun";
+"Log out account" = "Logout dari akun";
 
 /* Title of a button. */
 "Lost your password?" = "Lupa sandi Anda?";

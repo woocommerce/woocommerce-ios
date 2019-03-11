@@ -135,7 +135,7 @@
 "Certificate error" = "憑證錯誤";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Reset Activity Log" = "Reset Activity Log";
+"Clear old activity logs" = "Clear old activity logs";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "收集資訊";
@@ -423,7 +423,7 @@
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "使用 WordPress.com 帳號電子郵件地址登入，即可管理 WooCommerce 商店。";
 
 /* Log out button title */
-"Log Out" = "登出帳號";
+"Log out account" = "登出帳號";
 
 /* Title of a button. */
 "Lost your password?" = "忘記密碼？";

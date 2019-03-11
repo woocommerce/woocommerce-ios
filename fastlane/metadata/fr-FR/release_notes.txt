@@ -1,3 +1,3 @@
-- Les statistiques de la boutique n'étaient parfois pas cohérentes d'un écran à l'autre. Vos statistiques doivent être fiables. C'est désormais le cas grâce à des améliorations apportées à leur affichage.
-- Pouvoir accéder facilement à l'aide quand on en a besoin est le plus efficace. C'est pourquoi, nous avons ajouté un bouton d'aide sur l'écran Sélecteur de boutique.
-- Vous pouvez désormais voir et partager les journaux d'application. Les journaux permettent de suivre les problèmes rencontrés et nous permettent de garantir une utilisation fluide et sans bug de l'application.
+- Vous gérez plusieurs boutiques ? Vous pouvez changer de site sans vous connecter et vous déconnecter : accédez à Paramètres et appuyez sur Changer de boutique. Le nom de la boutique active apparaît dans l'onglet « Ma boutique ».
+- Lorsque l'ajout d'un commentaire ou le remplissage d'une commande échoue, la fenêtre de message propose l'option « Réessayer » afin de vous permettre de faire une nouvelle tentative.
+- Tous vos paiements n'étant pas en chiffres ronds, les commandes prennent désormais en charge les valeurs décimales.

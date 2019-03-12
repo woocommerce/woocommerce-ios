@@ -186,6 +186,8 @@
 		D823D905223746CE00C90817 /* NewShipmentTrackingMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D904223746CE00C90817 /* NewShipmentTrackingMapper.swift */; };
 		D823D90722376B4800C90817 /* shipment-tracking-new-custom-provider.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D90622376B4800C90817 /* shipment-tracking-new-custom-provider.json */; };
 		D823D90B22376EFE00C90817 /* shipment-tracking-delete.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D90A22376EFE00C90817 /* shipment-tracking-delete.json */; };
+		D823D90D2237784A00C90817 /* ShipmentTrackingProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D90C2237784A00C90817 /* ShipmentTrackingProvider.swift */; };
+		D823D91022377B4F00C90817 /* ShipmentTrackingProviderGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D90F22377B4F00C90817 /* ShipmentTrackingProviderGroup.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -383,6 +385,8 @@
 		D823D904223746CE00C90817 /* NewShipmentTrackingMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewShipmentTrackingMapper.swift; sourceTree = "<group>"; };
 		D823D90622376B4800C90817 /* shipment-tracking-new-custom-provider.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "shipment-tracking-new-custom-provider.json"; sourceTree = "<group>"; };
 		D823D90A22376EFE00C90817 /* shipment-tracking-delete.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "shipment-tracking-delete.json"; sourceTree = "<group>"; };
+		D823D90C2237784A00C90817 /* ShipmentTrackingProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTrackingProvider.swift; sourceTree = "<group>"; };
+		D823D90F22377B4F00C90817 /* ShipmentTrackingProviderGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTrackingProviderGroup.swift; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -627,6 +631,8 @@
 				CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */,
 				B5BB1D1120A255EC00112D92 /* OrderStatusEnum.swift */,
 				743E84EB22171F4600FAC9D7 /* ShipmentTracking.swift */,
+				D823D90C2237784A00C90817 /* ShipmentTrackingProvider.swift */,
+				D823D90F22377B4F00C90817 /* ShipmentTrackingProviderGroup.swift */,
 				B56C1EB720EA76F500D749F9 /* Site.swift */,
 				7426CA0E21AF2C90004E9FFC /* SiteAPI.swift */,
 				74046E1C217A6989007DD7BF /* SiteSetting.swift */,
@@ -1053,6 +1059,7 @@
 				74046E1F217A6B70007DD7BF /* SiteSettingsMapper.swift in Sources */,
 				CE12FBD9221F3A6F00C59248 /* OrderStatus.swift in Sources */,
 				7426CA1121AF30BD004E9FFC /* SiteAPIMapper.swift in Sources */,
+				D823D91022377B4F00C90817 /* ShipmentTrackingProviderGroup.swift in Sources */,
 				743E84EC22171F4600FAC9D7 /* ShipmentTracking.swift in Sources */,
 				B56C1EB820EA76F500D749F9 /* Site.swift in Sources */,
 				7412A8EA21B6E192005D182A /* ReportRemote.swift in Sources */,
@@ -1102,6 +1109,7 @@
 				74046E1D217A6989007DD7BF /* SiteSetting.swift in Sources */,
 				B5BB1D1020A237FB00112D92 /* Address.swift in Sources */,
 				B524194121AC60A700D6FC0A /* DotcomDevice.swift in Sources */,
+				D823D90D2237784A00C90817 /* ShipmentTrackingProvider.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
 				B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */,
 				B557DA0F20975E07005962F4 /* DotcomRequest.swift in Sources */,

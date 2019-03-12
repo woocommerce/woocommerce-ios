@@ -26,7 +26,6 @@ struct ShipmentTrackingProviderListMapper: Mapper {
             }
 
             providerGroups.append(ShipmentTrackingProviderGroup(name: groupName, providers: providers))
-
         }
 
         return providerGroups

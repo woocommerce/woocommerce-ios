@@ -277,7 +277,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `deleteShipmentTracking` properly parses the sample response.
+    /// Verifies that `deleteShipmentTracking` properly relays networking errors.
     ///
     func testDeleteShipmentTrackingProperlyRelaysNetworkingErrors() {
         let remote = ShipmentsRemote(network: network)
@@ -336,6 +336,9 @@ final class ShipmentsRemoteTests: XCTestCase {
 
     // MARK: - loadShipmentTrackingProviderGroups
     //
+
+    /// Verifies that `loadShipmentTrackingProviderGroups` properly parses the sample response.
+    ///
     func testLoadShipmentTrackingProviderGroupsReturnsParsedData() {
         let remote = ShipmentsRemote(network: network)
         let expectation = self.expectation(description: "Load shipment tracking providers information")
@@ -344,6 +347,62 @@ final class ShipmentsRemoteTests: XCTestCase {
         remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (groups, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(groups)
+            XCTAssertEqual(groups?.count, 19)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `loadShipmentTrackingProviderGroups` properly parses the sample response.
+    ///
+    func testLoadShipmentTrackingProviderGroupsProperlyRelaysNetworkingErrors() {
+        let remote = ShipmentsRemote(network: network)
+        let expectation = self.expectation(description: "Load shipment tracking providers information contains errors")
+
+        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (shipmentTrackingGroups, error) in
+            XCTAssertNil(shipmentTrackingGroups)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `loadShipmentTrackingProviderGroups` properly relays HTTP 404 errors.
+    ///
+    func testLoadShipmentTrackingProviderGroupsProperlyRelays404Errors() {
+        let remote = ShipmentsRemote(network: network)
+        let expectation = self.expectation(description: "Load shipment tracking providers information contains errors")
+
+        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", error: NetworkError.notFound)
+
+        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (shipmentTrackingGroups, error) in
+            XCTAssertNil(shipmentTrackingGroups)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `loadShipmentTrackingProviderGroups` correctly returns a Dotcom Error whenever `rest_no_route`
+    /// is returned because the shipment tracking extension is not installed.
+    ///
+    func testLoadShipmentTrackingProviderGroupsProperlyRelaysPluginNotInstalledErrors() {
+        let remote = ShipmentsRemote(network: network)
+        let expectation = self.expectation(description: "Load shipment tracking information")
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", filename: "shipment_tracking_plugin_not_active")
+        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (shipmentTrackingGroups, error) in
+            XCTAssertNil(shipmentTrackingGroups)
+            XCTAssertNotNil(error)
+
+            guard let dotComError = error as? DotcomError else {
+                XCTFail()
+                return
+            }
+            XCTAssertTrue(dotComError == .noRestRoute)
             expectation.fulfill()
         }
 

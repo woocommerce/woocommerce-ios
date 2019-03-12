@@ -135,7 +135,7 @@
 "Certificate error" = "Sertifika hatası";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Reset Activity Log" = "Eski etkinlik günlüklerini temizle";
+"Clear old activity logs" = "Eski etkinlik günlüklerini temizle";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Bilgi topla";
@@ -423,7 +423,7 @@
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "WooCommerce mağazalarınızı yönetmek için WordPress.com hesabınızın e-posta adresi ile oturum açın.";
 
 /* Log out button title */
-"Log Out" = "Hesaptan çıkış yap";
+"Log out account" = "Hesaptan çıkış yap";
 
 /* Title of a button. */
 "Lost your password?" = "Parolanızı mı unuttunuz?";

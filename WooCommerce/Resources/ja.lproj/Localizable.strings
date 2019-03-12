@@ -135,7 +135,7 @@
 "Certificate error" = "証明書エラー";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Reset Activity Log" = "古いアクティビティログをクリア";
+"Clear old activity logs" = "古いアクティビティログをクリア";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "情報を収集";
@@ -423,7 +423,7 @@
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "WooCommerce ストアを管理するには、WordPress.com アカウントのメールアドレスを使用してログインします。";
 
 /* Log out button title */
-"Log Out" = "アカウントからログアウト";
+"Log out account" = "アカウントからログアウト";
 
 /* Title of a button. */
 "Lost your password?" = "パスワードをお忘れですか ?";

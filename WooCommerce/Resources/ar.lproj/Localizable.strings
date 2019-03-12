@@ -135,7 +135,7 @@
 "Certificate error" = "خطأ في الشهادة";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Reset Activity Log" = "مسح سجلات النشاط القديمة";
+"Clear old activity logs" = "مسح سجلات النشاط القديمة";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "جمع المعلومات";
@@ -423,7 +423,7 @@
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "سجِّل الدخول باستخدام عنوان البريد الإلكتروني لحساب وردبرس.كوم الخاص بك لإدارة متاجر WooCommerce الخاصة بك.";
 
 /* Log out button title */
-"Log Out" = "تسجيل الخروج من الحساب";
+"Log out account" = "تسجيل الخروج من الحساب";
 
 /* Title of a button. */
 "Lost your password?" = "هل فقدت كلمة مرورك؟";

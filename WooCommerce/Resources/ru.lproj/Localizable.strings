@@ -135,7 +135,7 @@
 "Certificate error" = "Ошибка сертификата";
 
 /* Deletes all activity logs except for the marked 'Current'. */
-"Reset Activity Log" = "Очистить старые журналы активности";
+"Clear old activity logs" = "Очистить старые журналы активности";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Сбор информации";
@@ -423,7 +423,7 @@
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Для управления магазинами WooCommerce выполните вход, указав адрес электронной почты своей учетной записи WordPress.com.";
 
 /* Log out button title */
-"Log Out" = "Выйти из учётной записи";
+"Log out account" = "Выйти из учётной записи";
 
 /* Title of a button. */
 "Lost your password?" = "Забыли пароль?";

@@ -87,7 +87,7 @@ private extension SummaryTableViewCellTests {
     func sampleOrder() -> Order {
         return Order(siteID: 123,
                      orderID: 963,
-                     parentID: 0,
+                     parentID: 2,
                      customerID: 11,
                      number: "963",
                      statusKey: "automattic",

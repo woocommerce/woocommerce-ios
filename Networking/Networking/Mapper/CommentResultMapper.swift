@@ -15,7 +15,7 @@ struct CommentResultMapper: Mapper {
     }
 }
 
-private extension CommentResultMapper{
+private extension CommentResultMapper {
     enum Constants {
         static let statusKey: String = "status"
     }

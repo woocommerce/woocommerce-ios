@@ -1,6 +1,7 @@
 # Project configuration
 included:
   - WooCommerce
+  - Networking
 
 # Rules
 whitelist_rules:

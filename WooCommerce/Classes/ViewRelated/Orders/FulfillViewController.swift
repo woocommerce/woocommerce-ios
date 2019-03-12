@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import CocoaLumberjack
 
 import Yosemite
 import Gridicons

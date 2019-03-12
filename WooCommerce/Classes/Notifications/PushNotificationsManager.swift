@@ -1,6 +1,5 @@
 import Foundation
 import UserNotifications
-import CocoaLumberjack
 import AutomatticTracks
 import Yosemite
 

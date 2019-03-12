@@ -1,7 +1,6 @@
 import Foundation
 import Networking
 import Storage
-import CocoaLumberjack
 
 
 // MARK: - SettingStore

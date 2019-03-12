@@ -17,7 +17,7 @@ class CoreDataIterativeMigratorTests: XCTestCase {
         let model0URL = urlForModel(name: "Model")
         let model10URL = urlForModel(name: "Model 10")
         let storeURL = urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
-        let options = [NSInferMappingModelAutomaticallyOption : false, NSMigratePersistentStoresAutomaticallyOption : false]
+        let options = [NSInferMappingModelAutomaticallyOption: false, NSMigratePersistentStoresAutomaticallyOption: false]
 
         var model = NSManagedObjectModel(contentsOf: model0URL)
         XCTAssertNotNil(model)
@@ -41,7 +41,7 @@ class CoreDataIterativeMigratorTests: XCTestCase {
         let model0URL = urlForModel(name: "Model")
         let model10URL = urlForModel(name: "Model 10")
         let storeURL = urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
-        let options = [NSInferMappingModelAutomaticallyOption : false, NSMigratePersistentStoresAutomaticallyOption : false]
+        let options = [NSInferMappingModelAutomaticallyOption: false, NSMigratePersistentStoresAutomaticallyOption: false]
 
         var model = NSManagedObjectModel(contentsOf: model0URL)
         XCTAssertNotNil(model)
@@ -56,7 +56,8 @@ class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertNotNil(model)
 
         do {
-            let result = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: storeURL, storeType: NSSQLiteStoreType, to: model!, using: ["Model", "Model 2", "Model 3", "Model 4", "Model 5", "Model 6", "Model 7", "Model 8", "Model 9", "Model 10"])
+            let modelNames = ["Model", "Model 2", "Model 3", "Model 4", "Model 5", "Model 6", "Model 7", "Model 8", "Model 9", "Model 10"]
+            let result = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: storeURL, storeType: NSSQLiteStoreType, to: model!, using: modelNames)
             XCTAssertTrue(result)
         } catch {
             XCTFail("Error when attempting to migrate: \(error)")
@@ -91,7 +92,7 @@ extension CoreDataIterativeMigratorTests {
         if deleteIfExists {
             try? FileManager.default.removeItem(at: storeURL)
         }
-        
+
         try? FileManager.default.createDirectory(at: URL(fileURLWithPath: documentsDirectory), withIntermediateDirectories: true, attributes: nil)
 
         return storeURL

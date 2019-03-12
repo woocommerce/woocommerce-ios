@@ -2,6 +2,7 @@
 included:
   - WooCommerce
   - Networking
+  - Storage
 
 # Rules
 whitelist_rules:

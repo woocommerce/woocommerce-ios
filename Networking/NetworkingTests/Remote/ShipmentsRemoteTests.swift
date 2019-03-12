@@ -4,7 +4,7 @@ import XCTest
 
 /// ShipmentsRemote Unit Tests
 ///
-class ShipmentsRemoteTests: XCTestCase {
+final class ShipmentsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
@@ -101,12 +101,70 @@ class ShipmentsRemoteTests: XCTestCase {
         let remote = ShipmentsRemote(network: network)
         let expectation = self.expectation(description: "Create shipment tracking information")
 
+        let orderID = sampleOrderID
+        let siteID = sampleSiteID
+
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "new-shipment-tracking")
-        remote.createShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingProvider: "ctarda", trackingNumber: "1111") { (shipmentTracking, error) in
-                XCTAssertNil(error)
-                XCTAssertNotNil(shipmentTracking)
-                //XCTAssertEqual(shipmentTrackings?.count, 1)
-                expectation.fulfill()
+        remote.createShipmentTracking(for: siteID, orderID: orderID, trackingProvider: "Some provider", trackingNumber: "1111") { (shipmentTracking, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(shipmentTracking)
+            XCTAssertEqual(shipmentTracking?.orderID, orderID)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `createShipmentTracking` properly relays generic Networking Layer errors.
+    ///
+    func testCreateShipmentTrackingsProperlyRelaysNetworkingErrors() {
+        let remote = ShipmentsRemote(network: network)
+        let expectation = self.expectation(description: "Create shipment tracking information contains errors")
+
+        remote.createShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingProvider: "Some provider", trackingNumber: "11111") { (shipmentTracking, error) in
+            XCTAssertNil(shipmentTracking)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `createhipmentTrackings` properly relays HTTP 404 errors.
+    ///
+    func testCreateShipmentTrackingsProperlyRelays404Errors() {
+        let remote = ShipmentsRemote(network: network)
+        let expectation = self.expectation(description: "Create shipment tracking information contains errors")
+
+        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound)
+
+        remote.createShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingProvider: "Some provider", trackingNumber: "1111") { (shipmentTracking, error) in
+            XCTAssertNil(shipmentTracking)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `createShipmentTrackings` correctly returns a Dotcom Error whenever `rest_no_route`
+    /// is returned because the shipment tracking extension is not installed.
+    ///
+    func testCreateShipmentTrackingsProperlyRelaysPluginNotInstalledErrors() {
+        let remote = ShipmentsRemote(network: network)
+        let expectation = self.expectation(description: "Load shipment tracking information")
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_plugin_not_active")
+        remote.createShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingProvider: "some tracking provider", trackingNumber: "1111") { (shipmentTracking, error) in
+            XCTAssertNil(shipmentTracking)
+            XCTAssertNotNil(error)
+
+            guard let dotComError = error as? DotcomError else {
+                XCTFail()
+                return
+            }
+            XCTAssertTrue(dotComError == .noRestRoute)
+            expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)

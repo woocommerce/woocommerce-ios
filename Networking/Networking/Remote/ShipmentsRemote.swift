@@ -30,7 +30,7 @@ public final class ShipmentsRemote: Remote {
                           ParameterKeys.trackingProvider: trackingProvider]
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
-        let mapper = NewShipmentTrackingMapper()
+        let mapper = NewShipmentTrackingMapper(siteID: siteID, orderID: orderID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

@@ -32,7 +32,11 @@ public final class ShipmentsRemote: Remote {
     ///   - trackingNumber: The tracking number
     ///   - completion: Closure to be executed upon completion
     ///
-    public func createShipmentTracking(for siteID: Int, orderID: Int, trackingProvider: String, trackingNumber: String, completion: @escaping (ShipmentTracking?, Error?) -> Void) {
+    public func createShipmentTracking(for siteID: Int,
+                                       orderID: Int,
+                                       trackingProvider: String,
+                                       trackingNumber: String,
+                                       completion: @escaping (ShipmentTracking?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/"
 
         let parameters = [ParameterKeys.trackingNumber: trackingNumber,
@@ -54,7 +58,12 @@ public final class ShipmentsRemote: Remote {
     ///   - trackingLink: The custom url offered by this provider to track shipments
     ///   - completion: Closure to be executed upon completion
     ///
-    public func createShipmentTrackingWithCustomProvider(for siteID: Int, orderID: Int, trackingProvider: String, trackingNumber: String, trackingLink: String, completion: @escaping (ShipmentTracking?, Error?) -> Void) {
+    public func createShipmentTrackingWithCustomProvider(for siteID: Int,
+                                                         orderID: Int,
+                                                         trackingProvider: String,
+                                                         trackingNumber: String,
+                                                         trackingLink: String,
+                                                         completion: @escaping (ShipmentTracking?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/"
 
         let parameters = [ParameterKeys.trackingNumber: trackingNumber,

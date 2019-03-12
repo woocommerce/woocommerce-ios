@@ -12,7 +12,7 @@ struct NewShipmentTrackingMapper: Mapper {
     /// really return the orderID for the shipment tracking endpoint
     ///
     let orderID: Int
-    
+
     /// (Attempts) to convert a dictionary into an ShipmentTracking entity.
     ///
     func map(response: Data) throws -> ShipmentTracking {

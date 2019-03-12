@@ -50,7 +50,9 @@ final class ShipmentsRemoteTests: XCTestCase {
         let remote = ShipmentsRemote(network: network)
         let expectation = self.expectation(description: "Load shipment tracking information contains errors")
 
-        remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID, completion: { (shipmentTrackings, error) in
+        remote.loadShipmentTrackings(for: sampleSiteID,
+                                     orderID: sampleOrderID,
+                                     completion: { (shipmentTrackings, error) in
             XCTAssertNil(shipmentTrackings)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -127,7 +129,10 @@ final class ShipmentsRemoteTests: XCTestCase {
         let remote = ShipmentsRemote(network: network)
         let expectation = self.expectation(description: "Create shipment tracking information contains errors")
 
-        remote.createShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingProvider: "Some provider", trackingNumber: "11111") { (shipmentTracking, error) in
+        remote.createShipmentTracking(for: sampleSiteID,
+                                      orderID: sampleOrderID,
+                                      trackingProvider: "Some provider",
+                                      trackingNumber: "11111") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -144,7 +149,10 @@ final class ShipmentsRemoteTests: XCTestCase {
 
         network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound)
 
-        remote.createShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingProvider: "Some provider", trackingNumber: "1111") { (shipmentTracking, error) in
+        remote.createShipmentTracking(for: sampleSiteID,
+                                      orderID: sampleOrderID,
+                                      trackingProvider: "Some provider",
+                                      trackingNumber: "1111") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -161,7 +169,10 @@ final class ShipmentsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load shipment tracking information")
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_plugin_not_active")
-        remote.createShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingProvider: "some tracking provider", trackingNumber: "1111") { (shipmentTracking, error) in
+        remote.createShipmentTracking(for: sampleSiteID,
+                                      orderID: sampleOrderID,
+                                      trackingProvider: "some tracking provider",
+                                      trackingNumber: "1111") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
 
@@ -189,7 +200,11 @@ final class ShipmentsRemoteTests: XCTestCase {
         let siteID = sampleSiteID
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new_custom_provider")
-        remote.createShipmentTrackingWithCustomProvider(for: siteID, orderID: orderID, trackingProvider: "Some provider", trackingNumber: "1111", trackingLink: "https://somewhere.online.net.com?q=%1$s") { (shipmentTracking, error) in
+        remote.createShipmentTrackingWithCustomProvider(for: siteID,
+                                                        orderID: orderID,
+                                                        trackingProvider: "Some provider",
+                                                        trackingNumber: "1111",
+                                                        trackingLink: "https://somewhere.online.net.com?q=%1$s") { (shipmentTracking, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(shipmentTracking)
             XCTAssertEqual(shipmentTracking?.orderID, orderID)
@@ -205,7 +220,11 @@ final class ShipmentsRemoteTests: XCTestCase {
         let remote = ShipmentsRemote(network: network)
         let expectation = self.expectation(description: "Create shipment tracking information contains errors")
 
-        remote.createShipmentTrackingWithCustomProvider(for: sampleSiteID, orderID: sampleOrderID, trackingProvider: "Some provider", trackingNumber: "11111", trackingLink: "https://somewhere.online.net.com?q=%1$s") { (shipmentTracking, error) in
+        remote.createShipmentTrackingWithCustomProvider(for: sampleSiteID,
+                                                        orderID: sampleOrderID,
+                                                        trackingProvider: "Some provider",
+                                                        trackingNumber: "11111",
+                                                        trackingLink: "https://somewhere.online.net.com?q=%1$s") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -222,7 +241,11 @@ final class ShipmentsRemoteTests: XCTestCase {
 
         network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound)
 
-        remote.createShipmentTrackingWithCustomProvider(for: sampleSiteID, orderID: sampleOrderID, trackingProvider: "Some provider", trackingNumber: "1111", trackingLink: "https://somewhere.online.net.com?q=%1$s") { (shipmentTracking, error) in
+        remote.createShipmentTrackingWithCustomProvider(for: sampleSiteID,
+                                                        orderID: sampleOrderID,
+                                                        trackingProvider: "Some provider",
+                                                        trackingNumber: "1111",
+                                                        trackingLink: "https://somewhere.online.net.com?q=%1$s") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -239,7 +262,11 @@ final class ShipmentsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load shipment tracking information")
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_plugin_not_active")
-        remote.createShipmentTrackingWithCustomProvider(for: sampleSiteID, orderID: sampleOrderID, trackingProvider: "some tracking provider", trackingNumber: "1111", trackingLink: "https://somewhere.online.net.com?q=%1$s") { (shipmentTracking, error) in
+        remote.createShipmentTrackingWithCustomProvider(for: sampleSiteID,
+                                                        orderID: sampleOrderID,
+                                                        trackingProvider: "some tracking provider",
+                                                        trackingNumber: "1111",
+                                                        trackingLink: "https://somewhere.online.net.com?q=%1$s") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
 

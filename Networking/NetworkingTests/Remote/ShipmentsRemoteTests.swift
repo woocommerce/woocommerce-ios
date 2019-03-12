@@ -110,7 +110,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let orderID = sampleOrderID
         let siteID = sampleSiteID
 
-        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment-tracking-new")
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new")
         remote.createShipmentTracking(for: siteID, orderID: orderID, trackingProvider: "Some provider", trackingNumber: "1111") { (shipmentTracking, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(shipmentTracking)
@@ -188,7 +188,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let orderID = sampleOrderID
         let siteID = sampleSiteID
 
-        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment-tracking-new-custom-provider")
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new_custom_provider")
         remote.createShipmentTrackingWithCustomProvider(for: siteID, orderID: orderID, trackingProvider: "Some provider", trackingNumber: "1111", trackingLink: "https://somewhere.online.net.com?q=%1$s") { (shipmentTracking, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(shipmentTracking)
@@ -267,7 +267,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let siteID = sampleSiteID
         let trackingID = "trackingID"
 
-        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/\(trackingID)", filename: "shipment-tracking-delete")
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/\(trackingID)", filename: "shipment_tracking_delete")
         remote.deleteShipmentTracking(for: siteID, orderID: orderID, trackingID: trackingID) { shipmentTracking, error in
             XCTAssertNil(error)
             XCTAssertNotNil(shipmentTracking)
@@ -334,4 +334,24 @@ final class ShipmentsRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    // MARK: - loadShipmentTrackingProviderGroups
+    //
+    func testLoadShipmentTrackingProviderGroupsReturnsParsedData() {
+        let remote = ShipmentsRemote(network: network)
+        let expectation = self.expectation(description: "Load shipment tracking providers information")
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", filename: "shipment_tracking_providers")
+        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (groups, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(groups)
+        }
+//        remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID, completion: { (shipmentTrackings, error) in
+//            XCTAssertNil(error)
+//            XCTAssertNotNil(shipmentTrackings)
+//            XCTAssertEqual(shipmentTrackings?.count, 4)
+//            expectation.fulfill()
+//        })
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }

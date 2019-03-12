@@ -83,6 +83,15 @@ public final class ShipmentsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    public func loadShipmentTrackingProviderGroups(for siteID: Int, orderID: Int, completion: @escaping ([ShipmentTrackingProviderGroup]?, Error?) -> Void) {
+        let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/\(Constants.providersPath)"
+
+        let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
+        let mapper = ShipmentTrackingProviderListMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 
@@ -91,8 +100,9 @@ public final class ShipmentsRemote: Remote {
 private extension ShipmentsRemote {
 
     enum Constants {
-        static let ordersPath: String   = "orders"
-        static let shipmentPath: String = "shipment-trackings"
+        static let ordersPath: String    = "orders"
+        static let shipmentPath: String  = "shipment-trackings"
+        static let providersPath: String = "providers"
     }
 
     enum ParameterKeys {

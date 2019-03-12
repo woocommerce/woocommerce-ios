@@ -94,4 +94,21 @@ class ShipmentsRemoteTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that `createShipmentTracking` properly parses the sample response.
+    ///
+    func testCreateShipmentTrackingProperlyReturnsParsedShipmentTrackings() {
+        let remote = ShipmentsRemote(network: network)
+        let expectation = self.expectation(description: "Create shipment tracking information")
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "new-shipment-tracking")
+        remote.createShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingProvider: "ctarda", trackingNumber: "1111") { (shipmentTracking, error) in
+                XCTAssertNil(error)
+                XCTAssertNotNil(shipmentTracking)
+                //XCTAssertEqual(shipmentTrackings?.count, 1)
+                expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }

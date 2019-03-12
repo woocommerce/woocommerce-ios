@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Shipment Tracking Provider Entity (from the WC Shipment Tracking extension).
 ///
-public struct ShipmentTrackingProvider: Decodable {
+public struct ShipmentTrackingProvider {
     /// Tracking provider name
     ///
     public let name: String
@@ -17,13 +17,6 @@ public struct ShipmentTrackingProvider: Decodable {
         self.name = name
         self.url = url
     }
-
-    /// The public initializer for ShipmentTrackingProvider.
-    ///
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.unkeyedContainer()
-        self.init(name: "Name", url: "url")
-    }
 }
 
 extension ShipmentTrackingProvider: Comparable {
@@ -34,7 +27,4 @@ extension ShipmentTrackingProvider: Comparable {
     public static func < (lhs: ShipmentTrackingProvider, rhs: ShipmentTrackingProvider) -> Bool {
         return lhs.name < rhs.name
     }
-
-
 }
-

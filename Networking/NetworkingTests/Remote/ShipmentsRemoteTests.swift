@@ -344,13 +344,8 @@ final class ShipmentsRemoteTests: XCTestCase {
         remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (groups, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(groups)
+            expectation.fulfill()
         }
-//        remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID, completion: { (shipmentTrackings, error) in
-//            XCTAssertNil(error)
-//            XCTAssertNotNil(shipmentTrackings)
-//            XCTAssertEqual(shipmentTrackings?.count, 4)
-//            expectation.fulfill()
-//        })
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }

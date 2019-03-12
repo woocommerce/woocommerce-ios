@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Shipment Tracking Provider Grouping Entity (from the WC Shipment Tracking extension).
 ///
-public struct ShipmentTrackingProviderGroup: Decodable {
+public struct ShipmentTrackingProviderGroup {
     /// Tracking provider group name
     ///
     public let name: String
@@ -14,13 +14,6 @@ public struct ShipmentTrackingProviderGroup: Decodable {
     public init(name: String, providers: [ShipmentTrackingProvider]) {
         self.name = name
         self.providers = providers
-    }
-
-    /// The public initializer for ShipmentTrackingProvider.
-    ///
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.unkeyedContainer()
-        self.init(name: "Name", providers: [])
     }
 }
 

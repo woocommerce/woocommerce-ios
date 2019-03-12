@@ -1,12 +1,34 @@
 struct ShipmentTrackingProviderListMapper: Mapper {
-    /// (Attempts) to convert a dictionary into an ShipmentTracking entity.
+    /// (Attempts) to convert a dictionary into an ShipmentTrackingProviderGroup entity.
     ///
     func map(response: Data) throws -> [ShipmentTrackingProviderGroup] {
         let decoder = JSONDecoder()
-        return try decoder.decode(ShipmentTrackingProviderGroupEnvelope.self, from: response).groups
-    }
-}
+        let res =  try decoder.decode([String: [String: String]].self, from: response)
 
-private struct ShipmentTrackingProviderGroupEnvelope: Decodable {
-    let groups: [ShipmentTrackingProviderGroup]
+        var providerGroups: [ShipmentTrackingProviderGroup] = []
+
+        let keys = res.keys
+        for key in keys {
+            let groupName = key
+            guard let provider = res[key] else {
+                return []
+            }
+
+            let providerNames = provider.keys
+
+            var providers: [ShipmentTrackingProvider] = []
+            for providerName in providerNames {
+                guard let providerUrl = provider[providerName] else {
+                    return []
+                }
+
+                providers.append(ShipmentTrackingProvider(name: providerName, url: providerUrl))
+            }
+
+            providerGroups.append(ShipmentTrackingProviderGroup(name: groupName, providers: providers))
+
+        }
+
+        return providerGroups
+    }
 }

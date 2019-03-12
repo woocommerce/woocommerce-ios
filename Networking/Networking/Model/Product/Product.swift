@@ -9,13 +9,8 @@ public struct Product: Decodable {
     public let slug: String
     public let permalink: String
 
-    public let dateCreated: Date       // gmt
-    public let dateModified: Date?     // gmt
-
     public let productTypeKey: String
-    public let statusKey: String
-    public let featured: Bool
-    public let catalogVisibilityKey: String // convert to enum ProductVisibility?
+    public let catalogVisibilityKey: String  // convert to enum ProductCatalogVisibility
 
     public let description: String?
     public let shortDescription: String?
@@ -24,9 +19,6 @@ public struct Product: Decodable {
     public let price: String
     public let regularPrice: String?
     public let salePrice: String?
-    public let dateOnSaleFrom: Date?   // gmt
-    public let dateOnSaleTo: Date?     // gmt
-    public let priceHTML: String?
     public let onSale: Bool
 
     public let purchasable: Bool
@@ -34,26 +26,24 @@ public struct Product: Decodable {
     public let virtual: Bool
 
     public let downloadable: Bool
-    public let downloads: [ProductDownload?]
     public let downloadLimit: Int     // defaults to -1
     public let downloadExpiry: Int    // defaults to -1
 
     public let externalURL: String?
-    public let buttonText: String?
-
-    public let taxStatusKey: String   // convert to enum? ProductTaxStatus
+    public let taxStatusKey: String   // convert to enum ProductTaxStatus
     public let taxClass: String?
 
     public let manageStock: Bool
     public let stockQuantity: Int?   // API reports Int or null
-    public let stockStatusKey: String   // convert to enum ProductStockStatus?
-    public let backordersKey: String    // convert to enum ProductBackOrders?
+    public let stockStatusKey: String   // convert to enum ProductStockStatus
+
+    public let backordersKey: String    // convert to enum ProductBackOrders
     public let backordersAllowed: Bool
     public let backordered: Bool
 
     public let soldIndividually: Bool
     public let weight: String?
-    public let dimensions: Dimensions // struct
+    public let dimensions: Dimensions
 
     public let shippingRequired: Bool
     public let shippingTaxable: Bool
@@ -73,22 +63,18 @@ public struct Product: Decodable {
     public let categories: [String: Any?]
     public let tags: [String: Any?]
     public let images: [String: Any?]
+
     public let attributes: [String: Any?]
     public let defaultAttributes: [String: Any?]
     public let variations: [Int?]
     public let groupedProducts: [Int?]
 
     public let menuOrder: Int
-    public let metaData: [String: Any?]
 
     /// Computed Properties
     ///
     public var productType: ProductType {
         return ProductType(rawValue: productTypeKey)
-    }
-
-    public var status: ProductStatus {
-        return ProductStatus(rawValue: statusKey)
     }
 
     /// Product struct initializer.
@@ -97,11 +83,7 @@ public struct Product: Decodable {
                 name: String,
                 slug: String,
                 permalink: String,
-                dateCreated: Date,      // gmt
-                dateModified: Date?,    // gmt
                 productTypeKey: String,
-                statusKey: String,
-                featured: Bool,
                 catalogVisibilityKey: String,
                 description: String?,
                 shortDescription: String?,
@@ -109,19 +91,14 @@ public struct Product: Decodable {
                 price: String,
                 regularPrice: String?,
                 salePrice: String?,
-                dateOnSaleFrom: Date?,  // gmt
-                dateOnSaleTo: Date?,    // gmt
-                priceHTML: String?,
                 onSale: Bool,
                 purchasable: Bool,
                 totalSales: Int,
                 virtual: Bool,
                 downloadable: Bool,
-                downloads: [ProductDownload?],
                 downloadLimit: Int,    // defaults to -1
                 downloadExpiry: Int,   // defaults to -1
                 externalURL: String?,
-                buttonText: String?,
                 taxStatusKey: String,
                 taxClass: String?,
                 manageStock: Bool,
@@ -132,7 +109,7 @@ public struct Product: Decodable {
                 backordered: Bool,
                 soldIndividually: Bool,
                 weight: String?,
-                dimensions: Dimensions, // struct
+                dimensions: Dimensions,
                 shippingRequired: Bool,
                 shippingTaxable: Bool,
                 shippingClass: String?,
@@ -158,11 +135,7 @@ public struct Product: Decodable {
         self.name = name
         self.slug = slug
         self.permalink = permalink
-        self.dateCreated = dateCreated
-        self.dateModified = dateModified
         self.productTypeKey = productTypeKey
-        self.statusKey = statusKey
-        self.featured = featured
         self.catalogVisibilityKey = catalogVisibilityKey
         self.description = description
         self.shortDescription = shortDescription
@@ -170,19 +143,14 @@ public struct Product: Decodable {
         self.price = price
         self.regularPrice = regularPrice
         self.salePrice = salePrice
-        self.dateOnSaleFrom = dateOnSaleFrom
-        self.dateOnSaleTo = dateOnSaleTo
-        self.priceHTML = priceHTML
         self.onSale = onSale
         self.purchasable = purchasable
         self.totalSales = totalSales
         self.virtual = virtual
         self.downloadable = downloadable
-        self.downloads = downloads
         self.downloadLimit = downloadLimit
         self.downloadExpiry = downloadExpiry
         self.externalURL = externalURL
-        self.buttonText = buttonText
         self.taxStatusKey = taxStatusKey
         self.taxClass = taxClass
         self.manageStock = manageStock
@@ -214,7 +182,6 @@ public struct Product: Decodable {
         self.variations = variations
         self.groupedProducts = groupedProducts
         self.menuOrder = menuOrder
-        self.metaData = metaData
     }
 
     /// The public initializer for Product.
@@ -226,57 +193,61 @@ public struct Product: Decodable {
         let name = try container.decode(String.self, forKey: .name)
         let slug = try container.decode(String.self, forKey: .slug)
         let permalink = try container.decode(String.self, forKey: .permalink)
-        let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
-        let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified) ?? Date()
+
         let productTypeKey = try container.decode(String.self, forKey: .productTypeKey)
-        let statusKey = try container.decode(String.self, forKey: .statusKey)
-        let featured = try container.decode(Bool.self, forKey: .featured)
         let catalogVisibilityKey = try container.decode(String.self, forKey: .catalogVisibilityKey)
+
         let description = try container.decode(String.self, forKey: .description)
         let shortDescription = try container.decode(String.self, forKey: .shortDescription)
         let sku = try container.decode(String.self, forKey: .sku)
+
         let price = try container.decode(String.self, forKey: .price)
         let regularPrice = try container.decode(String.self, forKey: .regularPrice)
         let salePrice = try container.decode(String.self, forKey: .salePrice)
-        let dateOnSaleFrom = try container.decode(Date.self, forKey: .dateOnSaleFrom) ?? Date()
-        let dateOnSaleTo = try container.decode(Date.self, forKey: .dateOnSaleTo) ?? Date()
-        let priceHTML = try container.decode(String.self, forKey: .priceHTML)
         let onSale = try container.decode(Bool.self, forKey: .onSale)
+
         let purchasable = try container.decode(Bool.self, forKey: .purchasable)
         let totalSales = try container.decode(Int.self, forKey: .totalSales)
         let virtual = try container.decode(Bool.self, forKey: .virtual)
+
         let downloadable = try container.decode(Bool.self, forKey: .downloadable)
-        let downloads = try container.decode([ProductDownload].self, forKey: .downloads)
         let downloadLimit = try container.decode(Int.self, forKey: .downloadLimit)
         let downloadExpiry = try container.decode(Int.self, forKey: .downloadExpiry)
+
         let externalURL = try container.decode(String.self, forKey: .externalURL)
-        let buttonText = try container.decode(String.self, forKey: .buttonText)
         let taxStatusKey = try container.decode(String.self, forKey: .taxStatusKey)
         let taxClass = try container.decode(String.self, forKey: .taxClass)
+
         let manageStock = try container.decode(Bool.self, forKey: .manageStock)
         let stockQuantity = try container.decode(Int.self, forKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
+
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)
         let backordersAllowed = try container.decode(Bool.self, forKey: .backordersAllowed)
         let backordered = try container.decode(Bool.self, forKey: .backordered)
+
         let soldIndividuallly = try container.decode(Bool.self, forKey: .soldIndividually)
         let weight = try container.decode(String.self, forKey: .weight)
         let dimensions = try container.decode(Dimensions.self, forKey: .dimensions)
+
         let shippingRequired = try container.decode(Bool.self, forKey: .shippingRequired)
         let shippingTaxable = try container.decode(Bool.self, forKey: .shippingTaxable)
         let shippingClass = try container.decode(String.self, forKey: .shippingClass)
         let shippingClassID = try container.decode(Int.self, forKey: .shippingClassID)
+
         let reviewsAllowed = try container.decode(Bool.self, forKey: .reviewsAllowed)
         let averageRating = try container.decode(String.self, forKey: .averageRating)
         let ratingCount = try container.decode(Int.self, forKey: .ratingCount)
+
         let relatedIDs = try container.decodeIfPresent([Int].self, forKey: .relatedIDs)
         let upsellIDs = try container.decodeIfPresent([Int].self, forKey: .upsellIDs)
         let crossSellIDs = try container.decodeIfPresent([Int].self, forKey: .crossSellIDs)
         let parentID = try container.decode(Int.self, forKey: .parentID)
+
         let purchaseNote = try container.decodeIfPresent(String.self, forKey: .purchaseNote)
-//        let categories: [Dictionary<String, Any>] = try container.decode([Dictionary<String, Any>].self, forKey: .categories)
-//        let tags: [String: Any] = try container.decodeIfPresent([String: Any].self, forKey: .tags)
-//        let images: [String: Any] = try container.decode([String: Any?].self, forKey: .images)
+        let categories: [Dictionary<String, Any>] = try container.decode([Dictionary<String, Any>].self, forKey: .categories)
+        let tags: [String: Any] = try container.decodeIfPresent([String: Any].self, forKey: .tags)
+        let images: [String: Any] = try container.decode([String: Any?].self, forKey: .images)
     }
 }
 

@@ -3,7 +3,6 @@ import Gridicons
 import Contacts
 import MessageUI
 import Yosemite
-import CocoaLumberjack
 import SafariServices
 
 

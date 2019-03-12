@@ -1,6 +1,5 @@
 import Foundation
 import CoreData
-import CocoaLumberjack
 
 
 /// CoreDataManager: Manages the entire CoreData Stack. Conforms to the StorageManager API.

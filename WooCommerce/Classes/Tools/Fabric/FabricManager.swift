@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-import CocoaLumberjack
 import Crashlytics
 import Fabric
 import Yosemite

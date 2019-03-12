@@ -1,7 +1,6 @@
 import UIKit
 import Yosemite
 import Gridicons
-import CocoaLumberjack
 
 class NewNoteViewController: UIViewController {
 

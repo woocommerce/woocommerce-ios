@@ -57,19 +57,27 @@ class ShipmentStoreTests: XCTestCase {
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 4)
 
-            let storageTracking1 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID, orderID: self.sampleOrderID, trackingID: self.sampleShipmentTracking1().trackingID)
+            let storageTracking1 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
+                                                                         orderID: self.sampleOrderID,
+                                                                         trackingID: self.sampleShipmentTracking1().trackingID)
             XCTAssertNotNil(storageTracking1)
             XCTAssertEqual(storageTracking1?.toReadOnly(), self.sampleShipmentTracking1())
 
-            let storageTracking2 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID, orderID: self.sampleOrderID, trackingID: self.sampleShipmentTracking2().trackingID)
+            let storageTracking2 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
+                                                                         orderID: self.sampleOrderID,
+                                                                         trackingID: self.sampleShipmentTracking2().trackingID)
             XCTAssertNotNil(storageTracking2)
             XCTAssertEqual(storageTracking2?.toReadOnly(), self.sampleShipmentTracking2())
 
-            let storageTracking3 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID, orderID: self.sampleOrderID, trackingID: self.sampleShipmentTracking3().trackingID)
+            let storageTracking3 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
+                                                                         orderID: self.sampleOrderID,
+                                                                         trackingID: self.sampleShipmentTracking3().trackingID)
             XCTAssertNotNil(storageTracking3)
             XCTAssertEqual(storageTracking3?.toReadOnly(), self.sampleShipmentTracking3())
 
-            let storageTracking4 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID, orderID: self.sampleOrderID, trackingID: self.sampleShipmentTracking4().trackingID)
+            let storageTracking4 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
+                                                                         orderID: self.sampleOrderID,
+                                                                         trackingID: self.sampleShipmentTracking4().trackingID)
             XCTAssertNotNil(storageTracking4)
             XCTAssertEqual(storageTracking4?.toReadOnly(), self.sampleShipmentTracking4())
 
@@ -126,13 +134,17 @@ class ShipmentStoreTests: XCTestCase {
         let group = DispatchGroup()
 
         group.enter()
-        shipmentStore.upsertShipmentTrackingDataInBackground(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingData: sampleShipmentTrackingList()) {
+        shipmentStore.upsertShipmentTrackingDataInBackground(siteID: sampleSiteID,
+                                                             orderID: sampleOrderID,
+                                                             readOnlyShipmentTrackingData: sampleShipmentTrackingList()) {
             XCTAssertTrue(Thread.isMainThread)
             group.leave()
         }
 
         group.enter()
-        shipmentStore.upsertShipmentTrackingDataInBackground(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingData: sampleShipmentTrackingListMutated()) {
+        shipmentStore.upsertShipmentTrackingDataInBackground(siteID: sampleSiteID,
+                                                             orderID: sampleOrderID,
+                                                             readOnlyShipmentTrackingData: sampleShipmentTrackingListMutated()) {
             XCTAssertTrue(Thread.isMainThread)
             group.leave()
         }
@@ -141,7 +153,9 @@ class ShipmentStoreTests: XCTestCase {
         group.notify(queue: .main) {
             let originalShipmentTracking = self.sampleShipmentTracking1()
             let expectedShipmentTracking = self.sampleShipmentTracking1Mutated()
-            let storageShipmentTracking = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID, orderID: self.sampleOrderID, trackingID: expectedShipmentTracking.trackingID)
+            let storageShipmentTracking = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
+                                                                                orderID: self.sampleOrderID,
+                                                                                trackingID: expectedShipmentTracking.trackingID)
             XCTAssertNotEqual(storageShipmentTracking?.toReadOnly(), originalShipmentTracking)
             XCTAssertEqual(storageShipmentTracking?.toReadOnly(), expectedShipmentTracking)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 4)
@@ -161,13 +175,17 @@ class ShipmentStoreTests: XCTestCase {
         let group = DispatchGroup()
 
         group.enter()
-        shipmentStore.upsertShipmentTrackingDataInBackground(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingData: sampleShipmentTrackingList()) {
+        shipmentStore.upsertShipmentTrackingDataInBackground(siteID: sampleSiteID,
+                                                             orderID: sampleOrderID,
+                                                             readOnlyShipmentTrackingData: sampleShipmentTrackingList()) {
             XCTAssertTrue(Thread.isMainThread)
             group.leave()
         }
 
         group.enter()
-        shipmentStore.upsertShipmentTrackingDataInBackground(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingData: sampleShipmentTrackingListDeleted()) {
+        shipmentStore.upsertShipmentTrackingDataInBackground(siteID: sampleSiteID,
+                                                             orderID: sampleOrderID,
+                                                             readOnlyShipmentTrackingData: sampleShipmentTrackingListDeleted()) {
             XCTAssertTrue(Thread.isMainThread)
             group.leave()
         }
@@ -175,7 +193,9 @@ class ShipmentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Delete item from shipment tracking list")
         group.notify(queue: .main) {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 3)
-            XCTAssertNil(self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID, orderID: self.sampleOrderID, trackingID: self.sampleShipmentTracking3().trackingID))
+            XCTAssertNil(self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
+                                                               orderID: self.sampleOrderID,
+                                                               trackingID: self.sampleShipmentTracking3().trackingID))
 
             expectation.fulfill()
         }
@@ -189,7 +209,7 @@ class ShipmentStoreTests: XCTestCase {
 //
 private extension ShipmentStoreTests {
 
-    //  MARK: - ShipmentTracking Samples
+    // MARK: - ShipmentTracking Samples
 
     func sampleShipmentTracking1() -> Networking.ShipmentTracking {
         return ShipmentTracking(siteID: sampleSiteID,

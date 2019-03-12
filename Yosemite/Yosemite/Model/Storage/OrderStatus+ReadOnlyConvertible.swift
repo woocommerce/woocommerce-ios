@@ -21,4 +21,3 @@ extension Storage.OrderStatus: ReadOnlyConvertible {
         return OrderStatus(name: name, siteID: Int(siteID), slug: slug, total: Int(total))
     }
 }
-

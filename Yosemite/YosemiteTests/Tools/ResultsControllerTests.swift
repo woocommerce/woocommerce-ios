@@ -78,7 +78,9 @@ class ResultsControllerTests: XCTestCase {
     ///
     func testResultsControllerGroupSectionsBySectionNameKeypath() {
         let sectionNameKeyPath = "userID"
-        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sectionNameKeyPath: sectionNameKeyPath, sortedBy: [sampleSortDescriptor])
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext,
+                                                                   sectionNameKeyPath: sectionNameKeyPath,
+                                                                   sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
 
         let numberOfAccounts = 100
@@ -100,7 +102,9 @@ class ResultsControllerTests: XCTestCase {
     ///
     func testObjectAtIndexPathReturnsExpectedEntity() {
         let sectionNameKeyPath = "userID"
-        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sectionNameKeyPath: sectionNameKeyPath, sortedBy: [sampleSortDescriptor])
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext,
+                                                                   sectionNameKeyPath: sectionNameKeyPath,
+                                                                   sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
 
         let mutableAccount = storage.insertSampleAccount()
@@ -187,7 +191,9 @@ class ResultsControllerTests: XCTestCase {
     ///
     func testOnDidChangeSectionIsCalledWheneverNewSectionsAreAdded() {
         let sectionNameKeyPath = "userID"
-        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext, sectionNameKeyPath: sectionNameKeyPath, sortedBy: [sampleSortDescriptor])
+        let resultsController = ResultsController<Storage.Account>(viewContext: viewContext,
+                                                                   sectionNameKeyPath: sectionNameKeyPath,
+                                                                   sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
 
         let expectation = self.expectation(description: "OnDidChange")

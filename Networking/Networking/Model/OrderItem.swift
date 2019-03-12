@@ -19,7 +19,18 @@ public struct OrderItem: Decodable {
 
     /// OrderItem struct initializer.
     ///
-    public init(itemID: Int, name: String, productID: Int, quantity: NSDecimalNumber, price: NSDecimalNumber, sku: String?, subtotal: String, subtotalTax: String, taxClass: String, total: String, totalTax: String, variationID: Int) {
+    public init(itemID: Int,
+                name: String,
+                productID: Int,
+                quantity: NSDecimalNumber,
+                price: NSDecimalNumber,
+                sku: String?,
+                subtotal: String,
+                subtotalTax: String,
+                taxClass: String,
+                total: String,
+                totalTax: String,
+                variationID: Int) {
         self.itemID = itemID
         self.name = name
         self.productID = productID

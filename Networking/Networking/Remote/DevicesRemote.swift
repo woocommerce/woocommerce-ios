@@ -15,7 +15,11 @@ public class DevicesRemote: Remote {
     ///     - defaultStoreID: Active Store ID.
     ///     - completion: Closure to be executed on commpletion.
     ///
-    public func registerDevice(device: APNSDevice, applicationId: String, applicationVersion: String, defaultStoreID: Int, completion: @escaping (DotcomDevice?, Error?) -> Void) {
+    public func registerDevice(device: APNSDevice,
+                               applicationId: String,
+                               applicationVersion: String,
+                               defaultStoreID: Int,
+                               completion: @escaping (DotcomDevice?, Error?) -> Void) {
         var parameters = [
             ParameterKeys.applicationId: applicationId,
             ParameterKeys.applicationVersion: applicationVersion,

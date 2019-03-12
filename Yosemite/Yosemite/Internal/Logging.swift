@@ -24,22 +24,102 @@ internal func resetDefaultDebugLevel() {
     defaultDebugLevel = CocoaLumberjack.defaultDebugLevel
 }
 
-internal func DDLogDebug(_ message: @autoclosure () -> String, level: DDLogLevel = defaultDebugLevel, context: Int = 0, file: StaticString = #file, function: StaticString = #function, line: UInt = #line, tag: Any? = nil, asynchronous async: Bool = true, ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogDebug(message, level: level, context: context, file: file, function: function, line: line, tag: tag, asynchronous: async, ddlog: ddlog)
+internal func DDLogDebug(_ message: @autoclosure () -> String,
+                         level: DDLogLevel = defaultDebugLevel,
+                         context: Int = 0,
+                         file: StaticString = #file,
+                         function: StaticString = #function,
+                         line: UInt = #line,
+                         tag: Any? = nil,
+                         asynchronous async: Bool = true,
+                         ddlog: DDLog = DDLog.sharedInstance) {
+    CocoaLumberjack.DDLogDebug(message,
+                               level: level,
+                               context: context,
+                               file: file,
+                               function: function,
+                               line: line,
+                               tag: tag,
+                               asynchronous: async,
+                               ddlog: ddlog)
 }
 
-internal func DDLogInfo(_ message: @autoclosure () -> String, level: DDLogLevel = defaultDebugLevel, context: Int = 0, file: StaticString = #file, function: StaticString = #function, line: UInt = #line, tag: Any? = nil, asynchronous async: Bool = true, ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogInfo(message, level: level, context: context, file: file, function: function, line: line, tag: tag, asynchronous: async, ddlog: ddlog)
+internal func DDLogInfo(_ message: @autoclosure () -> String,
+                        level: DDLogLevel = defaultDebugLevel,
+                        context: Int = 0,
+                        file: StaticString = #file,
+                        function: StaticString = #function,
+                        line: UInt = #line,
+                        tag: Any? = nil,
+                        asynchronous async: Bool = true,
+                        ddlog: DDLog = DDLog.sharedInstance) {
+    CocoaLumberjack.DDLogInfo(message,
+                              level: level,
+                              context: context,
+                              file: file,
+                              function: function,
+                              line: line,
+                              tag: tag,
+                              asynchronous: async,
+                              ddlog: ddlog)
 }
 
-internal func DDLogWarn(_ message: @autoclosure () -> String, level: DDLogLevel = defaultDebugLevel, context: Int = 0, file: StaticString = #file, function: StaticString = #function, line: UInt = #line, tag: Any? = nil, asynchronous async: Bool = true, ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogWarn(message, level: level, context: context, file: file, function: function, line: line, tag: tag, asynchronous: async, ddlog: ddlog)
+internal func DDLogWarn(_ message: @autoclosure () -> String,
+                        level: DDLogLevel = defaultDebugLevel,
+                        context: Int = 0,
+                        file: StaticString = #file,
+                        function: StaticString = #function,
+                        line: UInt = #line,
+                        tag: Any? = nil,
+                        asynchronous async: Bool = true,
+                        ddlog: DDLog = DDLog.sharedInstance) {
+    CocoaLumberjack.DDLogWarn(message,
+                              level: level,
+                              context: context,
+                              file: file,
+                              function: function,
+                              line: line,
+                              tag: tag,
+                              asynchronous: async,
+                              ddlog: ddlog)
 }
 
-internal func DDLogVerbose(_ message: @autoclosure () -> String, level: DDLogLevel = defaultDebugLevel, context: Int = 0, file: StaticString = #file, function: StaticString = #function, line: UInt = #line, tag: Any? = nil, asynchronous async: Bool = true, ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogVerbose(message, level: level, context: context, file: file, function: function, line: line, tag: tag, asynchronous: async, ddlog: ddlog)
+internal func DDLogVerbose(_ message: @autoclosure () -> String,
+                        level: DDLogLevel = defaultDebugLevel,
+                        context: Int = 0,
+                        file: StaticString = #file,
+                        function: StaticString = #function,
+                        line: UInt = #line,
+                        tag: Any? = nil,
+                        asynchronous async: Bool = true,
+                        ddlog: DDLog = DDLog.sharedInstance) {
+    CocoaLumberjack.DDLogVerbose(message,
+                                 level: level,
+                                 context: context,
+                                 file: file,
+                                 function: function,
+                                 line: line,
+                                 tag: tag,
+                                 asynchronous: async,
+                                 ddlog: ddlog)
 }
 
-internal func DDLogError(_ message: @autoclosure () -> String, level: DDLogLevel = defaultDebugLevel, context: Int = 0, file: StaticString = #file, function: StaticString = #function, line: UInt = #line, tag: Any? = nil, asynchronous async: Bool = false, ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogError(message, level: level, context: context, file: file, function: function, line: line, tag: tag, asynchronous: async, ddlog: ddlog)
+internal func DDLogError(_ message: @autoclosure () -> String,
+                         level: DDLogLevel = defaultDebugLevel,
+                         context: Int = 0,
+                         file: StaticString = #file,
+                         function: StaticString = #function,
+                         line: UInt = #line,
+                         tag: Any? = nil,
+                         asynchronous async: Bool = false,
+                         ddlog: DDLog = DDLog.sharedInstance) {
+    CocoaLumberjack.DDLogError(message,
+                               level: level,
+                               context: context,
+                               file: file,
+                               function: function,
+                               line: line,
+                               tag: tag,
+                               asynchronous: async,
+                               ddlog: ddlog)
 }

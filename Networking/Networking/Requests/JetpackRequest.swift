@@ -83,9 +83,9 @@ private extension JetpackRequest {
     ///
     var dotcomParams: [String: String] {
         var output = [
-            "_method"   : method.rawValue.lowercased(),
-            "path"      : jetpackPath + jetpackQueryParams,
-            "json"      : "true"
+            "_method": method.rawValue.lowercased(),
+            "path": jetpackPath + jetpackQueryParams,
+            "json": "true"
         ]
 
         if let jetpackBodyParams = jetpackBodyParams {

@@ -80,8 +80,7 @@ private extension EntityListener {
         /// Scenario: Upsert (Insert + Update + Refresh)
         ///
         if let storageEntity = readOnlyConvertible(from: note.upsertedObjects, representing: readOnlyEntity),
-            let updatedEntity = storageEntity.toTypeErasedReadOnly() as? T
-        {
+            let updatedEntity = storageEntity.toTypeErasedReadOnly() as? T {
             readOnlyEntity = updatedEntity
             onUpsert?(readOnlyEntity)
         }

@@ -96,7 +96,7 @@ extension Storage.Order: ReadOnlyConvertible {
         guard let billingCountry = billingCountry else {
             return nil
         }
-        
+
         return Address(firstName: billingFirstName ?? "",
                        lastName: billingLastName ?? "",
                        company: billingCompany ?? "",

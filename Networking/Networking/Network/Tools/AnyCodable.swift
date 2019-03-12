@@ -20,7 +20,7 @@ import Foundation
  */
 public struct AnyCodable: Codable {
     public let value: Any
-    
+
     public init<T>(_ value: T?) {
         self.value = value ?? ()
     }
@@ -95,4 +95,10 @@ extension AnyCodable: CustomDebugStringConvertible {
     }
 }
 
-extension AnyCodable: ExpressibleByNilLiteral, ExpressibleByBooleanLiteral, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral, ExpressibleByStringLiteral, ExpressibleByArrayLiteral, ExpressibleByDictionaryLiteral {}
+extension AnyCodable: ExpressibleByNilLiteral,
+                      ExpressibleByBooleanLiteral,
+                      ExpressibleByIntegerLiteral,
+                      ExpressibleByFloatLiteral,
+                      ExpressibleByStringLiteral,
+                      ExpressibleByArrayLiteral,
+                      ExpressibleByDictionaryLiteral {}

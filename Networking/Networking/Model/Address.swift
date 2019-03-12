@@ -18,7 +18,17 @@ public struct Address: Decodable {
 
     /// Designated Initializer.
     ///
-    public init(firstName: String, lastName: String, company: String?, address1: String, address2: String?, city: String, state: String, postcode: String, country: String, phone: String?, email: String?) {
+    public init(firstName: String,
+                lastName: String,
+                company: String?,
+                address1: String,
+                address2: String?,
+                city: String,
+                state: String,
+                postcode: String,
+                country: String,
+                phone: String?,
+                email: String?) {
         self.firstName = firstName
         self.lastName = lastName
         self.company = company
@@ -47,7 +57,17 @@ public struct Address: Decodable {
         let phone = try container.decodeIfPresent(String.self, forKey: .phone)
         let email = try container.decodeIfPresent(String.self, forKey: .email)
 
-        self.init(firstName: firstName, lastName: lastName, company: company, address1: address1, address2: address2, city: city, state: state, postcode: postcode, country: country, phone: phone, email: email)
+        self.init(firstName: firstName,
+                  lastName: lastName,
+                  company: company,
+                  address1: address1,
+                  address2: address2,
+                  city: city,
+                  state: state,
+                  postcode: postcode,
+                  country: country,
+                  phone: phone,
+                  email: email)
     }
 }
 
@@ -96,4 +116,3 @@ extension Address: Comparable {
         (lhs.city == rhs.city && lhs.state == rhs.state && lhs.postcode == rhs.postcode && lhs.lastName < rhs.lastName)
     }
 }
-

@@ -15,7 +15,11 @@ public class SiteVisitStatsRemote: Remote {
     ///   - quantity: How many `unit`s to fetch
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadSiteVisitorStats(for siteID: Int, unit: StatGranularity, latestDateToInclude: Date, quantity: Int, completion: @escaping (SiteVisitStats?, Error?) -> Void) {
+    public func loadSiteVisitorStats(for siteID: Int,
+                                     unit: StatGranularity,
+                                     latestDateToInclude: Date,
+                                     quantity: Int,
+                                     completion: @escaping (SiteVisitStats?, Error?) -> Void) {
         let path = "\(Constants.sitesPath)/\(siteID)/\(Constants.siteVisitStatsPath)/"
         let parameters = [ParameterKeys.unit: unit.rawValue,
                           ParameterKeys.date: DateFormatter.Stats.statsDayFormatter.string(from: latestDateToInclude),

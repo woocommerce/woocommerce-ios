@@ -60,13 +60,35 @@ public struct OrderStats: Decodable {
                                                            avgProductsPerOrder: $0.fetchDoubleValue(for: ItemFieldNames.avgProductsPerOrder)) })
 
 
-        self.init(date: date, granularity: granularity, quantity: quantity, items: items, totalGrossSales: totalGrossSales, totalNetSales: totalNetSales, totalOrders: totalOrders, totalProducts: totalProducts, averageGrossSales: averageGrossSales, averageNetSales: averageNetSales, averageOrders: averageOrders, averageProducts: averageProducts)
+        self.init(date: date,
+                  granularity: granularity,
+                  quantity: quantity,
+                  items: items,
+                  totalGrossSales: totalGrossSales,
+                  totalNetSales: totalNetSales,
+                  totalOrders: totalOrders,
+                  totalProducts: totalProducts,
+                  averageGrossSales: averageGrossSales,
+                  averageNetSales: averageNetSales,
+                  averageOrders: averageOrders,
+                  averageProducts: averageProducts)
     }
 
 
     /// OrderStats struct initializer.
     ///
-    public init(date: String, granularity: StatGranularity, quantity: String, items: [OrderStatsItem]?, totalGrossSales: Double, totalNetSales: Double, totalOrders: Int, totalProducts: Int, averageGrossSales: Double, averageNetSales: Double, averageOrders: Double, averageProducts: Double) {
+    public init(date: String,
+                granularity: StatGranularity,
+                quantity: String,
+                items: [OrderStatsItem]?,
+                totalGrossSales: Double,
+                totalNetSales: Double,
+                totalOrders: Int,
+                totalProducts: Int,
+                averageGrossSales: Double,
+                averageNetSales: Double,
+                averageOrders: Double,
+                averageProducts: Double) {
         self.date = date
         self.granularity = granularity
         self.quantity = quantity

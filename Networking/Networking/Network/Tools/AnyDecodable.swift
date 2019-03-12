@@ -35,7 +35,7 @@ import Foundation
  */
 public struct AnyDecodable: Decodable {
     public let value: Any
-    
+
     public init<T>(_ value: T?) {
         self.value = value ?? ()
     }
@@ -51,7 +51,7 @@ extension AnyDecodable: _AnyDecodable {}
 extension _AnyDecodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        
+
         if container.decodeNil() {
             self.init(())
         } else if let bool = try? container.decode(Bool.self) {

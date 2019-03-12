@@ -55,7 +55,7 @@ private extension SettingStore {
     ///
     func retrieveSiteAPI(siteID: Int, onCompletion: @escaping (SiteAPI?, Error?) -> Void) {
         let remote = SiteAPIRemote(network: network)
-        remote.loadAPIInformation(for: siteID) { (siteAPI, error) in            
+        remote.loadAPIInformation(for: siteID) { (siteAPI, error) in
             onCompletion(siteAPI, error)
         }
     }

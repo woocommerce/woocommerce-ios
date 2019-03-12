@@ -19,8 +19,7 @@ public class OrdersRemote: Remote {
                               statusKey: String? = nil,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
-                              completion: @escaping ([Order]?, Error?) -> Void)
-    {
+                              completion: @escaping ([Order]?, Error?) -> Void) {
         let parameters = [
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
@@ -77,8 +76,7 @@ public class OrdersRemote: Remote {
                              keyword: String,
                              pageNumber: Int = Defaults.pageNumber,
                              pageSize: Int = Defaults.pageSize,
-                             completion: @escaping ([Order]?, Error?) -> Void)
-    {
+                             completion: @escaping ([Order]?, Error?) -> Void) {
         let parameters = [
             ParameterKeys.keyword: keyword,
             ParameterKeys.page: String(pageNumber),

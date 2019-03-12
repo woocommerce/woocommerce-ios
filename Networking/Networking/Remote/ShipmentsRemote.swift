@@ -35,17 +35,17 @@ public final class ShipmentsRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    public func createCustomShipmentTracking(for siteID: Int, orderID: Int, trackingProvider: String, trackingNumber: String, trackingLink: String, completion: @escaping (ShipmentTracking?, Error?) -> Void) {
-//        let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/"
-//
-//        let parameters = [ParameterKeys.trackingNumber: trackingNumber,
-//                          ParameterKeys.customTrackingLink: trackingLink,
-//                          ParameterKeys.customTrackingProvider: trackingProvider]
-//
-//        let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
-//        let mapper = ShipmentTrackingListMapper(siteID: siteID, orderID: orderID)
-//
-//        enqueue(request, mapper: mapper, completion: completion)
+    public func createShipmentTrackingWithCustomProvider(for siteID: Int, orderID: Int, trackingProvider: String, trackingNumber: String, trackingLink: String, completion: @escaping (ShipmentTracking?, Error?) -> Void) {
+        let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/"
+
+        let parameters = [ParameterKeys.trackingNumber: trackingNumber,
+                          ParameterKeys.customTrackingLink: trackingLink,
+                          ParameterKeys.customTrackingProvider: trackingProvider]
+
+        let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let mapper = NewShipmentTrackingMapper(siteID: siteID, orderID: orderID)
+
+        enqueue(request, mapper: mapper, completion: completion)
     }
 }
 

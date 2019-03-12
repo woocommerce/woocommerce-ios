@@ -184,6 +184,7 @@
 		CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */; };
 		D823D9032237450A00C90817 /* new-shipment-tracking.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D9022237450A00C90817 /* new-shipment-tracking.json */; };
 		D823D905223746CE00C90817 /* NewShipmentTrackingMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D904223746CE00C90817 /* NewShipmentTrackingMapper.swift */; };
+		D823D90722376B4800C90817 /* new-shipment-tracking-custom-provider.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D90622376B4800C90817 /* new-shipment-tracking-custom-provider.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -379,6 +380,7 @@
 		CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteMapper.swift; sourceTree = "<group>"; };
 		D823D9022237450A00C90817 /* new-shipment-tracking.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "new-shipment-tracking.json"; sourceTree = "<group>"; };
 		D823D904223746CE00C90817 /* NewShipmentTrackingMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewShipmentTrackingMapper.swift; sourceTree = "<group>"; };
+		D823D90622376B4800C90817 /* new-shipment-tracking-custom-provider.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "new-shipment-tracking-custom-provider.json"; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -651,6 +653,8 @@
 				B524194621AC643900D6FC0A /* device-settings.json */,
 				B505F6D420BEE4E600BB1B69 /* me.json */,
 				B58D10C92114D22E00107ED4 /* new-order-note.json */,
+				D823D9022237450A00C90817 /* new-shipment-tracking.json */,
+				D823D90622376B4800C90817 /* new-shipment-tracking-custom-provider.json */,
 				B5A24178217F98F600595DEF /* notifications-load-all.json */,
 				B554FA8C2180B59700C54DFF /* notifications-load-hashes.json */,
 				B5C6FCD520A3768900A4F8E4 /* order.json */,
@@ -685,7 +689,6 @@
 				749737692141F2BE0008C490 /* top-performers-week-alt.json */,
 				74ABA1C6213F19FD00FFAD30 /* top-performers-month.json */,
 				74ABA1C7213F19FE00FFAD30 /* top-performers-year.json */,
-				D823D9022237450A00C90817 /* new-shipment-tracking.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -935,6 +938,7 @@
 				74C947842193A6C70024CB60 /* comment-moderate-approved.json in Resources */,
 				B56C1EBA20EA7D2C00D749F9 /* sites.json in Resources */,
 				74A1D263211898F000931DFA /* site-visits-day.json in Resources */,
+				D823D90722376B4800C90817 /* new-shipment-tracking-custom-provider.json in Resources */,
 				74A1D264211898F000931DFA /* site-visits-week.json in Resources */,
 				B53EF53621813681003E146F /* generic_success.json in Resources */,
 				74A1D265211898F000931DFA /* site-visits-month.json in Resources */,

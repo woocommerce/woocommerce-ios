@@ -245,7 +245,7 @@ public struct Product: Decodable {
         let parentID = try container.decode(Int.self, forKey: .parentID)
 
         let purchaseNote = try container.decodeIfPresent(String.self, forKey: .purchaseNote)
-        let categories: [ProductCategory] = try container.decode([ProductCategory].self, forKey: .categories)
+        let categories = try container.decode([ProductCategory].self, forKey: .categories)
 //        let tags: [String: Any] = try container.decodeIfPresent([String: Any].self, forKey: .tags)
 //        let images: [String: Any] = try container.decode([String: Any?].self, forKey: .images)
     }

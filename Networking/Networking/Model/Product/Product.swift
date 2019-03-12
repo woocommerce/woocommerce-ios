@@ -60,7 +60,7 @@ public struct Product: Decodable {
     public let parentID: Int
 
     public let purchaseNote: String?
-    public let categories: [String: Any?]
+    public let categories: [ProductCategory?]
     public let tags: [String: Any?]
     public let images: [String: Any?]
 
@@ -122,7 +122,7 @@ public struct Product: Decodable {
                 crossSellIDs: [Int?],
                 parentID: Int,
                 purchaseNote: String?,
-                categories: [String: Any?],
+                categories: [ProductCategory?],
                 tags: [String: Any?],
                 images: [String: Any?],
                 attributes: [String: Any?],
@@ -245,9 +245,9 @@ public struct Product: Decodable {
         let parentID = try container.decode(Int.self, forKey: .parentID)
 
         let purchaseNote = try container.decodeIfPresent(String.self, forKey: .purchaseNote)
-        let categories: [Dictionary<String, Any>] = try container.decode([Dictionary<String, Any>].self, forKey: .categories)
-        let tags: [String: Any] = try container.decodeIfPresent([String: Any].self, forKey: .tags)
-        let images: [String: Any] = try container.decode([String: Any?].self, forKey: .images)
+        let categories: [ProductCategory] = try container.decode([ProductCategory].self, forKey: .categories)
+//        let tags: [String: Any] = try container.decodeIfPresent([String: Any].self, forKey: .tags)
+//        let images: [String: Any] = try container.decode([String: Any?].self, forKey: .images)
     }
 }
 
@@ -258,65 +258,70 @@ private extension Product {
 
     enum CodingKeys: String, CodingKey {
         case productID = "id"
-        case name
-        case slug
-        case permalink
-        case dateCreated = "date_created_gmt"
-        case dateModified = "date_modified_gmt"
+        case name = "name"
+        case slug = "slug"
+        case permalink = "permalink"
+
         case productTypeKey = "type"
         case statusKey = "status"
-        case featured
+
         case catalogVisibilityKey = "catalog_visibility"
-        case description
-        case shortDescription = "short_description"
+        case description          = "description"
+        case shortDescription     = "short_description"
+
         case sku
         case price
         case regularPrice = "regular_price"
         case salePrice = "sale_price"
-        case dateOnSaleFrom = "date_on_sale_from_gmt"
-        case dateOnSaleTo = "date_on_sale_to_gmt"
-        case priceHTML = "price_html"
         case onSale = "on_sale"
+
         case purchasable
         case totalSales = "total_sales"
         case virtual
+
         case downloadable
-        case downloads
         case downloadLimit = "download_limit"
         case downloadExpiry = "download_expiry"
+
         case externalURL = "external_url"
-        case buttonText = "button_text"
         case taxStatusKey = "tax_status"
         case taxClass = "tax_class"
+
         case manageStock = "manage_stock"
         case stockQuantity = "stock_quantity"
         case stockStatusKey = "stock_status"
+
         case backordersKey = "backorders"
         case backordersAllowed = "backorders_allowed"
         case backordered
+
         case soldIndividually = "sold_individually"
         case weight
         case dimensions
+
         case shippingRequired = "shipping_required"
         case shippingTaxable = "shipping_taxable"
         case shippingClass = "shipping_class"
         case shippingClassID = "shipping_class_id"
+
         case reviewsAllowed = "reviews_allowed"
         case averageRating = "average_rating"
         case ratingCount = "rating_count"
+
         case relatedIDs = "related_ids"
         case upsellIDs = "upsell_ids"
         case crossSellIDs = "cross_sell_ids"
         case parentID = "parent_id"
+
         case purchaseNote = "purchase_note"
-        case categories
+        case categories = "categories"
         case tags
         case images
+
         case attributes
         case defaultAttributes = "default_attributes"
         case variations
         case groupedProducts = "grouped_products"
         case menuOrder = "menu_order"
-        case metaData = "meta_data"
     }
 }

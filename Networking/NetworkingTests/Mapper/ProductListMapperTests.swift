@@ -151,8 +151,8 @@ class ProductListMapperTests: XCTestCase {
         XCTAssert(images.count == 1)
 
         let productImage = images[0]
-        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from:"2018-05-07T21:02:45")
-        let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from:"2018-05-07T21:03:04")
+        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-05-07T21:02:45")
+        let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-05-07T21:03:04")
         XCTAssertEqual(productImage?.imageID, 209)
         XCTAssertEqual(productImage?.dateCreated, dateCreated)
         XCTAssertEqual(productImage?.dateModified, dateModified)

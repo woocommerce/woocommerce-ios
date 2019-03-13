@@ -129,8 +129,7 @@ public struct Product: Decodable {
                 defaultAttributes: [ProductDefaultAttribute?],
                 variations: [Int?],
                 groupedProducts: [Int?],
-                menuOrder: Int,
-                metaData: [String: Any?]) {
+                menuOrder: Int) {
         self.productID = productID
         self.name = name
         self.slug = slug
@@ -239,19 +238,74 @@ public struct Product: Decodable {
         let averageRating = try container.decode(String.self, forKey: .averageRating)
         let ratingCount = try container.decode(Int.self, forKey: .ratingCount)
 
-        let relatedIDs = try container.decodeIfPresent([Int].self, forKey: .relatedIDs)
-        let upsellIDs = try container.decodeIfPresent([Int].self, forKey: .upsellIDs)
-        let crossSellIDs = try container.decodeIfPresent([Int].self, forKey: .crossSellIDs)
+        let relatedIDs = try container.decode([Int].self, forKey: .relatedIDs)
+        let upsellIDs = try container.decode([Int].self, forKey: .upsellIDs)
+        let crossSellIDs = try container.decode([Int].self, forKey: .crossSellIDs)
         let parentID = try container.decode(Int.self, forKey: .parentID)
 
         let purchaseNote = try container.decodeIfPresent(String.self, forKey: .purchaseNote)
         let categories = try container.decode([ProductCategory].self, forKey: .categories)
         let tags = try container.decode([ProductTag].self, forKey: .tags)
-        let images = try container.decodeIfPresent([ProductImage].self, forKey: .images)
+        let images = try container.decode([ProductImage].self, forKey: .images)
 
         let attributes = try container.decode([ProductAttribute].self, forKey: .attributes)
         let defaultAttributes = try container.decode([ProductDefaultAttribute].self, forKey: .defaultAttributes)
-        
+        let variations = try container.decode([Int].self, forKey: .variations)
+        let groupedProducts = try container.decode([Int].self, forKey: .groupedProducts)
+
+        let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
+
+        self.init(productID: productID,
+                  name: name,
+                  slug: slug,
+                  permalink: permalink,
+                  productTypeKey: productTypeKey,
+                  catalogVisibilityKey: catalogVisibilityKey,
+                  description: description,
+                  shortDescription: shortDescription,
+                  sku: sku,
+                  price: price,
+                  regularPrice: regularPrice,
+                  salePrice: salePrice,
+                  onSale: onSale,
+                  purchasable: purchasable,
+                  totalSales: totalSales,
+                  virtual: virtual,
+                  downloadable: downloadable,
+                  downloadLimit: downloadLimit,
+                  downloadExpiry: downloadExpiry,
+                  externalURL: externalURL,
+                  taxStatusKey: taxStatusKey,
+                  taxClass: taxClass,
+                  manageStock: manageStock,
+                  stockQuantity: stockQuantity,
+                  stockStatusKey: stockStatusKey,
+                  backordersKey: backordersKey,
+                  backordersAllowed: backordersAllowed,
+                  backordered: backordered,
+                  soldIndividually: soldIndividuallly,
+                  weight: weight,
+                  dimensions: dimensions,
+                  shippingRequired: shippingRequired,
+                  shippingTaxable: shippingTaxable,
+                  shippingClass: shippingClass,
+                  shippingClassID: shippingClassID,
+                  reviewsAllowed: reviewsAllowed,
+                  averageRating: averageRating,
+                  ratingCount: ratingCount,
+                  relatedIDs: relatedIDs,
+                  upsellIDs: upsellIDs,
+                  crossSellIDs: crossSellIDs,
+                  parentID: parentID,
+                  purchaseNote: purchaseNote,
+                  categories: categories,
+                  tags: tags,
+                  images: images,
+                  attributes: attributes,
+                  defaultAttributes: defaultAttributes,
+                  variations: variations,
+                  groupedProducts: groupedProducts,
+                  menuOrder: menuOrder)
     }
 }
 

@@ -96,13 +96,13 @@ public struct Product: Decodable {
                 totalSales: Int,
                 virtual: Bool,
                 downloadable: Bool,
-                downloadLimit: Int,    // defaults to -1
-                downloadExpiry: Int,   // defaults to -1
+                downloadLimit: Int,
+                downloadExpiry: Int,
                 externalURL: String?,
                 taxStatusKey: String,
                 taxClass: String?,
                 manageStock: Bool,
-                stockQuantity: Int?,  // API reports Int or null
+                stockQuantity: Int?,
                 stockStatusKey: String,
                 backordersKey: String,
                 backordersAllowed: Bool,

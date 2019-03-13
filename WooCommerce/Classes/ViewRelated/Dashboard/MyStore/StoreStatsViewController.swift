@@ -1,6 +1,5 @@
 import UIKit
 import Yosemite
-import CocoaLumberjack
 import XLPagerTabStrip
 
 

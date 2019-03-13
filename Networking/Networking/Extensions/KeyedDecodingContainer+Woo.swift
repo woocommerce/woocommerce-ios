@@ -10,7 +10,7 @@ extension KeyedDecodingContainer {
     /// This method *does NOT throw*. We want this behavior so that if a malformed entity is received, we just skip it, rather
     /// than breaking the entire parsing chain.
     ///
-    func failsafeDecodeIfPresent<T>(_ type: T.Type, forKey key: KeyedDecodingContainer<K>.Key) -> T? where T : Decodable {
+    func failsafeDecodeIfPresent<T>(_ type: T.Type, forKey key: KeyedDecodingContainer<K>.Key) -> T? where T: Decodable {
         do {
             return try decodeIfPresent(type, forKey: key)
         } catch {

@@ -175,6 +175,7 @@
 		B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6FCD320A373BA00A4F8E4 /* OrderMapper.swift */; };
 		B5C6FCD620A3768900A4F8E4 /* order.json in Resources */ = {isa = PBXBuildFile; fileRef = B5C6FCD520A3768900A4F8E4 /* order.json */; };
 		B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */; };
+		CE0A0F13223942D90075ED8D /* ProductImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F12223942D90075ED8D /* ProductImage.swift */; };
 		CE12FBD9221F3A6F00C59248 /* OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */; };
 		CE132BBA223851F80029DB6C /* ProductCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE132BB9223851F80029DB6C /* ProductCategory.swift */; };
 		CE132BBC223859710029DB6C /* ProductTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE132BBB223859710029DB6C /* ProductTag.swift */; };
@@ -373,6 +374,7 @@
 		B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsRemote.swift; sourceTree = "<group>"; };
 		BD9439D9B8F2C1ED2EADAA51 /* Pods-NetworkingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C8F9A8CC6F90A8C9B5EF2EE2 /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
+		CE0A0F12223942D90075ED8D /* ProductImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImage.swift; sourceTree = "<group>"; };
 		CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatus.swift; sourceTree = "<group>"; };
 		CE132BB9223851F80029DB6C /* ProductCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategory.swift; sourceTree = "<group>"; };
 		CE132BBB223859710029DB6C /* ProductTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTag.swift; sourceTree = "<group>"; };
@@ -808,6 +810,7 @@
 				CE6BFEE92236E191005C79FB /* ProductType.swift */,
 				CE132BB9223851F80029DB6C /* ProductCategory.swift */,
 				CE132BBB223859710029DB6C /* ProductTag.swift */,
+				CE0A0F12223942D90075ED8D /* ProductImage.swift */,
 			);
 			path = Product;
 			sourceTree = "<group>";
@@ -1125,6 +1128,7 @@
 				743E84EA22171C5800FAC9D7 /* ShipmentsRemote.swift in Sources */,
 				B59325D5217E4206000B0E8E /* NoteRange.swift in Sources */,
 				B59325C7217E22FC000B0E8E /* Note.swift in Sources */,
+				CE0A0F13223942D90075ED8D /* ProductImage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

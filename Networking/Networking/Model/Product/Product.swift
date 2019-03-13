@@ -10,7 +10,7 @@ public struct Product: Decodable {
     public let permalink: String
 
     public let productTypeKey: String
-    public let catalogVisibilityKey: String  // convert to enum ProductCatalogVisibility
+    public let catalogVisibilityKey: String // convert to enum ProductCatalogVisibility
 
     public let description: String?
     public let shortDescription: String?
@@ -26,15 +26,15 @@ public struct Product: Decodable {
     public let virtual: Bool
 
     public let downloadable: Bool
-    public let downloadLimit: Int     // defaults to -1
-    public let downloadExpiry: Int    // defaults to -1
+    public let downloadLimit: Int       // defaults to -1
+    public let downloadExpiry: Int      // defaults to -1
 
     public let externalURL: String?
-    public let taxStatusKey: String   // convert to enum ProductTaxStatus
+    public let taxStatusKey: String     // convert to enum ProductTaxStatus
     public let taxClass: String?
 
     public let manageStock: Bool
-    public let stockQuantity: Int?   // API reports Int or null
+    public let stockQuantity: Int?      // API reports Int or null
     public let stockStatusKey: String   // convert to enum ProductStockStatus
 
     public let backordersKey: String    // convert to enum ProductBackOrders
@@ -62,7 +62,7 @@ public struct Product: Decodable {
     public let purchaseNote: String?
     public let categories: [ProductCategory?]
     public let tags: [ProductTag?]
-    public let images: [String: Any?]
+    public let images: [ProductImage?]
 
     public let attributes: [String: Any?]
     public let defaultAttributes: [String: Any?]
@@ -124,7 +124,7 @@ public struct Product: Decodable {
                 purchaseNote: String?,
                 categories: [ProductCategory?],
                 tags: [ProductTag?],
-                images: [String: Any?],
+                images: [ProductImage?],
                 attributes: [String: Any?],
                 defaultAttributes: [String: Any?],
                 variations: [Int?],
@@ -197,13 +197,13 @@ public struct Product: Decodable {
         let productTypeKey = try container.decode(String.self, forKey: .productTypeKey)
         let catalogVisibilityKey = try container.decode(String.self, forKey: .catalogVisibilityKey)
 
-        let description = try container.decode(String.self, forKey: .description)
-        let shortDescription = try container.decode(String.self, forKey: .shortDescription)
-        let sku = try container.decode(String.self, forKey: .sku)
+        let description = try container.decodeIfPresent(String.self, forKey: .description)
+        let shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
+        let sku = try container.decodeIfPresent(String.self, forKey: .sku)
 
         let price = try container.decode(String.self, forKey: .price)
-        let regularPrice = try container.decode(String.self, forKey: .regularPrice)
-        let salePrice = try container.decode(String.self, forKey: .salePrice)
+        let regularPrice = try container.decodeIfPresent(String.self, forKey: .regularPrice)
+        let salePrice = try container.decodeIfPresent(String.self, forKey: .salePrice)
         let onSale = try container.decode(Bool.self, forKey: .onSale)
 
         let purchasable = try container.decode(Bool.self, forKey: .purchasable)
@@ -214,12 +214,12 @@ public struct Product: Decodable {
         let downloadLimit = try container.decode(Int.self, forKey: .downloadLimit)
         let downloadExpiry = try container.decode(Int.self, forKey: .downloadExpiry)
 
-        let externalURL = try container.decode(String.self, forKey: .externalURL)
+        let externalURL = try container.decodeIfPresent(String.self, forKey: .externalURL)
         let taxStatusKey = try container.decode(String.self, forKey: .taxStatusKey)
-        let taxClass = try container.decode(String.self, forKey: .taxClass)
+        let taxClass = try container.decodeIfPresent(String.self, forKey: .taxClass)
 
         let manageStock = try container.decode(Bool.self, forKey: .manageStock)
-        let stockQuantity = try container.decode(Int.self, forKey: .stockQuantity)
+        let stockQuantity = try container.decodeIfPresent(Int.self, forKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)
@@ -227,12 +227,12 @@ public struct Product: Decodable {
         let backordered = try container.decode(Bool.self, forKey: .backordered)
 
         let soldIndividuallly = try container.decode(Bool.self, forKey: .soldIndividually)
-        let weight = try container.decode(String.self, forKey: .weight)
+        let weight = try container.decodeIfPresent(String.self, forKey: .weight)
         let dimensions = try container.decode(Dimensions.self, forKey: .dimensions)
 
         let shippingRequired = try container.decode(Bool.self, forKey: .shippingRequired)
         let shippingTaxable = try container.decode(Bool.self, forKey: .shippingTaxable)
-        let shippingClass = try container.decode(String.self, forKey: .shippingClass)
+        let shippingClass = try container.decodeIfPresent(String.self, forKey: .shippingClass)
         let shippingClassID = try container.decode(Int.self, forKey: .shippingClassID)
 
         let reviewsAllowed = try container.decode(Bool.self, forKey: .reviewsAllowed)
@@ -247,7 +247,8 @@ public struct Product: Decodable {
         let purchaseNote = try container.decodeIfPresent(String.self, forKey: .purchaseNote)
         let categories = try container.decode([ProductCategory].self, forKey: .categories)
         let tags = try container.decode([ProductTag].self, forKey: .tags)
-//        let images: [String: Any] = try container.decode([String: Any?].self, forKey: .images)
+        let images = try container.decodeIfPresent([ProductImage].self, forKey: .images)
+        
     }
 }
 

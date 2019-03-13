@@ -68,7 +68,53 @@
                     "slug": "events"
                 }
             ],
-            "tags": [],
+            "tags": [
+                {
+                    "id": 40,
+                    "name": "20+",
+                    "slug": "20"
+                },
+                {
+                    "id": 39,
+                    "name": "30",
+                    "slug": "30"
+                },
+                {
+                    "id": 45,
+                    "name": "birthday party",
+                    "slug": "birthday-party"
+                },
+                {
+                    "id": 44,
+                    "name": "graduation",
+                    "slug": "graduation"
+                },
+                {
+                    "id": 41,
+                    "name": "meeting room",
+                    "slug": "meeting-room"
+                },
+                {
+                    "id": 42,
+                    "name": "meetings",
+                    "slug": "meetings"
+                },
+                {
+                    "id": 43,
+                    "name": "parties",
+                    "slug": "parties"
+                },
+                {
+                    "id": 38,
+                    "name": "party room",
+                    "slug": "party-room"
+                },
+                {
+                    "id": 37,
+                    "name": "room",
+                    "slug": "room"
+                }
+            ],
             "images": [],
             "attributes": [],
             "default_attributes": [],
@@ -410,7 +456,7 @@
             "date_created_gmt": "2018-01-26T21:49:46",
             "date_modified": "2018-09-19T17:45:57",
             "date_modified_gmt": "2018-09-19T17:45:57",
-            "type": "simple",
+            "type": "external",
             "status": "publish",
             "featured": false,
             "catalog_visibility": "visible",

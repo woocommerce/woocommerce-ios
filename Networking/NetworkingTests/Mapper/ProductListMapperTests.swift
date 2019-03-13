@@ -9,7 +9,7 @@ class ProductListMapperTests: XCTestCase {
     ///
     func testProductFieldsAreProperlyParsed() {
         let products = mapLoadAllProductsResponse()
-        XCTAssert(products.count == 10)
+        XCTAssertEqual(products.count, 10)
 
         let firstProduct = products[0]
         XCTAssertEqual(firstProduct.productID, 282)
@@ -67,7 +67,6 @@ class ProductListMapperTests: XCTestCase {
         XCTAssertEqual(firstProduct.parentID, 0)
 
         XCTAssertEqual(firstProduct.purchaseNote, "")
-        XCTAssertEqual(firstProduct.tags, [])
         XCTAssertEqual(firstProduct.images, [])
 
         XCTAssertEqual(firstProduct.attributes, [])
@@ -85,14 +84,81 @@ class ProductListMapperTests: XCTestCase {
         let products = mapLoadAllProductsResponse()
 
         let firstProduct = products[0]
-        let bookingType = ProductType(rawValue: "booking")
+        let customType = ProductType(rawValue: "booking")
         XCTAssertEqual(firstProduct.productTypeKey, "booking")
-        XCTAssertEqual(firstProduct.productType, bookingType)
+        XCTAssertEqual(firstProduct.productType, customType)
 
         let secondProduct = products[1]
         let simpleType = ProductType.simple
         XCTAssertEqual(secondProduct.productTypeKey, "simple")
         XCTAssertEqual(secondProduct.productType, simpleType)
+
+        let thirdProduct = products[2]
+        let groupedType = ProductType.grouped
+        XCTAssertEqual(thirdProduct.productTypeKey, "grouped")
+        XCTAssertEqual(thirdProduct.productType, groupedType)
+
+        let fourthProduct = products[3]
+        let externalType = ProductType.external
+        XCTAssertEqual(fourthProduct.productTypeKey, "external")
+        XCTAssertEqual(fourthProduct.productType, externalType)
+
+        let fifthProduct = products[4]
+        let variableType = ProductType.variable
+        XCTAssertEqual(fifthProduct.productTypeKey, "variable")
+        XCTAssertEqual(fifthProduct.productType, variableType)
+    }
+
+    /// Test that categories are properly mapped.
+    ///
+    func testThatProductCategoriesAreProperlyMapped() {
+        let products = mapLoadAllProductsResponse()
+        let firstProduct = products[0]
+        let categories = firstProduct.categories
+        XCTAssertEqual(categories.count, 1)
+
+        guard let category = firstProduct.categories[0] else {
+            XCTFail("Failed to parse product category")
+            return
+        }
+
+        XCTAssertEqual(category.categoryID, 36)
+        XCTAssertEqual(category.name, "Events")
+        XCTAssertEqual(category.slug, "events")
+        XCTAssertTrue(category.categoryID == 36)
+    }
+
+    /// Test that tags are properly mapped.
+    ///
+    func testThatProductTagsAreProperlyMapped() {
+        let products = mapLoadAllProductsResponse()
+        let firstProduct = products[0]
+        let tags = firstProduct.tags
+        XCTAssert(tags.count == 9)
+
+        let tag = tags[2]
+        XCTAssertEqual(tag?.tagID, 45)
+        XCTAssertEqual(tag?.name, "birthday party")
+        XCTAssertEqual(tag?.slug, "birthday-party")
+    }
+
+    /// Test that product images are properly mapped.
+    ///
+    func testThatProductImagesAreProperlyMapped() {
+        let products = mapLoadAllProductsResponse()
+        let product = products[1]
+        let images = product.images
+        XCTAssert(images.count == 1)
+
+        let productImage = images[0]
+        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from:"2018-05-07T21:02:45")
+        let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from:"2018-05-07T21:03:04")
+        XCTAssertEqual(productImage?.imageID, 209)
+        XCTAssertEqual(productImage?.dateCreated, dateCreated)
+        XCTAssertEqual(productImage?.dateModified, dateModified)
+        XCTAssertEqual(productImage?.src, "https://i0.wp.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/05/71PEq6VvFjL._SL1500_.jpg?fit=1500%2C1500&ssl=1")
+        XCTAssertEqual(productImage?.name, "Dymo LabelWriter 4XL")
+        XCTAssert(productImage?.alt?.isEmpty == true)
     }
 }
 

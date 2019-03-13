@@ -248,7 +248,7 @@ public struct Product: Decodable {
         let categories = try container.decode([ProductCategory].self, forKey: .categories)
         let tags = try container.decode([ProductTag].self, forKey: .tags)
         let images = try container.decodeIfPresent([ProductImage].self, forKey: .images)
-        
+
     }
 }
 
@@ -258,71 +258,71 @@ public struct Product: Decodable {
 private extension Product {
 
     enum CodingKeys: String, CodingKey {
-        case productID = "id"
-        case name = "name"
-        case slug = "slug"
-        case permalink = "permalink"
+        case productID  = "id"
+        case name       = "name"
+        case slug       = "slug"
+        case permalink  = "permalink"
 
         case productTypeKey = "type"
-        case statusKey = "status"
+        case statusKey      = "status"
 
-        case catalogVisibilityKey = "catalog_visibility"
-        case description          = "description"
-        case shortDescription     = "short_description"
+        case catalogVisibilityKey   = "catalog_visibility"
+        case description            = "description"
+        case shortDescription       = "short_description"
 
-        case sku
-        case price
-        case regularPrice = "regular_price"
-        case salePrice = "sale_price"
-        case onSale = "on_sale"
+        case sku            = "sku"
+        case price          = "price"
+        case regularPrice   = "regular_price"
+        case salePrice      = "sale_price"
+        case onSale         = "on_sale"
 
-        case purchasable
-        case totalSales = "total_sales"
-        case virtual
+        case purchasable    = "purchasable"
+        case totalSales     = "total_sales"
+        case virtual        = "virtual"
 
-        case downloadable
-        case downloadLimit = "download_limit"
+        case downloadable   = "downloadable"
+        case downloadLimit  = "download_limit"
         case downloadExpiry = "download_expiry"
 
-        case externalURL = "external_url"
-        case taxStatusKey = "tax_status"
-        case taxClass = "tax_class"
+        case externalURL    = "external_url"
+        case taxStatusKey   = "tax_status"
+        case taxClass       = "tax_class"
 
-        case manageStock = "manage_stock"
-        case stockQuantity = "stock_quantity"
+        case manageStock    = "manage_stock"
+        case stockQuantity  = "stock_quantity"
         case stockStatusKey = "stock_status"
 
-        case backordersKey = "backorders"
-        case backordersAllowed = "backorders_allowed"
-        case backordered
+        case backordersKey      = "backorders"
+        case backordersAllowed  = "backorders_allowed"
+        case backordered        = "backordered"
 
-        case soldIndividually = "sold_individually"
-        case weight
-        case dimensions
+        case soldIndividually   = "sold_individually"
+        case weight             = "weight"
+        case dimensions         = "dimensions"
 
-        case shippingRequired = "shipping_required"
-        case shippingTaxable = "shipping_taxable"
-        case shippingClass = "shipping_class"
-        case shippingClassID = "shipping_class_id"
+        case shippingRequired   = "shipping_required"
+        case shippingTaxable    = "shipping_taxable"
+        case shippingClass      = "shipping_class"
+        case shippingClassID    = "shipping_class_id"
 
         case reviewsAllowed = "reviews_allowed"
-        case averageRating = "average_rating"
-        case ratingCount = "rating_count"
+        case averageRating  = "average_rating"
+        case ratingCount    = "rating_count"
 
-        case relatedIDs = "related_ids"
-        case upsellIDs = "upsell_ids"
-        case crossSellIDs = "cross_sell_ids"
-        case parentID = "parent_id"
+        case relatedIDs     = "related_ids"
+        case upsellIDs      = "upsell_ids"
+        case crossSellIDs   = "cross_sell_ids"
+        case parentID       = "parent_id"
 
-        case purchaseNote = "purchase_note"
-        case categories = "categories"
-        case tags
-        case images
+        case purchaseNote   = "purchase_note"
+        case categories     = "categories"
+        case tags           = "tags"
+        case images         = "images"
 
-        case attributes
-        case defaultAttributes = "default_attributes"
-        case variations
-        case groupedProducts = "grouped_products"
-        case menuOrder = "menu_order"
+        case attributes         = "attributes"
+        case defaultAttributes  = "default_attributes"
+        case variations         = "variations"
+        case groupedProducts    = "grouped_products"
+        case menuOrder          = "menu_order"
     }
 }

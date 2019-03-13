@@ -180,6 +180,8 @@
 		CE0A0F17223970E80075ED8D /* ProductDefaultAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F16223970E80075ED8D /* ProductDefaultAttributes.swift */; };
 		CE0A0F19223987DF0075ED8D /* ProductListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F18223987DF0075ED8D /* ProductListMapper.swift */; };
 		CE0A0F1B223989670075ED8D /* ProductsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F1A223989670075ED8D /* ProductsRemote.swift */; };
+		CE0A0F1D22398D520075ED8D /* ProductListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F1C22398D520075ED8D /* ProductListMapperTests.swift */; };
+		CE0A0F1F223998A10075ED8D /* products-load-all.json in Resources */ = {isa = PBXBuildFile; fileRef = CE0A0F1E223998A00075ED8D /* products-load-all.json */; };
 		CE12FBD9221F3A6F00C59248 /* OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */; };
 		CE132BBA223851F80029DB6C /* ProductCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE132BB9223851F80029DB6C /* ProductCategory.swift */; };
 		CE132BBC223859710029DB6C /* ProductTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE132BBB223859710029DB6C /* ProductTag.swift */; };
@@ -383,6 +385,8 @@
 		CE0A0F16223970E80075ED8D /* ProductDefaultAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDefaultAttributes.swift; sourceTree = "<group>"; };
 		CE0A0F18223987DF0075ED8D /* ProductListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListMapper.swift; sourceTree = "<group>"; };
 		CE0A0F1A223989670075ED8D /* ProductsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsRemote.swift; sourceTree = "<group>"; };
+		CE0A0F1C22398D520075ED8D /* ProductListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListMapperTests.swift; sourceTree = "<group>"; };
+		CE0A0F1E223998A00075ED8D /* products-load-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-load-all.json"; sourceTree = "<group>"; };
 		CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatus.swift; sourceTree = "<group>"; };
 		CE132BB9223851F80029DB6C /* ProductCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategory.swift; sourceTree = "<group>"; };
 		CE132BBB223859710029DB6C /* ProductTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTag.swift; sourceTree = "<group>"; };
@@ -682,6 +686,7 @@
 				B58D10C52114D1F100107ED4 /* order-stats.json */,
 				7412A51021702E9700994370 /* order-stats-alt.json */,
 				CE19CB10222486A500E8AF7A /* order-statuses.json */,
+				CE0A0F1E223998A00075ED8D /* products-load-all.json */,
 				7412A8EF21B6E415005D182A /* report-orders.json */,
 				74046E20217A73D0007DD7BF /* settings-general.json */,
 				7492FAE2217FBDBC00ED2C69 /* settings-general-alt.json */,
@@ -792,6 +797,7 @@
 				74C8F06920EEBC8C00B6EDC9 /* OrderMapperTests.swift */,
 				74C8F06D20EEC1E700B6EDC9 /* OrderNotesMapperTests.swift */,
 				743FDB9F210FB3E500AC737F /* OrderStatsMapperTests.swift */,
+				CE0A0F1C22398D520075ED8D /* ProductListMapperTests.swift */,
 				7412A8ED21B6E335005D182A /* ReportOrderMapperTests.swift */,
 				743E84F722172E1F00FAC9D7 /* ShipmentTrackingListMapperTests.swift */,
 				74AB5B4C21AF354E00859C12 /* SiteAPIMapperTests.swift */,
@@ -971,6 +977,7 @@
 				74A1D265211898F000931DFA /* site-visits-month.json in Resources */,
 				74A1D266211898F000931DFA /* site-visits-year.json in Resources */,
 				743BF8BE21191B63008A9D87 /* site-visits.json in Resources */,
+				CE0A0F1F223998A10075ED8D /* products-load-all.json in Resources */,
 				74E30951216E8DCE00ABCE4C /* site-visits-alt.json in Resources */,
 				74ABA1C5213F17AA00FFAD30 /* top-performers-day.json in Resources */,
 				74ABA1CB213F19FE00FFAD30 /* top-performers-week.json in Resources */,
@@ -1168,6 +1175,7 @@
 				7412A8F221B6E47A005D182A /* ReportRemoteTests.swift in Sources */,
 				7412A8EE21B6E335005D182A /* ReportOrderMapperTests.swift in Sources */,
 				B505F6D720BEE58800BB1B69 /* AccountRemoteTests.swift in Sources */,
+				CE0A0F1D22398D520075ED8D /* ProductListMapperTests.swift in Sources */,
 				B554FA8B2180B1D500C54DFF /* NotificationsRemoteTests.swift in Sources */,
 				B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */,
 				B5969E1520A47F99005E9DF1 /* RemoteTests.swift in Sources */,

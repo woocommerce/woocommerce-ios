@@ -104,6 +104,7 @@
 		CE1B18D020EEC41600BECC3F /* WordPressAuthenticatorConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1B18CF20EEC41600BECC3F /* WordPressAuthenticatorConfiguration.swift */; };
 		CE1B18D220EEC44400BECC3F /* WordPressAuthenticatorStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1B18D120EEC44400BECC3F /* WordPressAuthenticatorStyles.swift */; };
 		E8AF6B9EF50902F2117DFAF9 /* Pods_WordPressAuthenticatorTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A441EC80D2B8D2209C2E228 /* Pods_WordPressAuthenticatorTests.framework */; };
+		FF629D9622393500004C4106 /* WordPressAuthenticator.podspec in Resources */ = {isa = PBXBuildFile; fileRef = FF629D9522393500004C4106 /* WordPressAuthenticator.podspec */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -245,6 +246,7 @@
 		CE1B18D120EEC44400BECC3F /* WordPressAuthenticatorStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorStyles.swift; sourceTree = "<group>"; };
 		E9414A95E29F3297555AC92B /* Pods-WordPressAuthenticator.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.debug.xcconfig"; sourceTree = "<group>"; };
 		FF475C5056EB60A277696BA9 /* Pods-WordPressAuthenticatorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.release.xcconfig"; sourceTree = "<group>"; };
+		FF629D9522393500004C4106 /* WordPressAuthenticator.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WordPressAuthenticator.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -465,6 +467,7 @@
 		B5ED78EA207E976500A8FD8C = {
 			isa = PBXGroup;
 			children = (
+				FF629D9522393500004C4106 /* WordPressAuthenticator.podspec */,
 				B5ED78F6207E976500A8FD8C /* WordPressAuthenticator */,
 				B5ED7901207E976500A8FD8C /* WordPressAuthenticatorTests */,
 				B5ED78F5207E976500A8FD8C /* Products */,
@@ -662,6 +665,7 @@
 				B5609118208A555600399AE4 /* SearchTableViewCell.xib in Resources */,
 				B560913F208A563800399AE4 /* Login.storyboard in Resources */,
 				B5609137208A563800399AE4 /* EmailMagicLink.storyboard in Resources */,
+				FF629D9622393500004C4106 /* WordPressAuthenticator.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

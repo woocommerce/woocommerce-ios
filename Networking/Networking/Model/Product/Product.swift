@@ -65,7 +65,7 @@ public struct Product: Decodable {
     public let images: [ProductImage?]
 
     public let attributes: [ProductAttribute?]
-    public let defaultAttributes: [String: Any?]
+    public let defaultAttributes: [ProductDefaultAttribute?]
     public let variations: [Int?]
     public let groupedProducts: [Int?]
 
@@ -126,7 +126,7 @@ public struct Product: Decodable {
                 tags: [ProductTag?],
                 images: [ProductImage?],
                 attributes: [ProductAttribute?],
-                defaultAttributes: [String: Any?],
+                defaultAttributes: [ProductDefaultAttribute?],
                 variations: [Int?],
                 groupedProducts: [Int?],
                 menuOrder: Int,
@@ -249,7 +249,8 @@ public struct Product: Decodable {
         let tags = try container.decode([ProductTag].self, forKey: .tags)
         let images = try container.decodeIfPresent([ProductImage].self, forKey: .images)
 
-        let attributes: [ProductAttribute] = try container.decode([ProductAttribute].self, forKey: .attributes)
+        let attributes = try container.decode([ProductAttribute].self, forKey: .attributes)
+        let defaultAttributes = try container.decode([ProductDefaultAttribute].self, forKey: .defaultAttributes)
         
     }
 }

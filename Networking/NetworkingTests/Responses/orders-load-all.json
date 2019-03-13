@@ -4,14 +4,9 @@
              "id": 963,
              "parent_id": 0,
              "number": "963",
-             "order_key": "wc_order_5ac408a83dba3",
-             "created_via": "checkout",
-             "version": "3.3.4",
              "status": "processing",
              "currency": "USD",
-             "date_created": "2018-04-03T19:05:12",
              "date_created_gmt": "2018-04-03T23:05:12",
-             "date_modified": "2018-04-03T19:05:14",
              "date_modified_gmt": "2018-04-03T23:05:14",
              "discount_total": "30.00",
              "discount_tax": "1.20",
@@ -20,10 +15,7 @@
              "cart_tax": "1.20",
              "total": "31.20",
              "total_tax": "1.20",
-             "prices_include_tax": false,
              "customer_id": 11,
-             "customer_ip_address": "24.52.34.206",
-             "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/65.0.3325.181 safari/537.36",
              "customer_note": "",
              "billing": {
              "first_name": "Johnny",
@@ -51,36 +43,9 @@
              "email": "scrambled@scrambled.com",
              "phone": "333-333-3333"
              },
-             "payment_method": "stripe",
              "payment_method_title": "Credit Card (Stripe)",
-             "transaction_id": "ch_1CCyBiJK48mSkzFLoXQiCziz",
-             "date_paid": "2018-04-03T19:05:14",
              "date_paid_gmt": "2018-04-03T23:05:14",
-             "date_completed": null,
              "date_completed_gmt": null,
-             "cart_hash": "c51a4e7d1d0762abbe726b4f6d489391",
-             "meta_data": [
-                           {
-                           "id": 24155,
-                           "key": "_stripe_source_id",
-                           "value": "src_1CCyBeJK48mSkzFLxOpLtdNk"
-                           },
-                           {
-                           "id": 24156,
-                           "key": "_stripe_charge_captured",
-                           "value": "yes"
-                           },
-                           {
-                           "id": 24157,
-                           "key": "Stripe Fee",
-                           "value": "1.20"
-                           },
-                           {
-                           "id": 24158,
-                           "key": "Net Revenue From Stripe",
-                           "value": "30.00"
-                           }
-                           ],
              "line_items": [
                             {
                             "id": 890,
@@ -127,36 +92,6 @@
                             "price": 0
                             }
                             ],
-             "tax_lines": [
-                           {
-                           "id": 893,
-                           "rate_code": "US-NY-STATE TAX-1",
-                           "rate_id": 1,
-                           "label": "State Tax",
-                           "compound": false,
-                           "tax_total": "1.20",
-                           "shipping_tax_total": "0.00",
-                           "meta_data": []
-                           }
-                           ],
-             "shipping_lines": [
-                                {
-                                "id": 892,
-                                "method_title": "Free shipping",
-                                "method_id": "free_shipping:26",
-                                "total": "0.00",
-                                "total_tax": "0.00",
-                                "taxes": [],
-                                "meta_data": [
-                                              {
-                                              "id": 6507,
-                                              "key": "Items",
-                                              "value": "Fruits Basket (Mix & Match Product) &times; 1, Fruits Bundle &times; 1"
-                                              }
-                                              ]
-                                }
-                                ],
-             "fee_lines": [],
              "coupon_lines": [
                               {
                               "id": 894,
@@ -208,38 +143,15 @@
                                             }
                                             ]
                               }
-                              ],
-             "refunds": [],
-             "_links": {
-             "self": [
-                      {
-                      "href": "https://scrambled/wp-json/wc/v2/orders/963"
-                      }
-                      ],
-             "collection": [
-                            {
-                            "href": "https://scrambled/wp-json/wc/v2/orders"
-                            }
-                            ],
-             "customer": [
-                          {
-                          "href": "https://scrambled/wp-json/wc/v2/customers/11"
-                          }
-                          ]
-             }
+                              ]
              },
              {
              "id": 961,
              "parent_id": 0,
              "number": "961",
-             "order_key": "wc_order_5ac3e9fd7c8b9",
-             "created_via": "checkout",
-             "version": "3.3.4",
              "status": "processing",
              "currency": "USD",
-             "date_created": "2018-04-03T16:54:21",
              "date_created_gmt": "2018-04-03T20:54:21",
-             "date_modified": "2018-04-03T16:54:23",
              "date_modified_gmt": "2018-04-03T20:54:23",
              "discount_total": "0.00",
              "discount_tax": "0.00",
@@ -248,10 +160,7 @@
              "cart_tax": "0.00",
              "total": "20.00",
              "total_tax": "0.00",
-             "prices_include_tax": false,
              "customer_id": 1,
-             "customer_ip_address": "100.2.138.170",
-             "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/65.0.3325.181 safari/537.36",
              "customer_note": "",
              "billing": {
              "first_name": "Julia",
@@ -277,41 +186,9 @@
              "postcode": "33139",
              "country": "US"
              },
-             "payment_method": "stripe",
              "payment_method_title": "Credit Card (Stripe)",
-             "transaction_id": "ch_scrambled",
-             "date_paid": "2018-04-03T16:54:23",
              "date_paid_gmt": "2018-04-03T20:54:23",
-             "date_completed": null,
              "date_completed_gmt": null,
-             "cart_hash": "b615a3a375d574ed3ccfedea4b91e854",
-             "meta_data": [
-                           {
-                           "id": 24086,
-                           "key": "_stripe_customer_id",
-                           "value": "cus_B9aZmYbtbK1ryN"
-                           },
-                           {
-                           "id": 24087,
-                           "key": "_stripe_source_id",
-                           "value": "src_1CCw92JK48mSkzFLYrjh01FM"
-                           },
-                           {
-                           "id": 24088,
-                           "key": "_stripe_charge_captured",
-                           "value": "yes"
-                           },
-                           {
-                           "id": 24089,
-                           "key": "Stripe Fee",
-                           "value": "0.88"
-                           },
-                           {
-                           "id": 24090,
-                           "key": "Net Revenue From Stripe",
-                           "value": "19.12"
-                           }
-                           ],
              "line_items": [
                             {
                             "id": 888,
@@ -330,57 +207,15 @@
                             "price": 20
                             }
                             ],
-             "tax_lines": [],
-             "shipping_lines": [
-                                {
-                                "id": 889,
-                                "method_title": "Free shipping",
-                                "method_id": "free_shipping:26",
-                                "total": "0.00",
-                                "total_tax": "0.00",
-                                "taxes": [],
-                                "meta_data": [
-                                              {
-                                              "id": 6484,
-                                              "key": "Items",
-                                              "value": "Poster (Product Add-On) &times; 1"
-                                              }
-                                              ]
-                                }
-                                ],
-             "fee_lines": [],
-             "coupon_lines": [],
-             "refunds": [],
-             "_links": {
-             "self": [
-                      {
-                      "href": "https://scrambled/wp-json/wc/v2/orders/961"
-                      }
-                      ],
-             "collection": [
-                            {
-                            "href": "https://scrambled/wp-json/wc/v2/orders"
-                            }
-                            ],
-             "customer": [
-                          {
-                          "href": "https://scrambled/wp-json/wc/v2/customers/1"
-                          }
-                          ]
-             }
+             "coupon_lines": []
              },
              {
              "id": 960,
              "parent_id": 0,
              "number": "960",
-             "order_key": "wc_order_5ac3e9968343a",
-             "created_via": "checkout",
-             "version": "3.3.4",
              "status": "processing",
              "currency": "USD",
-             "date_created": "2018-04-03T16:52:38",
              "date_created_gmt": "2018-04-03T20:52:38",
-             "date_modified": "2018-04-03T16:52:41",
              "date_modified_gmt": "2018-04-03T20:52:41",
              "discount_total": "0.00",
              "discount_tax": "0.00",
@@ -389,10 +224,7 @@
              "cart_tax": "0.00",
              "total": "20.00",
              "total_tax": "0.00",
-             "prices_include_tax": false,
              "customer_id": 1,
-             "customer_ip_address": "100.2.138.170",
-             "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_13_3) applewebkit/537.36 (khtml, like gecko) chrome/65.0.3325.181 safari/537.36",
              "customer_note": "",
              "billing": {
              "first_name": "Julia",
@@ -418,41 +250,9 @@
              "postcode": "33139",
              "country": "US"
              },
-             "payment_method": "stripe",
              "payment_method_title": "Credit Card (Stripe)",
-             "transaction_id": "ch_1CCw7QJK48mSkzFLIbQnSl7Z",
-             "date_paid": "2018-04-03T16:52:41",
              "date_paid_gmt": "2018-04-03T20:52:41",
-             "date_completed": null,
              "date_completed_gmt": null,
-             "cart_hash": "f2143aeb75a9d378b29ddfa165ee67fd",
-             "meta_data": [
-                           {
-                           "id": 24030,
-                           "key": "_stripe_customer_id",
-                           "value": "cus_B9aZmYbtbK1ryN"
-                           },
-                           {
-                           "id": 24031,
-                           "key": "_stripe_source_id",
-                           "value": "src_1CCw7NJK48mSkzFLyas6aoCp"
-                           },
-                           {
-                           "id": 24032,
-                           "key": "_stripe_charge_captured",
-                           "value": "yes"
-                           },
-                           {
-                           "id": 24033,
-                           "key": "Stripe Fee",
-                           "value": "0.88"
-                           },
-                           {
-                           "id": 24034,
-                           "key": "Net Revenue From Stripe",
-                           "value": "19.12"
-                           }
-                           ],
              "line_items": [
                             {
                             "id": 886,
@@ -477,44 +277,7 @@
                             "price": 20
                             }
                             ],
-             "tax_lines": [],
-             "shipping_lines": [
-                                {
-                                "id": 887,
-                                "method_title": "Free shipping",
-                                "method_id": "free_shipping:26",
-                                "total": "0.00",
-                                "total_tax": "0.00",
-                                "taxes": [],
-                                "meta_data": [
-                                              {
-                                              "id": 6470,
-                                              "key": "Items",
-                                              "value": "Poster (Product Add-On) &times; 1"
-                                              }
-                                              ]
-                                }
-                                ],
-             "fee_lines": [],
-             "coupon_lines": [],
-             "refunds": [],
-             "_links": {
-             "self": [
-                      {
-                      "href": "https://scrambled.com/wp-json/wc/v2/orders/960"
-                      }
-                      ],
-             "collection": [
-                            {
-                            "href": "https://scrambled.com/wp-json/wc/v2/orders"
-                            }
-                            ],
-             "customer": [
-                          {
-                          "href": "https://scrambled.com/wp-json/wc/v2/customers/1"
-                          }
-                          ]
-             }
+             "coupon_lines": []
              }
              ]
 }

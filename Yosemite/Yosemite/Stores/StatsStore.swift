@@ -165,7 +165,7 @@ extension StatsStore {
 
         let storage = storageManager.viewStorage
         let storageTopEarnerStats = storage.loadTopEarnerStats(date: readOnlyStats.date,
-                                                               granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.TopEarnerStats.self)
+                                               granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.TopEarnerStats.self)
         storageTopEarnerStats.update(with: readOnlyStats)
         handleTopEarnerStatsItems(readOnlyStats, storageTopEarnerStats, storage)
         storage.saveIfNeeded()
@@ -197,7 +197,8 @@ extension StatsStore {
         assert(Thread.isMainThread)
 
         let storage = storageManager.viewStorage
-        let storageSiteVisitStats = storage.loadSiteVisitStats(granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
+        let storageSiteVisitStats = storage.loadSiteVisitStats(
+            granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
         storageSiteVisitStats.update(with: readOnlyStats)
         handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
         storage.saveIfNeeded()
@@ -229,7 +230,8 @@ extension StatsStore {
         assert(Thread.isMainThread)
 
         let storage = storageManager.viewStorage
-        let storageOrderStats = storage.loadOrderStats(granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.OrderStats.self)
+        let storageOrderStats = storage.loadOrderStats(
+            granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.OrderStats.self)
         storageOrderStats.update(with: readOnlyStats)
         handleOrderStatsItems(readOnlyStats, storageOrderStats, storage)
         storage.saveIfNeeded()

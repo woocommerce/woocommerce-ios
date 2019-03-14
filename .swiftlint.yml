@@ -1,6 +1,9 @@
 # Project configuration
 included:
   - WooCommerce
+  - Networking
+  - Storage
+  - Yosemite
 
 # Rules
 whitelist_rules:

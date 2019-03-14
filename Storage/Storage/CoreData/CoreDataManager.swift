@@ -1,6 +1,5 @@
 import Foundation
 import CoreData
-import CocoaLumberjack
 
 
 /// CoreDataManager: Manages the entire CoreData Stack. Conforms to the StorageManager API.
@@ -158,7 +157,10 @@ public class CoreDataManager: StorageManagerType {
         }
 
         do {
-            let migrateResult = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: storeURL, storeType: NSSQLiteStoreType, to: objectModel, using: sortedKeys)
+            let migrateResult = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: storeURL,
+                                                                               storeType: NSSQLiteStoreType,
+                                                                               to: objectModel,
+                                                                               using: sortedKeys)
             if migrateResult == false {
                 DDLogError("☠️ [CoreDataManager] Unable to migrate store.")
             }

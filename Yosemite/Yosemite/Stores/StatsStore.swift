@@ -25,9 +25,17 @@ public class StatsStore: Store {
         case .resetStoredStats(let onCompletion):
             resetStoredStats(onCompletion: onCompletion)
         case .retrieveOrderStats(let siteID, let granularity, let latestDateToInclude, let quantity, let onCompletion):
-            retrieveOrderStats(siteID: siteID, granularity: granularity, latestDateToInclude: latestDateToInclude,  quantity: quantity, onCompletion: onCompletion)
+            retrieveOrderStats(siteID: siteID,
+                               granularity: granularity,
+                               latestDateToInclude: latestDateToInclude,
+                               quantity: quantity,
+                               onCompletion: onCompletion)
         case .retrieveSiteVisitStats(let siteID, let granularity, let latestDateToInclude, let quantity, let onCompletion):
-            retrieveSiteVisitStats(siteID: siteID, granularity: granularity, latestDateToInclude: latestDateToInclude,  quantity: quantity, onCompletion: onCompletion)
+            retrieveSiteVisitStats(siteID: siteID,
+                                   granularity: granularity,
+                                   latestDateToInclude: latestDateToInclude,
+                                   quantity: quantity,
+                                   onCompletion: onCompletion)
         case .retrieveTopEarnerStats(let siteID, let granularity, let latestDateToInclude, let onCompletion):
             retrieveTopEarnerStats(siteID: siteID, granularity: granularity, latestDateToInclude: latestDateToInclude, onCompletion: onCompletion)
         case .retrieveOrderTotals(let siteID, let status, let onCompletion):
@@ -39,7 +47,7 @@ public class StatsStore: Store {
 
 // MARK: - Public Helpers
 //
-public extension StatsStore  {
+public extension StatsStore {
 
     /// Converts a Date into the appropriately formatted string based on the `OrderStatGranularity`
     ///
@@ -60,7 +68,7 @@ public extension StatsStore  {
 
 // MARK: - Services!
 //
-private extension StatsStore  {
+private extension StatsStore {
 
     /// Deletes all of the Stats data.
     ///
@@ -99,7 +107,10 @@ private extension StatsStore  {
 
         let remote = SiteVisitStatsRemote(network: network)
 
-        remote.loadSiteVisitorStats(for: siteID, unit: granularity, latestDateToInclude: latestDateToInclude, quantity: quantity) { [weak self] (siteVisitStats, error) in
+        remote.loadSiteVisitorStats(for: siteID,
+                                    unit: granularity,
+                                    latestDateToInclude: latestDateToInclude,
+                                    quantity: quantity) { [weak self] (siteVisitStats, error) in
             guard let siteVisitStats = siteVisitStats else {
                 onCompletion(error)
                 return
@@ -118,7 +129,10 @@ private extension StatsStore  {
         let remote = TopEarnersStatsRemote(network: network)
         let formattedDateString = StatsStore.buildDateString(from: latestDateToInclude, with: granularity)
 
-        remote.loadTopEarnersStats(for: siteID, unit: granularity, latestDateToInclude: formattedDateString, limit: Constants.defaultTopEarnerStatsLimit) { [weak self] (topEarnerStats, error) in
+        remote.loadTopEarnersStats(for: siteID,
+                                   unit: granularity,
+                                   latestDateToInclude: formattedDateString,
+                                   limit: Constants.defaultTopEarnerStatsLimit) { [weak self] (topEarnerStats, error) in
             guard let topEarnerStats = topEarnerStats else {
                 onCompletion(error)
                 return
@@ -159,7 +173,9 @@ extension StatsStore {
 
     /// Updates the provided StorageTopEarnerStats items using the provided read-only TopEarnerStats items
     ///
-    private func handleTopEarnerStatsItems(_ readOnlyStats: Networking.TopEarnerStats, _ storageTopEarnerStats: Storage.TopEarnerStats, _ storage: StorageType) {
+    private func handleTopEarnerStatsItems(_ readOnlyStats: Networking.TopEarnerStats,
+                                           _ storageTopEarnerStats: Storage.TopEarnerStats,
+                                           _ storage: StorageType) {
 
         // Since we are treating the items in core data like a dumb cache, start by nuking all of the existing stored TopEarnerStatsItems
         storageTopEarnerStats.items?.forEach {
@@ -189,7 +205,9 @@ extension StatsStore {
 
     /// Updates the provided StorageSiteVisitStats items using the provided read-only SiteVisitStats items
     ///
-    private func handleSiteVisitStatsItems(_ readOnlyStats: Networking.SiteVisitStats, _ storageSiteVisitStats: Storage.SiteVisitStats, _ storage: StorageType) {
+    private func handleSiteVisitStatsItems(_ readOnlyStats: Networking.SiteVisitStats,
+                                           _ storageSiteVisitStats: Storage.SiteVisitStats,
+                                           _ storage: StorageType) {
 
         // Since we are treating the items in core data like a dumb cache, start by nuking all of the existing stored SiteVisitStatsItems
         storageSiteVisitStats.items?.forEach {

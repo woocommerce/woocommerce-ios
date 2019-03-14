@@ -9,7 +9,11 @@ public enum NotificationAction: Action {
 
     /// Registers a device for Push Notifications Delivery.
     ///
-    case registerDevice(device: APNSDevice, applicationId: String, applicationVersion: String, defaultStoreID: Int, onCompletion: (DotcomDevice?, Error?) -> Void)
+    case registerDevice(device: APNSDevice,
+                        applicationId: String,
+                        applicationVersion: String,
+                        defaultStoreID: Int,
+                        onCompletion: (DotcomDevice?, Error?) -> Void)
 
     /// Unregisters a device for Push Notifications Delivery.
     ///

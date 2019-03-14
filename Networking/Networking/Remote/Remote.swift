@@ -1,6 +1,5 @@
 import Foundation
 import Alamofire
-import CocoaLumberjack
 
 
 /// Represents a collection of Remote Endpoints

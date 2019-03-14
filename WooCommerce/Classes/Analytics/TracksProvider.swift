@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 import AutomatticTracks
-import CocoaLumberjack
 
 
 public class TracksProvider: AnalyticsProvider {

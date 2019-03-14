@@ -56,7 +56,7 @@ class NotificationStoreTests: XCTestCase {
                 XCTAssertEqual(note.noteId, 100036)
                 XCTAssertEqual(note.hash, 987654)
                 XCTAssertEqual(note.read, false)
-                XCTAssertEqual(note.icon,"https://s.wp.com/wp-content/mu-plugins/achievements/likeable-blog-5-2x.png")
+                XCTAssertEqual(note.icon, "https://s.wp.com/wp-content/mu-plugins/achievements/likeable-blog-5-2x.png")
                 XCTAssertEqual(note.noticon, "\u{f806}")
                 XCTAssertEqual(note.timestamp, "2018-10-10T01:52:46+00:00")
                 XCTAssertEqual(note.type, "like_milestone_achievement")
@@ -362,7 +362,10 @@ class NotificationStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "new", filename: "device-settings")
 
-        let action = NotificationAction.registerDevice(device: sampleAPNSDevice(), applicationId: sampleApplicationID, applicationVersion: sampleApplicationVersion, defaultStoreID: sampleDefaultStoreID) { (device, error) in
+        let action = NotificationAction.registerDevice(device: sampleAPNSDevice(),
+                                                       applicationId: sampleApplicationID,
+                                                       applicationVersion: sampleApplicationVersion,
+                                                       defaultStoreID: sampleDefaultStoreID) { (device, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(device)
             XCTAssertEqual(device?.deviceID, "12345678")
@@ -383,7 +386,10 @@ class NotificationStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "new", filename: "generic_error")
 
-        let action = NotificationAction.registerDevice(device: sampleAPNSDevice(), applicationId: sampleApplicationID, applicationVersion: sampleApplicationVersion, defaultStoreID: sampleDefaultStoreID) { (device, error) in
+        let action = NotificationAction.registerDevice(device: sampleAPNSDevice(),
+                                                       applicationId: sampleApplicationID,
+                                                       applicationVersion: sampleApplicationVersion,
+                                                       defaultStoreID: sampleDefaultStoreID) { (device, error) in
             XCTAssertNotNil(error)
             XCTAssertNil(device)
 

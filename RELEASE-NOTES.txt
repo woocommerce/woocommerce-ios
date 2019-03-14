@@ -1,3 +1,6 @@
+1.5
+-----
+
 1.4
 -----
 - bugfix: fix a crash happening on log out

@@ -6,7 +6,8 @@ import Alamofire
 ///
 public class TopEarnersStatsRemote: Remote {
 
-    /// Fetch the top earner (aka Top Performer) stats ( stats for a given site for the current day, week, month, or year (depends on the given granularity of the `unit` parameter).
+    /// Fetch the top earner (aka Top Performer) stats for a given site for the current day, week, month, or year
+    /// (depends on the given granularity of the `unit` parameter).
     ///
     /// - Parameters:
     ///   - siteID: The site ID
@@ -15,9 +16,13 @@ public class TopEarnersStatsRemote: Remote {
     ///   - limit: Maximum number of `unit`s to fetch
     ///   - completion: Closure to be executed upon completion.
     ///
-    /// Note: `latestDateToInclude` date string must be formatted appropriately given the `unit` param. See: `DateFormatter.Stats` extension for some helper funcs.
+    /// Note: `latestDateToInclude` string must be formatted appropriately given the `unit` param. See: `DateFormatter.Stats` extension for some helper funcs.
     ///
-    public func loadTopEarnersStats(for siteID: Int, unit: StatGranularity, latestDateToInclude: String, limit: Int, completion: @escaping (TopEarnerStats?, Error?) -> Void) {
+    public func loadTopEarnersStats(for siteID: Int,
+                                    unit: StatGranularity,
+                                    latestDateToInclude: String,
+                                    limit: Int,
+                                    completion: @escaping (TopEarnerStats?, Error?) -> Void) {
         let path = "\(Constants.sitesPath)/\(siteID)/\(Constants.topEarnersStatsPath)/"
         let parameters = [ParameterKeys.unit: unit.rawValue,
                           ParameterKeys.date: latestDateToInclude,

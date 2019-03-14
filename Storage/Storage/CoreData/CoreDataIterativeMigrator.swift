@@ -183,14 +183,24 @@ private extension CoreDataIterativeMigrator {
 //
 private extension CoreDataIterativeMigrator {
 
-    static func migrateStore(at url: URL, storeType: String, fromModel: NSManagedObjectModel, toModel: NSManagedObjectModel, with mappingModel: NSMappingModel) -> Bool {
+    static func migrateStore(at url: URL,
+                             storeType: String,
+                             fromModel: NSManagedObjectModel,
+                             toModel: NSManagedObjectModel,
+                             with mappingModel: NSMappingModel) -> Bool {
         let tempDestinationURL = createTemporaryFolder(at: url)
 
         // Migrate from the source model to the target model using the mapping,
         // and store the resulting data at the temporary path.
         let migrator = NSMigrationManager(sourceModel: fromModel, destinationModel: toModel)
         do {
-            try migrator.migrateStore(from: url, sourceType: storeType, options: nil, with: mappingModel, toDestinationURL: tempDestinationURL, destinationType: storeType, destinationOptions: nil)
+            try migrator.migrateStore(from: url,
+                                      sourceType: storeType,
+                                      options: nil,
+                                      with: mappingModel,
+                                      toDestinationURL: tempDestinationURL,
+                                      destinationType: storeType,
+                                      destinationOptions: nil)
         } catch {
             return false
         }
@@ -206,21 +216,21 @@ private extension CoreDataIterativeMigrator {
         return true
     }
 
-    static func metadataForPersistentStore(storeType: String, at url: URL) throws -> [String : Any]? {
+    static func metadataForPersistentStore(storeType: String, at url: URL) throws -> [String: Any]? {
 
         guard let sourceMetadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: storeType, at: url, options: nil) else {
             let description = "Failed to find source metadata for store: \(url)"
-            throw NSError(domain: "IterativeMigrator", code: 102, userInfo: [NSLocalizedDescriptionKey : description])
+            throw NSError(domain: "IterativeMigrator", code: 102, userInfo: [NSLocalizedDescriptionKey: description])
         }
 
         return sourceMetadata
     }
 
-    static func model(for metadata: [String : Any]) throws -> NSManagedObjectModel? {
+    static func model(for metadata: [String: Any]) throws -> NSManagedObjectModel? {
         let bundle = Bundle(for: CoreDataManager.self)
         guard let sourceModel = NSManagedObjectModel.mergedModel(from: [bundle], forStoreMetadata: metadata) else {
             let description = "Failed to find source model for metadata: \(metadata)"
-            throw NSError(domain: "IterativeMigrator", code: 100, userInfo: [NSLocalizedDescriptionKey : description])
+            throw NSError(domain: "IterativeMigrator", code: 100, userInfo: [NSLocalizedDescriptionKey: description])
         }
 
         return sourceModel
@@ -231,7 +241,7 @@ private extension CoreDataIterativeMigrator {
             guard let url = urlForModel(name: name, in: nil),
                 let model = NSManagedObjectModel(contentsOf: url) else {
                 let description = "No model found for \(name)"
-                throw NSError(domain: "IterativeMigrator", code: 110, userInfo: [NSLocalizedDescriptionKey : description])
+                throw NSError(domain: "IterativeMigrator", code: 110, userInfo: [NSLocalizedDescriptionKey: description])
             }
 
             return model

@@ -315,4 +315,3 @@ private extension OrderNoteStoreTests {
         return date
     }
 }
-

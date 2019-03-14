@@ -82,6 +82,7 @@ DEPENDENCIES:
   - Alamofire (~> 4.7)
   - Automattic-Tracks-iOS (= 0.2.4)
   - Charts (~> 3.2)
+  - CocoaLumberjack (~> 3.4)
   - CocoaLumberjack/Swift (~> 3.4)
   - Crashlytics (~> 3.10)
   - Gridicons (~> 0.18-beta)
@@ -147,6 +148,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 22d4c58200d7c105e0e407ab6bfd01a5d85014be
   ZendeskSDK: af6509ad7968d367f95b2645713802712152f879
 
-PODFILE CHECKSUM: bdc38e652c093973c639f51205241e2c3cdd7946
+PODFILE CHECKSUM: fa8c6b74d405866b108f16b75b24a6ea7154b198
 
 COCOAPODS: 1.5.3

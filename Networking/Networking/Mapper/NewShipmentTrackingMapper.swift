@@ -22,6 +22,14 @@ struct NewShipmentTrackingMapper: Mapper {
             .siteID: siteID,
             .orderID: orderID
         ]
-        return try decoder.decode(ShipmentTracking.self, from: response)
+        return try decoder.decode(NewShipmentTrackingMapperEnvelope.self, from: response).shipmentTracking
+    }
+}
+
+private struct NewShipmentTrackingMapperEnvelope: Decodable {
+    let shipmentTracking: ShipmentTracking
+
+    private enum CodingKeys: String, CodingKey {
+        case shipmentTracking = "data"
     }
 }

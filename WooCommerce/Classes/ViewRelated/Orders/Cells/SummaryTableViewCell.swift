@@ -88,6 +88,7 @@ final class SummaryTableViewCell: UITableViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
+        paymentStatusLabel.layer.borderColor = UIColor.clear.cgColor
     }
 }
 

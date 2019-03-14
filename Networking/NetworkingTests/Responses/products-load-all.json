@@ -671,7 +671,18 @@
                     ]
                 }
             ],
-            "default_attributes": [],
+            "default_attributes": [
+                {
+                    "id": 0,
+                    "name": "Size",
+                    "option": "Medium"
+                },
+                {
+                    "id": 0,
+                    "name": "Color",
+                    "option": "Purple"
+                }
+            ],
             "variations": [
                 192,
                 194,

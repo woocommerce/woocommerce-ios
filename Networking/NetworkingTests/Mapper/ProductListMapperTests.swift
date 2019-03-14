@@ -160,6 +160,52 @@ class ProductListMapperTests: XCTestCase {
         XCTAssertEqual(productImage?.name, "Dymo LabelWriter 4XL")
         XCTAssert(productImage?.alt?.isEmpty == true)
     }
+
+    /// Test that product attributes are properly mapped
+    ///
+    func testThatProductAttributesAreProperlyMapped() {
+        let products = mapLoadAllProductsResponse()
+        let product = products[4]
+        let attributes = product.attributes
+
+        guard let attribute = attributes[0] else {
+            XCTFail("Missing product attribute")
+            return
+        }
+
+        XCTAssertEqual(attribute.attributeID, 0)
+        XCTAssertEqual(attribute.name, "Size")
+        XCTAssertEqual(attribute.position, 0)
+        XCTAssertTrue(attribute.visible)
+        XCTAssertTrue(attribute.variation)
+
+        let option1 = attribute.options[0]
+        let option2 = attribute.options[1]
+        let option3 = attribute.options[2]
+        XCTAssertEqual(option1, "Small")
+        XCTAssertEqual(option2, "Medium")
+        XCTAssertEqual(option3, "Large")
+    }
+
+    /// Test that the default product attributes map properly
+    ///
+    func testThatDefaultProductAttributesMapProperly() {
+        let products = mapLoadAllProductsResponse()
+        let product = products[4]
+        let defaultAttributes = product.defaultAttributes
+        XCTAssert(defaultAttributes.count == 2)
+
+        let attribute1 = defaultAttributes[0]
+        let attribute2 = defaultAttributes[1]
+
+        XCTAssertEqual(attribute1?.attributeID, 0)
+        XCTAssertEqual(attribute1?.name, "Size")
+        XCTAssertEqual(attribute1?.option, "Medium")
+
+        XCTAssert(attribute2?.attributeID == 0)
+        XCTAssertEqual(attribute2?.name, "Color")
+        XCTAssertEqual(attribute2?.option, "Purple")
+    }
 }
 
 

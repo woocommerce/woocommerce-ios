@@ -17,16 +17,6 @@ public struct ShipmentTrackingProvider {
         self.name = name
         self.url = url
     }
-
-    public init?(dictionary: [String: String]?) {
-        guard let dictionary = dictionary,
-            let key = dictionary.keys.first,
-            let value = dictionary[key] else {
-            return nil
-        }
-
-        self.init(name: key, url: value)
-    }
 }
 
 extension ShipmentTrackingProvider: Comparable {

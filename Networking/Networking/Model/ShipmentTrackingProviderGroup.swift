@@ -11,9 +11,14 @@ public struct ShipmentTrackingProviderGroup {
     ///
     public let providers: [ShipmentTrackingProvider]
 
-    public init(name: String, providers: [ShipmentTrackingProvider]) {
+    init(name: String, providers: [ShipmentTrackingProvider]) {
         self.name = name
         self.providers = providers
+    }
+
+    public init(name: String, dictionary: [String: String]?) {
+        let providers = dictionary?.map({ ShipmentTrackingProvider(name: $0.key, url: $0.value) }) ?? []
+        self.init(name: name, providers: providers)
     }
 }
 

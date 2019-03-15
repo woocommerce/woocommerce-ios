@@ -7,4 +7,11 @@ class BasicTableViewCell: UITableViewCell {
 
         textLabel?.applyBodyStyle()
     }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        textLabel?.applyBodyStyle()
+        textLabel?.textAlignment = .left
+    }
 }

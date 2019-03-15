@@ -29,3 +29,19 @@ private extension Dimensions {
         case height
     }
 }
+
+// MARK: - Comparable Conformance
+//
+extension Dimensions: Comparable {
+    public static func == (lhs: Dimensions, rhs: Dimensions) -> Bool {
+        return lhs.length == rhs.length &&
+            lhs.width == rhs.width &&
+            lhs.height == rhs.height
+    }
+
+    public static func < (lhs: Dimensions, rhs: Dimensions) -> Bool {
+        return lhs.length < rhs.length ||
+            (lhs.length == rhs.length && lhs.width < rhs.width) ||
+            (lhs.length == rhs.length && lhs.width == rhs.width && lhs.height < rhs.height)
+    }
+}

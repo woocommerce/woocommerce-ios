@@ -5,6 +5,10 @@ import XCTest
 /// ProductListMapper Unit Tests
 ///
 class ProductListMapperTests: XCTestCase {
+    /// Dummy Site ID.
+    ///
+    private let dummySiteID = 33334444
+
     /// Verifies that all of the Product Fields are parsed correctly.
     ///
     func testProductFieldsAreProperlyParsed() {
@@ -17,7 +21,14 @@ class ProductListMapperTests: XCTestCase {
         XCTAssertEqual(firstProduct.slug, "book-the-green-room")
         XCTAssertEqual(firstProduct.permalink, "https://example.com/product/book-the-green-room/")
 
+        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-02-19T17:33:31")
+        let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-02-19T17:48:01")
+        XCTAssertEqual(firstProduct.dateCreated, dateCreated)
+        XCTAssertEqual(firstProduct.dateModified, dateModified)
+
         XCTAssertEqual(firstProduct.productTypeKey, "booking")
+        XCTAssertEqual(firstProduct.statusKey, "publish")
+        XCTAssertFalse(firstProduct.featured)
         XCTAssertEqual(firstProduct.catalogVisibilityKey, "visible")
 
         XCTAssertEqual(firstProduct.description, "<p>This is the party room!</p>\n")
@@ -220,7 +231,7 @@ private extension ProductListMapperTests {
             return []
         }
 
-        return try! ProductListMapper().map(response: response)
+        return try! ProductListMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the OrderListMapper output upon receiving `orders-load-all`

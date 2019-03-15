@@ -4,13 +4,19 @@ import Foundation
 /// Represents a Product Entity.
 ///
 public struct Product: Decodable {
+    public let siteID: Int
     public let productID: Int
     public let name: String
     public let slug: String
     public let permalink: String
 
+    public let dateCreated: Date        // gmt
+    public let dateModified: Date?      // gmt
+
     public let productTypeKey: String
-    public let catalogVisibilityKey: String // convert to enum ProductCatalogVisibility
+    public let statusKey: String        // draft, pending, private, published
+    public let featured: Bool
+    public let catalogVisibilityKey: String // visible, catalog, search, hidden
 
     public let description: String?
     public let shortDescription: String?
@@ -30,14 +36,14 @@ public struct Product: Decodable {
     public let downloadExpiry: Int      // defaults to -1
 
     public let externalURL: String?
-    public let taxStatusKey: String     // convert to enum ProductTaxStatus
+    public let taxStatusKey: String     // taxable, shipping, none
     public let taxClass: String?
 
     public let manageStock: Bool
     public let stockQuantity: Int?      // API reports Int or null
-    public let stockStatusKey: String   // convert to enum ProductStockStatus
+    public let stockStatusKey: String   // instock, outofstock, backorder
 
-    public let backordersKey: String    // convert to enum ProductBackOrders
+    public let backordersKey: String    // no, notify, yes
     public let backordersAllowed: Bool
     public let backordered: Bool
 
@@ -79,11 +85,16 @@ public struct Product: Decodable {
 
     /// Product struct initializer.
     ///
-    public init(productID: Int,
+    public init(siteID: Int,
+                productID: Int,
                 name: String,
                 slug: String,
                 permalink: String,
+                dateCreated: Date,
+                dateModified: Date?,
                 productTypeKey: String,
+                statusKey: String,
+                featured: Bool,
                 catalogVisibilityKey: String,
                 description: String?,
                 shortDescription: String?,
@@ -130,11 +141,16 @@ public struct Product: Decodable {
                 variations: [Int?],
                 groupedProducts: [Int?],
                 menuOrder: Int) {
+        self.siteID = siteID
         self.productID = productID
         self.name = name
         self.slug = slug
         self.permalink = permalink
+        self.dateCreated = dateCreated
+        self.dateModified = dateModified
         self.productTypeKey = productTypeKey
+        self.statusKey = statusKey
+        self.featured = featured
         self.catalogVisibilityKey = catalogVisibilityKey
         self.description = description
         self.shortDescription = shortDescription
@@ -186,6 +202,10 @@ public struct Product: Decodable {
     /// The public initializer for Product.
     ///
     public init(from decoder: Decoder) throws {
+        guard let siteID = decoder.userInfo[.siteID] as? Int else {
+            throw ProductDecodingError.missingSiteID
+        }
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let productID = try container.decode(Int.self, forKey: .productID)
@@ -193,7 +213,12 @@ public struct Product: Decodable {
         let slug = try container.decode(String.self, forKey: .slug)
         let permalink = try container.decode(String.self, forKey: .permalink)
 
+        let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
+        let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified) ?? Date()
+
         let productTypeKey = try container.decode(String.self, forKey: .productTypeKey)
+        let statusKey = try container.decode(String.self, forKey: .statusKey)
+        let featured = try container.decode(Bool.self, forKey: .featured)
         let catalogVisibilityKey = try container.decode(String.self, forKey: .catalogVisibilityKey)
 
         let description = try container.decodeIfPresent(String.self, forKey: .description)
@@ -255,11 +280,16 @@ public struct Product: Decodable {
 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
 
-        self.init(productID: productID,
+        self.init(siteID: siteID,
+                  productID: productID,
                   name: name,
                   slug: slug,
                   permalink: permalink,
+                  dateCreated: dateCreated,
+                  dateModified: dateModified,
                   productTypeKey: productTypeKey,
+                  statusKey: statusKey,
+                  featured: featured,
                   catalogVisibilityKey: catalogVisibilityKey,
                   description: description,
                   shortDescription: shortDescription,
@@ -320,10 +350,14 @@ private extension Product {
         case slug       = "slug"
         case permalink  = "permalink"
 
-        case productTypeKey = "type"
-        case statusKey      = "status"
+        case dateCreated  = "date_created_gmt"
+        case dateModified = "date_modified_gmt"
 
+        case productTypeKey         = "type"
+        case statusKey              = "status"
+        case featured               = "featured"
         case catalogVisibilityKey   = "catalog_visibility"
+
         case description            = "description"
         case shortDescription       = "short_description"
 
@@ -382,4 +416,119 @@ private extension Product {
         case groupedProducts    = "grouped_products"
         case menuOrder          = "menu_order"
     }
+}
+
+
+// MARK: - Comparable Conformance
+//
+extension Product: Comparable {
+    public static func == (lhs: Product, rhs: Product) -> Bool {
+        return lhs.siteID == rhs.siteID &&
+            lhs.productID == rhs.productID &&
+            lhs.name == rhs.name &&
+            lhs.slug == rhs.slug &&
+            lhs.permalink == rhs.permalink &&
+            lhs.dateCreated == rhs.dateCreated &&
+            lhs.dateModified == rhs.dateModified &&
+            lhs.productTypeKey == rhs.productTypeKey &&
+            lhs.statusKey == rhs.statusKey &&
+            lhs.featured == rhs.featured &&
+            lhs.catalogVisibilityKey == rhs.catalogVisibilityKey &&
+            lhs.description == rhs.description &&
+            lhs.shortDescription == rhs.shortDescription &&
+            lhs.sku == rhs.sku &&
+            lhs.price == rhs.price &&
+            lhs.regularPrice == rhs.regularPrice &&
+            lhs.salePrice == rhs.salePrice &&
+            lhs.onSale == rhs.onSale &&
+            lhs.purchasable == rhs.purchasable &&
+            lhs.totalSales == rhs.totalSales &&
+            lhs.virtual == rhs.virtual &&
+            lhs.downloadable == rhs.downloadable &&
+            lhs.downloadLimit == rhs.downloadLimit &&
+            lhs.downloadExpiry == rhs.downloadExpiry &&
+            lhs.externalURL == rhs.externalURL &&
+            lhs.taxStatusKey == rhs.taxStatusKey &&
+            lhs.taxClass == rhs.taxClass &&
+            lhs.manageStock == rhs.manageStock &&
+            lhs.stockQuantity == rhs.stockQuantity &&
+            lhs.stockStatusKey == rhs.stockStatusKey &&
+            lhs.backordersKey == rhs.backordersKey &&
+            lhs.backordersAllowed == rhs.backordersAllowed &&
+            lhs.backordered == rhs.backordered &&
+            lhs.soldIndividually == rhs.soldIndividually &&
+            lhs.weight == rhs.weight &&
+            lhs.dimensions == rhs.dimensions &&
+            lhs.shippingRequired == rhs.shippingRequired &&
+            lhs.shippingTaxable == rhs.shippingTaxable &&
+            lhs.shippingClass == rhs.shippingClass &&
+            lhs.shippingClassID == rhs.shippingClassID &&
+            lhs.reviewsAllowed == rhs.reviewsAllowed &&
+            lhs.averageRating == rhs.averageRating &&
+            lhs.ratingCount == rhs.ratingCount &&
+            lhs.relatedIDs == rhs.relatedIDs &&
+            lhs.upsellIDs == rhs.upsellIDs &&
+            lhs.parentID == rhs.parentID &&
+            lhs.purchaseNote == rhs.purchaseNote &&
+            lhs.categories == rhs.categories &&
+            lhs.tags == rhs.tags &&
+            lhs.images == rhs.images &&
+            lhs.attributes == rhs.attributes &&
+            lhs.defaultAttributes == rhs.defaultAttributes &&
+            lhs.variations == rhs.variations &&
+            lhs.groupedProducts == rhs.groupedProducts &&
+            lhs.menuOrder == rhs.menuOrder
+    }
+
+    public static func < (lhs: Product, rhs: Product) -> Bool {
+        /// Note: stockQuantity can be `null` in the API,
+        /// which is why we are unable to sort by it here.
+        ///
+        return lhs.siteID < rhs.siteID ||
+            (lhs.siteID == rhs.siteID && lhs.productID < rhs.productID) ||
+            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
+                lhs.name < rhs.name) ||
+            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
+                lhs.name == rhs.name && lhs.slug < rhs.slug) ||
+            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
+                lhs.name == rhs.name && lhs.slug == rhs.slug &&
+                lhs.dateCreated < rhs.dateCreated) ||
+            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
+                lhs.name == rhs.name && lhs.slug == rhs.slug &&
+                lhs.dateCreated == rhs.dateCreated &&
+                lhs.productTypeKey < rhs.productTypeKey) ||
+            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
+                lhs.name == rhs.name && lhs.slug == rhs.slug &&
+                lhs.dateCreated == rhs.dateCreated &&
+                lhs.productTypeKey == rhs.productTypeKey &&
+                lhs.statusKey < rhs.statusKey) ||
+            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
+                lhs.name == rhs.name && lhs.slug == rhs.slug &&
+                lhs.dateCreated == rhs.dateCreated &&
+                lhs.productTypeKey == rhs.productTypeKey &&
+                lhs.statusKey == rhs.statusKey &&
+                lhs.stockStatusKey < rhs.stockStatusKey) ||
+            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
+                lhs.name == rhs.name && lhs.slug == rhs.slug &&
+                lhs.dateCreated == rhs.dateCreated &&
+                lhs.productTypeKey == rhs.productTypeKey &&
+                lhs.statusKey == rhs.statusKey &&
+                lhs.stockStatusKey == rhs.stockStatusKey &&
+                lhs.averageRating < rhs.averageRating) ||
+            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
+                lhs.name == rhs.name && lhs.slug == rhs.slug &&
+                lhs.dateCreated == rhs.dateCreated &&
+                lhs.productTypeKey == rhs.productTypeKey &&
+                lhs.statusKey == rhs.statusKey &&
+                lhs.stockStatusKey == rhs.stockStatusKey &&
+                lhs.averageRating == rhs.averageRating &&
+                lhs.ratingCount < rhs.ratingCount)
+    }
+}
+
+
+// MARK: - Decoding Errors
+//
+enum ProductDecodingError: Error {
+    case missingSiteID
 }

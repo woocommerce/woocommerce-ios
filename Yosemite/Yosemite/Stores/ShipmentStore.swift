@@ -62,13 +62,15 @@ extension ShipmentStore {
     /// Updates (OR Inserts) the specified ReadOnly ShipmentTracking Entities into the Storage Layer *in a background thread*. onCompletion will be called
     /// on the main thread!
     ///
-    func upsertShipmentTrackingDataInBackground(siteID: Int, orderID: Int, readOnlyShipmentTrackingData: [Networking.ShipmentTracking], onCompletion: @escaping () -> Void) {
+    func upsertShipmentTrackingDataInBackground(siteID: Int,
+                                                orderID: Int,
+                                                readOnlyShipmentTrackingData: [Networking.ShipmentTracking],
+                                                onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             for readOnlyTracking in readOnlyShipmentTrackingData {
-                let storageTracking = derivedStorage.loadShipmentTracking(siteID: readOnlyTracking.siteID,
-                                                                          orderID: readOnlyTracking.orderID,
-                                                                          trackingID: readOnlyTracking.trackingID) ?? derivedStorage.insertNewObject(ofType: Storage.ShipmentTracking.self)
+                let storageTracking = derivedStorage.loadShipmentTracking(siteID: readOnlyTracking.siteID, orderID: readOnlyTracking.orderID,
+                    trackingID: readOnlyTracking.trackingID) ?? derivedStorage.insertNewObject(ofType: Storage.ShipmentTracking.self)
                 storageTracking.update(with: readOnlyTracking)
             }
 

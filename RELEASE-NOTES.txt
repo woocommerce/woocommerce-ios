@@ -1,5 +1,6 @@
 1.5
 -----
+- improvement: change top performers text from "Total Product Order" to "Total orders" for clarity
 
 1.4
 -----

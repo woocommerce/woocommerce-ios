@@ -622,7 +622,8 @@ private extension OrderDetailsViewController {
                 return
             }
 
-            self.viewModel = OrderDetailsViewModel(order: order, orderStatus: nil)
+            let orderStatus = self.lookUpOrderStatus(for: order)
+            self.viewModel = OrderDetailsViewModel(order: order, orderStatus: orderStatus)
             onCompletion?(nil)
         }
 

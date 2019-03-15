@@ -1,6 +1,7 @@
 1.5
 -----
 - improvement: change top performers text from "Total Product Order" to "Total orders" for clarity
+- bugfix: fixed an issue on the order details screen where the shipment tracking dates were incorrect
 
 1.4
 -----

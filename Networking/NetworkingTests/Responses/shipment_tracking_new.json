@@ -1,0 +1,26 @@
+{
+    "data": {
+        "tracking_id": "f2e7783b40837b9e1ec503a149dab4a1",
+        "tracking_provider": "TNT Express (consignment)",
+        "tracking_link": "http:\/\/www.tnt.com\/webtracker\/tracking.do?requestType=GEN&searchType=CON&respLang=en&respCountry=GENERIC&sourceID=1&sourceCountry=ww&cons=123456781234567812345678&navigation=1&g\nenericSiteIdent=",
+        "tracking_number": "123456781234567812345678",
+        "date_shipped": "2019-03-12",
+        "_links": {
+            "self": [
+                {
+                    "href": "https:\/\/somewhere.online.net.com\/wp-json\/wc\/v1\/orders\/33\/shipment-trackings\/f2e7783b40837b9e1ec503a149dab4a1"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https:\/\/somewhere.online.net.com\/wp-json\/wc\/v1\/orders\/33\/shipment-trackings"
+                }
+            ],
+            "up": [
+                {
+                    "href": "https:\/\/somewhere.online.net.com\/wp-json\/wc\/v1\/orders\/33"
+                }
+            ]
+        }
+    }
+}

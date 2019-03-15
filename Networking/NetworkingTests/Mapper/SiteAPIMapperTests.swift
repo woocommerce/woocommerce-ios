@@ -12,11 +12,11 @@ class SiteAPIMapperTests: XCTestCase {
 
     /// Dummy Site Namespaces.
     ///
-    private let dummyNamespaces = ["oembed/1.0", "wpcomsh/v1", "akismet/v1", "jetpack/v4", "wpcom/v2", "wc/v1", "wc/v2", "wc/v3", "wp/v2"]
+    private let dummyNamespaces = ["oembed/1.0", "akismet/v1", "jetpack/v4", "wpcom/v2", "wc/v1", "wc/v2", "wc/v3", "wc-pb/v3", "wp/v2"]
 
     /// Dummy Broken Site Namespaces.
     ///
-    private let dummyBrokenNamespaces = ["oembed/1.0", "wpcomsh/v1", "akismet/v1", "jetpack/v4", "wpcom/v2", "wp/v2"]
+    private let dummyBrokenNamespaces = ["oembed/1.0", "akismet/v1", "jetpack/v4", "wpcom/v2", "wc-pb/v3", "wp/v2"]
 
     /// Verifies the SiteSetting fields are parsed correctly.
     ///

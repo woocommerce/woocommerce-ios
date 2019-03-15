@@ -15,9 +15,24 @@ public class SiteAPIRemote: Remote {
     ///
     public func loadAPIInformation(for siteID: Int, completion: @escaping (SiteAPI?, Error?) -> Void) {
         let path = String()
-        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path)
+        let parameters = [ParameterKeys.fields: ParameterValues.fieldValues]
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = SiteAPIMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
+    }
+}
+
+
+// MARK: - Constants!
+//
+private extension SiteAPIRemote {
+
+    enum ParameterKeys {
+        static let fields: String = "_fields"
+    }
+
+    enum ParameterValues {
+        static let fieldValues: String = "authentication,namespaces"
     }
 }

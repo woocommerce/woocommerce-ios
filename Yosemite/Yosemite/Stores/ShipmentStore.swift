@@ -52,6 +52,18 @@ private extension ShipmentStore {
             }
         }
     }
+
+    func syncronizeShipmentTrackingProviderData(siteID: Int, orderID: Int, onCompletion: @escaping (Error?) -> Void) {
+        let remote = ShipmentsRemote(network: network)
+        remote.loadShipmentTrackingProviderGroups(for: siteID, orderID: orderID) { [weak self] (groups,error) in
+            guard let readOnlyShipmentTrackingProviderGroups = groups else {
+                onCompletion(error)
+                return
+            }
+
+//            self?.upsertShipmentTrackingProviderDataInBackground(siteID: siteID, orderID: orderID, readOnlyShipmentTrackingProviderGroups: readOnlyShipmentTrackingProviderGroups)
+        }
+    }
 }
 
 
@@ -85,5 +97,9 @@ extension ShipmentStore {
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
         }
+    }
+
+    func upsertShipmentTrackingProviderDataInBackground(siteID: Int, orderID: Int, readOnlyShipmentTrackingProviderGroups: [Networking.ShipmentTrackingProviderGroup], completion: () -> Void) {
+
     }
 }

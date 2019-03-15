@@ -367,7 +367,10 @@ private extension PeriodDataViewController {
         yAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(
             NSLocalizedString(
                 "Minimum value %@, maximum value %@",
-                comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}."
+                comment: """
+                    VoiceOver accessibility value, informs the user about the Y-axis min/max values. \
+                    It reads: Minimum value {value}, maximum value {value}.
+                    """
             ),
             yAxisMinimum,
             yAxisMaximum
@@ -402,7 +405,10 @@ private extension PeriodDataViewController {
             chartSummaryString += String.localizedStringWithFormat(
                 NSLocalizedString(
                     "Bar number %i, %@, ",
-                    comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}."
+                    comment: """
+                        VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. \
+                        It reads: Bar number {bar number} {summary of bar}.
+                        """
                 ),
                 i+1,
                 entrySummaryString

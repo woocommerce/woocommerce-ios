@@ -317,7 +317,10 @@ private extension OrderDetailsViewController {
         let message = String.localizedStringWithFormat(
             NSLocalizedString(
                 "Order %@ has been deleted from your store",
-                comment: "Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store"
+                comment: """
+                    Displayed whenever the Details for an Order that just got deleted was onscreen. \
+                    It reads: Order {order number} has been deleted from your store
+                    """
             ),
             viewModel.order.number
         )
@@ -452,7 +455,10 @@ private extension OrderDetailsViewController {
 
         cell.accessibilityHint = NSLocalizedString(
             "Prompts with the option to call or message the billing customer.",
-            comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer."
+            comment: """
+                VoiceOver accessibility hint, informing the user that the row can be tapped to get to a \
+                prompt that lets them call or message the billing customer.
+                """
         )
     }
 
@@ -616,7 +622,8 @@ private extension OrderDetailsViewController {
                 return
             }
 
-            self.viewModel = OrderDetailsViewModel(order: order, orderStatus: nil)
+            let orderStatus = self.lookUpOrderStatus(for: order)
+            self.viewModel = OrderDetailsViewModel(order: order, orderStatus: orderStatus)
             onCompletion?(nil)
         }
 

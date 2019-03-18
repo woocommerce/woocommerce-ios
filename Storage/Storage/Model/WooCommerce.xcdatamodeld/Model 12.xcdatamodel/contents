@@ -158,11 +158,13 @@
     </entity>
     <entity name="ShipmentTrackingProvider" representedClassName="ShipmentTrackingProvider" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="group" maxCount="1" deletionRule="Nullify" destinationEntity="ShipmentTrackingProviderGroup" inverseName="providers" inverseEntity="ShipmentTrackingProviderGroup" syncable="YES"/>
     </entity>
     <entity name="ShipmentTrackingProviderGroup" representedClassName="ShipmentTrackingProviderGroup" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="providers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShipmentTrackingProvider" inverseName="group" inverseEntity="ShipmentTrackingProvider" syncable="YES"/>
     </entity>
     <entity name="Site" representedClassName="Site" syncable="YES">
@@ -219,8 +221,8 @@
         <element name="OrderStatsItem" positionX="321.74609375" positionY="425.51171875" width="128" height="330"/>
         <element name="OrderStatus" positionX="-162" positionY="45" width="128" height="105"/>
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
-        <element name="ShipmentTrackingProvider" positionX="-162" positionY="45" width="128" height="90"/>
-        <element name="ShipmentTrackingProviderGroup" positionX="-153" positionY="54" width="128" height="75"/>
+        <element name="ShipmentTrackingProvider" positionX="-162" positionY="45" width="128" height="103"/>
+        <element name="ShipmentTrackingProviderGroup" positionX="-153" positionY="54" width="128" height="88"/>
         <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="150"/>
         <element name="SiteSetting" positionX="-362.54296875" positionY="217.9921875" width="128" height="120"/>
         <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="90"/>

@@ -1,10 +1,3 @@
-//
-//  ShipmentTrackingProviderGroup+CoreDataProperties.swift
-//  Storage
-//
-//  Created by Cesar Tardaguila on 14/3/2019.
-//  Copyright © 2019 Automattic. All rights reserved.
-//
 import Foundation
 import CoreData
 
@@ -15,6 +8,7 @@ extension ShipmentTrackingProviderGroup {
         return NSFetchRequest<ShipmentTrackingProviderGroup>(entityName: "ShipmentTrackingProviderGroup")
     }
 
+    @NSManaged public var siteID: Int64
     @NSManaged public var name: String?
     @NSManaged public var providers: NSSet?
 

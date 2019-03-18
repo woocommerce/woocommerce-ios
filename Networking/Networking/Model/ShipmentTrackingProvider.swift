@@ -7,13 +7,18 @@ public struct ShipmentTrackingProvider {
     ///
     public let name: String
 
+    /// Site Identifier
+    ///
+    public let siteID: Int
+
     /// Tracking provider url
     ///
     public let url: String
 
     /// Shipment Tracking Provider struct initializer
     ///
-    public init(name: String, url: String) {
+    public init(siteID: Int, name: String, url: String) {
+        self.siteID = siteID
         self.name = name
         self.url = url
     }

@@ -532,6 +532,7 @@ private extension OrdersViewController {
     func removePlaceholderOrders() {
         tableView.removeGhostContent()
         resultsController.startForwardingEvents(to: self.tableView)
+        tableView.reloadData()
     }
 
     /// Displays the Error Notice.

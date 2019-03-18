@@ -152,9 +152,19 @@ private extension LoginPrologueViewController {
     /// Returns the Disclaimer Attributed Text (which contains a link to the Jetpack Setup URL).
     ///
     var disclaimerAttributedText: NSAttributedString {
-        let disclaimerText = NSLocalizedString(
-            "This app requires Jetpack to connect to your Store. <br /> Read the <a href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>.",
-            comment: "Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language."
+        let disclaimerText = NSLocalizedString("""
+                                 This app requires Jetpack to connect to your Store. <br /> Read the \
+                                 <a href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>.
+                                 """,
+                             comment: """
+                                 Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to \
+                                 your Store. Read the configuration instructions.' and it links to a web page on the words \
+                                 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \
+                                 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. \
+                                 If a literal translation of 'Read the configuration instructions' does not make sense in your language, \
+                                 please use a contextually appropriate substitution. For example, you can translate it to say \
+                                 'See: instructions' or any alternative that sounds natural in your language.
+                                 """
         )
         let disclaimerAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.font(forStyle: .caption1, weight: .thin),

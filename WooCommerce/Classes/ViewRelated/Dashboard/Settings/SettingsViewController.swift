@@ -120,7 +120,10 @@ private extension SettingsViewController {
     func configureSections() {
         let selectedStoreTitle = NSLocalizedString(
             "Selected Store",
-            comment: "My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username."
+            comment: """
+                My Store > Settings > Selected Store information section. This is the heading listed above the information row that \
+                displays the store website and their username.
+                """
             ).uppercased()
         let improveTheAppTitle = NSLocalizedString("Help Improve The App", comment: "My Store > Settings > Privacy settings section").uppercased()
         let aboutSettingsTitle = NSLocalizedString("About the app", comment: "My Store > Settings > About app section").uppercased()

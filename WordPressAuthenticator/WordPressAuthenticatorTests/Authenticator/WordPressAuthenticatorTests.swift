@@ -46,12 +46,13 @@ class WordPressAuthenticatorTests: XCTestCase {
         WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
 
         var retrievedLoginFields = WordPressAuthenticator.retrieveLoginInfoForTokenAuth()
-        let retrievedEmail = loginFields.username
+        var retrievedEmail = retrievedLoginFields.username
         XCTAssert(email == retrievedEmail, "The email retrived should match the email that was saved.")
 
         WordPressAuthenticator.deleteLoginInfoForTokenAuth()
         retrievedLoginFields = WordPressAuthenticator.retrieveLoginInfoForTokenAuth()
+        retrievedEmail = retrievedLoginFields.username
 
-        XCTAssert(retrievedLoginFields == nil, "Saved loginFields should be deleted after calling deleteLoginInfoForTokenAuth.")
+        XCTAssert(email != retrievedEmail, "Saved loginFields should be deleted after calling deleteLoginInfoForTokenAuth.")
     }
 }

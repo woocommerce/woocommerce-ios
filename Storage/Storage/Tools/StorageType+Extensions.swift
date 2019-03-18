@@ -141,9 +141,16 @@ public extension StorageType {
         return allObjects(ofType: ShipmentTracking.self, matching: predicate, sortedBy: [descriptor])
     }
 
+    /// Retrieves a specific stored ShipmentTrackingProviderGroup
+    ///
+    public func loadShipmentTrackingProviderGroup(siteID: Int, providerGroupName: String) -> ShipmentTrackingProviderGroup? {
+        let predicate = NSPredicate(format: "siteID = %ld AND name ==[c] %@", siteID, providerGroupName)
+        return firstObject(ofType: ShipmentTrackingProviderGroup.self, matching: predicate)
+    }
+
     /// Retrieves all of the stored ShipmentTrackingProviderGroup entities for the provided siteID.
     ///
-    public func loadShipmentTrackingProviderGroups(siteID: Int) -> [ShipmentTrackingProviderGroup]? {
+    public func loadShipmentTrackingProviderGroupList(siteID: Int) -> [ShipmentTrackingProviderGroup]? {
         let predicate = NSPredicate(format: "siteID = %ld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \ShipmentTrackingProviderGroup.name, ascending: true)
         return allObjects(ofType: ShipmentTrackingProviderGroup.self, matching: predicate, sortedBy: [descriptor])

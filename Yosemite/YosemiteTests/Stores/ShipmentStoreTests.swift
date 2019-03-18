@@ -6,7 +6,7 @@ import XCTest
 
 /// ShipmentStoreTests Unit Tests
 ///
-class ShipmentStoreTests: XCTestCase {
+final class ShipmentStoreTests: XCTestCase {
 
     /// Mockup Dispatcher!
     ///

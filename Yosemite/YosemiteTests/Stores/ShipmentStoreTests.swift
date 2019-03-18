@@ -34,6 +34,10 @@ final class ShipmentStoreTests: XCTestCase {
     ///
     private let sampleOrderID = 963
 
+    /// Dummy Country name
+    ///
+    private let sampleCountryName = "Australia"
+
     // MARK: - Overridden Methods
 
     override func setUp() {
@@ -220,29 +224,11 @@ final class ShipmentStoreTests: XCTestCase {
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 19)
 
-//            let storageTracking1 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
-//                                                                         orderID: self.sampleOrderID,
-//                                                                         trackingID: self.sampleShipmentTracking1().trackingID)
-//            XCTAssertNotNil(storageTracking1)
-//            XCTAssertEqual(storageTracking1?.toReadOnly(), self.sampleShipmentTracking1())
-//
-//            let storageTracking2 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
-//                                                                         orderID: self.sampleOrderID,
-//                                                                         trackingID: self.sampleShipmentTracking2().trackingID)
-//            XCTAssertNotNil(storageTracking2)
-//            XCTAssertEqual(storageTracking2?.toReadOnly(), self.sampleShipmentTracking2())
-//
-//            let storageTracking3 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
-//                                                                         orderID: self.sampleOrderID,
-//                                                                         trackingID: self.sampleShipmentTracking3().trackingID)
-//            XCTAssertNotNil(storageTracking3)
-//            XCTAssertEqual(storageTracking3?.toReadOnly(), self.sampleShipmentTracking3())
-//
-//            let storageTracking4 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
-//                                                                         orderID: self.sampleOrderID,
-//                                                                         trackingID: self.sampleShipmentTracking4().trackingID)
-//            XCTAssertNotNil(storageTracking4)
-//            XCTAssertEqual(storageTracking4?.toReadOnly(), self.sampleShipmentTracking4())
+            let group1 = self.viewStorage.loadShipmentTrackingProviderGroup(siteID: self.sampleSiteID, providerGroupName: self.sampleCountryName)
+
+            XCTAssertNotNil(group1)
+            XCTAssertEqual(group1?.toReadOnly(), self.sampleShipmentTrackingProviderGroup())
+
 //
 //            // For grins, lets all check that viewStorage.loadShipmentTrackingList returns the same results 😇
 //            let storageTrackingList = self.viewStorage.loadShipmentTrackingList(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
@@ -325,5 +311,13 @@ private extension ShipmentStoreTests {
 
     func sampleShipmentTrackingListDeleted() -> [Networking.ShipmentTracking] {
         return [sampleShipmentTracking1Mutated(), sampleShipmentTracking2(), sampleShipmentTracking4()]
+    }
+
+    func sampleShipmentTrackingProviderGroup() -> Networking.ShipmentTrackingProviderGroup {
+        return ShipmentTrackingProviderGroup(name: sampleCountryName, siteID: sampleSiteID, providers: [sampleShipmentTrackingProvider()])
+    }
+
+    func sampleShipmentTrackingProvider() -> Networking.ShipmentTrackingProvider {
+        return ShipmentTrackingProvider(siteID: sampleSiteID, name: "A tracking Provider", url: "http://google.com")
     }
 }

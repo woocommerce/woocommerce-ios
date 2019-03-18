@@ -150,7 +150,6 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Called when finished logging in to a WordPress.com site
  *
- *  @param username                 username of the site
  *  @param authToken                authToken to be used to access the site
  *  @param requiredMultifactorCode  whether the login required a 2fa code
  */

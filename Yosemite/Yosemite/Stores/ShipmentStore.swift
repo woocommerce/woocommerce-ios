@@ -53,7 +53,7 @@ private extension ShipmentStore {
         }
     }
 
-    func syncronizeShipmentTrackingProviderData(siteID: Int, orderID: Int, onCompletion: @escaping (Error?) -> Void) {
+    func syncronizeShipmentTrackingProviderGroupsData(siteID: Int, orderID: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ShipmentsRemote(network: network)
         remote.loadShipmentTrackingProviderGroups(for: siteID, orderID: orderID) { [weak self] (groups,error) in
             guard let readOnlyShipmentTrackingProviderGroups = groups else {
@@ -61,7 +61,9 @@ private extension ShipmentStore {
                 return
             }
 
-//            self?.upsertShipmentTrackingProviderDataInBackground(siteID: siteID, orderID: orderID, readOnlyShipmentTrackingProviderGroups: readOnlyShipmentTrackingProviderGroups)
+            self?.upsertShipmentTrackingProviderDataInBackground(siteID: siteID, orderID: orderID, readOnlyShipmentTrackingProviderGroups: readOnlyShipmentTrackingProviderGroups, onCompletion: {
+                onCompletion(nil)
+            })
         }
     }
 }
@@ -101,7 +103,27 @@ extension ShipmentStore {
         }
     }
 
-    func upsertShipmentTrackingProviderDataInBackground(siteID: Int, orderID: Int, readOnlyShipmentTrackingProviderGroups: [Networking.ShipmentTrackingProviderGroup], completion: () -> Void) {
+    func upsertShipmentTrackingProviderDataInBackground(siteID: Int, orderID: Int, readOnlyShipmentTrackingProviderGroups: [Networking.ShipmentTrackingProviderGroup], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
 
+        derivedStorage.perform {
+            for readOnlyTrackingGroup in readOnlyShipmentTrackingProviderGroups {
+                let storageTracking = derivedStorage.loadShipmentTrackingProviderGroups(siteID: siteID) ?? derivedStorage.insertNewObject(ofType: Storage.ShipmentTrackingProviderGroup.self)
+                storageTracking.update(with: readOnlyTrackingGroup)
+            }
+
+            // Now, remove any objects that exist in storage but not in readOnlyShipmentTrackingProviderGroups
+            if let storageTrackingGroups = derivedStorage.loadShipmentTrackingProviderGroups(siteID: siteID) {
+                storageTrackingGroups.forEach({ storageTrackingGroup in
+                    if readOnlyShipmentTrackingProviderGroups.first(where: { $0.name == storageTrackingGroup.name } ) == nil {
+                        derivedStorage.deleteObject(storageTrackingGroup)
+                    }
+                })
+            }
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
     }
 }

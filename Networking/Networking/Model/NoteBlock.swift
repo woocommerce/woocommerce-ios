@@ -70,7 +70,8 @@ extension NoteBlock: Decodable {
 extension NoteBlock {
 
     /// Returns the current Block's Kind. SORRY: Duck Typing code below.
-    /// Calypso Ref.: https://github.com/Automattic/wp-calypso/blob/823e0d6d0e5dc92ecafc8f4e09dbb88c7862e1b6/client/notifications/src/panel/templates/functions.jsx#L171
+    /// Calypso Ref.:
+    ///    https://github.com/Automattic/wp-calypso/blob/823e0d6d0e5dc92ecafc8f4e09dbb88c7862e1b6/client/notifications/src/panel/templates/functions.jsx#L171
     ///
     public var kind: Kind {
         if type == Kind.user.rawValue {

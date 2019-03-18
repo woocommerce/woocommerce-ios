@@ -149,8 +149,10 @@ private extension PrivacySettingsViewController {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = Gridicon.iconOfType(.image)
         cell.imageView?.tintColor = .white
-        cell.textLabel?.text = NSLocalizedString(
-            "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.",
+        cell.textLabel?.text = NSLocalizedString("""
+                                    This information helps us improve our products, make marketing to you more relevant, \
+                                    personalize your WordPress.com experience, and more as detailed in our privacy policy.
+                                    """,
             comment: "Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect."
         )
     }

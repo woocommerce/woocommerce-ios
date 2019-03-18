@@ -18,6 +18,7 @@ extension UILabel {
     /// Setup: Layer
     ///
     private func applyLayerSettings() {
+        layer.masksToBounds = true
         layer.borderWidth = OrderStatusSettings.borderWidth
         layer.cornerRadius = OrderStatusSettings.cornerRadius
     }

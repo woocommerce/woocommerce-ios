@@ -43,6 +43,12 @@ final class ShipmentStoreTests: XCTestCase {
         network = MockupNetwork()
     }
 
+    override func tearDown() {
+        dispatcher = nil
+        storageManager = nil
+        network = nil
+        super.tearDown()
+    }
 
     // MARK: - ShipmentAction.synchronizeShipmentTrackingData
 

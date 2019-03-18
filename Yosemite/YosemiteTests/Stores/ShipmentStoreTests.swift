@@ -208,6 +208,54 @@ final class ShipmentStoreTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    // MARK: - ShipmentAction.synchronizeShipmentTrackingProviders
+
+    func testRetrieveShipmentTrackingProviderListEffectivelyPersistsRetrievedShipmentTrackingData() {
+        let expectation = self.expectation(description: "Retrieve shipment tracking providers list")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders/" + String(sampleOrderID) + "/" + "shipment-trackings/providers", filename: "shipment_tracking_providers")
+        let action = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: sampleSiteID, orderID: sampleOrderID) { error in
+            XCTAssertNil(error)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 4)
+
+            let storageTracking1 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
+                                                                         orderID: self.sampleOrderID,
+                                                                         trackingID: self.sampleShipmentTracking1().trackingID)
+            XCTAssertNotNil(storageTracking1)
+            XCTAssertEqual(storageTracking1?.toReadOnly(), self.sampleShipmentTracking1())
+
+            let storageTracking2 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
+                                                                         orderID: self.sampleOrderID,
+                                                                         trackingID: self.sampleShipmentTracking2().trackingID)
+            XCTAssertNotNil(storageTracking2)
+            XCTAssertEqual(storageTracking2?.toReadOnly(), self.sampleShipmentTracking2())
+
+            let storageTracking3 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
+                                                                         orderID: self.sampleOrderID,
+                                                                         trackingID: self.sampleShipmentTracking3().trackingID)
+            XCTAssertNotNil(storageTracking3)
+            XCTAssertEqual(storageTracking3?.toReadOnly(), self.sampleShipmentTracking3())
+
+            let storageTracking4 = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
+                                                                         orderID: self.sampleOrderID,
+                                                                         trackingID: self.sampleShipmentTracking4().trackingID)
+            XCTAssertNotNil(storageTracking4)
+            XCTAssertEqual(storageTracking4?.toReadOnly(), self.sampleShipmentTracking4())
+
+            // For grins, lets all check that viewStorage.loadShipmentTrackingList returns the same results 😇
+            let storageTrackingList = self.viewStorage.loadShipmentTrackingList(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
+            XCTAssertNotNil(storageTrackingList)
+            let readOnlyList = storageTrackingList?.map({ $0.toReadOnly() })
+            XCTAssertEqual(readOnlyList?.sorted(), self.sampleShipmentTrackingList().sorted())
+
+            expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 

@@ -100,7 +100,7 @@ private extension SignupGoogleViewController {
 
         service.createWPComUserWithGoogle(token: googleToken, success: { [weak self] accountCreated, wpcomUsername, wpcomToken in
 
-            let credentials = WordPressCredentials.wpcom(username: wpcomUsername, authToken: wpcomToken, isJetpackLogin: false, multifactor: false)
+            let credentials = WordPressCredentials.wpcom(authToken: wpcomToken, isJetpackLogin: false, multifactor: false)
 
             /// New Account: We'll signal the host app right away!
             ///

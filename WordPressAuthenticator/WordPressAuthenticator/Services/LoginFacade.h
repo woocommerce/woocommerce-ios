@@ -154,7 +154,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param authToken                authToken to be used to access the site
  *  @param requiredMultifactorCode  whether the login required a 2fa code
  */
-- (void)finishedLoginWithUsername:(NSString *)username authToken:(NSString *)authToken requiredMultifactorCode:(BOOL)requiredMultifactorCode;
+- (void)finishedLoginWithAuthToken:(NSString *)authToken requiredMultifactorCode:(BOOL)requiredMultifactorCode;
 
 
 /**

@@ -247,10 +247,7 @@ import WordPressUI
             return false
         }
 
-        guard let loginFields = retrieveLoginInfoForTokenAuth() else {
-            DDLogInfo("App opened with authentication link but info wasn't found for token.")
-            return false
-        }
+        let loginFields = retrieveLoginInfoForTokenAuth()
 
         // The only time we should expect a magic link login when there is already a default wpcom account
         // is when a user is logging into Jetpack.
@@ -265,7 +262,6 @@ import WordPressUI
             return false
         }
         loginController.loginFields = loginFields
-        loginController.email = loginFields.username
         loginController.token = token
         let controller = loginController
 
@@ -370,13 +366,14 @@ import WordPressUI
     ///
     /// - Returns: A loginFields instance or nil.
     ///
-    class func retrieveLoginInfoForTokenAuth() -> LoginFields? {
-
-        guard let dict = UserDefaults.standard.dictionary(forKey: Constants.authenticationInfoKey) else {
-            return nil
-        }
+    class func retrieveLoginInfoForTokenAuth() -> LoginFields {
 
         let loginFields = LoginFields()
+
+        guard let dict = UserDefaults.standard.dictionary(forKey: Constants.authenticationInfoKey) else {
+            return loginFields
+        }
+
         if let username = dict[Constants.username] as? String {
             loginFields.username = username
         }

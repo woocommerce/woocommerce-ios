@@ -108,12 +108,12 @@ extension ShipmentStore {
 
         derivedStorage.perform {
             for readOnlyTrackingGroup in readOnlyShipmentTrackingProviderGroups {
-                let storageTracking = derivedStorage.loadShipmentTrackingProviderGroups(siteID: siteID) ?? derivedStorage.insertNewObject(ofType: Storage.ShipmentTrackingProviderGroup.self)
+                let storageTracking = derivedStorage.loadShipmentTrackingProviderGroup(siteID: siteID, providerGroupName: readOnlyTrackingGroup.name) ?? derivedStorage.insertNewObject(ofType: Storage.ShipmentTrackingProviderGroup.self)
                 storageTracking.update(with: readOnlyTrackingGroup)
             }
 
             // Now, remove any objects that exist in storage but not in readOnlyShipmentTrackingProviderGroups
-            if let storageTrackingGroups = derivedStorage.loadShipmentTrackingProviderGroups(siteID: siteID) {
+            if let storageTrackingGroups = derivedStorage.loadShipmentTrackingProviderGroupList(siteID: siteID) {
                 storageTrackingGroups.forEach({ storageTrackingGroup in
                     if readOnlyShipmentTrackingProviderGroups.first(where: { $0.name == storageTrackingGroup.name } ) == nil {
                         derivedStorage.deleteObject(storageTrackingGroup)

@@ -15,7 +15,7 @@ public struct ShipmentTrackingProviderGroup {
     ///
     public let providers: [ShipmentTrackingProvider]
 
-    init(name: String, siteID: Int, providers: [ShipmentTrackingProvider]) {
+    public init(name: String, siteID: Int, providers: [ShipmentTrackingProvider]) {
         self.name = name
         self.siteID = siteID
         self.providers = providers

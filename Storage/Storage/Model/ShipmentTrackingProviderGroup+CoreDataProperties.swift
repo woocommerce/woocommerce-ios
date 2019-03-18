@@ -1,10 +1,3 @@
-//
-//  ShipmentTrackingProviderGroup+CoreDataProperties.swift
-//  Storage
-//
-//  Created by Cesar Tardaguila on 14/3/2019.
-//  Copyright © 2019 Automattic. All rights reserved.
-//
 import Foundation
 import CoreData
 

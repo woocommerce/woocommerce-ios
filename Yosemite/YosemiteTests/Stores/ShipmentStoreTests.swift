@@ -215,7 +215,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     // MARK: - ShipmentAction.synchronizeShipmentTrackingProviders
 
-    func testRetrieveShipmentTrackingProviderListEffectivelyPersistsRetrievedShipmentTrackingData() {
+    func testRetrieveShipmentTrackingProviderListEffectivelyPersistsRetrievedShipmentTrackingProviderData() {
         let expectation = self.expectation(description: "Retrieve shipment tracking providers list")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -228,13 +228,6 @@ final class ShipmentStoreTests: XCTestCase {
 
             XCTAssertNotNil(group1)
             XCTAssertEqual(group1?.toReadOnly(), self.sampleShipmentTrackingProviderGroup())
-
-//
-//            // For grins, lets all check that viewStorage.loadShipmentTrackingList returns the same results 😇
-//            let storageTrackingList = self.viewStorage.loadShipmentTrackingList(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
-//            XCTAssertNotNil(storageTrackingList)
-//            let readOnlyList = storageTrackingList?.map({ $0.toReadOnly() })
-//            XCTAssertEqual(readOnlyList?.sorted(), self.sampleShipmentTrackingList().sorted())
 
             expectation.fulfill()
         }
@@ -319,5 +312,9 @@ private extension ShipmentStoreTests {
 
     func sampleShipmentTrackingProvider() -> Networking.ShipmentTrackingProvider {
         return ShipmentTrackingProvider(siteID: sampleSiteID, name: "A tracking Provider", url: "http://google.com")
+    }
+
+    func sampleShipmentTrackingProviderGroupList() -> [Networking.ShipmentTrackingProviderGroup] {
+        return [sampleShipmentTrackingProviderGroup()]
     }
 }

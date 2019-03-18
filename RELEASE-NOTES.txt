@@ -10,6 +10,7 @@
 - improvement: Filtering by custom order status now supported!
 - new feature: You can now manually change the status of an order on the order details screen
 - bugfix: correctly flips chevron on Dashboard > New Orders, to support RTL languages.
+- bugfix: fixed an issue on the order details screen where the shipment tracking dates were incorrect
 
 1.3
 -----

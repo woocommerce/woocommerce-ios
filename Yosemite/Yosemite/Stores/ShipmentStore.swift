@@ -32,6 +32,8 @@ public class ShipmentStore: Store {
             synchronizeShipmentTrackingData(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .synchronizeShipmentTrackingProviders(let siteID, let orderID, let onCompletion):
             syncronizeShipmentTrackingProviderGroupsData(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+        case .deleteTracking(let siteID, let orderID, let trackingID, let onCompletion):
+            deleteTracking(siteID: siteID, orderID: orderID, trackingID: trackingID, onCompletion: onCompletion)
         }
     }
 }
@@ -66,6 +68,18 @@ private extension ShipmentStore {
             self?.upsertShipmentTrackingProviderDataInBackground(siteID: siteID, orderID: orderID, readOnlyShipmentTrackingProviderGroups: readOnlyShipmentTrackingProviderGroups, onCompletion: {
                 onCompletion(nil)
             })
+        }
+    }
+
+    func deleteTracking(siteID: Int, orderID: Int, trackingID: String, onCompletion: @escaping (Error?) -> Void) {
+        let remote = ShipmentsRemote(network: network)
+        remote.deleteShipmentTracking(for: siteID, orderID: orderID, trackingID: trackingID) { [weak self] (tracking, error) in
+            guard let readOnlyTracking = tracking else {
+                onCompletion(error)
+                return
+            }
+
+            self?.deleteStoredShipment(siteID: siteID, orderID: orderID, trackingID: trackingID)
         }
     }
 }
@@ -127,5 +141,17 @@ extension ShipmentStore {
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
         }
+    }
+
+    /// Deletes any Storage.ShipmentTracking with the specified trackingID
+    ///
+    func deleteStoredShipment(siteID: Int, orderID: Int, trackingID: String) {
+        let storage = storageManager.viewStorage
+        guard let tracking = storage.loadShipmentTracking(siteID: siteID, orderID: orderID, trackingID: trackingID) else {
+            return
+        }
+
+        storage.deleteObject(tracking)
+        storage.saveIfNeeded()
     }
 }

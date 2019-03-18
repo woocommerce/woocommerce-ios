@@ -30,6 +30,8 @@ public class ShipmentStore: Store {
         switch action {
         case .synchronizeShipmentTrackingData(let siteID, let orderID, let onCompletion):
             synchronizeShipmentTrackingData(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+        case .synchronizeShipmentTrackingProviders(let siteID, let orderID, let onCompletion):
+            syncronizeShipmentTrackingProviderGroupsData(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         }
     }
 }

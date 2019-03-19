@@ -65,7 +65,7 @@ private extension ShipmentStore {
                 return
             }
 
-            self?.upsertShipmentTrackingProviderDataInBackground(siteID: siteID,
+            self?.upsertTrackingProviderDataInBackground(siteID: siteID,
                                                                  orderID: orderID,
                                                                  readOnlyShipmentTrackingProviderGroups: readOnlyShipmentTrackingProviderGroups,
                                                                  onCompletion: {
@@ -123,7 +123,7 @@ extension ShipmentStore {
         }
     }
 
-    func upsertShipmentTrackingProviderDataInBackground(siteID: Int,
+    func upsertTrackingProviderDataInBackground(siteID: Int,
                                                         orderID: Int,
                                                         readOnlyShipmentTrackingProviderGroups: [Networking.ShipmentTrackingProviderGroup],
                                                         onCompletion: @escaping () -> Void) {
@@ -178,7 +178,9 @@ extension ShipmentStore {
         storage.saveIfNeeded()
     }
 
-    private func handleGroupProviders(_ readOnlyGroup: Networking.ShipmentTrackingProviderGroup, _ storageGroup: Storage.ShipmentTrackingProviderGroup, _ storage: StorageType) {
+    private func handleGroupProviders(_ readOnlyGroup: Networking.ShipmentTrackingProviderGroup,
+                                      _ storageGroup: Storage.ShipmentTrackingProviderGroup,
+                                      _ storage: StorageType) {
         // Upsert the items from the read-only group
         for readOnlyProvider in readOnlyGroup.providers {
             if let existingProvider = storage.loadShipmentTrackingProvider(siteID: readOnlyProvider.siteID,

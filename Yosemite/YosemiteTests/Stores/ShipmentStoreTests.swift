@@ -286,7 +286,7 @@ final class ShipmentStoreTests: XCTestCase {
         let group = DispatchGroup()
 
         group.enter()
-        shipmentStore.upsertShipmentTrackingProviderDataInBackground(siteID: sampleSiteID,
+        shipmentStore.upsertTrackingProviderDataInBackground(siteID: sampleSiteID,
                                                                      orderID: sampleOrderID,
                                                                      readOnlyShipmentTrackingProviderGroups: australiaAndSweden()) {
             XCTAssertTrue(Thread.isMainThread)
@@ -294,7 +294,7 @@ final class ShipmentStoreTests: XCTestCase {
         }
 
         group.enter()
-        shipmentStore.upsertShipmentTrackingProviderDataInBackground(siteID: sampleSiteID,
+        shipmentStore.upsertTrackingProviderDataInBackground(siteID: sampleSiteID,
                                                                      orderID: sampleOrderID,
                                                                      readOnlyShipmentTrackingProviderGroups: australiaMutatedAndSwedenMutated()) {
             XCTAssertTrue(Thread.isMainThread)
@@ -328,7 +328,7 @@ final class ShipmentStoreTests: XCTestCase {
         let group = DispatchGroup()
 
         group.enter()
-        shipmentStore.upsertShipmentTrackingProviderDataInBackground(siteID: sampleSiteID,
+        shipmentStore.upsertTrackingProviderDataInBackground(siteID: sampleSiteID,
                                                                      orderID: sampleOrderID,
                                                                      readOnlyShipmentTrackingProviderGroups: australiaAndSweden()) {
             XCTAssertTrue(Thread.isMainThread)
@@ -336,7 +336,7 @@ final class ShipmentStoreTests: XCTestCase {
         }
 
         group.enter()
-        shipmentStore.upsertShipmentTrackingProviderDataInBackground(siteID: sampleSiteID,
+        shipmentStore.upsertTrackingProviderDataInBackground(siteID: sampleSiteID,
                                                                      orderID: sampleOrderID,
                                                                      readOnlyShipmentTrackingProviderGroups: sampleShipmentTrackingProviderGroupListMutatedOneGroup()) {
             XCTAssertTrue(Thread.isMainThread)

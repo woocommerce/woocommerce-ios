@@ -12,6 +12,6 @@ class BasicTableViewCell: UITableViewCell {
         super.prepareForReuse()
 
         textLabel?.applyBodyStyle()
-        textLabel?.textAlignment = .left
+        textLabel?.textAlignment = .natural
     }
 }

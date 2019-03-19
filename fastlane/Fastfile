@@ -104,6 +104,25 @@ ENV["PROJECT_ROOT_FOLDER"]="./"
     ios_tag_build()
   end
 
+  #####################################################################################
+  # new_hotfix_release
+  # -----------------------------------------------------------------------------------
+  # This lane updates the release branch for a new hotix release. 
+  # -----------------------------------------------------------------------------------
+  # Usage:
+  # bundle exec fastlane new_hotfix_release [skip_confirm:<skip confirm>] [version:<version>]
+  #
+  # Example:
+  # bundle exec fastlane new_hotfix_release version:10.6.1
+  # bundle exec fastlane new_hotfix_release skip_confirm:true version:10.6.1
+  #####################################################################################
+  desc "Creates a new hotfix branch from the given tag"
+  lane :new_hotfix_release do | options |
+    prev_ver = ios_hotfix_prechecks(options)
+    ios_bump_version_hotfix(previous_version: prev_ver, version: options[:version])
+    ios_tag_build()
+  end
+
 ########################################################################
 # Helper Lanes
 ########################################################################  

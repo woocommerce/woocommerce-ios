@@ -38,3 +38,9 @@ extension ShipmentTrackingProviderGroup: Comparable {
         return lhs.name < rhs.name
     }
 }
+
+extension ShipmentTrackingProviderGroup: CustomStringConvertible {
+    public var description: String {
+        return name + " providers: \(providers)"
+    }
+}

@@ -24,6 +24,7 @@ public struct ShipmentTrackingProvider {
     }
 }
 
+
 extension ShipmentTrackingProvider: Comparable {
     public static func ==(lhs: ShipmentTrackingProvider, rhs: ShipmentTrackingProvider) -> Bool {
         return lhs.name == rhs.name &&
@@ -32,5 +33,12 @@ extension ShipmentTrackingProvider: Comparable {
     }
     public static func < (lhs: ShipmentTrackingProvider, rhs: ShipmentTrackingProvider) -> Bool {
         return lhs.name < rhs.name
+    }
+}
+
+
+extension ShipmentTrackingProvider: CustomStringConvertible {
+    public var description: String {
+        return name
     }
 }

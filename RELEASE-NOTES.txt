@@ -1,5 +1,10 @@
 1.5
 -----
+- bugfix: Sometimes Settings would style all the options like "Log Out". No longer happens now.
+- bugfix: order status refreshes upon pull-to-refresh in Order Details
+- bugfix: payment status label background color showing up beyond rounded border
+- improvement: change top performers text from "Total Product Order" to "Total orders" for clarity
+- bugfix: fixed an issue on the order details screen where the shipment tracking dates were incorrect
 
 1.4
 -----
@@ -10,6 +15,7 @@
 - improvement: Filtering by custom order status now supported!
 - new feature: You can now manually change the status of an order on the order details screen
 - bugfix: correctly flips chevron on Dashboard > New Orders, to support RTL languages.
+- bugfix: fixed an issue on the order details screen where the shipment tracking dates were incorrect
 
 1.3
 -----

@@ -26,7 +26,7 @@ public extension DateFormatter {
         public static let yearMonthDayDateFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.dateFormat = "yyyy'-'MM'-'DD'"
+            formatter.dateFormat = "yyyy'-'MM'-'dd"
             return formatter
         }()
 

@@ -1,0 +1,161 @@
+{
+    "data": {
+            "id": 282,
+            "name": "Book the Green Room",
+            "slug": "book-the-green-room",
+            "permalink": "https://example.com/product/book-the-green-room/",
+            "date_created": "2019-02-19T17:33:31",
+            "date_created_gmt": "2019-02-19T17:33:31",
+            "date_modified": "2019-02-19T17:48:01",
+            "date_modified_gmt": "2019-02-19T17:48:01",
+            "type": "booking",
+            "status": "publish",
+            "featured": false,
+            "catalog_visibility": "visible",
+            "description": "<p>This is the party room!</p>\n",
+            "short_description": "[contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests for $100.</p>\n",
+            "sku": "",
+            "price": "0",
+            "regular_price": "",
+            "sale_price": "",
+            "date_on_sale_from": null,
+            "date_on_sale_from_gmt": null,
+            "date_on_sale_to": null,
+            "date_on_sale_to_gmt": null,
+            "price_html": "Free",
+            "on_sale": false,
+            "purchasable": true,
+            "total_sales": 0,
+            "virtual": true,
+            "downloadable": false,
+            "downloads": [],
+            "download_limit": -1,
+            "download_expiry": -1,
+            "external_url": "",
+            "button_text": "",
+            "tax_status": "taxable",
+            "tax_class": "",
+            "manage_stock": false,
+            "stock_quantity": null,
+            "stock_status": "instock",
+            "backorders": "no",
+            "backorders_allowed": false,
+            "backordered": false,
+            "sold_individually": true,
+            "weight": "",
+            "dimensions": {
+                "length": "",
+                "width": "",
+                "height": ""
+            },
+            "shipping_required": false,
+            "shipping_taxable": false,
+            "shipping_class": "",
+            "shipping_class_id": 0,
+            "reviews_allowed": true,
+            "average_rating": "0.00",
+            "rating_count": 0,
+            "related_ids": [],
+            "upsell_ids": [],
+            "cross_sell_ids": [],
+            "parent_id": 0,
+            "purchase_note": "",
+            "categories": [
+                {
+                    "id": 36,
+                    "name": "Events",
+                    "slug": "events"
+                }
+            ],
+            "tags": [
+                {
+                    "id": 40,
+                    "name": "20+",
+                    "slug": "20"
+                },
+                {
+                    "id": 39,
+                    "name": "30",
+                    "slug": "30"
+                },
+                {
+                    "id": 45,
+                    "name": "birthday party",
+                    "slug": "birthday-party"
+                },
+                {
+                    "id": 44,
+                    "name": "graduation",
+                    "slug": "graduation"
+                },
+                {
+                    "id": 41,
+                    "name": "meeting room",
+                    "slug": "meeting-room"
+                },
+                {
+                    "id": 42,
+                    "name": "meetings",
+                    "slug": "meetings"
+                },
+                {
+                    "id": 43,
+                    "name": "parties",
+                    "slug": "parties"
+                },
+                {
+                    "id": 38,
+                    "name": "party room",
+                    "slug": "party-room"
+                },
+                {
+                    "id": 37,
+                    "name": "room",
+                    "slug": "room"
+                }
+            ],
+            "images": [],
+            "attributes": [],
+            "default_attributes": [],
+            "variations": [],
+            "grouped_products": [],
+            "menu_order": 0,
+            "meta_data": [
+                {
+                    "id": 6779,
+                    "key": "_wpas_done_all",
+                    "value": "1"
+                },
+                {
+                    "id": 6780,
+                    "key": "_g_feedback_shortcode_5368fb4ef32094b7055b8732bb77a337bdd9331d",
+                    "value": "[contact-field label=\"Name\" type=\"name\" required=\"1\"][contact-field label=\"Email\" type=\"email\" required=\"1\"][contact-field label=\"Phone Number\" type=\"text\" required=\"1\"][contact-field label=\"Group or Organization Name (if any)\" type=\"text\"][contact-field label=\"Special Requests / Event Notes\" type=\"textarea\"]"
+                },
+                {
+                    "id": 6781,
+                    "key": "_g_feedback_shortcode_atts_5368fb4ef32094b7055b8732bb77a337bdd9331d",
+                    "value": {
+                        "to": "thuy.copeland@automattic.com",
+                        "subject": "Booking Event",
+                        "show_subject": "no",
+                        "widget": 0,
+                        "id": 282,
+                        "submit_button_text": "Submit"
+                    }
+                }
+            ],
+            "jetpack_publicize_connections": [],
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://example.com/wp-json/wc/v3/products/282"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://example.com/wp-json/wc/v3/products"
+                    }
+                ]
+            }
+    }
+}

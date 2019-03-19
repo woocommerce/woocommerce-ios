@@ -5,6 +5,7 @@ import Alamofire
 /// Product: Remote Endpoints
 ///
 public class ProductsRemote: Remote {
+
     /// Retrieves all of the `Products` available.
     ///
     /// - Parameters:
@@ -29,6 +30,21 @@ public class ProductsRemote: Remote {
         let path = Constants.productsPath
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductListMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Retrieves a specific `Product`
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the Product.
+    ///     - productID: Identifier of the Product.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func loadProduct(for siteID: Int, productID: Int, completion: @escaping (Product?, Error?) -> Void) {
+        let path = "\(Constants.productsPath)/\(productID)"
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let mapper = ProductMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

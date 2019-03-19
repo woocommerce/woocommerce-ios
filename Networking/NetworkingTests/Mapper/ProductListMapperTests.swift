@@ -16,6 +16,7 @@ class ProductListMapperTests: XCTestCase {
         XCTAssertEqual(products.count, 10)
 
         let firstProduct = products[0]
+        XCTAssertEqual(firstProduct.siteID, dummySiteID)
         XCTAssertEqual(firstProduct.productID, 282)
         XCTAssertEqual(firstProduct.name, "Book the Green Room")
         XCTAssertEqual(firstProduct.slug, "book-the-green-room")

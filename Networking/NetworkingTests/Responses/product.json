@@ -114,10 +114,63 @@
                     "slug": "room"
                 }
             ],
-            "images": [],
-            "attributes": [],
-            "default_attributes": [],
-            "variations": [],
+            "images": [
+                {
+                    "id": 19,
+                    "date_created": "2018-01-26T21:49:45",
+                    "date_created_gmt": "2018-01-26T21:49:45",
+                    "date_modified": "2018-01-26T21:50:11",
+                    "date_modified_gmt": "2018-01-26T21:50:11",
+                    "src": "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png",
+                    "name": "Vneck Tshirt",
+                    "alt": ""
+                }
+            ],
+            "attributes": [
+                {
+                    "id": 0,
+                    "name": "Size",
+                    "position": 0,
+                    "visible": true,
+                    "variation": true,
+                    "options": [
+                        "Small",
+                        "Medium",
+                        "Large"
+                    ]
+                },
+                {
+                    "id": 0,
+                    "name": "Color",
+                    "position": 1,
+                    "visible": true,
+                    "variation": true,
+                    "options": [
+                        "Purple",
+                        "Yellow",
+                        "Hot Pink",
+                        "Lime Green",
+                        "Teal"
+                    ]
+                }
+            ],
+            "default_attributes": [
+                {
+                    "id": 0,
+                    "name": "Size",
+                    "option": "Medium"
+                },
+                {
+                    "id": 0,
+                    "name": "Color",
+                    "option": "Purple"
+                }
+            ],
+            "variations": [
+                192,
+                194,
+                193
+            ],
             "grouped_products": [],
             "menu_order": 0,
             "meta_data": [

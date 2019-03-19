@@ -32,7 +32,11 @@ class ProductListMapperTests: XCTestCase {
         XCTAssertEqual(firstProduct.catalogVisibilityKey, "visible")
 
         XCTAssertEqual(firstProduct.description, "<p>This is the party room!</p>\n")
-        XCTAssertEqual(firstProduct.shortDescription, "[contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests for $100.</p>\n")
+        XCTAssertEqual(firstProduct.shortDescription, """
+            [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
+            We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let \
+            us know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests for $100.</p>\n
+            """)
         XCTAssertEqual(firstProduct.sku, "")
 
         XCTAssertEqual(firstProduct.price, "0")
@@ -167,7 +171,8 @@ class ProductListMapperTests: XCTestCase {
         XCTAssertEqual(productImage?.imageID, 209)
         XCTAssertEqual(productImage?.dateCreated, dateCreated)
         XCTAssertEqual(productImage?.dateModified, dateModified)
-        XCTAssertEqual(productImage?.src, "https://i0.wp.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/05/71PEq6VvFjL._SL1500_.jpg?fit=1500%2C1500&ssl=1")
+        XCTAssertEqual(productImage?.src,
+                       "https://i0.wp.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/05/71PEq6VvFjL._SL1500_.jpg?fit=1500%2C1500&ssl=1")
         XCTAssertEqual(productImage?.name, "Dymo LabelWriter 4XL")
         XCTAssert(productImage?.alt?.isEmpty == true)
     }

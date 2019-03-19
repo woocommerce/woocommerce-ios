@@ -97,7 +97,7 @@ public final class ShipmentsRemote: Remote {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/\(Constants.providersPath)"
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
-        let mapper = ShipmentTrackingProviderListMapper()
+        let mapper = ShipmentTrackingProviderListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 12 (Release 1.5.0.0)
+- @ctarda 2019-03-14
+- Adds `ShipmentTrackingProvider` and `ShipmentTrackingProviderGroup`
+
 ## Model 11 (Release 1.4.0.0)
 
 - @mindgraffiti  2019-02-27

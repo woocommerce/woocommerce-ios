@@ -223,7 +223,8 @@ final class ShipmentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve shipment tracking providers list")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        network.simulateResponse(requestUrlSuffix: "orders/" + String(sampleOrderID) + "/" + "shipment-trackings/providers", filename: "shipment_tracking_providers")
+        network.simulateResponse(requestUrlSuffix: "orders/" + String(sampleOrderID) + "/" + "shipment-trackings/providers",
+                                 filename: "shipment_tracking_providers")
         let action = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: sampleSiteID, orderID: sampleOrderID) { error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 19)
@@ -250,7 +251,8 @@ final class ShipmentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve shipment tracking provider group list error response")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        network.simulateResponse(requestUrlSuffix: "orders/" + String(sampleOrderID) + "/" + "shipment-trackings/providers", filename: "shipment_tracking_plugin_not_active")
+        network.simulateResponse(requestUrlSuffix: "orders/" + String(sampleOrderID) + "/" + "shipment-trackings/providers",
+                                 filename: "shipment_tracking_plugin_not_active")
         let action = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: sampleSiteID, orderID: sampleOrderID) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -284,13 +286,17 @@ final class ShipmentStoreTests: XCTestCase {
         let group = DispatchGroup()
 
         group.enter()
-        shipmentStore.upsertShipmentTrackingProviderDataInBackground(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingProviderGroups: australiaAndSweden()) {
+        shipmentStore.upsertShipmentTrackingProviderDataInBackground(siteID: sampleSiteID,
+                                                                     orderID: sampleOrderID,
+                                                                     readOnlyShipmentTrackingProviderGroups: australiaAndSweden()) {
             XCTAssertTrue(Thread.isMainThread)
             group.leave()
         }
 
         group.enter()
-        shipmentStore.upsertShipmentTrackingProviderDataInBackground(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingProviderGroups: australiaMutatedAndSwedenMutated()) {
+        shipmentStore.upsertShipmentTrackingProviderDataInBackground(siteID: sampleSiteID,
+                                                                     orderID: sampleOrderID,
+                                                                     readOnlyShipmentTrackingProviderGroups: australiaMutatedAndSwedenMutated()) {
             XCTAssertTrue(Thread.isMainThread)
             group.leave()
         }
@@ -301,8 +307,8 @@ final class ShipmentStoreTests: XCTestCase {
             let expectedGroups = self.australiaMutatedAndSwedenMutated()
             let storageGroups = self.viewStorage.loadShipmentTrackingProviderGroupList(siteID: self.sampleSiteID)
 
-            XCTAssertNotEqual(storageGroups?.map{$0.toReadOnly()}, originalGroups)
-            XCTAssertEqual(storageGroups?.map{$0.toReadOnly()}, expectedGroups)
+            XCTAssertNotEqual(storageGroups?.map { $0.toReadOnly() }, originalGroups)
+            XCTAssertEqual(storageGroups?.map { $0.toReadOnly() }, expectedGroups)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 2)
 
             expectation.fulfill()
@@ -314,19 +320,25 @@ final class ShipmentStoreTests: XCTestCase {
     /// Verifies that `upsertShipmentTrackingProviderDataInBackground` removes duplicated data.
     ///
     func testUpdateRetrieveShipmentTrackingProviderGroupListEffectivelyRemovesDeletedShipmentTrackingGroupData() {
-        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 0)
 
         let group = DispatchGroup()
 
         group.enter()
-        shipmentStore.upsertShipmentTrackingProviderDataInBackground(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingProviderGroups: australiaAndSweden()) {
+        shipmentStore.upsertShipmentTrackingProviderDataInBackground(siteID: sampleSiteID,
+                                                                     orderID: sampleOrderID,
+                                                                     readOnlyShipmentTrackingProviderGroups: australiaAndSweden()) {
             XCTAssertTrue(Thread.isMainThread)
             group.leave()
         }
 
         group.enter()
-        shipmentStore.upsertShipmentTrackingProviderDataInBackground(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingProviderGroups: sampleShipmentTrackingProviderGroupListMutatedOneGroup()) {
+        shipmentStore.upsertShipmentTrackingProviderDataInBackground(siteID: sampleSiteID,
+                                                                     orderID: sampleOrderID,
+                                                                     readOnlyShipmentTrackingProviderGroups: sampleShipmentTrackingProviderGroupListMutatedOneGroup()) {
             XCTAssertTrue(Thread.isMainThread)
             group.leave()
         }
@@ -337,8 +349,8 @@ final class ShipmentStoreTests: XCTestCase {
             let expectedGroups = self.sampleShipmentTrackingProviderGroupListMutatedOneGroup()
             let storageGroups = self.viewStorage.loadShipmentTrackingProviderGroupList(siteID: self.sampleSiteID)
 
-            XCTAssertNotEqual(storageGroups?.map{$0.toReadOnly()}, originalGroups)
-            XCTAssertEqual(storageGroups?.map{$0.toReadOnly()}, expectedGroups)
+            XCTAssertNotEqual(storageGroups?.map { $0.toReadOnly() }, originalGroups)
+            XCTAssertEqual(storageGroups?.map { $0.toReadOnly() }, expectedGroups)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 1)
 
             expectation.fulfill()
@@ -414,35 +426,53 @@ private extension ShipmentStoreTests {
     }
 
     func sampleShipmentTrackingListDeleted() -> [Networking.ShipmentTracking] {
-        return [sampleShipmentTracking1Mutated(), sampleShipmentTracking2(), sampleShipmentTracking4()]
+        return [sampleShipmentTracking1Mutated(),
+                sampleShipmentTracking2(),
+                sampleShipmentTracking4()]
     }
 
     func sampleShipmentTrackingProviderSingleGroup() -> Networking.ShipmentTrackingProviderGroup {
-        return ShipmentTrackingProviderGroup(name: sampleCountryName, siteID: sampleSiteID, providers: [australiaSampleShipmentTrackingProvider1()])
+        return ShipmentTrackingProviderGroup(name: sampleCountryName,
+                                             siteID: sampleSiteID,
+                                             providers: [australiaSampleShipmentTrackingProvider1()])
     }
 
     func australia() -> Networking.ShipmentTrackingProviderGroup {
-        return ShipmentTrackingProviderGroup(name: sampleCountryName, siteID: sampleSiteID, providers: [australiaSampleShipmentTrackingProvider1(), australiaSampleShipmentTrackingProvider2()])
+        return ShipmentTrackingProviderGroup(name: sampleCountryName,
+                                             siteID: sampleSiteID,
+                                             providers: [australiaSampleShipmentTrackingProvider1(),
+                                                         australiaSampleShipmentTrackingProvider2()])
     }
 
     func sweden() -> Networking.ShipmentTrackingProviderGroup {
-        return ShipmentTrackingProviderGroup(name: sampleCountryName2, siteID: sampleSiteID, providers: [swedenSampleShipmentTrackingProvider1(), swedenSampleShipmentTrackingProvider2()])
+        return ShipmentTrackingProviderGroup(name: sampleCountryName2,
+                                             siteID: sampleSiteID,
+                                             providers: [swedenSampleShipmentTrackingProvider1(),
+                                                         swedenSampleShipmentTrackingProvider2()])
     }
 
     func australiaSampleShipmentTrackingProvider1() -> Networking.ShipmentTrackingProvider {
-        return ShipmentTrackingProvider(siteID: sampleSiteID, name: "Fastway Couriers", url: "http://www.fastway.com.au/courier-services/track-your-parcel?l=%1$s")
+        return ShipmentTrackingProvider(siteID: sampleSiteID,
+                                        name: "Fastway Couriers",
+                                        url: "http://www.fastway.com.au/courier-services/track-your-parcel?l=%1$s")
     }
 
     func australiaSampleShipmentTrackingProvider2() -> Networking.ShipmentTrackingProvider {
-        return ShipmentTrackingProvider(siteID: sampleSiteID, name: "Australia Post", url: "http://auspost.com.au/track/track.html?id=%1$s")
+        return ShipmentTrackingProvider(siteID: sampleSiteID,
+                                        name: "Australia Post",
+                                        url: "http://auspost.com.au/track/track.html?id=%1$s")
     }
 
     func swedenSampleShipmentTrackingProvider1() -> Networking.ShipmentTrackingProvider {
-        return ShipmentTrackingProvider(siteID: sampleSiteID, name: "PostNord Sverige AB", url: "http://www.fastway.com.au/courier-services/track-your-parcel?l=%1$s")
+        return ShipmentTrackingProvider(siteID: sampleSiteID,
+                                        name: "PostNord Sverige AB",
+                                        url: "http://www.fastway.com.au/courier-services/track-your-parcel?l=%1$s")
     }
 
     func swedenSampleShipmentTrackingProvider2() -> Networking.ShipmentTrackingProvider {
-        return ShipmentTrackingProvider(siteID: sampleSiteID, name: "DHL.se", url: "http://auspost.com.au/track/track.html?id=%1$s")
+        return ShipmentTrackingProvider(siteID: sampleSiteID,
+                                        name: "DHL.se",
+                                        url: "http://auspost.com.au/track/track.html?id=%1$s")
     }
 
     func australiaAndSweden() -> [Networking.ShipmentTrackingProviderGroup] {
@@ -450,11 +480,19 @@ private extension ShipmentStoreTests {
     }
 
     func australiaMutated() -> Networking.ShipmentTrackingProviderGroup {
-        return ShipmentTrackingProviderGroup(name: sampleCountryName, siteID: sampleSiteID, providers: [ShipmentTrackingProvider(siteID: sampleSiteID, name: "Australia mutated", url: "url mutated")])
+        return ShipmentTrackingProviderGroup(name: sampleCountryName,
+                                             siteID: sampleSiteID,
+                                             providers: [ShipmentTrackingProvider(siteID: sampleSiteID,
+                                                                                                                                 name: "Australia mutated",
+                                                                                                                                 url: "url mutated")])
     }
 
     func swedenMutated() -> Networking.ShipmentTrackingProviderGroup {
-        return ShipmentTrackingProviderGroup(name: sampleCountryName2, siteID: sampleSiteID, providers: [ShipmentTrackingProvider(siteID: sampleSiteID, name: "Sweden mutated", url: "none")])
+        return ShipmentTrackingProviderGroup(name: sampleCountryName2,
+                                             siteID: sampleSiteID,
+                                             providers: [ShipmentTrackingProvider(siteID: sampleSiteID,
+                                                                                  name: "Sweden mutated",
+                                                                                  url: "none")])
     }
 
     func sampleShipmentTrackingProviderGroupListMutatedOneGroup() -> [Networking.ShipmentTrackingProviderGroup] {
@@ -462,6 +500,6 @@ private extension ShipmentStoreTests {
     }
 
     func australiaMutatedAndSwedenMutated() -> [Networking.ShipmentTrackingProviderGroup] {
-        return [australiaMutated(),swedenMutated()]
+        return [australiaMutated(), swedenMutated()]
     }
 }

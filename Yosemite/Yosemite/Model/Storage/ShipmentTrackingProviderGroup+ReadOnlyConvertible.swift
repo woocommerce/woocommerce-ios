@@ -9,7 +9,7 @@ extension Storage.ShipmentTrackingProviderGroup: ReadOnlyConvertible {
     ///
     public func update(with shipmentTrackingProviderGroup: Yosemite.ShipmentTrackingProviderGroup) {
         name = shipmentTrackingProviderGroup.name
-        siteID = Int64(shipmentTrackingProviderGroup.siteID)        
+        siteID = Int64(shipmentTrackingProviderGroup.siteID)
     }
 
     /// Returns a ReadOnly version of the receiver.

@@ -55,9 +55,22 @@
             "reviews_allowed": true,
             "average_rating": "0.00",
             "rating_count": 0,
-            "related_ids": [],
-            "upsell_ids": [],
-            "cross_sell_ids": [],
+            "related_ids": [
+                31,
+                22,
+                369,
+                414,
+                56
+            ],
+            "upsell_ids":  [
+                99,
+                1234566
+            ],
+            "cross_sell_ids":  [
+                1234,
+                234234,
+                3
+            ],
             "parent_id": 0,
             "purchase_note": "",
             "categories": [

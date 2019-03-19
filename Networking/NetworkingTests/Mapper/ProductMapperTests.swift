@@ -83,9 +83,9 @@ class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.averageRating, "0.00")
         XCTAssertEqual(product.ratingCount, 0)
 
-        XCTAssertEqual(product.relatedIDs, [])
-        XCTAssertEqual(product.upsellIDs, [])
-        XCTAssertEqual(product.crossSellIDs, [])
+        XCTAssertEqual(product.relatedIDs, [31, 22, 369, 414, 56])
+        XCTAssertEqual(product.upsellIDs, [99, 1234566])
+        XCTAssertEqual(product.crossSellIDs, [1234, 234234, 3])
         XCTAssertEqual(product.parentID, 0)
 
         XCTAssertEqual(product.purchaseNote, "")
@@ -151,20 +151,18 @@ class ProductMapperTests: XCTestCase {
             XCTFail("Failed to parse product category")
             return
         }
-
-        XCTAssertNotNil(images)
         XCTAssertEqual(images.count, 1)
 
         let productImage = images[0]
         let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-01-26T21:49:45")
         let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-01-26T21:50:11")
-        XCTAssertEqual(productImage?.imageID, 19)
-        XCTAssertEqual(productImage?.dateCreated, dateCreated)
-        XCTAssertEqual(productImage?.dateModified, dateModified)
-        XCTAssertEqual(productImage?.src,
+        XCTAssertEqual(productImage.imageID, 19)
+        XCTAssertEqual(productImage.dateCreated, dateCreated)
+        XCTAssertEqual(productImage.dateModified, dateModified)
+        XCTAssertEqual(productImage.src,
                        "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png")
-        XCTAssertEqual(productImage?.name, "Vneck Tshirt")
-        XCTAssert(productImage?.alt?.isEmpty == true)
+        XCTAssertEqual(productImage.name, "Vneck Tshirt")
+        XCTAssert(productImage.alt?.isEmpty == true)
     }
 
     /// Test that product attributes are properly mapped
@@ -172,8 +170,8 @@ class ProductMapperTests: XCTestCase {
     func testThatProductAttributesAreProperlyMapped() {
         let product = mapLoadProductResponse()
         let attributes = product?.attributes
+        XCTAssertEqual(attributes?.count, 2)
 
-        XCTAssertNotNil(attributes)
         guard let attribute = attributes?[0] else {
             XCTFail("Missing product attribute")
             return

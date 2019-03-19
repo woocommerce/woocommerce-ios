@@ -60,20 +60,20 @@ public struct Product: Decodable {
     public let averageRating: String
     public let ratingCount: Int
 
-    public let relatedIDs: [Int?]
-    public let upsellIDs: [Int?]
-    public let crossSellIDs: [Int?]
+    public let relatedIDs: [Int]
+    public let upsellIDs: [Int]
+    public let crossSellIDs: [Int]
     public let parentID: Int
 
     public let purchaseNote: String?
-    public let categories: [ProductCategory?]
-    public let tags: [ProductTag?]
-    public let images: [ProductImage?]
+    public let categories: [ProductCategory]
+    public let tags: [ProductTag]
+    public let images: [ProductImage]
 
-    public let attributes: [ProductAttribute?]
-    public let defaultAttributes: [ProductDefaultAttribute?]
-    public let variations: [Int?]
-    public let groupedProducts: [Int?]
+    public let attributes: [ProductAttribute]
+    public let defaultAttributes: [ProductDefaultAttribute]
+    public let variations: [Int]
+    public let groupedProducts: [Int]
 
     public let menuOrder: Int
 
@@ -128,18 +128,18 @@ public struct Product: Decodable {
                 reviewsAllowed: Bool,
                 averageRating: String,
                 ratingCount: Int,
-                relatedIDs: [Int?],
-                upsellIDs: [Int?],
-                crossSellIDs: [Int?],
+                relatedIDs: [Int],
+                upsellIDs: [Int],
+                crossSellIDs: [Int],
                 parentID: Int,
                 purchaseNote: String?,
-                categories: [ProductCategory?],
-                tags: [ProductTag?],
-                images: [ProductImage?],
-                attributes: [ProductAttribute?],
-                defaultAttributes: [ProductDefaultAttribute?],
-                variations: [Int?],
-                groupedProducts: [Int?],
+                categories: [ProductCategory],
+                tags: [ProductTag],
+                images: [ProductImage],
+                attributes: [ProductAttribute],
+                defaultAttributes: [ProductDefaultAttribute],
+                variations: [Int],
+                groupedProducts: [Int],
                 menuOrder: Int) {
         self.siteID = siteID
         self.productID = productID

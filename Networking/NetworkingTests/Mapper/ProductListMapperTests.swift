@@ -133,11 +133,7 @@ class ProductListMapperTests: XCTestCase {
         let categories = firstProduct.categories
         XCTAssertEqual(categories.count, 1)
 
-        guard let category = firstProduct.categories[0] else {
-            XCTFail("Failed to parse product category")
-            return
-        }
-
+        let category = firstProduct.categories[0]
         XCTAssertEqual(category.categoryID, 36)
         XCTAssertEqual(category.name, "Events")
         XCTAssertEqual(category.slug, "events")
@@ -153,9 +149,9 @@ class ProductListMapperTests: XCTestCase {
         XCTAssert(tags.count == 9)
 
         let tag = tags[2]
-        XCTAssertEqual(tag?.tagID, 45)
-        XCTAssertEqual(tag?.name, "birthday party")
-        XCTAssertEqual(tag?.slug, "birthday-party")
+        XCTAssertEqual(tag.tagID, 45)
+        XCTAssertEqual(tag.name, "birthday party")
+        XCTAssertEqual(tag.slug, "birthday-party")
     }
 
     /// Test that product images are properly mapped.
@@ -164,18 +160,18 @@ class ProductListMapperTests: XCTestCase {
         let products = mapLoadAllProductsResponse()
         let product = products[1]
         let images = product.images
-        XCTAssert(images.count == 1)
+        XCTAssertEqual(images.count, 1)
 
         let productImage = images[0]
         let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-05-07T21:02:45")
         let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-05-07T21:03:04")
-        XCTAssertEqual(productImage?.imageID, 209)
-        XCTAssertEqual(productImage?.dateCreated, dateCreated)
-        XCTAssertEqual(productImage?.dateModified, dateModified)
-        XCTAssertEqual(productImage?.src,
+        XCTAssertEqual(productImage.imageID, 209)
+        XCTAssertEqual(productImage.dateCreated, dateCreated)
+        XCTAssertEqual(productImage.dateModified, dateModified)
+        XCTAssertEqual(productImage.src,
                        "https://i0.wp.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/05/71PEq6VvFjL._SL1500_.jpg?fit=1500%2C1500&ssl=1")
-        XCTAssertEqual(productImage?.name, "Dymo LabelWriter 4XL")
-        XCTAssert(productImage?.alt?.isEmpty == true)
+        XCTAssertEqual(productImage.name, "Dymo LabelWriter 4XL")
+        XCTAssert(productImage.alt?.isEmpty == true)
     }
 
     /// Test that product attributes are properly mapped
@@ -184,12 +180,9 @@ class ProductListMapperTests: XCTestCase {
         let products = mapLoadAllProductsResponse()
         let product = products[4]
         let attributes = product.attributes
+        XCTAssertEqual(attributes.count, 2)
 
-        guard let attribute = attributes[0] else {
-            XCTFail("Missing product attribute")
-            return
-        }
-
+        let attribute = attributes[0]
         XCTAssertEqual(attribute.attributeID, 0)
         XCTAssertEqual(attribute.name, "Size")
         XCTAssertEqual(attribute.position, 0)
@@ -210,18 +203,17 @@ class ProductListMapperTests: XCTestCase {
         let products = mapLoadAllProductsResponse()
         let product = products[4]
         let defaultAttributes = product.defaultAttributes
-        XCTAssert(defaultAttributes.count == 2)
+        XCTAssertEqual(defaultAttributes.count, 2)
 
         let attribute1 = defaultAttributes[0]
+        XCTAssertEqual(attribute1.attributeID, 0)
+        XCTAssertEqual(attribute1.name, "Size")
+        XCTAssertEqual(attribute1.option, "Medium")
+
         let attribute2 = defaultAttributes[1]
-
-        XCTAssertEqual(attribute1?.attributeID, 0)
-        XCTAssertEqual(attribute1?.name, "Size")
-        XCTAssertEqual(attribute1?.option, "Medium")
-
-        XCTAssert(attribute2?.attributeID == 0)
-        XCTAssertEqual(attribute2?.name, "Color")
-        XCTAssertEqual(attribute2?.option, "Purple")
+        XCTAssert(attribute2.attributeID == 0)
+        XCTAssertEqual(attribute2.name, "Color")
+        XCTAssertEqual(attribute2.option, "Purple")
     }
 }
 

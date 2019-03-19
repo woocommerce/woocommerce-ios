@@ -130,7 +130,7 @@ extension ShipmentStore {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             self.upsertShipmentTrackingGroups(siteID: siteID,
-                                              readOnlyShipmentTrackingProviderGroups: readOnlyShipmentTrackingProviderGroups,
+                                              readOnlyGroups: readOnlyShipmentTrackingProviderGroups,
                                               in: derivedStorage)
         }
 
@@ -140,22 +140,22 @@ extension ShipmentStore {
     }
 
     private func upsertShipmentTrackingGroups(siteID: Int,
-                                              readOnlyShipmentTrackingProviderGroups: [Networking.ShipmentTrackingProviderGroup],
+                                              readOnlyGroups: [Networking.ShipmentTrackingProviderGroup],
                                               in storage: StorageType) {
-        for readOnlyTrackingGroup in readOnlyShipmentTrackingProviderGroups {
+        for readOnlyGroup in readOnlyGroups {
             let storageTracking = storage.loadShipmentTrackingProviderGroup(siteID: siteID,
-                                                                            providerGroupName: readOnlyTrackingGroup.name) ??
+                                                                            providerGroupName: readOnlyGroup.name) ??
                 storage.insertNewObject(ofType: Storage.ShipmentTrackingProviderGroup.self)
 
-            storageTracking.update(with: readOnlyTrackingGroup)
+            storageTracking.update(with: readOnlyGroup)
 
-            handleGroupProviders(readOnlyTrackingGroup, storageTracking, storage)
+            handleGroupProviders(readOnlyGroup, storageTracking, storage)
         }
 
         // Now, remove any objects that exist in storage but not in readOnlyShipmentTrackingProviderGroups
         if let storageTrackingGroups = storage.loadShipmentTrackingProviderGroupList(siteID: siteID) {
             storageTrackingGroups.forEach({ storageTrackingGroup in
-                if readOnlyShipmentTrackingProviderGroups.first(where: { $0.siteID == storageTrackingGroup.siteID && $0.name == storageTrackingGroup.name } ) == nil {
+                if readOnlyGroups.first(where: { $0.siteID == storageTrackingGroup.siteID && $0.name == storageTrackingGroup.name } ) == nil {
                     storage.deleteObject(storageTrackingGroup)
                 }
             })

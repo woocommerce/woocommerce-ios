@@ -376,7 +376,9 @@ final class ShipmentStoreTests: XCTestCase {
 
                                                     XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 1)
 
-                                                    let storedTracking = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID, orderID: self.sampleOrderID, trackingID: mockTrackingID)
+                                                    let storedTracking = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
+                                                                                                               orderID: self.sampleOrderID,
+                                                                                                               trackingID: mockTrackingID)
 
                                                     XCTAssertEqual(storedTracking?.trackingNumber, mockTrackingNumber)
 
@@ -391,9 +393,12 @@ final class ShipmentStoreTests: XCTestCase {
     ///
     func testAddTrackingListReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Add shipment tracking error response")
-        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
 
-        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_plugin_not_active")
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/",
+            filename: "shipment_tracking_plugin_not_active")
         let action = ShipmentAction.addTracking(siteID: sampleSiteID,
                                                 orderID: sampleOrderID,
                                                 providerGroupName: "",
@@ -411,7 +416,9 @@ final class ShipmentStoreTests: XCTestCase {
     ///
     func testAddTrackingReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Add tracking empty response")
-        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
 
         let action = ShipmentAction.addTracking(siteID: sampleSiteID,
                                                 orderID: sampleOrderID,
@@ -431,7 +438,68 @@ final class ShipmentStoreTests: XCTestCase {
     /// Verifies that `deleteTracking` removes saved tracking.
     ///
     func testDeleteTrackingEffectivelyDeletesTrackingData() {
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
 
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new")
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 0)
+
+        let mockGroupName = "Australia"
+        let mockProviderName = "A provider"
+        // Mocks obtained from the content of shipment_tracking_new
+        let mockTrackingNumber = "123456781234567812345678"
+        let mockTrackingID = "f2e7783b40837b9e1ec503a149dab4a1"
+
+        shipmentStore.addTracking(siteID: sampleSiteID,
+                                  orderID: sampleOrderID,
+                                  providerGroupName: mockGroupName,
+                                  providerName: mockProviderName,
+                                  trackingNumber: mockTrackingNumber) { error in
+                                    XCTAssertNil(error)
+        }
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 1)
+
+        shipmentStore.deleteStoredShipment(siteID: sampleSiteID, orderID: sampleOrderID, trackingID: mockTrackingID)
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 0)
+    }
+
+    /// Verifies that `ShipmentAction.deleteTracking` returns an error whenever there is an error response from the backend.
+    ///
+    func testDeleteTrackingListReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Delete shipment tracking error response")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_plugin_not_active")
+        let action = ShipmentAction.deleteTracking(siteID: sampleSiteID,
+                                                   orderID: sampleOrderID,
+                                                   trackingID: "") { error in
+                                                    XCTAssertNotNil(error)
+                                                    expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ShipmentAction.deleteTracking` returns an error whenever there is no backend response.
+    ///
+    func testDeleteTrackingReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Delete tracking empty response")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ShipmentAction.deleteTracking(siteID: sampleSiteID,
+                                                orderID: sampleOrderID,
+                                                trackingID: "") { error in
+                                                    XCTAssertNotNil(error)
+                                                    expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }
 

@@ -101,60 +101,6 @@ private extension ShipmentStore {
             })
         }
     }
-
-    func addTracking(siteID: Int,
-                     orderID: Int,
-                     providerGroupName: String,
-                     providerName: String,
-                     trackingNumber: String,
-                     onCompletion: @escaping (Error?) -> Void) {
-        let remote = ShipmentsRemote(network: network)
-        remote.createShipmentTracking(for: siteID,
-                                      orderID: orderID,
-                                      trackingProvider: providerName,
-                                      trackingNumber: trackingNumber) { [weak self] (tracking, error) in
-            guard let newTracking = tracking else {
-                onCompletion(error)
-                return
-            }
-
-            self?.addStoredShipment(siteID: siteID,
-                                    orderID: orderID,
-                                    readOnlyTracking: newTracking)
-            onCompletion(nil)
-        }
-    }
-
-    func addCustomTracking(siteID: Int, orderID: Int, trackingProvider: String, trackingNumber: String, trackingURL: String, onCompletion: @escaping (Error?) -> Void) {
-        let remote = ShipmentsRemote(network: network)
-        remote.createShipmentTrackingWithCustomProvider(for: siteID, orderID: orderID, trackingProvider: trackingProvider, trackingNumber: trackingNumber, trackingURL: trackingURL) { [weak self] (tracking, error) in
-            guard let newTracking = tracking else {
-                onCompletion(error)
-                return
-            }
-
-            self?.addCustomStoredShipment(siteID: siteID,
-                                          orderID: orderID,
-                                          trackingProvider: trackingProvider,
-                                          trackingURL: trackingURL,
-                                          readOnlyTracking: newTracking)
-
-            onCompletion(nil)
-        }
-    }
-
-    func deleteTracking(siteID: Int, orderID: Int, trackingID: String, onCompletion: @escaping (Error?) -> Void) {
-        let remote = ShipmentsRemote(network: network)
-        remote.deleteShipmentTracking(for: siteID, orderID: orderID, trackingID: trackingID) { [weak self] (tracking, error) in
-            guard let _ = tracking else {
-                onCompletion(error)
-                return
-            }
-
-            self?.deleteStoredShipment(siteID: siteID, orderID: orderID, trackingID: trackingID)
-            onCompletion(nil)
-        }
-    }
 }
 
 
@@ -233,6 +179,72 @@ extension ShipmentStore {
                     storage.deleteObject(storageTrackingGroup)
                 }
             })
+        }
+    }
+
+    func addTracking(siteID: Int,
+                     orderID: Int,
+                     providerGroupName: String,
+                     providerName: String,
+                     trackingNumber: String,
+                     onCompletion: @escaping (Error?) -> Void) {
+        let remote = ShipmentsRemote(network: network)
+        remote.createShipmentTracking(for: siteID,
+                                      orderID: orderID,
+                                      trackingProvider: providerName,
+                                      trackingNumber: trackingNumber) { [weak self] (tracking, error) in
+                                        guard let newTracking = tracking else {
+                                            onCompletion(error)
+                                            return
+                                        }
+
+                                        self?.addStoredShipment(siteID: siteID,
+                                                                orderID: orderID,
+                                                                readOnlyTracking: newTracking)
+                                        onCompletion(nil)
+        }
+    }
+
+    func addCustomTracking(siteID: Int,
+                           orderID: Int,
+                           trackingProvider: String,
+                           trackingNumber: String,
+                           trackingURL: String,
+                           onCompletion: @escaping (Error?) -> Void) {
+        let remote = ShipmentsRemote(network: network)
+        remote.createShipmentTrackingWithCustomProvider(for: siteID,
+                                                        orderID: orderID,
+                                                        trackingProvider: trackingProvider,
+                                                        trackingNumber: trackingNumber,
+                                                        trackingURL: trackingURL) { [weak self] (tracking, error) in
+            guard let newTracking = tracking else {
+                onCompletion(error)
+                return
+            }
+
+            self?.addCustomStoredShipment(siteID: siteID,
+                                          orderID: orderID,
+                                          trackingProvider: trackingProvider,
+                                          trackingURL: trackingURL,
+                                          readOnlyTracking: newTracking)
+
+            onCompletion(nil)
+        }
+    }
+
+    func deleteTracking(siteID: Int,
+                        orderID: Int,
+                        trackingID: String,
+                        onCompletion: @escaping (Error?) -> Void) {
+        let remote = ShipmentsRemote(network: network)
+        remote.deleteShipmentTracking(for: siteID, orderID: orderID, trackingID: trackingID) { [weak self] (tracking, error) in
+            guard let _ = tracking else {
+                onCompletion(error)
+                return
+            }
+
+            self?.deleteStoredShipment(siteID: siteID, orderID: orderID, trackingID: trackingID)
+            onCompletion(nil)
         }
     }
 

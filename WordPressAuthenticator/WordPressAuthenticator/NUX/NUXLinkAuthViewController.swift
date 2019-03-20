@@ -9,15 +9,13 @@ import WordPressShared
 ///
 class NUXLinkAuthViewController: LoginViewController {
     @IBOutlet weak var statusLabel: UILabel?
-    @objc var email: String = ""
     @objc var token: String = ""
     @objc var didSync: Bool = false
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        // Gotta have email and token to use this vc
-        assert(!email.isEmpty, "Email cannot be nil")
+        // Gotta have a token to use this vc
         assert(!token.isEmpty, "Email token cannot be nil")
 
         if didSync {
@@ -26,7 +24,7 @@ class NUXLinkAuthViewController: LoginViewController {
 
         didSync = true // Make sure we don't call this twice by accident
 
-        let credentials = WordPressCredentials.wpcom(username: email, authToken: token, isJetpackLogin: isJetpackLogin, multifactor: false)
+        let credentials = WordPressCredentials.wpcom(authToken: token, isJetpackLogin: isJetpackLogin, multifactor: false)
         syncWPComAndPresentEpilogue(credentials: credentials)
 
         // Count this as success since we're authed. Even if there is a glitch

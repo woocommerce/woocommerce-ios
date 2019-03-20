@@ -155,8 +155,8 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     }
 
     // MARK: SigninWPComSyncHandler methods
-    dynamic open func finishedLogin(withUsername username: String, authToken: String, requiredMultifactorCode: Bool) {
-        let credentials = WordPressCredentials.wpcom(username: username, authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: requiredMultifactorCode)
+    dynamic open func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
+        let credentials = WordPressCredentials.wpcom(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: requiredMultifactorCode)
 
         syncWPComAndPresentEpilogue(credentials: credentials)
 
@@ -247,7 +247,7 @@ extension LoginViewController {
         switch credentials {
         case .wporg:
             break
-        case .wpcom(_, _, _, let multifactor):
+        case .wpcom(_, _, let multifactor):
             properties = [
                 "multifactor": multifactor.description,
                 "dotcom_user": true.description

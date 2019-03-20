@@ -71,7 +71,7 @@ describe(@"signInWithLoginFields", ^{
                 
                 successStub(authToken);
             }];
-            [[mockLoginFacadeDelegate expect] finishedLoginWithUsername:loginFields.username authToken:authToken requiredMultifactorCode:loginFields.meta.requiredMultifactor];
+            [[mockLoginFacadeDelegate expect] finishedLoginWithAuthToken:authToken requiredMultifactorCode:loginFields.meta.requiredMultifactor];
             
             [loginFacade signInWithLoginFields:loginFields];
             

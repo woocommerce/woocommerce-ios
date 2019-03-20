@@ -361,7 +361,11 @@ final class ShipmentStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new")
 
-        let action = ShipmentAction.addTracking(siteID: sampleSiteID, orderID: sampleOrderID, providerGrupName: "A country", providerName: "A provider", trackingNumber: "000000") { error in
+        let action = ShipmentAction.addTracking(siteID: sampleSiteID,
+                                                orderID: sampleOrderID,
+                                                providerGrupName: "A country",
+                                                providerName: "A provider",
+                                                trackingNumber: "000000") { error in
             XCTAssertNil(error)
 
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 1)

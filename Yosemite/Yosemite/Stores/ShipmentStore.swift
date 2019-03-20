@@ -33,7 +33,12 @@ public class ShipmentStore: Store {
         case .synchronizeShipmentTrackingProviders(let siteID, let orderID, let onCompletion):
             syncronizeShipmentTrackingProviderGroupsData(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .addTracking(let siteID, let orderID, let providerGroupName, let providerName, let trackingNumber, let onCompletion):
-            addTracking(siteID: siteID, orderID: orderID, providerGroupName: providerGroupName, providerName: providerName, trackingNumber: trackingNumber, onCompletion: onCompletion)
+            addTracking(siteID: siteID,
+                        orderID: orderID,
+                        providerGroupName: providerGroupName,
+                        providerName: providerName,
+                        trackingNumber: trackingNumber,
+                        onCompletion: onCompletion)
         case .deleteTracking(let siteID, let orderID, let trackingID, let onCompletion):
             deleteTracking(siteID: siteID, orderID: orderID, trackingID: trackingID, onCompletion: onCompletion)
         }
@@ -76,15 +81,25 @@ private extension ShipmentStore {
         }
     }
 
-    func addTracking(siteID: Int, orderID: Int, providerGroupName: String, providerName: String, trackingNumber: String, onCompletion: @escaping (Error?) -> Void) {
+    func addTracking(siteID: Int,
+                     orderID: Int,
+                     providerGroupName: String,
+                     providerName: String,
+                     trackingNumber: String,
+                     onCompletion: @escaping (Error?) -> Void) {
         let remote = ShipmentsRemote(network: network)
-        remote.createShipmentTracking(for: siteID, orderID: orderID, trackingProvider: providerName, trackingNumber: trackingNumber) { [weak self] (tracking, error) in
+        remote.createShipmentTracking(for: siteID,
+                                      orderID: orderID,
+                                      trackingProvider: providerName,
+                                      trackingNumber: trackingNumber) { [weak self] (tracking, error) in
             guard let newTracking = tracking else {
                 onCompletion(error)
                 return
             }
 
-            self?.addStoredShipment(siteID: siteID, orderID: orderID,readOnlyTracking: newTracking)
+            self?.addStoredShipment(siteID: siteID,
+                                    orderID: orderID,
+                                    readOnlyTracking: newTracking)
             onCompletion(nil)
         }
     }

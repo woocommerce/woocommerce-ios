@@ -32,7 +32,12 @@ public class ShipmentStore: Store {
             synchronizeShipmentTrackingData(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .synchronizeShipmentTrackingProviders(let siteID, let orderID, let onCompletion):
             syncronizeShipmentTrackingProviderGroupsData(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
-        case .addTracking(let siteID, let orderID, let providerGroupName, let providerName, let trackingNumber, let onCompletion):
+        case .addTracking(let siteID,
+                          let orderID,
+                          let providerGroupName,
+                          let providerName,
+                          let trackingNumber,
+                          let onCompletion):
             addTracking(siteID: siteID,
                         orderID: orderID,
                         providerGroupName: providerGroupName,

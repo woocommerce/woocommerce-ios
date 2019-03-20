@@ -282,33 +282,27 @@ final class ShipmentStoreTests: XCTestCase {
     func testUpdateRetrieveShipmentTrackingProviderGroupListEffectivelyUpdatesPreexistantShipmentTrackingData() {
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 0)
+        shipmentStore.upsertTrackingProviderData(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingProviderGroups: australiaAndSweden())
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 2)
 
         let group = DispatchGroup()
-
         group.enter()
         shipmentStore.upsertTrackingProviderDataInBackground(siteID: sampleSiteID,
-                                                                     orderID: sampleOrderID,
-                                                                     readOnlyShipmentTrackingProviderGroups: australiaAndSweden()) {
-            XCTAssertTrue(Thread.isMainThread)
-            group.leave()
-        }
-
-        group.enter()
-        shipmentStore.upsertTrackingProviderDataInBackground(siteID: sampleSiteID,
-                                                                     orderID: sampleOrderID,
-                                                                     readOnlyShipmentTrackingProviderGroups: australiaMutatedAndSwedenMutated()) {
-            XCTAssertTrue(Thread.isMainThread)
-            group.leave()
+                                                             orderID: sampleOrderID,
+                                                             readOnlyShipmentTrackingProviderGroups: australiaMutatedAndSwedenMutated()) {
+                                                                XCTAssertTrue(Thread.isMainThread)
+                                                                group.leave()
         }
 
         let expectation = self.expectation(description: "Update shipment tracking provider group list")
         group.notify(queue: .main) {
-            let originalGroups = self.australiaAndSweden()
-            let expectedGroups = self.australiaMutatedAndSwedenMutated()
+            let originalGroups = self.australiaAndSweden().sorted()
+            let expectedGroups = self.australiaMutatedAndSwedenMutated().sorted()
             let storageGroups = self.viewStorage.loadShipmentTrackingProviderGroupList(siteID: self.sampleSiteID)
+            let readOnlyStorageGroups = storageGroups?.map({ $0.toReadOnly() }).sorted()
 
-            XCTAssertNotEqual(storageGroups?.map { $0.toReadOnly() }, originalGroups)
-            XCTAssertEqual(storageGroups?.map { $0.toReadOnly() }, expectedGroups)
+            XCTAssertNotEqual(readOnlyStorageGroups, originalGroups)
+            XCTAssertEqual(readOnlyStorageGroups, expectedGroups)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 2)
 
             expectation.fulfill()
@@ -324,33 +318,27 @@ final class ShipmentStoreTests: XCTestCase {
                                           storageManager: storageManager,
                                           network: network)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 0)
+        shipmentStore.upsertTrackingProviderData(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingProviderGroups: australiaAndSweden())
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 2)
 
         let group = DispatchGroup()
-
         group.enter()
         shipmentStore.upsertTrackingProviderDataInBackground(siteID: sampleSiteID,
-                                                                     orderID: sampleOrderID,
-                                                                     readOnlyShipmentTrackingProviderGroups: australiaAndSweden()) {
-            XCTAssertTrue(Thread.isMainThread)
-            group.leave()
-        }
-
-        group.enter()
-        shipmentStore.upsertTrackingProviderDataInBackground(siteID: sampleSiteID,
-                                                                     orderID: sampleOrderID,
-                                                                     readOnlyShipmentTrackingProviderGroups: sampleShipmentTrackingProviderGroupListMutatedOneGroup()) {
-            XCTAssertTrue(Thread.isMainThread)
-            group.leave()
+                                                             orderID: sampleOrderID,
+                                                             readOnlyShipmentTrackingProviderGroups: sampleShipmentTrackingProviderGroupListMutatedOneGroup()) {
+                                                                XCTAssertTrue(Thread.isMainThread)
+                                                                group.leave()
         }
 
         let expectation = self.expectation(description: "Update shipment tracking provider group list")
         group.notify(queue: .main) {
-            let originalGroups = self.australiaAndSweden()
-            let expectedGroups = self.sampleShipmentTrackingProviderGroupListMutatedOneGroup()
+            let originalGroups = self.australiaAndSweden().sorted()
+            let expectedGroups = self.sampleShipmentTrackingProviderGroupListMutatedOneGroup().sorted()
             let storageGroups = self.viewStorage.loadShipmentTrackingProviderGroupList(siteID: self.sampleSiteID)
+            let readOnlyStorageGroups = storageGroups?.map({ $0.toReadOnly() }).sorted()
 
-            XCTAssertNotEqual(storageGroups?.map { $0.toReadOnly() }, originalGroups)
-            XCTAssertEqual(storageGroups?.map { $0.toReadOnly() }, expectedGroups)
+            XCTAssertNotEqual(readOnlyStorageGroups, originalGroups)
+            XCTAssertEqual(readOnlyStorageGroups, expectedGroups)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 1)
 
             expectation.fulfill()

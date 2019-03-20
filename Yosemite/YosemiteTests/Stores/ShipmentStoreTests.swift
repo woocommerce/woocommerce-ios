@@ -387,6 +387,45 @@ final class ShipmentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `ShipmentAction.addTracking` returns an error whenever there is an error response from the backend.
+    ///
+    func testAddTrackingListReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Add shipment tracking error response")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_plugin_not_active")
+        let action = ShipmentAction.addTracking(siteID: sampleSiteID,
+                                                orderID: sampleOrderID,
+                                                providerGroupName: "",
+                                                providerName: "",
+                                                trackingNumber: "") { error in
+                                                    XCTAssertNotNil(error)
+                                                    expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ShipmentAction.addTracking` returns an error whenever there is no backend response.
+    ///
+    func testAddTrackingReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Add tracking empty response")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ShipmentAction.addTracking(siteID: sampleSiteID,
+                                                orderID: sampleOrderID,
+                                                providerGroupName: "",
+                                                providerName: "",
+                                                trackingNumber: "") { error in
+                                                    XCTAssertNotNil(error)
+                                                    expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     // MARK: - ShipmentAction.deleteTracking
 
     /// Verifies that `deleteTracking` removes saved tracking.

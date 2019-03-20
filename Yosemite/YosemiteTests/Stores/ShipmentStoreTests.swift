@@ -350,6 +350,7 @@ final class ShipmentStoreTests: XCTestCase {
     }
 
     // MARK: - ShipmentAction.addTracking
+
     /// Verifies that `addTracking` saves a new tracking.
     ///
     func testAddTrackingEffectivelyAddsTrackingData() {
@@ -427,6 +428,107 @@ final class ShipmentStoreTests: XCTestCase {
                                                 trackingNumber: "") { error in
                                                     XCTAssertNotNil(error)
                                                     expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - ShipmentAction.addCustomTracking
+
+    /// Verifies that `addTracking` saves a new tracking.
+    ///
+    func testAddCustomTrackingEffectivelyAddsTrackingData() {
+        let expectation = self.expectation(description: "Add custom shipment tracking")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 0)
+
+        // Mocks obtained from the content of shipment_tracking_new_custom_provider
+        let customGroupName = ShipmentStore.customGroupName
+        let mockProviderName = "HK Shipments"
+        let mockTrackingNumber = "123456781234567812345678"
+        let mockTrackingID = "c2911c8175e33466d3d9955b53f29f7a"
+        let mockTrackingURL = "https://somewhere.online.net.com?q=%1$s"
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new_custom_provider")
+
+        let action = ShipmentAction.addCustomTracking(siteID: sampleSiteID,
+                                                      orderID: sampleOrderID,
+                                                      trackingProvider: mockProviderName,
+                                                      trackingNumber: mockTrackingNumber,
+                                                      trackingURL: mockTrackingURL) { error in
+                                                        XCTAssertNil(error)
+
+                                                        /// As a result of adding one tracking with a custom provider,
+                                                        /// we should have one group, one provider and one tracking
+                                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 1)
+                                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProvider.self), 1)
+                                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 1)
+
+                                                        let storedTracking = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
+                                                                                                                   orderID: self.sampleOrderID,
+                                                                                                                   trackingID: mockTrackingID)
+
+                                                        XCTAssertEqual(storedTracking?.trackingNumber, mockTrackingNumber)
+
+                                                        let storedProvider = self.viewStorage.loadShipmentTrackingProvider(siteID: self.sampleSiteID,
+                                                                                                                           name: mockProviderName)
+
+                                                        XCTAssertEqual(storedProvider?.name, mockProviderName)
+
+                                                        let storedGroup = self.viewStorage.loadShipmentTrackingProviderGroup(siteID: self.sampleSiteID,
+                                                                                                                             providerGroupName: customGroupName)
+
+                                                        XCTAssertEqual(storedGroup?.name, customGroupName)
+
+                                                        expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ShipmentAction.addCustomTracking` returns an error whenever there is an error response from the backend.
+    ///
+    func testAddCustomTrackingListReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Add custom tracking error response")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/",
+            filename: "shipment_tracking_plugin_not_active")
+        let action = ShipmentAction.addCustomTracking(siteID: sampleSiteID,
+                                                      orderID: sampleOrderID,
+                                                      trackingProvider: "",
+                                                      trackingNumber: "",
+                                                      trackingURL: "") { error in
+                                                        XCTAssertNotNil(error)
+                                                        expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ShipmentAction.addCustomTracking` returns an error whenever there is no backend response.
+    ///
+    func testAddCustomTrackingReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Add customtracking empty response")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
+
+        let action = ShipmentAction.addCustomTracking(siteID: sampleSiteID,
+                                                      orderID: sampleOrderID,
+                                                      trackingProvider: "",
+                                                      trackingNumber: "",
+                                                      trackingURL: "") { error in
+                                                        XCTAssertNotNil(error)
+                                                        expectation.fulfill()
         }
 
         shipmentStore.onAction(action)

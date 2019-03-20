@@ -18,8 +18,8 @@ public struct Product: Decodable {
     public let featured: Bool
     public let catalogVisibilityKey: String // visible, catalog, search, hidden
 
-    public let description: String?
-    public let shortDescription: String?
+    public let fullDescription: String?
+    public let briefDescription: String?
     public let sku: String?
 
     public let price: String
@@ -49,7 +49,7 @@ public struct Product: Decodable {
 
     public let soldIndividually: Bool
     public let weight: String?
-    public let dimensions: Dimensions
+    public let dimensions: ProductDimension
 
     public let shippingRequired: Bool
     public let shippingTaxable: Bool
@@ -96,8 +96,8 @@ public struct Product: Decodable {
                 statusKey: String,
                 featured: Bool,
                 catalogVisibilityKey: String,
-                description: String?,
-                shortDescription: String?,
+                fullDescription: String?,
+                briefDescription: String?,
                 sku: String?,
                 price: String,
                 regularPrice: String?,
@@ -120,7 +120,7 @@ public struct Product: Decodable {
                 backordered: Bool,
                 soldIndividually: Bool,
                 weight: String?,
-                dimensions: Dimensions,
+                dimensions: ProductDimension,
                 shippingRequired: Bool,
                 shippingTaxable: Bool,
                 shippingClass: String?,
@@ -152,8 +152,8 @@ public struct Product: Decodable {
         self.statusKey = statusKey
         self.featured = featured
         self.catalogVisibilityKey = catalogVisibilityKey
-        self.description = description
-        self.shortDescription = shortDescription
+        self.fullDescription = fullDescription
+        self.briefDescription = briefDescription
         self.sku = sku
         self.price = price
         self.regularPrice = regularPrice
@@ -221,8 +221,8 @@ public struct Product: Decodable {
         let featured = try container.decode(Bool.self, forKey: .featured)
         let catalogVisibilityKey = try container.decode(String.self, forKey: .catalogVisibilityKey)
 
-        let description = try container.decodeIfPresent(String.self, forKey: .description)
-        let shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
+        let fullDescription = try container.decodeIfPresent(String.self, forKey: .fullDescription)
+        let briefDescription = try container.decodeIfPresent(String.self, forKey: .briefDescription)
         let sku = try container.decodeIfPresent(String.self, forKey: .sku)
 
         let price = try container.decode(String.self, forKey: .price)
@@ -252,7 +252,7 @@ public struct Product: Decodable {
 
         let soldIndividuallly = try container.decode(Bool.self, forKey: .soldIndividually)
         let weight = try container.decodeIfPresent(String.self, forKey: .weight)
-        let dimensions = try container.decode(Dimensions.self, forKey: .dimensions)
+        let dimensions = try container.decode(ProductDimension.self, forKey: .dimensions)
 
         let shippingRequired = try container.decode(Bool.self, forKey: .shippingRequired)
         let shippingTaxable = try container.decode(Bool.self, forKey: .shippingTaxable)
@@ -291,8 +291,8 @@ public struct Product: Decodable {
                   statusKey: statusKey,
                   featured: featured,
                   catalogVisibilityKey: catalogVisibilityKey,
-                  description: description,
-                  shortDescription: shortDescription,
+                  fullDescription: fullDescription,
+                  briefDescription: briefDescription,
                   sku: sku,
                   price: price,
                   regularPrice: regularPrice,
@@ -358,8 +358,8 @@ private extension Product {
         case featured               = "featured"
         case catalogVisibilityKey   = "catalog_visibility"
 
-        case description            = "description"
-        case shortDescription       = "short_description"
+        case fullDescription        = "description"
+        case briefDescription       = "short_description"
 
         case sku            = "sku"
         case price          = "price"
@@ -434,8 +434,8 @@ extension Product: Comparable {
             lhs.statusKey == rhs.statusKey &&
             lhs.featured == rhs.featured &&
             lhs.catalogVisibilityKey == rhs.catalogVisibilityKey &&
-            lhs.description == rhs.description &&
-            lhs.shortDescription == rhs.shortDescription &&
+            lhs.fullDescription == rhs.fullDescription &&
+            lhs.briefDescription == rhs.briefDescription &&
             lhs.sku == rhs.sku &&
             lhs.price == rhs.price &&
             lhs.regularPrice == rhs.regularPrice &&

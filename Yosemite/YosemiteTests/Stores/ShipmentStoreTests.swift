@@ -219,6 +219,8 @@ final class ShipmentStoreTests: XCTestCase {
 
     // MARK: - ShipmentAction.synchronizeShipmentTrackingProviders
 
+    /// Verifies that `ShipmentAction.synchronizeShipmentTrackingProviders` effectively persists any retrieved tracking providers data.
+    ///
     func testRetrieveShipmentTrackingProviderListEffectivelyPersistsRetrievedShipmentTrackingProviderData() {
         let expectation = self.expectation(description: "Retrieve shipment tracking providers list")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -345,6 +347,38 @@ final class ShipmentStoreTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - ShipmentAction.addTracking
+    /// Verifies that `addTracking` saves a new tracking.
+    ///
+    func testAddTrackingEffectivelyAddsTrackingData() {
+        let expectation = self.expectation(description: "Add shipment tracking")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 0)
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new")
+
+        let action = ShipmentAction.addTracking(siteID: sampleSiteID, orderID: sampleOrderID, providerGrupName: "A country", providerName: "A provider", trackingNumber: "000000") { error in
+            XCTAssertNil(error)
+
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 1)
+
+            expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - ShipmentAction.deleteTracking
+
+    /// Verifies that `deleteTracking` removes saved tracking.
+    ///
+    func testDeleteTrackingEffectivelyDeletesTrackingData() {
+
     }
 }
 

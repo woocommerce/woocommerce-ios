@@ -14,6 +14,11 @@ public enum ShipmentAction: Action {
     ///
     case synchronizeShipmentTrackingProviders(siteID: Int, orderID: Int, onCompletion: (Error?) -> Void)
 
+    /// Adds a shipment tracking with `trackingID` associated with the provided `siteID` and `orderID`
+    ///
+    case addTracking(siteID: Int, orderID: Int, providerGrupName: String, providerName: String, trackingNumber: String, onCompletion: (Error?) -> Void)
+
     /// Removes a shipment tracking with `trackingID` associated with the provided `siteID` and `orderID`
+    ///
     case deleteTracking(siteID: Int, orderID: Int, trackingID: String, onCompletion: (Error?) -> Void)
 }

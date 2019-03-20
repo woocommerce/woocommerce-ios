@@ -91,6 +91,10 @@ class AuthenticationManager {
 // MARK: - WordPressAuthenticator Delegate
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
+    var allowWPComLogin: Bool {
+        return true
+    }
+
 
     /// Indicates if the active Authenticator can be dismissed or not.
     ///
@@ -175,13 +179,22 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Synchronizes the specified WordPress Account.
     ///
     func sync(credentials: WordPressCredentials, onCompletion: @escaping () -> Void) {
-        guard case let .wpcom(username, authToken, _, _) = credentials else {
+        guard case let .wpcom(authToken, _, _) = credentials else {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
 
-        StoresManager.shared
-            .authenticate(credentials: .init(username: username, authToken: authToken))
-            .synchronizeEntities(onCompletion: onCompletion)
+        let tempUsername = UUID().uuidString
+        StoresManager.shared.authenticate(credentials: .init(username: tempUsername, authToken: authToken))
+        let action = AccountAction.synchronizeAccount { (account, error) in
+            if let account = account {
+                StoresManager.shared
+                    .authenticate(credentials: .init(username: account.username, authToken: authToken))
+                    .synchronizeEntities(onCompletion: onCompletion)
+            } else {
+                StoresManager.shared.synchronizeEntities(onCompletion: onCompletion)
+            }
+        }
+        StoresManager.shared.dispatch(action)
     }
 
     /// Tracks a given Analytics Event.

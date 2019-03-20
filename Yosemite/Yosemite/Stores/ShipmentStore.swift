@@ -77,7 +77,7 @@ private extension ShipmentStore {
     func deleteTracking(siteID: Int, orderID: Int, trackingID: String, onCompletion: @escaping (Error?) -> Void) {
         let remote = ShipmentsRemote(network: network)
         remote.deleteShipmentTracking(for: siteID, orderID: orderID, trackingID: trackingID) { [weak self] (tracking, error) in
-            guard let readOnlyTracking = tracking else {
+            guard let _ = tracking else {
                 onCompletion(error)
                 return
             }

@@ -154,7 +154,7 @@
         <attribute name="backordersKey" attributeType="String" syncable="YES"/>
         <attribute name="briefDescription" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="catalogVisibilityKey" attributeType="String" syncable="YES"/>
-        <attribute name="crossSellIDs" attributeType="Transformable" customClassName="[Int64]" syncable="YES"/>
+        <attribute name="crossSellIDs" optional="YES" attributeType="Transformable" customClassName="[Int64]" syncable="YES"/>
         <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="dateModified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="downloadable" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
@@ -177,7 +177,7 @@
         <attribute name="purchaseNote" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="ratingCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="regularPrice" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="relatedIDs" attributeType="Transformable" customClassName="[Int64]" syncable="YES"/>
+        <attribute name="relatedIDs" optional="YES" attributeType="Transformable" customClassName="[Int64]" syncable="YES"/>
         <attribute name="reviewsAllowed" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="salePrice" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="shippingClass" optional="YES" attributeType="String" syncable="YES"/>
@@ -194,8 +194,8 @@
         <attribute name="taxClass" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="taxStatusKey" attributeType="String" syncable="YES"/>
         <attribute name="totalSales" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="upsellIDs" attributeType="Transformable" customClassName="[Int64]" syncable="YES"/>
-        <attribute name="variations" attributeType="Transformable" customClassName="[Int64]" syncable="YES"/>
+        <attribute name="upsellIDs" optional="YES" attributeType="Transformable" customClassName="[Int64]" syncable="YES"/>
+        <attribute name="variations" optional="YES" attributeType="Transformable" customClassName="[Int64]" syncable="YES"/>
         <attribute name="virtual" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="weight" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="attributes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductAttribute" inverseName="product" inverseEntity="ProductAttribute" syncable="YES"/>

@@ -38,8 +38,8 @@ class ProductMapperTests: XCTestCase {
         XCTAssertFalse(product.featured)
         XCTAssertEqual(product.catalogVisibilityKey, "visible")
 
-        XCTAssertEqual(product.description, "<p>This is the party room!</p>\n")
-        XCTAssertEqual(product.shortDescription, """
+        XCTAssertEqual(product.fullDescription, "<p>This is the party room!</p>\n")
+        XCTAssertEqual(product.briefDescription, """
             [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
             We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let \
             us know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests for $100.</p>\n

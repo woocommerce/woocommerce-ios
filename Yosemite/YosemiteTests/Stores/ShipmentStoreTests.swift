@@ -357,20 +357,30 @@ final class ShipmentStoreTests: XCTestCase {
         let shipmentStore = ShipmentStore(dispatcher: dispatcher,
                                           storageManager: storageManager,
                                           network: network)
+
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 0)
+
+        let mockProviderName = "A provider"
+        // Mocks obtained from the content of shipment_tracking_new
+        let mockTrackingNumber = "123456781234567812345678"
+        let mockTrackingID = "f2e7783b40837b9e1ec503a149dab4a1"
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new")
 
         let action = ShipmentAction.addTracking(siteID: sampleSiteID,
                                                 orderID: sampleOrderID,
-                                                providerGrupName: "A country",
-                                                providerName: "A provider",
-                                                trackingNumber: "000000") { error in
-            XCTAssertNil(error)
+                                                providerGroupName: "A country",
+                                                providerName: mockProviderName,
+                                                trackingNumber: mockTrackingNumber) { error in
+                                                    XCTAssertNil(error)
 
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 1)
+                                                    XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 1)
 
-            expectation.fulfill()
+                                                    let storedTracking = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID, orderID: self.sampleOrderID, trackingID: mockTrackingID)
+
+                                                    XCTAssertEqual(storedTracking?.trackingNumber, mockTrackingNumber)
+
+                                                    expectation.fulfill()
         }
 
         shipmentStore.onAction(action)

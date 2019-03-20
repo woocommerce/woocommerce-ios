@@ -7,6 +7,10 @@ import Storage
 //
 public class ShipmentStore: Store {
 
+    /// Name of the group of tracking providers created manually by users
+    ///
+    public static let customGroupName = NSLocalizedString("Custom", comment: "Name of the group of tracking providers created manually by users")
+
     /// Shared private StorageType for use during then entire ShipmentStore sync process
     ///
     private lazy var sharedDerivedStorage: StorageType = {
@@ -44,6 +48,18 @@ public class ShipmentStore: Store {
                         providerName: providerName,
                         trackingNumber: trackingNumber,
                         onCompletion: onCompletion)
+        case .addCustomTracking(let siteID,
+                                let orderID,
+                                let trackingProvider,
+                                let trackingNumber,
+                                let trackingURL,
+                                let onCompletion):
+            addCustomTracking(siteID: siteID,
+                              orderID: orderID,
+                              trackingProvider: trackingProvider,
+                              trackingNumber: trackingNumber,
+                              trackingURL: trackingURL,
+                              onCompletion: onCompletion)
         case .deleteTracking(let siteID, let orderID, let trackingID, let onCompletion):
             deleteTracking(siteID: siteID, orderID: orderID, trackingID: trackingID, onCompletion: onCompletion)
         }
@@ -105,6 +121,24 @@ private extension ShipmentStore {
             self?.addStoredShipment(siteID: siteID,
                                     orderID: orderID,
                                     readOnlyTracking: newTracking)
+            onCompletion(nil)
+        }
+    }
+
+    func addCustomTracking(siteID: Int, orderID: Int, trackingProvider: String, trackingNumber: String, trackingURL: String, onCompletion: @escaping (Error?) -> Void) {
+        let remote = ShipmentsRemote(network: network)
+        remote.createShipmentTrackingWithCustomProvider(for: siteID, orderID: orderID, trackingProvider: trackingProvider, trackingNumber: trackingNumber, trackingURL: trackingURL) { [weak self] (tracking, error) in
+            guard let newTracking = tracking else {
+                onCompletion(error)
+                return
+            }
+
+            self?.addCustomStoredShipment(siteID: siteID,
+                                          orderID: orderID,
+                                          trackingProvider: trackingProvider,
+                                          trackingURL: trackingURL,
+                                          readOnlyTracking: newTracking)
+
             onCompletion(nil)
         }
     }
@@ -228,6 +262,26 @@ extension ShipmentStore {
         storage.saveIfNeeded()
     }
 
+    func addCustomStoredShipment(siteID: Int,
+                           orderID: Int,
+                           trackingProvider: String,
+                           trackingURL: String,
+                           readOnlyTracking: Networking.ShipmentTracking) {
+        let storage = storageManager.viewStorage
+        let newStoredTracking = storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
+        newStoredTracking.update(with: readOnlyTracking)
+
+        let provider = storage.insertNewObject(ofType: Storage.ShipmentTrackingProvider.self)
+        provider.name = trackingProvider
+        provider.url = trackingURL
+        provider.siteID = Int64(siteID)
+
+
+        let customProvidersGroup = customGroup(siteID: siteID, storage: storage)
+        customProvidersGroup.addToProviders(provider)
+        storage.saveIfNeeded()
+    }
+
     private func handleProviders(_ readOnlyGroup: Networking.ShipmentTrackingProviderGroup,
                                       _ storageGroup: Storage.ShipmentTrackingProviderGroup,
                                       _ storage: StorageType) {
@@ -252,5 +306,21 @@ extension ShipmentStore {
                 }
             })
         }
+    }
+
+    private func customGroup(siteID: Int, storage: StorageType) -> Storage.ShipmentTrackingProviderGroup {
+        let customGroupName = type(of: self).customGroupName
+
+        if let existingCustomGroup =  storage.loadShipmentTrackingProviderGroup(siteID: siteID,
+                                                                                providerGroupName: customGroupName ) {
+            return existingCustomGroup
+        }
+
+        let newCustomGroup = storage.insertNewObject(ofType: Storage.ShipmentTrackingProviderGroup.self)
+
+        newCustomGroup.name = customGroupName
+        newCustomGroup.siteID = Int64(siteID)
+
+        return newCustomGroup
     }
 }

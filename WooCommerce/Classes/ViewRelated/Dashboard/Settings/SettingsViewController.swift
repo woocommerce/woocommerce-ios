@@ -217,7 +217,7 @@ private extension SettingsViewController {
     func configureLicenses(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Open Source Licenses", comment: "Navigates to open source licenses screen")
+        cell.textLabel?.text = NSLocalizedString("Open Source Licenses", comment: "Navigates to screen about open source licenses")
     }
 
     func configureAppSettings(cell: BasicTableViewCell) {

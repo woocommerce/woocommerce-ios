@@ -82,7 +82,7 @@ private extension FulfillViewController {
     ///
     func setupTableView() {
         tableView.tableFooterView = actionView
-        tableView.allowsSelection = false
+        //tableView.allowsSelection = false
     }
 
     ///Setup: Action Button!
@@ -340,6 +340,13 @@ extension FulfillViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        switch sections[indexPath.section].rows[indexPath.row] {
+        case .trackingAdd:
+            print("==== add tracking ===")
+        default:
+            break
+        }
     }
 }
 

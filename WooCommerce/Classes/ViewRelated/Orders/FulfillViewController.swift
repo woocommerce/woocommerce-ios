@@ -280,7 +280,7 @@ private extension FulfillViewController {
             fatalError()
         }
 
-        cell.leftImage = Gridicon.iconOfType(.quote).imageWithTintColor(.black)
+        cell.leftImage = UIImage.quoteImage.imageWithTintColor(.black)
         cell.labelText = note
 
         cell.isAccessibilityElement = true
@@ -318,8 +318,18 @@ private extension FulfillViewController {
             fatalError()
         }
 
-        cell.leftImage = Gridicon.iconOfType(.addOutline)
-        cell.labelText = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
+        let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
+        cell.leftImage = .addOutlineImage
+        cell.labelText = cellTextContent
+
+        cell.isAccessibilityElement = true
+
+        cell.accessibilityLabel = cellTextContent
+        cell.accessibilityTraits = .button
+        cell.accessibilityHint = NSLocalizedString(
+            "Adds tracking to an order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period."
+        )
     }
 }
 

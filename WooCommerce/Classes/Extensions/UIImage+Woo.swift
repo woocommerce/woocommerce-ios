@@ -78,6 +78,18 @@ extension UIImage {
     static var waitingForCustomersImage: UIImage {
         return UIImage(named: "woo-waiting-customers")!
     }
+
+    /// Quote Image
+    ///
+    static var quoteImage: UIImage {
+        return Gridicon.iconOfType(.quote)
+    }
+
+    /// Add Icon
+    ///
+    static var addOutlineImage: UIImage {
+        return Gridicon.iconOfType(.addOutline)
+    }
 }
 
 private extension UIImage {

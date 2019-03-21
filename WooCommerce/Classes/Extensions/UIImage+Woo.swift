@@ -90,6 +90,13 @@ extension UIImage {
     static var addOutlineImage: UIImage {
         return Gridicon.iconOfType(.addOutline)
     }
+
+    /// Camera Icon
+    ///
+    static var cameraImage: UIImage {
+        return Gridicon.iconOfType(.camera)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
 }
 
 private extension UIImage {

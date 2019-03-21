@@ -6,7 +6,7 @@ import XCTest
 
 /// ShipmentStoreTests Unit Tests
 ///
-class ShipmentStoreTests: XCTestCase {
+final class ShipmentStoreTests: XCTestCase {
 
     /// Mockup Dispatcher!
     ///
@@ -34,6 +34,14 @@ class ShipmentStoreTests: XCTestCase {
     ///
     private let sampleOrderID = 963
 
+    /// Mock Country name
+    ///
+    private let sampleCountryName = "Australia"
+
+    /// Second Mock Country name
+    ///
+    private let sampleCountryName2 = "Sweden"
+
     // MARK: - Overridden Methods
 
     override func setUp() {
@@ -43,6 +51,12 @@ class ShipmentStoreTests: XCTestCase {
         network = MockupNetwork()
     }
 
+    override func tearDown() {
+        dispatcher = nil
+        storageManager = nil
+        network = nil
+        super.tearDown()
+    }
 
     // MARK: - ShipmentAction.synchronizeShipmentTrackingData
 
@@ -202,6 +216,393 @@ class ShipmentStoreTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    // MARK: - ShipmentAction.synchronizeShipmentTrackingProviders
+
+    /// Verifies that `ShipmentAction.synchronizeShipmentTrackingProviders` effectively persists any retrieved tracking providers data.
+    ///
+    func testRetrieveShipmentTrackingProviderListEffectivelyPersistsRetrievedShipmentTrackingProviderData() {
+        let expectation = self.expectation(description: "Retrieve shipment tracking providers list")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders/" + String(sampleOrderID) + "/" + "shipment-trackings/providers",
+                                 filename: "shipment_tracking_providers")
+        let action = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: sampleSiteID, orderID: sampleOrderID) { error in
+            XCTAssertNil(error)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 19)
+
+            let group1 = self.viewStorage.loadShipmentTrackingProviderGroup(siteID: self.sampleSiteID, providerGroupName: self.sampleCountryName)
+
+            let groupProviders = group1?.providers
+
+            XCTAssertNotEqual(groupProviders?.count, 0)
+
+            XCTAssertNotNil(group1)
+            XCTAssertEqual(group1?.toReadOnly(), self.australia())
+
+            expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ShipmentAction.synchronizeShipmentTrackingProviders` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveShipmentTrackingGroupListReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve shipment tracking provider group list error response")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders/" + String(sampleOrderID) + "/" + "shipment-trackings/providers",
+                                 filename: "shipment_tracking_plugin_not_active")
+        let action = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: sampleSiteID, orderID: sampleOrderID) { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ShipmentAction.synchronizeShipmentTrackingProviders` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveShipmentTrackingGroupListReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve shipment tracking provider grup list empty response")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: sampleSiteID, orderID: sampleOrderID) { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `upsertShipmentTrackingProviderData` does not produce duplicate entries.
+    ///
+    func testUpdateRetrieveShipmentTrackingProviderGroupListEffectivelyUpdatesPreexistantShipmentTrackingData() {
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 0)
+        shipmentStore.upsertTrackingProviderData(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingProviderGroups: australiaAndSweden())
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 2)
+
+        let group = DispatchGroup()
+        group.enter()
+        shipmentStore.upsertTrackingProviderDataInBackground(siteID: sampleSiteID,
+                                                             orderID: sampleOrderID,
+                                                             readOnlyShipmentTrackingProviderGroups: australiaMutatedAndSwedenMutated()) {
+                                                                XCTAssertTrue(Thread.isMainThread)
+                                                                group.leave()
+        }
+
+        let expectation = self.expectation(description: "Update shipment tracking provider group list")
+        group.notify(queue: .main) {
+            let originalGroups = self.australiaAndSweden().sorted()
+            let expectedGroups = self.australiaMutatedAndSwedenMutated().sorted()
+            let storageGroups = self.viewStorage.loadShipmentTrackingProviderGroupList(siteID: self.sampleSiteID)
+            let readOnlyStorageGroups = storageGroups?.map({ $0.toReadOnly() }).sorted()
+
+            XCTAssertNotEqual(readOnlyStorageGroups, originalGroups)
+            XCTAssertEqual(readOnlyStorageGroups, expectedGroups)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 2)
+
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `upsertShipmentTrackingProviderDataInBackground` removes duplicated data.
+    ///
+    func testUpdateRetrieveShipmentTrackingProviderGroupListEffectivelyRemovesDeletedShipmentTrackingGroupData() {
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 0)
+        shipmentStore.upsertTrackingProviderData(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingProviderGroups: australiaAndSweden())
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 2)
+
+        let group = DispatchGroup()
+        group.enter()
+        shipmentStore.upsertTrackingProviderDataInBackground(siteID: sampleSiteID,
+                                                             orderID: sampleOrderID,
+                                                             readOnlyShipmentTrackingProviderGroups: sampleShipmentTrackingProviderGroupListMutatedOneGroup()) {
+                                                                XCTAssertTrue(Thread.isMainThread)
+                                                                group.leave()
+        }
+
+        let expectation = self.expectation(description: "Update shipment tracking provider group list")
+        group.notify(queue: .main) {
+            let originalGroups = self.australiaAndSweden().sorted()
+            let expectedGroups = self.sampleShipmentTrackingProviderGroupListMutatedOneGroup().sorted()
+            let storageGroups = self.viewStorage.loadShipmentTrackingProviderGroupList(siteID: self.sampleSiteID)
+            let readOnlyStorageGroups = storageGroups?.map({ $0.toReadOnly() }).sorted()
+
+            XCTAssertNotEqual(readOnlyStorageGroups, originalGroups)
+            XCTAssertEqual(readOnlyStorageGroups, expectedGroups)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 1)
+
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - ShipmentAction.addTracking
+
+    /// Verifies that `addTracking` saves a new tracking.
+    ///
+    func testAddTrackingEffectivelyAddsTrackingData() {
+        let expectation = self.expectation(description: "Add shipment tracking")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 0)
+
+        let mockProviderName = "A provider"
+        // Mocks obtained from the content of shipment_tracking_new
+        let mockTrackingNumber = "123456781234567812345678"
+        let mockTrackingID = "f2e7783b40837b9e1ec503a149dab4a1"
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new")
+
+        let action = ShipmentAction.addTracking(siteID: sampleSiteID,
+                                                orderID: sampleOrderID,
+                                                providerGroupName: "A country",
+                                                providerName: mockProviderName,
+                                                trackingNumber: mockTrackingNumber) { error in
+                                                    XCTAssertNil(error)
+
+                                                    XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 1)
+
+                                                    let storedTracking = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
+                                                                                                               orderID: self.sampleOrderID,
+                                                                                                               trackingID: mockTrackingID)
+
+                                                    XCTAssertEqual(storedTracking?.trackingNumber, mockTrackingNumber)
+
+                                                    expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ShipmentAction.addTracking` returns an error whenever there is an error response from the backend.
+    ///
+    func testAddTrackingListReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Add shipment tracking error response")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/",
+            filename: "shipment_tracking_plugin_not_active")
+        let action = ShipmentAction.addTracking(siteID: sampleSiteID,
+                                                orderID: sampleOrderID,
+                                                providerGroupName: "",
+                                                providerName: "",
+                                                trackingNumber: "") { error in
+                                                    XCTAssertNotNil(error)
+                                                    expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ShipmentAction.addTracking` returns an error whenever there is no backend response.
+    ///
+    func testAddTrackingReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Add tracking empty response")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
+
+        let action = ShipmentAction.addTracking(siteID: sampleSiteID,
+                                                orderID: sampleOrderID,
+                                                providerGroupName: "",
+                                                providerName: "",
+                                                trackingNumber: "") { error in
+                                                    XCTAssertNotNil(error)
+                                                    expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - ShipmentAction.addCustomTracking
+
+    /// Verifies that `addTracking` saves a new tracking.
+    ///
+    func testAddCustomTrackingEffectivelyAddsTrackingData() {
+        let expectation = self.expectation(description: "Add custom shipment tracking")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 0)
+
+        // Mocks obtained from the content of shipment_tracking_new_custom_provider
+        let customGroupName = ShipmentStore.customGroupName
+        let mockProviderName = "HK Shipments"
+        let mockTrackingNumber = "123456781234567812345678"
+        let mockTrackingID = "c2911c8175e33466d3d9955b53f29f7a"
+        let mockTrackingURL = "https://somewhere.online.net.com?q=%1$s"
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new_custom_provider")
+
+        let action = ShipmentAction.addCustomTracking(siteID: sampleSiteID,
+                                                      orderID: sampleOrderID,
+                                                      trackingProvider: mockProviderName,
+                                                      trackingNumber: mockTrackingNumber,
+                                                      trackingURL: mockTrackingURL) { error in
+                                                        XCTAssertNil(error)
+
+                                                        /// As a result of adding one tracking with a custom provider,
+                                                        /// we should have one group, one provider and one tracking
+                                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 1)
+                                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProvider.self), 1)
+                                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 1)
+
+                                                        let storedTracking = self.viewStorage.loadShipmentTracking(siteID: self.sampleSiteID,
+                                                                                                                   orderID: self.sampleOrderID,
+                                                                                                                   trackingID: mockTrackingID)
+
+                                                        XCTAssertEqual(storedTracking?.trackingNumber, mockTrackingNumber)
+
+                                                        let storedProvider = self.viewStorage.loadShipmentTrackingProvider(siteID: self.sampleSiteID,
+                                                                                                                           name: mockProviderName)
+
+                                                        XCTAssertEqual(storedProvider?.name, mockProviderName)
+
+                                                        let storedGroup = self.viewStorage.loadShipmentTrackingProviderGroup(siteID: self.sampleSiteID,
+                                                                                                                             providerGroupName: customGroupName)
+
+                                                        XCTAssertEqual(storedGroup?.name, customGroupName)
+
+                                                        expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ShipmentAction.addCustomTracking` returns an error whenever there is an error response from the backend.
+    ///
+    func testAddCustomTrackingListReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Add custom tracking error response")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/",
+            filename: "shipment_tracking_plugin_not_active")
+        let action = ShipmentAction.addCustomTracking(siteID: sampleSiteID,
+                                                      orderID: sampleOrderID,
+                                                      trackingProvider: "",
+                                                      trackingNumber: "",
+                                                      trackingURL: "") { error in
+                                                        XCTAssertNotNil(error)
+                                                        expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ShipmentAction.addCustomTracking` returns an error whenever there is no backend response.
+    ///
+    func testAddCustomTrackingReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Add customtracking empty response")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
+
+        let action = ShipmentAction.addCustomTracking(siteID: sampleSiteID,
+                                                      orderID: sampleOrderID,
+                                                      trackingProvider: "",
+                                                      trackingNumber: "",
+                                                      trackingURL: "") { error in
+                                                        XCTAssertNotNil(error)
+                                                        expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - ShipmentAction.deleteTracking
+
+    /// Verifies that `deleteTracking` removes saved tracking.
+    ///
+    func testDeleteTrackingEffectivelyDeletesTrackingData() {
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher,
+                                          storageManager: storageManager,
+                                          network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new")
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 0)
+
+        let mockGroupName = "Australia"
+        let mockProviderName = "A provider"
+        // Mocks obtained from the content of shipment_tracking_new
+        let mockTrackingNumber = "123456781234567812345678"
+        let mockTrackingID = "f2e7783b40837b9e1ec503a149dab4a1"
+
+        shipmentStore.addTracking(siteID: sampleSiteID,
+                                  orderID: sampleOrderID,
+                                  providerGroupName: mockGroupName,
+                                  providerName: mockProviderName,
+                                  trackingNumber: mockTrackingNumber) { error in
+                                    XCTAssertNil(error)
+        }
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 1)
+
+        shipmentStore.deleteStoredShipment(siteID: sampleSiteID, orderID: sampleOrderID, trackingID: mockTrackingID)
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 0)
+    }
+
+    /// Verifies that `ShipmentAction.deleteTracking` returns an error whenever there is an error response from the backend.
+    ///
+    func testDeleteTrackingListReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Delete shipment tracking error response")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_plugin_not_active")
+        let action = ShipmentAction.deleteTracking(siteID: sampleSiteID,
+                                                   orderID: sampleOrderID,
+                                                   trackingID: "") { error in
+                                                    XCTAssertNotNil(error)
+                                                    expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ShipmentAction.deleteTracking` returns an error whenever there is no backend response.
+    ///
+    func testDeleteTrackingReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Delete tracking empty response")
+        let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ShipmentAction.deleteTracking(siteID: sampleSiteID,
+                                                orderID: sampleOrderID,
+                                                trackingID: "") { error in
+                                                    XCTAssertNotNil(error)
+                                                    expectation.fulfill()
+        }
+
+        shipmentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 
@@ -270,6 +671,80 @@ private extension ShipmentStoreTests {
     }
 
     func sampleShipmentTrackingListDeleted() -> [Networking.ShipmentTracking] {
-        return [sampleShipmentTracking1Mutated(), sampleShipmentTracking2(), sampleShipmentTracking4()]
+        return [sampleShipmentTracking1Mutated(),
+                sampleShipmentTracking2(),
+                sampleShipmentTracking4()]
+    }
+
+    func sampleShipmentTrackingProviderSingleGroup() -> Networking.ShipmentTrackingProviderGroup {
+        return ShipmentTrackingProviderGroup(name: sampleCountryName,
+                                             siteID: sampleSiteID,
+                                             providers: [australiaSampleShipmentTrackingProvider1()])
+    }
+
+    func australia() -> Networking.ShipmentTrackingProviderGroup {
+        return ShipmentTrackingProviderGroup(name: sampleCountryName,
+                                             siteID: sampleSiteID,
+                                             providers: [australiaSampleShipmentTrackingProvider1(),
+                                                         australiaSampleShipmentTrackingProvider2()])
+    }
+
+    func sweden() -> Networking.ShipmentTrackingProviderGroup {
+        return ShipmentTrackingProviderGroup(name: sampleCountryName2,
+                                             siteID: sampleSiteID,
+                                             providers: [swedenSampleShipmentTrackingProvider1(),
+                                                         swedenSampleShipmentTrackingProvider2()])
+    }
+
+    func australiaSampleShipmentTrackingProvider1() -> Networking.ShipmentTrackingProvider {
+        return ShipmentTrackingProvider(siteID: sampleSiteID,
+                                        name: "Fastway Couriers",
+                                        url: "http://www.fastway.com.au/courier-services/track-your-parcel?l=%1$s")
+    }
+
+    func australiaSampleShipmentTrackingProvider2() -> Networking.ShipmentTrackingProvider {
+        return ShipmentTrackingProvider(siteID: sampleSiteID,
+                                        name: "Australia Post",
+                                        url: "http://auspost.com.au/track/track.html?id=%1$s")
+    }
+
+    func swedenSampleShipmentTrackingProvider1() -> Networking.ShipmentTrackingProvider {
+        return ShipmentTrackingProvider(siteID: sampleSiteID,
+                                        name: "PostNord Sverige AB",
+                                        url: "http://www.fastway.com.au/courier-services/track-your-parcel?l=%1$s")
+    }
+
+    func swedenSampleShipmentTrackingProvider2() -> Networking.ShipmentTrackingProvider {
+        return ShipmentTrackingProvider(siteID: sampleSiteID,
+                                        name: "DHL.se",
+                                        url: "http://auspost.com.au/track/track.html?id=%1$s")
+    }
+
+    func australiaAndSweden() -> [Networking.ShipmentTrackingProviderGroup] {
+        return [australia(), sweden()]
+    }
+
+    func australiaMutated() -> Networking.ShipmentTrackingProviderGroup {
+        return ShipmentTrackingProviderGroup(name: sampleCountryName,
+                                             siteID: sampleSiteID,
+                                             providers: [ShipmentTrackingProvider(siteID: sampleSiteID,
+                                                                                                                                 name: "Australia mutated",
+                                                                                                                                 url: "url mutated")])
+    }
+
+    func swedenMutated() -> Networking.ShipmentTrackingProviderGroup {
+        return ShipmentTrackingProviderGroup(name: sampleCountryName2,
+                                             siteID: sampleSiteID,
+                                             providers: [ShipmentTrackingProvider(siteID: sampleSiteID,
+                                                                                  name: "Sweden mutated",
+                                                                                  url: "none")])
+    }
+
+    func sampleShipmentTrackingProviderGroupListMutatedOneGroup() -> [Networking.ShipmentTrackingProviderGroup] {
+        return [australiaMutated()]
+    }
+
+    func australiaMutatedAndSwedenMutated() -> [Networking.ShipmentTrackingProviderGroup] {
+        return [australiaMutated(), swedenMutated()]
     }
 }

@@ -163,4 +163,9 @@ public extension StorageType {
         let descriptor = NSSortDescriptor(keyPath: \ShipmentTrackingProvider.name, ascending: true)
         return allObjects(ofType: ShipmentTrackingProvider.self, matching: predicate, sortedBy: [descriptor])
     }
+
+    public func loadShipmentTrackingProvider(siteID: Int, name: String) -> ShipmentTrackingProvider? {
+        let predicate = NSPredicate(format: "siteID = %ld AND name ==[c] %@", siteID, name)
+        return firstObject(ofType: ShipmentTrackingProvider.self, matching: predicate)
+    }
 }

@@ -190,7 +190,7 @@ private extension StoresManager {
     func replaceTempCredentialsIfNecessary(account: Account) {
         guard
             let credentials = sessionManager.defaultCredentials,
-            UUID(uuidString: credentials.username) != nil else {
+            credentials.hasPlaceholderUsername() else {
                 return
         }
         authenticate(credentials: .init(username: account.username, authToken: credentials.authToken))

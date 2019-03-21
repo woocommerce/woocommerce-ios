@@ -183,8 +183,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
 
-        let tempUsername = UUID().uuidString
-        StoresManager.shared.authenticate(credentials: .init(username: tempUsername, authToken: authToken))
+        StoresManager.shared.authenticate(credentials: .init(authToken: authToken))
         let action = AccountAction.synchronizeAccount { (account, error) in
             if let account = account {
                 StoresManager.shared

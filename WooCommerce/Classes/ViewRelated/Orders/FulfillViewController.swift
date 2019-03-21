@@ -435,14 +435,13 @@ private extension Section {
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
-// TODO: Tracking support to be added via #185
-//        let tracking: Section = {
-//            let title = NSLocalizedString("Optional Tracking Information", comment: "")
-//            let row = Row.trackingAdd
-//
-//            return Section(title: title, secondaryTitle: nil, rows: [row])
-//        }()
+        let tracking: Section = {
+            let title = NSLocalizedString("Optional Tracking Information", comment: "")
+            let row = Row.trackingAdd
 
-        return [products, note, address].compactMap { $0 }
+            return Section(title: title, secondaryTitle: nil, rows: [row])
+        }()
+
+        return [products, note, address, tracking].compactMap { $0 }
     }
 }

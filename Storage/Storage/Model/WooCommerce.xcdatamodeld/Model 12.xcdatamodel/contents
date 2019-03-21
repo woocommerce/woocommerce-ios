@@ -147,6 +147,106 @@
         <attribute name="slug" attributeType="String" syncable="YES"/>
         <attribute name="total" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
+    <entity name="Product" representedClassName="Product" syncable="YES">
+        <attribute name="averageRating" attributeType="String" syncable="YES"/>
+        <attribute name="backordered" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="backordersAllowed" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="backordersKey" attributeType="String" syncable="YES"/>
+        <attribute name="briefDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="catalogVisibilityKey" attributeType="String" syncable="YES"/>
+        <attribute name="crossSellIDs" optional="YES" attributeType="Transformable" customClassName="[Int64]" syncable="YES"/>
+        <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dateModified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="downloadable" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="downloadExpiry" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="downloadLimit" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="externalURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="featured" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="fullDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="groupedProducts" attributeType="Transformable" customClassName="[Int64]" syncable="YES"/>
+        <attribute name="manageStock" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="menuOrder" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="onSale" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="parentID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="permalink" attributeType="String" syncable="YES"/>
+        <attribute name="price" attributeType="String" syncable="YES"/>
+        <attribute name="productID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="productTypeKey" attributeType="String" syncable="YES"/>
+        <attribute name="purchasable" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="purchaseNote" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ratingCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="regularPrice" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="relatedIDs" optional="YES" attributeType="Transformable" customClassName="[Int64]" syncable="YES"/>
+        <attribute name="reviewsAllowed" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="salePrice" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingClass" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingClassID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="shippingRequired" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="shippingTaxable" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="sku" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="slug" attributeType="String" syncable="YES"/>
+        <attribute name="soldIndividually" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="statusKey" attributeType="String" syncable="YES"/>
+        <attribute name="stockQuantity" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="stockStatusKey" attributeType="String" syncable="YES"/>
+        <attribute name="taxClass" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taxStatusKey" attributeType="String" syncable="YES"/>
+        <attribute name="totalSales" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="upsellIDs" optional="YES" attributeType="Transformable" customClassName="[Int64]" syncable="YES"/>
+        <attribute name="variations" optional="YES" attributeType="Transformable" customClassName="[Int64]" syncable="YES"/>
+        <attribute name="virtual" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="weight" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="attributes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductAttribute" inverseName="product" inverseEntity="ProductAttribute" syncable="YES"/>
+        <relationship name="categories" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductCategory" inverseName="product" inverseEntity="ProductCategory" syncable="YES"/>
+        <relationship name="defaultAttributes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductDefaultAttribute" inverseName="product" inverseEntity="ProductDefaultAttribute" syncable="YES"/>
+        <relationship name="dimensions" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ProductDimensions" inverseName="product" inverseEntity="ProductDimensions" syncable="YES"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductImage" inverseName="product" inverseEntity="ProductImage" syncable="YES"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductTag" inverseName="product" inverseEntity="ProductTag" syncable="YES"/>
+    </entity>
+    <entity name="ProductAttribute" representedClassName="ProductAttribute" syncable="YES">
+        <attribute name="attributeID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="options" optional="YES" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
+        <attribute name="position" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="variation" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="visible" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="attributes" inverseEntity="Product" syncable="YES"/>
+    </entity>
+    <entity name="ProductCategory" representedClassName="ProductCategory" syncable="YES">
+        <attribute name="categoryID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="slug" attributeType="String" syncable="YES"/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="categories" inverseEntity="Product" syncable="YES"/>
+    </entity>
+    <entity name="ProductDefaultAttribute" representedClassName="ProductDefaultAttribute" syncable="YES">
+        <attribute name="attributeID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="option" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="defaultAttributes" inverseEntity="Product" syncable="YES"/>
+    </entity>
+    <entity name="ProductDimensions" representedClassName="ProductDimensions" syncable="YES">
+        <attribute name="height" attributeType="String" syncable="YES"/>
+        <attribute name="length" attributeType="String" syncable="YES"/>
+        <attribute name="width" attributeType="String" syncable="YES"/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="dimensions" inverseEntity="Product" syncable="YES"/>
+    </entity>
+    <entity name="ProductImage" representedClassName="ProductImage" syncable="YES">
+        <attribute name="alt" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dateModified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="imageID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="src" attributeType="String" syncable="YES"/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="images" inverseEntity="Product" syncable="YES"/>
+    </entity>
+    <entity name="ProductTag" representedClassName="ProductTag" syncable="YES">
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="slug" attributeType="String" syncable="YES"/>
+        <attribute name="tagID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="tags" inverseEntity="Product" syncable="YES"/>
+    </entity>
     <entity name="ShipmentTracking" representedClassName="ShipmentTracking" syncable="YES">
         <attribute name="dateShipped" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -211,7 +311,7 @@
     </entity>
     <elements>
         <element name="Account" positionX="-200.9765625" positionY="63.5625" width="128" height="120"/>
-        <element name="Note" positionX="-369.61328125" positionY="-95.85546875" width="128" height="285"/>
+        <element name="Note" positionX="-369.61328125" positionY="-95.85546875" width="128" height="283"/>
         <element name="Order" positionX="-20" positionY="27" width="128" height="720"/>
         <element name="OrderCoupon" positionX="-206.01953125" positionY="379.74609375" width="128" height="120"/>
         <element name="OrderItem" positionX="-364.890625" positionY="379.453125" width="128" height="240"/>
@@ -219,15 +319,22 @@
         <element name="OrderSearchResults" positionX="144.44140625" positionY="743.43359375" width="128" height="75"/>
         <element name="OrderStats" positionX="137.859375" positionY="388.33203125" width="128" height="225"/>
         <element name="OrderStatsItem" positionX="321.74609375" positionY="425.51171875" width="128" height="330"/>
-        <element name="OrderStatus" positionX="-162" positionY="45" width="128" height="105"/>
+        <element name="OrderStatus" positionX="-29.671875" positionY="781.29296875" width="128" height="105"/>
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
-        <element name="ShipmentTrackingProvider" positionX="-162" positionY="45" width="128" height="103"/>
-        <element name="ShipmentTrackingProviderGroup" positionX="-153" positionY="54" width="128" height="88"/>
+        <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>
+        <element name="ShipmentTrackingProviderGroup" positionX="-8.2734375" positionY="-117.890625" width="187.5" height="88"/>
         <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="150"/>
         <element name="SiteSetting" positionX="-362.54296875" positionY="217.9921875" width="128" height="120"/>
         <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="90"/>
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
+        <element name="ProductDefaultAttribute" positionX="-819.42578125" positionY="224.1171875" width="145.12109375" height="103"/>
+        <element name="ProductAttribute" positionX="-733.52734375" positionY="-73.046875" width="128" height="148"/>
+        <element name="ProductImage" positionX="-859.9296875" positionY="471.46484375" width="128" height="148"/>
+        <element name="ProductTag" positionX="-896.65234375" positionY="645.7421875" width="128" height="103"/>
+        <element name="ProductCategory" positionX="-773.3125" positionY="94.1328125" width="128" height="103"/>
+        <element name="Product" positionX="-534.98046875" positionY="-73.34765625" width="128" height="883"/>
+        <element name="ProductDimensions" positionX="-830.15234375" positionY="345.6328125" width="128" height="105"/>
     </elements>
 </model>

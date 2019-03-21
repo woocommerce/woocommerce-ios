@@ -3,14 +3,23 @@
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
 ## Model 12 (Release 1.5.0.0)
+- @bummytime 2019-03-20
+    - New `Product` entity
+    - New `ProductDefaultAttribute` entity
+    - New `ProductAttribute` entity
+    - New `ProductImage` entity
+    - New `ProductTag` entity
+    - New `ProductCategory` entity
+    - New `ProductDimensions` entity    
+
 - @ctarda 2019-03-14
-- Adds `ShipmentTrackingProvider` and `ShipmentTrackingProviderGroup`
+    - Adds `ShipmentTrackingProvider` and `ShipmentTrackingProviderGroup`
 
 ## Model 11 (Release 1.4.0.0)
 
 - @mindgraffiti  2019-02-27
-- Adds  `siteID` and `total` attributes to `OrderStatus` 
-- Changes `name` and `total` on `OrderStatus` to be optional
+    - Adds  `siteID` and `total` attributes to `OrderStatus` 
+    - Changes `name` and `total` on `OrderStatus` to be optional
 
 ## Model 10 (Release 1.3.0.0)
 Used mapping model: `WooCommerceModelV9toV10.xcmappingmodel`

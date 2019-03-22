@@ -7,24 +7,38 @@ public struct ShipmentTrackingProvider {
     ///
     public let name: String
 
+    /// Site Identifier
+    ///
+    public let siteID: Int
+
     /// Tracking provider url
     ///
     public let url: String
 
     /// Shipment Tracking Provider struct initializer
     ///
-    public init(name: String, url: String) {
+    public init(siteID: Int, name: String, url: String) {
+        self.siteID = siteID
         self.name = name
         self.url = url
     }
 }
 
+
 extension ShipmentTrackingProvider: Comparable {
     public static func ==(lhs: ShipmentTrackingProvider, rhs: ShipmentTrackingProvider) -> Bool {
         return lhs.name == rhs.name &&
-            lhs.url == rhs.url
+            lhs.url == rhs.url &&
+            lhs.siteID == rhs.siteID
     }
     public static func < (lhs: ShipmentTrackingProvider, rhs: ShipmentTrackingProvider) -> Bool {
         return lhs.name < rhs.name
+    }
+}
+
+
+extension ShipmentTrackingProvider: CustomStringConvertible {
+    public var description: String {
+        return name
     }
 }

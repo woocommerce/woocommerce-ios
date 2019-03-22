@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-02-20 07:54:02+0000 */
+/* Translation-Revision-Date: 2019-03-20 06:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -76,6 +76,9 @@
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "Log Aplikasi";
 
+/* Change order status screen - button title to apply selection */
+"Apply" = "Terapkan";
+
 /* Approve a comment */
 "Approve" = "Setujui";
 
@@ -122,11 +125,8 @@
 "Can Not Request Link" = "Tidak Dapat Meminta Tautan";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. */
+   Cancel button label - Cancel prompt for user information. - Change order status screen - button title for closing the view */
 "Cancel" = "Batalkan";
-
-/* Cancelled Order Status */
-"Canceled" = "Dibatalkan";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Dapatkan kabar terbaru dari situs favorit Anda dan bergabung dalam percakapan di mana pun, kapan pun.";
@@ -134,14 +134,8 @@
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Kesalahan sertifikat";
 
-/* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "Hapus log aktivitas lama";
-
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Kumpulkan informasi";
-
-/* Completed Order Status */
-"Completed" = "Selesai";
 
 /* Shown while the app waits for the site creation process to complete. */
 "Completing Signup" = "Menyelesaikan Pendaftaran";
@@ -233,6 +227,9 @@
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "Dotcom Error: [(code)] (theMessage)";
 
+/* WordPress.com error thrown when the the request REST API url is invalid. */
+"Dotcom Invalid REST Route" = "Rute REST Dotcom Tidak Valid";
+
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "Dotcom Token Tidak Ada";
 
@@ -281,9 +278,6 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Masukkan kata sandi saja.";
-
-/* Failed Order Status */
-"Failed" = "Gagal";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Gagal menyambungkan permintaan ke REST API.";
@@ -398,7 +392,8 @@
    Log In button label. */
 "Log In" = "Masuk";
 
-/* Alert button title - confirms and logs out the user */
+/* Alert button title - confirms and logs out the user
+   Log out button title */
 "Log Out" = "Logout";
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
@@ -421,9 +416,6 @@
 
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Login dengan alamat email akun WordPress.com Anda untuk mengelola toko WooCommerce.";
-
-/* Log out button title */
-"Log out account" = "Logout dari akun";
 
 /* Title of a button. */
 "Lost your password?" = "Lupa sandi Anda?";
@@ -476,7 +468,8 @@
 /* My Tickets title */
 "My Tickets" = "Tiket Saya";
 
-/* Dashboard navigation title */
+/* My Store Notice Title for loading error
+   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "Toko saya";
 
 /* Name text field placeholder */
@@ -507,8 +500,8 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Tidak ada aktivitas dalam periode ini";
 
-/* Fulfill order > customer info > where the physical shipping address would normally display.
-   Order details > customer info > billing details. This is where the address would normally display. - Order details > customer info > shipping details. This is where the address would normally display. */
+/* Order details > customer info > billing details. This is where the address would normally display.
+   Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "Tidak ada alamat yang dicantumkan.";
 
 /* Text displayed when no data is available for revenue chart. */
@@ -517,6 +510,9 @@
 /* Notifications List (Empty State + Filters)
    Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Tidak ada hasil untuk kriteria yang dipilih";
+
+/* Order details > tracking.  This is where the shipping date would normally display. */
+"Not shipped yet" = "Belum dikirimkan";
 
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
@@ -548,9 +544,6 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "Menyala";
 
-/* On Hold Order Status */
-"On Hold" = "Ditangguhkan";
-
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Buka pengaturan perangkat";
 
@@ -559,6 +552,9 @@
 
 /* Navigates to open source licenses screen */
 "Open Source Licenses" = "Lisensi sumber terbuka";
+
+/* Accessibility hint for the button to update the order status */
+"Opens a list of available statuses." = "Membuka daftar status yang tersedia.";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Informasi Pelacakan Opsional";
@@ -573,8 +569,14 @@
 /* Order notes section title */
 "Order Notes" = "Catatan Pesanan";
 
+/* Change order status screen - Screen title */
+"Order Status" = "Status Pesanan";
+
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "Pesanan ditandai sudah dipenuhi";
+
+/* Order status update success notice */
+"Order status updated" = "Status pesanan diperbarui";
 
 /* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
    Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
@@ -598,9 +600,6 @@
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "Pembayaran sebesar (totalValue) diterima melalui (order.paymentMethodTitle)";
-
-/* Pending Order Status */
-"Pending" = "Tertunda";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Nomor telepon: %@";
@@ -635,9 +634,6 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Buka aplikasi email Anda dan cari email dari WordPress.com";
 
-/* My Store > Settings > Primary Store information section */
-"Primary Store" = "Toko Utama";
-
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Kebijakan Privasi";
 
@@ -648,9 +644,6 @@
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Catatan privat";
-
-/* Processing Order Status */
-"Processing" = "Memproses";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -675,9 +668,6 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Baca kebijakan privasi";
 
-/* Refunded Order Status */
-"Refunded" = "Dana dikembalikan";
-
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Domain Terdaftar";
 
@@ -687,6 +677,9 @@
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Laporkan masalah crash";
+
+/* Deletes all activity logs except for the marked 'Current'. */
+"Reset Activity Log" = "Reset Log Aktivitas";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Menerima daftar pesanan yang mengandung kata kunci tertentu.";
@@ -719,6 +712,12 @@
 /* Search Orders */
 "Search orders" = "Cari pesanan";
 
+/* Page title for the select a different store screen */
+"Select Store" = "Pilih Toko";
+
+/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
+"Selected Store" = "Toko yang Dipilih";
+
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "Kirim Tautan";
 
@@ -734,6 +733,13 @@
 
 /* Action: Opens the Store in a browser */
 "Share your Store" = "Bagikan Toko Anda";
+
+/* Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
+"Shipment Company %@" = "Perusahaan Pengiriman %@";
+
+/* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
+   Date an item was shipped */
+"Shipped %@" = "Dikirimkan %@";
 
 /* Shipping label for payment view */
 "Shipping" = "Pengiriman";
@@ -827,6 +833,12 @@
 
 /* Subtotal label for payment view */
 "Subtotal" = "Subtotal";
+
+/* This action allows the user to change stores without logging out and logging back in again. */
+"Switch Store" = "Beralih Toko";
+
+/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
+"Switched to (newStoreName). You will only receive notifications from this store." = "Beralih ke (newStoreName). Anda hanya akan menerima pemberitahuan dari toko ini.";
 
 /* Labels an order note to let user know it's a system status message */
 "System status" = "Status sistem";
@@ -943,6 +955,18 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "Total Pengeluaran";
 
+/* Track package button title */
+"Track package" = "Lacak paket";
+
+/* Order tracking section title */
+"Tracking" = "Pelacakan";
+
+/* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
+"Tracking number %@" = "Nomor pelacakan %@";
+
+/* Accessibility hint for Track Package button in Order details screen */
+"Tracks a shipment." = "Melacak pengiriman.";
+
 /* Move a comment to the trash */
 "Trash" = "Buang";
 
@@ -961,8 +985,20 @@
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "Tidak Dapat Terhubung";
 
+/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
+"Unable to add note to order #(viewModel.order.orderID)" = "Tidak dapat menambahkan catatan ke pesanan #(viewModel.order.orderID)";
+
+/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order */
+"Unable to change status of order #(orderID)" = "Tidak dapat mengubah status pesanan #(orderID)";
+
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "Tidak dapat menemukan toko WooCommerce yang terhubung ke akun ini";
+
+/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
+"Unable to fulfill order #(orderID)" = "Tidak dapat memenuhi pesanan #(orderID)";
+
+/* Load Action Failed */
+"Unable to load content" = "Tidak dapat memuat konten";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Unable to mark review as %@";
@@ -996,6 +1032,9 @@
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "Log aktivitas hingga tujuh hari disimpan.";
+
+/* Accessibility label for the button to update the order status in Order Details */
+"Update Order Status" = "Perbarui Status Pesanan";
 
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "Diperbarui %1$@ pada %2$@";

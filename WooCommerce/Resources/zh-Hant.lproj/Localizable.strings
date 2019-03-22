@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-01-09 09:54:02+0000 */
+/* Translation-Revision-Date: 2019-03-21 10:54:02+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -43,7 +43,7 @@
 "Adds a note to an order" = "在訂單中新增備註";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
-"Advanced tool to review the app status" = "Advanced tool to review the app status";
+"Advanced tool to review the app status" = "檢視應用程式狀態的進階工具";
 
 /* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
    Name of the All filter on the Order List screen - it means all orders will be displayed. */
@@ -74,7 +74,10 @@
 "An error occurred while processing your request: " = "處理要求時發生錯誤：";
 
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
-"Application Logs" = "Application Logs";
+"Application Logs" = "應用程式記錄檔";
+
+/* Change order status screen - button title to apply selection */
+"Apply" = "套用";
 
 /* Approve a comment */
 "Approve" = "核准";
@@ -122,11 +125,8 @@
 "Can Not Request Link" = "無法要求連結";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. */
+   Cancel button label - Cancel prompt for user information. - Change order status screen - button title for closing the view */
 "Cancel" = "取消";
-
-/* Cancelled Order Status */
-"Canceled" = "已取消";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "隨時隨地掌握最愛網站的最新動態並加入討論。";
@@ -134,14 +134,8 @@
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "憑證錯誤";
 
-/* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "Clear old activity logs";
-
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "收集資訊";
-
-/* Completed Order Status */
-"Completed" = "已完成";
 
 /* Shown while the app waits for the site creation process to complete. */
 "Completing Signup" = "正在完成註冊程序";
@@ -198,7 +192,7 @@
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "無法連結。你的主機服務提供者封鎖了 POST 請求，但此應用程式需要使用 POST 請求才能與你的網站通訊。請聯絡你的主機服務提供者，以解決此問題。";
 
 /* Cell title: the current date. */
-"Current" = "Current";
+"Current" = "最新";
 
 /* Customer info section title
    Section title for the customer's billing and shipping address */
@@ -232,6 +226,9 @@
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "Dotcom 錯誤：[(code)] (theMessage)";
+
+/* WordPress.com error thrown when the the request REST API url is invalid. */
+"Dotcom Invalid REST Route" = "Dotcom 無效 REST 路由";
 
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "Dotcom 缺少 Token";
@@ -281,9 +278,6 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "請改為輸入你的密碼。";
-
-/* Failed Order Status */
-"Failed" = "失敗";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API 無法序列化要求。";
@@ -398,11 +392,12 @@
    Log In button label. */
 "Log In" = "登入";
 
-/* Alert button title - confirms and logs out the user */
+/* Alert button title - confirms and logs out the user
+   Log out button title */
 "Log Out" = "登出";
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
-"Log files by created date" = "Log files by created date";
+"Log files by created date" = "依建立日期排列記錄檔案";
 
 /* Label for button to log in using your site address. */
 "Log in by entering your site address." = "藉由輸入你的網站位址來登入。";
@@ -421,9 +416,6 @@
 
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "使用 WordPress.com 帳號電子郵件地址登入，即可管理 WooCommerce 商店。";
-
-/* Log out button title */
-"Log out account" = "登出帳號";
 
 /* Title of a button. */
 "Lost your password?" = "忘記密碼？";
@@ -476,7 +468,8 @@
 /* My Tickets title */
 "My Tickets" = "我的票證";
 
-/* Dashboard navigation title */
+/* My Store Notice Title for loading error
+   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "我的商店";
 
 /* Name text field placeholder */
@@ -507,8 +500,8 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "此期間沒有任何活動";
 
-/* Fulfill order > customer info > where the physical shipping address would normally display.
-   Order details > customer info > billing details. This is where the address would normally display. - Order details > customer info > shipping details. This is where the address would normally display. */
+/* Order details > customer info > billing details. This is where the address would normally display.
+   Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "指定任何地址";
 
 /* Text displayed when no data is available for revenue chart. */
@@ -517,6 +510,9 @@
 /* Notifications List (Empty State + Filters)
    Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "找不到與指定條件相符的結果";
+
+/* Order details > tracking.  This is where the shipping date would normally display. */
+"Not shipped yet" = "尚未運送。";
 
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
@@ -548,9 +544,6 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "開啟";
 
-/* On Hold Order Status */
-"On Hold" = "保留";
-
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "開啟裝置設定";
 
@@ -559,6 +552,9 @@
 
 /* Navigates to open source licenses screen */
 "Open Source Licenses" = "開放原始碼授權";
+
+/* Accessibility hint for the button to update the order status */
+"Opens a list of available statuses." = "開啟可用狀態的清單。";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "選用追蹤資訊";
@@ -573,8 +569,14 @@
 /* Order notes section title */
 "Order Notes" = "訂單備註";
 
+/* Change order status screen - Screen title */
+"Order Status" = "訂單狀態";
+
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "訂單標示為已履行";
+
+/* Order status update success notice */
+"Order status updated" = "已更新訂單狀態";
 
 /* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
    Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
@@ -598,9 +600,6 @@
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "已透過 (order.paymentMethodTitle) 收到 (totalValue) 付款";
-
-/* Pending Order Status */
-"Pending" = "待審核";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "電話號碼：%@";
@@ -635,9 +634,6 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "請開啟電子郵件應用程式，找到 WordPress.com 傳送的電子郵件。";
 
-/* My Store > Settings > Primary Store information section */
-"Primary Store" = "主要商店";
-
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "隱私權政策";
 
@@ -648,9 +644,6 @@
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "私人備註";
-
-/* Processing Order Status */
-"Processing" = "處理中";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -675,9 +668,6 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "閱讀隱私權政策";
 
-/* Refunded Order Status */
-"Refunded" = "已退款";
-
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "已註冊的網域";
 
@@ -687,6 +677,9 @@
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "報告當機";
+
+/* Deletes all activity logs except for the marked 'Current'. */
+"Reset Activity Log" = "重設活動記錄";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "擷取內含指定關鍵字的訂單清單。";
@@ -719,6 +712,12 @@
 /* Search Orders */
 "Search orders" = "搜尋訂單";
 
+/* Page title for the select a different store screen */
+"Select Store" = "選取商店";
+
+/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
+"Selected Store" = "已選取商店";
+
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "傳送連結";
 
@@ -734,6 +733,13 @@
 
 /* Action: Opens the Store in a browser */
 "Share your Store" = "分享你的商店";
+
+/* Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
+"Shipment Company %@" = "貨件公司 %@";
+
+/* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
+   Date an item was shipped */
+"Shipped %@" = "已運送 %@";
 
 /* Shipping label for payment view */
 "Shipping" = "運送方式";
@@ -828,6 +834,12 @@
 /* Subtotal label for payment view */
 "Subtotal" = "小計";
 
+/* This action allows the user to change stores without logging out and logging back in again. */
+"Switch Store" = "切換商店";
+
+/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
+"Switched to (newStoreName). You will only receive notifications from this store." = "已切換至 (newStoreName)。您只會收到此商店傳送的通知。";
+
 /* Labels an order note to let user know it's a system status message */
 "System status" = "系統狀態";
 
@@ -907,7 +919,7 @@
 "This Year" = "今年";
 
 /* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
-"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>.";
+"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "此應用程式需要 Jetpack 才能連結至你的商店。<br \/>請閱讀<a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">設定說明<\/a>。";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "這個電子郵件地址沒有在 WordPress.com 上註冊。";
@@ -943,6 +955,18 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "消費總額";
 
+/* Track package button title */
+"Track package" = "追蹤包裹";
+
+/* Order tracking section title */
+"Tracking" = "追蹤中";
+
+/* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
+"Tracking number %@" = "追蹤號碼 %@";
+
+/* Accessibility hint for Track Package button in Order details screen */
+"Tracks a shipment." = "追蹤貨件。";
+
 /* Move a comment to the trash */
 "Trash" = "移至垃圾桶";
 
@@ -961,8 +985,20 @@
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "無法連線";
 
+/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
+"Unable to add note to order #(viewModel.order.orderID)" = "無法新增附註至訂單 #(viewModel.order.orderID)";
+
+/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order */
+"Unable to change status of order #(orderID)" = "無法變更訂單 #(orderID) 的狀態";
+
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "找不到與此帳號連結的 WooCommerce 商店";
+
+/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
+"Unable to fulfill order #(orderID)" = "無法完成訂單 #(orderID)";
+
+/* Load Action Failed */
+"Unable to load content" = "無法載入內容";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Unable to mark review as %@";
@@ -995,28 +1031,31 @@
 "Unknown error" = "發生未知的錯誤";
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
-"Up to seven days՚ worth of logs are saved." = "Up to seven days՚ worth of logs are saved.";
+"Up to seven days՚ worth of logs are saved." = "可儲存最多七天的記錄。";
+
+/* Accessibility label for the button to update the order status in Order Details */
+"Update Order Status" = "已更新訂單狀態";
 
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "已於 %1$@ %2$@ 更新";
 
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
-"Updated %ld hour ago" = "Updated %ld hour ago";
+"Updated %ld hour ago" = "%ld 小時前已更新";
 
 /* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
-"Updated %ld hours ago" = "Updated %ld hours ago";
+"Updated %ld hours ago" = "%ld 小時前已更新";
 
 /* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
-"Updated %ld minute ago" = "Updated %ld minute ago";
+"Updated %ld minute ago" = "%ld 分鐘前已更新";
 
 /* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
-"Updated %ld minutes ago" = "Updated %ld minutes ago";
+"Updated %ld minutes ago" = "%ld 分鐘前已更新";
 
 /* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
-"Updated moments ago" = "Updated moments ago";
+"Updated moments ago" = "不久前已更新";
 
 /* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
-"Updated on %@" = "Updated on %@";
+"Updated on %@" = "更新日期：%@";
 
 /* Login dialog username placeholder
    Username placeholder */
@@ -1032,7 +1071,7 @@
 "Version %@" = "版本 %@";
 
 /* View application log cell title */
-"View Application Log" = "View Application Log";
+"View Application Log" = "檢視應用程式記錄檔";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "檢視先前提交的支援票證";

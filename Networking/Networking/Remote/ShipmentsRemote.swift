@@ -62,12 +62,12 @@ public final class ShipmentsRemote: Remote {
                                                          orderID: Int,
                                                          trackingProvider: String,
                                                          trackingNumber: String,
-                                                         trackingLink: String,
+                                                         trackingURL: String,
                                                          completion: @escaping (ShipmentTracking?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/"
 
         let parameters = [ParameterKeys.trackingNumber: trackingNumber,
-                          ParameterKeys.customTrackingLink: trackingLink,
+                          ParameterKeys.customTrackingLink: trackingURL,
                           ParameterKeys.customTrackingProvider: trackingProvider]
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
@@ -97,7 +97,7 @@ public final class ShipmentsRemote: Remote {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/\(Constants.providersPath)"
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
-        let mapper = ShipmentTrackingProviderListMapper()
+        let mapper = ShipmentTrackingProviderListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

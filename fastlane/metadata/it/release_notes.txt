@@ -1,3 +1,4 @@
-- Gestisci più di un negozio? Puoi passare da un sito all’altro senza dover accedere e uscire: vai in Impostazioni e tocca Cambia negozio. Il nome del negozio attivo è visualizzato nella scheda “Il mio negozio”.
-- Quando aggiungi una nota o l’evasione di un ordine non riesce, ora la casella del messaggio mostra l’opzione “Riprova” per permettere un altro tentativo.
-- Non accetti solo pagamenti per cifre intere, quindi ora gli ordini possono avere quantità decimali.
+- Visita la schermata dettagli dell'ordine per modificare manualmente lo stato di un ordine o visualizzare la tracciabilità della spedizione.
+- Ora supportiamo completamente e visualizziamo correttamente le etichette dello stato dell’ordine personalizzate.
+- È ora possibile filtrare per stato dell'ordine personalizzato.
+- Il supporto del linguaggio RTL è stato migliorato, con una migliore gestione del capovolgimento del componente grafico.

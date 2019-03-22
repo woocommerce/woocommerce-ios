@@ -1,3 +1,4 @@
-- Hanterar du fler än en butik? Du kan byta webbplatser utan att logga in och ut: Gå till Inställningar och tryck på Byt butik. Namnet på den aktiva butiken visas på fliken ”Min butik”.
-- När det inte går att lägga till en anteckning eller göra en beställning, visar meddelandeboxen nu alternativet ”Försök igen” så att du kan testa en gång till.
-- Du tar inte bara betalt i heltal, så beställningar kan nu ha decimalmängder.
+- Besök skärmen Orderdetaljer för att ändra en orderstatus manuellt eller visa leveransspårning.
+- Vi erbjuder nu fullt stöd och korrekt visning av anpassade orderstatusetiketter.
+- Du kan nu filtrera efter anpassad orderstatus.
+- RTL-språkstödet har förbättrats, med bättre hantering av grafisk komponentvändning.

@@ -1,3 +1,0 @@
-- Vous gérez plusieurs boutiques ? Vous pouvez changer de site sans vous connecter et vous déconnecter : accédez à Paramètres et appuyez sur Changer de boutique. Le nom de la boutique active apparaît dans l'onglet « Ma boutique ».
-- Lorsque l'ajout d'un commentaire ou le remplissage d'une commande échoue, la fenêtre de message propose l'option « Réessayer » afin de vous permettre de faire une nouvelle tentative.
-- Tous vos paiements n'étant pas en chiffres ronds, les commandes prennent désormais en charge les valeurs décimales.

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-02-20 10:54:02+0000 */
+/* Translation-Revision-Date: 2019-03-20 10:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -76,6 +76,9 @@
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "יומני אפליקציה";
 
+/* Change order status screen - button title to apply selection */
+"Apply" = "החלה";
+
 /* Approve a comment */
 "Approve" = "אישור";
 
@@ -122,11 +125,8 @@
 "Can Not Request Link" = "לא ניתן לבקש קישור";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. */
+   Cancel button label - Cancel prompt for user information. - Change order status screen - button title for closing the view */
 "Cancel" = "ביטול";
-
-/* Cancelled Order Status */
-"Canceled" = "בוטל";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "אפשר לבדוק את העדכונים באתרים המועדפים עליך ולהצטרף לשיחה בכל מקום ובכל זמן.";
@@ -134,14 +134,8 @@
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "שגיאה בתעודה";
 
-/* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "ניקוי פעילויות ישנות";
-
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "איסוף מידע";
-
-/* Completed Order Status */
-"Completed" = "הושלמה";
 
 /* Shown while the app waits for the site creation process to complete. */
 "Completing Signup" = "משלים את ההרשמה";
@@ -233,6 +227,9 @@
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "שגיאת Dotcom: [(code)] (theMessage)";
 
+/* WordPress.com error thrown when the the request REST API url is invalid. */
+"Dotcom Invalid REST Route" = "שגיאת Dotcom עקב נתיב REST לא תקף";
+
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "לפריט Dotcom חסר אסימון";
 
@@ -281,9 +278,6 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "במקום זאת יש להזין סיסמה.";
-
-/* Failed Order Status */
-"Failed" = "נכשל";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "לא הצלחנו לערוך בסדרה בקשה אל REST API.";
@@ -398,7 +392,8 @@
    Log In button label. */
 "Log In" = "התחבר";
 
-/* Alert button title - confirms and logs out the user */
+/* Alert button title - confirms and logs out the user
+   Log out button title */
 "Log Out" = "התנתקות";
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
@@ -421,9 +416,6 @@
 
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "עליך להתחבר באמצעות כתובת האימייל של החשבון ב-WordPress.com כדי לנהל את החנויות שלך ב-WooCommerce.";
-
-/* Log out button title */
-"Log out account" = "ניתוק החשבון";
 
 /* Title of a button. */
 "Lost your password?" = "שחזור סיסמה";
@@ -476,7 +468,8 @@
 /* My Tickets title */
 "My Tickets" = "הפנייה שלי";
 
-/* Dashboard navigation title */
+/* My Store Notice Title for loading error
+   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "החנות שלי";
 
 /* Name text field placeholder */
@@ -507,8 +500,8 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "אין פעילות בפרק זמן זה";
 
-/* Fulfill order > customer info > where the physical shipping address would normally display.
-   Order details > customer info > billing details. This is where the address would normally display. - Order details > customer info > shipping details. This is where the address would normally display. */
+/* Order details > customer info > billing details. This is where the address would normally display.
+   Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "לא צוינה כתובת.";
 
 /* Text displayed when no data is available for revenue chart. */
@@ -517,6 +510,9 @@
 /* Notifications List (Empty State + Filters)
    Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "לא נמצאו תוצאות לקריטריונים שנבחרו";
+
+/* Order details > tracking.  This is where the shipping date would normally display. */
+"Not shipped yet" = "טרם נשלח";
 
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
@@ -548,9 +544,6 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "מופעל";
 
-/* On Hold Order Status */
-"On Hold" = "בהמתנה";
-
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "יש לפתוח את הגדרות המכשיר";
 
@@ -559,6 +552,9 @@
 
 /* Navigates to open source licenses screen */
 "Open Source Licenses" = "רישיונות קוד פתוח";
+
+/* Accessibility hint for the button to update the order status */
+"Opens a list of available statuses." = "פתיחת רשימה של מצבים זמינים.";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "מידע על מעקב אופציונלי";
@@ -573,8 +569,14 @@
 /* Order notes section title */
 "Order Notes" = "הערות להזמנה";
 
+/* Change order status screen - Screen title */
+"Order Status" = "מצב ההזמנה";
+
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "הזמנות שסומנו כ'הושלם'";
+
+/* Order status update success notice */
+"Order status updated" = "מצב ההזמנה עודכן";
 
 /* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
    Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
@@ -598,9 +600,6 @@
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "תשלום של (totalvalue) התקבל דרך (order.paymentMethodTitle)";
-
-/* Pending Order Status */
-"Pending" = "ממתין לאישור";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "מספר טלפון: ‎%@";
@@ -635,9 +634,6 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "יש לפתוח את אפליקציית האימייל שלך ולחפש את ההודעה שנשלחה מ-WordPress.com.";
 
-/* My Store > Settings > Primary Store information section */
-"Primary Store" = "חנות ראשית";
-
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "מדיניות פרטיות";
 
@@ -648,9 +644,6 @@
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "הערה פרטית";
-
-/* Processing Order Status */
-"Processing" = "בטיפול";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -675,9 +668,6 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "עיון במדיניות פרטיות";
 
-/* Refunded Order Status */
-"Refunded" = "הוחזר";
-
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "דומיין רשום";
 
@@ -687,6 +677,9 @@
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "דיווח על קריסות";
+
+/* Deletes all activity logs except for the marked 'Current'. */
+"Reset Activity Log" = "איפוס יומן הפעילות";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "הפעולה מאחזרת רשימה של כל ההזמנות שכוללות מילת מפתח מסוימת.";
@@ -719,6 +712,12 @@
 /* Search Orders */
 "Search orders" = "חיפוש הזמנות";
 
+/* Page title for the select a different store screen */
+"Select Store" = "בחירת חנות";
+
+/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
+"Selected Store" = "החנות שנבחרה";
+
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "שליחת קישור";
 
@@ -734,6 +733,13 @@
 
 /* Action: Opens the Store in a browser */
 "Share your Store" = "שיתוף החנות שלך";
+
+/* Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
+"Shipment Company %@" = "חברת משלוח %@";
+
+/* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
+   Date an item was shipped */
+"Shipped %@" = "נשלח %@";
 
 /* Shipping label for payment view */
 "Shipping" = "משלוח";
@@ -827,6 +833,12 @@
 
 /* Subtotal label for payment view */
 "Subtotal" = "סכום ביניים";
+
+/* This action allows the user to change stores without logging out and logging back in again. */
+"Switch Store" = "החלפת חנות";
+
+/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
+"Switched to (newStoreName). You will only receive notifications from this store." = "החלפה אל (newStoreName). ההודעות שיתקבלו יהיו עבור החנות הזו בלבד.";
 
 /* Labels an order note to let user know it's a system status message */
 "System status" = "מצב מערכת";
@@ -943,6 +955,18 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "הוצאה כוללת";
 
+/* Track package button title */
+"Track package" = "לבצע מעקב אחר החבילה";
+
+/* Order tracking section title */
+"Tracking" = "מבצע מעקב";
+
+/* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
+"Tracking number %@" = "מספר מעקב %@";
+
+/* Accessibility hint for Track Package button in Order details screen */
+"Tracks a shipment." = "מעקב אחר משלוח.";
+
 /* Move a comment to the trash */
 "Trash" = "פח";
 
@@ -961,8 +985,20 @@
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "אי אפשר להתחבר";
 
+/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
+"Unable to add note to order #(viewModel.order.orderID)" = "אין אפשרות להוסיף פתק להזמנה #(viewModel.order.orderID)";
+
+/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order */
+"Unable to change status of order #(orderID)" = "אין אפשרות לעדכן את מצב ההזמנה #(orderID)";
+
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "אין אפשרות למצוא חנויות של WooCommerce שמקושרות לחשבון זה";
+
+/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
+"Unable to fulfill order #(orderID)" = "אין אפשרות להשלים את ההזמנה #(orderID)";
+
+/* Load Action Failed */
+"Unable to load content" = "אין אפשרות להעלות את התוכן";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Unable to mark review as %@";
@@ -996,6 +1032,9 @@
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "אנחנו שומרים יומנים באורך של עד שבעה ימים.";
+
+/* Accessibility label for the button to update the order status in Order Details */
+"Update Order Status" = "עדכון מצב הזמנות";
 
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "%1$@ עודכן ב-%2$@";

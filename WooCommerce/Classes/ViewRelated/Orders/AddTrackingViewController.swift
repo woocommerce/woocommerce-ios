@@ -95,7 +95,7 @@ private extension AddTrackingViewController {
 
         sections = [
             Section(rows: trackingRows),
-            Section(rows: [.logout])]
+            Section(rows: [.deleteTracking])]
     }
 }
 
@@ -127,8 +127,8 @@ extension AddTrackingViewController: UITableViewDataSource {
             configureTrackingNumber(cell: cell)
         case let cell as EditableValueOneTableViewCell where row == .dateShipped:
             configureDateShipped(cell: cell)
-        case let cell as BasicTableViewCell where row == .logout:
-            configureLogout(cell: cell)
+        case let cell as BasicTableViewCell where row == .deleteTracking:
+            configureDeleteTracking(cell: cell)
         default:
             fatalError()
         }
@@ -164,11 +164,11 @@ extension AddTrackingViewController: UITableViewDataSource {
         cell.accessoryType = .none
     }
 
-    func configureLogout(cell: BasicTableViewCell) {
+    func configureDeleteTracking(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = StyleManager.destructiveActionColor
-        cell.textLabel?.text = NSLocalizedString("Log Out", comment: "Log out button title")
+        cell.textLabel?.text = NSLocalizedString("Delete Tracking", comment: "Delete Tracking button title")
     }
 }
 
@@ -203,7 +203,7 @@ private enum Row: CaseIterable {
     case shippingProvider
     case trackingNumber
     case dateShipped
-    case logout
+    case deleteTracking
 
     var type: UITableViewCell.Type {
         switch self {
@@ -213,7 +213,7 @@ private enum Row: CaseIterable {
             return EditableValueOneTableViewCell.self
         case .dateShipped:
             return EditableValueOneTableViewCell.self
-        case .logout:
+        case .deleteTracking:
             return BasicTableViewCell.self
         }
     }

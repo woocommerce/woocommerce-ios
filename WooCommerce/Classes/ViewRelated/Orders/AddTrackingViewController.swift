@@ -78,6 +78,7 @@ private extension AddTrackingViewController {
         table.rowHeight = UITableView.automaticDimension
         table.backgroundColor = StyleManager.tableViewBackgroundColor
         table.dataSource = self
+        table.delegate = self
     }
 
     func registerTableViewCells() {
@@ -177,7 +178,18 @@ extension AddTrackingViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let lastSection = sections.count - 1
+        if section == lastSection {
+            return UITableView.automaticDimension
+        }
         return CGFloat.leastNonzeroMagnitude
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        if indexPath.section == 0 && indexPath.row == 0 {
+            print("==== moving on ")
+        }
     }
 }
 

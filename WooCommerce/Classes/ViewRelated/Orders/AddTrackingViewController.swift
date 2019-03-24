@@ -187,9 +187,31 @@ extension AddTrackingViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.section == 0 && indexPath.row == 0 {
-            print("==== moving on ")
+        let row = rowAtIndexPath(indexPath)
+        executeAction(for: row)
+    }
+}
+
+
+/// Execute user selection
+///
+private extension AddTrackingViewController {
+    func executeAction(for row: Row) {
+        if row == .deleteTracking {
+            deleteCurrentTracking()
         }
+
+        if row == .shippingProvider {
+            showAllShipmentProviders()
+        }
+    }
+
+    func deleteCurrentTracking() {
+        //
+    }
+
+    func showAllShipmentProviders() {
+        print("=== showing all shipment providers ====")
     }
 }
 

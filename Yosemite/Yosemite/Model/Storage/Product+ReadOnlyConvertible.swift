@@ -71,13 +71,11 @@ extension Storage.Product: ReadOnlyConvertible {
     ///
     public func toReadOnly() -> Yosemite.Product {
 
-        // TODO: toReadOnly() all of the children 👇
-
-        let productCategories = [Yosemite.ProductCategory]()
-        let productTags = [Yosemite.ProductTag]()
-        let productImages = [Yosemite.ProductImage]()
-        let productAttributes = [Yosemite.ProductAttribute]()
-        let productDefaultAttributes = [Yosemite.ProductDefaultAttribute]()
+        let productCategories = categories?.map { $0.toReadOnly() } ?? [Yosemite.ProductCategory]()
+        let productTags = tags?.map { $0.toReadOnly() } ?? [Yosemite.ProductTag]()
+        let productImages = images?.map { $0.toReadOnly() } ?? [Yosemite.ProductImage]()
+        let productAttributes = attributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductAttribute]()
+        let productDefaultAttributes = defaultAttributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductDefaultAttribute]()
 
         var quantity: Int?
         if let stockQuantity = stockQuantity {

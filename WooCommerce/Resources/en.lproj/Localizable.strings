@@ -104,7 +104,8 @@
 /* Application's Background State */
 "Background" = "Background";
 
-/* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+/* 
+                        VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. \ - It reads: Bar number {bar number} {summary of bar}. - */
 "Bar number %i, %@, " = "Bar number %1$i, %2$@, ";
 
 /* Billing title for customer info cell */
@@ -292,7 +293,8 @@
 /* Filter the orders list. */
 "Filter orders" = "Filter orders";
 
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+/* 
+                                                                 VoiceOver accessibility hint, \ - informing the user the button can be used to filter the notifications list. - */
 "Filters the notifications list by notification type." = "Filters the notifications list by notification type.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
@@ -454,7 +456,8 @@
 /* Message phone number button title */
 "Message" = "Message";
 
-/* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
+/* 
+                    VoiceOver accessibility value, informs the user about the Y-axis min/max values. \ - It reads: Minimum value {value}, maximum value {value}. - */
 "Minimum value %@, maximum value %@" = "Minimum value %1$@, maximum value %2$@";
 
 /* Statistical unit - a single week */
@@ -528,8 +531,8 @@
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Note to customer";
 
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
+/* 
+                    Title that appears on top of the main Notifications screen when there is no filter \ - applied to the list (plural form of the word Notification). - Title of the Notifications tab — plural form of Notification */
 "Notifications" = "Notifications";
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
@@ -560,7 +563,7 @@
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Open Mail";
 
-/* Navigates to open source licenses screen */
+/* Navigates to screen about open source licenses */
 "Open Source Licenses" = "Open Source Licenses";
 
 /* Accessibility hint for the button to update the order status */
@@ -573,7 +576,8 @@
    Order number title */
 "Order #\(viewModel.order.number)" = "Order #\(viewModel.order.number)";
 
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+/* 
+                    Displayed whenever the Details for an Order that just got deleted was onscreen. \ - It reads: Order {order number} has been deleted from your store - */
 "Order %@ has been deleted from your store" = "Order %@ has been deleted from your store";
 
 /* Order fulfillment success notice */
@@ -588,8 +592,8 @@
 /* Order status update success notice */
 "Order status updated" = "Order status updated";
 
-/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* 
+                                             Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. \ - Plural form of the word Order. - Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Orders";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -659,7 +663,8 @@
 /* Product section title */
 "PRODUCT" = "PRODUCT";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
+/* 
+                VoiceOver accessibility hint, informing the user that the row can be tapped to get to a \ - prompt that lets them call or message the billing customer. - */
 "Prompts with the option to call or message the billing customer." = "Prompts with the option to call or message the billing customer.";
 
 /* shown in promotional screens during first launch */
@@ -707,7 +712,8 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Review, prepare, and ship these pending orders";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+/* 
+                                             Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. \ - Plural form of the word Review. - */
 "Reviews" = "Reviews";
 
 /* Orders Search Placeholder */
@@ -719,7 +725,8 @@
 /* Page title for the select a different store screen */
 "Select Store" = "Select Store";
 
-/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
+/* 
+                My Store > Settings > Selected Store information section. This is the heading listed above the information row that \ - displays the store website and their username. - */
 "Selected Store" = "Selected Store";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
@@ -922,7 +929,8 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "There was a problem removing the block for specified site.";
 
-/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
+/* 
+                                 Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to \ - your Store. Read the configuration instructions.' and it links to a web page on the words \ - 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \ - 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. \ - If a literal translation of 'Read the configuration instructions' does not make sense in your language, \ - please use a contextually appropriate substitution. For example, you can translate it to say \ - 'See: instructions' or any alternative that sounds natural in your language. - */
 "This app requires Jetpack to connect to your Store. <br /> Read the <a href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>." = "This app requires Jetpack to connect to your Store. <br /> Read the <a href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
@@ -966,7 +974,7 @@
 "Total" = "Total";
 
 /* Top performers — label for the total number of products ordered */
-"Total Product Order: %ld" = "Total Product Order: %ld";
+"Total orders: %ld" = "Total orders: %ld";
 
 /* Description for Top Performers right column header */
 "Total Spend" = "Total Spend";
@@ -1004,7 +1012,7 @@
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
 "Unable to add note to order #\(viewModel.order.orderID)" = "Unable to add note to order #\(viewModel.order.orderID)";
 
-/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order  */
+/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
 "Unable to change status of order #\(orderID)" = "Unable to change status of order #\(orderID)";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
@@ -1028,7 +1036,8 @@
 /* Refresh Action Failed */
 "Unable to refresh list" = "Unable to refresh list";
 
-/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
+/* 
+                                  On the site picker screen, the error displayed when connecting to a site fails. \ - It reads: Unable to successfully connect to {site name} - */
 "Unable to successfully connect to %@" = "Unable to successfully connect to %@";
 
 /* Error message displayed when an error occurred checking for email availability. */
@@ -1064,22 +1073,27 @@
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %@ at %@" = "Updated %1$@ at %2$@";
 
-/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+/* 
+                Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. \ - Usage example: Updated 1 hour ago - */
 "Updated %ld hour ago" = "Updated %ld hour ago";
 
-/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+/* 
+                Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. \ - Usage example: Updated 14 hours ago - */
 "Updated %ld hours ago" = "Updated %ld hours ago";
 
-/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
+/* 
+                Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. \ - Usage example: Updated 1 minute ago - */
 "Updated %ld minute ago" = "Updated %ld minute ago";
 
-/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+/* 
+                Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. \ - Usage example: Updated 55 minutes ago - */
 "Updated %ld minutes ago" = "Updated %ld minutes ago";
 
 /* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
 "Updated moments ago" = "Updated moments ago";
 
-/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
+/* 
+                A specific date and time string which represents when the data was last updated. \ - Usage example: Updated on Jan 22, 2019 3:31PM - */
 "Updated on %@" = "Updated on %@";
 
 /* Login dialog username placeholder

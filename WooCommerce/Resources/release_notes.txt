@@ -1,4 +1,30 @@
-- Visit the Order Details screen to manually change an order’s status or view shipment tracking.
-- We now fully support and properly display custom order status labels.
-- You can now filter by custom order status.
-- RTL language support has been improved, with better handling of graphical component flipping.
+1.5
+-----
+- bugfix: Sometimes Settings would style all the options like "Log Out". No longer happens now.
+- bugfix: order status refreshes upon pull-to-refresh in Order Details
+- bugfix: payment status label background color showing up beyond rounded border
+- improvement: change top performers text from "Total Product Order" to "Total orders" for clarity
+- bugfix: fixed an issue on the order details screen where the shipment tracking dates were incorrect
+
+1.4
+-----
+- bugfix: fix a crash happening on log out
+- new feature: Add shipment tracking to Order Details screen
+- improvement: The store switcher now allows you to go back to the previous screen without logging you out
+- improvement: Custom order status labels are now supported! Instead of just displaying the order status slug and capitalizing the slug, the custom order status label will now be fetched from the server and properly displayed.
+- improvement: Filtering by custom order status now supported!
+- new feature: You can now manually change the status of an order on the order details screen
+- bugfix: correctly flips chevron on Dashboard > New Orders, to support RTL languages.
+- bugfix: fixed an issue on the order details screen where the shipment tracking dates were incorrect
+
+1.3
+-----
+- bugfix: Allows for decimal quantities which some extensions have
+- new feature: quick site select. Navigate to Settings > select row with store website.
+- improvement: Updated the colors of the bars in the charts for better readability
+- improvement: Present an error message with an option to retry when adding a note to an order fails
+- improvement: Present an error message with an option to retry when fulfilling an order fails
+- bugfix: Log out of the current account right after selecting "Try another account" in store picker
+- improvement: Use the store name for the title of the view in "My store" tab
+- improvement: Add an alert to let the user know about our new store switcher
+- improvement: Display Address in Order Details screen unless every field is empty

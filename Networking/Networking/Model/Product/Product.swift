@@ -49,7 +49,7 @@ public struct Product: Decodable {
 
     public let soldIndividually: Bool
     public let weight: String?
-    public let dimensions: ProductDimension
+    public let dimensions: ProductDimensions
 
     public let shippingRequired: Bool
     public let shippingTaxable: Bool
@@ -120,7 +120,7 @@ public struct Product: Decodable {
                 backordered: Bool,
                 soldIndividually: Bool,
                 weight: String?,
-                dimensions: ProductDimension,
+                dimensions: ProductDimensions,
                 shippingRequired: Bool,
                 shippingTaxable: Bool,
                 shippingClass: String?,
@@ -252,7 +252,7 @@ public struct Product: Decodable {
 
         let soldIndividuallly = try container.decode(Bool.self, forKey: .soldIndividually)
         let weight = try container.decodeIfPresent(String.self, forKey: .weight)
-        let dimensions = try container.decode(ProductDimension.self, forKey: .dimensions)
+        let dimensions = try container.decode(ProductDimensions.self, forKey: .dimensions)
 
         let shippingRequired = try container.decode(Bool.self, forKey: .shippingRequired)
         let shippingTaxable = try container.decode(Bool.self, forKey: .shippingTaxable)

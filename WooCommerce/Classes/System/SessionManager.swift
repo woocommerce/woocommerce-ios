@@ -51,8 +51,9 @@ struct SessionManager {
                 return
             }
 
+            removeCredentials()
+
             guard let credentials = newValue else {
-                removeCredentials()
                 return
             }
 

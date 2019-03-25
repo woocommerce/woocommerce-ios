@@ -1,3 +1,4 @@
-- Você gerencia mais de uma loja? É possível trocar de site sem fazer login e logout: acesse as Configurações e toque em Trocar de loja. O nome da loja ativa será exibido na guia “Minha loja”.
-- Quando houver falha ao adicionar uma observação ou preencher um pedido, a caixa de mensagens agora mostrará uma opção "Tentar novamente", para que você possa fazer uma nova tentativa.
-- Você não aceita apenas pagamentos em valores inteiros, portanto, agora poderá adicionar casas decimais a eles.
+- Acesse a tela Detalhes do pedido para alterar manualmente o status de um pedido ou visualizar o rastreamento do envio.
+- Agora nós oferecemos suporte e exibimos corretamente rótulos de status do pedido.
+- Você pode filtrar por status personalizado do pedido.
+- O suporte a idiomas RTL (da direita para a esquerda) foi aprimorado, com melhor manuseio da troca de componentes gráficos.

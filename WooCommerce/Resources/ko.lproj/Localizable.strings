@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-02-20 09:54:03+0000 */
+/* Translation-Revision-Date: 2019-03-20 09:54:11+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -76,6 +76,9 @@
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "애플리케이션 로그";
 
+/* Change order status screen - button title to apply selection */
+"Apply" = "적용";
+
 /* Approve a comment */
 "Approve" = "승인하기";
 
@@ -122,11 +125,8 @@
 "Can Not Request Link" = "링크를 요청할 수 없음";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. */
+   Cancel button label - Cancel prompt for user information. - Change order status screen - button title for closing the view */
 "Cancel" = "취소";
-
-/* Cancelled Order Status */
-"Canceled" = "취소됨";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "언제, 어디서든지 즐겨 찾는 사이트의 최신 소식을 확인하고 대화에 참여하세요.";
@@ -134,14 +134,8 @@
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "인증서 오류";
 
-/* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "이전 활동 기록 지우기";
-
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "정보 수집";
-
-/* Completed Order Status */
-"Completed" = "완료";
 
 /* Shown while the app waits for the site creation process to complete. */
 "Completing Signup" = "가입 완료 중";
@@ -233,6 +227,9 @@
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "닷컴 오류: [(code)] (theMessage)";
 
+/* WordPress.com error thrown when the the request REST API url is invalid. */
+"Dotcom Invalid REST Route" = "Dotcom 유효하지 않은 REST 경로";
+
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "닷컴 토큰 누락";
 
@@ -281,9 +278,6 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "비밀번호를 입력하세요.";
-
-/* Failed Order Status */
-"Failed" = "실패함";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API에 요청을 일련화할 수 없습니다.";
@@ -398,7 +392,8 @@
    Log In button label. */
 "Log In" = "로그인";
 
-/* Alert button title - confirms and logs out the user */
+/* Alert button title - confirms and logs out the user
+   Log out button title */
 "Log Out" = "로그아웃";
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
@@ -421,9 +416,6 @@
 
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "WooCommerce 스토어를 관리하려면 워드프레스닷컴 계정 이메일 주소로 로그인합니다.";
-
-/* Log out button title */
-"Log out account" = "로그아웃 계정";
 
 /* Title of a button. */
 "Lost your password?" = "비밀번호 분실?";
@@ -476,7 +468,8 @@
 /* My Tickets title */
 "My Tickets" = "내 티켓";
 
-/* Dashboard navigation title */
+/* My Store Notice Title for loading error
+   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "내 스토어";
 
 /* Name text field placeholder */
@@ -507,8 +500,8 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "이 기간에 활동이 없음";
 
-/* Fulfill order > customer info > where the physical shipping address would normally display.
-   Order details > customer info > billing details. This is where the address would normally display. - Order details > customer info > shipping details. This is where the address would normally display. */
+/* Order details > customer info > billing details. This is where the address would normally display.
+   Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "주소가 지정되지 않았습니다.";
 
 /* Text displayed when no data is available for revenue chart. */
@@ -517,6 +510,9 @@
 /* Notifications List (Empty State + Filters)
    Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "선택한 기준에 맞는 결과가 없음";
+
+/* Order details > tracking.  This is where the shipping date would normally display. */
+"Not shipped yet" = "아직 배송되지 않음";
 
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
@@ -548,9 +544,6 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "켬";
 
-/* On Hold Order Status */
-"On Hold" = "보류됨";
-
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "기기 설정 열기";
 
@@ -559,6 +552,9 @@
 
 /* Navigates to open source licenses screen */
 "Open Source Licenses" = "오픈 소스 라이선스";
+
+/* Accessibility hint for the button to update the order status */
+"Opens a list of available statuses." = "사용 가능한 상태 목록을 엽니다.";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "선택적 추적 정보";
@@ -573,8 +569,14 @@
 /* Order notes section title */
 "Order Notes" = "주문 메모";
 
+/* Change order status screen - Screen title */
+"Order Status" = "주문 상태";
+
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "주문이 이행됨으로 표시됨";
+
+/* Order status update success notice */
+"Order status updated" = "주문 상태 업데이트됨";
 
 /* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
    Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
@@ -598,9 +600,6 @@
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "(order.paymentMethodTitle)을(를) 통해 (totalValue) 결제 받음";
-
-/* Pending Order Status */
-"Pending" = "대기중";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "전화번호: %@";
@@ -635,9 +634,6 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "이메일 앱을 열고 워드프레스닷컴에서 보낸 이메일을 찾으세요.";
 
-/* My Store > Settings > Primary Store information section */
-"Primary Store" = "기본 스토어";
-
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "개인정보 취급방침";
 
@@ -648,9 +644,6 @@
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "비공개 메모";
-
-/* Processing Order Status */
-"Processing" = "처리 중";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -675,9 +668,6 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "개인정보 취급방침 읽기";
 
-/* Refunded Order Status */
-"Refunded" = "환불됨";
-
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "등록된 도메인";
 
@@ -687,6 +677,9 @@
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "충돌 보고";
+
+/* Deletes all activity logs except for the marked 'Current'. */
+"Reset Activity Log" = "활동 로그 재설정";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "지정된 키워드가 있는 주문 목록을 검색합니다.";
@@ -719,6 +712,12 @@
 /* Search Orders */
 "Search orders" = "주문 검색";
 
+/* Page title for the select a different store screen */
+"Select Store" = "스토어 선택";
+
+/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
+"Selected Store" = "선택한 스토어";
+
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "링크 전송";
 
@@ -734,6 +733,13 @@
 
 /* Action: Opens the Store in a browser */
 "Share your Store" = "스토어 공유";
+
+/* Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
+"Shipment Company %@" = "배송 회사 %@";
+
+/* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
+   Date an item was shipped */
+"Shipped %@" = "%@에 배송됨";
 
 /* Shipping label for payment view */
 "Shipping" = "배송";
@@ -827,6 +833,12 @@
 
 /* Subtotal label for payment view */
 "Subtotal" = "소계";
+
+/* This action allows the user to change stores without logging out and logging back in again. */
+"Switch Store" = "스토어 전환";
+
+/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
+"Switched to (newStoreName). You will only receive notifications from this store." = "(newStoreName)(으)로 전환했습니다. 이 스토어에서만 알림을 받습니다.";
 
 /* Labels an order note to let user know it's a system status message */
 "System status" = "시스템 상태";
@@ -943,6 +955,18 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "총 지출";
 
+/* Track package button title */
+"Track package" = "패키지 추적";
+
+/* Order tracking section title */
+"Tracking" = "추적";
+
+/* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
+"Tracking number %@" = "추적 번호 %@";
+
+/* Accessibility hint for Track Package button in Order details screen */
+"Tracks a shipment." = "배송을 추적합니다.";
+
 /* Move a comment to the trash */
 "Trash" = "휴지통";
 
@@ -961,8 +985,20 @@
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "연결할 수 없음";
 
+/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
+"Unable to add note to order #(viewModel.order.orderID)" = "주문 번호(viewModel.order.orderID)에 메모를 추가할 수 없음";
+
+/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order */
+"Unable to change status of order #(orderID)" = "주문 번호(orderID)의 상태를 변경할 수 없음";
+
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "이 계정에 연결된 우커머스 스토어를 찾을 수 없음";
+
+/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
+"Unable to fulfill order #(orderID)" = "주문 번호(orderID)를 처리할 수 없음";
+
+/* Load Action Failed */
+"Unable to load content" = "콘텐츠를 로드할 수 없음";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Unable to mark review as %@";
@@ -996,6 +1032,9 @@
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "최대 7일 상당의 로그가 저장됩니다.";
+
+/* Accessibility label for the button to update the order status in Order Details */
+"Update Order Status" = "주문 상태 업데이트";
 
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "%2$@에 %1$@ 업데이트";

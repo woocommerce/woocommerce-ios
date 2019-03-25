@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-02-20 09:54:03+0000 */
+/* Translation-Revision-Date: 2019-03-20 09:54:12+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -76,6 +76,9 @@
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "应用程序日志";
 
+/* Change order status screen - button title to apply selection */
+"Apply" = "应用";
+
 /* Approve a comment */
 "Approve" = "批准";
 
@@ -122,11 +125,8 @@
 "Can Not Request Link" = "无法请求链接";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. */
+   Cancel button label - Cancel prompt for user information. - Change order status screen - button title for closing the view */
 "Cancel" = "取消";
-
-/* Cancelled Order Status */
-"Canceled" = "已取消";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "密切关注您喜爱的站点，并随时随地加入对话。";
@@ -134,14 +134,8 @@
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "证书错误";
 
-/* Deletes all activity logs except for the marked 'Current'. */
-"Clear old activity logs" = "清除旧活动日志";
-
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "收集信息";
-
-/* Completed Order Status */
-"Completed" = "已完成";
 
 /* Shown while the app waits for the site creation process to complete. */
 "Completing Signup" = "正在完成注册";
@@ -233,6 +227,9 @@
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "Dotcom 错误：[(code)] (theMessage)";
 
+/* WordPress.com error thrown when the the request REST API url is invalid. */
+"Dotcom Invalid REST Route" = "Dotcom 无效 REST 路由";
+
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "Dotcom 缺少令牌";
 
@@ -281,9 +278,6 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "改为输入密码。";
-
-/* Failed Order Status */
-"Failed" = "失败";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "未能将请求序列化至 REST API。";
@@ -398,7 +392,8 @@
    Log In button label. */
 "Log In" = "登录";
 
-/* Alert button title - confirms and logs out the user */
+/* Alert button title - confirms and logs out the user
+   Log out button title */
 "Log Out" = "注销";
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
@@ -421,9 +416,6 @@
 
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "使用您的 WordPress.com 帐户电子邮件地址登录，管理您的 WooCommerce 商店。";
-
-/* Log out button title */
-"Log out account" = "注销帐户";
 
 /* Title of a button. */
 "Lost your password?" = "忘记密码？";
@@ -476,7 +468,8 @@
 /* My Tickets title */
 "My Tickets" = "我的申请单";
 
-/* Dashboard navigation title */
+/* My Store Notice Title for loading error
+   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "我的商店";
 
 /* Name text field placeholder */
@@ -507,8 +500,8 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "这段时间内没有任何活动";
 
-/* Fulfill order > customer info > where the physical shipping address would normally display.
-   Order details > customer info > billing details. This is where the address would normally display. - Order details > customer info > shipping details. This is where the address would normally display. */
+/* Order details > customer info > billing details. This is where the address would normally display.
+   Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "未指定地址。";
 
 /* Text displayed when no data is available for revenue chart. */
@@ -517,6 +510,9 @@
 /* Notifications List (Empty State + Filters)
    Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "没有符合所选条件的结果";
+
+/* Order details > tracking.  This is where the shipping date would normally display. */
+"Not shipped yet" = "尚未配送";
 
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
@@ -548,9 +544,6 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "打开";
 
-/* On Hold Order Status */
-"On Hold" = "保留";
-
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "打开设备设置";
 
@@ -559,6 +552,9 @@
 
 /* Navigates to open source licenses screen */
 "Open Source Licenses" = "开源许可证";
+
+/* Accessibility hint for the button to update the order status */
+"Opens a list of available statuses." = "打开可用状态列表。";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "可选的跟踪信息";
@@ -573,8 +569,14 @@
 /* Order notes section title */
 "Order Notes" = "订单备注";
 
+/* Change order status screen - Screen title */
+"Order Status" = "订单状态";
+
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "已将订单标记为已完成";
+
+/* Order status update success notice */
+"Order status updated" = "订单状态已更新";
 
 /* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
    Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
@@ -598,9 +600,6 @@
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "通过 (order.paymentMethodTitle) 接受 (totalValue) 的付款";
-
-/* Pending Order Status */
-"Pending" = "待审";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "电话号码：%@";
@@ -635,9 +634,6 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "请打开电子邮件应用程序，查找来自 WordPress.com 的电子邮件。";
 
-/* My Store > Settings > Primary Store information section */
-"Primary Store" = "主要商店";
-
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "隐私政策";
 
@@ -648,9 +644,6 @@
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "私人备注";
-
-/* Processing Order Status */
-"Processing" = "正在处理";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -675,9 +668,6 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "阅读隐私政策";
 
-/* Refunded Order Status */
-"Refunded" = "已退款";
-
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "已注册的域";
 
@@ -687,6 +677,9 @@
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "报告崩溃问题";
+
+/* Deletes all activity logs except for the marked 'Current'. */
+"Reset Activity Log" = "重置活动日志";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "检索包含给定关键字的订单列表。";
@@ -719,6 +712,12 @@
 /* Search Orders */
 "Search orders" = "搜索订单";
 
+/* Page title for the select a different store screen */
+"Select Store" = "选择商店";
+
+/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
+"Selected Store" = "已选商店";
+
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "发送链接";
 
@@ -734,6 +733,13 @@
 
 /* Action: Opens the Store in a browser */
 "Share your Store" = "共享您的商店";
+
+/* Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
+"Shipment Company %@" = "配送公司：%@";
+
+/* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
+   Date an item was shipped */
+"Shipped %@" = "配送日期：%@";
 
 /* Shipping label for payment view */
 "Shipping" = "配送";
@@ -827,6 +833,12 @@
 
 /* Subtotal label for payment view */
 "Subtotal" = "小计";
+
+/* This action allows the user to change stores without logging out and logging back in again. */
+"Switch Store" = "切换商店";
+
+/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
+"Switched to (newStoreName). You will only receive notifications from this store." = "切换至（新商店名称）。您只会收到来自此商店的通知。";
 
 /* Labels an order note to let user know it's a system status message */
 "System status" = "系统状态";
@@ -943,6 +955,18 @@
 /* Description for Top Performers right column header */
 "Total Spend" = "总花费";
 
+/* Track package button title */
+"Track package" = "跟踪包裹";
+
+/* Order tracking section title */
+"Tracking" = "跟踪";
+
+/* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
+"Tracking number %@" = "跟踪编号 %@";
+
+/* Accessibility hint for Track Package button in Order details screen */
+"Tracks a shipment." = "跟踪配送。";
+
 /* Move a comment to the trash */
 "Trash" = "移到回收站";
 
@@ -961,8 +985,20 @@
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "无法连接";
 
+/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
+"Unable to add note to order #(viewModel.order.orderID)" = "无法为订单 #(viewModel.order.orderID) 添加备注";
+
+/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order */
+"Unable to change status of order #(orderID)" = "无法更改订单 #(orderID) 的状态";
+
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "找不到与此帐户关联的 WooCommerce 商店";
+
+/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
+"Unable to fulfill order #(orderID)" = "无法完成订单 #(orderID)";
+
+/* Load Action Failed */
+"Unable to load content" = "无法加载内容";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Unable to mark review as %@";
@@ -996,6 +1032,9 @@
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "最多保存七天的日志。";
+
+/* Accessibility label for the button to update the order status in Order Details */
+"Update Order Status" = "更新订单状态";
 
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "更新时间：%1$@ %2$@";

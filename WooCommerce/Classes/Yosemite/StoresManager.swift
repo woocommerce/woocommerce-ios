@@ -160,7 +160,7 @@ private extension StoresManager {
             guard let `self` = self, let account = account else {
                 return
             }
-
+            self.replaceTempCredentialsIfNecessary(account: account)
             self.sessionManager.defaultAccount = account
         }
 
@@ -180,6 +180,20 @@ private extension StoresManager {
         }
 
         dispatch(action)
+    }
+
+    /// Replaces the temporary UUID username in default credentials with the
+    /// actual username from the passed account.  This *shouldn't* be necessary
+    /// under normal conditions but is a safety net incase there is an error
+    /// preventing the temp username from being updated during login.
+    ///
+    func replaceTempCredentialsIfNecessary(account: Account) {
+        guard
+            let credentials = sessionManager.defaultCredentials,
+            credentials.hasPlaceholderUsername() else {
+                return
+        }
+        authenticate(credentials: .init(username: account.username, authToken: credentials.authToken))
     }
 
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.

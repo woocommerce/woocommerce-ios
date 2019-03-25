@@ -101,7 +101,7 @@ private extension Date {
             "Updated %ld hours ago",
             comment: """
                 Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. \
-                Usage example: Updated 14 hours ago"
+                Usage example: Updated 14 hours ago
                 """
         )
         static let longFormUpdateStatement = NSLocalizedString(

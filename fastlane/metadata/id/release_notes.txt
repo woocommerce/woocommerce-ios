@@ -1,3 +1,4 @@
-- Mengelola lebih dari satu toko? Anda dapat beralih toko tanpa harus login dan logout: buka Pengaturan dan ketuk Beralih Toko. Nama toko yang aktif ditampilkan di tab “Toko Saya”.
-- Saat gagal menambahkan catatan atau memenuhi pesanan, kotak pesan kini menampilkan pilihan “Coba Lagi” sehingga Anda dapat mencoba melakukannya lagi.
-- Pembayaran yang Anda terima tidak selalu dalam angka bulat, jadi sekarang pesanan dapat menggunakan jumlah desimal.
+- Buka layar Detail Pesanan untuk mengubah status pesanan secara manual atau melihat pelacakan pengiriman.
+- Kini kami mendukung penuh dan menampilkan label status pesanan kustom dengan benar.
+- Kini Anda dapat menyaring menurut status pesanan kustom.
+- Dukungan bahasa RTL telah ditingkatkan, dengan penanganan tampilan komponen grafis yang lebih baik.

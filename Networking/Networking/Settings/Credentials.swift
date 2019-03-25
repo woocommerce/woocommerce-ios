@@ -20,6 +20,18 @@ public struct Credentials: Equatable {
         self.username = username
         self.authToken = authToken
     }
+
+    /// Convenience initializer. Assigns a UUID as a placeholder for the username.
+    ///
+    public init(authToken: String) {
+        self.init(username: UUID().uuidString, authToken: authToken)
+    }
+
+    /// Returns true if the username is a UUID placeholder.
+    ///
+    public func hasPlaceholderUsername() -> Bool {
+        return UUID(uuidString: username) != nil
+    }
 }
 
 

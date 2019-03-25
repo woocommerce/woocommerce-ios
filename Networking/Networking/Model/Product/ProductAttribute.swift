@@ -9,7 +9,7 @@ public struct ProductAttribute: Decodable {
     public let position: Int
     public let visible: Bool
     public let variation: Bool
-    public let options: [String?]
+    public let options: [String]
 
     /// ProductAttribute initializer.
     ///
@@ -18,7 +18,7 @@ public struct ProductAttribute: Decodable {
                 position: Int,
                 visible: Bool,
                 variation: Bool,
-                options: [String?]) {
+                options: [String]) {
         self.attributeID = attributeID
         self.name = name
         self.position = position

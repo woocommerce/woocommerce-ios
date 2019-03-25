@@ -1,3 +1,4 @@
-- Beheer je meer dan één winkel? Je kunt omschakelen tussen sites door in en uit te loggen: ga naar Instellingen en tik op Omschakelen tussen winkels. De naam van de actieve winkel wordt weergegeven op het tabblad 'Mijn winkel'.
-- Wanneer het toevoegen van een opmerking of het verwerken van een bestelling mislukt, wordt in het berichtvenster nu een optie 'Opnieuw proberen' weergegeven, zodat je nog een poging kunt wagen.
-- Je neemt niet alleen bestellingen met ronde bedragen aan, dus kunnen bestellingen nu decimale bedragen bevatten.
+- Ga naar het scherm Bestelgegevens om een status van een bestelling handmatig te wijzigen of de bestelling te volgen.
+- We ondersteunen aangepaste bestelstatus-labels nu volledig en geven deze op de juiste manier weer.
+- Je kunt nu filteren op aangepaste bestelstatus.
+- De ondersteuning voor RTL-talen is verbeterd, evenals het omkeren van grafische componenten.

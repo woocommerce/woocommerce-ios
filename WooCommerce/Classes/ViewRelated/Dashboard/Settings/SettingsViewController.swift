@@ -45,8 +45,12 @@ class SettingsViewController: UIViewController {
     ///
     private var sites = [Yosemite.Site]()
 
+    /// Store Picker Coordinator
+    ///
+    private var storePickerCoordinator: StorePickerCoordinator?
 
     // MARK: - Overridden Methods
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -57,6 +61,11 @@ class SettingsViewController: UIViewController {
         configureTableView()
         configureTableViewFooter()
         registerTableViewCells()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
     }
 }
 
@@ -99,14 +108,20 @@ private extension SettingsViewController {
         let footerView = TableFooterView.instantiateFromNib() as TableFooterView
         footerView.iconImage = Gridicon.iconOfType(.heartOutline)
         footerView.iconColor = StyleManager.wooGreyMid
-        footerView.footnoteText = NSLocalizedString("Made with love by Automattic", comment: "Tagline after the heart icon, displayed to the user")
+        footerView.footnoteText = NSLocalizedString(
+            "Made with love by Automattic",
+            comment: "Tagline after the heart icon, displayed to the user"
+        )
         footerView.footnoteColor = StyleManager.wooGreyMid
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
     }
 
     func configureSections() {
-        let selectedStoreTitle = NSLocalizedString("Selected Store", comment: "My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username.").uppercased()
+        let selectedStoreTitle = NSLocalizedString(
+            "Selected Store",
+            comment: "My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username."
+            ).uppercased()
         let improveTheAppTitle = NSLocalizedString("Help Improve The App", comment: "My Store > Settings > Privacy settings section").uppercased()
         let aboutSettingsTitle = NSLocalizedString("About the app", comment: "My Store > Settings > About app section").uppercased()
         let otherTitle = NSLocalizedString("Other", comment: "My Store > Settings > Other app section").uppercased()
@@ -166,7 +181,10 @@ private extension SettingsViewController {
     func configureSwitchStore(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Switch Store", comment: "This action allows the user to change stores without logging out and logging back in again.")
+        cell.textLabel?.text = NSLocalizedString(
+            "Switch Store",
+            comment: "This action allows the user to change stores without logging out and logging back in again."
+        )
     }
 
     func configureSupport(cell: BasicTableViewCell) {
@@ -209,7 +227,7 @@ private extension SettingsViewController {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = StyleManager.destructiveActionColor
-        cell.textLabel?.text = NSLocalizedString("Log out account", comment: "Log out button title")
+        cell.textLabel?.text = NSLocalizedString("Log Out", comment: "Log out button title")
     }
 }
 
@@ -230,7 +248,10 @@ private extension SettingsViewController {
 
     func logoutWasPressed() {
         WooAnalytics.shared.track(.settingsLogoutTapped)
-        let messageUnformatted = NSLocalizedString("Are you sure you want to log out of the account %@?", comment: "Alert message to confirm a user meant to log out.")
+        let messageUnformatted = NSLocalizedString(
+            "Are you sure you want to log out of the account %@?",
+            comment: "Alert message to confirm a user meant to log out."
+        )
         let messageFormatted = String(format: messageUnformatted, accountName)
         let alertController = UIAlertController(title: "", message: messageFormatted, preferredStyle: .alert)
 
@@ -250,26 +271,9 @@ private extension SettingsViewController {
 
     func switchStoreWasPressed() {
         WooAnalytics.shared.track(.settingsSelectedStoreTapped)
-        StoresManager.shared.removeDefaultStore()
-
-        let group = DispatchGroup()
-
-        group.enter()
-        let statsAction = StatsAction.resetStoredStats {
-            group.leave()
-        }
-        StoresManager.shared.dispatch(statsAction)
-
-        group.enter()
-        let orderAction = OrderAction.resetStoredOrders {
-            group.leave()
-        }
-        StoresManager.shared.dispatch(orderAction)
-
-        group.notify(queue: .main) { [weak self] in
-            let pickerVC = StorePickerViewController()
-            let loginNavController = LoginNavigationController(rootViewController: pickerVC)
-            self?.present(loginNavController, animated: true, completion: nil)
+        if let navigationController = navigationController {
+            storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
+            storePickerCoordinator?.start()
         }
     }
 

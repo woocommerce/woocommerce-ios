@@ -1,3 +1,4 @@
-- Mehr als einen Shop verwalten? Du kannst zwischen Websites wechseln, ohne dich an- und abzumelden: Navigiere zu den Einstellungen und tippe auf den Button zum Wechseln des Shops. Der Name des aktiven Shops wird auf dem Tab „Mein Shop“ angezeigt.
-- Wenn ein Hinweis nicht hinzugefügt oder eine Bestellung nicht erfüllt werden kann, wird im Nachrichtenfeld jetzt die Option zum erneuten Versuchen angezeigt, damit du es noch einmal probieren kannst.
-- Du nimmst nicht nur Zahlungen mit runden Zahlen an, sodass Bestellungen jetzt Dezimalmengen enthalten können.
+- Rufe den Bildschirm mit den Bestelldetails auf, um den Status einer Bestellung manuell zu ändern oder die Versandverfolgung anzuzeigen.
+- Wir bieten jetzt umfassende Unterstützung für individuelle Bestellstatusbezeichnungen und zeigen diese korrekt an.
+- Du kannst jetzt nach individuellem Bestellstatus filtern.
+- RTL-Sprachunterstützung wurde verbessert, wobei der grafische Komponentenwechsel besser verarbeitet wird.

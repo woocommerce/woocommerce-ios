@@ -1,6 +1,5 @@
 import UIKit
 import Yosemite
-import CocoaLumberjack
 
 protocol NewOrdersDelegate {
     func didUpdateNewOrdersData(hasNewOrders: Bool)
@@ -17,6 +16,18 @@ class NewOrdersViewController: UIViewController {
     @IBOutlet private weak var chevronImageView: UIImageView!
     @IBOutlet private weak var actionButton: UIButton!
     @IBOutlet private weak var bottomSpacerView: UIView!
+
+    private var orderStatuses: [OrderStatus]? {
+        didSet {
+            updateNewOrdersIfNeeded(orderCount: totalPendingOrders)
+        }
+    }
+
+    /// Total number of pending server-side orders
+    ///
+    private var totalPendingOrders: Int {
+        return orderStatuses?.filter({ $0.slug == OrderStatusEnum.processing.rawValue }).map({ $0.total }).reduce(0, +) ?? 0
+    }
 
     // MARK: - Public Properties
 
@@ -45,17 +56,13 @@ extension NewOrdersViewController {
             return
         }
 
-        let action = StatsAction.retrieveOrderTotals(siteID: siteID, status: .processing) { [weak self] (processingOrderCount, error) in
-            guard let `self` = self, let processingOrderCount = processingOrderCount else {
-                if let error = error {
-                    DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing pending orders: \(error)")
-                }
-                onCompletion?(error)
-                return
+        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { [weak self] (orderStatuses, error) in
+            if let error = error {
+                DDLogError("⛔️ Dashboard (New Orders) — Error synchronizing order statuses: \(error)")
             }
 
-            self.updateNewOrdersIfNeeded(orderCount: processingOrderCount)
-            onCompletion?(nil)
+            self?.orderStatuses = orderStatuses
+            onCompletion?(error)
         }
 
         StoresManager.shared.dispatch(action)
@@ -75,9 +82,11 @@ private extension NewOrdersViewController {
         titleLabel.textInsets = Constants.newOrdersTitleLabelInsets
         descriptionLabel.applyBodyStyle()
         descriptionLabel.textInsets = Constants.newOrdersDescriptionLabelInsets
-        descriptionLabel.text = NSLocalizedString("Review, prepare, and ship these pending orders",
-                                                  comment: "Description text used on the UI element displayed when a user has pending orders to process.")
-        chevronImageView.image = UIImage.chevronImage
+        descriptionLabel.text = NSLocalizedString(
+            "Review, prepare, and ship these pending orders",
+            comment: "Description text used on the UI element displayed when a user has pending orders to process."
+        )
+        chevronImageView.image = UIImage.chevronImage.imageFlippedForRightToLeftLayoutDirection()
     }
 }
 
@@ -87,10 +96,14 @@ private extension NewOrdersViewController {
 private extension NewOrdersViewController {
 
     @IBAction func buttonTouchUpInside(_ sender: UIButton) {
-        sender.fadeOutSelectedBackground {
-            WooAnalytics.shared.track(.dashboardNewOrdersButtonTapped)
-            MainTabBarController.presentOrders(statusKeyFilter: .processing)
+        sender.fadeOutSelectedBackground()
+        guard let pendingStatus = orderStatuses?.first(where: { $0.slug == OrderStatusEnum.processing.rawValue }) else {
+            DDLogError("⛔️ Unable to display pending orders list — unable to locate pending status for current site.")
+            return
         }
+
+       WooAnalytics.shared.track(.dashboardNewOrdersButtonTapped)
+       MainTabBarController.presentOrders(statusFilter: pendingStatus)
     }
 
     @IBAction func buttonTouchUpOutside(_ sender: UIButton) {
@@ -151,9 +164,15 @@ private extension UIButton {
 private extension NewOrdersViewController {
 
     func updateNewOrdersIfNeeded(orderCount: Int) {
-        titleLabel.text = String.pluralize(orderCount,
-                                           singular: NSLocalizedString("You have %ld order to fulfill", comment: "Title text used on the My Store UI when a user has a _single_ pending order to process."),
-                                           plural: NSLocalizedString("You have %ld orders to fulfill", comment: "Title text used on the My Store UI when a user has _multiple_ pending orders to process."))
+        let singular = NSLocalizedString(
+            "You have %ld order to fulfill",
+            comment: "Title text used on the My Store UI when a user has a _single_ pending order to process."
+        )
+        let plural = NSLocalizedString(
+            "You have %ld orders to fulfill",
+            comment: "Title text used on the My Store UI when a user has _multiple_ pending orders to process."
+        )
+        titleLabel.text = String.pluralize(orderCount, singular: singular, plural: plural)
         delegate?.didUpdateNewOrdersData(hasNewOrders: orderCount > 0)
     }
 }

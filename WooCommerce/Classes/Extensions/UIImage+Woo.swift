@@ -34,6 +34,15 @@ extension UIImage {
         return UIImage(named: "gravatar")!
     }
 
+    /// Pencil Icon
+    ///
+    static var pencilImage: UIImage {
+        let tintColor = StyleManager.wooCommerceBrandColor
+        return Gridicon.iconOfType(.pencil)
+            .imageWithTintColor(tintColor)!
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Jetpack Logo Image
     ///
     static var jetpackLogoImage: UIImage {

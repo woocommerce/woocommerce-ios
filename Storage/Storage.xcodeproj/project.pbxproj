@@ -35,6 +35,7 @@
 		74F009C12183B99B002B4566 /* Note+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F009BF2183B99B002B4566 /* Note+CoreDataProperties.swift */; };
 		9302E3A6220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9302E3A5220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift */; };
 		9302E3AC220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9302E3AB220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift */; };
+		933A27302222344D00C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A272F2222344D00C2143A /* Logging.swift */; };
 		B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505255320EE6914008090F5 /* StorageType+Extensions.swift */; };
 		B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6D820BEEA3100BB1B69 /* Account+CoreDataProperties.swift */; };
 		B505F6DB20BEEA3200BB1B69 /* Account+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6D920BEEA3200BB1B69 /* Account+CoreDataClass.swift */; };
@@ -53,7 +54,6 @@
 		B54CA5C920A4C17800F38CD1 /* NSObject+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54CA5C820A4C17800F38CD1 /* NSObject+Storage.swift */; };
 		B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */; };
 		B59E11E020A9F5E6004121A4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DF20A9F5E6004121A4 /* Constants.swift */; };
-		B5A036A4214C0F6C00774E2C /* CocoaLumberjack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A036A3214C0F6C00774E2C /* CocoaLumberjack.swift */; };
 		B5B914C520EFF03500F2F832 /* Site+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B914C320EFF03500F2F832 /* Site+CoreDataClass.swift */; };
 		B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B914C420EFF03500F2F832 /* Site+CoreDataProperties.swift */; };
 		B5DC3CAA20D1B2FE0063AC41 /* WooCommerce.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */; };
@@ -61,9 +61,9 @@
 		B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111D21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift */; };
 		CE12FBCE221F0E1A00C59248 /* Order+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBCC221F0E1A00C59248 /* Order+CoreDataClass.swift */; };
 		CE12FBCF221F0E1A00C59248 /* Order+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBCD221F0E1A00C59248 /* Order+CoreDataProperties.swift */; };
-		CE12FBD2221F140900C59248 /* OrderStatus+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBD0221F140900C59248 /* OrderStatus+CoreDataClass.swift */; };
-		CE12FBD3221F140900C59248 /* OrderStatus+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBD1221F140900C59248 /* OrderStatus+CoreDataProperties.swift */; };
 		CE12FBE32220515600C59248 /* WooCommerceModelV9toV10.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBE22220515600C59248 /* WooCommerceModelV9toV10.xcmappingmodel */; };
+		CE3B7AD22225E62C0050FE4B /* OrderStatus+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3B7AD02225E62C0050FE4B /* OrderStatus+CoreDataClass.swift */; };
+		CE3B7AD32225E62C0050FE4B /* OrderStatus+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3B7AD12225E62C0050FE4B /* OrderStatus+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,6 +114,7 @@
 		9302E3A5220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataIterativeMigrator.swift; sourceTree = "<group>"; };
 		9302E3A7220DC69400DA5018 /* Model 10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 10.xcdatamodel"; sourceTree = "<group>"; };
 		9302E3AB220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataIterativeMigratorTests.swift; sourceTree = "<group>"; };
+		933A272F2222344D00C2143A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		A3821B262583F14863740A37 /* Pods-Storage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.debug.xcconfig"; sourceTree = "<group>"; };
 		B505255320EE6914008090F5 /* StorageType+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageType+Extensions.swift"; sourceTree = "<group>"; };
 		B505F6D820BEEA3100BB1B69 /* Account+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -137,7 +138,6 @@
 		B59E11D920A9D00C004121A4 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManagerTests.swift; sourceTree = "<group>"; };
 		B59E11DF20A9F5E6004121A4 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		B5A036A3214C0F6C00774E2C /* CocoaLumberjack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaLumberjack.swift; path = ../../WooCommerce/Classes/Tools/Logging/CocoaLumberjack.swift; sourceTree = "<group>"; };
 		B5B2358C2190CC22009A4A54 /* Model 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 6.xcdatamodel"; sourceTree = "<group>"; };
 		B5B914C320EFF03500F2F832 /* Site+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Site+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B5B914C420EFF03500F2F832 /* Site+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Site+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -147,9 +147,10 @@
 		BB0EDB0E92A719168B18DAFE /* Pods-StorageTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.release.xcconfig"; sourceTree = "<group>"; };
 		CE12FBCC221F0E1A00C59248 /* Order+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CE12FBCD221F0E1A00C59248 /* Order+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		CE12FBD0221F140900C59248 /* OrderStatus+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+CoreDataClass.swift"; sourceTree = "<group>"; };
-		CE12FBD1221F140900C59248 /* OrderStatus+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CE12FBE22220515600C59248 /* WooCommerceModelV9toV10.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV9toV10.xcmappingmodel; sourceTree = "<group>"; };
+		CE3B7ACF2225E5CE0050FE4B /* Model 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 11.xcdatamodel"; sourceTree = "<group>"; };
+		CE3B7AD02225E62C0050FE4B /* OrderStatus+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+CoreDataClass.swift"; sourceTree = "<group>"; };
+		CE3B7AD12225E62C0050FE4B /* OrderStatus+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -336,16 +337,16 @@
 				74F009BF2183B99B002B4566 /* Note+CoreDataProperties.swift */,
 				CE12FBCC221F0E1A00C59248 /* Order+CoreDataClass.swift */,
 				CE12FBCD221F0E1A00C59248 /* Order+CoreDataProperties.swift */,
-				B5FD111D21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift */,
-				B5FD111C21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift */,
-				CE12FBD0221F140900C59248 /* OrderStatus+CoreDataClass.swift */,
-				CE12FBD1221F140900C59248 /* OrderStatus+CoreDataProperties.swift */,
 				7426A04E20F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift */,
 				7426A04F20F69D00002A4E07 /* OrderCoupon+CoreDataProperties.swift */,
 				7426A05220F69DA4002A4E07 /* OrderItem+CoreDataClass.swift */,
 				7426A05320F69DA4002A4E07 /* OrderItem+CoreDataProperties.swift */,
 				74B7D6AB20F90CBB002667AC /* OrderNote+CoreDataClass.swift */,
 				74B7D6AC20F90CBB002667AC /* OrderNote+CoreDataProperties.swift */,
+				B5FD111D21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift */,
+				B5FD111C21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift */,
+				CE3B7AD02225E62C0050FE4B /* OrderStatus+CoreDataClass.swift */,
+				CE3B7AD12225E62C0050FE4B /* OrderStatus+CoreDataProperties.swift */,
 				7499FA42221C7A60004EC0B4 /* ShipmentTracking+CoreDataClass.swift */,
 				7499FA43221C7A60004EC0B4 /* ShipmentTracking+CoreDataProperties.swift */,
 				B5B914C320EFF03500F2F832 /* Site+CoreDataClass.swift */,
@@ -369,7 +370,7 @@
 		B5A036A2214C0F6500774E2C /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				B5A036A3214C0F6C00774E2C /* CocoaLumberjack.swift */,
+				933A272F2222344D00C2143A /* Logging.swift */,
 			);
 			name = Internal;
 			sourceTree = "<group>";
@@ -549,7 +550,6 @@
 				74938EC9216FA9B200540BA1 /* OrderStatsItem+CoreDataProperties.swift in Sources */,
 				B54CA5BB20A4BD2800F38CD1 /* NSManagedObject+Object.swift in Sources */,
 				7471A514216CF0FE00219F7E /* SiteVisitStats+CoreDataClass.swift in Sources */,
-				B5A036A4214C0F6C00774E2C /* CocoaLumberjack.swift in Sources */,
 				74938ECB216FA9B200540BA1 /* OrderStats+CoreDataProperties.swift in Sources */,
 				7426A05120F69D00002A4E07 /* OrderCoupon+CoreDataProperties.swift in Sources */,
 				B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */,
@@ -562,6 +562,7 @@
 				7471A515216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataProperties.swift in Sources */,
 				CE12FBCE221F0E1A00C59248 /* Order+CoreDataClass.swift in Sources */,
 				B54CA5BD20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift in Sources */,
+				933A27302222344D00C2143A /* Logging.swift in Sources */,
 				746A9D21214078080013F6FF /* TopEarnerStats+CoreDataClass.swift in Sources */,
 				74B7D6AD20F90CBB002667AC /* OrderNote+CoreDataClass.swift in Sources */,
 				B52B0F7920AA287C00477698 /* StorageManagerType.swift in Sources */,
@@ -575,7 +576,7 @@
 				B54CA5C920A4C17800F38CD1 /* NSObject+Storage.swift in Sources */,
 				7471A516216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataClass.swift in Sources */,
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,
-				CE12FBD2221F140900C59248 /* OrderStatus+CoreDataClass.swift in Sources */,
+				CE3B7AD22225E62C0050FE4B /* OrderStatus+CoreDataClass.swift in Sources */,
 				74B7D6AE20F90CBB002667AC /* OrderNote+CoreDataProperties.swift in Sources */,
 				CE12FBCF221F0E1A00C59248 /* Order+CoreDataProperties.swift in Sources */,
 				B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */,
@@ -588,7 +589,7 @@
 				7492FAD7217FA9C100ED2C69 /* SiteSetting+CoreDataProperties.swift in Sources */,
 				B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */,
 				9302E3A6220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift in Sources */,
-				CE12FBD3221F140900C59248 /* OrderStatus+CoreDataProperties.swift in Sources */,
+				CE3B7AD32225E62C0050FE4B /* OrderStatus+CoreDataProperties.swift in Sources */,
 				746A9D24214078080013F6FF /* TopEarnerStatsItem+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -883,6 +884,7 @@
 		B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				CE3B7ACF2225E5CE0050FE4B /* Model 11.xcdatamodel */,
 				9302E3A7220DC69400DA5018 /* Model 10.xcdatamodel */,
 				B5FD111721D402C200560344 /* Model 9.xcdatamodel */,
 				7435E58C21C007D100216F0F /* Model 8.xcdatamodel */,
@@ -894,7 +896,7 @@
 				746A9D14214071F90013F6FF /* Model 2.xcdatamodel */,
 				B59E11D920A9D00C004121A4 /* Model.xcdatamodel */,
 			);
-			currentVersion = 9302E3A7220DC69400DA5018 /* Model 10.xcdatamodel */;
+			currentVersion = CE3B7ACF2225E5CE0050FE4B /* Model 11.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

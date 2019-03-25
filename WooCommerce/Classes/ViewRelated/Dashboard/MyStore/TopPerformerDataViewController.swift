@@ -2,7 +2,6 @@ import UIKit
 import Yosemite
 import Charts
 import XLPagerTabStrip
-import CocoaLumberjack
 import WordPressUI
 
 
@@ -275,7 +274,8 @@ private extension TopPerformerDataViewController {
 //
 private extension TopPerformerDataViewController {
     enum Text {
-        static let sectionDescription = NSLocalizedString("Gain insights into how products are performing on your store", comment: "Description for Top Performers section of My Store tab.")
+        static let sectionDescription = NSLocalizedString("Gain insights into how products are performing on your store",
+                                                          comment: "Description for Top Performers section of My Store tab.")
         static let sectionLeftColumn = NSLocalizedString("Product", comment: "Description for Top Performers left column header")
         static let sectionRightColumn = NSLocalizedString("Total Spend", comment: "Description for Top Performers right column header")
     }

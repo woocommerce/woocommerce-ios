@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import CocoaLumberjack
 
 import Yosemite
 import Gridicons
@@ -130,7 +129,7 @@ extension FulfillViewController {
     @IBAction func fulfillWasPressed() {
         // Capture these values for the undo closure
         let orderID = order.orderID
-        let doneStatus = OrderStatusKey.completed
+        let doneStatus = OrderStatusEnum.completed.rawValue
         let undoStatus = order.statusKey
 
         let done = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: doneStatus)
@@ -138,16 +137,16 @@ extension FulfillViewController {
 
         WooAnalytics.shared.track(.orderFulfillmentCompleteButtonTapped)
         WooAnalytics.shared.track(.orderStatusChange, withProperties: ["id": order.orderID,
-                                                                       "from": order.statusKey.rawValue,
-                                                                       "to": OrderStatusKey.completed.rawValue])
+                                                                       "from": order.statusKey,
+                                                                       "to": OrderStatusEnum.completed.rawValue])
         StoresManager.shared.dispatch(done)
 
         displayOrderCompleteNotice {
             WooAnalytics.shared.track(.orderMarkedCompleteUndoButtonTapped)
             WooAnalytics.shared.track(.orderStatusChangeUndo, withProperties: ["id": orderID])
             WooAnalytics.shared.track(.orderStatusChange, withProperties: ["id": orderID,
-                                                                           "from": doneStatus.rawValue,
-                                                                           "to": undoStatus.rawValue])
+                                                                           "from": doneStatus,
+                                                                           "to": undoStatus])
             StoresManager.shared.dispatch(undo)
         }
 
@@ -157,7 +156,7 @@ extension FulfillViewController {
 
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
-    private func updateOrderAction(siteID: Int, orderID: Int, statusKey: OrderStatusKey) -> Action {
+    private func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
             guard let error = error else {
                 WooAnalytics.shared.track(.orderStatusChangeSuccess)
@@ -165,7 +164,7 @@ extension FulfillViewController {
             }
 
             WooAnalytics.shared.track(.orderStatusChangeFailed, withError: error)
-            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(statusKey.rawValue)]. Error: \(error)")
+            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(statusKey)]. Error: \(error)")
 
             self.displayErrorNotice(orderID: orderID)
         })
@@ -184,7 +183,10 @@ extension FulfillViewController {
     /// Displays the `Unable to Fulfill Order` Notice.
     ///
     func displayErrorNotice(orderID: Int) {
-        let title = NSLocalizedString("Unable to fulfill order #\(orderID)", comment: "Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}")
+        let title = NSLocalizedString(
+            "Unable to fulfill order #\(orderID)",
+            comment: "Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}"
+        )
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.fulfillWasPressed()
@@ -223,7 +225,8 @@ extension FulfillViewController: UITableViewDataSource {
             return nil
         }
 
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
+        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
             fatalError()
         }
 
@@ -281,7 +284,12 @@ private extension FulfillViewController {
         cell.labelText = note
 
         cell.isAccessibilityElement = true
-        cell.accessibilityHint = NSLocalizedString("Adds a note to an order", comment: "VoiceOver accessibility hint, informing the user that the button can be used to add an order note.")
+
+        cell.accessibilityHint = NSLocalizedString(
+            "Adds a note to an order",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to add an order note."
+        )
+
         cell.accessibilityLabel = note
         cell.accessibilityTraits = .button
     }
@@ -292,16 +300,15 @@ private extension FulfillViewController {
         guard let cell = cell as? CustomerInfoTableViewCell else {
             fatalError()
         }
-
-        guard let address = order.shippingAddress ?? order.billingAddress else {
-            cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
-            cell.address = NSLocalizedString("No address specified.", comment: "Fulfill order > customer info > where the physical shipping address would normally display.")
-            return
-        }
+        let shippingAddress = order.shippingAddress
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
-        cell.name = address.fullNameWithCompany
-        cell.address = address.formattedPostalAddress
+        cell.name = shippingAddress?.fullNameWithCompany
+        cell.address = shippingAddress?.formattedPostalAddress ??
+            NSLocalizedString(
+                "No address specified.",
+                comment: "Order details > customer info > shipping details. This is where the address would normally display."
+        )
     }
 
     /// Setup: Add Tracking Cell

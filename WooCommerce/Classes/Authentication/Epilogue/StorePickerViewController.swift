@@ -5,42 +5,56 @@ import WordPressUI
 import Yosemite
 
 
+typealias SelectStoreClosure = () -> Void
+
+/// StorePickerViewControllerDelegate: the interface with operations related to the store picker
+///
+protocol StorePickerViewControllerDelegate: AnyObject {
+
+    /// Notifies the delegate that a store is about to be picked.
+    ///
+    /// - Parameter storeID: ID of the store selected by the user
+    /// - Returns: a closure to be executed prior to store selection
+    ///
+    func willSelectStore(with storeID: Int, onCompletion: @escaping SelectStoreClosure)
+
+    /// Notifies the delegate that the store selection is complete
+    ///
+    func didSelectStore(with storeID: Int)
+}
+
+
+/// Configuration option enum for the StorePickerViewController
+///
+enum StorePickerConfiguration {
+
+    /// Setup the store picker for use in the login flow
+    ///
+    case login
+
+    /// Setup the store picker for use in the store switching flow
+    ///
+    case switchingStores
+
+    /// Setup the store picker for use as a basic modal in app
+    ///
+    case standard
+}
+
 
 /// Allows the user to pick which WordPress.com (OR) Jetpack-Connected-Store we should set up as the Main Store.
 ///
 class StorePickerViewController: UIViewController {
 
-    /// Represents the internal StorePicker State
+    /// StorePickerViewController Delegate
     ///
-    private var state: StorePickerState = .empty {
-        didSet {
-            stateWasUpdated()
-        }
-    }
+    weak var delegate: StorePickerViewControllerDelegate?
 
-    /// Header View: Displays all of the Account Details
+    /// Selected configuration for the store picker
     ///
-    private let accountHeaderView: AccountHeaderView = {
-        return AccountHeaderView.instantiateFromNib()
-    }()
+    var configuration: StorePickerConfiguration = .login
 
-    /// Site Picker's dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
-    ///
-    private lazy var noticePresenter: NoticePresenter = {
-        let noticePresenter = NoticePresenter()
-        noticePresenter.presentingViewController = self
-        return noticePresenter
-    }()
-
-    /// ResultsController: Loads Sites from the Storage Layer.
-    ///
-    private let resultsController: ResultsController<StorageSite> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "isWooCommerceActive == YES")
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
+    // MARK: - Private Properties
 
     /// White-Background View, to be placed surrounding the bottom area.
     ///
@@ -81,14 +95,53 @@ class StorePickerViewController: UIViewController {
         }
     }
 
+    /// Represents the internal StorePicker State
+    ///
+    private var state: StorePickerState = .empty {
+        didSet {
+            stateWasUpdated()
+        }
+    }
+
+    /// Header View: Displays all of the Account Details
+    ///
+    private let accountHeaderView: AccountHeaderView = {
+        return AccountHeaderView.instantiateFromNib()
+    }()
+
+    /// Site Picker's dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
+    ///
+    private lazy var noticePresenter: NoticePresenter = {
+        let noticePresenter = NoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
+    /// ResultsController: Loads Sites from the Storage Layer.
+    ///
+    private let resultsController: ResultsController<StorageSite> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "isWooCommerceActive == YES")
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
     ///
     private var estimatedRowHeights = [IndexPath: CGFloat]()
 
-    /// Closure to be executed upon dismissal.
+    /// The currently selected site on this screen (NOT the current default site for the app).
     ///
-    var onDismiss: (() -> Void)?
+    private var currentlySelectedSite: Site? {
+        didSet {
+            guard let site = currentlySelectedSite else {
+                return
+            }
 
+            displaySiteWCRequirementWarningIfNeeded(siteID: site.siteID, siteName: site.name)
+        }
+    }
 
     // MARK: - View Lifecycle
 
@@ -100,25 +153,25 @@ class StorePickerViewController: UIViewController {
         setupTableView()
         refreshResults()
 
-        startListeningToNotifications()
+        if configuration == .login {
+            startListeningToNotifications()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(true, animated: animated)
-    }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        onDismiss?()
+        setupViewForCurrentConfiguration()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        // This should be called here to address this issue:
-        // https://github.com/woocommerce/woocommerce-ios/issues/693
-        stopListeningToNotifications()
+        if configuration == .login {
+            // This should be called here to address this issue:
+            // https://github.com/woocommerce/woocommerce-ios/issues/693
+            stopListeningToNotifications()
+        }
     }
 }
 
@@ -150,8 +203,31 @@ private extension StorePickerViewController {
         accountHeaderView.username = "@" + defaultAccount.username
         accountHeaderView.fullname = defaultAccount.displayName
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
-        accountHeaderView.onHelpRequested = {
-            AppDelegate.shared.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
+        accountHeaderView.isHelpButtonEnabled = configuration == .login
+        accountHeaderView.onHelpRequested = { AppDelegate.shared.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin) }
+    }
+
+    func setupNavigation() {
+        title = NSLocalizedString("Select Store", comment: "Page title for the select a different store screen")
+        // Don't show the previous VC's title in the next-view's back button
+        let backButton = UIBarButtonItem(title: String(),
+                                         style: .plain,
+                                         target: nil,
+                                         action: nil)
+
+        navigationItem.backBarButtonItem = backButton
+    }
+
+    func setupViewForCurrentConfiguration() {
+        guard isViewLoaded else {
+            return
+        }
+
+        switch configuration {
+        case .switchingStores:
+            setupNavigation()
+        default:
+            navigationController?.setNavigationBarHidden(true, animated: true)
         }
     }
 
@@ -162,7 +238,7 @@ private extension StorePickerViewController {
     }
 
     func stateWasUpdated() {
-        preselectDefaultStoreIfPossible()
+        preselectStoreIfPossible()
         reloadInterface()
     }
 }
@@ -207,35 +283,22 @@ private extension StorePickerViewController {
 
     /// Sets the first available Store as the default one. If possible!
     ///
-    func preselectDefaultStoreIfPossible() {
+    func preselectStoreIfPossible() {
         guard case let .available(sites) = state, let firstSite = sites.first else {
             return
         }
-
-        if let site = StoresManager.shared.sessionManager.defaultSite {
-            displaySiteWCRequirementWarningIfNeeded(siteID: site.siteID, siteName: site.name)
-            StoresManager.shared.updateDefaultStore(storeID: site.siteID)
+        guard currentlySelectedSite == nil else {
             return
         }
 
-        displaySiteWCRequirementWarningIfNeeded(siteID: firstSite.siteID, siteName: firstSite.name)
-        StoresManager.shared.updateDefaultStore(storeID: firstSite.siteID)
-    }
-
-    /// Indicates if a Store is set as the Default one.
-    ///
-    func isDefaultStore(site: Yosemite.Site) -> Bool {
-        return site.siteID == StoresManager.shared.sessionManager.defaultStoreID
-    }
-
-    /// Returns the IndexPath for the DefaultStore, if any.
-    ///
-    func indexPathForDefaultStore() -> IndexPath? {
-        guard let defaultStoreID = StoresManager.shared.sessionManager.defaultStoreID else {
-            return nil
+        // If there is a defaultSite already set, select it
+        if let site = StoresManager.shared.sessionManager.defaultSite {
+            currentlySelectedSite = site
+            return
         }
 
-        return state.indexPath(for: defaultStoreID)
+        // Otherwise select the first site in the list
+        currentlySelectedSite = firstSite
     }
 
     /// Reloads the UI.
@@ -246,13 +309,30 @@ private extension StorePickerViewController {
         tableView.reloadData()
     }
 
-    /// This method will reload both, the [Default Site's Row] and the [Selected Row] after running the specified closure
+    /// Dismiss this VC
     ///
-    func reloadDefaultStoreAndSelectedStoreRows(afterRunning block: () -> Void) {
+    func cleanupAndDismiss() {
+        if let siteID = currentlySelectedSite?.siteID {
+            delegate?.didSelectStore(with: siteID)
+        }
+
+        switch configuration {
+        case .switchingStores:
+            navigationController?.popViewController(animated: true)
+        default:
+            dismiss(animated: true)
+        }
+    }
+
+    /// This method will reload the [Selected Row]
+    ///
+    func reloadSelectedStoreRows(afterRunning block: () -> Void) {
         /// Preserve: Selected and Checked Rows
         ///
         var rowsToReload = [IndexPath]()
-        if let oldCheckedRow = indexPathForDefaultStore() {
+
+        if let oldSiteID = currentlySelectedSite?.siteID,
+            let oldCheckedRow = state.indexPath(for: oldSiteID) {
             rowsToReload.append(oldCheckedRow)
         }
 
@@ -263,6 +343,11 @@ private extension StorePickerViewController {
         /// Update the Default Store
         ///
         block()
+
+        if let newSiteID = currentlySelectedSite?.siteID,
+            let selectedRow = state.indexPath(for: newSiteID) {
+            rowsToReload.append(selectedRow)
+        }
 
         /// Refresh: Selected and Checked Rows
         ///
@@ -314,8 +399,13 @@ private extension StorePickerViewController {
     /// Displays the Error Notice for the version check.
     ///
     func displayVersionCheckErrorNotice(siteID: Int, siteName: String) {
-        let message = String.localizedStringWithFormat(NSLocalizedString("Unable to successfully connect to %@",
-                                                                         comment: "On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name}"), siteName)
+        let message = String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Unable to successfully connect to %@",
+                comment: "On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name}"
+            ),
+            siteName
+        )
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.displaySiteWCRequirementWarningIfNeeded(siteID: siteID, siteName: siteName)
@@ -347,15 +437,15 @@ extension StorePickerViewController {
         case .empty:
             restartAuthentication()
         default:
-            // We need to call refreshUserData() here because the user selected
-            // their default store and tracks should to know about it.
-            WooAnalytics.shared.refreshUserData()
-            WooAnalytics.shared.track(.sitePickerContinueTapped,
-                                      withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? String()])
+            guard let delegate = delegate else {
+                return
+            }
+            guard let site = currentlySelectedSite else {
+                return
+            }
 
-            dismiss(animated: true) {
-                AppDelegate.shared.authenticatorWasDismissed()
-                MainTabBarController.switchToMyStoreTab(animated: true)
+            delegate.willSelectStore(with: site.siteID) { [weak self] in
+                self?.cleanupAndDismiss()
             }
         }
     }
@@ -382,7 +472,6 @@ extension StorePickerViewController: UITableViewDataSource {
         guard let site = state.site(at: indexPath) else {
             return tableView.dequeueReusableCell(withIdentifier: EmptyStoresTableViewCell.reuseIdentifier, for: indexPath)
         }
-
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreTableViewCell.reuseIdentifier, for: indexPath) as? StoreTableViewCell else {
             fatalError()
         }
@@ -390,7 +479,7 @@ extension StorePickerViewController: UITableViewDataSource {
         cell.name = site.name
         cell.url = site.url
         cell.allowsCheckmark = state.multipleStoresAvailable
-        cell.displaysCheckmark = isDefaultStore(site: site)
+        cell.displaysCheckmark = currentlySelectedSite == site
 
         return cell
     }
@@ -423,10 +512,8 @@ extension StorePickerViewController: UITableViewDelegate {
             return
         }
 
-        displaySiteWCRequirementWarningIfNeeded(siteID: site.siteID, siteName: site.name)
-
-        reloadDefaultStoreAndSelectedStoreRows {
-            StoresManager.shared.updateDefaultStore(storeID: site.siteID)
+        reloadSelectedStoreRows() {
+            currentlySelectedSite = site
         }
 
         tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
@@ -436,7 +523,7 @@ extension StorePickerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 
         // Preserve the Cell Height
-        // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
+        // Why: Because Autosizing Cells, upon reload, will need to be laid out yet again. This might cause
         // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
         // the actual value. AKA no flicker!
         //

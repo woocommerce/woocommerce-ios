@@ -12,7 +12,10 @@ class NoPeriodDataTableViewCell: UITableViewCell {
     @IBOutlet private var legendLabel: UILabel! {
         didSet {
             legendLabel.applySubheadlineStyle()
-            legendLabel.text = NSLocalizedString("No activity this period", comment: "Default text for Top Performers section when no data exists for a given period.")
+            legendLabel.text = NSLocalizedString(
+                "No activity this period",
+                comment: "Default text for Top Performers section when no data exists for a given period."
+            )
         }
     }
 }

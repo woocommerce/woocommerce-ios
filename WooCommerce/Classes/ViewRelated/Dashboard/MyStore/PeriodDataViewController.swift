@@ -2,7 +2,6 @@ import UIKit
 import Yosemite
 import Charts
 import XLPagerTabStrip
-import CocoaLumberjack
 
 
 class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
@@ -237,15 +236,21 @@ private extension PeriodDataViewController {
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
         xAxisAccessibilityView.accessibilityTraits = .staticText
-        xAxisAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart: X Axis", comment: "VoiceOver accessibility label for the store revenue chart's X-axis.")
+        xAxisAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart: X Axis",
+                                                                      comment: "VoiceOver accessibility label for the store revenue chart's X-axis.")
         yAxisAccessibilityView.isAccessibilityElement = true
         yAxisAccessibilityView.accessibilityTraits = .staticText
-        yAxisAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart: Y Axis", comment: "VoiceOver accessibility label for the store revenue chart's Y-axis.")
+        yAxisAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart: Y Axis",
+                                                                      comment: "VoiceOver accessibility label for the store revenue chart's Y-axis.")
         chartAccessibilityView.isAccessibilityElement = true
         chartAccessibilityView.accessibilityTraits = .image
-        chartAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart", comment: "VoiceOver accessibility label for the store revenue chart.")
-        chartAccessibilityView.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Store revenue chart %@",
-                                                                                                       comment: "VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}."), granularity.pluralizedString)
+        chartAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart",
+                                                                      comment: "VoiceOver accessibility label for the store revenue chart.")
+        chartAccessibilityView.accessibilityLabel = String.localizedStringWithFormat(
+            NSLocalizedString("Store revenue chart %@",
+                              comment: "VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}."),
+            granularity.pluralizedString
+        )
     }
 
     func configureBarChart() {
@@ -359,10 +364,24 @@ extension PeriodDataViewController: IAxisValueFormatter {
 private extension PeriodDataViewController {
 
     func updateChartAccessibilityValues() {
-        yAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(NSLocalizedString("Minimum value %@, maximum value %@",
-                                                                                                       comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}."), yAxisMinimum, yAxisMaximum)
-        xAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(NSLocalizedString("Starting period %@, ending period %@",
-                                                                                                       comment: "VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}."), xAxisMinimum, xAxisMaximum)
+        yAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Minimum value %@, maximum value %@",
+                comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}."
+            ),
+            yAxisMinimum,
+            yAxisMaximum
+        )
+
+        xAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Starting period %@, ending period %@",
+                comment: "VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}."
+            ),
+            xAxisMinimum,
+            xAxisMaximum
+        )
+
         chartAccessibilityView.accessibilityValue = chartSummaryString()
     }
 
@@ -380,8 +399,14 @@ private extension PeriodDataViewController {
             }
 
             let entrySummaryString = (entry.accessibilityValue ?? String(entry.y))
-            chartSummaryString += String.localizedStringWithFormat(NSLocalizedString("Bar number %i, %@, ",
-                                                                                     comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}."), i+1, entrySummaryString)
+            chartSummaryString += String.localizedStringWithFormat(
+                NSLocalizedString(
+                    "Bar number %i, %@, ",
+                    comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}."
+                ),
+                i+1,
+                entrySummaryString
+            )
         }
         return chartSummaryString
     }
@@ -431,7 +456,16 @@ private extension PeriodDataViewController {
         reloadSiteFields()
         reloadChart(animateChart: animateChart)
         reloadLastUpdatedField()
-        view.accessibilityElements = [visitorsTitle, visitorsData, ordersTitle, ordersData, revenueTitle, revenueData, lastUpdated, yAxisAccessibilityView, xAxisAccessibilityView, chartAccessibilityView]
+        view.accessibilityElements = [visitorsTitle,
+                                      visitorsData,
+                                      ordersTitle,
+                                      ordersData,
+                                      revenueTitle,
+                                      revenueData,
+                                      lastUpdated,
+                                      yAxisAccessibilityView,
+                                      xAxisAccessibilityView,
+                                      chartAccessibilityView]
     }
 
     func reloadOrderFields() {
@@ -492,7 +526,9 @@ private extension PeriodDataViewController {
         var dataEntries: [BarChartDataEntry] = []
         statItems.forEach { (item) in
             let entry = BarChartDataEntry(x: Double(barCount), y: item.grossSales)
-            let formattedAmount = CurrencyFormatter().formatHumanReadableAmount(String(item.grossSales), with: orderStats.currencyCode, roundSmallNumbers: false) ?? String()
+            let formattedAmount = CurrencyFormatter().formatHumanReadableAmount(String(item.grossSales),
+                                                                                with: orderStats.currencyCode,
+                                                                                roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
             barColors.append(StyleManager.wooGreyMid)
             dataEntries.append(entry)

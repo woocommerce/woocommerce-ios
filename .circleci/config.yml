@@ -3,7 +3,6 @@ version: 2.1
 orbs:
   # This uses the Orbs located at https://github.com/wordpress-mobile/circleci-orbs
   ios: wordpress-mobile/ios@0.0.18
-  danger: wordpress-mobile/danger@0.0.18
 
 workflows:
   woocommerce_ios:
@@ -14,5 +13,3 @@ workflows:
           scheme: WooCommerce
           device: iPhone XS
           ios-version: "12.1"
-      - danger/danger-ruby:
-          name: Danger

@@ -17,3 +17,16 @@ extension String {
         return " "
     }
 }
+
+
+/// String: URL manipulation
+///
+extension String {
+    func addHTTPSSchemeIfNecessary() -> String {
+        if self.hasPrefix("http://") || self.hasPrefix("https://") {
+            return self
+        }
+
+        return "https://\(self)"
+    }
+}

@@ -1,3 +1,4 @@
-- Birden fazla mağaza mı yönetiyorsunuz? Oturum açıp kapatmadan siteler arasında geçiş yapabilirsiniz. Ayarlar'a gidin ve Mağaza Değiştir'e dokunun. Etkin olan mağazanın arı “Mağazam” sekmesinde görüntülenir.
-- Bir not ekleme ya da siparişi yerine getirme başarısız olduğunda, tekrar deneyebilmeniz için mesaj kutusunda artık "Tekrar dene" seçeneği görüntüleniyor.
-- Siparişlerin artık ondalık miktarlarda olabilmesi için sadece yuvarlanmış sayılarda ödeme almakla kalmayacaksınız.
+- Bir siparişin durumunu manuel olarak değiştirmek ya da sevkiyat izlemeyi görüntülemek için Sipariş Detayları ekranına gidin.
+- Artık özel sipariş durumu etiketlerini tam olarak destekliyor ve gerektiği şekilde görüntülüyoruz.
+- Artık özel sipariş durumuna göre filtreleyebilirsiniz.
+- RTL dil desteği, daha iyi grafik bileşen çevirme işlemeyle geliştirildi.

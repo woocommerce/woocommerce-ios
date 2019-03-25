@@ -29,6 +29,20 @@ class OrderLoaderViewController: UIViewController {
         }
     }
 
+    /// ResultsController: Handles all things order status
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    /// The current list of order statuses for the default site
+    ///
+    private var currentSiteStatuses: [OrderStatus] {
+        return statusResultsController.fetchedObjects
+    }
 
     // MARK: - Initializers
 
@@ -49,6 +63,7 @@ class OrderLoaderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureResultsController()
         configureNavigationItem()
         configureSpinner()
         configureMainView()
@@ -88,6 +103,13 @@ private extension OrderLoaderViewController {
 // MARK: - Configuration
 //
 private extension OrderLoaderViewController {
+
+    /// Setup: Results Controller
+    ///
+    func configureResultsController() {
+        // Order status FRC
+        try? statusResultsController.performFetch()
+    }
 
     /// Setup: Navigation
     ///
@@ -160,7 +182,8 @@ private extension OrderLoaderViewController {
         }
 
         // Setup the DetailsViewController
-        detailsViewController.viewModel = OrderDetailsViewModel(order: order)
+        let orderStatus = lookUpOrderStatus(for: order.statusKey)
+        detailsViewController.viewModel = OrderDetailsViewModel(order: order, orderStatus: orderStatus)
 
         // Attach
         addChild(detailsViewController)
@@ -197,6 +220,20 @@ private extension OrderLoaderViewController {
 }
 
 
+// MARK: - Private Helpers
+//
+private extension OrderLoaderViewController {
+
+    func lookUpOrderStatus(for statusKey: String) -> OrderStatus? {
+        for orderStatus in currentSiteStatuses where orderStatus.slug == statusKey {
+            return orderStatus
+        }
+
+        return nil
+    }
+}
+
+
 // MARK: - Finite State Machine Management
 //
 private extension OrderLoaderViewController {
@@ -220,7 +257,7 @@ private extension OrderLoaderViewController {
         switch state {
         case .loading:
             stopSpinner()
-        case .success(_):
+        case .success:
             detachChildrenViewControllers()
         case .failure:
             removeAllOverlays()

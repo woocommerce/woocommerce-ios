@@ -54,6 +54,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return window?.rootViewController as? MainTabBarController
     }
 
+    /// Store Picker Coordinator
+    ///
+    private var storePickerCoordinator: StorePickerCoordinator?
+
 
     // MARK: - AppDelegate Methods
 
@@ -116,17 +120,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         pushNotesManager.registrationDidFail(with: error)
     }
 
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication,
+                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         pushNotesManager.handleNotification(userInfo, completionHandler: completionHandler)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+        // Sent when the application is about to move from active to inactive state.
+        // This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message)
+        // or when the user quits the application and it begins the transition to the background state.
+        // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks.
+        // Games should use this method to pause the game.
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
+        // Use this method to release shared resources, save user data, invalidate timers,
+        // and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     }
 
@@ -135,7 +145,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        // Restart any tasks that were paused (or not yet started) while the application was inactive.
+        // If the application was previously in the background, optionally refresh the user interface.
 
         RequirementsChecker.checkMinimumWooVersionForDefaultStore()
     }
@@ -336,17 +347,15 @@ extension AppDelegate {
         guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore else {
             return
         }
+        guard let tabBar = AppDelegate.shared.tabBarController,
+            let navigationController = tabBar.selectedViewController as? UINavigationController else {
+                DDLogError("⛔️ Unable to locate navigationController in order to launch the store picker.")
+            return
+        }
 
-        displayStorePicker()
-    }
-
-    /// Displays the Woo Store Picker.
-    ///
-    func displayStorePicker() {
-        let pickerViewController = StorePickerViewController()
-        let navigationController = UINavigationController(rootViewController: pickerViewController)
-
-        window?.rootViewController?.present(navigationController, animated: true, completion: nil)
+        DDLogInfo("💬 Authenticated user does not have a Woo store selected — launching store picker.")
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .standard)
+        storePickerCoordinator?.start()
     }
 
     /// Whenever we're in an Authenticated state, let's Sync all of the WC-Y entities.

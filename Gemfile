@@ -4,8 +4,6 @@ source 'https://rubygems.org' do
   gem 'cocoapods-repo-update', '~> 0.0.4'
   gem 'cocoapods-check'
   gem 'xcpretty-travis-formatter'
-  gem 'danger'
-  gem 'danger-swiftlint'
   gem 'dotenv'
 end
 

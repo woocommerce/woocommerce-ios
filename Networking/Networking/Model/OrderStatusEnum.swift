@@ -1,9 +1,9 @@
 import Foundation
 
 
-/// Represents all of the possible Order Statuses
+/// Represents all of the possible Order Statuses in enum form
 ///
-public enum OrderStatusKey: Decodable, Hashable {
+public enum OrderStatusEnum: Decodable, Hashable {
     case pending
     case processing
     case onHold
@@ -17,7 +17,7 @@ public enum OrderStatusKey: Decodable, Hashable {
 
 /// RawRepresentable Conformance
 ///
-extension OrderStatusKey: RawRepresentable {
+extension OrderStatusEnum: RawRepresentable {
 
     /// Designated Initializer.
     ///
@@ -42,7 +42,7 @@ extension OrderStatusKey: RawRepresentable {
         }
     }
 
-    /// Returns the current Enum Case's Raw Value
+    /// Returns the current Enum Case's Raw Value, also known as the `slug`
     ///
     public var rawValue: String {
         switch self {
@@ -54,31 +54,6 @@ extension OrderStatusKey: RawRepresentable {
         case .completed:            return Keys.completed
         case .refunded:             return Keys.refunded
         case .custom(let payload):  return payload
-        }
-    }
-}
-
-
-/// StringConvertible Conformance
-///
-extension OrderStatusKey: CustomStringConvertible {
-
-    /// Returns a string describing the current OrderStatus Instance
-    /// Custom doesn't return a localized string because the payload arrives at runtime, not buildtime.
-    ///
-    public var description: String {
-        switch self {
-        case .pending:              return NSLocalizedString("Pending", comment: "Pending Order Status")
-        case .processing:           return NSLocalizedString("Processing", comment: "Processing Order Status")
-        case .onHold:               return NSLocalizedString("On Hold", comment: "On Hold Order Status")
-        case .failed:               return NSLocalizedString("Failed", comment: "Failed Order Status")
-        case .cancelled:            return NSLocalizedString("Canceled", comment: "Cancelled Order Status")
-        case .completed:            return NSLocalizedString("Completed", comment: "Completed Order Status")
-        case .refunded:             return NSLocalizedString("Refunded", comment: "Refunded Order Status")
-        case .custom(let payload):
-            return payload
-                .replacingOccurrences(of: "-", with: " ")
-                .capitalized
         }
     }
 }

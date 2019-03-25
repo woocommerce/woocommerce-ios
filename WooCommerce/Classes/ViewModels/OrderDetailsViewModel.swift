@@ -5,11 +5,13 @@ import Yosemite
 
 class OrderDetailsViewModel {
     let order: Order
+    let orderStatus: OrderStatus?
     let currencyFormatter: CurrencyFormatter
     let couponLines: [OrderCouponLine]?
 
-    init(order: Order) {
+    init(order: Order, orderStatus: OrderStatus? = nil) {
         self.order = order
+        self.orderStatus = orderStatus
         self.currencyFormatter = CurrencyFormatter()
         self.couponLines = order.coupons
     }
@@ -26,8 +28,12 @@ class OrderDetailsViewModel {
         shortFormat.dateFormat = "HH:mm:ss"
         shortFormat.timeStyle = .short
         let time = shortFormat.string(from: order.dateModified)
-        return String.localizedStringWithFormat(NSLocalizedString("Updated %@ at %@",
-                                                                  comment: "Order updated summary date. It reads: Updated {medium formatted date} at {short style time}"), order.dateModified.mediumString(), time)
+        return String.localizedStringWithFormat(
+            NSLocalizedString("Updated %@ at %@",
+                              comment: "Order updated summary date. It reads: Updated {medium formatted date} at {short style time}"),
+            order.dateModified.mediumString(),
+            time
+        )
     }
 
     var items: [OrderItem] {
@@ -36,8 +42,10 @@ class OrderDetailsViewModel {
 
     let fulfillTitle = NSLocalizedString("Fulfill order", comment: "Fulfill order button title")
 
+    let trackTitle = NSLocalizedString("Track package", comment: "Track package button title")
+
     var isProcessingPayment: Bool {
-        return order.statusKey == .processing
+        return order.statusKey == OrderStatusEnum.processing.rawValue
     }
 
     let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
@@ -132,7 +140,10 @@ class OrderDetailsViewModel {
             return nil
         }
 
-        return NSLocalizedString("Payment of \(totalValue) received via \(order.paymentMethodTitle)", comment: "Payment of <currency symbol><payment total> received via (payment method title)")
+        return NSLocalizedString(
+            "Payment of \(totalValue) received via \(order.paymentMethodTitle)",
+            comment: "Payment of <currency symbol><payment total> received via (payment method title)"
+        )
     }
 
     /// Order Notes Button

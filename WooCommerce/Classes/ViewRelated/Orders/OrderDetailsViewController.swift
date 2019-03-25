@@ -3,7 +3,7 @@ import Gridicons
 import Contacts
 import MessageUI
 import Yosemite
-import CocoaLumberjack
+import SafariServices
 
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
@@ -22,6 +22,16 @@ class OrderDetailsViewController: UIViewController {
         return refreshControl
     }()
 
+    private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
+                                    viewModel.order.siteID,
+                                    viewModel.order.orderID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)
+
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     /// Indicates if the Billing details should be rendered.
     ///
     private var displaysBillingDetails = false {
@@ -36,6 +46,16 @@ class OrderDetailsViewController: UIViewController {
         return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: viewModel.order)
     }()
 
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     /// Sections to be rendered
     ///
     private var sections = [Section]()
@@ -44,8 +64,7 @@ class OrderDetailsViewController: UIViewController {
     ///
     var viewModel: OrderDetailsViewModel! {
         didSet {
-            reloadSections()
-            reloadTableViewIfPossible()
+            reloadTableViewSectionsAndData()
         }
     }
 
@@ -53,9 +72,20 @@ class OrderDetailsViewController: UIViewController {
     ///
     private var orderNotes: [OrderNote] = [] {
         didSet {
-            reloadSections()
-            reloadTableViewIfPossible()
+            reloadTableViewSectionsAndData()
         }
+    }
+
+    /// Order shipment tracking list
+    ///
+    private var orderTracking: [ShipmentTracking] {
+        return trackingResultsController.fetchedObjects
+    }
+
+    /// Order statuses list
+    ///
+    private var currentSiteStatuses: [OrderStatus] {
+        return statusResultsController.fetchedObjects
     }
 
     /// Haptic Feedback!
@@ -69,14 +99,17 @@ class OrderDetailsViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
-        configureEntityListener()
         registerTableViewCells()
         registerTableViewHeaderFooters()
+        configureEntityListener()
+        configureResultsController()
+        configureTrackingResultsController()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         syncNotes()
+        syncTracking()
     }
 }
 
@@ -95,6 +128,7 @@ private extension OrderDetailsViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
+        tableView.separatorInset = .zero
     }
 
     /// Setup: Navigation
@@ -114,7 +148,8 @@ private extension OrderDetailsViewController {
                 return
             }
 
-            self.viewModel = OrderDetailsViewModel(order: order)
+            let orderStatus = self.lookUpOrderStatus(for: order)
+            self.viewModel = OrderDetailsViewModel(order: order, orderStatus: orderStatus)
         }
 
         entityListener.onDelete = { [weak self] in
@@ -127,14 +162,39 @@ private extension OrderDetailsViewController {
         }
     }
 
-    /// Reloads the tableView, granted that the view has been effectively loaded.
+    /// Setup: Results Controller
     ///
-    func reloadTableViewIfPossible() {
+    private func configureResultsController() {
+        try? statusResultsController.performFetch()
+    }
+
+    func configureTrackingResultsController() {
+        trackingResultsController.onDidChangeContent = { [weak self] in
+            self?.reloadTableViewSectionsAndData()
+        }
+
+        trackingResultsController.onDidResetContent = { [weak self] in
+            self?.reloadTableViewSectionsAndData()
+        }
+
+        try? trackingResultsController.performFetch()
+    }
+
+    /// Reloads the tableView's data, assuming the view has been loaded.
+    ///
+    func reloadTableViewDataIfPossible() {
         guard isViewLoaded else {
             return
         }
 
         tableView.reloadData()
+    }
+
+    /// Reloads the tableView's sections and data.
+    ///
+    func reloadTableViewSectionsAndData() {
+        reloadSections()
+        reloadTableViewDataIfPossible()
     }
 
     /// Registers all of the available TableViewCells
@@ -149,6 +209,7 @@ private extension OrderDetailsViewController {
             OrderNoteTableViewCell.self,
             PaymentTableViewCell.self,
             ProductListTableViewCell.self,
+            OrderTrackingTableViewCell.self,
             SummaryTableViewCell.self
         ]
 
@@ -196,6 +257,15 @@ private extension OrderDetailsViewController {
             return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
         }()
 
+        let tracking: Section? = {
+            guard orderTracking.count > 0 else {
+                return nil
+            }
+
+            let rows: [Row] = Array(repeating: .tracking, count: orderTracking.count)
+            return Section(title: Title.tracking, rows: rows)
+        }()
+
         let customerNote: Section? = {
             guard viewModel.customerNote.isEmpty == false else {
                 return nil
@@ -232,7 +302,7 @@ private extension OrderDetailsViewController {
             return Section(title: Title.notes, rows: rows)
         }()
 
-        sections = [summary, products, customerNote, customerInformation, payment, notes].compactMap { $0 }
+        sections = [summary, products, tracking, customerNote, customerInformation, payment, notes].compactMap { $0 }
     }
 }
 
@@ -244,8 +314,13 @@ private extension OrderDetailsViewController {
     /// Displays a Notice onscreen, indicating that the current Order has been deleted from the Store.
     ///
     func displayOrderDeletedNotice() {
-        let message = String.localizedStringWithFormat(NSLocalizedString("Order %@ has been deleted from your store",
-                                                                         comment: "Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store"), viewModel.order.number)
+        let message = String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Order %@ has been deleted from your store",
+                comment: "Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store"
+            ),
+            viewModel.order.number
+        )
 
         let notice = Notice(title: message, feedbackType: .error)
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
@@ -267,6 +342,11 @@ extension OrderDetailsViewController {
 
         group.enter()
         syncNotes { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncTracking { _ in
             group.leave()
         }
 
@@ -302,6 +382,8 @@ private extension OrderDetailsViewController {
             configurePayment(cell: cell)
         case let cell as ProductListTableViewCell:
             configureProductList(cell: cell)
+        case let cell as OrderTrackingTableViewCell:
+            configureTracking(cell: cell, at: indexPath)
         case let cell as SummaryTableViewCell:
             configureSummary(cell: cell)
         default:
@@ -314,7 +396,9 @@ private extension OrderDetailsViewController {
 
         cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
         cell.name = billingAddress?.fullNameWithCompany
-        cell.address = billingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > billing details. This is where the address would normally display.")
+        cell.address = billingAddress?.formattedPostalAddress ??
+            NSLocalizedString("No address specified.",
+                              comment: "Order details > customer info > billing details. This is where the address would normally display.")
     }
 
     func configureBillingEmail(cell: BillingDetailsTableViewCell) {
@@ -332,8 +416,16 @@ private extension OrderDetailsViewController {
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button
-        cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Email: %@", comment: "Accessibility label that lets the user know the billing customer's email address"), email)
-        cell.accessibilityHint = NSLocalizedString("Composes a new email message to the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear.")
+        cell.accessibilityLabel = String.localizedStringWithFormat(
+            NSLocalizedString("Email: %@",
+                              comment: "Accessibility label that lets the user know the billing customer's email address"),
+            email
+        )
+
+        cell.accessibilityHint = NSLocalizedString(
+            "Composes a new email message to the billing customer.",
+            comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear."
+        )
     }
 
     func configureBillingPhone(cell: BillingDetailsTableViewCell) {
@@ -350,8 +442,18 @@ private extension OrderDetailsViewController {
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button
-        cell.accessibilityLabel = String.localizedStringWithFormat(NSLocalizedString("Phone number: %@", comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."), phoneNumber)
-        cell.accessibilityHint = NSLocalizedString("Prompts with the option to call or message the billing customer.", comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer.")
+        cell.accessibilityLabel = String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Phone number: %@",
+                comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."
+            ),
+            phoneNumber
+        )
+
+        cell.accessibilityHint = NSLocalizedString(
+            "Prompts with the option to call or message the billing customer.",
+            comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer."
+        )
     }
 
     func configureCustomerNote(cell: CustomerNoteTableViewCell) {
@@ -363,8 +465,15 @@ private extension OrderDetailsViewController {
         cell.labelText = viewModel.addNoteText
 
         cell.accessibilityTraits = .button
-        cell.accessibilityLabel = NSLocalizedString("Add a note button", comment: "Accessibility label for the 'Add a note' button")
-        cell.accessibilityHint = NSLocalizedString("Composes a new order note.", comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note.")
+        cell.accessibilityLabel = NSLocalizedString(
+            "Add a note button",
+            comment: "Accessibility label for the 'Add a note' button"
+        )
+
+        cell.accessibilityHint = NSLocalizedString(
+            "Composes a new order note.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note."
+        )
     }
 
     func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
@@ -398,7 +507,16 @@ private extension OrderDetailsViewController {
 
         cell.footerText = viewModel.paymentSummary
 
-        cell.accessibilityElements = [cell.subtotalLabel, cell.subtotalValue, cell.discountLabel, cell.discountValue, cell.shippingLabel, cell.shippingValue, cell.taxesLabel, cell.taxesValue, cell.totalLabel, cell.totalValue]
+        cell.accessibilityElements = [cell.subtotalLabel,
+                                      cell.subtotalValue,
+                                      cell.discountLabel,
+                                      cell.discountValue,
+                                      cell.shippingLabel,
+                                      cell.shippingValue,
+                                      cell.taxesLabel,
+                                      cell.taxesValue,
+                                      cell.totalLabel,
+                                      cell.totalValue]
 
         if let footerText = cell.footerText {
             cell.accessibilityElements?.append(footerText)
@@ -431,19 +549,58 @@ private extension OrderDetailsViewController {
         }
     }
 
+    func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
+        guard let tracking = orderTracking(at: indexPath) else {
+            return
+        }
+
+        cell.topText = tracking.trackingProvider
+        cell.middleText = tracking.trackingNumber
+
+        if let dateShipped = tracking.dateShipped?.toString(dateStyle: .medium, timeStyle: .none) {
+            cell.bottomText = String.localizedStringWithFormat(
+                NSLocalizedString("Shipped %@",
+                                  comment: "Date an item was shipped"),
+                                  dateShipped)
+        } else {
+            cell.bottomText = NSLocalizedString("Not shipped yet",
+                                                comment: "Order details > tracking. " +
+                " This is where the shipping date would normally display.")
+        }
+
+        guard let url = tracking.trackingURL, url.isEmpty == false else {
+            cell.hideActionButton()
+            return
+        }
+
+        cell.showActionButton()
+        cell.actionButtonNormalText = viewModel.trackTitle
+
+        cell.onActionTouchUp = { [ weak self ] in
+            self?.trackingWasPressed(at: indexPath)
+        }
+    }
+
     func configureShippingAddress(cell: CustomerInfoTableViewCell) {
         let shippingAddress = viewModel.order.shippingAddress
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
         cell.name = shippingAddress?.fullNameWithCompany
-        cell.address = shippingAddress?.formattedPostalAddress ?? NSLocalizedString("No address specified.", comment: "Order details > customer info > shipping details. This is where the address would normally display.")
+        cell.address = shippingAddress?.formattedPostalAddress ??
+            NSLocalizedString(
+                "No address specified.",
+                comment: "Order details > customer info > shipping details. This is where the address would normally display."
+        )
     }
 
     func configureSummary(cell: SummaryTableViewCell) {
         cell.title = viewModel.summaryTitle
         cell.dateCreated = viewModel.summaryDateCreated
+        cell.onEditTouchUp = { [weak self] in
+            self?.displayOrderStatusList()
+        }
 
-        cell.display(orderStatusKey: viewModel.order.statusKey)
+        cell.display(viewModel: viewModel)
     }
 }
 
@@ -459,7 +616,24 @@ private extension OrderDetailsViewController {
                 return
             }
 
-            self.viewModel = OrderDetailsViewModel(order: order)
+            self.viewModel = OrderDetailsViewModel(order: order, orderStatus: nil)
+            onCompletion?(nil)
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
+    func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
+        let orderID = viewModel.order.orderID
+        let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: viewModel.order.siteID,
+                                                                    orderID: orderID) { error in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
+                onCompletion?(error)
+                return
+            }
+
+            WooAnalytics.shared.track(.orderTrackingLoaded, withProperties: ["id": orderID])
             onCompletion?(nil)
         }
 
@@ -483,6 +657,14 @@ private extension OrderDetailsViewController {
 
         StoresManager.shared.dispatch(action)
     }
+
+    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
+        for orderStatus in currentSiteStatuses where orderStatus.slug == order.statusKey {
+            return orderStatus
+        }
+
+        return nil
+    }
 }
 
 
@@ -503,6 +685,25 @@ private extension OrderDetailsViewController {
         WooAnalytics.shared.track(.orderDetailFulfillButtonTapped)
         let fulfillViewController = FulfillViewController(order: viewModel.order)
         navigationController?.pushViewController(fulfillViewController, animated: true)
+    }
+
+    func trackingWasPressed(at indexPath: IndexPath) {
+        guard let tracking = orderTracking(at: indexPath) else {
+            return
+        }
+
+        guard let trackingURL = tracking.trackingURL?.addHTTPSSchemeIfNecessary(),
+            let url = URL(string: trackingURL) else {
+            return
+        }
+
+        WooAnalytics.shared.track(.orderDetailTrackPackageButtonTapped)
+        displayWebView(url: url)
+    }
+
+    func displayWebView(url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        present(safariViewController, animated: true, completion: nil)
     }
 }
 
@@ -539,7 +740,8 @@ extension OrderDetailsViewController: UITableViewDataSource {
             return nil
         }
 
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
+        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
             fatalError()
         }
 
@@ -677,9 +879,18 @@ private extension OrderDetailsViewController {
         return orderNotes[noteIndex]
     }
 
+    func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
+        let orderIndex = indexPath.row
+        guard orderTracking.indices.contains(orderIndex) else {
+            return nil
+        }
+
+        return orderTracking[orderIndex]
+    }
+
     /// Checks if copying the row data at the provided indexPath is allowed
     ///
-    /// - Parameter indexPath: indexpath of the row to check
+    /// - Parameter indexPath: index path of the row to check
     /// - Returns: true is copying is allowed, false otherwise
     ///
     func checkIfCopyingIsAllowed(for indexPath: IndexPath) -> Bool {
@@ -775,9 +986,23 @@ private extension OrderDetailsViewController {
 
         UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
         WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": self.viewModel.order.orderID,
-                                                                        "status": self.viewModel.order.statusKey.rawValue,
+                                                                        "status": self.viewModel.order.statusKey,
                                                                         "type": "call"])
 
+    }
+}
+
+
+// MARK: - Present Order Status List
+//
+private extension OrderDetailsViewController {
+    private func displayOrderStatusList() {
+        WooAnalytics.shared.track(.orderDetailOrderStatusEditButtonTapped,
+                                  withProperties: ["status": viewModel.order.statusKey])
+        let statusList = OrderStatusListViewController(order: viewModel.order)
+        let navigationController = UINavigationController(rootViewController: statusList)
+
+        present(navigationController, animated: true)
     }
 }
 
@@ -794,7 +1019,7 @@ extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
 
         displayMessageComposer(for: phoneNumber)
         WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
-                                                                        "status": viewModel.order.statusKey.rawValue,
+                                                                        "status": viewModel.order.statusKey,
                                                                         "type": "sms"])
     }
 
@@ -821,7 +1046,7 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
 
         displayEmailComposer(for: email)
         WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
-                                                                        "status": viewModel.order.statusKey.rawValue,
+                                                                        "status": viewModel.order.statusKey,
                                                                         "type": "email"])
     }
 
@@ -860,11 +1085,13 @@ private extension OrderDetailsViewController {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
         static let productDetailsSegue = "ShowProductListViewController"
+        static let orderStatusListSegue = "ShowOrderStatusListViewController"
     }
 
     enum Title {
         static let product = NSLocalizedString("Product", comment: "Product section title")
         static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
+        static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
         static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
         static let information = NSLocalizedString("Customer Information", comment: "Customer info section title")
         static let payment = NSLocalizedString("Payment", comment: "Payment section title")
@@ -898,6 +1125,7 @@ private extension OrderDetailsViewController {
         case summary
         case productList
         case productDetails
+        case tracking
         case customerNote
         case shippingAddress
         case billingAddress
@@ -915,6 +1143,8 @@ private extension OrderDetailsViewController {
                 return ProductListTableViewCell.reuseIdentifier
             case .productDetails:
                 return BasicTableViewCell.reuseIdentifier
+            case .tracking:
+                return OrderTrackingTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:

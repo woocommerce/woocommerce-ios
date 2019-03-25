@@ -222,8 +222,8 @@ private extension AddTrackingViewController {
     }
 
     func showAllShipmentProviders() {
-        print("=== showing all shipment providers ====")
-        let shippingList = ShippingProvidersViewController()
+        let shippingProviders = ShippingProvidersViewModel()
+        let shippingList = ShippingProvidersViewController(viewModel: shippingProviders)
         navigationController?.pushViewController(shippingList, animated: true)
     }
 }

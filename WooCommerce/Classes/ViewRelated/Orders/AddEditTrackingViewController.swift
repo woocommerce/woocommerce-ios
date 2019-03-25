@@ -2,7 +2,7 @@ import UIKit
 
 /// Presents a tracking provider, tracking number and shipment date
 ///
-final class AddTrackingViewController: UIViewController {
+final class AddEditTrackingViewController: UIViewController {
 
     @IBOutlet private weak var table: UITableView!
 
@@ -23,7 +23,7 @@ final class AddTrackingViewController: UIViewController {
 }
 
 
-private extension AddTrackingViewController {
+private extension AddEditTrackingViewController {
     func configureNavigation() {
         configureTitle()
         configureDismissButton()
@@ -80,7 +80,7 @@ private extension AddTrackingViewController {
 }
 
 
-private extension AddTrackingViewController {
+private extension AddEditTrackingViewController {
     func configureTable() {
         registerTableViewCells()
         configureSections()
@@ -111,7 +111,7 @@ private extension AddTrackingViewController {
 }
 
 
-extension AddTrackingViewController: UITableViewDataSource {
+extension AddEditTrackingViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
     }
@@ -183,7 +183,7 @@ extension AddTrackingViewController: UITableViewDataSource {
     }
 }
 
-extension AddTrackingViewController: UITableViewDelegate {
+extension AddEditTrackingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return CGFloat.leastNonzeroMagnitude
     }
@@ -206,7 +206,7 @@ extension AddTrackingViewController: UITableViewDelegate {
 
 /// Execute user selection
 ///
-private extension AddTrackingViewController {
+private extension AddEditTrackingViewController {
     func executeAction(for row: Row) {
         if row == .deleteTracking {
             deleteCurrentTracking()

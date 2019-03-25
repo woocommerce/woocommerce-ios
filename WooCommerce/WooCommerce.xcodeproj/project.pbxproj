@@ -299,6 +299,8 @@
 		D843D5C822434A08001BFA55 /* AddTrackingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5C622434A08001BFA55 /* AddTrackingViewController.xib */; };
 		D843D5CB22437E59001BFA55 /* EditableValueOneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5C922437E59001BFA55 /* EditableValueOneTableViewCell.swift */; };
 		D843D5CC22437E59001BFA55 /* EditableValueOneTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5CA22437E59001BFA55 /* EditableValueOneTableViewCell.xib */; };
+		D843D5D322485009001BFA55 /* ShippingProvidersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5D122485009001BFA55 /* ShippingProvidersViewController.swift */; };
+		D843D5D422485009001BFA55 /* ShippingProvidersViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5D222485009001BFA55 /* ShippingProvidersViewController.xib */; };
 		D85B8333222FABD1002168F3 /* StatusListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */; };
 		D85B8334222FABD1002168F3 /* StatusListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */; };
 		D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */; };
@@ -649,6 +651,8 @@
 		D843D5C622434A08001BFA55 /* AddTrackingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddTrackingViewController.xib; sourceTree = "<group>"; };
 		D843D5C922437E59001BFA55 /* EditableValueOneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableValueOneTableViewCell.swift; sourceTree = "<group>"; };
 		D843D5CA22437E59001BFA55 /* EditableValueOneTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditableValueOneTableViewCell.xib; sourceTree = "<group>"; };
+		D843D5D122485009001BFA55 /* ShippingProvidersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingProvidersViewController.swift; sourceTree = "<group>"; };
+		D843D5D222485009001BFA55 /* ShippingProvidersViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingProvidersViewController.xib; sourceTree = "<group>"; };
 		D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusListTableViewCell.swift; sourceTree = "<group>"; };
 		D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StatusListTableViewCell.xib; sourceTree = "<group>"; };
 		D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StatusListTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/StatusListTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
@@ -1223,6 +1227,8 @@
 				D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */,
 				D843D5C522434A08001BFA55 /* AddTrackingViewController.swift */,
 				D843D5C622434A08001BFA55 /* AddTrackingViewController.xib */,
+				D843D5D122485009001BFA55 /* ShippingProvidersViewController.swift */,
+				D843D5D222485009001BFA55 /* ShippingProvidersViewController.xib */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -1569,6 +1575,7 @@
 				B5F571B021BF149D0010D1B8 /* o.caf in Resources */,
 				B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */,
 				B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */,
+				D843D5D422485009001BFA55 /* ShippingProvidersViewController.xib in Resources */,
 				B557DA1620979904005962F4 /* CustomerNoteTableViewCell.xib in Resources */,
 				93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
@@ -1865,6 +1872,7 @@
 				747AA08B2107CF8D0047A89B /* TracksProvider.swift in Sources */,
 				CE1EC8F120B8A408009762BF /* OrderNoteTableViewCell.swift in Sources */,
 				CE583A0421076C0100D73C1C /* NewNoteViewController.swift in Sources */,
+				D843D5D322485009001BFA55 /* ShippingProvidersViewController.swift in Sources */,
 				B58B4AC02108FF6100076FDD /* Array+Helpers.swift in Sources */,
 				B5A56BF0219F2CE90065A902 /* VerticalButton.swift in Sources */,
 				748C7780211E18A600814F2C /* OrderStats+Woo.swift in Sources */,

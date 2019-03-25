@@ -27,6 +27,7 @@ private extension AddTrackingViewController {
     func configureNavigation() {
         configureTitle()
         configureDismissButton()
+        configureBackButton()
         configureAddButton()
         configureSections()
     }
@@ -45,6 +46,16 @@ private extension AddTrackingViewController {
                                             action: #selector(dismissButtonTapped))
         leftBarButton.tintColor = .white
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
+    }
+
+    func configureBackButton() {
+        // Don't show the About title in the next-view's back button
+        let backButton = UIBarButtonItem(title: String(),
+                                         style: .plain,
+                                         target: nil,
+                                         action: nil)
+
+        navigationItem.backBarButtonItem = backButton
     }
 
     func configureAddButton() {
@@ -212,6 +223,8 @@ private extension AddTrackingViewController {
 
     func showAllShipmentProviders() {
         print("=== showing all shipment providers ====")
+        let shippingList = ShippingProvidersViewController()
+        navigationController?.pushViewController(shippingList, animated: true)
     }
 }
 

@@ -3,12 +3,24 @@ import UIKit
 /// Presents a tracking provider, tracking number and shipment date
 ///
 final class AddEditTrackingViewController: UIViewController {
+    private let viewModel: AddEditTrackingViewModel
 
     @IBOutlet private weak var table: UITableView!
 
     /// Table Sections to be rendered
     ///
-    private var sections = [Section]()
+    private lazy var sections = {
+        return self.viewModel.sections
+    }()
+
+    init(viewModel: AddEditTrackingViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: type(of: self).nibName, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,12 +41,10 @@ private extension AddEditTrackingViewController {
         configureDismissButton()
         configureBackButton()
         configureAddButton()
-        configureSections()
     }
 
     func configureTitle() {
-        title = NSLocalizedString("Add Tracking",
-            comment: "Add tracking screen - title.")
+        title = viewModel.title
     }
 
     func configureDismissButton() {
@@ -59,12 +69,10 @@ private extension AddEditTrackingViewController {
     }
 
     func configureAddButton() {
-        let addButtonTitle = NSLocalizedString("Add",
-                                               comment: "Add tracking screen - button title to add a tracking")
-        let rightBarButton = UIBarButtonItem(title: addButtonTitle,
+        let rightBarButton = UIBarButtonItem(title: viewModel.primaryActionTitle,
                                              style: .done,
                                              target: self,
-                                             action: #selector(addButtonTapped))
+                                             action: #selector(primaryButtonTapped))
         rightBarButton.tintColor = .white
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         navigationItem.rightBarButtonItem?.isEnabled = false
@@ -74,7 +82,7 @@ private extension AddEditTrackingViewController {
         dismiss(animated: true, completion: nil)
     }
 
-    @objc func addButtonTapped() {
+    @objc func primaryButtonTapped() {
         print("=== add===")
     }
 }
@@ -83,7 +91,6 @@ private extension AddEditTrackingViewController {
 private extension AddEditTrackingViewController {
     func configureTable() {
         registerTableViewCells()
-        configureSections()
 
         table.estimatedRowHeight = Constants.rowHeight
         table.rowHeight = UITableView.automaticDimension
@@ -93,20 +100,7 @@ private extension AddEditTrackingViewController {
     }
 
     func registerTableViewCells() {
-        for row in Row.allCases {
-            table.register(row.type.loadNib(),
-                           forCellReuseIdentifier: row.reuseIdentifier)
-        }
-    }
-
-    func configureSections() {
-        let trackingRows: [Row] = [.shippingProvider,
-                                   .trackingNumber,
-                                   .dateShipped]
-
-        sections = [
-            Section(rows: trackingRows),
-            Section(rows: [.deleteTracking])]
+        viewModel.registerCells(for: table)
     }
 }
 
@@ -130,7 +124,7 @@ extension AddEditTrackingViewController: UITableViewDataSource {
 
     /// Cells currently configured in the order they appear on screen
     ///
-    fileprivate func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+    fileprivate func configure(_ cell: UITableViewCell, for row: AddEditTrackingRow, at indexPath: IndexPath) {
         switch cell {
         case let cell as EditableValueOneTableViewCell where row == .shippingProvider:
             configureShippingProvider(cell: cell)
@@ -139,7 +133,7 @@ extension AddEditTrackingViewController: UITableViewDataSource {
         case let cell as EditableValueOneTableViewCell where row == .dateShipped:
             configureDateShipped(cell: cell)
         case let cell as BasicTableViewCell where row == .deleteTracking:
-            configureDeleteTracking(cell: cell)
+            configureSecondaryAction(cell: cell)
         default:
             fatalError()
         }
@@ -149,7 +143,7 @@ extension AddEditTrackingViewController: UITableViewDataSource {
         return nil
     }
 
-    private func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
+    private func rowAtIndexPath(_ indexPath: IndexPath) -> AddEditTrackingRow {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
@@ -175,11 +169,11 @@ extension AddEditTrackingViewController: UITableViewDataSource {
         cell.accessoryType = .none
     }
 
-    func configureDeleteTracking(cell: BasicTableViewCell) {
+    func configureSecondaryAction(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = StyleManager.destructiveActionColor
-        cell.textLabel?.text = NSLocalizedString("Delete Tracking", comment: "Delete Tracking button title")
+        cell.textLabel?.text = viewModel.secondaryActionTitle
     }
 }
 
@@ -207,56 +201,11 @@ extension AddEditTrackingViewController: UITableViewDelegate {
 /// Execute user selection
 ///
 private extension AddEditTrackingViewController {
-    func executeAction(for row: Row) {
-        if row == .deleteTracking {
-            deleteCurrentTracking()
-        }
-
-        if row == .shippingProvider {
-            showAllShipmentProviders()
-        }
-    }
-
-    func deleteCurrentTracking() {
-        //
-    }
-
-    func showAllShipmentProviders() {
-        let shippingProviders = ShippingProvidersViewModel()
-        let shippingList = ShippingProvidersViewController(viewModel: shippingProviders)
-        navigationController?.pushViewController(shippingList, animated: true)
+    func executeAction(for row: AddEditTrackingRow) {
+        viewModel.executeAction(for: row, sender: self)
     }
 }
 
-
-private struct Section {
-    let rows: [Row]
-}
-
-
-private enum Row: CaseIterable {
-    case shippingProvider
-    case trackingNumber
-    case dateShipped
-    case deleteTracking
-
-    var type: UITableViewCell.Type {
-        switch self {
-        case .shippingProvider:
-            return EditableValueOneTableViewCell.self
-        case .trackingNumber:
-            return EditableValueOneTableViewCell.self
-        case .dateShipped:
-            return EditableValueOneTableViewCell.self
-        case .deleteTracking:
-            return BasicTableViewCell.self
-        }
-    }
-
-    var reuseIdentifier: String {
-        return type.reuseIdentifier
-    }
-}
 
 
 private struct Constants {

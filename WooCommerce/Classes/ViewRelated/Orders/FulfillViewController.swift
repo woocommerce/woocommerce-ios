@@ -343,7 +343,8 @@ extension FulfillViewController: UITableViewDelegate {
 
         switch sections[indexPath.section].rows[indexPath.row] {
         case .trackingAdd:
-            let addTracking = AddEditTrackingViewController()
+            let viewModel = AddTrackingViewModel()
+            let addTracking = AddEditTrackingViewController(viewModel: viewModel)
             let navController = WooNavigationController(rootViewController: addTracking)
             present(navController, animated: true, completion: nil)
         default:

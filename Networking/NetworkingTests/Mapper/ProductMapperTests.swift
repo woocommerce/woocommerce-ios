@@ -59,7 +59,7 @@ class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.downloadLimit, -1)
         XCTAssertEqual(product.downloadExpiry, -1)
 
-        XCTAssertEqual(product.externalURL, "")
+        XCTAssertEqual(product.externalURL, "http://somewhere.com")
         XCTAssertEqual(product.taxStatusKey, "taxable")
         XCTAssertEqual(product.taxClass, "")
 
@@ -72,7 +72,7 @@ class ProductMapperTests: XCTestCase {
         XCTAssertFalse(product.backordered)
 
         XCTAssertTrue(product.soldIndividually)
-        XCTAssertEqual(product.weight, "")
+        XCTAssertEqual(product.weight, "213")
 
         XCTAssertFalse(product.shippingRequired)
         XCTAssertFalse(product.shippingTaxable)
@@ -80,15 +80,15 @@ class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.shippingClassID, 0)
 
         XCTAssertTrue(product.reviewsAllowed)
-        XCTAssertEqual(product.averageRating, "0.00")
-        XCTAssertEqual(product.ratingCount, 0)
+        XCTAssertEqual(product.averageRating, "4.30")
+        XCTAssertEqual(product.ratingCount, 23)
 
         XCTAssertEqual(product.relatedIDs, [31, 22, 369, 414, 56])
         XCTAssertEqual(product.upsellIDs, [99, 1234566])
         XCTAssertEqual(product.crossSellIDs, [1234, 234234, 3])
         XCTAssertEqual(product.parentID, 0)
 
-        XCTAssertEqual(product.purchaseNote, "")
+        XCTAssertEqual(product.purchaseNote, "Thank you!")
         XCTAssertEqual(product.images.count, 1)
 
         XCTAssertEqual(product.attributes.count, 2)

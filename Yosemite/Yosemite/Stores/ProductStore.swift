@@ -281,4 +281,3 @@ extension ProductStore {
         upsertStoredProducts(readOnlyProducts: [readOnlyProduct], in: storage)
     }
 }
-

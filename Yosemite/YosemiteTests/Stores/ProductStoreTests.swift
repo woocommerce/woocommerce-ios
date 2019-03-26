@@ -213,7 +213,7 @@ private extension ProductStoreTests {
                                           position: 1,
                                           visible: true,
                                           variation: true,
-                                          options: ["Purple", "Yellow", "Hot Pink" , "Lime Green", "Teal"])
+                                          options: ["Purple", "Yellow", "Hot Pink", "Lime Green", "Teal"])
         return [attribute1, attribute2].sorted()
     }
 

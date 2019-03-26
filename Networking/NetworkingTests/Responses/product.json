@@ -31,7 +31,7 @@
             "downloads": [],
             "download_limit": -1,
             "download_expiry": -1,
-            "external_url": "",
+            "external_url": "http://somewhere.com",
             "button_text": "",
             "tax_status": "taxable",
             "tax_class": "",
@@ -42,19 +42,19 @@
             "backorders_allowed": false,
             "backordered": false,
             "sold_individually": true,
-            "weight": "",
+            "weight": "213",
             "dimensions": {
-                "length": "",
-                "width": "",
-                "height": ""
+                "length": "12",
+                "width": "33",
+                "height": "54"
             },
             "shipping_required": false,
             "shipping_taxable": false,
             "shipping_class": "",
             "shipping_class_id": 0,
             "reviews_allowed": true,
-            "average_rating": "0.00",
-            "rating_count": 0,
+            "average_rating": "4.30",
+            "rating_count": 23,
             "related_ids": [
                 31,
                 22,
@@ -72,7 +72,7 @@
                 3
             ],
             "parent_id": 0,
-            "purchase_note": "",
+            "purchase_note": "Thank you!",
             "categories": [
                 {
                     "id": 36,

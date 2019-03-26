@@ -470,11 +470,16 @@ extension Product: Comparable {
             lhs.upsellIDs == rhs.upsellIDs &&
             lhs.parentID == rhs.parentID &&
             lhs.purchaseNote == rhs.purchaseNote &&
-            lhs.categories == rhs.categories &&
-            lhs.tags == rhs.tags &&
-            lhs.images == rhs.images &&
-            lhs.attributes == rhs.attributes &&
-            lhs.defaultAttributes == rhs.defaultAttributes &&
+            lhs.categories.count == rhs.categories.count &&
+            lhs.categories.sorted() == rhs.categories.sorted() &&
+            lhs.tags.count == rhs.tags.count &&
+            lhs.tags.sorted() == rhs.tags.sorted() &&
+            lhs.images.count == rhs.images.count &&
+            lhs.images.sorted() == rhs.images.sorted() &&
+            lhs.attributes.count == rhs.attributes.count &&
+            lhs.attributes.sorted() == rhs.attributes.sorted() &&
+            lhs.defaultAttributes.count == rhs.defaultAttributes.count &&
+            lhs.defaultAttributes.sorted() == rhs.defaultAttributes.sorted() &&
             lhs.variations == rhs.variations &&
             lhs.groupedProducts == rhs.groupedProducts &&
             lhs.menuOrder == rhs.menuOrder

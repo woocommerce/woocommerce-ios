@@ -33,6 +33,7 @@ final class ShippingProvidersViewController: UIViewController {
         configureNavigation()
         configureSearchController()
         configureTable()
+        configureViewModel()
     }
 }
 
@@ -78,17 +79,33 @@ private extension ShippingProvidersViewController {
 }
 
 
+private extension ShippingProvidersViewController {
+    func configureViewModel() {
+        viewModel.configureResultsController(table: table)
+    }
+}
+
 
 extension ShippingProvidersViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return viewModel.resultsController.sections.count
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return viewModel.resultsController.sections[section].numberOfObjects
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: StatusListTableViewCell.reuseIdentifier,
+                                                       for: indexPath) as? StatusListTableViewCell else {
+                                                        fatalError()
+        }
+
+        let provider = viewModel.resultsController.object(at: indexPath)
+        cell.textLabel?.text = provider.name
+
+        return cell
     }
-
-
 }
 
 extension ShippingProvidersViewController: UITableViewDelegate {

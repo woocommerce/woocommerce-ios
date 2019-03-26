@@ -3,6 +3,7 @@ import UIKit
 import Yosemite
 
 final class ShippingProvidersViewModel {
+    private let orderID: Int
     private(set) var groups = [ShipmentTrackingProviderGroup]()
 
     let title = NSLocalizedString("Shipping Providers",
@@ -21,6 +22,25 @@ final class ShippingProvidersViewModel {
                                                                        sortedBy: [descriptor])
     }()
 
+    init(orderID: Int) {
+        self.orderID = orderID
+        fetchGroups()
+    }
+
+    private func fetchGroups() {
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID, orderID: orderID) { [weak self] error in
+            if let error = error {
+                self?.presentNotice(error)
+            }
+        }
+
+        StoresManager.shared.dispatch(loadGroupsAction)
+    }
+
     /// Setup: Results Controller
     ///
     func configureResultsController(table: UITableView, completion: @escaping ()-> Void) {
@@ -28,7 +48,7 @@ final class ShippingProvidersViewModel {
             guard let `self` = self else {
                 return
             }
-            print("===== did change content ====")
+
             self.groups = self.resultsController.fetchedObjects
             completion()
         }
@@ -37,11 +57,16 @@ final class ShippingProvidersViewModel {
             guard let `self` = self else {
                 return
             }
-            print("===== did reset content ====")
+
             self.groups = self.resultsController.fetchedObjects
             completion()
         }
-//        resultsController.startForwardingEvents(to: table)
-//        try? resultsController.performFetch()
+
+        resultsController.startForwardingEvents(to: table)
+        try? resultsController.performFetch()
+    }
+
+    private func presentNotice(_ error: Error) {
+        print("==== present error notice ====")
     }
 }

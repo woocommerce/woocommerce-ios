@@ -30,6 +30,7 @@ enum AddEditTrackingRow: CaseIterable {
 }
 
 protocol AddEditTrackingViewModel {
+    var orderID: Int { get }
     var title: String { get }
     var primaryActionTitle: String { get }
     var secondaryActionTitle: String? { get }
@@ -49,6 +50,8 @@ extension AddEditTrackingViewModel {
 }
 
 struct AddTrackingViewModel: AddEditTrackingViewModel {
+    let orderID: Int
+
     let title = NSLocalizedString("Add Tracking",
                                  comment: "Add tracking screen - title.")
 
@@ -74,7 +77,7 @@ struct AddTrackingViewModel: AddEditTrackingViewModel {
     }
 
     private func showAllShipmentProviders(sender: UIViewController) {
-        let shippingProviders = ShippingProvidersViewModel()
+        let shippingProviders = ShippingProvidersViewModel(orderID: orderID)
         let shippingList = ShippingProvidersViewController(viewModel: shippingProviders)
         sender.navigationController?.pushViewController(shippingList, animated: true)
     }
@@ -82,6 +85,8 @@ struct AddTrackingViewModel: AddEditTrackingViewModel {
 
 
 struct EditTrackingViewModel: AddEditTrackingViewModel {
+    let orderID: Int
+    
     let title = NSLocalizedString("Edit Tracking",
                                  comment: "Edit tracking screen - title.")
 
@@ -117,7 +122,7 @@ struct EditTrackingViewModel: AddEditTrackingViewModel {
     }
 
     private func showAllShipmentProviders(sender: UIViewController) {
-        let shippingProviders = ShippingProvidersViewModel()
+        let shippingProviders = ShippingProvidersViewModel(orderID: orderID)
         let shippingList = ShippingProvidersViewController(viewModel: shippingProviders)
         sender.navigationController?.pushViewController(shippingList, animated: true)
     }

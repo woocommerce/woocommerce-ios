@@ -59,7 +59,6 @@ private extension ShippingProvidersViewController {
 
     func configureTable() {
         registerTableViewCells()
-//        configureSections()
 
         table.estimatedRowHeight = Constants.rowHeight
         table.rowHeight = UITableView.automaticDimension
@@ -109,6 +108,10 @@ extension ShippingProvidersViewController: UITableViewDataSource {
         cell.textLabel?.text = provider.name
 
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return viewModel.resultsController.sections[section].name
     }
 }
 

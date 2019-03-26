@@ -390,14 +390,14 @@ private extension PeriodDataViewController {
 
 
     func chartSummaryString() -> String {
-        guard let dataSet = barChartView.barData?.dataSets.first as? BarChartDataSet, dataSet.entryCount > 0 else {
+        guard let dataSet = barChartView.barData?.dataSets.first as? BarChartDataSet, dataSet.count > 0 else {
             return barChartView.noDataText
         }
 
         var chartSummaryString = ""
-        for i in 0..<dataSet.entryCount {
+        for i in 0..<dataSet.count {
             // We are not including zero value bars here to keep things shorter
-            guard let entry = dataSet.entryForIndex(i), entry.y != 0.0 else {
+            guard let entry = dataSet[safe: i], entry.y != 0.0 else {
                 continue
             }
 

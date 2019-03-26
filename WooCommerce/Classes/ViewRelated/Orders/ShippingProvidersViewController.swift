@@ -34,6 +34,7 @@ final class ShippingProvidersViewController: UIViewController {
         configureSearchController()
         configureTable()
         configureViewModel()
+        table.reloadData()
     }
 }
 
@@ -81,7 +82,10 @@ private extension ShippingProvidersViewController {
 
 private extension ShippingProvidersViewController {
     func configureViewModel() {
-        viewModel.configureResultsController(table: table)
+        viewModel.configureResultsController(table: table) { [weak self] in
+            print("==== reloading table ====")
+            self?.table.reloadData()
+        }
     }
 }
 

@@ -3,7 +3,7 @@ import UIKit
 import Yosemite
 
 final class ShippingProvidersViewModel {
-    private(set) var groups = [StorageShipmentTrackingProviderGroup]()
+    private(set) var groups = [ShipmentTrackingProviderGroup]()
 
     let title = NSLocalizedString("Shipping Providers",
                                   comment: "Title of view displaying all available Shipment Tracking Providers")
@@ -23,8 +23,25 @@ final class ShippingProvidersViewModel {
 
     /// Setup: Results Controller
     ///
-    func configureResultsController(table: UITableView) {
-        resultsController.startForwardingEvents(to: table)
-        try? resultsController.performFetch()
+    func configureResultsController(table: UITableView, completion: @escaping ()-> Void) {
+        resultsController.onDidChangeContent = { [weak self] in
+            guard let `self` = self else {
+                return
+            }
+            print("===== did change content ====")
+            self.groups = self.resultsController.fetchedObjects
+            completion()
+        }
+
+        resultsController.onDidResetContent = { [weak self] in
+            guard let `self` = self else {
+                return
+            }
+            print("===== did reset content ====")
+            self.groups = self.resultsController.fetchedObjects
+            completion()
+        }
+//        resultsController.startForwardingEvents(to: table)
+//        try? resultsController.performFetch()
     }
 }

@@ -95,7 +95,8 @@ extension ShippingProvidersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.resultsController.sections[section].numberOfObjects
+        let group = viewModel.resultsController.sections[section]
+        return group.objects.first?.providers.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -104,8 +105,9 @@ extension ShippingProvidersViewController: UITableViewDataSource {
                                                         fatalError()
         }
 
-        let provider = viewModel.resultsController.object(at: indexPath)
-        cell.textLabel?.text = provider.name
+        let group = viewModel.resultsController.sections[indexPath.section]
+        let providerName = group.objects.first?.providers[indexPath.item].name ?? ""
+        cell.textLabel?.text = providerName
 
         return cell
     }

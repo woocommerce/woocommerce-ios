@@ -462,6 +462,10 @@ private extension Section {
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
-        return [products, note, address, tracking].compactMap { $0 }
+        if FeatureFlag.manualShipmentTracking.enabled {
+            return [products, note, address, tracking].compactMap { $0 }
+        } else {
+            return [products, note, address].compactMap { $0 }
+        }
     }
 }

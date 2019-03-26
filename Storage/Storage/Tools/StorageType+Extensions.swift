@@ -185,4 +185,39 @@ public extension StorageType {
         let predicate = NSPredicate(format: "siteID = %ld AND productID = %ld", siteID, productID)
         return firstObject(ofType: Product.self, matching: predicate)
     }
+
+    /// Retrieves the Stored Product Attribute.
+    ///
+    public func loadProductAttribute(attributeID: Int) -> ProductAttribute? {
+        let predicate = NSPredicate(format: "attributeID = %ld", attributeID)
+        return firstObject(ofType: ProductAttribute.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored Product Default Attribute.
+    ///
+    public func loadProductDefaultAttribute(defaultAttributeID: Int) -> ProductDefaultAttribute? {
+        let predicate = NSPredicate(format: "attributeID = %ld", defaultAttributeID)
+        return firstObject(ofType: ProductDefaultAttribute.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored Product Image.
+    ///
+    public func loadProductImage(imageID: Int) -> ProductImage? {
+        let predicate = NSPredicate(format: "imageID = %ld", imageID)
+        return firstObject(ofType: ProductImage.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored Product Category.
+    ///
+    public func loadProductCategory(categoryID: Int) -> ProductCategory? {
+        let predicate = NSPredicate(format: "categoryID = %ld", categoryID)
+        return firstObject(ofType: ProductCategory.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored Product Tag.
+    ///
+    public func loadProductTag(tagID: Int) -> ProductTag? {
+        let predicate = NSPredicate(format: "tagID = %ld", tagID)
+        return firstObject(ofType: ProductTag.self, matching: predicate)
+    }
 }

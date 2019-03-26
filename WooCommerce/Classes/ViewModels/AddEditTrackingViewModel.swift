@@ -86,7 +86,7 @@ struct AddTrackingViewModel: AddEditTrackingViewModel {
 
 struct EditTrackingViewModel: AddEditTrackingViewModel {
     let orderID: Int
-    
+
     let title = NSLocalizedString("Edit Tracking",
                                  comment: "Edit tracking screen - title.")
 

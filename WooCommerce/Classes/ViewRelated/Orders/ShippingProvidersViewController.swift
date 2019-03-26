@@ -39,7 +39,7 @@ final class ShippingProvidersViewController: UIViewController {
 }
 
 
-// MARK : - Configure UI
+// MARK: - Configure UI
 //
 private extension ShippingProvidersViewController {
     func configureNavigation() {
@@ -71,7 +71,7 @@ private extension ShippingProvidersViewController {
     ///
     func registerTableViewCells() {
         let cells = [StatusListTableViewCell.self]
-        
+
         for cell in cells {
             table.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
@@ -116,7 +116,7 @@ extension ShippingProvidersViewController: UITableViewDataSource {
 }
 
 extension ShippingProvidersViewController: UITableViewDelegate {
-    
+
 }
 
 extension ShippingProvidersViewController: UISearchResultsUpdating {

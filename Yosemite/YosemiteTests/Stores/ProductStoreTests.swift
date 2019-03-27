@@ -273,7 +273,43 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    // MARK: - upsert tests
+
+    // MARK: - ProductStore.upsertStoredProduct
+
+    /// Verifies that `ProductStore.upsertStoredProduct` does not produce duplicate entries.
+    ///
+    func testUpdateStoredProductEffectivelyUpdatesPreexistantProduct() {
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductImage.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 9)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
+
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProductMutated(), in: viewStorage)
+        let storageProduct1 = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)
+        XCTAssertEqual(storageProduct1?.toReadOnly(), sampleProductMutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 5)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 1)
+    }
+
 
     /// Verifies that Inoccuous Upsert OP(s) performed in Derived Contexts **DO NOT** trigger Refresh Events in the
     /// main thread.
@@ -448,6 +484,123 @@ private extension ProductStoreTests {
         let defaultAttribute2 = ProductDefaultAttribute(attributeID: 0, name: "Size", option: "Medium")
 
         return [defaultAttribute1, defaultAttribute2]
+    }
+
+    func sampleProductMutated() -> Networking.Product {
+        return Product(siteID: sampleSiteID,
+                       productID: sampleProductID,
+                       name: "Book the Green Room",
+                       slug: "book-the-green-room",
+                       permalink: "https://example.com/product/book-the-green-room/",
+                       dateCreated: date(with: "2019-02-19T17:33:31"),
+                       dateModified: date(with: "2019-02-19T17:48:01"),
+                       productTypeKey: "booking",
+                       statusKey: "publish",
+                       featured: false,
+                       catalogVisibilityKey: "visible",
+                       fullDescription: "<p>This is the party room!</p>\n",
+                       briefDescription: """
+                           [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
+                           We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us \
+                           know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests \
+                           for $100.</p>\n
+                           """,
+                       sku: "345",
+                       price: "123",
+                       regularPrice: "",
+                       salePrice: "",
+                       onSale: true,
+                       purchasable: false,
+                       totalSales: 66,
+                       virtual: false,
+                       downloadable: true,
+                       downloadLimit: -1,
+                       downloadExpiry: -1,
+                       externalURL: "http://somewhere.com.net",
+                       taxStatusKey: "taxable",
+                       taxClass: "",
+                       manageStock: true,
+                       stockQuantity: nil,
+                       stockStatusKey: "nostock",
+                       backordersKey: "yes",
+                       backordersAllowed: true,
+                       backordered: true,
+                       soldIndividually: false,
+                       weight: "777",
+                       dimensions: sampleDimensionsMutated(),
+                       shippingRequired: true,
+                       shippingTaxable: false,
+                       shippingClass: "",
+                       shippingClassID: 0,
+                       reviewsAllowed: false,
+                       averageRating: "1.30",
+                       ratingCount: 76,
+                       relatedIDs: [31, 22, 369],
+                       upsellIDs: [99, 123, 234, 444],
+                       crossSellIDs: [1234, 234234, 999, 989],
+                       parentID: 444,
+                       purchaseNote: "Whatever!",
+                       categories: sampleCategoriesMutated(),
+                       tags: sampleTagsMutated(),
+                       images: sampleImagesMutated(),
+                       attributes: sampleAttributesMutated(),
+                       defaultAttributes: sampleDefaultAttributesMutated(),
+                       variations: [],
+                       groupedProducts: [111, 222, 333],
+                       menuOrder: 0)
+    }
+
+    func sampleDimensionsMutated() -> Networking.ProductDimensions {
+        return ProductDimensions(length: "12", width: "33", height: "54")
+    }
+
+    func sampleCategoriesMutated() -> [Networking.ProductCategory] {
+        let category1 = ProductCategory(categoryID: 36, name: "Events", slug: "events")
+        let category2 = ProductCategory(categoryID: 362, name: "Other Stuff", slug: "other")
+        return [category1, category2]
+    }
+
+    func sampleTagsMutated() -> [Networking.ProductTag] {
+        let tag1 = ProductTag(tagID: 37, name: "something", slug: "something")
+        let tag2 = ProductTag(tagID: 38, name: "party room", slug: "party-room")
+        let tag3 = ProductTag(tagID: 39, name: "3000", slug: "3000")
+        let tag4 = ProductTag(tagID: 45, name: "birthday party", slug: "birthday-party")
+        let tag5 = ProductTag(tagID: 95, name: "yep", slug: "yep")
+
+        return [tag1, tag2, tag3, tag4, tag5]
+    }
+
+    func sampleImagesMutated() -> [Networking.ProductImage] {
+        let image1 = ProductImage(imageID: 19,
+                                  dateCreated: date(with: "2018-01-26T21:49:45"),
+                                  dateModified: date(with: "2018-01-26T21:50:11"),
+                                  src: "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png",
+                                  name: "Vneck Tshirt",
+                                  alt: "")
+        let image2 = ProductImage(imageID: 999,
+                                  dateCreated: date(with: "2019-01-26T21:44:45"),
+                                  dateModified: date(with: "2019-01-26T21:54:11"),
+                                  src: "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/test.png",
+                                  name: "ZZZTest Image",
+                                  alt: "")
+        return [image1, image2]
+    }
+
+    func sampleAttributesMutated() -> [Networking.ProductAttribute] {
+        let attribute1 = ProductAttribute(attributeID: 0,
+                                          name: "Color",
+                                          position: 0,
+                                          visible: false,
+                                          variation: false,
+                                          options: ["Purple", "Yellow"])
+
+        return [attribute1]
+    }
+
+    func sampleDefaultAttributesMutated() -> [Networking.ProductDefaultAttribute] {
+        let defaultAttribute1 = ProductDefaultAttribute(attributeID: 0, name: "Color", option: "Purple")
+
+        return [defaultAttribute1]
     }
 
     func date(with dateString: String) -> Date {

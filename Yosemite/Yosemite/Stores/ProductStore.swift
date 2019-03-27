@@ -170,7 +170,7 @@ private extension ProductStore {
 
         // Now, remove any objects that exist in storageProduct.attributes but not in readOnlyProduct.attributes
         storageProduct.attributes?.forEach { storageAttribute in
-            if readOnlyProduct.attributes.first(where: { $0.attributeID == storageAttribute.attributeID } ) == nil {
+            if readOnlyProduct.attributes.first(where: { $0.attributeID == storageAttribute.attributeID && $0.name == storageAttribute.name } ) == nil {
                 storageProduct.removeFromAttributes(storageAttribute)
                 storage.deleteObject(storageAttribute)
             }
@@ -194,7 +194,8 @@ private extension ProductStore {
 
         // Now, remove any objects that exist in storageProduct.defaultAttributes but not in readOnlyProduct.defaultAttributes
         storageProduct.defaultAttributes?.forEach { storageDefaultAttribute in
-            if readOnlyProduct.defaultAttributes.first(where: { $0.attributeID == storageDefaultAttribute.attributeID } ) == nil {
+            if readOnlyProduct.defaultAttributes.first(where:
+                { $0.attributeID == storageDefaultAttribute.attributeID && $0.name == storageDefaultAttribute.name } ) == nil {
                 storageProduct.removeFromDefaultAttributes(storageDefaultAttribute)
                 storage.deleteObject(storageDefaultAttribute)
             }

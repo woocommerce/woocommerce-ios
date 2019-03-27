@@ -159,7 +159,7 @@ private extension ProductStore {
     func handleProductAttributes(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         // Upsert the attributes from the read-only product
         for readOnlyAttribute in readOnlyProduct.attributes {
-            if let existingStorageAttribute = storage.loadProductAttribute(attributeID: readOnlyAttribute.attributeID) {
+            if let existingStorageAttribute = storage.loadProductAttribute(attributeID: readOnlyAttribute.attributeID, name: readOnlyAttribute.name) {
                 existingStorageAttribute.update(with: readOnlyAttribute)
             } else {
                 let newStorageAttribute = storage.insertNewObject(ofType: Storage.ProductAttribute.self)
@@ -182,7 +182,8 @@ private extension ProductStore {
     func handleProductDefaultAttributes(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         // Upsert the default attributes from the read-only product
         for readOnlyDefaultAttribute in readOnlyProduct.defaultAttributes {
-            if let existingStorageDefaultAttribute = storage.loadProductDefaultAttribute(defaultAttributeID: readOnlyDefaultAttribute.attributeID) {
+            if let existingStorageDefaultAttribute = storage.loadProductDefaultAttribute(defaultAttributeID: readOnlyDefaultAttribute.attributeID,
+                                                                                         name: readOnlyDefaultAttribute.name ?? "") {
                 existingStorageDefaultAttribute.update(with: readOnlyDefaultAttribute)
             } else {
                 let newStorageDefaultAttribute = storage.insertNewObject(ofType: Storage.ProductDefaultAttribute.self)

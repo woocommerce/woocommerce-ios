@@ -188,15 +188,19 @@ public extension StorageType {
 
     /// Retrieves the Stored Product Attribute.
     ///
-    public func loadProductAttribute(attributeID: Int) -> ProductAttribute? {
-        let predicate = NSPredicate(format: "attributeID = %ld", attributeID)
+    /// Note: WC attribute ID's often have an ID of `0`, so we need to also look them up by name 😏
+    ///
+    public func loadProductAttribute(attributeID: Int, name: String) -> ProductAttribute? {
+        let predicate = NSPredicate(format: "attributeID = %ld AND name ==[c] %@", attributeID, name)
         return firstObject(ofType: ProductAttribute.self, matching: predicate)
     }
 
     /// Retrieves the Stored Product Default Attribute.
     ///
-    public func loadProductDefaultAttribute(defaultAttributeID: Int) -> ProductDefaultAttribute? {
-        let predicate = NSPredicate(format: "attributeID = %ld", defaultAttributeID)
+    /// Note: WC default attribute ID's often have an ID of `0`, so we need to also look them up by name 😏
+    ///
+    public func loadProductDefaultAttribute(defaultAttributeID: Int, name: String) -> ProductDefaultAttribute? {
+        let predicate = NSPredicate(format: "attributeID = %ld AND name ==[c] %@", defaultAttributeID, name)
         return firstObject(ofType: ProductDefaultAttribute.self, matching: predicate)
     }
 

@@ -74,6 +74,34 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `ProductAction.synchronizeProducts` effectively persists all of the product fields
+    /// correctly across all of the related Prodcut objects (tags, categories, attributes, etc).
+    ///
+    func testRetrieveProdcutsEffectivelyPersistsProductFieldsAndRelatedObjects() {
+        let expectation = self.expectation(description: "Persist product list")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProduct = sampleProduct()
+
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+            XCTAssertNil(error)
+
+            let predicate = NSPredicate(format: "productID = %ld", remoteProduct.productID)
+            let storedProduct = self.viewStorage.firstObject(ofType: Storage.Product.self, matching: predicate)
+            let readOnlyStoredProduct = storedProduct?.toReadOnly()
+            XCTAssertNotNil(storedProduct)
+            XCTAssertNotNil(readOnlyStoredProduct)
+            XCTAssertEqual(readOnlyStoredProduct, remoteProduct)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
 
     // MARK: - ProductAction.retrieveProduct
 

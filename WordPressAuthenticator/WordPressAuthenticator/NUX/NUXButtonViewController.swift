@@ -169,7 +169,7 @@ extension NUXButtonViewController {
     /// Returns a new NUXButtonViewController Instance
     ///
     public class func instance() -> NUXButtonViewController {
-        let storyboard = UIStoryboard(name: "NUXButtonView", bundle: Bundle(for: self))
+        let storyboard = UIStoryboard(name: "NUXButtonView", bundle: WordPressAuthenticator.mainBundle)
         guard let buttonViewController = storyboard.instantiateViewController(withIdentifier: "ButtonView") as? NUXButtonViewController else {
             fatalError()
         }

@@ -310,6 +310,31 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 1)
     }
 
+    /// Verifies that `ProductStore.upsertStoredProduct` effectively inserts a new Product, with the specified payload.
+    ///
+    func testUpdateStoredOrderEffectivelyPersistsNewOrder() {
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProduct = sampleProduct()
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductImage.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+        productStore.upsertStoredProduct(readOnlyProduct: remoteProduct, in: viewStorage)
+
+        let storageProduct = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)
+        XCTAssertEqual(storageProduct?.toReadOnly(), remoteProduct)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 9)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
+    }
 
     /// Verifies that Inoccuous Upsert OP(s) performed in Derived Contexts **DO NOT** trigger Refresh Events in the
     /// main thread.

@@ -136,10 +136,10 @@ class ProductMapperTests: XCTestCase {
         XCTAssertNotNil(tags)
         XCTAssertEqual(tags?.count, 9)
 
-        let tag = tags?[2]
-        XCTAssertEqual(tag?.tagID, 45)
-        XCTAssertEqual(tag?.name, "birthday party")
-        XCTAssertEqual(tag?.slug, "birthday-party")
+        let tag = tags?[1]
+        XCTAssertEqual(tag?.tagID, 38)
+        XCTAssertEqual(tag?.name, "party room")
+        XCTAssertEqual(tag?.slug, "party-room")
     }
 
     /// Test that product images are properly mapped.
@@ -178,17 +178,17 @@ class ProductMapperTests: XCTestCase {
         }
 
         XCTAssertEqual(attribute.attributeID, 0)
-        XCTAssertEqual(attribute.name, "Size")
-        XCTAssertEqual(attribute.position, 0)
+        XCTAssertEqual(attribute.name, "Color")
+        XCTAssertEqual(attribute.position, 1)
         XCTAssertTrue(attribute.visible)
         XCTAssertTrue(attribute.variation)
 
         let option1 = attribute.options[0]
         let option2 = attribute.options[1]
         let option3 = attribute.options[2]
-        XCTAssertEqual(option1, "Small")
-        XCTAssertEqual(option2, "Medium")
-        XCTAssertEqual(option3, "Large")
+        XCTAssertEqual(option1, "Purple")
+        XCTAssertEqual(option2, "Yellow")
+        XCTAssertEqual(option3, "Hot Pink")
     }
 
     /// Test that the default product attributes map properly
@@ -202,12 +202,12 @@ class ProductMapperTests: XCTestCase {
         let attribute2 = defaultAttributes?[1]
 
         XCTAssertEqual(attribute1?.attributeID, 0)
-        XCTAssertEqual(attribute1?.name, "Size")
-        XCTAssertEqual(attribute1?.option, "Medium")
+        XCTAssertEqual(attribute1?.name, "Color")
+        XCTAssertEqual(attribute1?.option, "Purple")
 
         XCTAssert(attribute2?.attributeID == 0)
-        XCTAssertEqual(attribute2?.name, "Color")
-        XCTAssertEqual(attribute2?.option, "Purple")
+        XCTAssertEqual(attribute2?.name, "Size")
+        XCTAssertEqual(attribute2?.option, "Medium")
     }
 }
 

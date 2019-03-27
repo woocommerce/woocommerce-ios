@@ -83,9 +83,14 @@
             ],
             "tags": [
                 {
-                    "id": 40,
-                    "name": "20+",
-                    "slug": "20"
+                    "id": 37,
+                    "name": "room",
+                    "slug": "room"
+                },
+                {
+                    "id": 38,
+                    "name": "party room",
+                    "slug": "party-room"
                 },
                 {
                     "id": 39,
@@ -93,14 +98,9 @@
                     "slug": "30"
                 },
                 {
-                    "id": 45,
-                    "name": "birthday party",
-                    "slug": "birthday-party"
-                },
-                {
-                    "id": 44,
-                    "name": "graduation",
-                    "slug": "graduation"
+                    "id": 40,
+                    "name": "20+",
+                    "slug": "20"
                 },
                 {
                     "id": 41,
@@ -118,14 +118,14 @@
                     "slug": "parties"
                 },
                 {
-                    "id": 38,
-                    "name": "party room",
-                    "slug": "party-room"
+                    "id": 44,
+                    "name": "graduation",
+                    "slug": "graduation"
                 },
                 {
-                    "id": 37,
-                    "name": "room",
-                    "slug": "room"
+                    "id": 45,
+                    "name": "birthday party",
+                    "slug": "birthday-party"
                 }
             ],
             "images": [
@@ -143,18 +143,6 @@
             "attributes": [
                 {
                     "id": 0,
-                    "name": "Size",
-                    "position": 0,
-                    "visible": true,
-                    "variation": true,
-                    "options": [
-                        "Small",
-                        "Medium",
-                        "Large"
-                    ]
-                },
-                {
-                    "id": 0,
                     "name": "Color",
                     "position": 1,
                     "visible": true,
@@ -166,18 +154,30 @@
                         "Lime Green",
                         "Teal"
                     ]
+                },
+                {
+                    "id": 0,
+                    "name": "Size",
+                    "position": 0,
+                    "visible": true,
+                    "variation": true,
+                    "options": [
+                        "Small",
+                        "Medium",
+                        "Large"
+                    ]
                 }
             ],
             "default_attributes": [
                 {
                     "id": 0,
-                    "name": "Size",
-                    "option": "Medium"
+                    "name": "Color",
+                    "option": "Purple"
                 },
                 {
                     "id": 0,
-                    "name": "Color",
-                    "option": "Purple"
+                    "name": "Size",
+                    "option": "Medium"
                 }
             ],
             "variations": [

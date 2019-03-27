@@ -214,6 +214,113 @@ class ProductStoreTests: XCTestCase {
         productStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that whenever a `ProductAction.retrieveProduct` action results in a response with statusCode = 404, the local entity
+    /// is obliterated from existence.
+    ///
+    func testRetrieveSingleProductResultingInStatusCode404CausesTheStoredProductToGetDeleted() {
+        let expectation = self.expectation(description: "Retrieve single product empty response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+
+        network.simulateError(requestUrlSuffix: "products/282", error: NetworkError.notFound)
+        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(product)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - ProductAction.resetStoredProducts
+
+    /// Verifies that `ProductAction.resetStoredProducts` nukes the Products from Storage
+    ///
+    func testResetStoredProductsEffectivelyNukesTheProductsCache() {
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 9)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
+
+        let expectation = self.expectation(description: "Stored Products Reset")
+        let action = ProductAction.resetStoredProducts() {
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductImage.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - upsert tests
+
+    /// Verifies that Inoccuous Upsert OP(s) performed in Derived Contexts **DO NOT** trigger Refresh Events in the
+    /// main thread.
+    ///
+    /// This translates effectively into: Ensure that performing update OP's that don't really change anything, do not
+    /// end up causing UI refresh OP's in the main thread.
+    ///
+    func testInoccuousUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
+        // Stack
+        let viewContext = storageManager.persistentContainer.viewContext
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let entityListener = EntityListener(viewContext: viewContext, readOnlyEntity: sampleProduct())
+
+        // Track Events: Upsert == 1 / Delete == 0
+        var numberOfUpsertEvents = 0
+        entityListener.onUpsert = { upserted in
+            numberOfUpsertEvents += 1
+        }
+
+        // We expect *never* to get a deletion event
+        entityListener.onDelete = {
+            XCTFail()
+        }
+
+        // Initial save: This should trigger *ONE* Upsert event
+        let backgroundSaveExpectation = expectation(description: "Retrieve product empty response")
+        let derivedContext = storageManager.newDerivedStorage()
+
+        derivedContext.perform {
+            productStore.upsertStoredProduct(readOnlyProduct: self.sampleProduct(), in: derivedContext)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedContext) {
+
+            // Secondary Save: Expect ZERO new Upsert Events
+            derivedContext.perform {
+                productStore.upsertStoredProduct(readOnlyProduct: self.sampleProduct(), in: derivedContext)
+            }
+
+            self.storageManager.saveDerivedType(derivedStorage: derivedContext) {
+                XCTAssertEqual(numberOfUpsertEvents, 1)
+                backgroundSaveExpectation.fulfill()
+            }
+        }
+
+        wait(for: [backgroundSaveExpectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 
@@ -295,16 +402,17 @@ private extension ProductStoreTests {
     }
 
     func sampleTags() -> [Networking.ProductTag] {
-        let tag1 = ProductTag(tagID: 40, name: "20+", slug: "20")
-        let tag2 = ProductTag(tagID: 39, name: "30", slug: "30")
-        let tag3 = ProductTag(tagID: 45, name: "birthday party", slug: "birthday-party")
-        let tag4 = ProductTag(tagID: 44, name: "graduation", slug: "graduation")
+        let tag1 = ProductTag(tagID: 37, name: "room", slug: "room")
+        let tag2 = ProductTag(tagID: 38, name: "party room", slug: "party-room")
+        let tag3 = ProductTag(tagID: 39, name: "30", slug: "30")
+        let tag4 = ProductTag(tagID: 40, name: "20+", slug: "20")
         let tag5 = ProductTag(tagID: 41, name: "meeting room", slug: "meeting-room")
         let tag6 = ProductTag(tagID: 42, name: "meetings", slug: "meetings")
         let tag7 = ProductTag(tagID: 43, name: "parties", slug: "parties")
-        let tag8 = ProductTag(tagID: 38, name: "party room", slug: "party-room")
-        let tag9 = ProductTag(tagID: 37, name: "room", slug: "room")
-        return [tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9].sorted()
+        let tag8 = ProductTag(tagID: 44, name: "graduation", slug: "graduation")
+        let tag9 = ProductTag(tagID: 45, name: "birthday party", slug: "birthday-party")
+
+        return [tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9]
     }
 
     func sampleImages() -> [Networking.ProductImage] {
@@ -319,26 +427,27 @@ private extension ProductStoreTests {
 
     func sampleAttributes() -> [Networking.ProductAttribute] {
         let attribute1 = ProductAttribute(attributeID: 0,
+                                          name: "Color",
+                                          position: 1,
+                                          visible: true,
+                                          variation: true,
+                                          options: ["Purple", "Yellow", "Hot Pink", "Lime Green", "Teal"])
+
+        let attribute2 = ProductAttribute(attributeID: 0,
                                           name: "Size",
                                           position: 0,
                                           visible: true,
                                           variation: true,
                                           options: ["Small", "Medium", "Large"])
 
-        let attribute2 = ProductAttribute(attributeID: 0,
-                                          name: "Color",
-                                          position: 1,
-                                          visible: true,
-                                          variation: true,
-                                          options: ["Purple", "Yellow", "Hot Pink", "Lime Green", "Teal"])
-        return [attribute1, attribute2].sorted()
+        return [attribute1, attribute2]
     }
 
     func sampleDefaultAttributes() -> [Networking.ProductDefaultAttribute] {
-        let defaultAttribute1 = ProductDefaultAttribute(attributeID: 0, name: "Size", option: "Medium")
-        let defaultAttribute2 = ProductDefaultAttribute(attributeID: 0, name: "Color", option: "Purple")
+        let defaultAttribute1 = ProductDefaultAttribute(attributeID: 0, name: "Color", option: "Purple")
+        let defaultAttribute2 = ProductDefaultAttribute(attributeID: 0, name: "Size", option: "Medium")
 
-        return [defaultAttribute1, defaultAttribute2].sorted()
+        return [defaultAttribute1, defaultAttribute2]
     }
 
     func date(with dateString: String) -> Date {

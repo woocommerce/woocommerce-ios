@@ -145,9 +145,9 @@ class ProductListMapperTests: XCTestCase {
         XCTAssert(tags.count == 9)
 
         let tag = tags[2]
-        XCTAssertEqual(tag.tagID, 45)
-        XCTAssertEqual(tag.name, "birthday party")
-        XCTAssertEqual(tag.slug, "birthday-party")
+        XCTAssertEqual(tag.tagID, 39)
+        XCTAssertEqual(tag.name, "30")
+        XCTAssertEqual(tag.slug, "30")
     }
 
     /// Test that product images are properly mapped.

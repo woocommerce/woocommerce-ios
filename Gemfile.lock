@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/wordpress-mobile/release-toolkit
-  revision: 973ac23dbc092806209d4659f6bb67bf031ad8d5
-  ref: 973ac23dbc092806209d4659f6bb67bf031ad8d5
+  revision: 074bac6f11ae07a293d73eed71eede716480ef6e
+  tag: 0.2.0
   specs:
-    fastlane-plugin-wpmreleasetoolkit (0.1.9)
+    fastlane-plugin-wpmreleasetoolkit (0.2.0)
       diffy
       git
       nokogiri
@@ -159,7 +159,7 @@ GEM
     nap (1.1.0)
     naturally (2.2.0)
     netrc (0.11.0)
-    nokogiri (1.10.1)
+    nokogiri (1.10.2)
       mini_portile2 (~> 2.4.0)
     octokit (4.13.0)
       sawyer (~> 0.8.0, >= 0.5.3)

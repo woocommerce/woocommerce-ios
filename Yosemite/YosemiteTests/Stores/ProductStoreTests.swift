@@ -52,6 +52,7 @@ class ProductStoreTests: XCTestCase {
         network = MockupNetwork()
     }
 
+
     // MARK: - ProductAction.synchronizeProducts
 
     /// Verifies that ProductAction.synchronizeProducts effectively persists any retrieved products.
@@ -75,7 +76,7 @@ class ProductStoreTests: XCTestCase {
     }
 
     /// Verifies that `ProductAction.synchronizeProducts` effectively persists all of the product fields
-    /// correctly across all of the related Prodcut objects (tags, categories, attributes, etc).
+    /// correctly across all of the related `Product` entities (tags, categories, attributes, etc).
     ///
     func testRetrieveProdcutsEffectivelyPersistsProductFieldsAndRelatedObjects() {
         let expectation = self.expectation(description: "Persist product list")
@@ -88,8 +89,7 @@ class ProductStoreTests: XCTestCase {
         let action = ProductAction.synchronizeProducts(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertNil(error)
 
-            let predicate = NSPredicate(format: "productID = %ld", remoteProduct.productID)
-            let storedProduct = self.viewStorage.firstObject(ofType: Storage.Product.self, matching: predicate)
+            let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
             XCTAssertNotNil(storedProduct)
             XCTAssertNotNil(readOnlyStoredProduct)
@@ -102,10 +102,41 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that ProductAction.synchronizeProducts returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveProdcutsReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve products error response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "products", filename: "generic_error")
+        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that ProductAction.synchronizeProducts returns an error whenever there is no backend response.
+    ///
+    func testRetrieveProdcutsReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve products empty response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
 
     // MARK: - ProductAction.retrieveProduct
 
-    /// Verifies that OrderAction.retrieveOrder returns the expected Order.
+    /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product`.
     ///
     func testRetrieveSingleProductReturnsExpectedFields() {
         let expectation = self.expectation(description: "Retrieve single product")
@@ -125,6 +156,64 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `ProductAction.retrieveProduct` effectively persists all of the remote product fields
+    /// correctly across all of the related `Product` entities (tags, categories, attributes, etc).
+    ///
+    func testRetrieveSingleProductEffectivelyPersistsProductFieldsAndRelatedObjects() {
+        let expectation = self.expectation(description: "Persist single product")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProduct = sampleProduct()
+
+        network.simulateResponse(requestUrlSuffix: "products/282", filename: "product")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
+            XCTAssertNotNil(product)
+            XCTAssertNil(error)
+
+            let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleProductID)
+            let readOnlyStoredProduct = storedProduct?.toReadOnly()
+            XCTAssertNotNil(storedProduct)
+            XCTAssertNotNil(readOnlyStoredProduct)
+            XCTAssertEqual(readOnlyStoredProduct, remoteProduct)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.retrieveProduct` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveSingleProdcutReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve single product error response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "products/282", filename: "generic_error")
+        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.retrieveProduct` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveSingleProdcutReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve single product empty response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 

@@ -12,7 +12,8 @@ final class ShippingProvidersViewModel {
     ///
     private(set) lazy var resultsController: ResultsController<StorageShipmentTrackingProviderGroup> = {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let predicate = NSPredicate(format: "siteID == %lld",
+                                    StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
         return ResultsController<StorageShipmentTrackingProviderGroup>(storageManager: storageManager,
@@ -31,7 +32,8 @@ final class ShippingProvidersViewModel {
             return
         }
 
-        let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID, orderID: orderID) { [weak self] error in
+        let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID,
+                                                                                   orderID: orderID) { [weak self] error in
             if let error = error {
                 self?.presentNotice(error)
             }
@@ -42,7 +44,7 @@ final class ShippingProvidersViewModel {
 
     /// Setup: Results Controller
     ///
-    func configureResultsController(table: UITableView, completion: @escaping ()-> Void) {
+    func configureResultsController(table: UITableView) {
         resultsController.startForwardingEvents(to: table)
         try? resultsController.performFetch()
     }

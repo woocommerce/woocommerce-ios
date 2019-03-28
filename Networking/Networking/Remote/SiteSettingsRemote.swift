@@ -19,6 +19,20 @@ public class SiteSettingsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Retrieves all of the product `SiteSetting`s for a given site.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch the product settings.
+    ///   - completion: Closure to be executed upon completion.
+    ///
+    public func loadProductSettings(for siteID: Int, completion: @escaping ([SiteSetting]?, Error?) -> Void) {
+        let path = Constants.productSettingsPath
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let mapper = SiteSettingsMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 
@@ -27,5 +41,6 @@ public class SiteSettingsRemote: Remote {
 private extension SiteSettingsRemote {
     enum Constants {
         static let generalSettingsPath: String   = "settings/general"
+        static let productSettingsPath: String   = "settings/products"
     }
 }

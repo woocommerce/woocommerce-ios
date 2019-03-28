@@ -113,7 +113,6 @@ public extension StorageType {
         return allObjects(ofType: SiteSetting.self, matching: predicate, sortedBy: [descriptor])
     }
 
-
     /// Retrieves the Stored SiteSetting.
     ///
     public func loadSiteSetting(siteID: Int, settingID: String) -> SiteSetting? {

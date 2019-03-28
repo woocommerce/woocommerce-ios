@@ -141,7 +141,7 @@ class SettingStoreTests: XCTestCase {
                                                      readOnlySiteSettings: [sampleGeneralSiteSetting(), sampleGeneralSiteSetting2()],
                                                      in: viewStorage)
 
-        let storageSiteSettings = viewStorage.loadAllSiteSettings(siteID: sampleSiteID)
+        let storageSiteSettings = viewStorage.loadSiteSettings(siteID: sampleSiteID, settingGroupKey: SiteSettingGroup.general.rawValue)
         XCTAssertNotNil(storageSiteSettings)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
         XCTAssertEqual(storageSiteSettings?.map({ $0.toReadOnly() }).sorted(), remoteSiteSettings)
@@ -302,6 +302,174 @@ class SettingStoreTests: XCTestCase {
 
         settingStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - SettingStore.upsertStoredProductSiteSettings
+
+    /// Verifies that `upsertStoredProductSiteSettings` effectively inserts a new SiteSetting, with the specified payload.
+    ///
+    func testUpsertStoredProductSiteSettingsEffectivelyPersistsNewSiteSettings() {
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteSiteSettings = [sampleProductSiteSetting(), sampleProductSiteSetting2()].sorted()
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
+        settingStore.upsertStoredProductSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleProductSiteSetting(), sampleProductSiteSetting2()],
+                                                     in: viewStorage)
+
+        let storageSiteSettings = viewStorage.loadSiteSettings(siteID: sampleSiteID, settingGroupKey: SiteSettingGroup.product.rawValue)
+        XCTAssertNotNil(storageSiteSettings)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
+        XCTAssertEqual(storageSiteSettings?.map({ $0.toReadOnly() }).sorted(), remoteSiteSettings)
+    }
+
+    /// Verifies that `upsertStoredProductSiteSettings` does not produce duplicate entries.
+    ///
+    func testUpsertStoredProductSiteSettingsEffectivelyUpdatesPreexistantSiteSettings() {
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
+        settingStore.upsertStoredProductSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleProductSiteSetting()],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 1)
+        settingStore.upsertStoredProductSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleProductSiteSettingMutated()],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 1)
+        settingStore.upsertStoredProductSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleProductSiteSettingMutated(), sampleProductSiteSetting2()],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
+        settingStore.upsertStoredProductSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleProductSiteSettingMutated(), sampleProductSiteSetting2Mutated()],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
+
+        let expectedSiteSetting = sampleProductSiteSettingMutated()
+        let storageSiteSetting = viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: sampleProductSiteSettingMutated().settingID)
+        XCTAssertEqual(storageSiteSetting?.toReadOnly(), expectedSiteSetting)
+
+        let expectedSiteSetting2 = sampleProductSiteSetting2Mutated()
+        let storageSiteSetting2 = viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: sampleProductSiteSetting2Mutated().settingID)
+        XCTAssertEqual(storageSiteSetting2?.toReadOnly(), expectedSiteSetting2)
+    }
+
+    /// Verifies that `upsertStoredProductSiteSettings` removes previously stored SiteSettings correctly.
+    ///
+    func testUpsertStoredProductSiteSettingsEffectivelyRemovesInvalidSiteSettings() {
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
+        settingStore.upsertStoredProductSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleProductSiteSetting(), sampleProductSiteSetting2()],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
+        settingStore.upsertStoredProductSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleProductSiteSetting2Mutated()],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 1)
+
+        let expectedSiteSetting = sampleProductSiteSetting2Mutated()
+        let storageSiteSetting = viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: sampleProductSiteSetting2Mutated().settingID)
+        XCTAssertEqual(storageSiteSetting?.toReadOnly(), expectedSiteSetting)
+    }
+
+    /// Verifies that `upsertStoredProductSiteSettings` removes previously stored SiteSettings correctly if an empty read-only array is passed in.
+    ///
+    func testUpsertStoredProductSiteSettingsEffectivelyRemovesSiteSettings() {
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
+        settingStore.upsertStoredProductSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleProductSiteSetting(), sampleProductSiteSetting2()],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
+        settingStore.upsertStoredProductSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
+    }
+
+
+    // MARK: - Misc SettingStore Upsert Tests
+
+    /// Verifies that `upsertStored*SiteSettings` effectively persists SiteSettings for multiple setting groups
+    ///
+    func testUpsertMultipleSiteSettingsGroupsEffectivelyPersistsSiteSettings() {
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteGeneralSiteSettings = [sampleGeneralSiteSetting(), sampleGeneralSiteSetting2()].sorted()
+        let remoteProductSiteSettings = [sampleProductSiteSetting(), sampleProductSiteSetting2()].sorted()
+        let remoteAllSiteSettings = [sampleGeneralSiteSetting(), sampleGeneralSiteSetting2(), sampleProductSiteSetting(), sampleProductSiteSetting2()].sorted()
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleGeneralSiteSetting(), sampleGeneralSiteSetting2()],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
+
+        settingStore.upsertStoredProductSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleProductSiteSetting(), sampleProductSiteSetting2()],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 4)
+
+        let storageSiteSettings = viewStorage.loadAllSiteSettings(siteID: sampleSiteID)
+        XCTAssertNotNil(storageSiteSettings)
+        XCTAssertEqual(storageSiteSettings?.map({ $0.toReadOnly() }).sorted(), remoteAllSiteSettings)
+
+        let storageGeneralSiteSettings = viewStorage.loadSiteSettings(siteID: sampleSiteID, settingGroupKey: SiteSettingGroup.general.rawValue)
+        XCTAssertNotNil(storageGeneralSiteSettings)
+        XCTAssertEqual(storageGeneralSiteSettings?.map({ $0.toReadOnly() }).sorted(), remoteGeneralSiteSettings)
+
+        let storageProductSiteSettings = viewStorage.loadSiteSettings(siteID: sampleSiteID, settingGroupKey: SiteSettingGroup.product.rawValue)
+        XCTAssertNotNil(storageProductSiteSettings)
+        XCTAssertEqual(storageProductSiteSettings?.map({ $0.toReadOnly() }).sorted(), remoteProductSiteSettings)
+    }
+
+    /// Verifies that `upsertStored*SiteSettings` effectively updates + prunes SiteSettings for multiple setting groups
+    ///
+    func testUpsertMultipleSiteSettingsGroupsEffectivelyUpdatesSiteSettings() {
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteGeneralSiteSettings = [sampleGeneralSiteSetting(), sampleGeneralSiteSetting2()].sorted()
+        let remoteProductSiteSettings = [sampleProductSiteSetting(), sampleProductSiteSetting2()].sorted()
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleGeneralSiteSetting(), sampleGeneralSiteSetting2()],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
+
+        settingStore.upsertStoredProductSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleProductSiteSetting(), sampleProductSiteSetting2()],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 4)
+
+        let storageGeneralSiteSettings = viewStorage.loadSiteSettings(siteID: sampleSiteID, settingGroupKey: SiteSettingGroup.general.rawValue)
+        XCTAssertNotNil(storageGeneralSiteSettings)
+        XCTAssertEqual(storageGeneralSiteSettings?.map({ $0.toReadOnly() }).sorted(), remoteGeneralSiteSettings)
+
+        let storageProductSiteSettings = viewStorage.loadSiteSettings(siteID: sampleSiteID, settingGroupKey: SiteSettingGroup.product.rawValue)
+        XCTAssertNotNil(storageProductSiteSettings)
+        XCTAssertEqual(storageProductSiteSettings?.map({ $0.toReadOnly() }).sorted(), remoteProductSiteSettings)
+
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleGeneralSiteSetting2Mutated()],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 3)
+
+        settingStore.upsertStoredProductSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleProductSiteSetting2Mutated()],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
+
+        let storageGeneralSiteSettings2 = viewStorage.loadSiteSettings(siteID: sampleSiteID, settingGroupKey: SiteSettingGroup.general.rawValue)
+        XCTAssertNotNil(storageGeneralSiteSettings2)
+        XCTAssertEqual(storageGeneralSiteSettings2?.map({ $0.toReadOnly() }).sorted(), [sampleGeneralSiteSetting2Mutated()])
+
+        let storageProductSiteSettings2 = viewStorage.loadSiteSettings(siteID: sampleSiteID, settingGroupKey: SiteSettingGroup.product.rawValue)
+        XCTAssertNotNil(storageProductSiteSettings2)
+        XCTAssertEqual(storageProductSiteSettings2?.map({ $0.toReadOnly() }).sorted(), [sampleProductSiteSetting2Mutated()])
     }
 
 

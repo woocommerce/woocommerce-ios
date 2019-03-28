@@ -65,7 +65,7 @@ private extension ShippingProvidersViewController {
     func configureTable() {
         registerTableViewCells()
         styleTableView()
-        
+
         table.dataSource = self
         table.delegate = self
     }

@@ -95,34 +95,11 @@ private extension SettingStore {
     func upsertStoredGeneralSettingsInBackground(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
-           self.upsertStoredGeneralSettings(siteID: siteID, readOnlySiteSettings: readOnlySiteSettings, in: derivedStorage)
+            self.upsertSettings(readOnlySiteSettings, in: derivedStorage, siteID: siteID, settingGroup: SiteSettingGroup.general)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
-        }
-    }
-
-    /// Updates (OR Inserts) the specified **general** ReadOnly `SiteSetting` Entities into the Storage Layer.
-    ///
-    func upsertStoredGeneralSettings(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
-        // Upsert the settings from the read-only site settings
-        for readOnlyItem in readOnlySiteSettings {
-            if let existingStorageItem = storage.loadSiteSetting(siteID: siteID, settingID: readOnlyItem.settingID) {
-                existingStorageItem.update(with: readOnlyItem)
-            } else {
-                let newStorageItem = storage.insertNewObject(ofType: Storage.SiteSetting.self)
-                newStorageItem.update(with: readOnlyItem)
-            }
-        }
-
-        // Now, remove any objects that exist in (general) storageSiteSettings but not in readOnlySiteSettings
-        if let storageSiteSettings = storage.loadSiteSettings(siteID: siteID, settingGroupKey: SiteSettingGroup.general.rawValue) {
-            storageSiteSettings.forEach({ storageItem in
-                if readOnlySiteSettings.first(where: { $0.settingID == storageItem.settingID } ) == nil {
-                    storage.deleteObject(storageItem)
-                }
-            })
         }
     }
 
@@ -132,7 +109,7 @@ private extension SettingStore {
     func upsertStoredProductSettingsInBackground(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
-            self.upsertStoredProductSiteSettings(siteID: siteID, readOnlySiteSettings: readOnlySiteSettings, in: derivedStorage)
+            self.upsertSettings(readOnlySiteSettings, in: derivedStorage, siteID: siteID, settingGroup: SiteSettingGroup.product)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
@@ -140,9 +117,7 @@ private extension SettingStore {
         }
     }
 
-    /// Updates (OR Inserts) the specified **product** ReadOnly `SiteSetting` entities into the Storage Layer.
-    ///
-    func upsertStoredProductSettings(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
+    func upsertSettings(_ readOnlySiteSettings: [SiteSetting], in storage: StorageType, siteID: Int, settingGroup: SiteSettingGroup) {
         // Upsert the settings from the read-only site settings
         for readOnlyItem in readOnlySiteSettings {
             if let existingStorageItem = storage.loadSiteSetting(siteID: siteID, settingID: readOnlyItem.settingID) {
@@ -153,16 +128,14 @@ private extension SettingStore {
             }
         }
 
-        // Now, remove any objects that exist in (product) storageSiteSettings but not in readOnlySiteSettings
-        if let storageSiteSettings = storage.loadSiteSettings(siteID: siteID, settingGroupKey: SiteSettingGroup.product.rawValue) {
+        // Now, remove any objects that exist in storageSiteSettings but not in readOnlySiteSettings
+        if let storageSiteSettings = storage.loadSiteSettings(siteID: siteID, settingGroupKey: settingGroup.rawValue) {
             storageSiteSettings.forEach({ storageItem in
                 if readOnlySiteSettings.first(where: { $0.settingID == storageItem.settingID } ) == nil {
                     storage.deleteObject(storageItem)
                 }
             })
         }
-
-        storage.saveIfNeeded()
     }
 }
 
@@ -174,13 +147,13 @@ extension SettingStore {
     /// Unit Testing Helper: Updates or Inserts the specified **general** ReadOnly SiteSetting entities in the provided Storage instance.
     ///
     func upsertStoredGeneralSiteSettings(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
-        upsertStoredGeneralSettings(siteID: siteID, readOnlySiteSettings: readOnlySiteSettings, in: storage)
+        upsertSettings(readOnlySiteSettings, in: storage, siteID: siteID, settingGroup: SiteSettingGroup.general)
     }
 
     /// Unit Testing Helper: Updates or Inserts the specified **product** ReadOnly SiteSetting entities in the provided Storage instance.
     ///
     func upsertStoredProductSiteSettings(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
-        upsertStoredProductSettings(siteID: siteID, readOnlySiteSettings: readOnlySiteSettings, in: storage)
+        upsertSettings(readOnlySiteSettings, in: storage, siteID: siteID, settingGroup: SiteSettingGroup.product)
     }
 }
 

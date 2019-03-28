@@ -1,5 +1,6 @@
 import UIKit
 import Foundation
+import Yosemite
 
 struct AddEditTrackingSection {
     let rows: [AddEditTrackingRow]
@@ -32,9 +33,11 @@ enum AddEditTrackingRow: CaseIterable {
 protocol AddEditTrackingViewModel {
     var orderID: Int { get }
     var title: String { get }
+    var providerCellName: String { get }
     var primaryActionTitle: String { get }
     var secondaryActionTitle: String? { get }
     var sections: [AddEditTrackingSection] { get }
+    var shipmentProvider: ShipmentTrackingProvider? { get set }
 
     func registerCells(for tableView: UITableView)
     func executeAction(for row: AddEditTrackingRow, sender: UIViewController)
@@ -49,7 +52,7 @@ extension AddEditTrackingViewModel {
     }
 }
 
-struct AddTrackingViewModel: AddEditTrackingViewModel {
+final class AddTrackingViewModel: AddEditTrackingViewModel {
     let orderID: Int
 
     let title = NSLocalizedString("Add Tracking",
@@ -70,6 +73,16 @@ struct AddTrackingViewModel: AddEditTrackingViewModel {
 
     }
 
+    var shipmentProvider: ShipmentTrackingProvider?
+
+    var providerCellName: String {
+        return shipmentProvider?.name ?? ""
+    }
+
+    init(orderID: Int) {
+        self.orderID = orderID
+    }
+
     func executeAction(for row: AddEditTrackingRow, sender: UIViewController) {
         if row == .shippingProvider {
             showAllShipmentProviders(sender: sender)
@@ -78,13 +91,19 @@ struct AddTrackingViewModel: AddEditTrackingViewModel {
 
     private func showAllShipmentProviders(sender: UIViewController) {
         let shippingProviders = ShippingProvidersViewModel(orderID: orderID)
-        let shippingList = ShippingProvidersViewController(viewModel: shippingProviders)
+        let shippingList = ShippingProvidersViewController(viewModel: shippingProviders, delegate: self)
         sender.navigationController?.pushViewController(shippingList, animated: true)
     }
 }
 
+extension AddTrackingViewModel: ShipmentProviderListDelegate {
+    func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: ShipmentTrackingProvider) {
+        shipmentProvider = didSelect
+    }
+}
 
-struct EditTrackingViewModel: AddEditTrackingViewModel {
+
+final class EditTrackingViewModel: AddEditTrackingViewModel {
     let orderID: Int
 
     let title = NSLocalizedString("Edit Tracking",
@@ -106,6 +125,16 @@ struct EditTrackingViewModel: AddEditTrackingViewModel {
             AddEditTrackingSection(rows: [.deleteTracking])]
     }
 
+    var shipmentProvider: ShipmentTrackingProvider?
+
+    var providerCellName: String {
+        return shipmentProvider?.name ?? ""
+    }
+
+    init(orderID: Int) {
+        self.orderID = orderID
+    }
+
     func executeAction(for row: AddEditTrackingRow, sender: UIViewController) {
         if row == .deleteTracking {
             deleteCurrentTracking()
@@ -123,7 +152,13 @@ struct EditTrackingViewModel: AddEditTrackingViewModel {
 
     private func showAllShipmentProviders(sender: UIViewController) {
         let shippingProviders = ShippingProvidersViewModel(orderID: orderID)
-        let shippingList = ShippingProvidersViewController(viewModel: shippingProviders)
+        let shippingList = ShippingProvidersViewController(viewModel: shippingProviders, delegate: self)
         sender.navigationController?.pushViewController(shippingList, animated: true)
+    }
+}
+
+extension EditTrackingViewModel: ShipmentProviderListDelegate {
+    func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: ShipmentTrackingProvider) {
+        shipmentProvider = didSelect
     }
 }

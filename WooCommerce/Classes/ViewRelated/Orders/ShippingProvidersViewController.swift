@@ -1,8 +1,13 @@
 import UIKit
 import Yosemite
 
+protocol ShipmentProviderListDelegate: AnyObject {
+    func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: ShipmentTrackingProvider)
+}
+
 final class ShippingProvidersViewController: UIViewController {
     private let viewModel: ShippingProvidersViewModel
+    private weak var delegate: ShipmentProviderListDelegate?
 
     @IBOutlet weak var table: UITableView!
 
@@ -19,8 +24,9 @@ final class ShippingProvidersViewController: UIViewController {
         return returnValue
     }()
 
-    init(viewModel: ShippingProvidersViewModel) {
+    init(viewModel: ShippingProvidersViewModel, delegate: ShipmentProviderListDelegate) {
         self.viewModel = viewModel
+        self.delegate = delegate
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -118,7 +124,15 @@ extension ShippingProvidersViewController: UITableViewDataSource {
 }
 
 extension ShippingProvidersViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let group = viewModel.resultsController.sections[indexPath.section]
+        guard let provider = group.objects.first?.providers[indexPath.item] else {
+            return
+        }
 
+        print("selected provider ", provider)
+        delegate?.shipmentProviderList(self, didSelect: provider)
+    }
 }
 
 extension ShippingProvidersViewController: UISearchResultsUpdating {

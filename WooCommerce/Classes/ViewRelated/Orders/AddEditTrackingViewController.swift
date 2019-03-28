@@ -149,6 +149,7 @@ extension AddEditTrackingViewController: UITableViewDataSource {
 
     private func configureShippingProvider(cell: EditableValueOneTableViewCell) {
         cell.title.text = NSLocalizedString("Shipping provider", comment: "Add / Edit shipping provider. Title of cell presenting name")
+        cell.value.text = viewModel.providerCellName
 
         cell.value.isEnabled = false
         cell.accessoryType = .disclosureIndicator

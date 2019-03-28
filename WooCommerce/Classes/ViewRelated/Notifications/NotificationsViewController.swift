@@ -213,10 +213,7 @@ private extension NotificationsViewController {
         rightBarButton.accessibilityTraits = .button
         rightBarButton.accessibilityLabel = NSLocalizedString("Filter notifications", comment: "Accessibility label for the Filter notifications button.")
         rightBarButton.accessibilityHint = NSLocalizedString("Filters the notifications list by notification type.",
-                                                             comment: """
-                                                                 VoiceOver accessibility hint, \
-                                                                 informing the user the button can be used to filter the notifications list.
-                                                                 """
+                                                             comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list."
         )
         navigationItem.rightBarButtonItem = rightBarButton
     }
@@ -250,10 +247,7 @@ private extension NotificationsViewController {
         guard currentTypeFilter != .all else {
             navigationItem.title = NSLocalizedString(
                 "Notifications",
-                comment: """
-                    Title that appears on top of the main Notifications screen when there is no filter \
-                    applied to the list (plural form of the word Notification).
-                    """
+                comment: "Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification)."
             )
             return
         }
@@ -882,17 +876,11 @@ private extension NotificationsViewController {
                 )
             case .orders:
                 return NSLocalizedString("Orders",
-                                         comment: """
-                                             Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. \
-                                             Plural form of the word Order.
-                                             """
+                                         comment: "Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order."
                 )
             case .reviews:
                 return NSLocalizedString("Reviews",
-                                         comment: """
-                                             Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. \
-                                             Plural form of the word Review.
-                                             """
+                                         comment: "Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review."
                 )
             }
         }

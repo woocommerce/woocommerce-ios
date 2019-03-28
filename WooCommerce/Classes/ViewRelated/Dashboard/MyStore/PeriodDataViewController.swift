@@ -367,10 +367,7 @@ private extension PeriodDataViewController {
         yAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(
             NSLocalizedString(
                 "Minimum value %@, maximum value %@",
-                comment: """
-                    VoiceOver accessibility value, informs the user about the Y-axis min/max values. \
-                    It reads: Minimum value {value}, maximum value {value}.
-                    """
+                comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}."
             ),
             yAxisMinimum,
             yAxisMaximum
@@ -390,14 +387,14 @@ private extension PeriodDataViewController {
 
 
     func chartSummaryString() -> String {
-        guard let dataSet = barChartView.barData?.dataSets.first as? BarChartDataSet, dataSet.entryCount > 0 else {
+        guard let dataSet = barChartView.barData?.dataSets.first as? BarChartDataSet, dataSet.count > 0 else {
             return barChartView.noDataText
         }
 
         var chartSummaryString = ""
-        for i in 0..<dataSet.entryCount {
+        for i in 0..<dataSet.count {
             // We are not including zero value bars here to keep things shorter
-            guard let entry = dataSet.entryForIndex(i), entry.y != 0.0 else {
+            guard let entry = dataSet[safe: i], entry.y != 0.0 else {
                 continue
             }
 
@@ -405,10 +402,7 @@ private extension PeriodDataViewController {
             chartSummaryString += String.localizedStringWithFormat(
                 NSLocalizedString(
                     "Bar number %i, %@, ",
-                    comment: """
-                        VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. \
-                        It reads: Bar number {bar number} {summary of bar}.
-                        """
+                    comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}."
                 ),
                 i+1,
                 entrySummaryString

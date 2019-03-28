@@ -225,9 +225,9 @@ private extension StoresManager {
 
         CurrencySettings.shared.beginListeningToSiteSettingsUpdates()
 
-        let action = SettingAction.retrieveSiteSettings(siteID: siteID) { error in
+        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
             if let error = error {
-                DDLogError("⛔️ Could not successfully fetch settings for siteID \(siteID): \(error)")
+                DDLogError("⛔️ Could not successfully synchronize general settings for siteID \(siteID): \(error)")
             }
         }
         dispatch(action)

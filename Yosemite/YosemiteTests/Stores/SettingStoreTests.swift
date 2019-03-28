@@ -39,10 +39,10 @@ class SettingStoreTests: XCTestCase {
     }
 
 
-    // MARK: - SettingAction.retrieveSiteSettings
+    // MARK: - SettingAction.synchronizeGeneralSiteSettings
 
 
-    /// Verifies that `SettingAction.retrieveSiteSettings` effectively persists any retrieved SiteSettings.
+    /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` effectively persists any retrieved SiteSettings.
     ///
     func testRetrieveSiteSettingsEffectivelyPersistsRetrievedSettings() {
         let expectation = self.expectation(description: "Persist site settings")
@@ -51,7 +51,7 @@ class SettingStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
 
-        let action = SettingAction.retrieveSiteSettings(siteID: sampleSiteID) { (error) in
+        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { (error) in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 20)
 
@@ -68,18 +68,18 @@ class SettingStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `SettingAction.retrieveSiteSettings` effectively persists any updated SiteSettings.
+    /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` effectively persists any updated SiteSettings.
     ///
     func testRetrieveSiteSettingsEffectivelyPersistsUpdatedSettings() {
         let expectation = self.expectation(description: "Persist updated site settings")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
-        settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()])
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
 
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general-alt")
-        let action = SettingAction.retrieveSiteSettings(siteID: sampleSiteID) { (error) in
+        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { (error) in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 20)
 
@@ -95,14 +95,14 @@ class SettingStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `SettingAction.retrieveSiteSettings` returns an error whenever there is an error response from the backend.
+    /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveSiteSettingsReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve site settings error response")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "generic_error")
-        let action = SettingAction.retrieveSiteSettings(siteID: sampleSiteID) { (error) in
+        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { (error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -111,13 +111,13 @@ class SettingStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `SettingAction.retrieveSiteSettings` returns an error whenever there is no backend response.
+    /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` returns an error whenever there is no backend response.
     ///
     func testRetrieveSiteSettingsReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve site settings empty response")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = SettingAction.retrieveSiteSettings(siteID: sampleSiteID) { (error) in
+        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { (error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -126,14 +126,14 @@ class SettingStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `upsertStoredSiteSettings` effectively inserts a new SiteSetting, with the specified payload.
+    /// Verifies that `upsertStoredGeneralSiteSettings` effectively inserts a new SiteSetting, with the specified payload.
     ///
     func testUpsertStoredSiteSettingsEffectivelyPersistsNewSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteSiteSettings = [sampleSiteSetting(), sampleSiteSetting2()].sorted()
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
-        settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()])
 
         let storageSiteSettings = viewStorage.loadSiteSettings(siteID: sampleSiteID)
         XCTAssertNotNil(storageSiteSettings)
@@ -141,19 +141,19 @@ class SettingStoreTests: XCTestCase {
         XCTAssertEqual(storageSiteSettings?.map({ $0.toReadOnly() }).sorted(), remoteSiteSettings)
     }
 
-    /// Verifies that `upsertStoredSiteSettings` does not produce duplicate entries.
+    /// Verifies that `upsertStoredGeneralSiteSettings` does not produce duplicate entries.
     ///
     func testUpsertStoredSiteSettingsEffectivelyUpdatesPreexistantSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
-        settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting()])
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 1)
-        settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSettingMutated()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSettingMutated()])
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 1)
-        settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSettingMutated(), sampleSiteSetting2()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSettingMutated(), sampleSiteSetting2()])
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
-        settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSettingMutated(), sampleSiteSetting2Mutated()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSettingMutated(), sampleSiteSetting2Mutated()])
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
 
         let expectedSiteSetting = sampleSiteSettingMutated()
@@ -165,15 +165,15 @@ class SettingStoreTests: XCTestCase {
         XCTAssertEqual(storageSiteSetting2?.toReadOnly(), expectedSiteSetting2)
     }
 
-    /// Verifies that `upsertStoredSiteSettings` removes previously stored SiteSettings correctly.
+    /// Verifies that `upsertStoredGeneralSiteSettings` removes previously stored SiteSettings correctly.
     ///
     func testUpsertStoredSiteSettingsEffectivelyRemovesInvalidSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
-        settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()])
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
-        settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting2Mutated()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting2Mutated()])
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 1)
 
         let expectedSiteSetting = sampleSiteSetting2Mutated()
@@ -181,15 +181,15 @@ class SettingStoreTests: XCTestCase {
         XCTAssertEqual(storageSiteSetting?.toReadOnly(), expectedSiteSetting)
     }
 
-    /// Verifies that `upsertStoredSiteSettings` removes previously stored SiteSettings correctly if an empty read-only array is passed in.
+    /// Verifies that `upsertStoredGeneralSiteSettings` removes previously stored SiteSettings correctly if an empty read-only array is passed in.
     ///
     func testUpsertStoredSiteSettingsEffectivelyRemovesSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
-        settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()])
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
-        settingStore.upsertStoredSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [])
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
     }
 

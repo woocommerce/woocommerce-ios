@@ -13,7 +13,7 @@ class SiteSettingsMapperTests: XCTestCase {
     /// Verifies the SiteSetting fields are parsed correctly.
     ///
     func testSiteSettingFieldsAreProperlyParsed() {
-        let settings = mapLoadAllSiteSettingsResponse()
+        let settings = mapLoadGeneralSiteSettingsResponse()
         XCTAssertEqual(settings.count, 20)
 
         let firstSetting = settings[0]
@@ -45,7 +45,7 @@ class SiteSettingsMapperTests: XCTestCase {
     /// Verifies that a SiteSetting in a broken state gets default values
     ///
     func testSiteSettingsAreProperlyParsedWhenNullsReceived() {
-        let settings = mapLoadBrokenSiteSettingsResponse()
+        let settings = mapLoadBrokenGeneralSiteSettingsResponse()
         XCTAssertEqual(settings.count, 1)
 
         let firstSetting = settings[0]
@@ -65,23 +65,23 @@ private extension SiteSettingsMapperTests {
 
     /// Returns the OrderNotesMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapSettings(from filename: String) -> [SiteSetting] {
+    func mapGeneralSettings(from filename: String) -> [SiteSetting] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! SiteSettingsMapper(siteID: dummySiteID).map(response: response)
+        return try! SiteSettingsMapper(siteID: dummySiteID, settingsGroup: SiteSettingGroup.general.rawValue).map(response: response)
     }
 
-    /// Returns the OrderNotesMapper output upon receiving `orders-load-all`
+    /// Returns the OrderNotesMapper output upon receiving `settings-general`
     ///
-    func mapLoadAllSiteSettingsResponse() -> [SiteSetting] {
-        return mapSettings(from: "settings-general")
+    func mapLoadGeneralSiteSettingsResponse() -> [SiteSetting] {
+        return mapGeneralSettings(from: "settings-general")
     }
 
-    /// Returns the OrderNotesMapper output upon receiving `broken-order`
+    /// Returns the OrderNotesMapper output upon receiving `broken-settings-general`
     ///
-    func mapLoadBrokenSiteSettingsResponse() -> [SiteSetting] {
-        return mapSettings(from: "broken-settings-general")
+    func mapLoadBrokenGeneralSiteSettingsResponse() -> [SiteSetting] {
+        return mapGeneralSettings(from: "broken-settings-general")
     }
 }

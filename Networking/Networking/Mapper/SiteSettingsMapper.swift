@@ -11,6 +11,10 @@ struct SiteSettingsMapper: Mapper {
     ///
     let siteID: Int
 
+    /// Group name associated to the settings that will be parsed.
+    /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't return the group in any of the setting endpoints.
+    ///
+    let settingsGroup: String
 
     /// (Attempts) to convert a dictionary into [SiteSetting].
     ///
@@ -18,7 +22,8 @@ struct SiteSettingsMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [
-            .siteID: siteID
+            .siteID: siteID,
+            .settingGroupKey: settingsGroup
         ]
 
         return try decoder.decode(SiteSettingsEnvelope.self, from: response).settings

@@ -23,6 +23,7 @@ extension Storage.SiteSetting: ReadOnlyConvertible {
                            settingID: settingID ?? "",
                            label: label ?? "",
                            description: settingDescription ?? "",
-                           value: value ?? "")
+                           value: value ?? "",
+                           settingGroupKey: "") // FIXME: Add the setting group here
     }
 }

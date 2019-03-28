@@ -97,9 +97,9 @@ public extension StorageType {
         return firstObject(ofType: OrderStatus.self, matching: predicate)
     }
 
-    /// Retrieves all of the Stored SiteSettings for the provided siteID.
+    /// Retrieves **all** of the Stored SiteSettings for the provided siteID.
     ///
-    public func loadSiteSettings(siteID: Int) -> [SiteSetting]? {
+    public func loadAllSiteSettings(siteID: Int) -> [SiteSetting]? {
         let predicate = NSPredicate(format: "siteID = %ld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \SiteSetting.settingID, ascending: false)
         return allObjects(ofType: SiteSetting.self, matching: predicate, sortedBy: [descriptor])

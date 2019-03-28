@@ -41,7 +41,6 @@ class SettingStoreTests: XCTestCase {
 
     // MARK: - SettingAction.synchronizeGeneralSiteSettings
 
-
     /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` effectively persists any retrieved SiteSettings.
     ///
     func testRetrieveSiteSettingsEffectivelyPersistsRetrievedSettings() {
@@ -75,7 +74,9 @@ class SettingStoreTests: XCTestCase {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
-        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()],
+                                                     in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
 
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general-alt")
@@ -126,6 +127,9 @@ class SettingStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+
+    // MARK: - SettingStore.upsertStoredGeneralSiteSettings
+
     /// Verifies that `upsertStoredGeneralSiteSettings` effectively inserts a new SiteSetting, with the specified payload.
     ///
     func testUpsertStoredSiteSettingsEffectivelyPersistsNewSiteSettings() {
@@ -133,9 +137,9 @@ class SettingStoreTests: XCTestCase {
         let remoteSiteSettings = [sampleSiteSetting(), sampleSiteSetting2()].sorted()
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
-        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()], in: viewStorage)
 
-        let storageSiteSettings = viewStorage.loadSiteSettings(siteID: sampleSiteID)
+        let storageSiteSettings = viewStorage.loadAllSiteSettings(siteID: sampleSiteID)
         XCTAssertNotNil(storageSiteSettings)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
         XCTAssertEqual(storageSiteSettings?.map({ $0.toReadOnly() }).sorted(), remoteSiteSettings)
@@ -147,13 +151,21 @@ class SettingStoreTests: XCTestCase {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
-        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleSiteSetting()],
+                                                     in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 1)
-        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSettingMutated()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleSiteSettingMutated()],
+                                                     in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 1)
-        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSettingMutated(), sampleSiteSetting2()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleSiteSettingMutated(), sampleSiteSetting2()],
+                                                     in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
-        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSettingMutated(), sampleSiteSetting2Mutated()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleSiteSettingMutated(), sampleSiteSetting2Mutated()],
+                                                     in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
 
         let expectedSiteSetting = sampleSiteSettingMutated()
@@ -171,9 +183,13 @@ class SettingStoreTests: XCTestCase {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
-        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()],
+                                                     in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
-        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting2Mutated()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleSiteSetting2Mutated()],
+                                                     in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 1)
 
         let expectedSiteSetting = sampleSiteSetting2Mutated()
@@ -187,15 +203,18 @@ class SettingStoreTests: XCTestCase {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
-        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleSiteSetting(), sampleSiteSetting2()],
+                                                     in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
-        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID, readOnlySiteSettings: [])
+        settingStore.upsertStoredGeneralSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [],
+                                                     in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
     }
 
 
     // MARK: - SettingAction.retrieveSiteAPI
-
 
     /// Verifies that `SettingAction.retrieveSiteAPI` returns the expected API information.
     ///
@@ -272,7 +291,7 @@ class SettingStoreTests: XCTestCase {
 //
 private extension SettingStoreTests {
 
-    // MARK: - SiteSetting Samples
+    // MARK: - General SiteSetting Samples
 
     func sampleSiteSetting() -> Networking.SiteSetting {
         return SiteSetting(siteID: sampleSiteID,

@@ -7,6 +7,10 @@ import Storage
 //
 public class SettingStore: Store {
 
+    private lazy var sharedDerivedStorage: StorageType = {
+        return storageManager.newDerivedStorage()
+    }()
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -47,8 +51,9 @@ private extension SettingStore {
                 return
             }
 
-            self?.upsertStoredGeneralSiteSettings(siteID: siteID, readOnlySiteSettings: settings)
-            onCompletion(nil)
+            self?.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
+                onCompletion(nil)
+            }
         }
     }
 
@@ -62,8 +67,9 @@ private extension SettingStore {
                 return
             }
 
-            self?.upsertStoredProductSiteSettings(siteID: siteID, readOnlySiteSettings: settings)
-            onCompletion(nil)
+            self?.upsertStoredProductSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
+                onCompletion(nil)
+            }
         }
     }
 
@@ -81,14 +87,25 @@ private extension SettingStore {
 
 // MARK: - Persistence
 //
-extension SettingStore {
+private extension SettingStore {
 
-    /// Updates (OR Inserts) the specified general ReadOnly SiteSetting Entities into the Storage Layer.
+    /// Updates (OR Inserts) the specified **general** ReadOnly `SiteSetting` Entities **in a background thread**. `onCompletion` will be called
+    /// on the main thread!
     ///
-    func upsertStoredGeneralSiteSettings(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting]) {
-        assert(Thread.isMainThread)
-        let storage = storageManager.viewStorage
+    func upsertStoredGeneralSettingsInBackground(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+           self.upsertStoredGeneralSettings(siteID: siteID, readOnlySiteSettings: readOnlySiteSettings, in: derivedStorage)
+        }
 
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates (OR Inserts) the specified **general** ReadOnly `SiteSetting` Entities into the Storage Layer.
+    ///
+    func upsertStoredGeneralSettings(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
         // Upsert the settings from the read-only site settings
         for readOnlyItem in readOnlySiteSettings {
             if let existingStorageItem = storage.loadSiteSetting(siteID: siteID, settingID: readOnlyItem.settingID) {
@@ -100,23 +117,33 @@ extension SettingStore {
         }
 
         // Now, remove any objects that exist in storageSiteSettings but not in readOnlySiteSettings
-        if let storageSiteSettings = storage.loadSiteSettings(siteID: siteID) {
+        // FIXME: 🚨 Only fetch/prune the general settings! 🚨
+        if let storageSiteSettings = storage.loadAllSiteSettings(siteID: siteID) {
             storageSiteSettings.forEach({ storageItem in
                 if readOnlySiteSettings.first(where: { $0.settingID == storageItem.settingID } ) == nil {
                     storage.deleteObject(storageItem)
                 }
             })
         }
-
-        storage.saveIfNeeded()
     }
 
-    /// Updates (OR Inserts) the specified product ReadOnly SiteSetting Entities into the Storage Layer.
+    /// Updates (OR Inserts) the specified **product** ReadOnly `SiteSetting` entities **in a background thread**. `onCompletion` will be called
+    /// on the main thread!
     ///
-    func upsertStoredProductSiteSettings(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting]) {
-        assert(Thread.isMainThread)
-        let storage = storageManager.viewStorage
+    func upsertStoredProductSettingsInBackground(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.upsertStoredProductSiteSettings(siteID: siteID, readOnlySiteSettings: readOnlySiteSettings, in: derivedStorage)
+        }
 
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates (OR Inserts) the specified **product** ReadOnly `SiteSetting` entities into the Storage Layer.
+    ///
+    func upsertStoredProductSettings(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
         // Upsert the settings from the read-only site settings
         for readOnlyItem in readOnlySiteSettings {
             if let existingStorageItem = storage.loadSiteSetting(siteID: siteID, settingID: readOnlyItem.settingID) {
@@ -128,7 +155,8 @@ extension SettingStore {
         }
 
         // Now, remove any objects that exist in storageSiteSettings but not in readOnlySiteSettings
-        if let storageSiteSettings = storage.loadSiteSettings(siteID: siteID) {
+        // FIXME: 🚨 Only fetch/prune the product settings! 🚨
+        if let storageSiteSettings = storage.loadAllSiteSettings(siteID: siteID) {
             storageSiteSettings.forEach({ storageItem in
                 if readOnlySiteSettings.first(where: { $0.settingID == storageItem.settingID } ) == nil {
                     storage.deleteObject(storageItem)
@@ -139,3 +167,22 @@ extension SettingStore {
         storage.saveIfNeeded()
     }
 }
+
+
+// MARK: - Unit Testing Helpers
+//
+extension SettingStore {
+
+    /// Unit Testing Helper: Updates or Inserts the specified **general** ReadOnly SiteSetting entities in the provided Storage instance.
+    ///
+    func upsertStoredGeneralSiteSettings(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
+        upsertStoredGeneralSettings(siteID: siteID, readOnlySiteSettings: readOnlySiteSettings, in: storage)
+    }
+
+    /// Unit Testing Helper: Updates or Inserts the specified **product** ReadOnly SiteSetting entities in the provided Storage instance.
+    ///
+    func upsertStoredProductSiteSettings(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
+        upsertStoredProductSettings(siteID: siteID, readOnlySiteSettings: readOnlySiteSettings, in: storage)
+    }
+}
+

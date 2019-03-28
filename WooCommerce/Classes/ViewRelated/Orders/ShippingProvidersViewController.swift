@@ -59,10 +59,8 @@ private extension ShippingProvidersViewController {
 
     func configureTable() {
         registerTableViewCells()
-
-        table.estimatedRowHeight = Constants.rowHeight
-        table.rowHeight = UITableView.automaticDimension
-        table.backgroundColor = StyleManager.tableViewBackgroundColor
+        styleTableView()
+        
         table.dataSource = self
         table.delegate = self
     }
@@ -75,6 +73,12 @@ private extension ShippingProvidersViewController {
         for cell in cells {
             table.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
+    }
+
+    func styleTableView() {
+        table.estimatedRowHeight = Constants.rowHeight
+        table.rowHeight = UITableView.automaticDimension
+        table.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 }
 

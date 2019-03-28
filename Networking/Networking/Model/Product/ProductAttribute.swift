@@ -77,7 +77,7 @@ extension ProductAttribute: Comparable {
 
     public static func < (lhs: ProductAttribute, rhs: ProductAttribute) -> Bool {
         return lhs.attributeID < rhs.attributeID ||
-            (lhs.attributeID == rhs.attributeID && lhs.position < rhs.position) ||
-            (lhs.attributeID == rhs.attributeID && lhs.position == rhs.position && lhs.name < rhs.name)
+            (lhs.attributeID == rhs.attributeID && lhs.name < rhs.name) ||
+            (lhs.attributeID == rhs.attributeID && lhs.name == rhs.name && lhs.position < rhs.position)
     }
 }

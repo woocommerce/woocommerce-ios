@@ -14,6 +14,7 @@ extension Storage.SiteSetting: ReadOnlyConvertible {
         label = setting.label
         settingDescription = setting.settingDescription
         value = setting.value
+        settingGroupKey = setting.settingGroupKey
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -24,6 +25,6 @@ extension Storage.SiteSetting: ReadOnlyConvertible {
                            label: label ?? "",
                            description: settingDescription ?? "",
                            value: value ?? "",
-                           settingGroupKey: "") // FIXME: Add the setting group here
+                           settingGroupKey: settingGroupKey ?? SiteSettingGroup.general.rawValue) // Default to general group
     }
 }

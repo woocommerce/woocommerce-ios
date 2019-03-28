@@ -116,9 +116,8 @@ private extension SettingStore {
             }
         }
 
-        // Now, remove any objects that exist in storageSiteSettings but not in readOnlySiteSettings
-        // FIXME: 🚨 Only fetch/prune the general settings! 🚨
-        if let storageSiteSettings = storage.loadAllSiteSettings(siteID: siteID) {
+        // Now, remove any objects that exist in (general) storageSiteSettings but not in readOnlySiteSettings
+        if let storageSiteSettings = storage.loadSiteSettings(siteID: siteID, settingGroupKey: SiteSettingGroup.general.rawValue) {
             storageSiteSettings.forEach({ storageItem in
                 if readOnlySiteSettings.first(where: { $0.settingID == storageItem.settingID } ) == nil {
                     storage.deleteObject(storageItem)
@@ -154,9 +153,8 @@ private extension SettingStore {
             }
         }
 
-        // Now, remove any objects that exist in storageSiteSettings but not in readOnlySiteSettings
-        // FIXME: 🚨 Only fetch/prune the product settings! 🚨
-        if let storageSiteSettings = storage.loadAllSiteSettings(siteID: siteID) {
+        // Now, remove any objects that exist in (product) storageSiteSettings but not in readOnlySiteSettings
+        if let storageSiteSettings = storage.loadSiteSettings(siteID: siteID, settingGroupKey: SiteSettingGroup.product.rawValue) {
             storageSiteSettings.forEach({ storageItem in
                 if readOnlySiteSettings.first(where: { $0.settingID == storageItem.settingID } ) == nil {
                     storage.deleteObject(storageItem)

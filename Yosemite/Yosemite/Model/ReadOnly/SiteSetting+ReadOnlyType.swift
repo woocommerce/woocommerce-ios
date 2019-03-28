@@ -14,6 +14,7 @@ extension Yosemite.SiteSetting: ReadOnlyType {
         }
 
         return siteID == Int(storageSiteSiteSetting.siteID) &&
-            storageSiteSiteSetting.settingID == settingID
+            storageSiteSiteSetting.settingID == settingID &&
+            storageSiteSiteSetting.settingGroupKey == settingGroupKey
     }
 }

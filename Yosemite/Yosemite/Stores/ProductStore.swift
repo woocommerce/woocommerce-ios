@@ -194,10 +194,10 @@ private extension ProductStore {
 
         // Now, remove any objects that exist in storageProduct.defaultAttributes but not in readOnlyProduct.defaultAttributes
         storageProduct.defaultAttributes?.forEach { storageDefaultAttribute in
-            if readOnlyProduct.defaultAttributes.first(where:
-                { $0.attributeID == storageDefaultAttribute.attributeID && $0.name == storageDefaultAttribute.name } ) == nil {
-                storageProduct.removeFromDefaultAttributes(storageDefaultAttribute)
-                storage.deleteObject(storageDefaultAttribute)
+            if readOnlyProduct.defaultAttributes.first(where: {
+                $0.attributeID == storageDefaultAttribute.attributeID && $0.name == storageDefaultAttribute.name } ) == nil {
+                    storageProduct.removeFromDefaultAttributes(storageDefaultAttribute)
+                    storage.deleteObject(storageDefaultAttribute)
             }
         }
     }

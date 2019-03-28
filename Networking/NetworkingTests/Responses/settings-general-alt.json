@@ -2743,26 +2743,6 @@
 					}
 				]
 			}
-		},
-		{
-			"id": "woocommerce_bookings_tz_calculation",
-			"label": "Enable Bookings Timezone calculation",
-			"description": "Schedule Bookings events, such as reminder emails and auto-completions of bookings, using your site’s configured timezone.",
-			"type": "checkbox",
-			"default": "no",
-			"value": "no",
-			"_links": {
-				"self": [
-					{
-						"href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_bookings_tz_calculation"
-					}
-				],
-				"collection": [
-					{
-						"href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
-					}
-				]
-			}
 		}
 	]
 }

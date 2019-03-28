@@ -70,7 +70,7 @@ private extension SiteSettingsMapperTests {
             return []
         }
 
-        return try! SiteSettingsMapper(siteID: dummySiteID, settingsGroup: SiteSettingGroup.general.rawValue).map(response: response)
+        return try! SiteSettingsMapper(siteID: dummySiteID, settingsGroup: SiteSettingGroup.general).map(response: response)
     }
 
     /// Returns the OrderNotesMapper output upon receiving `settings-general`

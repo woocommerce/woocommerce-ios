@@ -43,8 +43,8 @@ class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` effectively persists any retrieved SiteSettings.
     ///
-    func testRetrieveSiteSettingsEffectivelyPersistsRetrievedSettings() {
-        let expectation = self.expectation(description: "Persist site settings")
+    func testRetrieveGerneralSiteSettingsEffectivelyPersistsRetrievedSettings() {
+        let expectation = self.expectation(description: "Persist general site settings")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general")
@@ -69,8 +69,8 @@ class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` effectively persists any updated SiteSettings.
     ///
-    func testRetrieveSiteSettingsEffectivelyPersistsUpdatedSettings() {
-        let expectation = self.expectation(description: "Persist updated site settings")
+    func testRetrieveGeneralSiteSettingsEffectivelyPersistsUpdatedSettings() {
+        let expectation = self.expectation(description: "Persist updated general site settings")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
@@ -82,7 +82,7 @@ class SettingStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general-alt")
         let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { (error) in
             XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 20)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 19)
 
             let readOnlySiteSetting = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleGeneralSiteSetting().settingID)
             XCTAssertEqual(readOnlySiteSetting?.toReadOnly(), self.sampleGeneralSiteSettingMutated())
@@ -98,8 +98,8 @@ class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` returns an error whenever there is an error response from the backend.
     ///
-    func testRetrieveSiteSettingsReturnsErrorUponReponseError() {
-        let expectation = self.expectation(description: "Retrieve site settings error response")
+    func testRetrieveGeneralSiteSettingsReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve general site settings error response")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "generic_error")
@@ -114,8 +114,8 @@ class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` returns an error whenever there is no backend response.
     ///
-    func testRetrieveSiteSettingsReturnsErrorUponEmptyResponse() {
-        let expectation = self.expectation(description: "Retrieve site settings empty response")
+    func testRetrieveGeneralSiteSettingsReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve general site settings empty response")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { (error) in
@@ -132,7 +132,7 @@ class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredGeneralSiteSettings` effectively inserts a new SiteSetting, with the specified payload.
     ///
-    func testUpsertStoredSiteSettingsEffectivelyPersistsNewSiteSettings() {
+    func testUpsertStoredGeneralSiteSettingsEffectivelyPersistsNewSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteSiteSettings = [sampleGeneralSiteSetting(), sampleGeneralSiteSetting2()].sorted()
 
@@ -149,7 +149,7 @@ class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredGeneralSiteSettings` does not produce duplicate entries.
     ///
-    func testUpsertStoredSiteSettingsEffectivelyUpdatesPreexistantSiteSettings() {
+    func testUpsertStoredGeneralSiteSettingsEffectivelyUpdatesPreexistantSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
@@ -181,7 +181,7 @@ class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredGeneralSiteSettings` removes previously stored SiteSettings correctly.
     ///
-    func testUpsertStoredSiteSettingsEffectivelyRemovesInvalidSiteSettings() {
+    func testUpsertStoredGeneralSiteSettingsEffectivelyRemovesInvalidSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
@@ -201,7 +201,7 @@ class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredGeneralSiteSettings` removes previously stored SiteSettings correctly if an empty read-only array is passed in.
     ///
-    func testUpsertStoredSiteSettingsEffectivelyRemovesSiteSettings() {
+    func testUpsertStoredGeneralSiteSettingsEffectivelyRemovesSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
@@ -213,6 +213,95 @@ class SettingStoreTests: XCTestCase {
                                                      readOnlySiteSettings: [],
                                                      in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
+    }
+
+
+    // MARK: - SettingAction.synchronizeProductSiteSettings
+
+    /// Verifies that `SettingAction.synchronizeProductSiteSettings` effectively persists any retrieved SiteSettings.
+    ///
+    func testRetrieveProductSiteSettingsEffectivelyPersistsRetrievedSettings() {
+        let expectation = self.expectation(description: "Persist product site settings")
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "settings/products", filename: "settings-product")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
+
+        let action = SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { (error) in
+            XCTAssertNil(error)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 23)
+
+            let readOnlySiteSetting = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleProductSiteSetting().settingID)
+            XCTAssertEqual(readOnlySiteSetting?.toReadOnly(), self.sampleProductSiteSetting())
+
+            let readOnlySiteSetting2 = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleProductSiteSetting2().settingID)
+            XCTAssertEqual(readOnlySiteSetting2?.toReadOnly(), self.sampleProductSiteSetting2())
+
+            expectation.fulfill()
+        }
+
+        settingStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `SettingAction.synchronizeProductSiteSettings` effectively persists any updated SiteSettings.
+    ///
+    func testRetrieveProductSiteSettingsEffectivelyPersistsUpdatedSettings() {
+        let expectation = self.expectation(description: "Persist updated product site settings")
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
+        settingStore.upsertStoredProductSiteSettings(siteID: sampleSiteID,
+                                                     readOnlySiteSettings: [sampleProductSiteSetting(), sampleProductSiteSetting2()],
+                                                     in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
+
+        network.simulateResponse(requestUrlSuffix: "settings/products", filename: "settings-product-alt")
+        let action = SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { (error) in
+            XCTAssertNil(error)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 22)
+
+            let readOnlySiteSetting = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleProductSiteSetting().settingID)
+            XCTAssertEqual(readOnlySiteSetting?.toReadOnly(), self.sampleProductSiteSettingMutated())
+
+            let readOnlySiteSetting2 = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleProductSiteSetting2().settingID)
+            XCTAssertEqual(readOnlySiteSetting2?.toReadOnly(), self.sampleProductSiteSetting2Mutated())
+            expectation.fulfill()
+        }
+
+        settingStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `SettingAction.synchronizeProductSiteSettings` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveProductSiteSettingsReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve product site settings error response")
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "settings/products", filename: "generic_error")
+        let action = SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { (error) in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        settingStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `SettingAction.synchronizeProductSiteSettings` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveProductSiteSettingsReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve product site settings empty response")
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { (error) in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        settingStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
 
@@ -329,6 +418,44 @@ private extension SettingStoreTests {
                            description: "This sets the thousand separator!!",
                            value: "~",
                            settingGroupKey: SiteSettingGroup.general.rawValue)
+    }
+
+    // MARK: - Product SiteSetting Samples
+
+    func sampleProductSiteSetting() -> Networking.SiteSetting {
+        return SiteSetting(siteID: sampleSiteID,
+                           settingID: "woocommerce_dimension_unit",
+                           label: "Dimensions unit",
+                           description: "This controls what unit you will define lengths in.",
+                           value: "m",
+                           settingGroupKey: SiteSettingGroup.product.rawValue)
+    }
+
+    func sampleProductSiteSettingMutated() -> Networking.SiteSetting {
+        return SiteSetting(siteID: sampleSiteID,
+                           settingID: "woocommerce_dimension_unit",
+                           label: "Dimension Fruit",
+                           description: "This controls what fruit you will define lengths in.",
+                           value: "Kumquat",
+                           settingGroupKey: SiteSettingGroup.product.rawValue)
+    }
+
+    func sampleProductSiteSetting2() -> Networking.SiteSetting {
+        return SiteSetting(siteID: sampleSiteID,
+                           settingID: "woocommerce_weight_unit",
+                           label: "Weight unit",
+                           description: "This controls what unit you will define weights in.",
+                           value: "kg",
+                           settingGroupKey: SiteSettingGroup.product.rawValue)
+    }
+
+    func sampleProductSiteSetting2Mutated() -> Networking.SiteSetting {
+        return SiteSetting(siteID: sampleSiteID,
+                           settingID: "woocommerce_weight_unit",
+                           label: "Animal unit",
+                           description: "This controls what animal you will define weights in.",
+                           value: "elephants",
+                           settingGroupKey: SiteSettingGroup.product.rawValue)
     }
 
     // MARK: - SiteAPI Samples

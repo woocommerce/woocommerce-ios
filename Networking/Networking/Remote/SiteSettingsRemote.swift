@@ -15,7 +15,7 @@ public class SiteSettingsRemote: Remote {
     public func loadGeneralSettings(for siteID: Int, completion: @escaping ([SiteSetting]?, Error?) -> Void) {
         let path = Constants.siteSettingsPath + Constants.generalSettingsGroup
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
-        let mapper = SiteSettingsMapper(siteID: siteID, settingsGroup: Constants.generalSettingsGroup)
+        let mapper = SiteSettingsMapper(siteID: siteID, settingsGroup: SiteSettingGroup.general)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -29,7 +29,7 @@ public class SiteSettingsRemote: Remote {
     public func loadProductSettings(for siteID: Int, completion: @escaping ([SiteSetting]?, Error?) -> Void) {
         let path = Constants.siteSettingsPath + Constants.productSettingsGroup
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
-        let mapper = SiteSettingsMapper(siteID: siteID, settingsGroup: Constants.productSettingsGroup)
+        let mapper = SiteSettingsMapper(siteID: siteID, settingsGroup: SiteSettingGroup.product)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

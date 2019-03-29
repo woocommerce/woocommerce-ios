@@ -65,6 +65,8 @@ class AuthenticationManager {
     func loginForWordPressDotCom() -> UIViewController {
         let loginViewController = WordPressAuthenticator.signinForWPCom()
         loginViewController.offerSignupOption = false
+        loginViewController.loginFields.restrictToWPCom = false
+
         return loginViewController
     }
 

@@ -225,12 +225,19 @@ private extension StoresManager {
 
         CurrencySettings.shared.beginListeningToSiteSettingsUpdates()
 
-        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
+        let generalSettingsAction = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
             if let error = error {
                 DDLogError("⛔️ Could not successfully synchronize general settings for siteID \(siteID): \(error)")
             }
         }
-        dispatch(action)
+        dispatch(generalSettingsAction)
+
+        let productSettingsAction = SettingAction.synchronizeProductSiteSettings(siteID: siteID) { error in
+            if let error = error {
+                DDLogError("⛔️ Could not successfully synchronize product settings for siteID \(siteID): \(error)")
+            }
+        }
+        dispatch(productSettingsAction)
     }
 
     /// Synchronizes the order statuses, if possible.

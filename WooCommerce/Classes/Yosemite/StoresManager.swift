@@ -215,29 +215,43 @@ private extension StoresManager {
         dispatch(action)
     }
 
-    /// Loads the specified site settings, if possible.
+    /// Synchronizes the settings for the specified site, if possible.
     ///
-    func fetchSiteSettings(with siteID: Int) {
+    func synchronizeSettings(with siteID: Int, onCompletion: @escaping () -> Void) {
         guard siteID != 0 else {
             // Just return if the siteID == 0 so we are not making extra requests
             return
         }
 
-        CurrencySettings.shared.beginListeningToSiteSettingsUpdates()
+        let group = DispatchGroup()
+        var errors = [Error]()
 
+        group.enter()
         let generalSettingsAction = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
             if let error = error {
-                DDLogError("⛔️ Could not successfully synchronize general settings for siteID \(siteID): \(error)")
+                errors.append(error)
             }
+            group.leave()
         }
         dispatch(generalSettingsAction)
 
+        group.enter()
         let productSettingsAction = SettingAction.synchronizeProductSiteSettings(siteID: siteID) { error in
             if let error = error {
-                DDLogError("⛔️ Could not successfully synchronize product settings for siteID \(siteID): \(error)")
+                errors.append(error)
             }
+            group.leave()
         }
         dispatch(productSettingsAction)
+
+        group.notify(queue: .main) {
+            if errors.isEmpty {
+                DDLogInfo("🎛 Site settings sync completed for siteID \(siteID)")
+            } else {
+                DDLogError("⛔️ Site settings sync had \(errors.count) error(s) for siteID \(siteID): \(errors)")
+            }
+            onCompletion()
+        }
     }
 
     /// Synchronizes the order statuses, if possible.
@@ -265,7 +279,9 @@ private extension StoresManager {
         }
 
         restoreSessionSite(with: siteID)
-        fetchSiteSettings(with: siteID)
+        synchronizeSettings(with: siteID) {
+            CurrencySettings.shared.beginListeningToSiteSettingsUpdates()
+        }
         retrieveOrderStatus(with: siteID)
     }
 

@@ -29,6 +29,6 @@ extension UIImage {
     /// Returns WordPressAuthenticator's Bundle
     ///
     private static var bundle: Bundle {
-        return Bundle(for: WordPressAuthenticator.self)
+        return WordPressAuthenticator.resourcesBundle
     }
 }

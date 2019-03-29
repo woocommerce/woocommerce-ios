@@ -75,12 +75,12 @@ extension StoreStatsViewController {
         periodVCs.forEach { (vc) in
             group.enter()
 
-            syncOrderStats(for: vc.granularity) { error in
+            syncOrderStats(for: vc.granularity) { [weak self] error in
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing order stats: \(error)")
                     syncError = error
                 } else {
-                    WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": vc.granularity.rawValue])
+                    self?.trackStatsLoaded(for: vc.granularity.rawValue)
                 }
                 group.leave()
             }
@@ -252,6 +252,17 @@ private extension StoreStatsViewController {
         case .year:
             return Constants.quantityDefaultForYear
         }
+    }
+
+    func trackStatsLoaded(for granularityString: String) {
+        guard StoresManager.shared.isAuthenticated else {
+            return
+        }
+        guard granularityString.isEmpty == false else {
+            return
+        }
+
+        WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularityString])
     }
 }
 

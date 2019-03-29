@@ -280,7 +280,7 @@ private extension StoresManager {
 
         restoreSessionSite(with: siteID)
         synchronizeSettings(with: siteID) {
-            CurrencySettings.shared.beginListeningToSiteSettingsUpdates()
+            CurrencySettings.shared.refresh()
         }
         retrieveOrderStatus(with: siteID)
     }

@@ -156,4 +156,3 @@ extension SettingStore {
         upsertSettings(readOnlySiteSettings, in: storage, siteID: siteID, settingGroup: SiteSettingGroup.product)
     }
 }
-

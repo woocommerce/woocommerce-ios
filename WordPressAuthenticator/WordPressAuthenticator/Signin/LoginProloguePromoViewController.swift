@@ -61,7 +61,7 @@ class LoginProloguePromoViewController: UIViewController {
         headingLabel = UILabel()
         animationHolder = UIView()
 
-        let bundle = Bundle(for: WordPressAuthenticator.self)
+        let bundle = WordPressAuthenticator.resourcesBundle
         animationView = LOTAnimationView(name: type.animationKey, bundle: bundle)
 
         super.init(nibName: nil, bundle: nil)

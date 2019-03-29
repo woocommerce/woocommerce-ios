@@ -55,6 +55,9 @@ extension ProductDefaultAttribute: Comparable {
     }
 
     public static func < (lhs: ProductDefaultAttribute, rhs: ProductDefaultAttribute) -> Bool {
-        return lhs.attributeID < rhs.attributeID
+        let lhsName = lhs.name ?? ""
+        let rhsName = rhs.name ?? ""
+        return lhs.attributeID < rhs.attributeID ||
+            (lhs.attributeID == rhs.attributeID && lhsName < rhsName)
     }
 }

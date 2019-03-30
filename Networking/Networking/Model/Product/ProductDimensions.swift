@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Dimensions Entity.
 ///
-public struct ProductDimension: Decodable {
+public struct ProductDimensions: Decodable {
     public let length: String
     public let width: String
     public let height: String
@@ -21,7 +21,7 @@ public struct ProductDimension: Decodable {
 
 /// Defines all of the Dimensions CodingKeys
 ///
-private extension ProductDimension {
+private extension ProductDimensions {
 
     enum CodingKeys: String, CodingKey {
         case length
@@ -32,14 +32,14 @@ private extension ProductDimension {
 
 // MARK: - Comparable Conformance
 //
-extension ProductDimension: Comparable {
-    public static func == (lhs: ProductDimension, rhs: ProductDimension) -> Bool {
+extension ProductDimensions: Comparable {
+    public static func == (lhs: ProductDimensions, rhs: ProductDimensions) -> Bool {
         return lhs.length == rhs.length &&
             lhs.width == rhs.width &&
             lhs.height == rhs.height
     }
 
-    public static func < (lhs: ProductDimension, rhs: ProductDimension) -> Bool {
+    public static func < (lhs: ProductDimensions, rhs: ProductDimensions) -> Bool {
         return lhs.length < rhs.length ||
             (lhs.length == rhs.length && lhs.width < rhs.width) ||
             (lhs.length == rhs.length && lhs.width == rhs.width && lhs.height < rhs.height)

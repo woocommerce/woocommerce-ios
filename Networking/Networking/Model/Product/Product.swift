@@ -49,7 +49,7 @@ public struct Product: Decodable {
 
     public let soldIndividually: Bool
     public let weight: String?
-    public let dimensions: ProductDimension
+    public let dimensions: ProductDimensions
 
     public let shippingRequired: Bool
     public let shippingTaxable: Bool
@@ -120,7 +120,7 @@ public struct Product: Decodable {
                 backordered: Bool,
                 soldIndividually: Bool,
                 weight: String?,
-                dimensions: ProductDimension,
+                dimensions: ProductDimensions,
                 shippingRequired: Bool,
                 shippingTaxable: Bool,
                 shippingClass: String?,
@@ -252,7 +252,7 @@ public struct Product: Decodable {
 
         let soldIndividuallly = try container.decode(Bool.self, forKey: .soldIndividually)
         let weight = try container.decodeIfPresent(String.self, forKey: .weight)
-        let dimensions = try container.decode(ProductDimension.self, forKey: .dimensions)
+        let dimensions = try container.decode(ProductDimensions.self, forKey: .dimensions)
 
         let shippingRequired = try container.decode(Bool.self, forKey: .shippingRequired)
         let shippingTaxable = try container.decode(Bool.self, forKey: .shippingTaxable)
@@ -470,11 +470,16 @@ extension Product: Comparable {
             lhs.upsellIDs == rhs.upsellIDs &&
             lhs.parentID == rhs.parentID &&
             lhs.purchaseNote == rhs.purchaseNote &&
-            lhs.categories == rhs.categories &&
-            lhs.tags == rhs.tags &&
-            lhs.images == rhs.images &&
-            lhs.attributes == rhs.attributes &&
-            lhs.defaultAttributes == rhs.defaultAttributes &&
+            lhs.categories.count == rhs.categories.count &&
+            lhs.categories.sorted() == rhs.categories.sorted() &&
+            lhs.tags.count == rhs.tags.count &&
+            lhs.tags.sorted() == rhs.tags.sorted() &&
+            lhs.images.count == rhs.images.count &&
+            lhs.images.sorted() == rhs.images.sorted() &&
+            lhs.attributes.count == rhs.attributes.count &&
+            lhs.attributes.sorted() == rhs.attributes.sorted() &&
+            lhs.defaultAttributes.count == rhs.defaultAttributes.count &&
+            lhs.defaultAttributes.sorted() == rhs.defaultAttributes.sorted() &&
             lhs.variations == rhs.variations &&
             lhs.groupedProducts == rhs.groupedProducts &&
             lhs.menuOrder == rhs.menuOrder

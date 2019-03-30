@@ -32,7 +32,7 @@
             "downloads": [],
             "download_limit": -1,
             "download_expiry": -1,
-            "external_url": "",
+            "external_url": "http://somewhere.com",
             "button_text": "",
             "tax_status": "taxable",
             "tax_class": "",
@@ -43,24 +43,37 @@
             "backorders_allowed": false,
             "backordered": false,
             "sold_individually": true,
-            "weight": "",
+            "weight": "213",
             "dimensions": {
-                "length": "",
-                "width": "",
-                "height": ""
+                "length": "12",
+                "width": "33",
+                "height": "54"
             },
             "shipping_required": false,
             "shipping_taxable": false,
             "shipping_class": "",
             "shipping_class_id": 0,
             "reviews_allowed": true,
-            "average_rating": "0.00",
-            "rating_count": 0,
-            "related_ids": [],
-            "upsell_ids": [],
-            "cross_sell_ids": [],
+            "average_rating": "4.30",
+            "rating_count": 23,
+            "related_ids": [
+                31,
+                22,
+                369,
+                414,
+                56
+            ],
+            "upsell_ids":  [
+                99,
+                1234566
+            ],
+            "cross_sell_ids":  [
+                1234,
+                234234,
+                3
+            ],
             "parent_id": 0,
-            "purchase_note": "",
+            "purchase_note": "Thank you!",
             "categories": [
                 {
                     "id": 36,
@@ -70,9 +83,14 @@
             ],
             "tags": [
                 {
-                    "id": 40,
-                    "name": "20+",
-                    "slug": "20"
+                    "id": 37,
+                    "name": "room",
+                    "slug": "room"
+                },
+                {
+                    "id": 38,
+                    "name": "party room",
+                    "slug": "party-room"
                 },
                 {
                     "id": 39,
@@ -80,14 +98,9 @@
                     "slug": "30"
                 },
                 {
-                    "id": 45,
-                    "name": "birthday party",
-                    "slug": "birthday-party"
-                },
-                {
-                    "id": 44,
-                    "name": "graduation",
-                    "slug": "graduation"
+                    "id": 40,
+                    "name": "20+",
+                    "slug": "20"
                 },
                 {
                     "id": 41,
@@ -105,20 +118,73 @@
                     "slug": "parties"
                 },
                 {
-                    "id": 38,
-                    "name": "party room",
-                    "slug": "party-room"
+                    "id": 44,
+                    "name": "graduation",
+                    "slug": "graduation"
                 },
                 {
-                    "id": 37,
-                    "name": "room",
-                    "slug": "room"
+                    "id": 45,
+                    "name": "birthday party",
+                    "slug": "birthday-party"
                 }
             ],
-            "images": [],
-            "attributes": [],
-            "default_attributes": [],
-            "variations": [],
+            "images": [
+                {
+                    "id": 19,
+                    "date_created": "2018-01-26T21:49:45",
+                    "date_created_gmt": "2018-01-26T21:49:45",
+                    "date_modified": "2018-01-26T21:50:11",
+                    "date_modified_gmt": "2018-01-26T21:50:11",
+                    "src": "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png",
+                    "name": "Vneck Tshirt",
+                    "alt": ""
+                }
+            ],
+            "attributes": [
+                {
+                    "id": 0,
+                    "name": "Color",
+                    "position": 1,
+                    "visible": true,
+                    "variation": true,
+                    "options": [
+                        "Purple",
+                        "Yellow",
+                        "Hot Pink",
+                        "Lime Green",
+                        "Teal"
+                    ]
+                },
+                {
+                    "id": 0,
+                    "name": "Size",
+                    "position": 0,
+                    "visible": true,
+                    "variation": true,
+                    "options": [
+                        "Small",
+                        "Medium",
+                        "Large"
+                    ]
+                }
+            ],
+            "default_attributes": [
+                {
+                    "id": 0,
+                    "name": "Color",
+                    "option": "Purple"
+                },
+                {
+                    "id": 0,
+                    "name": "Size",
+                    "option": "Medium"
+                }
+            ],
+            "variations": [
+                192,
+                194,
+                193
+            ],
             "grouped_products": [],
             "menu_order": 0,
             "meta_data": [
@@ -525,9 +591,9 @@
                     "id": 19,
                     "date_created": "2018-01-26T21:49:45",
                     "date_created_gmt": "2018-01-26T21:49:45",
-                    "date_modified": "2018-01-26T21:49:45",
-                    "date_modified_gmt": "2018-01-26T21:49:45",
-                    "src": "https://i2.wp.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg?fit=801%2C800&ssl=1",
+                    "date_modified": "2018-01-26T21:50:11",
+                    "date_modified_gmt": "2018-01-26T21:50:11",
+                    "src": "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png",
                     "name": "Vneck Tshirt",
                     "alt": ""
                 }

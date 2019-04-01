@@ -30,6 +30,8 @@ final class FulfillViewController: UIViewController {
     ///
     private let order: Order
 
+    /// ResultsController fetching ShipemntTracking data
+    ///
     private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
         let storageManager = AppDelegate.shared.storageManager
         let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
@@ -361,20 +363,6 @@ private extension FulfillViewController {
                                                 comment: "Order details > tracking. " +
                 " This is where the shipping date would normally display.")
         }
-
-//        cell.onActionTouchUp = { [ weak self ] in
-//            self?.trackingWasPressed(at: indexPath)
-//        }
-
-    }
-
-    func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
-        let orderIndex = indexPath.row
-        guard orderTracking.indices.contains(orderIndex) else {
-            return nil
-        }
-
-        return orderTracking[orderIndex]
     }
 
     /// Setup: Add Tracking Cell
@@ -428,6 +416,8 @@ extension FulfillViewController: UITableViewDelegate {
 }
 
 
+// MARK: - Data fetch
+//
 private extension FulfillViewController {
     func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
         let orderID = order.orderID
@@ -446,11 +436,7 @@ private extension FulfillViewController {
 
         StoresManager.shared.dispatch(action)
     }
-}
 
-
-
-extension FulfillViewController {
     func configureTrackingResultsController() {
         trackingResultsController.onDidChangeContent = { [weak self] in
             self?.reloadSections()
@@ -463,6 +449,20 @@ extension FulfillViewController {
         try? trackingResultsController.performFetch()
     }
 
+    func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
+        let orderIndex = indexPath.row
+        guard orderTracking.indices.contains(orderIndex) else {
+            return nil
+        }
+
+        return orderTracking[orderIndex]
+    }
+}
+
+
+// MARK: - Table view sections
+//
+private extension FulfillViewController {
     func reloadSections() {
         let products: Section = {
             let title = NSLocalizedString("Product", comment: "Section header title for the product")

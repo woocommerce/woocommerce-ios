@@ -31,6 +31,7 @@ enum AddEditTrackingRow: CaseIterable {
 }
 
 protocol AddEditTrackingViewModel {
+    var siteID: Int { get }
     var orderID: Int { get }
     var title: String { get }
     var providerCellName: String { get }
@@ -60,6 +61,7 @@ extension AddEditTrackingViewModel {
 }
 
 final class AddTrackingViewModel: AddEditTrackingViewModel {
+    let siteID: Int
     let orderID: Int
 
     let title = NSLocalizedString("Add Tracking",
@@ -101,7 +103,8 @@ final class AddTrackingViewModel: AddEditTrackingViewModel {
         return false
     }
 
-    init(orderID: Int) {
+    init(siteID: Int, orderID: Int) {
+        self.siteID = siteID
         self.orderID = orderID
     }
 
@@ -135,6 +138,7 @@ extension AddTrackingViewModel: ShipmentProviderListDelegate {
 
 
 final class EditTrackingViewModel: AddEditTrackingViewModel {
+    let siteID: Int
     let orderID: Int
 
     let title = NSLocalizedString("Edit Tracking",
@@ -180,7 +184,8 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
         return false
     }
 
-    init(orderID: Int, shipmentTracking: ShipmentTracking) {
+    init(siteID: Int, orderID: Int, shipmentTracking: ShipmentTracking) {
+        self.siteID = siteID
         self.orderID = orderID
         self.shipmentTracking = shipmentTracking
     }

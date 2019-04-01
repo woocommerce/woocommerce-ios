@@ -82,11 +82,11 @@ private extension AddEditTrackingViewController {
     }
 
     @objc func dismissButtonTapped() {
-        dismiss(animated: true, completion: nil)
+        dismiss()
     }
 
     @objc func primaryButtonTapped() {
-//        let action = ShipmentAction.addTracking(siteID: <#T##Int#>, orderID: <#T##Int#>, providerGroupName: <#T##String#>, providerName: <#T##String#>, trackingNumber: <#T##String#>, onCompletion: <#T##(Error?) -> Void#>)
+        viewModel.isCustom ? addTracking() : addCustomTracking()
     }
 }
 
@@ -234,6 +234,60 @@ private extension AddEditTrackingViewController {
     }
 }
 
+
+
+private extension AddEditTrackingViewController {
+    private func addTracking() {
+        guard let groupName = viewModel.shipmentProviderGroupName, let providerName = viewModel.shipmentProvider?.name, let trackingNumber = viewModel.trackingNumber else {
+            return
+        }
+
+        let orderID = viewModel.orderID
+
+        let addTrackingAction = ShipmentAction.addTracking(siteID: viewModel.siteID,
+                                                           orderID: orderID,
+                                                           providerGroupName: groupName,
+                                                           providerName: providerName,
+                                                           trackingNumber: trackingNumber) { [weak self] error in
+
+                                                            guard let error = error else {
+                                                                //track error in Tracks
+                                                                return
+                                                            }
+
+                                                            self?.dismiss()
+                                                            //track success ib Tracks
+                                                            DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
+
+                                                            self?.displayErrorNotice(orderID: orderID)
+        }
+
+        StoresManager.shared.dispatch(addTrackingAction)
+    }
+
+    func addCustomTracking() {
+
+    }
+
+    func dismiss() {
+        dismiss(animated: true, completion: nil)
+    }
+
+    /// Displays the `Unable to Add tracking` Notice.
+    ///
+    func displayErrorNotice(orderID: Int) {
+        let title = NSLocalizedString(
+            "Unable to add tracking to order #\(orderID)",
+            comment: "Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number}"
+        )
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.primaryButtonTapped()
+        }
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+}
 
 private struct Constants {
     static let rowHeight = CGFloat(74)

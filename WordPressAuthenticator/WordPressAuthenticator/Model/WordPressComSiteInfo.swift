@@ -3,7 +3,7 @@ import Foundation
 
 // MARK: - WordPress.com Site Info
 //
-class WordPressComSiteInfo {
+public class WordPressComSiteInfo {
 
     /// Site's Name!
     ///

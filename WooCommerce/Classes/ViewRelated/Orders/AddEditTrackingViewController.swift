@@ -193,6 +193,8 @@ extension AddEditTrackingViewController: UITableViewDataSource {
 
     private func configureTrackingNumber(cell: EditableValueOneTableViewCell) {
         cell.title.text = NSLocalizedString("Tracking number", comment: "Add / Edit shipping provider. Title of cell presenting tracking number")
+
+        cell.value.text = viewModel.shipmentTracking?.trackingNumber
         cell.value.isEnabled = true
 
         cell.value.addTarget(self, action: #selector(didChangeTrackingNumber), for: .editingChanged)

@@ -172,7 +172,7 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
     var shipmentProviderGroupName: String?
 
     var providerCellName: String {
-        return shipmentProvider?.name ?? ""
+        return shipmentTracking?.trackingProvider ?? ""
     }
 
     var canCommit: Bool {

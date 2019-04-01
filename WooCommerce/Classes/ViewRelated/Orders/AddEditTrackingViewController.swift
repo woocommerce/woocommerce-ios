@@ -15,6 +15,14 @@ final class AddEditTrackingViewController: UIViewController {
         return self.viewModel.sections
     }()
 
+    /// Dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
+    ///
+    private lazy var noticePresenter: NoticePresenter = {
+        let noticePresenter = NoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     init(viewModel: AddEditTrackingViewModel) {
         self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)
@@ -246,6 +254,11 @@ extension AddEditTrackingViewController: UITableViewDelegate {
 //
 private extension AddEditTrackingViewController {
     func executeAction(for row: AddEditTrackingRow) {
+        if row == .deleteTracking {
+            deleteTracking()
+            return
+        }
+
         viewModel.executeAction(for: row, sender: self)
     }
 }
@@ -278,7 +291,31 @@ private extension AddEditTrackingViewController {
 // MARK: - Actions!
 //
 private extension AddEditTrackingViewController {
-    private func addTracking() {
+    func deleteTracking() {
+        configureForCommittingTracking()
+
+        let siteID = viewModel.siteID
+        let orderID = viewModel.orderID
+        guard let trackingID = viewModel.shipmentTracking?.trackingID else {
+            return
+        }
+
+        let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID, orderID: orderID, trackingID: trackingID) { [weak self] error in
+            if let error = error {
+                //track error ib Tracks
+                DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
+
+                self?.configureForEditingTracking()
+
+                self?.displayDeleteErrorNotice(orderID: orderID)
+                return
+            }
+        }
+
+        StoresManager.shared.dispatch(deleteTrackingAction)
+    }
+
+    func addTracking() {
         configureForCommittingTracking()
         guard let groupName = viewModel.shipmentProviderGroupName,
             let providerName = viewModel.shipmentProvider?.name,
@@ -300,7 +337,7 @@ private extension AddEditTrackingViewController {
 
                                                                 self?.configureForEditingTracking()
 
-                                                                self?.displayErrorNotice(orderID: orderID)
+                                                                self?.displayAddErrorNotice(orderID: orderID)
                                                                 return
                                                             }
 
@@ -329,7 +366,7 @@ private extension AddEditTrackingViewController {
 private extension AddEditTrackingViewController {
     /// Displays the `Unable to Add tracking` Notice.
     ///
-    func displayErrorNotice(orderID: Int) {
+    func displayAddErrorNotice(orderID: Int) {
         let title = NSLocalizedString(
             "Unable to add tracking to order #\(orderID)",
             comment: "Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number}"
@@ -339,7 +376,22 @@ private extension AddEditTrackingViewController {
             self?.primaryButtonTapped()
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Displays the `Unable to delete tracking` Notice.
+    ///
+    func displayDeleteErrorNotice(orderID: Int) {
+        let title = NSLocalizedString(
+            "Unable to delete tracking for order #\(orderID)",
+            comment: "Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}"
+        )
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.deleteTracking()
+        }
+
+        noticePresenter.enqueue(notice: notice)
     }
 }
 

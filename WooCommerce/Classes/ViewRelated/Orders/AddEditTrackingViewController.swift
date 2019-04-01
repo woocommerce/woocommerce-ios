@@ -166,6 +166,8 @@ extension AddEditTrackingViewController: UITableViewDataSource {
     private func configureDateShipped(cell: EditableValueOneTableViewCell) {
         cell.title.text = NSLocalizedString("Date shipped", comment: "Add / Edit shipping provider. Title of cell date shipped")
 
+        cell.value.text = viewModel.shipmentDate.toString(dateStyle: .medium, timeStyle: .none)
+
         cell.value.isEnabled = true
         cell.accessoryType = .none
     }

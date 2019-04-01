@@ -37,6 +37,8 @@ protocol AddEditTrackingViewModel {
     var primaryActionTitle: String { get }
     var secondaryActionTitle: String? { get }
     var sections: [AddEditTrackingSection] { get }
+    var shipmentDate: Date { get }
+    var shipmentTracking: ShipmentTracking? { get }
     var shipmentProvider: ShipmentTrackingProvider? { get set }
 
     func registerCells(for tableView: UITableView)
@@ -62,6 +64,9 @@ final class AddTrackingViewModel: AddEditTrackingViewModel {
                                                comment: "Add tracking screen - button title to add a tracking")
     let secondaryActionTitle: String? = nil
 
+    let shipmentTracking: ShipmentTracking? = nil
+
+    let shipmentDate = Date()
 
     var sections: [AddEditTrackingSection] {
         let trackingRows: [AddEditTrackingRow] = [.shippingProvider,
@@ -115,6 +120,12 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
     let secondaryActionTitle: String? = NSLocalizedString("Delete Tracking",
                                                  comment: "Delete Tracking button title")
 
+    let shipmentTracking: ShipmentTracking?
+
+    var shipmentDate: Date {
+        return shipmentTracking?.dateShipped ?? Date()
+    }
+
     var sections: [AddEditTrackingSection] {
         let trackingRows: [AddEditTrackingRow] = [.shippingProvider,
                                                       .trackingNumber,
@@ -131,8 +142,9 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
         return shipmentProvider?.name ?? ""
     }
 
-    init(orderID: Int) {
+    init(orderID: Int, shipmentTracking: ShipmentTracking) {
         self.orderID = orderID
+        self.shipmentTracking = shipmentTracking
     }
 
     func executeAction(for row: AddEditTrackingRow, sender: UIViewController) {

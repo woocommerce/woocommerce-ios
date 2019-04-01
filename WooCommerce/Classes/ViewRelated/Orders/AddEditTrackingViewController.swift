@@ -3,7 +3,7 @@ import UIKit
 /// Presents a tracking provider, tracking number and shipment date
 ///
 final class AddEditTrackingViewController: UIViewController {
-    private let viewModel: AddEditTrackingViewModel
+    private var viewModel: AddEditTrackingViewModel
 
     @IBOutlet private weak var table: UITableView!
 
@@ -31,6 +31,7 @@ final class AddEditTrackingViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         table.reloadData()
+        activateActionButtonIfNecessary()
     }
 }
 
@@ -159,8 +160,8 @@ extension AddEditTrackingViewController: UITableViewDataSource {
         cell.title.text = NSLocalizedString("Tracking number", comment: "Add / Edit shipping provider. Title of cell presenting tracking number")
         cell.value.isEnabled = true
 
-        let camera = UIImageView(image: .cameraImage)
-        cell.accessoryView = camera
+        cell.value.addTarget(self, action: #selector(didChangeTrackingNumber), for: .editingChanged)
+        cell.accessoryType = .none
     }
 
     private func configureDateShipped(cell: EditableValueOneTableViewCell) {
@@ -209,6 +210,27 @@ private extension AddEditTrackingViewController {
     }
 }
 
+
+/// Tracking number textfield
+///
+private extension AddEditTrackingViewController {
+    @objc func didChangeTrackingNumber(sender: UITextField) {
+        guard let newTrackingNumber = sender.text else {
+            return
+        }
+
+        viewModel.trackingNumber = newTrackingNumber
+        activateActionButtonIfNecessary()
+    }
+}
+
+
+/// Activates the action button (Add/Edit) if there is anough data to add or edit a shipment tracking
+private extension AddEditTrackingViewController {
+    private func activateActionButtonIfNecessary() {
+        navigationItem.rightBarButtonItem?.isEnabled = viewModel.canCommit
+    }
+}
 
 
 private struct Constants {

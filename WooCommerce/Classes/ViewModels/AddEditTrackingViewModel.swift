@@ -42,6 +42,8 @@ protocol AddEditTrackingViewModel {
     var shipmentTracking: ShipmentTracking? { get }
     var shipmentProvider: ShipmentTrackingProvider? { get set }
 
+    var canCommit: Bool { get }
+
     func registerCells(for tableView: UITableView)
     func executeAction(for row: AddEditTrackingRow, sender: UIViewController)
 }
@@ -85,6 +87,11 @@ final class AddTrackingViewModel: AddEditTrackingViewModel {
 
     var providerCellName: String {
         return shipmentProvider?.name ?? ""
+    }
+
+    var canCommit: Bool {
+        return shipmentProvider != nil &&
+            trackingNumber != nil
     }
 
     init(orderID: Int) {
@@ -153,6 +160,11 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
 
     var providerCellName: String {
         return shipmentProvider?.name ?? ""
+    }
+
+    var canCommit: Bool {
+        return shipmentProvider != nil &&
+            trackingNumber != nil
     }
 
     init(orderID: Int, shipmentTracking: ShipmentTracking) {

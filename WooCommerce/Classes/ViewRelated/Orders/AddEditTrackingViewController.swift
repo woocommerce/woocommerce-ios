@@ -81,12 +81,41 @@ private extension AddEditTrackingViewController {
         navigationItem.rightBarButtonItem?.isEnabled = false
     }
 
+    func configureForCommittingTracking() {
+        hideKeyboard()
+        configureRightButtonItemAsSpinner()
+        navigationItem.rightBarButtonItem?.isEnabled = false
+    }
+
+    func configureForEditingTracking() {
+        configureAddButton()
+        navigationItem.rightBarButtonItem?.isEnabled = true
+    }
+
+    func configureRightButtonItemAsSpinner() {
+        let activityIndicator = UIActivityIndicatorView(style: .white)
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.startAnimating()
+
+        let rightBarButton = UIBarButtonItem(customView: activityIndicator)
+
+        navigationItem.setRightBarButton(rightBarButton, animated: true)
+    }
+
+    func showKeyboard() {
+        table.firstSubview(ofType: UITextField.self)?.becomeFirstResponder()
+    }
+
+    func hideKeyboard() {
+        table.firstSubview(ofType: UITextField.self)?.resignFirstResponder()
+    }
+
     @objc func dismissButtonTapped() {
         dismiss()
     }
 
     @objc func primaryButtonTapped() {
-        viewModel.isCustom ? addTracking() : addCustomTracking()
+        viewModel.isCustom ? addCustomTracking() : addTracking()
     }
 }
 
@@ -238,6 +267,7 @@ private extension AddEditTrackingViewController {
 
 private extension AddEditTrackingViewController {
     private func addTracking() {
+        configureForCommittingTracking()
         guard let groupName = viewModel.shipmentProviderGroupName,
             let providerName = viewModel.shipmentProvider?.name,
             let trackingNumber = viewModel.trackingNumber else {
@@ -252,19 +282,23 @@ private extension AddEditTrackingViewController {
                                                            providerName: providerName,
                                                            trackingNumber: trackingNumber) { [weak self] error in
 
-                                                            guard let error = error else {
-                                                                //track error in Tracks
+                                                            if let error = error {
+                                                                //track error ib Tracks
+                                                                DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
+
+                                                                self?.configureForEditingTracking()
+
+                                                                self?.displayErrorNotice(orderID: orderID)
                                                                 return
                                                             }
 
-                                                            self?.dismiss()
-                                                            //track success ib Tracks
-                                                            DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 
-                                                            self?.displayErrorNotice(orderID: orderID)
+                                                            // Track success in tracks
+                                                            self?.dismiss()
         }
 
         StoresManager.shared.dispatch(addTrackingAction)
+
     }
 
     func addCustomTracking() {

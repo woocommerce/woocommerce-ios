@@ -92,12 +92,20 @@ final class AddTrackingViewModel: AddEditTrackingViewModel {
         if row == .shippingProvider {
             showAllShipmentProviders(sender: sender)
         }
+
+        if row == .dateShipped {
+            showDatePicker(sender: sender)
+        }
     }
 
     private func showAllShipmentProviders(sender: UIViewController) {
         let shippingProviders = ShippingProvidersViewModel(orderID: orderID)
         let shippingList = ShippingProvidersViewController(viewModel: shippingProviders, delegate: self)
         sender.navigationController?.pushViewController(shippingList, animated: true)
+    }
+
+    private func showDatePicker(sender: UIViewController) {
+        PickerPresenter().showDatePicker(date: shipmentDate, sender: sender)
     }
 }
 
@@ -155,6 +163,10 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
         if row == .shippingProvider {
             showAllShipmentProviders(sender: sender)
         }
+
+        if row == .dateShipped {
+            showDatePicker(sender: sender)
+        }
     }
 
     private func deleteCurrentTracking() {
@@ -167,10 +179,24 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
         let shippingList = ShippingProvidersViewController(viewModel: shippingProviders, delegate: self)
         sender.navigationController?.pushViewController(shippingList, animated: true)
     }
+
+    private func showDatePicker(sender: UIViewController) {
+        PickerPresenter().showDatePicker(date: shipmentDate, sender: sender)
+    }
 }
 
 extension EditTrackingViewModel: ShipmentProviderListDelegate {
     func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: ShipmentTrackingProvider) {
         shipmentProvider = didSelect
+    }
+}
+
+
+private struct PickerPresenter {
+    func showDatePicker(date: Date, sender: UIViewController) {
+        let picker = UIDatePicker(frame: .zero)
+        picker.autoresizingMask = .flexibleWidth
+        picker.datePickerMode = .date
+        picker.date = date
     }
 }

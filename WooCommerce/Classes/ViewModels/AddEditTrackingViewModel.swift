@@ -37,6 +37,7 @@ protocol AddEditTrackingViewModel {
     var primaryActionTitle: String { get }
     var secondaryActionTitle: String? { get }
     var sections: [AddEditTrackingSection] { get }
+    var trackingNumber: String? { get set }
     var shipmentDate: Date { get }
     var shipmentTracking: ShipmentTracking? { get }
     var shipmentProvider: ShipmentTrackingProvider? { get set }
@@ -65,6 +66,8 @@ final class AddTrackingViewModel: AddEditTrackingViewModel {
     let secondaryActionTitle: String? = nil
 
     let shipmentTracking: ShipmentTracking? = nil
+
+    var trackingNumber: String?
 
     let shipmentDate = Date()
 
@@ -129,6 +132,8 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
                                                  comment: "Delete Tracking button title")
 
     let shipmentTracking: ShipmentTracking?
+
+    var trackingNumber: String?
 
     var shipmentDate: Date {
         return shipmentTracking?.dateShipped ?? Date()

@@ -41,8 +41,10 @@ protocol AddEditTrackingViewModel {
     var shipmentDate: Date { get }
     var shipmentTracking: ShipmentTracking? { get }
     var shipmentProvider: ShipmentTrackingProvider? { get set }
+    var shipmentProviderGroupName: String? { get set }
 
     var canCommit: Bool { get }
+    var isCustom: Bool { get }
 
     func registerCells(for tableView: UITableView)
     func executeAction(for row: AddEditTrackingRow, sender: UIViewController)
@@ -84,6 +86,7 @@ final class AddTrackingViewModel: AddEditTrackingViewModel {
     }
 
     var shipmentProvider: ShipmentTrackingProvider?
+    var shipmentProviderGroupName: String?
 
     var providerCellName: String {
         return shipmentProvider?.name ?? ""
@@ -92,6 +95,10 @@ final class AddTrackingViewModel: AddEditTrackingViewModel {
     var canCommit: Bool {
         return shipmentProvider != nil &&
             trackingNumber != nil
+    }
+
+    var isCustom: Bool {
+        return false
     }
 
     init(orderID: Int) {
@@ -120,8 +127,9 @@ final class AddTrackingViewModel: AddEditTrackingViewModel {
 }
 
 extension AddTrackingViewModel: ShipmentProviderListDelegate {
-    func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: ShipmentTrackingProvider) {
+    func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: ShipmentTrackingProvider, groupName: String) {
         shipmentProvider = didSelect
+        shipmentProviderGroupName = groupName
     }
 }
 
@@ -157,6 +165,7 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
     }
 
     var shipmentProvider: ShipmentTrackingProvider?
+    var shipmentProviderGroupName: String?
 
     var providerCellName: String {
         return shipmentProvider?.name ?? ""
@@ -165,6 +174,10 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
     var canCommit: Bool {
         return shipmentProvider != nil &&
             trackingNumber != nil
+    }
+
+    var isCustom: Bool {
+        return false
     }
 
     init(orderID: Int, shipmentTracking: ShipmentTracking) {
@@ -203,8 +216,9 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
 }
 
 extension EditTrackingViewModel: ShipmentProviderListDelegate {
-    func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: ShipmentTrackingProvider) {
+    func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: ShipmentTrackingProvider, groupName: String) {
         shipmentProvider = didSelect
+        shipmentProviderGroupName = groupName
     }
 }
 

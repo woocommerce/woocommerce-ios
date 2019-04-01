@@ -1,4 +1,6 @@
 import UIKit
+import Yosemite
+import Storage
 
 /// Presents a tracking provider, tracking number and shipment date
 ///
@@ -84,7 +86,7 @@ private extension AddEditTrackingViewController {
     }
 
     @objc func primaryButtonTapped() {
-        print("=== add===")
+//        let action = ShipmentAction.addTracking(siteID: <#T##Int#>, orderID: <#T##Int#>, providerGroupName: <#T##String#>, providerName: <#T##String#>, trackingNumber: <#T##String#>, onCompletion: <#T##(Error?) -> Void#>)
     }
 }
 

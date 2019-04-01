@@ -2,7 +2,7 @@ import UIKit
 import Yosemite
 
 protocol ShipmentProviderListDelegate: AnyObject {
-    func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: ShipmentTrackingProvider)
+    func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: ShipmentTrackingProvider, groupName: String)
 }
 
 final class ShippingProvidersViewController: UIViewController {
@@ -130,8 +130,9 @@ extension ShippingProvidersViewController: UITableViewDelegate {
             return
         }
 
-        print("selected provider ", provider)
-        delegate?.shipmentProviderList(self, didSelect: provider)
+        let groupName = viewModel.resultsController.sections[indexPath.section].name
+
+        delegate?.shipmentProviderList(self, didSelect: provider, groupName: groupName)
     }
 }
 

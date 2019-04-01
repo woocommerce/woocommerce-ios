@@ -238,7 +238,9 @@ private extension AddEditTrackingViewController {
 
 private extension AddEditTrackingViewController {
     private func addTracking() {
-        guard let groupName = viewModel.shipmentProviderGroupName, let providerName = viewModel.shipmentProvider?.name, let trackingNumber = viewModel.trackingNumber else {
+        guard let groupName = viewModel.shipmentProviderGroupName,
+            let providerName = viewModel.shipmentProvider?.name,
+            let trackingNumber = viewModel.trackingNumber else {
             return
         }
 

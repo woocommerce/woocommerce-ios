@@ -123,6 +123,11 @@ private extension AddEditTrackingViewController {
     }
 
     @objc func primaryButtonTapped() {
+        if viewModel.isEditing == true {
+            updateTracking()
+
+            return
+        }
         viewModel.isCustom ? addCustomTracking() : addTracking()
     }
 }
@@ -300,7 +305,9 @@ private extension AddEditTrackingViewController {
             return
         }
 
-        let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID, orderID: orderID, trackingID: trackingID) { [weak self] error in
+        let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
+                                                                 orderID: orderID,
+                                                                 trackingID: trackingID) { [weak self] error in
             if let error = error {
                 //track error ib Tracks
                 DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
@@ -313,6 +320,19 @@ private extension AddEditTrackingViewController {
         }
 
         StoresManager.shared.dispatch(deleteTrackingAction)
+    }
+
+    func updateTracking() {
+        configureForCommittingTracking()
+
+//        let siteID = viewModel.siteID
+//        let orderID = viewModel.orderID
+//        guard let trackingID = viewModel.shipmentTracking?.trackingID else {
+//            return
+//        }
+
+        //let updateTrackingAction = ShipmentAction
+
     }
 
     func addTracking() {
@@ -372,7 +392,10 @@ private extension AddEditTrackingViewController {
             comment: "Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number}"
         )
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+        let notice = Notice(title: title,
+                            message: nil,
+                            feedbackType: .error,
+                            actionTitle: actionTitle) { [weak self] in
             self?.primaryButtonTapped()
         }
 
@@ -387,7 +410,10 @@ private extension AddEditTrackingViewController {
             comment: "Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}"
         )
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+        let notice = Notice(title: title,
+                            message: nil,
+                            feedbackType: .error,
+                            actionTitle: actionTitle) { [weak self] in
             self?.deleteTracking()
         }
 

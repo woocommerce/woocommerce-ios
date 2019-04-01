@@ -48,6 +48,7 @@ protocol AddEditTrackingViewModel {
 
     var canCommit: Bool { get }
     var isCustom: Bool { get }
+    var isEditing: Bool { get }
 
     func registerCells(for tableView: UITableView)
     func executeAction(for row: AddEditTrackingRow, sender: UIViewController)
@@ -100,6 +101,8 @@ final class AddTrackingViewModel: AddEditTrackingViewModel {
         return shipmentProvider != nil &&
             trackingNumber != nil
     }
+
+    let isEditing: Bool = false
 
     var isCustom: Bool {
         return false
@@ -181,6 +184,8 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
         return shipmentTracking?.trackingProvider != nil &&
             trackingNumber != nil
     }
+
+    let isEditing: Bool = true
 
     var isCustom: Bool {
         return false

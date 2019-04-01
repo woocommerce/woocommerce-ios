@@ -6,7 +6,7 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
     @IBOutlet private var topLine: UILabel!
     @IBOutlet private var middleLine: UILabel!
     @IBOutlet private var bottomLine: UILabel!
-    @IBOutlet weak var icon: UIImageView!
+    @IBOutlet private weak var icon: UIImageView!
 
     var topText: String? {
         get {

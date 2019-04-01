@@ -247,7 +247,7 @@
         <attribute name="tagID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="tags" inverseEntity="Product" syncable="YES"/>
     </entity>
-    <entity name="ProductVariation" representedClassName="Product" syncable="YES" codeGenerationType="class">
+    <entity name="ProductVariation" representedClassName="Product" syncable="YES">
         <attribute name="backordered" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="backordersAllowed" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="backordersKey" attributeType="String" syncable="YES"/>
@@ -284,19 +284,19 @@
         <relationship name="dimensions" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ProductVariationDimensions" inverseName="productVariation" inverseEntity="ProductVariationDimensions" syncable="YES"/>
         <relationship name="image" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ProductVariationImage" inverseName="productVariation" inverseEntity="ProductVariationImage" syncable="YES"/>
     </entity>
-    <entity name="ProductVariationAttribute" representedClassName="ProductVariationAttribute" syncable="YES" codeGenerationType="class">
+    <entity name="ProductVariationAttribute" representedClassName="ProductVariationAttribute" syncable="YES">
         <attribute name="attributeID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="option" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="productVariation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductVariation" inverseName="attributes" inverseEntity="ProductVariation" syncable="YES"/>
     </entity>
-    <entity name="ProductVariationDimensions" representedClassName="ProductVariationDimensions" syncable="YES" codeGenerationType="class">
+    <entity name="ProductVariationDimensions" representedClassName="ProductVariationDimensions" syncable="YES">
         <attribute name="height" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="length" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="width" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="productVariation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductVariation" inverseName="dimensions" inverseEntity="ProductVariation" syncable="YES"/>
     </entity>
-    <entity name="ProductVariationImage" representedClassName="ProductImage" syncable="YES" codeGenerationType="class">
+    <entity name="ProductVariationImage" representedClassName="ProductImage" syncable="YES">
         <attribute name="alt" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="dateModified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
@@ -396,8 +396,8 @@
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
         <element name="ProductVariation" positionX="-1007.2265625" positionY="-77.41796875" width="128" height="568"/>
-        <element name="ProductVariationDimensions" positionX="-1274.84765625" positionY="196.52734375" width="163.98046875" height="105"/>
+        <element name="ProductVariationDimensions" positionX="-1274.84765625" positionY="196.52734375" width="163.98046875" height="103"/>
         <element name="ProductVariationImage" positionX="-1308.1953125" positionY="324.6328125" width="156.37890625" height="148"/>
-        <element name="ProductVariationAttribute" positionX="-1223.453125" positionY="67.7109375" width="151.01953125" height="105"/>
+        <element name="ProductVariationAttribute" positionX="-1223.453125" positionY="67.7109375" width="151.01953125" height="103"/>
     </elements>
 </model>

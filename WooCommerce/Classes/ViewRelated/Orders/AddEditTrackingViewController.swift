@@ -120,6 +120,8 @@ private extension AddEditTrackingViewController {
 }
 
 
+// MARK: - Table configuration
+//
 private extension AddEditTrackingViewController {
     func configureTable() {
         registerTableViewCells()
@@ -137,6 +139,8 @@ private extension AddEditTrackingViewController {
 }
 
 
+// MARK: - UITableViewDataSource conformance
+//
 extension AddEditTrackingViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
@@ -212,6 +216,9 @@ extension AddEditTrackingViewController: UITableViewDataSource {
     }
 }
 
+
+// MARK: - UITableViewDelegate comformance
+//
 extension AddEditTrackingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return CGFloat.leastNonzeroMagnitude
@@ -233,8 +240,8 @@ extension AddEditTrackingViewController: UITableViewDelegate {
 }
 
 
-/// Execute user selection
-///
+// MARK: - UITableViewDelegate comformance
+//
 private extension AddEditTrackingViewController {
     func executeAction(for row: AddEditTrackingRow) {
         viewModel.executeAction(for: row, sender: self)
@@ -242,8 +249,8 @@ private extension AddEditTrackingViewController {
 }
 
 
-/// Tracking number textfield
-///
+// MARK: - Tracking number textfield
+//
 private extension AddEditTrackingViewController {
     @objc func didChangeTrackingNumber(sender: UITextField) {
         guard let newTrackingNumber = sender.text else {
@@ -256,6 +263,8 @@ private extension AddEditTrackingViewController {
 }
 
 
+// MARK: - Navigation bar management
+//
 /// Activates the action button (Add/Edit) if there is anough data to add or edit a shipment tracking
 private extension AddEditTrackingViewController {
     private func activateActionButtonIfNecessary() {
@@ -264,7 +273,8 @@ private extension AddEditTrackingViewController {
 }
 
 
-
+// MARK: - Actions!
+//
 private extension AddEditTrackingViewController {
     private func addTracking() {
         configureForCommittingTracking()
@@ -302,13 +312,19 @@ private extension AddEditTrackingViewController {
     }
 
     func addCustomTracking() {
-
+        // To be implemented
     }
 
     func dismiss() {
         dismiss(animated: true, completion: nil)
     }
 
+}
+
+
+// MARK: - Error handling
+//
+private extension AddEditTrackingViewController {
     /// Displays the `Unable to Add tracking` Notice.
     ///
     func displayErrorNotice(orderID: Int) {

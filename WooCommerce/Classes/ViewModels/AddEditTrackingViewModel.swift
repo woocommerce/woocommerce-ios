@@ -37,10 +37,12 @@ protocol AddEditTrackingViewModel {
     var providerCellName: String { get }
     var primaryActionTitle: String { get }
     var secondaryActionTitle: String? { get }
+
     var sections: [AddEditTrackingSection] { get }
     var trackingNumber: String? { get set }
     var shipmentDate: Date { get }
     var shipmentTracking: ShipmentTracking? { get }
+
     var shipmentProvider: ShipmentTrackingProvider? { get set }
     var shipmentProviderGroupName: String? { get set }
 
@@ -176,7 +178,7 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
     }
 
     var canCommit: Bool {
-        return shipmentProvider != nil &&
+        return shipmentTracking?.trackingProvider != nil &&
             trackingNumber != nil
     }
 

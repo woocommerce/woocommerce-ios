@@ -144,9 +144,12 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
 
         let facade = WordPressXMLRPCAPIFacade()
         facade.guessXMLRPCURL(forSite: loginFields.siteAddress, success: { [weak self] (url) in
+            // Success! We now know that we have a valid XML-RPC endpoint.
+            // At this point, we do NOT know if this is a WP.com site or a self-hosted site.
             if let url = url {
                 self?.loginFields.meta.xmlrpcURL = url as NSURL
             }
+            // Let's try to grab site info in preparation for the next screen.
             self?.fetchSiteInfo()
 
         }, failure: { [weak self] (error) in
@@ -185,16 +188,22 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         let successBlock: (WordPressComSiteInfo) -> Void = { [weak self] siteInfo in
             self?.loginFields.meta.siteInfo = siteInfo
             if WordPressAuthenticator.shared.delegate?.allowWPComLogin == false {
+                // Hey, you have to log out of your existing WP.com account before logging into another one.
                 self?.promptUserToLogoutBeforeConnectingWPComSite()
                 self?.configureViewLoading(false)
             } else {
                 self?.showSelfHostedUsernamePassword()
             }
         }
+
+        // Is this a WP.com site address?
         if let siteAddress = baseSiteUrl.components(separatedBy: "://").last {
             let service = WordPressComBlogService()
+            // Yes. Then let's attempt to grab the site info.
             service.fetchSiteInfo(for: siteAddress, success: successBlock, failure: { [weak self] (error) in
-                // If fetchSiteInfo failed due to the site is being private (errorCode == .authorizationRequired) we try to fetch the site info with a call to connect/site-info endpoint. If this call succeeds we check if login allowed
+                // If fetchSiteInfo failed because the site is private (errorCode == .authorizationRequired),
+                // then we try to fetch the site info with a call to the `connect/site-info` endpoint.
+                // If this call succeeds, we check if login is allowed.
                 let originalError = error as NSError
                 let errorCode = WordPressComRestApiError(rawValue: originalError.code)
                 if errorCode == .authorizationRequired {

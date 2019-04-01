@@ -7,29 +7,29 @@ public class WordPressComSiteInfo {
 
     /// Site's Name!
     ///
-    let name: String
+    public let name: String
 
     /// Tagline.
     ///
-    let tagline: String
+    public let tagline: String
 
     /// Public URL.
     ///
-    let url: String
+    public let url: String
 
     /// Indicates if Jetpack is available, or not,
     ///
-    let hasJetpack: Bool
+    public let hasJetpack: Bool
 
     /// URL of the Site's Blavatar.
     ///
-    let icon: String
+    public let icon: String
 
 
 
     /// Initializes the current SiteInfo instance with a raw dictionary.
     ///
-    init(remote: [AnyHashable: Any]) {
+    public init(remote: [AnyHashable: Any]) {
         name        = remote["name"] as? String         ?? ""
         tagline     = remote["description"] as? String  ?? ""
         url         = remote["URL"] as? String          ?? ""

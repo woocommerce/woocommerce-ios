@@ -40,6 +40,7 @@ public typealias ShipmentTrackingProviderGroup = Networking.ShipmentTrackingProv
 public typealias Site = Networking.Site
 public typealias SiteAPI = Networking.SiteAPI
 public typealias SiteSetting = Networking.SiteSetting
+public typealias SiteSettingGroup = Networking.SiteSettingGroup
 public typealias SiteVisitStats = Networking.SiteVisitStats
 public typealias SiteVisitStatsItem = Networking.SiteVisitStatsItem
 public typealias TopEarnerStats = Networking.TopEarnerStats

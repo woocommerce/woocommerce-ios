@@ -8,7 +8,7 @@ import Gridicons
 
 /// Renders the Order Fulfillment Interface
 ///
-class FulfillViewController: UIViewController {
+final class FulfillViewController: UIViewController {
 
     /// Main TableView
     ///
@@ -24,19 +24,32 @@ class FulfillViewController: UIViewController {
 
     /// Sections to be Rendered
     ///
-    private let sections: [Section]
+    private var sections = [Section]()
 
     /// Order to be Fulfilled
     ///
     private let order: Order
 
+    private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
+                                    self.order.siteID,
+                                    self.order.orderID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)
 
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    /// Order shipment tracking list
+    ///
+    private var orderTracking: [ShipmentTracking] {
+        return trackingResultsController.fetchedObjects
+    }
 
     /// Designated Initializer
     ///
     init(order: Order) {
         self.order = order
-        self.sections = Section.allSections(for: order)
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -57,6 +70,12 @@ class FulfillViewController: UIViewController {
         setupActionButton()
         registerTableViewCells()
         registerTableViewHeaderFooters()
+        reloadSections()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        syncTracking()
     }
 }
 
@@ -100,6 +119,7 @@ private extension FulfillViewController {
         let cells = [
             CustomerInfoTableViewCell.self,
             LeftImageTableViewCell.self,
+            OrderTrackingTableViewCell.self,
             ProductDetailsTableViewCell.self
         ]
 
@@ -252,6 +272,8 @@ private extension FulfillViewController {
             setupNoteCell(cell, with: text)
         case .address(let shipping):
             setupAddressCell(cell, with: shipping)
+        case .tracking:
+            setupTrackingCell(cell)
         case .trackingAdd:
             setupTrackingAddCell(cell)
         }
@@ -311,6 +333,12 @@ private extension FulfillViewController {
         )
     }
 
+    /// Setup: Shipment Tracking Cell
+    ///
+    func setupTrackingCell(_ cell: UITableViewCell) {
+
+    }
+
     /// Setup: Add Tracking Cell
     ///
     func setupTrackingAddCell(_ cell: UITableViewCell) {
@@ -354,75 +382,30 @@ extension FulfillViewController: UITableViewDelegate {
 }
 
 
-// MARK: - Row: Represents a TableView Row
-//
-private enum Row {
+private extension FulfillViewController {
+    func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
+        let orderID = order.orderID
+        let siteID = order.siteID
+        let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: siteID,
+                                                                    orderID: orderID) { error in
+                                                                        if let error = error {
+                                                                            DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
+                                                                            onCompletion?(error)
+                                                                            return
+                                                                        }
 
-    /// Represents a Product Row
-    ///
-    case product(item: OrderItem)
-
-    /// Represents a Note Row
-    ///
-    case note(text: String)
-
-    /// Represents an Address Row
-    ///
-    case address(shipping: Address?)
-
-    /// Represents an "Add Tracking" Row
-    ///
-    case trackingAdd
-
-
-    /// Returns the Row's Reuse Identifier
-    ///
-    var reuseIdentifier: String {
-        return cellType.reuseIdentifier
-    }
-
-    /// Returns the Row's Cell Type
-    ///
-    var cellType: UITableViewCell.Type {
-        switch self {
-        case .address:
-            return CustomerInfoTableViewCell.self
-        case .note:
-            return LeftImageTableViewCell.self
-        case .product:
-            return ProductDetailsTableViewCell.self
-        case .trackingAdd:
-            return LeftImageTableViewCell.self
+                                                                        WooAnalytics.shared.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+                                                                        onCompletion?(nil)
         }
+
+        StoresManager.shared.dispatch(action)
     }
 }
 
 
-// MARK: - Section: Represents a TableView Section
-//
-private struct Section {
 
-    /// Section's Title
-    ///
-    let title: String?
-
-    /// Section's Secondary Title
-    ///
-    let secondaryTitle: String?
-
-    /// Section's Row(s)
-    ///
-    let rows: [Row]
-}
-
-
-// MARK: - Section: Public Methods
-//
-private extension Section {
-
-    /// Returns all of the Sections that should be rendered, in order to represent a given Order.
-    ///
-    static func allSections(for order: Order) -> [Section] {
+extension FulfillViewController {
+    func reloadSections() {
         let products: Section = {
             let title = NSLocalizedString("Product", comment: "Section header title for the product")
             let secondaryTitle = NSLocalizedString("Qty", comment: "Section header title - abbreviation for quantity")
@@ -455,17 +438,96 @@ private extension Section {
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
-        let tracking: Section = {
+        let tracking: Section? = {
             let title = NSLocalizedString("Optional Tracking Information", comment: "")
+            guard orderTracking.count > 0 else {
+                return nil
+            }
+
+            let rows: [Row] = Array(repeating: .tracking, count: orderTracking.count)
+            return Section(title: title, secondaryTitle: nil, rows: rows)
+        }()
+
+        let addTracking: Section = {
+            let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : ""
             let row = Row.trackingAdd
 
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
         if FeatureFlag.manualShipmentTracking.enabled {
-            return [products, note, address, tracking].compactMap { $0 }
+            sections =  [products, note, address, tracking, addTracking].compactMap { $0 }
         } else {
-            return [products, note, address].compactMap { $0 }
+            sections = [products, note, address].compactMap { $0 }
         }
     }
+}
+
+
+
+// MARK: - Row: Represents a TableView Row
+//
+private enum Row {
+
+    /// Represents a Product Row
+    ///
+    case product(item: OrderItem)
+
+    /// Represents a Note Row
+    ///
+    case note(text: String)
+
+    /// Represents an Address Row
+    ///
+    case address(shipping: Address?)
+
+    /// Represents an "Add Tracking" Row
+    ///
+    case trackingAdd
+
+    /// Represents a Shipment Tracking Row
+    ///
+    case tracking
+
+
+    /// Returns the Row's Reuse Identifier
+    ///
+    var reuseIdentifier: String {
+        return cellType.reuseIdentifier
+    }
+
+    /// Returns the Row's Cell Type
+    ///
+    var cellType: UITableViewCell.Type {
+        switch self {
+        case .address:
+            return CustomerInfoTableViewCell.self
+        case .note:
+            return LeftImageTableViewCell.self
+        case .product:
+            return ProductDetailsTableViewCell.self
+        case .trackingAdd:
+            return LeftImageTableViewCell.self
+        case .tracking:
+            return OrderTrackingTableViewCell.self
+        }
+    }
+}
+
+
+// MARK: - Section: Represents a TableView Section
+//
+private struct Section {
+
+    /// Section's Title
+    ///
+    let title: String?
+
+    /// Section's Secondary Title
+    ///
+    let secondaryTitle: String?
+
+    /// Section's Row(s)
+    ///
+    let rows: [Row]
 }

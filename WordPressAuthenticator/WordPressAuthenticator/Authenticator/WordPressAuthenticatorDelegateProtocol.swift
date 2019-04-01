@@ -36,6 +36,14 @@ public protocol WordPressAuthenticatorDelegate: class {
     ///
     func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag)
 
+    /// Signals to the Host App that a WordPress site is available and needs validated
+    /// before presenting the self-hosted username and password view controller.
+    /// - Parameters:
+    ///     - site: passes in the site information to the delegate method.
+    ///     - onCompletion: Closure to be executed on completion.
+    ///
+    func shouldPresentSelfHostedUsernamePasswordController(for siteInfo: WordPressComSiteInfo, onCompletion: @escaping (Error?) -> Void)
+
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, onDismiss: @escaping () -> Void)

@@ -19,7 +19,6 @@ private extension EditableValueOneTableViewCell {
     }
 
     func styleValue() {
-        //TODO. Style value textfield
-        //value.apply
+        value.applyBodyStyle()
     }
 }

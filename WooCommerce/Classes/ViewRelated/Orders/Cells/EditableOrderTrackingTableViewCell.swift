@@ -6,8 +6,7 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
     @IBOutlet private var topLine: UILabel!
     @IBOutlet private var middleLine: UILabel!
     @IBOutlet private var bottomLine: UILabel!
-    
-    var onActionTouchUp: (() -> Void)?
+    @IBOutlet weak var icon: UIImageView!
 
     var topText: String? {
         get {
@@ -44,11 +43,11 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
         configureTopLine()
         configureMiddleLine()
         configureBottomLine()
-        //configureActionButton()
+        configureActionButton()
     }
 
     private func configureTopLine() {
-        topLine.applySubheadlineStyle()
+        topLine.applyBodyStyle()
     }
 
     private func configureMiddleLine() {
@@ -56,13 +55,15 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
     }
 
     private func configureBottomLine() {
-        bottomLine.applySubheadlineStyle()
+        bottomLine.applyBodyStyle()
     }
-}
 
-extension EditableOrderTrackingTableViewCell {
-    @IBAction func actionButtonPressed(_ sender: Any) {
-        onActionTouchUp?()
+    private func configureActionButton() {
+        let pencilIcon = UIImage.pencilImage
+            .imageFlippedForRightToLeftLayoutDirection()
+            .imageWithTintColor(StyleManager.wooCommerceBrandColor)
+
+        icon.image = pencilIcon
     }
 }
 
@@ -115,7 +116,7 @@ extension EditableOrderTrackingTableViewCell {
         return bottomLine
     }
 
-//    func getActionButton() -> UIButton {
-//        return actionButton
-//    }
+    func getActionButton() -> UIImageView {
+        return icon
+    }
 }

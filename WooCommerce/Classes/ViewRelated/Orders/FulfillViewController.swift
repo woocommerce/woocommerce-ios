@@ -361,6 +361,11 @@ private extension FulfillViewController {
                                                 comment: "Order details > tracking. " +
                 " This is where the shipping date would normally display.")
         }
+
+//        cell.onActionTouchUp = { [ weak self ] in
+//            self?.trackingWasPressed(at: indexPath)
+//        }
+
     }
 
     func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
@@ -405,6 +410,14 @@ extension FulfillViewController: UITableViewDelegate {
         switch sections[indexPath.section].rows[indexPath.row] {
         case .trackingAdd:
             let viewModel = AddTrackingViewModel(siteID: order.siteID, orderID: order.orderID)
+            let addTracking = AddEditTrackingViewController(viewModel: viewModel)
+            let navController = WooNavigationController(rootViewController: addTracking)
+            present(navController, animated: true, completion: nil)
+        case .tracking:
+            guard let shipmentTracking = orderTracking(at: indexPath) else {
+                return
+            }
+            let viewModel = EditTrackingViewModel(siteID: order.siteID, orderID: order.orderID, shipmentTracking: shipmentTracking)
             let addTracking = AddEditTrackingViewController(viewModel: viewModel)
             let navController = WooNavigationController(rootViewController: addTracking)
             present(navController, animated: true, completion: nil)

@@ -70,12 +70,16 @@ final class FulfillViewController: UIViewController {
         setupActionButton()
         registerTableViewCells()
         registerTableViewHeaderFooters()
+        configureTrackingResultsController()
         reloadSections()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        syncTracking()
+        syncTracking { [weak self] error in
+            self?.reloadSections()
+            self?.tableView.reloadData()
+        }
     }
 }
 
@@ -434,6 +438,18 @@ private extension FulfillViewController {
 
 
 extension FulfillViewController {
+    func configureTrackingResultsController() {
+        trackingResultsController.onDidChangeContent = { [weak self] in
+            self?.reloadSections()
+        }
+
+        trackingResultsController.onDidResetContent = { [weak self] in
+            self?.reloadSections()
+        }
+
+        try? trackingResultsController.performFetch()
+    }
+
     func reloadSections() {
         let products: Section = {
             let title = NSLocalizedString("Product", comment: "Section header title for the product")
@@ -538,7 +554,7 @@ private enum Row {
         case .trackingAdd:
             return LeftImageTableViewCell.self
         case .tracking:
-            return OrderTrackingTableViewCell.self
+            return EditableOrderTrackingTableViewCell.self
         }
     }
 }

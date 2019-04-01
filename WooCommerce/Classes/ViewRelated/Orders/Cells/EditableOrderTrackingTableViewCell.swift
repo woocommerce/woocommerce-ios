@@ -6,10 +6,7 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
     @IBOutlet private var topLine: UILabel!
     @IBOutlet private var middleLine: UILabel!
     @IBOutlet private var bottomLine: UILabel!
-    @IBOutlet private var topBorder: UIView!
-    @IBOutlet private var actionButton: UIButton!
-    @IBOutlet private var internalSeparator: UIView!
-
+    
     var onActionTouchUp: (() -> Void)?
 
     var topText: String? {
@@ -42,37 +39,12 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
         }
     }
 
-    var actionButtonNormalText: String? {
-        get {
-            return actionButton.title(for: .normal)
-        }
-        set {
-            actionButton.setTitle(newValue, for: .normal)
-            configureActionButtonForVoiceOver()
-        }
-    }
-
-    func showActionButton() {
-        actionButton.isHidden = false
-        internalSeparator.isHidden = false
-    }
-
-    func hideActionButton() {
-        actionButton.isHidden = true
-        internalSeparator.isHidden = true
-    }
-
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureButtonSeparator()
         configureTopLine()
         configureMiddleLine()
         configureBottomLine()
-        configureActionButton()
-    }
-
-    private func configureButtonSeparator() {
-        topBorder.backgroundColor = StyleManager.wooGreyBorder
+        //configureActionButton()
     }
 
     private func configureTopLine() {
@@ -85,11 +57,6 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
 
     private func configureBottomLine() {
         bottomLine.applySubheadlineStyle()
-    }
-
-    private func configureActionButton() {
-        actionButton.applyTertiaryButtonStyle()
-        configureActionButtonForVoiceOver()
     }
 }
 
@@ -125,11 +92,11 @@ private extension EditableOrderTrackingTableViewCell {
     }
 
     func configureActionButtonForVoiceOver() {
-        actionButton.accessibilityLabel = actionButtonNormalText
-        actionButton.accessibilityTraits = .button
-        actionButton.accessibilityHint = NSLocalizedString("Tracks a shipment.",
-                                                           comment:
-            "Accessibility hint for Track Package button in Order details screen")
+//        actionButton.accessibilityLabel = actionButtonNormalText
+//        actionButton.accessibilityTraits = .button
+//        actionButton.accessibilityHint = NSLocalizedString("Tracks a shipment.",
+//                                                           comment:
+//            "Accessibility hint for Track Package button in Order details screen")
     }
 }
 
@@ -148,7 +115,7 @@ extension EditableOrderTrackingTableViewCell {
         return bottomLine
     }
 
-    func getActionButton() -> UIButton {
-        return actionButton
-    }
+//    func getActionButton() -> UIButton {
+//        return actionButton
+//    }
 }

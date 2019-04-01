@@ -119,7 +119,7 @@ private extension FulfillViewController {
         let cells = [
             CustomerInfoTableViewCell.self,
             LeftImageTableViewCell.self,
-            OrderTrackingTableViewCell.self,
+            EditableOrderTrackingTableViewCell.self,
             ProductDetailsTableViewCell.self
         ]
 
@@ -233,7 +233,7 @@ extension FulfillViewController: UITableViewDataSource {
         let row = sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
 
-        setup(cell: cell, for: row)
+        setup(cell: cell, for: row, at: indexPath)
 
         return cell
     }
@@ -264,7 +264,7 @@ private extension FulfillViewController {
 
     /// Setup a given UITableViewCell instance to actually display the specified Row's Payload.
     ///
-    func setup(cell: UITableViewCell, for row: Row) {
+    func setup(cell: UITableViewCell, for row: Row, at: IndexPath) {
         switch row {
         case .product(let item):
             setupProductCell(cell, with: item)
@@ -273,7 +273,7 @@ private extension FulfillViewController {
         case .address(let shipping):
             setupAddressCell(cell, with: shipping)
         case .tracking:
-            setupTrackingCell(cell)
+            setupTrackingCell(cell, at: at)
         case .trackingAdd:
             setupTrackingAddCell(cell)
         }
@@ -335,8 +335,37 @@ private extension FulfillViewController {
 
     /// Setup: Shipment Tracking Cell
     ///
-    func setupTrackingCell(_ cell: UITableViewCell) {
+    func setupTrackingCell(_ cell: UITableViewCell, at indexPath: IndexPath) {
+        guard let cell = cell as? EditableOrderTrackingTableViewCell else {
+            fatalError()
+        }
 
+        guard let tracking = orderTracking(at: indexPath) else {
+            return
+        }
+
+        cell.topText = tracking.trackingProvider
+        cell.middleText = tracking.trackingNumber
+
+        if let dateShipped = tracking.dateShipped?.toString(dateStyle: .medium, timeStyle: .none) {
+            cell.bottomText = String.localizedStringWithFormat(
+                NSLocalizedString("Shipped %@",
+                                  comment: "Date an item was shipped"),
+                dateShipped)
+        } else {
+            cell.bottomText = NSLocalizedString("Not shipped yet",
+                                                comment: "Order details > tracking. " +
+                " This is where the shipping date would normally display.")
+        }
+    }
+
+    func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
+        let orderIndex = indexPath.row
+        guard orderTracking.indices.contains(orderIndex) else {
+            return nil
+        }
+
+        return orderTracking[orderIndex]
     }
 
     /// Setup: Add Tracking Cell

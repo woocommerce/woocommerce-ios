@@ -290,6 +290,8 @@
 		CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */; };
 		CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */; };
 		D8023EE3221547D400D2DC30 /* FancyAlertViewController+SwitchStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8023EE2221547D400D2DC30 /* FancyAlertViewController+SwitchStore.swift */; };
+		D8149F532251CFE60006A245 /* EditableOrderTrackingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8149F512251CFE50006A245 /* EditableOrderTrackingTableViewCell.swift */; };
+		D8149F542251CFE60006A245 /* EditableOrderTrackingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8149F522251CFE50006A245 /* EditableOrderTrackingTableViewCell.xib */; };
 		D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D816DDBB22265DA300903E59 /* OrderTrackingTableViewCellTests.swift */; };
 		D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */; };
 		D81D9229222E7F0800FFA585 /* OrderStatusListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */; };
@@ -644,6 +646,8 @@
 		CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManager.swift; sourceTree = "<group>"; };
 		CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManagerTests.swift; sourceTree = "<group>"; };
 		D8023EE2221547D400D2DC30 /* FancyAlertViewController+SwitchStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FancyAlertViewController+SwitchStore.swift"; sourceTree = "<group>"; };
+		D8149F512251CFE50006A245 /* EditableOrderTrackingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditableOrderTrackingTableViewCell.swift; sourceTree = "<group>"; };
+		D8149F522251CFE50006A245 /* EditableOrderTrackingTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditableOrderTrackingTableViewCell.xib; sourceTree = "<group>"; };
 		D816DDBB22265DA300903E59 /* OrderTrackingTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTrackingTableViewCellTests.swift; sourceTree = "<group>"; };
 		D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListViewController.swift; sourceTree = "<group>"; };
 		D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderStatusListViewController.xib; sourceTree = "<group>"; };
@@ -1390,6 +1394,8 @@
 		CEE006022077D0F80079161F /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				D8149F512251CFE50006A245 /* EditableOrderTrackingTableViewCell.swift */,
+				D8149F522251CFE50006A245 /* EditableOrderTrackingTableViewCell.xib */,
 				D83C129E22250BEF004CA04C /* OrderTrackingTableViewCell.swift */,
 				D83C129D22250BEF004CA04C /* OrderTrackingTableViewCell.xib */,
 				B5FD110D21D3CB8500560344 /* OrderTableViewCell.xib */,
@@ -1607,6 +1613,7 @@
 				B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */,
 				74A95B5821C403EA00FEE953 /* pure-min.css in Resources */,
 				B5BE75DD213F1D3D00909A14 /* OverlayMessageView.xib in Resources */,
+				D8149F542251CFE60006A245 /* EditableOrderTrackingTableViewCell.xib in Resources */,
 				D81D9229222E7F0800FFA585 /* OrderStatusListViewController.xib in Resources */,
 				748D34DE214828DD00E21A2F /* TopPerformerDataViewController.xib in Resources */,
 				CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */,
@@ -1858,6 +1865,7 @@
 				B59D1EE321907C7B009D1978 /* NSAttributedString+Helpers.swift in Sources */,
 				CE17C2E220ACA06800AFBD20 /* BillingDetailsTableViewCell.swift in Sources */,
 				74B5713621CD7604008F9B8E /* SharingHelper.swift in Sources */,
+				D8149F532251CFE60006A245 /* EditableOrderTrackingTableViewCell.swift in Sources */,
 				9324401421DE99FC0067CD83 /* CrashlyticsLogger.swift in Sources */,
 				740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */,
 				B511ED27218A660E005787DC /* StringDescriptor.swift in Sources */,

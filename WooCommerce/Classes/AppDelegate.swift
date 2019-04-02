@@ -90,9 +90,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Upgrade check...
         checkForUpgrades()
 
-        // Store switcher alert
-        displayStoreSwitcherAlertIfNeeded()
-
         return true
     }
 
@@ -373,11 +370,5 @@ extension AppDelegate {
     func authenticatorWasDismissed() {
         setupPushNotificationsManagerIfPossible()
         RequirementsChecker.checkMinimumWooVersionForDefaultStore()
-    }
-}
-
-private extension AppDelegate {
-    private func displayStoreSwitcherAlertIfNeeded() {
-        SwitchStoreAlertLauncher().displayStoreSwitcherAlertIfNeeded()
     }
 }

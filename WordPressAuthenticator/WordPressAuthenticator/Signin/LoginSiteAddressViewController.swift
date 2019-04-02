@@ -192,7 +192,10 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                 self?.promptUserToLogoutBeforeConnectingWPComSite()
                 self?.configureViewLoading(false)
             } else {
-                self?.showSelfHostedUsernamePassword()
+                guard let strongSelf = self else {
+                    return
+                }
+                strongSelf.presentUsernamePasswordControllerIfPossible(siteInfo: siteInfo)
             }
         }
 
@@ -208,16 +211,44 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                 let errorCode = WordPressComRestApiError(rawValue: originalError.code)
                 if errorCode == .authorizationRequired {
                     service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { error in
-                        self?.showSelfHostedUsernamePassword()
+                        // The un-authed site info request failed.
+                        guard let strongSelf = self else {
+                            return
+                        }
+
+                        strongSelf.presentUsernamePasswordControllerIfPossible(siteInfo: nil)
                     })
                 } else {
-                    self?.showSelfHostedUsernamePassword()
+                    // Failed to get the site info.
+                    guard let strongSelf = self else {
+                        return
+                    }
+
+                    strongSelf.presentUsernamePasswordControllerIfPossible(siteInfo: nil)
                 }
             })
-
         } else {
-            showSelfHostedUsernamePassword()
+            // Not a WP.com site. Let's make an un-authenticated site info request.
+            let service = WordPressComBlogService()
+            service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] error in
+                guard let strongSelf = self else {
+                    return
+                }
+
+                strongSelf.presentUsernamePasswordControllerIfPossible(siteInfo: nil)
+            })
         }
+    }
+
+    func presentUsernamePasswordControllerIfPossible(siteInfo: WordPressComSiteInfo?) {
+        WordPressAuthenticator.shared.delegate?.shouldPresentSelfHostedUsernamePasswordController(for: siteInfo, onCompletion: { (error) in
+            guard let originalError = error as? NSError else {
+                self.showSelfHostedUsernamePassword()
+                return
+            }
+
+            self.displayError(message: originalError.localizedDescription)
+        })
     }
 
 

@@ -192,6 +192,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                 self?.promptUserToLogoutBeforeConnectingWPComSite()
                 self?.configureViewLoading(false)
             } else {
+                self?.configureViewLoading(false)
                 guard let strongSelf = self else {
                     return
                 }
@@ -212,6 +213,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                 if errorCode == .authorizationRequired {
                     service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { error in
                         // The un-authed site info request failed.
+                        self?.configureViewLoading(false)
                         guard let strongSelf = self else {
                             return
                         }
@@ -220,6 +222,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                     })
                 } else {
                     // Failed to get the site info.
+                    self?.configureViewLoading(false)
                     guard let strongSelf = self else {
                         return
                     }
@@ -231,6 +234,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             // Not a WP.com site. Let's make an un-authenticated site info request.
             let service = WordPressComBlogService()
             service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] error in
+                self?.configureViewLoading(false)
                 guard let strongSelf = self else {
                     return
                 }
@@ -242,7 +246,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
 
     func presentUsernamePasswordControllerIfPossible(siteInfo: WordPressComSiteInfo?) {
         WordPressAuthenticator.shared.delegate?.shouldPresentSelfHostedUsernamePasswordController(for: siteInfo, onCompletion: { (error) in
-            guard let originalError = error as? NSError else {
+            guard let originalError = error as NSError? else {
                 self.showSelfHostedUsernamePassword()
                 return
             }

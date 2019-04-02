@@ -96,6 +96,10 @@ private extension StorePickerCoordinator {
     func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {
         StoresManager.shared.removeDefaultStore()
 
+        // Note: We are not deleting products here because products from multiple sites
+        // can exist in Storage simultaneously. Eventually we should make orders and stats
+        // behave this way. See https://github.com/woocommerce/woocommerce-ios/issues/279
+        // for more details.
         let group = DispatchGroup()
 
         group.enter()

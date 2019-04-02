@@ -273,7 +273,7 @@
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="sku" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="statusKey" attributeType="String" syncable="YES"/>
-        <attribute name="stockQuantity" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="stockQuantity" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="stockStatusKey" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="taxClass" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="taxStatusKey" optional="YES" attributeType="String" syncable="YES"/>
@@ -291,9 +291,9 @@
         <relationship name="productVariation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductVariation" inverseName="attributes" inverseEntity="ProductVariation" syncable="YES"/>
     </entity>
     <entity name="ProductVariationDimensions" representedClassName="ProductVariationDimensions" syncable="YES">
-        <attribute name="height" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="length" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="width" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="height" attributeType="String" syncable="YES"/>
+        <attribute name="length" attributeType="String" syncable="YES"/>
+        <attribute name="width" attributeType="String" syncable="YES"/>
         <relationship name="productVariation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductVariation" inverseName="dimensions" inverseEntity="ProductVariation" syncable="YES"/>
     </entity>
     <entity name="ProductVariationImage" representedClassName="ProductImage" syncable="YES">
@@ -386,6 +386,10 @@
         <element name="ProductDimensions" positionX="-830.15234375" positionY="345.6328125" width="128" height="105"/>
         <element name="ProductImage" positionX="-859.9296875" positionY="471.46484375" width="128" height="148"/>
         <element name="ProductTag" positionX="-896.65234375" positionY="645.7421875" width="128" height="103"/>
+        <element name="ProductVariation" positionX="-1007.2265625" positionY="-77.41796875" width="128" height="570"/>
+        <element name="ProductVariationAttribute" positionX="-1223.453125" positionY="67.7109375" width="151.01953125" height="103"/>
+        <element name="ProductVariationDimensions" positionX="-1274.84765625" positionY="196.52734375" width="163.98046875" height="105"/>
+        <element name="ProductVariationImage" positionX="-1308.1953125" positionY="324.6328125" width="156.37890625" height="148"/>
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>
         <element name="ShipmentTrackingProviderGroup" positionX="-8.2734375" positionY="-117.890625" width="187.5" height="88"/>
@@ -395,9 +399,5 @@
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="ProductVariation" positionX="-1007.2265625" positionY="-77.41796875" width="128" height="568"/>
-        <element name="ProductVariationDimensions" positionX="-1274.84765625" positionY="196.52734375" width="163.98046875" height="103"/>
-        <element name="ProductVariationImage" positionX="-1308.1953125" positionY="324.6328125" width="156.37890625" height="148"/>
-        <element name="ProductVariationAttribute" positionX="-1223.453125" positionY="67.7109375" width="151.01953125" height="103"/>
     </elements>
 </model>

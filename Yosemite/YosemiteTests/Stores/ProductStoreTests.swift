@@ -30,6 +30,10 @@ class ProductStoreTests: XCTestCase {
     ///
     private let sampleSiteID = 123
 
+    /// Testing SiteID #2
+    ///
+    private let sampleSiteID2 = 999
+
     /// Testing ProductID
     ///
     private let sampleProductID = 282
@@ -310,6 +314,52 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 1)
     }
 
+    /// Verifies that `ProductStore.upsertStoredProduct` updates the correct site's product.
+    ///
+    func testUpdateStoredProductEffectivelyUpdatesCorrectSitesProduct() {
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductImage.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 9)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
+
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(sampleSiteID2), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 18)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 4)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 4)
+
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProductMutated(), in: viewStorage)
+        let storageProduct1 = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)
+        XCTAssertEqual(storageProduct1?.toReadOnly(), sampleProductMutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 14)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 3)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 3)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 3)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 3)
+
+        let storageProduct2 = viewStorage.loadProduct(siteID: sampleSiteID2, productID: sampleProductID)
+        XCTAssertEqual(storageProduct2?.toReadOnly(), sampleProduct(sampleSiteID2))
+    }
+
     /// Verifies that `ProductStore.upsertStoredProduct` effectively inserts a new Product, with the specified payload.
     ///
     func testUpdateStoredOrderEffectivelyPersistsNewOrder() {
@@ -389,8 +439,9 @@ class ProductStoreTests: XCTestCase {
 //
 private extension ProductStoreTests {
 
-    func sampleProduct() -> Networking.Product {
-        return Product(siteID: sampleSiteID,
+    func sampleProduct(_ siteID: Int? = nil) -> Networking.Product {
+        let testSiteID = siteID ?? sampleSiteID
+        return Product(siteID: testSiteID,
                        productID: sampleProductID,
                        name: "Book the Green Room",
                        slug: "book-the-green-room",
@@ -511,8 +562,10 @@ private extension ProductStoreTests {
         return [defaultAttribute1, defaultAttribute2]
     }
 
-    func sampleProductMutated() -> Networking.Product {
-        return Product(siteID: sampleSiteID,
+    func sampleProductMutated(_ siteID: Int? = nil) -> Networking.Product {
+        let testSiteID = siteID ?? sampleSiteID
+
+        return Product(siteID: testSiteID,
                        productID: sampleProductID,
                        name: "Book the Green Room",
                        slug: "book-the-green-room",

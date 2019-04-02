@@ -157,9 +157,13 @@ private extension ProductStore {
     /// Updates, inserts, or prunes the provided StorageProduct's attributes using the provided read-only Product's attributes
     ///
     func handleProductAttributes(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        let siteID = readOnlyProduct.siteID
+
         // Upsert the attributes from the read-only product
         for readOnlyAttribute in readOnlyProduct.attributes {
-            if let existingStorageAttribute = storage.loadProductAttribute(attributeID: readOnlyAttribute.attributeID, name: readOnlyAttribute.name) {
+            if let existingStorageAttribute = storage.loadProductAttribute(siteID: siteID,
+                                                                           attributeID: readOnlyAttribute.attributeID,
+                                                                           name: readOnlyAttribute.name) {
                 existingStorageAttribute.update(with: readOnlyAttribute)
             } else {
                 let newStorageAttribute = storage.insertNewObject(ofType: Storage.ProductAttribute.self)
@@ -180,9 +184,12 @@ private extension ProductStore {
     /// Updates, inserts, or prunes the provided StorageProduct's default attributes using the provided read-only Product's default attributes
     ///
     func handleProductDefaultAttributes(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        let siteID = readOnlyProduct.siteID
+
         // Upsert the default attributes from the read-only product
         for readOnlyDefaultAttribute in readOnlyProduct.defaultAttributes {
-            if let existingStorageDefaultAttribute = storage.loadProductDefaultAttribute(defaultAttributeID: readOnlyDefaultAttribute.attributeID,
+            if let existingStorageDefaultAttribute = storage.loadProductDefaultAttribute(siteID: siteID,
+                                                                                         defaultAttributeID: readOnlyDefaultAttribute.attributeID,
                                                                                          name: readOnlyDefaultAttribute.name ?? "") {
                 existingStorageDefaultAttribute.update(with: readOnlyDefaultAttribute)
             } else {
@@ -205,9 +212,12 @@ private extension ProductStore {
     /// Updates, inserts, or prunes the provided StorageProduct's images using the provided read-only Product's images
     ///
     func handleProductImages(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        let siteID = readOnlyProduct.siteID
+
         // Upsert the images from the read-only product
         for readOnlyImage in readOnlyProduct.images {
-            if let existingStorageImage = storage.loadProductImage(imageID: readOnlyImage.imageID) {
+            if let existingStorageImage = storage.loadProductImage(siteID: siteID,
+                                                                   imageID: readOnlyImage.imageID) {
                 existingStorageImage.update(with: readOnlyImage)
             } else {
                 let newStorageImage = storage.insertNewObject(ofType: Storage.ProductImage.self)
@@ -228,9 +238,11 @@ private extension ProductStore {
     /// Updates, inserts, or prunes the provided StorageProduct's categories using the provided read-only Product's categories
     ///
     func handleProductCategories(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        let siteID = readOnlyProduct.siteID
+
         // Upsert the categories from the read-only product
         for readOnlyCategory in readOnlyProduct.categories {
-            if let existingStorageCategory = storage.loadProductCategory(categoryID: readOnlyCategory.categoryID) {
+            if let existingStorageCategory = storage.loadProductCategory(siteID: siteID, categoryID: readOnlyCategory.categoryID) {
                 existingStorageCategory.update(with: readOnlyCategory)
             } else {
                 let newStorageCategory = storage.insertNewObject(ofType: Storage.ProductCategory.self)
@@ -251,9 +263,11 @@ private extension ProductStore {
     /// Updates, inserts, or prunes the provided StorageProduct's tags using the provided read-only Product's tags
     ///
     func handleProductTags(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        let siteID = readOnlyProduct.siteID
+
         // Upsert the tags from the read-only product
         for readOnlyTag in readOnlyProduct.tags {
-            if let existingStorageTag = storage.loadProductTag(tagID: readOnlyTag.tagID) {
+            if let existingStorageTag = storage.loadProductTag(siteID: siteID, tagID: readOnlyTag.tagID) {
                 existingStorageTag.update(with: readOnlyTag)
             } else {
                 let newStorageTag = storage.insertNewObject(ofType: Storage.ProductTag.self)

@@ -247,6 +247,64 @@
         <attribute name="tagID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="tags" inverseEntity="Product" syncable="YES"/>
     </entity>
+    <entity name="ProductVariation" representedClassName="ProductVariation" syncable="YES">
+        <attribute name="backordered" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="backordersAllowed" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="backordersKey" attributeType="String" syncable="YES"/>
+        <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dateModified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dateOnSaleFrom" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dateOnSaleTo" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="downloadable" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="downloadExpiry" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="downloadLimit" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="fullDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="manageStock" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="menuOrder" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="onSale" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="permalink" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="price" attributeType="String" syncable="YES"/>
+        <attribute name="productID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="purchasable" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="regularPrice" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="salePrice" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shippingClass" attributeType="String" syncable="YES"/>
+        <attribute name="shippingClassID" attributeType="String" syncable="YES"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="sku" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="statusKey" attributeType="String" syncable="YES"/>
+        <attribute name="stockQuantity" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="stockStatusKey" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taxClass" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taxStatusKey" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="variationID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="virtual" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="weight" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="attributes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductVariationAttribute" inverseName="productVariation" inverseEntity="ProductVariationAttribute" syncable="YES"/>
+        <relationship name="dimensions" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ProductVariationDimensions" inverseName="productVariation" inverseEntity="ProductVariationDimensions" syncable="YES"/>
+        <relationship name="image" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ProductVariationImage" inverseName="productVariation" inverseEntity="ProductVariationImage" syncable="YES"/>
+    </entity>
+    <entity name="ProductVariationAttribute" representedClassName="ProductVariationAttribute" syncable="YES">
+        <attribute name="attributeID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="option" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="productVariation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductVariation" inverseName="attributes" inverseEntity="ProductVariation" syncable="YES"/>
+    </entity>
+    <entity name="ProductVariationDimensions" representedClassName="ProductVariationDimensions" syncable="YES">
+        <attribute name="height" attributeType="String" syncable="YES"/>
+        <attribute name="length" attributeType="String" syncable="YES"/>
+        <attribute name="width" attributeType="String" syncable="YES"/>
+        <relationship name="productVariation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductVariation" inverseName="dimensions" inverseEntity="ProductVariation" syncable="YES"/>
+    </entity>
+    <entity name="ProductVariationImage" representedClassName="ProductVariationImage" syncable="YES">
+        <attribute name="alt" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dateModified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="imageID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="src" attributeType="String" syncable="YES"/>
+        <relationship name="productVariation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductVariation" inverseName="image" inverseEntity="ProductVariation" syncable="YES"/>
+    </entity>
     <entity name="ShipmentTracking" representedClassName="ShipmentTracking" syncable="YES">
         <attribute name="dateShipped" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -328,6 +386,10 @@
         <element name="ProductDimensions" positionX="-830.15234375" positionY="345.6328125" width="128" height="105"/>
         <element name="ProductImage" positionX="-859.9296875" positionY="471.46484375" width="128" height="148"/>
         <element name="ProductTag" positionX="-896.65234375" positionY="645.7421875" width="128" height="103"/>
+        <element name="ProductVariation" positionX="-1007.2265625" positionY="-77.41796875" width="128" height="568"/>
+        <element name="ProductVariationAttribute" positionX="-1223.453125" positionY="67.7109375" width="151.01953125" height="103"/>
+        <element name="ProductVariationDimensions" positionX="-1274.84765625" positionY="196.52734375" width="163.98046875" height="105"/>
+        <element name="ProductVariationImage" positionX="-1308.1953125" positionY="324.6328125" width="156.37890625" height="148"/>
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>
         <element name="ShipmentTrackingProviderGroup" positionX="-8.2734375" positionY="-117.890625" width="187.5" height="88"/>

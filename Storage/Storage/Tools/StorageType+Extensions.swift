@@ -232,4 +232,19 @@ public extension StorageType {
         let predicate = NSPredicate(format: "tagID = %ld", tagID)
         return firstObject(ofType: ProductTag.self, matching: predicate)
     }
+
+    /// Retrieves all of the stored ProductVariations for the provided siteID and productID.
+    ///
+    public func loadProductVariations(siteID: Int, productID: Int) -> [ProductVariation]? {
+        let predicate = NSPredicate(format: "siteID = %ld AND productID = %ld", siteID, productID)
+        let descriptor = NSSortDescriptor(keyPath: \ProductVariation.variationID, ascending: false)
+        return allObjects(ofType: ProductVariation.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Retrieves a stored ProductVariation for the provided siteID, productID, and variationID.
+    ///
+    public func loadProductVariation(siteID: Int, productID: Int, variationID: Int) -> ProductVariation? {
+        let predicate = NSPredicate(format: "siteID = %ld AND productID = %ld AND variationID = %ld", siteID, productID, variationID)
+        return firstObject(ofType: ProductVariation.self, matching: predicate)
+    }
 }

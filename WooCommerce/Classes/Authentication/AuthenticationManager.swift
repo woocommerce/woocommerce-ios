@@ -93,10 +93,10 @@ class AuthenticationManager {
 // MARK: - WordPressAuthenticator Delegate
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
+
     var allowWPComLogin: Bool {
         return true
     }
-
 
     /// Indicates if the active Authenticator can be dismissed or not.
     ///
@@ -128,6 +128,20 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Note: As of now, this is a NO-OP, we're not supporting any signup flows.
     ///
     func createdWordPressComAccount(username: String, authToken: String) { }
+
+    /// Validates that the self-hosted site contains the correct information
+    /// and can proceed to the self-hosted username and password view controller.
+    ///
+    func shouldPresentSelfHostedUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (Error?) -> Void) {
+        guard let site = siteInfo, site.hasJetpack == true else {
+            // build the error here
+            let error = NSError(domain: "WooCommerceAuthenticationErrorDomain", code: 555, userInfo: [NSLocalizedDescriptionKey: NSLocalizedString("Looks like you site isn't set up to use this app. Make sure your site has Jetpack installed to continue.", comment: "Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps.")])
+            onCompletion(error)
+            return
+        }
+
+        onCompletion(nil)
+    }
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///

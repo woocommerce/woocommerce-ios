@@ -9,15 +9,23 @@ public struct SiteSetting: Decodable {
     public let label: String
     public let settingDescription: String
     public let value: String
+    public let settingGroupKey: String
+
+    // MARK: Computed Properties
+
+    public var settingGroup: SiteSettingGroup {
+        return SiteSettingGroup(rawValue: settingGroupKey)
+    }
 
     /// OrderNote struct initializer.
     ///
-    public init(siteID: Int, settingID: String, label: String, description: String, value: String) {
+    public init(siteID: Int, settingID: String, label: String, description: String, value: String, settingGroupKey: String) {
         self.siteID = siteID
         self.settingID = settingID
         self.label = label
         self.settingDescription = description
         self.value = value
+        self.settingGroupKey = settingGroupKey
     }
 
     /// The public initializer for SiteSetting.
@@ -25,6 +33,9 @@ public struct SiteSetting: Decodable {
     public init(from decoder: Decoder) throws {
         guard let siteID = decoder.userInfo[.siteID] as? Int else {
             throw SiteSettingError.missingSiteID
+        }
+        guard let settingGroupKey = decoder.userInfo[.settingGroupKey] as? String else {
+            throw SiteSettingError.missingSettingGroupKey
         }
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -42,7 +53,7 @@ public struct SiteSetting: Decodable {
             DDLogWarn("⚠️ Could not successfully decode SiteSetting value for \(settingID)")
         }
 
-        self.init(siteID: siteID, settingID: settingID, label: label, description: settingDescription, value: value) // initialize the struct
+        self.init(siteID: siteID, settingID: settingID, label: label, description: settingDescription, value: value, settingGroupKey: settingGroupKey)
     }
 }
 
@@ -67,7 +78,9 @@ extension SiteSetting: Comparable {
         return lhs.settingID == rhs.settingID &&
             lhs.label == rhs.label &&
             lhs.settingDescription == rhs.settingDescription &&
-            lhs.value == rhs.value
+            lhs.value == rhs.value &&
+            lhs.settingGroupKey == rhs.settingGroupKey
+
     }
 
     public static func < (lhs: SiteSetting, rhs: SiteSetting) -> Bool {
@@ -86,4 +99,5 @@ extension SiteSetting: Comparable {
 //
 enum SiteSettingError: Error {
     case missingSiteID
+    case missingSettingGroupKey
 }

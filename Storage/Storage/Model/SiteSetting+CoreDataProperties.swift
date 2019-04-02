@@ -13,5 +13,5 @@ extension SiteSetting {
     @NSManaged public var label: String?
     @NSManaged public var settingDescription: String?
     @NSManaged public var value: String?
-
+    @NSManaged public var settingGroupKey: String?
 }

@@ -62,7 +62,7 @@ PODS:
     - WordPressKit (~> 3.1)
     - WordPressShared (~> 1.4)
     - WordPressUI (~> 1.0)
-  - WordPressKit (3.1.2):
+  - WordPressKit (3.2.1):
     - Alamofire (~> 4.7.3)
     - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.3)
@@ -94,7 +94,7 @@ DEPENDENCIES:
   - Crashlytics (~> 3.10)
   - Gridicons (~> 0.18-beta)
   - KeychainAccess (~> 3.1)
-  - WordPressAuthenticator (from `/Users/thuycopeland/WordPressAuthenticator-iOS/`)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `task/wc-support-site-url-login`)
   - WordPressShared (~> 1.1)
   - WordPressUI (~> 1.2)
   - XLPagerTabStrip (~> 8.1)
@@ -131,7 +131,13 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   WordPressAuthenticator:
-    :path: "/Users/thuycopeland/WordPressAuthenticator-iOS/"
+    :branch: task/wc-support-site-url-login
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
+
+CHECKOUT OPTIONS:
+  WordPressAuthenticator:
+    :commit: a29f0d7e7369a5b7b1a4993c061b59bf27b742cc
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
@@ -154,14 +160,14 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 8f8a24b257a4d978c8d40ad1e7355b944ffbfa8c
-  WordPressAuthenticator: d4e955f2960c6c796d08ea77caa227739c89dbd5
-  WordPressKit: c431508391b18d5d5e622564c9f12ee9f8883eda
+  WordPressAuthenticator: c1d524a7d5830962b4ab606d8e25386719aa7fb5
+  WordPressKit: fbe41d08c1d3b9ec909e0fe82c09bddb143bc972
   WordPressShared: 63d57a4a07ad9f9a1ee5e8a7162e48fbb5192014
   WordPressUI: 44fe43a9c5c504dfd534286e39e1ce6ebcd69ff5
   wpxmlrpc: 6ba55c773cfa27083ae4a2173e69b19f46da98e2
   XLPagerTabStrip: 63166e21c9844fa30f2d95d30f335e73be5caf22
   ZendeskSDK: af6509ad7968d367f95b2645713802712152f879
 
-PODFILE CHECKSUM: 8b6687ab4744e1db7134d7cffbf73307ae45506b
+PODFILE CHECKSUM: b2b3a9b8c6b3e04b1ed61ccb7919796194cd4426
 
 COCOAPODS: 1.5.3

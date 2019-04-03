@@ -1630,11 +1630,11 @@
 			inputPaths = (
 				"${SRCROOT}/../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-resources.sh",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
-				"${PODS_ROOT}/../../WordPressAuthenticator-iOS/WordPressAuthenticator/NUX/NUXButtonView.storyboard",
-				"${PODS_ROOT}/../../WordPressAuthenticator-iOS/WordPressAuthenticator/Signin/EmailMagicLink.storyboard",
-				"${PODS_ROOT}/../../WordPressAuthenticator-iOS/WordPressAuthenticator/Signin/Login.storyboard",
-				"${PODS_ROOT}/../../WordPressAuthenticator-iOS/WordPressAuthenticator/Signup/Signup.storyboard",
-				"${PODS_ROOT}/../../WordPressAuthenticator-iOS/WordPressAuthenticator/UI/SearchTableViewCell.xib",
+				"${PODS_ROOT}/WordPressAuthenticator/WordPressAuthenticator/NUX/NUXButtonView.storyboard",
+				"${PODS_ROOT}/WordPressAuthenticator/WordPressAuthenticator/Signin/EmailMagicLink.storyboard",
+				"${PODS_ROOT}/WordPressAuthenticator/WordPressAuthenticator/Signin/Login.storyboard",
+				"${PODS_ROOT}/WordPressAuthenticator/WordPressAuthenticator/Signup/Signup.storyboard",
+				"${PODS_ROOT}/WordPressAuthenticator/WordPressAuthenticator/UI/SearchTableViewCell.xib",
 				"${PODS_CONFIGURATION_BUILD_DIR}/WordPressAuthenticator/WordPressAuthenticatorResources.bundle",
 				"${PODS_ROOT}/ZendeskSDK/ZendeskSDK/4.2.1/ZendeskSDKStrings.bundle",
 			);

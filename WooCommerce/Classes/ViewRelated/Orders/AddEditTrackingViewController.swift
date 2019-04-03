@@ -80,6 +80,10 @@ private extension AddEditTrackingViewController {
     }
 
     func configureAddButton() {
+        guard viewModel.shouldDisplayActionButton else {
+            return
+        }
+        
         let rightBarButton = UIBarButtonItem(title: viewModel.primaryActionTitle,
                                              style: .done,
                                              target: self,
@@ -123,11 +127,6 @@ private extension AddEditTrackingViewController {
     }
 
     @objc func primaryButtonTapped() {
-        if viewModel.isEditing == true {
-            updateTracking()
-
-            return
-        }
         viewModel.isCustom ? addCustomTracking() : addTracking()
     }
 }

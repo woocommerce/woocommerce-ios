@@ -4,7 +4,8 @@ import UIKit
 @objc(TestingAppDelegate)
 class TestingAppDelegate: AppDelegate {
 
-    override func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+    override func application(_ application: UIApplication,
+                              willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Don't call super so nothing gets set up.
 
         let bundle = Bundle(for: type(of: self))
@@ -17,7 +18,7 @@ class TestingAppDelegate: AppDelegate {
         return true
     }
 
-    override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]?) -> Bool {
+    override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Don't call super so nothing gets set up.
 
         return true

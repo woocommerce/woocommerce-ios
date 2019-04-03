@@ -18,7 +18,7 @@ extension SessionManager {
 // MARK: - Testing Constants
 //
 enum SessionSettings {
-    static let credentials = Credentials(username: "username", authToken: "authToken")
+    static let credentials = Credentials(username: "username", authToken: "authToken", siteAddress: "siteAddress")
     static let defaults = UserDefaults(suiteName: "storesManagerTests")!
     static let keychainServiceName = "com.woocommerce.storesmanagertests"
 }

@@ -172,7 +172,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
     }
 
     func finishedLogin(withNonceAuthToken authToken: String) {
-        let siteURL = loginFields.siteAddress != nil ? loginFields.siteAddress : LoginFieldsMeta.dotcomAddress
+        let siteURL = !loginFields.siteAddress.isEmpty ? loginFields.siteAddress : LoginFieldsMeta.dotcomAddress
         let credentials = WordPressCredentials.wpcom(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: true, siteURL: siteURL)
         syncWPComAndPresentEpilogue(credentials: credentials)
 

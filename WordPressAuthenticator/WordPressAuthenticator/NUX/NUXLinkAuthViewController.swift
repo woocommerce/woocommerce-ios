@@ -24,7 +24,7 @@ class NUXLinkAuthViewController: LoginViewController {
 
         didSync = true // Make sure we don't call this twice by accident
 
-        let siteURL = loginFields.siteAddress != nil ? loginFields.siteAddress : LoginFieldsMeta.dotcomAddress
+        let siteURL = !loginFields.siteAddress.isEmpty ? loginFields.siteAddress : LoginFieldsMeta.dotcomAddress
         let credentials = WordPressCredentials.wpcom(authToken: token, isJetpackLogin: isJetpackLogin, multifactor: false, siteURL: siteURL)
         syncWPComAndPresentEpilogue(credentials: credentials)
 

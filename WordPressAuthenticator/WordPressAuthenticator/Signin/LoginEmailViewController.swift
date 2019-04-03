@@ -538,7 +538,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 // LoginFacadeDelegate methods for Google Google Sign In
 extension LoginEmailViewController {
     func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
-        let siteURL = loginFields.siteAddress != nil ? loginFields.siteAddress : LoginFieldsMeta.dotcomAddress
+        let siteURL = !loginFields.siteAddress.isEmpty ? loginFields.siteAddress : LoginFieldsMeta.dotcomAddress
         let credentials = WordPressCredentials.wpcom(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: false, siteURL: siteURL)
         syncWPComAndPresentEpilogue(credentials: credentials)
 

@@ -196,7 +196,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                 guard let strongSelf = self else {
                     return
                 }
-                strongSelf.presentUsernamePasswordControllerIfPossible(siteInfo: siteInfo)
+                strongSelf.presentNextControllerIfPossible(siteInfo: siteInfo)
             }
         }
 
@@ -218,7 +218,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                             return
                         }
 
-                        strongSelf.presentUsernamePasswordControllerIfPossible(siteInfo: nil)
+                        strongSelf.presentNextControllerIfPossible(siteInfo: nil)
                     })
                 } else {
                     // Failed to get the site info.
@@ -227,7 +227,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                         return
                     }
 
-                    strongSelf.presentUsernamePasswordControllerIfPossible(siteInfo: nil)
+                    strongSelf.presentNextControllerIfPossible(siteInfo: nil)
                 }
             })
         } else {
@@ -239,15 +239,20 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                     return
                 }
 
-                strongSelf.presentUsernamePasswordControllerIfPossible(siteInfo: nil)
+                strongSelf.presentNextControllerIfPossible(siteInfo: nil)
             })
         }
     }
 
-    func presentUsernamePasswordControllerIfPossible(siteInfo: WordPressComSiteInfo?) {
-        WordPressAuthenticator.shared.delegate?.shouldPresentSelfHostedUsernamePasswordController(for: siteInfo, onCompletion: { (error) in
+    func presentNextControllerIfPossible(siteInfo: WordPressComSiteInfo?) {
+        WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { (error, isSelfHosted) in
             guard let originalError = error as NSError? else {
-                self.showSelfHostedUsernamePassword()
+                if isSelfHosted {
+                    self.showSelfHostedUsernamePassword()
+                } else {
+                    self.showWPUsernamePassword()
+                }
+
                 return
             }
 
@@ -272,10 +277,18 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         return false
     }
 
-
+    /// Here we will continue with the self-hosted flow.
+    ///
     @objc func showSelfHostedUsernamePassword() {
         configureViewLoading(false)
         performSegue(withIdentifier: .showURLUsernamePassword, sender: self)
+    }
+
+    /// Break away from the self-hosted flow.
+    /// Display a username / password login screen for WP.com sites.
+    @objc func showWPUsernamePassword() {
+        configureViewLoading(false)
+        performSegue(withIdentifier: .showWPUsernamePassword, sender: self)
     }
 
 

@@ -132,15 +132,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Validates that the self-hosted site contains the correct information
     /// and can proceed to the self-hosted username and password view controller.
     ///
-    func shouldPresentSelfHostedUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (Error?) -> Void) {
+    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (Error?, Bool) -> Void) {
+        let isSelfHosted = false
+
         guard let site = siteInfo, site.hasJetpack == true else {
-            // build the error here
             let error = NSError(domain: "WooCommerceAuthenticationErrorDomain", code: 555, userInfo: [NSLocalizedDescriptionKey: NSLocalizedString("Looks like you site isn't set up to use this app. Make sure your site has Jetpack installed to continue.", comment: "Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps.")])
-            onCompletion(error)
+            onCompletion(error, isSelfHosted)
             return
         }
 
-        onCompletion(nil)
+        onCompletion(nil, isSelfHosted)
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.
@@ -195,15 +196,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Synchronizes the specified WordPress Account.
     ///
     func sync(credentials: WordPressCredentials, onCompletion: @escaping () -> Void) {
-        guard case let .wpcom(authToken, _, _) = credentials else {
+        guard case let .wpcom(authToken, _, _, siteURL) = credentials else {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
 
         StoresManager.shared.authenticate(credentials: .init(authToken: authToken))
         let action = AccountAction.synchronizeAccount { (account, error) in
             if let account = account {
+                let credentials = Credentials(username: account.username, authToken: authToken, siteAddress: siteURL)
                 StoresManager.shared
-                    .authenticate(credentials: .init(username: account.username, authToken: authToken))
+                    .authenticate(credentials: credentials)
                     .synchronizeEntities(onCompletion: onCompletion)
             } else {
                 StoresManager.shared.synchronizeEntities(onCompletion: onCompletion)

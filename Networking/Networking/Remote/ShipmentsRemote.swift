@@ -87,7 +87,7 @@ public final class ShipmentsRemote: Remote {
     public func deleteShipmentTracking(for siteID: Int, orderID: Int, trackingID: String, completion: @escaping (ShipmentTracking?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/" + trackingID
 
-        let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark2, method: .delete, siteID: siteID, path: path, parameters: nil)
         let mapper = NewShipmentTrackingMapper(siteID: siteID, orderID: orderID)
 
         enqueue(request, mapper: mapper, completion: completion)

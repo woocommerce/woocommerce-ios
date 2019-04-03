@@ -311,9 +311,9 @@ private extension AddEditTrackingViewController {
                                                                     if let error = error {
                                                                         //track error ib Tracks
                                                                         DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
-                                                                        
+
                                                                         self?.configureForEditingTracking()
-                                                                        
+
                                                                         self?.displayDeleteErrorNotice(orderID: orderID)
                                                                         return
                                                                     }

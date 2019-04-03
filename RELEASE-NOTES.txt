@@ -1,5 +1,6 @@
 1.6
 -----
+- improvement: you can now log in using a site address.
  
 1.5
 -----

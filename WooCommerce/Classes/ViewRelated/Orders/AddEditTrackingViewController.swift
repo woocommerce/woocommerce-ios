@@ -83,7 +83,7 @@ private extension AddEditTrackingViewController {
         guard viewModel.shouldDisplayActionButton else {
             return
         }
-        
+
         let rightBarButton = UIBarButtonItem(title: viewModel.primaryActionTitle,
                                              style: .done,
                                              target: self,
@@ -316,7 +316,7 @@ private extension AddEditTrackingViewController {
                                                                         self?.displayDeleteErrorNotice(orderID: orderID)
                                                                         return
                                                                     }
-                                                                    
+
                                                                     // Track success in tracks
                                                                     self?.dismiss()
         }

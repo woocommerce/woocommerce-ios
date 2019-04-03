@@ -324,19 +324,6 @@ private extension AddEditTrackingViewController {
         StoresManager.shared.dispatch(deleteTrackingAction)
     }
 
-    func updateTracking() {
-        configureForCommittingTracking()
-
-//        let siteID = viewModel.siteID
-//        let orderID = viewModel.orderID
-//        guard let trackingID = viewModel.shipmentTracking?.trackingID else {
-//            return
-//        }
-
-        //let updateTrackingAction = ShipmentAction
-
-    }
-
     func addTracking() {
         configureForCommittingTracking()
         guard let groupName = viewModel.shipmentProviderGroupName,

@@ -45,6 +45,14 @@
 		7499FA45221C7A60004EC0B4 /* ShipmentTracking+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7499FA43221C7A60004EC0B4 /* ShipmentTracking+CoreDataProperties.swift */; };
 		74B7D6AD20F90CBB002667AC /* OrderNote+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B7D6AB20F90CBB002667AC /* OrderNote+CoreDataClass.swift */; };
 		74B7D6AE20F90CBB002667AC /* OrderNote+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B7D6AC20F90CBB002667AC /* OrderNote+CoreDataProperties.swift */; };
+		74E218F22252BA8400E4B0D7 /* ProductVariationAttribute+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E218EE2252BA8400E4B0D7 /* ProductVariationAttribute+CoreDataClass.swift */; };
+		74E218F32252BA8400E4B0D7 /* ProductVariationAttribute+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E218EF2252BA8400E4B0D7 /* ProductVariationAttribute+CoreDataProperties.swift */; };
+		74E218F42252BA8400E4B0D7 /* ProductVariationDimensions+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E218F02252BA8400E4B0D7 /* ProductVariationDimensions+CoreDataClass.swift */; };
+		74E218F52252BA8400E4B0D7 /* ProductVariationDimensions+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E218F12252BA8400E4B0D7 /* ProductVariationDimensions+CoreDataProperties.swift */; };
+		74E218F72252BB7800E4B0D7 /* ProductVariation+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E218F62252BB7800E4B0D7 /* ProductVariation+CoreDataProperties.swift */; };
+		74E218F92252BB9E00E4B0D7 /* ProductVariation+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E218F82252BB9E00E4B0D7 /* ProductVariation+CoreDataClass.swift */; };
+		74ED52332252EF2C0076D28E /* ProductVariationImage+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74ED52312252EF2C0076D28E /* ProductVariationImage+CoreDataClass.swift */; };
+		74ED52342252EF2C0076D28E /* ProductVariationImage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74ED52322252EF2C0076D28E /* ProductVariationImage+CoreDataProperties.swift */; };
 		74F009C02183B99B002B4566 /* Note+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F009BE2183B99B002B4566 /* Note+CoreDataClass.swift */; };
 		74F009C12183B99B002B4566 /* Note+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F009BF2183B99B002B4566 /* Note+CoreDataProperties.swift */; };
 		9302E3A6220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9302E3A5220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift */; };
@@ -141,6 +149,14 @@
 		74B053702153090F0068EB85 /* Model 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 3.xcdatamodel"; sourceTree = "<group>"; };
 		74B7D6AB20F90CBB002667AC /* OrderNote+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderNote+CoreDataClass.swift"; sourceTree = "<group>"; };
 		74B7D6AC20F90CBB002667AC /* OrderNote+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderNote+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		74E218EE2252BA8400E4B0D7 /* ProductVariationAttribute+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductVariationAttribute+CoreDataClass.swift"; sourceTree = "<group>"; };
+		74E218EF2252BA8400E4B0D7 /* ProductVariationAttribute+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductVariationAttribute+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		74E218F02252BA8400E4B0D7 /* ProductVariationDimensions+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductVariationDimensions+CoreDataClass.swift"; sourceTree = "<group>"; };
+		74E218F12252BA8400E4B0D7 /* ProductVariationDimensions+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductVariationDimensions+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		74E218F62252BB7800E4B0D7 /* ProductVariation+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductVariation+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		74E218F82252BB9E00E4B0D7 /* ProductVariation+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductVariation+CoreDataClass.swift"; sourceTree = "<group>"; };
+		74ED52312252EF2C0076D28E /* ProductVariationImage+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductVariationImage+CoreDataClass.swift"; sourceTree = "<group>"; };
+		74ED52322252EF2C0076D28E /* ProductVariationImage+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductVariationImage+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		74F009BE2183B99B002B4566 /* Note+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataClass.swift"; sourceTree = "<group>"; };
 		74F009BF2183B99B002B4566 /* Note+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7C81935EDD982072BBDCC837 /* Pods-Storage.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.release.xcconfig"; sourceTree = "<group>"; };
@@ -397,6 +413,14 @@
 				747453942242C85E00E0B5EE /* ProductCategory+CoreDataProperties.swift */,
 				747453972242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataClass.swift */,
 				747453982242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataProperties.swift */,
+				74E218F82252BB9E00E4B0D7 /* ProductVariation+CoreDataClass.swift */,
+				74E218F62252BB7800E4B0D7 /* ProductVariation+CoreDataProperties.swift */,
+				74E218EE2252BA8400E4B0D7 /* ProductVariationAttribute+CoreDataClass.swift */,
+				74E218EF2252BA8400E4B0D7 /* ProductVariationAttribute+CoreDataProperties.swift */,
+				74E218F02252BA8400E4B0D7 /* ProductVariationDimensions+CoreDataClass.swift */,
+				74E218F12252BA8400E4B0D7 /* ProductVariationDimensions+CoreDataProperties.swift */,
+				74ED52312252EF2C0076D28E /* ProductVariationImage+CoreDataClass.swift */,
+				74ED52322252EF2C0076D28E /* ProductVariationImage+CoreDataProperties.swift */,
 				747453992242C85E00E0B5EE /* ProductTag+CoreDataClass.swift */,
 				7474539A2242C85E00E0B5EE /* ProductTag+CoreDataProperties.swift */,
 				7499FA42221C7A60004EC0B4 /* ShipmentTracking+CoreDataClass.swift */,
@@ -604,6 +628,8 @@
 			files = (
 				B5B914C520EFF03500F2F832 /* Site+CoreDataClass.swift in Sources */,
 				74938EC9216FA9B200540BA1 /* OrderStatsItem+CoreDataProperties.swift in Sources */,
+				74E218F42252BA8400E4B0D7 /* ProductVariationDimensions+CoreDataClass.swift in Sources */,
+				74ED52332252EF2C0076D28E /* ProductVariationImage+CoreDataClass.swift in Sources */,
 				747453A02242C85E00E0B5EE /* ProductImage+CoreDataProperties.swift in Sources */,
 				B54CA5BB20A4BD2800F38CD1 /* NSManagedObject+Object.swift in Sources */,
 				D821645D2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift in Sources */,
@@ -617,10 +643,12 @@
 				B505F6DB20BEEA3200BB1B69 /* Account+CoreDataClass.swift in Sources */,
 				7426A05520F69DA4002A4E07 /* OrderItem+CoreDataProperties.swift in Sources */,
 				747453A72242C85E00E0B5EE /* ProductTag+CoreDataClass.swift in Sources */,
+				74E218F52252BA8400E4B0D7 /* ProductVariationDimensions+CoreDataProperties.swift in Sources */,
 				74938EC8216FA9B200540BA1 /* OrderStatsItem+CoreDataClass.swift in Sources */,
 				747453A32242C85E00E0B5EE /* Product+CoreDataClass.swift in Sources */,
 				D821645B2239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataClass.swift in Sources */,
 				D821645C2239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift in Sources */,
+				74E218F92252BB9E00E4B0D7 /* ProductVariation+CoreDataClass.swift in Sources */,
 				7499FA45221C7A60004EC0B4 /* ShipmentTracking+CoreDataProperties.swift in Sources */,
 				B5FD111E21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift in Sources */,
 				7471A515216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataProperties.swift in Sources */,
@@ -631,6 +659,7 @@
 				746A9D21214078080013F6FF /* TopEarnerStats+CoreDataClass.swift in Sources */,
 				74B7D6AD20F90CBB002667AC /* OrderNote+CoreDataClass.swift in Sources */,
 				B52B0F7920AA287C00477698 /* StorageManagerType.swift in Sources */,
+				74ED52342252EF2C0076D28E /* ProductVariationImage+CoreDataProperties.swift in Sources */,
 				7471A517216CF0FE00219F7E /* SiteVisitStats+CoreDataProperties.swift in Sources */,
 				7426A05420F69DA4002A4E07 /* OrderItem+CoreDataClass.swift in Sources */,
 				7492FAD6217FA9C100ED2C69 /* SiteSetting+CoreDataClass.swift in Sources */,
@@ -640,6 +669,8 @@
 				7474539D2242C85E00E0B5EE /* ProductAttribute+CoreDataClass.swift in Sources */,
 				747453A42242C85E00E0B5EE /* Product+CoreDataProperties.swift in Sources */,
 				746A9D22214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift in Sources */,
+				74E218F32252BA8400E4B0D7 /* ProductVariationAttribute+CoreDataProperties.swift in Sources */,
+				74E218F72252BB7800E4B0D7 /* ProductVariation+CoreDataProperties.swift in Sources */,
 				74F009C12183B99B002B4566 /* Note+CoreDataProperties.swift in Sources */,
 				CE12FBE32220515600C59248 /* WooCommerceModelV9toV10.xcmappingmodel in Sources */,
 				747453A62242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataProperties.swift in Sources */,
@@ -648,6 +679,7 @@
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,
 				7474539E2242C85E00E0B5EE /* ProductAttribute+CoreDataProperties.swift in Sources */,
 				CE3B7AD22225E62C0050FE4B /* OrderStatus+CoreDataClass.swift in Sources */,
+				74E218F22252BA8400E4B0D7 /* ProductVariationAttribute+CoreDataClass.swift in Sources */,
 				74B7D6AE20F90CBB002667AC /* OrderNote+CoreDataProperties.swift in Sources */,
 				CE12FBCF221F0E1A00C59248 /* Order+CoreDataProperties.swift in Sources */,
 				7474539B2242C85E00E0B5EE /* ProductDimensions+CoreDataClass.swift in Sources */,

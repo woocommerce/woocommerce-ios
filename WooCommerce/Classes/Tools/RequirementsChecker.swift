@@ -44,7 +44,6 @@ class RequirementsChecker {
     ///
     static func checkMinimumWooVersionForDefaultStore() {
         guard StoresManager.shared.isAuthenticated else {
-            DDLogWarn("⚠️ Cannot check WC version on default store — user is not authenticated.")
             return
         }
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID, siteID != 0 else {

@@ -5,16 +5,19 @@ import AutomatticTracks
 
 public class TracksProvider: AnalyticsProvider {
 
-    private let contextManager: TracksContextManager
-    private let tracksService: TracksService
+    lazy private var contextManager: TracksContextManager = {
+        return TracksContextManager()
+    }()
+    lazy private var tracksService: TracksService = {
+        let tracksService = TracksService(contextManager: contextManager)!
+        tracksService.eventNamePrefix = Constants.eventNamePrefix
+        return tracksService
+    }()
 
 
     /// Designated Initializer
     ///
     init() {
-        self.contextManager = TracksContextManager()
-        self.tracksService = TracksService(contextManager: contextManager)
-        self.tracksService.eventNamePrefix = Constants.eventNamePrefix
     }
 }
 

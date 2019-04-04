@@ -12,7 +12,7 @@ struct ProductMapper: Mapper {
     let siteID: Int
 
 
-    /// (Attempts) to convert a dictionary into [Order].
+    /// (Attempts) to convert a dictionary into Product.
     ///
     func map(response: Data) throws -> Product {
         let decoder = JSONDecoder()

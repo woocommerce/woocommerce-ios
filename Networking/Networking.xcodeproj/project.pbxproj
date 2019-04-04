@@ -31,6 +31,8 @@
 		741B950120EBC8A700DD6E2D /* OrderCouponLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */; };
 		741D33672256AA4300109FAE /* ProductVariationMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741D33652256AA4300109FAE /* ProductVariationMapper.swift */; };
 		741D33682256AA4300109FAE /* ProductVariationListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741D33662256AA4300109FAE /* ProductVariationListMapper.swift */; };
+		741D336D2256B4E300109FAE /* product-variations-load-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 741D336B2256B4E300109FAE /* product-variations-load-all.json */; };
+		741D336E2256B4E300109FAE /* product-variation.json in Resources */ = {isa = PBXBuildFile; fileRef = 741D336C2256B4E300109FAE /* product-variation.json */; };
 		7426CA0D21AF27B9004E9FFC /* SiteAPIRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426CA0C21AF27B9004E9FFC /* SiteAPIRemote.swift */; };
 		7426CA0F21AF2C90004E9FFC /* SiteAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426CA0E21AF2C90004E9FFC /* SiteAPI.swift */; };
 		7426CA1121AF30BD004E9FFC /* SiteAPIMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426CA1021AF30BD004E9FFC /* SiteAPIMapper.swift */; };
@@ -249,6 +251,8 @@
 		741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCouponLine.swift; sourceTree = "<group>"; };
 		741D33652256AA4300109FAE /* ProductVariationMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductVariationMapper.swift; sourceTree = "<group>"; };
 		741D33662256AA4300109FAE /* ProductVariationListMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductVariationListMapper.swift; sourceTree = "<group>"; };
+		741D336B2256B4E300109FAE /* product-variations-load-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variations-load-all.json"; sourceTree = "<group>"; };
+		741D336C2256B4E300109FAE /* product-variation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variation.json"; sourceTree = "<group>"; };
 		7426CA0C21AF27B9004E9FFC /* SiteAPIRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteAPIRemote.swift; sourceTree = "<group>"; };
 		7426CA0E21AF2C90004E9FFC /* SiteAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteAPI.swift; sourceTree = "<group>"; };
 		7426CA1021AF30BD004E9FFC /* SiteAPIMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteAPIMapper.swift; sourceTree = "<group>"; };
@@ -729,6 +733,8 @@
 				CE19CB10222486A500E8AF7A /* order-statuses.json */,
 				74749B98224135C4005C4CF2 /* product.json */,
 				CE0A0F1E223998A00075ED8D /* products-load-all.json */,
+				741D336C2256B4E300109FAE /* product-variation.json */,
+				741D336B2256B4E300109FAE /* product-variations-load-all.json */,
 				7412A8EF21B6E415005D182A /* report-orders.json */,
 				74046E20217A73D0007DD7BF /* settings-general.json */,
 				7492FAE2217FBDBC00ED2C69 /* settings-general-alt.json */,
@@ -1004,6 +1010,7 @@
 				740211DF2193985A002248DA /* comment-moderate-spam.json in Resources */,
 				B5147876211B9227007562E5 /* broken-orders-mark-2.json in Resources */,
 				B58D10C82114D21D00107ED4 /* generic_error.json in Resources */,
+				741D336E2256B4E300109FAE /* product-variation.json in Resources */,
 				CE50346721B5DCBE007573C6 /* site-plan.json in Resources */,
 				743E84F322172D0A00FAC9D7 /* shipment_tracking_empty.json in Resources */,
 				B505F6D520BEE4E700BB1B69 /* me.json in Resources */,
@@ -1031,6 +1038,7 @@
 				74046E21217A73D0007DD7BF /* settings-general.json in Resources */,
 				7492FAE3217FBDBC00ED2C69 /* settings-general-alt.json in Resources */,
 				74C947842193A6C70024CB60 /* comment-moderate-approved.json in Resources */,
+				741D336D2256B4E300109FAE /* product-variations-load-all.json in Resources */,
 				B56C1EBA20EA7D2C00D749F9 /* sites.json in Resources */,
 				74A1D263211898F000931DFA /* site-visits-day.json in Resources */,
 				D823D90722376B4800C90817 /* shipment_tracking_new_custom_provider.json in Resources */,

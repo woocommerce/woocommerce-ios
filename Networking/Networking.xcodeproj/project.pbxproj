@@ -70,6 +70,8 @@
 		74A1D26B21189B8100931DFA /* SiteVisitStatsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A1D26A21189B8100931DFA /* SiteVisitStatsItem.swift */; };
 		74A1D26D21189DFF00931DFA /* SiteVisitStatsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A1D26C21189DFE00931DFA /* SiteVisitStatsMapper.swift */; };
 		74A1D26F21189EA100931DFA /* SiteVisitStatsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A1D26E21189EA000931DFA /* SiteVisitStatsRemote.swift */; };
+		74A5573422564E47007BED83 /* ProductVariation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A5573322564E47007BED83 /* ProductVariation.swift */; };
+		74A5573622564E62007BED83 /* ProductVariationAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A5573522564E62007BED83 /* ProductVariationAttribute.swift */; };
 		74A7B4BC217A807400E85A8B /* SiteSettingsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7B4BB217A807400E85A8B /* SiteSettingsMapperTests.swift */; };
 		74A7B4BE217A841400E85A8B /* broken-settings-general.json in Resources */ = {isa = PBXBuildFile; fileRef = 74A7B4BD217A841400E85A8B /* broken-settings-general.json */; };
 		74AB0ACA21948CE4008220CD /* CommentResultMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AB0AC921948CE4008220CD /* CommentResultMapperTests.swift */; };
@@ -284,6 +286,8 @@
 		74A1D26A21189B8100931DFA /* SiteVisitStatsItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsItem.swift; sourceTree = "<group>"; };
 		74A1D26C21189DFE00931DFA /* SiteVisitStatsMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsMapper.swift; sourceTree = "<group>"; };
 		74A1D26E21189EA000931DFA /* SiteVisitStatsRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsRemote.swift; sourceTree = "<group>"; };
+		74A5573322564E47007BED83 /* ProductVariation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariation.swift; sourceTree = "<group>"; };
+		74A5573522564E62007BED83 /* ProductVariationAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationAttribute.swift; sourceTree = "<group>"; };
 		74A7B4BB217A807400E85A8B /* SiteSettingsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteSettingsMapperTests.swift; sourceTree = "<group>"; };
 		74A7B4BD217A841400E85A8B /* broken-settings-general.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "broken-settings-general.json"; sourceTree = "<group>"; };
 		74AB0AC921948CE4008220CD /* CommentResultMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentResultMapperTests.swift; sourceTree = "<group>"; };
@@ -874,6 +878,8 @@
 				CE0A0F1422396BF00075ED8D /* ProductAttribute.swift */,
 				CE6BFEE72236D133005C79FB /* ProductDimensions.swift */,
 				CE0A0F16223970E80075ED8D /* ProductDefaultAttribute.swift */,
+				74A5573322564E47007BED83 /* ProductVariation.swift */,
+				74A5573522564E62007BED83 /* ProductVariationAttribute.swift */,
 			);
 			path = Product;
 			sourceTree = "<group>";
@@ -1132,6 +1138,7 @@
 				CE0A0F17223970E80075ED8D /* ProductDefaultAttribute.swift in Sources */,
 				748D4248210F89ED00CF7D1B /* OrderStatsRemote.swift in Sources */,
 				CE6BFEE52236BF05005C79FB /* Product.swift in Sources */,
+				74A5573422564E47007BED83 /* ProductVariation.swift in Sources */,
 				7452387221124B7700A973CD /* AnyEncodable.swift in Sources */,
 				740CF89921937A030023ED3A /* CommentRemote.swift in Sources */,
 				74ABA1CD213F1B6B00FFAD30 /* TopEarnerStats.swift in Sources */,
@@ -1190,6 +1197,7 @@
 				B5BB1D1220A255EC00112D92 /* OrderStatusEnum.swift in Sources */,
 				B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */,
 				74C8F06820EEB7BD00B6EDC9 /* OrderNotesMapper.swift in Sources */,
+				74A5573622564E62007BED83 /* ProductVariationAttribute.swift in Sources */,
 				B53EF5342180F646003E146F /* DotcomValidator.swift in Sources */,
 				74046E1D217A6989007DD7BF /* SiteSetting.swift in Sources */,
 				B5BB1D1020A237FB00112D92 /* Address.swift in Sources */,

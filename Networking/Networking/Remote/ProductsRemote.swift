@@ -76,7 +76,7 @@ public class ProductsRemote: Remote {
             ParameterKeys.contextKey: context ?? Defaults.context
         ]
 
-        let path = "\(Paths.products)/" + String(productID) + "/" + "\(Paths.variations)/"
+        let path = "\(Paths.products)/" + String(productID) + "/" + "\(Paths.variations)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
 

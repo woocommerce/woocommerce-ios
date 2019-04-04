@@ -10,7 +10,6 @@ import WordPressAuthenticator
 
 // MARK: - Woo's App Delegate!
 //
-@UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     /// AppDelegate's Instance
@@ -162,6 +161,10 @@ private extension AppDelegate {
     /// Sets up the main UIWindow instance.
     ///
     func setupMainWindow() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
+
+        window = UIWindow()
+        window?.rootViewController = storyboard.instantiateInitialViewController()
         window?.makeKeyAndVisible()
     }
 

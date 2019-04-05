@@ -59,10 +59,10 @@ PODS:
     - lottie-ios (= 2.5.2)
     - "NSURL+IDN (= 0.3)"
     - SVProgressHUD (= 2.2.5)
-    - WordPressKit (~> 3.1)
+    - WordPressKit (~> 3.2.2.beta)
     - WordPressShared (~> 1.4)
     - WordPressUI (~> 1.0)
-  - WordPressKit (3.2.1):
+  - WordPressKit (3.2.2.beta-3):
     - Alamofire (~> 4.7.3)
     - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.3)
@@ -136,7 +136,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   WordPressAuthenticator:
-    :commit: a29f0d7e7369a5b7b1a4993c061b59bf27b742cc
+    :commit: 74512b859550275f3755fdd4d311d44fad8b3d8e
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
@@ -160,8 +160,8 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 8f8a24b257a4d978c8d40ad1e7355b944ffbfa8c
-  WordPressAuthenticator: c1d524a7d5830962b4ab606d8e25386719aa7fb5
-  WordPressKit: fbe41d08c1d3b9ec909e0fe82c09bddb143bc972
+  WordPressAuthenticator: 255287667ad0733572c187ea9c0cc0310488f377
+  WordPressKit: 6ef1696d6f073385ed28c96e74747c1fbbd6fe4a
   WordPressShared: 63d57a4a07ad9f9a1ee5e8a7162e48fbb5192014
   WordPressUI: 44fe43a9c5c504dfd534286e39e1ce6ebcd69ff5
   wpxmlrpc: 6ba55c773cfa27083ae4a2173e69b19f46da98e2

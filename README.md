@@ -15,7 +15,10 @@ At the moment *WooCommerce for iOS* uses Swift 4.2 and requires Xcode 10 or newe
 
 We use a few tools to help with development. To install or update the required dependencies, run the follow command on the command line:
 
-`rake dependencies`
+`bundle exec pod install`
+
+you may also have to:
+`bundle install`
 
 #### CocoaPods
 

@@ -1,0 +1,3 @@
+Cette version vise à résoudre des problèmes et à apporter des améliorations :
+– Dans les détails de la commande, l’état de la commande est désormais actualisé au moment de l’extraction pour actualisation.
+– De petites améliorations ont été apportées à l’interface utilisateur de certains écrans.

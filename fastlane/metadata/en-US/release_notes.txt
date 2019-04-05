@@ -1,4 +1,3 @@
-- Visit the Order Details screen to manually change an order’s status or view shipment tracking.
-- We now fully support and properly display custom order status labels.
-- You can now filter by custom order status.
-- RTL language support has been improved, with better handling of graphical component flipping.
+This version is all about fixes and refinements:
+– In Order Details, the order status now refreshes upon pull-to-refresh.
+– Some small UI refinements have been done in different screens.

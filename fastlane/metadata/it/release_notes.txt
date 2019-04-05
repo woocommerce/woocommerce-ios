@@ -1,4 +1,3 @@
-- Visita la schermata dettagli dell'ordine per modificare manualmente lo stato di un ordine o visualizzare la tracciabilità della spedizione.
-- Ora supportiamo completamente e visualizziamo correttamente le etichette dello stato dell’ordine personalizzate.
-- È ora possibile filtrare per stato dell'ordine personalizzato.
-- Il supporto del linguaggio RTL è stato migliorato, con una migliore gestione del capovolgimento del componente grafico.
+Questa versione è dedicata a correzioni e perfezionamenti:
+– Nei Dettagli dell'ordine, lo stato dell’ordine ora viene aggiornato con il gesto “trascina per aggiornare”.
+– Alcuni piccoli perfezionamenti alla UI sono stati apportati in diverse schermate.

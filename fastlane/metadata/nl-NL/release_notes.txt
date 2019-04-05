@@ -1,4 +1,3 @@
-- Ga naar het scherm Bestelgegevens om een status van een bestelling handmatig te wijzigen of de bestelling te volgen.
-- We ondersteunen aangepaste bestelstatus-labels nu volledig en geven deze op de juiste manier weer.
-- Je kunt nu filteren op aangepaste bestelstatus.
-- De ondersteuning voor RTL-talen is verbeterd, evenals het omkeren van grafische componenten.
+Deze versie draait om reparaties en verfijningen:
+– In het scherm Bestelgegevens kun je nu de bestelstatus vernieuwen door het scherm omlaag te trekken.
+– Er zijn een paar kleine UI-verbeteringen aangebracht in verschillende schermen.

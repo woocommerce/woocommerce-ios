@@ -1,4 +1,3 @@
-- Visita la pantalla Información del pedido para cambiar manualmente el estado de un pedido o ver el seguimiento del envío.
-- Ahora admitimos y mostramos debidamente las etiquetas de estado de los pedidos personalizados.
-- Ahora puedes filtrar por estado del pedido personalizado.
-- Se ha mejorado la compatibilidad con los idiomas de derecha a izquierda gracias a un mejor tratamiento del volteo de componentes gráficos.
+Esta versión se centra en corregir errores y hacer mejoras:
+– En la información del pedido, el estado ahora se actualiza con un gesto de deslizar hacia abajo.
+– Se han realizado algunas mejoras de IU en varias pantallas.

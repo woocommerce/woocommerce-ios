@@ -144,9 +144,9 @@ public struct ProductVariation: Decodable {
         let permalink = try container.decode(String.self, forKey: .permalink)
 
         let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
-        let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified) ?? Date()
-        let dateOnSaleFrom = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleFrom) ?? Date()
-        let dateOnSaleTo = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleTo) ?? Date()
+        let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified)
+        let dateOnSaleFrom = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleFrom)
+        let dateOnSaleTo = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleTo)
 
         let statusKey = try container.decode(String.self, forKey: .statusKey)
         let fullDescription = try container.decodeIfPresent(String.self, forKey: .fullDescription)

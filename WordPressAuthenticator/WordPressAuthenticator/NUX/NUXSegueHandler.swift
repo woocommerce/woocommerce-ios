@@ -6,7 +6,7 @@ public protocol NUXSegueHandler {
 }
 
 extension NUXSegueHandler where Self: NUXViewController {
-    public func performSegue(withIdentifier identifier: SegueIdentifier, sender: AnyObject?) {
+    public func performSegue(withIdentifier identifier: NUXViewController.SegueIdentifier, sender: AnyObject?) {
         performSegue(withIdentifier: identifier.rawValue, sender: sender)
     }
 }

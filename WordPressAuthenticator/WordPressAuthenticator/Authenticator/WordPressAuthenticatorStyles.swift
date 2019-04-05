@@ -73,7 +73,7 @@ public struct WordPressAuthenticatorStyle {
 }
 
 public extension WordPressAuthenticatorStyle {
-    public static var defaultStyle: WordPressAuthenticatorStyle {
+    static var defaultStyle: WordPressAuthenticatorStyle {
         return WordPressAuthenticatorStyle(primaryNormalBackgroundColor: WPStyleGuide.mediumBlue(),
                                            primaryNormalBorderColor: WPStyleGuide.wordPressBlue(),
                                            primaryHighlightBackgroundColor: WPStyleGuide.wordPressBlue(),

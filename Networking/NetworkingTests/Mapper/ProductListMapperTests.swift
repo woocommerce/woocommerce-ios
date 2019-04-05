@@ -218,7 +218,7 @@ class ProductListMapperTests: XCTestCase {
 ///
 private extension ProductListMapperTests {
 
-    /// Returns the OrderListMapper output upon receiving `filename` (Data Encoded)
+    /// Returns the ProductListMapper output upon receiving `filename` (Data Encoded)
     ///
     func mapProducts(from filename: String) -> [Product] {
         guard let response = Loader.contentsOf(filename) else {
@@ -228,7 +228,7 @@ private extension ProductListMapperTests {
         return try! ProductListMapper(siteID: dummySiteID).map(response: response)
     }
 
-    /// Returns the OrderListMapper output upon receiving `orders-load-all`
+    /// Returns the ProductListMapper output upon receiving `products-load-all`
     ///
     func mapLoadAllProductsResponse() -> [Product] {
         return mapProducts(from: "products-load-all")

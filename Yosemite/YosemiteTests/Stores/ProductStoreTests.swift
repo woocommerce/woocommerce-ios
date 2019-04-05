@@ -260,8 +260,8 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
 
-        let expectation = self.expectation(description: "Stored Products Reset")
-        let action = ProductAction.resetStoredProducts() {
+        let expectation = self.expectation(description: "Stored Products + Variations Reset")
+        let action = ProductAction.resetStoredProductsAndVariations() {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
@@ -269,6 +269,8 @@ class ProductStoreTests: XCTestCase {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+
+            // FIXME: Also test nuking product variations here!
 
             expectation.fulfill()
         }

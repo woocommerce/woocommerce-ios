@@ -26,12 +26,16 @@ public class ProductStore: Store {
         }
 
         switch action {
-        case .resetStoredProducts(let onCompletion):
-            resetStoredProducts(onCompletion: onCompletion)
+        case .resetStoredProductsAndVariations(let onCompletion):
+            resetStoredProductsAndVariations(onCompletion: onCompletion)
         case .retrieveProduct(let siteID, let productID, let onCompletion):
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .synchronizeProducts(let siteID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProducts(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .synchronizeProductVariations(let siteID, let productID, let onCompletion):
+            synchronizeProductVariations(siteID: siteID, productID: productID, onCompletion: onCompletion)
+        case .retrieveProductVariation(let siteID, let productID, let variationID, let onCompletion):
+            retrieveProductVariation(siteID: siteID, productID: productID, variationID: variationID, onCompletion: onCompletion)
         }
     }
 }
@@ -41,18 +45,19 @@ public class ProductStore: Store {
 //
 private extension ProductStore {
 
-    /// Nukes all of the Stored Products.
+    /// Nukes all of the Stored Products and ProductVariations.
     ///
-    func resetStoredProducts(onCompletion: () -> Void) {
+    func resetStoredProductsAndVariations(onCompletion: () -> Void) {
         let storage = storageManager.viewStorage
         storage.deleteAllObjects(ofType: Storage.Product.self)
+        storage.deleteAllObjects(ofType: Storage.ProductVariation.self)
         storage.saveIfNeeded()
-        DDLogDebug("Products deleted")
+        DDLogDebug("Products and ProductVariations deleted")
 
         onCompletion()
     }
 
-    /// Retrieves the products associated with a given Site ID (if any!).
+    /// Synchronizes the products associated with a given Site ID (if any!).
     ///
     func synchronizeProducts(siteID: Int, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
@@ -88,14 +93,49 @@ private extension ProductStore {
             }
         }
     }
+
+    /// Synchronizes the product variations associated with the provided Site ID and Product ID (if any!).
+    ///
+    func synchronizeProductVariations(siteID: Int, productID: Int, onCompletion: @escaping (Error?) -> Void) {
+        let remote = ProductsRemote(network: network)
+
+        remote.loadAllProductVariations(for: siteID, productID: productID) { (productVariations, error) in
+            guard let _ = productVariations else {
+                onCompletion(error)
+                return
+            }
+
+            // FIXME: Upsert product variations here!
+            onCompletion(nil)
+        }
+    }
+
+    /// Retrieves the product variation associated with the provided Site ID, Product ID, and Variation ID (if any!).
+    ///
+    func retrieveProductVariation(siteID: Int, productID: Int, variationID: Int, onCompletion: @escaping (Networking.ProductVariation?, Error?) -> Void) {
+        let remote = ProductsRemote(network: network)
+
+        remote.loadProductVariation(for: siteID, productID: productID, variationID: variationID) { [weak self] (productVariation, error) in
+            guard let productVariation = productVariation else {
+                if case NetworkError.notFound? = error {
+                    self?.deleteStoredProduct(siteID: siteID, productID: productID)
+                }
+                onCompletion(nil, error)
+                return
+            }
+
+            // FIXME: Upsert product variation here!
+            onCompletion(productVariation, nil)
+        }
+    }
 }
 
 
-// MARK: - Storage
+// MARK: - Storage: Product
 //
 private extension ProductStore {
 
-    /// Deletes any Storage.Product with the specified OrderID
+    /// Deletes any Storage.Product with the specified `siteID` and `productID`
     ///
     func deleteStoredProduct(siteID: Int, productID: Int) {
         let storage = storageManager.viewStorage
@@ -283,6 +323,24 @@ private extension ProductStore {
                 storage.deleteObject(storageTag)
             }
         }
+    }
+}
+
+
+// MARK: - Storage: Product Variations
+//
+private extension ProductStore {
+
+    /// Deletes any Storage.ProductVariation with the specified `siteID`, `productID`, and `variationID`
+    ///
+    func deleteStoredProductVariation(siteID: Int, productID: Int, variationID: Int) {
+        let storage = storageManager.viewStorage
+        guard let productVariation = storage.loadProductVariation(siteID: siteID, productID: productID, variationID: variationID) else {
+            return
+        }
+
+        storage.deleteObject(productVariation)
+        storage.saveIfNeeded()
     }
 }
 

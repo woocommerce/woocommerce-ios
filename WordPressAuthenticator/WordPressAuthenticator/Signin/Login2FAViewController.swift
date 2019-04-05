@@ -172,8 +172,8 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
     }
 
     func finishedLogin(withNonceAuthToken authToken: String) {
-        let siteURL = !loginFields.siteAddress.isEmpty ? loginFields.siteAddress : LoginFieldsMeta.dotcomAddress
-        let credentials = WordPressCredentials.wpcom(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: true, siteURL: siteURL)
+        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: true, siteURL: loginFields.siteAddress)
+        let credentials = AuthenticatorCredentials(wpcom: wpcom)
         syncWPComAndPresentEpilogue(credentials: credentials)
 
         // Disconnect now that we're done with Google.

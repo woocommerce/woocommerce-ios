@@ -116,6 +116,4 @@ public class LoginFieldsMeta: NSObject {
     @objc public var socialServiceIDToken: String?
 
     var googleUser: GIDGoogleUser?
-
-    public static let dotcomAddress = "https://wordpress.com" // backup URL if siteAddress is empty.
 }

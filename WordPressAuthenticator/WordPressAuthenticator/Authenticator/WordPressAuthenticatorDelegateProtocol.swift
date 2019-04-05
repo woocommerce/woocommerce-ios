@@ -46,11 +46,11 @@ public protocol WordPressAuthenticatorDelegate: class {
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
-    func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, onDismiss: @escaping () -> Void)
+    func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void)
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
-    func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, service: SocialService?)
+    func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, service: SocialService?)
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
@@ -72,7 +72,7 @@ public protocol WordPressAuthenticatorDelegate: class {
     ///     - credentials: WordPress Site Credentials.
     ///     - onCompletion: Closure to be executed on completion.
     ///
-    func sync(credentials: WordPressCredentials, onCompletion: @escaping () -> Void)
+    func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void)
 
     /// Signals the Host App that a given Analytics Event has occurred.
     ///

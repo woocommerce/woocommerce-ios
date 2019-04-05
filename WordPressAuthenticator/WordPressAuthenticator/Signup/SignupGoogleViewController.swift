@@ -100,9 +100,8 @@ private extension SignupGoogleViewController {
 
         service.createWPComUserWithGoogle(token: googleToken, success: { [weak self] accountCreated, wpcomUsername, wpcomToken in
 
-            let siteURL = self?.loginFields.siteAddress ?? LoginFieldsMeta.dotcomAddress
-
-            let credentials = WordPressCredentials.wpcom(authToken: wpcomToken, isJetpackLogin: false, multifactor: false, siteURL: siteURL)
+            let wpcom = WordPressComCredentials(authToken: wpcomToken, isJetpackLogin: false, multifactor: false, siteURL: self?.loginFields.siteAddress ?? "")
+            let credentials = AuthenticatorCredentials(wpcom: wpcom)
 
             /// New Account: We'll signal the host app right away!
             ///
@@ -129,7 +128,7 @@ private extension SignupGoogleViewController {
 
     /// Social Signup Successful: Analytics + Pushing the Signup Epilogue.
     ///
-    func socialSignupWasSuccessful(with credentials: WordPressCredentials) {
+    func socialSignupWasSuccessful(with credentials: AuthenticatorCredentials) {
         WordPressAuthenticator.track(.createdAccount, properties: ["source": "google"])
         WordPressAuthenticator.track(.signupSocialSuccess)
 
@@ -138,7 +137,7 @@ private extension SignupGoogleViewController {
 
     /// Social Login Successful: Analytics + Pushing the Login Epilogue.
     ///
-    func wasLoggedInInstead(with credentials: WordPressCredentials) {
+    func wasLoggedInInstead(with credentials: AuthenticatorCredentials) {
         WordPressAuthenticator.track(.signupSocialToLogin)
         WordPressAuthenticator.track(.loginSocialSuccess)
 

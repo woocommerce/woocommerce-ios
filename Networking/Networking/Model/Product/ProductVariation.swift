@@ -47,7 +47,7 @@ public struct ProductVariation: Decodable {
     public let shippingClass: String?
     public let shippingClassID: Int
 
-    public let image: ProductImage
+    public let image: ProductImage?
     public let attributes: [ProductVariationAttribute]
 
     public let menuOrder: Int
@@ -87,7 +87,7 @@ public struct ProductVariation: Decodable {
                 dimensions: ProductDimensions,
                 shippingClass: String?,
                 shippingClassID: Int,
-                image: ProductImage,
+                image: ProductImage?,
                 attributes: [ProductVariationAttribute],
                 menuOrder: Int) {
 
@@ -181,7 +181,7 @@ public struct ProductVariation: Decodable {
         let shippingClass = try container.decodeIfPresent(String.self, forKey: .shippingClass)
         let shippingClassID = try container.decode(Int.self, forKey: .shippingClassID)
 
-        let image = try container.decode(ProductImage.self, forKey: .image)
+        let image = try container.decodeIfPresent(ProductImage.self, forKey: .image)
 
         let attributes = try container.decode([ProductVariationAttribute].self, forKey: .attributes)
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)

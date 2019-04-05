@@ -43,7 +43,7 @@ extension ProductVariation {
     @NSManaged public var weight: String?
 
     @NSManaged public var dimensions: ProductVariationDimensions?
-    @NSManaged public var image: ProductImage?
+    @NSManaged public var image: ProductVariationImage?
     @NSManaged public var attributes: Set<ProductVariationAttribute>?
 }
 

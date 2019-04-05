@@ -266,22 +266,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
 
 extension LoginUsernamePasswordViewController {
 
-//    func finishedLogin(withUsername username: String, password: String, xmlrpc: String, options: [AnyHashable: Any]) {
-//        displayLoginMessage("")
-//
-//        guard let delegate = WordPressAuthenticator.shared.delegate else {
-//            fatalError()
-//        }
-//
-//        let credentials = WordPressCredentials.wporg(username: username, password: password, xmlrpc: xmlrpc, options: options)
-//        delegate.sync(credentials: credentials) { [weak self] in
-//
-//            NotificationCenter.default.post(name: Foundation.Notification.Name(rawValue: WordPressAuthenticator.WPSigninDidFinishNotification), object: nil)
-//            self?.showLoginEpilogue(for: credentials)
-//        }
-//    }
-
-
     func displayLoginMessage(_ message: String) {
         configureForgotPasswordButton()
     }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-03-19 18:54:08+0000 */
+/* Translation-Revision-Date: 2019-04-03 14:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -106,7 +106,7 @@
 /* Application's Background State */
 "Background" = "Фон";
 
-/* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+/* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. \ - It reads: Bar number {bar number} {summary of bar}. - */
 "Bar number %1$i, %2$@, " = "Номер столбца %1$i, %2$@, ";
 
 /* Billing title for customer info cell */
@@ -291,7 +291,7 @@
 /* Filter the orders list. */
 "Filter orders" = "Фильтровать заказы";
 
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+/* VoiceOver accessibility hint, \ - informing the user the button can be used to filter the notifications list. - */
 "Filters the notifications list by notification type." = "Фильтрование уведомлений по типу.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
@@ -450,7 +450,7 @@
 /* Message phone number button title */
 "Message" = "Сообщение";
 
-/* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
+/* VoiceOver accessibility value, informs the user about the Y-axis min/max values. \ - It reads: Minimum value {value}, maximum value {value}. - */
 "Minimum value %1$@, maximum value %2$@" = "Минимальное значение — %1$@, максимальное значение — %2$@";
 
 /* Statistical unit - a single week */
@@ -518,8 +518,7 @@
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Примечание для клиента";
 
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
+/* Title that appears on top of the main Notifications screen when there is no filter \ - applied to the list (plural form of the word Notification). - Title of the Notifications tab — plural form of Notification */
 "Notifications" = "Уведомления";
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
@@ -550,7 +549,7 @@
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Открыть почту";
 
-/* Navigates to open source licenses screen */
+/* Navigates to screen about open source licenses */
 "Open Source Licenses" = "Лицензии на ПО с открытым исходным кодом";
 
 /* Accessibility hint for the button to update the order status */
@@ -563,7 +562,7 @@
    Order number title */
 "Order #(viewModel.order.number)" = "Заказ №(viewModel.order.number)";
 
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. \ - It reads: Order {order number} has been deleted from your store - */
 "Order %@ has been deleted from your store" = "Заказ %@ удалён из вашего магазина";
 
 /* Order notes section title */
@@ -578,8 +577,7 @@
 /* Order status update success notice */
 "Order status updated" = "Статус заказа обновлен";
 
-/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. \ - Plural form of the word Order. - Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Заказы";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -649,7 +647,7 @@
    Product section title - Section header title for the product */
 "Product" = "Товар";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
+/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a \ - prompt that lets them call or message the billing customer. - */
 "Prompts with the option to call or message the billing customer." = "Позвонить или отправить сообщение плательщику.";
 
 /* shown in promotional screens during first launch */
@@ -697,7 +695,7 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Просмотреть, подготовить и отправить эти ожидающие заказы";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. \ - Plural form of the word Review. - */
 "Reviews" = "Обзоры";
 
 /* SKU label */
@@ -715,7 +713,7 @@
 /* Page title for the select a different store screen */
 "Select Store" = "Выбрать магазин";
 
-/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
+/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that \ - displays the store website and their username. - */
 "Selected Store" = "Выбранный магазин";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
@@ -918,7 +916,7 @@
 /* Top Performers section title - this year */
 "This Year" = "В этом году";
 
-/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
+/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to \ - your Store. Read the configuration instructions.' and it links to a web page on the words \ - 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \ - 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. \ - If a literal translation of 'Read the configuration instructions' does not make sense in your language, \ - please use a contextually appropriate substitution. For example, you can translate it to say \ - 'See: instructions' or any alternative that sounds natural in your language. - */
 "This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "Для подключения к вашему магазину приложению требуется Jetpack. <br \/> См. <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">инструкции по настройке<\/a>.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
@@ -949,11 +947,11 @@
 /* Total label for payment view */
 "Total" = "Итого";
 
-/* Top performers — label for the total number of products ordered */
-"Total Product Order: %ld" = "Общее число заказов продуктов: %ld";
-
 /* Description for Top Performers right column header */
 "Total Spend" = "Общий объём выручки";
+
+/* Top performers — label for the total number of products ordered */
+"Total orders: %ld" = "Всего заказов: %ld";
 
 /* Track package button title */
 "Track package" = "Отслеживание посылки";
@@ -988,7 +986,7 @@
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
 "Unable to add note to order #(viewModel.order.orderID)" = "Не удалось добавить примечание к заказу #(viewModel.order.orderID)";
 
-/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order */
+/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
 "Unable to change status of order #(orderID)" = "Не удалось изменить статус заказа #(orderID)";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
@@ -1009,7 +1007,7 @@
 /* Refresh Action Failed */
 "Unable to refresh list" = "Не удалось обновить список";
 
-/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
+/* On the site picker screen, the error displayed when connecting to a site fails. \ - It reads: Unable to successfully connect to {site name} - */
 "Unable to successfully connect to %@" = "Не удалось подключиться к %@";
 
 /* Error message displayed when an error occurred checking for email availability. */
@@ -1039,22 +1037,22 @@
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "Обновлено %1$@ в %2$@";
 
-/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. \ - Usage example: Updated 1 hour ago - */
 "Updated %ld hour ago" = "Обновлено %ld час назад";
 
-/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. \ - Usage example: Updated 14 hours ago - */
 "Updated %ld hours ago" = "Обновлено %ld ч. назад";
 
-/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
+/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. \ - Usage example: Updated 1 minute ago - */
 "Updated %ld minute ago" = "Обновлено %ld минуту назад";
 
-/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. \ - Usage example: Updated 55 minutes ago - */
 "Updated %ld minutes ago" = "Обновлено %ld мин. назад";
 
 /* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
 "Updated moments ago" = "Обновлено только что";
 
-/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
+/* A specific date and time string which represents when the data was last updated. \ - Usage example: Updated on Jan 22, 2019 3:31PM - */
 "Updated on %@" = "Обновлено %@";
 
 /* Login dialog username placeholder

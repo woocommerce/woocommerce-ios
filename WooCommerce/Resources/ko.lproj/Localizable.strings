@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-03-20 09:54:11+0000 */
+/* Translation-Revision-Date: 2019-04-03 09:54:02+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -106,7 +106,7 @@
 /* Application's Background State */
 "Background" = "배경";
 
-/* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+/* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. \ - It reads: Bar number {bar number} {summary of bar}. - */
 "Bar number %1$i, %2$@, " = "표시줄 번호 %1$i, %2$@, ";
 
 /* Billing title for customer info cell */
@@ -228,7 +228,7 @@
 "Dotcom Error: [(code)] (theMessage)" = "닷컴 오류: [(code)] (theMessage)";
 
 /* WordPress.com error thrown when the the request REST API url is invalid. */
-"Dotcom Invalid REST Route" = "Dotcom 유효하지 않은 REST 경로";
+"Dotcom Invalid REST Route" = "REST 경로의 유효하지 않은 Dotcom";
 
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "닷컴 토큰 누락";
@@ -291,7 +291,7 @@
 /* Filter the orders list. */
 "Filter orders" = "주문에 필터 적용";
 
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
+/* VoiceOver accessibility hint, \ - informing the user the button can be used to filter the notifications list. - */
 "Filters the notifications list by notification type." = "알림 목록을 알림 유형별로 필터링합니다.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
@@ -450,7 +450,7 @@
 /* Message phone number button title */
 "Message" = "메시지";
 
-/* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
+/* VoiceOver accessibility value, informs the user about the Y-axis min/max values. \ - It reads: Minimum value {value}, maximum value {value}. - */
 "Minimum value %1$@, maximum value %2$@" = "최소값 %1$@, 최대값 %2$@";
 
 /* Statistical unit - a single week */
@@ -518,8 +518,7 @@
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "고객에게 남길 메모";
 
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
+/* Title that appears on top of the main Notifications screen when there is no filter \ - applied to the list (plural form of the word Notification). - Title of the Notifications tab — plural form of Notification */
 "Notifications" = "Notifications";
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
@@ -550,7 +549,7 @@
 /* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "메일 열기";
 
-/* Navigates to open source licenses screen */
+/* Navigates to screen about open source licenses */
 "Open Source Licenses" = "오픈 소스 라이선스";
 
 /* Accessibility hint for the button to update the order status */
@@ -563,7 +562,7 @@
    Order number title */
 "Order #(viewModel.order.number)" = "주문 #(viewModel.order.number)";
 
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store */
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. \ - It reads: Order {order number} has been deleted from your store - */
 "Order %@ has been deleted from your store" = "스토어에서 %@ 주문이 삭제되었습니다.";
 
 /* Order notes section title */
@@ -578,8 +577,7 @@
 /* Order status update success notice */
 "Order status updated" = "주문 상태 업데이트됨";
 
-/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. \ - Plural form of the word Order. - Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "주문";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -649,7 +647,7 @@
    Product section title - Section header title for the product */
 "Product" = "상품";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
+/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a \ - prompt that lets them call or message the billing customer. - */
 "Prompts with the option to call or message the billing customer." = "청구 고객에게 전화를 걸거나 메시지를 보낼 수 있는 옵션이 표시된 메시지가 나타납니다.";
 
 /* shown in promotional screens during first launch */
@@ -697,7 +695,7 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "대기 중인 주문 검토, 준비 및 배송";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. \ - Plural form of the word Review. - */
 "Reviews" = "검토";
 
 /* SKU label */
@@ -715,7 +713,7 @@
 /* Page title for the select a different store screen */
 "Select Store" = "스토어 선택";
 
-/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
+/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that \ - displays the store website and their username. - */
 "Selected Store" = "선택한 스토어";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
@@ -918,7 +916,7 @@
 /* Top Performers section title - this year */
 "This Year" = "올해";
 
-/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
+/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to \ - your Store. Read the configuration instructions.' and it links to a web page on the words \ - 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \ - 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. \ - If a literal translation of 'Read the configuration instructions' does not make sense in your language, \ - please use a contextually appropriate substitution. For example, you can translate it to say \ - 'See: instructions' or any alternative that sounds natural in your language. - */
 "This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "이 앱에서 회원님의 스토어에 연결하려면 젯팩이 있어야 합니다. <br \/> <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">구성 지침<\/a>을 읽어보세요.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
@@ -949,11 +947,11 @@
 /* Total label for payment view */
 "Total" = "총";
 
-/* Top performers — label for the total number of products ordered */
-"Total Product Order: %ld" = "총 상품 주문: %ld";
-
 /* Description for Top Performers right column header */
 "Total Spend" = "총 지출";
+
+/* Top performers — label for the total number of products ordered */
+"Total orders: %ld" = "총 주문 수: %ld";
 
 /* Track package button title */
 "Track package" = "패키지 추적";
@@ -988,7 +986,7 @@
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
 "Unable to add note to order #(viewModel.order.orderID)" = "주문 번호(viewModel.order.orderID)에 메모를 추가할 수 없음";
 
-/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order */
+/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
 "Unable to change status of order #(orderID)" = "주문 번호(orderID)의 상태를 변경할 수 없음";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
@@ -1009,7 +1007,7 @@
 /* Refresh Action Failed */
 "Unable to refresh list" = "목록을 새로 고칠 수 없음";
 
-/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
+/* On the site picker screen, the error displayed when connecting to a site fails. \ - It reads: Unable to successfully connect to {site name} - */
 "Unable to successfully connect to %@" = "%@에 연결할 수 없습니다.";
 
 /* Error message displayed when an error occurred checking for email availability. */
@@ -1039,22 +1037,22 @@
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "%2$@에 %1$@ 업데이트";
 
-/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. \ - Usage example: Updated 1 hour ago - */
 "Updated %ld hour ago" = "%ld시간 전에 업데이트됨";
 
-/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. \ - Usage example: Updated 14 hours ago - */
 "Updated %ld hours ago" = "%ld시간 전에 업데이트됨";
 
-/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
+/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. \ - Usage example: Updated 1 minute ago - */
 "Updated %ld minute ago" = "%ld분 전에 업데이트됨";
 
-/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. \ - Usage example: Updated 55 minutes ago - */
 "Updated %ld minutes ago" = "%ld분 전에 업데이트됨";
 
 /* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
 "Updated moments ago" = "방금 업데이트됨";
 
-/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
+/* A specific date and time string which represents when the data was last updated. \ - Usage example: Updated on Jan 22, 2019 3:31PM - */
 "Updated on %@" = "%@에 업데이트";
 
 /* Login dialog username placeholder

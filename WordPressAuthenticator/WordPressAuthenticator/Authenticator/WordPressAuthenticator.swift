@@ -133,7 +133,7 @@ import WordPressUI
             trackOpenedLogin()
         }
 
-        let storyboard = UIStoryboard(name: "Login", bundle: mainBundle)
+        let storyboard = UIStoryboard(name: "Login", bundle: bundle)
         if let controller = storyboard.instantiateInitialViewController() {
             if let childController = controller.children.first as? LoginPrologueViewController {
                 childController.loginFields.restrictToWPCom = restrictToWPCom
@@ -149,7 +149,7 @@ import WordPressUI
             trackOpenedLogin()
         }
 
-        let storyboard = UIStoryboard(name: "Login", bundle: mainBundle)
+        let storyboard = UIStoryboard(name: "Login", bundle: bundle)
         guard let controller = storyboard.instantiateViewController(withIdentifier: "emailEntry") as? LoginEmailViewController else {
             return
         }
@@ -183,7 +183,7 @@ import WordPressUI
     /// Returns an instance of LoginSiteAddressViewController: allows the user to log into a WordPress.org website.
     ///
     @objc public class func signinForWPOrg() -> UIViewController {
-        let storyboard = UIStoryboard(name: "Login", bundle: mainBundle)
+        let storyboard = UIStoryboard(name: "Login", bundle: bundle)
         guard let controller = storyboard.instantiateViewController(withIdentifier: "siteAddress") as? LoginSiteAddressViewController else {
             fatalError("unable to create wpcom password screen")
         }
@@ -199,7 +199,7 @@ import WordPressUI
         loginFields.emailAddress = dotcomEmailAddress ?? String()
         loginFields.username = dotcomUsername ?? String()
 
-        let storyboard = UIStoryboard(name: "Login", bundle: mainBundle)
+        let storyboard = UIStoryboard(name: "Login", bundle: bundle)
         guard let controller = storyboard.instantiateViewController(withIdentifier: "LoginWPcomPassword") as? LoginWPComViewController else {
             fatalError("unable to create wpcom password screen")
         }
@@ -215,7 +215,7 @@ import WordPressUI
     /// This allows the host app to configure the controller's features.
     ///
     public class func signinForWPCom() -> LoginEmailViewController {
-        let storyboard = UIStoryboard(name: "Login", bundle: mainBundle)
+        let storyboard = UIStoryboard(name: "Login", bundle: bundle)
         guard let controller = storyboard.instantiateViewController(withIdentifier: "emailEntry") as? LoginEmailViewController else {
             fatalError()
         }
@@ -255,7 +255,7 @@ import WordPressUI
             return false
         }
 
-        let storyboard = UIStoryboard(name: "EmailMagicLink", bundle: mainBundle)
+        let storyboard = UIStoryboard(name: "EmailMagicLink", bundle: bundle)
         guard let loginController = storyboard.instantiateViewController(withIdentifier: "LinkAuthView") as? NUXLinkAuthViewController else {
             DDLogInfo("App opened with authentication link but couldn't create login screen.")
             return false
@@ -415,22 +415,19 @@ import WordPressUI
         UIApplication.shared.open(forgotPasswordURL)
     }
 
-    /// Returns the WordPressAuthenticator main bundle
+    /// Returns the WordPressAuthenticator Bundle
+    /// If installed via CocoaPods, this will be WordPressAuthenticator.bundle,
+    /// otherwise it will be the framework bundle.
     ///
-    class var mainBundle: Bundle {
-        return Bundle(for: WordPressAuthenticator.self)
-    }
-    
-    /// Returns the WordPressAuthenticatorResouces.bundle
-    ///
-    class var resourcesBundle: Bundle {
-        // If installed with CocoaPods, resources will be in WordPressAuthenticatorResources.bundle
-        if let bundleURL = mainBundle.resourceURL,
-            let resourceBundle = Bundle(url: bundleURL.appendingPathComponent("WordPressAuthenticatorResources.bundle")) {
+    class var bundle: Bundle {
+        let defaultBundle = Bundle(for: WordPressAuthenticator.self)
+        // If installed with CocoaPods, resources will be in WordPressAuthenticator.bundle
+        if let bundleURL = defaultBundle.resourceURL,
+            let resourceBundle = Bundle(url: bundleURL.appendingPathComponent("WordPressAuthenticator.bundle")) {
             return resourceBundle
         }
-        // Otherwise, the main bundle is used for resources
-        return mainBundle
+        // Otherwise, the default bundle is used for resources
+        return defaultBundle
     }
 
     // MARK: - 1Password Helper

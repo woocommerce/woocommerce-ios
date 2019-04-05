@@ -185,7 +185,6 @@ public struct ProductVariation: Decodable {
 
         let attributes = try container.decode([ProductVariationAttribute].self, forKey: .attributes)
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
-        
 
         self.init(siteID: siteID,
                   variationID: variationID,
@@ -226,7 +225,7 @@ public struct ProductVariation: Decodable {
 }
 
 
-// MARK: -  Defines all of the Product CodingKeys
+// MARK: - Defines all of the Product CodingKeys
 //
 private extension ProductVariation {
 

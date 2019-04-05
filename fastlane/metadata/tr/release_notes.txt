@@ -1,4 +1,3 @@
-- Bir siparişin durumunu manuel olarak değiştirmek ya da sevkiyat izlemeyi görüntülemek için Sipariş Detayları ekranına gidin.
-- Artık özel sipariş durumu etiketlerini tam olarak destekliyor ve gerektiği şekilde görüntülüyoruz.
-- Artık özel sipariş durumuna göre filtreleyebilirsiniz.
-- RTL dil desteği, daha iyi grafik bileşen çevirme işlemeyle geliştirildi.
+Bu sürümde çok sayıda düzeltme ve iyileştirme yapıldı:
+– Artık Sipariş Detayları sayfasında çekerek yenile özelliği ile sipariş durumu yenilenebiliyor.
+– Farklı ekranlarda bazı ufak Kullanıcı Arayüzü iyileştirmeleri yapıldı.

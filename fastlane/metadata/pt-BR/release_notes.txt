@@ -1,4 +1,3 @@
-- Acesse a tela Detalhes do pedido para alterar manualmente o status de um pedido ou visualizar o rastreamento do envio.
-- Agora nós oferecemos suporte e exibimos corretamente rótulos de status do pedido.
-- Você pode filtrar por status personalizado do pedido.
-- O suporte a idiomas RTL (da direita para a esquerda) foi aprimorado, com melhor manuseio da troca de componentes gráficos.
+Esta versão é dedicada às correções e melhorias:
+– Nos Detalhes do pedido, o status do pedido passará a ser atualizado após o comando arrastar para atualizar.
+– Algumas melhorias de IU foram feitas em telas diferentes.

@@ -153,31 +153,31 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             self?.fetchSiteInfo()
 
         }, failure: { [weak self] (error) in
-            guard let error = error, let strongSelf = self else {
+            guard let error = error, let self = self else {
                 return
             }
             DDLogError(error.localizedDescription)
             WordPressAuthenticator.track(.loginFailedToGuessXMLRPC, error: error)
             WordPressAuthenticator.track(.loginFailed, error: error)
-            strongSelf.configureViewLoading(false)
+            self.configureViewLoading(false)
 
-            let err = strongSelf.originalErrorOrError(error: error as NSError)
+            let err = self.originalErrorOrError(error: error as NSError)
 
-            if strongSelf.errorDiscoveringJetpackSite(error: err) {
-                strongSelf.displayError(error as NSError, sourceTag: .jetpackLogin)
+            if self.errorDiscoveringJetpackSite(error: err) {
+                self.displayError(error as NSError, sourceTag: .jetpackLogin)
 
             } else if let xmlrpcValidatorError = err as? WordPressOrgXMLRPCValidatorError {
-                strongSelf.displayError(message: xmlrpcValidatorError.localizedDescription)
+                self.displayError(message: xmlrpcValidatorError.localizedDescription)
 
             } else if (err.domain == NSURLErrorDomain && err.code == NSURLErrorCannotFindHost) ||
                 (err.domain == NSURLErrorDomain && err.code == NSURLErrorNetworkConnectionLost) {
                 // NSURLErrorNetworkConnectionLost can be returned when an invalid URL is entered.
                 let msg = NSLocalizedString("Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again.",
                                             comment: "Error message shown a URL does not point to an existing site.")
-                strongSelf.displayError(message: msg)
+                self.displayError(message: msg)
 
             } else {
-                strongSelf.displayError(error as NSError, sourceTag: strongSelf.sourceTag)
+                self.displayError(error as NSError, sourceTag: self.sourceTag)
             }
         })
     }
@@ -193,10 +193,10 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                 self?.configureViewLoading(false)
             } else {
                 self?.configureViewLoading(false)
-                guard let strongSelf = self else {
+                guard let self = self else {
                     return
                 }
-                strongSelf.presentNextControllerIfPossible(siteInfo: siteInfo)
+                self.presentNextControllerIfPossible(siteInfo: siteInfo)
             }
         }
 
@@ -214,20 +214,20 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                     service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { error in
                         // The un-authed site info request failed.
                         self?.configureViewLoading(false)
-                        guard let strongSelf = self else {
+                        guard let self = self else {
                             return
                         }
 
-                        strongSelf.presentNextControllerIfPossible(siteInfo: nil)
+                        self.presentNextControllerIfPossible(siteInfo: nil)
                     })
                 } else {
                     // Failed to get the site info.
                     self?.configureViewLoading(false)
-                    guard let strongSelf = self else {
+                    guard let self = self else {
                         return
                     }
 
-                    strongSelf.presentNextControllerIfPossible(siteInfo: nil)
+                    self.presentNextControllerIfPossible(siteInfo: nil)
                 }
             })
         } else {
@@ -235,11 +235,11 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             let service = WordPressComBlogService()
             service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] error in
                 self?.configureViewLoading(false)
-                guard let strongSelf = self else {
+                guard let self = self else {
                     return
                 }
 
-                strongSelf.presentNextControllerIfPossible(siteInfo: nil)
+                self.presentNextControllerIfPossible(siteInfo: nil)
             })
         }
     }

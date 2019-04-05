@@ -149,7 +149,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
-    func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, onDismiss: @escaping () -> Void) {
+    func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
         storePickerCoordinator?.onDismiss = onDismiss
         storePickerCoordinator?.start()
@@ -157,7 +157,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Presents the Signup Epilogue, in the specified NavigationController.
     ///
-    func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, service: SocialService?) {
+    func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, service: SocialService?) {
         // NO-OP: The current WC version does not support Signup.
     }
 
@@ -198,15 +198,15 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Synchronizes the specified WordPress Account.
     ///
-    func sync(credentials: WordPressCredentials, onCompletion: @escaping () -> Void) {
-        guard case let .wpcom(authToken, _, _, siteURL) = credentials else {
+    func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
+        guard let wpcom = credentials.wpcom else {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
 
-        StoresManager.shared.authenticate(credentials: .init(authToken: authToken))
+        StoresManager.shared.authenticate(credentials: .init(authToken: wpcom.authToken))
         let action = AccountAction.synchronizeAccount { (account, error) in
             if let account = account {
-                let credentials = Credentials(username: account.username, authToken: authToken, siteAddress: siteURL)
+                let credentials = Credentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
                 StoresManager.shared
                     .authenticate(credentials: credentials)
                     .synchronizeEntities(onCompletion: onCompletion)

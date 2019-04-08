@@ -303,8 +303,8 @@
 		D83C12A022250BF0004CA04C /* OrderTrackingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83C129E22250BEF004CA04C /* OrderTrackingTableViewCell.swift */; };
 		D83F5930225B269C00626E75 /* DatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83F592E225B269C00626E75 /* DatePickerTableViewCell.swift */; };
 		D83F5931225B269C00626E75 /* DatePickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D83F592F225B269C00626E75 /* DatePickerTableViewCell.xib */; };
-		D843D5C722434A08001BFA55 /* AddEditTrackingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5C522434A08001BFA55 /* AddEditTrackingViewController.swift */; };
-		D843D5C822434A08001BFA55 /* AddEditTrackingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5C622434A08001BFA55 /* AddEditTrackingViewController.xib */; };
+		D83F5933225B2EB900626E75 /* ManualTrackingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83F5932225B2EB800626E75 /* ManualTrackingViewController.swift */; };
+		D843D5C822434A08001BFA55 /* ManualTrackingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5C622434A08001BFA55 /* ManualTrackingViewController.xib */; };
 		D843D5CB22437E59001BFA55 /* EditableValueOneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5C922437E59001BFA55 /* EditableValueOneTableViewCell.swift */; };
 		D843D5CC22437E59001BFA55 /* EditableValueOneTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5CA22437E59001BFA55 /* EditableValueOneTableViewCell.xib */; };
 		D843D5D322485009001BFA55 /* ShippingProvidersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5D122485009001BFA55 /* ShippingProvidersViewController.swift */; };
@@ -665,8 +665,8 @@
 		D83C129E22250BEF004CA04C /* OrderTrackingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderTrackingTableViewCell.swift; sourceTree = "<group>"; };
 		D83F592E225B269C00626E75 /* DatePickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerTableViewCell.swift; sourceTree = "<group>"; };
 		D83F592F225B269C00626E75 /* DatePickerTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DatePickerTableViewCell.xib; sourceTree = "<group>"; };
-		D843D5C522434A08001BFA55 /* AddEditTrackingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditTrackingViewController.swift; sourceTree = "<group>"; };
-		D843D5C622434A08001BFA55 /* AddEditTrackingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddEditTrackingViewController.xib; sourceTree = "<group>"; };
+		D83F5932225B2EB800626E75 /* ManualTrackingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManualTrackingViewController.swift; sourceTree = "<group>"; };
+		D843D5C622434A08001BFA55 /* ManualTrackingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ManualTrackingViewController.xib; sourceTree = "<group>"; };
 		D843D5C922437E59001BFA55 /* EditableValueOneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableValueOneTableViewCell.swift; sourceTree = "<group>"; };
 		D843D5CA22437E59001BFA55 /* EditableValueOneTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditableValueOneTableViewCell.xib; sourceTree = "<group>"; };
 		D843D5D122485009001BFA55 /* ShippingProvidersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingProvidersViewController.swift; sourceTree = "<group>"; };
@@ -1248,8 +1248,8 @@
 				B5FD111121D3CE7700560344 /* NewNoteViewController.xib */,
 				D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */,
 				D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */,
-				D843D5C522434A08001BFA55 /* AddEditTrackingViewController.swift */,
-				D843D5C622434A08001BFA55 /* AddEditTrackingViewController.xib */,
+				D83F5932225B2EB800626E75 /* ManualTrackingViewController.swift */,
+				D843D5C622434A08001BFA55 /* ManualTrackingViewController.xib */,
 				D843D5D122485009001BFA55 /* ShippingProvidersViewController.swift */,
 				D843D5D222485009001BFA55 /* ShippingProvidersViewController.xib */,
 			);
@@ -1616,7 +1616,7 @@
 				8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */,
 				B5F8B7E5219478FA00DAB7E2 /* NotificationDetailsViewController.xib in Resources */,
 				B5FD111221D3CE7700560344 /* NewNoteViewController.xib in Resources */,
-				D843D5C822434A08001BFA55 /* AddEditTrackingViewController.xib in Resources */,
+				D843D5C822434A08001BFA55 /* ManualTrackingViewController.xib in Resources */,
 				CE22E3FC21714776005A6BEF /* TopLeftImageTableViewCell.xib in Resources */,
 				B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */,
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
@@ -1934,6 +1934,7 @@
 				CE855364209BA6A700938BDC /* ShowHideSectionFooter.swift in Sources */,
 				7441E1D221503F77004E6ECE /* IntrinsicTableView.swift in Sources */,
 				B517EA1D218B41F200730EC4 /* String+Woo.swift in Sources */,
+				D83F5933225B2EB900626E75 /* ManualTrackingViewController.swift in Sources */,
 				B57C744A20F5649300EEFC87 /* EmptyStoresTableViewCell.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				B5A82EE7210263460053ADC8 /* UIViewController+Helpers.swift in Sources */,
@@ -1950,7 +1951,6 @@
 				CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */,
 				748D34E12148291E00E21A2F /* TopPerformerDataViewController.swift in Sources */,
 				B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */,
-				D843D5C722434A08001BFA55 /* AddEditTrackingViewController.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,
 				B5A56BF3219F46470065A902 /* UIButton+Animations.swift in Sources */,
 				B54FBE552111F70700390F57 /* ResultsController+UIKit.swift in Sources */,

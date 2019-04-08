@@ -4,7 +4,7 @@ import Storage
 
 /// Presents a tracking provider, tracking number and shipment date
 ///
-final class AddEditTrackingViewController: UIViewController {
+final class ManualTrackingViewController: UIViewController {
     private var viewModel: ManualShipmentTrackingViewModel
     private var datePickerVisible: Bool = false
 
@@ -47,7 +47,7 @@ final class AddEditTrackingViewController: UIViewController {
 }
 
 
-private extension AddEditTrackingViewController {
+private extension ManualTrackingViewController {
     func configureNavigation() {
         configureTitle()
         configureDismissButton()
@@ -135,7 +135,7 @@ private extension AddEditTrackingViewController {
 
 // MARK: - Table configuration
 //
-private extension AddEditTrackingViewController {
+private extension ManualTrackingViewController {
     func configureTable() {
         registerTableViewCells()
 
@@ -154,7 +154,7 @@ private extension AddEditTrackingViewController {
 
 // MARK: - UITableViewDataSource conformance
 //
-extension AddEditTrackingViewController: UITableViewDataSource {
+extension ManualTrackingViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
     }
@@ -244,7 +244,7 @@ extension AddEditTrackingViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate comformance
 //
-extension AddEditTrackingViewController: UITableViewDelegate {
+extension ManualTrackingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return CGFloat.leastNonzeroMagnitude
     }
@@ -279,7 +279,7 @@ extension AddEditTrackingViewController: UITableViewDelegate {
 
 // MARK: - Actions associated to taps in cells
 //
-private extension AddEditTrackingViewController {
+private extension ManualTrackingViewController {
     func executeAction(for indexPath: IndexPath) {
         let row = rowAtIndexPath(indexPath)
         if row == .deleteTracking {
@@ -313,7 +313,7 @@ private extension AddEditTrackingViewController {
 
 // MARK: - Conformance to delegate of List of Shipment providers.
 //
-extension AddEditTrackingViewController: ShipmentProviderListDelegate {
+extension ManualTrackingViewController: ShipmentProviderListDelegate {
     func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: Yosemite.ShipmentTrackingProvider, groupName: String) {
         viewModel.shipmentProvider = didSelect
         viewModel.shipmentProviderGroupName = groupName
@@ -323,7 +323,7 @@ extension AddEditTrackingViewController: ShipmentProviderListDelegate {
 
 // MARK: - Tracking number textfield
 //
-private extension AddEditTrackingViewController {
+private extension ManualTrackingViewController {
     @objc func didChangeTrackingNumber(sender: UITextField) {
         guard let newTrackingNumber = sender.text else {
             return
@@ -338,7 +338,7 @@ private extension AddEditTrackingViewController {
 // MARK: - Navigation bar management
 //
 /// Activates the action button (Add/Edit) if there is anough data to add or edit a shipment tracking
-private extension AddEditTrackingViewController {
+private extension ManualTrackingViewController {
     private func activateActionButtonIfNecessary() {
         navigationItem.rightBarButtonItem?.isEnabled = viewModel.canCommit
     }
@@ -347,7 +347,7 @@ private extension AddEditTrackingViewController {
 
 // MARK: - Actions!
 //
-private extension AddEditTrackingViewController {
+private extension ManualTrackingViewController {
     func deleteTracking() {
         configureForCommittingTracking()
 
@@ -425,7 +425,7 @@ private extension AddEditTrackingViewController {
 
 // MARK: - Error handling
 //
-private extension AddEditTrackingViewController {
+private extension ManualTrackingViewController {
     /// Displays the `Unable to Add tracking` Notice.
     ///
     func displayAddErrorNotice(orderID: Int) {

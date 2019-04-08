@@ -38,6 +38,14 @@ class ProductStoreTests: XCTestCase {
     ///
     private let sampleProductID = 282
 
+    /// Testing VariationID #1
+    ///
+    private let sampleVariation1ID = 215
+
+    /// Testing VariationID #2
+    ///
+    private let sampleVariation2ID = 295
+
     /// Testing Page Number
     ///
     private let defaultPageNumber = 1
@@ -246,7 +254,7 @@ class ProductStoreTests: XCTestCase {
 
     // MARK: - ProductAction.resetStoredProducts
 
-    /// Verifies that `ProductAction.resetStoredProducts` nukes the Products from Storage
+    /// Verifies that `ProductAction.resetStoredProductsAndVariations` nukes the Products + ProductVariations from Storage
     ///
     func testResetStoredProductsEffectivelyNukesTheProductsCache() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -260,6 +268,18 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
 
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation1(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 2)
+
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation2(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 2)
+
         let expectation = self.expectation(description: "Stored Products + Variations Reset")
         let action = ProductAction.resetStoredProductsAndVariations() {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
@@ -269,8 +289,10 @@ class ProductStoreTests: XCTestCase {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
-
-            // FIXME: Also test nuking product variations here!
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 0)
 
             expectation.fulfill()
         }
@@ -437,7 +459,20 @@ class ProductStoreTests: XCTestCase {
 }
 
 
-// MARK: - Private Methods
+// MARK: - Private Helpers
+//
+private extension ProductStoreTests {
+
+    func date(with dateString: String) -> Date {
+        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
+            return Date()
+        }
+        return date
+    }
+}
+
+
+// MARK: - Product Samples
 //
 private extension ProductStoreTests {
 
@@ -682,11 +717,134 @@ private extension ProductStoreTests {
 
         return [defaultAttribute1]
     }
+}
 
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
+
+// MARK: - Product Variation Samples
+//
+private extension ProductStoreTests {
+
+    // MARK: Variation #1
+
+    func sampleVariation1(_ siteID: Int? = nil) -> Networking.ProductVariation {
+        let testSiteID = siteID ?? sampleSiteID
+
+        return ProductVariation(siteID: testSiteID,
+                                variationID: sampleVariation1ID,
+                                productID: sampleProductID,
+                                permalink: "https://paperairplane.store/product/paper-airplane/?attribute_color=Black&attribute_length=Short",
+                                dateCreated: date(with: "2019-02-21T16:56:17"),
+                                dateModified: date(with: "2019-04-04T22:08:33"),
+                                dateOnSaleFrom: date(with: "2019-04-01T08:08:44"),
+                                dateOnSaleTo: date(with: "2019-04-29T01:08:21"),
+                                statusKey: "publish",
+                                fullDescription: "Hi there!",
+                                sku: "345345",
+                                price: "14.33",
+                                regularPrice: "12.77",
+                                salePrice: "14.33",
+                                onSale: true,
+                                purchasable: true,
+                                virtual: false,
+                                downloadable: false,
+                                downloadLimit: -1,
+                                downloadExpiry: -1,
+                                taxStatusKey: "taxable",
+                                taxClass: "a_lot",
+                                manageStock: false,
+                                stockQuantity: nil,
+                                stockStatusKey: "instock",
+                                backordersKey: "no",
+                                backordersAllowed: true,
+                                backordered: false,
+                                weight: "99",
+                                dimensions: sampleVariation1Dimensions(),
+                                shippingClass: "Woo!",
+                                shippingClassID: 99,
+                                image: sampleVariation1Image(),
+                                attributes: sampleVariation1Attributes(),
+                                menuOrder: 4)
+    }
+
+    func sampleVariation1Dimensions() -> Networking.ProductDimensions {
+        return ProductDimensions(length: "11", width: "22", height: "33")
+    }
+
+    func sampleVariation1Image() -> Networking.ProductImage {
+        return ProductImage(imageID: 206,
+                            dateCreated: date(with: "2019-01-31T20:38:17"),
+                            dateModified: date(with: "2019-02-28T01:38:17"),
+                            src: "https://i1.wp.com/paperairplane.store/wp-content/uploads/2019/01/FFXUJ9RIAY1N6DC.LARGE_.jpg?fit=1024%2C853&ssl=1",
+                            name: "FFXUJ9RIAY1N6DC.LARGE",
+                            alt: "It's a picture! Yaaay!")
+    }
+
+    func sampleVariation1Attributes() -> [Networking.ProductVariationAttribute] {
+        let attribute1 = ProductVariationAttribute(attributeID: 0, name: "Color", option: "Black")
+        let attribute2 = ProductVariationAttribute(attributeID: 0, name: "Length", option: "Short")
+
+        return [attribute1, attribute2]
+    }
+
+    // MARK: Variation #2
+
+    func sampleVariation2(_ siteID: Int? = nil) -> Networking.ProductVariation {
+        let testSiteID = siteID ?? sampleSiteID
+
+        return ProductVariation(siteID: testSiteID,
+                                variationID: sampleVariation2ID,
+                                productID: sampleProductID,
+                                permalink: "https://paperairplane.store/product/paper-airplane/?attribute_color=Black&attribute_length=Long",
+                                dateCreated: date(with: "2019-04-04T22:06:45"),
+                                dateModified: date(with: "2019-04-04T22:08:33"),
+                                dateOnSaleFrom: nil,
+                                dateOnSaleTo: nil,
+                                statusKey: "publish",
+                                fullDescription: "",
+                                sku: "345345",
+                                price: "",
+                                regularPrice: "",
+                                salePrice: "",
+                                onSale: true,
+                                purchasable: false,
+                                virtual: false,
+                                downloadable: true,
+                                downloadLimit: 500,
+                                downloadExpiry: 100000239847897,
+                                taxStatusKey: "taxable",
+                                taxClass: "",
+                                manageStock: false,
+                                stockQuantity: nil,
+                                stockStatusKey: "instock",
+                                backordersKey: "no",
+                                backordersAllowed: false,
+                                backordered: false,
+                                weight: "",
+                                dimensions: sampleVariation2Dimensions(),
+                                shippingClass: "",
+                                shippingClassID: 0,
+                                image: sampleVariation2Image(),
+                                attributes: sampleVariation2Attributes(),
+                                menuOrder: 2)
+    }
+
+    func sampleVariation2Dimensions() -> Networking.ProductDimensions {
+        return ProductDimensions(length: "", width: "", height: "")
+    }
+
+    func sampleVariation2Image() -> Networking.ProductImage {
+        return ProductImage(imageID: 123123,
+                            dateCreated: date(with: "2016-11-13T20:38:17"),
+                            dateModified: nil,
+                            src: "https://i1.wp.com/paperairplane.store/wp-content/uploads/2019/01/FFXUJ9RIAY1N6DC.LARGE_.jpg?fit=1024%2C853&ssl=1",
+                            name: "this_is_a_picture",
+                            alt: "")
+    }
+
+    func sampleVariation2Attributes() -> [Networking.ProductVariationAttribute] {
+        let attribute1 = ProductVariationAttribute(attributeID: 0, name: "Color", option: "White")
+        let attribute2 = ProductVariationAttribute(attributeID: 0, name: "Length", option: "Long")
+
+        return [attribute1, attribute2]
     }
 }

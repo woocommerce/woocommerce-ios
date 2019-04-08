@@ -25,7 +25,7 @@ target 'WooCommerce' do
   
   # allow pod to pick up beta versions, such as 1.1.7-beta.1
   #pod 'WordPressAuthenticator', '~> 1.1-beta'
-  pod 'WordPressAuthenticator', '~> 1.2.0-beta.1'
+  pod 'WordPressAuthenticator', '~> 1.2.1'
 
   pod 'WordPressShared', '~> 1.1'
   pod 'WordPressUI', '~> 1.2'

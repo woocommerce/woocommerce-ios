@@ -52,8 +52,8 @@ public func ==(lhs: Credentials, rhs: Credentials) -> Bool {
     return lhs.authToken == rhs.authToken && lhs.username == rhs.username
 }
 
-extension Credentials {
-    public struct Constants {
-        public static let placeholderSiteAddress = "https://wordpress.com"
+private extension Credentials {
+    struct Constants {
+        static let placeholderSiteAddress = "https://wordpress.com"
     }
 }

@@ -110,9 +110,7 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     let isAdding: Bool = true
 
-    var isCustom: Bool {
-        return false
-    }
+    let isCustom: Bool = false
 
     init(siteID: Int, orderID: Int) {
         self.siteID = siteID

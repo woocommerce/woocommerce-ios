@@ -417,7 +417,7 @@ class ProductStoreTests: XCTestCase {
     /// This translates effectively into: Ensure that performing update OP's that don't really change anything, do not
     /// end up causing UI refresh OP's in the main thread.
     ///
-    func testInoccuousUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
+    func testInoccuousProductUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
         // Stack
         let viewContext = storageManager.persistentContainer.viewContext
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -435,7 +435,7 @@ class ProductStoreTests: XCTestCase {
         }
 
         // Initial save: This should trigger *ONE* Upsert event
-        let backgroundSaveExpectation = expectation(description: "Retrieve product empty response")
+        let backgroundSaveExpectation = expectation(description: "Background save of identical product variation should not upsert")
         let derivedContext = storageManager.newDerivedStorage()
 
         derivedContext.perform {
@@ -666,6 +666,135 @@ class ProductStoreTests: XCTestCase {
 
         productStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - ProductStore.upsertStoredProductVariation
+
+    /// Verifies that `ProductStore.upsertStoredProductVariation` does not produce duplicate entries.
+    ///
+    func testUpdateStoredProductVariationsEffectivelyUpdatesPreexistantProduct() {
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 0)
+
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation1(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 2)
+
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation1Mutated(), in: viewStorage)
+        let storageVariation1 = viewStorage.loadProductVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: sampleVariation1ID)
+        XCTAssertEqual(storageVariation1?.toReadOnly(), sampleVariation1Mutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 3)
+    }
+
+    /// Verifies that `ProductStore.upsertStoredProductVariation` updates the correct site's product variation.
+    ///
+    func testUpdateStoredProductVariationEffectivelyUpdatesCorrectSitesProductVariation() {
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 0)
+
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation1(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 2)
+
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation1(sampleSiteID2), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 2)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 2)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 2)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 4)
+
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation1Mutated(), in: viewStorage)
+        let storageVariation1 = viewStorage.loadProductVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: sampleVariation1ID)
+        XCTAssertEqual(storageVariation1?.toReadOnly(), sampleVariation1Mutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 2)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 2)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 2)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 5)
+
+        let storageVariation2 = viewStorage.loadProductVariation(siteID: sampleSiteID2, productID: sampleProductID, variationID: sampleVariation1ID)
+        XCTAssertEqual(storageVariation2?.toReadOnly(), sampleVariation1(sampleSiteID2))
+    }
+
+    /// Verifies that `ProductStore.upsertStoredProductVariation` effectively inserts a new ProductVariation, with the specified payload.
+    ///
+    func testUpdateStoredProductVariationEffectivelyPersistsNewProductVariation() {
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProductVariation = sampleVariation2()
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 0)
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: remoteProductVariation, in: viewStorage)
+
+        let storageVariation = viewStorage.loadProductVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: sampleVariation2ID)
+        XCTAssertEqual(storageVariation?.toReadOnly(), remoteProductVariation)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 2)
+    }
+
+    /// Verifies that Inoccuous Upsert OP(s) performed in Derived Contexts **DO NOT** trigger Refresh Events in the
+    /// main thread.
+    ///
+    /// This translates effectively into: Ensure that performing update OP's that don't really change anything, do not
+    /// end up causing UI refresh OP's in the main thread.
+    ///
+    func testInoccuousProductVariationUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
+        // Stack
+        let viewContext = storageManager.persistentContainer.viewContext
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let entityListener = EntityListener(viewContext: viewContext, readOnlyEntity: sampleVariation1())
+
+        // Track Events: Upsert == 1 / Delete == 0
+        var numberOfUpsertEvents = 0
+        entityListener.onUpsert = { upserted in
+            numberOfUpsertEvents += 1
+        }
+
+        // We expect *never* to get a deletion event
+        entityListener.onDelete = {
+            XCTFail()
+        }
+
+        // Initial save: This should trigger *ONE* Upsert event
+        let backgroundSaveExpectation = expectation(description: "Background save of identical product variation should not upsert")
+        let derivedContext = storageManager.newDerivedStorage()
+
+        derivedContext.perform {
+            productStore.upsertStoredProductVariation(readOnlyProductVariation: self.sampleVariation1(), in: derivedContext)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedContext) {
+
+            // Secondary Save: Expect ZERO new Upsert Events
+            derivedContext.perform {
+                productStore.upsertStoredProductVariation(readOnlyProductVariation: self.sampleVariation1(), in: derivedContext)
+            }
+
+            self.storageManager.saveDerivedType(derivedStorage: derivedContext) {
+                XCTAssertEqual(numberOfUpsertEvents, 1)
+                backgroundSaveExpectation.fulfill()
+            }
+        }
+
+        wait(for: [backgroundSaveExpectation], timeout: Constants.expectationTimeout)
     }
 }
 
@@ -995,6 +1124,67 @@ private extension ProductStoreTests {
         let attribute2 = ProductVariationAttribute(attributeID: 0, name: "Length", option: "Short")
 
         return [attribute1, attribute2]
+    }
+
+    func sampleVariation1Mutated(_ siteID: Int? = nil) -> Networking.ProductVariation {
+        let testSiteID = siteID ?? sampleSiteID
+
+        return ProductVariation(siteID: testSiteID,
+                                variationID: sampleVariation1ID,
+                                productID: sampleProductID,
+                                permalink: "https://paperairplane.store/product/paper-airplane/?attribute_color=Red&attribute_animal=Banana",
+                                dateCreated: date(with: "2019-03-21T16:56:17"),
+                                dateModified: date(with: "2019-04-04T22:08:33"),
+                                dateOnSaleFrom: date(with: "2019-04-01T08:08:44"),
+                                dateOnSaleTo: date(with: "2019-05-29T01:08:21"),
+                                statusKey: "publish",
+                                fullDescription: "Hi there!",
+                                sku: "1111",
+                                price: "20.33",
+                                regularPrice: "22.77",
+                                salePrice: "24.33",
+                                onSale: true,
+                                purchasable: true,
+                                virtual: false,
+                                downloadable: false,
+                                downloadLimit: -1,
+                                downloadExpiry: -1,
+                                taxStatusKey: "taxable",
+                                taxClass: "meh",
+                                manageStock: true,
+                                stockQuantity: 89769,
+                                stockStatusKey: "instock",
+                                backordersKey: "no",
+                                backordersAllowed: false,
+                                backordered: false,
+                                weight: "1024",
+                                dimensions: sampleVariation1DimensionsMutated(),
+                                shippingClass: "Not woo.",
+                                shippingClassID: 123,
+                                image: sampleVariation1ImageMutated(),
+                                attributes: sampleVariation1AttributesMutated(),
+                                menuOrder: 2)
+    }
+
+    func sampleVariation1DimensionsMutated() -> Networking.ProductDimensions {
+        return ProductDimensions(length: "21", width: "32", height: "43")
+    }
+
+    func sampleVariation1ImageMutated() -> Networking.ProductImage {
+        return ProductImage(imageID: 2011,
+                            dateCreated: date(with: "2019-03-31T20:38:17"),
+                            dateModified: date(with: "2019-04-28T01:38:17"),
+                            src: "https://i1.wp.com/paperairplane.store/wp-content/uploads/2019/01/image.jpg",
+                            name: "Picture1",
+                            alt: "It's a picture. Boooo!")
+    }
+
+    func sampleVariation1AttributesMutated() -> [Networking.ProductVariationAttribute] {
+        let attribute1 = ProductVariationAttribute(attributeID: 0, name: "Color", option: "Red")
+        let attribute2 = ProductVariationAttribute(attributeID: 0, name: "Animal", option: "Gorilla")
+        let attribute3 = ProductVariationAttribute(attributeID: 0, name: "Fruit", option: "Banana")
+
+        return [attribute1, attribute2, attribute3]
     }
 
     // MARK: Variation #2

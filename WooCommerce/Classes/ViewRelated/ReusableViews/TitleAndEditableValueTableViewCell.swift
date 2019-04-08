@@ -1,6 +1,6 @@
 import UIKit
 
-final class EditableValueOneTableViewCell: UITableViewCell {
+final class TitleAndEditableValueTableViewCell: UITableViewCell {
     @IBOutlet weak var title: UILabel!
     @IBOutlet weak var value: UITextField!
 
@@ -13,7 +13,7 @@ final class EditableValueOneTableViewCell: UITableViewCell {
 }
 
 
-private extension EditableValueOneTableViewCell {
+private extension TitleAndEditableValueTableViewCell {
     func configureAsNonSelectable() {
         selectionStyle = .none
     }

@@ -16,11 +16,11 @@ enum AddEditTrackingRow: CaseIterable {
     var type: UITableViewCell.Type {
         switch self {
         case .shippingProvider:
-            return EditableValueOneTableViewCell.self
+            return TitleAndEditableValueTableViewCell.self
         case .trackingNumber:
-            return EditableValueOneTableViewCell.self
+            return TitleAndEditableValueTableViewCell.self
         case .dateShipped:
-            return EditableValueOneTableViewCell.self
+            return TitleAndEditableValueTableViewCell.self
         case .deleteTracking:
             return BasicTableViewCell.self
         case .datePicker:

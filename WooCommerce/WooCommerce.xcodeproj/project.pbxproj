@@ -305,9 +305,10 @@
 		D83F5931225B269C00626E75 /* DatePickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D83F592F225B269C00626E75 /* DatePickerTableViewCell.xib */; };
 		D83F5933225B2EB900626E75 /* ManualTrackingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83F5932225B2EB800626E75 /* ManualTrackingViewController.swift */; };
 		D83F5935225B3CDD00626E75 /* DatePickerTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83F5934225B3CDD00626E75 /* DatePickerTableViewCellTests.swift */; };
+		D83F5937225B402E00626E75 /* EditableValueOneTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83F5936225B402E00626E75 /* EditableValueOneTableViewCellTests.swift */; };
 		D843D5C822434A08001BFA55 /* ManualTrackingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5C622434A08001BFA55 /* ManualTrackingViewController.xib */; };
-		D843D5CB22437E59001BFA55 /* EditableValueOneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5C922437E59001BFA55 /* EditableValueOneTableViewCell.swift */; };
-		D843D5CC22437E59001BFA55 /* EditableValueOneTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5CA22437E59001BFA55 /* EditableValueOneTableViewCell.xib */; };
+		D843D5CB22437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5C922437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift */; };
+		D843D5CC22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5CA22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib */; };
 		D843D5D322485009001BFA55 /* ShippingProvidersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5D122485009001BFA55 /* ShippingProvidersViewController.swift */; };
 		D843D5D422485009001BFA55 /* ShippingProvidersViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5D222485009001BFA55 /* ShippingProvidersViewController.xib */; };
 		D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */; };
@@ -668,9 +669,10 @@
 		D83F592F225B269C00626E75 /* DatePickerTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DatePickerTableViewCell.xib; sourceTree = "<group>"; };
 		D83F5932225B2EB800626E75 /* ManualTrackingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManualTrackingViewController.swift; sourceTree = "<group>"; };
 		D83F5934225B3CDD00626E75 /* DatePickerTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DatePickerTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/DatePickerTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
+		D83F5936225B402E00626E75 /* EditableValueOneTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EditableValueOneTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/EditableValueOneTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
 		D843D5C622434A08001BFA55 /* ManualTrackingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ManualTrackingViewController.xib; sourceTree = "<group>"; };
-		D843D5C922437E59001BFA55 /* EditableValueOneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableValueOneTableViewCell.swift; sourceTree = "<group>"; };
-		D843D5CA22437E59001BFA55 /* EditableValueOneTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditableValueOneTableViewCell.xib; sourceTree = "<group>"; };
+		D843D5C922437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndEditableValueTableViewCell.swift; sourceTree = "<group>"; };
+		D843D5CA22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndEditableValueTableViewCell.xib; sourceTree = "<group>"; };
 		D843D5D122485009001BFA55 /* ShippingProvidersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingProvidersViewController.swift; sourceTree = "<group>"; };
 		D843D5D222485009001BFA55 /* ShippingProvidersViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingProvidersViewController.xib; sourceTree = "<group>"; };
 		D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingProvidersViewModel.swift; sourceTree = "<group>"; };
@@ -814,6 +816,7 @@
 		B53A569521123D27000776C9 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				D83F5936225B402E00626E75 /* EditableValueOneTableViewCellTests.swift */,
 				D83F5934225B3CDD00626E75 /* DatePickerTableViewCellTests.swift */,
 				93FA787121CD2A1A00B663E5 /* CurrencySettingsTests.swift */,
 				B53A569621123D3B000776C9 /* ResultsControllerUIKitTests.swift */,
@@ -1404,8 +1407,8 @@
 				B5A56BEF219F2CE90065A902 /* VerticalButton.swift */,
 				D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */,
 				D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */,
-				D843D5C922437E59001BFA55 /* EditableValueOneTableViewCell.swift */,
-				D843D5CA22437E59001BFA55 /* EditableValueOneTableViewCell.xib */,
+				D843D5C922437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift */,
+				D843D5CA22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib */,
 				D83F592E225B269C00626E75 /* DatePickerTableViewCell.swift */,
 				D83F592F225B269C00626E75 /* DatePickerTableViewCell.xib */,
 			);
@@ -1601,7 +1604,7 @@
 			files = (
 				B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */,
 				CE583A0C2107937F00D73C1C /* TextViewTableViewCell.xib in Resources */,
-				D843D5CC22437E59001BFA55 /* EditableValueOneTableViewCell.xib in Resources */,
+				D843D5CC22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib in Resources */,
 				B560D68A2195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib in Resources */,
 				B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */,
 				74E0F441211C9AE600A79CCE /* PeriodDataViewController.xib in Resources */,
@@ -1880,7 +1883,7 @@
 				B5D1AFC620BC7B7300DB0E8C /* StorePickerViewController.swift in Sources */,
 				74D0A5302139CF1300E2919F /* String+Helpers.swift in Sources */,
 				7435E58E21C0151B00216F0F /* OrderNote+Woo.swift in Sources */,
-				D843D5CB22437E59001BFA55 /* EditableValueOneTableViewCell.swift in Sources */,
+				D843D5CB22437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift in Sources */,
 				B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */,
 				B5DBF3C520E148E000B53AED /* DeauthenticatedState.swift in Sources */,
 				748C7782211E294000814F2C /* Double+Woo.swift in Sources */,
@@ -2068,6 +2071,7 @@
 				B541B2132189E7FD008FE7C1 /* ScannerWooTests.swift in Sources */,
 				B57C5C9A21B80E7100FF82B2 /* DataWooTests.swift in Sources */,
 				B53A56A42112483E000776C9 /* Constants.swift in Sources */,
+				D83F5937225B402E00626E75 /* EditableValueOneTableViewCellTests.swift in Sources */,
 				9379E1A6225537D0006A6BE4 /* TestingAppDelegate.swift in Sources */,
 				B56C721421B5BBC000E5E85B /* MockupStoresManager.swift in Sources */,
 				B5C6CE612190D28E00515926 /* NSAttributedStringHelperTests.swift in Sources */,

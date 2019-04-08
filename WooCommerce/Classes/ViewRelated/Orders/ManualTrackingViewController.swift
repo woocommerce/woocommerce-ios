@@ -175,11 +175,11 @@ extension ManualTrackingViewController: UITableViewDataSource {
     ///
     fileprivate func configure(_ cell: UITableViewCell, for row: AddEditTrackingRow, at indexPath: IndexPath) {
         switch cell {
-        case let cell as EditableValueOneTableViewCell where row == .shippingProvider:
+        case let cell as TitleAndEditableValueTableViewCell where row == .shippingProvider:
             configureShippingProvider(cell: cell)
-        case let cell as EditableValueOneTableViewCell where row == .trackingNumber:
+        case let cell as TitleAndEditableValueTableViewCell where row == .trackingNumber:
             configureTrackingNumber(cell: cell)
-        case let cell as EditableValueOneTableViewCell where row == .dateShipped:
+        case let cell as TitleAndEditableValueTableViewCell where row == .dateShipped:
             configureDateShipped(cell: cell)
         case let cell as BasicTableViewCell where row == .deleteTracking:
             configureSecondaryAction(cell: cell)
@@ -198,7 +198,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
-    private func configureShippingProvider(cell: EditableValueOneTableViewCell) {
+    private func configureShippingProvider(cell: TitleAndEditableValueTableViewCell) {
         cell.title.text = NSLocalizedString("Shipping provider", comment: "Add / Edit shipping provider. Title of cell presenting name")
         cell.value.text = viewModel.providerCellName
 
@@ -206,7 +206,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
         cell.accessoryType = .disclosureIndicator
     }
 
-    private func configureTrackingNumber(cell: EditableValueOneTableViewCell) {
+    private func configureTrackingNumber(cell: TitleAndEditableValueTableViewCell) {
         cell.title.text = NSLocalizedString("Tracking number", comment: "Add / Edit shipping provider. Title of cell presenting tracking number")
 
         cell.value.text = viewModel.shipmentTracking?.trackingNumber
@@ -216,7 +216,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
         cell.accessoryType = .none
     }
 
-    private func configureDateShipped(cell: EditableValueOneTableViewCell) {
+    private func configureDateShipped(cell: TitleAndEditableValueTableViewCell) {
         cell.title.text = NSLocalizedString("Date shipped", comment: "Add / Edit shipping provider. Title of cell date shipped")
 
         cell.value.text = viewModel.shipmentDate.toString(dateStyle: .medium, timeStyle: .none)

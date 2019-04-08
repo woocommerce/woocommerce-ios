@@ -15,7 +15,9 @@ final class AddManualTrackingViewModelTests: XCTestCase {
                                                          .trackingNumber,
                                                          .dateShipped,
                                                          .datePicker]
-        static let provider = ShipmentTrackingProvider(siteID: 1234, name: "A mock provider", url: "http://somewhere.internet.com")
+        static let provider = ShipmentTrackingProvider(siteID: 1234,
+                                                       name: "A mock provider",
+                                                       url: "http://somewhere.internet.com")
     }
 
     override func setUp() {

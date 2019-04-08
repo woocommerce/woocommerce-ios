@@ -136,7 +136,12 @@ final class EditTrackingViewModel: ManualTrackingViewModel {
 
     let shipmentTracking: ShipmentTracking?
 
-    var trackingNumber: String?
+    var trackingNumber: String? {
+        get {
+            return shipmentTracking?.trackingNumber
+        }
+        set {}
+    }
 
     var shipmentDate: Date {
         get {

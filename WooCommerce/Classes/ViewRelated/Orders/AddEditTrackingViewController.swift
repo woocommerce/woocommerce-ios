@@ -218,7 +218,7 @@ extension AddEditTrackingViewController: UITableViewDataSource {
 
         cell.value.text = viewModel.shipmentDate.toString(dateStyle: .medium, timeStyle: .none)
 
-        cell.value.isEnabled = true
+        cell.value.isEnabled = false
         cell.accessoryType = .none
     }
 

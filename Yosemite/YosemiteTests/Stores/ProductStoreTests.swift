@@ -70,7 +70,7 @@ class ProductStoreTests: XCTestCase {
     /// Verifies that ProductAction.synchronizeProducts effectively persists any retrieved products.
     ///
     func testRetrieveProductsEffectivelyPersistsRetrievedProducts() {
-        let expectation = self.expectation(description: "Persist product list")
+        let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
@@ -198,7 +198,7 @@ class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.retrieveProduct` returns an error whenever there is an error response from the backend.
     ///
-    func testRetrieveSingleProdcutReturnsErrorUponReponseError() {
+    func testRetrieveSingleProductReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve single product error response")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -214,12 +214,13 @@ class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.retrieveProduct` returns an error whenever there is no backend response.
     ///
-    func testRetrieveSingleProdcutReturnsErrorUponEmptyResponse() {
+    func testRetrieveSingleProductReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve single product empty response")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
             XCTAssertNotNil(error)
+            XCTAssertNil(product)
             expectation.fulfill()
         }
 
@@ -463,7 +464,7 @@ class ProductStoreTests: XCTestCase {
     /// Verifies that ProductAction.synchronizeProductVariations effectively persists any retrieved product variations.
     ///
     func testRetrieveProductVariationsEffectivelyPersistsRetrievedProductVariations() {
-        let expectation = self.expectation(description: "Persist product variation list")
+        let expectation = self.expectation(description: "Retrieve product variation list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "variations", filename: "product-variations-load-all")
@@ -500,7 +501,9 @@ class ProductStoreTests: XCTestCase {
         let action = ProductAction.synchronizeProductVariations(siteID: sampleSiteID, productID: sampleProductID) { error in
             XCTAssertNil(error)
 
-            let storedProductVariation = self.viewStorage.loadProductVariation(siteID: self.sampleSiteID, productID: self.sampleProductID, variationID: self.sampleVariation1ID)
+            let storedProductVariation = self.viewStorage.loadProductVariation(siteID: self.sampleSiteID,
+                                                                               productID: self.sampleProductID,
+                                                                               variationID: self.sampleVariation1ID)
             let readOnlyStoredProductVariation = storedProductVariation?.toReadOnly()
 
             XCTAssertNotNil(storedProductVariation)
@@ -538,6 +541,126 @@ class ProductStoreTests: XCTestCase {
 
         let action = ProductAction.synchronizeProductVariations(siteID: sampleSiteID, productID: sampleProductID) { error in
             XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - ProductAction.retrieveProductVariation
+
+    /// Verifies that `ProductAction.retrieveProductVariation` returns the expected `ProductVariation`.
+    ///
+    func testRetrieveSingleProductVariationReturnsExpectedFields() {
+        let expectation = self.expectation(description: "Retrieve single product variation")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProductVariation = sampleVariation1()
+
+        network.simulateResponse(requestUrlSuffix: "variations/215", filename: "product-variation")
+        let action = ProductAction.retrieveProductVariation(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            variationID: sampleVariation1ID) { (productVariation, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(productVariation)
+            XCTAssertEqual(productVariation, remoteProductVariation)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.retrieveProductVariation` effectively persists all of the remote product variation fields
+    /// correctly across all of the related `ProductVariation` entities (attributes, dimensions, image, etc).
+    ///
+    func testRetrieveSingleProductVariationEffectivelyPersistsProductVariationFieldsAndRelatedObjects() {
+        let expectation = self.expectation(description: "Persist single product variation")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProductVariation = sampleVariation1()
+
+        network.simulateResponse(requestUrlSuffix: "variations/215", filename: "product-variation")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+
+        let action = ProductAction.retrieveProductVariation(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            variationID: sampleVariation1ID) { (productVariation, error) in
+            XCTAssertNotNil(productVariation)
+            XCTAssertNil(error)
+
+            let storedProductVariation = self.viewStorage.loadProductVariation(siteID: self.sampleSiteID,
+                                                                               productID: self.sampleProductID,
+                                                                               variationID: self.sampleVariation1ID)
+            let readOnlyStoredProductVariation = storedProductVariation?.toReadOnly()
+            XCTAssertNotNil(storedProductVariation)
+            XCTAssertNotNil(readOnlyStoredProductVariation)
+            XCTAssertEqual(readOnlyStoredProductVariation, remoteProductVariation)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.retrieveProductVariation` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveSingleProductVariationReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve single product variation error response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "variations/215", filename: "generic_error")
+        let action = ProductAction.retrieveProductVariation(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            variationID: sampleVariation1ID) { (productVariation, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(productVariation)
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.retrieveProductVariation` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveSingleProductVariationReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve single product variation empty response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ProductAction.retrieveProductVariation(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            variationID: sampleVariation1ID) { (productVariation, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(productVariation)
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that whenever a `ProductAction.retrieveProductVariation` action results in a response with statusCode = 404, the local entity
+    /// is obliterated from existence.
+    ///
+    func testRetrieveSingleProductVariationResultingInStatusCode404CausesTheStoredProductVariationToGetDeleted() {
+        let expectation = self.expectation(description: "Retrieve single product variation 404 response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation1(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+
+        network.simulateError(requestUrlSuffix: "variations/215", error: NetworkError.notFound)
+        let action = ProductAction.retrieveProductVariation(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            variationID: sampleVariation1ID) { (productVariation, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(productVariation)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+
             expectation.fulfill()
         }
 

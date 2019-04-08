@@ -59,7 +59,7 @@ PODS:
     - lottie-ios (= 2.5.2)
     - "NSURL+IDN (= 0.3)"
     - SVProgressHUD (= 2.2.5)
-    - WordPressKit (~> 3.2.2)
+    - WordPressKit (~> 3.2.2.beta)
     - WordPressShared (~> 1.4)
     - WordPressUI (~> 1.0)
   - WordPressKit (3.2.2):
@@ -168,6 +168,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 63166e21c9844fa30f2d95d30f335e73be5caf22
   ZendeskSDK: af6509ad7968d367f95b2645713802712152f879
 
-PODFILE CHECKSUM: b2b3a9b8c6b3e04b1ed61ccb7919796194cd4426
+PODFILE CHECKSUM: 1367c2b5d0cbfea7f7f6cc19d14a1b83cbfd9d68
 
 COCOAPODS: 1.5.3

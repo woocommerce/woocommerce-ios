@@ -293,7 +293,6 @@
 		CEEC9B6021E79CAA0055EEF0 /* FeatureFlagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */; };
 		CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */; };
 		CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */; };
-		D8023EE3221547D400D2DC30 /* FancyAlertViewController+SwitchStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8023EE2221547D400D2DC30 /* FancyAlertViewController+SwitchStore.swift */; };
 		D8149F532251CFE60006A245 /* EditableOrderTrackingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8149F512251CFE50006A245 /* EditableOrderTrackingTableViewCell.swift */; };
 		D8149F542251CFE60006A245 /* EditableOrderTrackingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8149F522251CFE50006A245 /* EditableOrderTrackingTableViewCell.xib */; };
 		D8149F562251EE300006A245 /* UITextField+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8149F552251EE300006A245 /* UITextField+Helpers.swift */; };
@@ -302,6 +301,8 @@
 		D81D9229222E7F0800FFA585 /* OrderStatusListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */; };
 		D83C129F22250BF0004CA04C /* OrderTrackingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D83C129D22250BEF004CA04C /* OrderTrackingTableViewCell.xib */; };
 		D83C12A022250BF0004CA04C /* OrderTrackingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83C129E22250BEF004CA04C /* OrderTrackingTableViewCell.swift */; };
+		D83F5930225B269C00626E75 /* DatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83F592E225B269C00626E75 /* DatePickerTableViewCell.swift */; };
+		D83F5931225B269C00626E75 /* DatePickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D83F592F225B269C00626E75 /* DatePickerTableViewCell.xib */; };
 		D843D5C722434A08001BFA55 /* AddEditTrackingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5C522434A08001BFA55 /* AddEditTrackingViewController.swift */; };
 		D843D5C822434A08001BFA55 /* AddEditTrackingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5C622434A08001BFA55 /* AddEditTrackingViewController.xib */; };
 		D843D5CB22437E59001BFA55 /* EditableValueOneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5C922437E59001BFA55 /* EditableValueOneTableViewCell.swift */; };
@@ -654,7 +655,6 @@
 		CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagTests.swift; sourceTree = "<group>"; };
 		CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManager.swift; sourceTree = "<group>"; };
 		CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManagerTests.swift; sourceTree = "<group>"; };
-		D8023EE2221547D400D2DC30 /* FancyAlertViewController+SwitchStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FancyAlertViewController+SwitchStore.swift"; sourceTree = "<group>"; };
 		D8149F512251CFE50006A245 /* EditableOrderTrackingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditableOrderTrackingTableViewCell.swift; sourceTree = "<group>"; };
 		D8149F522251CFE50006A245 /* EditableOrderTrackingTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditableOrderTrackingTableViewCell.xib; sourceTree = "<group>"; };
 		D8149F552251EE300006A245 /* UITextField+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Helpers.swift"; sourceTree = "<group>"; };
@@ -663,6 +663,8 @@
 		D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderStatusListViewController.xib; sourceTree = "<group>"; };
 		D83C129D22250BEF004CA04C /* OrderTrackingTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderTrackingTableViewCell.xib; sourceTree = "<group>"; };
 		D83C129E22250BEF004CA04C /* OrderTrackingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderTrackingTableViewCell.swift; sourceTree = "<group>"; };
+		D83F592E225B269C00626E75 /* DatePickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerTableViewCell.swift; sourceTree = "<group>"; };
+		D83F592F225B269C00626E75 /* DatePickerTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DatePickerTableViewCell.xib; sourceTree = "<group>"; };
 		D843D5C522434A08001BFA55 /* AddEditTrackingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditTrackingViewController.swift; sourceTree = "<group>"; };
 		D843D5C622434A08001BFA55 /* AddEditTrackingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddEditTrackingViewController.xib; sourceTree = "<group>"; };
 		D843D5C922437E59001BFA55 /* EditableValueOneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableValueOneTableViewCell.swift; sourceTree = "<group>"; };
@@ -1401,6 +1403,8 @@
 				D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */,
 				D843D5C922437E59001BFA55 /* EditableValueOneTableViewCell.swift */,
 				D843D5CA22437E59001BFA55 /* EditableValueOneTableViewCell.xib */,
+				D83F592E225B269C00626E75 /* DatePickerTableViewCell.swift */,
+				D83F592F225B269C00626E75 /* DatePickerTableViewCell.xib */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -1656,6 +1660,7 @@
 				CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */,
 				CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */,
 				74F9E9CD214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib in Resources */,
+				D83F5931225B269C00626E75 /* DatePickerTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1971,6 +1976,7 @@
 				CE1EC8CA20B479F1009762BF /* TwoColumnLabelView.swift in Sources */,
 				D83C12A022250BF0004CA04C /* OrderTrackingTableViewCell.swift in Sources */,
 				CE21B3DD20FF9BC200A259D5 /* ProductListViewController.swift in Sources */,
+				D83F5930225B269C00626E75 /* DatePickerTableViewCell.swift in Sources */,
 				B59D1EDF219072CC009D1978 /* NoteTableViewCell.swift in Sources */,
 				74AAF6A5212A04A900C612B0 /* ChartMarker.swift in Sources */,
 				CE32B11520BF8779006FBCF4 /* ProductListTableViewCell.swift in Sources */,

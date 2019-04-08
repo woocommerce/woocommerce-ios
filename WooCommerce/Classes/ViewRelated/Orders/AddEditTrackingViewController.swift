@@ -6,6 +6,7 @@ import Storage
 ///
 final class AddEditTrackingViewController: UIViewController {
     private var viewModel: AddEditTrackingViewModel
+    private var datePickerVisible: Bool = false
 
     @IBOutlet private weak var table: UITableView!
 
@@ -182,6 +183,8 @@ extension AddEditTrackingViewController: UITableViewDataSource {
             configureDateShipped(cell: cell)
         case let cell as BasicTableViewCell where row == .deleteTracking:
             configureSecondaryAction(cell: cell)
+        case let cell as DatePickerTableViewCell where row == .datePicker:
+            configurePicker(cell: cell)
         default:
             fatalError()
         }
@@ -228,6 +231,14 @@ extension AddEditTrackingViewController: UITableViewDataSource {
         cell.textLabel?.textColor = StyleManager.destructiveActionColor
         cell.textLabel?.text = viewModel.secondaryActionTitle
     }
+
+    func configurePicker(cell: DatePickerTableViewCell) {
+        guard datePickerVisible else {
+            return
+        }
+
+        cell.backgroundView?.backgroundColor = .red
+    }
 }
 
 
@@ -246,10 +257,22 @@ extension AddEditTrackingViewController: UITableViewDelegate {
         return CGFloat.leastNonzeroMagnitude
     }
 
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let row = rowAtIndexPath(indexPath)
+        guard row == .datePicker else {
+            return Constants.rowHeight
+        }
+
+        guard datePickerVisible else {
+            return CGFloat.leastNonzeroMagnitude
+        }
+
+        return Constants.pickerRowHeight
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let row = rowAtIndexPath(indexPath)
-        executeAction(for: row)
+        executeAction(for: indexPath)
     }
 }
 
@@ -257,13 +280,25 @@ extension AddEditTrackingViewController: UITableViewDelegate {
 // MARK: - UITableViewDelegate comformance
 //
 private extension AddEditTrackingViewController {
-    func executeAction(for row: AddEditTrackingRow) {
+    func executeAction(for indexPath: IndexPath) {
+        let row = rowAtIndexPath(indexPath)
         if row == .deleteTracking {
             deleteTracking()
             return
         }
 
+        if row == .dateShipped && viewModel.shouldDisplayActionButton {
+            displayDatePicker(at: indexPath)
+            return
+        }
+
         viewModel.executeAction(for: row, sender: self)
+    }
+
+    func displayDatePicker(at indexPath: IndexPath) {
+        datePickerVisible = true
+
+        table.reloadData()
     }
 }
 
@@ -412,4 +447,5 @@ private extension AddEditTrackingViewController {
 
 private struct Constants {
     static let rowHeight = CGFloat(74)
+    static let pickerRowHeight = CGFloat(216)
 }

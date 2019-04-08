@@ -11,6 +11,7 @@ enum AddEditTrackingRow: CaseIterable {
     case trackingNumber
     case dateShipped
     case deleteTracking
+    case datePicker
 
     var type: UITableViewCell.Type {
         switch self {
@@ -22,6 +23,8 @@ enum AddEditTrackingRow: CaseIterable {
             return EditableValueOneTableViewCell.self
         case .deleteTracking:
             return BasicTableViewCell.self
+        case .datePicker:
+            return DatePickerTableViewCell.self
         }
     }
 
@@ -83,7 +86,8 @@ final class AddTrackingViewModel: AddEditTrackingViewModel {
     var sections: [AddEditTrackingSection] {
         let trackingRows: [AddEditTrackingRow] = [.shippingProvider,
                                                       .trackingNumber,
-                                                      .dateShipped]
+                                                      .dateShipped,
+                                                      .datePicker]
 
         return [
             AddEditTrackingSection(rows: trackingRows)]

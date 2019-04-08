@@ -4,7 +4,7 @@ import WordPressShared
 /// Part two of the self-hosted sign in flow. A valid site address should be acquired
 /// before presenting this view controller.
 ///
-class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
+class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardResponder {
     @IBOutlet var siteHeaderView: SiteInfoHeaderView!
     @IBOutlet var usernameField: WPWalkthroughTextField!
     @IBOutlet var passwordField: WPWalkthroughTextField!
@@ -14,7 +14,7 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
     @objc var onePasswordButton: UIButton!
     override var sourceTag: WordPressSupportSourceTag {
         get {
-            return .loginUsernamePassword
+            return .loginWPComUsernamePassword
         }
     }
 
@@ -43,7 +43,7 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         super.viewWillAppear(animated)
 
         // Update special case login fields.
-        loginFields.meta.userIsDotCom = false
+        loginFields.meta.userIsDotCom = true
 
         configureTextFields()
         configureSubmitButton(animating: false)
@@ -264,24 +264,7 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
 }
 
 
-extension LoginSelfHostedViewController {
-
-    func finishedLogin(withUsername username: String, password: String, xmlrpc: String, options: [AnyHashable: Any]) {
-        displayLoginMessage("")
-
-        guard let delegate = WordPressAuthenticator.shared.delegate else {
-            fatalError()
-        }
-
-        let wporg = WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: options)
-        let credentials = AuthenticatorCredentials(wporg: wporg)
-        delegate.sync(credentials: credentials) { [weak self] in
-
-            NotificationCenter.default.post(name: Foundation.Notification.Name(rawValue: WordPressAuthenticator.WPSigninDidFinishNotification), object: nil)
-            self?.showLoginEpilogue(for: credentials)
-        }
-    }
-
+extension LoginUsernamePasswordViewController {
 
     func displayLoginMessage(_ message: String) {
         configureForgotPasswordButton()
@@ -301,7 +284,7 @@ extension LoginSelfHostedViewController {
 }
 
 
-extension LoginSelfHostedViewController: UITextFieldDelegate {
+extension LoginUsernamePasswordViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == usernameField {
             passwordField.becomeFirstResponder()
@@ -311,3 +294,4 @@ extension LoginSelfHostedViewController: UITextFieldDelegate {
         return true
     }
 }
+

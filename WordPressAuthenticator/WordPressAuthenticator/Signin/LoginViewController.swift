@@ -99,7 +99,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     // MARK: - Epilogue
 
-    func showSignupEpilogue(for credentials: WordPressCredentials) {
+    func showSignupEpilogue(for credentials: AuthenticatorCredentials) {
         guard let navigationController = navigationController else {
             fatalError()
         }
@@ -111,7 +111,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         authenticationDelegate.presentSignupEpilogue(in: navigationController, for: credentials, service: service)
     }
 
-    func showLoginEpilogue(for credentials: WordPressCredentials) {
+    func showLoginEpilogue(for credentials: AuthenticatorCredentials) {
         guard let navigationController = navigationController else {
             fatalError()
         }
@@ -156,7 +156,8 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     // MARK: SigninWPComSyncHandler methods
     dynamic open func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
-        let credentials = WordPressCredentials.wpcom(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: requiredMultifactorCode)
+        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: requiredMultifactorCode, siteURL: loginFields.siteAddress)
+        let credentials = AuthenticatorCredentials(wpcom: wpcom)
 
         syncWPComAndPresentEpilogue(credentials: credentials)
 
@@ -204,9 +205,9 @@ extension LoginViewController {
 
     /// Signals the Main App to synchronize the specified WordPress.com account. On completion, the epilogue will be pushed (if needed).
     ///
-    func syncWPComAndPresentEpilogue(credentials: WordPressCredentials) {
+    func syncWPComAndPresentEpilogue(credentials: AuthenticatorCredentials) {
         syncWPCom(credentials: credentials) { [weak self] in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 
@@ -224,7 +225,7 @@ extension LoginViewController {
     ///
     /// Signals the Main App to synchronize the specified WordPress.com account.
     ///
-    private func syncWPCom(credentials: WordPressCredentials, completion: (() -> ())? = nil) {
+    private func syncWPCom(credentials: AuthenticatorCredentials, completion: (() -> ())? = nil) {
         SafariCredentialsService.updateSafariCredentialsIfNeeded(with: loginFields)
 
         configureStatusLabel(NSLocalizedString("Getting account information", comment: "Alerts the user that wpcom account information is being retrieved."))
@@ -241,15 +242,12 @@ extension LoginViewController {
 
     /// Tracks the SignIn Event
     ///
-    func trackSignIn(credentials: WordPressCredentials) {
+    func trackSignIn(credentials: AuthenticatorCredentials) {
         var properties = [String: String]()
 
-        switch credentials {
-        case .wporg:
-            break
-        case .wpcom(_, _, let multifactor):
+        if let wpcom = credentials.wpcom {
             properties = [
-                "multifactor": multifactor.description,
+                "multifactor": wpcom.multifactor.description,
                 "dotcom_user": true.description
             ]
         }

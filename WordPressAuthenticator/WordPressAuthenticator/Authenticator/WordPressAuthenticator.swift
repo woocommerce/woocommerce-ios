@@ -211,15 +211,14 @@ import WordPressUI
     }
 
 
-    /// Returns an instance of LoginEmailViewController. This allows the host app to fine tune the way it's displayed / configure
-    /// it's features.
+    /// Returns an instance of LoginEmailViewController.
+    /// This allows the host app to configure the controller's features.
     ///
     public class func signinForWPCom() -> LoginEmailViewController {
         let storyboard = UIStoryboard(name: "Login", bundle: bundle)
         guard let controller = storyboard.instantiateViewController(withIdentifier: "emailEntry") as? LoginEmailViewController else {
             fatalError()
         }
-        controller.loginFields.restrictToWPCom = true
 
         return controller
     }

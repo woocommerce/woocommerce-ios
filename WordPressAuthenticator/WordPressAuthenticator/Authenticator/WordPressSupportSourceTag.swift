@@ -39,6 +39,9 @@ extension WordPressSupportSourceTag {
     public static var loginUsernamePassword: WordPressSupportSourceTag {
         return WordPressSupportSourceTag(name: "loginUsernamePassword", origin: "origin:login-username-password")
     }
+    public static var loginWPComUsernamePassword: WordPressSupportSourceTag {
+        return WordPressSupportSourceTag(name: "loginWPComUsernamePassword", origin: "origin:wpcom-login-username-password")
+    }
     public static var loginWPComPassword: WordPressSupportSourceTag {
         return WordPressSupportSourceTag(name: "loginWPComPassword", origin: "origin:login-wpcom-password")
     }

@@ -36,13 +36,21 @@ public protocol WordPressAuthenticatorDelegate: class {
     ///
     func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag)
 
-    /// Presents the Login Epilogue, in the specified NavigationController.
+    /// Signals to the Host App that a WordPress site is available and needs validated
+    /// before presenting the username and password view controller.
+    /// - Parameters:
+    ///     - site: passes in the site information to the delegate method.
+    ///     - onCompletion: Closure to be executed on completion.
     ///
-    func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, onDismiss: @escaping () -> Void)
+    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (Error?, Bool) -> Void)
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
-    func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, service: SocialService?)
+    func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void)
+
+    /// Presents the Login Epilogue, in the specified NavigationController.
+    ///
+    func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, service: SocialService?)
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
@@ -64,7 +72,7 @@ public protocol WordPressAuthenticatorDelegate: class {
     ///     - credentials: WordPress Site Credentials.
     ///     - onCompletion: Closure to be executed on completion.
     ///
-    func sync(credentials: WordPressCredentials, onCompletion: @escaping () -> Void)
+    func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void)
 
     /// Signals the Host App that a given Analytics Event has occurred.
     ///

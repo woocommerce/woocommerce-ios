@@ -144,37 +144,40 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
 
         let facade = WordPressXMLRPCAPIFacade()
         facade.guessXMLRPCURL(forSite: loginFields.siteAddress, success: { [weak self] (url) in
+            // Success! We now know that we have a valid XML-RPC endpoint.
+            // At this point, we do NOT know if this is a WP.com site or a self-hosted site.
             if let url = url {
                 self?.loginFields.meta.xmlrpcURL = url as NSURL
             }
+            // Let's try to grab site info in preparation for the next screen.
             self?.fetchSiteInfo()
 
         }, failure: { [weak self] (error) in
-            guard let error = error, let strongSelf = self else {
+            guard let error = error, let self = self else {
                 return
             }
             DDLogError(error.localizedDescription)
             WordPressAuthenticator.track(.loginFailedToGuessXMLRPC, error: error)
             WordPressAuthenticator.track(.loginFailed, error: error)
-            strongSelf.configureViewLoading(false)
+            self.configureViewLoading(false)
 
-            let err = strongSelf.originalErrorOrError(error: error as NSError)
+            let err = self.originalErrorOrError(error: error as NSError)
 
-            if strongSelf.errorDiscoveringJetpackSite(error: err) {
-                strongSelf.displayError(error as NSError, sourceTag: .jetpackLogin)
+            if self.errorDiscoveringJetpackSite(error: err) {
+                self.displayError(error as NSError, sourceTag: .jetpackLogin)
 
             } else if let xmlrpcValidatorError = err as? WordPressOrgXMLRPCValidatorError {
-                strongSelf.displayError(message: xmlrpcValidatorError.localizedDescription)
+                self.displayError(message: xmlrpcValidatorError.localizedDescription)
 
             } else if (err.domain == NSURLErrorDomain && err.code == NSURLErrorCannotFindHost) ||
                 (err.domain == NSURLErrorDomain && err.code == NSURLErrorNetworkConnectionLost) {
                 // NSURLErrorNetworkConnectionLost can be returned when an invalid URL is entered.
                 let msg = NSLocalizedString("Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again.",
                                             comment: "Error message shown a URL does not point to an existing site.")
-                strongSelf.displayError(message: msg)
+                self.displayError(message: msg)
 
             } else {
-                strongSelf.displayError(error as NSError, sourceTag: strongSelf.sourceTag)
+                self.displayError(error as NSError, sourceTag: self.sourceTag)
             }
         })
     }
@@ -185,30 +188,76 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         let successBlock: (WordPressComSiteInfo) -> Void = { [weak self] siteInfo in
             self?.loginFields.meta.siteInfo = siteInfo
             if WordPressAuthenticator.shared.delegate?.allowWPComLogin == false {
+                // Hey, you have to log out of your existing WP.com account before logging into another one.
                 self?.promptUserToLogoutBeforeConnectingWPComSite()
                 self?.configureViewLoading(false)
             } else {
-                self?.showSelfHostedUsernamePassword()
+                self?.configureViewLoading(false)
+                guard let self = self else {
+                    return
+                }
+                self.presentNextControllerIfPossible(siteInfo: siteInfo)
             }
         }
+
+        // Is this a WP.com site address?
         if let siteAddress = baseSiteUrl.components(separatedBy: "://").last {
             let service = WordPressComBlogService()
+            // Yes. Then let's attempt to grab the site info.
             service.fetchSiteInfo(for: siteAddress, success: successBlock, failure: { [weak self] (error) in
-                // If fetchSiteInfo failed due to the site is being private (errorCode == .authorizationRequired) we try to fetch the site info with a call to connect/site-info endpoint. If this call succeeds we check if login allowed
+                // If fetchSiteInfo failed because the site is private (errorCode == .authorizationRequired),
+                // then we try to fetch the site info with a call to the `connect/site-info` endpoint.
+                // If this call succeeds, we check if login is allowed.
                 let originalError = error as NSError
                 let errorCode = WordPressComRestApiError(rawValue: originalError.code)
                 if errorCode == .authorizationRequired {
                     service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { error in
-                        self?.showSelfHostedUsernamePassword()
+                        // The un-authed site info request failed.
+                        self?.configureViewLoading(false)
+                        guard let self = self else {
+                            return
+                        }
+
+                        self.presentNextControllerIfPossible(siteInfo: nil)
                     })
                 } else {
-                    self?.showSelfHostedUsernamePassword()
+                    // Failed to get the site info.
+                    self?.configureViewLoading(false)
+                    guard let self = self else {
+                        return
+                    }
+
+                    self.presentNextControllerIfPossible(siteInfo: nil)
                 }
             })
-
         } else {
-            showSelfHostedUsernamePassword()
+            // Not a WP.com site. Let's make an un-authenticated site info request.
+            let service = WordPressComBlogService()
+            service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] error in
+                self?.configureViewLoading(false)
+                guard let self = self else {
+                    return
+                }
+
+                self.presentNextControllerIfPossible(siteInfo: nil)
+            })
         }
+    }
+
+    func presentNextControllerIfPossible(siteInfo: WordPressComSiteInfo?) {
+        WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { (error, isSelfHosted) in
+            guard let originalError = error else {
+                if isSelfHosted {
+                    self.showSelfHostedUsernamePassword()
+                } else {
+                    self.showWPUsernamePassword()
+                }
+
+                return
+            }
+
+            self.displayError(message: originalError.localizedDescription)
+        })
     }
 
 
@@ -228,10 +277,18 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         return false
     }
 
-
+    /// Here we will continue with the self-hosted flow.
+    ///
     @objc func showSelfHostedUsernamePassword() {
         configureViewLoading(false)
         performSegue(withIdentifier: .showURLUsernamePassword, sender: self)
+    }
+
+    /// Break away from the self-hosted flow.
+    /// Display a username / password login screen for WP.com sites.
+    @objc func showWPUsernamePassword() {
+        configureViewLoading(false)
+        performSegue(withIdentifier: .showWPUsernamePassword, sender: self)
     }
 
 

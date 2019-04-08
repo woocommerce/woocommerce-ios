@@ -30,6 +30,7 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
         case showSigninV2
         case showGoogle
         case showURLUsernamePassword
+        case showWPUsernamePassword
         case showSelfHostedLogin
         case showWPComLogin
         case startMagicLinkFlow

@@ -5,7 +5,7 @@ import Storage
 /// Presents a tracking provider, tracking number and shipment date
 ///
 final class ManualTrackingViewController: UIViewController {
-    private var viewModel: ManualShipmentTrackingViewModel
+    private var viewModel: ManualTrackingViewModel
     private var datePickerVisible: Bool = false
 
     @IBOutlet private weak var table: UITableView!
@@ -24,7 +24,7 @@ final class ManualTrackingViewController: UIViewController {
         return noticePresenter
     }()
 
-    init(viewModel: ManualShipmentTrackingViewModel) {
+    init(viewModel: ManualTrackingViewModel) {
         self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }

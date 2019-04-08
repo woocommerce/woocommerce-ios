@@ -237,7 +237,10 @@ extension ManualTrackingViewController: UITableViewDataSource {
             return
         }
 
-        cell.backgroundView?.backgroundColor = .red
+        cell.onDateSelected = { [weak self] date in
+            self?.viewModel.shipmentDate = date
+            self?.reload()
+        }
     }
 }
 
@@ -300,13 +303,17 @@ private extension ManualTrackingViewController {
     func displayDatePicker(at indexPath: IndexPath) {
         datePickerVisible = true
 
-        table.reloadData()
+        reload()
     }
 
     func showAllShipmentProviders() {
         let shippingProviders = ShippingProvidersViewModel(orderID: viewModel.orderID)
         let shippingList = ShippingProvidersViewController(viewModel: shippingProviders, delegate: self)
         navigationController?.pushViewController(shippingList, animated: true)
+    }
+
+    func reload() {
+        table.reloadData()
     }
 }
 

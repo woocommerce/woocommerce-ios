@@ -43,7 +43,7 @@ protocol ManualTrackingViewModel {
 
     var sections: [AddEditTrackingSection] { get }
     var trackingNumber: String? { get set }
-    var shipmentDate: Date { get }
+    var shipmentDate: Date { get set }
     var shipmentTracking: ShipmentTracking? { get }
 
     var shipmentProvider: ShipmentTrackingProvider? { get set }
@@ -83,7 +83,7 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     var trackingNumber: String?
 
-    let shipmentDate = Date()
+    var shipmentDate = Date()
 
     var sections: [AddEditTrackingSection] {
         let trackingRows: [AddEditTrackingRow] = [.shippingProvider,
@@ -141,7 +141,12 @@ final class EditTrackingViewModel: ManualTrackingViewModel {
     var trackingNumber: String?
 
     var shipmentDate: Date {
-        return shipmentTracking?.dateShipped ?? Date()
+        get {
+            return shipmentTracking?.dateShipped ?? Date()
+        }
+        set {
+            
+        }
     }
 
     var sections: [AddEditTrackingSection] {

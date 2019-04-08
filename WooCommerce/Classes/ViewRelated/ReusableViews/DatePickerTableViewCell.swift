@@ -2,15 +2,7 @@ import UIKit
 
 final class DatePickerTableViewCell: UITableViewCell {
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    @IBAction func dateChanged(_ sender: UIDatePicker) {
+        print("==== new date ==== ", sender.date)
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-    
 }

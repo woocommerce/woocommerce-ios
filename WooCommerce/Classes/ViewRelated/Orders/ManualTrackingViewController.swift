@@ -393,11 +393,16 @@ private extension ManualTrackingViewController {
         }
 
         let orderID = viewModel.orderID
+        let dateShipped = DateFormatter
+            .Defaults
+            .yearMonthDayDateFormatter
+            .string(from: viewModel.shipmentDate)
 
         let addTrackingAction = ShipmentAction.addTracking(siteID: viewModel.siteID,
                                                            orderID: orderID,
                                                            providerGroupName: groupName,
                                                            providerName: providerName,
+                                                           dateShipped: dateShipped,
                                                            trackingNumber: trackingNumber) { [weak self] error in
 
                                                             if let error = error {

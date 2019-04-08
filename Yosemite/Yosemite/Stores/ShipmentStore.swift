@@ -40,6 +40,7 @@ public class ShipmentStore: Store {
                           let orderID,
                           let providerGroupName,
                           let providerName,
+                          let dateShipped,
                           let trackingNumber,
                           let onCompletion):
             addTracking(siteID: siteID,
@@ -47,6 +48,7 @@ public class ShipmentStore: Store {
                         providerGroupName: providerGroupName,
                         providerName: providerName,
                         trackingNumber: trackingNumber,
+                        dateShipped: dateShipped,
                         onCompletion: onCompletion)
         case .addCustomTracking(let siteID,
                                 let orderID,
@@ -187,11 +189,13 @@ extension ShipmentStore {
                      providerGroupName: String,
                      providerName: String,
                      trackingNumber: String,
+                     dateShipped: String,
                      onCompletion: @escaping (Error?) -> Void) {
         let remote = ShipmentsRemote(network: network)
         remote.createShipmentTracking(for: siteID,
                                       orderID: orderID,
                                       trackingProvider: providerName,
+                                      dateShipped: dateShipped,
                                       trackingNumber: trackingNumber) { [weak self] (tracking, error) in
                                         guard let newTracking = tracking else {
                                             onCompletion(error)

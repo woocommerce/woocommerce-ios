@@ -262,6 +262,11 @@ extension ManualTrackingViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let row = rowAtIndexPath(indexPath)
+
+        if row == .deleteTracking {
+            return Constants.deleteRowHeight
+        }
+
         guard row == .datePicker else {
             return Constants.rowHeight
         }
@@ -476,6 +481,7 @@ private extension ManualTrackingViewController {
 }
 
 private struct Constants {
+    static let deleteRowHeight = CGFloat(48)
     static let rowHeight = CGFloat(74)
     static let pickerRowHeight = CGFloat(216)
 }

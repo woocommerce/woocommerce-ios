@@ -10,10 +10,13 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
     ///
     public func update(with productVariation: Yosemite.ProductVariation) {
         siteID = Int64(productVariation.siteID)
+        variationID = Int64(productVariation.variationID)
         productID = Int64(productVariation.productID)
         permalink = productVariation.permalink
         dateCreated = productVariation.dateCreated
         dateModified = productVariation.dateModified
+        dateOnSaleFrom = productVariation.dateOnSaleFrom
+        dateOnSaleTo = productVariation.dateOnSaleTo
         statusKey = productVariation.statusKey
         fullDescription = productVariation.fullDescription
         sku = productVariation.sku
@@ -29,13 +32,15 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
         taxStatusKey = productVariation.taxStatusKey
         taxClass = productVariation.taxClass
         manageStock = productVariation.manageStock
+        stockQuantity = Int64(productVariation.stockQuantity ?? 0)
         stockStatusKey = productVariation.stockStatusKey
-        weight = productVariation.weight
-        shippingClassID = String(productVariation.shippingClassID)
-        menuOrder = Int64(productVariation.menuOrder)
         backordersKey = productVariation.backordersKey
         backordersAllowed = productVariation.backordersAllowed
         backordered = productVariation.backordered
+        weight = productVariation.weight
+        shippingClass = productVariation.shippingClass ?? ""
+        shippingClassID = String(productVariation.shippingClassID)
+        menuOrder = Int64(productVariation.menuOrder)
     }
 
     /// Returns a ReadOnly version of the receiver.

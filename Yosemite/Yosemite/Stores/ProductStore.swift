@@ -200,10 +200,12 @@ private extension ProductStore {
     ///
     func handleProductAttributes(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
+        let productID = readOnlyProduct.productID
 
         // Upsert the attributes from the read-only product
         for readOnlyAttribute in readOnlyProduct.attributes {
             if let existingStorageAttribute = storage.loadProductAttribute(siteID: siteID,
+                                                                           productID: productID,
                                                                            attributeID: readOnlyAttribute.attributeID,
                                                                            name: readOnlyAttribute.name) {
                 existingStorageAttribute.update(with: readOnlyAttribute)
@@ -227,10 +229,12 @@ private extension ProductStore {
     ///
     func handleProductDefaultAttributes(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
+        let productID = readOnlyProduct.productID
 
         // Upsert the default attributes from the read-only product
         for readOnlyDefaultAttribute in readOnlyProduct.defaultAttributes {
             if let existingStorageDefaultAttribute = storage.loadProductDefaultAttribute(siteID: siteID,
+                                                                                         productID: productID,
                                                                                          defaultAttributeID: readOnlyDefaultAttribute.attributeID,
                                                                                          name: readOnlyDefaultAttribute.name ?? "") {
                 existingStorageDefaultAttribute.update(with: readOnlyDefaultAttribute)
@@ -255,10 +259,12 @@ private extension ProductStore {
     ///
     func handleProductImages(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
+        let productID = readOnlyProduct.productID
 
         // Upsert the images from the read-only product
         for readOnlyImage in readOnlyProduct.images {
             if let existingStorageImage = storage.loadProductImage(siteID: siteID,
+                                                                   productID: productID,
                                                                    imageID: readOnlyImage.imageID) {
                 existingStorageImage.update(with: readOnlyImage)
             } else {
@@ -281,10 +287,13 @@ private extension ProductStore {
     ///
     func handleProductCategories(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
+        let productID = readOnlyProduct.productID
 
         // Upsert the categories from the read-only product
         for readOnlyCategory in readOnlyProduct.categories {
-            if let existingStorageCategory = storage.loadProductCategory(siteID: siteID, categoryID: readOnlyCategory.categoryID) {
+            if let existingStorageCategory = storage.loadProductCategory(siteID: siteID,
+                                                                         productID: productID,
+                                                                         categoryID: readOnlyCategory.categoryID) {
                 existingStorageCategory.update(with: readOnlyCategory)
             } else {
                 let newStorageCategory = storage.insertNewObject(ofType: Storage.ProductCategory.self)
@@ -306,10 +315,13 @@ private extension ProductStore {
     ///
     func handleProductTags(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
+        let productID = readOnlyProduct.productID
 
         // Upsert the tags from the read-only product
         for readOnlyTag in readOnlyProduct.tags {
-            if let existingStorageTag = storage.loadProductTag(siteID: siteID, tagID: readOnlyTag.tagID) {
+            if let existingStorageTag = storage.loadProductTag(siteID: siteID,
+                                                               productID: productID,
+                                                               tagID: readOnlyTag.tagID) {
                 existingStorageTag.update(with: readOnlyTag)
             } else {
                 let newStorageTag = storage.insertNewObject(ofType: Storage.ProductTag.self)
@@ -423,12 +435,14 @@ private extension ProductStore {
                                  _ storageProductVariation: Storage.ProductVariation,
                                  _ storage: StorageType) {
         let siteID = readOnlyProductVariation.siteID
+        let variationID = readOnlyProductVariation.variationID
 
         // Upsert the attributes from the read-only product variation
         for readOnlyAttribute in readOnlyProductVariation.attributes {
             if let existingStorageAttribute = storage.loadProductVariationAttribute(siteID: siteID,
-                                                                           attributeID: readOnlyAttribute.attributeID,
-                                                                           name: readOnlyAttribute.name) {
+                                                                                    variationID: variationID,
+                                                                                    attributeID: readOnlyAttribute.attributeID,
+                                                                                    name: readOnlyAttribute.name) {
                 existingStorageAttribute.update(with: readOnlyAttribute)
             } else {
                 let newStorageAttribute = storage.insertNewObject(ofType: Storage.ProductVariationAttribute.self)
@@ -439,7 +453,7 @@ private extension ProductStore {
 
         // Now, remove any objects that exist in storageProductVariation.attributes but not in readOnlyProductVariation.attributes
         storageProductVariation.attributes?.forEach { storageAttribute in
-            if readOnlyProductVariation.attributes.first(where: { $0.attributeID == storageAttribute.attributeID && $0.name == storageAttribute.name } ) == nil {
+            if readOnlyProductVariation.attributes.first(where: { $0.attributeID == storageAttribute.attributeID && $0.name == storageAttribute.name }) == nil {
                 storageProductVariation.removeFromAttributes(storageAttribute)
                 storage.deleteObject(storageAttribute)
             }

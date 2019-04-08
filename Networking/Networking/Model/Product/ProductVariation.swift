@@ -168,7 +168,7 @@ public struct ProductVariation: Decodable {
         let taxClass = try container.decodeIfPresent(String.self, forKey: .taxClass)
 
         let manageStock = try container.decode(Bool.self, forKey: .manageStock)
-        let stockQuantity = try container.decodeIfPresent(Int.self, forKey: .stockQuantity)
+        let stockQuantity = try container.decodeIfPresent(Int.self, forKey: .stockQuantity) ?? 0
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)
@@ -306,7 +306,7 @@ extension ProductVariation: Comparable {
             lhs.taxStatusKey == rhs.taxStatusKey &&
             lhs.taxClass == rhs.taxClass &&
             lhs.manageStock == rhs.manageStock &&
-            lhs.stockQuantity == rhs.stockQuantity &&
+            (lhs.stockQuantity ?? 0) == (rhs.stockQuantity ?? 0) &&
             lhs.stockStatusKey == rhs.stockStatusKey &&
             lhs.backordersKey == rhs.backordersKey &&
             lhs.backordersAllowed == rhs.backordersAllowed &&

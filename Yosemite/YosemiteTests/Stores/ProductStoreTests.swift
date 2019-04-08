@@ -90,7 +90,7 @@ class ProductStoreTests: XCTestCase {
     /// Verifies that `ProductAction.synchronizeProducts` effectively persists all of the product fields
     /// correctly across all of the related `Product` entities (tags, categories, attributes, etc).
     ///
-    func testRetrieveProdcutsEffectivelyPersistsProductFieldsAndRelatedObjects() {
+    func testRetrieveProductsEffectivelyPersistsProductFieldsAndRelatedObjects() {
         let expectation = self.expectation(description: "Persist product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteProduct = sampleProduct()
@@ -116,7 +116,7 @@ class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.synchronizeProducts returns an error whenever there is an error response from the backend.
     ///
-    func testRetrieveProdcutsReturnsErrorUponReponseError() {
+    func testRetrieveProductsReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve products error response")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -132,7 +132,7 @@ class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.synchronizeProducts returns an error whenever there is no backend response.
     ///
-    func testRetrieveProdcutsReturnsErrorUponEmptyResponse() {
+    func testRetrieveProductsReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve products empty response")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -252,7 +252,7 @@ class ProductStoreTests: XCTestCase {
     }
 
 
-    // MARK: - ProductAction.resetStoredProducts
+    // MARK: - ProductAction.resetStoredProductsAndVariations
 
     /// Verifies that `ProductAction.resetStoredProductsAndVariations` nukes the Products + ProductVariations from Storage
     ///
@@ -278,7 +278,7 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 2)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 4)
 
         let expectation = self.expectation(description: "Stored Products + Variations Reset")
         let action = ProductAction.resetStoredProductsAndVariations() {
@@ -386,7 +386,7 @@ class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductStore.upsertStoredProduct` effectively inserts a new Product, with the specified payload.
     ///
-    func testUpdateStoredOrderEffectivelyPersistsNewOrder() {
+    func testUpdateStoredProductEffectivelyPersistsNewProduct() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteProduct = sampleProduct()
 
@@ -455,6 +455,94 @@ class ProductStoreTests: XCTestCase {
         }
 
         wait(for: [backgroundSaveExpectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - ProductAction.synchronizeProductVariations
+
+    /// Verifies that ProductAction.synchronizeProductVariations effectively persists any retrieved product variations.
+    ///
+    func testRetrieveProductVariationsEffectivelyPersistsRetrievedProductVariations() {
+        let expectation = self.expectation(description: "Persist product variation list")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "variations", filename: "product-variations-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 0)
+
+        let action = ProductAction.synchronizeProductVariations(siteID: sampleSiteID, productID: sampleProductID) { error in
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 4)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 4)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 4)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 8)
+            XCTAssertNil(error)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.synchronizeProductVariations` effectively persists all of the product variation fields
+    /// correctly across all of the related `ProductVariation` entities (attributes, dimensions, image, etc).
+    ///
+    func testRetrieveProductVariationsEffectivelyPersistsProductVariationFieldsAndRelatedObjects() {
+        let expectation = self.expectation(description: "Persist product variation list")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProductVariation = sampleVariation1(sampleSiteID)
+
+        network.simulateResponse(requestUrlSuffix: "variations", filename: "product-variations-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+
+        let action = ProductAction.synchronizeProductVariations(siteID: sampleSiteID, productID: sampleProductID) { error in
+            XCTAssertNil(error)
+
+            let storedProductVariation = self.viewStorage.loadProductVariation(siteID: self.sampleSiteID, productID: self.sampleProductID, variationID: self.sampleVariation1ID)
+            let readOnlyStoredProductVariation = storedProductVariation?.toReadOnly()
+
+            XCTAssertNotNil(storedProductVariation)
+            XCTAssertNotNil(readOnlyStoredProductVariation)
+            XCTAssertEqual(readOnlyStoredProductVariation, remoteProductVariation)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.synchronizeProductVariations` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveProductVariationsReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve product variations error response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "variations", filename: "generic_error")
+        let action = ProductAction.synchronizeProductVariations(siteID: sampleSiteID, productID: sampleProductID) { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.synchronizeProductVariations` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveProductVariationsReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve product variations empty response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ProductAction.synchronizeProductVariations(siteID: sampleSiteID, productID: sampleProductID) { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }
 
@@ -752,7 +840,7 @@ private extension ProductStoreTests {
                                 taxStatusKey: "taxable",
                                 taxClass: "a_lot",
                                 manageStock: false,
-                                stockQuantity: nil,
+                                stockQuantity: 0,
                                 stockStatusKey: "instock",
                                 backordersKey: "no",
                                 backordersAllowed: true,
@@ -814,7 +902,7 @@ private extension ProductStoreTests {
                                 taxStatusKey: "taxable",
                                 taxClass: "",
                                 manageStock: false,
-                                stockQuantity: nil,
+                                stockQuantity: 0,
                                 stockStatusKey: "instock",
                                 backordersKey: "no",
                                 backordersAllowed: false,

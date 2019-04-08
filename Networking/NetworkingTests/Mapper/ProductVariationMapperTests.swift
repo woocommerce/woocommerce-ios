@@ -53,7 +53,7 @@ class ProductVariationMapperTests: XCTestCase {
         XCTAssertEqual(productVariation.taxClass, "a_lot")
 
         XCTAssertFalse(productVariation.manageStock)
-        XCTAssertNil(productVariation.stockQuantity)
+        XCTAssertEqual(productVariation.stockQuantity, 0)
         XCTAssertEqual(productVariation.stockStatusKey, "instock")
 
         XCTAssertEqual(productVariation.backordersKey, "no")

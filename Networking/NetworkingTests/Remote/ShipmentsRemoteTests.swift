@@ -113,7 +113,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let siteID = sampleSiteID
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new")
-        remote.createShipmentTracking(for: siteID, orderID: orderID, trackingProvider: "Some provider", trackingNumber: "1111") { (shipmentTracking, error) in
+        remote.createShipmentTracking(for: siteID, orderID: orderID, trackingProvider: "Some provider", dateShipped: "2019-04-01", trackingNumber: "1111") { (shipmentTracking, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(shipmentTracking)
             XCTAssertEqual(shipmentTracking?.orderID, orderID)
@@ -132,6 +132,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         remote.createShipmentTracking(for: sampleSiteID,
                                       orderID: sampleOrderID,
                                       trackingProvider: "Some provider",
+                                      dateShipped: "2019-04-01",
                                       trackingNumber: "11111") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
@@ -152,6 +153,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         remote.createShipmentTracking(for: sampleSiteID,
                                       orderID: sampleOrderID,
                                       trackingProvider: "Some provider",
+                                      dateShipped: "2019-04-01",
                                       trackingNumber: "1111") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
@@ -172,6 +174,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         remote.createShipmentTracking(for: sampleSiteID,
                                       orderID: sampleOrderID,
                                       trackingProvider: "some tracking provider",
+                                      dateShipped: "2019-04-01",
                                       trackingNumber: "1111") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)

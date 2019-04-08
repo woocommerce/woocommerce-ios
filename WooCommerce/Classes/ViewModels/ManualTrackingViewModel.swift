@@ -144,9 +144,7 @@ final class EditTrackingViewModel: ManualTrackingViewModel {
         get {
             return shipmentTracking?.dateShipped ?? Date()
         }
-        set {
-            
-        }
+        set {}
     }
 
     var sections: [AddEditTrackingSection] {

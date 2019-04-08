@@ -198,32 +198,6 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
     }
 
     func executeAction(for row: AddEditTrackingRow, sender: UIViewController) {
-        if row == .deleteTracking {
-            deleteCurrentTracking()
-        }
-
-        if row == .shippingProvider {
-            showAllShipmentProviders(sender: sender)
-        }
-
-        if row == .dateShipped {
-            showDatePicker(sender: sender)
-        }
-    }
-
-    private func deleteCurrentTracking() {
-        //
-        print("=== ready to delete a shipment ===")
-    }
-
-    private func showAllShipmentProviders(sender: UIViewController) {
-        let shippingProviders = ShippingProvidersViewModel(orderID: orderID)
-        let shippingList = ShippingProvidersViewController(viewModel: shippingProviders, delegate: self)
-        sender.navigationController?.pushViewController(shippingList, animated: true)
-    }
-
-    private func showDatePicker(sender: UIViewController) {
-        PickerPresenter().showDatePicker(date: shipmentDate, sender: sender)
     }
 }
 

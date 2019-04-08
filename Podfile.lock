@@ -1,7 +1,7 @@
 PODS:
   - 1PasswordExtension (1.8.5)
   - Alamofire (4.7.3)
-  - Automattic-Tracks-iOS (0.3.2-beta.1):
+  - Automattic-Tracks-iOS (0.3.3):
     - CocoaLumberjack (~> 3.4.1)
     - Reachability (~> 3.1)
     - UIDeviceIdentifier (~> 1.1.4)
@@ -87,12 +87,12 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
-  - Automattic-Tracks-iOS (= 0.3.2-beta.1)
+  - Automattic-Tracks-iOS (= 0.3.3)
   - Charts (~> 3.2)
   - CocoaLumberjack (~> 3.4)
   - CocoaLumberjack/Swift (~> 3.4)
   - Crashlytics (~> 3.10)
-  - Gridicons (~> 0.18-beta)
+  - Gridicons (~> 0.18)
   - KeychainAccess (~> 3.1)
   - WordPressAuthenticator (~> 1.2.1)
   - WordPressShared (~> 1.1)
@@ -133,7 +133,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  Automattic-Tracks-iOS: 7678d30a5e2dfe75ff93e6496024790eefcf441d
+  Automattic-Tracks-iOS: 4414d11f650bc6fc00676b730d4077f66056b805
   Charts: f69cf0518b6d1d62608ca504248f1bbe0b6ae77e
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
@@ -159,6 +159,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 63166e21c9844fa30f2d95d30f335e73be5caf22
   ZendeskSDK: af6509ad7968d367f95b2645713802712152f879
 
-PODFILE CHECKSUM: 3bd77b2c778131dad76347fa28c3a732ebeecb97
+PODFILE CHECKSUM: e89a2fe22cc6ee3570ac338813f6989c6e302e6d
 
 COCOAPODS: 1.5.3

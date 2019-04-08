@@ -65,6 +65,8 @@ class AuthenticationManager {
     func loginForWordPressDotCom() -> UIViewController {
         let loginViewController = WordPressAuthenticator.signinForWPCom()
         loginViewController.offerSignupOption = false
+        loginViewController.loginFields.restrictToWPCom = false
+
         return loginViewController
     }
 
@@ -91,10 +93,10 @@ class AuthenticationManager {
 // MARK: - WordPressAuthenticator Delegate
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
+
     var allowWPComLogin: Bool {
         return true
     }
-
 
     /// Indicates if the active Authenticator can be dismissed or not.
     ///
@@ -127,9 +129,27 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func createdWordPressComAccount(username: String, authToken: String) { }
 
+    /// Validates that the self-hosted site contains the correct information
+    /// and can proceed to the self-hosted username and password view controller.
+    ///
+    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (Error?, Bool) -> Void) {
+        let isSelfHosted = false
+
+        guard let site = siteInfo, site.hasJetpack == true else {
+            let errorInfo = NSLocalizedString("Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue.", comment: "Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps.")
+            let error = NSError(domain: "WooCommerceAuthenticationErrorDomain",
+                                code: 555,
+                                userInfo: [NSLocalizedDescriptionKey: errorInfo])
+            onCompletion(error, isSelfHosted)
+            return
+        }
+
+        onCompletion(nil, isSelfHosted)
+    }
+
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
-    func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, onDismiss: @escaping () -> Void) {
+    func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
         storePickerCoordinator?.onDismiss = onDismiss
         storePickerCoordinator?.start()
@@ -137,7 +157,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Presents the Signup Epilogue, in the specified NavigationController.
     ///
-    func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: WordPressCredentials, service: SocialService?) {
+    func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, service: SocialService?) {
         // NO-OP: The current WC version does not support Signup.
     }
 
@@ -178,16 +198,17 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Synchronizes the specified WordPress Account.
     ///
-    func sync(credentials: WordPressCredentials, onCompletion: @escaping () -> Void) {
-        guard case let .wpcom(authToken, _, _) = credentials else {
+    func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
+        guard let wpcom = credentials.wpcom else {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
 
-        StoresManager.shared.authenticate(credentials: .init(authToken: authToken))
+        StoresManager.shared.authenticate(credentials: .init(authToken: wpcom.authToken))
         let action = AccountAction.synchronizeAccount { (account, error) in
             if let account = account {
+                let credentials = Credentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
                 StoresManager.shared
-                    .authenticate(credentials: .init(username: account.username, authToken: authToken))
+                    .authenticate(credentials: credentials)
                     .synchronizeEntities(onCompletion: onCompletion)
             } else {
                 StoresManager.shared.synchronizeEntities(onCompletion: onCompletion)

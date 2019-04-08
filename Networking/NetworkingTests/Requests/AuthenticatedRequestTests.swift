@@ -13,7 +13,7 @@ class AuthenticatedRequestTests: XCTestCase {
 
     /// Sample Credentials
     ///
-    private let credentials = Credentials(username: "username", authToken: "yosemite")
+    private let credentials = Credentials(username: "username", authToken: "yosemite", siteAddress: "https://wordpress.com")
 
 
     /// Verifies that the Bearer Token is injected, as part of the HTTP Headers.

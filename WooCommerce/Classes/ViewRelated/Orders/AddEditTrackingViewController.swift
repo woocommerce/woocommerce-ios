@@ -5,7 +5,7 @@ import Storage
 /// Presents a tracking provider, tracking number and shipment date
 ///
 final class AddEditTrackingViewController: UIViewController {
-    private var viewModel: AddEditTrackingViewModel
+    private var viewModel: ManualShipmentTrackingViewModel
     private var datePickerVisible: Bool = false
 
     @IBOutlet private weak var table: UITableView!
@@ -24,7 +24,7 @@ final class AddEditTrackingViewController: UIViewController {
         return noticePresenter
     }()
 
-    init(viewModel: AddEditTrackingViewModel) {
+    init(viewModel: ManualShipmentTrackingViewModel) {
         self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -413,7 +413,7 @@ private extension AddEditTrackingViewController {
     }
 
     func addCustomTracking() {
-        // To be implemented
+        // To be implemented in a follow up PR
     }
 
     func dismiss() {

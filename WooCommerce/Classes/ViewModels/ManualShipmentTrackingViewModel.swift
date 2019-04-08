@@ -33,7 +33,7 @@ enum AddEditTrackingRow: CaseIterable {
     }
 }
 
-protocol AddEditTrackingViewModel {
+protocol ManualShipmentTrackingViewModel {
     var siteID: Int { get }
     var orderID: Int { get }
     var title: String { get }
@@ -56,7 +56,7 @@ protocol AddEditTrackingViewModel {
     func registerCells(for tableView: UITableView)
 }
 
-extension AddEditTrackingViewModel {
+extension ManualShipmentTrackingViewModel {
     func registerCells(for tableView: UITableView) {
         for row in AddEditTrackingRow.allCases {
             tableView.register(row.type.loadNib(),
@@ -65,7 +65,7 @@ extension AddEditTrackingViewModel {
     }
 }
 
-final class AddTrackingViewModel: AddEditTrackingViewModel {
+final class AddTrackingViewModel: ManualShipmentTrackingViewModel {
     let siteID: Int
     let orderID: Int
 
@@ -118,7 +118,7 @@ final class AddTrackingViewModel: AddEditTrackingViewModel {
 }
 
 
-final class EditTrackingViewModel: AddEditTrackingViewModel {
+final class EditTrackingViewModel: ManualShipmentTrackingViewModel {
     let siteID: Int
     let orderID: Int
 

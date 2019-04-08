@@ -479,3 +479,12 @@ private struct Constants {
     static let rowHeight = CGFloat(74)
     static let pickerRowHeight = CGFloat(216)
 }
+
+
+/// Testability
+///
+extension ManualTrackingViewController {
+    func getTable() -> UITableView {
+        return table
+    }
+}

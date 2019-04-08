@@ -81,7 +81,7 @@ private extension AddEditTrackingViewController {
     }
 
     func configureAddButton() {
-        guard viewModel.shouldDisplayActionButton else {
+        guard viewModel.isAdding else {
             return
         }
 
@@ -277,7 +277,7 @@ extension AddEditTrackingViewController: UITableViewDelegate {
 }
 
 
-// MARK: - UITableViewDelegate comformance
+// MARK: - Actions associated to taps in cells
 //
 private extension AddEditTrackingViewController {
     func executeAction(for indexPath: IndexPath) {
@@ -287,7 +287,7 @@ private extension AddEditTrackingViewController {
             return
         }
 
-        if row == .dateShipped && viewModel.shouldDisplayActionButton {
+        if row == .dateShipped && viewModel.isAdding {
             displayDatePicker(at: indexPath)
             return
         }

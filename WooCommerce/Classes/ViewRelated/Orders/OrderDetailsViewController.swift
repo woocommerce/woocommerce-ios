@@ -815,10 +815,9 @@ extension OrderDetailsViewController: UITableViewDelegate {
             return UISwipeActionsConfiguration(actions: [])
         }
 
-        let row = rowAtIndexPath(indexPath)
         let copyActionTitle = NSLocalizedString("Copy", comment: "Copy address text button title — should be one word and as short as possible.")
         let copyAction = UIContextualAction(style: .normal, title: copyActionTitle) { [weak self] (action, view, success) in
-            self?.copyText(at: row)
+            self?.copyText(at: indexPath)
             success(true)
         }
         copyAction.backgroundColor = StyleManager.wooCommerceBrandColor
@@ -844,8 +843,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
             return
         }
 
-        let row = rowAtIndexPath(indexPath)
-        copyText(at: row)
+        copyText(at: indexPath)
     }
 }
 
@@ -905,6 +903,10 @@ private extension OrderDetailsViewController {
             if let _ = viewModel.order.shippingAddress {
                 return true
             }
+        case .tracking:
+            if orderTracking(at: indexPath)?.trackingNumber.isEmpty == false {
+                return true
+            }
         default:
             break
         }
@@ -914,14 +916,18 @@ private extension OrderDetailsViewController {
 
     /// Sends the provided Row's text data to the pasteboard
     ///
-    /// - Parameter row: Row to copy text data from
+    /// - Parameter indexPath: IndexPath to copy text data from
     ///
-    func copyText(at row: Row) {
+    func copyText(at indexPath: IndexPath) {
+        let row = rowAtIndexPath(indexPath)
+
         switch row {
         case .billingAddress:
             sendToPasteboard(viewModel.order.billingAddress?.fullNameWithCompanyAndAddress)
         case .shippingAddress:
             sendToPasteboard(viewModel.order.shippingAddress?.fullNameWithCompanyAndAddress)
+        case .tracking:
+            sendToPasteboard(orderTracking(at: indexPath)?.trackingNumber, includeTrailingNewline: false)
         default:
             break // We only send text to the pasteboard from the address rows right meow
         }
@@ -930,15 +936,20 @@ private extension OrderDetailsViewController {
     /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
     /// is nil, nothing is sent to the pasteboard.
     ///
-    /// - Parameter text: string value to send to the pasteboard
+    /// - Parameter
+    ///   - text: string value to send to the pasteboard
+    ///   - includeTrailingNewline: It true, insert a trailing newline; defaults to true
     ///
-    func sendToPasteboard(_ text: String?) {
-        guard let text = text, text.isEmpty == false else {
+    func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
+        guard var text = text, text.isEmpty == false else {
             return
         }
 
-        // Insert an extra newline to make life easier when pasting
-        UIPasteboard.general.string = text + "\n"
+        if includeTrailingNewline {
+            text += "\n"
+        }
+
+        UIPasteboard.general.string = text
         hapticGenerator.notificationOccurred(.success)
     }
 }

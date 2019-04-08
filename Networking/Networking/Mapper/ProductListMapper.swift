@@ -4,10 +4,9 @@ import Foundation
 /// Mapper: Product List
 ///
 struct ProductListMapper: Mapper {
-    /// Site Identifier associated to the orders that will be parsed.
-    /// We're injecting this field via `JSONDecoder.userInfo` because
-    /// the remote endpoints don't really return the SiteID in any of
-    /// the Product Endpoints.
+    /// Site Identifier associated to the products that will be parsed.
+    ///
+    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Product Endpoints.
     ///
     let siteID: Int
 
@@ -26,7 +25,7 @@ struct ProductListMapper: Mapper {
 
 
 /// ProductEnvelope Disposable Entity:
-/// `Load Products` endpoint returns the updated products document in the `data` key.
+/// `Load All Products` endpoint returns the updated products document in the `data` key.
 /// This entity allows us to do parse all the things with JSONDecoder.
 ///
 private struct ProductListEnvelope: Decodable {

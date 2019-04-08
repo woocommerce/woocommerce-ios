@@ -1,4 +1,3 @@
-- Besök skärmen Orderdetaljer för att ändra en orderstatus manuellt eller visa leveransspårning.
-- Vi erbjuder nu fullt stöd och korrekt visning av anpassade orderstatusetiketter.
-- Du kan nu filtrera efter anpassad orderstatus.
-- RTL-språkstödet har förbättrats, med bättre hantering av grafisk komponentvändning.
+Den här versionen handlar om lösningar och förbättringar:
+– Orderstatusen uppdateras nu i orderinformation när du drar och släpper fönstret.
+– Vissa små gränssnittsförbättringar på olika skärmar.

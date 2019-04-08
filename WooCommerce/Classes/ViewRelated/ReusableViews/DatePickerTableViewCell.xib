@@ -37,6 +37,9 @@
                 <constraint firstItem="njF-e1-oar" firstAttribute="trailing" secondItem="Jym-fu-gTL" secondAttribute="trailing" id="YY6-YI-s0p"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="picker" destination="Jym-fu-gTL" id="sId-5O-xO6"/>
+            </connections>
         </tableViewCell>
     </objects>
 </document>

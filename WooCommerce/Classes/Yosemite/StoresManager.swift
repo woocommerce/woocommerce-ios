@@ -184,7 +184,7 @@ private extension StoresManager {
 
     /// Replaces the temporary UUID username in default credentials with the
     /// actual username from the passed account.  This *shouldn't* be necessary
-    /// under normal conditions but is a safety net incase there is an error
+    /// under normal conditions but is a safety net in case there is an error
     /// preventing the temp username from being updated during login.
     ///
     func replaceTempCredentialsIfNecessary(account: Account) {
@@ -193,7 +193,7 @@ private extension StoresManager {
             credentials.hasPlaceholderUsername() else {
                 return
         }
-        authenticate(credentials: .init(username: account.username, authToken: credentials.authToken))
+        authenticate(credentials: .init(username: account.username, authToken: credentials.authToken, siteAddress: credentials.siteAddress))
     }
 
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.

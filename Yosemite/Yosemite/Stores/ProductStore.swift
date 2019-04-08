@@ -99,14 +99,15 @@ private extension ProductStore {
     func synchronizeProductVariations(siteID: Int, productID: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
-        remote.loadAllProductVariations(for: siteID, productID: productID) { (productVariations, error) in
-            guard let _ = productVariations else {
+        remote.loadAllProductVariations(for: siteID, productID: productID) { [weak self] (productVariations, error) in
+            guard let productVariations = productVariations else {
                 onCompletion(error)
                 return
             }
 
-            // FIXME: Upsert product variations here!
-            onCompletion(nil)
+            self?.upsertStoredProductVariationsInBackground(readOnlyProductVariations: productVariations) {
+                onCompletion(nil)
+            }
         }
     }
 
@@ -124,8 +125,9 @@ private extension ProductStore {
                 return
             }
 
-            // FIXME: Upsert product variation here!
-            onCompletion(productVariation, nil)
+            self?.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation]) {
+                onCompletion(productVariation, nil)
+            }
         }
     }
 }
@@ -373,9 +375,7 @@ private extension ProductStore {
             storageProductVariation.update(with: readOnlyProductVariation)
             handleProductVariationDimensions(readOnlyProductVariation, storageProductVariation, storage)
             handleProductVariationImage(readOnlyProductVariation, storageProductVariation, storage)
-
-            // FIXME: Finish up product variation attribs 👇👇👇
-            //handleProductVariationAttributes(readOnlyProductVariation, storageProductVariation, storage)
+            handleProductVariationAttributes(readOnlyProductVariation, storageProductVariation, storage)
         }
     }
 
@@ -414,6 +414,35 @@ private extension ProductStore {
             let newStorageImage = storage.insertNewObject(ofType: Storage.ProductVariationImage.self)
             newStorageImage.update(with: readOnlyImage)
             storageProductVariation.image = newStorageImage
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided StorageProductVariation's attributes using the provided read-only ProductVariation's attributes
+    ///
+    func handleProductVariationAttributes(_ readOnlyProductVariation: Networking.ProductVariation,
+                                 _ storageProductVariation: Storage.ProductVariation,
+                                 _ storage: StorageType) {
+        let siteID = readOnlyProductVariation.siteID
+
+        // Upsert the attributes from the read-only product variation
+        for readOnlyAttribute in readOnlyProductVariation.attributes {
+            if let existingStorageAttribute = storage.loadProductVariationAttribute(siteID: siteID,
+                                                                           attributeID: readOnlyAttribute.attributeID,
+                                                                           name: readOnlyAttribute.name) {
+                existingStorageAttribute.update(with: readOnlyAttribute)
+            } else {
+                let newStorageAttribute = storage.insertNewObject(ofType: Storage.ProductVariationAttribute.self)
+                newStorageAttribute.update(with: readOnlyAttribute)
+                storageProductVariation.addToAttributes(newStorageAttribute)
+            }
+        }
+
+        // Now, remove any objects that exist in storageProductVariation.attributes but not in readOnlyProductVariation.attributes
+        storageProductVariation.attributes?.forEach { storageAttribute in
+            if readOnlyProductVariation.attributes.first(where: { $0.attributeID == storageAttribute.attributeID && $0.name == storageAttribute.name } ) == nil {
+                storageProductVariation.removeFromAttributes(storageAttribute)
+                storage.deleteObject(storageAttribute)
+            }
         }
     }
 }

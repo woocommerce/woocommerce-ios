@@ -247,4 +247,13 @@ public extension StorageType {
         let predicate = NSPredicate(format: "siteID = %ld AND productID = %ld AND variationID = %ld", siteID, productID, variationID)
         return firstObject(ofType: ProductVariation.self, matching: predicate)
     }
+
+    /// Retrieves the Stored Product Variation Attribute.
+    ///
+    /// Note: WC variation attribute ID's often have an ID of `0`, so we need to also look them up by name 😏
+    ///
+    public func loadProductVariationAttribute(siteID: Int, attributeID: Int, name: String) -> ProductVariationAttribute? {
+        let predicate = NSPredicate(format: "productVariation.siteID = %ld AND attributeID = %ld AND name ==[c] %@", siteID, attributeID, name)
+        return firstObject(ofType: ProductVariationAttribute.self, matching: predicate)
+    }
 }

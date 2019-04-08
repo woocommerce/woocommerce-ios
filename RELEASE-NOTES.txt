@@ -1,3 +1,6 @@
+1.7
+-----
+ 
 1.6
 -----
 - improvement: Tracking numbers can now be copied to the pasteboard from the order details screen.

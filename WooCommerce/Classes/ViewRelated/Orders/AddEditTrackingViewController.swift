@@ -292,13 +292,31 @@ private extension AddEditTrackingViewController {
             return
         }
 
-        viewModel.executeAction(for: row, sender: self)
+        if row == .shippingProvider && viewModel.isAdding {
+            showAllShipmentProviders()
+        }
     }
 
     func displayDatePicker(at indexPath: IndexPath) {
         datePickerVisible = true
 
         table.reloadData()
+    }
+
+    func showAllShipmentProviders() {
+        let shippingProviders = ShippingProvidersViewModel(orderID: viewModel.orderID)
+        let shippingList = ShippingProvidersViewController(viewModel: shippingProviders, delegate: self)
+        navigationController?.pushViewController(shippingList, animated: true)
+    }
+}
+
+
+// MARK: - Conformance to delegate of List of Shipment providers.
+//
+extension AddEditTrackingViewController: ShipmentProviderListDelegate {
+    func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: Yosemite.ShipmentTrackingProvider, groupName: String) {
+        viewModel.shipmentProvider = didSelect
+        viewModel.shipmentProviderGroupName = groupName
     }
 }
 

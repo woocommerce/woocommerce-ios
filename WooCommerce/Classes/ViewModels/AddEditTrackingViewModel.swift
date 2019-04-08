@@ -54,7 +54,6 @@ protocol AddEditTrackingViewModel {
     var isAdding: Bool { get }
 
     func registerCells(for tableView: UITableView)
-    func executeAction(for row: AddEditTrackingRow, sender: UIViewController)
 }
 
 extension AddEditTrackingViewModel {
@@ -116,33 +115,6 @@ final class AddTrackingViewModel: AddEditTrackingViewModel {
         self.siteID = siteID
         self.orderID = orderID
     }
-
-    func executeAction(for row: AddEditTrackingRow, sender: UIViewController) {
-        if row == .shippingProvider {
-            showAllShipmentProviders(sender: sender)
-        }
-
-        if row == .dateShipped {
-            showDatePicker(sender: sender)
-        }
-    }
-
-    private func showAllShipmentProviders(sender: UIViewController) {
-        let shippingProviders = ShippingProvidersViewModel(orderID: orderID)
-        let shippingList = ShippingProvidersViewController(viewModel: shippingProviders, delegate: self)
-        sender.navigationController?.pushViewController(shippingList, animated: true)
-    }
-
-    private func showDatePicker(sender: UIViewController) {
-        PickerPresenter().showDatePicker(date: shipmentDate, sender: sender)
-    }
-}
-
-extension AddTrackingViewModel: ShipmentProviderListDelegate {
-    func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: ShipmentTrackingProvider, groupName: String) {
-        shipmentProvider = didSelect
-        shipmentProviderGroupName = groupName
-    }
 }
 
 
@@ -199,25 +171,5 @@ final class EditTrackingViewModel: AddEditTrackingViewModel {
         self.siteID = siteID
         self.orderID = orderID
         self.shipmentTracking = shipmentTracking
-    }
-
-    func executeAction(for row: AddEditTrackingRow, sender: UIViewController) {
-    }
-}
-
-extension EditTrackingViewModel: ShipmentProviderListDelegate {
-    func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: ShipmentTrackingProvider, groupName: String) {
-        shipmentProvider = didSelect
-        shipmentProviderGroupName = groupName
-    }
-}
-
-
-private struct PickerPresenter {
-    func showDatePicker(date: Date, sender: UIViewController) {
-        let picker = UIDatePicker(frame: .zero)
-        picker.autoresizingMask = .flexibleWidth
-        picker.datePickerMode = .date
-        picker.date = date
     }
 }

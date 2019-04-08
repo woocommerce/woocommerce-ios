@@ -33,6 +33,10 @@ enum AddEditTrackingRow: CaseIterable {
     }
 }
 
+
+/// Abstracts the different viewmodels supporting adding, editing and creating custom
+/// shipment trackings
+///
 protocol ManualTrackingViewModel {
     var siteID: Int { get }
     var orderID: Int { get }

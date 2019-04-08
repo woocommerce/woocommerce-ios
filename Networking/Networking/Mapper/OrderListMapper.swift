@@ -6,8 +6,8 @@ import Foundation
 struct OrderListMapper: Mapper {
 
     /// Site Identifier associated to the orders that will be parsed.
-    /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't really return the SiteID in any of the
-    /// Order Endpoints.
+    ///
+    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Order Endpoints.
     ///
     let siteID: Int
 

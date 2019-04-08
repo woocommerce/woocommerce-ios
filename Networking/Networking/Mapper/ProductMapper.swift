@@ -1,18 +1,18 @@
 import Foundation
 
 
-/// Mapper: Order
+/// Mapper: Product
 ///
 struct ProductMapper: Mapper {
 
-    /// Site Identifier associated to the orders that will be parsed.
-    /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't really return the SiteID in any of the
-    /// Order Endpoints.
+    /// Site Identifier associated to the product that will be parsed.
+    ///
+    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Product Endpoints.
     ///
     let siteID: Int
 
 
-    /// (Attempts) to convert a dictionary into [Order].
+    /// (Attempts) to convert a dictionary into Product.
     ///
     func map(response: Data) throws -> Product {
         let decoder = JSONDecoder()
@@ -26,8 +26,9 @@ struct ProductMapper: Mapper {
 }
 
 
-/// OrdersEnvelope Disposable Entity:
-/// `Update Order` endpoint returns the updated order document in the `data` key. This entity
+/// ProductEnvelope Disposable Entity
+///
+/// `Load Product` endpoint returns the requested product document in the `data` key. This entity
 /// allows us to do parse all the things with JSONDecoder.
 ///
 private struct ProductEnvelope: Decodable {

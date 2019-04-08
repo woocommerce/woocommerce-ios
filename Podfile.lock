@@ -1,7 +1,7 @@
 PODS:
   - 1PasswordExtension (1.8.5)
   - Alamofire (4.7.3)
-  - Automattic-Tracks-iOS (0.3.2-beta.1):
+  - Automattic-Tracks-iOS (0.3.3):
     - CocoaLumberjack (~> 3.4.1)
     - Reachability (~> 3.1)
     - UIDeviceIdentifier (~> 1.1.4)
@@ -59,10 +59,10 @@ PODS:
     - lottie-ios (= 2.5.2)
     - "NSURL+IDN (= 0.3)"
     - SVProgressHUD (= 2.2.5)
-    - WordPressKit (~> 3.2.2.beta)
+    - WordPressKit (~> 3.2.2)
     - WordPressShared (~> 1.4)
     - WordPressUI (~> 1.0)
-  - WordPressKit (3.2.2.beta-3):
+  - WordPressKit (3.2.2):
     - Alamofire (~> 4.7.3)
     - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.3)
@@ -87,12 +87,12 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
-  - Automattic-Tracks-iOS (= 0.3.2-beta.1)
+  - Automattic-Tracks-iOS (= 0.3.3)
   - Charts (~> 3.2)
   - CocoaLumberjack (~> 3.4)
   - CocoaLumberjack/Swift (~> 3.4)
   - Crashlytics (~> 3.10)
-  - Gridicons (~> 0.18-beta)
+  - Gridicons (~> 0.18)
   - KeychainAccess (~> 3.1)
   - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `task/wc-support-site-url-login`)
   - WordPressShared (~> 1.1)
@@ -142,7 +142,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  Automattic-Tracks-iOS: 7678d30a5e2dfe75ff93e6496024790eefcf441d
+  Automattic-Tracks-iOS: 4414d11f650bc6fc00676b730d4077f66056b805
   Charts: f69cf0518b6d1d62608ca504248f1bbe0b6ae77e
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
@@ -161,7 +161,7 @@ SPEC CHECKSUMS:
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 8f8a24b257a4d978c8d40ad1e7355b944ffbfa8c
   WordPressAuthenticator: 255287667ad0733572c187ea9c0cc0310488f377
-  WordPressKit: 6ef1696d6f073385ed28c96e74747c1fbbd6fe4a
+  WordPressKit: 61a83ade68516f1398176b80c199489af0e83303
   WordPressShared: 63d57a4a07ad9f9a1ee5e8a7162e48fbb5192014
   WordPressUI: 44fe43a9c5c504dfd534286e39e1ce6ebcd69ff5
   wpxmlrpc: 6ba55c773cfa27083ae4a2173e69b19f46da98e2

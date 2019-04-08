@@ -1,0 +1,90 @@
+{
+    "data": {
+        "id": 215,
+        "date_created": "2019-02-21T10:56:17",
+        "date_created_gmt": "2019-02-21T16:56:17",
+        "date_modified": "2019-04-04T17:08:33",
+        "date_modified_gmt": "2019-04-04T22:08:33",
+        "description": "Hi there!",
+        "permalink": "https:\/\/paperairplane.store\/product\/paper-airplane\/?attribute_color=Black&attribute_length=Short",
+        "sku": "345345",
+        "price": "14.33",
+        "regular_price": "12.77",
+        "sale_price": "14.33",
+        "date_on_sale_from": "2019-03-01T08:08:44",
+        "date_on_sale_from_gmt": "2019-04-01T08:08:44",
+        "date_on_sale_to": "2019-03-29T01:08:21",
+        "date_on_sale_to_gmt": "2019-04-29T01:08:21",
+        "on_sale": true,
+        "status": "publish",
+        "purchasable": true,
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "tax_status": "taxable",
+        "tax_class": "a_lot",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "stock_status": "instock",
+        "backorders": "no",
+        "backorders_allowed": true,
+        "backordered": false,
+        "weight": "99",
+        "dimensions": {
+            "length": "11",
+            "width": "22",
+            "height": "33"
+        },
+        "shipping_class": "Woo!",
+        "shipping_class_id": 99,
+        "image": {
+            "id": 206,
+            "date_created": "2019-01-31T08:38:17",
+            "date_created_gmt": "2019-01-31T20:38:17",
+            "date_modified": "2019-02-01T08:38:17",
+            "date_modified_gmt": "2019-02-28T01:38:17",
+            "src": "https:\/\/i1.wp.com\/paperairplane.store\/wp-content\/uploads\/2019\/01\/FFXUJ9RIAY1N6DC.LARGE_.jpg?fit=1024%2C853&ssl=1",
+            "name": "FFXUJ9RIAY1N6DC.LARGE",
+            "alt": "It's a picture! Yaaay!"
+        },
+        "attributes": [
+            {
+                "id": 0,
+                "name": "Color",
+                "option": "Black"
+            },
+            {
+                "id": 0,
+                "name": "Length",
+                "option": "Short"
+            }
+        ],
+        "menu_order": 4,
+        "meta_data": [
+            {
+                "id": 5368,
+                "key": "_created_via",
+                "value": "ajax-unknown"
+            }
+        ],
+        "_links": {
+            "self": [
+                {
+                    "href": "https:\/\/paperairplane.store\/wp-json\/wc\/v3\/products\/205\/variations\/215"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https:\/\/paperairplane.store\/wp-json\/wc\/v3\/products\/205\/variations"
+                }
+            ],
+            "up": [
+                {
+                    "href": "https:\/\/paperairplane.store\/wp-json\/wc\/v3\/products\/205"
+                }
+            ]
+        }
+    }
+}

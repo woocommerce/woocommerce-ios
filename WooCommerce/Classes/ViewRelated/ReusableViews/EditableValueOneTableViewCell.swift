@@ -6,6 +6,7 @@ final class EditableValueOneTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureAsNonSelectable()
         styleTitle()
         styleValue()
     }
@@ -13,6 +14,10 @@ final class EditableValueOneTableViewCell: UITableViewCell {
 
 
 private extension EditableValueOneTableViewCell {
+    func configureAsNonSelectable() {
+        selectionStyle = .none
+    }
+
     func styleTitle() {
         title.applyFootnoteStyle()
     }

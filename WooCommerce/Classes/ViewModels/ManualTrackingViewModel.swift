@@ -65,6 +65,9 @@ extension ManualTrackingViewModel {
     }
 }
 
+
+/// View model supporting adding shipment tacking manually, using non-custom providers
+///
 final class AddTrackingViewModel: ManualTrackingViewModel {
     let siteID: Int
     let orderID: Int
@@ -118,6 +121,8 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 }
 
 
+/// View model supporting editing shipment tacking manually, using non-custom providers
+///
 final class EditTrackingViewModel: ManualTrackingViewModel {
     let siteID: Int
     let orderID: Int

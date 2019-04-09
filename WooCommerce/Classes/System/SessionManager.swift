@@ -130,17 +130,20 @@ private extension SessionManager {
     /// Returns the Default Credentials, if any.
     ///
     func loadCredentials() -> Credentials? {
-        guard let username = defaults[.defaultUsername] as? String, let authToken = keychain[username] else {
+        guard let username = defaults[.defaultUsername] as? String,
+            let authToken = keychain[username],
+            let siteAddress = defaults[.defaultSiteAddress] as? String else {
             return nil
         }
 
-        return Credentials(username: username, authToken: authToken)
+        return Credentials(username: username, authToken: authToken, siteAddress: siteAddress)
     }
 
     /// Persists the Credentials's authToken in the keychain, and username in User Settings.
     ///
     func saveCredentials(_ credentials: Credentials) {
         defaults[.defaultUsername] = credentials.username
+        defaults[.defaultSiteAddress] = credentials.siteAddress
         keychain[credentials.username] = credentials.authToken
     }
 

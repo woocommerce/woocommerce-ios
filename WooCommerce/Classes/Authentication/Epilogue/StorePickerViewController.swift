@@ -291,6 +291,13 @@ private extension StorePickerViewController {
             return
         }
 
+        // If a site address was passed in credentials, select it
+        if let siteAddress = StoresManager.shared.sessionManager.defaultCredentials?.siteAddress,
+            let site = sites.filter({ $0.url == siteAddress }).first {
+            currentlySelectedSite = site
+            return
+        }
+
         // If there is a defaultSite already set, select it
         if let site = StoresManager.shared.sessionManager.defaultSite {
             currentlySelectedSite = site

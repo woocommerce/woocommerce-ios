@@ -11,6 +11,12 @@ public struct ProductAttribute: Decodable {
     public let variation: Bool
     public let options: [String]
 
+    // Variation type products alter the structure of this ProductAttribute type.
+    // Because of that, we need to also include this option String as well. 🤯
+    // For more details see: https://github.com/woocommerce/woocommerce-ios/issues/859
+    private let option: String
+
+
     /// ProductAttribute initializer.
     ///
     public init(attributeID: Int,
@@ -25,6 +31,7 @@ public struct ProductAttribute: Decodable {
         self.visible = visible
         self.variation = variation
         self.options = options
+        self.option = ""
     }
 
     /// Public initializer for ProductAttribute.
@@ -37,7 +44,14 @@ public struct ProductAttribute: Decodable {
         let position = container.failsafeDecodeIfPresent(Int.self, forKey: .position) ?? 0
         let visible = container.failsafeDecodeIfPresent(Bool.self, forKey: .visible) ?? true
         let variation = container.failsafeDecodeIfPresent(Bool.self, forKey: .variation) ?? true
-        let options = container.failsafeDecodeIfPresent([String].self, forKey: .options) ?? [String]()
+
+        var options = container.failsafeDecodeIfPresent([String].self, forKey: .options) ?? [String]()
+        if options.isEmpty {
+            // This `ProductAttribute` may be linked to a variation type product → check if the `option` field contains anything.
+            if let variationTypeOption = container.failsafeDecodeIfPresent(String.self, forKey: .option) {
+                options.append(variationTypeOption)
+            }
+        }
 
         self.init(attributeID: attributeID,
                   name: name,
@@ -59,6 +73,7 @@ private extension ProductAttribute {
         case visible        = "visible"
         case variation      = "variation"
         case options        = "options"
+        case option         = "option"
     }
 }
 

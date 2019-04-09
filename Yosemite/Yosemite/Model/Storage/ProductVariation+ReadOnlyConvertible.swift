@@ -85,8 +85,12 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
                                 attributes: productVariationAttributes,
                                 menuOrder: Int(menuOrder))
     }
+}
 
-    // MARK: - Private Helpers
+
+// MARK: - Private Helpers
+//
+private extension Storage.ProductVariation {
 
     private func createReadOnlyDimensions() -> Yosemite.ProductDimensions {
         guard let dimensions = dimensions else {

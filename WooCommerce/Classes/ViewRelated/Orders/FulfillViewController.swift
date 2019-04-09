@@ -107,7 +107,6 @@ private extension FulfillViewController {
     ///
     func setupTableView() {
         tableView.tableFooterView = actionView
-        //tableView.allowsSelection = false
     }
 
     ///Setup: Action Button!
@@ -270,7 +269,7 @@ private extension FulfillViewController {
 
     /// Setup a given UITableViewCell instance to actually display the specified Row's Payload.
     ///
-    func setup(cell: UITableViewCell, for row: Row, at: IndexPath) {
+    func setup(cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch row {
         case .product(let item):
             setupProductCell(cell, with: item)
@@ -279,7 +278,7 @@ private extension FulfillViewController {
         case .address(let shipping):
             setupAddressCell(cell, with: shipping)
         case .tracking:
-            setupTrackingCell(cell, at: at)
+            setupTrackingCell(cell, at: indexPath)
         case .trackingAdd:
             setupTrackingAddCell(cell)
         }
@@ -396,11 +395,13 @@ extension FulfillViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch sections[indexPath.section].rows[indexPath.row] {
+
         case .trackingAdd:
             let viewModel = AddTrackingViewModel(siteID: order.siteID, orderID: order.orderID)
             let addTracking = ManualTrackingViewController(viewModel: viewModel)
             let navController = WooNavigationController(rootViewController: addTracking)
             present(navController, animated: true, completion: nil)
+
         case .tracking:
             guard let shipmentTracking = orderTracking(at: indexPath) else {
                 return
@@ -409,6 +410,7 @@ extension FulfillViewController: UITableViewDelegate {
             let addTracking = ManualTrackingViewController(viewModel: viewModel)
             let navController = WooNavigationController(rootViewController: addTracking)
             present(navController, animated: true, completion: nil)
+            
         default:
             break
         }

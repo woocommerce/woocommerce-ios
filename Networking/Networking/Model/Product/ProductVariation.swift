@@ -47,7 +47,7 @@ public struct ProductVariation: Decodable {
     public let shippingClass: String?
     public let shippingClassID: Int
 
-    public let image: ProductImage
+    public let image: ProductImage?
     public let attributes: [ProductVariationAttribute]
 
     public let menuOrder: Int
@@ -87,7 +87,7 @@ public struct ProductVariation: Decodable {
                 dimensions: ProductDimensions,
                 shippingClass: String?,
                 shippingClassID: Int,
-                image: ProductImage,
+                image: ProductImage?,
                 attributes: [ProductVariationAttribute],
                 menuOrder: Int) {
 
@@ -168,7 +168,7 @@ public struct ProductVariation: Decodable {
         let taxClass = try container.decodeIfPresent(String.self, forKey: .taxClass)
 
         let manageStock = try container.decode(Bool.self, forKey: .manageStock)
-        let stockQuantity = try container.decodeIfPresent(Int.self, forKey: .stockQuantity)
+        let stockQuantity = try container.decodeIfPresent(Int.self, forKey: .stockQuantity) ?? 0
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)
@@ -181,7 +181,7 @@ public struct ProductVariation: Decodable {
         let shippingClass = try container.decodeIfPresent(String.self, forKey: .shippingClass)
         let shippingClassID = try container.decode(Int.self, forKey: .shippingClassID)
 
-        let image = try container.decode(ProductImage.self, forKey: .image)
+        let image = try container.decodeIfPresent(ProductImage.self, forKey: .image)
 
         let attributes = try container.decode([ProductVariationAttribute].self, forKey: .attributes)
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
@@ -306,7 +306,7 @@ extension ProductVariation: Comparable {
             lhs.taxStatusKey == rhs.taxStatusKey &&
             lhs.taxClass == rhs.taxClass &&
             lhs.manageStock == rhs.manageStock &&
-            lhs.stockQuantity == rhs.stockQuantity &&
+            (lhs.stockQuantity ?? 0) == (rhs.stockQuantity ?? 0) &&
             lhs.stockStatusKey == rhs.stockStatusKey &&
             lhs.backordersKey == rhs.backordersKey &&
             lhs.backordersAllowed == rhs.backordersAllowed &&

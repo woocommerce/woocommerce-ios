@@ -69,6 +69,8 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
             .imageWithTintColor(StyleManager.wooCommerceBrandColor)
 
         icon.image = pencilIcon
+
+        configureActionButtonForVoiceOver()
     }
 }
 
@@ -98,11 +100,13 @@ private extension EditableOrderTrackingTableViewCell {
     }
 
     func configureActionButtonForVoiceOver() {
-//        actionButton.accessibilityLabel = actionButtonNormalText
-//        actionButton.accessibilityTraits = .button
-//        actionButton.accessibilityHint = NSLocalizedString("Tracks a shipment.",
-//                                                           comment:
-//            "Accessibility hint for Track Package button in Order details screen")
+        icon.accessibilityLabel = NSLocalizedString("Edit",
+                                                            comment:
+            "Accessibility hint for Pencil button in an individual Shipment Tracking in the order fulfillment screen")
+        icon.accessibilityTraits = .button
+        icon.accessibilityHint = NSLocalizedString("Edits a shipment.",
+                                                           comment:
+            "Accessibility hint for Edit Shipment button in Order fulfillment screen")
     }
 }
 

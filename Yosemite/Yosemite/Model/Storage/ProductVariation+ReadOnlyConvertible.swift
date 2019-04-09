@@ -92,7 +92,7 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
 //
 private extension Storage.ProductVariation {
 
-    private func createReadOnlyDimensions() -> Yosemite.ProductDimensions {
+    func createReadOnlyDimensions() -> Yosemite.ProductDimensions {
         guard let dimensions = dimensions else {
             return ProductDimensions(length: "", width: "", height: "")
         }
@@ -100,7 +100,7 @@ private extension Storage.ProductVariation {
         return ProductDimensions(length: dimensions.length, width: dimensions.width, height: dimensions.height)
     }
 
-    private func createReadOnlyImage() -> Yosemite.ProductImage? {
+    func createReadOnlyImage() -> Yosemite.ProductImage? {
         guard let image = image else {
             return nil
         }

@@ -140,19 +140,13 @@ final class EditTrackingViewModel: ManualTrackingViewModel {
 
     let shipmentTracking: ShipmentTracking?
 
-    var trackingNumber: String? {
-        get {
-            return shipmentTracking?.trackingNumber
-        }
-        set {}
-    }
+    lazy var trackingNumber: String? = {
+        return shipmentTracking?.trackingNumber
+    }()
 
-    var shipmentDate: Date {
-        get {
-            return shipmentTracking?.dateShipped ?? Date()
-        }
-        set {}
-    }
+    lazy var shipmentDate: Date = {
+        return shipmentTracking?.dateShipped ?? Date()
+    }()
 
     var sections: [AddEditTrackingSection] {
         let trackingRows: [AddEditTrackingRow] = [.shippingProvider,

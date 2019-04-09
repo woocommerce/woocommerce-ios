@@ -154,8 +154,8 @@ private extension HelpAndSupportViewController {
     func configureBrowseFaq(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Browse our FAQ", comment: "Browse our FAQ title")
-        cell.detailTextLabel?.text = NSLocalizedString("Get answers to questions you have", comment: "Subtitle for Browse our FAQ")
+        cell.textLabel?.text = NSLocalizedString("Help Center", comment: "Browse our help documentation website title")
+        cell.detailTextLabel?.text = NSLocalizedString("Get answers to questions you have", comment: "Subtitle for Help Center")
     }
 
     /// Contact Support cell.

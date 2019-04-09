@@ -101,7 +101,7 @@ class ZendeskManager: NSObject {
     // MARK: - Show Zendesk Views
     //
     // -TODO: in the future this should show the Zendesk Help Center.
-    /// For now, link to the online FAQ
+    /// For now, link to the online help documentation
     ///
     func showHelpCenter(from controller: UIViewController) {
         let safariViewController = SFSafariViewController(url: WooConstants.helpCenterURL)

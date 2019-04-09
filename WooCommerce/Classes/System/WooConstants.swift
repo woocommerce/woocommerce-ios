@@ -37,7 +37,7 @@ enum WooConstants {
     ///
     static let privacyURL = URL(string: "https://automattic.com/privacy/")!
 
-    /// FAQ URL
+    /// Help Center URL
     ///
     static let helpCenterURL = URL(string: "https://docs.woocommerce.com/document/woocommerce-ios/")!
 

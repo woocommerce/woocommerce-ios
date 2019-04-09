@@ -216,7 +216,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
     private func configureTrackingNumber(cell: TitleAndEditableValueTableViewCell) {
         cell.title.text = NSLocalizedString("Tracking number", comment: "Add / Edit shipping provider. Title of cell presenting tracking number")
 
-        cell.value.text = viewModel.shipmentTracking?.trackingNumber
+        cell.value.text = viewModel.trackingNumber
         cell.value.isEnabled = true
 
         cell.value.addTarget(self, action: #selector(didChangeTrackingNumber), for: .editingChanged)

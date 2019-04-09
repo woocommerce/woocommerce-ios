@@ -22,6 +22,8 @@ final class ShippingProvidersViewModel {
                                                                        sortedBy: [descriptor])
     }()
 
+    var onError: ((Error) -> Void)?
+
     /// Designated initializer
     ///
     init(orderID: Int) {
@@ -31,7 +33,7 @@ final class ShippingProvidersViewModel {
 
     /// Loads shipment tracking groups
     ///
-    private func fetchGroups() {
+    func fetchGroups() {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             return
         }
@@ -39,7 +41,7 @@ final class ShippingProvidersViewModel {
         let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID,
                                                                                    orderID: orderID) { [weak self] error in
             if let error = error {
-                self?.presentNotice(error)
+                self?.handleError(error)
             }
         }
 
@@ -53,7 +55,7 @@ final class ShippingProvidersViewModel {
         try? resultsController.performFetch()
     }
 
-    private func presentNotice(_ error: Error) {
-        print("==== present error notice ====")
+    private func handleError(_ error: Error) {
+        onError?(error)
     }
 }

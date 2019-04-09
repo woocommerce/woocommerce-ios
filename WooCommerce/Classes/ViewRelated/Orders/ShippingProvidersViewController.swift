@@ -11,6 +11,14 @@ final class ShippingProvidersViewController: UIViewController {
 
     @IBOutlet weak var table: UITableView!
 
+    /// Dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
+    ///
+    private lazy var noticePresenter: NoticePresenter = {
+        let noticePresenter = NoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     init(viewModel: ShippingProvidersViewModel, delegate: ShipmentProviderListDelegate) {
         self.viewModel = viewModel
         self.delegate = delegate
@@ -67,13 +75,20 @@ private extension ShippingProvidersViewController {
 }
 
 
+// MARK: - View model configuration and binding
+//
 private extension ShippingProvidersViewController {
     func configureViewModel() {
         viewModel.configureResultsController(table: table)
+        viewModel.onError = { [weak self] error in
+            self?.presentNotice(error)
+        }
     }
 }
 
 
+// MARK: - Conformance to UITableViewDataSource
+//
 extension ShippingProvidersViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return viewModel.resultsController.sections.count
@@ -102,6 +117,9 @@ extension ShippingProvidersViewController: UITableViewDataSource {
     }
 }
 
+
+// MARK: - Conformance to UITableViewDelegate
+//
 extension ShippingProvidersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let group = viewModel.resultsController.sections[indexPath.section]
@@ -116,6 +134,29 @@ extension ShippingProvidersViewController: UITableViewDelegate {
 }
 
 
+// MARK: - Error handling
+//
+private extension ShippingProvidersViewController {
+    func presentNotice(_ error: Error) {
+        let title = NSLocalizedString(
+            "Unable to load Shipment Providers",
+            comment: "Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers"
+        )
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title,
+                            message: nil,
+                            feedbackType: .error,
+                            actionTitle: actionTitle) { [weak self] in
+                                self?.viewModel.fetchGroups()
+        }
+
+        noticePresenter.enqueue(notice: notice)
+    }
+}
+
+
+// MARK: - Private constants
+//
 private struct Constants {
     static let rowHeight = CGFloat(48)
 }

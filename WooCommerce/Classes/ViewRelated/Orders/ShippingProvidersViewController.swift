@@ -31,6 +31,7 @@ final class ShippingProvidersViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureBackground()
         configureNavigation()
         configureTable()
         configureViewModel()
@@ -41,6 +42,10 @@ final class ShippingProvidersViewController: UIViewController {
 // MARK: - Configure UI
 //
 private extension ShippingProvidersViewController {
+    func configureBackground() {
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
+    }
+
     func configureNavigation() {
         configureTitle()
     }

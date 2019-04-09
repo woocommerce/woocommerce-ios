@@ -35,6 +35,7 @@ final class ManualTrackingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureBackground()
         configureNavigation()
         configureTable()
     }
@@ -47,7 +48,13 @@ final class ManualTrackingViewController: UIViewController {
 }
 
 
+// MARK: - Styles
+///
 private extension ManualTrackingViewController {
+    func configureBackground() {
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
+    }
+
     func configureNavigation() {
         configureTitle()
         configureDismissButton()

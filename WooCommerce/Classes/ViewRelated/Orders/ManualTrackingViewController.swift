@@ -205,6 +205,16 @@ extension ManualTrackingViewController: UITableViewDataSource {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
+    private func indexPathForRow(_ row: AddEditTrackingRow, inSection section: Int) -> IndexPath? {
+        let requestedSection = sections[section]
+
+        guard let requestedIndex = requestedSection.rows.firstIndex(of: row) else {
+            return nil
+        }
+
+        return IndexPath(row: requestedIndex, section: section)
+    }
+
     private func configureShippingProvider(cell: TitleAndEditableValueTableViewCell) {
         cell.title.text = NSLocalizedString("Shipping provider", comment: "Add / Edit shipping provider. Title of cell presenting name")
         cell.value.text = viewModel.providerCellName
@@ -240,13 +250,9 @@ extension ManualTrackingViewController: UITableViewDataSource {
     }
 
     func configurePicker(cell: DatePickerTableViewCell) {
-        guard datePickerVisible else {
-            return
-        }
-
         cell.onDateSelected = { [weak self] date in
             self?.viewModel.shipmentDate = date
-            self?.reload()
+            self?.reloadDate()
         }
     }
 }
@@ -315,7 +321,7 @@ private extension ManualTrackingViewController {
     func displayDatePicker(at indexPath: IndexPath) {
         datePickerVisible = true
 
-        reload()
+        reloadDatePicker(at: indexPath)
     }
 
     func showAllShipmentProviders() {
@@ -324,8 +330,20 @@ private extension ManualTrackingViewController {
         navigationController?.pushViewController(shippingList, animated: true)
     }
 
-    func reload() {
-        table.reloadData()
+    func reloadDatePicker(at indexPath: IndexPath) {
+        table.beginUpdates()
+        table.reloadRows(at: [indexPath], with: .fade)
+        table.endUpdates()
+    }
+
+    func reloadDate() {
+        guard let dateRowIndex = indexPathForRow(.dateShipped, inSection: 0) else {
+            return
+        }
+
+        table.beginUpdates()
+        table.reloadRows(at: [dateRowIndex], with: .none)
+        table.endUpdates()
     }
 }
 

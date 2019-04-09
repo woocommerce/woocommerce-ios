@@ -22,11 +22,15 @@ final class ShippingProvidersViewModel {
                                                                        sortedBy: [descriptor])
     }()
 
+    /// Designated initializer
+    ///
     init(orderID: Int) {
         self.orderID = orderID
         fetchGroups()
     }
 
+    /// Loads shipment tracking groups
+    ///
     private func fetchGroups() {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             return

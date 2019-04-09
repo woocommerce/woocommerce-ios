@@ -121,3 +121,64 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
         self.orderID = orderID
     }
 }
+
+
+/// View model supporting editing shipment tacking manually, using non-custom providers
+///
+final class EditTrackingViewModel: ManualTrackingViewModel {
+    let siteID: Int
+    let orderID: Int
+
+    let title = NSLocalizedString("Edit Tracking",
+                                 comment: "Edit tracking screen - title.")
+
+    let primaryActionTitle = NSLocalizedString("Save",
+                                               comment: "Edit tracking screen - button title to save a tracking")
+
+    let secondaryActionTitle: String? = NSLocalizedString("Delete Tracking",
+                                                 comment: "Delete Tracking button title")
+
+    let shipmentTracking: ShipmentTracking?
+
+    lazy var trackingNumber: String? = {
+        return shipmentTracking?.trackingNumber
+    }()
+
+    lazy var shipmentDate: Date = {
+        return shipmentTracking?.dateShipped ?? Date()
+    }()
+
+    var sections: [AddEditTrackingSection] {
+        let trackingRows: [AddEditTrackingRow] = [.shippingProvider,
+                                                      .trackingNumber,
+                                                      .dateShipped]
+
+        return [
+            AddEditTrackingSection(rows: trackingRows),
+            AddEditTrackingSection(rows: [.deleteTracking])]
+    }
+
+    var shipmentProvider: ShipmentTrackingProvider?
+    var shipmentProviderGroupName: String?
+
+    var providerCellName: String {
+        return shipmentTracking?.trackingProvider ?? ""
+    }
+
+    var canCommit: Bool {
+        return shipmentTracking?.trackingProvider != nil &&
+            trackingNumber != nil
+    }
+
+    let isAdding: Bool = false
+
+    var isCustom: Bool {
+        return false
+    }
+
+    init(siteID: Int, orderID: Int, shipmentTracking: ShipmentTracking) {
+        self.siteID = siteID
+        self.orderID = orderID
+        self.shipmentTracking = shipmentTracking
+    }
+}

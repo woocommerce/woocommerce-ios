@@ -40,10 +40,15 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureAsSelectable()
         configureTopLine()
         configureMiddleLine()
         configureBottomLine()
         configureActionButton()
+    }
+
+    private func configureAsSelectable() {
+        selectionStyle = .default
     }
 
     private func configureTopLine() {

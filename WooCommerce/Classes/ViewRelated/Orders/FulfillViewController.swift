@@ -397,6 +397,8 @@ extension FulfillViewController: UITableViewDelegate {
         switch sections[indexPath.section].rows[indexPath.row] {
 
         case .trackingAdd:
+            WooAnalytics.shared.track(.orderFulfillmentAddTrackingButtonTapped)
+            
             let viewModel = AddTrackingViewModel(siteID: order.siteID, orderID: order.orderID)
             let addTracking = ManualTrackingViewController(viewModel: viewModel)
             let navController = WooNavigationController(rootViewController: addTracking)

@@ -352,6 +352,9 @@ private extension ManualTrackingViewController {
 //
 extension ManualTrackingViewController: ShipmentProviderListDelegate {
     func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: Yosemite.ShipmentTrackingProvider, groupName: String) {
+        WooAnalytics.shared.track(.orderFulfillmentTrackingCarrierSelected,
+                                  withProperties: ["option": didSelect.name])
+
         viewModel.shipmentProvider = didSelect
         viewModel.shipmentProviderGroupName = groupName
     }

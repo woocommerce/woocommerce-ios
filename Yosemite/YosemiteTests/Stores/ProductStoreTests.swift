@@ -220,6 +220,41 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `ProductAction.retrieveProduct` effectively persists all of the remote product fields
+    /// correctly across all of the related `Product` entities (tags, categories, attributes, etc) for `variation` product types.
+    ///
+    func testRetrieveSingleVariationTypeProductEffectivelyPersistsProductFieldsAndRelatedObjects() {
+        let expectation = self.expectation(description: "Persist single variation type product")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProduct = sampleVariationTypeProduct()
+
+        network.simulateResponse(requestUrlSuffix: "products/295", filename: "variation-as-product")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleVariationTypeProductID) { (product, error) in
+            XCTAssertNotNil(product)
+            XCTAssertNil(error)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+
+            let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleVariationTypeProductID)
+            let readOnlyStoredProduct = storedProduct?.toReadOnly()
+            XCTAssertNotNil(storedProduct)
+            XCTAssertNotNil(readOnlyStoredProduct)
+            XCTAssertEqual(readOnlyStoredProduct, remoteProduct)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that `ProductAction.retrieveProduct` returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveSingleProductReturnsErrorUponReponseError() {

@@ -11,8 +11,8 @@ public struct ProductAttribute: Decodable {
     public let variation: Bool
     public let options: [String]
 
-    // Variation type products alter the structure of this ProductAttribute type.
-    // Because of that, we need to also include this option String as well. 🤯
+    // Variation type products alter the structure of ProductAttribute.
+    // Because of that, we need to also include this private `option` String as well. 🤯
     // For more details see: https://github.com/woocommerce/woocommerce-ios/issues/859
     private let option: String
 
@@ -73,7 +73,7 @@ private extension ProductAttribute {
         case visible        = "visible"
         case variation      = "variation"
         case options        = "options"
-        case option         = "option"
+        case option         = "option"  // Exists because of variation type products only
     }
 }
 

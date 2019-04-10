@@ -38,6 +38,18 @@ class ProductStoreTests: XCTestCase {
     ///
     private let sampleProductID = 282
 
+    /// Testing Variation Type ProductID
+    ///
+    private let sampleVariationTypeProductID = 295
+
+    /// Testing VariationID #1
+    ///
+    private let sampleVariation1ID = 215
+
+    /// Testing VariationID #2
+    ///
+    private let sampleVariation2ID = 295
+
     /// Testing Page Number
     ///
     private let defaultPageNumber = 1
@@ -62,7 +74,7 @@ class ProductStoreTests: XCTestCase {
     /// Verifies that ProductAction.synchronizeProducts effectively persists any retrieved products.
     ///
     func testRetrieveProductsEffectivelyPersistsRetrievedProducts() {
-        let expectation = self.expectation(description: "Persist product list")
+        let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
@@ -82,7 +94,7 @@ class ProductStoreTests: XCTestCase {
     /// Verifies that `ProductAction.synchronizeProducts` effectively persists all of the product fields
     /// correctly across all of the related `Product` entities (tags, categories, attributes, etc).
     ///
-    func testRetrieveProdcutsEffectivelyPersistsProductFieldsAndRelatedObjects() {
+    func testRetrieveProductsEffectivelyPersistsProductFieldsAndRelatedObjects() {
         let expectation = self.expectation(description: "Persist product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteProduct = sampleProduct()
@@ -108,7 +120,7 @@ class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.synchronizeProducts returns an error whenever there is an error response from the backend.
     ///
-    func testRetrieveProdcutsReturnsErrorUponReponseError() {
+    func testRetrieveProductsReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve products error response")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -124,7 +136,7 @@ class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.synchronizeProducts returns an error whenever there is no backend response.
     ///
-    func testRetrieveProdcutsReturnsErrorUponEmptyResponse() {
+    func testRetrieveProductsReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve products empty response")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -149,6 +161,26 @@ class ProductStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "products/282", filename: "product")
         let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(product)
+            XCTAssertEqual(product, remoteProduct)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product` for `variation` product types.
+    ///
+    func testRetrieveSingleVariationTypeProductReturnsExpectedFields() {
+        let expectation = self.expectation(description: "Retrieve single variation type product")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProduct = sampleVariationTypeProduct()
+
+        network.simulateResponse(requestUrlSuffix: "products/295", filename: "variation-as-product")
+        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleVariationTypeProductID) { (product, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(product)
             XCTAssertEqual(product, remoteProduct)
@@ -188,9 +220,44 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `ProductAction.retrieveProduct` effectively persists all of the remote product fields
+    /// correctly across all of the related `Product` entities (tags, categories, attributes, etc) for `variation` product types.
+    ///
+    func testRetrieveSingleVariationTypeProductEffectivelyPersistsProductFieldsAndRelatedObjects() {
+        let expectation = self.expectation(description: "Persist single variation type product")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProduct = sampleVariationTypeProduct()
+
+        network.simulateResponse(requestUrlSuffix: "products/295", filename: "variation-as-product")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleVariationTypeProductID) { (product, error) in
+            XCTAssertNotNil(product)
+            XCTAssertNil(error)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+
+            let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleVariationTypeProductID)
+            let readOnlyStoredProduct = storedProduct?.toReadOnly()
+            XCTAssertNotNil(storedProduct)
+            XCTAssertNotNil(readOnlyStoredProduct)
+            XCTAssertEqual(readOnlyStoredProduct, remoteProduct)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that `ProductAction.retrieveProduct` returns an error whenever there is an error response from the backend.
     ///
-    func testRetrieveSingleProdcutReturnsErrorUponReponseError() {
+    func testRetrieveSingleProductReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve single product error response")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -206,12 +273,13 @@ class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.retrieveProduct` returns an error whenever there is no backend response.
     ///
-    func testRetrieveSingleProdcutReturnsErrorUponEmptyResponse() {
+    func testRetrieveSingleProductReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve single product empty response")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
             XCTAssertNotNil(error)
+            XCTAssertNil(product)
             expectation.fulfill()
         }
 
@@ -244,9 +312,9 @@ class ProductStoreTests: XCTestCase {
     }
 
 
-    // MARK: - ProductAction.resetStoredProducts
+    // MARK: - ProductAction.resetStoredProductsAndVariations
 
-    /// Verifies that `ProductAction.resetStoredProducts` nukes the Products from Storage
+    /// Verifies that `ProductAction.resetStoredProductsAndVariations` nukes the Products + ProductVariations from Storage
     ///
     func testResetStoredProductsEffectivelyNukesTheProductsCache() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -260,8 +328,20 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
 
-        let expectation = self.expectation(description: "Stored Products Reset")
-        let action = ProductAction.resetStoredProducts() {
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation1(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 2)
+
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation2(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 4)
+
+        let expectation = self.expectation(description: "Stored Products + Variations Reset")
+        let action = ProductAction.resetStoredProductsAndVariations() {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
@@ -269,6 +349,10 @@ class ProductStoreTests: XCTestCase {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 0)
 
             expectation.fulfill()
         }
@@ -362,7 +446,7 @@ class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductStore.upsertStoredProduct` effectively inserts a new Product, with the specified payload.
     ///
-    func testUpdateStoredOrderEffectivelyPersistsNewOrder() {
+    func testUpdateStoredProductEffectivelyPersistsNewProduct() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteProduct = sampleProduct()
 
@@ -386,13 +470,13 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
     }
 
-    /// Verifies that Inoccuous Upsert OP(s) performed in Derived Contexts **DO NOT** trigger Refresh Events in the
+    /// Verifies that Innocuous Upsert OP(s) performed in Derived Contexts **DO NOT** trigger Refresh Events in the
     /// main thread.
     ///
     /// This translates effectively into: Ensure that performing update OP's that don't really change anything, do not
     /// end up causing UI refresh OP's in the main thread.
     ///
-    func testInoccuousUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
+    func testInnocuousProductUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
         // Stack
         let viewContext = storageManager.persistentContainer.viewContext
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -410,7 +494,7 @@ class ProductStoreTests: XCTestCase {
         }
 
         // Initial save: This should trigger *ONE* Upsert event
-        let backgroundSaveExpectation = expectation(description: "Retrieve product empty response")
+        let backgroundSaveExpectation = expectation(description: "Background save of identical product variation should not upsert")
         let derivedContext = storageManager.newDerivedStorage()
 
         derivedContext.perform {
@@ -432,10 +516,362 @@ class ProductStoreTests: XCTestCase {
 
         wait(for: [backgroundSaveExpectation], timeout: Constants.expectationTimeout)
     }
+
+
+    // MARK: - ProductAction.synchronizeProductVariations
+
+    /// Verifies that ProductAction.synchronizeProductVariations effectively persists any retrieved product variations.
+    ///
+    func testRetrieveProductVariationsEffectivelyPersistsRetrievedProductVariations() {
+        let expectation = self.expectation(description: "Retrieve product variation list")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "variations", filename: "product-variations-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 0)
+
+        let action = ProductAction.synchronizeProductVariations(siteID: sampleSiteID, productID: sampleProductID) { error in
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 4)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 4)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 4)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 8)
+            XCTAssertNil(error)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.synchronizeProductVariations` effectively persists all of the product variation fields
+    /// correctly across all of the related `ProductVariation` entities (attributes, dimensions, image, etc).
+    ///
+    func testRetrieveProductVariationsEffectivelyPersistsProductVariationFieldsAndRelatedObjects() {
+        let expectation = self.expectation(description: "Persist product variation list")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProductVariation = sampleVariation1(sampleSiteID)
+
+        network.simulateResponse(requestUrlSuffix: "variations", filename: "product-variations-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+
+        let action = ProductAction.synchronizeProductVariations(siteID: sampleSiteID, productID: sampleProductID) { error in
+            XCTAssertNil(error)
+
+            let storedProductVariation = self.viewStorage.loadProductVariation(siteID: self.sampleSiteID,
+                                                                               productID: self.sampleProductID,
+                                                                               variationID: self.sampleVariation1ID)
+            let readOnlyStoredProductVariation = storedProductVariation?.toReadOnly()
+
+            XCTAssertNotNil(storedProductVariation)
+            XCTAssertNotNil(readOnlyStoredProductVariation)
+            XCTAssertEqual(readOnlyStoredProductVariation, remoteProductVariation)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.synchronizeProductVariations` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveProductVariationsReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve product variations error response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "variations", filename: "generic_error")
+        let action = ProductAction.synchronizeProductVariations(siteID: sampleSiteID, productID: sampleProductID) { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.synchronizeProductVariations` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveProductVariationsReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve product variations empty response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ProductAction.synchronizeProductVariations(siteID: sampleSiteID, productID: sampleProductID) { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - ProductAction.retrieveProductVariation
+
+    /// Verifies that `ProductAction.retrieveProductVariation` returns the expected `ProductVariation`.
+    ///
+    func testRetrieveSingleProductVariationReturnsExpectedFields() {
+        let expectation = self.expectation(description: "Retrieve single product variation")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProductVariation = sampleVariation1()
+
+        network.simulateResponse(requestUrlSuffix: "variations/215", filename: "product-variation")
+        let action = ProductAction.retrieveProductVariation(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            variationID: sampleVariation1ID) { (productVariation, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(productVariation)
+            XCTAssertEqual(productVariation, remoteProductVariation)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.retrieveProductVariation` effectively persists all of the remote product variation fields
+    /// correctly across all of the related `ProductVariation` entities (attributes, dimensions, image, etc).
+    ///
+    func testRetrieveSingleProductVariationEffectivelyPersistsProductVariationFieldsAndRelatedObjects() {
+        let expectation = self.expectation(description: "Persist single product variation")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProductVariation = sampleVariation1()
+
+        network.simulateResponse(requestUrlSuffix: "variations/215", filename: "product-variation")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+
+        let action = ProductAction.retrieveProductVariation(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            variationID: sampleVariation1ID) { (productVariation, error) in
+            XCTAssertNotNil(productVariation)
+            XCTAssertNil(error)
+
+            let storedProductVariation = self.viewStorage.loadProductVariation(siteID: self.sampleSiteID,
+                                                                               productID: self.sampleProductID,
+                                                                               variationID: self.sampleVariation1ID)
+            let readOnlyStoredProductVariation = storedProductVariation?.toReadOnly()
+            XCTAssertNotNil(storedProductVariation)
+            XCTAssertNotNil(readOnlyStoredProductVariation)
+            XCTAssertEqual(readOnlyStoredProductVariation, remoteProductVariation)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.retrieveProductVariation` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveSingleProductVariationReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve single product variation error response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "variations/215", filename: "generic_error")
+        let action = ProductAction.retrieveProductVariation(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            variationID: sampleVariation1ID) { (productVariation, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(productVariation)
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.retrieveProductVariation` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveSingleProductVariationReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve single product variation empty response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ProductAction.retrieveProductVariation(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            variationID: sampleVariation1ID) { (productVariation, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(productVariation)
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that whenever a `ProductAction.retrieveProductVariation` action results in a response with statusCode = 404, the local entity
+    /// is obliterated from existence.
+    ///
+    func testRetrieveSingleProductVariationResultingInStatusCode404CausesTheStoredProductVariationToGetDeleted() {
+        let expectation = self.expectation(description: "Retrieve single product variation 404 response")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation1(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+
+        network.simulateError(requestUrlSuffix: "variations/215", error: NetworkError.notFound)
+        let action = ProductAction.retrieveProductVariation(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            variationID: sampleVariation1ID) { (productVariation, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(productVariation)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - ProductStore.upsertStoredProductVariation
+
+    /// Verifies that `ProductStore.upsertStoredProductVariation` does not produce duplicate entries.
+    ///
+    func testUpdateStoredProductVariationsEffectivelyUpdatesPreexistantProduct() {
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 0)
+
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation1(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 2)
+
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation1Mutated(), in: viewStorage)
+        let storageVariation1 = viewStorage.loadProductVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: sampleVariation1ID)
+        XCTAssertEqual(storageVariation1?.toReadOnly(), sampleVariation1Mutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 3)
+    }
+
+    /// Verifies that `ProductStore.upsertStoredProductVariation` updates the correct site's product variation.
+    ///
+    func testUpdateStoredProductVariationEffectivelyUpdatesCorrectSitesProductVariation() {
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 0)
+
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation1(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 2)
+
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation1(sampleSiteID2), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 2)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 2)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 2)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 4)
+
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: sampleVariation1Mutated(), in: viewStorage)
+        let storageVariation1 = viewStorage.loadProductVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: sampleVariation1ID)
+        XCTAssertEqual(storageVariation1?.toReadOnly(), sampleVariation1Mutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 2)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 2)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 2)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 5)
+
+        let storageVariation2 = viewStorage.loadProductVariation(siteID: sampleSiteID2, productID: sampleProductID, variationID: sampleVariation1ID)
+        XCTAssertEqual(storageVariation2?.toReadOnly(), sampleVariation1(sampleSiteID2))
+    }
+
+    /// Verifies that `ProductStore.upsertStoredProductVariation` effectively inserts a new ProductVariation, with the specified payload.
+    ///
+    func testUpdateStoredProductVariationEffectivelyPersistsNewProductVariation() {
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProductVariation = sampleVariation2()
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 0)
+        productStore.upsertStoredProductVariation(readOnlyProductVariation: remoteProductVariation, in: viewStorage)
+
+        let storageVariation = viewStorage.loadProductVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: sampleVariation2ID)
+        XCTAssertEqual(storageVariation?.toReadOnly(), remoteProductVariation)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationImage.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationDimensions.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariationAttribute.self), 2)
+    }
+
+    /// Verifies that Innocuous Upsert OP(s) performed in Derived Contexts **DO NOT** trigger Refresh Events in the
+    /// main thread.
+    ///
+    /// This translates effectively into: Ensure that performing update OP's that don't really change anything, do not
+    /// end up causing UI refresh OP's in the main thread.
+    ///
+    func testInnocuousProductVariationUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
+        // Stack
+        let viewContext = storageManager.persistentContainer.viewContext
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let entityListener = EntityListener(viewContext: viewContext, readOnlyEntity: sampleVariation1())
+
+        // Track Events: Upsert == 1 / Delete == 0
+        var numberOfUpsertEvents = 0
+        entityListener.onUpsert = { upserted in
+            numberOfUpsertEvents += 1
+        }
+
+        // We expect *never* to get a deletion event
+        entityListener.onDelete = {
+            XCTFail()
+        }
+
+        // Initial save: This should trigger *ONE* Upsert event
+        let backgroundSaveExpectation = expectation(description: "Background save of identical product variation should not upsert")
+        let derivedContext = storageManager.newDerivedStorage()
+
+        derivedContext.perform {
+            productStore.upsertStoredProductVariation(readOnlyProductVariation: self.sampleVariation1(), in: derivedContext)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedContext) {
+
+            // Secondary Save: Expect ZERO new Upsert Events
+            derivedContext.perform {
+                productStore.upsertStoredProductVariation(readOnlyProductVariation: self.sampleVariation1(), in: derivedContext)
+            }
+
+            self.storageManager.saveDerivedType(derivedStorage: derivedContext) {
+                XCTAssertEqual(numberOfUpsertEvents, 1)
+                backgroundSaveExpectation.fulfill()
+            }
+        }
+
+        wait(for: [backgroundSaveExpectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 
-// MARK: - Private Methods
+// MARK: - Private Helpers
+//
+private extension ProductStoreTests {
+
+    func date(with dateString: String) -> Date {
+        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
+            return Date()
+        }
+        return date
+    }
+}
+
+
+// MARK: - Product Samples
 //
 private extension ProductStoreTests {
 
@@ -681,10 +1117,286 @@ private extension ProductStoreTests {
         return [defaultAttribute1]
     }
 
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
+    func sampleVariationTypeProduct(_ siteID: Int? = nil) -> Networking.Product {
+        let testSiteID = siteID ?? sampleSiteID
+        return Product(siteID: testSiteID,
+                       productID: sampleVariationTypeProductID,
+                       name: "Paper Airplane - Black, Long",
+                       slug: "paper-airplane-3",
+                       permalink: "https://paperairplane.store/product/paper-airplane/?attribute_color=Black&attribute_length=Long",
+                       dateCreated: date(with: "2019-04-04T22:06:45"),
+                       dateModified: date(with: "2019-04-09T20:24:03"),
+                       productTypeKey: "variation",
+                       statusKey: "publish",
+                       featured: false,
+                       catalogVisibilityKey: "visible",
+                       fullDescription: "<p>Long paper airplane. Color is black. </p>\n",
+                       briefDescription: "",
+                       sku: "345345-2",
+                       price: "22.72",
+                       regularPrice: "22.72",
+                       salePrice: "",
+                       onSale: false,
+                       purchasable: true,
+                       totalSales: 0,
+                       virtual: false,
+                       downloadable: false,
+                       downloadLimit: -1,
+                       downloadExpiry: -1,
+                       externalURL: "",
+                       taxStatusKey: "taxable",
+                       taxClass: "",
+                       manageStock: false,
+                       stockQuantity: nil,
+                       stockStatusKey: "instock",
+                       backordersKey: "no",
+                       backordersAllowed: false,
+                       backordered: false,
+                       soldIndividually: true,
+                       weight: "888",
+                       dimensions: sampleVariationTypeDimensions(),
+                       shippingRequired: true,
+                       shippingTaxable: true,
+                       shippingClass: "",
+                       shippingClassID: 0,
+                       reviewsAllowed: true,
+                       averageRating: "0.00",
+                       ratingCount: 0,
+                       relatedIDs: [],
+                       upsellIDs: [],
+                       crossSellIDs: [],
+                       parentID: 205,
+                       purchaseNote: "",
+                       categories: [],
+                       tags: [],
+                       images: sampleVariationTypeImages(),
+                       attributes: sampleVariationTypeAttributes(),
+                       defaultAttributes: [],
+                       variations: [],
+                       groupedProducts: [],
+                       menuOrder: 2)
+    }
+
+    func sampleVariationTypeDimensions() -> Networking.ProductDimensions {
+        return ProductDimensions(length: "11", width: "22", height: "33")
+    }
+
+    func sampleVariationTypeImages() -> [Networking.ProductImage] {
+        let image1 = ProductImage(imageID: 301,
+                                  dateCreated: date(with: "2019-04-09T20:23:58"),
+                                  dateModified: date(with: "2019-04-09T20:23:58"),
+                                  src: "https://i0.wp.com/paperairplane.store/wp-content/uploads/2019/04/paper_plane_black.png?fit=600%2C473&ssl=1",
+                                  name: "paper_plane_black",
+                                  alt: "")
+        return [image1]
+    }
+
+    func sampleVariationTypeAttributes() -> [Networking.ProductAttribute] {
+        let attribute1 = ProductAttribute(attributeID: 0,
+                                          name: "Color",
+                                          position: 0,
+                                          visible: true,
+                                          variation: true,
+                                          options: ["Black"])
+
+        let attribute2 = ProductAttribute(attributeID: 0,
+                                          name: "Length",
+                                          position: 0,
+                                          visible: true,
+                                          variation: true,
+                                          options: ["Long"])
+
+        return [attribute1, attribute2]
+    }
+}
+
+
+// MARK: - Product Variation Samples
+//
+private extension ProductStoreTests {
+
+    // MARK: Variation #1
+
+    func sampleVariation1(_ siteID: Int? = nil) -> Networking.ProductVariation {
+        let testSiteID = siteID ?? sampleSiteID
+
+        return ProductVariation(siteID: testSiteID,
+                                variationID: sampleVariation1ID,
+                                productID: sampleProductID,
+                                permalink: "https://paperairplane.store/product/paper-airplane/?attribute_color=Black&attribute_length=Short",
+                                dateCreated: date(with: "2019-02-21T16:56:17"),
+                                dateModified: date(with: "2019-04-04T22:08:33"),
+                                dateOnSaleFrom: date(with: "2019-04-01T08:08:44"),
+                                dateOnSaleTo: date(with: "2019-04-29T01:08:21"),
+                                statusKey: "publish",
+                                fullDescription: "Hi there!",
+                                sku: "345345",
+                                price: "14.33",
+                                regularPrice: "12.77",
+                                salePrice: "14.33",
+                                onSale: true,
+                                purchasable: true,
+                                virtual: false,
+                                downloadable: false,
+                                downloadLimit: -1,
+                                downloadExpiry: -1,
+                                taxStatusKey: "taxable",
+                                taxClass: "a_lot",
+                                manageStock: false,
+                                stockQuantity: 0,
+                                stockStatusKey: "instock",
+                                backordersKey: "no",
+                                backordersAllowed: true,
+                                backordered: false,
+                                weight: "99",
+                                dimensions: sampleVariation1Dimensions(),
+                                shippingClass: "Woo!",
+                                shippingClassID: 99,
+                                image: sampleVariation1Image(),
+                                attributes: sampleVariation1Attributes(),
+                                menuOrder: 4)
+    }
+
+    func sampleVariation1Dimensions() -> Networking.ProductDimensions {
+        return ProductDimensions(length: "11", width: "22", height: "33")
+    }
+
+    func sampleVariation1Image() -> Networking.ProductImage {
+        return ProductImage(imageID: 206,
+                            dateCreated: date(with: "2019-01-31T20:38:17"),
+                            dateModified: date(with: "2019-02-28T01:38:17"),
+                            src: "https://i1.wp.com/paperairplane.store/wp-content/uploads/2019/01/FFXUJ9RIAY1N6DC.LARGE_.jpg?fit=1024%2C853&ssl=1",
+                            name: "FFXUJ9RIAY1N6DC.LARGE",
+                            alt: "It's a picture! Yaaay!")
+    }
+
+    func sampleVariation1Attributes() -> [Networking.ProductVariationAttribute] {
+        let attribute1 = ProductVariationAttribute(attributeID: 0, name: "Color", option: "Black")
+        let attribute2 = ProductVariationAttribute(attributeID: 0, name: "Length", option: "Short")
+
+        return [attribute1, attribute2]
+    }
+
+    func sampleVariation1Mutated(_ siteID: Int? = nil) -> Networking.ProductVariation {
+        let testSiteID = siteID ?? sampleSiteID
+
+        return ProductVariation(siteID: testSiteID,
+                                variationID: sampleVariation1ID,
+                                productID: sampleProductID,
+                                permalink: "https://paperairplane.store/product/paper-airplane/?attribute_color=Red&attribute_animal=Banana",
+                                dateCreated: date(with: "2019-03-21T16:56:17"),
+                                dateModified: date(with: "2019-04-04T22:08:33"),
+                                dateOnSaleFrom: date(with: "2019-04-01T08:08:44"),
+                                dateOnSaleTo: date(with: "2019-05-29T01:08:21"),
+                                statusKey: "publish",
+                                fullDescription: "Hi there!",
+                                sku: "1111",
+                                price: "20.33",
+                                regularPrice: "22.77",
+                                salePrice: "24.33",
+                                onSale: true,
+                                purchasable: true,
+                                virtual: false,
+                                downloadable: false,
+                                downloadLimit: -1,
+                                downloadExpiry: -1,
+                                taxStatusKey: "taxable",
+                                taxClass: "meh",
+                                manageStock: true,
+                                stockQuantity: 89769,
+                                stockStatusKey: "instock",
+                                backordersKey: "no",
+                                backordersAllowed: false,
+                                backordered: false,
+                                weight: "1024",
+                                dimensions: sampleVariation1DimensionsMutated(),
+                                shippingClass: "Not woo.",
+                                shippingClassID: 123,
+                                image: sampleVariation1ImageMutated(),
+                                attributes: sampleVariation1AttributesMutated(),
+                                menuOrder: 2)
+    }
+
+    func sampleVariation1DimensionsMutated() -> Networking.ProductDimensions {
+        return ProductDimensions(length: "21", width: "32", height: "43")
+    }
+
+    func sampleVariation1ImageMutated() -> Networking.ProductImage {
+        return ProductImage(imageID: 2011,
+                            dateCreated: date(with: "2019-03-31T20:38:17"),
+                            dateModified: date(with: "2019-04-28T01:38:17"),
+                            src: "https://i1.wp.com/paperairplane.store/wp-content/uploads/2019/01/image.jpg",
+                            name: "Picture1",
+                            alt: "It's a picture. Boooo!")
+    }
+
+    func sampleVariation1AttributesMutated() -> [Networking.ProductVariationAttribute] {
+        let attribute1 = ProductVariationAttribute(attributeID: 0, name: "Color", option: "Red")
+        let attribute2 = ProductVariationAttribute(attributeID: 0, name: "Animal", option: "Gorilla")
+        let attribute3 = ProductVariationAttribute(attributeID: 0, name: "Fruit", option: "Banana")
+
+        return [attribute1, attribute2, attribute3]
+    }
+
+    // MARK: Variation #2
+
+    func sampleVariation2(_ siteID: Int? = nil) -> Networking.ProductVariation {
+        let testSiteID = siteID ?? sampleSiteID
+
+        return ProductVariation(siteID: testSiteID,
+                                variationID: sampleVariation2ID,
+                                productID: sampleProductID,
+                                permalink: "https://paperairplane.store/product/paper-airplane/?attribute_color=Black&attribute_length=Long",
+                                dateCreated: date(with: "2019-04-04T22:06:45"),
+                                dateModified: date(with: "2019-04-04T22:08:33"),
+                                dateOnSaleFrom: nil,
+                                dateOnSaleTo: nil,
+                                statusKey: "publish",
+                                fullDescription: "",
+                                sku: "345345",
+                                price: "",
+                                regularPrice: "",
+                                salePrice: "",
+                                onSale: true,
+                                purchasable: false,
+                                virtual: false,
+                                downloadable: true,
+                                downloadLimit: 500,
+                                downloadExpiry: 100000239847897,
+                                taxStatusKey: "taxable",
+                                taxClass: "",
+                                manageStock: false,
+                                stockQuantity: 0,
+                                stockStatusKey: "instock",
+                                backordersKey: "no",
+                                backordersAllowed: false,
+                                backordered: false,
+                                weight: "",
+                                dimensions: sampleVariation2Dimensions(),
+                                shippingClass: "",
+                                shippingClassID: 0,
+                                image: sampleVariation2Image(),
+                                attributes: sampleVariation2Attributes(),
+                                menuOrder: 2)
+    }
+
+    func sampleVariation2Dimensions() -> Networking.ProductDimensions {
+        return ProductDimensions(length: "", width: "", height: "")
+    }
+
+    func sampleVariation2Image() -> Networking.ProductImage {
+        return ProductImage(imageID: 123123,
+                            dateCreated: date(with: "2016-11-13T20:38:17"),
+                            dateModified: nil,
+                            src: "https://i1.wp.com/paperairplane.store/wp-content/uploads/2019/01/FFXUJ9RIAY1N6DC.LARGE_.jpg?fit=1024%2C853&ssl=1",
+                            name: "this_is_a_picture",
+                            alt: "")
+    }
+
+    func sampleVariation2Attributes() -> [Networking.ProductVariationAttribute] {
+        let attribute1 = ProductVariationAttribute(attributeID: 0, name: "Color", option: "White")
+        let attribute2 = ProductVariationAttribute(attributeID: 0, name: "Length", option: "Long")
+
+        return [attribute1, attribute2]
     }
 }

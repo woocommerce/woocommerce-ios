@@ -14,6 +14,10 @@ class ProductMapperTests: XCTestCase {
     ///
     private let dummyProductID = 282
 
+    /// Dummy Product Variation ID.
+    ///
+    private let dummyProductVariationID = 295
+
     /// Verifies that all of the Product Fields are parsed correctly.
     ///
     func testProductFieldsAreProperlyParsed() {
@@ -98,6 +102,88 @@ class ProductMapperTests: XCTestCase {
 
         XCTAssertEqual(product.menuOrder, 0)
         XCTAssertEqual(product.productType, ProductType(rawValue: "booking"))
+    }
+
+    /// Verifies that all of the Product Fields are parsed correctly when using a variation fetched via the Products endpoint.
+    ///
+    func testVariationProductFieldsAreProperlyParsed() {
+        guard let product = mapLoadVariationProductResponse() else {
+            XCTFail("Failed to parse product variation")
+            return
+        }
+
+        XCTAssertEqual(product.siteID, dummySiteID)
+        XCTAssertEqual(product.productID, dummyProductVariationID)
+        XCTAssertEqual(product.name, "Paper Airplane - Black, Long")
+        XCTAssertEqual(product.slug, "paper-airplane-3")
+        XCTAssertEqual(product.permalink, "https://paperairplane.store/product/paper-airplane/?attribute_color=Black&attribute_length=Long")
+
+        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-04-04T22:06:45")
+        let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-04-09T20:24:03")
+        XCTAssertEqual(product.dateCreated, dateCreated)
+        XCTAssertEqual(product.dateModified, dateModified)
+
+        XCTAssertEqual(product.productTypeKey, "variation")
+        XCTAssertEqual(product.statusKey, "publish")
+        XCTAssertFalse(product.featured)
+        XCTAssertEqual(product.catalogVisibilityKey, "visible")
+
+        XCTAssertEqual(product.fullDescription, "<p>Long paper airplane. Color is black. </p>\n")
+        XCTAssertEqual(product.briefDescription, "")
+        XCTAssertEqual(product.sku, "345345-2")
+
+        XCTAssertEqual(product.price, "22.72")
+        XCTAssertEqual(product.regularPrice, "22.72")
+        XCTAssertEqual(product.salePrice, "")
+        XCTAssertFalse(product.onSale)
+
+        XCTAssertTrue(product.purchasable)
+        XCTAssertEqual(product.totalSales, 0)
+        XCTAssertFalse(product.virtual)
+
+        XCTAssertFalse(product.downloadable)
+        XCTAssertEqual(product.downloadLimit, -1)
+        XCTAssertEqual(product.downloadExpiry, -1)
+
+        XCTAssertEqual(product.externalURL, "")
+        XCTAssertEqual(product.taxStatusKey, "taxable")
+        XCTAssertEqual(product.taxClass, "")
+
+        XCTAssertFalse(product.manageStock)
+        XCTAssertNil(product.stockQuantity)
+        XCTAssertEqual(product.stockStatusKey, "instock")
+
+        XCTAssertEqual(product.backordersKey, "no")
+        XCTAssertFalse(product.backordersAllowed)
+        XCTAssertFalse(product.backordered)
+
+        XCTAssertTrue(product.soldIndividually)
+        XCTAssertEqual(product.weight, "888")
+
+        XCTAssertTrue(product.shippingRequired)
+        XCTAssertTrue(product.shippingTaxable)
+        XCTAssertEqual(product.shippingClass, "")
+        XCTAssertEqual(product.shippingClassID, 0)
+
+        XCTAssertTrue(product.reviewsAllowed)
+        XCTAssertEqual(product.averageRating, "0.00")
+        XCTAssertEqual(product.ratingCount, 0)
+
+        XCTAssertEqual(product.relatedIDs, [])
+        XCTAssertEqual(product.upsellIDs, [])
+        XCTAssertEqual(product.crossSellIDs, [])
+        XCTAssertEqual(product.parentID, 205)
+
+        XCTAssertEqual(product.purchaseNote, "")
+        XCTAssertEqual(product.images.count, 1)
+
+        XCTAssertEqual(product.attributes.count, 2)
+        XCTAssertEqual(product.defaultAttributes.count, 0)
+        XCTAssertEqual(product.variations.count, 0)
+        XCTAssertEqual(product.groupedProducts, [])
+
+        XCTAssertEqual(product.menuOrder, 2)
+        XCTAssertEqual(product.productType, ProductType.variation)
     }
 
     /// Test that ProductTypeKey converts to a ProductType enum properly.
@@ -230,5 +316,11 @@ private extension ProductMapperTests {
     ///
     func mapLoadProductResponse() -> Product? {
         return mapProduct(from: "product")
+    }
+
+    /// Returns the ProductMapper output upon receiving `variation-as-product`
+    ///
+    func mapLoadVariationProductResponse() -> Product? {
+        return mapProduct(from: "variation-as-product")
     }
 }

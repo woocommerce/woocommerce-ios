@@ -3,7 +3,7 @@ import UIKit
 
 /// Represents a cell with a Title Label and Body Label
 ///
-class HeadlineLabelTableViewCell: UITableViewCell {
+final class HeadlineLabelTableViewCell: UITableViewCell {
     @IBOutlet private weak var headlineLabel: UILabel?
     @IBOutlet private weak var bodyLabel: UILabel?
 

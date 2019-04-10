@@ -372,6 +372,7 @@ final class ShipmentStoreTests: XCTestCase {
                                                 orderID: sampleOrderID,
                                                 providerGroupName: "A country",
                                                 providerName: mockProviderName,
+                                                dateShipped: "2019-04-01",
                                                 trackingNumber: mockTrackingNumber) { error in
                                                     XCTAssertNil(error)
 
@@ -404,6 +405,7 @@ final class ShipmentStoreTests: XCTestCase {
                                                 orderID: sampleOrderID,
                                                 providerGroupName: "",
                                                 providerName: "",
+                                                dateShipped: "",
                                                 trackingNumber: "") { error in
                                                     XCTAssertNotNil(error)
                                                     expectation.fulfill()
@@ -425,6 +427,7 @@ final class ShipmentStoreTests: XCTestCase {
                                                 orderID: sampleOrderID,
                                                 providerGroupName: "",
                                                 providerName: "",
+                                                dateShipped: "",
                                                 trackingNumber: "") { error in
                                                     XCTAssertNotNil(error)
                                                     expectation.fulfill()
@@ -553,12 +556,13 @@ final class ShipmentStoreTests: XCTestCase {
         // Mocks obtained from the content of shipment_tracking_new
         let mockTrackingNumber = "123456781234567812345678"
         let mockTrackingID = "f2e7783b40837b9e1ec503a149dab4a1"
+        let mockDateShipped = "2019-04-01"
 
         shipmentStore.addTracking(siteID: sampleSiteID,
                                   orderID: sampleOrderID,
                                   providerGroupName: mockGroupName,
                                   providerName: mockProviderName,
-                                  trackingNumber: mockTrackingNumber) { error in
+                                  trackingNumber: mockTrackingNumber, dateShipped: mockDateShipped) { error in
                                     XCTAssertNil(error)
         }
 

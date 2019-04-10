@@ -446,8 +446,10 @@ private extension ManualTrackingViewController {
                                                            trackingNumber: trackingNumber) { [weak self] error in
                                                             
                                                             if let error = error {
-                                                                // TODO: Send error to Tracks
                                                                 DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
+
+                                                                WooAnalytics.shared.track(.orderTrackingFailed,
+                                                                                          withError: error)
                                                                 
                                                                 self?.configureForEditingTracking()
                                                                 
@@ -455,7 +457,7 @@ private extension ManualTrackingViewController {
                                                                 return
                                                             }
                                                             
-                                                            
+                                                        WooAnalytics.shared.track(.orderTrackingSuccess)
 
                                                             self?.dismiss()
         }

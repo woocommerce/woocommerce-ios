@@ -437,33 +437,32 @@ private extension ManualTrackingViewController {
         WooAnalytics.shared.track(.orderTrackingAdd, withProperties: ["id": orderID,
                                                                       "status": statusKey,
                                                                       "carrier": providerName])
-                
+
         let addTrackingAction = ShipmentAction.addTracking(siteID: siteID,
                                                            orderID: orderID,
                                                            providerGroupName: groupName,
                                                            providerName: providerName,
                                                            dateShipped: dateShipped,
                                                            trackingNumber: trackingNumber) { [weak self] error in
-                                                            
+
                                                             if let error = error {
                                                                 DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 
                                                                 WooAnalytics.shared.track(.orderTrackingFailed,
                                                                                           withError: error)
-                                                                
+
                                                                 self?.configureForEditingTracking()
-                                                                
+
                                                                 self?.displayAddErrorNotice(orderID: orderID)
                                                                 return
                                                             }
-                                                            
+
                                                         WooAnalytics.shared.track(.orderTrackingSuccess)
 
                                                             self?.dismiss()
         }
-        
+
         StoresManager.shared.dispatch(addTrackingAction)
-        
     }
 
     func addCustomTracking() {

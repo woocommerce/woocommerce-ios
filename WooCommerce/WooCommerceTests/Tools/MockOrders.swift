@@ -3,7 +3,7 @@
 final class MockOrders {
     let siteID = 1234
     let orderID = 5678
-    
+
     func sampleOrder() -> Networking.Order {
         return Order(siteID: siteID,
                      orderID: orderID,

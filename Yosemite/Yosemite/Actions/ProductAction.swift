@@ -14,7 +14,15 @@ public enum ProductAction: Action {
     ///
     case retrieveProduct(siteID: Int, productID: Int, onCompletion: (Product?, Error?) -> Void)
 
-    /// Nukes all of the cached products.
+    /// Synchronizes the ProductVariations matching the specified criteria.
     ///
-    case resetStoredProducts(onCompletion: () -> Void)
+    case synchronizeProductVariations(siteID: Int, productID: Int, onCompletion: (Error?) -> Void)
+
+    /// Retrieves the specified ProductVariation.
+    ///
+    case retrieveProductVariation(siteID: Int, productID: Int, variationID: Int, onCompletion: (ProductVariation?, Error?) -> Void)
+
+    /// Nukes all of the cached products and product variations.
+    ///
+    case resetStoredProductsAndVariations(onCompletion: () -> Void)
 }

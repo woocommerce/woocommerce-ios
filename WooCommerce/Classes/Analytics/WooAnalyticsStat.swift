@@ -161,6 +161,7 @@ public enum WooAnalyticsStat: String {
     case orderStatusChangeSuccess               = "order_status_change_success"
     case orderStatusChangeFailed                = "order_status_change_failed"
     case orderStatusChangeUndo                  = "order_status_change_undo"
+    case orderTrackingAdd                       = "order_tracking_add"
     case orderTrackingLoaded                    = "order_tracking_loaded"
 
     // Push Notifications Events

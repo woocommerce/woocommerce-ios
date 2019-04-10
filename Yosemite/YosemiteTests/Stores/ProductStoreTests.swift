@@ -38,6 +38,10 @@ class ProductStoreTests: XCTestCase {
     ///
     private let sampleProductID = 282
 
+    /// Testing Variation Type ProductID
+    ///
+    private let sampleVariationTypeProductID = 295
+
     /// Testing VariationID #1
     ///
     private let sampleVariation1ID = 215
@@ -168,6 +172,26 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product` for `variation` product types.
+    ///
+    func testRetrieveSingleVariationTypeProductReturnsExpectedFields() {
+        let expectation = self.expectation(description: "Retrieve single variation type product")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProduct = sampleVariationTypeProduct()
+
+        network.simulateResponse(requestUrlSuffix: "products/295", filename: "variation-as-product")
+        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleVariationTypeProductID) { (product, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(product)
+            XCTAssertEqual(product, remoteProduct)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that `ProductAction.retrieveProduct` effectively persists all of the remote product fields
     /// correctly across all of the related `Product` entities (tags, categories, attributes, etc).
     ///
@@ -184,6 +208,41 @@ class ProductStoreTests: XCTestCase {
             XCTAssertNil(error)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleProductID)
+            let readOnlyStoredProduct = storedProduct?.toReadOnly()
+            XCTAssertNotNil(storedProduct)
+            XCTAssertNotNil(readOnlyStoredProduct)
+            XCTAssertEqual(readOnlyStoredProduct, remoteProduct)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.retrieveProduct` effectively persists all of the remote product fields
+    /// correctly across all of the related `Product` entities (tags, categories, attributes, etc) for `variation` product types.
+    ///
+    func testRetrieveSingleVariationTypeProductEffectivelyPersistsProductFieldsAndRelatedObjects() {
+        let expectation = self.expectation(description: "Persist single variation type product")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProduct = sampleVariationTypeProduct()
+
+        network.simulateResponse(requestUrlSuffix: "products/295", filename: "variation-as-product")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleVariationTypeProductID) { (product, error) in
+            XCTAssertNotNil(product)
+            XCTAssertNil(error)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+
+            let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleVariationTypeProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
             XCTAssertNotNil(storedProduct)
             XCTAssertNotNil(readOnlyStoredProduct)
@@ -1056,6 +1115,98 @@ private extension ProductStoreTests {
         let defaultAttribute1 = ProductDefaultAttribute(attributeID: 0, name: "Color", option: "Purple")
 
         return [defaultAttribute1]
+    }
+
+    func sampleVariationTypeProduct(_ siteID: Int? = nil) -> Networking.Product {
+        let testSiteID = siteID ?? sampleSiteID
+        return Product(siteID: testSiteID,
+                       productID: sampleVariationTypeProductID,
+                       name: "Paper Airplane - Black, Long",
+                       slug: "paper-airplane-3",
+                       permalink: "https://paperairplane.store/product/paper-airplane/?attribute_color=Black&attribute_length=Long",
+                       dateCreated: date(with: "2019-04-04T22:06:45"),
+                       dateModified: date(with: "2019-04-09T20:24:03"),
+                       productTypeKey: "variation",
+                       statusKey: "publish",
+                       featured: false,
+                       catalogVisibilityKey: "visible",
+                       fullDescription: "<p>Long paper airplane. Color is black. </p>\n",
+                       briefDescription: "",
+                       sku: "345345-2",
+                       price: "22.72",
+                       regularPrice: "22.72",
+                       salePrice: "",
+                       onSale: false,
+                       purchasable: true,
+                       totalSales: 0,
+                       virtual: false,
+                       downloadable: false,
+                       downloadLimit: -1,
+                       downloadExpiry: -1,
+                       externalURL: "",
+                       taxStatusKey: "taxable",
+                       taxClass: "",
+                       manageStock: false,
+                       stockQuantity: nil,
+                       stockStatusKey: "instock",
+                       backordersKey: "no",
+                       backordersAllowed: false,
+                       backordered: false,
+                       soldIndividually: true,
+                       weight: "888",
+                       dimensions: sampleVariationTypeDimensions(),
+                       shippingRequired: true,
+                       shippingTaxable: true,
+                       shippingClass: "",
+                       shippingClassID: 0,
+                       reviewsAllowed: true,
+                       averageRating: "0.00",
+                       ratingCount: 0,
+                       relatedIDs: [],
+                       upsellIDs: [],
+                       crossSellIDs: [],
+                       parentID: 205,
+                       purchaseNote: "",
+                       categories: [],
+                       tags: [],
+                       images: sampleVariationTypeImages(),
+                       attributes: sampleVariationTypeAttributes(),
+                       defaultAttributes: [],
+                       variations: [],
+                       groupedProducts: [],
+                       menuOrder: 2)
+    }
+
+    func sampleVariationTypeDimensions() -> Networking.ProductDimensions {
+        return ProductDimensions(length: "11", width: "22", height: "33")
+    }
+
+    func sampleVariationTypeImages() -> [Networking.ProductImage] {
+        let image1 = ProductImage(imageID: 301,
+                                  dateCreated: date(with: "2019-04-09T20:23:58"),
+                                  dateModified: date(with: "2019-04-09T20:23:58"),
+                                  src: "https://i0.wp.com/paperairplane.store/wp-content/uploads/2019/04/paper_plane_black.png?fit=600%2C473&ssl=1",
+                                  name: "paper_plane_black",
+                                  alt: "")
+        return [image1]
+    }
+
+    func sampleVariationTypeAttributes() -> [Networking.ProductAttribute] {
+        let attribute1 = ProductAttribute(attributeID: 0,
+                                          name: "Color",
+                                          position: 0,
+                                          visible: true,
+                                          variation: true,
+                                          options: ["Black"])
+
+        let attribute2 = ProductAttribute(attributeID: 0,
+                                          name: "Length",
+                                          position: 0,
+                                          visible: true,
+                                          variation: true,
+                                          options: ["Long"])
+
+        return [attribute1, attribute2]
     }
 }
 

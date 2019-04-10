@@ -220,7 +220,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
         cell.value.text = viewModel.providerCellName
 
         cell.value.isEnabled = false
-        cell.accessoryType = viewModel.isAdding ? .disclosureIndicator : .none
+        cell.accessoryType = viewModel.providerCellAccessoryType
     }
 
     private func configureTrackingNumber(cell: TitleAndEditableValueTableViewCell) {

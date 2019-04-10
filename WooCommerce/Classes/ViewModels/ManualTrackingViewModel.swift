@@ -42,6 +42,7 @@ protocol ManualTrackingViewModel {
     var orderID: Int { get }
     var title: String { get }
     var providerCellName: String { get }
+    var providerCellAccessoryType: UITableViewCell.AccessoryType { get }
     var primaryActionTitle: String { get }
     var secondaryActionTitle: String? { get }
 
@@ -107,6 +108,8 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
         return shipmentProvider?.name ?? ""
     }
 
+    let providerCellAccessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+
     var canCommit: Bool {
         return shipmentProvider != nil &&
             trackingNumber != nil
@@ -164,6 +167,8 @@ final class EditTrackingViewModel: ManualTrackingViewModel {
     var providerCellName: String {
         return shipmentTracking?.trackingProvider ?? ""
     }
+
+    let providerCellAccessoryType = UITableViewCell.AccessoryType.none
 
     var canCommit: Bool {
         return shipmentTracking?.trackingProvider != nil &&

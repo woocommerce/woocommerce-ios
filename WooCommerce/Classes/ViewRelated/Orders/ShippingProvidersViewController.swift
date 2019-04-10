@@ -11,6 +11,20 @@ final class ShippingProvidersViewController: UIViewController {
 
     @IBOutlet weak var table: UITableView!
 
+
+    private lazy var searchController: UISearchController = {
+        let returnValue = UISearchController(searchResultsController: nil)
+        returnValue.hidesNavigationBarDuringPresentation = false
+        returnValue.dimsBackgroundDuringPresentation = false
+        returnValue.searchResultsUpdater = self
+        returnValue.delegate = self
+
+        returnValue.searchBar.tintColor = .black
+        returnValue.searchBar.backgroundColor = .white
+
+        return returnValue
+    }()
+
     /// Dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
     ///
     private lazy var noticePresenter: NoticePresenter = {
@@ -33,6 +47,7 @@ final class ShippingProvidersViewController: UIViewController {
         super.viewDidLoad()
         configureBackground()
         configureNavigation()
+        configureSearchController()
         configureTable()
         configureViewModel()
     }
@@ -52,6 +67,13 @@ private extension ShippingProvidersViewController {
 
     func configureTitle() {
         title = viewModel.title
+    }
+
+    func configureSearchController() {
+        guard table.tableHeaderView == nil else {
+            return
+        }
+        table.tableHeaderView = searchController.searchBar
     }
 
     func configureTable() {
@@ -136,6 +158,18 @@ extension ShippingProvidersViewController: UITableViewDelegate {
 
         delegate?.shipmentProviderList(self, didSelect: provider, groupName: groupName)
     }
+}
+
+
+extension ShippingProvidersViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        //
+    }
+}
+
+
+extension ShippingProvidersViewController: UISearchControllerDelegate {
+
 }
 
 

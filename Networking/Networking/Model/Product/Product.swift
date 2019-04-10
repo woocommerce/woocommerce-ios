@@ -231,7 +231,7 @@ public struct Product: Decodable {
         let onSale = try container.decode(Bool.self, forKey: .onSale)
 
         let purchasable = try container.decode(Bool.self, forKey: .purchasable)
-        let totalSales = try container.decode(Int.self, forKey: .totalSales)
+        let totalSales = container.failsafeDecodeIfPresent(Int.self, forKey: .totalSales) ?? 0
         let virtual = try container.decode(Bool.self, forKey: .virtual)
 
         let downloadable = try container.decode(Bool.self, forKey: .downloadable)

@@ -8,6 +8,7 @@ public enum ProductType: Decodable, Hashable {
     case grouped
     case external
     case variable
+    case variation
     case custom(String) // in case there are extensions modifying product types
 }
 
@@ -28,6 +29,8 @@ extension ProductType: RawRepresentable {
             self = .external
         case Keys.variable:
             self = .variable
+        case Keys.variation:
+            self = .variation
         default:
             self = .custom(rawValue)
         }
@@ -41,6 +44,7 @@ extension ProductType: RawRepresentable {
         case .grouped:              return Keys.grouped
         case .external:             return Keys.external
         case .variable:             return Keys.variable
+        case .variation:            return Keys.variation
         case .custom(let payload):  return payload
         }
     }
@@ -54,4 +58,5 @@ private enum Keys {
     static let grouped  = "grouped"
     static let external = "external"
     static let variable = "variable"
+    static let variation = "variation"
 }

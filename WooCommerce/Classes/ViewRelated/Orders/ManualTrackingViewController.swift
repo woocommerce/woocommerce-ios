@@ -87,6 +87,10 @@ private extension ManualTrackingViewController {
         navigationItem.backBarButtonItem = backButton
     }
 
+    func removeProgressIndicator() {
+        navigationItem.rightBarButtonItem = nil
+    }
+
     func configureAddButton() {
         guard viewModel.isAdding else {
             return
@@ -108,6 +112,7 @@ private extension ManualTrackingViewController {
     }
 
     func configureForEditingTracking() {
+        removeProgressIndicator()
         configureAddButton()
         navigationItem.rightBarButtonItem?.isEnabled = true
     }

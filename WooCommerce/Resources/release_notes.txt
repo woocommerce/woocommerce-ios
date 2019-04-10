@@ -1,1 +1,1 @@
-- Tracking numbers can now be copied to the pasteboard from the order details screen.
+- Stay top of orders with fewer taps: now, you can copy tracking numbers right to the pasteboard from the order details screen.

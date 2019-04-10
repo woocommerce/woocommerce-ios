@@ -170,7 +170,10 @@ class StatsStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 0)
 
-        let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID, granularity: .day, latestDateToInclude: date(with: "2018-08-06T17:06:55"), quantity: 2) { (error) in
+        let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID,
+                                                        granularity: .day,
+                                                        latestDateToInclude: date(with: "2018-08-06T17:06:55"),
+                                                        quantity: 2) { (error) in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 1)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
@@ -196,7 +199,10 @@ class StatsStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits-alt")
-        let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID, granularity: .year, latestDateToInclude: date(with: "2018-08-06T17:06:55"), quantity: 2) { (error) in
+        let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID,
+                                                        granularity: .year,
+                                                        latestDateToInclude: date(with: "2018-08-06T17:06:55"),
+                                                        quantity: 2) { (error) in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 1)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
@@ -217,7 +223,10 @@ class StatsStoreTests: XCTestCase {
         let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "generic_error")
-        let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID, granularity: .year, latestDateToInclude: date(with: "2018-08-06T17:06:55"), quantity: 2) { (error) in
+        let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID,
+                                                        granularity: .year,
+                                                        latestDateToInclude: date(with: "2018-08-06T17:06:55"),
+                                                        quantity: 2) { (error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -232,7 +241,10 @@ class StatsStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve site visit stats empty response")
         let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID, granularity: .year, latestDateToInclude: date(with: "2018-08-06T17:06:55"), quantity: 2) { (error) in
+        let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID,
+                                                        granularity: .year,
+                                                        latestDateToInclude: date(with: "2018-08-06T17:06:55"),
+                                                        quantity: 2) { (error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -448,7 +460,7 @@ class StatsStoreTests: XCTestCase {
 //
 private extension StatsStoreTests {
 
-    //  MARK: - Order Stats Sample
+    // MARK: - Order Stats Sample
 
     func sampleOrderStats() -> Networking.OrderStats {
         return OrderStats(date: "2018-06-02",
@@ -564,7 +576,7 @@ private extension StatsStoreTests {
                               avgProductsPerOrder: 10)
     }
 
-    //  MARK: - Site Visit Stats Sample
+    // MARK: - Site Visit Stats Sample
 
     func sampleSiteVisitStats() -> Networking.SiteVisitStats {
         return SiteVisitStats(date: "2015-08-06",

@@ -54,7 +54,7 @@ extension ProductTableViewCell {
     func configure(_ statsItem: TopEarnerStatsItem?) {
         nameText = statsItem?.productName
         detailText = String.localizedStringWithFormat(
-            NSLocalizedString("Total Product Order: %ld",
+            NSLocalizedString("Total orders: %ld",
                               comment: "Top performers — label for the total number of products ordered"),
             statsItem?.quantity ?? 0
         )

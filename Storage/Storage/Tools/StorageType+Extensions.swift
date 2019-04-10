@@ -140,4 +140,49 @@ public extension StorageType {
         let descriptor = NSSortDescriptor(keyPath: \ShipmentTracking.orderID, ascending: false)
         return allObjects(ofType: ShipmentTracking.self, matching: predicate, sortedBy: [descriptor])
     }
+
+    /// Retrieves a specific stored ShipmentTrackingProviderGroup
+    ///
+    public func loadShipmentTrackingProviderGroup(siteID: Int, providerGroupName: String) -> ShipmentTrackingProviderGroup? {
+        let predicate = NSPredicate(format: "siteID = %ld AND name ==[c] %@", siteID, providerGroupName)
+        return firstObject(ofType: ShipmentTrackingProviderGroup.self, matching: predicate)
+    }
+
+    /// Retrieves all of the stored ShipmentTrackingProviderGroup entities for the provided siteID.
+    ///
+    public func loadShipmentTrackingProviderGroupList(siteID: Int) -> [ShipmentTrackingProviderGroup]? {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        let descriptor = NSSortDescriptor(keyPath: \ShipmentTrackingProviderGroup.name, ascending: true)
+        return allObjects(ofType: ShipmentTrackingProviderGroup.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Retrieves all of the stored ShipmentTrackingProvider entities for the provided siteID.
+    ///
+    public func loadShipmentTrackingProviderList(siteID: Int) -> [ShipmentTrackingProvider]? {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        let descriptor = NSSortDescriptor(keyPath: \ShipmentTrackingProvider.name, ascending: true)
+        return allObjects(ofType: ShipmentTrackingProvider.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Retrieves a stored ShipmentTrackingProvider for the provided siteID.
+    ///
+    public func loadShipmentTrackingProvider(siteID: Int, name: String) -> ShipmentTrackingProvider? {
+        let predicate = NSPredicate(format: "siteID = %ld AND name ==[c] %@", siteID, name)
+        return firstObject(ofType: ShipmentTrackingProvider.self, matching: predicate)
+    }
+
+    /// Retrieves all of the stored Products for the provided siteID.
+    ///
+    public func loadProducts(siteID: Int) -> [Product]? {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        let descriptor = NSSortDescriptor(keyPath: \Product.productID, ascending: false)
+        return allObjects(ofType: Product.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Retrieves a stored Product for the provided siteID.
+    ///
+    public func loadProduct(siteID: Int, productID: Int) -> Product? {
+        let predicate = NSPredicate(format: "siteID = %ld AND productID = %ld", siteID, productID)
+        return firstObject(ofType: Product.self, matching: predicate)
+    }
 }

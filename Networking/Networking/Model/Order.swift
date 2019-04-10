@@ -123,7 +123,28 @@ public struct Order: Decodable {
 
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
 
-        self.init(siteID: siteID, orderID: orderID, parentID: parentID, customerID: customerID, number: number, statusKey: statusKey, currency: currency, customerNote: customerNote, dateCreated: dateCreated, dateModified: dateModified, datePaid: datePaid, discountTotal: discountTotal, discountTax: discountTax, shippingTotal: shippingTotal, shippingTax: shippingTax, total: total, totalTax: totalTax, paymentMethodTitle: paymentMethodTitle, items: items, billingAddress: billingAddress, shippingAddress: shippingAddress, coupons: coupons)
+        self.init(siteID: siteID,
+                  orderID: orderID,
+                  parentID: parentID,
+                  customerID: customerID,
+                  number: number,
+                  statusKey: statusKey,
+                  currency: currency,
+                  customerNote: customerNote,
+                  dateCreated: dateCreated,
+                  dateModified: dateModified,
+                  datePaid: datePaid,
+                  discountTotal: discountTotal,
+                  discountTax: discountTax,
+                  shippingTotal: shippingTotal,
+                  shippingTax: shippingTax,
+                  total: total,
+                  totalTax: totalTax,
+                  paymentMethodTitle: paymentMethodTitle,
+                  items: items,
+                  billingAddress: billingAddress,
+                  shippingAddress: shippingAddress,
+                  coupons: coupons)
     }
 }
 

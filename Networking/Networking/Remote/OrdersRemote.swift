@@ -19,12 +19,12 @@ public class OrdersRemote: Remote {
                               statusKey: String? = nil,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
-                              completion: @escaping ([Order]?, Error?) -> Void)
-    {
+                              completion: @escaping ([Order]?, Error?) -> Void) {
         let parameters = [
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
-            ParameterKeys.statusKey: statusKey ?? Defaults.statusAny
+            ParameterKeys.statusKey: statusKey ?? Defaults.statusAny,
+            ParameterKeys.fields: ParameterValues.fieldValues
         ]
 
         let path = Constants.ordersPath
@@ -42,8 +42,12 @@ public class OrdersRemote: Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadOrder(for siteID: Int, orderID: Int, completion: @escaping (Order?, Error?) -> Void) {
+        let parameters = [
+            ParameterKeys.fields: ParameterValues.fieldValues
+        ]
+
         let path = "\(Constants.ordersPath)/\(orderID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = OrderMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -77,13 +81,13 @@ public class OrdersRemote: Remote {
                              keyword: String,
                              pageNumber: Int = Defaults.pageNumber,
                              pageSize: Int = Defaults.pageSize,
-                             completion: @escaping ([Order]?, Error?) -> Void)
-    {
+                             completion: @escaping ([Order]?, Error?) -> Void) {
         let parameters = [
             ParameterKeys.keyword: keyword,
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
-            ParameterKeys.statusKey: Defaults.statusAny
+            ParameterKeys.statusKey: Defaults.statusAny,
+            ParameterKeys.fields: ParameterValues.fieldValues
         ]
 
         let path = Constants.ordersPath
@@ -155,5 +159,14 @@ public extension OrdersRemote {
         static let page: String             = "page"
         static let perPage: String          = "per_page"
         static let statusKey: String        = "status"
+        static let fields: String           = "_fields"
+    }
+
+    enum ParameterValues {
+        static let fieldValues: String = """
+            id,parent_id,customer_id,number,status,currency,customer_note,date_created_gmt,
+            date_modified_gmt,date_paid_gmt,discount_total,discount_tax,shipping_total,
+            shipping_tax,total,total_tax,payment_method_title,line_items,shipping,billing,coupon_lines
+            """
     }
 }

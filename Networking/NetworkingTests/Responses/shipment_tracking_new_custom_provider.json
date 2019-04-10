@@ -1,0 +1,26 @@
+{
+    "data": {
+        "tracking_id": "c2911c8175e33466d3d9955b53f29f7a",
+        "tracking_provider": "HK Shipments",
+        "tracking_link": "https:\/\/somewhere.online.net.com?q=%1$s",
+        "tracking_number": "123456781234567812345678",
+        "date_shipped": "2019-03-12",
+        "_links": {
+            "self": [
+                {
+                    "href": "https:\/\/somewhere.online.net.com/wp-json\/wc\/v1\/order/33\/shipment-trackings\/c2911c8175e33466d3d9955b53f29f7a"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https:\/\/somewhere.online.net.com\/wp-json\/wc\/v1\/orders\/33\/shipment-trackings"
+                }
+            ],
+            "up": [
+                {
+                    "href": "https:\/\/somewhere.online.net.com\/wp-json\/wc\/v1\/orders\/33"
+                }
+            ]
+        }
+    }
+}

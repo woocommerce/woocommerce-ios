@@ -97,7 +97,8 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `OrderAction.synchronizeOrders` effectively persists all of the order fields correctly across all of the related Order objects (items, coupons, etc).
+    /// Verifies that `OrderAction.synchronizeOrders` effectively persists all of the order fields
+    /// correctly across all of the related Order objects (items, coupons, etc).
     ///
     func testRetrieveOrdersEffectivelyPersistsOrderFieldsAndRelatedObjects() {
         let expectation = self.expectation(description: "Persist order list")
@@ -192,7 +193,10 @@ class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.searchOrders(siteID: sampleSiteID, keyword: defaultSearchKeyword, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = OrderAction.searchOrders(siteID: sampleSiteID,
+                                              keyword: defaultSearchKeyword,
+                                              pageNumber: defaultPageNumber,
+                                              pageSize: defaultPageSize) { error in
             let readOnlyOrder = self.viewStorage.loadOrder(orderID: expectedOrder.orderID)?.toReadOnly()
             XCTAssertEqual(readOnlyOrder, expectedOrder)
             XCTAssertNil(error)
@@ -213,7 +217,10 @@ class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.searchOrders(siteID: sampleSiteID, keyword: defaultSearchKeyword, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = OrderAction.searchOrders(siteID: sampleSiteID,
+                                              keyword: defaultSearchKeyword,
+                                              pageNumber: defaultPageNumber,
+                                              pageSize: defaultPageSize) { error in
             let searchResults = self.viewStorage.loadOrderSearchResults(keyword: self.defaultSearchKeyword)
 
             XCTAssertEqual(searchResults?.keyword, self.defaultSearchKeyword)
@@ -236,7 +243,10 @@ class OrderStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
-        let nestedAction = OrderAction.searchOrders(siteID: sampleSiteID, keyword: defaultSearchKeyword, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let nestedAction = OrderAction.searchOrders(siteID: sampleSiteID,
+                                                    keyword: defaultSearchKeyword,
+                                                    pageNumber: defaultPageNumber,
+                                                    pageSize: defaultPageSize) { error in
             let orders = context.allObjects(ofType: Storage.Order.self, matching: nil, sortedBy: nil)
             for order in orders {
                 XCTAssertEqual(order.searchResults?.count, 1)
@@ -250,7 +260,10 @@ class OrderStoreTests: XCTestCase {
             expectation.fulfill()
         }
 
-        let firstAction = OrderAction.searchOrders(siteID: sampleSiteID, keyword: defaultSearchKeyword, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let firstAction = OrderAction.searchOrders(siteID: sampleSiteID,
+                                                   keyword: defaultSearchKeyword,
+                                                   pageNumber: defaultPageNumber,
+                                                   pageSize: defaultPageSize) { error in
             orderStore.onAction(nestedAction)
         }
 
@@ -280,7 +293,8 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `OrderAction.retrieveOrder` effectively persists all of the remote order fields correctly across all of the related `Order` objects (items, coupons, etc).
+    /// Verifies that `OrderAction.retrieveOrder` effectively persists all of the remote order fields
+    /// correctly across all of the related `Order` objects (items, coupons, etc).
     ///
     func testRetrieveSingleOrderEffectivelyPersistsOrderFieldsAndRelatedObjects() {
         let expectation = self.expectation(description: "Persist order")
@@ -331,7 +345,7 @@ class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 2)
-        
+
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
         let storageOrder2 = viewStorage.loadOrder(orderID: sampleOrderMutated2().orderID)
         XCTAssertEqual(storageOrder2?.toReadOnly(), sampleOrderMutated2())

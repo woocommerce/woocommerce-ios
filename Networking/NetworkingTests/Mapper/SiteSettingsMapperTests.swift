@@ -28,7 +28,8 @@ class SiteSettingsMapperTests: XCTestCase {
         XCTAssertNotNil(currencySetting)
         XCTAssertEqual(currencySetting.siteID, dummySiteID)
         XCTAssertEqual(currencySetting.settingID, "woocommerce_currency")
-        XCTAssertEqual(currencySetting.settingDescription, "This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.")
+        XCTAssertEqual(currencySetting.settingDescription,
+                       "This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.")
         XCTAssertEqual(currencySetting.label, "Currency")
         XCTAssertEqual(currencySetting.value, "USD")
 

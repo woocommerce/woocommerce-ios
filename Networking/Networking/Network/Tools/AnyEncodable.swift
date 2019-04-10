@@ -33,7 +33,7 @@ import Foundation
  */
 public struct AnyEncodable: Encodable {
     public let value: Any
-    
+
     public init<T>(_ value: T?) {
         self.value = value ?? ()
     }
@@ -52,7 +52,7 @@ extension AnyEncodable: _AnyEncodable {}
 extension _AnyEncodable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        
+
         switch self.value {
         case is Void:
             try container.encodeNil()
@@ -166,7 +166,13 @@ extension AnyEncodable: CustomDebugStringConvertible {
     }
 }
 
-extension AnyEncodable: ExpressibleByNilLiteral, ExpressibleByBooleanLiteral, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral, ExpressibleByStringLiteral, ExpressibleByArrayLiteral, ExpressibleByDictionaryLiteral {}
+extension AnyEncodable: ExpressibleByNilLiteral,
+                        ExpressibleByBooleanLiteral,
+                        ExpressibleByIntegerLiteral,
+                        ExpressibleByFloatLiteral,
+                        ExpressibleByStringLiteral,
+                        ExpressibleByArrayLiteral,
+                        ExpressibleByDictionaryLiteral {}
 
 extension _AnyEncodable {
     public init(nilLiteral: ()) {
@@ -188,7 +194,7 @@ extension _AnyEncodable {
     public init(extendedGraphemeClusterLiteral value: String) {
         self.init(value)
     }
-    
+
     public init(stringLiteral value: String) {
         self.init(value)
     }

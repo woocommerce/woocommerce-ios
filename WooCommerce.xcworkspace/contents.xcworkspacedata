@@ -8,10 +8,10 @@
       location = "group:Yosemite/Yosemite.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Networking/Networking.xcodeproj">
+      location = "group:Storage/Storage.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Storage/Storage.xcodeproj">
+      location = "group:Networking/Networking.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

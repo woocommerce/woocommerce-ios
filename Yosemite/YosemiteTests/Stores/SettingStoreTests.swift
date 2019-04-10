@@ -310,11 +310,11 @@ private extension SettingStoreTests {
 
     func sampleSiteAPIWithWoo() -> Networking.SiteAPI {
         return SiteAPI(siteID: sampleSiteID,
-                       namespaces: ["oembed/1.0", "wpcomsh/v1", "akismet/v1", "jetpack/v4", "wpcom/v2", "wc/v1", "wc/v2", "wc/v3", "wp/v2"])
+                       namespaces: ["oembed/1.0", "akismet/v1", "jetpack/v4", "wpcom/v2", "wc/v1", "wc/v2", "wc/v3", "wc-pb/v3", "wp/v2"])
     }
 
     func sampleSiteAPINoWoo() -> Networking.SiteAPI {
         return SiteAPI(siteID: sampleSiteID,
-                       namespaces: ["oembed/1.0", "wpcomsh/v1", "akismet/v1", "jetpack/v4", "wpcom/v2", "wp/v2"])
+                       namespaces: ["oembed/1.0", "akismet/v1", "jetpack/v4", "wpcom/v2", "wc-pb/v3", "wp/v2"])
     }
 }

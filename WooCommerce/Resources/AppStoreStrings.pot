@@ -47,12 +47,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v1.4-whats-new"
+msgctxt "v1.5-whats-new"
 msgid ""
-"- Visit the Order Details screen to manually change an order’s status or view shipment tracking.\n"
-"- We now fully support and properly display custom order status labels.\n"
-"- You can now filter by custom order status.\n"
-"- RTL language support has been improved, with better handling of graphical component flipping.\n"
+"This version is all about fixes and refinements:\n"
+"– In Order Details, the order status now refreshes upon pull-to-refresh.\n"
+"– Some small UI refinements have been done in different screens.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

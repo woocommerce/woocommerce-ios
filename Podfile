@@ -52,78 +52,80 @@ target 'WooCommerce' do
 
 end
 
-
-
 # Yosemite Layer:
 # ===============
 #
-target 'Yosemite' do
-  project 'Yosemite/Yosemite.xcodeproj'
-
-  # External Libraries
-  # ==================
-  #
+def yosemite_pods
   pod 'Alamofire', '~> 4.7'
   pod 'CocoaLumberjack', '~> 3.4'
   pod 'CocoaLumberjack/Swift', '~> 3.4'
-
-  # Unit Tests
-  # ==========
-  #
-  target 'YosemiteTests' do
-    inherit! :search_paths
-  end
-
 end
 
+# Yosemite Target:
+# ================
+#
+target 'Yosemite' do
+  project 'Yosemite/Yosemite.xcodeproj'
+  yosemite_pods
+end
 
+# Unit Tests
+# ==========
+#
+target 'YosemiteTests' do
+  project 'Yosemite/Yosemite.xcodeproj'
+  yosemite_pods
+end
 
 # Networking Layer:
 # =================
 #
-target 'Networking' do
-  project 'Networking/Networking.xcodeproj'
-
-
-  # External Libraries
-  # ==================
-  #
+def networking_pods
   pod 'Alamofire', '~> 4.7'
   pod 'CocoaLumberjack', '~> 3.4'
   pod 'CocoaLumberjack/Swift', '~> 3.4'
+end
 
+# Networking Target:
+# ==================
+#
+target 'Networking' do
+  project 'Networking/Networking.xcodeproj'
+  networking_pods
+end
 
-  # Unit Tests
-  # ==========
-  #
-  target 'NetworkingTests' do
-    inherit! :search_paths
-  end
+# Unit Tests
+# ==========
+#
+target 'NetworkingTests' do
+  project 'Networking/Networking.xcodeproj'
+  networking_pods
 end
 
 
 # Storage Layer:
 # ==============
 #
-target 'Storage' do
-  project 'Storage/Storage.xcodeproj'
-
-  # External Libraries
-  # ==================
-  #
+def storage_pods
   pod 'CocoaLumberjack', '~> 3.4'
   pod 'CocoaLumberjack/Swift', '~> 3.4'
-
-
-  # Unit Tests
-  # ==========
-  #
-  target 'StorageTests' do
-    inherit! :search_paths
-  end
 end
 
+# Storage Target:
+# ===============
+#
+target 'Storage' do
+  project 'Storage/Storage.xcodeproj'
+  storage_pods
+end
 
+# Unit Tests
+# ==========
+#
+target 'StorageTests' do
+  project 'Storage/Storage.xcodeproj'
+  storage_pods
+end
 
 # Workarounds:
 # ============

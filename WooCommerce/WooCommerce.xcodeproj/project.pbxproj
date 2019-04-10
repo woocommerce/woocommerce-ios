@@ -1698,7 +1698,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-resources.sh",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/WordPressAuthenticator/WordPressAuthenticator.bundle",
 				"${PODS_ROOT}/ZendeskSDK/ZendeskSDK/4.2.1/ZendeskSDKStrings.bundle",
@@ -1711,7 +1711,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		91990E72B3E1D58AC13D7628 /* [CP] Check Pods Manifest.lock */ = {
@@ -1773,7 +1773,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Automattic-Tracks-iOS/AutomatticTracks.framework",
@@ -1830,7 +1830,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */ = {
@@ -2360,9 +2360,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9D2992FEF3D1246B8CCC2EBB /* Pods-WooCommerceTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_MODULES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = WooCommerceTests/Info.plist;
@@ -2381,9 +2381,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_MODULES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = WooCommerceTests/Info.plist;

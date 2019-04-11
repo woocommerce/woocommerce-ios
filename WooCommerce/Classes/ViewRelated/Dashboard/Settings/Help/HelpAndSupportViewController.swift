@@ -93,12 +93,12 @@ private extension HelpAndSupportViewController {
         let helpAndSupportTitle = NSLocalizedString("HOW CAN WE HELP?", comment: "My Store > Settings > Help & Support section title")
 
         guard ZendeskManager.shared.zendeskEnabled == true else {
-            sections = [Section(title: helpAndSupportTitle, rows: [.browseFaq])]
+            sections = [Section(title: helpAndSupportTitle, rows: [.helpCenter])]
             return
         }
 
         sections = [
-            Section(title: helpAndSupportTitle, rows: [.browseFaq,
+            Section(title: helpAndSupportTitle, rows: [.helpCenter,
                                                        .contactSupport,
                                                        .myTickets,
                                                        .contactEmail,
@@ -134,8 +134,8 @@ private extension HelpAndSupportViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as ValueOneTableViewCell where row == .browseFaq:
-            configureBrowseFaq(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .helpCenter:
+            configureHelpCenter(cell: cell)
         case let cell as ValueOneTableViewCell where row == .contactSupport:
             configureContactSupport(cell: cell)
         case let cell as ValueOneTableViewCell where row == .myTickets:
@@ -149,13 +149,13 @@ private extension HelpAndSupportViewController {
         }
     }
 
-    /// Browse our FAQ cell.
+    /// Help Center cell.
     ///
-    func configureBrowseFaq(cell: ValueOneTableViewCell) {
+    func configureHelpCenter(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Browse our FAQ", comment: "Browse our FAQ title")
-        cell.detailTextLabel?.text = NSLocalizedString("Get answers to questions you have", comment: "Subtitle for Browse our FAQ")
+        cell.textLabel?.text = NSLocalizedString("Help Center", comment: "Browse our help documentation website title")
+        cell.detailTextLabel?.text = NSLocalizedString("Get answers to questions you have", comment: "Subtitle for Help Center")
     }
 
     /// Contact Support cell.
@@ -215,9 +215,9 @@ private extension HelpAndSupportViewController {
 //
 private extension HelpAndSupportViewController {
 
-    /// Browse our FAQ action
+    /// Help Center action
     ///
-    func browseFaqWasPressed() {
+    func helpCenterWasPressed() {
         ZendeskManager.shared.showHelpCenter(from: self)
     }
 
@@ -306,8 +306,8 @@ extension HelpAndSupportViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch rowAtIndexPath(indexPath) {
-        case .browseFaq:
-            browseFaqWasPressed()
+        case .helpCenter:
+            helpCenterWasPressed()
         case .contactSupport:
             contactSupportWasPressed()
         case .myTickets:
@@ -336,7 +336,7 @@ private struct Section {
 }
 
 private enum Row: CaseIterable {
-    case browseFaq
+    case helpCenter
     case contactSupport
     case myTickets
     case contactEmail
@@ -344,7 +344,7 @@ private enum Row: CaseIterable {
 
     var type: UITableViewCell.Type {
         switch self {
-        case .browseFaq:
+        case .helpCenter:
             return ValueOneTableViewCell.self
         case .contactSupport:
             return ValueOneTableViewCell.self

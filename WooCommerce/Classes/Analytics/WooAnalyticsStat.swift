@@ -106,7 +106,7 @@ public enum WooAnalyticsStat: String {
     case settingsSelectedStoreTapped            = "settings_selected_site_tapped"
     case settingsContactSupportTapped           = "main_menu_contact_support_tapped"
 
-    case settingsPrivacySettingsTapped          = "settings_privacy_settings_tapped"
+    case settingsPrivacySettingsTapped          = "settings_privacy_settings_button_tapped"
     case settingsCollectInfoToggled             = "settings_privacy_settings_collect_info_toggled"
     case settingsReportCrashesToggled           = "settings_privacy_settings_report_crashes_toggled"
     case settingsPrivacyPolicyTapped            = "settings_privacy_settings_privacy_policy_link_tapped"

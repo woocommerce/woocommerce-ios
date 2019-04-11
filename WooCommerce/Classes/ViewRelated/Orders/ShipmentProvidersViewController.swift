@@ -196,7 +196,7 @@ private extension ShipmentProvidersViewController {
         }
 
         emptyListOverlay = EmptyListMessageWithActionView.instantiateFromNib()
-        emptyListOverlay?.messageText = NSLocalizedString("No results found for \(term).\nAdd a custom provider", comment: "Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider'")
+        emptyListOverlay?.messageText = NSLocalizedString("No results found for \(term)\nAdd a custom provider", comment: "Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider'")
         emptyListOverlay?.actionText = NSLocalizedString("Custom Provider", comment: "Title of button to add a custom shipment tracking provider when filtering the provider list yields no results.")
         emptyListOverlay?.onAction = { [weak self] in
             self?.addCustomProvider()

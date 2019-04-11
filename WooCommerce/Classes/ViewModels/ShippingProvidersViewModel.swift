@@ -24,6 +24,10 @@ final class ShippingProvidersViewModel {
 
     var onError: ((Error) -> Void)?
 
+    var isListEmpty: Bool {
+        return resultsController.fetchedObjects.count == 0
+    }
+
     /// Designated initializer
     ///
     init(orderID: Int) {

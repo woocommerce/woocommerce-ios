@@ -169,12 +169,13 @@ extension ShipmentProvidersViewController: UISearchResultsUpdating {
             searchTerm.isEmpty == false else {
             viewModel.clearFilters()
             table.reloadData()
+            presentEmptyStateIfNecessary()
             return
         }
 
-        print("===== search term ", searchTerm)
         viewModel.filter(by: searchTerm)
         table.reloadData()
+        presentEmptyStateIfNecessary()
     }
 }
 
@@ -183,6 +184,22 @@ extension ShipmentProvidersViewController: UISearchControllerDelegate {
 
 }
 
+
+// MARK: - Empty state
+//
+private extension ShipmentProvidersViewController {
+    func presentEmptyStateIfNecessary() {
+        guard viewModel.isListEmpty else {
+            removeEmptyState()
+            return
+        }
+
+    }
+
+    func removeEmptyState() {
+
+    }
+}
 
 // MARK: - Error handling
 //

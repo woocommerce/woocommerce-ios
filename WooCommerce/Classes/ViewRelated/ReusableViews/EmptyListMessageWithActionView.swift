@@ -2,7 +2,7 @@ import UIKit
 
 final class EmptyListMessageWithActionView: UIView {
     @IBOutlet private weak var messageLabel: UILabel!
-    @IBOutlet private weak var actionButton: UIView!
+    @IBOutlet private weak var actionButton: BordersView!
     @IBOutlet private weak var actionButtonLabel: UILabel!
 
     var messageText: String? {
@@ -62,6 +62,8 @@ private extension EmptyListMessageWithActionView {
 
     func applyActionButtonStyle() {
         actionButton.backgroundColor = .white
+        actionButton.topVisible = true
+        actionButton.bottomVisible = true
     }
 
     func applyActionLabelStyle() {

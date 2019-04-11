@@ -55,6 +55,20 @@ final class ShippingProvidersViewModel {
         try? resultsController.performFetch()
     }
 
+    /// Filter results by text
+    ///
+    func filter(by text: String) {
+        let predicate = NSPredicate(format: "ANY providers.name CONTAINS[cd] %@",
+                                    text)
+        resultsController.predicate = predicate
+    }
+
+    /// Clear all filters
+    ///
+    func clearFilters() {
+        resultsController.predicate = nil
+    }
+
     private func handleError(_ error: Error) {
         onError?(error)
     }

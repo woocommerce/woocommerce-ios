@@ -161,9 +161,20 @@ extension ShipmentProvidersViewController: UITableViewDelegate {
 }
 
 
+// MARK: - Search and filtering
+//
 extension ShipmentProvidersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        //
+        guard let searchTerm = searchController.searchBar.text,
+            searchTerm.isEmpty == false else {
+            viewModel.clearFilters()
+            table.reloadData()
+            return
+        }
+
+        print("===== search term ", searchTerm)
+        viewModel.filter(by: searchTerm)
+        table.reloadData()
     }
 }
 

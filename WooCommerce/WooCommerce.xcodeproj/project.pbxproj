@@ -312,8 +312,8 @@
 		D843D5C822434A08001BFA55 /* ManualTrackingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5C622434A08001BFA55 /* ManualTrackingViewController.xib */; };
 		D843D5CB22437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5C922437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift */; };
 		D843D5CC22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5CA22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib */; };
-		D843D5D322485009001BFA55 /* ShippingProvidersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5D122485009001BFA55 /* ShippingProvidersViewController.swift */; };
-		D843D5D422485009001BFA55 /* ShippingProvidersViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5D222485009001BFA55 /* ShippingProvidersViewController.xib */; };
+		D843D5D322485009001BFA55 /* ShipmentProvidersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5D122485009001BFA55 /* ShipmentProvidersViewController.swift */; };
+		D843D5D422485009001BFA55 /* ShipmentProvidersViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5D222485009001BFA55 /* ShipmentProvidersViewController.xib */; };
 		D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */; };
 		D843D5D92248EE91001BFA55 /* ManualTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */; };
 		D85B8333222FABD1002168F3 /* StatusListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */; };
@@ -679,8 +679,8 @@
 		D843D5C622434A08001BFA55 /* ManualTrackingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ManualTrackingViewController.xib; sourceTree = "<group>"; };
 		D843D5C922437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndEditableValueTableViewCell.swift; sourceTree = "<group>"; };
 		D843D5CA22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndEditableValueTableViewCell.xib; sourceTree = "<group>"; };
-		D843D5D122485009001BFA55 /* ShippingProvidersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingProvidersViewController.swift; sourceTree = "<group>"; };
-		D843D5D222485009001BFA55 /* ShippingProvidersViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingProvidersViewController.xib; sourceTree = "<group>"; };
+		D843D5D122485009001BFA55 /* ShipmentProvidersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentProvidersViewController.swift; sourceTree = "<group>"; };
+		D843D5D222485009001BFA55 /* ShipmentProvidersViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShipmentProvidersViewController.xib; sourceTree = "<group>"; };
 		D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingProvidersViewModel.swift; sourceTree = "<group>"; };
 		D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualTrackingViewModel.swift; sourceTree = "<group>"; };
 		D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusListTableViewCell.swift; sourceTree = "<group>"; };
@@ -1265,8 +1265,8 @@
 				D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */,
 				D83F5932225B2EB800626E75 /* ManualTrackingViewController.swift */,
 				D843D5C622434A08001BFA55 /* ManualTrackingViewController.xib */,
-				D843D5D122485009001BFA55 /* ShippingProvidersViewController.swift */,
-				D843D5D222485009001BFA55 /* ShippingProvidersViewController.xib */,
+				D843D5D122485009001BFA55 /* ShipmentProvidersViewController.swift */,
+				D843D5D222485009001BFA55 /* ShipmentProvidersViewController.xib */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -1620,7 +1620,7 @@
 				B5F571B021BF149D0010D1B8 /* o.caf in Resources */,
 				B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */,
 				B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */,
-				D843D5D422485009001BFA55 /* ShippingProvidersViewController.xib in Resources */,
+				D843D5D422485009001BFA55 /* ShipmentProvidersViewController.xib in Resources */,
 				B557DA1620979904005962F4 /* CustomerNoteTableViewCell.xib in Resources */,
 				93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
@@ -1925,7 +1925,7 @@
 				747AA08B2107CF8D0047A89B /* TracksProvider.swift in Sources */,
 				CE1EC8F120B8A408009762BF /* OrderNoteTableViewCell.swift in Sources */,
 				CE583A0421076C0100D73C1C /* NewNoteViewController.swift in Sources */,
-				D843D5D322485009001BFA55 /* ShippingProvidersViewController.swift in Sources */,
+				D843D5D322485009001BFA55 /* ShipmentProvidersViewController.swift in Sources */,
 				B58B4AC02108FF6100076FDD /* Array+Helpers.swift in Sources */,
 				B5A56BF0219F2CE90065A902 /* VerticalButton.swift in Sources */,
 				748C7780211E18A600814F2C /* OrderStats+Woo.swift in Sources */,

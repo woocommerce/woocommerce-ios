@@ -2,10 +2,10 @@ import UIKit
 import Yosemite
 
 protocol ShipmentProviderListDelegate: AnyObject {
-    func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: ShipmentTrackingProvider, groupName: String)
+    func shipmentProviderList(_ list: ShipmentProvidersViewController, didSelect: ShipmentTrackingProvider, groupName: String)
 }
 
-final class ShippingProvidersViewController: UIViewController {
+final class ShipmentProvidersViewController: UIViewController {
     private let viewModel: ShippingProvidersViewModel
     private weak var delegate: ShipmentProviderListDelegate?
 
@@ -56,7 +56,7 @@ final class ShippingProvidersViewController: UIViewController {
 
 // MARK: - Configure UI
 //
-private extension ShippingProvidersViewController {
+private extension ShipmentProvidersViewController {
     func configureBackground() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
@@ -104,7 +104,7 @@ private extension ShippingProvidersViewController {
 
 // MARK: - View model configuration and binding
 //
-private extension ShippingProvidersViewController {
+private extension ShipmentProvidersViewController {
     func configureViewModel() {
         viewModel.configureResultsController(table: table)
         viewModel.onError = { [weak self] error in
@@ -116,7 +116,7 @@ private extension ShippingProvidersViewController {
 
 // MARK: - Conformance to UITableViewDataSource
 //
-extension ShippingProvidersViewController: UITableViewDataSource {
+extension ShipmentProvidersViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return viewModel.resultsController.sections.count
     }
@@ -147,7 +147,7 @@ extension ShippingProvidersViewController: UITableViewDataSource {
 
 // MARK: - Conformance to UITableViewDelegate
 //
-extension ShippingProvidersViewController: UITableViewDelegate {
+extension ShipmentProvidersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let group = viewModel.resultsController.sections[indexPath.section]
         guard let provider = group.objects.first?.providers[indexPath.item] else {
@@ -161,21 +161,21 @@ extension ShippingProvidersViewController: UITableViewDelegate {
 }
 
 
-extension ShippingProvidersViewController: UISearchResultsUpdating {
+extension ShipmentProvidersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         //
     }
 }
 
 
-extension ShippingProvidersViewController: UISearchControllerDelegate {
+extension ShipmentProvidersViewController: UISearchControllerDelegate {
 
 }
 
 
 // MARK: - Error handling
 //
-private extension ShippingProvidersViewController {
+private extension ShipmentProvidersViewController {
     func presentNotice(_ error: Error) {
         let title = NSLocalizedString(
             "Unable to load Shipment Providers",

@@ -96,3 +96,20 @@ private extension EmptyListMessageWithActionView {
         actionButton.accessibilityTraits = .button
     }
 }
+
+
+// MARK: - Unit tests
+//
+extension EmptyListMessageWithActionView {
+    func getMessageLabel() -> UILabel {
+        return messageLabel
+    }
+
+    func getButton() -> BordersView {
+        return actionButton
+    }
+
+    func getButtonLabel() -> UILabel {
+        return actionButtonLabel
+    }
+}

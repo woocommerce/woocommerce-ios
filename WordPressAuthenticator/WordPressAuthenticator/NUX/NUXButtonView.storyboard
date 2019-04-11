@@ -51,8 +51,7 @@
                                         <state key="normal" title="Primary Button">
                                             <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                         </state>
-                                        <state key="selected" backgroundImage="beveled-blue-button-down"/>
-                                        <state key="highlighted" backgroundImage="beveled-blue-button-down">
+                                        <state key="highlighted">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
@@ -69,8 +68,7 @@
                                         <state key="normal" title="Cancel Button">
                                             <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                         </state>
-                                        <state key="selected" backgroundImage="beveled-blue-button-down"/>
-                                        <state key="highlighted" backgroundImage="beveled-blue-button-down">
+                                        <state key="highlighted">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
@@ -108,7 +106,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="beveled-blue-button-down" width="18" height="19"/>
         <image name="darkgrey-shadow" width="10" height="10"/>
     </resources>
 </document>

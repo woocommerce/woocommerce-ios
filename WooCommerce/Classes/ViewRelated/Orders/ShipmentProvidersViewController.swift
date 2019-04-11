@@ -19,9 +19,6 @@ final class ShipmentProvidersViewController: UIViewController {
         returnValue.searchResultsUpdater = self
         returnValue.delegate = self
 
-        returnValue.searchBar.tintColor = .black
-        returnValue.searchBar.backgroundColor = .white
-
         return returnValue
     }()
 

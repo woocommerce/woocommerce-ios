@@ -56,7 +56,8 @@ private extension EmptyListMessageWithActionView {
     }
 
     func applyMessageLabelStyle() {
-        messageLabel.applyBodyStyle()
+        messageLabel.textAlignment = .center
+        messageLabel.applyEmptyStateTitleStyle()
     }
 
     func applyActionButtonStyle() {

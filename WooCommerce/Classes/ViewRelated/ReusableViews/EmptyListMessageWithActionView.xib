@@ -16,7 +16,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="uQE-ll-SpT">
+                <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" alignment="center" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="uQE-ll-SpT">
                     <rect key="frame" x="0.0" y="297.5" width="375" height="92.5"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ldr-2h-SOT">
@@ -44,15 +44,18 @@
                             </constraints>
                         </view>
                     </subviews>
+                    <constraints>
+                        <constraint firstItem="Lfm-8q-CzH" firstAttribute="leading" secondItem="uQE-ll-SpT" secondAttribute="leading" id="PlV-Xx-PHk"/>
+                        <constraint firstAttribute="trailing" secondItem="Lfm-8q-CzH" secondAttribute="trailing" id="yp8-0S-fHX"/>
+                    </constraints>
                 </stackView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="uQE-ll-SpT" secondAttribute="trailing" id="DEf-bQ-ufE"/>
                 <constraint firstItem="uQE-ll-SpT" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="Jg1-hi-PCG"/>
-                <constraint firstItem="uQE-ll-SpT" firstAttribute="centerY" secondItem="vUN-kp-3ea" secondAttribute="centerY" id="c81-kv-WV0"/>
-                <constraint firstItem="uQE-ll-SpT" firstAttribute="top" relation="greaterThanOrEqual" secondItem="vUN-kp-3ea" secondAttribute="top" constant="20" id="hHv-1W-iP1"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="uQE-ll-SpT" secondAttribute="bottom" constant="20" id="yDN-yi-0Di"/>
+                <constraint firstItem="uQE-ll-SpT" firstAttribute="top" relation="greaterThanOrEqual" secondItem="vUN-kp-3ea" secondAttribute="top" constant="115" id="hHv-1W-iP1"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="uQE-ll-SpT" secondAttribute="bottom" priority="750" constant="20" id="yDN-yi-0Di"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>

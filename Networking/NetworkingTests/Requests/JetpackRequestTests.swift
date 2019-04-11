@@ -4,7 +4,7 @@ import XCTest
 
 /// JetpackRequest Unit Tests
 ///
-class JetpackRequestTests: XCTestCase {
+final class JetpackRequestTests: XCTestCase {
 
     /// Testing API Version
     ///
@@ -88,7 +88,11 @@ private extension JetpackRequestTests {
         switch request.method {
         case .get:
             let parameters = concatenate(request.parameters).addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
-            return "?_method=" + request.method.rawValue.lowercased() + "&json=true&path=" + sampleWooApiVersion.path + sampleRPC + parameters
+            let ampersandAsPercentEncoded = "&".addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
+            let methodAsPercentEncoded = String("method=" + request.method.rawValue.lowercased())
+                .addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
+            return "?json=true&path=" + sampleWooApiVersion.path + sampleRPC + parameters
+                + ampersandAsPercentEncoded + "_" + methodAsPercentEncoded
         default:
             return String()
         }
@@ -104,11 +108,14 @@ private extension JetpackRequestTests {
         let parametersAsData = try! JSONEncoder().encode(request.parameters)
         let parametersAsString = String(data: parametersAsData, encoding: .utf8)!
         let parametersAsPercentEncoded = parametersAsString.addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
+        let ampersandAsPercentEncoded = "&".addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
+        let methodAsPercentEncoded = String("method=" + request.method.rawValue.lowercased())
+            .addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
 
-        return "_method=" + request.method.rawValue.lowercased() +
-            "&body=" + parametersAsPercentEncoded +
+        return "body=" + parametersAsPercentEncoded +
             "&json=true" +
-            "&path=" + sampleWooApiVersion.path + sampleRPC
+            "&path=" + sampleWooApiVersion.path + sampleRPC +
+            ampersandAsPercentEncoded + "_" + methodAsPercentEncoded
     }
 
     /// Concatenates the specified collection of Parameters for the URLRequest's httpBody.

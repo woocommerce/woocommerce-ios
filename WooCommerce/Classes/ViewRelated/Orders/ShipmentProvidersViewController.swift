@@ -8,7 +8,6 @@ protocol ShipmentProviderListDelegate: AnyObject {
 final class ShipmentProvidersViewController: UIViewController {
     private let viewModel: ShippingProvidersViewModel
     private weak var delegate: ShipmentProviderListDelegate?
-    private var emptyListOverlay: EmptyListMessageWithActionView?
 
     @IBOutlet weak var table: UITableView!
 
@@ -166,49 +165,56 @@ extension ShipmentProvidersViewController: UITableViewDelegate {
 //
 extension ShipmentProvidersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        guard let searchTerm = searchController.searchBar.text,
-            searchTerm.isEmpty == false else {
-            viewModel.clearFilters()
-            table.reloadData()
-                presentEmptyStateIfNecessary()
-            return
-        }
-
-        viewModel.filter(by: searchTerm)
-        table.reloadData()
-        presentEmptyStateIfNecessary(term: searchTerm)
+        resetUIState(searchTerm: searchController.searchBar.text)
     }
 }
 
 
 extension ShipmentProvidersViewController: UISearchControllerDelegate {
-
+    func willDismissSearchController(_ searchController: UISearchController) {
+        resetUIState(searchTerm: "")
+    }
 }
 
 
 // MARK: - Empty state
 //
 private extension ShipmentProvidersViewController {
+    func resetUIState(searchTerm: String?) {
+        guard let searchTerm = searchTerm,
+            searchTerm.isEmpty == false else {
+                viewModel.clearFilters()
+                table.reloadData()
+                presentEmptyStateIfNecessary()
+                return
+        }
+
+        viewModel.filter(by: searchTerm)
+        table.reloadData()
+        presentEmptyStateIfNecessary(term: searchTerm)
+    }
+
     func presentEmptyStateIfNecessary(term: String = "") {
         guard viewModel.isListEmpty else {
             removeEmptyState()
             return
         }
 
-        emptyListOverlay = EmptyListMessageWithActionView.instantiateFromNib()
-        emptyListOverlay?.messageText = NSLocalizedString("No results found for \(term)\nAdd a custom provider", comment: "Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider'")
-        emptyListOverlay?.actionText = NSLocalizedString("Custom Provider", comment: "Title of button to add a custom shipment tracking provider when filtering the provider list yields no results.")
-        emptyListOverlay?.onAction = { [weak self] in
+        let emptyState: EmptyListMessageWithActionView = EmptyListMessageWithActionView.instantiateFromNib()
+        emptyState.messageText = NSLocalizedString("No results found for \(term)\nAdd a custom provider",
+            comment: "Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider'")
+        emptyState.actionText = NSLocalizedString("Custom Provider",
+                                                  comment: "Title of button to add a custom shipment tracking provider when filtering the provider list yields no results.")
+        emptyState.onAction = { [weak self] in
             self?.addCustomProvider()
         }
 
-        emptyListOverlay?.attach(to: view)
+        emptyState.attach(to: view)
     }
 
     func removeEmptyState() {
-        if emptyListOverlay != nil {
-            emptyListOverlay?.removeFromSuperview()
-            emptyListOverlay = nil
+        for subview in view.subviews where subview is EmptyListMessageWithActionView {
+            subview.removeFromSuperview()
         }
     }
 

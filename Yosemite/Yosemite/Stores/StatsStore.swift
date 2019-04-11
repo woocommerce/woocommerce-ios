@@ -87,12 +87,21 @@ private extension StatsStore {
 
     /// Retrieves the order stats associated with the provided Site ID (if any!).
     ///
-    func retrieveOrderStats(siteID: Int, queryID: String, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (Error?) -> Void) {
+    func retrieveOrderStats(siteID: Int,
+                            queryID: String,
+                            granularity: StatGranularity,
+                            latestDateToInclude: Date,
+                            quantity: Int,
+                            onCompletion: @escaping (Error?) -> Void) {
 
         let remote = OrderStatsRemote(network: network)
         let formattedDateString = StatsStore.buildDateString(from: latestDateToInclude, with: granularity)
 
-        remote.loadOrderStats(for: siteID, queryID: queryID, unit: granularity, latestDateToInclude: formattedDateString, quantity: quantity) { [weak self] (orderStats, error) in
+        remote.loadOrderStats(for: siteID,
+                              queryID: queryID,
+                              unit: granularity,
+                              latestDateToInclude: formattedDateString,
+                              quantity: quantity) { [weak self] (orderStats, error) in
             guard let orderStats = orderStats else {
                 onCompletion(error)
                 return
@@ -105,7 +114,12 @@ private extension StatsStore {
 
     /// Retrieves the site visit stats associated with the provided Site ID (if any!).
     ///
-    func retrieveSiteVisitStats(siteID: Int, queryID: String, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (Error?) -> Void) {
+    func retrieveSiteVisitStats(siteID: Int,
+                                queryID: String,
+                                granularity: StatGranularity,
+                                latestDateToInclude: Date,
+                                quantity: Int,
+                                onCompletion: @escaping (Error?) -> Void) {
 
         let remote = SiteVisitStatsRemote(network: network)
 

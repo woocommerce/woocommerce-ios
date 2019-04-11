@@ -20,6 +20,7 @@ final class EmptyListMessageWithActionView: UIView {
         }
         set {
             actionButtonLabel.text = newValue
+            configureActionButtonForVoiceOver()
         }
     }
 
@@ -82,5 +83,16 @@ private extension EmptyListMessageWithActionView {
 private extension EmptyListMessageWithActionView {
     @objc func buttonTapped() {
         onAction?()
+    }
+}
+
+
+// MARK: - Accessibility
+//
+private extension EmptyListMessageWithActionView {
+    func configureActionButtonForVoiceOver() {
+        actionButton.isAccessibilityElement = true
+        actionButton.accessibilityLabel = actionButtonLabel.text
+        actionButton.accessibilityTraits = .button
     }
 }

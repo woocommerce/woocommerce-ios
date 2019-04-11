@@ -51,6 +51,11 @@ final class ShipmentProvidersViewController: UIViewController {
         configureTable()
         configureViewModel()
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        searchController.dismiss(animated: false, completion: nil)
+    }
 }
 
 

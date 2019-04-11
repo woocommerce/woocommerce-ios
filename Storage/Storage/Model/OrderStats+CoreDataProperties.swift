@@ -8,6 +8,7 @@ extension OrderStats {
         return NSFetchRequest<OrderStats>(entityName: "OrderStats")
     }
 
+    @NSManaged public var queryID: String
     @NSManaged public var date: String
     @NSManaged public var granularity: String
     @NSManaged public var quantity: String?

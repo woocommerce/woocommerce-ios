@@ -24,14 +24,16 @@ public class StatsStore: Store {
         switch action {
         case .resetStoredStats(let onCompletion):
             resetStoredStats(onCompletion: onCompletion)
-        case .retrieveOrderStats(let siteID, let granularity, let latestDateToInclude, let quantity, let onCompletion):
+        case .retrieveOrderStats(let siteID, let queryID, let granularity, let latestDateToInclude, let quantity, let onCompletion):
             retrieveOrderStats(siteID: siteID,
+                               queryID: queryID,
                                granularity: granularity,
                                latestDateToInclude: latestDateToInclude,
                                quantity: quantity,
                                onCompletion: onCompletion)
-        case .retrieveSiteVisitStats(let siteID, let granularity, let latestDateToInclude, let quantity, let onCompletion):
+        case .retrieveSiteVisitStats(let siteID, let queryID, let granularity, let latestDateToInclude, let quantity, let onCompletion):
             retrieveSiteVisitStats(siteID: siteID,
+                                   queryID: queryID,
                                    granularity: granularity,
                                    latestDateToInclude: latestDateToInclude,
                                    quantity: quantity,
@@ -85,12 +87,12 @@ private extension StatsStore {
 
     /// Retrieves the order stats associated with the provided Site ID (if any!).
     ///
-    func retrieveOrderStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (Error?) -> Void) {
+    func retrieveOrderStats(siteID: Int, queryID: String, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (Error?) -> Void) {
 
         let remote = OrderStatsRemote(network: network)
         let formattedDateString = StatsStore.buildDateString(from: latestDateToInclude, with: granularity)
 
-        remote.loadOrderStats(for: siteID, unit: granularity, latestDateToInclude: formattedDateString, quantity: quantity) { [weak self] (orderStats, error) in
+        remote.loadOrderStats(for: siteID, queryID: queryID, unit: granularity, latestDateToInclude: formattedDateString, quantity: quantity) { [weak self] (orderStats, error) in
             guard let orderStats = orderStats else {
                 onCompletion(error)
                 return
@@ -103,11 +105,12 @@ private extension StatsStore {
 
     /// Retrieves the site visit stats associated with the provided Site ID (if any!).
     ///
-    func retrieveSiteVisitStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (Error?) -> Void) {
+    func retrieveSiteVisitStats(siteID: Int, queryID: String, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (Error?) -> Void) {
 
         let remote = SiteVisitStatsRemote(network: network)
 
         remote.loadSiteVisitorStats(for: siteID,
+                                    queryID: queryID,
                                     unit: granularity,
                                     latestDateToInclude: latestDateToInclude,
                                     quantity: quantity) { [weak self] (siteVisitStats, error) in
@@ -198,7 +201,7 @@ extension StatsStore {
 
         let storage = storageManager.viewStorage
         let storageSiteVisitStats = storage.loadSiteVisitStats(
-            granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
+            queryID: readOnlyStats.queryID) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
         storageSiteVisitStats.update(with: readOnlyStats)
         handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
         storage.saveIfNeeded()
@@ -231,7 +234,7 @@ extension StatsStore {
 
         let storage = storageManager.viewStorage
         let storageOrderStats = storage.loadOrderStats(
-            granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.OrderStats.self)
+            queryID: readOnlyStats.queryID) ?? storage.insertNewObject(ofType: Storage.OrderStats.self)
         storageOrderStats.update(with: readOnlyStats)
         handleOrderStatsItems(readOnlyStats, storageOrderStats, storage)
         storage.saveIfNeeded()
@@ -252,7 +255,7 @@ extension StatsStore {
 
         // Upsert the items from the read-only order stats item
         for readOnlyItem in readOnlyItems {
-            if let existingStorageItem = storage.loadOrderStatsItem(period: readOnlyItem.period) {
+            if let existingStorageItem = storage.loadOrderStatsItem(queryID: readOnlyStats.queryID, period: readOnlyItem.period) {
                 existingStorageItem.update(with: readOnlyItem)
             } else {
                 let newStorageItem = storage.insertNewObject(ofType: Storage.OrderStatsItem.self)

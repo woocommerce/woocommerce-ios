@@ -10,6 +10,7 @@ public class OrderStatsRemote: Remote {
     ///
     /// - Parameters:
     ///   - siteID: The site ID
+    ///   - queryID: Local query ID to attach to the result
     ///   - unit: Defines the granularity of the stats we are fetching (one of 'day', 'week', 'month', or 'year')
     ///   - latestDateToInclude: The latest date to include in the results.
     ///     This string should match the `unit`, e.g.: 'day':'1955-11-05', 'week':'1955-W44', 'month':'1955-11', 'year':'1955'.
@@ -19,6 +20,7 @@ public class OrderStatsRemote: Remote {
     /// Note: by limiting the return values with the `_fields` param, we shrink the response size by over 90%! (~40kb to ~3kb)
     ///
     public func loadOrderStats(for siteID: Int,
+                               queryID: String,
                                unit: StatGranularity,
                                latestDateToInclude: String,
                                quantity: Int,
@@ -29,7 +31,7 @@ public class OrderStatsRemote: Remote {
                           ParameterKeys.quantity: String(quantity),
                           ParameterKeys.fields: ParameterValues.fieldValues]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
-        let mapper = OrderStatsMapper()
+        let mapper = OrderStatsMapper(queryID: queryID)
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

@@ -75,7 +75,7 @@ extension StoreStatsViewController {
         periodVCs.forEach { (vc) in
             group.enter()
 
-            syncOrderStats(for: vc.granularity) { [weak self] error in
+            syncOrderStats(for: vc.statsQueryOptions) { [weak self] error in
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing order stats: \(error)")
                     syncError = error
@@ -86,7 +86,7 @@ extension StoreStatsViewController {
             }
 
             group.enter()
-            syncVisitorStats(for: vc.granularity) { error in
+            syncVisitorStats(for: vc.statsQueryOptions) { error in
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
                     syncError = error
@@ -157,11 +157,13 @@ private extension StoreStatsViewController {
         let weekVC = PeriodDataViewController(granularity: .week)
         let monthVC = PeriodDataViewController(granularity: .month)
         let yearVC = PeriodDataViewController(granularity: .year)
+        let customVC = PeriodDataViewController(isCustomRange: true)
 
         periodVCs.append(dayVC)
         periodVCs.append(weekVC)
         periodVCs.append(monthVC)
         periodVCs.append(yearVC)
+        periodVCs.append(customVC)
     }
 
     func configureTabStrip() {
@@ -193,16 +195,17 @@ private extension StoreStatsViewController {
 //
 private extension StoreStatsViewController {
 
-    func syncVisitorStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
+    func syncVisitorStats(for statsQueryOptions: StatsQueryOptions, onCompletion: ((Error?) -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
         }
 
         let action = StatsAction.retrieveSiteVisitStats(siteID: siteID,
-                                                        granularity: granularity,
-                                                        latestDateToInclude: Date(),
-                                                        quantity: quantity(for: granularity)) { (error) in
+                                                        queryID: statsQueryOptions.queryID,
+                                                        granularity: statsQueryOptions.granularity,
+                                                        latestDateToInclude: statsQueryOptions.latestDateToInclude,
+                                                        quantity: statsQueryOptions.quantity) { (error) in
             if let error = error {
                 DDLogError("⛔️ Dashboard (Site Stats) — Error synchronizing site visit stats: \(error)")
             }
@@ -211,16 +214,17 @@ private extension StoreStatsViewController {
         StoresManager.shared.dispatch(action)
     }
 
-    func syncOrderStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
+    func syncOrderStats(for statsQueryOptions: StatsQueryOptions, onCompletion: ((Error?) -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
         }
 
         let action = StatsAction.retrieveOrderStats(siteID: siteID,
-                                                    granularity: granularity,
-                                                    latestDateToInclude: Date(),
-                                                    quantity: quantity(for: granularity)) { (error) in
+                                                    queryID: statsQueryOptions.queryID,
+                                                    granularity: statsQueryOptions.granularity,
+                                                    latestDateToInclude: statsQueryOptions.latestDateToInclude,
+                                                    quantity: statsQueryOptions.quantity) { (error) in
             if let error = error {
                 DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats: \(error)")
             }
@@ -239,19 +243,6 @@ private extension StoreStatsViewController {
         return periodVCs.filter({ $0.granularity == granularity }).first
     }
 
-    func quantity(for granularity: StatGranularity) -> Int {
-        switch granularity {
-        case .day:
-            return Constants.quantityDefaultForDay
-        case .week:
-            return Constants.quantityDefaultForWeek
-        case .month:
-            return Constants.quantityDefaultForMonth
-        case .year:
-            return Constants.quantityDefaultForYear
-        }
-    }
-
     func trackStatsLoaded(for granularity: StatGranularity) {
         guard StoresManager.shared.isAuthenticated else {
             return
@@ -265,13 +256,6 @@ private extension StoreStatsViewController {
 // MARK: - Constants!
 //
 private extension StoreStatsViewController {
-    enum Constants {
-        static let quantityDefaultForDay = 30
-        static let quantityDefaultForWeek = 13
-        static let quantityDefaultForMonth = 12
-        static let quantityDefaultForYear = 5
-    }
-
     enum TabStrip {
         static let buttonLeftRightMargin: CGFloat   = 14.0
         static let selectedBarHeight: CGFloat       = 3.0

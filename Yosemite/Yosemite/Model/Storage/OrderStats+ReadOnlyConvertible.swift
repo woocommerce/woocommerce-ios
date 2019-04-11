@@ -9,6 +9,7 @@ extension Storage.OrderStats: ReadOnlyConvertible {
     /// Updates the Storage.OrderStats with the ReadOnly.
     ///
     public func update(with stats: Yosemite.OrderStats) {
+        queryID = stats.queryID
         date = stats.date
         granularity = stats.granularity.rawValue
         quantity = stats.quantity
@@ -28,7 +29,8 @@ extension Storage.OrderStats: ReadOnlyConvertible {
         let statItems = items?.map { $0.toReadOnly() } ?? [Yosemite.OrderStatsItem]()
 
 
-        return OrderStats(date: date,
+        return OrderStats(queryID: queryID,
+                          date: date,
                           granularity: StatGranularity(rawValue: granularity) ?? .day,
                           quantity: quantity ?? "",
                           items: statItems,

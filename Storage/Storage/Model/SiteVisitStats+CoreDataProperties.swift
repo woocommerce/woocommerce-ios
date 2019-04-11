@@ -8,6 +8,7 @@ extension SiteVisitStats {
         return NSFetchRequest<SiteVisitStats>(entityName: "SiteVisitStats")
     }
 
+    @NSManaged public var queryID: String
     @NSManaged public var date: String
     @NSManaged public var granularity: String
     @NSManaged public var items: Set<SiteVisitStatsItem>?

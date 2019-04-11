@@ -6,6 +6,10 @@ import XCTest
 ///
 class OrderStatsMapperTests: XCTestCase {
 
+    /// Dummy Query ID.
+    ///
+    private let dummyQueryID = "dummyQueryID"
+
     /// Verifies that all of the day unit OrderStats fields are parsed correctly.
     ///
     func testDayUnitStatFieldsAreProperlyParsed() {
@@ -14,6 +18,7 @@ class OrderStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(dayStats.queryID, dummyQueryID)
         XCTAssertEqual(dayStats.granularity, .day)
         XCTAssertEqual(dayStats.date, "2018-06-08")
         XCTAssertEqual(dayStats.quantity, "31")
@@ -76,6 +81,7 @@ class OrderStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(weekStats.queryID, dummyQueryID)
         XCTAssertEqual(weekStats.granularity, .week)
         XCTAssertEqual(weekStats.date, "2018-W30")
         XCTAssertEqual(weekStats.quantity, "31")
@@ -158,6 +164,7 @@ class OrderStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(monthStats.queryID, dummyQueryID)
         XCTAssertEqual(monthStats.granularity, .month)
         XCTAssertEqual(monthStats.date, "2018-06")
         XCTAssertEqual(monthStats.quantity, "12")
@@ -220,6 +227,7 @@ class OrderStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(yearStats.queryID, dummyQueryID)
         XCTAssertEqual(yearStats.granularity, .year)
         XCTAssertEqual(yearStats.date, "2018")
         XCTAssertEqual(yearStats.quantity, "4")
@@ -287,7 +295,7 @@ private extension OrderStatsMapperTests {
             return nil
         }
 
-        return try! OrderStatsMapper().map(response: response)
+        return try! OrderStatsMapper(queryID: dummyQueryID).map(response: response)
     }
 
     /// Returns the OrderStatsMapper output upon receiving `order-stats-day`

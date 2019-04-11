@@ -63,22 +63,24 @@ public extension StorageType {
 
     /// Retrieves the Stored SiteVisitStats.
     ///
-    public func loadSiteVisitStats(granularity: String) -> SiteVisitStats? {
-        let predicate = NSPredicate(format: "granularity ==[c] %@", granularity)
+    public func loadSiteVisitStats(queryID: String) -> SiteVisitStats? {
+        let predicate = NSPredicate(format: "queryID == %@", queryID)
         return firstObject(ofType: SiteVisitStats.self, matching: predicate)
     }
 
     /// Retrieves the Stored OrderStats.
     ///
-    public func loadOrderStats(granularity: String) -> OrderStats? {
-        let predicate = NSPredicate(format: "granularity ==[c] %@", granularity)
+    public func loadOrderStats(queryID: String) -> OrderStats? {
+        let predicate = NSPredicate(format: "queryID == %@", queryID)
         return firstObject(ofType: OrderStats.self, matching: predicate)
     }
 
     /// Retrieves the Stored OrderStatsItem.
     ///
-    public func loadOrderStatsItem(period: String) -> OrderStatsItem? {
-        let predicate = NSPredicate(format: "period ==[c] %@", period)
+    public func loadOrderStatsItem(queryID: String, period: String) -> OrderStatsItem? {
+        let predicate = NSPredicate(format: "%K == %@ AND %K ==[c] %@",
+                                    #keyPath(OrderStatsItem.stats.queryID), queryID,
+                                    #keyPath(OrderStatsItem.period), period)
         return firstObject(ofType: OrderStatsItem.self, matching: predicate)
     }
 

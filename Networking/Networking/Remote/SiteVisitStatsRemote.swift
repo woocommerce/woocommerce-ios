@@ -10,12 +10,14 @@ public class SiteVisitStatsRemote: Remote {
     ///
     /// - Parameters:
     ///   - siteID: The site ID
+    ///   - queryID: Local query ID to attach to the result
     ///   - unit: Defines the granularity of the stats we are fetching (one of 'day', 'week', 'month', or 'year')
     ///   - latestDateToInclude: The latest date to include in the results.
     ///   - quantity: How many `unit`s to fetch
     ///   - completion: Closure to be executed upon completion.
     ///
     public func loadSiteVisitorStats(for siteID: Int,
+                                     queryID: String,
                                      unit: StatGranularity,
                                      latestDateToInclude: Date,
                                      quantity: Int,
@@ -26,7 +28,7 @@ public class SiteVisitStatsRemote: Remote {
                           ParameterKeys.quantity: String(quantity),
                           ParameterKeys.statFields: Constants.visitorStatFieldValue]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
-        let mapper = SiteVisitStatsMapper()
+        let mapper = SiteVisitStatsMapper(queryID: queryID)
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

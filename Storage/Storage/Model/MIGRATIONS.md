@@ -2,6 +2,12 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 14
+
+- @jeanregisser 2019-04-11
+  - Added `queryID` attribute on `OrderStats` entity
+  - Added `queryID` attribute on `SiteVisitStats` entity
+
 ## Model 13 (Release 1.6.0.0)
 - @bummytime 2019-03-28
     - Added  `settingGroupKey` attribute on `SiteSetting` entity

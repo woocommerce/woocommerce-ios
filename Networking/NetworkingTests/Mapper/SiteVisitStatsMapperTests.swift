@@ -6,6 +6,10 @@ import XCTest
 ///
 class SiteVisitStatsMapperTests: XCTestCase {
 
+    /// Dummy Query ID.
+    ///
+    private let dummyQueryID = "dummyQueryID"
+
     /// Verifies that all of the day unit SiteVisitStats fields are parsed correctly.
     ///
     func testDayUnitStatFieldsAreProperlyParsed() {
@@ -14,6 +18,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(dayStats.queryID, dummyQueryID)
         XCTAssertEqual(dayStats.granularity, .day)
         XCTAssertEqual(dayStats.date, "2018-08-06")
         XCTAssertEqual(dayStats.items!.count, 12)
@@ -36,6 +41,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(weekStats.queryID, dummyQueryID)
         XCTAssertEqual(weekStats.granularity, .week)
         XCTAssertEqual(weekStats.date, "2018-08-06")
         XCTAssertEqual(weekStats.items!.count, 12)
@@ -58,6 +64,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(monthStats.queryID, dummyQueryID)
         XCTAssertEqual(monthStats.granularity, .month)
         XCTAssertEqual(monthStats.date, "2018-08-06")
         XCTAssertEqual(monthStats.items!.count, 12)
@@ -80,6 +87,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(yearStats.queryID, dummyQueryID)
         XCTAssertEqual(yearStats.granularity, .year)
         XCTAssertEqual(yearStats.date, "2018-08-06")
         XCTAssertEqual(yearStats.items!.count, 5)
@@ -107,7 +115,7 @@ private extension SiteVisitStatsMapperTests {
             return nil
         }
 
-        return try! SiteVisitStatsMapper().map(response: response)
+        return try! SiteVisitStatsMapper(queryID: dummyQueryID).map(response: response)
     }
 
     /// Returns the SiteVisitStatsMapper output upon receiving `site-visits-day`

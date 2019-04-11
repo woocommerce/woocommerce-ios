@@ -4,6 +4,7 @@ import Foundation
 /// Represents site visit stats over a specific period.
 ///
 public struct SiteVisitStats: Decodable {
+    public let queryID: String
     public let date: String
     public let granularity: StatGranularity
     public let items: [SiteVisitStatsItem]?
@@ -11,6 +12,10 @@ public struct SiteVisitStats: Decodable {
     /// The public initializer for order stats.
     ///
     public init(from decoder: Decoder) throws {
+        guard let queryID = decoder.userInfo[.queryID] as? String else {
+            throw SiteVisitStatsDecodingError.missingQueryID
+        }
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let date = try container.decode(String.self, forKey: .date)
@@ -22,13 +27,14 @@ public struct SiteVisitStats: Decodable {
         let items = rawDataContainers.map({ SiteVisitStatsItem(period: $0.fetchStringValue(for: ItemFieldNames.period),
                                                                visitors: $0.fetchIntValue(for: ItemFieldNames.visitors)) })
 
-        self.init(date: date, granularity: granularity, items: items)
+        self.init(queryID: queryID, date: date, granularity: granularity, items: items)
     }
 
 
     /// SiteVisitStats struct initializer.
     ///
-    public init(date: String, granularity: StatGranularity, items: [SiteVisitStatsItem]?) {
+    public init(queryID: String, date: String, granularity: StatGranularity, items: [SiteVisitStatsItem]?) {
+        self.queryID = queryID
         self.date = date
         self.granularity = granularity
         self.items = items
@@ -59,7 +65,8 @@ private extension SiteVisitStats {
 //
 extension SiteVisitStats: Comparable {
     public static func == (lhs: SiteVisitStats, rhs: SiteVisitStats) -> Bool {
-        return lhs.date == rhs.date &&
+        return lhs.queryID == rhs.queryID &&
+            lhs.date == rhs.date &&
             lhs.granularity == rhs.granularity &&
             lhs.items?.count == rhs.items?.count &&
             lhs.items?.sorted() == rhs.items?.sorted()
@@ -68,6 +75,13 @@ extension SiteVisitStats: Comparable {
     public static func < (lhs: SiteVisitStats, rhs: SiteVisitStats) -> Bool {
         return lhs.date < rhs.date
     }
+}
+
+
+// MARK: - Decoding Errors
+//
+enum SiteVisitStatsDecodingError: Error {
+    case missingQueryID
 }
 
 

@@ -28,9 +28,10 @@ class SiteVisitStatsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load order stats")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits-day")
-        remote.loadSiteVisitorStats(for: sampleSiteID, unit: .day, latestDateToInclude: Date(), quantity: 12) { (siteVisitStats, error) in
+        remote.loadSiteVisitorStats(for: sampleSiteID, queryID: "day", unit: .day, latestDateToInclude: Date(), quantity: 12) { (siteVisitStats, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(siteVisitStats)
+            XCTAssertEqual(siteVisitStats?.queryID, "day")
             XCTAssertEqual(siteVisitStats?.items?.count, 12)
             expectation.fulfill()
         }
@@ -44,7 +45,7 @@ class SiteVisitStatsRemoteTests: XCTestCase {
         let remote = SiteVisitStatsRemote(network: network)
         let expectation = self.expectation(description: "Load order stats contains errors")
 
-        remote.loadSiteVisitorStats(for: sampleSiteID, unit: .day, latestDateToInclude: Date(), quantity: 12) { (siteVisitStats, error) in
+        remote.loadSiteVisitorStats(for: sampleSiteID, queryID: "day", unit: .day, latestDateToInclude: Date(), quantity: 12) { (siteVisitStats, error) in
             XCTAssertNil(siteVisitStats)
             XCTAssertNotNil(error)
             expectation.fulfill()

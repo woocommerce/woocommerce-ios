@@ -51,7 +51,7 @@ class StatsStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/orders/", filename: "order-stats")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStats.self), 0)
 
-        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
+        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, queryID: "day", granularity: .day,
                                                     latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (error) in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStats.self), 1)
@@ -78,7 +78,7 @@ class StatsStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatsItem.self), 2)
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/orders/", filename: "order-stats-alt")
-        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
+        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, queryID: "day", granularity: .day,
                                                     latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (error) in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStats.self), 1)
@@ -100,7 +100,7 @@ class StatsStoreTests: XCTestCase {
         let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/orders/", filename: "generic_error")
-        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
+        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, queryID: "day", granularity: .day,
                                                     latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -116,7 +116,7 @@ class StatsStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve site visit stats empty response")
         let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, granularity: .day,
+        let action = StatsAction.retrieveOrderStats(siteID: sampleSiteID, queryID: "day", granularity: .day,
                                                     latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -132,10 +132,10 @@ class StatsStoreTests: XCTestCase {
         let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrderStats = sampleOrderStats()
 
-        XCTAssertNil(viewStorage.loadOrderStats(granularity: StatGranularity.year.rawValue))
+        XCTAssertNil(viewStorage.loadOrderStats(queryID: "day"))
         statsStore.upsertStoredOrderStats(readOnlyStats: remoteOrderStats)
 
-        let storageOrderStats = viewStorage.loadOrderStats(granularity: StatGranularity.day.rawValue)
+        let storageOrderStats = viewStorage.loadOrderStats(queryID: "day")
         XCTAssertEqual(storageOrderStats?.toReadOnly(), remoteOrderStats)
     }
 
@@ -144,7 +144,7 @@ class StatsStoreTests: XCTestCase {
     func testUpdateStoredOrderStatsEffectivelyUpdatesPreexistantOrderStats() {
         let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        XCTAssertNil(viewStorage.loadOrderStats(granularity: StatGranularity.day.rawValue))
+        XCTAssertNil(viewStorage.loadOrderStats(queryID: "day"))
         statsStore.upsertStoredOrderStats(readOnlyStats: sampleOrderStats())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStats.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsItem.self), 2)
@@ -153,8 +153,31 @@ class StatsStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsItem.self), 2)
 
         let expectedOrderStats = sampleOrderStatsMutated()
-        let storageOrderStats = viewStorage.loadOrderStats(granularity: StatGranularity.day.rawValue)
+        let storageOrderStats = viewStorage.loadOrderStats(queryID: "day")
         XCTAssertEqual(storageOrderStats?.toReadOnly(), expectedOrderStats)
+    }
+
+    /// Verifies that `upsertStoredOrderStats` does not mix up items with different queryIDs and same periods
+    ///
+    func testUpsertStoredOrderStatsKeepsItemsSeparateBasedOnQueryID() {
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let orderStatsDay = sampleOrderStats(queryID: "day")
+        let orderStatsCustom = sampleOrderStats(queryID: "custom")
+        XCTAssertNil(viewStorage.loadOrderStats(queryID: "day"))
+        XCTAssertNil(viewStorage.loadOrderStats(queryID: "custom"))
+        statsStore.upsertStoredOrderStats(readOnlyStats: orderStatsDay)
+        statsStore.upsertStoredOrderStats(readOnlyStats: orderStatsCustom)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStats.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsItem.self), 4)
+
+        let storageOrderStatsDay = viewStorage.loadOrderStats(queryID: "day")
+        XCTAssertEqual(storageOrderStatsDay?.items?.count, 2)
+        XCTAssertEqual(storageOrderStatsDay?.toReadOnly(), orderStatsDay)
+
+        let storageOrderStatsCustom = viewStorage.loadOrderStats(queryID: "custom")
+        XCTAssertEqual(storageOrderStatsCustom?.items?.count, 2)
+        XCTAssertEqual(storageOrderStatsCustom?.toReadOnly(), orderStatsCustom)
     }
 
 
@@ -171,7 +194,8 @@ class StatsStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 0)
 
         let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID,
-                                                        granularity: .day,
+                                                        queryID: "year",
+                                                        granularity: .year,
                                                         latestDateToInclude: date(with: "2018-08-06T17:06:55"),
                                                         quantity: 2) { (error) in
             XCTAssertNil(error)
@@ -200,6 +224,7 @@ class StatsStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits-alt")
         let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID,
+                                                        queryID: "year",
                                                         granularity: .year,
                                                         latestDateToInclude: date(with: "2018-08-06T17:06:55"),
                                                         quantity: 2) { (error) in
@@ -224,6 +249,7 @@ class StatsStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "generic_error")
         let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID,
+                                                        queryID: "year",
                                                         granularity: .year,
                                                         latestDateToInclude: date(with: "2018-08-06T17:06:55"),
                                                         quantity: 2) { (error) in
@@ -242,6 +268,7 @@ class StatsStoreTests: XCTestCase {
         let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let action = StatsAction.retrieveSiteVisitStats(siteID: sampleSiteID,
+                                                        queryID: "year",
                                                         granularity: .year,
                                                         latestDateToInclude: date(with: "2018-08-06T17:06:55"),
                                                         quantity: 2) { (error) in
@@ -259,10 +286,10 @@ class StatsStoreTests: XCTestCase {
         let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteSiteVisitStats = sampleSiteVisitStats()
 
-        XCTAssertNil(viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue))
+        XCTAssertNil(viewStorage.loadSiteVisitStats(queryID: "year"))
         statsStore.upsertStoredSiteVisitStats(readOnlyStats: remoteSiteVisitStats)
 
-        let storageSiteVisitStats = viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue)
+        let storageSiteVisitStats = viewStorage.loadSiteVisitStats(queryID: "year")
         XCTAssertEqual(storageSiteVisitStats?.toReadOnly(), remoteSiteVisitStats)
     }
 
@@ -271,7 +298,7 @@ class StatsStoreTests: XCTestCase {
     func testUpdateStoredSiteVisitStatsEffectivelyUpdatesPreexistantSiteVisitStats() {
         let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        XCTAssertNil(viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue))
+        XCTAssertNil(viewStorage.loadSiteVisitStats(queryID: "year"))
         statsStore.upsertStoredSiteVisitStats(readOnlyStats: sampleSiteVisitStats())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
@@ -280,8 +307,31 @@ class StatsStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
 
         let expectedSiteVisitStats = sampleSiteVisitStatsMutated()
-        let storageSiteVisitStats = viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue)
+        let storageSiteVisitStats = viewStorage.loadSiteVisitStats(queryID: "year")
         XCTAssertEqual(storageSiteVisitStats?.toReadOnly(), expectedSiteVisitStats)
+    }
+
+    /// Verifies that `upsertStoredSiteVisitStats` does not mix up items with different queryIDs and same periods
+    ///
+    func testUpsertStoredSiteVisitStatsKeepsItemsSeparateBasedOnQueryID() {
+        let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let siteVisitStatsDay = sampleSiteVisitStats(queryID: "day")
+        let siteVisitStatsCustom = sampleSiteVisitStats(queryID: "custom")
+        XCTAssertNil(viewStorage.loadSiteVisitStats(queryID: "day"))
+        XCTAssertNil(viewStorage.loadSiteVisitStats(queryID: "custom"))
+        statsStore.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStatsDay)
+        statsStore.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStatsCustom)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 4)
+
+        let storageSiteVisitStatsDay = viewStorage.loadSiteVisitStats(queryID: "day")
+        XCTAssertEqual(storageSiteVisitStatsDay?.items?.count, 2)
+        XCTAssertEqual(storageSiteVisitStatsDay?.toReadOnly(), siteVisitStatsDay)
+
+        let storageSiteVisitStatsCustom = viewStorage.loadSiteVisitStats(queryID: "custom")
+        XCTAssertEqual(storageSiteVisitStatsCustom?.items?.count, 2)
+        XCTAssertEqual(storageSiteVisitStatsCustom?.toReadOnly(), siteVisitStatsCustom)
     }
 
 
@@ -462,8 +512,9 @@ private extension StatsStoreTests {
 
     // MARK: - Order Stats Sample
 
-    func sampleOrderStats() -> Networking.OrderStats {
-        return OrderStats(date: "2018-06-02",
+    func sampleOrderStats(queryID: String? = nil) -> Networking.OrderStats {
+        return OrderStats(queryID: queryID ?? "day",
+                          date: "2018-06-02",
                           granularity: .day,
                           quantity: "2",
                           items: [sampleOrderStatsItem1(), sampleOrderStatsItem2()],
@@ -520,7 +571,8 @@ private extension StatsStoreTests {
     }
 
     func sampleOrderStatsMutated() -> Networking.OrderStats {
-        return OrderStats(date: "2018-06-02",
+        return OrderStats(queryID: "day",
+                          date: "2018-06-02",
                           granularity: .day,
                           quantity: "2",
                           items: [sampleOrderStatsItem1Mutated(), sampleOrderStatsItem2Mutated()],
@@ -578,8 +630,9 @@ private extension StatsStoreTests {
 
     // MARK: - Site Visit Stats Sample
 
-    func sampleSiteVisitStats() -> Networking.SiteVisitStats {
-        return SiteVisitStats(date: "2015-08-06",
+    func sampleSiteVisitStats(queryID: String? = nil) -> Networking.SiteVisitStats {
+        return SiteVisitStats(queryID: queryID ?? "year",
+                              date: "2015-08-06",
                               granularity: .year,
                               items: [sampleSiteVisitStatsItem1(), sampleSiteVisitStatsItem2()])
     }
@@ -594,7 +647,8 @@ private extension StatsStoreTests {
     }
 
     func sampleSiteVisitStatsMutated() -> Networking.SiteVisitStats {
-        return SiteVisitStats(date: "2015-08-06",
+        return SiteVisitStats(queryID: "year",
+                              date: "2015-08-06",
                               granularity: .year,
                               items: [sampleSiteVisitStatsItem1Mutated(), sampleSiteVisitStatsItem2Mutated()])
     }

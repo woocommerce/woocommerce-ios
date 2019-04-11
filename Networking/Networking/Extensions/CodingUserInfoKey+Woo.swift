@@ -20,4 +20,8 @@ extension CodingUserInfoKey {
     /// Used to store the ProductID within a Coder/Decoder's userInfo dictionary.
     ///
     public static let productID = CodingUserInfoKey(rawValue: "productID")!
+
+    /// Used to store the QueryID within a Coder/Decoder's userInfo dictionary.
+    ///
+    public static let queryID = CodingUserInfoKey(rawValue: "queryID")!
 }

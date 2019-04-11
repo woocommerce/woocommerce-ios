@@ -4,6 +4,7 @@ import Foundation
 /// Represents order stats over a specific period.
 ///
 public struct OrderStats: Decodable {
+    public let queryID: String
     public let date: String
     public let granularity: StatGranularity
     public let quantity: String
@@ -21,6 +22,10 @@ public struct OrderStats: Decodable {
     /// The public initializer for order stats.
     ///
     public init(from decoder: Decoder) throws {
+        guard let queryID = decoder.userInfo[.queryID] as? String else {
+            throw OrderStatsDecodingError.missingQueryID
+        }
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let date = try container.decode(String.self, forKey: .date)
@@ -60,7 +65,8 @@ public struct OrderStats: Decodable {
                                                            avgProductsPerOrder: $0.fetchDoubleValue(for: ItemFieldNames.avgProductsPerOrder)) })
 
 
-        self.init(date: date,
+        self.init(queryID: queryID,
+                  date: date,
                   granularity: granularity,
                   quantity: quantity,
                   items: items,
@@ -77,7 +83,8 @@ public struct OrderStats: Decodable {
 
     /// OrderStats struct initializer.
     ///
-    public init(date: String,
+    public init(queryID: String,
+                date: String,
                 granularity: StatGranularity,
                 quantity: String,
                 items: [OrderStatsItem]?,
@@ -89,6 +96,7 @@ public struct OrderStats: Decodable {
                 averageNetSales: Double,
                 averageOrders: Double,
                 averageProducts: Double) {
+        self.queryID = queryID
         self.date = date
         self.granularity = granularity
         self.quantity = quantity
@@ -131,7 +139,8 @@ private extension OrderStats {
 //
 extension OrderStats: Comparable {
     public static func == (lhs: OrderStats, rhs: OrderStats) -> Bool {
-        return lhs.date == rhs.date &&
+        return lhs.queryID == rhs.queryID &&
+            lhs.date == rhs.date &&
             lhs.granularity == rhs.granularity &&
             lhs.quantity == rhs.quantity &&
             lhs.totalGrossSales == rhs.totalGrossSales &&
@@ -150,6 +159,12 @@ extension OrderStats: Comparable {
         return lhs.date < rhs.date ||
             (lhs.date == rhs.date && lhs.quantity < rhs.quantity)
     }
+}
+
+// MARK: - Decoding Errors
+//
+enum OrderStatsDecodingError: Error {
+    case missingQueryID
 }
 
 

@@ -8,7 +8,24 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
     // MARK: - Public Properties
 
-    public let granularity: StatGranularity
+    public private(set) var granularity: StatGranularity
+    public let isCustomRange: Bool
+    public var statsQueryOptions: StatsQueryOptions {
+        return StatsQueryOptions(
+            queryID: queryID,
+            granularity: granularity,
+            // TODO: implement UI to select custom range
+            period: isCustomRange ? .range(from: Date(timeIntervalSince1970: 1554715707), to: Date(timeIntervalSince1970: 1554974907))
+                                  : .latest
+        )
+    }
+    public var queryID: String {
+        if isCustomRange {
+            return "custom"
+        }
+
+        return granularity.rawValue
+    }
     public var orderStats: OrderStats? {
         return orderStatsResultsController.fetchedObjects.first
     }
@@ -40,7 +57,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     ///
     private lazy var siteStatsResultsController: ResultsController<StorageSiteVisitStats> = {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "granularity ==[c] %@", granularity.rawValue)
+        let predicate = NSPredicate(format: "queryID == %@", queryID)
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
@@ -50,7 +67,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     ///
     private lazy var orderStatsResultsController: ResultsController<StorageOrderStats> = {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "granularity ==[c] %@", granularity.rawValue)
+        let predicate = NSPredicate(format: "queryID == %@", queryID)
         let descriptor = NSSortDescriptor(keyPath: \StorageOrderStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
@@ -100,12 +117,17 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
     /// Designated Initializer
     ///
-    init(granularity: StatGranularity) {
+    init(granularity: StatGranularity, isCustomRange: Bool = false) {
         self.granularity = granularity
+        self.isCustomRange = isCustomRange
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
         self.configureResultsControllers()
+    }
+
+    convenience init(isCustomRange: Bool) {
+        self.init(granularity: .year, isCustomRange: isCustomRange)
     }
 
     /// NSCoder Conformance
@@ -303,7 +325,8 @@ private extension PeriodDataViewController {
 //
 extension PeriodDataViewController {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: granularity.pluralizedString)
+        return IndicatorInfo(title: isCustomRange ? NSLocalizedString("Custom", comment: "Custom stats period range")
+                                                  : granularity.pluralizedString)
     }
 }
 

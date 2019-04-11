@@ -8,6 +8,7 @@ protocol ShipmentProviderListDelegate: AnyObject {
 final class ShipmentProvidersViewController: UIViewController {
     private let viewModel: ShippingProvidersViewModel
     private weak var delegate: ShipmentProviderListDelegate?
+    private var emptyListOverlay: EmptyListMessageWithActionView?
 
     @IBOutlet weak var table: UITableView!
 
@@ -194,10 +195,26 @@ private extension ShipmentProvidersViewController {
             return
         }
 
+        emptyListOverlay = EmptyListMessageWithActionView.instantiateFromNib()
+        emptyListOverlay?.messageText = NSLocalizedString("No results found for DHL.\nAdd a custom provider", comment: "Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider'")
+        emptyListOverlay?.actionText = NSLocalizedString("Custom Provider", comment: "Title of button to add a custom shipment tracking provider when filtering the provider list yields no results.")
+        emptyListOverlay?.onAction = { [weak self] in
+            self?.addCustomProvider()
+        }
+
+        emptyListOverlay?.attach(to: view)
     }
 
     func removeEmptyState() {
+        if emptyListOverlay != nil {
+            emptyListOverlay?.removeFromSuperview()
+            emptyListOverlay = nil
+        }
+    }
 
+    func addCustomProvider() {
+        // TO be implemented as part of #846:
+        // https://github.com/woocommerce/woocommerce-ios/issues/846
     }
 }
 

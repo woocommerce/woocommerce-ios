@@ -79,6 +79,8 @@ private extension ShipmentProvidersViewController {
     }
 
     func configureSearchController() {
+        searchController.searchBar.textField?.backgroundColor = StyleManager.tableViewBackgroundColor
+
         guard table.tableHeaderView == nil else {
             return
         }

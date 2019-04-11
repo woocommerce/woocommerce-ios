@@ -419,7 +419,7 @@ import WordPressUI
     /// If installed via CocoaPods, this will be WordPressAuthenticator.bundle,
     /// otherwise it will be the framework bundle.
     ///
-    class var bundle: Bundle {
+    public class var bundle: Bundle {
         let defaultBundle = Bundle(for: WordPressAuthenticator.self)
         // If installed with CocoaPods, resources will be in WordPressAuthenticator.bundle
         if let bundleURL = defaultBundle.resourceURL,

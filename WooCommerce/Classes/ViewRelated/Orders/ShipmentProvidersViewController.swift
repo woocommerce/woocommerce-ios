@@ -30,6 +30,12 @@ final class ShipmentProvidersViewController: UIViewController {
         return noticePresenter
     }()
 
+    /// Deinitializer
+    ///
+    deinit {
+        stopListeningToNotifications()
+    }
+
     init(viewModel: ShippingProvidersViewModel, delegate: ShipmentProviderListDelegate) {
         self.viewModel = viewModel
         self.delegate = delegate
@@ -47,6 +53,7 @@ final class ShipmentProvidersViewController: UIViewController {
         configureSearchController()
         configureTable()
         configureViewModel()
+        startListeningToNotifications()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -103,6 +110,41 @@ private extension ShipmentProvidersViewController {
     }
 }
 
+
+// MARK: - Keyboard management
+//
+private extension ShipmentProvidersViewController {
+    /// Registers for all of the related Notifications
+    ///
+    func startListeningToNotifications() {
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+    }
+
+    /// Unregisters from the Notification Center
+    ///
+    func stopListeningToNotifications() {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    /// Executed whenever `UIResponder.keyboardWillShowNotification` note is posted
+    ///
+    @objc func keyboardWillShow(_ note: Notification) {
+        let bottomInset = keyboardHeight(from: note)
+
+        table.contentInset.bottom = bottomInset
+        table.scrollIndicatorInsets.bottom = bottomInset
+    }
+
+    /// Returns the Keyboard Height from a (hopefully) Keyboard Notification.
+    ///
+    func keyboardHeight(from note: Notification) -> CGFloat {
+        let wrappedRect = note.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
+        let keyboardRect = wrappedRect?.cgRectValue ?? .zero
+
+        return keyboardRect.height
+    }
+}
 
 // MARK: - View model configuration and binding
 //

@@ -46,7 +46,7 @@ class ProductDetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigation()
+        configureNavigationTitle()
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
@@ -71,15 +71,11 @@ private extension ProductDetailsViewController {
         tableView.separatorInset = .zero
     }
 
-    /// Setup: Navigation
+    /// Setup: Navigation Title
     ///
-    func configureNavigation() {
+    func configureNavigationTitle() {
         title = NSLocalizedString("Product", comment: "Title of product detail screen.")
-
-        // Don't show the Order details title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
-
 
     /// Reloads the tableView's data, assuming the view has been loaded.
     ///
@@ -150,7 +146,7 @@ private extension ProductDetailsViewController {
 extension ProductDetailsViewController {
 
     @objc func pullToRefresh() {
-        // TODO: refresh the product screen
+        refreshControl.endRefreshing()
     }
 }
 

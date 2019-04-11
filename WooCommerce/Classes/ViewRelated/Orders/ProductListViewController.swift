@@ -71,6 +71,7 @@ extension ProductListViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? ProductDetailsTableViewCell else {
             fatalError()
         }
+        cell.selectionStyle = .default
         cell.configure(item: itemViewModel, with: viewModel)
         return cell
     }
@@ -109,9 +110,12 @@ private extension ProductListViewController {
         return items[indexPath.row]
     }
 
+    /// Displays the product detail screen for the provided ProductID
+    ///
     func productWasPressed(for productID: Int) {
         let loaderViewController = ProductLoaderViewController(productID: productID, siteID: viewModel.order.siteID)
-        navigationController?.pushViewController(loaderViewController, animated: true)
+        let navController = WooNavigationController(rootViewController: loaderViewController)
+        present(navController, animated: true, completion: nil)
     }
 }
 

@@ -48,11 +48,50 @@ class ProductLoaderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavigationItem()
+        configureNavigationTitle()
         configureSpinner()
         configureMainView()
-
+        configureDismissButton()
         reloadProduct()
+    }
+}
+
+
+// MARK: - Configuration
+//
+private extension ProductLoaderViewController {
+
+    /// Setup: Navigation Title
+    ///
+    func configureNavigationTitle() {
+        title = NSLocalizedString("Loading Product", comment: "Displayed when an Product is being retrieved")
+    }
+
+    /// Setup: Main View
+    ///
+    func configureMainView() {
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.addSubview(activityIndicator)
+        view.pinSubviewAtCenter(activityIndicator)
+    }
+
+    /// Setup: Spinner
+    ///
+    func configureSpinner() {
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+    }
+
+    /// Setup: Dismiss Button
+    ///
+    func configureDismissButton() {
+        let dismissButtonTitle = NSLocalizedString("Dismiss", comment: "Product details screen - button title for closing the view")
+        let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,
+                                            style: .plain,
+                                            target: self,
+                                            action: #selector(dismissButtonTapped))
+        leftBarButton.tintColor = .white
+        navigationItem.setLeftBarButton(leftBarButton, animated: false)
     }
 }
 
@@ -81,33 +120,9 @@ private extension ProductLoaderViewController {
         state = .loading
         StoresManager.shared.dispatch(action)
     }
-}
 
-
-// MARK: - Configuration
-//
-private extension ProductLoaderViewController {
-
-    /// Setup: Navigation
-    ///
-    func configureNavigationItem() {
-        title = NSLocalizedString("Loading Product", comment: "Displayed when an Product is being retrieved")
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
-    }
-
-    /// Setup: Main View
-    ///
-    func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        view.addSubview(activityIndicator)
-        view.pinSubviewAtCenter(activityIndicator)
-    }
-
-    /// Setup: Spinner
-    ///
-    func configureSpinner() {
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+    @objc func dismissButtonTapped() {
+        dismiss(animated: true, completion: nil)
     }
 }
 

@@ -1,9 +1,7 @@
 import Foundation
 import UIKit
-
 import Yosemite
 import Gridicons
-
 
 
 /// Renders the Order Fulfillment Interface
@@ -147,7 +145,7 @@ private extension FulfillViewController {
 
 // MARK: - Action Handlers
 //
-extension FulfillViewController {
+private extension FulfillViewController {
 
     /// Whenever the Fulfillment Action is pressed, we'll mark the order as Completed, and pull back to the previous screen.
     ///
@@ -181,7 +179,7 @@ extension FulfillViewController {
 
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
-    private func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
+    func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
             guard let error = error else {
                 WooAnalytics.shared.track(.orderStatusChangeSuccess)
@@ -197,7 +195,7 @@ extension FulfillViewController {
 
     /// Displays the `Order Fulfilled` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
     ///
-    private func displayOrderCompleteNotice(onUndoAction: @escaping () -> Void) {
+    func displayOrderCompleteNotice(onUndoAction: @escaping () -> Void) {
         let message = NSLocalizedString("Order marked as fulfilled", comment: "Order fulfillment success notice")
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
         let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
@@ -218,6 +216,14 @@ extension FulfillViewController {
         }
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Displays the product detail screen for the provided ProductID
+    ///
+    func productWasPressed(for productID: Int) {
+        let loaderViewController = ProductLoaderViewController(productID: productID, siteID: order.siteID)
+        let navController = WooNavigationController(rootViewController: loaderViewController)
+        present(navController, animated: true, completion: nil)
     }
 }
 
@@ -292,7 +298,7 @@ private extension FulfillViewController {
         }
 
         let viewModel = OrderItemViewModel(item: item, currency: order.currency)
-
+        cell.selectionStyle = .default
         cell.name = viewModel.name
         cell.quantity = viewModel.quantity
         cell.price = viewModel.price
@@ -401,6 +407,9 @@ extension FulfillViewController: UITableViewDelegate {
             let addTracking = ManualTrackingViewController(viewModel: viewModel)
             let navController = WooNavigationController(rootViewController: addTracking)
             present(navController, animated: true, completion: nil)
+
+        case .product(let item):
+            productWasPressed(for: item.productID)
 
         default:
             break

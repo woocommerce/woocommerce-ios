@@ -1,22 +1,43 @@
 import UIKit
 import Yosemite
 
+
 class ProductListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
+    private var items = [OrderItem]()
 
     var viewModel: OrderDetailsViewModel!
-    private var items = [OrderItem]()
+
+    // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         self.items = viewModel.order.items
-        title = NSLocalizedString("Details Order #\(viewModel.order.number)", comment: "Screen title: Details Order number (number)")
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        configureMainView()
         configureTableView()
     }
+}
 
+
+// MARK: - Configuration
+//
+private extension ProductListViewController {
+
+    /// Setup: Main View
+    ///
+    func configureMainView() {
+        title = NSLocalizedString("Details Order #\(viewModel.order.number)", comment: "Screen title: Details Order number (number)")
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
+
+        // Don't show the Order details title in the next-view's back button
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+    }
+
+    /// Setup: TableView
+    ///
     func configureTableView() {
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = Constants.rowHeight
@@ -28,15 +49,13 @@ class ProductListViewController: UIViewController {
         let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
         tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
     }
-
-    func itemAtIndexPath(_ indexPath: IndexPath) -> OrderItem {
-        return items[indexPath.row]
-    }
 }
+
 
 // MARK: - UITableViewDataSource Conformance
 //
 extension ProductListViewController: UITableViewDataSource {
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -68,17 +87,39 @@ extension ProductListViewController: UITableViewDataSource {
     }
 }
 
+
 // MARK: - UITableViewDelegate Conformance
 //
 extension ProductListViewController: UITableViewDelegate {
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        let orderItem = itemAtIndexPath(indexPath)
+        productWasPressed(for: orderItem.productID)
     }
 }
 
-// MARK: - Private methods and more
+
+// MARK: - Private Helpers
 //
 private extension ProductListViewController {
+
+    func itemAtIndexPath(_ indexPath: IndexPath) -> OrderItem {
+        return items[indexPath.row]
+    }
+
+    func productWasPressed(for productID: Int) {
+        let loaderViewController = ProductLoaderViewController(productID: productID, siteID: viewModel.order.siteID)
+        navigationController?.pushViewController(loaderViewController, animated: true)
+    }
+}
+
+
+// MARK: - Constants!
+//
+private extension ProductListViewController {
+
     struct Constants {
         static let sectionHeight = CGFloat(44)
         static let rowHeight = CGFloat(80)

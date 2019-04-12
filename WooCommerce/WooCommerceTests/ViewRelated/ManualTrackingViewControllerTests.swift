@@ -6,13 +6,12 @@ final class ManualTrackingViewControllerTests: XCTestCase {
     private var viewModel: ManualTrackingViewModel?
 
     private struct MockData {
-        static let siteID = 1234
-        static let orderID = 5678
+        static let order = MockOrders().sampleOrder()
     }
 
     override func setUp() {
         super.setUp()
-        viewModel = AddTrackingViewModel(siteID: MockData.siteID, orderID: MockData.orderID)
+        viewModel = AddTrackingViewModel(order: MockData.order)
         subject = ManualTrackingViewController(viewModel: viewModel!)
         // Force the VC to load the xib
         let _ = subject?.view

@@ -140,6 +140,7 @@ private extension ProductDetailsViewController {
 extension ProductDetailsViewController {
 
     @objc func pullToRefresh() {
+        DDLogInfo("♻️ Requesting product detail data be reloaded...")
         syncProduct() { [weak self] (error) in
             if let error = error {
                  DDLogError("⛔️ Error loading product details: \(error)")

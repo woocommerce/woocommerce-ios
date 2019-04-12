@@ -6,9 +6,13 @@ import Yosemite
 ///
 class ProductDetailsViewController: UIViewController {
 
-    /// Order to be Fulfilled
+    /// Product to be displayed
     ///
-    private let product: Product?
+    private var product: Product {
+        didSet {
+            reloadTableViewSectionsAndData()
+        }
+    }
 
     /// Main TableView.
     ///
@@ -26,12 +30,17 @@ class ProductDetailsViewController: UIViewController {
         return refreshControl
     }()
 
+    /// EntityListener: Update / Deletion Notifications.
+    ///
+    private lazy var entityListener: EntityListener<Product> = {
+        return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: product)
+    }()
+
     // MARK: - Initializers
 
     /// Designated Initializer
     ///
-    init(product: Product?) {
-        // TODO: this should not be nil
+    init(product: Product) {
         self.product = product
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -50,6 +59,7 @@ class ProductDetailsViewController: UIViewController {
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
+        reloadTableViewSectionsAndData()
     }
 }
 
@@ -71,38 +81,42 @@ private extension ProductDetailsViewController {
         tableView.separatorInset = .zero
     }
 
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells() {
+        let cells = [
+            BasicTableViewCell.self
+        ]
+
+        for cell in cells {
+            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        }
+    }
+
     /// Setup: Navigation Title
     ///
     func configureNavigationTitle() {
         title = NSLocalizedString("Product", comment: "Title of product detail screen.")
     }
 
-    /// Reloads the tableView's data, assuming the view has been loaded.
+    /// Setup: EntityListener
     ///
-    func reloadTableViewDataIfPossible() {
-        guard isViewLoaded else {
-            return
+    func configureEntityListener() {
+        entityListener.onUpsert = { [weak self] product in
+            guard let `self` = self else {
+                return
+            }
+
+            self.product = product
         }
 
-        tableView.reloadData()
-    }
+        entityListener.onDelete = { [weak self] in
+            guard let `self` = self else {
+                return
+            }
 
-    /// Reloads the tableView's sections and data.
-    ///
-    func reloadTableViewSectionsAndData() {
-        reloadSections()
-        reloadTableViewDataIfPossible()
-    }
-
-    /// Registers all of the available TableViewCells
-    ///
-    func registerTableViewCells() {
-        let cells = [
-            BasicTableViewCell.self,
-        ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+            self.navigationController?.dismiss(animated: true, completion: nil)
+            self.displayProductRemovedNotice()
         }
     }
 
@@ -121,9 +135,81 @@ private extension ProductDetailsViewController {
 }
 
 
+// MARK: - Action Handlers
+//
+extension ProductDetailsViewController {
+
+    @objc func pullToRefresh() {
+        syncProduct() { [weak self] (error) in
+            if let error = error {
+                 DDLogError("⛔️ Error loading product details: \(error)")
+                self?.displaySyncingErrorNotice()
+            }
+            self?.refreshControl.endRefreshing()
+        }
+    }
+}
+
+
+// MARK: - Notices
+//
+private extension ProductDetailsViewController {
+
+    /// Displays a notice indicating that the current Product has been removed from the Store.
+    ///
+    func displayProductRemovedNotice() {
+        let message = String.localizedStringWithFormat(
+            NSLocalizedString("Product %ld has been removed from your store",
+                comment: "Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store."
+        ), product.productID)
+
+        let notice = Notice(title: message, feedbackType: .error)
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Displays a notice indicating that an error occurred while sync'ing.
+    ///
+    func displaySyncingErrorNotice() {
+        let message = String.localizedStringWithFormat(
+            NSLocalizedString("Unable to refresh Product #%ld",
+                comment: "Notice displayed when an error occurs while refreshing a product. It reads: Unable to refresh product #{product number}"
+        ), product.productID)
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.refreshControl.beginRefreshing()
+            self?.pullToRefresh()
+        }
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+}
+
+
+// MARK: - Sync'ing Helpers
+//
+private extension ProductDetailsViewController {
+
+    func syncProduct(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ProductAction.retrieveProduct(siteID: product.siteID, productID: product.productID) { [weak self] (product, error) in
+            guard let `self` = self, let product = product else {
+                DDLogError("⛔️ Error synchronizing Product: \(error.debugDescription)")
+                onCompletion?(error)
+                return
+            }
+
+            self.product = product
+            onCompletion?(nil)
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+}
+
+
 // MARK: - Cell Configuration
 //
 private extension ProductDetailsViewController {
+
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as BasicTableViewCell:
@@ -134,19 +220,10 @@ private extension ProductDetailsViewController {
     }
 
     func configureProductDetails(cell: BasicTableViewCell) {
-        cell.textLabel?.text = "Hi there! 😃"
+        cell.textLabel?.text = product.name
+        cell.detailTextLabel?.text = product.fullDescription
         cell.accessoryType = .none
-        cell.selectionStyle = .default
-    }
-}
-
-
-// MARK: - Action Handlers
-//
-extension ProductDetailsViewController {
-
-    @objc func pullToRefresh() {
-        refreshControl.endRefreshing()
+        cell.selectionStyle = .none
     }
 }
 
@@ -230,8 +307,27 @@ extension ProductDetailsViewController: UITableViewDelegate {
 //
 private extension ProductDetailsViewController {
 
+    /// Returns the Row enum value for the provided IndexPath
+    ///
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
+    }
+
+    /// Reloads the tableView's data, assuming the view has been loaded.
+    ///
+    func reloadTableViewDataIfPossible() {
+        guard isViewLoaded else {
+            return
+        }
+
+        tableView.reloadData()
+    }
+
+    /// Reloads the tableView's sections and data.
+    ///
+    func reloadTableViewSectionsAndData() {
+        reloadSections()
+        reloadTableViewDataIfPossible()
     }
 }
 
@@ -284,7 +380,7 @@ private extension ProductDetailsViewController {
         var reuseIdentifier: String {
             switch self {
             case .productSummary:
-                return SummaryTableViewCell.reuseIdentifier
+                return BasicTableViewCell.reuseIdentifier
             }
         }
     }

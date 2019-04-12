@@ -52,7 +52,7 @@ class ProductLoaderViewController: UIViewController {
         configureSpinner()
         configureMainView()
         configureDismissButton()
-        reloadProduct()
+        loadProduct()
     }
 }
 
@@ -102,7 +102,7 @@ private extension ProductLoaderViewController {
 
     /// Loads (and displays) the specified Product.
     ///
-    func reloadProduct() {
+    func loadProduct() {
         let action = ProductAction.retrieveProduct(siteID: siteID, productID: productID) { [weak self] (product, error) in
             guard let `self` = self else {
                 return
@@ -151,7 +151,7 @@ private extension ProductLoaderViewController {
         overlayView.messageText = NSLocalizedString("The Product couldn't be loaded.", comment: "Fetching a product failed")
         overlayView.actionText = NSLocalizedString("Retry", comment: "Retry the last action")
         overlayView.onAction = { [weak self] in
-            self?.reloadProduct()
+            self?.loadProduct()
         }
 
         overlayView.attach(to: view)
@@ -168,9 +168,7 @@ private extension ProductLoaderViewController {
     /// Presents the ProductDetailsViewController, as a childViewController, for a given Product.
     ///
     func presentProductDetails(for product: Product) {
-
-        // TODO: Setup the ProductDetailsViewController with a real product we load in this VC
-        let detailsViewController = ProductDetailsViewController(product: nil)
+        let detailsViewController = ProductDetailsViewController(product: product)
 
         // Attach
         addChild(detailsViewController)

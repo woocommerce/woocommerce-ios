@@ -169,7 +169,7 @@ extension ShipmentProvidersViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let group = viewModel.resultsController.sections[section]
-        return group.objects.first?.providers.count ?? 0
+        return group.objects.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -179,7 +179,7 @@ extension ShipmentProvidersViewController: UITableViewDataSource {
         }
 
         let group = viewModel.resultsController.sections[indexPath.section]
-        let providerName = group.objects.first?.providers[indexPath.item].name ?? ""
+        let providerName = group.objects[indexPath.item].name
         cell.textLabel?.text = providerName
 
         return cell
@@ -196,9 +196,7 @@ extension ShipmentProvidersViewController: UITableViewDataSource {
 extension ShipmentProvidersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let group = viewModel.resultsController.sections[indexPath.section]
-        guard let provider = group.objects.first?.providers[indexPath.item] else {
-            return
-        }
+        let provider = group.objects[indexPath.item]
 
         let groupName = viewModel.resultsController.sections[indexPath.section].name
 

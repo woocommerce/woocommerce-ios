@@ -12,17 +12,23 @@ final class ShippingProvidersViewModel {
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) StorageShipmentTrackingProviderGroup in sync.
     ///
-    private(set) lazy var resultsController: ResultsController<StorageShipmentTrackingProviderGroup> = {
+    private(set) lazy var resultsController: ResultsController<StorageShipmentTrackingProvider> = {
         let storageManager = AppDelegate.shared.storageManager
         let predicate = NSPredicate(format: "siteID == %lld",
                                     StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
-        let descriptor = NSSortDescriptor(key: #keyPath(StorageShipmentTrackingProviderGroup.name),
+
+        let groupNameKeyPath = #keyPath(StorageShipmentTrackingProvider.group.name)
+        let providerNameKeyPath = #keyPath(StorageShipmentTrackingProvider.name)
+
+        let providerGroupDescriptor = NSSortDescriptor(key: groupNameKeyPath,
+                                                      ascending: true)
+        let providerNameDescriptor = NSSortDescriptor(key: providerNameKeyPath,
                                           ascending: true)
 
-        return ResultsController<StorageShipmentTrackingProviderGroup>(storageManager: storageManager,
-                                                                       sectionNameKeyPath: #keyPath(StorageShipmentTrackingProviderGroup.name),
+        return ResultsController<StorageShipmentTrackingProvider>(storageManager: storageManager,
+                                                                       sectionNameKeyPath: groupNameKeyPath,
                                                                        matching: predicate,
-                                                                       sortedBy: [descriptor])
+                                                                       sortedBy: [providerGroupDescriptor, providerNameDescriptor])
     }()
 
     /// Closure to be executed in case there is an error fetching data
@@ -69,7 +75,7 @@ final class ShippingProvidersViewModel {
     /// Filter results by text
     ///
     func filter(by text: String) {
-        let predicate = NSPredicate(format: "ANY providers.name CONTAINS[cd] %@", text)
+        let predicate = NSPredicate(format: "name CONTAINS[cd] %@", text)
         resultsController.predicate = predicate
     }
 

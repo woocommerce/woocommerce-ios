@@ -2,6 +2,8 @@ import Foundation
 import UIKit
 import Yosemite
 
+/// Encapsulates the data necessary to render a list of shipment providers
+///
 final class ShippingProvidersViewModel {
     private let orderID: Int
 
@@ -22,8 +24,12 @@ final class ShippingProvidersViewModel {
                                                                        sortedBy: [descriptor])
     }()
 
+    /// Closure to be executed in case there is an error fetching data
+    ///
     var onError: ((Error) -> Void)?
 
+    /// Convenience property to check if the data collection is empty
+    ///
     var isListEmpty: Bool {
         return resultsController.fetchedObjects.count == 0
     }
@@ -62,8 +68,7 @@ final class ShippingProvidersViewModel {
     /// Filter results by text
     ///
     func filter(by text: String) {
-        let predicate = NSPredicate(format: "ANY providers.name CONTAINS[cd] %@",
-                                    text)
+        let predicate = NSPredicate(format: "ANY providers.name CONTAINS[cd] %@", text)
         resultsController.predicate = predicate
     }
 

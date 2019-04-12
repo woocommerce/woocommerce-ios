@@ -7,8 +7,7 @@ final class EditManualTrackingViewModelTest: XCTestCase {
     private var subject: EditTrackingViewModel?
 
     private struct MockData {
-        static let siteID = 1234
-        static let orderID = 5678
+        static let order = MockOrders().sampleOrder()
         static let title = "Edit Tracking"
         static let primaryActionTitle = "Save"
         static let secondaryActiontitle = "Delete Tracking"
@@ -32,7 +31,7 @@ final class EditManualTrackingViewModelTest: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        subject = EditTrackingViewModel(siteID: MockData.siteID, orderID: MockData.orderID, shipmentTracking: MockData.shipmentTracking)
+        subject = EditTrackingViewModel(order: MockData.order, shipmentTracking: MockData.shipmentTracking)
     }
 
     override func tearDown() {
@@ -41,11 +40,11 @@ final class EditManualTrackingViewModelTest: XCTestCase {
     }
 
     func testSiteIDRemainsUnchanged() {
-        XCTAssertEqual(subject?.siteID, MockData.siteID)
+        XCTAssertEqual(subject?.siteID, MockData.order.siteID)
     }
 
     func testOrderIDRemainsUnchanged() {
-        XCTAssertEqual(subject?.orderID, MockData.orderID)
+        XCTAssertEqual(subject?.orderID, MockData.order.orderID)
     }
 
     func testTitleReturnsExpectation() {

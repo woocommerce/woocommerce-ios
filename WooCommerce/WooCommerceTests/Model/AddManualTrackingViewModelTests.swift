@@ -7,8 +7,7 @@ final class AddManualTrackingViewModelTests: XCTestCase {
     private var subject: AddTrackingViewModel?
 
     private struct MockData {
-        static let siteID = 1234
-        static let orderID = 5678
+        static let order = MockOrders().sampleOrder()
         static let title = "Add Tracking"
         static let primaryActionTitle = "Add"
         static let sectionCount = 1
@@ -24,7 +23,7 @@ final class AddManualTrackingViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        subject = AddTrackingViewModel(siteID: MockData.siteID, orderID: MockData.orderID)
+        subject = AddTrackingViewModel(order: MockData.order)
     }
 
     override func tearDown() {
@@ -33,11 +32,11 @@ final class AddManualTrackingViewModelTests: XCTestCase {
     }
 
     func testSiteIDRemainsUnchanged() {
-        XCTAssertEqual(subject?.siteID, MockData.siteID)
+        XCTAssertEqual(subject?.siteID, MockData.order.siteID)
     }
 
     func testOrderIDRemainsUnchanged() {
-        XCTAssertEqual(subject?.orderID, MockData.orderID)
+        XCTAssertEqual(subject?.orderID, MockData.order.orderID)
     }
 
     func testTitleReturnsExpectation() {

@@ -141,6 +141,8 @@ public enum WooAnalyticsStat: String {
     case orderDetailProductDetailTapped         = "order_detail_product_detail_button_tapped"
     case orderDetailTrackPackageButtonTapped    = "order_detail_track_package_button_tapped"
     case orderFulfillmentCompleteButtonTapped   = "order_fulfillment_mark_order_complete_button_tapped"
+    case orderFulfillmentAddTrackingButtonTapped = "order_fulfillment_tracking_add_tracking_button_tapped"
+    case orderFulfillmentTrackingCarrierSelected = "order_fulfillment_tracking_carrier_selected"
     case orderMarkedCompleteUndoButtonTapped    = "snack_order_marked_complete_undo_button_tapped"
     case orderShareStoreButtonTapped            = "orders_list_share_your_store_button_tapped"
     case orderStatusDialogApplyButtonTapped     = "set_order_status_dialog_apply_button_tapped"
@@ -159,7 +161,10 @@ public enum WooAnalyticsStat: String {
     case orderStatusChangeSuccess               = "order_status_change_success"
     case orderStatusChangeFailed                = "order_status_change_failed"
     case orderStatusChangeUndo                  = "order_status_change_undo"
+    case orderTrackingAdd                       = "order_tracking_add"
+    case orderTrackingFailed                    = "order_tracking_failed"
     case orderTrackingLoaded                    = "order_tracking_loaded"
+    case orderTrackingSuccess                   = "order_tracking_success"
 
     // Push Notifications Events
     //

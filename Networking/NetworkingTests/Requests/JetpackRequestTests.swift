@@ -75,6 +75,16 @@ final class JetpackRequestTests: XCTestCase {
         let output = try! request.asURLRequest()
         XCTAssertNil(output.httpBody)
     }
+
+    /// Verifies that a DELETE JetpackRequest will actually become a GET with a `&_method=delete` query string parameter.
+    ///
+    func testDeleteRequestBecomesGetRequest() {
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .delete, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
+
+        let output = try! request.asURLRequest()
+        XCTAssertEqual(output.httpMethod?.uppercased(), "GET")
+        XCTAssertTrue((output.url?.absoluteString.contains("%26_method%3Ddelete"))!)
+    }
 }
 
 

@@ -16,10 +16,11 @@ final class ShippingProvidersViewModel {
         let storageManager = AppDelegate.shared.storageManager
         let predicate = NSPredicate(format: "siteID == %lld",
                                     StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+        let descriptor = NSSortDescriptor(key: #keyPath(StorageShipmentTrackingProviderGroup.name),
+                                          ascending: true)
 
         return ResultsController<StorageShipmentTrackingProviderGroup>(storageManager: storageManager,
-                                                                       sectionNameKeyPath: "name",
+                                                                       sectionNameKeyPath: #keyPath(StorageShipmentTrackingProviderGroup.name),
                                                                        matching: predicate,
                                                                        sortedBy: [descriptor])
     }()

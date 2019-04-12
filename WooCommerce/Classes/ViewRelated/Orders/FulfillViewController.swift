@@ -269,7 +269,7 @@ extension FulfillViewController: UITableViewDataSource {
 }
 
 
-// MARK: - UITableViewDataSource Conformance
+// MARK: - Cell Configuration
 //
 private extension FulfillViewController {
 
@@ -298,7 +298,7 @@ private extension FulfillViewController {
         }
 
         let viewModel = OrderItemViewModel(item: item, currency: order.currency)
-        cell.selectionStyle = .default
+        cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
         cell.name = viewModel.name
         cell.quantity = viewModel.quantity
         cell.price = viewModel.price
@@ -411,7 +411,9 @@ extension FulfillViewController: UITableViewDelegate {
             present(navController, animated: true, completion: nil)
 
         case .product(let item):
-            productWasPressed(for: item.productID)
+            if FeatureFlag.productDetails.enabled {
+                productWasPressed(for: item.productID)
+            }
 
         default:
             break

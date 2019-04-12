@@ -385,4 +385,3 @@ private extension ProductDetailsViewController {
         }
     }
 }
-

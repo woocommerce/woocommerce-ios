@@ -404,6 +404,15 @@ extension FulfillViewController: UITableViewDelegate {
             let navController = WooNavigationController(rootViewController: addTracking)
             present(navController, animated: true, completion: nil)
 
+        case .tracking:
+            guard let shipmentTracking = orderTracking(at: indexPath) else {
+                return
+            }
+            let viewModel = EditTrackingViewModel(order: order, shipmentTracking: shipmentTracking)
+            let addTracking = ManualTrackingViewController(viewModel: viewModel)
+            let navController = WooNavigationController(rootViewController: addTracking)
+            present(navController, animated: true, completion: nil)
+
         default:
             break
         }

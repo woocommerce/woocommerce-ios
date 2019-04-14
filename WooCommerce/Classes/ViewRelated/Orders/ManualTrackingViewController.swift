@@ -87,6 +87,10 @@ private extension ManualTrackingViewController {
         navigationItem.backBarButtonItem = backButton
     }
 
+    func removeProgressIndicator() {
+        navigationItem.rightBarButtonItem = nil
+    }
+
     func configureAddButton() {
         guard viewModel.isAdding else {
             return
@@ -103,11 +107,13 @@ private extension ManualTrackingViewController {
 
     func configureForCommittingTracking() {
         hideKeyboard()
+        disableSecondaryActionButton()
         configureRightButtonItemAsSpinner()
         navigationItem.rightBarButtonItem?.isEnabled = false
     }
 
     func configureForEditingTracking() {
+        removeProgressIndicator()
         configureAddButton()
         navigationItem.rightBarButtonItem?.isEnabled = true
     }
@@ -120,6 +126,26 @@ private extension ManualTrackingViewController {
         let rightBarButton = UIBarButtonItem(customView: activityIndicator)
 
         navigationItem.setRightBarButton(rightBarButton, animated: true)
+    }
+
+    func disableSecondaryActionButton() {
+        guard let cell = cellForSecondaryAction() else {
+            return
+        }
+
+        cell.selectionStyle = .none
+        cell.isUserInteractionEnabled = false
+        cell.alpha = Constants.disabledAlpha
+    }
+
+    func enableSecondaryActionButton() {
+        guard let cell = cellForSecondaryAction() else {
+            return
+        }
+
+        cell.selectionStyle = .default
+        cell.isUserInteractionEnabled = true
+        cell.alpha = Constants.enabledAlpha
     }
 
     func showKeyboard() {
@@ -215,12 +241,26 @@ extension ManualTrackingViewController: UITableViewDataSource {
         return IndexPath(row: requestedIndex, section: section)
     }
 
+    private func cellForSecondaryAction() -> BasicTableViewCell? {
+        // The secondary action only exists when deleting
+        guard viewModel.isAdding == false else {
+            return nil
+        }
+
+        guard let actionIndexPath = indexPathForRow(.deleteTracking, inSection: 1),
+            let cell = table.cellForRow(at: actionIndexPath) as? BasicTableViewCell else {
+                return nil
+        }
+
+        return cell
+    }
+
     private func configureShippingProvider(cell: TitleAndEditableValueTableViewCell) {
         cell.title.text = NSLocalizedString("Shipping provider", comment: "Add / Edit shipping provider. Title of cell presenting name")
         cell.value.text = viewModel.providerCellName
 
         cell.value.isEnabled = false
-        cell.accessoryType = .disclosureIndicator
+        cell.accessoryType = viewModel.providerCellAccessoryType
     }
 
     private func configureTrackingNumber(cell: TitleAndEditableValueTableViewCell) {
@@ -242,7 +282,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
         cell.accessoryType = .none
     }
 
-    func configureSecondaryAction(cell: BasicTableViewCell) {
+    private func configureSecondaryAction(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = StyleManager.destructiveActionColor
@@ -406,6 +446,7 @@ private extension ManualTrackingViewController {
 
                                                                         self?.configureForEditingTracking()
 
+                                                          self?.enableSecondaryActionButton()
                                                                         self?.displayDeleteErrorNotice(orderID: orderID)
                                                                         return
                                                                     }
@@ -520,6 +561,8 @@ private struct Constants {
     static let deleteRowHeight = CGFloat(48)
     static let rowHeight = CGFloat(74)
     static let pickerRowHeight = CGFloat(216)
+    static let disabledAlpha = CGFloat(0.7)
+    static let enabledAlpha = CGFloat(1.0)
 }
 
 

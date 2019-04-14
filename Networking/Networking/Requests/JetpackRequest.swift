@@ -55,7 +55,7 @@ struct JetpackRequest: URLRequestConvertible {
     /// Returns a URLRequest instance reprensenting the current Jetpack Request.
     ///
     func asURLRequest() throws -> URLRequest {
-        let dotcomEndpoint = DotcomRequest(wordpressApiVersion: JetpackRequest.wordpressApiVersion, method: method, path: dotcomPath)
+        let dotcomEndpoint = DotcomRequest(wordpressApiVersion: JetpackRequest.wordpressApiVersion, method: dotcomMethod, path: dotcomPath)
         let dotcomRequest = try dotcomEndpoint.asURLRequest()
 
         return try dotcomEncoder.encode(dotcomRequest, with: dotcomParams)
@@ -76,16 +76,22 @@ private extension JetpackRequest {
     /// Returns the WordPress.com Parameters Encoder
     ///
     var dotcomEncoder: ParameterEncoding {
-        return method == .get ? URLEncoding.queryString : URLEncoding.httpBody
+        return dotcomMethod == .get ? URLEncoding.queryString : URLEncoding.httpBody
+    }
+
+    /// Returns the WordPress.com HTTP Method
+    ///
+    var dotcomMethod: HTTPMethod {
+        // If we are calling DELETE via a tunneled connection, use GET instead (DELETE will be added to the `_method` query string param)
+        return method == .delete ? .get : method
     }
 
     /// Returns the WordPress.com Parameters
     ///
     var dotcomParams: [String: String] {
         var output = [
-            "_method": method.rawValue.lowercased(),
-            "path": jetpackPath + jetpackQueryParams,
-            "json": "true"
+            "json": "true",
+            "path": jetpackPath + jetpackQueryParams + "&_method=" + method.rawValue.lowercased()
         ]
 
         if let jetpackBodyParams = jetpackBodyParams {
@@ -110,7 +116,7 @@ private extension JetpackRequest {
     /// Indicates if the Jetpack Tunneled Request should encode it's parameters in the Query (or Body)
     ///
     var jetpackEncodesParametersInQuery: Bool {
-        return method == .get
+        return dotcomMethod == .get
     }
 
     /// Returns the Jetpack-Tunneled-Request's Parameters

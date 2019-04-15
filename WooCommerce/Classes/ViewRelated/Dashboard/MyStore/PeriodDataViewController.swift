@@ -14,8 +14,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         return StatsQueryOptions(
             queryID: queryID,
             granularity: granularity,
-            // TODO: implement UI to select custom range
-            period: isCustomRange ? .range(from: Date(timeIntervalSince1970: 1554715707), to: Date(timeIntervalSince1970: 1554974907))
+            period: isCustomRange ? .range(from: startDate, to: endDate)
                                   : .latest
         )
     }
@@ -35,6 +34,8 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
     // MARK: - Private Properties
 
+    @IBOutlet private weak var customRangeContainer: UIView!
+    @IBOutlet private weak var editRangeButton: UIButton!
     @IBOutlet private weak var visitorsTitle: UILabel!
     @IBOutlet private weak var visitorsData: UILabel!
     @IBOutlet private weak var ordersTitle: UILabel!
@@ -43,10 +44,19 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     @IBOutlet private weak var revenueData: UILabel!
     @IBOutlet private weak var barChartView: BarChartView!
     @IBOutlet private weak var lastUpdated: UILabel!
+    @IBOutlet private weak var topBorderView: UIView!
     @IBOutlet private weak var borderView: UIView!
     @IBOutlet private weak var yAxisAccessibilityView: UIView!
     @IBOutlet private weak var xAxisAccessibilityView: UIView!
     @IBOutlet private weak var chartAccessibilityView: UIView!
+
+    /// Start date for the range
+    ///
+    private var startDate: Date = Date(timeIntervalSince1970: 1554715707)
+
+    /// End date for the range
+    ///
+    private var endDate: Date = Date(timeIntervalSince1970: 1554974907)
 
     private var lastUpdatedDate: Date?
     private var yAxisMinimum: String = Constants.chartYAxisMinimum.humanReadableString()
@@ -148,7 +158,6 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         super.viewDidAppear(animated)
         reloadAllFields()
         trackChangedTabIfNeeded()
-        presentRangeSelectionIfNeeded()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -239,6 +248,21 @@ private extension PeriodDataViewController {
         view.backgroundColor = StyleManager.wooWhite
         borderView.backgroundColor = StyleManager.wooGreyBorder
 
+        // Custom range
+        customRangeContainer.isHidden = !isCustomRange
+        // Small hack to have the image on the right side!
+        editRangeButton.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+        editRangeButton.titleLabel?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+        editRangeButton.imageView?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+        editRangeButton.titleLabel?.font = StyleManager.actionButtonTitleFont
+        editRangeButton.setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
+        editRangeButton.setImage(.pencilImage, for: .normal)
+        updateDisplayedRange()
+
+        // Border view when custom range is visible
+        topBorderView.isHidden = !isCustomRange
+        topBorderView.backgroundColor = StyleManager.wooGreyBorder
+
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
         visitorsTitle.applyFootnoteStyle()
@@ -319,6 +343,25 @@ private extension PeriodDataViewController {
         yAxis.valueFormatter = self
         yAxis.setLabelCount(3, force: true)
     }
+}
+
+
+// MARK: - Actions
+//
+private extension PeriodDataViewController {
+
+    @IBAction func editRangeWasPressed() {
+        let rangeSelectionController = CustomDateRangeSelectionViewController(startDate: startDate, endDate: endDate, granularity: granularity)
+        rangeSelectionController.onSelectionCompleted = { [weak self] (startDate, endDate, granularity) in
+            self?.startDate = startDate
+            self?.endDate = endDate
+            self?.granularity = granularity
+            self?.updateDisplayedRange()
+        }
+        let navigationController = WooNavigationController(rootViewController: rangeSelectionController)
+        self.present(navigationController, animated: true)
+    }
+
 }
 
 
@@ -441,6 +484,17 @@ private extension PeriodDataViewController {
 //
 private extension PeriodDataViewController {
 
+    func updateDisplayedRange() {
+        self.editRangeButton.setTitle(String.localizedStringWithFormat(
+            NSLocalizedString(
+                "%@ - %@",
+                comment: "Custom range value. It reads: {date} - {date}."
+            ),
+            startDate.toString(dateStyle: .medium, timeStyle: .none),
+            endDate.toString(dateStyle: .medium, timeStyle: .none)
+        ), for: .normal)
+    }
+
     func updateSiteVisitDataIfNeeded() {
         if siteStats != nil {
             lastUpdatedDate = Date()
@@ -473,18 +527,6 @@ private extension PeriodDataViewController {
         }
         WooAnalytics.shared.track(.dashboardMainStatsDate, withProperties: ["range": granularity.rawValue])
         isInitialLoad = false
-    }
-
-    func presentRangeSelectionIfNeeded() {
-        guard isCustomRange else {
-            return
-        }
-        let rangeSelectionController = CustomDateRangeSelectionViewController(startDate: Date(), endDate: Date(), granularity: granularity)
-        rangeSelectionController.onSelectionCompleted = { (startDate, endDate, granularity) in
-            // TODO
-        }
-        let navigationController = WooNavigationController(rootViewController: rangeSelectionController)
-        self.present(navigationController, animated: true)
     }
 
     func reloadAllFields(animateChart: Bool = true) {

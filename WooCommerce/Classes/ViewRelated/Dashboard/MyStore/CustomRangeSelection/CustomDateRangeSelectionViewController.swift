@@ -7,7 +7,7 @@ class CustomDateRangeSelectionViewController: UIViewController {
 
     /// Closure to be executed when the user taps on Apply
     ///
-    var onSelectionCompleted: ((_ startDate: String, _ endDate: String, _ granularity: StatGranularity) -> Void)?
+    var onSelectionCompleted: ((_ startDate: Date, _ endDate: Date, _ granularity: StatGranularity) -> Void)?
 
     /// Main TableView
     ///

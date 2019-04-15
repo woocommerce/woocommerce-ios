@@ -15,11 +15,11 @@
             <objects>
                 <viewController id="zaY-no-5X6" customClass="StoreStatsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="EgO-Cw-kVD">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="380"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="424"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Y7g-5h-02N">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="380"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="424"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PBm-IO-eju">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
@@ -50,10 +50,10 @@
                                         </constraints>
                                     </view>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iZC-Gc-okA">
-                                        <rect key="frame" x="0.0" y="50" width="375" height="329"/>
+                                        <rect key="frame" x="0.0" y="50" width="375" height="373"/>
                                     </scrollView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kbr-bQ-njj">
-                                        <rect key="frame" x="0.0" y="379" width="375" height="1"/>
+                                        <rect key="frame" x="0.0" y="423" width="375" height="1"/>
                                         <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1" id="Co8-ct-oPM"/>
@@ -95,25 +95,25 @@
                                 <rect key="frame" x="0.0" y="64" width="375" height="1007"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="c2q-ri-kSZ">
-                                        <rect key="frame" x="0.0" y="18" width="375" height="991"/>
+                                        <rect key="frame" x="0.0" y="18" width="375" height="1035"/>
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bgR-ww-mDR">
-                                                <rect key="frame" x="0.0" y="0.0" width="375" height="380"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="375" height="424"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="380" id="5lW-FM-zPi"/>
+                                                    <constraint firstAttribute="height" constant="424" id="5lW-FM-zPi"/>
                                                 </constraints>
                                                 <connections>
                                                     <segue destination="zaY-no-5X6" kind="embed" identifier="StoreStatsEmbedSegue" id="DIr-Go-f5K"/>
                                                 </connections>
                                             </containerView>
                                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C0r-mX-o7t">
-                                                <rect key="frame" x="0.0" y="380" width="375" height="18"/>
+                                                <rect key="frame" x="0.0" y="424" width="375" height="18"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="18" id="nnZ-bG-12v"/>
                                                 </constraints>
                                             </view>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NG7-v2-HCV">
-                                                <rect key="frame" x="0.0" y="398" width="375" height="128"/>
+                                                <rect key="frame" x="0.0" y="442" width="375" height="128"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" relation="lessThanOrEqual" constant="128" id="fJC-ES-Qpn"/>
                                                     <constraint firstAttribute="height" priority="999" constant="128" id="zqf-iK-TiH"/>
@@ -123,7 +123,7 @@
                                                 </connections>
                                             </containerView>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5mn-wP-ueH">
-                                                <rect key="frame" x="0.0" y="526" width="375" height="465"/>
+                                                <rect key="frame" x="0.0" y="570" width="375" height="465"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" priority="900" constant="465" id="GhH-0R-SZx"/>
                                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="465" id="SIr-zN-m3B"/>

@@ -34,8 +34,8 @@ public class ShipmentStore: Store {
         switch action {
         case .synchronizeShipmentTrackingData(let siteID, let orderID, let onCompletion):
             synchronizeShipmentTrackingData(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
-        case .synchronizeShipmentTrackingProviders(let siteID, let orderID, let onCompletion):
-            syncronizeShipmentTrackingProviderGroupsData(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+        case .synchronizeShipmentTrackingProviders(let siteID, let onCompletion):
+            syncronizeShipmentTrackingProviderGroupsData(siteID: siteID, onCompletion: onCompletion)
         case .addTracking(let siteID,
                           let orderID,
                           let providerGroupName,
@@ -87,19 +87,17 @@ private extension ShipmentStore {
         }
     }
 
-    func syncronizeShipmentTrackingProviderGroupsData(siteID: Int, orderID: Int, onCompletion: @escaping (Error?) -> Void) {
+    func syncronizeShipmentTrackingProviderGroupsData(siteID: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ShipmentsRemote(network: network)
-        remote.loadShipmentTrackingProviderGroups(for: siteID, orderID: orderID) { [weak self] (groups, error) in
+        remote.loadShipmentTrackingProviderGroups(for: siteID) { [weak self] (groups, error) in
             guard let readOnlyShipmentTrackingProviderGroups = groups else {
                 onCompletion(error)
                 return
             }
 
-            self?.upsertTrackingProviderDataInBackground(siteID: siteID,
-                                                                 orderID: orderID,
-                                                                 readOnlyShipmentTrackingProviderGroups: readOnlyShipmentTrackingProviderGroups,
-                                                                 onCompletion: {
-                onCompletion(nil)
+            self?.upsertTrackingProviderDataInBackground(siteID: siteID,                                                                 readOnlyShipmentTrackingProviderGroups: readOnlyShipmentTrackingProviderGroups,
+                                                         onCompletion: {
+                                                            onCompletion(nil)
             })
         }
     }
@@ -148,7 +146,6 @@ extension ShipmentStore {
     }
 
     func upsertTrackingProviderDataInBackground(siteID: Int,
-                                                orderID: Int,
                                                 readOnlyShipmentTrackingProviderGroups: [Networking.ShipmentTrackingProviderGroup],
                                                         onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage

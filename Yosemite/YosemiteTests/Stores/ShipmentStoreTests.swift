@@ -32,7 +32,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Dummy Order ID
     ///
-    private let sampleOrderID = 963
+    private let sampleOrderID = 8
 
     /// Mock Country name
     ///
@@ -227,7 +227,7 @@ final class ShipmentStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "orders/" + String(sampleOrderID) + "/" + "shipment-trackings/providers",
                                  filename: "shipment_tracking_providers")
-        let action = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: sampleSiteID, orderID: sampleOrderID) { error in
+        let action = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: sampleSiteID) { error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 19)
 
@@ -255,7 +255,7 @@ final class ShipmentStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "orders/" + String(sampleOrderID) + "/" + "shipment-trackings/providers",
                                  filename: "shipment_tracking_plugin_not_active")
-        let action = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: sampleSiteID, orderID: sampleOrderID) { error in
+        let action = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: sampleSiteID) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -270,7 +270,7 @@ final class ShipmentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve shipment tracking provider grup list empty response")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: sampleSiteID, orderID: sampleOrderID) { error in
+        let action = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: sampleSiteID) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -290,7 +290,6 @@ final class ShipmentStoreTests: XCTestCase {
         let group = DispatchGroup()
         group.enter()
         shipmentStore.upsertTrackingProviderDataInBackground(siteID: sampleSiteID,
-                                                             orderID: sampleOrderID,
                                                              readOnlyShipmentTrackingProviderGroups: australiaMutatedAndSwedenMutated()) {
                                                                 XCTAssertTrue(Thread.isMainThread)
                                                                 group.leave()
@@ -326,7 +325,6 @@ final class ShipmentStoreTests: XCTestCase {
         let group = DispatchGroup()
         group.enter()
         shipmentStore.upsertTrackingProviderDataInBackground(siteID: sampleSiteID,
-                                                             orderID: sampleOrderID,
                                                              readOnlyShipmentTrackingProviderGroups: sampleShipmentTrackingProviderGroupListMutatedOneGroup()) {
                                                                 XCTAssertTrue(Thread.isMainThread)
                                                                 group.leave()

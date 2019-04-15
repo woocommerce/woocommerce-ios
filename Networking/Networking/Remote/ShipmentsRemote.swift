@@ -95,8 +95,14 @@ public final class ShipmentsRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    public func loadShipmentTrackingProviderGroups(for siteID: Int, orderID: Int, completion: @escaping ([ShipmentTrackingProviderGroup]?, Error?) -> Void) {
-        let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/\(Constants.providersPath)"
+    public func loadShipmentTrackingProviderGroups(for siteID: Int, completion: @escaping ([ShipmentTrackingProviderGroup]?, Error?) -> Void) {
+        // Any orderID would do, as long as there is an orderID in the path
+        // and it is a number.
+        // https://github.com/woocommerce/woocommerce-ios/issues/875
+        //
+        let orderID = "8"
+        
+        let path = "\(Constants.ordersPath)/" + orderID + "/" + "\(Constants.shipmentPath)/\(Constants.providersPath)"
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = ShipmentTrackingProviderListMapper(siteID: siteID)

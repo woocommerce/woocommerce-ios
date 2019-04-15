@@ -16,7 +16,7 @@ final class ShipmentsRemoteTests: XCTestCase {
 
     /// Dummy Order ID
     ///
-    let sampleOrderID = 567
+    let sampleOrderID = 8
 
     /// Repeat always!
     ///
@@ -378,7 +378,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load shipment tracking providers information")
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", filename: "shipment_tracking_providers")
-        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (groups, error) in
+        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID) { (groups, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(groups)
             XCTAssertEqual(groups?.count, 19)
@@ -394,7 +394,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let remote = ShipmentsRemote(network: network)
         let expectation = self.expectation(description: "Load shipment tracking providers information contains errors")
 
-        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (shipmentTrackingGroups, error) in
+        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID) { (shipmentTrackingGroups, error) in
             XCTAssertNil(shipmentTrackingGroups)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -411,7 +411,7 @@ final class ShipmentsRemoteTests: XCTestCase {
 
         network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", error: NetworkError.notFound)
 
-        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (shipmentTrackingGroups, error) in
+        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID) { (shipmentTrackingGroups, error) in
             XCTAssertNil(shipmentTrackingGroups)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -428,7 +428,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load shipment tracking information")
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", filename: "shipment_tracking_plugin_not_active")
-        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (shipmentTrackingGroups, error) in
+        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID) { (shipmentTrackingGroups, error) in
             XCTAssertNil(shipmentTrackingGroups)
             XCTAssertNotNil(error)
 

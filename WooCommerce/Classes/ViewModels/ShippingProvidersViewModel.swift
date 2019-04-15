@@ -55,8 +55,7 @@ final class ShippingProvidersViewModel {
             return
         }
 
-        let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID,
-                                                                                   orderID: orderID) { [weak self] error in
+        let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID) { [weak self] error in
             if let error = error {
                 self?.handleError(error)
             }

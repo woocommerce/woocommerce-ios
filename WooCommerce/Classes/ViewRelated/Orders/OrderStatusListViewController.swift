@@ -164,9 +164,6 @@ private extension OrderStatusListViewController {
             return
         }
 
-        WooAnalytics.shared.track(.orderDetailOrderStatusEditButtonTapped,
-                                  withProperties: ["status": newStatus])
-
         let orderID = order.orderID
         let undoStatus = order.statusKey
 
@@ -174,9 +171,17 @@ private extension OrderStatusListViewController {
         let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)
 
         StoresManager.shared.dispatch(done)
+        WooAnalytics.shared.track(.orderStatusChange,
+                                  withProperties: ["id": orderID,
+                                                   "from": undoStatus,
+                                                   "to": newStatus])
 
         displayOrderUpdatedNotice {
             StoresManager.shared.dispatch(undo)
+            WooAnalytics.shared.track(.orderStatusChange,
+                                      withProperties: ["id": orderID,
+                                                       "from": newStatus,
+                                                       "to": undoStatus])
         }
     }
 

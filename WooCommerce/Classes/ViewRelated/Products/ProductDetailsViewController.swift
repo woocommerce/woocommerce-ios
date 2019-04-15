@@ -4,7 +4,7 @@ import Yosemite
 
 /// ProductDetailsViewController: Displays the details for a given Product.
 ///
-class ProductDetailsViewController: UIViewController {
+final class ProductDetailsViewController: UIViewController {
 
     /// Product to be displayed
     ///
@@ -103,7 +103,7 @@ private extension ProductDetailsViewController {
     ///
     func configureEntityListener() {
         entityListener.onUpsert = { [weak self] product in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 
@@ -111,7 +111,7 @@ private extension ProductDetailsViewController {
         }
 
         entityListener.onDelete = { [weak self] in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 
@@ -192,7 +192,7 @@ private extension ProductDetailsViewController {
 
     func syncProduct(onCompletion: ((Error?) -> ())? = nil) {
         let action = ProductAction.retrieveProduct(siteID: product.siteID, productID: product.productID) { [weak self] (product, error) in
-            guard let `self` = self, let product = product else {
+            guard let self = self, let product = product else {
                 DDLogError("⛔️ Error synchronizing Product: \(error.debugDescription)")
                 onCompletion?(error)
                 return

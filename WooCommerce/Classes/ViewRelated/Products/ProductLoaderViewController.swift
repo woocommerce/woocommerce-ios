@@ -6,7 +6,7 @@ import Yosemite
 /// ProductLoaderViewController: Loads asynchronously a Product (given it's ProductID + SiteID).
 /// On Success the ProductDetailsViewController will be rendered "in place".
 ///
-class ProductLoaderViewController: UIViewController {
+final class ProductLoaderViewController: UIViewController {
 
     /// UI Spinner
     ///
@@ -148,7 +148,7 @@ private extension ProductLoaderViewController {
     func displayFailureOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
-        overlayView.messageText = NSLocalizedString("The Product couldn't be loaded.", comment: "Fetching a product failed")
+        overlayView.messageText = NSLocalizedString("This product couldn't be loaded", comment: "Message displayed when loading a specific product fails")
         overlayView.actionText = NSLocalizedString("Retry", comment: "Retry the last action")
         overlayView.onAction = { [weak self] in
             self?.loadProduct()

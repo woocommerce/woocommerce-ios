@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
+import UIKit
 
 final class EditManualTrackingViewModelTest: XCTestCase {
     private var subject: EditTrackingViewModel?
@@ -25,6 +26,7 @@ final class EditManualTrackingViewModelTest: XCTestCase {
                                                        trackingProvider: "A mock provider",
                                                        trackingURL: nil,
                                                        dateShipped: Date())
+        static let accessoryType = UITableViewCell.AccessoryType.none
     }
 
     override func setUp() {
@@ -81,6 +83,10 @@ final class EditManualTrackingViewModelTest: XCTestCase {
         let cellName = subject?.providerCellName
 
         XCTAssertEqual(cellName, MockData.provider.name)
+    }
+
+    func testProviderCellNameAccesoryTypeMatchesExpectation() {
+        XCTAssertEqual(subject?.providerCellAccessoryType, MockData.accessoryType)
     }
 
     func testCanCommitReturnsTrue() {

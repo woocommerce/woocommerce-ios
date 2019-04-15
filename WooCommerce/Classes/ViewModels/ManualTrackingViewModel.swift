@@ -103,7 +103,12 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     }
 
-    var shipmentProvider: ShipmentTrackingProvider?
+    var shipmentProvider: ShipmentTrackingProvider? {
+        didSet {
+            saveSelectedShipmentProvider()
+        }
+    }
+
     var shipmentProviderGroupName: String?
 
     var providerCellName: String {
@@ -125,6 +130,55 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
         self.siteID = order.siteID
         self.orderID = order.orderID
         self.orderStatus = order.statusKey
+    }
+
+}
+
+
+// MARK :- Persistence of the selected ShipmentTrackingProvider
+//
+private extension AddTrackingViewModel {
+    func saveSelectedShipmentProvider() {
+        guard let shipmentProvider = shipmentProvider else {
+            return
+        }
+
+        let key = persistenceKey(provider: shipmentProvider).serialised()
+
+        UserDefaults.standard[.lastShipmentProviderSelected] = key
+    }
+
+    func persistenceKey(provider: ShipmentTrackingProvider) -> ProviderPersistenceKey {
+        return ProviderPersistenceKey(providerName: provider.name, siteID: provider.siteID)
+    }
+
+
+    func readSelectedShipmentProvider() -> ShipmentTrackingProvider? {
+        guard let key = UserDefaults.standard[.lastShipmentProviderSelected] else {
+            return nil
+        }
+
+
+    }
+}
+
+
+private struct ProviderPersistenceKey {
+    let providerName: String
+    let siteID: Int
+
+    func serialised() -> String {
+        return "\(providerName)::\(siteID)"
+    }
+
+    static func materialize(serialised: String) -> ProviderPersistenceKey? {
+        let components = serialised.components(separatedBy: "::")
+
+        if components.count != 2 {
+            return nil
+        }
+
+        return ProviderPersistenceKey(providerName: components[0], siteID: Int(components[1]) ?? 0)
     }
 }
 

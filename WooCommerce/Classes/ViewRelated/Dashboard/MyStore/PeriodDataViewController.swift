@@ -148,6 +148,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         super.viewDidAppear(animated)
         reloadAllFields()
         trackChangedTabIfNeeded()
+        presentRangeSelectionIfNeeded()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -472,6 +473,18 @@ private extension PeriodDataViewController {
         }
         WooAnalytics.shared.track(.dashboardMainStatsDate, withProperties: ["range": granularity.rawValue])
         isInitialLoad = false
+    }
+
+    func presentRangeSelectionIfNeeded() {
+        guard isCustomRange else {
+            return
+        }
+        let rangeSelectionController = CustomDateRangeSelectionViewController(startDate: Date(), endDate: Date(), granularity: granularity)
+        rangeSelectionController.onSelectionCompleted = { (startDate, endDate, granularity) in
+            // TODO
+        }
+        let navigationController = WooNavigationController(rootViewController: rangeSelectionController)
+        self.present(navigationController, animated: true)
     }
 
     func reloadAllFields(animateChart: Bool = true) {

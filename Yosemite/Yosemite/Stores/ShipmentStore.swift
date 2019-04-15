@@ -95,7 +95,8 @@ private extension ShipmentStore {
                 return
             }
 
-            self?.upsertTrackingProviderDataInBackground(siteID: siteID,                                                                 readOnlyShipmentTrackingProviderGroups: readOnlyShipmentTrackingProviderGroups,
+            self?.upsertTrackingProviderDataInBackground(siteID: siteID,
+                                                         readOnlyShipmentTrackingProviderGroups: readOnlyShipmentTrackingProviderGroups,
                                                          onCompletion: {
                                                             onCompletion(nil)
             })

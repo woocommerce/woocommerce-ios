@@ -101,7 +101,7 @@ public final class ShipmentsRemote: Remote {
         // https://github.com/woocommerce/woocommerce-ios/issues/875
         //
         let orderID = "8"
-        
+
         let path = "\(Constants.ordersPath)/" + orderID + "/" + "\(Constants.shipmentPath)/\(Constants.providersPath)"
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)

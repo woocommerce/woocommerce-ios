@@ -48,6 +48,11 @@ final class FulfillViewController: UIViewController {
         return trackingResultsController.fetchedObjects
     }
 
+    /// Indicates if we consider the shipment tracking plugin as reachable
+    /// https://github.com/woocommerce/woocommerce-ios/issues/852#issuecomment-482308373
+    ///
+    private var trackingIsReachable: Bool = false
+
     /// Designated Initializer
     ///
     init(order: Order) {
@@ -79,6 +84,10 @@ final class FulfillViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         syncTracking { [weak self] error in
+            if error == nil {
+                self?.trackingIsReachable = true
+            }
+
             self?.reloadSections()
             self?.tableView.reloadData()
         }
@@ -435,6 +444,7 @@ private extension FulfillViewController {
                                                                         }
 
                                                                         WooAnalytics.shared.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+
                                                                         onCompletion?(nil)
         }
 
@@ -510,7 +520,13 @@ private extension FulfillViewController {
             return Section(title: title, secondaryTitle: nil, rows: rows)
         }()
 
-        let addTracking: Section = {
+        let addTracking: Section? = {
+            // Hide the section if we consider the shipment
+            // tracking plugin is not installed
+            guard trackingIsReachable else {
+                return nil
+            }
+
             let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : ""
             let row = Row.trackingAdd
 

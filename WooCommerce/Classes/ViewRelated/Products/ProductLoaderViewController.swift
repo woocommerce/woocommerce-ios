@@ -104,7 +104,7 @@ private extension ProductLoaderViewController {
     ///
     func loadProduct() {
         let action = ProductAction.retrieveProduct(siteID: siteID, productID: productID) { [weak self] (product, error) in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 

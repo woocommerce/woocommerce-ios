@@ -174,11 +174,6 @@ private extension AddTrackingViewModel {
     }
 }
 
-struct PreselectedProvider: Codable {
-    private var siteID: Int
-    private var providerName: String
-}
-
 
 /// View model supporting editing shipment tacking manually, using non-custom providers
 ///

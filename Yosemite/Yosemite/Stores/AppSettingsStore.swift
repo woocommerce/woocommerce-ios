@@ -56,7 +56,7 @@ public class AppSettingsStore: Store {
 }
 
 
-// MARK: - Tracking providers!
+// MARK: - Shipment tracking providers!
 //
 private extension AppSettingsStore {
     func addTrackingProvider(siteID: Int,

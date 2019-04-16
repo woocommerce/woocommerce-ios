@@ -1,5 +1,8 @@
 import Foundation
 
+/// Implementation of the FileStorage protocol that reads and writes
+/// from and to a plist file at a given URL
+///
 public final class PListFileStorage: FileStorage {
     public init() { }
 

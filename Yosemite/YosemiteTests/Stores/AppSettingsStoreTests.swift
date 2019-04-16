@@ -108,11 +108,22 @@ final class AppSettingsStoreTests: XCTestCase {
     }
 }
 
+// MARK: - Mock data
 
+/// Mock implementation of the FileStorage protocol.
+/// It loads the contents of a file in the test bundle
+/// and simulates writes to the same file
+///
 private final class MockFileLoader: FileStorage {
     private let loader = PListFileStorage()
 
+    /// A boolean value to test if a write to disk is requested
+    ///
     var dataWriteIsHit: Bool = false
+
+    /// List of `PreselectedProvider` materialised from the data passed
+    /// tpo `write()`
+    ///
     var fileData = [PreselectedProvider]()
 
     func data(for fileURL: URL) throws -> Data {

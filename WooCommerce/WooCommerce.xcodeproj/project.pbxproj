@@ -21,6 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		0F2268842265E4E800E0EC4F /* DatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2268822265E4E800E0EC4F /* DatePickerTableViewCell.swift */; };
+		0F2268852265E4E800E0EC4F /* DatePickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0F2268832265E4E800E0EC4F /* DatePickerTableViewCell.xib */; };
 		0F91060C225CD015004A3573 /* CustomDateRangeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F91060A225CD015004A3573 /* CustomDateRangeSelectionViewController.swift */; };
 		0F91060D225CD015004A3573 /* CustomDateRangeSelectionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0F91060B225CD015004A3573 /* CustomDateRangeSelectionViewController.xib */; };
 		0F910611225F36B0004A3573 /* StatsQueryOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F910610225F36B0004A3573 /* StatsQueryOptions.swift */; };
@@ -346,6 +348,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0F2268822265E4E800E0EC4F /* DatePickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerTableViewCell.swift; sourceTree = "<group>"; };
+		0F2268832265E4E800E0EC4F /* DatePickerTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DatePickerTableViewCell.xib; sourceTree = "<group>"; };
 		0F91060A225CD015004A3573 /* CustomDateRangeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDateRangeSelectionViewController.swift; sourceTree = "<group>"; };
 		0F91060B225CD015004A3573 /* CustomDateRangeSelectionViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomDateRangeSelectionViewController.xib; sourceTree = "<group>"; };
 		0F910610225F36B0004A3573 /* StatsQueryOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsQueryOptions.swift; sourceTree = "<group>"; };
@@ -1377,6 +1381,8 @@
 				CE21B3D620FE669A00A259D5 /* BasicTableViewCell.xib */,
 				B5FD111521D3F13700560344 /* BordersView.swift */,
 				B5A8532120BDBFAE00FAAB4D /* CircularImageView.swift */,
+				0F2268822265E4E800E0EC4F /* DatePickerTableViewCell.swift */,
+				0F2268832265E4E800E0EC4F /* DatePickerTableViewCell.xib */,
 				CE24BCCD212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift */,
 				CE24BCCE212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib */,
 				7441E1D121503F77004E6ECE /* IntrinsicTableView.swift */,
@@ -1637,6 +1643,7 @@
 				B5FD110E21D3CB8500560344 /* OrderTableViewCell.xib in Resources */,
 				D83C129F22250BF0004CA04C /* OrderTrackingTableViewCell.xib in Resources */,
 				B59D1EE121907304009D1978 /* NoteTableViewCell.xib in Resources */,
+				0F2268852265E4E800E0EC4F /* DatePickerTableViewCell.xib in Resources */,
 				B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */,
 				B560D6882195BCC70027BB7E /* NoteDetailsHeaderTableViewCell.xib in Resources */,
 				CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */,
@@ -2012,6 +2019,7 @@
 				B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */,
 				CEEC9B5E21E79C330055EEF0 /* BuildConfiguration.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderTableViewCell.swift in Sources */,
+				0F2268842265E4E800E0EC4F /* DatePickerTableViewCell.swift in Sources */,
 				748AD087219F481B00023535 /* UIView+Animation.swift in Sources */,
 				748D34DF214828DD00E21A2F /* TopPerformersViewController.swift in Sources */,
 				B509FED321C05121000076A9 /* SupportManagerAdapter.swift in Sources */,

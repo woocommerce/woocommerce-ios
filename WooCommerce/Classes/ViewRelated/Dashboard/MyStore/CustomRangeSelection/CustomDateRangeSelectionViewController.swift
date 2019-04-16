@@ -30,6 +30,22 @@ class CustomDateRangeSelectionViewController: UIViewController {
     ///
     private var granularity: StatGranularity
 
+    /// Parent row for the date picker (above it visually)
+    ///
+    private var datePickerParentRow: Row?
+
+    // MARK: - Computed Properties
+    private var datePickerDate: Date {
+        switch datePickerParentRow {
+        case .some(.rangeStart):
+            return startDate
+        case .some(.rangeEnd):
+            return endDate
+        default:
+            return Date()
+        }
+    }
+
     init(startDate: Date, endDate: Date, granularity: StatGranularity) {
         self.startDate = startDate
         self.endDate = endDate
@@ -48,7 +64,7 @@ class CustomDateRangeSelectionViewController: UIViewController {
 
         configureNavigation()
         configureMainView()
-        configureSections()
+        reloadSections()
         configureTableView()
         registerTableViewCells()
     }
@@ -111,14 +127,21 @@ private extension CustomDateRangeSelectionViewController {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
-    func configureSections() {
+    func reloadSections() {
         let rangeTitle = NSLocalizedString(
             "Range",
             comment: "My Store > Custom Range > Date range section"
             ).uppercased()
 
+
+        var rangeRows: [Row] = [.rangeStart, .rangeEnd]
+        // Add picker row when necessary
+        if let datePickerParentRow = datePickerParentRow, let parentIndex = rangeRows.firstIndex(of: datePickerParentRow) {
+            rangeRows.insert(.datePicker, at: parentIndex + 1)
+        }
+
         sections = [
-            Section(title: rangeTitle, rows: [.calendar], footerHeight: CGFloat.leastNonzeroMagnitude),
+            Section(title: rangeTitle, rows: rangeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
             Section(title: nil, rows: [.granularity], footerHeight: UITableView.automaticDimension),
         ]
     }
@@ -133,8 +156,12 @@ private extension CustomDateRangeSelectionViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as BasicTableViewCell where row == .calendar:
-            configureCalendar(cell: cell)
+        case let cell as RightDetailTableViewCell where row == .rangeStart:
+            configureRangeStart(cell: cell)
+        case let cell as RightDetailTableViewCell where row == .rangeEnd:
+            configureRangeEnd(cell: cell)
+        case let cell as DatePickerTableViewCell where row == .datePicker:
+            configureDatePicker(cell: cell)
         case let cell as RightDetailTableViewCell where row == .granularity:
             configureGranularity(cell: cell)
         default:
@@ -142,8 +169,23 @@ private extension CustomDateRangeSelectionViewController {
         }
     }
 
-    func configureCalendar(cell: BasicTableViewCell) {
-        cell.textLabel?.text = "Start - end (TODO)"
+    func configureRangeStart(cell: RightDetailTableViewCell) {
+        cell.accessoryType = .none
+        cell.textLabel?.text = NSLocalizedString("Starts", comment: "My Store > Custom Range > Start date cell")
+        cell.detailTextLabel?.text = startDate.toString(dateStyle: .medium, timeStyle: .none)
+    }
+
+    func configureRangeEnd(cell: RightDetailTableViewCell) {
+        cell.accessoryType = .none
+        cell.textLabel?.text = NSLocalizedString("Ends", comment: "My Store > Custom Range > Start date cell")
+        cell.detailTextLabel?.text = endDate.toString(dateStyle: .medium, timeStyle: .none)
+    }
+
+    func configureDatePicker(cell: DatePickerTableViewCell) {
+        let datePicker = cell.datePicker
+        datePicker?.date = datePickerDate
+        datePicker?.removeTarget(nil, action: nil, for: .allEvents)
+        datePicker?.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
     }
 
     func configureGranularity(cell: RightDetailTableViewCell) {
@@ -182,8 +224,43 @@ private extension CustomDateRangeSelectionViewController {
     }
 
     @objc func applyButtonTapped() {
-//        self.completion = 
+        onSelectionCompleted?(startDate, endDate, granularity)
         dismiss(animated: true, completion: nil)
+    }
+
+    func rangeRowWasPressed(row: Row, indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        let prevPickerIndexPath = indexPathForRow(row: .datePicker)
+        datePickerParentRow = datePickerParentRow != row ? row : nil
+        reloadSections()
+
+        // Do fine grained row animations
+        tableView.performBatchUpdates({
+            if let prevPickerIndexPath = prevPickerIndexPath {
+                tableView.deleteRows(at: [prevPickerIndexPath], with: .fade)
+            }
+            if let insertIndexPath = indexPathForRow(row: .datePicker) {
+                tableView.insertRows(at: [insertIndexPath], with: .fade)
+            }
+        }, completion: nil)
+    }
+
+    @objc func dateChanged(_ sender: UIDatePicker) {
+        guard let datePickerParentRow = datePickerParentRow, let indexPathToReload = indexPathForRow(row: datePickerParentRow) else {
+            return
+        }
+
+        switch datePickerParentRow {
+        case .rangeStart:
+            startDate = sender.date
+        case .rangeEnd:
+            endDate = sender.date
+        case .datePicker, .granularity:
+            break
+        }
+
+        tableView.reloadRows(at: [indexPathToReload], with: .none)
     }
 
     func granularityWasPressed() {
@@ -239,11 +316,14 @@ extension CustomDateRangeSelectionViewController: UITableViewDataSource {
 extension CustomDateRangeSelectionViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch rowAtIndexPath(indexPath) {
+        let row = rowAtIndexPath(indexPath)
+        switch row {
+        case .rangeStart, .rangeEnd:
+            rangeRowWasPressed(row: row, indexPath: indexPath)
+        case .datePicker:
+            break
         case .granularity:
             granularityWasPressed()
-        default:
-            break
         }
     }
 }
@@ -262,15 +342,17 @@ private struct Section {
 }
 
 private enum Row: CaseIterable {
-    case calendar
+    case rangeStart
+    case rangeEnd
+    case datePicker
     case granularity
 
     var type: UITableViewCell.Type {
         switch self {
-        case .calendar:
-            return BasicTableViewCell.self
-        case .granularity:
+        case .rangeStart, .rangeEnd, .granularity:
             return RightDetailTableViewCell.self
+        case .datePicker:
+            return DatePickerTableViewCell.self
         }
     }
 

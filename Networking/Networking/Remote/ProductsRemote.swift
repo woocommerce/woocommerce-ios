@@ -104,7 +104,7 @@ public class ProductsRemote: Remote {
 // MARK: - Constants
 //
 public extension ProductsRemote {
-    public enum Defaults {
+    enum Defaults {
         public static let pageSize: Int   = 25
         public static let pageNumber: Int = 1
         public static let context: String = "view"

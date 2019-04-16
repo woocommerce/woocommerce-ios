@@ -143,7 +143,7 @@ private extension AppSettingsStore {
         encoder.outputFormat = .xml
         do {
             let encodedData = try encoder.encode(data)
-            try encodedData.write(to: selectedProvidersURL)
+            try fileStorage.write(encodedData, to: selectedProvidersURL)
         } catch {
             let error = AppSettingsStoreErrors.writePreselectedProvider
             onCompletion(error)

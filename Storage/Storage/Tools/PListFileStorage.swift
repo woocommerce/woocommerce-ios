@@ -8,7 +8,16 @@ public final class PListFileStorage: FileStorage {
             let data = try Data(contentsOf: fileURL)
             return data
         } catch {
-            let error = PListFileStorageErrors.fileLoadFailed
+            let error = PListFileStorageErrors.fileReadFailed
+            throw error
+        }
+    }
+
+    public func write(_ data: Data, to fileURL: URL) throws {
+        do {
+            try data.write(to: fileURL)
+        } catch {
+            let error = PListFileStorageErrors.fileWriteFailed
             throw error
         }
     }
@@ -17,5 +26,6 @@ public final class PListFileStorage: FileStorage {
 /// Errors
 ///
 enum PListFileStorageErrors: Error {
-    case fileLoadFailed
+    case fileReadFailed
+    case fileWriteFailed
 }

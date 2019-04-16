@@ -72,7 +72,7 @@ private extension AppSettingsStore {
         }
 
         do {
-            let data = try Data(contentsOf: selectedProvidersURL)
+            let data = try fileStorage.data(for: selectedProvidersURL)
             let decoder = PropertyListDecoder()
             let settings = try decoder.decode([PreselectedProvider].self, from: data)
             upsertTrackingProvider(siteID: siteID,

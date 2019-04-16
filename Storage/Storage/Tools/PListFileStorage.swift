@@ -3,13 +3,13 @@ import Foundation
 public final class PListFileStorage: FileStorage {
     public init() { }
 
-    public func data(for fileURL: URL, completion: @escaping (Data?, Error?) -> Void) {
+    public func data(for fileURL: URL) throws -> Data {
         do {
             let data = try Data(contentsOf: fileURL)
-            completion(data, nil)
+            return data
         } catch {
             let error = PListFileStorageErrors.fileLoadFailed
-            completion(nil, error)
+            throw error
         }
     }
 }

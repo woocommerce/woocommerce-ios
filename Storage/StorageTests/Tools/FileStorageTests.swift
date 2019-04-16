@@ -18,28 +18,12 @@ final class FileStorageTests: XCTestCase {
     }
 
     func testFileIsLoaded() {
-        let expectation = self.expectation(description: "File must be loaded")
-
-        subject?.data(for: fileURL!, completion: { data, error in
-            if data != nil {
-                expectation.fulfill()
-            }
-        })
-
-        waitForExpectations(timeout: 2, handler: nil)
+        XCTAssertNoThrow(try subject?.data(for: fileURL!))
     }
 
     func testErrorIsTriggeredWhenFileFailsToLoad() {
         let url = URL(string: "http://somewhere.on.the.internet")
 
-        let expectation = self.expectation(description: "An error must be triggered")
-
-        subject?.data(for: url!, completion: { data, error in
-            if error != nil && data == nil {
-                expectation.fulfill()
-            }
-        })
-
-        waitForExpectations(timeout: 2, handler: nil)
+        XCTAssertThrowsError(try subject?.data(for: url!))
     }
 }

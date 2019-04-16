@@ -1,8 +1,12 @@
 import Storage
+import Networking
 
 // MARK: - AppSettingsStore
 //
 public class AppSettingsStore: Store {
+    /// URL to the plist file that we use to store the user selected
+    /// shipment tracing provider
+    ///
     private lazy var selectedProvidersURL: URL = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         return documents!.appendingPathComponent("shipment-providers.plist")

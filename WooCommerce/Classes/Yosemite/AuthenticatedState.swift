@@ -29,6 +29,7 @@ class AuthenticatedState: StoresManagerState {
 
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, network: NullNetwork()),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -37,8 +38,7 @@ class AuthenticatedState: StoresManagerState {
             SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
         startListeningToNotifications()

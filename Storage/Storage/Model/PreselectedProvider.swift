@@ -1,3 +1,6 @@
+/// Models a pair of `siteID` and Shipment Tracking Provider name
+/// These entities will be serialised to a plist file
+///
 public struct PreselectedProvider: Codable, Equatable {
     public let siteID: Int
     public let providerName: String

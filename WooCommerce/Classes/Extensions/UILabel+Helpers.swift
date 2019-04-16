@@ -39,4 +39,10 @@ extension UILabel {
         layer.cornerRadius = 4.0
         font = .footnote
     }
+
+    func applyEmptyStateTitleStyle() {
+        adjustsFontForContentSizeCategory = true
+        font = .body
+        textColor = StyleManager.wooGreyMid
+    }
 }

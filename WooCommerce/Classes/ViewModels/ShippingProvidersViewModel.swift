@@ -2,6 +2,8 @@ import Foundation
 import UIKit
 import Yosemite
 
+/// Encapsulates the data necessary to render a list of shipment providers
+///
 final class ShippingProvidersViewModel {
     private let orderID: Int
 
@@ -10,19 +12,34 @@ final class ShippingProvidersViewModel {
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) StorageShipmentTrackingProviderGroup in sync.
     ///
-    private(set) lazy var resultsController: ResultsController<StorageShipmentTrackingProviderGroup> = {
+    private(set) lazy var resultsController: ResultsController<StorageShipmentTrackingProvider> = {
         let storageManager = AppDelegate.shared.storageManager
         let predicate = NSPredicate(format: "siteID == %lld",
                                     StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
-        return ResultsController<StorageShipmentTrackingProviderGroup>(storageManager: storageManager,
-                                                                       sectionNameKeyPath: "name",
+        let groupNameKeyPath = #keyPath(StorageShipmentTrackingProvider.group.name)
+        let providerNameKeyPath = #keyPath(StorageShipmentTrackingProvider.name)
+
+        let providerGroupDescriptor = NSSortDescriptor(key: groupNameKeyPath,
+                                                      ascending: true)
+        let providerNameDescriptor = NSSortDescriptor(key: providerNameKeyPath,
+                                          ascending: true)
+
+        return ResultsController<StorageShipmentTrackingProvider>(storageManager: storageManager,
+                                                                       sectionNameKeyPath: groupNameKeyPath,
                                                                        matching: predicate,
-                                                                       sortedBy: [descriptor])
+                                                                       sortedBy: [providerGroupDescriptor, providerNameDescriptor])
     }()
 
+    /// Closure to be executed in case there is an error fetching data
+    ///
     var onError: ((Error) -> Void)?
+
+    /// Convenience property to check if the data collection is empty
+    ///
+    var isListEmpty: Bool {
+        return resultsController.fetchedObjects.count == 0
+    }
 
     /// Designated initializer
     ///
@@ -53,6 +70,19 @@ final class ShippingProvidersViewModel {
     func configureResultsController(table: UITableView) {
         resultsController.startForwardingEvents(to: table)
         try? resultsController.performFetch()
+    }
+
+    /// Filter results by text
+    ///
+    func filter(by text: String) {
+        let predicate = NSPredicate(format: "name CONTAINS[cd] %@", text)
+        resultsController.predicate = predicate
+    }
+
+    /// Clear all filters
+    ///
+    func clearFilters() {
+        resultsController.predicate = nil
     }
 
     private func handleError(_ error: Error) {

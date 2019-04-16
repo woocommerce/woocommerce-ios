@@ -8,4 +8,9 @@ public enum AppSettingsAction: Action {
     case addTrackingProvider(siteID: Int,
         providerName: String,
         onCompletion: (Error?) -> Void)
+
+    /// Loads the stored shipment tracking provider associated with the `siteID`
+    ///
+    case loadTrackingProvider(siteID: Int,
+        onCompletion: (ShipmentTrackingProvider?, Error?) -> Void)
 }

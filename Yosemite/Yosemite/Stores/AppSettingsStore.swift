@@ -27,6 +27,10 @@ public class AppSettingsStore: Store {
             addTrackingProvider(siteID: siteID,
                                 providerName: providerName,
                                 onCompletion: onCompletion)
+
+        case .loadTrackingProvider(let siteID, let onCompletion):
+            loadTrackingProvider(siteID: siteID,
+                                 onCompletion: onCompletion)
         }
     }
 }
@@ -60,6 +64,30 @@ private extension AppSettingsStore {
             onCompletion(error)
         }
 
+    }
+
+    func loadTrackingProvider(siteID: Int,
+                              onCompletion: (ShipmentTrackingProvider?, Error?) -> Void) {
+        guard let allSavedProviders = read() else {
+            let error = AppSettingsStoreErrors.readPreselectedProvider
+            onCompletion(nil, error)
+            return
+        }
+
+        let providerName = allSavedProviders.filter {
+                $0.siteID == siteID
+            }.first?.providerName
+
+        guard let name = providerName else {
+            return
+        }
+
+        let provider = storageManager
+            .viewStorage
+            .loadShipmentTrackingProvider(siteID: siteID,
+                                          name: name)
+
+        onCompletion(provider?.toReadOnly(), nil)
     }
 
     func upsertTrackingProvider(siteID: Int,
@@ -101,6 +129,16 @@ private extension AppSettingsStore {
             onCompletion(error)
         }
     }
+
+    func read() -> [PreselectedProvider]? {
+        do {
+            let data = try Data(contentsOf: selectedProvidersURL)
+            let decoder = PropertyListDecoder()
+            return try decoder.decode([PreselectedProvider].self, from: data)
+        } catch {
+            return nil
+        }
+    }
 }
 
 
@@ -109,4 +147,5 @@ private extension AppSettingsStore {
 enum AppSettingsStoreErrors: Error {
     case parsePreselectedProvider
     case writePreselectedProvider
+    case readPreselectedProvider
 }

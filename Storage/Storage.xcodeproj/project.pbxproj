@@ -93,6 +93,8 @@
 		D87F614E22657C2F0031A13B /* PreselectedProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F614D22657C2F0031A13B /* PreselectedProvider.swift */; };
 		D87F61532265AA230031A13B /* FileStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F61522265AA230031A13B /* FileStorage.swift */; };
 		D87F61552265AA900031A13B /* PListFileStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F61542265AA900031A13B /* PListFileStorage.swift */; };
+		D87F61572265AD980031A13B /* FileStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F61562265AD980031A13B /* FileStorageTests.swift */; };
+		D87F615C2265AF190031A13B /* shipment-provider.plist in Resources */ = {isa = PBXBuildFile; fileRef = D87F615B2265AF190031A13B /* shipment-provider.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -211,6 +213,8 @@
 		D87F614D22657C2F0031A13B /* PreselectedProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreselectedProvider.swift; sourceTree = "<group>"; };
 		D87F61522265AA230031A13B /* FileStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileStorage.swift; sourceTree = "<group>"; };
 		D87F61542265AA900031A13B /* PListFileStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PListFileStorage.swift; sourceTree = "<group>"; };
+		D87F61562265AD980031A13B /* FileStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FileStorageTests.swift; path = StorageTests/Tools/FileStorageTests.swift; sourceTree = SOURCE_ROOT; };
+		D87F615B2265AF190031A13B /* shipment-provider.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "shipment-provider.plist"; sourceTree = "<group>"; };
 		DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -350,6 +354,7 @@
 		B54CA5A620A4BBA600F38CD1 /* StorageTests */ = {
 			isa = PBXGroup;
 			children = (
+				D87F61582265AED70031A13B /* Mock data */,
 				B54CA5C520A4BFC800F38CD1 /* Tools */,
 				B52B0F7D20AA2F1200477698 /* Extensions */,
 				B59E11DC20A9F1E6004121A4 /* CoreData */,
@@ -450,6 +455,7 @@
 		B59E11DC20A9F1E6004121A4 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				D87F61562265AD980031A13B /* FileStorageTests.swift */,
 				9302E3AB220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift */,
 				B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */,
 			);
@@ -462,6 +468,14 @@
 				933A272F2222344D00C2143A /* Logging.swift */,
 			);
 			name = Internal;
+			sourceTree = "<group>";
+		};
+		D87F61582265AED70031A13B /* Mock data */ = {
+			isa = PBXGroup;
+			children = (
+				D87F615B2265AF190031A13B /* shipment-provider.plist */,
+			);
+			path = "Mock data";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -568,6 +582,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D87F615C2265AF190031A13B /* shipment-provider.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -725,6 +740,7 @@
 				B54CA5C320A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift in Sources */,
 				B54CA5C720A4BFDC00F38CD1 /* DummyStack.swift in Sources */,
 				B54CA5C220A4BF6900F38CD1 /* NSManagedObjectStorageTests.swift in Sources */,
+				D87F61572265AD980031A13B /* FileStorageTests.swift in Sources */,
 				B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

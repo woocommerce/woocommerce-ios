@@ -521,7 +521,7 @@ private extension FulfillViewController {
         }()
 
         let addTracking: Section? = {
-            // Hide the section if we consider the shipment
+            // Hide the section if the shipment
             // tracking plugin is not installed
             guard trackingIsReachable else {
                 return nil

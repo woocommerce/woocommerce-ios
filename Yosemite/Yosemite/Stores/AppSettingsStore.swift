@@ -152,7 +152,7 @@ private extension AppSettingsStore {
 
     func read() -> [PreselectedProvider]? {
         do {
-            let data = try Data(contentsOf: selectedProvidersURL)
+            let data = try fileStorage.data(for: selectedProvidersURL)
             let decoder = PropertyListDecoder()
             return try decoder.decode([PreselectedProvider].self, from: data)
         } catch {

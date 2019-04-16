@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Networking
+import Storage
 
 
 
@@ -29,7 +30,7 @@ class AuthenticatedState: StoresManagerState {
 
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, network: NullNetwork()),
+            AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

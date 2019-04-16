@@ -4,10 +4,26 @@ import Networking
 // MARK: - AppSettingsStore
 //
 public class AppSettingsStore: Store {
-    /// URL to the plist file that we use to store the user selected
-    /// shipment tracing provider
+    /// Loads a plist file at a given URL
     ///
-    private lazy var selectedProvidersURL: URL = {
+    private let fileStorage: FileStorage
+
+    /// Designated initaliser
+    ///
+    public init(dispatcher: Dispatcher,
+                storageManager: StorageManagerType,
+                fileStorage: FileStorage) {
+        self.fileStorage = fileStorage
+        super.init(dispatcher: dispatcher,
+                   storageManager: storageManager,
+                   network: NullNetwork())
+    }
+
+    /// URL to the plist file that we use to store the user selected
+    /// shipment tracing provider. Not declared as `private` so it can
+    /// be overriden in tests
+    ///
+    lazy var selectedProvidersURL: URL = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         return documents!.appendingPathComponent("shipment-providers.plist")
     }()

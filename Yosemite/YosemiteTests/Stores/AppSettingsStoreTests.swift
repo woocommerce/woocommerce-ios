@@ -1,33 +1,104 @@
-//
-//  AppSettingsStoreTests.swift
-//  YosemiteTests
-//
-//  Created by Cesar Tardaguila on 16/4/2019.
-//  Copyright © 2019 Automattic. All rights reserved.
-//
-
 import XCTest
+@testable import Yosemite
+@testable import Storage
 
-class AppSettingsStoreTests: XCTestCase {
+
+/// Mock constants
+///
+private struct TestConstants {
+    static let fileURL = Bundle(for: AppSettingsStoreTests.self)
+        .url(forResource: "shipment-provider", withExtension: "plist")
+    static let siteID = 156590080
+    static let providerName = "post.at"
+
+    static let newSiteID = 1234
+    static let newProviderName = "Some provider"
+}
+
+
+/// AppSettingsStore unit tests
+///
+final class AppSettingsStoreTests: XCTestCase {
+    /// Mockup Dispatcher!
+    ///
+    private var dispatcher: Dispatcher?
+
+    /// Mockup Storage: InMemory
+    ///
+    private var storageManager: MockupStorageManager?
+
+    /// Mockup File Storage: Load a plist in the test bundle
+    ///
+    private var fileStorage: MockFileLoader?
+
+    /// Test subject
+    ///
+    private var subject: AppSettingsStore?
 
     override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        super.setUp()
+        dispatcher = Dispatcher()
+        storageManager = MockupStorageManager()
+        fileStorage = MockFileLoader()
+        subject = AppSettingsStore(dispatcher: dispatcher!, storageManager: storageManager!, fileStorage: fileStorage!)
+        subject?.selectedProvidersURL = TestConstants.fileURL!
     }
 
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        dispatcher = nil
+        storageManager = nil
+        fileStorage = nil
+        subject = nil
+        super.tearDown()
     }
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testFileStorageIsRequestedToWriteWhenAddingANewShipmentProvider() {
+        let expectation = self.expectation(description: "A write is requested")
+        
+        let action = AppSettingsAction.addTrackingProvider(siteID: TestConstants.newSiteID,
+                                                           providerName: TestConstants.newProviderName) { error in
+                                                            XCTAssertNil(error)
+                                                            
+                                                            if self.fileStorage?.dataWriteIsHit == true {
+                                                                expectation.fulfill()
+                                                            }
         }
+        
+        subject?.onAction(action)
+        
+        waitForExpectations(timeout: 2, handler: nil)
     }
 
+    func testFileStorageIsRequestedToWriteWhenAddingAShipmentProviderForExistingSite() {
+        let expectation = self.expectation(description: "A write is requested")
+
+        let action = AppSettingsAction.addTrackingProvider(siteID: TestConstants.siteID,
+                                                           providerName: TestConstants.providerName) { error in
+                                                            XCTAssertNil(error)
+
+                                                            if self.fileStorage?.dataWriteIsHit == true {
+                                                                expectation.fulfill()
+                                                            }
+        }
+
+        subject?.onAction(action)
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+}
+
+
+private final class MockFileLoader: FileStorage {
+    private let loader = PListFileStorage()
+
+    var dataWriteIsHit: Bool = false
+
+    func data(for fileURL: URL) throws -> Data {
+        let result = try loader.data(for: TestConstants.fileURL!)
+        return result
+    }
+
+    func write(_ data: Data, to fileURL: URL) throws {
+        dataWriteIsHit = true
+    }
 }

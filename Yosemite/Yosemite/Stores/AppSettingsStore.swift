@@ -144,6 +144,7 @@ private extension AppSettingsStore {
         do {
             let encodedData = try encoder.encode(data)
             try fileStorage.write(encodedData, to: selectedProvidersURL)
+            onCompletion(nil)
         } catch {
             let error = AppSettingsStoreErrors.writePreselectedProvider
             onCompletion(error)

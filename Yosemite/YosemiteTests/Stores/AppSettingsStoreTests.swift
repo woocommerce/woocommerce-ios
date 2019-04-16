@@ -54,18 +54,18 @@ final class AppSettingsStoreTests: XCTestCase {
 
     func testFileStorageIsRequestedToWriteWhenAddingANewShipmentProvider() {
         let expectation = self.expectation(description: "A write is requested")
-        
+
         let action = AppSettingsAction.addTrackingProvider(siteID: TestConstants.newSiteID,
                                                            providerName: TestConstants.newProviderName) { error in
                                                             XCTAssertNil(error)
-                                                            
+
                                                             if self.fileStorage?.dataWriteIsHit == true {
                                                                 expectation.fulfill()
                                                             }
         }
-        
+
         subject?.onAction(action)
-        
+
         waitForExpectations(timeout: 2, handler: nil)
     }
 
@@ -85,6 +85,27 @@ final class AppSettingsStoreTests: XCTestCase {
 
         waitForExpectations(timeout: 2, handler: nil)
     }
+
+    func testAddingNewProviderToExistingSiteUpdatesFile() {
+        let expectation = self.expectation(description: "File is updated")
+
+        let action = AppSettingsAction
+            .addTrackingProvider(siteID: TestConstants.siteID,
+                                 providerName: TestConstants.newProviderName) { error in
+                                    XCTAssertNil(error)
+                                    let fileData = self.fileStorage?.fileData
+                                    let updatedProvider = fileData?.filter({ $0.siteID == TestConstants.siteID}).first
+
+                                    if updatedProvider?.providerName == TestConstants.newProviderName {
+                                        expectation.fulfill()
+                                    }
+
+        }
+
+        subject?.onAction(action)
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
 }
 
 
@@ -92,6 +113,7 @@ private final class MockFileLoader: FileStorage {
     private let loader = PListFileStorage()
 
     var dataWriteIsHit: Bool = false
+    var fileData = [PreselectedProvider]()
 
     func data(for fileURL: URL) throws -> Data {
         let result = try loader.data(for: TestConstants.fileURL!)
@@ -100,5 +122,11 @@ private final class MockFileLoader: FileStorage {
 
     func write(_ data: Data, to fileURL: URL) throws {
         dataWriteIsHit = true
+        decode(data)
+    }
+
+    private func decode(_ data: Data) {
+        let decoder = PropertyListDecoder()
+        fileData = try! decoder.decode([PreselectedProvider].self, from: data)
     }
 }

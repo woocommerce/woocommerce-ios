@@ -248,7 +248,7 @@ private extension ShipmentProvidersViewController {
         emptyState.messageText = NSLocalizedString("No results found for \(term)\nAdd a custom provider",
             comment: "Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider'")
         emptyState.actionText = NSLocalizedString("Custom Provider",
-                                                  comment: "Title of button to add a custom shipment tracking provider when filtering the provider list yields no results."
+                                                  comment: "Title of button to add a custom tracking provider if filtering the list yields no results."
         )
 
         emptyState.onAction = { [weak self] in

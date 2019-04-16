@@ -130,6 +130,8 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
         self.siteID = order.siteID
         self.orderID = order.orderID
         self.orderStatus = order.statusKey
+
+        loadSelectedShipmentProvider()
     }
 
 }
@@ -151,6 +153,21 @@ private extension AddTrackingViewModel {
             }
 
             DDLogError("⛔️ Save selected Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
+    func loadSelectedShipmentProvider() {
+        let siteID = self.siteID
+
+        let action = AppSettingsAction.loadTrackingProvider(siteID: siteID) { [weak self] (provider, error) in
+            guard let error = error else {
+                self?.shipmentProvider = provider
+                return
+            }
+
+            DDLogError("⛔️ Read selected Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
         }
 
         StoresManager.shared.dispatch(action)

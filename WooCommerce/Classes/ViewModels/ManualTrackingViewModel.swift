@@ -143,43 +143,23 @@ private extension AddTrackingViewModel {
             return
         }
 
-        let key = persistenceKey(provider: shipmentProvider).serialised()
+        let siteID = self.siteID
 
-        UserDefaults.standard[.lastShipmentProviderSelected] = key
-    }
+        let action = AppSettingsAction.addTrackingProvider(siteID: siteID, providerName: shipmentProvider.name) { error in
+            guard let error = error else {
+                return
+            }
 
-    func persistenceKey(provider: ShipmentTrackingProvider) -> ProviderPersistenceKey {
-        return ProviderPersistenceKey(providerName: provider.name, siteID: provider.siteID)
-    }
-
-
-    func readSelectedShipmentProvider() -> ShipmentTrackingProvider? {
-        guard let key = UserDefaults.standard[.lastShipmentProviderSelected] else {
-            return nil
+            DDLogError("⛔️ Save selected Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
         }
 
-
+        StoresManager.shared.dispatch(action)
     }
 }
 
-
-private struct ProviderPersistenceKey {
-    let providerName: String
-    let siteID: Int
-
-    func serialised() -> String {
-        return "\(providerName)::\(siteID)"
-    }
-
-    static func materialize(serialised: String) -> ProviderPersistenceKey? {
-        let components = serialised.components(separatedBy: "::")
-
-        if components.count != 2 {
-            return nil
-        }
-
-        return ProviderPersistenceKey(providerName: components[0], siteID: Int(components[1]) ?? 0)
-    }
+struct PreselectedProvider: Codable {
+    private var siteID: Int
+    private var providerName: String
 }
 
 

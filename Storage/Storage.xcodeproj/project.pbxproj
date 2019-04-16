@@ -90,6 +90,7 @@
 		D821645C2239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82164582239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift */; };
 		D821645D2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82164592239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift */; };
 		D821645E2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D821645A2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataProperties.swift */; };
+		D87F614E22657C2F0031A13B /* PreselectedProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F614D22657C2F0031A13B /* PreselectedProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -205,6 +206,7 @@
 		D82164592239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProviderGroup+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D821645A2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProviderGroup+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D82A61EF2239EB9900335D40 /* Model 12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 12.xcdatamodel"; sourceTree = "<group>"; };
+		D87F614D22657C2F0031A13B /* PreselectedProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreselectedProvider.swift; sourceTree = "<group>"; };
 		DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -434,6 +436,7 @@
 				7492FAD4217FA9C100ED2C69 /* SiteSetting+CoreDataClass.swift */,
 				7492FAD5217FA9C100ED2C69 /* SiteSetting+CoreDataProperties.swift */,
 				7471A518216CF12900219F7E /* Stats */,
+				D87F614D22657C2F0031A13B /* PreselectedProvider.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -685,6 +688,7 @@
 				CE3B7AD22225E62C0050FE4B /* OrderStatus+CoreDataClass.swift in Sources */,
 				74E218F22252BA8400E4B0D7 /* ProductVariationAttribute+CoreDataClass.swift in Sources */,
 				74B7D6AE20F90CBB002667AC /* OrderNote+CoreDataProperties.swift in Sources */,
+				D87F614E22657C2F0031A13B /* PreselectedProvider.swift in Sources */,
 				CE12FBCF221F0E1A00C59248 /* Order+CoreDataProperties.swift in Sources */,
 				7474539B2242C85E00E0B5EE /* ProductDimensions+CoreDataClass.swift in Sources */,
 				B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */,

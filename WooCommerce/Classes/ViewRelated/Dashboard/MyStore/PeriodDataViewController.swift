@@ -487,8 +487,8 @@ private extension PeriodDataViewController {
     func updateDisplayedRange() {
         self.editRangeButton.setTitle(String.localizedStringWithFormat(
             NSLocalizedString(
-                "%@ - %@",
-                comment: "Custom range value. It reads: {date} - {date}."
+                "%@–%@",
+                comment: "Custom range value. It reads: {date}–{date}."
             ),
             startDate.toString(dateStyle: .medium, timeStyle: .none),
             endDate.toString(dateStyle: .medium, timeStyle: .none)

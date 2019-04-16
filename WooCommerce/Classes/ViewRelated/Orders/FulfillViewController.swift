@@ -1,9 +1,7 @@
 import Foundation
 import UIKit
-
 import Yosemite
 import Gridicons
-
 
 
 /// Renders the Order Fulfillment Interface
@@ -48,6 +46,11 @@ final class FulfillViewController: UIViewController {
         return trackingResultsController.fetchedObjects
     }
 
+    /// Indicates if we consider the shipment tracking plugin as reachable
+    /// https://github.com/woocommerce/woocommerce-ios/issues/852#issuecomment-482308373
+    ///
+    private var trackingIsReachable: Bool = false
+
     /// Designated Initializer
     ///
     init(order: Order) {
@@ -79,6 +82,10 @@ final class FulfillViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         syncTracking { [weak self] error in
+            if error == nil {
+                self?.trackingIsReachable = true
+            }
+
             self?.reloadSections()
             self?.tableView.reloadData()
         }
@@ -147,7 +154,7 @@ private extension FulfillViewController {
 
 // MARK: - Action Handlers
 //
-extension FulfillViewController {
+private extension FulfillViewController {
 
     /// Whenever the Fulfillment Action is pressed, we'll mark the order as Completed, and pull back to the previous screen.
     ///
@@ -181,7 +188,7 @@ extension FulfillViewController {
 
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
-    private func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
+    func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
             guard let error = error else {
                 WooAnalytics.shared.track(.orderStatusChangeSuccess)
@@ -197,7 +204,7 @@ extension FulfillViewController {
 
     /// Displays the `Order Fulfilled` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
     ///
-    private func displayOrderCompleteNotice(onUndoAction: @escaping () -> Void) {
+    func displayOrderCompleteNotice(onUndoAction: @escaping () -> Void) {
         let message = NSLocalizedString("Order marked as fulfilled", comment: "Order fulfillment success notice")
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
         let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
@@ -218,6 +225,14 @@ extension FulfillViewController {
         }
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Displays the product detail screen for the provided ProductID
+    ///
+    func productWasPressed(for productID: Int) {
+        let loaderViewController = ProductLoaderViewController(productID: productID, siteID: order.siteID)
+        let navController = WooNavigationController(rootViewController: loaderViewController)
+        present(navController, animated: true, completion: nil)
     }
 }
 
@@ -263,7 +278,7 @@ extension FulfillViewController: UITableViewDataSource {
 }
 
 
-// MARK: - UITableViewDataSource Conformance
+// MARK: - Cell Configuration
 //
 private extension FulfillViewController {
 
@@ -292,7 +307,7 @@ private extension FulfillViewController {
         }
 
         let viewModel = OrderItemViewModel(item: item, currency: order.currency)
-
+        cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
         cell.name = viewModel.name
         cell.quantity = viewModel.quantity
         cell.price = viewModel.price
@@ -404,6 +419,11 @@ extension FulfillViewController: UITableViewDelegate {
             let navController = WooNavigationController(rootViewController: addTracking)
             present(navController, animated: true, completion: nil)
 
+        case .product(let item):
+            if FeatureFlag.productDetails.enabled {
+                productWasPressed(for: item.productID)
+            }
+
         case .tracking:
             guard let shipmentTracking = orderTracking(at: indexPath) else {
                 return
@@ -435,6 +455,7 @@ private extension FulfillViewController {
                                                                         }
 
                                                                         WooAnalytics.shared.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+
                                                                         onCompletion?(nil)
         }
 
@@ -510,7 +531,13 @@ private extension FulfillViewController {
             return Section(title: title, secondaryTitle: nil, rows: rows)
         }()
 
-        let addTracking: Section = {
+        let addTracking: Section? = {
+            // Hide the section if the shipment
+            // tracking plugin is not installed
+            guard trackingIsReachable else {
+                return nil
+            }
+
             let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : ""
             let row = Row.trackingAdd
 

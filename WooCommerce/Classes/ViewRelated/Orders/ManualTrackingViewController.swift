@@ -366,7 +366,7 @@ private extension ManualTrackingViewController {
 
     func showAllShipmentProviders() {
         let shippingProviders = ShippingProvidersViewModel(orderID: viewModel.orderID)
-        let shippingList = ShippingProvidersViewController(viewModel: shippingProviders, delegate: self)
+        let shippingList = ShipmentProvidersViewController(viewModel: shippingProviders, delegate: self)
         navigationController?.pushViewController(shippingList, animated: true)
     }
 
@@ -391,7 +391,7 @@ private extension ManualTrackingViewController {
 // MARK: - Conformance to delegate of List of Shipment providers.
 //
 extension ManualTrackingViewController: ShipmentProviderListDelegate {
-    func shipmentProviderList(_ list: ShippingProvidersViewController, didSelect: Yosemite.ShipmentTrackingProvider, groupName: String) {
+    func shipmentProviderList(_ list: ShipmentProvidersViewController, didSelect: Yosemite.ShipmentTrackingProvider, groupName: String) {
         WooAnalytics.shared.track(.orderFulfillmentTrackingCarrierSelected,
                                   withProperties: ["option": didSelect.name])
 

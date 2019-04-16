@@ -61,8 +61,7 @@ public class AppSettingsStore: Store {
 private extension AppSettingsStore {
     func addTrackingProvider(siteID: Int,
                              providerName: String,
-                             onCompletion: (Error?) -> Void)
-    {
+                             onCompletion: (Error?) -> Void) {
         guard FileManager.default.fileExists(atPath: selectedProvidersURL.path) else {
             insertNewProvider(siteID: siteID,
                               providerName: providerName,

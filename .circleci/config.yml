@@ -2,14 +2,15 @@ version: 2.1
 
 orbs:
   # This uses the Orbs located at https://github.com/wordpress-mobile/circleci-orbs
-  ios: wordpress-mobile/ios@0.0.18
+  ios: wordpress-mobile/ios@0.0.25
 
 workflows:
   woocommerce_ios:
     jobs:
       - ios/test:
           name: Test
+          xcode-version: "10.2.0"
           workspace: WooCommerce.xcworkspace
           scheme: WooCommerce
           device: iPhone XS
-          ios-version: "12.1"
+          ios-version: "12.2"

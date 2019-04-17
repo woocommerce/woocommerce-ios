@@ -178,7 +178,7 @@ private extension AppSettingsStore {
 }
 
 
-// MARK:- Conformance to Resettable
+// MARK: - Conformance to Resettable
 extension AppSettingsStore: Resettable {
     public func reset() {
         resetStoredProviders()
@@ -186,7 +186,8 @@ extension AppSettingsStore: Resettable {
 }
 
 
-// MARK:- Errors
+// MARK: - Errors
+
 /// Errors
 ///
 enum AppSettingsStoreErrors: Error {
@@ -197,7 +198,8 @@ enum AppSettingsStoreErrors: Error {
 }
 
 
-// MARK:- Constants
+// MARK: - Constants
+
 /// Constants
 ///
 private enum Constants {

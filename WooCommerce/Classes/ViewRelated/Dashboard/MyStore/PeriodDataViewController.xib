@@ -62,27 +62,11 @@
                         <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YSf-XA-4dG">
                             <rect key="frame" x="0.0" y="44" width="375" height="1"/>
                             <subviews>
-                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NVu-1X-dSs">
-                                    <rect key="frame" x="0.0" y="0.0" width="14" height="1"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="1" id="3eG-4X-gPw"/>
-                                        <constraint firstAttribute="width" constant="14" id="D7X-ZX-Cvg"/>
-                                    </constraints>
-                                </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MG9-aZ-PV2">
-                                    <rect key="frame" x="14" y="0.0" width="347" height="1"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
                                     <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="1" id="uPY-Jv-Mrk"/>
-                                    </constraints>
-                                </view>
-                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G4v-SD-kzQ">
-                                    <rect key="frame" x="361" y="0.0" width="14" height="1"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="14" id="KsM-eT-qFd"/>
-                                        <constraint firstAttribute="height" constant="1" id="cCu-S2-vWO"/>
                                     </constraints>
                                 </view>
                             </subviews>

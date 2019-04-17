@@ -102,15 +102,7 @@ private extension AuthenticatedState {
 
 private extension AuthenticatedState {
     func resetServices() {
-        let servicesToReset = resettableServices()
-        for service in servicesToReset {
-            service.reset()
-        }
-    }
-
-    func resettableServices() -> [Resettable] {
-        return services.compactMap {
-            $0 as? Resettable
-        }
+        let resetStoredProviders = AppSettingsAction.resetStoredProviders(onCompletion: nil)
+        StoresManager.shared.dispatch(resetStoredProviders)
     }
 }

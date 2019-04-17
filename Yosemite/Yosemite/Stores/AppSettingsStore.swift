@@ -178,14 +178,6 @@ private extension AppSettingsStore {
 }
 
 
-// MARK: - Conformance to Resettable
-extension AppSettingsStore: Resettable {
-    public func reset() {
-        resetStoredProviders()
-    }
-}
-
-
 // MARK: - Errors
 
 /// Errors

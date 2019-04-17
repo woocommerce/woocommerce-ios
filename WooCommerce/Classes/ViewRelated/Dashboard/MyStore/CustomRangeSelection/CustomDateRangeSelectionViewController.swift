@@ -184,6 +184,7 @@ private extension CustomDateRangeSelectionViewController {
     func configureDatePicker(cell: DatePickerTableViewCell) {
         let datePicker = cell.datePicker
         datePicker?.date = datePickerDate
+        datePicker?.maximumDate = Date()
         datePicker?.removeTarget(nil, action: nil, for: .allEvents)
         datePicker?.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
     }

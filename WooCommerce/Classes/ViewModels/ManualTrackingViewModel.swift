@@ -161,9 +161,10 @@ private extension AddTrackingViewModel {
     func loadSelectedShipmentProvider() {
         let siteID = self.siteID
 
-        let action = AppSettingsAction.loadTrackingProvider(siteID: siteID) { [weak self] (provider, error) in
+        let action = AppSettingsAction.loadTrackingProvider(siteID: siteID) { [weak self] (provider, providerGroup, error) in
             guard let error = error else {
                 self?.shipmentProvider = provider
+                self?.shipmentProviderGroupName = providerGroup?.name
                 return
             }
 

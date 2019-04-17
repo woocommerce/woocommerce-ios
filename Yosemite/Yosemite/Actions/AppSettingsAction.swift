@@ -12,5 +12,5 @@ public enum AppSettingsAction: Action {
     /// Loads the stored shipment tracking provider associated with the `siteID`
     ///
     case loadTrackingProvider(siteID: Int,
-        onCompletion: (ShipmentTrackingProvider?, Error?) -> Void)
+        onCompletion: (ShipmentTrackingProvider?, ShipmentTrackingProviderGroup?, Error?) -> Void)
 }

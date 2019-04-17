@@ -86,10 +86,10 @@ private extension AppSettingsStore {
     }
 
     func loadTrackingProvider(siteID: Int,
-                              onCompletion: (ShipmentTrackingProvider?, Error?) -> Void) {
+                              onCompletion: (ShipmentTrackingProvider?, ShipmentTrackingProviderGroup?, Error?) -> Void) {
         guard let allSavedProviders = read() else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
-            onCompletion(nil, error)
+            onCompletion(nil, nil, error)
             return
         }
 
@@ -106,7 +106,7 @@ private extension AppSettingsStore {
             .loadShipmentTrackingProvider(siteID: siteID,
                                           name: name)
 
-        onCompletion(provider?.toReadOnly(), nil)
+        onCompletion(provider?.toReadOnly(), provider?.group?.toReadOnly(), nil)
     }
 
     func upsertTrackingProvider(siteID: Int,

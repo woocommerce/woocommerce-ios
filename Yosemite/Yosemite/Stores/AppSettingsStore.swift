@@ -25,7 +25,7 @@ public class AppSettingsStore: Store {
     ///
     lazy var selectedProvidersURL: URL = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent("shipment-providers.plist")
+        return documents!.appendingPathComponent(Constants.shipmentProvidersFileName)
     }()
 
     /// Registers for supported Actions.
@@ -182,6 +182,7 @@ extension AppSettingsStore: Resettable {
 }
 
 
+// MARK:- Errors
 /// Errors
 ///
 enum AppSettingsStoreErrors: Error {
@@ -189,4 +190,12 @@ enum AppSettingsStoreErrors: Error {
     case writePreselectedProvider
     case readPreselectedProvider
     case deletePreselectedProvider
+}
+
+
+// MARK:- Constants
+/// Constants
+///
+private enum Constants {
+    static let shipmentProvidersFileName = "shipment-providers.plist"
 }

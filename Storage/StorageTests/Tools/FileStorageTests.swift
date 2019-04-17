@@ -15,6 +15,7 @@ final class FileStorageTests: XCTestCase {
     override func tearDown() {
         fileURL = nil
         subject = nil
+        super.tearDown()
     }
 
     func testFileIsLoaded() {

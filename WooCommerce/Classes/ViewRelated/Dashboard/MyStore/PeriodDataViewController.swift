@@ -50,14 +50,6 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     @IBOutlet private weak var xAxisAccessibilityView: UIView!
     @IBOutlet private weak var chartAccessibilityView: UIView!
 
-    /// Start date for the range
-    ///
-    private var startDate: Date = Date(timeIntervalSince1970: 1554715707)
-
-    /// End date for the range
-    ///
-    private var endDate: Date = Date(timeIntervalSince1970: 1554974907)
-
     private var lastUpdatedDate: Date?
     private var yAxisMinimum: String = Constants.chartYAxisMinimum.humanReadableString()
     private var yAxisMaximum: String = ""
@@ -88,6 +80,33 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
 
     // MARK: - Computed Properties
+
+    /// Start date for the custom range
+    /// Note: this is shared for all sites. Future update should use https://github.com/woocommerce/woocommerce-ios/pull/883
+    ///
+    private var startDate: Date {
+        get {
+            let date: Date? = UserDefaults.standard[.statsCustomRangeStartDate]
+            // return persisted date. Defaults to 14 days ago
+            return date ?? Date().addingTimeInterval(-3600 * 24 * 14)
+        }
+        set {
+            UserDefaults.standard[.statsCustomRangeStartDate] = newValue
+        }
+    }
+
+    /// End date for the custom range
+    /// Note: this is shared for all sites. Future update should use https://github.com/woocommerce/woocommerce-ios/pull/883
+    ///
+    private var endDate: Date {
+        get {
+            let date: Date? = UserDefaults.standard[.statsCustomRangeEndDate]
+            return date ?? Date()
+        }
+        set {
+            UserDefaults.standard[.statsCustomRangeEndDate] = newValue
+        }
+    }
 
     private var currencySymbol: String {
         guard let rawCode = orderStats?.currencyCode else {
@@ -137,7 +156,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     }
 
     convenience init(isCustomRange: Bool) {
-        self.init(granularity: .year, isCustomRange: isCustomRange)
+        self.init(granularity: .day, isCustomRange: isCustomRange)
     }
 
     /// NSCoder Conformance

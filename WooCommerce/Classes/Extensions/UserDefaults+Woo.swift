@@ -19,6 +19,8 @@ extension UserDefaults {
         case analyticsUsername
         case notificationsLastSeenTime
         case notificationsMarkAsReadCount
+        case statsCustomRangeStartDate
+        case statsCustomRangeEndDate
     }
 }
 

@@ -28,8 +28,6 @@
 		0F910611225F36B0004A3573 /* StatsQueryOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F910610225F36B0004A3573 /* StatsQueryOptions.swift */; };
 		0FE189B922648B65005BAF69 /* RightDetailTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0FE189B822648B64005BAF69 /* RightDetailTableViewCell.xib */; };
 		0FE189BB22648B90005BAF69 /* RightDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FE189BA22648B90005BAF69 /* RightDetailTableViewCell.swift */; };
-		0FE189BF22648FC4005BAF69 /* GranularitySelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FE189BD22648FC4005BAF69 /* GranularitySelectionViewController.swift */; };
-		0FE189C022648FC4005BAF69 /* GranularitySelectionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0FE189BE22648FC4005BAF69 /* GranularitySelectionViewController.xib */; };
 		74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74036CBF211B882100E462C2 /* PeriodDataViewController.swift */; };
 		740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740987B221B87760000E4C80 /* FancyAnimatedButton+Woo.swift */; };
 		740ADFE521C33688009EE5A9 /* licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 740ADFE421C33688009EE5A9 /* licenses.html */; };
@@ -355,8 +353,6 @@
 		0F910610225F36B0004A3573 /* StatsQueryOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsQueryOptions.swift; sourceTree = "<group>"; };
 		0FE189B822648B64005BAF69 /* RightDetailTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RightDetailTableViewCell.xib; sourceTree = "<group>"; };
 		0FE189BA22648B90005BAF69 /* RightDetailTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RightDetailTableViewCell.swift; sourceTree = "<group>"; };
-		0FE189BD22648FC4005BAF69 /* GranularitySelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GranularitySelectionViewController.swift; sourceTree = "<group>"; };
-		0FE189BE22648FC4005BAF69 /* GranularitySelectionViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GranularitySelectionViewController.xib; sourceTree = "<group>"; };
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74036CBF211B882100E462C2 /* PeriodDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodDataViewController.swift; sourceTree = "<group>"; };
@@ -698,20 +694,10 @@
 		0F910607225CCD6D004A3573 /* CustomRangeSelection */ = {
 			isa = PBXGroup;
 			children = (
-				0FE189BC22648FA6005BAF69 /* GranularitySelection */,
 				0F91060A225CD015004A3573 /* CustomDateRangeSelectionViewController.swift */,
 				0F91060B225CD015004A3573 /* CustomDateRangeSelectionViewController.xib */,
 			);
 			path = CustomRangeSelection;
-			sourceTree = "<group>";
-		};
-		0FE189BC22648FA6005BAF69 /* GranularitySelection */ = {
-			isa = PBXGroup;
-			children = (
-				0FE189BD22648FC4005BAF69 /* GranularitySelectionViewController.swift */,
-				0FE189BE22648FC4005BAF69 /* GranularitySelectionViewController.xib */,
-			);
-			path = GranularitySelection;
 			sourceTree = "<group>";
 		};
 		74036CBE211B87FD00E462C2 /* MyStore */ = {
@@ -1662,7 +1648,6 @@
 				74334F37214AB130006D6AC5 /* ProductTableViewCell.xib in Resources */,
 				CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */,
 				CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */,
-				0FE189C022648FC4005BAF69 /* GranularitySelectionViewController.xib in Resources */,
 				74F9E9CD214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2012,7 +1997,6 @@
 				B5980A6321AC879F00EBF596 /* Bundle+Woo.swift in Sources */,
 				B59D1EE5219080B4009D1978 /* Note+Woo.swift in Sources */,
 				CE4DA5CA21DEA78E00074607 /* NSDecimalNumber+Helpers.swift in Sources */,
-				0FE189BF22648FC4005BAF69 /* GranularitySelectionViewController.swift in Sources */,
 				CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */,
 				B57B678E21078C5400AF8905 /* OrderItemViewModel.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,

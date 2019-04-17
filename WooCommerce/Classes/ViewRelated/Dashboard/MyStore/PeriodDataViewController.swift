@@ -156,6 +156,8 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         self.isCustomRange = isCustomRange
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
+        self.setAutomaticGranularityIfNeeded()
+
         // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
         self.configureResultsControllers()
     }
@@ -368,11 +370,11 @@ private extension PeriodDataViewController {
 private extension PeriodDataViewController {
 
     @IBAction func editRangeWasPressed() {
-        let rangeSelectionController = CustomDateRangeSelectionViewController(startDate: startDate, endDate: endDate, granularity: granularity)
-        rangeSelectionController.onSelectionCompleted = { [weak self] (startDate, endDate, granularity) in
+        let rangeSelectionController = CustomDateRangeSelectionViewController(startDate: startDate, endDate: endDate)
+        rangeSelectionController.onSelectionCompleted = { [weak self] (startDate, endDate) in
             self?.startDate = startDate
             self?.endDate = endDate
-            self?.granularity = granularity
+            self?.setAutomaticGranularityIfNeeded()
             self?.updateDisplayedRange()
         }
         let navigationController = WooNavigationController(rootViewController: rangeSelectionController)
@@ -499,6 +501,13 @@ private extension PeriodDataViewController {
 // MARK: - Private Helpers
 //
 private extension PeriodDataViewController {
+
+    func setAutomaticGranularityIfNeeded() {
+        guard isCustomRange else {
+            return
+        }
+        self.granularity = StatsQueryOptions.automaticGranularity(from: startDate, to: endDate)
+    }
 
     func updateDisplayedRange() {
         let title = String.localizedStringWithFormat(

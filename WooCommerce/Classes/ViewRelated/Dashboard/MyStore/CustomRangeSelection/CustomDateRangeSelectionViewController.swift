@@ -7,7 +7,7 @@ class CustomDateRangeSelectionViewController: UIViewController {
 
     /// Closure to be executed when the user taps on Apply
     ///
-    var onSelectionCompleted: ((_ startDate: Date, _ endDate: Date, _ granularity: StatGranularity) -> Void)?
+    var onSelectionCompleted: ((_ startDate: Date, _ endDate: Date) -> Void)?
 
     /// Main TableView
     ///
@@ -17,7 +17,6 @@ class CustomDateRangeSelectionViewController: UIViewController {
     ///
     private var sections = [Section]()
 
-
     /// Start date for the range
     ///
     private var startDate: Date
@@ -26,15 +25,12 @@ class CustomDateRangeSelectionViewController: UIViewController {
     ///
     private var endDate: Date
 
-    /// Granularity for the range
-    ///
-    private var granularity: StatGranularity
-
     /// Parent row for the date picker (above it visually)
     ///
     private var datePickerParentRow: Row?
 
     // MARK: - Computed Properties
+
     private var datePickerDate: Date {
         switch datePickerParentRow {
         case .some(.rangeStart):
@@ -46,10 +42,11 @@ class CustomDateRangeSelectionViewController: UIViewController {
         }
     }
 
-    init(startDate: Date, endDate: Date, granularity: StatGranularity) {
+    // MARK: - Initialization
+
+    init(startDate: Date, endDate: Date) {
         self.startDate = startDate.normalizedDate()
         self.endDate = endDate.normalizedDate()
-        self.granularity = granularity
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -142,7 +139,6 @@ private extension CustomDateRangeSelectionViewController {
 
         sections = [
             Section(title: rangeTitle, rows: rangeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
-            Section(title: nil, rows: [.granularity], footerHeight: UITableView.automaticDimension),
         ]
     }
 
@@ -162,8 +158,6 @@ private extension CustomDateRangeSelectionViewController {
             configureRangeEnd(cell: cell)
         case let cell as DatePickerTableViewCell where row == .datePicker:
             configureDatePicker(cell: cell)
-        case let cell as RightDetailTableViewCell where row == .granularity:
-            configureGranularity(cell: cell)
         default:
             fatalError()
         }
@@ -187,11 +181,6 @@ private extension CustomDateRangeSelectionViewController {
         datePicker?.maximumDate = Date()
         datePicker?.removeTarget(nil, action: nil, for: .allEvents)
         datePicker?.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
-    }
-
-    func configureGranularity(cell: RightDetailTableViewCell) {
-        cell.textLabel?.text = NSLocalizedString("Display as", comment: "My Store > Custom Range > Granularity cell")
-        cell.detailTextLabel?.text = granularity.pluralizedString
     }
 }
 
@@ -230,7 +219,7 @@ private extension CustomDateRangeSelectionViewController {
             return
         }
 
-        onSelectionCompleted?(startDate, endDate, granularity)
+        onSelectionCompleted?(startDate, endDate)
         dismiss(animated: true, completion: nil)
     }
 
@@ -272,24 +261,12 @@ private extension CustomDateRangeSelectionViewController {
             startDate = sender.date
         case .rangeEnd:
             endDate = sender.date
-        case .datePicker, .granularity:
+        case .datePicker:
             break
         }
 
         tableView.reloadRows(at: [indexPathToReload], with: .none)
     }
-
-    func granularityWasPressed() {
-        let granularitySelectionController = GranularitySelectionViewController(granularity: granularity)
-        granularitySelectionController.onSelectionChanged = { [weak self] granularity in
-            self?.granularity = granularity
-            if let indexPath = self?.indexPathForRow(row: .granularity) {
-                self?.tableView.reloadRows(at: [indexPath], with: .fade)
-            }
-        }
-        self.navigationController?.pushViewController(granularitySelectionController, animated: true)
-    }
-
 }
 
 
@@ -338,8 +315,6 @@ extension CustomDateRangeSelectionViewController: UITableViewDelegate {
             rangeRowWasPressed(row: row, indexPath: indexPath)
         case .datePicker:
             break
-        case .granularity:
-            granularityWasPressed()
         }
     }
 }
@@ -361,11 +336,10 @@ private enum Row: CaseIterable {
     case rangeStart
     case rangeEnd
     case datePicker
-    case granularity
 
     var type: UITableViewCell.Type {
         switch self {
-        case .rangeStart, .rangeEnd, .granularity:
+        case .rangeStart, .rangeEnd:
             return RightDetailTableViewCell.self
         case .datePicker:
             return DatePickerTableViewCell.self

@@ -30,6 +30,32 @@ struct StatsQueryOptions {
     }
 }
 
+extension StatsQueryOptions {
+
+    /// Chooses appropriate granularity based on the range
+    ///
+    static func automaticGranularity(from: Date, to: Date) -> StatGranularity {
+        let calendar = Calendar(identifier: .gregorian)
+
+        let components = calendar.dateComponents([.day], from: from, to: to)
+
+        if let days = components.day {
+            if days > 365 {
+                return .year
+            }
+            if days > 31 * 6 {
+                return .month
+            }
+            if days > 31 {
+                return .week
+            }
+        }
+
+        // Default
+        return .day
+    }
+}
+
 private extension StatsQueryOptions {
     func quantity(for granularity: StatGranularity) -> Int {
         switch granularity {

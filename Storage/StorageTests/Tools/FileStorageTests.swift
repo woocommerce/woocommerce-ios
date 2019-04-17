@@ -27,4 +27,17 @@ final class FileStorageTests: XCTestCase {
 
         XCTAssertThrowsError(try subject?.data(for: url!))
     }
+
+    func testErrorIsTriggeredWhenWritingFails() {
+        let url = URL(string: "http://somewhere.on.the.internet")
+        let data = Data(count: 0)
+
+        XCTAssertThrowsError(try subject?.write(data, to: url!))
+    }
+
+    func testErrorIsTriggeredWhenFileFailsToDelete() {
+        let url = URL(string: "http://somewhere.on.the.internet")
+
+        XCTAssertThrowsError(try subject?.deleteFile(at: url!))
+    }
 }

@@ -100,6 +100,8 @@ private extension AppSettingsStore {
             }.first?.providerName
 
         guard let name = providerName else {
+            let error = AppSettingsStoreErrors.readPreselectedProvider
+            onCompletion(nil, nil, error)
             return
         }
 

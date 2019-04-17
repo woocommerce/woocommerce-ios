@@ -83,6 +83,8 @@ private extension AppSettingsStore {
         } catch {
             let error = AppSettingsStoreErrors.parsePreselectedProvider
             onCompletion(error)
+
+            DDLogError("⛔️ Saving a tracking provider locally failed: siteID \(siteID). Error: \(error)")
         }
 
     }

@@ -13,4 +13,8 @@ public enum AppSettingsAction: Action {
     ///
     case loadTrackingProvider(siteID: Int,
         onCompletion: (ShipmentTrackingProvider?, ShipmentTrackingProviderGroup?, Error?) -> Void)
+
+    /// Clears the stored providers
+    ///
+    case resetStoredProviders(onCompletion: ((Error?) -> Void)?)
 }

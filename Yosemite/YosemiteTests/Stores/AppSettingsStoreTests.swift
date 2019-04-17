@@ -106,6 +106,22 @@ final class AppSettingsStoreTests: XCTestCase {
 
         waitForExpectations(timeout: 2, handler: nil)
     }
+
+    func testRestoreResetProvidersHitsClearFile() {
+        let expectation = self.expectation(description: "File is updated")
+
+        let action = AppSettingsAction.resetStoredProviders { error in
+            XCTAssertNil(error)
+
+            if self.fileStorage?.deleteIsHit == true {
+                expectation.fulfill()
+            }
+        }
+
+        subject?.onAction(action)
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
 }
 
 // MARK: - Mock data
@@ -120,6 +136,10 @@ private final class MockFileLoader: FileStorage {
     /// A boolean value to test if a write to disk is requested
     ///
     var dataWriteIsHit: Bool = false
+
+    /// A boolean value to test if a file deletion is requested
+    ///
+    var deleteIsHit: Bool = false
 
     /// List of `PreselectedProvider` materialised from the data passed
     /// tpo `write()`
@@ -140,4 +160,9 @@ private final class MockFileLoader: FileStorage {
         let decoder = PropertyListDecoder()
         fileData = try! decoder.decode([PreselectedProvider].self, from: data)
     }
+
+    func deleteFile(at fileURL: URL) throws {
+        deleteIsHit = true
+    }
+
 }

@@ -24,6 +24,15 @@ public final class PListFileStorage: FileStorage {
             throw error
         }
     }
+
+    public func deleteFile(at fileURL: URL) throws {
+        do {
+            try FileManager.default.removeItem(at: fileURL)
+        } catch {
+            let error = PListFileStorageErrors.fileDeleteFailed
+            throw error
+        }
+    }
 }
 
 /// Errors
@@ -31,4 +40,5 @@ public final class PListFileStorage: FileStorage {
 enum PListFileStorageErrors: Error {
     case fileReadFailed
     case fileWriteFailed
+    case fileDeleteFailed
 }

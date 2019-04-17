@@ -14,4 +14,7 @@ public protocol FileStorage {
     /// Reads a `Data` blob to a file at `fileURL`
     ///
     func write(_ data: Data, to fileURL: URL) throws
+
+    /// Deletes a file at `fileURL`
+    func deleteFile(at fileURL: URL) throws
 }

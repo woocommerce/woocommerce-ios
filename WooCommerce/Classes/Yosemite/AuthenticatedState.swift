@@ -62,6 +62,8 @@ class AuthenticatedState: StoresManagerState {
 
         pushNotesManager.unregisterForRemoteNotifications()
         pushNotesManager.resetBadgeCount()
+
+        resetServices()
     }
 
     /// Executed whenever the state is activated.
@@ -94,5 +96,21 @@ private extension AuthenticatedState {
     ///
     func tunnelTimeoutWasReceived(note: Notification) {
         WooAnalytics.shared.track(.jetpackTunnelTimeout)
+    }
+}
+
+
+private extension AuthenticatedState {
+    func resetServices() {
+        let servicesToReset = resettableServices()
+        for service in servicesToReset {
+            service.reset()
+        }
+    }
+
+    func resettableServices() -> [Resettable] {
+        return services.compactMap {
+            $0 as? Resettable
+        }
     }
 }

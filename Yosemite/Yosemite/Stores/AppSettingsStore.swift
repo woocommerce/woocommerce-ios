@@ -51,6 +51,8 @@ public class AppSettingsStore: Store {
         case .loadTrackingProvider(let siteID, let onCompletion):
             loadTrackingProvider(siteID: siteID,
                                  onCompletion: onCompletion)
+        case .resetStoredProviders(let onCompletion):
+            resetStoredProviders(onCompletion: onCompletion)
         }
     }
 }
@@ -159,6 +161,24 @@ private extension AppSettingsStore {
             return nil
         }
     }
+
+    func resetStoredProviders(onCompletion: ((Error?) -> Void)? = nil) {
+        do {
+            try fileStorage.deleteFile(at: selectedProvidersURL)
+            onCompletion?(nil)
+        } catch {
+            let error = AppSettingsStoreErrors.deletePreselectedProvider
+            onCompletion?(error)
+        }
+    }
+}
+
+
+// MARK:- Conformance to Resettable
+extension AppSettingsStore: Resettable {
+    public func reset() {
+        resetStoredProviders()
+    }
 }
 
 
@@ -168,4 +188,5 @@ enum AppSettingsStoreErrors: Error {
     case parsePreselectedProvider
     case writePreselectedProvider
     case readPreselectedProvider
+    case deletePreselectedProvider
 }

@@ -113,6 +113,7 @@
 		D87F614C22657B150031A13B /* AppSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F614B22657B150031A13B /* AppSettingsStore.swift */; };
 		D87F615E2265B1BC0031A13B /* AppSettingsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F615D2265B1BC0031A13B /* AppSettingsStoreTests.swift */; };
 		D87F61602265B2400031A13B /* shipment-provider.plist in Resources */ = {isa = PBXBuildFile; fileRef = D87F615F2265B2400031A13B /* shipment-provider.plist */; };
+		D8A8C4F02266B66B001C72BF /* Resettable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A8C4EF2266B66B001C72BF /* Resettable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -239,6 +240,7 @@
 		D87F614B22657B150031A13B /* AppSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsStore.swift; sourceTree = "<group>"; };
 		D87F615D2265B1BC0031A13B /* AppSettingsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsStoreTests.swift; sourceTree = "<group>"; };
 		D87F615F2265B2400031A13B /* shipment-provider.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "shipment-provider.plist"; sourceTree = "<group>"; };
+		D8A8C4EF2266B66B001C72BF /* Resettable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resettable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -460,6 +462,7 @@
 			children = (
 				B5C9DE102087FF0E006B910A /* Dispatcher.swift */,
 				B5C9DE112087FF0E006B910A /* Store.swift */,
+				D8A8C4EF2266B66B001C72BF /* Resettable.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -716,6 +719,7 @@
 			files = (
 				7492FADD217FAF5C00ED2C69 /* SettingStore.swift in Sources */,
 				B52E0032211A440D00700FDE /* Order+ReadOnlyType.swift in Sources */,
+				D8A8C4F02266B66B001C72BF /* Resettable.swift in Sources */,
 				B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */,
 				B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */,
 				744A3218216D55F80051439B /* SiteVisitStats+ReadOnlyConvertible.swift in Sources */,

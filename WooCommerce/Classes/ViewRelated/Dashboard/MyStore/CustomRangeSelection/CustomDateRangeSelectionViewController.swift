@@ -172,13 +172,13 @@ private extension CustomDateRangeSelectionViewController {
     func configureRangeStart(cell: RightDetailTableViewCell) {
         cell.accessoryType = .none
         cell.textLabel?.text = NSLocalizedString("Starts", comment: "My Store > Custom Range > Start date cell")
-        cell.detailTextLabel?.text = startDate.toString(dateStyle: .medium, timeStyle: .none)
+        cell.detailTextLabel?.text = startDate.toString(dateStyle: .long, timeStyle: .none)
     }
 
     func configureRangeEnd(cell: RightDetailTableViewCell) {
         cell.accessoryType = .none
         cell.textLabel?.text = NSLocalizedString("Ends", comment: "My Store > Custom Range > Start date cell")
-        cell.detailTextLabel?.text = endDate.toString(dateStyle: .medium, timeStyle: .none)
+        cell.detailTextLabel?.text = endDate.toString(dateStyle: .long, timeStyle: .none)
     }
 
     func configureDatePicker(cell: DatePickerTableViewCell) {

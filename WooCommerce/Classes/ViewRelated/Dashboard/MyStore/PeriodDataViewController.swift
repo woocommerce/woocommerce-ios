@@ -506,8 +506,8 @@ private extension PeriodDataViewController {
                 "%@–%@ (Edit)",
                 comment: "Custom range value. It reads: {date}–{date} (Edit). Parentheses are important for styling the text."
             ),
-            startDate.toString(dateStyle: .medium, timeStyle: .none),
-            endDate.toString(dateStyle: .medium, timeStyle: .none)
+            startDate.toString(dateStyle: .long, timeStyle: .none),
+            endDate.toString(dateStyle: .long, timeStyle: .none)
         )
         let defaultStyle: StringStyles.Style = [
             .foregroundColor: StyleManager.wooGreyMid,

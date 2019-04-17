@@ -9,7 +9,7 @@ A Jetpack-powered companion app for WooCommerce.
 
 ### Download Xcode
 
-At the moment *WooCommerce for iOS* uses Swift 4.2 and requires Xcode 10 or newer. Previous versions of Xcode can be [downloaded from Apple](https://developer.apple.com/downloads/index.action).*
+At the moment *WooCommerce for iOS* uses Swift 4.2 and requires Xcode 10.2 or newer. Previous versions of Xcode can be [downloaded from Apple](https://developer.apple.com/downloads/index.action).*
 
 ### Third party tools
 
@@ -23,7 +23,7 @@ you may also have to:
 #### CocoaPods
 
 The woocommerce-ios project uses [CocoaPods](http://cocoapods.org/) to manage third party libraries.  
-Third party libraries and resources managed by CocoaPods will be installed by the `rake dependencies` command above.
+Third party libraries and resources managed by CocoaPods will be installed by the `bundle exec pod install` command above.
 
 #### Peril
 

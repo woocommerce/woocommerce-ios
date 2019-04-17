@@ -81,6 +81,11 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
     // MARK: - Computed Properties
 
+    private var tabTitle: String {
+        return isCustomRange ? NSLocalizedString("Custom", comment: "Custom stats period range")
+                             : granularity.pluralizedString
+    }
+
     /// Start date for the custom range
     /// Note: this is shared for all sites. Future update should use https://github.com/woocommerce/woocommerce-ios/pull/883
     ///
@@ -314,8 +319,8 @@ private extension PeriodDataViewController {
                                                                       comment: "VoiceOver accessibility label for the store revenue chart.")
         chartAccessibilityView.accessibilityLabel = String.localizedStringWithFormat(
             NSLocalizedString("Store revenue chart %@",
-                              comment: "VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}."),
-            granularity.pluralizedString
+                              comment: "VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {tab title}."),
+            tabTitle
         )
     }
 
@@ -388,8 +393,7 @@ private extension PeriodDataViewController {
 //
 extension PeriodDataViewController {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: isCustomRange ? NSLocalizedString("Custom", comment: "Custom stats period range")
-                                                  : granularity.pluralizedString)
+        return IndicatorInfo(title: tabTitle)
     }
 }
 

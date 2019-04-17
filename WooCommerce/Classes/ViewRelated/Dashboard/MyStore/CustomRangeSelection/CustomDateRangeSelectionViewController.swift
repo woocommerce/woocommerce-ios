@@ -225,8 +225,23 @@ private extension CustomDateRangeSelectionViewController {
     }
 
     @objc func applyButtonTapped() {
+        guard startDate.compare(endDate) != .orderedDescending else {
+            warnInvalideRange()
+            return
+        }
+
         onSelectionCompleted?(startDate, endDate, granularity)
         dismiss(animated: true, completion: nil)
+    }
+
+    func warnInvalideRange() {
+        let alert = UIAlertController(title: NSLocalizedString("Cannot Apply Range", comment: "Invalid custom range alert title."),
+                                      message: NSLocalizedString("The start date must be before the end date.", comment: "Invalid custom range alert message."),
+                                      preferredStyle: .alert)
+        let cancel = UIAlertAction(title: NSLocalizedString("OK", comment: "Invalid custom range alert ack button."), style: .cancel, handler: nil)
+        alert.addAction(cancel)
+
+        present(alert, animated: true, completion: nil)
     }
 
     func rangeRowWasPressed(row: Row, indexPath: IndexPath) {

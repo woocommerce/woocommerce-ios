@@ -21,7 +21,7 @@ public class AppSettingsStore: Store {
 
     /// URL to the plist file that we use to store the user selected
     /// shipment tracing provider. Not declared as `private` so it can
-    /// be overriden in tests
+    /// be overridden in tests
     ///
     lazy var selectedProvidersURL: URL = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first

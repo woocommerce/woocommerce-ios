@@ -96,7 +96,7 @@ private extension ProductDetailsViewController {
     /// Setup: Navigation Title
     ///
     func configureNavigationTitle() {
-        title = NSLocalizedString("Product", comment: "Title of product detail screen.")
+        title = product.name
     }
 
     /// Setup: EntityListener

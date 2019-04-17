@@ -85,7 +85,7 @@ private extension ProductDetailsViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            BasicTableViewCell.self
+            LargeImageTableViewCell.self
         ]
 
         for cell in cells {
@@ -213,18 +213,20 @@ private extension ProductDetailsViewController {
 
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as BasicTableViewCell:
-            configureProductDetails(cell: cell)
+        case let cell as LargeImageTableViewCell:
+            configureProductImage(cell: cell)
         default:
             fatalError("Unidentified row type")
         }
     }
 
-    func configureProductDetails(cell: BasicTableViewCell) {
-        cell.textLabel?.text = product.name
-        cell.detailTextLabel?.text = product.fullDescription
-        cell.accessoryType = .none
-        cell.selectionStyle = .none
+    func configureProductImage(cell: LargeImageTableViewCell) {
+        // TODO: setup the cell here!
+        if let productImageURLString = product.images.first?.src {
+            cell.mainImageView?.downloadImage(from: URL(string: productImageURLString), placeholderImage: UIImage.productPlaceholderImage)
+        } else {
+            cell.mainImageView?.image = .productPlaceholderImage
+        }
     }
 }
 
@@ -242,10 +244,17 @@ extension ProductDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = sections[indexPath.section].rows[indexPath.row]
+        let row = rowAtIndexPath(indexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         configure(cell, for: row, at: indexPath)
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch rowAtIndexPath(indexPath) {
+        case .productSummary:
+            return 200 // FIXME: Not right!
+        }
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -381,7 +390,7 @@ private extension ProductDetailsViewController {
         var reuseIdentifier: String {
             switch self {
             case .productSummary:
-                return BasicTableViewCell.reuseIdentifier
+                return LargeImageTableViewCell.reuseIdentifier
             }
         }
     }

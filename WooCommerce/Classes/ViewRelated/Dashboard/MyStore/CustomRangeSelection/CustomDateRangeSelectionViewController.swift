@@ -47,8 +47,8 @@ class CustomDateRangeSelectionViewController: UIViewController {
     }
 
     init(startDate: Date, endDate: Date, granularity: StatGranularity) {
-        self.startDate = startDate
-        self.endDate = endDate
+        self.startDate = startDate.normalizedDate()
+        self.endDate = endDate.normalizedDate()
         self.granularity = granularity
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }

@@ -274,13 +274,6 @@ private extension PeriodDataViewController {
 
         // Custom range
         customRangeContainer.isHidden = !isCustomRange
-        // Small hack to have the image on the right side!
-        editRangeButton.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
-        editRangeButton.titleLabel?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
-        editRangeButton.imageView?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
-        editRangeButton.titleLabel?.font = StyleManager.actionButtonTitleFont
-        editRangeButton.setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
-        editRangeButton.setImage(.pencilImage, for: .normal)
         updateDisplayedRange()
 
         // Border view when custom range is visible
@@ -508,14 +501,25 @@ private extension PeriodDataViewController {
 private extension PeriodDataViewController {
 
     func updateDisplayedRange() {
-        self.editRangeButton.setTitle(String.localizedStringWithFormat(
+        let title = String.localizedStringWithFormat(
             NSLocalizedString(
-                "%@–%@",
-                comment: "Custom range value. It reads: {date}–{date}."
+                "%@–%@ (Edit)",
+                comment: "Custom range value. It reads: {date}–{date} (Edit). Parentheses are important for styling the text."
             ),
             startDate.toString(dateStyle: .medium, timeStyle: .none),
             endDate.toString(dateStyle: .medium, timeStyle: .none)
-        ), for: .normal)
+        )
+        let defaultStyle: StringStyles.Style = [
+            .foregroundColor: StyleManager.wooGreyMid,
+            .font: UIFont.footnote
+        ]
+        let attributedTitle = NSMutableAttributedString(string: title, attributes: defaultStyle)
+        if let editRange = title.range(of: "\\(.*\\)", options: .regularExpression) {
+            let fullRange = NSRange(editRange, in: title)
+            attributedTitle.addAttributes([.foregroundColor: StyleManager.wooCommerceBrandColor],
+                                          range: NSRange(location: fullRange.location + 1, length: fullRange.length - 2))
+        }
+        editRangeButton.setAttributedTitle(attributedTitle, for: .normal)
     }
 
     func updateSiteVisitDataIfNeeded() {

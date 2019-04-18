@@ -101,14 +101,14 @@ class ZendeskManager: NSObject {
     // MARK: - Show Zendesk Views
     //
     // -TODO: in the future this should show the Zendesk Help Center.
-    /// For now, link to the online FAQ
+    /// For now, link to the online help documentation
     ///
     func showHelpCenter(from controller: UIViewController) {
-        let safariViewController = SFSafariViewController(url: WooConstants.faqURL)
+        let safariViewController = SFSafariViewController(url: WooConstants.helpCenterURL)
         safariViewController.modalPresentationStyle = .pageSheet
         controller.present(safariViewController, animated: true, completion: nil)
 
-        WooAnalytics.shared.track(.supportBrowseOurFaqTapped)
+        WooAnalytics.shared.track(.supportHelpCenterViewed)
     }
 
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.

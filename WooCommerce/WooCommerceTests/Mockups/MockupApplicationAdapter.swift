@@ -29,19 +29,19 @@ class MockupApplicationAdapter: ApplicationAdapter {
 
 
 
-    /// Inoccuous `registerForRemoteNotifications`
+    /// Innocuous `registerForRemoteNotifications`
     ///
     func registerForRemoteNotifications() {
         registerWasCalled = true
     }
 
-    /// Inoccuous `presentInAppNotification`
+    /// Innocuous `presentInAppNotification`
     ///
     func presentInAppNotification(message: String) {
         presentInAppMessages.append(message)
     }
 
-    /// Inoccuous `displayNotificationDetails`
+    /// Innocuous `displayNotificationDetails`
     ///
     func presentNotificationDetails(for noteID: Int) {
         presentDetailsNoteIDs.append(noteID)

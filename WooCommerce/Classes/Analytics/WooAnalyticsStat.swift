@@ -84,7 +84,7 @@ public enum WooAnalyticsStat: String {
 
     // Help & Support Events
     //
-    case supportBrowseOurFaqTapped                  = "support_faq_viewed"
+    case supportHelpCenterViewed                    = "support_help_center_viewed"
     case supportNewRequestViewed                    = "support_new_request_viewed"
     case supportNewRequestCreated                   = "support_new_request_created"
     case supportNewRequestFailed                    = "support_new_request_failed"
@@ -108,12 +108,12 @@ public enum WooAnalyticsStat: String {
     case settingsSelectedStoreTapped                = "settings_selected_site_tapped"
     case settingsContactSupportTapped               = "main_menu_contact_support_tapped"
 
-    case settingsPrivacySettingsTapped              = "settings_privacy_settings_tapped"
-    case settingsCollectInfoToggled                 = "settings_privacy_settings_collect_info_toggled"
-    case settingsReportCrashesToggled               = "settings_privacy_settings_report_crashes_toggled"
-    case settingsPrivacyPolicyTapped                = "settings_privacy_settings_privacy_policy_link_tapped"
-    case settingsShareInfoLearnMoreTapped           = "settings_privacy_settings_share_info_link_tapped"
-    case settingsThirdPartyLearnMoreTapped          = "settings_privacy_settings_third_party_tracking_info_link_tapped"
+    case settingsPrivacySettingsTapped              = "settings_privacy_settings_button_tapped"
+    case settingsCollectInfoToggled                 = "privacy_settings_collect_info_toggled"
+    case settingsReportCrashesToggled               = "privacy_settings_crash_reporting_toggled"
+    case settingsPrivacyPolicyTapped                = "privacy_settings_privacy_policy_link_tapped"
+    case settingsShareInfoLearnMoreTapped           = "privacy_settings_share_info_link_tapped"
+    case settingsThirdPartyLearnMoreTapped          = "privacy_settings_third_party_tracking_info_link_tapped"
     case settingsLicensesLinkTapped                 = "settings_about_open_source_licenses_link_tapped"
     case settingsAboutLinkTapped                    = "settings_about_woocommerce_link_tapped"
 
@@ -143,6 +143,8 @@ public enum WooAnalyticsStat: String {
     case orderDetailProductDetailTapped             = "order_detail_product_detail_button_tapped"
     case orderDetailTrackPackageButtonTapped        = "order_detail_track_package_button_tapped"
     case orderFulfillmentCompleteButtonTapped       = "order_fulfillment_mark_order_complete_button_tapped"
+    case orderFulfillmentAddTrackingButtonTapped    = "order_fulfillment_tracking_add_tracking_button_tapped"
+    case orderFulfillmentTrackingCarrierSelected    = "order_fulfillment_tracking_carrier_selected"
     case orderMarkedCompleteUndoButtonTapped        = "snack_order_marked_complete_undo_button_tapped"
     case orderShareStoreButtonTapped                = "orders_list_share_your_store_button_tapped"
     case orderStatusDialogApplyButtonTapped         = "set_order_status_dialog_apply_button_tapped"
@@ -161,7 +163,10 @@ public enum WooAnalyticsStat: String {
     case orderStatusChangeSuccess                   = "order_status_change_success"
     case orderStatusChangeFailed                    = "order_status_change_failed"
     case orderStatusChangeUndo                      = "order_status_change_undo"
+    case orderTrackingAdd                           = "order_tracking_add"
+    case orderTrackingFailed                        = "order_tracking_failed"
     case orderTrackingLoaded                        = "order_tracking_loaded"
+    case orderTrackingSuccess                       = "order_tracking_success"
 
     // Push Notifications Events
     //

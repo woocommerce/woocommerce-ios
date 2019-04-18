@@ -176,11 +176,12 @@ private extension CustomDateRangeSelectionViewController {
     }
 
     func configureDatePicker(cell: DatePickerTableViewCell) {
-        let datePicker = cell.datePicker
-        datePicker?.date = datePickerDate
-        datePicker?.maximumDate = Date()
-        datePicker?.removeTarget(nil, action: nil, for: .allEvents)
-        datePicker?.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
+        let datePicker = cell.getPicker()
+        datePicker.date = datePickerDate
+        datePicker.maximumDate = Date()
+        cell.onDateSelected = { [weak self] date in
+            self?.dateChanged(date)
+        }
     }
 }
 
@@ -251,16 +252,16 @@ private extension CustomDateRangeSelectionViewController {
         }, completion: nil)
     }
 
-    @objc func dateChanged(_ sender: UIDatePicker) {
+    func dateChanged(_ date: Date) {
         guard let datePickerParentRow = datePickerParentRow, let indexPathToReload = indexPathForRow(row: datePickerParentRow) else {
             return
         }
 
         switch datePickerParentRow {
         case .rangeStart:
-            startDate = sender.date
+            startDate = date
         case .rangeEnd:
-            endDate = sender.date
+            endDate = date
         case .datePicker:
             break
         }

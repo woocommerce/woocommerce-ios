@@ -1,15 +1,19 @@
-//
-//  DatePickerTableViewCell.swift
-//  WooCommerce
-//
-//  Created by Jean Regisser on 16/04/2019.
-//  Copyright © 2019 Automattic. All rights reserved.
-//
-
 import UIKit
 
-class DatePickerTableViewCell: UITableViewCell {
+/// Cell containing a UIDatePicker, configured as Year / Month / Day
+///
+final class DatePickerTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var datePicker: UIDatePicker!
+    var onDateSelected: ((Date) -> Void)?
+    @IBOutlet private weak var picker: UIDatePicker!
 
+    @IBAction func dateChanged(_ sender: UIDatePicker) {
+        onDateSelected?(sender.date)
+    }
+}
+
+extension DatePickerTableViewCell {
+    func getPicker() -> UIDatePicker {
+        return picker
+    }
 }

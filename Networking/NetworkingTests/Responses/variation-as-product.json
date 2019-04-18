@@ -1,0 +1,121 @@
+{
+    "data": {
+        "id": 295,
+        "name": "Paper Airplane - Black, Long",
+        "slug": "paper-airplane-3",
+        "permalink": "https:\/\/paperairplane.store\/product\/paper-airplane\/?attribute_color=Black&attribute_length=Long",
+        "date_created": "2019-04-04T17:06:45",
+        "date_created_gmt": "2019-04-04T22:06:45",
+        "date_modified": "2019-04-09T15:24:03",
+        "date_modified_gmt": "2019-04-09T20:24:03",
+        "type": "variation",
+        "status": "publish",
+        "featured": false,
+        "catalog_visibility": "visible",
+        "description": "<p>Long paper airplane. Color is black. <\/p>\n",
+        "short_description": "",
+        "sku": "345345-2",
+        "price": "22.72",
+        "regular_price": "22.72",
+        "sale_price": "",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;<\/span>22.72<\/span>",
+        "on_sale": false,
+        "purchasable": true,
+        "total_sales": "0",
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "stock_status": "instock",
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "sold_individually": true,
+        "weight": "888",
+        "dimensions": {
+            "length": "11",
+            "width": "22",
+            "height": "33"
+        },
+        "shipping_required": true,
+        "shipping_taxable": true,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": true,
+        "average_rating": "0.00",
+        "rating_count": 0,
+        "related_ids": [],
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 205,
+        "purchase_note": "",
+        "categories": [],
+        "tags": [],
+        "images": [
+            {
+                "id": 301,
+                "date_created": "2019-04-09T10:23:58",
+                "date_created_gmt": "2019-04-09T20:23:58",
+                "date_modified": "2019-04-09T10:23:58",
+                "date_modified_gmt": "2019-04-09T20:23:58",
+                "src": "https:\/\/i0.wp.com\/paperairplane.store\/wp-content\/uploads\/2019\/04\/paper_plane_black.png?fit=600%2C473&ssl=1",
+                "name": "paper_plane_black",
+                "alt": ""
+            }
+        ],
+        "attributes": [
+            {
+                "id": 0,
+                "name": "Color",
+                "option": "Black"
+            },
+            {
+                "id": 0,
+                "name": "Length",
+                "option": "Long"
+            }
+        ],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 2,
+        "meta_data": [
+            {
+                "id": 6034,
+                "key": "_created_via",
+                "value": "ajax-unknown"
+            }
+        ],
+        "jetpack_publicize_connections": [],
+        "jetpack_sharing_enabled": true,
+        "jetpack_likes_enabled": true,
+        "_links": {
+            "self": [
+                {
+                    "href": "https:\/\/paperairplane.store\/wp-json\/wc\/v3\/products\/295"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https:\/\/paperairplane.store\/wp-json\/wc\/v3\/products"
+                }
+            ],
+            "up": [
+                {
+                    "href": "https:\/\/paperairplane.store\/wp-json\/wc\/v3\/products\/205"
+                }
+            ]
+        }
+    }
+}

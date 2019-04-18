@@ -248,11 +248,11 @@ public extension ResultsController {
 
     // MARK: - ResultsController.ChangeType
     //
-    public typealias ChangeType = NSFetchedResultsChangeType
+    typealias ChangeType = NSFetchedResultsChangeType
 
     // MARK: - ResultsController.SectionInfo
     //
-    public class SectionInfo {
+    class SectionInfo {
 
         /// Name of the section
         ///

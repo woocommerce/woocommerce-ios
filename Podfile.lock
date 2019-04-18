@@ -75,13 +75,13 @@ PODS:
   - WordPressUI (1.2.0)
   - wpxmlrpc (0.8.4)
   - XLPagerTabStrip (8.1.1)
-  - ZendeskSDK (2.3.0):
-    - ZendeskSDK/Providers (= 2.3.0)
-    - ZendeskSDK/UI (= 2.3.0)
-  - ZendeskSDK/Core (2.3.0)
-  - ZendeskSDK/Providers (2.3.0):
+  - ZendeskSDK (2.3.1):
+    - ZendeskSDK/Providers (= 2.3.1)
+    - ZendeskSDK/UI (= 2.3.1)
+  - ZendeskSDK/Core (2.3.1)
+  - ZendeskSDK/Providers (2.3.1):
     - ZendeskSDK/Core
-  - ZendeskSDK/UI (2.3.0):
+  - ZendeskSDK/UI (2.3.1):
     - ZendeskSDK/Core
     - ZendeskSDK/Providers
 
@@ -98,7 +98,7 @@ DEPENDENCIES:
   - WordPressShared (~> 1.1)
   - WordPressUI (~> 1.2)
   - XLPagerTabStrip (~> 8.1)
-  - ZendeskSDK (~> 2.2)
+  - ZendeskSDK (~> 2.3.1)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -157,8 +157,8 @@ SPEC CHECKSUMS:
   WordPressUI: 44fe43a9c5c504dfd534286e39e1ce6ebcd69ff5
   wpxmlrpc: 6ba55c773cfa27083ae4a2173e69b19f46da98e2
   XLPagerTabStrip: 63166e21c9844fa30f2d95d30f335e73be5caf22
-  ZendeskSDK: af6509ad7968d367f95b2645713802712152f879
+  ZendeskSDK: cbd49d65efb2f2cdbdcaac84e618896ae87b861e
 
-PODFILE CHECKSUM: 3d033a1879417c8fca27339e428bd5adc401f6a9
+PODFILE CHECKSUM: 8482e446d484a2387701a07c9133b984eeccf393
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.6.1

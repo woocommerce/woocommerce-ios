@@ -210,8 +210,12 @@ extension ManualTrackingViewController: UITableViewDataSource {
         switch cell {
         case let cell as TitleAndEditableValueTableViewCell where row == .shippingProvider:
             configureShippingProvider(cell: cell)
+        case let cell as TitleAndEditableValueTableViewCell where row == .providerName:
+            configureProviderName(cell: cell)
         case let cell as TitleAndEditableValueTableViewCell where row == .trackingNumber:
             configureTrackingNumber(cell: cell)
+        case let cell as TitleAndEditableValueTableViewCell where row == .trackingLink:
+            configureTrackingLink(cell: cell)
         case let cell as TitleAndEditableValueTableViewCell where row == .dateShipped:
             configureDateShipped(cell: cell)
         case let cell as BasicTableViewCell where row == .deleteTracking:
@@ -263,10 +267,34 @@ extension ManualTrackingViewController: UITableViewDataSource {
         cell.accessoryType = viewModel.providerCellAccessoryType
     }
 
+    private func configureProviderName(cell: TitleAndEditableValueTableViewCell) {
+        cell.title.text = NSLocalizedString("Provider name", comment: "Add Custom shipping provider. Title of cell presenting the provider name")
+        cell.value.placeholder = NSLocalizedString("Enter provider name", comment: "Add custom shipping provider. Placeholder of cell presenting provider name")
+        // TODO. Populate
+        cell.value.text = ""
+        cell.value.isEnabled = true
+
+        cell.value.addTarget(self, action: #selector(didChangeProviderName), for: .editingChanged)
+        cell.accessoryType = .none
+    }
+
     private func configureTrackingNumber(cell: TitleAndEditableValueTableViewCell) {
         cell.title.text = NSLocalizedString("Tracking number", comment: "Add / Edit shipping provider. Title of cell presenting tracking number")
 
+        cell.value.placeholder = NSLocalizedString("Enter tracking number", comment: "Add custom shipping provider. Placeholder of cell presenting tracking number")
         cell.value.text = viewModel.trackingNumber
+        cell.value.isEnabled = true
+
+        cell.value.addTarget(self, action: #selector(didChangeTrackingNumber), for: .editingChanged)
+        cell.accessoryType = .none
+    }
+
+    private func configureTrackingLink(cell: TitleAndEditableValueTableViewCell) {
+        cell.title.text = NSLocalizedString("Tracking link (optional)", comment: "Add custom shipping provider. Title of cell presenting tracking link")
+
+        //cell.value.text = viewModel.trackingNumber
+        // TODO. populate
+        cell.value.placeholder = NSLocalizedString("Enter tracking link", comment: "Add custom shipping provider. Placeholder of cell presenting tracking link")
         cell.value.isEnabled = true
 
         cell.value.addTarget(self, action: #selector(didChangeTrackingNumber), for: .editingChanged)
@@ -353,7 +381,9 @@ private extension ManualTrackingViewController {
             return
         }
 
-        if row == .shippingProvider && viewModel.isAdding {
+        if row == .shippingProvider &&
+            viewModel.isAdding &&
+            !viewModel.isCustom {
             showAllShipmentProviders()
         }
     }
@@ -404,6 +434,16 @@ extension ManualTrackingViewController: ShipmentProviderListDelegate {
 // MARK: - Tracking number textfield
 //
 private extension ManualTrackingViewController {
+    @objc func didChangeProviderName(sender: UITextField) {
+        guard let newProviderName = sender.text else {
+            return
+        }
+
+        //viewModel.provi = newTrackingNumber
+        //TODO. Set property in viewModel
+        activateActionButtonIfNecessary()
+    }
+
     @objc func didChangeTrackingNumber(sender: UITextField) {
         guard let newTrackingNumber = sender.text else {
             return

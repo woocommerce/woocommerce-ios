@@ -10,6 +10,7 @@ enum AddEditTrackingRow: CaseIterable {
     case shippingProvider
     case providerName
     case trackingNumber
+    case trackingLink
     case dateShipped
     case deleteTracking
     case datePicker
@@ -21,6 +22,8 @@ enum AddEditTrackingRow: CaseIterable {
         case .providerName:
             return TitleAndEditableValueTableViewCell.self
         case .trackingNumber:
+            return TitleAndEditableValueTableViewCell.self
+        case .trackingLink:
             return TitleAndEditableValueTableViewCell.self
         case .dateShipped:
             return TitleAndEditableValueTableViewCell.self
@@ -225,7 +228,9 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
 
     var sections: [AddEditTrackingSection] {
         let trackingRows: [AddEditTrackingRow] = [.shippingProvider,
+                                                  .providerName,
                                                   .trackingNumber,
+                                                  .trackingLink,
                                                   .dateShipped,
                                                   .datePicker]
 
@@ -238,10 +243,10 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
     var shipmentProviderGroupName: String?
 
     var providerCellName: String {
-        return shipmentProvider?.name ?? ""
+        return NSLocalizedString("Custom Provider", comment: "Add custom shipping provider. Content of cell titled Shipping Provider")
     }
 
-    let providerCellAccessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+    let providerCellAccessoryType = UITableViewCell.AccessoryType.none
 
     var canCommit: Bool {
         return shipmentProvider != nil &&
@@ -250,7 +255,7 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
 
     let isAdding: Bool = true
 
-    let isCustom: Bool = false
+    let isCustom: Bool = true
 
     init(order: Order) {
         self.order = order

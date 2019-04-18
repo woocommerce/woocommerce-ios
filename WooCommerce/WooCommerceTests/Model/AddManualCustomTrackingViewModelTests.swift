@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 
 final class AddManualCustomTrackingViewModelTests: XCTestCase {
-    private var subject: AddTrackingViewModel?
+    private var subject: AddCustomTrackingViewModel?
 
     private struct MockData {
         static let order = MockOrders().sampleOrder()
@@ -21,7 +21,7 @@ final class AddManualCustomTrackingViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        subject = AddTrackingViewModel(order: MockData.order)
+        subject = AddCustomTrackingViewModel(order: MockData.order)
     }
 
     override func tearDown() {
@@ -56,5 +56,59 @@ final class AddManualCustomTrackingViewModelTests: XCTestCase {
         let date = subject?.shipmentDate
 
         XCTAssertEqual(date?.normalizedDate(), Date().normalizedDate())
+    }
+
+    func testSectionCountIsOne() {
+        XCTAssertEqual(subject?.sections.count, MockData.sectionCount)
+    }
+
+    func testRowsMatchExpectation() {
+        XCTAssertEqual(subject?.sections.first?.rows, MockData.trackingRows)
+    }
+
+    func testRowsDoesNotContainDelete() {
+        let rows = subject?.sections.first?.rows
+        let rowsContainsDelete = rows?.contains(.deleteTracking)
+
+        XCTAssertFalse(rowsContainsDelete!)
+    }
+
+    func testIsAddingReturnsTrue() {
+        XCTAssertTrue(subject!.isAdding)
+    }
+
+    func testIsCustomReturnsTrue() {
+        XCTAssertTrue(subject!.isCustom)
+    }
+
+    func testCanCommitReturnsTrueWithNameAndTrackingNumberAndURL() {
+        subject?.providerName = "A name"
+        subject?.trackingNumber = "123"
+        subject?.trackingLink = "somewhere.com"
+
+        XCTAssertTrue(subject!.canCommit)
+    }
+
+    func testCanCommitReturnsTrueWithNameAndTrackingNumberAndNoURL() {
+        subject?.providerName = "A name"
+        subject?.trackingNumber = "123"
+
+        XCTAssertTrue(subject!.canCommit)
+    }
+
+    func testCanCommitReturnsFalseWithoutName() {
+        subject?.trackingNumber = "123"
+
+        XCTAssertFalse(subject!.canCommit)
+    }
+
+    func testCanCommitReturnsFalseWithoutTrackingNumber() {
+        subject?.providerName = "A name"
+
+        XCTAssertFalse(subject!.canCommit)
+    }
+
+    func testCanCommitReturnsFalseWithoutNameAndWithoutTrackingNumber() {
+        XCTAssertFalse(subject!.canCommit)
     }
 }

@@ -70,6 +70,8 @@ public enum WooAnalyticsStat: String {
     //
     case dashboardMainStatsDate                 = "dashboard_main_stats_date"
     case dashboardMainStatsLoaded               = "dashboard_main_stats_loaded"
+    case dashboardMainStatsCustomRangeEditTapped = "dashboard_main_stats_custom_range_edit_tapped"
+    case dashboardMainStatsCustomRangeApplied   = "dashboard_main_stats_custom_range_applied"
     case dashboardTopPerformersDate             = "dashboard_top_performers_date"
     case dashboardTopPerformersLoaded           = "dashboard_top_performers_loaded"
     case dashboardUnfulfilledOrdersLoaded       = "dashboard_unfulfilled_orders_loaded"

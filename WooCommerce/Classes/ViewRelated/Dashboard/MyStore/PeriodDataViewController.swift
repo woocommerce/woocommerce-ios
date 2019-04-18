@@ -370,12 +370,21 @@ private extension PeriodDataViewController {
 private extension PeriodDataViewController {
 
     @IBAction func editRangeWasPressed() {
+        WooAnalytics.shared.track(.dashboardMainStatsCustomRangeEditTapped)
+
         let rangeSelectionController = CustomDateRangeSelectionViewController(startDate: startDate, endDate: endDate)
         rangeSelectionController.onSelectionCompleted = { [weak self] (startDate, endDate) in
             self?.startDate = startDate
             self?.endDate = endDate
             self?.setAutomaticGranularityIfNeeded()
             self?.updateDisplayedRange()
+
+            let calendar = Calendar(identifier: .gregorian)
+            let components = calendar.dateComponents([.day], from: startDate, to: endDate)
+
+            if let days = components.day {
+                WooAnalytics.shared.track(.dashboardMainStatsCustomRangeApplied, withProperties: ["rangeInDays": days])
+            }
         }
         let navigationController = WooNavigationController(rootViewController: rangeSelectionController)
         self.present(navigationController, animated: true)
@@ -557,11 +566,11 @@ private extension PeriodDataViewController {
 
     func trackChangedTabIfNeeded() {
         // This is a little bit of a workaround to prevent the "tab tapped" tracks event from firing when launching the app.
-        if granularity == .day && isInitialLoad {
+        if granularity == .day && !isCustomRange && isInitialLoad {
             isInitialLoad = false
             return
         }
-        WooAnalytics.shared.track(.dashboardMainStatsDate, withProperties: ["range": granularity.rawValue])
+        WooAnalytics.shared.track(.dashboardMainStatsDate, withProperties: ["range": isCustomRange ? "custom" : granularity.rawValue])
         isInitialLoad = false
     }
 

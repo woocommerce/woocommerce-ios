@@ -5,7 +5,7 @@ import Yosemite
 /// Encapsulates the data necessary to render a list of shipment providers
 ///
 final class ShippingProvidersViewModel {
-    private let orderID: Int
+    let order: Order
 
     let title = NSLocalizedString("Shipping Providers",
                                   comment: "Title of view displaying all available Shipment Tracking Providers")
@@ -43,8 +43,8 @@ final class ShippingProvidersViewModel {
 
     /// Designated initializer
     ///
-    init(orderID: Int) {
-        self.orderID = orderID
+    init(order: Order) {
+        self.order = order
         fetchGroups()
     }
 
@@ -54,6 +54,8 @@ final class ShippingProvidersViewModel {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             return
         }
+
+        let orderID = order.orderID
 
         let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID,
                                                                                    orderID: orderID) { [weak self] error in

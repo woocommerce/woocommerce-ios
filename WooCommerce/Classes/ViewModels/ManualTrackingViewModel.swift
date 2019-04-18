@@ -8,6 +8,7 @@ struct AddEditTrackingSection {
 
 enum AddEditTrackingRow: CaseIterable {
     case shippingProvider
+    case providerName
     case trackingNumber
     case dateShipped
     case deleteTracking
@@ -16,6 +17,8 @@ enum AddEditTrackingRow: CaseIterable {
     var type: UITableViewCell.Type {
         switch self {
         case .shippingProvider:
+            return TitleAndEditableValueTableViewCell.self
+        case .providerName:
             return TitleAndEditableValueTableViewCell.self
         case .trackingNumber:
             return TitleAndEditableValueTableViewCell.self
@@ -38,6 +41,7 @@ enum AddEditTrackingRow: CaseIterable {
 /// shipment trackings
 ///
 protocol ManualTrackingViewModel {
+    var order: Order { get }
     var siteID: Int { get }
     var orderID: Int { get }
     var orderStatus: String { get }
@@ -75,6 +79,7 @@ extension ManualTrackingViewModel {
 /// View model supporting adding shipment tacking manually, using non-custom providers
 ///
 final class AddTrackingViewModel: ManualTrackingViewModel {
+    let order: Order
     let siteID: Int
     let orderID: Int
     let orderStatus: String
@@ -122,6 +127,7 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
     let isCustom: Bool = false
 
     init(order: Order) {
+        self.order = order
         self.siteID = order.siteID
         self.orderID = order.orderID
         self.orderStatus = order.statusKey
@@ -132,6 +138,7 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 /// View model supporting editing shipment tacking manually, using non-custom providers
 ///
 final class EditTrackingViewModel: ManualTrackingViewModel {
+    let order: Order
     let siteID: Int
     let orderID: Int
     let orderStatus: String
@@ -186,9 +193,69 @@ final class EditTrackingViewModel: ManualTrackingViewModel {
     }
 
     init(order: Order, shipmentTracking: ShipmentTracking) {
+        self.order = order
         self.siteID = order.siteID
         self.orderID = order.orderID
         self.orderStatus = order.statusKey
         self.shipmentTracking = shipmentTracking
+    }
+}
+
+
+/// View model supporting adding custom shipment tacking manually, using non-custom providers
+///
+final class AddCustomTrackingViewModel: ManualTrackingViewModel {
+    let order: Order
+    let siteID: Int
+    let orderID: Int
+    let orderStatus: String
+
+    let title = NSLocalizedString("Add Tracking",
+                                  comment: "Add tracking screen - title.")
+
+    let primaryActionTitle = NSLocalizedString("Add",
+                                               comment: "Add tracking screen - button title to add a tracking")
+    let secondaryActionTitle: String? = nil
+
+    let shipmentTracking: ShipmentTracking? = nil
+
+    var trackingNumber: String?
+
+    var shipmentDate = Date()
+
+    var sections: [AddEditTrackingSection] {
+        let trackingRows: [AddEditTrackingRow] = [.shippingProvider,
+                                                  .trackingNumber,
+                                                  .dateShipped,
+                                                  .datePicker]
+
+        return [
+            AddEditTrackingSection(rows: trackingRows)]
+
+    }
+
+    var shipmentProvider: ShipmentTrackingProvider?
+    var shipmentProviderGroupName: String?
+
+    var providerCellName: String {
+        return shipmentProvider?.name ?? ""
+    }
+
+    let providerCellAccessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+
+    var canCommit: Bool {
+        return shipmentProvider != nil &&
+            trackingNumber != nil
+    }
+
+    let isAdding: Bool = true
+
+    let isCustom: Bool = false
+
+    init(order: Order) {
+        self.order = order
+        self.siteID = order.siteID
+        self.orderID = order.orderID
+        self.orderStatus = order.statusKey
     }
 }

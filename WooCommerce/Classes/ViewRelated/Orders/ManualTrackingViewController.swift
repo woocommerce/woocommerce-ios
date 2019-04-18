@@ -365,7 +365,7 @@ private extension ManualTrackingViewController {
     }
 
     func showAllShipmentProviders() {
-        let shippingProviders = ShippingProvidersViewModel(orderID: viewModel.orderID)
+        let shippingProviders = ShippingProvidersViewModel(order: viewModel.order)
         let shippingList = ShipmentProvidersViewController(viewModel: shippingProviders, delegate: self)
         navigationController?.pushViewController(shippingList, animated: true)
     }

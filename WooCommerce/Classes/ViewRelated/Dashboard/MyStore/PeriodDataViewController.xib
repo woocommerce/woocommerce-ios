@@ -44,7 +44,7 @@
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0oU-WL-xKi">
                                     <rect key="frame" x="14" y="0.0" width="347" height="44"/>
                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="20" maxY="0.0"/>
-                                    <state key="normal" title="Button1"/>
+                                    <state key="normal" title="Range placeholder"/>
                                     <connections>
                                         <action selector="editRangeWasPressed" destination="-1" eventType="touchUpInside" id="ucd-28-QSN"/>
                                     </connections>

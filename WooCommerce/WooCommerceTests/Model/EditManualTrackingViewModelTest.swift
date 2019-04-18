@@ -40,11 +40,11 @@ final class EditManualTrackingViewModelTest: XCTestCase {
     }
 
     func testSiteIDRemainsUnchanged() {
-        XCTAssertEqual(subject?.siteID, MockData.order.siteID)
+        XCTAssertEqual(subject?.order.siteID, MockData.order.siteID)
     }
 
     func testOrderIDRemainsUnchanged() {
-        XCTAssertEqual(subject?.orderID, MockData.order.orderID)
+        XCTAssertEqual(subject?.order.orderID, MockData.order.orderID)
     }
 
     func testTitleReturnsExpectation() {

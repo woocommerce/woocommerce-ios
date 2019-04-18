@@ -2,6 +2,7 @@ import UIKit
 import Foundation
 import Yosemite
 
+// MARK:- Sections
 struct AddEditTrackingSection {
     let rows: [AddEditTrackingRow]
 }
@@ -40,6 +41,8 @@ enum AddEditTrackingRow: CaseIterable {
 }
 
 
+// MARK:- View Model Protocol
+
 /// Abstracts the different viewmodels supporting adding, editing and creating custom
 /// shipment trackings
 ///
@@ -77,6 +80,8 @@ extension ManualTrackingViewModel {
     }
 }
 
+
+// MARK:- ViewModel for adding a tracking provider
 
 /// View model supporting adding shipment tacking manually, using non-custom providers
 ///
@@ -134,6 +139,8 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
     }
 }
 
+
+// MARK:- ViewModel for editing a tracking provider
 
 /// View model supporting editing shipment tacking manually, using non-custom providers
 ///
@@ -199,6 +206,8 @@ final class EditTrackingViewModel: ManualTrackingViewModel {
     }
 }
 
+
+// MARK:- ViewModel for adding a custom tracking provider
 
 /// View model supporting adding custom shipment tacking manually, using non-custom providers
 ///

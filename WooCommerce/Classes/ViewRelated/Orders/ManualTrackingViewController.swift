@@ -556,7 +556,49 @@ private extension ManualTrackingViewController {
     }
 
     func addCustomTracking() {
-        // To be implemented in a follow up PR
+        guard let providerName = viewModel.providerName,
+            let trackingNumber = viewModel.trackingNumber else {
+                //TODO. Present notice
+            return
+        }
+        configureForCommittingTracking()
+
+        let siteID = viewModel.order.siteID
+        let orderID = viewModel.order.orderID
+        let statusKey = viewModel.order.statusKey
+        let trackingLink = viewModel.trackingLink ?? ""
+        let dateShipped = DateFormatter
+            .Defaults
+            .yearMonthDayDateFormatter
+            .string(from: viewModel.shipmentDate)
+
+        WooAnalytics.shared.track(.orderTrackingAdd, withProperties: ["id": orderID,
+                                                                      "status": statusKey,
+                                                                      "carrier": providerName])
+
+        let action = ShipmentAction.addCustomTracking(siteID: siteID,
+                                                      orderID: orderID,
+                                                      trackingProvider: providerName,
+                                                      trackingNumber: trackingNumber, trackingURL: trackingLink) { [weak self] error in
+                                                        if let error = error {
+                                                            DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
+
+                                                            WooAnalytics.shared.track(.orderTrackingFailed,
+                                                                                      withError: error)
+
+                                                            self?.configureForEditingTracking()
+
+                                                            self?.displayAddErrorNotice(orderID: orderID)
+                                                            return
+                                                        }
+
+                                                        WooAnalytics.shared.track(.orderTrackingSuccess)
+
+                                                        self?.dismiss()
+        }
+
+        StoresManager.shared.dispatch(action)
+
     }
 
     func dismiss() {

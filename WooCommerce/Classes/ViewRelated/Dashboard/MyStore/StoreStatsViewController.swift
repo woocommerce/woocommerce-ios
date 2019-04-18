@@ -80,7 +80,7 @@ extension StoreStatsViewController {
                     DDLogError("⛔️ Error synchronizing order stats: \(error)")
                     syncError = error
                 } else {
-                    self?.trackStatsLoaded(for: vc.granularity)
+                    self?.trackStatsLoaded(for: vc.granularity, isCustomRange: vc.isCustomRange)
                 }
                 group.leave()
             }
@@ -243,12 +243,14 @@ private extension StoreStatsViewController {
         return periodVCs.filter({ $0.granularity == granularity }).first
     }
 
-    func trackStatsLoaded(for granularity: StatGranularity) {
+    func trackStatsLoaded(for granularity: StatGranularity, isCustomRange: Bool) {
         guard StoresManager.shared.isAuthenticated else {
             return
         }
 
-        WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
+        WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: [
+             "range": isCustomRange ? "custom" : granularity.rawValue,
+        ])
     }
 }
 

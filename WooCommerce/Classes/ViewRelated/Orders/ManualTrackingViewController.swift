@@ -579,7 +579,9 @@ private extension ManualTrackingViewController {
         let action = ShipmentAction.addCustomTracking(siteID: siteID,
                                                       orderID: orderID,
                                                       trackingProvider: providerName,
-                                                      trackingNumber: trackingNumber, trackingURL: trackingLink) { [weak self] error in
+                                                      trackingNumber: trackingNumber,
+                                                      trackingURL: trackingLink,
+                                                      dateShipped: dateShipped) { [weak self] error in
                                                         if let error = error {
                                                             DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 

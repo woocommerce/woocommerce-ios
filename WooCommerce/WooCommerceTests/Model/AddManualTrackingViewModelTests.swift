@@ -118,5 +118,4 @@ final class AddManualTrackingViewModelTests: XCTestCase {
     func testIsCustomReturnsFalse() {
         XCTAssertFalse(subject!.isCustom)
     }
-
 }

@@ -458,7 +458,7 @@ private extension ManualTrackingViewController {
             return
         }
 
-        viewModel.trackingLink = newTrackingLink
+        viewModel.trackingLink = newTrackingLink.addHTTPSSchemeIfNecessary()
         activateActionButtonIfNecessary()
     }
 }

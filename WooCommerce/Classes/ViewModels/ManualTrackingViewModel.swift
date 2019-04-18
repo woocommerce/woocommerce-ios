@@ -122,7 +122,7 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     var canCommit: Bool {
         return shipmentProvider != nil &&
-            trackingNumber != nil
+            trackingNumber?.isEmpty == false
     }
 
     let isAdding: Bool = true

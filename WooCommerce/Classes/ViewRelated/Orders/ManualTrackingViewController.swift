@@ -270,8 +270,8 @@ extension ManualTrackingViewController: UITableViewDataSource {
     private func configureProviderName(cell: TitleAndEditableValueTableViewCell) {
         cell.title.text = NSLocalizedString("Provider name", comment: "Add Custom shipping provider. Title of cell presenting the provider name")
         cell.value.placeholder = NSLocalizedString("Enter provider name", comment: "Add custom shipping provider. Placeholder of cell presenting provider name")
-        // TODO. Populate
-        cell.value.text = ""
+
+        cell.value.text = viewModel.providerName
         cell.value.isEnabled = true
 
         cell.value.addTarget(self, action: #selector(didChangeProviderName), for: .editingChanged)
@@ -292,12 +292,13 @@ extension ManualTrackingViewController: UITableViewDataSource {
     private func configureTrackingLink(cell: TitleAndEditableValueTableViewCell) {
         cell.title.text = NSLocalizedString("Tracking link (optional)", comment: "Add custom shipping provider. Title of cell presenting tracking link")
 
-        //cell.value.text = viewModel.trackingNumber
-        // TODO. populate
         cell.value.placeholder = NSLocalizedString("Enter tracking link", comment: "Add custom shipping provider. Placeholder of cell presenting tracking link")
-        cell.value.isEnabled = true
 
-        cell.value.addTarget(self, action: #selector(didChangeTrackingNumber), for: .editingChanged)
+        cell.value.text = viewModel.trackingLink
+
+        cell.value.isEnabled = true
+        cell.value.addTarget(self, action: #selector(didChangeTrackingLink), for: .editingChanged)
+
         cell.accessoryType = .none
     }
 
@@ -439,8 +440,7 @@ private extension ManualTrackingViewController {
             return
         }
 
-        //viewModel.provi = newTrackingNumber
-        //TODO. Set property in viewModel
+        viewModel.providerName = newProviderName
         activateActionButtonIfNecessary()
     }
 
@@ -450,6 +450,15 @@ private extension ManualTrackingViewController {
         }
 
         viewModel.trackingNumber = newTrackingNumber
+        activateActionButtonIfNecessary()
+    }
+
+    @objc func didChangeTrackingLink(sender: UITextField) {
+        guard let newTrackingLink = sender.text else {
+            return
+        }
+
+        viewModel.trackingLink = newTrackingLink
         activateActionButtonIfNecessary()
     }
 }

@@ -52,7 +52,9 @@ protocol ManualTrackingViewModel {
     var secondaryActionTitle: String? { get }
 
     var sections: [AddEditTrackingSection] { get }
+    var providerName: String? { get set }
     var trackingNumber: String? { get set }
+    var trackingLink: String? { get set }
     var shipmentDate: Date { get set }
     var shipmentTracking: ShipmentTracking? { get }
 
@@ -90,7 +92,11 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     let shipmentTracking: ShipmentTracking? = nil
 
+    var providerName: String?
+
     var trackingNumber: String?
+
+    var trackingLink: String?
 
     var shipmentDate = Date()
 
@@ -149,6 +155,10 @@ final class EditTrackingViewModel: ManualTrackingViewModel {
         return shipmentTracking?.trackingNumber
     }()
 
+    var providerName: String?
+
+    var trackingLink: String?
+
     lazy var shipmentDate: Date = {
         return shipmentTracking?.dateShipped ?? Date()
     }()
@@ -204,7 +214,11 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
 
     let shipmentTracking: ShipmentTracking? = nil
 
+    var providerName: String?
+
     var trackingNumber: String?
+
+    var trackingLink: String?
 
     var shipmentDate = Date()
 
@@ -231,8 +245,8 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
     let providerCellAccessoryType = UITableViewCell.AccessoryType.none
 
     var canCommit: Bool {
-        return shipmentProvider != nil &&
-            trackingNumber != nil
+        return providerName?.isEmpty == false &&
+            trackingNumber?.isEmpty == false
     }
 
     let isAdding: Bool = true

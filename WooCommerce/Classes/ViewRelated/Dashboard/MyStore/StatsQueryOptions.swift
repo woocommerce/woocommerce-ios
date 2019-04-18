@@ -1,14 +1,24 @@
 import Foundation
 import Yosemite
 
+/// Structure grouping the options for querying stats
+///
 struct StatsQueryOptions {
     enum Period {
         case latest
         case range(from: Date, to: Date)
     }
 
+    /// Local query ID to attach to the result
+    ///
     let queryID: String
+
+    /// Granularity of the results
+    ///
     let granularity: StatGranularity
+
+    /// Period queried
+    ///
     let period: Period
 
     var latestDateToInclude: Date {

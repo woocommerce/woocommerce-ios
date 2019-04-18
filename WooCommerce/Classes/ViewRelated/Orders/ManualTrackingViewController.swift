@@ -471,8 +471,8 @@ private extension ManualTrackingViewController {
     func deleteTracking() {
         configureForCommittingTracking()
 
-        let siteID = viewModel.siteID
-        let orderID = viewModel.orderID
+        let siteID = viewModel.order.siteID
+        let orderID = viewModel.order.orderID
         guard let trackingID = viewModel.shipmentTracking?.trackingID else {
             return
         }
@@ -507,9 +507,9 @@ private extension ManualTrackingViewController {
         }
 
 
-        let siteID = viewModel.siteID
-        let orderID = viewModel.orderID
-        let statusKey = viewModel.orderStatus
+        let siteID = viewModel.order.siteID
+        let orderID = viewModel.order.orderID
+        let statusKey = viewModel.order.statusKey
         let dateShipped = DateFormatter
             .Defaults
             .yearMonthDayDateFormatter

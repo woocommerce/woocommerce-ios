@@ -45,9 +45,6 @@ enum AddEditTrackingRow: CaseIterable {
 ///
 protocol ManualTrackingViewModel {
     var order: Order { get }
-    var siteID: Int { get }
-    var orderID: Int { get }
-    var orderStatus: String { get }
     var title: String { get }
     var providerCellName: String { get }
     var providerCellAccessoryType: UITableViewCell.AccessoryType { get }
@@ -83,9 +80,6 @@ extension ManualTrackingViewModel {
 ///
 final class AddTrackingViewModel: ManualTrackingViewModel {
     let order: Order
-    let siteID: Int
-    let orderID: Int
-    let orderStatus: String
 
     let title = NSLocalizedString("Add Tracking",
                                  comment: "Add tracking screen - title.")
@@ -131,9 +125,6 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     init(order: Order) {
         self.order = order
-        self.siteID = order.siteID
-        self.orderID = order.orderID
-        self.orderStatus = order.statusKey
     }
 }
 
@@ -142,9 +133,6 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 ///
 final class EditTrackingViewModel: ManualTrackingViewModel {
     let order: Order
-    let siteID: Int
-    let orderID: Int
-    let orderStatus: String
 
     let title = NSLocalizedString("Edit Tracking",
                                  comment: "Edit tracking screen - title.")
@@ -197,9 +185,6 @@ final class EditTrackingViewModel: ManualTrackingViewModel {
 
     init(order: Order, shipmentTracking: ShipmentTracking) {
         self.order = order
-        self.siteID = order.siteID
-        self.orderID = order.orderID
-        self.orderStatus = order.statusKey
         self.shipmentTracking = shipmentTracking
     }
 }
@@ -209,9 +194,6 @@ final class EditTrackingViewModel: ManualTrackingViewModel {
 ///
 final class AddCustomTrackingViewModel: ManualTrackingViewModel {
     let order: Order
-    let siteID: Int
-    let orderID: Int
-    let orderStatus: String
 
     let title = NSLocalizedString("Add Tracking",
                                   comment: "Add tracking screen - title.")
@@ -259,8 +241,5 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
 
     init(order: Order) {
         self.order = order
-        self.siteID = order.siteID
-        self.orderID = order.orderID
-        self.orderStatus = order.statusKey
     }
 }

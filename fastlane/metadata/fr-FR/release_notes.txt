@@ -1,3 +1,1 @@
-Cette version vise à résoudre des problèmes et à apporter des améliorations :
-– Dans les détails de la commande, l’état de la commande est désormais actualisé au moment de l’extraction pour actualisation.
-– De petites améliorations ont été apportées à l’interface utilisateur de certains écrans.
+- Contrôlez plus facilement la situation : vous pouvez désormais copier les numéros de suivi directement dans le presse-papier à partir de l'écran des détails de la commande.

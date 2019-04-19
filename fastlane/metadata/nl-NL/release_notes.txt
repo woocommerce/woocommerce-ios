@@ -1,3 +1,1 @@
-Deze versie draait om reparaties en verfijningen:
-– In het scherm Bestelgegevens kun je nu de bestelstatus vernieuwen door het scherm omlaag te trekken.
-– Er zijn een paar kleine UI-verbeteringen aangebracht in verschillende schermen.
+- Houd bestellingen met minder klikken bij: je kunt de trackingnummers nu rechtstreeks naar het klembord kopiëren vanuit het bestellingsoverzicht.

@@ -13,5 +13,4 @@ final class TitleBodyTableViewCell: UITableViewCell {
         bodyLabel?.lineBreakMode = .byWordWrapping
         bodyLabel?.numberOfLines = 0
     }
-    
 }

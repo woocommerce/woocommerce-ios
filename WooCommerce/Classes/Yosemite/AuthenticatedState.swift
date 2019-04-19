@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Networking
+import Storage
 
 
 
@@ -29,6 +30,7 @@ class AuthenticatedState: StoresManagerState {
 
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -60,6 +62,8 @@ class AuthenticatedState: StoresManagerState {
 
         pushNotesManager.unregisterForRemoteNotifications()
         pushNotesManager.resetBadgeCount()
+
+        resetServices()
     }
 
     /// Executed whenever the state is activated.
@@ -92,5 +96,13 @@ private extension AuthenticatedState {
     ///
     func tunnelTimeoutWasReceived(note: Notification) {
         WooAnalytics.shared.track(.jetpackTunnelTimeout)
+    }
+}
+
+
+private extension AuthenticatedState {
+    func resetServices() {
+        let resetStoredProviders = AppSettingsAction.resetStoredProviders(onCompletion: nil)
+        StoresManager.shared.dispatch(resetStoredProviders)
     }
 }

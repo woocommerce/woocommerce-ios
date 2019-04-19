@@ -59,6 +59,7 @@ public typealias StorageOrderNote = Storage.OrderNote
 public typealias StorageOrderStats = Storage.OrderStats
 public typealias StorageOrderStatsItem = Storage.OrderStatsItem
 public typealias StorageOrderStatus = Storage.OrderStatus
+public typealias StoragePreselectedProvider = Storage.PreselectedProvider
 public typealias StorageProduct = Storage.Product
 public typealias StorageProductDimensions = Storage.ProductDimensions
 public typealias StorageProductAttribute = Storage.ProductAttribute

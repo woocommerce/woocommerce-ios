@@ -1,3 +1,1 @@
-Esta versão é dedicada às correções e melhorias:
-– Nos Detalhes do pedido, o status do pedido passará a ser atualizado após o comando arrastar para atualizar.
-– Algumas melhorias de IU foram feitas em telas diferentes.
+- Mantenha os pedidos sob controle com apenas alguns toques: Agora, você pode copiar números de rastreamento para a área de transferência a partir da tela de detalhes do pedido.

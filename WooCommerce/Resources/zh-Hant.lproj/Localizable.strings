@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-03-21 10:54:02+0000 */
+/* Translation-Revision-Date: 2019-04-17 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -106,7 +106,7 @@
 /* Application's Background State */
 "Background" = "背景";
 
-/* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. \ - It reads: Bar number {bar number} {summary of bar}. - */
+/* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "長條數目 %1$i, %2$@,";
 
 /* Billing title for customer info cell */
@@ -291,7 +291,7 @@
 /* Filter the orders list. */
 "Filter orders" = "篩選訂單";
 
-/* VoiceOver accessibility hint, \ - informing the user the button can be used to filter the notifications list. - */
+/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
 "Filters the notifications list by notification type." = "依通知類型篩選通知。";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
@@ -450,7 +450,7 @@
 /* Message phone number button title */
 "Message" = "訊息";
 
-/* VoiceOver accessibility value, informs the user about the Y-axis min/max values. \ - It reads: Minimum value {value}, maximum value {value}. - */
+/* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %1$@, maximum value %2$@" = "最小值：%1$@；最大值：%2$@";
 
 /* Statistical unit - a single week */
@@ -518,14 +518,15 @@
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "給顧客的備註";
 
-/* Title that appears on top of the main Notifications screen when there is no filter \ - applied to the list (plural form of the word Notification). - Title of the Notifications tab — plural form of Notification */
+/* Title of the Notifications tab — plural form of Notification
+   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
 "Notifications" = "通知";
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
 "Notifications: %@" = "Notifications: %@";
 
-/* Button title. An acknowledgement of the message displayed in a prompt.
-   Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+/* Alert dismissal title
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "確定";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -562,7 +563,7 @@
    Order number title */
 "Order #(viewModel.order.number)" = "訂單編號 (viewModel.order.number)";
 
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. \ - It reads: Order {order number} has been deleted from your store - */
+/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store. */
 "Order %@ has been deleted from your store" = "已從你的商店刪除訂單　%@";
 
 /* Order notes section title */
@@ -577,7 +578,8 @@
 /* Order status update success notice */
 "Order status updated" = "已更新訂單狀態";
 
-/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. \ - Plural form of the word Order. - Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
+   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "訂單";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -629,6 +631,9 @@
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "請填寫所有欄位";
 
+/* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
+"Please log out before connecting to a different wordpress.com site" = "請先登出再連結至另一個 WordPress.com 網站";
+
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "請開啟電子郵件應用程式，找到 WordPress.com 傳送的電子郵件。";
 
@@ -647,7 +652,7 @@
    Product section title - Section header title for the product */
 "Product" = "產品";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a \ - prompt that lets them call or message the billing customer. - */
+/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "提示致電或傳簡訊給帳單客戶的選項。";
 
 /* shown in promotional screens during first launch */
@@ -695,7 +700,7 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "檢視、準備和運送這些待處理訂單";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. \ - Plural form of the word Review. - */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
 "Reviews" = "評論";
 
 /* SKU label */
@@ -713,7 +718,7 @@
 /* Page title for the select a different store screen */
 "Select Store" = "選取商店";
 
-/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that \ - displays the store website and their username. - */
+/* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "已選取商店";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
@@ -916,7 +921,7 @@
 /* Top Performers section title - this year */
 "This Year" = "今年";
 
-/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to \ - your Store. Read the configuration instructions.' and it links to a web page on the words \ - 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \ - 'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. \ - If a literal translation of 'Read the configuration instructions' does not make sense in your language, \ - please use a contextually appropriate substitution. For example, you can translate it to say \ - 'See: instructions' or any alternative that sounds natural in your language. - */
+/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
 "This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "此應用程式需要 Jetpack 才能連結至你的商店。<br \/>請閱讀<a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">設定說明<\/a>。";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
@@ -951,7 +956,7 @@
 "Total Spend" = "消費總額";
 
 /* Top performers — label for the total number of products ordered */
-"Total orders: %ld" = "Total orders: %ld";
+"Total orders: %ld" = "訂單總數：%ld";
 
 /* Track package button title */
 "Track package" = "追蹤包裹";
@@ -1007,7 +1012,7 @@
 /* Refresh Action Failed */
 "Unable to refresh list" = "無法重新整理清單";
 
-/* On the site picker screen, the error displayed when connecting to a site fails. \ - It reads: Unable to successfully connect to {site name} - */
+/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
 "Unable to successfully connect to %@" = "Unable to successfully connect to %@";
 
 /* Error message displayed when an error occurred checking for email availability. */
@@ -1037,22 +1042,22 @@
 /* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
 "Updated %1$@ at %2$@" = "已於 %1$@ %2$@ 更新";
 
-/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. \ - Usage example: Updated 1 hour ago - */
+/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "%ld 小時前已更新";
 
-/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. \ - Usage example: Updated 14 hours ago - */
+/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
 "Updated %ld hours ago" = "%ld 小時前已更新";
 
-/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. \ - Usage example: Updated 1 minute ago - */
+/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
 "Updated %ld minute ago" = "%ld 分鐘前已更新";
 
-/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. \ - Usage example: Updated 55 minutes ago - */
+/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
 "Updated %ld minutes ago" = "%ld 分鐘前已更新";
 
 /* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
 "Updated moments ago" = "不久前已更新";
 
-/* A specific date and time string which represents when the data was last updated. \ - Usage example: Updated on Jan 22, 2019 3:31PM - */
+/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
 "Updated on %@" = "更新日期：%@";
 
 /* Login dialog username placeholder

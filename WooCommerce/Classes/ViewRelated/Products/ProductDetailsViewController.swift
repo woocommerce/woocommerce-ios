@@ -40,7 +40,6 @@ final class ProductDetailsViewController: UIViewController {
         guard let productImageURLString = product.images.first?.src else {
             return nil
         }
-
         return URL(string: productImageURLString)
     }
 
@@ -68,6 +67,7 @@ final class ProductDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationTitle()
+        configureMainView()
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
@@ -80,10 +80,21 @@ final class ProductDetailsViewController: UIViewController {
 //
 private extension ProductDetailsViewController {
 
+    /// Setup: Navigation Title
+    ///
+    func configureNavigationTitle() {
+        title = product.name
+    }
+
+    /// Setup: main view
+    ///
+    func configureMainView() {
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
+    }
+
     /// Setup: TableView
     ///
     func configureTableView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedSectionHeaderHeight = Metrics.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
@@ -91,24 +102,7 @@ private extension ProductDetailsViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
         tableView.separatorInset = .zero
-    }
-
-    /// Registers all of the available TableViewCells
-    ///
-    func registerTableViewCells() {
-        let cells = [
-            LargeImageTableViewCell.self
-        ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
-    }
-
-    /// Setup: Navigation Title
-    ///
-    func configureNavigationTitle() {
-        title = product.name
+        tableView.tableFooterView = UIView(frame: .zero)
     }
 
     /// Setup: EntityListener
@@ -129,6 +123,18 @@ private extension ProductDetailsViewController {
 
             self.navigationController?.dismiss(animated: true, completion: nil)
             self.displayProductRemovedNotice()
+        }
+    }
+
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells() {
+        let cells = [
+            LargeImageTableViewCell.self
+        ]
+
+        for cell in cells {
+            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
     }
 
@@ -237,12 +243,12 @@ private extension ProductDetailsViewController {
         }
 
         if productHasImage {
+            cell.heightConstraint.constant = Metrics.productImageHeight
             mainImageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage)
         } else {
-            mainImageView.image = UIImage.renderBackgroundImage(fill: .white,
-                                                                border: .white,
-                                                                size: CGSize(width: tableView.frame.width, height: Metrics.sectionHeight),
-                                                                cornerRadius: .zero)
+            cell.heightConstraint.constant = Metrics.emptyProductImageHeight
+            let size = CGSize(width: tableView.frame.width, height: Metrics.emptyProductImageHeight)
+            mainImageView.image = StyleManager.wooWhite.image(size)
         }
     }
 }
@@ -270,7 +276,7 @@ extension ProductDetailsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch rowAtIndexPath(indexPath) {
         case .productSummary:
-            return productHasImage ? Metrics.productImageHeight : Metrics.sectionHeight
+            return productHasImage ? Metrics.productImageHeight : Metrics.emptyProductImageHeight
         }
     }
 
@@ -360,6 +366,7 @@ private extension ProductDetailsViewController {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
         static let productImageHeight = CGFloat(374)
+        static let emptyProductImageHeight = CGFloat(88)
     }
 
     struct Section {

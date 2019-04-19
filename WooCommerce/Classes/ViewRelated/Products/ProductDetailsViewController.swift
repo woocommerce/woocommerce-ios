@@ -73,9 +73,9 @@ private extension ProductDetailsViewController {
     func configureTableView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
-        tableView.estimatedSectionFooterHeight = Constants.rowHeight
-        tableView.estimatedRowHeight = Constants.rowHeight
+        tableView.estimatedSectionHeaderHeight = Metrics.sectionHeight
+        tableView.estimatedSectionFooterHeight = .zero
+        tableView.estimatedRowHeight = Metrics.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
         tableView.separatorInset = .zero
@@ -125,7 +125,6 @@ private extension ProductDetailsViewController {
     func registerTableViewHeaderFooters() {
         let headersAndFooters = [
             TwoColumnSectionHeaderView.self,
-            ShowHideSectionFooter.self
         ]
 
         for kind in headersAndFooters {
@@ -253,7 +252,7 @@ extension ProductDetailsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch rowAtIndexPath(indexPath) {
         case .productSummary:
-            return 200 // FIXME: Not right!
+            return Metrics.productImageHeight
         }
     }
 
@@ -360,9 +359,10 @@ private extension ProductDetailsViewController {
 //
 private extension ProductDetailsViewController {
 
-    enum Constants {
+    enum Metrics {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
+        static let productImageHeight = CGFloat(374)
     }
 
     struct Section {

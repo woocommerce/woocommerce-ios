@@ -36,6 +36,18 @@ final class ProductDetailsViewController: UIViewController {
         return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: product)
     }()
 
+    private var imageURL: URL? {
+        guard let productImageURLString = product.images.first?.src else {
+            return nil
+        }
+
+        return URL(string: productImageURLString)
+    }
+
+    private var productHasImage: Bool {
+        return imageURL != nil
+    }
+
     // MARK: - Initializers
 
     /// Designated Initializer
@@ -74,7 +86,7 @@ private extension ProductDetailsViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedSectionHeaderHeight = Metrics.sectionHeight
-        tableView.estimatedSectionFooterHeight = .zero
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = Metrics.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
@@ -220,11 +232,17 @@ private extension ProductDetailsViewController {
     }
 
     func configureProductImage(cell: LargeImageTableViewCell) {
-        // TODO: setup the cell here!
-        if let productImageURLString = product.images.first?.src {
-            cell.mainImageView?.downloadImage(from: URL(string: productImageURLString), placeholderImage: UIImage.productPlaceholderImage)
+        guard let mainImageView = cell.mainImageView else {
+            return
+        }
+
+        if productHasImage {
+            mainImageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage)
         } else {
-            cell.mainImageView?.image = .productPlaceholderImage
+            mainImageView.image = UIImage.renderBackgroundImage(fill: .white,
+                                                                border: .white,
+                                                                size: CGSize(width: tableView.frame.width, height: Metrics.sectionHeight),
+                                                                cornerRadius: .zero)
         }
     }
 }
@@ -252,7 +270,7 @@ extension ProductDetailsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch rowAtIndexPath(indexPath) {
         case .productSummary:
-            return Metrics.productImageHeight
+            return productHasImage ? Metrics.productImageHeight : Metrics.sectionHeight
         }
     }
 
@@ -280,20 +298,6 @@ extension ProductDetailsViewController: UITableViewDataSource {
 
         return headerView
     }
-
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        let lastSectionIndex = sections.count - 1
-
-        if sections[section].footer != nil || section == lastSectionIndex {
-            return UITableView.automaticDimension
-        }
-
-        return .leastNonzeroMagnitude
-    }
-
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return nil
-    }
 }
 
 
@@ -312,7 +316,7 @@ extension ProductDetailsViewController: UITableViewDelegate {
 }
 
 
-// MARK: - Private helpers
+// MARK: - Tableview helpers
 //
 private extension ProductDetailsViewController {
 
@@ -338,18 +342,11 @@ private extension ProductDetailsViewController {
         reloadSections()
         reloadTableViewDataIfPossible()
     }
-}
 
-
-// MARK: - Sections
-//
-private extension ProductDetailsViewController {
-
-    /// Setup: Sections
+    /// Rebuild the section struct
     ///
     func reloadSections() {
         let summary = Section(row: .productSummary)
-        // TODO: More sections go here
         sections = [summary].compactMap { $0 }
     }
 }

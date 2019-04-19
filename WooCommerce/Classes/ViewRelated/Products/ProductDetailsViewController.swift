@@ -98,7 +98,7 @@ private extension ProductDetailsViewController {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedSectionHeaderHeight = Metrics.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = Metrics.rowHeight
+        tableView.estimatedRowHeight = Metrics.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
         tableView.separatorInset = .zero
@@ -130,7 +130,8 @@ private extension ProductDetailsViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            LargeImageTableViewCell.self
+            LargeImageTableViewCell.self,
+            TitleBodyTableViewCell.self
         ]
 
         for cell in cells {
@@ -232,6 +233,8 @@ private extension ProductDetailsViewController {
         switch cell {
         case let cell as LargeImageTableViewCell:
             configureProductImage(cell: cell)
+        case let cell as TitleBodyTableViewCell:
+            configureProductName(cell: cell)
         default:
             fatalError("Unidentified row type")
         }
@@ -250,6 +253,13 @@ private extension ProductDetailsViewController {
             let size = CGSize(width: tableView.frame.width, height: Metrics.emptyProductImageHeight)
             mainImageView.image = StyleManager.wooWhite.image(size)
         }
+    }
+
+    func configureProductName(cell: TitleBodyTableViewCell) {
+        cell.accessoryType = .none
+        cell.selectionStyle = .none
+        cell.titleLabel?.text = NSLocalizedString("Title", comment: "Product details screen — product title descriptive label")
+        cell.bodyLabel?.text = product.name
     }
 }
 
@@ -277,6 +287,8 @@ extension ProductDetailsViewController: UITableViewDataSource {
         switch rowAtIndexPath(indexPath) {
         case .productSummary:
             return productHasImage ? Metrics.productImageHeight : Metrics.emptyProductImageHeight
+        default:
+            return UITableView.automaticDimension
         }
     }
 
@@ -352,7 +364,7 @@ private extension ProductDetailsViewController {
     /// Rebuild the section struct
     ///
     func reloadSections() {
-        let summary = Section(row: .productSummary)
+        let summary = Section(rows: [.productSummary, .productName])
         sections = [summary].compactMap { $0 }
     }
 }
@@ -363,10 +375,10 @@ private extension ProductDetailsViewController {
 private extension ProductDetailsViewController {
 
     enum Metrics {
-        static let rowHeight = CGFloat(38)
+        static let estimatedRowHeight = CGFloat(86)
         static let sectionHeight = CGFloat(44)
         static let productImageHeight = CGFloat(374)
-        static let emptyProductImageHeight = CGFloat(88)
+        static let emptyProductImageHeight = CGFloat(86)
     }
 
     struct Section {
@@ -389,12 +401,14 @@ private extension ProductDetailsViewController {
 
     enum Row {
         case productSummary
-        // TODO: More rows go here
+        case productName
 
         var reuseIdentifier: String {
             switch self {
             case .productSummary:
                 return LargeImageTableViewCell.reuseIdentifier
+            case .productName:
+                return TitleBodyTableViewCell.reuseIdentifier
             }
         }
     }

@@ -1,3 +1,1 @@
-In dieser Version dreht sich alles um Fehlerbehebungen und Verbesserungen:
-– In den Bestelldetails wird der Bestellstatus jetzt bei „Pull-to-Refresh“ aktualisiert.
-– Auf verschiedenen Seiten wurden einige kleinere UI-Verbesserungen durchgeführt.
+- Bleibe bei deinen Bestellungen mit weniger Klicks auf dem neuesten Stand: Jetzt kannst du Sendungsverfolgungsnummern direkt vom Bildschirm mit den Bestelldetails in die Zwischenablage kopieren.

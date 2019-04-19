@@ -103,7 +103,12 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     }
 
-    var shipmentProvider: ShipmentTrackingProvider?
+    var shipmentProvider: ShipmentTrackingProvider? {
+        didSet {
+            saveSelectedShipmentProvider()
+        }
+    }
+
     var shipmentProviderGroupName: String?
 
     var providerCellName: String {
@@ -125,6 +130,48 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
         self.siteID = order.siteID
         self.orderID = order.orderID
         self.orderStatus = order.statusKey
+
+        loadSelectedShipmentProvider()
+    }
+
+}
+
+
+// MARK:- Persistence of the selected ShipmentTrackingProvider
+//
+private extension AddTrackingViewModel {
+    func saveSelectedShipmentProvider() {
+        guard let shipmentProvider = shipmentProvider else {
+            return
+        }
+
+        let siteID = self.siteID
+
+        let action = AppSettingsAction.addTrackingProvider(siteID: siteID, providerName: shipmentProvider.name) { error in
+            guard let error = error else {
+                return
+            }
+
+            DDLogError("⛔️ Save selected Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
+    func loadSelectedShipmentProvider() {
+        let siteID = self.siteID
+
+        let action = AppSettingsAction.loadTrackingProvider(siteID: siteID) { [weak self] (provider, providerGroup, error) in
+            guard let error = error else {
+                self?.shipmentProvider = provider
+                self?.shipmentProviderGroupName = providerGroup?.name
+                return
+            }
+
+            DDLogError("⛔️ Read selected Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
+        }
+
+        StoresManager.shared.dispatch(action)
     }
 }
 

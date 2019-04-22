@@ -69,13 +69,13 @@ private extension AccountStore {
     ///
     func synchronizeAccountSettings(userID: Int, onCompletion: @escaping (AccountSettings?, Error?) -> Void) {
         let remote = AccountRemote(network: network)
-        
+
         remote.loadAccountSettings(for: userID) { [weak self] (accountSettings, error) in
             guard let accountSettings = accountSettings else {
                 onCompletion(nil, error)
                 return
             }
-            
+
             self?.upsertStoredAccountSettings(readOnlyAccountSettings: accountSettings)
             onCompletion(accountSettings, nil)
         }
@@ -158,7 +158,8 @@ extension AccountStore {
         assert(Thread.isMainThread)
 
         let storage = storageManager.viewStorage
-        let storageAccount = storage.loadAccountSettings(userId: readOnlyAccountSettings.userID) ?? storage.insertNewObject(ofType: Storage.AccountSettings.self)
+        let storageAccount = storage.loadAccountSettings(userId: readOnlyAccountSettings.userID) ??
+            storage.insertNewObject(ofType: Storage.AccountSettings.self)
 
         storageAccount.update(with: readOnlyAccountSettings)
         storage.saveIfNeeded()

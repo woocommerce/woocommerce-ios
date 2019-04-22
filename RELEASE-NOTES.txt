@@ -1,6 +1,10 @@
-1.6
+1.7
 -----
  
+1.6
+-----
+- improvement: Tracking numbers can now be copied to the pasteboard from the order details screen.
+
 1.5
 -----
 - bugfix: Sometimes Settings would style all the options like "Log Out". No longer happens now.

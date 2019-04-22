@@ -36,7 +36,8 @@ class AuthenticatedState: StoresManagerState {
             StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
         startListeningToNotifications()

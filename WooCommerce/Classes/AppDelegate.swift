@@ -10,7 +10,6 @@ import WordPressAuthenticator
 
 // MARK: - Woo's App Delegate!
 //
-@UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     /// AppDelegate's Instance
@@ -90,9 +89,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Upgrade check...
         checkForUpgrades()
 
-        // Store switcher alert
-        displayStoreSwitcherAlertIfNeeded()
-
         return true
     }
 
@@ -165,6 +161,10 @@ private extension AppDelegate {
     /// Sets up the main UIWindow instance.
     ///
     func setupMainWindow() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
+
+        window = UIWindow()
+        window?.rootViewController = storyboard.instantiateInitialViewController()
         window?.makeKeyAndVisible()
     }
 
@@ -373,11 +373,5 @@ extension AppDelegate {
     func authenticatorWasDismissed() {
         setupPushNotificationsManagerIfPossible()
         RequirementsChecker.checkMinimumWooVersionForDefaultStore()
-    }
-}
-
-private extension AppDelegate {
-    private func displayStoreSwitcherAlertIfNeeded() {
-        SwitchStoreAlertLauncher().displayStoreSwitcherAlertIfNeeded()
     }
 }

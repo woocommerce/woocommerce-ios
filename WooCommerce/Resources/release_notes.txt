@@ -1,3 +1,1 @@
-This version is all about fixes and refinements:
-– In Order Details, the order status now refreshes upon pull-to-refresh.
-– Some small UI refinements have been done in different screens.
+- Stay top of orders with fewer taps: now, you can copy tracking numbers right to the pasteboard from the order details screen.

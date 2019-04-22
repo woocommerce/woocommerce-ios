@@ -102,14 +102,8 @@ public class CurrencySettings {
     ///
     private lazy var resultsController: ResultsController<StorageSiteSetting> = {
         let storageManager = AppDelegate.shared.storageManager
-
-        let resultsController = ResultsController<StorageSiteSetting>(storageManager: storageManager, sectionNameKeyPath: nil, sortedBy: [])
-
-        resultsController.onDidChangeObject = { [weak self] (object, indexPath, type, newIndexPath) in
-            self?.updateCurrencyOptions(with: object)
-        }
-
-        return resultsController
+        let descriptor = NSSortDescriptor(keyPath: \StorageSiteSetting.siteID, ascending: false)
+        return ResultsController<StorageSiteSetting>(storageManager: storageManager, sortedBy: [descriptor])
     }()
 
 
@@ -124,6 +118,8 @@ public class CurrencySettings {
         self.thousandSeparator = thousandSeparator
         self.decimalSeparator = decimalSeparator
         self.numberOfDecimals = numberOfDecimals
+
+        configureResultsController()
     }
 
 
@@ -145,10 +141,6 @@ public class CurrencySettings {
         self.init()
 
         siteSettings.forEach { updateCurrencyOptions(with: $0) }
-    }
-
-    func beginListeningToSiteSettingsUpdates() {
-        try? resultsController.performFetch()
     }
 
     func updateCurrencyOptions(with siteSetting: SiteSetting) {
@@ -510,9 +502,38 @@ public class CurrencySettings {
 }
 
 
-// MARK: -
+// MARK: - ResultsController
+//
+extension CurrencySettings {
 
+    /// Refreshes the currency settings for the current default site
+    ///
+    func refresh() {
+        refreshResultsPredicate()
+    }
+
+    /// Setup: ResultsController
+    ///
+    private func configureResultsController() {
+        resultsController.onDidChangeObject = { [weak self] (object, indexPath, type, newIndexPath) in
+            self?.updateCurrencyOptions(with: object)
+        }
+        refreshResultsPredicate()
+    }
+
+    private func refreshResultsPredicate() {
+        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let settingTypePredicate = NSPredicate(format: "settingGroupKey ==[c] %@", SiteSettingGroup.general.rawValue)
+        resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingTypePredicate])
+        try? resultsController.performFetch()
+    }
+}
+
+
+// MARK: - Constants!
+//
 private extension CurrencySettings {
+
     enum Constants {
         static let currencyCodeKey = "woocommerce_currency"
         static let currencyPositionKey = "woocommerce_currency_pos"

@@ -75,12 +75,12 @@ extension StoreStatsViewController {
         periodVCs.forEach { (vc) in
             group.enter()
 
-            syncOrderStats(for: vc.granularity) { error in
+            syncOrderStats(for: vc.granularity) { [weak self] error in
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing order stats: \(error)")
                     syncError = error
                 } else {
-                    WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": vc.granularity.rawValue])
+                    self?.trackStatsLoaded(for: vc.granularity)
                 }
                 group.leave()
             }
@@ -195,7 +195,6 @@ private extension StoreStatsViewController {
 
     func syncVisitorStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            DDLogWarn("⚠️ Tried to sync order stats without a current defaultStoreID")
             onCompletion?(nil)
             return
         }
@@ -214,7 +213,6 @@ private extension StoreStatsViewController {
 
     func syncOrderStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            DDLogWarn("⚠️ Tried to sync order stats without a current defaultStoreID")
             onCompletion?(nil)
             return
         }
@@ -252,6 +250,14 @@ private extension StoreStatsViewController {
         case .year:
             return Constants.quantityDefaultForYear
         }
+    }
+
+    func trackStatsLoaded(for granularity: StatGranularity) {
+        guard StoresManager.shared.isAuthenticated else {
+            return
+        }
+
+        WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
     }
 }
 

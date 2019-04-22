@@ -5,9 +5,9 @@ import Foundation
 ///
 struct OrderMapper: Mapper {
 
-    /// Site Identifier associated to the orders that will be parsed.
-    /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't really return the SiteID in any of the
-    /// Order Endpoints.
+    /// Site Identifier associated to the order that will be parsed.
+    ///
+    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Order Endpoints.
     ///
     let siteID: Int
 
@@ -26,8 +26,9 @@ struct OrderMapper: Mapper {
 }
 
 
-/// OrdersEnvelope Disposable Entity:
-/// `Update Order` endpoint returns the updated order document in the `data` key. This entity
+/// OrdersEnvelope Disposable Entity
+///
+/// `Load Order` endpoint returns the requested order document in the `data` key. This entity
 /// allows us to do parse all the things with JSONDecoder.
 ///
 private struct OrderEnvelope: Decodable {

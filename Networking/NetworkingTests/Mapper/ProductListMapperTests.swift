@@ -53,7 +53,7 @@ class ProductListMapperTests: XCTestCase {
         XCTAssertEqual(firstProduct.downloadLimit, -1)
         XCTAssertEqual(firstProduct.downloadExpiry, -1)
 
-        XCTAssertEqual(firstProduct.externalURL, "")
+        XCTAssertEqual(firstProduct.externalURL, "http://somewhere.com")
         XCTAssertEqual(firstProduct.taxStatusKey, "taxable")
         XCTAssertEqual(firstProduct.taxClass, "")
 
@@ -66,7 +66,7 @@ class ProductListMapperTests: XCTestCase {
         XCTAssertFalse(firstProduct.backordered)
 
         XCTAssertTrue(firstProduct.soldIndividually)
-        XCTAssertEqual(firstProduct.weight, "")
+        XCTAssertEqual(firstProduct.weight, "213")
 
         XCTAssertFalse(firstProduct.shippingRequired)
         XCTAssertFalse(firstProduct.shippingTaxable)
@@ -74,20 +74,16 @@ class ProductListMapperTests: XCTestCase {
         XCTAssertEqual(firstProduct.shippingClassID, 0)
 
         XCTAssertTrue(firstProduct.reviewsAllowed)
-        XCTAssertEqual(firstProduct.averageRating, "0.00")
-        XCTAssertEqual(firstProduct.ratingCount, 0)
+        XCTAssertEqual(firstProduct.averageRating, "4.30")
+        XCTAssertEqual(firstProduct.ratingCount, 23)
 
-        XCTAssertEqual(firstProduct.relatedIDs, [])
-        XCTAssertEqual(firstProduct.upsellIDs, [])
-        XCTAssertEqual(firstProduct.crossSellIDs, [])
+        XCTAssertEqual(firstProduct.relatedIDs, [31, 22, 369, 414, 56])
+        XCTAssertEqual(firstProduct.upsellIDs, [99, 1234566])
+        XCTAssertEqual(firstProduct.crossSellIDs, [1234, 234234, 3])
         XCTAssertEqual(firstProduct.parentID, 0)
 
-        XCTAssertEqual(firstProduct.purchaseNote, "")
-        XCTAssertEqual(firstProduct.images, [])
-
-        XCTAssertEqual(firstProduct.attributes, [])
-        XCTAssertEqual(firstProduct.defaultAttributes, [])
-        XCTAssertEqual(firstProduct.variations, [])
+        XCTAssertEqual(firstProduct.purchaseNote, "Thank you!")
+        XCTAssertEqual(firstProduct.variations, [192, 194, 193])
         XCTAssertEqual(firstProduct.groupedProducts, [])
 
         XCTAssertEqual(firstProduct.menuOrder, 0)
@@ -149,9 +145,9 @@ class ProductListMapperTests: XCTestCase {
         XCTAssert(tags.count == 9)
 
         let tag = tags[2]
-        XCTAssertEqual(tag.tagID, 45)
-        XCTAssertEqual(tag.name, "birthday party")
-        XCTAssertEqual(tag.slug, "birthday-party")
+        XCTAssertEqual(tag.tagID, 39)
+        XCTAssertEqual(tag.name, "30")
+        XCTAssertEqual(tag.slug, "30")
     }
 
     /// Test that product images are properly mapped.
@@ -222,7 +218,7 @@ class ProductListMapperTests: XCTestCase {
 ///
 private extension ProductListMapperTests {
 
-    /// Returns the OrderListMapper output upon receiving `filename` (Data Encoded)
+    /// Returns the ProductListMapper output upon receiving `filename` (Data Encoded)
     ///
     func mapProducts(from filename: String) -> [Product] {
         guard let response = Loader.contentsOf(filename) else {
@@ -232,7 +228,7 @@ private extension ProductListMapperTests {
         return try! ProductListMapper(siteID: dummySiteID).map(response: response)
     }
 
-    /// Returns the OrderListMapper output upon receiving `orders-load-all`
+    /// Returns the ProductListMapper output upon receiving `products-load-all`
     ///
     func mapLoadAllProductsResponse() -> [Product] {
         return mapProducts(from: "products-load-all")

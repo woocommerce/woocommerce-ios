@@ -1,3 +1,1 @@
-Versi ini penuh dengan perbaikan dan penyempurnaan:
-– Pada Detail pesanan, status pesanan kini disegarkan lewat tindakan tarik-untuk-segarkan.
-– Beberapa penyempurnaan UI kecil telah dilakukan di berbagai layar.
+- Terus ikuti semua pesanan dengan beberapa ketukan: sekarang, Anda dapat menyalin nomor pelacakan langsung ke papan tempel dari layar detail pesanan.

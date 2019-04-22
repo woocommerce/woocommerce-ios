@@ -97,10 +97,18 @@ public extension StorageType {
         return firstObject(ofType: OrderStatus.self, matching: predicate)
     }
 
-    /// Retrieves all of the Stored SiteSettings for the provided siteID.
+    /// Retrieves **all** of the stored SiteSettings for the provided siteID.
     ///
-    public func loadSiteSettings(siteID: Int) -> [SiteSetting]? {
+    public func loadAllSiteSettings(siteID: Int) -> [SiteSetting]? {
         let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        let descriptor = NSSortDescriptor(keyPath: \SiteSetting.settingID, ascending: false)
+        return allObjects(ofType: SiteSetting.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Retrieves stored SiteSettings for the provided siteID and settingGroupKey.
+    ///
+    public func loadSiteSettings(siteID: Int, settingGroupKey: String) -> [SiteSetting]? {
+        let predicate = NSPredicate(format: "siteID = %ld AND settingGroupKey ==[c] %@", siteID, settingGroupKey)
         let descriptor = NSSortDescriptor(keyPath: \SiteSetting.settingID, ascending: false)
         return allObjects(ofType: SiteSetting.self, matching: predicate, sortedBy: [descriptor])
     }
@@ -184,5 +192,59 @@ public extension StorageType {
     public func loadProduct(siteID: Int, productID: Int) -> Product? {
         let predicate = NSPredicate(format: "siteID = %ld AND productID = %ld", siteID, productID)
         return firstObject(ofType: Product.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored Product Attribute.
+    ///
+    /// Note: WC attribute ID's often have an ID of `0`, so we need to also look them up by name 😏
+    ///
+    public func loadProductAttribute(siteID: Int, attributeID: Int, name: String) -> ProductAttribute? {
+        let predicate = NSPredicate(format: "product.siteID = %ld AND attributeID = %ld AND name ==[c] %@", siteID, attributeID, name)
+        return firstObject(ofType: ProductAttribute.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored Product Default Attribute.
+    ///
+    /// Note: WC default attribute ID's often have an ID of `0`, so we need to also look them up by name 😏
+    ///
+    public func loadProductDefaultAttribute(siteID: Int, defaultAttributeID: Int, name: String) -> ProductDefaultAttribute? {
+        let predicate = NSPredicate(format: "product.siteID = %ld AND attributeID = %ld AND name ==[c] %@", siteID, defaultAttributeID, name)
+        return firstObject(ofType: ProductDefaultAttribute.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored Product Image.
+    ///
+    public func loadProductImage(siteID: Int, imageID: Int) -> ProductImage? {
+        let predicate = NSPredicate(format: "product.siteID = %ld AND imageID = %ld", siteID, imageID)
+        return firstObject(ofType: ProductImage.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored Product Category.
+    ///
+    public func loadProductCategory(siteID: Int, categoryID: Int) -> ProductCategory? {
+        let predicate = NSPredicate(format: "product.siteID = %ld AND categoryID = %ld", siteID, categoryID)
+        return firstObject(ofType: ProductCategory.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored Product Tag.
+    ///
+    public func loadProductTag(siteID: Int, tagID: Int) -> ProductTag? {
+        let predicate = NSPredicate(format: "product.siteID = %ld AND tagID = %ld", siteID, tagID)
+        return firstObject(ofType: ProductTag.self, matching: predicate)
+    }
+
+    /// Retrieves all of the stored ProductVariations for the provided siteID and productID.
+    ///
+    public func loadProductVariations(siteID: Int, productID: Int) -> [ProductVariation]? {
+        let predicate = NSPredicate(format: "siteID = %ld AND productID = %ld", siteID, productID)
+        let descriptor = NSSortDescriptor(keyPath: \ProductVariation.variationID, ascending: false)
+        return allObjects(ofType: ProductVariation.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Retrieves a stored ProductVariation for the provided siteID, productID, and variationID.
+    ///
+    public func loadProductVariation(siteID: Int, productID: Int, variationID: Int) -> ProductVariation? {
+        let predicate = NSPredicate(format: "siteID = %ld AND productID = %ld AND variationID = %ld", siteID, productID, variationID)
+        return firstObject(ofType: ProductVariation.self, matching: predicate)
     }
 }

@@ -90,6 +90,11 @@
 		D821645C2239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82164582239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift */; };
 		D821645D2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82164592239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift */; };
 		D821645E2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D821645A2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataProperties.swift */; };
+		D87F614E22657C2F0031A13B /* PreselectedProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F614D22657C2F0031A13B /* PreselectedProvider.swift */; };
+		D87F61532265AA230031A13B /* FileStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F61522265AA230031A13B /* FileStorage.swift */; };
+		D87F61552265AA900031A13B /* PListFileStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F61542265AA900031A13B /* PListFileStorage.swift */; };
+		D87F61572265AD980031A13B /* FileStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F61562265AD980031A13B /* FileStorageTests.swift */; };
+		D87F615C2265AF190031A13B /* shipment-provider.plist in Resources */ = {isa = PBXBuildFile; fileRef = D87F615B2265AF190031A13B /* shipment-provider.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -205,6 +210,11 @@
 		D82164592239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProviderGroup+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D821645A2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProviderGroup+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D82A61EF2239EB9900335D40 /* Model 12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 12.xcdatamodel"; sourceTree = "<group>"; };
+		D87F614D22657C2F0031A13B /* PreselectedProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreselectedProvider.swift; sourceTree = "<group>"; };
+		D87F61522265AA230031A13B /* FileStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileStorage.swift; sourceTree = "<group>"; };
+		D87F61542265AA900031A13B /* PListFileStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PListFileStorage.swift; sourceTree = "<group>"; };
+		D87F61562265AD980031A13B /* FileStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FileStorageTests.swift; path = StorageTests/Tools/FileStorageTests.swift; sourceTree = SOURCE_ROOT; };
+		D87F615B2265AF190031A13B /* shipment-provider.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "shipment-provider.plist"; sourceTree = "<group>"; };
 		DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -272,6 +282,7 @@
 			isa = PBXGroup;
 			children = (
 				B505255320EE6914008090F5 /* StorageType+Extensions.swift */,
+				D87F61542265AA900031A13B /* PListFileStorage.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -291,6 +302,7 @@
 				B52B0F7A20AA28A800477698 /* Object.swift */,
 				B52B0F7820AA287C00477698 /* StorageManagerType.swift */,
 				B505F6DF20BEEA8100BB1B69 /* StorageType.swift */,
+				D87F61522265AA230031A13B /* FileStorage.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -342,6 +354,7 @@
 		B54CA5A620A4BBA600F38CD1 /* StorageTests */ = {
 			isa = PBXGroup;
 			children = (
+				D87F61582265AED70031A13B /* Mock data */,
 				B54CA5C520A4BFC800F38CD1 /* Tools */,
 				B52B0F7D20AA2F1200477698 /* Extensions */,
 				B59E11DC20A9F1E6004121A4 /* CoreData */,
@@ -434,6 +447,7 @@
 				7492FAD4217FA9C100ED2C69 /* SiteSetting+CoreDataClass.swift */,
 				7492FAD5217FA9C100ED2C69 /* SiteSetting+CoreDataProperties.swift */,
 				7471A518216CF12900219F7E /* Stats */,
+				D87F614D22657C2F0031A13B /* PreselectedProvider.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -441,6 +455,7 @@
 		B59E11DC20A9F1E6004121A4 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				D87F61562265AD980031A13B /* FileStorageTests.swift */,
 				9302E3AB220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift */,
 				B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */,
 			);
@@ -453,6 +468,14 @@
 				933A272F2222344D00C2143A /* Logging.swift */,
 			);
 			name = Internal;
+			sourceTree = "<group>";
+		};
+		D87F61582265AED70031A13B /* Mock data */ = {
+			isa = PBXGroup;
+			children = (
+				D87F615B2265AF190031A13B /* shipment-provider.plist */,
+			);
+			path = "Mock data";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -560,6 +583,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D87F615C2265AF190031A13B /* shipment-provider.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -643,6 +667,7 @@
 				74938ECB216FA9B200540BA1 /* OrderStats+CoreDataProperties.swift in Sources */,
 				7426A05120F69D00002A4E07 /* OrderCoupon+CoreDataProperties.swift in Sources */,
 				747453A12242C85E00E0B5EE /* ProductCategory+CoreDataClass.swift in Sources */,
+				D87F61552265AA900031A13B /* PListFileStorage.swift in Sources */,
 				B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */,
 				74938ECA216FA9B200540BA1 /* OrderStats+CoreDataClass.swift in Sources */,
 				B505F6DB20BEEA3200BB1B69 /* Account+CoreDataClass.swift in Sources */,
@@ -686,6 +711,7 @@
 				CE3B7AD22225E62C0050FE4B /* OrderStatus+CoreDataClass.swift in Sources */,
 				74E218F22252BA8400E4B0D7 /* ProductVariationAttribute+CoreDataClass.swift in Sources */,
 				74B7D6AE20F90CBB002667AC /* OrderNote+CoreDataProperties.swift in Sources */,
+				D87F614E22657C2F0031A13B /* PreselectedProvider.swift in Sources */,
 				CE12FBCF221F0E1A00C59248 /* Order+CoreDataProperties.swift in Sources */,
 				7474539B2242C85E00E0B5EE /* ProductDimensions+CoreDataClass.swift in Sources */,
 				B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */,
@@ -694,6 +720,7 @@
 				746A9D23214078080013F6FF /* TopEarnerStatsItem+CoreDataClass.swift in Sources */,
 				74F009C02183B99B002B4566 /* Note+CoreDataClass.swift in Sources */,
 				7499FA44221C7A60004EC0B4 /* ShipmentTracking+CoreDataClass.swift in Sources */,
+				D87F61532265AA230031A13B /* FileStorage.swift in Sources */,
 				B505F6DE20BEEA4F00BB1B69 /* CoreDataManager.swift in Sources */,
 				7492FAD7217FA9C100ED2C69 /* SiteSetting+CoreDataProperties.swift in Sources */,
 				B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */,
@@ -714,6 +741,7 @@
 				B54CA5C320A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift in Sources */,
 				B54CA5C720A4BFDC00F38CD1 /* DummyStack.swift in Sources */,
 				B54CA5C220A4BF6900F38CD1 /* NSManagedObjectStorageTests.swift in Sources */,
+				D87F61572265AD980031A13B /* FileStorageTests.swift in Sources */,
 				B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

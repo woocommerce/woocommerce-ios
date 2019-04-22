@@ -1,3 +1,1 @@
-Questa versione è dedicata a correzioni e perfezionamenti:
-– Nei Dettagli dell'ordine, lo stato dell’ordine ora viene aggiornato con il gesto “trascina per aggiornare”.
-– Alcuni piccoli perfezionamenti alla UI sono stati apportati in diverse schermate.
+- Tieni sotto controllo gli ordini con pochi tocchi: ora puoi copiare i numeri di tracciabilità dalla schermata dei dettaglio dell'ordine direttamente sullo sfondo della finestra del disegno.

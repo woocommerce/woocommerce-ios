@@ -25,9 +25,10 @@ class AccountSettingsRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
 
-        remote.loadAccountSettings { (accountSettings, error) in
+        remote.loadAccountSettings(for: 1) { (accountSettings, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(accountSettings)
+            XCTAssertEqual(1, accountSettings!.userID)
             XCTAssertTrue(accountSettings!.tracksOptOut)
 
             expectation.fulfill()

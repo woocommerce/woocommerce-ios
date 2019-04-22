@@ -16,13 +16,18 @@ public class AccountRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    public func loadAccountSettings(completion: @escaping (AccountSettings?, Error?) -> Void) {
+
+    /// Loads the AccountSettings associated with the Credential's authToken.
+    /// - Parameters:
+    ///   - for: The dotcom user ID - used primarily for persistence not on the actual network call
+    ///
+    public func loadAccountSettings(for userID: Int, completion: @escaping (AccountSettings?, Error?) -> Void) {
         let path = "me/settings"
         let parameters = [
             "fields": "tracks_opt_out"
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
-        let mapper = AccountSettingsMapper()
+        let mapper = AccountSettingsMapper(userID: userID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

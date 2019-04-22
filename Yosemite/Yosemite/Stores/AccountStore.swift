@@ -62,6 +62,24 @@ private extension AccountStore {
             onCompletion(account, nil)
         }
     }
+    
+    
+    /// Synchronizes the WordPress.com account settings associated with the Network's Auth Token.
+    /// User ID is passed along because the API doesn't include it in the response.
+    ///
+    func synchronizeAccountSettings(userID: Int, onCompletion: @escaping (AccountSettings?, Error?) -> Void) {
+        let remote = AccountRemote(network: network)
+        
+        remote.loadAccountSettings(for: userID) { [weak self] (accountSettings, error) in
+            guard let accountSettings = accountSettings else {
+                onCompletion(nil, error)
+                return
+            }
+            
+            self?.upsertStoredAccountSettings(readOnlyAccountSettings: accountSettings)
+            onCompletion(accountSettings, nil)
+        }
+    }
 
     /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.
     ///
@@ -102,6 +120,12 @@ private extension AccountStore {
         let account = storageManager.viewStorage.loadAccount(userId: userID)?.toReadOnly()
         onCompletion(account)
     }
+    
+    /// Loads the AccountSettings associated with the specified userID.
+    func loadAccountSettings(userID: Int, onCompletion: @escaping (AccountSettings?) -> Void) {
+        let accountSettings = storageManager.viewStorage.loadAccountSettings(userId: userID)?.toReadOnly()
+        onCompletion(accountSettings)
+    }
 
     /// Loads the Site associated with the specified siteID (if any!)
     ///
@@ -120,14 +144,26 @@ extension AccountStore {
     ///
     func upsertStoredAccount(readOnlyAccount: Networking.Account) {
         assert(Thread.isMainThread)
-
+        
         let storage = storageManager.viewStorage
         let storageAccount = storage.loadAccount(userId: readOnlyAccount.userID) ?? storage.insertNewObject(ofType: Storage.Account.self)
-
+        
         storageAccount.update(with: readOnlyAccount)
         storage.saveIfNeeded()
     }
-
+    
+    /// Updates (OR Inserts) the specified ReadOnly AccountSettings Entity into the Storage Layer.
+    ///
+    func upsertStoredAccountSettings(readOnlyAccountSettings: Networking.AccountSettings) {
+        assert(Thread.isMainThread)
+        
+        let storage = storageManager.viewStorage
+        let storageAccount = storage.loadAccountSettings(userId: readOnlyAccountSettings.userID) ?? storage.insertNewObject(ofType: Storage.AccountSettings.self)
+        
+        storageAccount.update(with: readOnlyAccountSettings)
+        storage.saveIfNeeded()
+    }
+    
     /// Updates the specified ReadOnly Site Plan attribute in the Site entity, in the Storage Layer.
     ///
     func updateStoredSitePlanInBackground(plan: SitePlan, onCompletion: @escaping () -> Void) {

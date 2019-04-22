@@ -11,6 +11,13 @@ public extension StorageType {
         let predicate = NSPredicate(format: "userID = %ld", userId)
         return firstObject(ofType: Account.self, matching: predicate)
     }
+    
+    /// Retrieves the Stores AccountSettings.
+    ///
+    func loadAccountSettings(userId: Int) -> AccountSettings? {
+        let predicate = NSPredicate(format: "userID = %ld", userId)
+        return firstObject(ofType: AccountSettings.self, matching: predicate)
+    }
 
     /// Retrieves the Stored Site.
     ///

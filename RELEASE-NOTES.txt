@@ -1,3 +1,6 @@
+1.8
+-----
+ 
 1.7
 -----
 - improvement: you can now log in using a site address.

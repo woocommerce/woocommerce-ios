@@ -144,22 +144,22 @@ extension AccountStore {
     ///
     func upsertStoredAccount(readOnlyAccount: Networking.Account) {
         assert(Thread.isMainThread)
-        
+
         let storage = storageManager.viewStorage
         let storageAccount = storage.loadAccount(userId: readOnlyAccount.userID) ?? storage.insertNewObject(ofType: Storage.Account.self)
-        
+
         storageAccount.update(with: readOnlyAccount)
         storage.saveIfNeeded()
     }
-    
+
     /// Updates (OR Inserts) the specified ReadOnly AccountSettings Entity into the Storage Layer.
     ///
     func upsertStoredAccountSettings(readOnlyAccountSettings: Networking.AccountSettings) {
         assert(Thread.isMainThread)
-        
+
         let storage = storageManager.viewStorage
         let storageAccount = storage.loadAccountSettings(userId: readOnlyAccountSettings.userID) ?? storage.insertNewObject(ofType: Storage.AccountSettings.self)
-        
+
         storageAccount.update(with: readOnlyAccountSettings)
         storage.saveIfNeeded()
     }

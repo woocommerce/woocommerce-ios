@@ -27,10 +27,10 @@ public struct AccountSettings: Decodable {
         guard let userID = decoder.userInfo[.userID] as? Int else {
             throw AccountSettingsDecodingError.missingUserID
         }
-        
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let tracksOptOut = try container.decode(Bool.self, forKey: .tracksOptOut)
-        
+
         self.init(userID: userID, tracksOptOut: tracksOptOut)
     }
 }

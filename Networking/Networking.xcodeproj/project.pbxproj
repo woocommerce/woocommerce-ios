@@ -112,6 +112,7 @@
 		74D5BECE217E0F98007B0348 /* SiteSettingsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D5BECD217E0F98007B0348 /* SiteSettingsRemoteTests.swift */; };
 		74E30951216E8DCE00ABCE4C /* site-visits-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = 74E30950216E8DCE00ABCE4C /* site-visits-alt.json */; };
 		933A2732222234F800C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A2731222234F800C2143A /* Logging.swift */; };
+		9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */; };
 		93D8BBFB226BBC5100AD2EB3 /* AccountSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */; };
 		93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BBFC226BBEE800AD2EB3 /* AccountSettingsMapper.swift */; };
 		93D8BBFF226BC1DA00AD2EB3 /* me-settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */; };
@@ -341,6 +342,7 @@
 		74E30950216E8DCE00ABCE4C /* site-visits-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-visits-alt.json"; sourceTree = "<group>"; };
 		753D6504FF01F09F6A33B73E /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
 		933A2731222234F800C2143A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
+		9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsMapperTests.swift; sourceTree = "<group>"; };
 		93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettings.swift; sourceTree = "<group>"; };
 		93D8BBFC226BBEE800AD2EB3 /* AccountSettingsMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsMapper.swift; sourceTree = "<group>"; };
 		93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "me-settings.json"; sourceTree = "<group>"; };
@@ -870,6 +872,7 @@
 			isa = PBXGroup;
 			children = (
 				B505F6D220BEE3A500BB1B69 /* AccountMapperTests.swift */,
+				9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */,
 				74AB0AC921948CE4008220CD /* CommentResultMapperTests.swift */,
 				B524194221AC622500D6FC0A /* DotcomDeviceMapperTests.swift */,
 				B554FA922180C17200C54DFF /* NoteHashListMapperTests.swift */,
@@ -1305,6 +1308,7 @@
 				B567AF2F20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift in Sources */,
 				B5C6FCCD20A34B8300A4F8E4 /* OrderListMapperTests.swift in Sources */,
 				B518663520A0A2E800037A38 /* Constants.swift in Sources */,
+				9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */,
 				7470B1852257CED10000117E /* ProductVariationMapperTests.swift in Sources */,
 				B57B1E6721C916850046E764 /* NetworkErrorTests.swift in Sources */,
 				74002D6C2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift in Sources */,

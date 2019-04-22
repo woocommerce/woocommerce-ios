@@ -30,10 +30,14 @@ public class AccountStore: Store {
         switch action {
         case .loadAccount(let userID, let onCompletion):
             loadAccount(userID: userID, onCompletion: onCompletion)
+        case .loadAccountSettings(let userID, let onCompletion):
+            loadAccountSettings(userID: userID, onCompletion: onCompletion)
         case .loadSite(let siteID, let onCompletion):
             loadSite(siteID: siteID, onCompletion: onCompletion)
         case .synchronizeAccount(let onCompletion):
             synchronizeAccount(onCompletion: onCompletion)
+        case .synchronizeAccountSettings(let userID, let onCompletion):
+            synchronizeAccountSettings(userID: userID, onCompletion: onCompletion)
         case .synchronizeSites(let onCompletion):
             synchronizeSites(onCompletion: onCompletion)
         case .synchronizeSitePlan(let siteID, let onCompletion):

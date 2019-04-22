@@ -186,7 +186,7 @@ private extension AddTrackingViewModel {
 }
 
 
-//MARK:- ViewModel for editing a tracking provider
+// MARK:- ViewModel for editing a tracking provider
 
 /// View model supporting editing shipment tacking manually, using non-custom providers
 ///
@@ -253,7 +253,7 @@ final class EditTrackingViewModel: ManualTrackingViewModel {
 }
 
 
-//MARK:- ViewModel for adding a custom tracking provider
+// MARK:- ViewModel for adding a custom tracking provider
 
 /// View model supporting adding custom shipment tacking manually, using non-custom providers
 ///

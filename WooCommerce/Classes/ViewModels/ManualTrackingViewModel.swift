@@ -2,13 +2,16 @@ import UIKit
 import Foundation
 import Yosemite
 
+// MARK: - Sections
 struct AddEditTrackingSection {
     let rows: [AddEditTrackingRow]
 }
 
 enum AddEditTrackingRow: CaseIterable {
     case shippingProvider
+    case providerName
     case trackingNumber
+    case trackingLink
     case dateShipped
     case deleteTracking
     case datePicker
@@ -17,7 +20,11 @@ enum AddEditTrackingRow: CaseIterable {
         switch self {
         case .shippingProvider:
             return TitleAndEditableValueTableViewCell.self
+        case .providerName:
+            return TitleAndEditableValueTableViewCell.self
         case .trackingNumber:
+            return TitleAndEditableValueTableViewCell.self
+        case .trackingLink:
             return TitleAndEditableValueTableViewCell.self
         case .dateShipped:
             return TitleAndEditableValueTableViewCell.self
@@ -34,13 +41,13 @@ enum AddEditTrackingRow: CaseIterable {
 }
 
 
+// MARK: - View Model Protocol
+
 /// Abstracts the different viewmodels supporting adding, editing and creating custom
 /// shipment trackings
 ///
 protocol ManualTrackingViewModel {
-    var siteID: Int { get }
-    var orderID: Int { get }
-    var orderStatus: String { get }
+    var order: Order { get }
     var title: String { get }
     var providerCellName: String { get }
     var providerCellAccessoryType: UITableViewCell.AccessoryType { get }
@@ -48,7 +55,9 @@ protocol ManualTrackingViewModel {
     var secondaryActionTitle: String? { get }
 
     var sections: [AddEditTrackingSection] { get }
+    var providerName: String? { get set }
     var trackingNumber: String? { get set }
+    var trackingLink: String? { get set }
     var shipmentDate: Date { get set }
     var shipmentTracking: ShipmentTracking? { get }
 
@@ -72,12 +81,12 @@ extension ManualTrackingViewModel {
 }
 
 
+// MARK: - ViewModel for adding a tracking provider
+
 /// View model supporting adding shipment tacking manually, using non-custom providers
 ///
 final class AddTrackingViewModel: ManualTrackingViewModel {
-    let siteID: Int
-    let orderID: Int
-    let orderStatus: String
+    let order: Order
 
     let title = NSLocalizedString("Add Tracking",
                                  comment: "Add tracking screen - title.")
@@ -88,7 +97,11 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     let shipmentTracking: ShipmentTracking? = nil
 
+    var providerName: String?
+
     var trackingNumber: String?
+
+    var trackingLink: String?
 
     var shipmentDate = Date()
 
@@ -119,7 +132,7 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     var canCommit: Bool {
         return shipmentProvider != nil &&
-            trackingNumber != nil
+            trackingNumber?.isEmpty == false
     }
 
     let isAdding: Bool = true
@@ -127,17 +140,14 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
     let isCustom: Bool = false
 
     init(order: Order) {
-        self.siteID = order.siteID
-        self.orderID = order.orderID
-        self.orderStatus = order.statusKey
+        self.order = order
 
         loadSelectedShipmentProvider()
     }
-
 }
 
 
-// MARK:- Persistence of the selected ShipmentTrackingProvider
+// MARK: - Persistence of the selected ShipmentTrackingProvider
 //
 private extension AddTrackingViewModel {
     func saveSelectedShipmentProvider() {
@@ -145,7 +155,7 @@ private extension AddTrackingViewModel {
             return
         }
 
-        let siteID = self.siteID
+        let siteID = order.siteID
 
         let action = AppSettingsAction.addTrackingProvider(siteID: siteID, providerName: shipmentProvider.name) { error in
             guard let error = error else {
@@ -159,7 +169,7 @@ private extension AddTrackingViewModel {
     }
 
     func loadSelectedShipmentProvider() {
-        let siteID = self.siteID
+        let siteID = order.siteID
 
         let action = AppSettingsAction.loadTrackingProvider(siteID: siteID) { [weak self] (provider, providerGroup, error) in
             guard let error = error else {
@@ -176,12 +186,12 @@ private extension AddTrackingViewModel {
 }
 
 
+// MARK: - ViewModel for editing a tracking provider
+
 /// View model supporting editing shipment tacking manually, using non-custom providers
 ///
 final class EditTrackingViewModel: ManualTrackingViewModel {
-    let siteID: Int
-    let orderID: Int
-    let orderStatus: String
+    let order: Order
 
     let title = NSLocalizedString("Edit Tracking",
                                  comment: "Edit tracking screen - title.")
@@ -197,6 +207,10 @@ final class EditTrackingViewModel: ManualTrackingViewModel {
     lazy var trackingNumber: String? = {
         return shipmentTracking?.trackingNumber
     }()
+
+    var providerName: String?
+
+    var trackingLink: String?
 
     lazy var shipmentDate: Date = {
         return shipmentTracking?.dateShipped ?? Date()
@@ -233,9 +247,68 @@ final class EditTrackingViewModel: ManualTrackingViewModel {
     }
 
     init(order: Order, shipmentTracking: ShipmentTracking) {
-        self.siteID = order.siteID
-        self.orderID = order.orderID
-        self.orderStatus = order.statusKey
+        self.order = order
         self.shipmentTracking = shipmentTracking
+    }
+}
+
+
+// MARK: - ViewModel for adding a custom tracking provider
+
+/// View model supporting adding custom shipment tacking manually, using non-custom providers
+///
+final class AddCustomTrackingViewModel: ManualTrackingViewModel {
+    let order: Order
+
+    let title = NSLocalizedString("Add Tracking",
+                                  comment: "Add tracking screen - title.")
+
+    let primaryActionTitle = NSLocalizedString("Add",
+                                               comment: "Add tracking screen - button title to add a tracking")
+    let secondaryActionTitle: String? = nil
+
+    let shipmentTracking: ShipmentTracking? = nil
+
+    var providerName: String?
+
+    var trackingNumber: String?
+
+    var trackingLink: String?
+
+    var shipmentDate = Date()
+
+    var sections: [AddEditTrackingSection] {
+        let trackingRows: [AddEditTrackingRow] = [.shippingProvider,
+                                                  .providerName,
+                                                  .trackingNumber,
+                                                  .trackingLink,
+                                                  .dateShipped,
+                                                  .datePicker]
+
+        return [
+            AddEditTrackingSection(rows: trackingRows)]
+
+    }
+
+    var shipmentProvider: ShipmentTrackingProvider?
+    var shipmentProviderGroupName: String?
+
+    var providerCellName: String {
+        return NSLocalizedString("Custom Provider", comment: "Add custom shipping provider. Content of cell titled Shipping Provider")
+    }
+
+    let providerCellAccessoryType = UITableViewCell.AccessoryType.none
+
+    var canCommit: Bool {
+        return providerName?.isEmpty == false &&
+            trackingNumber?.isEmpty == false
+    }
+
+    let isAdding: Bool = true
+
+    let isCustom: Bool = true
+
+    init(order: Order) {
+        self.order = order
     }
 }

@@ -32,6 +32,7 @@ public enum ShipmentAction: Action {
         trackingProvider: String,
         trackingNumber: String,
         trackingURL: String,
+        dateShipped: String,
         onCompletion: (Error?) -> Void)
 
     /// Removes a shipment tracking with `trackingID` associated with the provided `siteID` and `orderID`

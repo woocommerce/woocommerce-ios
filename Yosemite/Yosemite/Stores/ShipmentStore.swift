@@ -55,12 +55,14 @@ public class ShipmentStore: Store {
                                 let trackingProvider,
                                 let trackingNumber,
                                 let trackingURL,
+                                let dateShipped,
                                 let onCompletion):
             addCustomTracking(siteID: siteID,
                               orderID: orderID,
                               trackingProvider: trackingProvider,
                               trackingNumber: trackingNumber,
                               trackingURL: trackingURL,
+                              dateShipped: dateShipped,
                               onCompletion: onCompletion)
         case .deleteTracking(let siteID, let orderID, let trackingID, let onCompletion):
             deleteTracking(siteID: siteID, orderID: orderID, trackingID: trackingID, onCompletion: onCompletion)
@@ -214,13 +216,15 @@ extension ShipmentStore {
                            trackingProvider: String,
                            trackingNumber: String,
                            trackingURL: String,
+                           dateShipped: String,
                            onCompletion: @escaping (Error?) -> Void) {
         let remote = ShipmentsRemote(network: network)
         remote.createShipmentTrackingWithCustomProvider(for: siteID,
                                                         orderID: orderID,
                                                         trackingProvider: trackingProvider,
                                                         trackingNumber: trackingNumber,
-                                                        trackingURL: trackingURL) { [weak self] (tracking, error) in
+                                                        trackingURL: trackingURL,
+                                                        dateShipped: dateShipped) { [weak self] (tracking, error) in
             guard let newTracking = tracking else {
                 onCompletion(error)
                 return

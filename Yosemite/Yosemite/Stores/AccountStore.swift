@@ -62,8 +62,8 @@ private extension AccountStore {
             onCompletion(account, nil)
         }
     }
-    
-    
+
+
     /// Synchronizes the WordPress.com account settings associated with the Network's Auth Token.
     /// User ID is passed along because the API doesn't include it in the response.
     ///
@@ -120,7 +120,7 @@ private extension AccountStore {
         let account = storageManager.viewStorage.loadAccount(userId: userID)?.toReadOnly()
         onCompletion(account)
     }
-    
+
     /// Loads the AccountSettings associated with the specified userID.
     func loadAccountSettings(userID: Int, onCompletion: @escaping (AccountSettings?) -> Void) {
         let accountSettings = storageManager.viewStorage.loadAccountSettings(userId: userID)?.toReadOnly()
@@ -163,7 +163,7 @@ extension AccountStore {
         storageAccount.update(with: readOnlyAccountSettings)
         storage.saveIfNeeded()
     }
-    
+
     /// Updates the specified ReadOnly Site Plan attribute in the Site entity, in the Storage Layer.
     ///
     func updateStoredSitePlanInBackground(plan: SitePlan, onCompletion: @escaping () -> Void) {

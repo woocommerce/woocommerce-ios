@@ -16,6 +16,17 @@ public class AccountRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    public func loadAccountSettings(completion: @escaping (AccountSettings?, Error?) -> Void) {
+        let path = "me/settings"
+        let parameters = [
+            "fields": "tracks_opt_out"
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
+        let mapper = AccountSettingsMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
 
     /// Loads the Sites collection associated with the WordPress.com User.
     ///

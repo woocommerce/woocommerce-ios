@@ -11,15 +11,15 @@ public struct AccountSettings: Decodable {
     /// Tracks analytics opt out dotcom setting
     ///
     public let tracksOptOut: Bool
-    
-    
+
+
     /// Default initializer for AccountSettings.
     ///
     public init(userID: Int, tracksOptOut: Bool) {
         self.userID = userID
         self.tracksOptOut = tracksOptOut
     }
-    
+
 
     /// The public initializer for AccountSettings.
     ///

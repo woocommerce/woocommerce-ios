@@ -64,7 +64,7 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
     }
 
     private func configureActionButton() {
-        let pencilIcon = UIImage.pencilImage
+        let pencilIcon = UIImage.deleteImage
             .imageFlippedForRightToLeftLayoutDirection()
             .imageWithTintColor(StyleManager.wooCommerceBrandColor)
 

@@ -52,7 +52,8 @@ private extension AccountSettings {
 extension AccountSettings: Equatable {
 
     public static func == (lhs: AccountSettings, rhs: AccountSettings) -> Bool {
-        return lhs.tracksOptOut == rhs.tracksOptOut
+        return lhs.userID == rhs.userID &&
+            lhs.tracksOptOut == rhs.tracksOptOut
     }
 }
 

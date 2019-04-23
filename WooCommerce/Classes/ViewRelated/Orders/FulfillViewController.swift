@@ -421,7 +421,8 @@ extension FulfillViewController: UITableViewDelegate {
 
         case .product(let item):
             if FeatureFlag.productDetails.enabled {
-                productWasPressed(for: item.productID)
+                let productIDToLoad = item.variationID == 0 ? item.productID : item.variationID
+                productWasPressed(for: productIDToLoad)
             }
 
         case .tracking:

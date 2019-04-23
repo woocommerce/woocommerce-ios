@@ -58,6 +58,8 @@
 		9302E3A6220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9302E3A5220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift */; };
 		9302E3AC220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9302E3AB220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift */; };
 		933A27302222344D00C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A272F2222344D00C2143A /* Logging.swift */; };
+		937D6C47226E1D1F004FB8A5 /* AccountSettings+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 937D6C45226E1D1F004FB8A5 /* AccountSettings+CoreDataClass.swift */; };
+		937D6C48226E1D1F004FB8A5 /* AccountSettings+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 937D6C46226E1D1F004FB8A5 /* AccountSettings+CoreDataProperties.swift */; };
 		B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505255320EE6914008090F5 /* StorageType+Extensions.swift */; };
 		B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6D820BEEA3100BB1B69 /* Account+CoreDataProperties.swift */; };
 		B505F6DB20BEEA3200BB1B69 /* Account+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6D920BEEA3200BB1B69 /* Account+CoreDataClass.swift */; };
@@ -169,6 +171,9 @@
 		9302E3A7220DC69400DA5018 /* Model 10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 10.xcdatamodel"; sourceTree = "<group>"; };
 		9302E3AB220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataIterativeMigratorTests.swift; sourceTree = "<group>"; };
 		933A272F2222344D00C2143A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
+		937D6C45226E1D1F004FB8A5 /* AccountSettings+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountSettings+CoreDataClass.swift"; sourceTree = "<group>"; };
+		937D6C46226E1D1F004FB8A5 /* AccountSettings+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountSettings+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		93D8BBF9226A6B3200AD2EB3 /* Model 14.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 14.xcdatamodel"; sourceTree = "<group>"; };
 		A3821B262583F14863740A37 /* Pods-Storage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.debug.xcconfig"; sourceTree = "<group>"; };
 		B505255320EE6914008090F5 /* StorageType+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageType+Extensions.swift"; sourceTree = "<group>"; };
 		B505F6D820BEEA3100BB1B69 /* Account+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -400,6 +405,8 @@
 				B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */,
 				B505F6D920BEEA3200BB1B69 /* Account+CoreDataClass.swift */,
 				B505F6D820BEEA3100BB1B69 /* Account+CoreDataProperties.swift */,
+				937D6C45226E1D1F004FB8A5 /* AccountSettings+CoreDataClass.swift */,
+				937D6C46226E1D1F004FB8A5 /* AccountSettings+CoreDataProperties.swift */,
 				74F009BE2183B99B002B4566 /* Note+CoreDataClass.swift */,
 				74F009BF2183B99B002B4566 /* Note+CoreDataProperties.swift */,
 				CE12FBCC221F0E1A00C59248 /* Order+CoreDataClass.swift */,
@@ -699,6 +706,7 @@
 				7474539D2242C85E00E0B5EE /* ProductAttribute+CoreDataClass.swift in Sources */,
 				747453A42242C85E00E0B5EE /* Product+CoreDataProperties.swift in Sources */,
 				746A9D22214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift in Sources */,
+				937D6C48226E1D1F004FB8A5 /* AccountSettings+CoreDataProperties.swift in Sources */,
 				74E218F32252BA8400E4B0D7 /* ProductVariationAttribute+CoreDataProperties.swift in Sources */,
 				74E218F72252BB7800E4B0D7 /* ProductVariation+CoreDataProperties.swift in Sources */,
 				74F009C12183B99B002B4566 /* Note+CoreDataProperties.swift in Sources */,
@@ -715,6 +723,7 @@
 				CE12FBCF221F0E1A00C59248 /* Order+CoreDataProperties.swift in Sources */,
 				7474539B2242C85E00E0B5EE /* ProductDimensions+CoreDataClass.swift in Sources */,
 				B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */,
+				937D6C47226E1D1F004FB8A5 /* AccountSettings+CoreDataClass.swift in Sources */,
 				B52B0F7B20AA28A800477698 /* Object.swift in Sources */,
 				7426A05020F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift in Sources */,
 				746A9D23214078080013F6FF /* TopEarnerStatsItem+CoreDataClass.swift in Sources */,
@@ -1023,6 +1032,7 @@
 		B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				93D8BBF9226A6B3200AD2EB3 /* Model 14.xcdatamodel */,
 				74159626224D5644003C21CF /* Model 13.xcdatamodel */,
 				D82A61EF2239EB9900335D40 /* Model 12.xcdatamodel */,
 				CE3B7ACF2225E5CE0050FE4B /* Model 11.xcdatamodel */,
@@ -1037,7 +1047,7 @@
 				746A9D14214071F90013F6FF /* Model 2.xcdatamodel */,
 				B59E11D920A9D00C004121A4 /* Model.xcdatamodel */,
 			);
-			currentVersion = 74159626224D5644003C21CF /* Model 13.xcdatamodel */;
+			currentVersion = 93D8BBF9226A6B3200AD2EB3 /* Model 14.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

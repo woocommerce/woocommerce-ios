@@ -1146,7 +1146,7 @@ private extension ProductStoreTests {
                        externalURL: "",
                        taxStatusKey: "taxable",
                        taxClass: "",
-                       manageStock: false,
+                       manageStock: true,
                        stockQuantity: nil,
                        stockStatusKey: "instock",
                        backordersKey: "no",

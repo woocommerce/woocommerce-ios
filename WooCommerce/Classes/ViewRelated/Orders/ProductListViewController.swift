@@ -98,7 +98,8 @@ extension ProductListViewController: UITableViewDelegate {
 
         if FeatureFlag.productDetails.enabled {
             let orderItem = itemAtIndexPath(indexPath)
-            productWasPressed(for: orderItem.productID)
+            let productIDToLoad = orderItem.variationID == 0 ? orderItem.productID : orderItem.variationID
+            productWasPressed(for: productIDToLoad)
         }
     }
 }

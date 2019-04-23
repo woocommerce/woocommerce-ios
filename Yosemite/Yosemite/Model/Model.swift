@@ -7,6 +7,7 @@ import Storage
 // MARK: - Exported ReadOnly Symbols
 
 public typealias Account = Networking.Account
+public typealias AccountSettings = Networking.AccountSettings
 public typealias Address = Networking.Address
 public typealias APNSDevice = Networking.APNSDevice
 public typealias CommentStatus = Networking.CommentStatus

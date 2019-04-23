@@ -1,6 +1,6 @@
 1.8
 -----
-- update: this app supports iOS 12.2 and up.
+- update: this app supports iOS 12.0 and up.
  
 1.7
 -----

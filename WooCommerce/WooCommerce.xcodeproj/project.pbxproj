@@ -318,7 +318,6 @@
 		D83F5935225B3CDD00626E75 /* DatePickerTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83F5934225B3CDD00626E75 /* DatePickerTableViewCellTests.swift */; };
 		D83F5937225B402E00626E75 /* EditableValueOneTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83F5936225B402E00626E75 /* EditableValueOneTableViewCellTests.swift */; };
 		D83F5939225B424B00626E75 /* AddManualTrackingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83F5938225B424B00626E75 /* AddManualTrackingViewModelTests.swift */; };
-		D83F593B225B474700626E75 /* EditManualTrackingViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83F593A225B474700626E75 /* EditManualTrackingViewModelTest.swift */; };
 		D83F593D225B4B5000626E75 /* ManualTrackingViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83F593C225B4B5000626E75 /* ManualTrackingViewControllerTests.swift */; };
 		D843D5C822434A08001BFA55 /* ManualTrackingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5C622434A08001BFA55 /* ManualTrackingViewController.xib */; };
 		D843D5CB22437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5C922437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift */; };
@@ -699,7 +698,6 @@
 		D83F5934225B3CDD00626E75 /* DatePickerTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DatePickerTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/DatePickerTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
 		D83F5936225B402E00626E75 /* EditableValueOneTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EditableValueOneTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/EditableValueOneTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
 		D83F5938225B424B00626E75 /* AddManualTrackingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddManualTrackingViewModelTests.swift; path = WooCommerceTests/Model/AddManualTrackingViewModelTests.swift; sourceTree = SOURCE_ROOT; };
-		D83F593A225B474700626E75 /* EditManualTrackingViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EditManualTrackingViewModelTest.swift; path = WooCommerceTests/Model/EditManualTrackingViewModelTest.swift; sourceTree = SOURCE_ROOT; };
 		D83F593C225B4B5000626E75 /* ManualTrackingViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ManualTrackingViewControllerTests.swift; path = WooCommerceTests/ViewRelated/ManualTrackingViewControllerTests.swift; sourceTree = SOURCE_ROOT; };
 		D843D5C622434A08001BFA55 /* ManualTrackingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ManualTrackingViewController.xib; sourceTree = "<group>"; };
 		D843D5C922437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndEditableValueTableViewCell.swift; sourceTree = "<group>"; };
@@ -874,7 +872,6 @@
 				D8A8C4F22268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift */,
 				D82DFB4B225F303200EFE2CB /* EmptyListMessageWithActionTests.swift */,
 				D83F593C225B4B5000626E75 /* ManualTrackingViewControllerTests.swift */,
-				D83F593A225B474700626E75 /* EditManualTrackingViewModelTest.swift */,
 				D83F5938225B424B00626E75 /* AddManualTrackingViewModelTests.swift */,
 				D83F5936225B402E00626E75 /* EditableValueOneTableViewCellTests.swift */,
 				D83F5934225B3CDD00626E75 /* DatePickerTableViewCellTests.swift */,
@@ -2174,7 +2171,6 @@
 				B57C5C9921B80E7100FF82B2 /* DictionaryWooTests.swift in Sources */,
 				D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */,
 				D85B833D2230DC9D002168F3 /* StringWooTests.swift in Sources */,
-				D83F593B225B474700626E75 /* EditManualTrackingViewModelTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

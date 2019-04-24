@@ -344,7 +344,17 @@ extension ManualTrackingViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+        let row = rowAtIndexPath(indexPath)
+
+        guard row == .datePicker else {
+            return UITableView.automaticDimension
+        }
+
+        guard datePickerVisible else {
+            return CGFloat.leastNonzeroMagnitude
+        }
+        
+        return Constants.rowHeight
     }
 
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {

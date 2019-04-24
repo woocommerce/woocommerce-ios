@@ -653,7 +653,7 @@ private extension StorePickerState {
             return nil
         }
 
-        guard let row = sites.index(where: { $0.siteID == siteID }) else {
+        guard let row = sites.firstIndex(where: { $0.siteID == siteID }) else {
             return nil
         }
 

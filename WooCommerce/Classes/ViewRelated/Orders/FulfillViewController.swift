@@ -439,7 +439,7 @@ extension FulfillViewController: UITableViewDelegate {
 }
 
 
-// MARK:- Shipment Tracking deletion
+// MARK: - Shipment Tracking deletion
 //
 private extension FulfillViewController {
     func presentDeleteAlert(at indexPath: IndexPath) {
@@ -694,7 +694,7 @@ private struct Section {
 }
 
 
-// MARK:- Alerts
+// MARK: - Alerts
 private enum DeleteAction {
     static let cancel = NSLocalizedString("Cancel",
                                           comment: "Cancel the action sheet")

@@ -344,22 +344,44 @@ extension ManualTrackingViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = rowAtIndexPath(indexPath)
+        return UITableView.automaticDimension
+    }
 
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        let row = rowAtIndexPath(indexPath)
+        
         if row == .deleteTracking {
             return Constants.deleteRowHeight
         }
-
+        
         guard row == .datePicker else {
             return Constants.rowHeight
         }
-
+        
         guard datePickerVisible else {
             return CGFloat.leastNonzeroMagnitude
         }
-
-        return Constants.pickerRowHeight
+        
+        return Constants.rowHeight
     }
+
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        let row = rowAtIndexPath(indexPath)
+//
+//        if row == .deleteTracking {
+//            return Constants.deleteRowHeight
+//        }
+//
+//        guard row == .datePicker else {
+//            return Constants.rowHeight
+//        }
+//
+//        guard datePickerVisible else {
+//            return CGFloat.leastNonzeroMagnitude
+//        }
+//
+//        return UITableView.automaticDimension
+//    }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)

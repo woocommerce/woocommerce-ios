@@ -26,3 +26,12 @@ private extension TitleAndEditableValueTableViewCell {
         value.applyBodyStyle()
     }
 }
+
+extension TitleAndEditableValueTableViewCell {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
+            print("==== font size changed ")
+        }
+    }
+}

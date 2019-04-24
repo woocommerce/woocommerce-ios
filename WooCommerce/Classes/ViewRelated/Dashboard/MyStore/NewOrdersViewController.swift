@@ -43,6 +43,17 @@ class NewOrdersViewController: UIViewController {
         super.viewDidLoad()
         configureView()
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        calculatePreferredSize()
+    }
+
+    private func calculatePreferredSize() {
+        let targetSize = CGSize(width: view.bounds.width,
+                                height: UIView.layoutFittingCompressedSize.height)
+        preferredContentSize = view.systemLayoutSizeFitting(targetSize)
+    }
 }
 
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="z1L-hy-XB6">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="z1L-hy-XB6">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -115,8 +115,7 @@
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NG7-v2-HCV">
                                                 <rect key="frame" x="0.0" y="398" width="375" height="128"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="128" id="fJC-ES-Qpn"/>
-                                                    <constraint firstAttribute="height" priority="999" constant="128" id="zqf-iK-TiH"/>
+                                                    <constraint firstAttribute="height" priority="250" constant="128" id="zqf-iK-TiH"/>
                                                 </constraints>
                                                 <connections>
                                                     <segue destination="lX1-IT-Jsn" kind="embed" identifier="NewOrdersEmbedSegue" id="eBk-2G-rWy"/>
@@ -159,6 +158,7 @@
                     <size key="freeformSize" width="375" height="1120"/>
                     <connections>
                         <outlet property="newOrdersContainerView" destination="NG7-v2-HCV" id="iHE-T1-Sum"/>
+                        <outlet property="newOrdersHeightConstraint" destination="zqf-iK-TiH" id="g32-8U-nYh"/>
                         <outlet property="scrollView" destination="5Cz-cT-K5z" id="AiQ-Nv-JRm"/>
                         <segue destination="5Fc-gh-JKM" kind="show" identifier="ShowSettingsViewController" id="5OG-7I-yID"/>
                     </connections>
@@ -376,8 +376,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
                                         <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="1" id="FEo-sh-VQW"/>
-                                            <constraint firstAttribute="height" priority="999" constant="1" id="Vcs-aF-t4s"/>
+                                            <constraint firstAttribute="height" constant="1" id="Vcs-aF-t4s"/>
                                         </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kqf-GE-eZ1">
@@ -386,13 +385,13 @@
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="r9n-PT-jow">
                                                 <rect key="frame" x="0.0" y="0.0" width="347" height="108"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" text="You have 10 orders to fulfill" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XgA-ra-emd" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" text="You have 10 orders to fulfill" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XgA-ra-emd" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="0.0" width="347" height="20.5"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Review, prepare, and ship these pending orders..." lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3ad-g9-Y4v" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Review, prepare, and ship these pending orders..." lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3ad-g9-Y4v" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="20.5" width="347" height="87.5"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                         <nil key="textColor"/>
@@ -420,21 +419,19 @@
                                         <rect key="frame" x="0.0" y="109" width="375" height="1"/>
                                         <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="1" id="Ozw-am-g5P"/>
-                                            <constraint firstAttribute="height" priority="999" constant="1" id="rQ2-Uz-ZHT"/>
+                                            <constraint firstAttribute="height" constant="1" id="rQ2-Uz-ZHT"/>
                                         </constraints>
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GNX-8x-jG2">
                                         <rect key="frame" x="0.0" y="110" width="375" height="18"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" priority="999" constant="18" id="OSr-3q-Szr"/>
-                                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="18" id="keP-js-csr"/>
+                                            <constraint firstAttribute="height" constant="18" id="OSr-3q-Szr"/>
                                         </constraints>
                                     </view>
                                 </subviews>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s9n-KV-6jV">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="110"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="128"/>
                                 <connections>
                                     <action selector="buttonTouchDown:" destination="lX1-IT-Jsn" eventType="touchDown" id="rIo-QZ-BRU"/>
                                     <action selector="buttonTouchDragOutside:" destination="lX1-IT-Jsn" eventType="touchDragOutside" id="iJa-hU-1Ko"/>
@@ -450,7 +447,7 @@
                             <constraint firstItem="s9n-KV-6jV" firstAttribute="trailing" secondItem="3HX-fV-pCj" secondAttribute="trailing" id="B0f-od-5mS"/>
                             <constraint firstItem="8K9-4b-JO7" firstAttribute="top" secondItem="3HX-fV-pCj" secondAttribute="top" id="JsB-DA-r8z"/>
                             <constraint firstItem="8K9-4b-JO7" firstAttribute="leading" secondItem="3HX-fV-pCj" secondAttribute="leading" id="UI1-Lu-Lue"/>
-                            <constraint firstItem="s9n-KV-6jV" firstAttribute="bottom" secondItem="GNX-8x-jG2" secondAttribute="top" id="md4-mZ-gvI"/>
+                            <constraint firstItem="3HX-fV-pCj" firstAttribute="bottom" secondItem="s9n-KV-6jV" secondAttribute="bottom" id="g4k-nL-7oL"/>
                             <constraint firstItem="s9n-KV-6jV" firstAttribute="top" secondItem="3HX-fV-pCj" secondAttribute="top" id="uOu-EC-soB"/>
                             <constraint firstItem="8K9-4b-JO7" firstAttribute="bottom" secondItem="3HX-fV-pCj" secondAttribute="bottom" id="v7f-3V-PQS"/>
                         </constraints>
@@ -468,7 +465,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0t9-47-pnO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1506" y="2148"/>
+            <point key="canvasLocation" x="-1506.4000000000001" y="2147.226386806597"/>
         </scene>
         <!--Top Performers View Controller-->
         <scene sceneID="cVB-Jf-xe7">

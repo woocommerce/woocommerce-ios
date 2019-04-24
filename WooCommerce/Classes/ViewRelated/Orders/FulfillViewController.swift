@@ -370,6 +370,9 @@ private extension FulfillViewController {
 
         cell.topText = tracking.trackingProvider
         cell.middleText = tracking.trackingNumber
+        cell.onDeleteTouchUp = { [weak self] in
+            self?.presentDeleteAlert(at: indexPath)
+        }
 
         if let dateShipped = tracking.dateShipped?.toString(dateStyle: .medium, timeStyle: .none) {
             cell.bottomText = String.localizedStringWithFormat(
@@ -430,7 +433,7 @@ extension FulfillViewController: UITableViewDelegate {
             }
 
         case .tracking:
-            presentDeleteAlert(at: indexPath)
+            break
 
         default:
             break

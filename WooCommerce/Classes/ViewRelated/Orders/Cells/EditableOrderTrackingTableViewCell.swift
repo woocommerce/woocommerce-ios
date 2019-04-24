@@ -8,6 +8,8 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
     @IBOutlet private var bottomLine: UILabel!
     @IBOutlet private weak var icon: UIImageView!
 
+    var onDeleteTouchUp: (() -> Void)?
+
     var topText: String? {
         get {
             return topLine.text
@@ -71,6 +73,22 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
         icon.image = pencilIcon
 
         configureActionButtonForVoiceOver()
+
+        configureIconTapGesture()
+    }
+}
+
+
+/// MARK: - Actions
+private extension EditableOrderTrackingTableViewCell {
+    func configureIconTapGesture() {
+        icon.isUserInteractionEnabled = true
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(iconTapped))
+        icon.addGestureRecognizer(tapGesture)
+    }
+
+    @objc func iconTapped() {
+        onDeleteTouchUp?()
     }
 }
 

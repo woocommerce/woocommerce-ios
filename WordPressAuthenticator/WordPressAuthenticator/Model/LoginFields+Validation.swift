@@ -1,3 +1,15 @@
+extension String {
+    func isValidURL() -> Bool {
+        let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+        if let match = detector.firstMatch(in: self, options: [], range: NSRange(location: 0, length: self.utf16.count)) {
+            // it is a link, if the match covers the whole string
+            return match.range.length == self.utf16.count
+        } else {
+            return false
+        }
+    }
+}
+
 // MARK: - LoginFields Validation Methods
 //
 extension LoginFields {
@@ -14,11 +26,7 @@ extension LoginFields {
     /// Returns *true* if the siteURL contains a valid URL. False otherwise.
     ///
     func validateSiteForSignin() -> Bool {
-        guard let url = URL(string: NSURL.idnEncodedURL(siteAddress)) else {
-            return false
-        }
-
-        return !url.absoluteString.isEmpty
+        return siteAddress.isValidURL()
     }
 
     /// Returns *true* if the credentials required for account creation have been provided.

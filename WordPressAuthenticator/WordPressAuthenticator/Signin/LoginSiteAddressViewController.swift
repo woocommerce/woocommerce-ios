@@ -317,7 +317,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     ///
     /// - Returns: `true` if the Site Address contains a valid URL.  `false` otherwise.
     ///
-    private func refreshSiteAddressError(immediate: Bool) -> Bool {
+    private func refreshSiteAddressError(immediate: Bool) {
         let showError = !loginFields.siteAddress.isEmpty && !loginFields.validateSiteForSignin()
         
         if showError {
@@ -326,8 +326,6 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             urlErrorDebouncer.cancel()
             displayError(message: "")
         }
-        
-        return !showError
     }
 
     // MARK: - Actions

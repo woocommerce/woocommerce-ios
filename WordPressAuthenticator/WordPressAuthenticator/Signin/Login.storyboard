@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ck1-vY-O11">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ck1-vY-O11">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -1050,7 +1050,7 @@
                                                 <color key="textColor" red="0.18039215689999999" green="0.2666666667" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="251" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="https://example.wordpress.com" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ZrT-CY-qD7" customClass="LoginTextField" customModule="WordPressAuthenticator" customModuleProvider="target">
+                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="251" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="https://example.com" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ZrT-CY-qD7" customClass="LoginTextField" customModule="WordPressAuthenticator" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="246" width="391" height="44"/>
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="usernameField"/>
@@ -1064,9 +1064,9 @@
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="showTopLineSeparator" value="YES"/>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
+                                                    <action selector="handleEditingDidEnd:" destination="anK-hg-K4j" eventType="editingDidEnd" id="YA7-4F-S9f"/>
                                                     <action selector="handleSubmitForm" destination="anK-hg-K4j" eventType="primaryActionTriggered" id="9op-PL-dLy"/>
                                                     <action selector="handleTextFieldDidChange:" destination="anK-hg-K4j" eventType="editingChanged" id="HdI-gj-hRv"/>
-                                                    <action selector="handleTextFieldDidChange:" destination="anK-hg-K4j" eventType="editingDidBegin" id="o3I-NR-Vk3"/>
                                                     <outlet property="delegate" destination="anK-hg-K4j" id="LHf-xJ-KYE"/>
                                                 </connections>
                                             </textField>
@@ -1415,7 +1415,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="2Bq-Nv-ZkV"/>
-        <segue reference="ySQ-EM-6JI"/>
+        <segue reference="0ao-yi-yZI"/>
         <segue reference="TkG-0R-c3i"/>
         <segue reference="sIC-Hv-FJw"/>
         <segue reference="D3h-Su-Jwk"/>

@@ -23,7 +23,14 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             loginFields.meta.siteInfo = nil
         }
     }
-
+    
+    // MARK: - URL Validation
+    
+    private lazy var urlErrorDebouncer = Debouncer(delay: 2) { [weak self] in
+        let errorMessage = NSLocalizedString("Enter a valid URL eg. example.com.", comment: "Error message shown when a URL is invalid.")
+        
+        self?.displayError(message: errorMessage)
+    }
 
     // MARK: - Lifecycle
 
@@ -69,7 +76,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     @objc func localizeControls() {
         instructionLabel?.text = WordPressAuthenticator.shared.displayStrings.siteLoginInstructions
 
-        siteURLField.placeholder = NSLocalizedString("example.wordpress.com", comment: "Site Address placeholder")
+        siteURLField.placeholder = NSLocalizedString("example.com", comment: "Site Address placeholder")
 
         let submitButtonTitle = NSLocalizedString("Next", comment: "Title of a button. The text should be capitalized.").localizedCapitalized
         submitButton?.setTitle(submitButtonTitle, for: .normal)
@@ -135,15 +142,13 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     @objc func validateForm() {
         view.endEditing(true)
         displayError(message: "")
-        guard loginFields.validateSiteForSignin() else {
-            assertionFailure("Form should not be submitted unless there is a valid looking URL entered.")
-            return
-        }
+        
+        let siteAddress = WordPressAuthenticator.baseSiteURL(string: loginFields.siteAddress)
 
         configureViewLoading(true)
 
         let facade = WordPressXMLRPCAPIFacade()
-        facade.guessXMLRPCURL(forSite: loginFields.siteAddress, success: { [weak self] (url) in
+        facade.guessXMLRPCURL(forSite: siteAddress, success: { [weak self] (url) in
             // Success! We now know that we have a valid XML-RPC endpoint.
             // At this point, we do NOT know if this is a WP.com site or a self-hosted site.
             if let url = url {
@@ -172,8 +177,9 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             } else if (err.domain == NSURLErrorDomain && err.code == NSURLErrorCannotFindHost) ||
                 (err.domain == NSURLErrorDomain && err.code == NSURLErrorNetworkConnectionLost) {
                 // NSURLErrorNetworkConnectionLost can be returned when an invalid URL is entered.
-                let msg = NSLocalizedString("Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again.",
-                                            comment: "Error message shown a URL does not point to an existing site.")
+                let msg = NSLocalizedString(
+                    "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress.",
+                    comment: "Error message shown a URL does not point to an existing site.")
                 self.displayError(message: msg)
 
             } else {
@@ -305,6 +311,24 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         alertController.addDefaultActionWithTitle(acceptActionTitle)
         present(alertController, animated: true)
     }
+    
+    // MARK: - URL Validation
+    
+    /// Does a local / quick Site Adrress validation and refreshes the UI with an error
+    /// if necessary.
+    ///
+    /// - Returns: `true` if the Site Address contains a valid URL.  `false` otherwise.
+    ///
+    private func refreshSiteAddressError(immediate: Bool) {
+        let showError = !loginFields.siteAddress.isEmpty && !loginFields.validateSiteForSignin()
+        
+        if showError {
+            urlErrorDebouncer.call(immediate: immediate)
+        } else {
+            urlErrorDebouncer.cancel()
+            displayError(message: "")
+        }
+    }
 
     // MARK: - Actions
 
@@ -328,11 +352,16 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     }
 
     @IBAction func handleTextFieldDidChange(_ sender: UITextField) {
-        loginFields.siteAddress = WordPressAuthenticator.baseSiteURL(string: siteURLField.nonNilTrimmedText())
+        displayError(message: "")
+        loginFields.siteAddress = siteURLField.nonNilTrimmedText()
         configureSubmitButton(animating: false)
+        refreshSiteAddressError(immediate: false)
     }
 
-
+    @IBAction func handleEditingDidEnd(_ sender: UITextField) {
+        refreshSiteAddressError(immediate: true)
+    }
+    
     // MARK: - Keyboard Notifications
 
 

@@ -459,10 +459,7 @@ private extension FulfillViewController {
         }
 
         let button = cell.getActionButton()
-        let buttonRect = button.frame
-        let buttonSize = buttonRect.size
-        let buttonRectConverted = cell.convert(buttonRect, to: tableView)
-            .offsetBy(dx: buttonSize.width / 2, dy: buttonSize.height / 2)
+        let buttonRectConverted = button.convert(button.bounds, to: tableView)
 
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.sourceView = tableView

@@ -310,6 +310,20 @@ extension ManualTrackingViewController: UITableViewDelegate {
         let row = rowAtIndexPath(indexPath)
 
         guard row == .datePicker else {
+            return UITableView.automaticDimension
+        }
+
+        guard datePickerVisible else {
+            return CGFloat.leastNonzeroMagnitude
+        }
+
+        return Constants.pickerRowHeight
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        let row = rowAtIndexPath(indexPath)
+
+        guard row == .datePicker else {
             return Constants.rowHeight
         }
 

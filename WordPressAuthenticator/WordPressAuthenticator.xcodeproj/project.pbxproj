@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A4095182271AEFC009AA86D /* WPAuthenticator-Swift.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4095152271AEFC009AA86D /* WPAuthenticator-Swift.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		7A7A9B9CD2D81959F9AB9AF6 /* Pods_WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C736FF243DE333FCAB1C2614 /* Pods_WordPressAuthenticator.framework */; };
 		98AA5A5720AA1A7000A5958A /* WPHelpIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AA5A5620AA1A7000A5958A /* WPHelpIndicatorView.swift */; };
 		B501C045208FC68700D1E58F /* LoginFieldsValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B501C03C208FC52400D1E58F /* LoginFieldsValidationTests.swift */; };
@@ -138,6 +139,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1A4095152271AEFC009AA86D /* WPAuthenticator-Swift.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WPAuthenticator-Swift.h"; sourceTree = "<group>"; };
 		276354F054C34AD36CA32AB6 /* Pods-WordPressAuthenticator.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.release-alpha.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		33FEF45B466FF8EAAE5F3923 /* Pods-WordPressAuthenticator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.release.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.release.xcconfig"; sourceTree = "<group>"; };
 		37AFD4EF492B00CA7AEC11A3 /* Pods-WordPressAuthenticatorTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.release-alpha.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
@@ -276,6 +278,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1A4095132271AEFC009AA86D /* Private */ = {
+			isa = PBXGroup;
+			children = (
+				1A4095152271AEFC009AA86D /* WPAuthenticator-Swift.h */,
+			);
+			path = Private;
+			sourceTree = "<group>";
+		};
 		6205895375D954F46B1DFE53 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -501,6 +511,7 @@
 				B5ED7917207E993E00A8FD8C /* Logging */,
 				B5609098208A4EAF00399AE4 /* Model */,
 				B5609097208A4EAF00399AE4 /* NUX */,
+				1A4095132271AEFC009AA86D /* Private */,
 				B560909A208A4EAF00399AE4 /* Services */,
 				B5609095208A4EAF00399AE4 /* Signin */,
 				B5609096208A4EAF00399AE4 /* Signup */,
@@ -569,6 +580,7 @@
 				B56090E5208A4F9D00399AE4 /* WPWalkthroughTextField.h in Headers */,
 				B560910E208A54F800399AE4 /* LoginFacade.h in Headers */,
 				B56090E7208A4F9D00399AE4 /* WPNUXSecondaryButton.h in Headers */,
+				1A4095182271AEFC009AA86D /* WPAuthenticator-Swift.h in Headers */,
 				B56090E0208A4F9D00399AE4 /* WPWalkthroughOverlayView.h in Headers */,
 				B5ED7905207E976500A8FD8C /* WordPressAuthenticator.h in Headers */,
 				B56090E3208A4F9D00399AE4 /* WPNUXMainButton.h in Headers */,

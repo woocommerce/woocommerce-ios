@@ -27,7 +27,9 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     // MARK: - URL Validation
     
     private lazy var urlErrorDebouncer = Debouncer(delay: 2) { [weak self] in
-        self?.displayError(message: "Enter a valid URL eg. example.wordpress.com.")
+        let errorMessage = NSLocalizedString("Enter a valid URL eg. example.com.", comment: "Error message shown when a URL is invalid.")
+        
+        self?.displayError(message: errorMessage)
     }
 
     // MARK: - Lifecycle
@@ -74,7 +76,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     @objc func localizeControls() {
         instructionLabel?.text = WordPressAuthenticator.shared.displayStrings.siteLoginInstructions
 
-        siteURLField.placeholder = NSLocalizedString("example.wordpress.com", comment: "Site Address placeholder")
+        siteURLField.placeholder = NSLocalizedString("example.com", comment: "Site Address placeholder")
 
         let submitButtonTitle = NSLocalizedString("Next", comment: "Title of a button. The text should be capitalized.").localizedCapitalized
         submitButton?.setTitle(submitButtonTitle, for: .normal)

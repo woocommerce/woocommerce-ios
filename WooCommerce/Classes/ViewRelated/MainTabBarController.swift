@@ -63,7 +63,7 @@ class MainTabBarController: UITabBarController {
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         guard let currentlySelectedTab = WooTab(rawValue: selectedIndex),
-            let userSelectedIndex = tabBar.items?.index(of: item),
+            let userSelectedIndex = tabBar.items?.firstIndex(of: item),
             let userSelectedTab = WooTab(rawValue: userSelectedIndex) else {
                 return
         }

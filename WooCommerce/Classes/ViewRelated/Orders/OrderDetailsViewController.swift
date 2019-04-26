@@ -507,16 +507,16 @@ private extension OrderDetailsViewController {
 
         cell.footerText = viewModel.paymentSummary
 
-        cell.accessibilityElements = [cell.subtotalLabel,
-                                      cell.subtotalValue,
-                                      cell.discountLabel,
-                                      cell.discountValue,
-                                      cell.shippingLabel,
-                                      cell.shippingValue,
-                                      cell.taxesLabel,
-                                      cell.taxesValue,
-                                      cell.totalLabel,
-                                      cell.totalValue]
+        cell.accessibilityElements = [cell.subtotalLabel as Any,
+                                      cell.subtotalValue as Any,
+                                      cell.discountLabel as Any,
+                                      cell.discountValue as Any,
+                                      cell.shippingLabel as Any,
+                                      cell.shippingValue as Any,
+                                      cell.taxesLabel as Any,
+                                      cell.taxesValue as Any,
+                                      cell.totalLabel as Any,
+                                      cell.totalValue as Any]
 
         if let footerText = cell.footerText {
             cell.accessibilityElements?.append(footerText)

@@ -132,6 +132,14 @@ end
 # Workarounds:
 # ============
 #
+pre_install do |installer|
+  installer.analysis_result.specifications.each do |s|
+    if s.name == 'CocoaLumberjack'
+      s.swift_version = '4.2'
+    end
+  end
+end
+
 post_install do |installer|
 
   # Workaround: Drop 32 Bit Architectures

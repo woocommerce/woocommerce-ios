@@ -115,8 +115,8 @@
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NG7-v2-HCV">
                                                 <rect key="frame" x="0.0" y="398" width="375" height="128"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="128" id="NdA-x6-usn"/>
-                                                    <constraint firstAttribute="height" priority="250" constant="128" id="zqf-iK-TiH"/>
+                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="80" id="NdA-x6-usn"/>
+                                                    <constraint firstAttribute="height" priority="250" constant="80" id="zqf-iK-TiH"/>
                                                 </constraints>
                                                 <connections>
                                                     <segue destination="lX1-IT-Jsn" kind="embed" identifier="NewOrdersEmbedSegue" id="eBk-2G-rWy"/>
@@ -378,7 +378,7 @@
                                 </constraints>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="VYR-yM-cEa">
-                                <rect key="frame" x="0.0" y="1" width="375" height="126"/>
+                                <rect key="frame" x="0.0" y="1" width="375" height="110"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="LcR-e9-aXE">
                                         <rect key="frame" x="0.0" y="0.0" width="355" height="55"/>
@@ -398,7 +398,7 @@
                                         </subviews>
                                     </stackView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="r52-GN-xeA">
-                                        <rect key="frame" x="355" y="0.0" width="20" height="126"/>
+                                        <rect key="frame" x="355" y="0.0" width="20" height="110"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="20" id="IWb-N8-kSs"/>
@@ -438,7 +438,7 @@
                             <constraint firstItem="8jA-re-uJx" firstAttribute="trailing" secondItem="3HX-fV-pCj" secondAttribute="trailing" id="RBW-RE-adK"/>
                             <constraint firstItem="8jA-re-uJx" firstAttribute="leading" secondItem="3HX-fV-pCj" secondAttribute="leading" id="SaS-Dr-Mfo"/>
                             <constraint firstItem="VYR-yM-cEa" firstAttribute="leading" secondItem="3HX-fV-pCj" secondAttribute="leading" id="b6Z-jI-PzO"/>
-                            <constraint firstItem="p4s-ZW-Vui" firstAttribute="top" secondItem="VYR-yM-cEa" secondAttribute="bottom" id="gMM-9B-BvL"/>
+                            <constraint firstItem="p4s-ZW-Vui" firstAttribute="top" secondItem="VYR-yM-cEa" secondAttribute="bottom" constant="16" id="gMM-9B-BvL"/>
                             <constraint firstItem="VYR-yM-cEa" firstAttribute="trailing" secondItem="3HX-fV-pCj" secondAttribute="trailing" id="lFg-zf-3Vm"/>
                             <constraint firstItem="3HX-fV-pCj" firstAttribute="bottom" secondItem="s9n-KV-6jV" secondAttribute="bottom" id="lZu-Fe-psx"/>
                             <constraint firstItem="s9n-KV-6jV" firstAttribute="leading" secondItem="3HX-fV-pCj" secondAttribute="leading" id="qBx-iV-cdp"/>

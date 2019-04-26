@@ -107,7 +107,6 @@ private extension ManualTrackingViewController {
 
     func configureForCommittingTracking() {
         hideKeyboard()
-        disableSecondaryActionButton()
         configureRightButtonItemAsSpinner()
         navigationItem.rightBarButtonItem?.isEnabled = false
     }
@@ -126,26 +125,6 @@ private extension ManualTrackingViewController {
         let rightBarButton = UIBarButtonItem(customView: activityIndicator)
 
         navigationItem.setRightBarButton(rightBarButton, animated: true)
-    }
-
-    func disableSecondaryActionButton() {
-        guard let cell = cellForSecondaryAction() else {
-            return
-        }
-
-        cell.selectionStyle = .none
-        cell.isUserInteractionEnabled = false
-        cell.alpha = Constants.disabledAlpha
-    }
-
-    func enableSecondaryActionButton() {
-        guard let cell = cellForSecondaryAction() else {
-            return
-        }
-
-        cell.selectionStyle = .default
-        cell.isUserInteractionEnabled = true
-        cell.alpha = Constants.enabledAlpha
     }
 
     func showKeyboard() {
@@ -218,8 +197,6 @@ extension ManualTrackingViewController: UITableViewDataSource {
             configureTrackingLink(cell: cell)
         case let cell as TitleAndEditableValueTableViewCell where row == .dateShipped:
             configureDateShipped(cell: cell)
-        case let cell as BasicTableViewCell where row == .deleteTracking:
-            configureSecondaryAction(cell: cell)
         case let cell as DatePickerTableViewCell where row == .datePicker:
             configurePicker(cell: cell)
         default:
@@ -243,20 +220,6 @@ extension ManualTrackingViewController: UITableViewDataSource {
         }
 
         return IndexPath(row: requestedIndex, section: section)
-    }
-
-    private func cellForSecondaryAction() -> BasicTableViewCell? {
-        // The secondary action only exists when deleting
-        guard viewModel.isAdding == false else {
-            return nil
-        }
-
-        guard let actionIndexPath = indexPathForRow(.deleteTracking, inSection: 1),
-            let cell = table.cellForRow(at: actionIndexPath) as? BasicTableViewCell else {
-                return nil
-        }
-
-        return cell
     }
 
     private func configureShippingProvider(cell: TitleAndEditableValueTableViewCell) {
@@ -354,15 +317,11 @@ extension ManualTrackingViewController: UITableViewDelegate {
             return CGFloat.leastNonzeroMagnitude
         }
 
-        return Constants.rowHeight
+        return Constants.pickerRowHeight
     }
 
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         let row = rowAtIndexPath(indexPath)
-
-        if row == .deleteTracking {
-            return Constants.deleteRowHeight
-        }
 
         guard row == .datePicker else {
             return Constants.rowHeight
@@ -372,7 +331,7 @@ extension ManualTrackingViewController: UITableViewDelegate {
             return CGFloat.leastNonzeroMagnitude
         }
 
-        return Constants.rowHeight
+        return Constants.pickerRowHeight
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -387,10 +346,6 @@ extension ManualTrackingViewController: UITableViewDelegate {
 private extension ManualTrackingViewController {
     func executeAction(for indexPath: IndexPath) {
         let row = rowAtIndexPath(indexPath)
-        if row == .deleteTracking {
-            deleteTracking()
-            return
-        }
 
         if row == .dateShipped && viewModel.isAdding {
             displayDatePicker(at: indexPath)
@@ -492,36 +447,6 @@ private extension ManualTrackingViewController {
 // MARK: - Actions!
 //
 private extension ManualTrackingViewController {
-    func deleteTracking() {
-        configureForCommittingTracking()
-
-        let siteID = viewModel.order.siteID
-        let orderID = viewModel.order.orderID
-        guard let trackingID = viewModel.shipmentTracking?.trackingID else {
-            return
-        }
-
-        let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
-                                                                 orderID: orderID,
-                                                                 trackingID: trackingID) { [weak self] error in
-                                                                    if let error = error {
-                                                                        // TODO: Send error to Tracks
-                                                                        DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
-
-                                                                        self?.configureForEditingTracking()
-
-                                                          self?.enableSecondaryActionButton()
-                                                                        self?.displayDeleteErrorNotice(orderID: orderID)
-                                                                        return
-                                                                    }
-
-                                                                    // Track success in tracks
-                                                                    self?.dismiss()
-        }
-
-        StoresManager.shared.dispatch(deleteTrackingAction)
-    }
-
     func addTracking() {
         configureForCommittingTracking()
         guard let groupName = viewModel.shipmentProviderGroupName,
@@ -645,28 +570,9 @@ private extension ManualTrackingViewController {
 
         noticePresenter.enqueue(notice: notice)
     }
-
-    /// Displays the `Unable to delete tracking` Notice.
-    ///
-    func displayDeleteErrorNotice(orderID: Int) {
-        let title = NSLocalizedString(
-            "Unable to delete tracking for order #\(orderID)",
-            comment: "Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}"
-        )
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title,
-                            message: nil,
-                            feedbackType: .error,
-                            actionTitle: actionTitle) { [weak self] in
-            self?.deleteTracking()
-        }
-
-        noticePresenter.enqueue(notice: notice)
-    }
 }
 
 private struct Constants {
-    static let deleteRowHeight = CGFloat(48)
     static let rowHeight = CGFloat(74)
     static let pickerRowHeight = CGFloat(216)
     static let disabledAlpha = CGFloat(0.7)

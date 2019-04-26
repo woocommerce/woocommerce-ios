@@ -6,7 +6,9 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
     @IBOutlet private var topLine: UILabel!
     @IBOutlet private var middleLine: UILabel!
     @IBOutlet private var bottomLine: UILabel!
-    @IBOutlet private weak var icon: UIImageView!
+    private var deleteButton = UIButton(type: .detailDisclosure)
+
+    var onDeleteTouchUp: (() -> Void)?
 
     var topText: String? {
         get {
@@ -48,7 +50,7 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
     }
 
     private func configureAsSelectable() {
-        selectionStyle = .default
+        selectionStyle = .none
     }
 
     private func configureTopLine() {
@@ -64,13 +66,24 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
     }
 
     private func configureActionButton() {
-        let pencilIcon = UIImage.pencilImage
+        let deleteIcon = UIImage.deleteImage
             .imageFlippedForRightToLeftLayoutDirection()
             .imageWithTintColor(StyleManager.wooCommerceBrandColor)
 
-        icon.image = pencilIcon
+        deleteButton.setImage(deleteIcon!, for: .normal)
+        deleteButton.addTarget(self, action: #selector(iconTapped), for: .touchUpInside)
+
+        self.accessoryView = deleteButton
 
         configureActionButtonForVoiceOver()
+    }
+}
+
+
+/// MARK: - Actions
+private extension EditableOrderTrackingTableViewCell {
+    @objc func iconTapped() {
+        onDeleteTouchUp?()
     }
 }
 
@@ -100,13 +113,12 @@ private extension EditableOrderTrackingTableViewCell {
     }
 
     func configureActionButtonForVoiceOver() {
-        icon.accessibilityLabel = NSLocalizedString("Edit",
+        deleteButton.accessibilityLabel = NSLocalizedString("Delete",
+                                                             comment:
+            "Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen")
+        deleteButton.accessibilityHint = NSLocalizedString("Deletes a shipment's tracking information.",
                                                             comment:
-            "Accessibility hint for Pencil button in an individual Shipment Tracking in the order fulfillment screen")
-        icon.accessibilityTraits = .button
-        icon.accessibilityHint = NSLocalizedString("Edits a shipment.",
-                                                           comment:
-            "Accessibility hint for Edit Shipment button in Order fulfillment screen")
+            "Accessibility hint for Delete Shipment button in Order fulfillment screen")
     }
 }
 
@@ -125,7 +137,7 @@ extension EditableOrderTrackingTableViewCell {
         return bottomLine
     }
 
-    func getActionButton() -> UIImageView {
-        return icon
+    func getActionButton() -> UIButton {
+        return deleteButton
     }
 }

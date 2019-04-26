@@ -69,10 +69,10 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
         let deleteIcon = UIImage.deleteImage
             .imageFlippedForRightToLeftLayoutDirection()
             .imageWithTintColor(StyleManager.wooCommerceBrandColor)
-        
+
         deleteButton.setImage(deleteIcon!, for: .normal)
         deleteButton.addTarget(self, action: #selector(iconTapped), for: .touchUpInside)
-        
+
         self.accessoryView = deleteButton
 
         configureActionButtonForVoiceOver()

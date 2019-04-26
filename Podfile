@@ -1,7 +1,7 @@
 inhibit_all_warnings!
 use_frameworks!
 
-platform :ios, '12.0'
+platform :ios, '11.0'
 workspace 'WooCommerce.xcworkspace'
 
 plugin 'cocoapods-repo-update'
@@ -132,6 +132,14 @@ end
 # Workarounds:
 # ============
 #
+pre_install do |installer|
+  installer.analysis_result.specifications.each do |s|
+    if s.name == 'CocoaLumberjack'
+      s.swift_version = '4.2'
+    end
+  end
+end
+
 post_install do |installer|
 
   # Workaround: Drop 32 Bit Architectures

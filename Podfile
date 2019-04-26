@@ -27,8 +27,9 @@ target 'WooCommerce' do
   #pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'task/wc-support-site-url-login'
   pod 'WordPressAuthenticator', '~> 1.3.0'
 
-  pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => 'task/support-swift-5'
-  # pod 'WordPressShared', '~> 1.1'
+  # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => 'task/support-swift-5'  
+  pod 'WordPressShared', '~> 1.7-beta'
+  
   pod 'WordPressUI', '~> 1.2'
 
 

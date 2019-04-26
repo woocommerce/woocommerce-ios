@@ -456,16 +456,16 @@ private extension PeriodDataViewController {
         reloadSiteFields()
         reloadChart(animateChart: animateChart)
         reloadLastUpdatedField()
-        view.accessibilityElements = [visitorsTitle,
-                                      visitorsData,
-                                      ordersTitle,
-                                      ordersData,
-                                      revenueTitle,
-                                      revenueData,
-                                      lastUpdated,
-                                      yAxisAccessibilityView,
-                                      xAxisAccessibilityView,
-                                      chartAccessibilityView]
+        view.accessibilityElements = [visitorsTitle as Any,
+                                      visitorsData as Any,
+                                      ordersTitle as Any,
+                                      ordersData as Any,
+                                      revenueTitle as Any,
+                                      revenueData as Any,
+                                      lastUpdated as Any,
+                                      yAxisAccessibilityView as Any,
+                                      xAxisAccessibilityView as Any,
+                                      chartAccessibilityView as Any]
     }
 
     func reloadOrderFields() {

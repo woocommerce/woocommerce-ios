@@ -33,7 +33,7 @@ public class EntityListener<T: ReadOnlyType> {
     /// Deinitializer
     ///
     deinit {
-        NotificationCenter.default.removeObserver(notificationsToken)
+        NotificationCenter.default.removeObserver(notificationsToken as Any)
     }
 
     /// Designated Initializer.

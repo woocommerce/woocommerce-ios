@@ -377,11 +377,11 @@
                                     <constraint firstAttribute="height" constant="1" id="Vcs-aF-t4s"/>
                                 </constraints>
                             </view>
-                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="VYR-yM-cEa">
-                                <rect key="frame" x="0.0" y="17" width="375" height="94"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="VYR-yM-cEa">
+                                <rect key="frame" x="0.0" y="1" width="375" height="126"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="LcR-e9-aXE">
-                                        <rect key="frame" x="0.0" y="8.5" width="355" height="77"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="355" height="55"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" text="You have 10 orders to fulfill" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="XgA-ra-emd" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="355" height="20.5"/>
@@ -390,7 +390,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Review, prepare, and ship these pending orders..." lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="3ad-g9-Y4v" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="34.5" width="355" height="42.5"/>
+                                                <rect key="frame" x="0.0" y="34.5" width="355" height="20.5"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -398,14 +398,16 @@
                                         </subviews>
                                     </stackView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="r52-GN-xeA">
-                                        <rect key="frame" x="355" y="37" width="20" height="20"/>
+                                        <rect key="frame" x="355" y="0.0" width="20" height="126"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="20" id="IWb-N8-kSs"/>
-                                            <constraint firstAttribute="height" constant="20" id="j47-Si-j6t"/>
                                         </constraints>
                                     </imageView>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstItem="r52-GN-xeA" firstAttribute="centerY" secondItem="VYR-yM-cEa" secondAttribute="centerY" id="zRi-Id-MUI"/>
+                                </constraints>
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p4s-ZW-Vui">
                                 <rect key="frame" x="0.0" y="127" width="377" height="1"/>
@@ -431,12 +433,12 @@
                             <constraint firstItem="s9n-KV-6jV" firstAttribute="top" secondItem="3HX-fV-pCj" secondAttribute="top" id="CsQ-76-JsV"/>
                             <constraint firstItem="3HX-fV-pCj" firstAttribute="trailing" secondItem="s9n-KV-6jV" secondAttribute="trailing" id="DcB-Ce-Ahw"/>
                             <constraint firstItem="3HX-fV-pCj" firstAttribute="bottom" secondItem="p4s-ZW-Vui" secondAttribute="bottom" id="Dpv-Ii-25e"/>
-                            <constraint firstItem="VYR-yM-cEa" firstAttribute="top" secondItem="8jA-re-uJx" secondAttribute="bottom" constant="16" id="HUs-sR-q67"/>
+                            <constraint firstItem="VYR-yM-cEa" firstAttribute="top" secondItem="8jA-re-uJx" secondAttribute="bottom" id="HUs-sR-q67"/>
                             <constraint firstItem="8jA-re-uJx" firstAttribute="top" secondItem="3HX-fV-pCj" secondAttribute="top" id="MAt-pq-sbN"/>
                             <constraint firstItem="8jA-re-uJx" firstAttribute="trailing" secondItem="3HX-fV-pCj" secondAttribute="trailing" id="RBW-RE-adK"/>
                             <constraint firstItem="8jA-re-uJx" firstAttribute="leading" secondItem="3HX-fV-pCj" secondAttribute="leading" id="SaS-Dr-Mfo"/>
                             <constraint firstItem="VYR-yM-cEa" firstAttribute="leading" secondItem="3HX-fV-pCj" secondAttribute="leading" id="b6Z-jI-PzO"/>
-                            <constraint firstItem="p4s-ZW-Vui" firstAttribute="top" secondItem="VYR-yM-cEa" secondAttribute="bottom" constant="16" id="gMM-9B-BvL"/>
+                            <constraint firstItem="p4s-ZW-Vui" firstAttribute="top" secondItem="VYR-yM-cEa" secondAttribute="bottom" id="gMM-9B-BvL"/>
                             <constraint firstItem="VYR-yM-cEa" firstAttribute="trailing" secondItem="3HX-fV-pCj" secondAttribute="trailing" id="lFg-zf-3Vm"/>
                             <constraint firstItem="3HX-fV-pCj" firstAttribute="bottom" secondItem="s9n-KV-6jV" secondAttribute="bottom" id="lZu-Fe-psx"/>
                             <constraint firstItem="s9n-KV-6jV" firstAttribute="leading" secondItem="3HX-fV-pCj" secondAttribute="leading" id="qBx-iV-cdp"/>

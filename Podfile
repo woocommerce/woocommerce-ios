@@ -1,7 +1,7 @@
 inhibit_all_warnings!
 use_frameworks!
 
-platform :ios, '11.0'
+platform :ios, '12.0'
 workspace 'WooCommerce.xcworkspace'
 
 plugin 'cocoapods-repo-update'

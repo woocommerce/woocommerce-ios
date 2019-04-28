@@ -12,6 +12,7 @@ class DashboardViewController: UIViewController {
 
     @IBOutlet private weak var scrollView: UIScrollView!
     @IBOutlet private weak var newOrdersContainerView: UIView!
+    @IBOutlet weak var newOrdersHeightConstraint: NSLayoutConstraint!
 
     private var storeStatsViewController: StoreStatsViewController!
     private var newOrdersViewController: NewOrdersViewController!
@@ -58,6 +59,13 @@ class DashboardViewController: UIViewController {
         }
         if let vc = segue.destination as? TopPerformersViewController, segue.identifier == Segues.topPerformersSegue {
             topPerformersViewController = vc
+        }
+    }
+
+    override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
+        super.preferredContentSizeDidChange(forChildContentContainer: container)
+        if let containerVC = container as? NewOrdersViewController {
+            newOrdersHeightConstraint?.constant = containerVC.preferredContentSize.height
         }
     }
 }

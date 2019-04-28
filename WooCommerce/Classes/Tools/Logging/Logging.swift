@@ -34,7 +34,7 @@ internal func DDLogDebug(_ message: @autoclosure () -> String,
                          asynchronous async: Bool = true,
                          ddlog: DDLog = DDLog.sharedInstance) {
 
-    CocoaLumberjack.DDLogDebug(message,
+    CocoaLumberjack.DDLogDebug(message(),
                                level: level,
                                context: context,
                                file: file,
@@ -55,7 +55,7 @@ internal func DDLogInfo(_ message: @autoclosure () -> String,
                         asynchronous async: Bool = true,
                         ddlog: DDLog = DDLog.sharedInstance) {
 
-    CocoaLumberjack.DDLogInfo(message,
+    CocoaLumberjack.DDLogInfo(message(),
                               level: level,
                               context: context,
                               file: file,
@@ -76,7 +76,7 @@ internal func DDLogWarn(_ message: @autoclosure () -> String,
                         asynchronous async: Bool = true,
                         ddlog: DDLog = DDLog.sharedInstance) {
 
-    CocoaLumberjack.DDLogWarn(message,
+    CocoaLumberjack.DDLogWarn(message(),
                               level: level,
                               context: context,
                               file: file,
@@ -97,7 +97,7 @@ internal func DDLogVerbose(_ message: @autoclosure () -> String,
                            asynchronous async: Bool = true,
                            ddlog: DDLog = DDLog.sharedInstance) {
 
-    CocoaLumberjack.DDLogVerbose(message,
+    CocoaLumberjack.DDLogVerbose(message(),
                                  level: level,
                                  context: context,
                                  file: file,
@@ -118,7 +118,7 @@ internal func DDLogError(_ message: @autoclosure () -> String,
                          asynchronous async: Bool = false,
                          ddlog: DDLog = DDLog.sharedInstance) {
 
-    CocoaLumberjack.DDLogError(message,
+    CocoaLumberjack.DDLogError(message(),
                                level: level,
                                context: context,
                                file: file,

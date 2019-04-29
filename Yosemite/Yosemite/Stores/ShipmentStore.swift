@@ -184,10 +184,6 @@ extension ShipmentStore {
                 }
             })
         }
-
-        // Check if the special country "custom" exists and if it does not, add it to the list of readonlygroups
-        appendCustomShipmentProviderGroupIfNecessary(siteID: siteID,
-                                                     storage: storage)
     }
 
     func addTracking(siteID: Int,
@@ -330,23 +326,6 @@ extension ShipmentStore {
                 }
             })
         }
-    }
-
-    private func appendCustomShipmentProviderGroupIfNecessary(siteID: Int,
-                                                              storage: StorageType) {
-        let customGroupName = type(of: self).customGroupName
-        if let _ =  storage.loadShipmentTrackingProviderGroup(siteID: siteID,
-                                                                                providerGroupName: customGroupName ) {
-            return
-        }
-
-        let provider = storage.insertNewObject(ofType: Storage.ShipmentTrackingProvider.self)
-        provider.name = "Custom Provider"
-
-        let customProvidersGroup = customGroup(siteID: siteID, storage: storage)
-        customProvidersGroup.addToProviders(provider)
-        print("===== inserting a custom group ====")
-        //storage.saveIfNeeded()
     }
 
     private func customGroup(siteID: Int, storage: StorageType) -> Storage.ShipmentTrackingProviderGroup {

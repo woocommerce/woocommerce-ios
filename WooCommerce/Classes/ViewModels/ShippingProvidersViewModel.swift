@@ -36,6 +36,10 @@ final class ShippingProvidersViewModel {
     ///
     var onError: ((Error) -> Void)?
 
+    /// Closure to be executed when the data is ready to be rendered
+    ///
+    var onDataLoaded: (() -> Void)?
+
     /// Convenience property to check if the data collection is empty
     ///
     var isListEmpty: Bool {
@@ -71,7 +75,13 @@ final class ShippingProvidersViewModel {
     /// Setup: Results Controller
     ///
     func configureResultsController(table: UITableView) {
-        resultsController.startForwardingEvents(to: table)
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.prepareData()
+        }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.prepareData()
+        }
+        
         try? resultsController.performFetch()
     }
 
@@ -90,6 +100,10 @@ final class ShippingProvidersViewModel {
 
     private func handleError(_ error: Error) {
         onError?(error)
+    }
+
+    private func prepareData() {
+        onDataLoaded?()
     }
 }
 

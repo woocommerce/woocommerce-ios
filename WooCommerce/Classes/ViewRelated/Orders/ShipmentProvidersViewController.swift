@@ -156,6 +156,10 @@ private extension ShipmentProvidersViewController {
         viewModel.onError = { [weak self] error in
             self?.presentNotice(error)
         }
+        
+        viewModel.onDataLoaded = { [weak self] in
+            self?.table.reloadData()
+        }
     }
 }
 

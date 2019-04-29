@@ -135,14 +135,20 @@ extension ShippingProvidersViewModel {
 // MARK: - Methods supporting an implementation of UITableViewDataSource
 //
 extension ShippingProvidersViewModel {
+    /// Indicates if the item at a given IndexPath is a custom shipment provider
+    ///
     func isCustom(indexPath: IndexPath) -> Bool {
         return indexPath.section == Constants.customSectionIndex
     }
 
+    /// Indicates the name of a group of shipment providers at a given IndexPath
+    ///
     func groupName(at indexPath: IndexPath) -> String {
         return resultsController.sections[indexPath.section - Constants.specialSectionsCount].name
     }
 
+    /// Returns the ShipmentTrackingProvider at a given IndexPath
+    ///
     func provider(at indexPath: IndexPath) -> ShipmentTrackingProvider {
         let group = resultsController.sections[indexPath.section - Constants.specialSectionsCount]
         let provider = group.objects[indexPath.item]

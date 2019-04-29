@@ -200,6 +200,11 @@ extension ShipmentProvidersViewController: UITableViewDelegate {
 
         let groupName = viewModel.resultsController.sections[indexPath.section].name
 
+        if viewModel.shouldCreateCustomTracking(for: groupName) {
+            addCustomProvider()
+            return
+        }
+
         delegate?.shipmentProviderList(self, didSelect: provider, groupName: groupName)
     }
 }

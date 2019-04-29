@@ -41,6 +41,10 @@ final class ShippingProvidersViewModel {
         return resultsController.fetchedObjects.count == 0
     }
 
+    func shouldCreateCustomTracking(for groupName: String) -> Bool {
+        return groupName == ShipmentStore.customGroupName
+    }
+
     /// Designated initializer
     ///
     init(order: Order) {

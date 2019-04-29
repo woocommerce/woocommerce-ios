@@ -7,6 +7,7 @@ import Yosemite
 final class ShippingProvidersViewModel {
     let order: Order
 
+    /// Title of view displaying all available Shipment Tracking Providers
     let title = NSLocalizedString("Shipping Providers",
                                   comment: "Title of view displaying all available Shipment Tracking Providers")
 
@@ -39,10 +40,6 @@ final class ShippingProvidersViewModel {
     ///
     var isListEmpty: Bool {
         return resultsController.fetchedObjects.count == 0
-    }
-
-    func shouldCreateCustomTracking(for groupName: String) -> Bool {
-        return groupName == ShipmentStore.customGroupName
     }
 
     /// Designated initializer
@@ -97,7 +94,7 @@ final class ShippingProvidersViewModel {
 }
 
 
-// MARK: - Support for UITableViewDataSource
+// MARK: - Methods supporting an implementation of UITableViewDataSource
 //
 extension ShippingProvidersViewModel {
     func numberOfSections() -> Int {
@@ -118,7 +115,8 @@ extension ShippingProvidersViewModel {
             return Constants.customProvider
         }
 
-        let group = resultsController.sections[indexPath.section - Constants.specialSectionsCount]
+        let group = resultsController
+            .sections[indexPath.section - Constants.specialSectionsCount]
         return group.objects[indexPath.item].name
     }
 
@@ -127,12 +125,14 @@ extension ShippingProvidersViewModel {
             return Constants.customGroup
         }
 
-        return resultsController.sections[section - Constants.specialSectionsCount].name
+        return resultsController
+            .sections[section - Constants.specialSectionsCount]
+            .name
     }
 }
 
 
-// MARK: - Support for UITableViewDataSource
+// MARK: - Methods supporting an implementation of UITableViewDataSource
 //
 extension ShippingProvidersViewModel {
     func isCustom(indexPath: IndexPath) -> Bool {
@@ -148,6 +148,10 @@ extension ShippingProvidersViewModel {
         let provider = group.objects[indexPath.item]
 
         return provider
+    }
+
+    func shouldCreateCustomTracking(for groupName: String) -> Bool {
+        return groupName == ShipmentStore.customGroupName
     }
 }
 

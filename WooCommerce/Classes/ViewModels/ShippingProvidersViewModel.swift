@@ -13,7 +13,7 @@ final class ShippingProvidersViewModel {
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) StorageShipmentTrackingProviderGroup in sync.
     ///
-    private lazy var resultsController: ResultsController<StorageShipmentTrackingProvider> = {
+    private let resultsController: ResultsController<StorageShipmentTrackingProvider> = {
         let storageManager = AppDelegate.shared.storageManager
         let predicate = NSPredicate(format: "siteID == %lld",
                                     StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
@@ -50,38 +50,20 @@ final class ShippingProvidersViewModel {
     ///
     init(order: Order) {
         self.order = order
-        fetchGroups()
-    }
-
-    /// Loads shipment tracking groups
-    ///
-    func fetchGroups() {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            return
-        }
-
-        let orderID = order.orderID
-
-        let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID,
-                                                                                   orderID: orderID) { [weak self] error in
-            if let error = error {
-                self?.handleError(error)
-            }
-        }
-
-        StoresManager.shared.dispatch(loadGroupsAction)
+        //fetchGroups()
     }
 
     /// Setup: Results Controller
     ///
-    func configureResultsController(table: UITableView) {
+    func configureResultsController() {
         resultsController.onDidChangeContent = { [weak self] in
             self?.prepareData()
         }
+
         resultsController.onDidResetContent = { [weak self] in
             self?.prepareData()
         }
-        
+
         try? resultsController.performFetch()
     }
 
@@ -103,6 +85,9 @@ final class ShippingProvidersViewModel {
     }
 
     private func prepareData() {
+        print("======= all objects ======")
+        print(resultsController.fetchedObjects)
+        print("/////// all objects ======")
         onDataLoaded?()
     }
 }

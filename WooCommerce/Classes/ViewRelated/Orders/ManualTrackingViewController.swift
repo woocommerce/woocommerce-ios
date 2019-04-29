@@ -38,6 +38,7 @@ final class ManualTrackingViewController: UIViewController {
         configureBackground()
         configureNavigation()
         configureTable()
+        fetchGroups()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -550,6 +551,29 @@ private extension ManualTrackingViewController {
 }
 
 
+// MARK: - Fetch list of shipment tracking providers
+private extension ManualTrackingViewController {
+    /// Loads shipment tracking groups
+    ///
+    func fetchGroups() {
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let orderID = viewModel.order.orderID
+
+        let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID,
+                                                                                   orderID: orderID) { [weak self] error in
+                                                                                    if let error = error {
+                                                                                        self?.displayLoadProvidersErrorNotice(error)
+                                                                                    }
+        }
+
+        StoresManager.shared.dispatch(loadGroupsAction)
+    }
+}
+
+
 // MARK: - Error handling
 //
 private extension ManualTrackingViewController {
@@ -566,6 +590,22 @@ private extension ManualTrackingViewController {
                             feedbackType: .error,
                             actionTitle: actionTitle) { [weak self] in
             self?.primaryButtonTapped()
+        }
+
+        noticePresenter.enqueue(notice: notice)
+    }
+
+    func displayLoadProvidersErrorNotice(_ error: Error) {
+        let title = NSLocalizedString(
+            "Unable to load Shipment Providers",
+            comment: "Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers"
+        )
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title,
+                            message: nil,
+                            feedbackType: .error,
+                            actionTitle: actionTitle) { [weak self] in
+                                self?.fetchGroups()
         }
 
         noticePresenter.enqueue(notice: notice)

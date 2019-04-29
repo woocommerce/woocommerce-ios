@@ -152,11 +152,8 @@ private extension ShipmentProvidersViewController {
 //
 private extension ShipmentProvidersViewController {
     func configureViewModel() {
-        viewModel.configureResultsController(table: table)
-        viewModel.onError = { [weak self] error in
-            self?.presentNotice(error)
-        }
-        
+        viewModel.configureResultsController()
+
         viewModel.onDataLoaded = { [weak self] in
             self?.table.reloadData()
         }
@@ -272,26 +269,6 @@ private extension ShipmentProvidersViewController {
         let addCustomTrackingViewModel = AddCustomTrackingViewModel(order: viewModel.order)
         let addCustomTrackingViewController = ManualTrackingViewController(viewModel: addCustomTrackingViewModel)
         navigationController?.pushViewController(addCustomTrackingViewController, animated: true)
-    }
-}
-
-// MARK: - Error handling
-//
-private extension ShipmentProvidersViewController {
-    func presentNotice(_ error: Error) {
-        let title = NSLocalizedString(
-            "Unable to load Shipment Providers",
-            comment: "Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers"
-        )
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title,
-                            message: nil,
-                            feedbackType: .error,
-                            actionTitle: actionTitle) { [weak self] in
-                                self?.viewModel.fetchGroups()
-        }
-
-        noticePresenter.enqueue(notice: notice)
     }
 }
 

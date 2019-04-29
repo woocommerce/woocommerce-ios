@@ -164,11 +164,15 @@ private extension ShipmentProvidersViewController {
 //
 extension ShipmentProvidersViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.resultsController.sections.count
+        return viewModel.resultsController.sections.count + 1
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let group = viewModel.resultsController.sections[section]
+        if section == 0 {
+            return 1
+        }
+
+        let group = viewModel.resultsController.sections[section - 1]
         return group.objects.count
     }
 
@@ -178,7 +182,12 @@ extension ShipmentProvidersViewController: UITableViewDataSource {
                                                         fatalError()
         }
 
-        let group = viewModel.resultsController.sections[indexPath.section]
+        if indexPath.section == 0 {
+            cell.textLabel?.text = "Custom Provider"
+            return cell
+        }
+
+        let group = viewModel.resultsController.sections[indexPath.section - 1]
         let providerName = group.objects[indexPath.item].name
         cell.textLabel?.text = providerName
 
@@ -186,7 +195,10 @@ extension ShipmentProvidersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return viewModel.resultsController.sections[section].name
+        if section == 0 {
+            return "Custom"
+        }
+        return viewModel.resultsController.sections[section - 1].name
     }
 }
 
@@ -195,15 +207,14 @@ extension ShipmentProvidersViewController: UITableViewDataSource {
 //
 extension ShipmentProvidersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let group = viewModel.resultsController.sections[indexPath.section]
-        let provider = group.objects[indexPath.item]
-
-        let groupName = viewModel.resultsController.sections[indexPath.section].name
-
-        if viewModel.shouldCreateCustomTracking(for: groupName) {
+        if indexPath.section == 0 {
             addCustomProvider()
             return
         }
+        let group = viewModel.resultsController.sections[indexPath.section - 1]
+        let provider = group.objects[indexPath.item]
+
+        let groupName = viewModel.resultsController.sections[indexPath.section].name
 
         delegate?.shipmentProviderList(self, didSelect: provider, groupName: groupName)
     }

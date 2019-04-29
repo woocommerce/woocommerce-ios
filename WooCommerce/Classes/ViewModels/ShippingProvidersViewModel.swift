@@ -101,33 +101,33 @@ final class ShippingProvidersViewModel {
 //
 extension ShippingProvidersViewModel {
     func numberOfSections() -> Int {
-        return resultsController.sections.count + 1
+        return resultsController.sections.count + Constants.specialSectionsCount
     }
 
     func numberOfRowsInSection(_ section: Int) -> Int {
-        if section == 0 {
+        if section == Constants.customSectionIndex {
             return 1
         }
 
-        let group = resultsController.sections[section - 1]
+        let group = resultsController.sections[section - Constants.specialSectionsCount]
         return group.objects.count
     }
 
     func titleForCellAt(_ indexPath: IndexPath) -> String {
-        if indexPath.section == 0 {
+        if indexPath.section == Constants.customSectionIndex {
             return "Custom Provider"
         }
 
-        let group = resultsController.sections[indexPath.section - 1]
+        let group = resultsController.sections[indexPath.section - Constants.specialSectionsCount]
         return group.objects[indexPath.item].name
     }
 
     func titleForHeaderInSection(_ section: Int) -> String {
-        if section == 0 {
+        if section == Constants.customSectionIndex {
             return "Custom"
         }
 
-        return resultsController.sections[section - 1].name
+        return resultsController.sections[section - Constants.specialSectionsCount].name
     }
 }
 
@@ -136,17 +136,23 @@ extension ShippingProvidersViewModel {
 //
 extension ShippingProvidersViewModel {
     func isCustom(indexPath: IndexPath) -> Bool {
-        return indexPath.section == 0
+        return indexPath.section == Constants.customSectionIndex
     }
 
     func groupName(at indexPath: IndexPath) -> String {
-        return resultsController.sections[indexPath.section - 1].name
+        return resultsController.sections[indexPath.section - Constants.specialSectionsCount].name
     }
 
     func provider(at indexPath: IndexPath) -> ShipmentTrackingProvider {
-        let group = resultsController.sections[indexPath.section - 1]
+        let group = resultsController.sections[indexPath.section - Constants.specialSectionsCount]
         let provider = group.objects[indexPath.item]
 
         return provider
     }
+}
+
+
+private enum Constants {
+    static let customSectionIndex = 0
+    static let specialSectionsCount = 1
 }

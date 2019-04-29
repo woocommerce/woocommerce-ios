@@ -76,10 +76,6 @@ final class ShippingProvidersViewModel {
     func configureResultsController(table: UITableView) {
         resultsController.startForwardingEvents(to: table)
         try? resultsController.performFetch()
-        // Clearing filters (which nullfies the results controller predicate
-        // seems to be necessary in order to get the Custom group to show up
-        // I pressume there is a better way, but I can not find it.
-        clearFilters()
     }
 
     /// Filter results by text

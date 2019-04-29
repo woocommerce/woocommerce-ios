@@ -115,7 +115,7 @@ extension ShippingProvidersViewModel {
 
     func titleForCellAt(_ indexPath: IndexPath) -> String {
         if indexPath.section == Constants.customSectionIndex {
-            return "Custom Provider"
+            return Constants.customProvider
         }
 
         let group = resultsController.sections[indexPath.section - Constants.specialSectionsCount]
@@ -124,7 +124,7 @@ extension ShippingProvidersViewModel {
 
     func titleForHeaderInSection(_ section: Int) -> String {
         if section == Constants.customSectionIndex {
-            return "Custom"
+            return Constants.customGroup
         }
 
         return resultsController.sections[section - Constants.specialSectionsCount].name
@@ -155,4 +155,7 @@ extension ShippingProvidersViewModel {
 private enum Constants {
     static let customSectionIndex = 0
     static let specialSectionsCount = 1
+    static let customGroup = ShipmentStore.customGroupName
+    static let customProvider = NSLocalizedString("Custom Provider",
+                                                  comment: "Placeholder name of a custom shipment tracking provider")
 }

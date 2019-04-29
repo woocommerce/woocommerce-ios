@@ -12,7 +12,7 @@ final class ShippingProvidersViewModel {
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) StorageShipmentTrackingProviderGroup in sync.
     ///
-    private(set) lazy var resultsController: ResultsController<StorageShipmentTrackingProvider> = {
+    private lazy var resultsController: ResultsController<StorageShipmentTrackingProvider> = {
         let storageManager = AppDelegate.shared.storageManager
         let predicate = NSPredicate(format: "siteID == %lld",
                                     StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
@@ -93,5 +93,60 @@ final class ShippingProvidersViewModel {
 
     private func handleError(_ error: Error) {
         onError?(error)
+    }
+}
+
+
+// MARK: - Support for UITableViewDataSource
+//
+extension ShippingProvidersViewModel {
+    func numberOfSections() -> Int {
+        return resultsController.sections.count + 1
+    }
+
+    func numberOfRowsInSection(_ section: Int) -> Int {
+        if section == 0 {
+            return 1
+        }
+
+        let group = resultsController.sections[section - 1]
+        return group.objects.count
+    }
+
+    func titleForCellAt(_ indexPath: IndexPath) -> String {
+        if indexPath.section == 0 {
+            return "Custom Provider"
+        }
+
+        let group = resultsController.sections[indexPath.section - 1]
+        return group.objects[indexPath.item].name
+    }
+
+    func titleForHeaderInSection(_ section: Int) -> String {
+        if section == 0 {
+            return "Custom"
+        }
+
+        return resultsController.sections[section - 1].name
+    }
+}
+
+
+// MARK: - Support for UITableViewDataSource
+//
+extension ShippingProvidersViewModel {
+    func isCustom(indexPath: IndexPath) -> Bool {
+        return indexPath.section == 0
+    }
+
+    func groupName(at indexPath: IndexPath) -> String {
+        return resultsController.sections[indexPath.section - 1].name
+    }
+
+    func provider(at indexPath: IndexPath) -> ShipmentTrackingProvider {
+        let group = resultsController.sections[indexPath.section - 1]
+        let provider = group.objects[indexPath.item]
+
+        return provider
     }
 }

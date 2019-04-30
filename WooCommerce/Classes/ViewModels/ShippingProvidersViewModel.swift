@@ -13,7 +13,7 @@ final class ShippingProvidersViewModel {
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) StorageShipmentTrackingProviderGroup in sync.
     ///
-    private let resultsController: ResultsController<StorageShipmentTrackingProvider> = {
+    private lazy var resultsController: ResultsController<StorageShipmentTrackingProvider> = {
         let storageManager = AppDelegate.shared.storageManager
         let predicate = NSPredicate(format: "siteID == %lld",
                                     StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
@@ -50,7 +50,6 @@ final class ShippingProvidersViewModel {
     ///
     init(order: Order) {
         self.order = order
-        //fetchGroups()
     }
 
     /// Setup: Results Controller

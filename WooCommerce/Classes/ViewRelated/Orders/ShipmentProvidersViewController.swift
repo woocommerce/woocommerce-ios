@@ -152,11 +152,11 @@ private extension ShipmentProvidersViewController {
 //
 private extension ShipmentProvidersViewController {
     func configureViewModel() {
-        viewModel.configureResultsController()
-
         viewModel.onDataLoaded = { [weak self] in
             self?.table.reloadData()
         }
+
+        viewModel.configureResultsController()
     }
 }
 

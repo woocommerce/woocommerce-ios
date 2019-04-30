@@ -85,9 +85,7 @@ final class ShippingProvidersViewModel {
     }
 
     private func prepareData() {
-        print("======= all objects ======")
         print(resultsController.fetchedObjects)
-        print("/////// all objects ======")
         onDataLoaded?()
     }
 }

@@ -139,7 +139,7 @@ class StatsStoreTests: XCTestCase {
         XCTAssertEqual(storageOrderStats?.toReadOnly(), remoteOrderStats)
     }
 
-    /// Verifies that `upsertStoredOrderStats` does not produce duplicate entries.
+    /// Verifies that `upsertStoredOrderStats` does not produce duplicate entries and keeps the original order.
     ///
     func testUpdateStoredOrderStatsEffectivelyUpdatesPreexistantOrderStats() {
         let statsStore = StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -148,13 +148,15 @@ class StatsStoreTests: XCTestCase {
         statsStore.upsertStoredOrderStats(readOnlyStats: sampleOrderStats())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStats.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsItem.self), 2)
-        statsStore.upsertStoredOrderStats(readOnlyStats: sampleOrderStatsMutated())
+        statsStore.upsertStoredOrderStats(readOnlyStats: sampleOrderStatsMutatedMoreQuantity())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStats.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsItem.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsItem.self), 3)
 
-        let expectedOrderStats = sampleOrderStatsMutated()
+        let expectedOrderStats = sampleOrderStatsMutatedMoreQuantity()
         let storageOrderStats = viewStorage.loadOrderStats(queryID: "day")
         XCTAssertEqual(storageOrderStats?.toReadOnly(), expectedOrderStats)
+        // Specifically check items order as previous check internally uses `sorted()`
+        XCTAssertEqual(storageOrderStats?.toReadOnly().items, expectedOrderStats.items)
     }
 
     /// Verifies that `upsertStoredOrderStats` does not mix up items with different queryIDs and same periods
@@ -584,6 +586,43 @@ private extension StatsStoreTests {
                           averageNetSales: 24.1368,
                           averageOrders: 1.2903,
                           averageProducts: 1.4194)
+    }
+
+    func sampleOrderStatsMutatedMoreQuantity() -> Networking.OrderStats {
+        return OrderStats(queryID: "day",
+                          date: "2018-06-03",
+                          granularity: .day,
+                          quantity: "3",
+                          items: [sampleOrderStatsItem0Mutated(), sampleOrderStatsItem1Mutated(), sampleOrderStatsItem2Mutated()],
+                          totalGrossSales: 539.23,
+                          totalNetSales: 538.24,
+                          totalOrders: 19,
+                          totalProducts: 23,
+                          averageGrossSales: 24.1687,
+                          averageNetSales: 24.1368,
+                          averageOrders: 1.2903,
+                          averageProducts: 1.4194)
+    }
+
+    func sampleOrderStatsItem0Mutated() -> Networking.OrderStatsItem {
+        return OrderStatsItem(period: "2018-05-31",
+                              orders: 3,
+                              products: 3,
+                              coupons: 0,
+                              couponDiscount: 0,
+                              totalSales: 410.54,
+                              totalTax: 2.65,
+                              totalShipping: 0,
+                              totalShippingTax: 0,
+                              totalRefund: 0,
+                              totalTaxRefund: 0,
+                              totalShippingRefund: 0,
+                              totalShippingTaxRefund: 0,
+                              currency: "USD",
+                              grossSales: 410.54,
+                              netSales: 400,
+                              avgOrderValue: 60.32,
+                              avgProductsPerOrder: 7)
     }
 
     func sampleOrderStatsItem1Mutated() -> Networking.OrderStatsItem {

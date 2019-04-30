@@ -258,32 +258,17 @@ extension StatsStore {
     ///
     private func handleOrderStatsItems(_ readOnlyStats: Networking.OrderStats, _ storageStats: Storage.OrderStats, _ storage: StorageType) {
 
-        guard let readOnlyItems = readOnlyStats.items, !readOnlyItems.isEmpty else {
-            // No items in the read-only order stats, so remove all the items in Storage.OrderStats
-            storageStats.items?.forEach {
-                storageStats.removeFromItems($0)
-                storage.deleteObject($0)
-            }
-            return
+        // Since we are treating the items in core data like a dumb cache, start by nuking all of the existing stored OrderStatsItem
+        storageStats.items?.forEach {
+            storageStats.removeFromItems($0)
+            storage.deleteObject($0)
         }
 
-        // Upsert the items from the read-only order stats item
-        for readOnlyItem in readOnlyItems {
-            if let existingStorageItem = storage.loadOrderStatsItem(queryID: readOnlyStats.queryID, period: readOnlyItem.period) {
-                existingStorageItem.update(with: readOnlyItem)
-            } else {
-                let newStorageItem = storage.insertNewObject(ofType: Storage.OrderStatsItem.self)
-                newStorageItem.update(with: readOnlyItem)
-                storageStats.addToItems(newStorageItem)
-            }
-        }
-
-        // Now, remove any objects that exist in storageStats.items but not in readOnlyStats.items
-        storageStats.items?.forEach({ storageItem in
-            if readOnlyItems.first(where: { $0.period == storageItem.period } ) == nil {
-                storageStats.removeFromItems(storageItem)
-                storage.deleteObject(storageItem)
-            }
+        // Insert the items from the read-only stats
+        readOnlyStats.items?.forEach({ readOnlyItem in
+            let newStorageItem = storage.insertNewObject(ofType: Storage.OrderStatsItem.self)
+            newStorageItem.update(with: readOnlyItem)
+            storageStats.addToItems(newStorageItem)
         })
     }
 }

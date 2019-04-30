@@ -112,6 +112,11 @@
 		74D5BECE217E0F98007B0348 /* SiteSettingsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D5BECD217E0F98007B0348 /* SiteSettingsRemoteTests.swift */; };
 		74E30951216E8DCE00ABCE4C /* site-visits-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = 74E30950216E8DCE00ABCE4C /* site-visits-alt.json */; };
 		933A2732222234F800C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A2731222234F800C2143A /* Logging.swift */; };
+		9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */; };
+		93D8BBFB226BBC5100AD2EB3 /* AccountSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */; };
+		93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BBFC226BBEE800AD2EB3 /* AccountSettingsMapper.swift */; };
+		93D8BBFF226BC1DA00AD2EB3 /* me-settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */; };
+		93D8BC01226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */; };
 		B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */; };
 		B505F6CF20BEE38B00BB1B69 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6CE20BEE38B00BB1B69 /* Account.swift */; };
 		B505F6D120BEE39600BB1B69 /* AccountRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6D020BEE39600BB1B69 /* AccountRemote.swift */; };
@@ -218,6 +223,7 @@
 		D823D91022377B4F00C90817 /* ShipmentTrackingProviderGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D90F22377B4F00C90817 /* ShipmentTrackingProviderGroup.swift */; };
 		D823D91222377DF300C90817 /* ShipmentTrackingProviderListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D91122377DF200C90817 /* ShipmentTrackingProviderListMapper.swift */; };
 		D823D91422377EE600C90817 /* shipment_tracking_providers.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D91322377EE600C90817 /* shipment_tracking_providers.json */; };
+		D87F6151226591E10031A13B /* NullNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F6150226591E10031A13B /* NullNetwork.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -336,6 +342,11 @@
 		74E30950216E8DCE00ABCE4C /* site-visits-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-visits-alt.json"; sourceTree = "<group>"; };
 		753D6504FF01F09F6A33B73E /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
 		933A2731222234F800C2143A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
+		9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsMapperTests.swift; sourceTree = "<group>"; };
+		93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettings.swift; sourceTree = "<group>"; };
+		93D8BBFC226BBEE800AD2EB3 /* AccountSettingsMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsMapper.swift; sourceTree = "<group>"; };
+		93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "me-settings.json"; sourceTree = "<group>"; };
+		93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsRemoteTests.swift; sourceTree = "<group>"; };
 		B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountMapper.swift; sourceTree = "<group>"; };
 		B505F6CE20BEE38B00BB1B69 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		B505F6D020BEE39600BB1B69 /* AccountRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountRemote.swift; sourceTree = "<group>"; };
@@ -447,6 +458,7 @@
 		D823D90F22377B4F00C90817 /* ShipmentTrackingProviderGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTrackingProviderGroup.swift; sourceTree = "<group>"; };
 		D823D91122377DF200C90817 /* ShipmentTrackingProviderListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTrackingProviderListMapper.swift; sourceTree = "<group>"; };
 		D823D91322377EE600C90817 /* shipment_tracking_providers.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shipment_tracking_providers.json; sourceTree = "<group>"; };
+		D87F6150226591E10031A13B /* NullNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullNetwork.swift; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -524,6 +536,7 @@
 				B556FD68211CE2EC00B5DAE7 /* NetworkError.swift */,
 				B518662320A099BF00037A38 /* AlamofireNetwork.swift */,
 				B518662620A09BCC00037A38 /* MockupNetwork.swift */,
+				D87F6150226591E10031A13B /* NullNetwork.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -533,6 +546,7 @@
 			children = (
 				B5969E1420A47F99005E9DF1 /* RemoteTests.swift */,
 				B505F6D620BEE58800BB1B69 /* AccountRemoteTests.swift */,
+				93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */,
 				740211E021939908002248DA /* CommentRemoteTests.swift */,
 				B524194821AC659500D6FC0A /* DevicesRemoteTests.swift */,
 				B554FA8A2180B1D500C54DFF /* NotificationsRemoteTests.swift */,
@@ -679,6 +693,7 @@
 				CE6BFEE62236CF0D005C79FB /* Product */,
 				74A1D26921189AC100931DFA /* Stats */,
 				B505F6CE20BEE38B00BB1B69 /* Account.swift */,
+				93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */,
 				B5BB1D0F20A237FB00112D92 /* Address.swift */,
 				B53EF53721813806003E146F /* DotcomError.swift */,
 				B5A2417C217F9ECC00595DEF /* MetaContainer.swift */,
@@ -724,6 +739,7 @@
 				740211DE2193985A002248DA /* comment-moderate-spam.json */,
 				B524194621AC643900D6FC0A /* device-settings.json */,
 				B505F6D420BEE4E600BB1B69 /* me.json */,
+				93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */,
 				B58D10C92114D22E00107ED4 /* new-order-note.json */,
 				B5A24178217F98F600595DEF /* notifications-load-all.json */,
 				B554FA8C2180B59700C54DFF /* notifications-load-hashes.json */,
@@ -779,6 +795,7 @@
 			children = (
 				B567AF2820A0FA1E00AB6C62 /* Mapper.swift */,
 				B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */,
+				93D8BBFC226BBEE800AD2EB3 /* AccountSettingsMapper.swift */,
 				740211E221939C83002248DA /* CommentResultMapper.swift */,
 				B524193E21AC5FE400D6FC0A /* DotcomDeviceMapper.swift */,
 				B554FA8E2180BC7000C54DFF /* NoteHashListMapper.swift */,
@@ -855,6 +872,7 @@
 			isa = PBXGroup;
 			children = (
 				B505F6D220BEE3A500BB1B69 /* AccountMapperTests.swift */,
+				9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */,
 				74AB0AC921948CE4008220CD /* CommentResultMapperTests.swift */,
 				B524194221AC622500D6FC0A /* DotcomDeviceMapperTests.swift */,
 				B554FA922180C17200C54DFF /* NoteHashListMapperTests.swift */,
@@ -970,11 +988,11 @@
 				TargetAttributes = {
 					B557D9E2209753AA005962F4 = {
 						CreatedOnToolsVersion = 9.3;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 					};
 					B557D9EB209753AA005962F4 = {
 						CreatedOnToolsVersion = 9.3;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
@@ -1047,6 +1065,7 @@
 				7412A51121702E9700994370 /* order-stats-alt.json in Resources */,
 				74046E21217A73D0007DD7BF /* settings-general.json in Resources */,
 				7492FAE3217FBDBC00ED2C69 /* settings-general-alt.json in Resources */,
+				93D8BBFF226BC1DA00AD2EB3 /* me-settings.json in Resources */,
 				74C947842193A6C70024CB60 /* comment-moderate-approved.json in Resources */,
 				741D336D2256B4E300109FAE /* product-variations-load-all.json in Resources */,
 				B56C1EBA20EA7D2C00D749F9 /* sites.json in Resources */,
@@ -1180,6 +1199,7 @@
 				B56C1EB820EA76F500D749F9 /* Site.swift in Sources */,
 				7412A8EA21B6E192005D182A /* ReportRemote.swift in Sources */,
 				B5A2417D217F9ECC00595DEF /* MetaContainer.swift in Sources */,
+				93D8BBFB226BBC5100AD2EB3 /* AccountSettings.swift in Sources */,
 				B53EF53821813806003E146F /* DotcomError.swift in Sources */,
 				D823D91222377DF300C90817 /* ShipmentTrackingProviderListMapper.swift in Sources */,
 				B5C151BB217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift in Sources */,
@@ -1209,8 +1229,10 @@
 				CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */,
 				CE0A0F1522396BF00075ED8D /* ProductAttribute.swift in Sources */,
 				7426CA0F21AF2C90004E9FFC /* SiteAPI.swift in Sources */,
+				D87F6151226591E10031A13B /* NullNetwork.swift in Sources */,
 				B53EF5322180F21C003E146F /* Dictionary+Woo.swift in Sources */,
 				74A1D26D21189DFF00931DFA /* SiteVisitStatsMapper.swift in Sources */,
+				93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */,
 				74D522B62113607F00042831 /* StatGranularity.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,
 				B572F69A21AC475C003EEFF0 /* DevicesRemote.swift in Sources */,
@@ -1269,6 +1291,7 @@
 				7470B1872257D5C10000117E /* ProductVariationListMapperTests.swift in Sources */,
 				74C8F06A20EEBC8C00B6EDC9 /* OrderMapperTests.swift in Sources */,
 				74AB5B4D21AF354E00859C12 /* SiteAPIMapperTests.swift in Sources */,
+				93D8BC01226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift in Sources */,
 				B5C151C0217EE3FB00C7BDC1 /* NoteListMapperTests.swift in Sources */,
 				B567AF3120A0FB8F00AB6C62 /* JetpackRequestTests.swift in Sources */,
 				7412A8F221B6E47A005D182A /* ReportRemoteTests.swift in Sources */,
@@ -1285,6 +1308,7 @@
 				B567AF2F20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift in Sources */,
 				B5C6FCCD20A34B8300A4F8E4 /* OrderListMapperTests.swift in Sources */,
 				B518663520A0A2E800037A38 /* Constants.swift in Sources */,
+				9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */,
 				7470B1852257CED10000117E /* ProductVariationMapperTests.swift in Sources */,
 				B57B1E6721C916850046E764 /* NetworkErrorTests.swift in Sources */,
 				74002D6C2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift in Sources */,
@@ -1456,7 +1480,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};
@@ -1485,7 +1509,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Networking;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};
@@ -1507,7 +1531,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.NetworkingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};
@@ -1528,7 +1552,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.NetworkingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};

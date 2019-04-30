@@ -1,3 +1,1 @@
-Esta versión se centra en corregir errores y hacer mejoras:
-– En la información del pedido, el estado ahora se actualiza con un gesto de deslizar hacia abajo.
-– Se han realizado algunas mejoras de IU en varias pantallas.
+- Mantente al día de los pedidos en tan solo unos pasos: ahora puedes copiar los números de seguimiento al portapapeles desde la pantalla de detalles del pedido.

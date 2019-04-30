@@ -1,7 +1,7 @@
 inhibit_all_warnings!
 use_frameworks!
 
-platform :ios, '11.0'
+platform :ios, '12.0'
 workspace 'WooCommerce.xcworkspace'
 
 plugin 'cocoapods-repo-update'
@@ -27,7 +27,9 @@ target 'WooCommerce' do
   #pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'task/wc-support-site-url-login'
   pod 'WordPressAuthenticator', '~> 1.3.0'
 
-  pod 'WordPressShared', '~> 1.1'
+  # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => 'task/support-swift-5'  
+  pod 'WordPressShared', '~> 1.7-beta'
+  
   pod 'WordPressUI', '~> 1.2'
 
 
@@ -130,6 +132,14 @@ end
 # Workarounds:
 # ============
 #
+pre_install do |installer|
+  installer.analysis_result.specifications.each do |s|
+    if s.name == 'CocoaLumberjack'
+      s.swift_version = '4.2'
+    end
+  end
+end
+
 post_install do |installer|
 
   # Workaround: Drop 32 Bit Architectures

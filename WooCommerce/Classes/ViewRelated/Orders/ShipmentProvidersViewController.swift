@@ -265,8 +265,9 @@ private extension ShipmentProvidersViewController {
     }
 
     func addCustomProvider() {
-        // TO be implemented as part of #846:
-        // https://github.com/woocommerce/woocommerce-ios/issues/846
+        let addCustomTrackingViewModel = AddCustomTrackingViewModel(order: viewModel.order)
+        let addCustomTrackingViewController = ManualTrackingViewController(viewModel: addCustomTrackingViewModel)
+        navigationController?.pushViewController(addCustomTrackingViewController, animated: true)
     }
 }
 

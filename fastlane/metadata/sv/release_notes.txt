@@ -1,3 +1,1 @@
-Den här versionen handlar om lösningar och förbättringar:
-– Orderstatusen uppdateras nu i orderinformation när du drar och släpper fönstret.
-– Vissa små gränssnittsförbättringar på olika skärmar.
+- Håll koll på ordrar med färre klick: du kan nu kopiera spårningsnummer direkt från skärmen för orderdetaljer till Urklipp.

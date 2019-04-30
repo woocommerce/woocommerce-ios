@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="18E226" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.98" systemVersion="18E226" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="gravatarUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="userID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="username" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="AccountSettings" representedClassName="AccountSettings" syncable="YES">
+        <attribute name="tracksOptOut" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="userID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <entity name="Note" representedClassName="Note" syncable="YES">
         <attribute name="body" optional="YES" attributeType="Binary" syncable="YES"/>
@@ -372,6 +376,7 @@
     </entity>
     <elements>
         <element name="Account" positionX="-200.9765625" positionY="63.5625" width="128" height="120"/>
+        <element name="AccountSettings" positionX="-846" positionY="270" width="128" height="75"/>
         <element name="Note" positionX="-369.61328125" positionY="-95.85546875" width="128" height="283"/>
         <element name="Order" positionX="-20" positionY="27" width="128" height="720"/>
         <element name="OrderCoupon" positionX="-206.01953125" positionY="379.74609375" width="128" height="120"/>

@@ -7,6 +7,7 @@ import Storage
 // MARK: - Exported ReadOnly Symbols
 
 public typealias Account = Networking.Account
+public typealias AccountSettings = Networking.AccountSettings
 public typealias Address = Networking.Address
 public typealias APNSDevice = Networking.APNSDevice
 public typealias CommentStatus = Networking.CommentStatus
@@ -59,6 +60,7 @@ public typealias StorageOrderNote = Storage.OrderNote
 public typealias StorageOrderStats = Storage.OrderStats
 public typealias StorageOrderStatsItem = Storage.OrderStatsItem
 public typealias StorageOrderStatus = Storage.OrderStatus
+public typealias StoragePreselectedProvider = Storage.PreselectedProvider
 public typealias StorageProduct = Storage.Product
 public typealias StorageProductDimensions = Storage.ProductDimensions
 public typealias StorageProductAttribute = Storage.ProductAttribute

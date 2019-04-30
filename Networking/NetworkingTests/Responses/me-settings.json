@@ -1,0 +1,61 @@
+{
+	"enable_translator": false,
+	"surprise_me": false,
+	"post_post_flag": false,
+	"holidaysnow": false,
+	"user_login": "test123123",
+	"password": "",
+	"display_name": "test123123",
+	"first_name": "Dem 123",
+	"last_name": "Nines",
+	"description": "🙃\n\nThis is a bit more about me.\n\nAnd multi line text.",
+	"user_email": "moocow@example.com",
+	"user_email_change_pending": false,
+	"new_user_email": "",
+	"user_URL": "http://www.xcode.moo",
+	"language": "en",
+	"avatar_URL": "https://2.gravatar.com/avatar/x?s=200&amp;d=mm",
+	"primary_site_ID": 57773116,
+	"comment_like_notification": true,
+	"mentions_notification": true,
+	"subscription_delivery_email_default": "instantly",
+	"subscription_delivery_jabber_default": false,
+	"subscription_delivery_mail_option": "html",
+	"subscription_delivery_day": 1,
+	"subscription_delivery_hour": 6,
+	"subscription_delivery_email_blocked": false,
+	"two_step_enabled": true,
+	"two_step_sms_enabled": false,
+	"two_step_backup_codes_printed": true,
+	"two_step_sms_country": "US",
+	"two_step_sms_phone_number": "4145551212",
+	"user_login_can_be_changed": true,
+	"calypso_preferences": {
+		"recentSites": [
+			57773116,
+			131820877,
+			157622730,
+			138332102
+		],
+		"editor-mode": "tinymce",
+		"firstViewHistory": [
+			{
+				"view": "stats",
+				"timestamp": 1470247961321,
+				"disabled": true
+			}
+		],
+		"guided-tours-history": [
+			{
+				"timestamp": 1510925179923,
+				"tourName": "simplePaymentsTour",
+				"finished": true
+			}
+		],
+		"editor-sidebar": "open"
+	},
+	"jetpack_connect": [],
+	"is_desktop_app_user": true,
+	"locale_variant": false,
+	"tracks_opt_out": true
+}

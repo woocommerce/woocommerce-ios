@@ -111,6 +111,8 @@ private extension ResultsController {
                 if let indexPath = indexPath {
                     tableView.reloadRows(at: [indexPath], with: animations.update)
                 }
+            @unknown default:
+                fatalError()
             }
         }
     }

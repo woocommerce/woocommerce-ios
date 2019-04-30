@@ -36,6 +36,17 @@ final class ProductDetailsViewController: UIViewController {
         return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: product)
     }()
 
+    private var imageURL: URL? {
+        guard let productImageURLString = product.images.first?.src else {
+            return nil
+        }
+        return URL(string: productImageURLString)
+    }
+
+    private var productHasImage: Bool {
+        return imageURL != nil
+    }
+
     // MARK: - Initializers
 
     /// Designated Initializer
@@ -56,6 +67,7 @@ final class ProductDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationTitle()
+        configureMainView()
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
@@ -68,35 +80,29 @@ final class ProductDetailsViewController: UIViewController {
 //
 private extension ProductDetailsViewController {
 
-    /// Setup: TableView
-    ///
-    func configureTableView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
-        tableView.estimatedSectionFooterHeight = Constants.rowHeight
-        tableView.estimatedRowHeight = Constants.rowHeight
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.refreshControl = refreshControl
-        tableView.separatorInset = .zero
-    }
-
-    /// Registers all of the available TableViewCells
-    ///
-    func registerTableViewCells() {
-        let cells = [
-            BasicTableViewCell.self
-        ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
-    }
-
     /// Setup: Navigation Title
     ///
     func configureNavigationTitle() {
-        title = NSLocalizedString("Product", comment: "Title of product detail screen.")
+        title = product.name
+    }
+
+    /// Setup: main view
+    ///
+    func configureMainView() {
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
+    }
+
+    /// Setup: TableView
+    ///
+    func configureTableView() {
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.estimatedSectionHeaderHeight = Metrics.sectionHeight
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = Metrics.estimatedRowHeight
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.refreshControl = refreshControl
+        tableView.separatorInset = .zero
+        tableView.tableFooterView = UIView(frame: .zero)
     }
 
     /// Setup: EntityListener
@@ -120,12 +126,24 @@ private extension ProductDetailsViewController {
         }
     }
 
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells() {
+        let cells = [
+            LargeImageTableViewCell.self,
+            TitleBodyTableViewCell.self
+        ]
+
+        for cell in cells {
+            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        }
+    }
+
     /// Registers all of the available TableViewHeaderFooters
     ///
     func registerTableViewHeaderFooters() {
         let headersAndFooters = [
             TwoColumnSectionHeaderView.self,
-            ShowHideSectionFooter.self
         ]
 
         for kind in headersAndFooters {
@@ -213,18 +231,35 @@ private extension ProductDetailsViewController {
 
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as BasicTableViewCell:
-            configureProductDetails(cell: cell)
+        case let cell as LargeImageTableViewCell:
+            configureProductImage(cell: cell)
+        case let cell as TitleBodyTableViewCell:
+            configureProductName(cell: cell)
         default:
             fatalError("Unidentified row type")
         }
     }
 
-    func configureProductDetails(cell: BasicTableViewCell) {
-        cell.textLabel?.text = product.name
-        cell.detailTextLabel?.text = product.fullDescription
+    func configureProductImage(cell: LargeImageTableViewCell) {
+        guard let mainImageView = cell.mainImageView else {
+            return
+        }
+
+        if productHasImage {
+            cell.heightConstraint.constant = Metrics.productImageHeight
+            mainImageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage)
+        } else {
+            cell.heightConstraint.constant = Metrics.emptyProductImageHeight
+            let size = CGSize(width: tableView.frame.width, height: Metrics.emptyProductImageHeight)
+            mainImageView.image = StyleManager.wooWhite.image(size)
+        }
+    }
+
+    func configureProductName(cell: TitleBodyTableViewCell) {
         cell.accessoryType = .none
         cell.selectionStyle = .none
+        cell.titleLabel?.text = NSLocalizedString("Title", comment: "Product details screen — product title descriptive label")
+        cell.bodyLabel?.text = product.name
     }
 }
 
@@ -242,10 +277,19 @@ extension ProductDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = sections[indexPath.section].rows[indexPath.row]
+        let row = rowAtIndexPath(indexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         configure(cell, for: row, at: indexPath)
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch rowAtIndexPath(indexPath) {
+        case .productSummary:
+            return productHasImage ? Metrics.productImageHeight : Metrics.emptyProductImageHeight
+        default:
+            return UITableView.automaticDimension
+        }
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -272,20 +316,6 @@ extension ProductDetailsViewController: UITableViewDataSource {
 
         return headerView
     }
-
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        let lastSectionIndex = sections.count - 1
-
-        if sections[section].footer != nil || section == lastSectionIndex {
-            return UITableView.automaticDimension
-        }
-
-        return .leastNonzeroMagnitude
-    }
-
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return nil
-    }
 }
 
 
@@ -304,7 +334,7 @@ extension ProductDetailsViewController: UITableViewDelegate {
 }
 
 
-// MARK: - Private helpers
+// MARK: - Tableview helpers
 //
 private extension ProductDetailsViewController {
 
@@ -330,18 +360,11 @@ private extension ProductDetailsViewController {
         reloadSections()
         reloadTableViewDataIfPossible()
     }
-}
 
-
-// MARK: - Sections
-//
-private extension ProductDetailsViewController {
-
-    /// Setup: Sections
+    /// Rebuild the section struct
     ///
     func reloadSections() {
-        let summary = Section(row: .productSummary)
-        // TODO: More sections go here
+        let summary = Section(rows: [.productSummary, .productName])
         sections = [summary].compactMap { $0 }
     }
 }
@@ -351,9 +374,11 @@ private extension ProductDetailsViewController {
 //
 private extension ProductDetailsViewController {
 
-    enum Constants {
-        static let rowHeight = CGFloat(38)
+    enum Metrics {
+        static let estimatedRowHeight = CGFloat(86)
         static let sectionHeight = CGFloat(44)
+        static let productImageHeight = CGFloat(374)
+        static let emptyProductImageHeight = CGFloat(86)
     }
 
     struct Section {
@@ -376,12 +401,14 @@ private extension ProductDetailsViewController {
 
     enum Row {
         case productSummary
-        // TODO: More rows go here
+        case productName
 
         var reuseIdentifier: String {
             switch self {
             case .productSummary:
-                return BasicTableViewCell.reuseIdentifier
+                return LargeImageTableViewCell.reuseIdentifier
+            case .productName:
+                return TitleBodyTableViewCell.reuseIdentifier
             }
         }
     }

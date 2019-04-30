@@ -455,6 +455,7 @@ final class ShipmentStoreTests: XCTestCase {
         let mockTrackingNumber = "123456781234567812345678"
         let mockTrackingID = "c2911c8175e33466d3d9955b53f29f7a"
         let mockTrackingURL = "https://somewhere.online.net.com?q=%1$s"
+        let mockDateShipped = "1234"
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new_custom_provider")
 
@@ -462,7 +463,8 @@ final class ShipmentStoreTests: XCTestCase {
                                                       orderID: sampleOrderID,
                                                       trackingProvider: mockProviderName,
                                                       trackingNumber: mockTrackingNumber,
-                                                      trackingURL: mockTrackingURL) { error in
+                                                      trackingURL: mockTrackingURL,
+                                                      dateShipped: mockDateShipped) { error in
                                                         XCTAssertNil(error)
 
                                                         /// As a result of adding one tracking with a custom provider,
@@ -508,7 +510,8 @@ final class ShipmentStoreTests: XCTestCase {
                                                       orderID: sampleOrderID,
                                                       trackingProvider: "",
                                                       trackingNumber: "",
-                                                      trackingURL: "") { error in
+                                                      trackingURL: "",
+                                                      dateShipped: "") { error in
                                                         XCTAssertNotNil(error)
                                                         expectation.fulfill()
         }
@@ -529,7 +532,8 @@ final class ShipmentStoreTests: XCTestCase {
                                                       orderID: sampleOrderID,
                                                       trackingProvider: "",
                                                       trackingNumber: "",
-                                                      trackingURL: "") { error in
+                                                      trackingURL: "",
+                                                      dateShipped: "") { error in
                                                         XCTAssertNotNil(error)
                                                         expectation.fulfill()
         }

@@ -26,10 +26,12 @@ final class StatusListTableViewCell: UITableViewCell {
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
         accessoryType = highlighted ? .checkmark : .none
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
         accessoryType = selected ? .checkmark : .none
     }
 

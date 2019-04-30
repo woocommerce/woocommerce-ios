@@ -50,11 +50,32 @@ final class ShippingProvidersViewModel {
     ///
     init(order: Order) {
         self.order = order
+        fetchGroups()
+    }
+
+    /// Loads shipment tracking groups
+    ///
+    func fetchGroups() {
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let orderID = order.orderID
+
+        let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID,
+                                                                                   orderID: orderID) { [weak self] error in
+                                                                                    if let error = error {
+                                                                                        self?.handleError(error)
+                                                                                    }
+        }
+
+        StoresManager.shared.dispatch(loadGroupsAction)
     }
 
     /// Setup: Results Controller
     ///
     func configureResultsController() {
+        print("===== configure results controller ====")
         resultsController.onDidChangeContent = { [weak self] in
             self?.prepareData()
         }

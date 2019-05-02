@@ -30,6 +30,10 @@ final class ShipmentProvidersViewController: UIViewController {
         return noticePresenter
     }()
 
+    /// Footer spinner shown when loading data for the first time
+    ///
+    private lazy var footerSpinnerView = FooterSpinnerView()
+
     /// Deinitializer
     ///
     deinit {
@@ -71,6 +75,7 @@ private extension ShipmentProvidersViewController {
     /// Loads shipment tracking groups
     ///
     func fetchGroups() {
+        footerSpinnerView.startAnimating()
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             return
         }
@@ -82,6 +87,7 @@ private extension ShipmentProvidersViewController {
                                                                                     if let error = error {
                                                                                         self?.presentNotice(error)
                                                                                     }
+                                                                                    self?.footerSpinnerView.stopAnimating()
         }
 
         StoresManager.shared.dispatch(loadGroupsAction)
@@ -116,6 +122,10 @@ private extension ShipmentProvidersViewController {
     func configureTable() {
         registerTableViewCells()
         styleTableView()
+
+        if viewModel.isListEmpty {
+            table.tableFooterView = footerSpinnerView
+        }
 
         table.dataSource = self
         table.delegate = self

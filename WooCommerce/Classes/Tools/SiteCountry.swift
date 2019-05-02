@@ -14,7 +14,6 @@ final class SiteCountry {
         let siteIDKeyPath = #keyPath(StorageSiteSetting.siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteSetting.siteID, ascending: false)
         return ResultsController<StorageSiteSetting>(storageManager: storageManager, sectionNameKeyPath: siteIDKeyPath, matching: compoundPredicate, sortedBy: [descriptor])
-        //return ResultsController<StorageSiteSetting>(storageManager: storageManager, sortedBy: [descriptor])
     }()
 
     init() {
@@ -22,39 +21,72 @@ final class SiteCountry {
     }
 
     var siteCountry: String? {
-        //print("=== all objects ", resultsController.fetchedObjects)
+        print("==== first ", resultsController.fetchedObjects.first)
         return resultsController.fetchedObjects.first?.value
     }
 
     /// Setup: ResultsController
     ///
     private func configureResultsController() {
-        resultsController.onDidChangeObject = { [weak self] (object, indexPath, type, newIndexPath) in
-            self?.updateCountry(with: object)
-        }
-        resultsController.onDidChangeContent = {[weak self] in
-            print("===== did change content ===")
-        }
-        refreshResultsPredicate()
-    }
-
-    private func refreshResultsPredicate() {
-//        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
-//        let settingTypePredicate = NSPredicate(format: "settingGroupKey ==[c] %@", SiteSettingGroup.general.rawValue)
-//        resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingTypePredicate])
         try? resultsController.performFetch()
     }
+}
 
-    private func updateCountry(with siteSetting: SiteSetting) {
-        let value = siteSetting.value
 
-        switch siteSetting.settingID {
-        case Constants.countryKey:
-            print("=== country value ", value)
-            //siteCountry = value
-        default:
-            break
-        }
+extension SiteCountry {
+    enum CountryCode: String, CaseIterable {
+        // A
+        case AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN,
+        // B
+        BAM, BBD, BDT, BGN, BHD, BIF, BMD, BND, BOB, BRL, BSD, BTC, BTN, BWP, BYR, BYN, BZD,
+        // C
+        CAD, CDF, CHF, CLP, CNY, COP, CRC, CUC, CUP, CVE, CZK,
+        // D
+        DJF, DKK, DOP, DZD,
+        // E
+        EGP, ERN, ETB, EUR, FJD,
+        // F
+        FKP,
+        // G
+        GBP, GEL, GGP, GHS, GIP, GMD, GNF, GTQ, GYD,
+        // H
+        HKD, HNL, HRK, HTG, HUF,
+        // I
+        IDR, ILS, IMP, INR, IQD, IRR, IRT, ISK,
+        // J
+        JEP, JMD, JOD, JPY,
+        // K
+        KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT,
+        // L
+        LAK, LBP, LKR, LRD, LSL, LYD,
+        // M
+        MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN,
+        // N
+        NAD, NGN, NIO, NOK, NPR, NZD,
+        // O
+        OMR,
+        // P
+        PAB, PEN, PGK, PHP, PKR, PLN, PRB, PYG,
+        // Q
+        QAR,
+        // R
+        RMB, RON, RSD, RUB, RWF,
+        // S
+        SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLL, SOS, SRD, SSP, STD, SYP, SZL,
+        // T
+        THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS,
+        // U
+        UAH, UGX, USD, UYU, UZS,
+        // V
+        VEF, VND, VUV,
+        // W
+        WST,
+        // X
+        XAF, XCD, XOF, XPF,
+        // Y
+        YER,
+        // Z
+        ZAR, ZMW
     }
 }
 

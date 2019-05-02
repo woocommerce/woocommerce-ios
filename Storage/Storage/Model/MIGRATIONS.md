@@ -2,9 +2,13 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 14 (Release 1.8.0.0)
+- @astralbodies 2019-04-22
+    - New `AccountSettings` entity with `tracksOptOut` attribute.
+  
 ## Model 13 (Release 1.6.0.0)
 - @bummytime 2019-03-28
-    - Added  `settingGroupKey` attribute on `SiteSetting` entity
+    - Added `settingGroupKey` attribute on `SiteSetting` entity
     
 - @bummytime 2019-04-01
     - New `ProductVariation` entity

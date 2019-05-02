@@ -118,6 +118,7 @@
         <attribute name="date" attributeType="String" syncable="YES"/>
         <attribute name="granularity" attributeType="String" syncable="YES"/>
         <attribute name="quantity" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="queryID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="totalGrossSales" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="totalNetSales" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="totalOrders" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -349,6 +350,7 @@
     <entity name="SiteVisitStats" representedClassName="SiteVisitStats" syncable="YES">
         <attribute name="date" attributeType="String" syncable="YES"/>
         <attribute name="granularity" attributeType="String" syncable="YES"/>
+        <attribute name="queryID" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SiteVisitStatsItem" inverseName="stats" inverseEntity="SiteVisitStatsItem" syncable="YES"/>
     </entity>
     <entity name="SiteVisitStatsItem" representedClassName="SiteVisitStatsItem" syncable="YES">
@@ -381,7 +383,7 @@
         <element name="OrderItem" positionX="-364.890625" positionY="379.453125" width="128" height="240"/>
         <element name="OrderNote" positionX="-365.16796875" positionY="630.2109375" width="128" height="135"/>
         <element name="OrderSearchResults" positionX="144.44140625" positionY="743.43359375" width="128" height="75"/>
-        <element name="OrderStats" positionX="137.859375" positionY="388.33203125" width="128" height="225"/>
+        <element name="OrderStats" positionX="137.859375" positionY="388.33203125" width="128" height="240"/>
         <element name="OrderStatsItem" positionX="321.74609375" positionY="425.51171875" width="128" height="330"/>
         <element name="OrderStatus" positionX="-29.671875" positionY="781.29296875" width="128" height="105"/>
         <element name="Product" positionX="-534.98046875" positionY="-73.34765625" width="128" height="883"/>
@@ -400,7 +402,7 @@
         <element name="ShipmentTrackingProviderGroup" positionX="-8.2734375" positionY="-117.890625" width="187.5" height="88"/>
         <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="150"/>
         <element name="SiteSetting" positionX="-362.54296875" positionY="217.9921875" width="128" height="135"/>
-        <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="90"/>
+        <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="105"/>
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>

@@ -17,11 +17,11 @@ import CocoaLumberjack
 ///
 /// Example:
 ///     internal var defaultDebugLevel: DDLogLevel = .verbose
-internal var defaultDebugLevel: DDLogLevel = CocoaLumberjack.defaultDebugLevel
+internal var defaultDebugLevel: DDLogLevel = CocoaLumberjack.dynamicLogLevel
 
 /// Reset the logging level threshold to the app-wide default.
 internal func resetDefaultDebugLevel() {
-    defaultDebugLevel = CocoaLumberjack.defaultDebugLevel
+    defaultDebugLevel = CocoaLumberjack.dynamicLogLevel
 }
 
 internal func DDLogDebug(_ message: @autoclosure () -> String,

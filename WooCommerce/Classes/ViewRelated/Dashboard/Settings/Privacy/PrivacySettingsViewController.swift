@@ -209,10 +209,10 @@ private extension PrivacySettingsViewController {
     //
     func collectInfoWasUpdated(newValue: Bool) {
         // Save the user's preference
-        WooAnalytics.shared.setUserHasOptedIn(newValue)
+//        WooAnalytics.shared.setUserHasOptedOut(!newValue)
 
         // This event will only report if the user has turned tracking back on
-        WooAnalytics.shared.track(.settingsCollectInfoToggled)
+//        WooAnalytics.shared.track(.settingsCollectInfoToggled)
     }
 
     func reportCrashesWasUpdated(newValue: Bool) {

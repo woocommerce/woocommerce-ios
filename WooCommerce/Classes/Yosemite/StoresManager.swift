@@ -85,6 +85,11 @@ class StoresManager {
         synchronizeAccount { _ in
             group.leave()
         }
+        
+        group.enter()
+        synchronizeAccountSettings { _ in
+            group.leave()
+        }
 
         group.enter()
         synchronizeSites { _ in
@@ -175,13 +180,39 @@ private extension StoresManager {
                 self.sessionManager.defaultAccount = account
                 WooAnalytics.shared.refreshUserData()
             }
-
+            
             onCompletion(error)
         }
-
+        
         dispatch(action)
     }
+    
+    /// Synchronizes the WordPress.com Account Settings, associated with the current credentials.
+    ///
+    func synchronizeAccountSettings(onCompletion: @escaping (Error?) -> Void) {
+        guard let userID = self.sessionManager.defaultAccount?.userID else {
+            onCompletion(StoresManagerError.missingDefaultSite)
+            return
+        }
+        
+        let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] (accountSettings, error) in
+            if let `self` = self, let accountSettings = accountSettings, self.isAuthenticated {
+                // TODO: Do something here to turn off tracking if we opted out already
+                WooAnalytics.shared.refreshUserData()
+                // Save the user's preference
+                WooAnalytics.shared.setUserHasOptedOut(accountSettings.tracksOptOut)
+                
+                // This event will only report if the user has turned tracking back on
+                WooAnalytics.shared.track(.settingsCollectInfoToggled)
 
+            }
+            
+            onCompletion(error)
+        }
+        
+        dispatch(action)
+    }
+    
     /// Replaces the temporary UUID username in default credentials with the
     /// actual username from the passed account.  This *shouldn't* be necessary
     /// under normal conditions but is a safety net in case there is an error

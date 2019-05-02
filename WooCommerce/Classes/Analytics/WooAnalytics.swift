@@ -122,18 +122,18 @@ public extension WooAnalytics {
 //
 extension WooAnalytics {
 
-    func setUserHasOptedIn(_ optedIn: Bool) {
-        userHasOptedIn = optedIn
+    func setUserHasOptedOut(_ optedOut: Bool) {
+        userHasOptedIn = !optedOut
 
-        if optedIn {
-            refreshUserData()
-            startObservingNotifications()
-            DDLogInfo("🔵 Tracking started.")
-        } else {
+        if optedOut {
             stopObservingNotifications()
             analyticsProvider.clearEvents()
             analyticsProvider.clearUsers()
             DDLogInfo("🔴 Tracking opt-out complete.")
+        } else {
+            refreshUserData()
+            startObservingNotifications()
+            DDLogInfo("🔵 Tracking started.")
         }
     }
 }

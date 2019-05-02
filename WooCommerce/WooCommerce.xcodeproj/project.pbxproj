@@ -1205,13 +1205,13 @@
 		B5D1AFBE20BC67B500DB0E8C /* System */ = {
 			isa = PBXGroup;
 			children = (
-				B5AA7B3C20ED5D15004DA14F /* SessionManager.swift */,
-				B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */,
-				CECA64B020D9990E005A44C4 /* WooCommerce-Bridging-Header.h */,
-				CE2409F0215D12D30091F887 /* WooNavigationController.swift */,
-				CEEC9B5B21E79B3E0055EEF0 /* FeatureFlag.swift */,
 				CEEC9B5D21E79C330055EEF0 /* BuildConfiguration.swift */,
+				CEEC9B5B21E79B3E0055EEF0 /* FeatureFlag.swift */,
 				934CB122224EAB150005CCB9 /* main.swift */,
+				B5AA7B3C20ED5D15004DA14F /* SessionManager.swift */,
+				CECA64B020D9990E005A44C4 /* WooCommerce-Bridging-Header.h */,
+				B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */,
+				CE2409F0215D12D30091F887 /* WooNavigationController.swift */,
 			);
 			path = System;
 			sourceTree = "<group>";

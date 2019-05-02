@@ -1,5 +1,6 @@
 import UIKit
 import Gridicons
+import WordPressShared
 
 // MARK: - WordPress Authenticator Styles
 //

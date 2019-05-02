@@ -54,12 +54,37 @@ final class ShipmentProvidersViewController: UIViewController {
         configureNavigation()
         configureSearchController()
         configureTable()
+        fetchGroups()
         startListeningToNotifications()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         searchController.dismiss(animated: false, completion: nil)
+    }
+}
+
+
+// MARK: - Fetch data
+//
+private extension ShipmentProvidersViewController {
+    /// Loads shipment tracking groups
+    ///
+    func fetchGroups() {
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let orderID = viewModel.order.orderID
+
+        let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID,
+                                                                                   orderID: orderID) { [weak self] error in
+                                                                                    if let error = error {
+                                                                                        self?.presentNotice(error)
+                                                                                    }
+        }
+
+        StoresManager.shared.dispatch(loadGroupsAction)
     }
 }
 
@@ -222,6 +247,26 @@ extension ShipmentProvidersViewController: UISearchControllerDelegate {
     }
 }
 
+
+// MARK: - Error handling
+//
+private extension ShipmentProvidersViewController {
+    func presentNotice(_ error: Error) {
+        let title = NSLocalizedString(
+            "Unable to load Shipment Providers",
+            comment: "Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers"
+        )
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title,
+                            message: nil,
+                            feedbackType: .error,
+                            actionTitle: actionTitle) { [weak self] in
+                                self?.fetchGroups()
+        }
+
+        noticePresenter.enqueue(notice: notice)
+    }
+}
 
 // MARK: - Empty state
 //

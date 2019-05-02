@@ -32,10 +32,6 @@ final class ShippingProvidersViewModel {
                                                                        sortedBy: [providerGroupDescriptor, providerNameDescriptor])
     }()
 
-    /// Closure to be executed in case there is an error fetching data
-    ///
-    var onError: ((Error) -> Void)?
-
     /// Closure to be executed when the data is ready to be rendered
     ///
     var onDataLoaded: (() -> Void)?
@@ -50,38 +46,17 @@ final class ShippingProvidersViewModel {
     ///
     init(order: Order) {
         self.order = order
-        fetchGroups()
-    }
-
-    /// Loads shipment tracking groups
-    ///
-    func fetchGroups() {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            return
-        }
-
-        let orderID = order.orderID
-
-        let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID,
-                                                                                   orderID: orderID) { [weak self] error in
-                                                                                    if let error = error {
-                                                                                        self?.handleError(error)
-                                                                                    }
-        }
-
-        StoresManager.shared.dispatch(loadGroupsAction)
     }
 
     /// Setup: Results Controller
     ///
     func configureResultsController() {
-        print("===== configure results controller ====")
         resultsController.onDidChangeContent = { [weak self] in
-            self?.prepareData()
+            self?.dataWasUpdated()
         }
 
         resultsController.onDidResetContent = { [weak self] in
-            self?.prepareData()
+            self?.dataWasUpdated()
         }
 
         try? resultsController.performFetch()
@@ -100,12 +75,7 @@ final class ShippingProvidersViewModel {
         resultsController.predicate = nil
     }
 
-    private func handleError(_ error: Error) {
-        onError?(error)
-    }
-
-    private func prepareData() {
-        print(resultsController.fetchedObjects)
+    private func dataWasUpdated() {
         onDataLoaded?()
     }
 }

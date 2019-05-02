@@ -41,7 +41,7 @@ target 'WooCommerce' do
   pod 'KeychainAccess', '~> 3.2'
   pod 'CocoaLumberjack', '~> 3.4'
   pod 'CocoaLumberjack/Swift', '~> 3.4'
-  pod 'XLPagerTabStrip', '~> 8.1'
+  pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.2'
   pod 'ZendeskSDK', '~> 2.3.1'
 

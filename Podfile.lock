@@ -50,7 +50,7 @@ PODS:
   - Reachability (3.2)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (1.1.4)
-  - WordPressAuthenticator (1.3.0):
+  - WordPressAuthenticator (1.4.1-beta.1):
     - 1PasswordExtension (= 1.8.5)
     - Alamofire (= 4.7.3)
     - CocoaLumberjack (~> 3.4)
@@ -59,10 +59,10 @@ PODS:
     - lottie-ios (= 2.5.2)
     - "NSURL+IDN (= 0.3)"
     - SVProgressHUD (= 2.2.5)
-    - WordPressKit (~> 3.2.2)
+    - WordPressKit (~> 4.1.0-beta)
     - WordPressShared (~> 1.4)
     - WordPressUI (~> 1.0)
-  - WordPressKit (3.2.2):
+  - WordPressKit (4.1.0-beta.1):
     - Alamofire (~> 4.7.3)
     - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.3)
@@ -94,7 +94,7 @@ DEPENDENCIES:
   - Crashlytics (~> 3.10)
   - Gridicons (~> 0.18)
   - KeychainAccess (~> 3.2)
-  - WordPressAuthenticator (~> 1.3.0)
+  - WordPressAuthenticator (~> 1.4-beta)
   - WordPressShared (~> 1.7-beta)
   - WordPressUI (~> 1.2)
   - XLPagerTabStrip (~> 9.0)
@@ -151,14 +151,14 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 8f8a24b257a4d978c8d40ad1e7355b944ffbfa8c
-  WordPressAuthenticator: b14ec6a2ddfe65bc2abd1c517ef7ec86aaa9d0f5
-  WordPressKit: 61a83ade68516f1398176b80c199489af0e83303
+  WordPressAuthenticator: 06e2da86707fb050b319ad899a038bdceee77f8c
+  WordPressKit: ab450fc37b54d8fe6839fb6e4074962980480cc0
   WordPressShared: 6949d39fefa19e5bed98fa482d1be29fea77849a
   WordPressUI: 44fe43a9c5c504dfd534286e39e1ce6ebcd69ff5
   wpxmlrpc: 6ba55c773cfa27083ae4a2173e69b19f46da98e2
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: cbd49d65efb2f2cdbdcaac84e618896ae87b861e
 
-PODFILE CHECKSUM: ae6de3cc2a016205152cef90a4634aa89012cfb8
+PODFILE CHECKSUM: d445a5c8a43ce0f42186fc432a4e5bda7a786ecc
 
 COCOAPODS: 1.6.1

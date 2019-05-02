@@ -59,6 +59,7 @@ final class ShipmentProvidersViewController: UIViewController {
         configureSearchController()
         configureTable()
         fetchGroups()
+        fetchSettings()
         startListeningToNotifications()
     }
 
@@ -91,6 +92,15 @@ private extension ShipmentProvidersViewController {
         }
 
         StoresManager.shared.dispatch(loadGroupsAction)
+    }
+
+    func fetchSettings() {
+        let generalSettingsAction = SettingAction.synchronizeGeneralSiteSettings(siteID: viewModel.order.siteID) { error in
+            if let error = error {
+                print("==== error fetching settings ")
+            }
+        }
+        //StoresManager.shared.dispatch(generalSettingsAction)
     }
 }
 

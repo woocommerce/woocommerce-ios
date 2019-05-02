@@ -11,6 +11,8 @@ final class ShippingProvidersViewModel {
     let title = NSLocalizedString("Shipping Providers",
                                   comment: "Title of view displaying all available Shipment Tracking Providers")
 
+    private let siteCountry = SiteCountry()
+
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) StorageShipmentTrackingProviderGroup in sync.
     ///
     private lazy var resultsController: ResultsController<StorageShipmentTrackingProvider> = {
@@ -92,6 +94,8 @@ extension ShippingProvidersViewModel {
         if section == Constants.customSectionIndex {
             return 1
         }
+
+        print("settings ", siteCountry.siteCountry)
 
         let group = resultsController.sections[section - Constants.specialSectionsCount]
         return group.objects.count

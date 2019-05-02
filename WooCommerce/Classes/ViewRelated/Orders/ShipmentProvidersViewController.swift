@@ -40,6 +40,8 @@ final class ShipmentProvidersViewController: UIViewController {
         self.viewModel = viewModel
         self.delegate = delegate
         super.init(nibName: type(of: self).nibName, bundle: nil)
+
+        self.configureViewModel()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -52,7 +54,6 @@ final class ShipmentProvidersViewController: UIViewController {
         configureNavigation()
         configureSearchController()
         configureTable()
-        configureViewModel()
         startListeningToNotifications()
     }
 

@@ -1,1 +1,1 @@
-- Terus ikuti semua pesanan dengan beberapa ketukan: sekarang, Anda dapat menyalin nomor pelacakan langsung ke papan tempel dari layar detail pesanan.
+* Kini Anda dapat login menggunakan alamat situs sebagai ganti alamat email.

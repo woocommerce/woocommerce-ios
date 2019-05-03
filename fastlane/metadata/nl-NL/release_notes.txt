@@ -1,1 +1,1 @@
-- Houd bestellingen met minder klikken bij: je kunt de trackingnummers nu rechtstreeks naar het klembord kopiëren vanuit het bestellingsoverzicht.
+* Je kunt nu inloggen met een site-adres in plaats van met je e-mailadres.

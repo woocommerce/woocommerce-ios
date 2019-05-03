@@ -1,1 +1,1 @@
-- Stay top of orders with fewer taps: now, you can copy tracking numbers right to the pasteboard from the order details screen.
+* You can now log in using a site address instead of your email address.

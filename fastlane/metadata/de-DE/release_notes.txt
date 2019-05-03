@@ -1,1 +1,1 @@
-- Bleibe bei deinen Bestellungen mit weniger Klicks auf dem neuesten Stand: Jetzt kannst du Sendungsverfolgungsnummern direkt vom Bildschirm mit den Bestelldetails in die Zwischenablage kopieren.
+* Du kannst jetzt eine Website-Adresse anstelle deiner E-Mail-Adresse zur Anmeldung verwenden.

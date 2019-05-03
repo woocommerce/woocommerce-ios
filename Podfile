@@ -19,13 +19,13 @@ target 'WooCommerce' do
 
   # Use the latest bugfix for coretelephony
   #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.4-beta.1'
-  pod 'Automattic-Tracks-iOS', '0.3.3'
+  pod 'Automattic-Tracks-iOS', '~> 0.3.5-beta'
 
   pod 'Gridicons', '~> 0.18'
   
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   #pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'task/wc-support-site-url-login'
-  pod 'WordPressAuthenticator', '~> 1.3.0'
+  pod 'WordPressAuthenticator', '~> 1.4-beta'
 
   # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => 'task/support-swift-5'  
   pod 'WordPressShared', '~> 1.7-beta'
@@ -38,10 +38,10 @@ target 'WooCommerce' do
   #
   pod 'Alamofire', '~> 4.7'
   pod 'Crashlytics', '~> 3.10'
-  pod 'KeychainAccess', '~> 3.1'
-  pod 'CocoaLumberjack', '~> 3.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.4'
-  pod 'XLPagerTabStrip', '~> 8.1'
+  pod 'KeychainAccess', '~> 3.2'
+  pod 'CocoaLumberjack', '~> 3.5'
+  pod 'CocoaLumberjack/Swift', '~> 3.5'
+  pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.2'
   pod 'ZendeskSDK', '~> 2.3.1'
 
@@ -59,8 +59,8 @@ end
 #
 def yosemite_pods
   pod 'Alamofire', '~> 4.7'
-  pod 'CocoaLumberjack', '~> 3.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.4'
+  pod 'CocoaLumberjack', '~> 3.5'
+  pod 'CocoaLumberjack/Swift', '~> 3.5'
 end
 
 # Yosemite Target:
@@ -84,8 +84,8 @@ end
 #
 def networking_pods
   pod 'Alamofire', '~> 4.7'
-  pod 'CocoaLumberjack', '~> 3.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.4'
+  pod 'CocoaLumberjack', '~> 3.5'
+  pod 'CocoaLumberjack/Swift', '~> 3.5'
 end
 
 # Networking Target:
@@ -109,8 +109,8 @@ end
 # ==============
 #
 def storage_pods
-  pod 'CocoaLumberjack', '~> 3.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.4'
+  pod 'CocoaLumberjack', '~> 3.5'
+  pod 'CocoaLumberjack/Swift', '~> 3.5'
 end
 
 # Storage Target:
@@ -135,7 +135,7 @@ end
 pre_install do |installer|
   installer.analysis_result.specifications.each do |s|
     if s.name == 'CocoaLumberjack'
-      s.swift_version = '4.2'
+      s.swift_version = '5.0'
     end
   end
 end

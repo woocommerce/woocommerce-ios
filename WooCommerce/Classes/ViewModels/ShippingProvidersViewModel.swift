@@ -158,7 +158,7 @@ extension ShippingProvidersViewModel {
         }
 
         if section ==  Constants.countrySectionIndex {
-            let group = storeCountryResultsController.sections[0]
+            let group = storeCountrySection()
             return group.objects.count
         }
 
@@ -172,8 +172,7 @@ extension ShippingProvidersViewModel {
         }
 
         if indexPath.section == Constants.countrySectionIndex {
-            let group = storeCountryResultsController
-                .sections[0]
+            let group = storeCountrySection()
             return group.objects[indexPath.item].name
             //return "Cesar"
         }
@@ -189,14 +188,17 @@ extension ShippingProvidersViewModel {
         }
 
         if section == Constants.countrySectionIndex {
-            return storeCountryResultsController
-                .sections[0]
-                .name
+            return storeCountrySection().name
         }
 
         return resultsController
             .sections[section - Constants.specialSectionsCount]
             .name
+    }
+
+    private func storeCountrySection() -> ResultsController<StorageShipmentTrackingProvider>.SectionInfo {
+        return storeCountryResultsController
+            .sections[0]
     }
 }
 

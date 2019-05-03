@@ -51,7 +51,8 @@ public class LoginFields: NSObject {
     
     // MARK: - Convenience
     
-    @objc func baseSiteAddress() -> String {
+    @objc
+    public func baseSiteAddress() -> String {
         return WordPressAuthenticator.baseSiteURL(string: self.siteAddress)
     }
 }

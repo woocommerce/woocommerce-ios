@@ -305,6 +305,32 @@ extension SiteCountry {
         case TC
         case TV
 
+        // U
+        case UG
+        case UA
+        case AE
+        case GB
+        case US
+        case UY
+        case UZ
+
+        // V
+        case VU
+        case VA
+        case VE
+        case VN
+
+        // W
+        case WF
+        case EH
+
+        // Y
+        case YE
+
+        // Z
+        case ZM
+        case ZW
+
 
         var readableCountry: String {
             switch self {
@@ -578,6 +604,32 @@ extension SiteCountry {
             case .TM: return "Turkmenistan"
             case .TC: return "Turks and Caicos Islands"
             case .TV: return "Tuvalu"
+
+            // U
+            case .UG: return "Uganda"
+            case .UA: return "Ukraine"
+            case .AE: return "United Arab Emirates"
+            case .GB: return "United Kingdom (UK)"
+            case .US: return "United States (US)"
+            case .UY: return "Uruguay"
+            case .UZ: return "Uzbekistan"
+
+            // V
+            case .VU: return "Vanuatu"
+            case .VA: return "Vatican"
+            case .VE: return "Venezuela"
+            case .VN: return "Vietnam"
+
+            // W
+            case .WF: return "Wallis and Futuna"
+            case .EH: return "Western Sahara"
+
+            // Y
+            case .YE: return "Yemen"
+
+            // Z
+            case .ZM: return "Zambia"
+            case .ZW: return "Zimbabwe"
             }
         }
     }

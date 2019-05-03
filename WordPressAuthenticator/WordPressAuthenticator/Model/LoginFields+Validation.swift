@@ -14,7 +14,7 @@ extension LoginFields {
     /// Returns *true* if the siteURL contains a valid URL. False otherwise.
     ///
     func validateSiteForSignin() -> Bool {
-        return siteAddress.isValidURL()
+        return true //siteAddress.isValidURL()
     }
 
     /// Returns *true* if the credentials required for account creation have been provided.

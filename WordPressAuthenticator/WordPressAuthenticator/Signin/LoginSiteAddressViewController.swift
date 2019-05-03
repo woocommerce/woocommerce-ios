@@ -314,7 +314,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     
     // MARK: - URL Validation
     
-    /// Does a local / quick Site Adrress validation and refreshes the UI with an error
+    /// Does a local / quick Site Address validation and refreshes the UI with an error
     /// if necessary.
     ///
     /// - Returns: `true` if the Site Address contains a valid URL.  `false` otherwise.

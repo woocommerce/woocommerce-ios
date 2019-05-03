@@ -48,6 +48,12 @@ public class LoginFields: NSObject {
         storedCredentials?.storedUserameHash = usernameHash
         storedCredentials?.storedPasswordHash = passwordHash
     }
+    
+    // MARK: - Convenience
+    
+    @objc func baseSiteAddress() -> String {
+        return WordPressAuthenticator.baseSiteURL(string: self.siteAddress)
+    }
 }
 
 /// A helper class for storing safari saved password information.

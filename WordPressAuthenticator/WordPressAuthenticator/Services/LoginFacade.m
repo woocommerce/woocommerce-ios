@@ -152,7 +152,7 @@
 
     [self.delegate displayLoginMessage:NSLocalizedString(@"Authenticating", nil)];
 
-    NSString *siteUrl = [NSURL IDNEncodedURL:loginFields.siteAddress];
+    NSString *siteUrl = [NSURL IDNEncodedURL: [loginFields baseSiteAddress]];
     [self.wordpressXMLRPCAPIFacade guessXMLRPCURLForSite:siteUrl success:guessXMLRPCURLSuccess failure:guessXMLRPCURLFailure];
 }
 

@@ -97,20 +97,16 @@ final class ShippingProvidersViewModel {
     ///
     func configureResultsController() {
         resultsController.onDidChangeContent = { [weak self] in
-            self?.extractStoreCountryProviders()
             self?.dataWasUpdated()
         }
 
         resultsController.onDidResetContent = { [weak self] in
-            self?.extractStoreCountryProviders()
             self?.dataWasUpdated()
         }
 
         try? resultsController.performFetch()
 
         try? storeCountryResultsController.performFetch()
-
-        extractStoreCountryProviders()
     }
 
     /// Filter results by text
@@ -129,10 +125,6 @@ final class ShippingProvidersViewModel {
 
     private func dataWasUpdated() {
         onDataLoaded?()
-    }
-
-    private func extractStoreCountryProviders() {
-        //countryProviders = storeCountryResultsController.fetchedObjects
     }
 
     private func predicateExcludingStoreCountry(predicate: NSPredicate) -> NSPredicate {

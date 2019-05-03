@@ -87,6 +87,10 @@ final class ShippingProvidersViewModel {
         return resultsController.fetchedObjects.count == 0
     }
 
+    private var storeCountryIsFound: Bool {
+        return storeCountryResultsController.fetchedObjects.count != 0
+    }
+
     /// Designated initializer
     ///
     init(order: Order) {
@@ -149,7 +153,7 @@ final class ShippingProvidersViewModel {
 //
 extension ShippingProvidersViewModel {
     func numberOfSections() -> Int {
-        return resultsController.sections.count + Constants.specialSectionsCount
+        return resultsController.sections.count + delta()
     }
 
     func numberOfRowsInSection(_ section: Int) -> Int {
@@ -157,12 +161,13 @@ extension ShippingProvidersViewModel {
             return 1
         }
 
-        if section ==  Constants.countrySectionIndex {
+        if storeCountryIsFound &&
+            section ==  Constants.countrySectionIndex {
             let group = storeCountrySection()
-            return group.objects.count
+            return group?.objects.count ?? 0
         }
 
-        let group = resultsController.sections[section - Constants.specialSectionsCount]
+        let group = resultsController.sections[section - delta()]
         return group.objects.count
     }
 
@@ -171,14 +176,15 @@ extension ShippingProvidersViewModel {
             return Constants.customProvider
         }
 
-        if indexPath.section == Constants.countrySectionIndex {
+        if storeCountryIsFound &&
+            indexPath.section == Constants.countrySectionIndex {
             let group = storeCountrySection()
-            return group.objects[indexPath.item].name
+            return group?.objects[indexPath.item].name ?? ""
             //return "Cesar"
         }
 
         let group = resultsController
-            .sections[indexPath.section - Constants.specialSectionsCount]
+            .sections[indexPath.section - delta()]
         return group.objects[indexPath.item].name
     }
 
@@ -187,18 +193,23 @@ extension ShippingProvidersViewModel {
             return Constants.customGroup
         }
 
-        if section == Constants.countrySectionIndex {
-            return storeCountrySection().name
+        if storeCountryIsFound &&
+            section == Constants.countrySectionIndex {
+            return storeCountrySection()?.name ?? ""
         }
 
         return resultsController
-            .sections[section - Constants.specialSectionsCount]
+            .sections[section - delta()]
             .name
     }
 
-    private func storeCountrySection() -> ResultsController<StorageShipmentTrackingProvider>.SectionInfo {
+    private func storeCountrySection() -> ResultsController<StorageShipmentTrackingProvider>.SectionInfo? {
         return storeCountryResultsController
-            .sections[0]
+            .sections.first
+    }
+
+    private func delta() -> Int {
+        return storeCountryIsFound ? Constants.specialSectionsCount : Constants.specialSectionsCount - 1
     }
 }
 
@@ -216,7 +227,7 @@ extension ShippingProvidersViewModel {
     ///
     func groupName(at indexPath: IndexPath) -> String {
         if indexPath.section == Constants.countrySectionIndex {
-            return storeCountryResultsController.sections[0].name
+            return storeCountrySection()?.name ?? ""
         }
         return resultsController.sections[indexPath.section - Constants.specialSectionsCount].name
     }
@@ -224,11 +235,12 @@ extension ShippingProvidersViewModel {
     /// Returns the ShipmentTrackingProvider at a given IndexPath
     ///
     func provider(at indexPath: IndexPath) -> ShipmentTrackingProvider {
-        if indexPath.section == Constants.countrySectionIndex {
-            let group = storeCountryResultsController.sections[0]
-            let provider = group.objects[indexPath.item]
+        if storeCountryIsFound &&
+            indexPath.section == Constants.countrySectionIndex {
+            let group = storeCountrySection()
+            let provider = group?.objects[indexPath.item]
 
-            return provider
+            return provider!
         }
 
         let group = resultsController.sections[indexPath.section - Constants.specialSectionsCount]
@@ -241,7 +253,6 @@ extension ShippingProvidersViewModel {
         return groupName == ShipmentStore.customGroupName
     }
 }
-
 
 private enum Constants {
     static let customSectionIndex = 0

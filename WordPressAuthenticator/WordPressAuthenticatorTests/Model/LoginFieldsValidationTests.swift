@@ -32,7 +32,7 @@ class LoginFieldsValidationTests: XCTestCase {
         XCTAssertFalse(loginFields.validateSiteForSignin(), "Empty site should not validate.")
 
         loginFields.siteAddress = "hostname"
-        XCTAssertFalse(loginFields.validateSiteForSignin(), "Since we want to validate simple mistakes, to use a hostname you'll need an http:// or https:// prefix.")
+        XCTAssertTrue(loginFields.validateSiteForSignin(), "Hostnames should validate.")
         
         loginFields.siteAddress = "http://hostname"
         XCTAssert(loginFields.validateSiteForSignin(), "Since we want to validate simple mistakes, to use a hostname you'll need an http:// or https:// prefix.")

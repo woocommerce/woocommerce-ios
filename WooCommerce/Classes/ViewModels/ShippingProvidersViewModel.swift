@@ -12,6 +12,30 @@ final class ShippingProvidersViewModel {
                                   comment: "Title of view displaying all available Shipment Tracking Providers")
 
     private let siteCountry = SiteCountry()
+    private lazy var siteCountryName: String? = {
+        return self.siteCountry.siteCountryName
+    }()
+
+    private var countryProviders: [StorageShipmentTrackingProvider] = []
+
+    private lazy var predicateMatchingSiteCountry: NSPredicate? = {
+        guard let name = self.siteCountryName else {
+            return nil
+        }
+
+        return NSPredicate(format: "group.name contains[cd] %@",
+                                    name)
+    }()
+
+    private lazy var predicateNotMatchingSiteCountry: NSPredicate? = {
+        guard let name = self.siteCountryName else {
+            return nil
+        }
+
+        return NSPredicate(format: "not group.name contains[cd] %@",
+                                    name)
+    }()
+
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) StorageShipmentTrackingProviderGroup in sync.
     ///
@@ -30,8 +54,27 @@ final class ShippingProvidersViewModel {
 
         return ResultsController<StorageShipmentTrackingProvider>(storageManager: storageManager,
                                                                        sectionNameKeyPath: groupNameKeyPath,
-                                                                       matching: predicate,
+                                                                       matching: predicateExcludingStoreCountry(predicate: predicate),
                                                                        sortedBy: [providerGroupDescriptor, providerNameDescriptor])
+    }()
+
+    private lazy var storeCountryResultsController: ResultsController<StorageShipmentTrackingProvider> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld",
+                                    StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+
+        let groupNameKeyPath = #keyPath(StorageShipmentTrackingProvider.group.name)
+        let providerNameKeyPath = #keyPath(StorageShipmentTrackingProvider.name)
+
+        let providerGroupDescriptor = NSSortDescriptor(key: groupNameKeyPath,
+                                                       ascending: true)
+        let providerNameDescriptor = NSSortDescriptor(key: providerNameKeyPath,
+                                                      ascending: true)
+
+        return ResultsController<StorageShipmentTrackingProvider>(storageManager: storageManager,
+                                                                  sectionNameKeyPath: groupNameKeyPath,
+                                                                  matching: predicateMatchingStoreCountry(predicate: predicate),
+                                                                  sortedBy: [providerGroupDescriptor, providerNameDescriptor])
     }()
 
     /// Closure to be executed when the data is ready to be rendered
@@ -54,20 +97,27 @@ final class ShippingProvidersViewModel {
     ///
     func configureResultsController() {
         resultsController.onDidChangeContent = { [weak self] in
+            self?.extractStoreCountryProviders()
             self?.dataWasUpdated()
         }
 
         resultsController.onDidResetContent = { [weak self] in
+            self?.extractStoreCountryProviders()
             self?.dataWasUpdated()
         }
 
         try? resultsController.performFetch()
+
+        try? storeCountryResultsController.performFetch()
+
+        extractStoreCountryProviders()
     }
 
     /// Filter results by text
     ///
     func filter(by text: String) {
         let predicate = NSPredicate(format: "name CONTAINS[cd] %@", text)
+        //let predicate = predicateExcludingStoreCountry(predicate: NSPredicate(format: "name CONTAINS[cd] %@", text))
         resultsController.predicate = predicate
     }
 
@@ -79,6 +129,26 @@ final class ShippingProvidersViewModel {
 
     private func dataWasUpdated() {
         onDataLoaded?()
+    }
+
+    private func extractStoreCountryProviders() {
+        //countryProviders = storeCountryResultsController.fetchedObjects
+    }
+
+    private func predicateExcludingStoreCountry(predicate: NSPredicate) -> NSPredicate {
+        guard let excludingStore = predicateNotMatchingSiteCountry else {
+            return predicate
+        }
+
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, excludingStore])
+    }
+
+    private func predicateMatchingStoreCountry(predicate: NSPredicate) -> NSPredicate {
+        guard let matchingStore = predicateMatchingSiteCountry else {
+            return predicate
+        }
+
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, matchingStore])
     }
 }
 
@@ -95,7 +165,10 @@ extension ShippingProvidersViewModel {
             return 1
         }
 
-        print("settings ", siteCountry.siteCountry)
+        if section ==  Constants.countrySectionIndex {
+            let group = storeCountryResultsController.sections[0]
+            return group.objects.count
+        }
 
         let group = resultsController.sections[section - Constants.specialSectionsCount]
         return group.objects.count
@@ -106,6 +179,13 @@ extension ShippingProvidersViewModel {
             return Constants.customProvider
         }
 
+        if indexPath.section == Constants.countrySectionIndex {
+            let group = storeCountryResultsController
+                .sections[0]
+            return group.objects[indexPath.item].name
+            //return "Cesar"
+        }
+
         let group = resultsController
             .sections[indexPath.section - Constants.specialSectionsCount]
         return group.objects[indexPath.item].name
@@ -114,6 +194,12 @@ extension ShippingProvidersViewModel {
     func titleForHeaderInSection(_ section: Int) -> String {
         if section == Constants.customSectionIndex {
             return Constants.customGroup
+        }
+
+        if section == Constants.countrySectionIndex {
+            return storeCountryResultsController
+                .sections[0]
+                .name
         }
 
         return resultsController
@@ -135,12 +221,22 @@ extension ShippingProvidersViewModel {
     /// Indicates the name of a group of shipment providers at a given IndexPath
     ///
     func groupName(at indexPath: IndexPath) -> String {
+        if indexPath.section == Constants.countrySectionIndex {
+            return storeCountryResultsController.sections[0].name
+        }
         return resultsController.sections[indexPath.section - Constants.specialSectionsCount].name
     }
 
     /// Returns the ShipmentTrackingProvider at a given IndexPath
     ///
     func provider(at indexPath: IndexPath) -> ShipmentTrackingProvider {
+        if indexPath.section == Constants.countrySectionIndex {
+            let group = storeCountryResultsController.sections[0]
+            let provider = group.objects[indexPath.item]
+
+            return provider
+        }
+
         let group = resultsController.sections[indexPath.section - Constants.specialSectionsCount]
         let provider = group.objects[indexPath.item]
 
@@ -155,7 +251,8 @@ extension ShippingProvidersViewModel {
 
 private enum Constants {
     static let customSectionIndex = 0
-    static let specialSectionsCount = 1
+    static let countrySectionIndex = 1
+    static let specialSectionsCount = 2
     static let customGroup = NSLocalizedString("Custom",
                                                comment: "Name of the section for custom shipment tracking providers")
     static let customProvider = NSLocalizedString("Custom Provider",

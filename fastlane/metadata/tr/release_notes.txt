@@ -1,1 +1,1 @@
-- Birkaç dokunmayla siparişler hakkında bilgi edinin: Şimdi, sipariş bilgileri ekranındaki izleme numaralarını panoya kopyalayabilirsiniz.
+* Artık e-posta adresiniz yerine bir site adresi kullanarak oturum açabilirsiniz.

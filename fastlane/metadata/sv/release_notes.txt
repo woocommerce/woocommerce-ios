@@ -1,1 +1,1 @@
-- Håll koll på ordrar med färre klick: du kan nu kopiera spårningsnummer direkt från skärmen för orderdetaljer till Urklipp.
+* Du kan nu använda en webbplatsadress i stället för din e-postadress.

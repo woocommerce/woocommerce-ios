@@ -1,1 +1,1 @@
-- Contrôlez plus facilement la situation : vous pouvez désormais copier les numéros de suivi directement dans le presse-papier à partir de l'écran des détails de la commande.
+* Vous pouvez désormais vous connecter en utilisant une adresse de site Web plutôt qu'une adresse e-mail.

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-04-16 09:54:03+0000 */
+/* Translation-Revision-Date: 2019-05-01 08:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -27,10 +27,12 @@
 /* The plugin is active on the site and has enabled automatic updates */
 "Active, Autoupdates on" = "פעיל, עדכונים אוטומטיים מופעלים";
 
-/* Add a note screen - button title to send the note */
+/* Add a note screen - button title to send the note
+   Add tracking screen - button title to add a tracking */
 "Add" = "הוספה";
 
-/* Add Tracking row label */
+/* Add Tracking row label
+   Add tracking screen - title. */
 "Add Tracking" = "הוספת מעקב";
 
 /* Button text for adding a new order note */
@@ -41,6 +43,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "הפעולה מוסיפה הערה להזמנה";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
+"Adds tracking to an order." = "להוספת מעקב אחר הזמנה.";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "כלי מתקדם לבדיקת מצב האפליקציה";
@@ -111,9 +116,6 @@
 
 /* Billing title for customer info cell */
 "Billing details" = "פרטי חיוב";
-
-/* Browse our FAQ title */
-"Browse our FAQ" = "לעיון בשאלות הנפוצות שלנו";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "ביצוע ההרשמה מהווה את הסכמתך לתנאי השימוש שלנו.";
@@ -194,6 +196,9 @@
 /* Cell title: the current date. */
 "Current" = "נוכחי";
 
+/* Title of button to add a custom tracking provider if filtering the list yields no results. */
+"Custom Provider" = "ספק מותאם";
+
 /* Customer info section title
    Section title for the customer's billing and shipping address */
 "Customer Information" = "פרטי לקוח";
@@ -202,11 +207,17 @@
    Section title for a note from the customer */
 "Customer Provided Note" = "הערה שסופקה על-ידי הלקוח";
 
+/* Add / Edit shipping provider. Title of cell date shipped */
+"Date shipped" = "תאריך משלוח";
+
 /* Statistical unit - a single day */
 "Day" = "יום";
 
 /* Plural of 'day' — a statistical unit */
 "Days" = "ימים";
+
+/* Delete Tracking button title */
+"Delete Tracking" = "מחיקת מעקב";
 
 /* The row label to tap for a detailed product list */
 "Details" = "פרטים";
@@ -218,7 +229,7 @@
 "Discount" = "הנחה";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet */
+   Dismiss the action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "בטל";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -247,6 +258,15 @@
 
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "יש להקיש פעמיים כדי לשנות את ההגדרות.";
+
+/* Accessibility hint for Pencil button in an individual Shipment Tracking in the order fulfillment screen */
+"Edit" = "עריכה";
+
+/* Edit tracking screen - title. */
+"Edit Tracking" = "עריכת מעקב";
+
+/* Accessibility hint for Edit Shipment button in Order fulfillment screen */
+"Edits a shipment." = "לעריכת המשלוח.";
 
 /* Email address text field placeholder */
 "Email" = "אימייל";
@@ -309,7 +329,7 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "קבלת תובנות על ביצועי המוצרים בחנות שלך";
 
-/* Subtitle for Browse our FAQ */
+/* Subtitle for Help Center */
 "Get answers to questions you have" = "קבלת מענה לשאלותיך";
 
 /* Alerts the user that wpcom account information is being retrieved. */
@@ -327,6 +347,9 @@
 
 /* Contact Support Action */
 "Help & Support" = "עזרה ותמיכה";
+
+/* Browse our help documentation website title */
+"Help Center" = "מרכז העזרה";
 
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "נשמח לעזרה בשיפור האפליקציה";
@@ -388,6 +411,9 @@
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "טוען הזמנה";
 
+/* Displayed when an Product is being retrieved */
+"Loading Product" = "טוען את המוצר";
+
 /* Button title.  Tapping takes the user to the login form.
    Log In button label. */
 "Log In" = "התחבר";
@@ -416,6 +442,9 @@
 
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "עליך להתחבר באמצעות כתובת האימייל של החשבון ב-WordPress.com כדי לנהל את החנויות שלך ב-WooCommerce.";
+
+/* Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps. */
+"Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue." = "נראה שהאתר שלך לא מוגדר לשימוש באפליקציה הזאת. עליך לוודא שבאתר שלך מותקן Jetpack כדי להמשיך.";
 
 /* Title of a button. */
 "Lost your password?" = "שחזור סיסמה";
@@ -510,6 +539,9 @@
 /* Notifications List (Empty State + Filters)
    Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "לא נמצאו תוצאות לקריטריונים שנבחרו";
+
+/* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
+"No results found for (term)\nAdd a custom provider" = "No results found for (term)\nAdd a custom provider";
 
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "טרם נשלח";
@@ -649,8 +681,11 @@
 "Private note" = "הערה פרטית";
 
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product */
+   Product section title - Section header title for the product - Title of product detail screen. */
 "Product" = "מוצר";
+
+/* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
+"Product %ld has been removed from your store" = "המוצר %ld הוסר מהחנות שלך";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "הצגת האפשרות להתקשרות או לשליחת הודעה אל הלקוח המשלם.";
@@ -709,6 +744,9 @@
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS נשלח";
 
+/* Edit tracking screen - button title to save a tracking */
+"Save" = "שמירה";
+
 /* Orders Search Placeholder */
 "Search all orders" = "חיפוש בכל ההזמנות";
 
@@ -747,8 +785,14 @@
 /* Shipping label for payment view */
 "Shipping" = "משלוח";
 
+/* Title of view displaying all available Shipment Tracking Providers */
+"Shipping Providers" = "ספקי משלוח";
+
 /* Shipping title for customer info cell */
 "Shipping details" = "פרטי משלוח";
+
+/* Add / Edit shipping provider. Title of cell presenting name */
+"Shipping provider" = "ספק משלוח";
 
 /* Footer text to show the billing cell */
 "Show billing" = "הצגת חיוב";
@@ -930,6 +974,9 @@
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "המידע הזה עוזר לנו לשפר את המוצרים שלנו, להציג שיווק רלוונטי יותר, לספק לך חוויית שימוש אישית ב-WordPress.com ועוד, כפי שמפורט במדיניות הפרטיות שלנו.";
 
+/* Message displayed when loading a specific product fails */
+"This product couldn't be loaded" = "לא ניתן לטעון את המוצר";
+
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "כדי ליצור חשבון WordPress.com חדש, יש להזין את כתובת האימייל שלך.";
 
@@ -964,6 +1011,9 @@
 /* Order tracking section title */
 "Tracking" = "מבצע מעקב";
 
+/* Add / Edit shipping provider. Title of cell presenting tracking number */
+"Tracking number" = "מספר מעקב";
+
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "מספר מעקב %@";
 
@@ -991,14 +1041,23 @@
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
 "Unable to add note to order #(viewModel.order.orderID)" = "אין אפשרות להוסיף פתק להזמנה #(viewModel.order.orderID)";
 
+/* Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number} */
+"Unable to add tracking to order #(orderID)" = "אין אפשרות להוסיף מעקב להזמנה #(orderID)";
+
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
 "Unable to change status of order #(orderID)" = "אין אפשרות לעדכן את מצב ההזמנה #(orderID)";
+
+/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
+"Unable to delete tracking for order #(orderID)" = "אין אפשרות למחוק את המעקב אחר ההזמנה #(orderID)";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "אין אפשרות למצוא חנויות של WooCommerce שמקושרות לחשבון זה";
 
 /* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
 "Unable to fulfill order #(orderID)" = "אין אפשרות להשלים את ההזמנה #(orderID)";
+
+/* Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers */
+"Unable to load Shipment Providers" = "אין אפשרות לטעון את ספקי המשלוח";
 
 /* Load Action Failed */
 "Unable to load content" = "אין אפשרות להעלות את התוכן";
@@ -1008,6 +1067,9 @@
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "לא ניתן לקרוא את אתר WordPress בכתובת URL זו. יש להקיש על 'דרושה עזרה?' כדי להציג את השאלות הנפוצות.";
+
+/* Notice displayed when an error occurs while refreshing a product. It reads: Unable to refresh product #{product number} */
+"Unable to refresh Product #%ld" = "אין אפשרות לרענן את המוצר #%ld";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "אין אפשרות לרענן את הרשימה";

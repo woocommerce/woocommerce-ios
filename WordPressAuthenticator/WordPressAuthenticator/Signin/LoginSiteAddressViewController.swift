@@ -172,10 +172,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
 
             let err = self.originalErrorOrError(error: error as NSError)
 
-            if self.errorDiscoveringJetpackSite(error: err) {
-                self.displayError(error as NSError, sourceTag: .jetpackLogin)
-
-            } else if let xmlrpcValidatorError = err as? WordPressOrgXMLRPCValidatorError {
+            if let xmlrpcValidatorError = err as? WordPressOrgXMLRPCValidatorError {
                 self.displayError(message: xmlrpcValidatorError.localizedDescription)
 
             } else if (err.domain == NSURLErrorDomain && err.code == NSURLErrorCannotFindHost) ||
@@ -276,15 +273,6 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             return error
         }
         return err
-    }
-
-
-    @objc func errorDiscoveringJetpackSite(error: NSError) -> Bool {
-        if let _ = error.userInfo[WordPressOrgXMLRPCValidator.UserInfoHasJetpackKey] {
-            return true
-        }
-
-        return false
     }
 
     /// Here we will continue with the self-hosted flow.

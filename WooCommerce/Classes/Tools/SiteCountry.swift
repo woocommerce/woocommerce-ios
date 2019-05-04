@@ -24,6 +24,24 @@ final class SiteCountry {
         return resultsController.fetchedObjects.first?.value
     }
 
+    var siteCountryName: String? {
+        guard let siteCountryCode = siteCountry else {
+            return nil
+        }
+
+        guard let code = siteCountryCode.components(separatedBy: ":").first else {
+            return nil
+        }
+
+        guard let countryCode = CountryCode(rawValue: code) else {
+            return nil
+        }
+
+        //return countryCode.readableCountry
+        return "United States"
+        //return "Czecha"
+    }
+
     /// Setup: ResultsController
     ///
     private func configureResultsController() {
@@ -609,8 +627,8 @@ extension SiteCountry {
             case .UG: return "Uganda"
             case .UA: return "Ukraine"
             case .AE: return "United Arab Emirates"
-            case .GB: return "United Kingdom (UK)"
-            case .US: return "United States (US)"
+            case .GB: return "United Kingdom"
+            case .US: return "United States"
             case .UY: return "Uruguay"
             case .UZ: return "Uzbekistan"
 

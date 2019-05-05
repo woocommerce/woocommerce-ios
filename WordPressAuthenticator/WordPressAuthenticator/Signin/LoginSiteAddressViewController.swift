@@ -143,12 +143,16 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         view.endEditing(true)
         displayError(message: "")
         
-        let siteAddress = WordPressAuthenticator.baseSiteURL(string: loginFields.siteAddress)
+        // We need to to this here because before this point we need the URL to be pre-validated
+        // exactly as the user inputs it, and after this point we need the URL to be the base site URL.
+        // This isn't really great, but it's the only sane solution I could come up with given the current
+        // architecture of this pod.
+        loginFields.siteAddress = WordPressAuthenticator.baseSiteURL(string: loginFields.siteAddress)
 
         configureViewLoading(true)
 
         let facade = WordPressXMLRPCAPIFacade()
-        facade.guessXMLRPCURL(forSite: siteAddress, success: { [weak self] (url) in
+        facade.guessXMLRPCURL(forSite: loginFields.siteAddress, success: { [weak self] (url) in
             // Success! We now know that we have a valid XML-RPC endpoint.
             // At this point, we do NOT know if this is a WP.com site or a self-hosted site.
             if let url = url {
@@ -302,7 +306,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     
     // MARK: - URL Validation
     
-    /// Does a local / quick Site Adrress validation and refreshes the UI with an error
+    /// Does a local / quick Site Address validation and refreshes the UI with an error
     /// if necessary.
     ///
     /// - Returns: `true` if the Site Address contains a valid URL.  `false` otherwise.

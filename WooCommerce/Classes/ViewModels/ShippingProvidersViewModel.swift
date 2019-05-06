@@ -247,22 +247,22 @@ extension ShippingProvidersViewModel {
 
     /// Indicates the name of a group of shipment providers at a given IndexPath
     ///
-    func groupName(at indexPath: IndexPath) -> String {
+    func groupName(at indexPath: IndexPath) -> String? {
         if indexPath.section == Constants.countrySectionIndex {
-            return storeCountrySection()?.name ?? ""
+            return storeCountrySection()?.name
         }
         return providersExcludingStoreCountry.sections[indexPath.section - Constants.specialSectionsCount].name
     }
 
     /// Returns the ShipmentTrackingProvider at a given IndexPath
     ///
-    func provider(at indexPath: IndexPath) -> ShipmentTrackingProvider {
+    func provider(at indexPath: IndexPath) -> ShipmentTrackingProvider? {
         if storeCountryHasProviders &&
             indexPath.section == Constants.countrySectionIndex {
             let group = storeCountrySection()
             let provider = group?.objects[indexPath.item]
 
-            return provider!
+            return provider
         }
 
         let group = providersExcludingStoreCountry.sections[indexPath.section - Constants.specialSectionsCount]

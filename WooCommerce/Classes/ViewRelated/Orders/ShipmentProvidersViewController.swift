@@ -234,8 +234,10 @@ extension ShipmentProvidersViewController: UITableViewDelegate {
             return
         }
 
-        let provider = viewModel.provider(at: indexPath)
-        let groupName = viewModel.groupName(at: indexPath)
+        guard let provider = viewModel.provider(at: indexPath),
+            let groupName = viewModel.groupName(at: indexPath) else {
+                return
+        }
 
         delegate?.shipmentProviderList(self, didSelect: provider, groupName: groupName)
     }

@@ -2,8 +2,10 @@ import Foundation
 import UIKit
 import Yosemite
 
-/// Encapsulates the data necessary to render a list of shipment providers
-///
+/// Encapsulates the logic necessary to render a list of shipment tracking providers
+/// The list of providers has to be ordered alphabetically (ascending), wiht two exceptions:
+/// - A section to add Custom Providers
+/// - The providers corresponding to the store country should be shown first
 final class ShippingProvidersViewModel {
     let order: Order
 
@@ -22,7 +24,7 @@ final class ShippingProvidersViewModel {
         return self.siteCountry.siteCountryName
     }()
 
-    // MARK: - Support for results controller
+    // MARK: - Predicates
 
     /// Predicate to match all the providers that correspond
     /// to the store's country
@@ -46,9 +48,11 @@ final class ShippingProvidersViewModel {
                                     name)
     }()
 
+    // MARK: - Results controllers
+
     /// ResultsController to fetch the list of shipment providers,
     /// excluding the store country
-    private lazy var resultsController: ResultsController<StorageShipmentTrackingProvider> = {
+    private lazy var providersExcludingStoreCountry: ResultsController<StorageShipmentTrackingProvider> = {
         let storageManager = AppDelegate.shared.storageManager
         let groupNameKeyPath = ResultsControllerConstants.groupNameKeyPath
         let providerNameKeyPath = ResultsControllerConstants.providerNameKeyPath
@@ -67,7 +71,7 @@ final class ShippingProvidersViewModel {
 
     /// Results controller, to fetch the list of shipment providers
     /// correspoding to the store country
-    private lazy var storeCountryResultsController: ResultsController<StorageShipmentTrackingProvider> = {
+    private lazy var providersForStoreCountry: ResultsController<StorageShipmentTrackingProvider> = {
         let storageManager = AppDelegate.shared.storageManager
         let groupNameKeyPath = ResultsControllerConstants.groupNameKeyPath
         let providerNameKeyPath = ResultsControllerConstants.providerNameKeyPath
@@ -92,11 +96,11 @@ final class ShippingProvidersViewModel {
     /// Convenience property to check if the data collection is empty
     ///
     var isListEmpty: Bool {
-        return resultsController.fetchedObjects.count == 0
+        return providersExcludingStoreCountry.fetchedObjects.count == 0
     }
 
     private var storeCountryIsFound: Bool {
-        return storeCountryResultsController.fetchedObjects.count != 0
+        return providersForStoreCountry.fetchedObjects.count != 0
     }
 
     /// Designated initializer
@@ -108,17 +112,17 @@ final class ShippingProvidersViewModel {
     /// Setup: Results Controller
     ///
     func configureResultsController() {
-        resultsController.onDidChangeContent = { [weak self] in
+        providersExcludingStoreCountry.onDidChangeContent = { [weak self] in
             self?.dataWasUpdated()
         }
 
-        resultsController.onDidResetContent = { [weak self] in
+        providersExcludingStoreCountry.onDidResetContent = { [weak self] in
             self?.dataWasUpdated()
         }
 
-        try? resultsController.performFetch()
+        try? providersExcludingStoreCountry.performFetch()
 
-        try? storeCountryResultsController.performFetch()
+        try? providersForStoreCountry.performFetch()
     }
 
     /// Filter results by text
@@ -126,13 +130,13 @@ final class ShippingProvidersViewModel {
     func filter(by text: String) {
         let predicate = NSPredicate(format: "name CONTAINS[cd] %@", text)
         //let predicate = predicateExcludingStoreCountry(predicate: NSPredicate(format: "name CONTAINS[cd] %@", text))
-        resultsController.predicate = predicate
+        providersExcludingStoreCountry.predicate = predicate
     }
 
     /// Clear all filters
     ///
     func clearFilters() {
-        resultsController.predicate = nil
+        providersExcludingStoreCountry.predicate = nil
     }
 
     private func dataWasUpdated() {
@@ -161,7 +165,7 @@ final class ShippingProvidersViewModel {
 //
 extension ShippingProvidersViewModel {
     func numberOfSections() -> Int {
-        return resultsController.sections.count + delta()
+        return providersExcludingStoreCountry.sections.count + delta()
     }
 
     func numberOfRowsInSection(_ section: Int) -> Int {
@@ -175,7 +179,7 @@ extension ShippingProvidersViewModel {
             return group?.objects.count ?? 0
         }
 
-        let group = resultsController.sections[section - delta()]
+        let group = providersExcludingStoreCountry.sections[section - delta()]
         return group.objects.count
     }
 
@@ -191,7 +195,7 @@ extension ShippingProvidersViewModel {
             //return "Cesar"
         }
 
-        let group = resultsController
+        let group = providersExcludingStoreCountry
             .sections[indexPath.section - delta()]
         return group.objects[indexPath.item].name
     }
@@ -206,13 +210,13 @@ extension ShippingProvidersViewModel {
             return storeCountrySection()?.name ?? ""
         }
 
-        return resultsController
+        return providersExcludingStoreCountry
             .sections[section - delta()]
             .name
     }
 
     private func storeCountrySection() -> ResultsController<StorageShipmentTrackingProvider>.SectionInfo? {
-        return storeCountryResultsController
+        return providersForStoreCountry
             .sections.first
     }
 
@@ -237,7 +241,7 @@ extension ShippingProvidersViewModel {
         if indexPath.section == Constants.countrySectionIndex {
             return storeCountrySection()?.name ?? ""
         }
-        return resultsController.sections[indexPath.section - Constants.specialSectionsCount].name
+        return providersExcludingStoreCountry.sections[indexPath.section - Constants.specialSectionsCount].name
     }
 
     /// Returns the ShipmentTrackingProvider at a given IndexPath
@@ -251,7 +255,7 @@ extension ShippingProvidersViewModel {
             return provider!
         }
 
-        let group = resultsController.sections[indexPath.section - Constants.specialSectionsCount]
+        let group = providersExcludingStoreCountry.sections[indexPath.section - Constants.specialSectionsCount]
         let provider = group.objects[indexPath.item]
 
         return provider

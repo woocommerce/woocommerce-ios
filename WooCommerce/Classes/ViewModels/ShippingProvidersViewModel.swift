@@ -11,13 +11,17 @@ final class ShippingProvidersViewModel {
     let title = NSLocalizedString("Shipping Providers",
                                   comment: "Title of view displaying all available Shipment Tracking Providers")
 
+    /// Encapsulates the logic to figure out the current store's country
+    /// and translate that into a readable string
     private let siteCountry = SiteCountry()
+
+    /// The name of the current store's country
     private lazy var siteCountryName: String? = {
         return self.siteCountry.siteCountryName
     }()
 
-    private var countryProviders: [StorageShipmentTrackingProvider] = []
-
+    /// Predicate to match all the providers that correspond
+    /// to the store's country
     private lazy var predicateMatchingSiteCountry: NSPredicate? = {
         guard let name = self.siteCountryName else {
             return nil
@@ -27,6 +31,8 @@ final class ShippingProvidersViewModel {
                                     name)
     }()
 
+    /// Predicate to match all the providers excluding those matching
+    /// the store's country
     private lazy var predicateNotMatchingSiteCountry: NSPredicate? = {
         guard let name = self.siteCountryName else {
             return nil
@@ -37,7 +43,7 @@ final class ShippingProvidersViewModel {
     }()
 
 
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) StorageShipmentTrackingProviderGroup in sync.
+    /// ResultsController to fetch the list of shipment providers
     ///
     private lazy var resultsController: ResultsController<StorageShipmentTrackingProvider> = {
         let storageManager = AppDelegate.shared.storageManager
@@ -58,6 +64,8 @@ final class ShippingProvidersViewModel {
                                                                        sortedBy: [providerGroupDescriptor, providerNameDescriptor])
     }()
 
+    /// Results controller 
+    ///
     private lazy var storeCountryResultsController: ResultsController<StorageShipmentTrackingProvider> = {
         let storageManager = AppDelegate.shared.storageManager
         let predicate = NSPredicate(format: "siteID == %lld",

@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 final class SiteCountry {
-    /// ResultsController: Whenever settings change, I will change. We both change. The world changes.
+    /// ResultsController. Fetches the store country from SiteSetting
     ///
     private lazy var resultsController: ResultsController<StorageSiteSetting> = {
         let storageManager = AppDelegate.shared.storageManager
@@ -24,20 +24,19 @@ final class SiteCountry {
         return resultsController.fetchedObjects.first?.value
     }
 
+    /// Returns the name of the country associated with the current store.
+    /// The default store country can be stored in a format like `HK:KOWLOON`
+    /// i.e. will return `Hong Kong` for `HK:KOWLOON`.
+    /// Will return nil if it can not figure out a valid country name
     var siteCountryName: String? {
-        guard let siteCountryCode = siteCountry else {
-            return nil
-        }
-
-        guard let code = siteCountryCode.components(separatedBy: ":").first else {
-            return nil
-        }
-
-        guard let countryCode = CountryCode(rawValue: code) else {
-            return nil
+        guard let siteCountryCode = siteCountry,
+            let code = siteCountryCode.components(separatedBy: ":").first,
+            let countryCode = CountryCode(rawValue: code) else {
+                return nil
         }
 
         return countryCode.readableCountry
+        //return "United States"
     }
 
     /// Setup: ResultsController
@@ -48,6 +47,7 @@ final class SiteCountry {
 }
 
 
+// MARK: - Mapping between country codes and readable names
 extension SiteCountry {
     enum CountryCode: String, CaseIterable {
         // A
@@ -652,10 +652,10 @@ extension SiteCountry {
 }
 
 
-// MARK: - Constants!
+// MARK: - Constants.
 //
 private extension SiteCountry {
-
+    /// The key of the SiteSetting containing the store country
     enum Constants {
         static let countryKey = "woocommerce_default_country"
     }

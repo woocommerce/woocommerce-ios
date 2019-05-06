@@ -1,1 +1,1 @@
-- Mantenha os pedidos sob controle com apenas alguns toques: Agora, você pode copiar números de rastreamento para a área de transferência a partir da tela de detalhes do pedido.
+* Agora você pode fazer login com um endereço de site em vez do endereço de e-mail.

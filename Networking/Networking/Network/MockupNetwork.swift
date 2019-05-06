@@ -42,7 +42,7 @@ class MockupNetwork: Network {
     /// - Parameter useResponseQueue: Use the response queue. Default is `false`.
     ///
     convenience init(useResponseQueue: Bool = false) {
-        let dummy = Credentials(username: "", authToken: "")
+        let dummy = Credentials(username: "", authToken: "", siteAddress: "")
         self.init(credentials: dummy)
         self.useResponseQueue = useResponseQueue
     }

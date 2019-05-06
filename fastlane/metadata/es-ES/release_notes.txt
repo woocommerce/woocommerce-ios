@@ -1,1 +1,1 @@
-- Mantente al día de los pedidos en tan solo unos pasos: ahora puedes copiar los números de seguimiento al portapapeles desde la pantalla de detalles del pedido.
+* Ahora puedes acceder con la dirección de un sitio en lugar de hacerlo con tu dirección de correo electrónico.

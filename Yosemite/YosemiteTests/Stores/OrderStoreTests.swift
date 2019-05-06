@@ -575,13 +575,13 @@ class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that Inoccuous Upsert OP(s) performed in Derived Contexts **DO NOT** trigger Refresh Events in the
+    /// Verifies that Innocuous Upsert OP(s) performed in Derived Contexts **DO NOT** trigger Refresh Events in the
     /// main thread.
     ///
     /// This translates effectively into: Ensure that performing update OP's that don't really change anything, do not
     /// end up causing UI refresh OP's in the main thread.
     ///
-    func testInoccuousUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
+    func testInnocuousUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
         // Stack
         let viewContext = storageManager.persistentContainer.viewContext
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

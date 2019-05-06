@@ -140,7 +140,7 @@ public class OrdersRemote: Remote {
 // MARK: - Constants!
 //
 public extension OrdersRemote {
-    public enum Defaults {
+    enum Defaults {
         public static let pageSize: Int     = 25
         public static let pageNumber: Int   = 1
         public static let statusAny: String = "any"

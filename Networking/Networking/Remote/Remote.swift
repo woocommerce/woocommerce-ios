@@ -128,9 +128,9 @@ public extension NSNotification.Name {
 
     /// Posted whenever an Invalid Token Error is received.
     ///
-    public static let RemoteDidReceiveInvalidTokenError = NSNotification.Name(rawValue: "RemoteDidReceiveInvalidTokenError")
+    static let RemoteDidReceiveInvalidTokenError = NSNotification.Name(rawValue: "RemoteDidReceiveInvalidTokenError")
 
     /// Posted whenever a Jetpack Timeout is received.
     ///
-    public static let RemoteDidReceiveJetpackTimeoutError = NSNotification.Name(rawValue: "RemoteDidReceiveJetpackTimeoutError")
+    static let RemoteDidReceiveJetpackTimeoutError = NSNotification.Name(rawValue: "RemoteDidReceiveJetpackTimeoutError")
 }

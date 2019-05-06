@@ -35,12 +35,14 @@ public final class ShipmentsRemote: Remote {
     public func createShipmentTracking(for siteID: Int,
                                        orderID: Int,
                                        trackingProvider: String,
+                                       dateShipped: String,
                                        trackingNumber: String,
                                        completion: @escaping (ShipmentTracking?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/"
 
         let parameters = [ParameterKeys.trackingNumber: trackingNumber,
-                          ParameterKeys.trackingProvider: trackingProvider]
+                          ParameterKeys.trackingProvider: trackingProvider,
+                          ParameterKeys.dateShipped: dateShipped]
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
         let mapper = NewShipmentTrackingMapper(siteID: siteID, orderID: orderID)
@@ -119,5 +121,6 @@ private extension ShipmentsRemote {
         static let customTrackingProvider: String = "custom_tracking_provider"
         static let trackingNumber: String         = "tracking_number"
         static let trackingProvider: String       = "tracking_provider"
+        static let dateShipped: String            = "date_shipped"
     }
 }

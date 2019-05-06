@@ -26,12 +26,16 @@ public class ProductStore: Store {
         }
 
         switch action {
-        case .resetStoredProducts(let onCompletion):
-            resetStoredProducts(onCompletion: onCompletion)
+        case .resetStoredProductsAndVariations(let onCompletion):
+            resetStoredProductsAndVariations(onCompletion: onCompletion)
         case .retrieveProduct(let siteID, let productID, let onCompletion):
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .synchronizeProducts(let siteID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProducts(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .synchronizeProductVariations(let siteID, let productID, let onCompletion):
+            synchronizeProductVariations(siteID: siteID, productID: productID, onCompletion: onCompletion)
+        case .retrieveProductVariation(let siteID, let productID, let variationID, let onCompletion):
+            retrieveProductVariation(siteID: siteID, productID: productID, variationID: variationID, onCompletion: onCompletion)
         }
     }
 }
@@ -41,18 +45,19 @@ public class ProductStore: Store {
 //
 private extension ProductStore {
 
-    /// Nukes all of the Stored Products.
+    /// Nukes all of the Stored Products and ProductVariations.
     ///
-    func resetStoredProducts(onCompletion: () -> Void) {
+    func resetStoredProductsAndVariations(onCompletion: () -> Void) {
         let storage = storageManager.viewStorage
         storage.deleteAllObjects(ofType: Storage.Product.self)
+        storage.deleteAllObjects(ofType: Storage.ProductVariation.self)
         storage.saveIfNeeded()
-        DDLogDebug("Products deleted")
+        DDLogDebug("Products and ProductVariations deleted")
 
         onCompletion()
     }
 
-    /// Retrieves the products associated with a given Site ID (if any!).
+    /// Synchronizes the products associated with a given Site ID (if any!).
     ///
     func synchronizeProducts(siteID: Int, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
@@ -88,14 +93,51 @@ private extension ProductStore {
             }
         }
     }
+
+    /// Synchronizes the product variations associated with the provided Site ID and Product ID (if any!).
+    ///
+    func synchronizeProductVariations(siteID: Int, productID: Int, onCompletion: @escaping (Error?) -> Void) {
+        let remote = ProductsRemote(network: network)
+
+        remote.loadAllProductVariations(for: siteID, productID: productID) { [weak self] (productVariations, error) in
+            guard let productVariations = productVariations else {
+                onCompletion(error)
+                return
+            }
+
+            self?.upsertStoredProductVariationsInBackground(readOnlyProductVariations: productVariations) {
+                onCompletion(nil)
+            }
+        }
+    }
+
+    /// Retrieves the product variation associated with the provided Site ID, Product ID, and Variation ID (if any!).
+    ///
+    func retrieveProductVariation(siteID: Int, productID: Int, variationID: Int, onCompletion: @escaping (Networking.ProductVariation?, Error?) -> Void) {
+        let remote = ProductsRemote(network: network)
+
+        remote.loadProductVariation(for: siteID, productID: productID, variationID: variationID) { [weak self] (productVariation, error) in
+            guard let productVariation = productVariation else {
+                if case NetworkError.notFound? = error {
+                    self?.deleteStoredProductVariation(siteID: siteID, productID: productID, variationID: variationID)
+                }
+                onCompletion(nil, error)
+                return
+            }
+
+            self?.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation]) {
+                onCompletion(productVariation, nil)
+            }
+        }
+    }
 }
 
 
-// MARK: - Storage
+// MARK: - Storage: Product
 //
 private extension ProductStore {
 
-    /// Deletes any Storage.Product with the specified OrderID
+    /// Deletes any Storage.Product with the specified `siteID` and `productID`
     ///
     func deleteStoredProduct(siteID: Int, productID: Int) {
         let storage = storageManager.viewStorage
@@ -158,10 +200,12 @@ private extension ProductStore {
     ///
     func handleProductAttributes(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
+        let productID = readOnlyProduct.productID
 
         // Upsert the attributes from the read-only product
         for readOnlyAttribute in readOnlyProduct.attributes {
             if let existingStorageAttribute = storage.loadProductAttribute(siteID: siteID,
+                                                                           productID: productID,
                                                                            attributeID: readOnlyAttribute.attributeID,
                                                                            name: readOnlyAttribute.name) {
                 existingStorageAttribute.update(with: readOnlyAttribute)
@@ -185,10 +229,12 @@ private extension ProductStore {
     ///
     func handleProductDefaultAttributes(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
+        let productID = readOnlyProduct.productID
 
         // Upsert the default attributes from the read-only product
         for readOnlyDefaultAttribute in readOnlyProduct.defaultAttributes {
             if let existingStorageDefaultAttribute = storage.loadProductDefaultAttribute(siteID: siteID,
+                                                                                         productID: productID,
                                                                                          defaultAttributeID: readOnlyDefaultAttribute.attributeID,
                                                                                          name: readOnlyDefaultAttribute.name ?? "") {
                 existingStorageDefaultAttribute.update(with: readOnlyDefaultAttribute)
@@ -213,10 +259,12 @@ private extension ProductStore {
     ///
     func handleProductImages(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
+        let productID = readOnlyProduct.productID
 
         // Upsert the images from the read-only product
         for readOnlyImage in readOnlyProduct.images {
             if let existingStorageImage = storage.loadProductImage(siteID: siteID,
+                                                                   productID: productID,
                                                                    imageID: readOnlyImage.imageID) {
                 existingStorageImage.update(with: readOnlyImage)
             } else {
@@ -239,10 +287,13 @@ private extension ProductStore {
     ///
     func handleProductCategories(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
+        let productID = readOnlyProduct.productID
 
         // Upsert the categories from the read-only product
         for readOnlyCategory in readOnlyProduct.categories {
-            if let existingStorageCategory = storage.loadProductCategory(siteID: siteID, categoryID: readOnlyCategory.categoryID) {
+            if let existingStorageCategory = storage.loadProductCategory(siteID: siteID,
+                                                                         productID: productID,
+                                                                         categoryID: readOnlyCategory.categoryID) {
                 existingStorageCategory.update(with: readOnlyCategory)
             } else {
                 let newStorageCategory = storage.insertNewObject(ofType: Storage.ProductCategory.self)
@@ -264,10 +315,13 @@ private extension ProductStore {
     ///
     func handleProductTags(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
+        let productID = readOnlyProduct.productID
 
         // Upsert the tags from the read-only product
         for readOnlyTag in readOnlyProduct.tags {
-            if let existingStorageTag = storage.loadProductTag(siteID: siteID, tagID: readOnlyTag.tagID) {
+            if let existingStorageTag = storage.loadProductTag(siteID: siteID,
+                                                               productID: productID,
+                                                               tagID: readOnlyTag.tagID) {
                 existingStorageTag.update(with: readOnlyTag)
             } else {
                 let newStorageTag = storage.insertNewObject(ofType: Storage.ProductTag.self)
@@ -287,6 +341,127 @@ private extension ProductStore {
 }
 
 
+// MARK: - Storage: Product Variations
+//
+private extension ProductStore {
+
+    /// Deletes any Storage.ProductVariation with the specified `siteID`, `productID`, and `variationID`
+    ///
+    func deleteStoredProductVariation(siteID: Int, productID: Int, variationID: Int) {
+        let storage = storageManager.viewStorage
+        guard let productVariation = storage.loadProductVariation(siteID: siteID, productID: productID, variationID: variationID) else {
+            return
+        }
+
+        storage.deleteObject(productVariation)
+        storage.saveIfNeeded()
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly ProductVariation Entities *in a background thread*. onCompletion will be called
+    /// on the main thread!
+    ///
+    func upsertStoredProductVariationsInBackground(readOnlyProductVariations: [Networking.ProductVariation], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.upsertStoredProductVariations(readOnlyProductVariations: readOnlyProductVariations, in: derivedStorage)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly Product Variation Entities into the Storage Layer.
+    ///
+    /// - Parameters:
+    ///     - readOnlyProductVariations: Remote Products to be persisted.
+    ///     - storage: Where we should save all the things!
+    ///
+    func upsertStoredProductVariations(readOnlyProductVariations: [Networking.ProductVariation], in storage: StorageType) {
+        for readOnlyProductVariation in readOnlyProductVariations {
+            let storageProductVariation = storage.loadProductVariation(siteID: readOnlyProductVariation.siteID,
+                                                                       productID: readOnlyProductVariation.productID,
+                                                                       variationID: readOnlyProductVariation.variationID) ??
+                storage.insertNewObject(ofType: Storage.ProductVariation.self)
+
+            storageProductVariation.update(with: readOnlyProductVariation)
+            handleProductVariationDimensions(readOnlyProductVariation, storageProductVariation, storage)
+            handleProductVariationImage(readOnlyProductVariation, storageProductVariation, storage)
+            handleProductVariationAttributes(readOnlyProductVariation, storageProductVariation, storage)
+        }
+    }
+
+    /// Updates or inserts the provided StorageProductVariation's dimensions using the provided read-only ProductVariation's dimensions
+    ///
+    func handleProductVariationDimensions(_ readOnlyProductVariation: Networking.ProductVariation,
+                                          _ storageProductVariation: Storage.ProductVariation,
+                                          _ storage: StorageType) {
+
+        if let existingStorageDimensions = storageProductVariation.dimensions {
+            existingStorageDimensions.update(with: readOnlyProductVariation.dimensions)
+        } else {
+            let newStorageDimensions = storage.insertNewObject(ofType: Storage.ProductVariationDimensions.self)
+            newStorageDimensions.update(with: readOnlyProductVariation.dimensions)
+            storageProductVariation.dimensions = newStorageDimensions
+        }
+    }
+
+    /// Updates or inserts the provided StorageProductVariation's image using the provided read-only ProductVariation's image
+    ///
+    func handleProductVariationImage(_ readOnlyProductVariation: Networking.ProductVariation,
+                                     _ storageProductVariation: Storage.ProductVariation,
+                                     _ storage: StorageType) {
+
+        if let existingStorageImage = storageProductVariation.image {
+            if let readOnlyImage = readOnlyProductVariation.image {
+                // The existing storageImage and readOnlyImage both exist so update!
+                existingStorageImage.update(with: readOnlyImage)
+            } else {
+                // readOnlyImage is nil, so nuke the existing storageImage!
+                storageProductVariation.image = nil
+                storage.deleteObject(existingStorageImage)
+            }
+        } else if let readOnlyImage = readOnlyProductVariation.image {
+            // There's a readOnlyImage, but no existing storageImage, so create a new one and save it
+            let newStorageImage = storage.insertNewObject(ofType: Storage.ProductVariationImage.self)
+            newStorageImage.update(with: readOnlyImage)
+            storageProductVariation.image = newStorageImage
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided StorageProductVariation's attributes using the provided read-only ProductVariation's attributes
+    ///
+    func handleProductVariationAttributes(_ readOnlyProductVariation: Networking.ProductVariation,
+                                 _ storageProductVariation: Storage.ProductVariation,
+                                 _ storage: StorageType) {
+        let siteID = readOnlyProductVariation.siteID
+        let variationID = readOnlyProductVariation.variationID
+
+        // Upsert the attributes from the read-only product variation
+        for readOnlyAttribute in readOnlyProductVariation.attributes {
+            if let existingStorageAttribute = storage.loadProductVariationAttribute(siteID: siteID,
+                                                                                    variationID: variationID,
+                                                                                    attributeID: readOnlyAttribute.attributeID,
+                                                                                    name: readOnlyAttribute.name) {
+                existingStorageAttribute.update(with: readOnlyAttribute)
+            } else {
+                let newStorageAttribute = storage.insertNewObject(ofType: Storage.ProductVariationAttribute.self)
+                newStorageAttribute.update(with: readOnlyAttribute)
+                storageProductVariation.addToAttributes(newStorageAttribute)
+            }
+        }
+
+        // Now, remove any objects that exist in storageProductVariation.attributes but not in readOnlyProductVariation.attributes
+        storageProductVariation.attributes?.forEach { storageAttribute in
+            if readOnlyProductVariation.attributes.first(where: { $0.attributeID == storageAttribute.attributeID && $0.name == storageAttribute.name }) == nil {
+                storageProductVariation.removeFromAttributes(storageAttribute)
+                storage.deleteObject(storageAttribute)
+            }
+        }
+    }
+}
+
+
 // MARK: - Unit Testing Helpers
 //
 extension ProductStore {
@@ -295,5 +470,11 @@ extension ProductStore {
     ///
     func upsertStoredProduct(readOnlyProduct: Networking.Product, in storage: StorageType) {
         upsertStoredProducts(readOnlyProducts: [readOnlyProduct], in: storage)
+    }
+
+    /// Unit Testing Helper: Updates or Inserts the specified ReadOnly ProductVariation in a given Storage Layer.
+    ///
+    func upsertStoredProductVariation(readOnlyProductVariation: Networking.ProductVariation, in storage: StorageType) {
+        upsertStoredProductVariations(readOnlyProductVariations: [readOnlyProductVariation], in: storage)
     }
 }

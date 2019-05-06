@@ -25,8 +25,8 @@ final class SiteCountry {
     }
 
     /// Returns the name of the country associated with the current store.
-    /// The default store country can be stored in a format like `HK:KOWLOON`
-    /// i.e. will return `Hong Kong` for `HK:KOWLOON`.
+    /// The default store country is provided in a format like `HK:KOWLOON`
+    /// This methdo will transform `HK:KOWLOON` into `Hong Kong`
     /// Will return nil if it can not figure out a valid country name
     var siteCountryName: String? {
         guard let siteCountryCode = siteCountry,

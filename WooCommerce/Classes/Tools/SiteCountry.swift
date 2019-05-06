@@ -36,7 +36,6 @@ final class SiteCountry {
         }
 
         return countryCode.readableCountry
-        //return "United States"
     }
 
     /// Setup: ResultsController

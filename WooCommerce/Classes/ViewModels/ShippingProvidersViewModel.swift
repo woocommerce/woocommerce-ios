@@ -99,7 +99,7 @@ final class ShippingProvidersViewModel {
         return providersExcludingStoreCountry.fetchedObjects.count == 0
     }
 
-    private var storeCountryIsFound: Bool {
+    private var storeCountryHasProviders: Bool {
         return providersForStoreCountry.fetchedObjects.count != 0
     }
 
@@ -122,6 +122,14 @@ final class ShippingProvidersViewModel {
 
         try? providersExcludingStoreCountry.performFetch()
 
+        providersForStoreCountry.onDidChangeContent = { [weak self] in
+            self?.dataWasUpdated()
+        }
+
+        providersForStoreCountry.onDidResetContent = { [weak self] in
+            self?.dataWasUpdated()
+        }
+
         try? providersForStoreCountry.performFetch()
     }
 
@@ -129,7 +137,6 @@ final class ShippingProvidersViewModel {
     ///
     func filter(by text: String) {
         let predicate = NSPredicate(format: "name CONTAINS[cd] %@", text)
-        //let predicate = predicateExcludingStoreCountry(predicate: NSPredicate(format: "name CONTAINS[cd] %@", text))
         providersExcludingStoreCountry.predicate = predicate
     }
 
@@ -173,7 +180,7 @@ extension ShippingProvidersViewModel {
             return 1
         }
 
-        if storeCountryIsFound &&
+        if storeCountryHasProviders &&
             section ==  Constants.countrySectionIndex {
             let group = storeCountrySection()
             return group?.objects.count ?? 0
@@ -188,11 +195,10 @@ extension ShippingProvidersViewModel {
             return Constants.customProvider
         }
 
-        if storeCountryIsFound &&
+        if storeCountryHasProviders &&
             indexPath.section == Constants.countrySectionIndex {
             let group = storeCountrySection()
             return group?.objects[indexPath.item].name ?? ""
-            //return "Cesar"
         }
 
         let group = providersExcludingStoreCountry
@@ -205,7 +211,7 @@ extension ShippingProvidersViewModel {
             return Constants.customGroup
         }
 
-        if storeCountryIsFound &&
+        if storeCountryHasProviders &&
             section == Constants.countrySectionIndex {
             return storeCountrySection()?.name ?? ""
         }
@@ -221,12 +227,12 @@ extension ShippingProvidersViewModel {
     }
 
     private func delta() -> Int {
-        return storeCountryIsFound ? Constants.specialSectionsCount : Constants.specialSectionsCount - 1
+        return storeCountryHasProviders ? Constants.specialSectionsCount : Constants.specialSectionsCount - 1
     }
 }
 
 
-// MARK: - Methods supporting an implementation of UITableViewDataSource
+// MARK: - Methods supporting the implementation of UITableViewDataSource
 //
 extension ShippingProvidersViewModel {
     /// Indicates if the item at a given IndexPath is a custom shipment provider
@@ -247,7 +253,7 @@ extension ShippingProvidersViewModel {
     /// Returns the ShipmentTrackingProvider at a given IndexPath
     ///
     func provider(at indexPath: IndexPath) -> ShipmentTrackingProvider {
-        if storeCountryIsFound &&
+        if storeCountryHasProviders &&
             indexPath.section == Constants.countrySectionIndex {
             let group = storeCountrySection()
             let provider = group?.objects[indexPath.item]

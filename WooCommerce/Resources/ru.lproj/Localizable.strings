@@ -27,10 +27,12 @@
 /* The plugin is active on the site and has enabled automatic updates */
 "Active, Autoupdates on" = "Активен, автообновление включено";
 
-/* Add a note screen - button title to send the note */
+/* Add a note screen - button title to send the note
+   Add tracking screen - button title to add a tracking */
 "Add" = "Добавить";
 
-/* Add Tracking row label */
+/* Add Tracking row label
+   Add tracking screen - title. */
 "Add Tracking" = "Добавить отслеживание";
 
 /* Button text for adding a new order note */
@@ -41,6 +43,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Добавить примечание к заказу";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
+"Adds tracking to an order." = "Adds tracking to an order.";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Специальный инструмент для анализа состояния приложения";
@@ -111,9 +116,6 @@
 
 /* Billing title for customer info cell */
 "Billing details" = "Платёжные сведения";
-
-/* Browse our FAQ title */
-"Browse our FAQ" = "Поиск в списке часто задаваемых вопросов";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Регистрируясь вы соглашаетесь с нашими _Правилами пользования_.";
@@ -194,6 +196,9 @@
 /* Cell title: the current date. */
 "Current" = "Текущая дата";
 
+/* Title of button to add a custom tracking provider if filtering the list yields no results. */
+"Custom Provider" = "Custom Provider";
+
 /* Customer info section title
    Section title for the customer's billing and shipping address */
 "Customer Information" = "Информация о клиенте";
@@ -202,11 +207,17 @@
    Section title for a note from the customer */
 "Customer Provided Note" = "Примечание клиента";
 
+/* Add / Edit shipping provider. Title of cell date shipped */
+"Date shipped" = "Date shipped";
+
 /* Statistical unit - a single day */
 "Day" = "День";
 
 /* Plural of 'day' — a statistical unit */
 "Days" = "Дни";
+
+/* Delete Tracking button title */
+"Delete Tracking" = "Delete Tracking";
 
 /* The row label to tap for a detailed product list */
 "Details" = "Подробности";
@@ -218,7 +229,7 @@
 "Discount" = "Скидка";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet */
+   Dismiss the action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Игнорировать";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -247,6 +258,15 @@
 
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Коснитесь два раза, чтобы изменить настройку.";
+
+/* Accessibility hint for Pencil button in an individual Shipment Tracking in the order fulfillment screen */
+"Edit" = "Edit";
+
+/* Edit tracking screen - title. */
+"Edit Tracking" = "Edit Tracking";
+
+/* Accessibility hint for Edit Shipment button in Order fulfillment screen */
+"Edits a shipment." = "Edits a shipment.";
 
 /* Email address text field placeholder */
 "Email" = "E-mail";
@@ -309,7 +329,7 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Получайте информацию об эффективности продаж различных продуктов в вашем магазине";
 
-/* Subtitle for Browse our FAQ */
+/* Subtitle for Help Center */
 "Get answers to questions you have" = "Получите ответы на возникшие вопросы";
 
 /* Alerts the user that wpcom account information is being retrieved. */
@@ -327,6 +347,9 @@
 
 /* Contact Support Action */
 "Help & Support" = "Помощь и техническая поддержка";
+
+/* Browse our help documentation website title */
+"Help Center" = "Help Center";
 
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "Помогите улучшить приложение";
@@ -388,6 +411,9 @@
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Загрузка заказа";
 
+/* Displayed when an Product is being retrieved */
+"Loading Product" = "Loading Product";
+
 /* Button title.  Tapping takes the user to the login form.
    Log In button label. */
 "Log In" = "Войти";
@@ -416,6 +442,9 @@
 
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Для управления магазинами WooCommerce выполните вход, указав адрес электронной почты своей учетной записи WordPress.com.";
+
+/* Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps. */
+"Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue." = "Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue.";
 
 /* Title of a button. */
 "Lost your password?" = "Забыли пароль?";
@@ -510,6 +539,9 @@
 /* Notifications List (Empty State + Filters)
    Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Нет результатов по выбранным критериям";
+
+/* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
+"No results found for (term)\nAdd a custom provider" = "No results found for (term)\nAdd a custom provider";
 
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "Еще не отправлено";
@@ -649,8 +681,11 @@
 "Private note" = "Конфиденциальное примечание";
 
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product */
+   Product section title - Section header title for the product - Title of product detail screen. */
 "Product" = "Товар";
+
+/* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
+"Product %ld has been removed from your store" = "Product %ld has been removed from your store";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Позвонить или отправить сообщение плательщику.";
@@ -709,6 +744,9 @@
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS отправлено";
 
+/* Edit tracking screen - button title to save a tracking */
+"Save" = "Save";
+
 /* Orders Search Placeholder */
 "Search all orders" = "Поиск по всем заказам";
 
@@ -747,8 +785,14 @@
 /* Shipping label for payment view */
 "Shipping" = "Доставка";
 
+/* Title of view displaying all available Shipment Tracking Providers */
+"Shipping Providers" = "Shipping Providers";
+
 /* Shipping title for customer info cell */
 "Shipping details" = "Сведения о доставке";
+
+/* Add / Edit shipping provider. Title of cell presenting name */
+"Shipping provider" = "Shipping provider";
 
 /* Footer text to show the billing cell */
 "Show billing" = "Показать платёжные сведения";
@@ -930,6 +974,9 @@
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "Эта информация позволит нам улушать наши продукты, уточнять маркетинг, персонализировать ваш опыт взаимодействия с WordPress.com, и далее как указано в нашей политике конфиденциальности.";
 
+/* Message displayed when loading a specific product fails */
+"This product couldn't be loaded" = "This product couldn't be loaded";
+
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Для создания новой учетной записи WordPress.com, пожалуйста, введите ваш адрес эл.почты.";
 
@@ -964,6 +1011,9 @@
 /* Order tracking section title */
 "Tracking" = "Отслеживание";
 
+/* Add / Edit shipping provider. Title of cell presenting tracking number */
+"Tracking number" = "Tracking number";
+
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Номер для отслеживания %@";
 
@@ -991,14 +1041,23 @@
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
 "Unable to add note to order #(viewModel.order.orderID)" = "Не удалось добавить примечание к заказу #(viewModel.order.orderID)";
 
+/* Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number} */
+"Unable to add tracking to order #(orderID)" = "Unable to add tracking to order #(orderID)";
+
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
 "Unable to change status of order #(orderID)" = "Не удалось изменить статус заказа #(orderID)";
+
+/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
+"Unable to delete tracking for order #(orderID)" = "Unable to delete tracking for order #(orderID)";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "Не удалось найти магазины WooCommerce, подключенные к этой учётной записи";
 
 /* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
 "Unable to fulfill order #(orderID)" = "Не удалось выполнить заказ #(orderID)";
+
+/* Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers */
+"Unable to load Shipment Providers" = "Unable to load Shipment Providers";
 
 /* Load Action Failed */
 "Unable to load content" = "Не удалось загрузить содержимое";
@@ -1008,6 +1067,9 @@
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Не удалось найти веб-сайт WordPress по этому URL-адресу. Нажмите кнопку «Нужна помощь?», чтобы просмотреть ответы на часто задаваемые вопросы.";
+
+/* Notice displayed when an error occurs while refreshing a product. It reads: Unable to refresh product #{product number} */
+"Unable to refresh Product #%ld" = "Unable to refresh Product #%ld";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Не удалось обновить список";

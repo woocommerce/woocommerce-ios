@@ -1,1 +1,1 @@
-- Tieni sotto controllo gli ordini con pochi tocchi: ora puoi copiare i numeri di tracciabilità dalla schermata dei dettaglio dell'ordine direttamente sullo sfondo della finestra del disegno.
+* Ora puoi accedere utilizzando l'indirizzo di un sito invece del tuo indirizzo e-mail.

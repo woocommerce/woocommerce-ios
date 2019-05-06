@@ -13,7 +13,10 @@ final class SiteCountry {
 
         let siteIDKeyPath = #keyPath(StorageSiteSetting.siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteSetting.siteID, ascending: false)
-        return ResultsController<StorageSiteSetting>(storageManager: storageManager, sectionNameKeyPath: siteIDKeyPath, matching: compoundPredicate, sortedBy: [descriptor])
+        return ResultsController<StorageSiteSetting>(storageManager: storageManager,
+                                                     sectionNameKeyPath: siteIDKeyPath,
+                                                     matching: compoundPredicate,
+                                                     sortedBy: [descriptor])
     }()
 
     init() {

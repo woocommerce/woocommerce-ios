@@ -20,7 +20,7 @@ final class SiteCountry {
         configureResultsController()
     }
 
-    var siteCountry: String? {
+    private var siteCountry: String? {
         return resultsController.fetchedObjects.first?.value
     }
 
@@ -37,9 +37,7 @@ final class SiteCountry {
             return nil
         }
 
-        //return countryCode.readableCountry
-        return "United States"
-        //return "Czecha"
+        return countryCode.readableCountry
     }
 
     /// Setup: ResultsController

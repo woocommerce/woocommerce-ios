@@ -149,7 +149,11 @@ final class ShippingProvidersViewModel {
     private func dataWasUpdated() {
         onDataLoaded?()
     }
+}
 
+
+// MARK: - Support for composing predicates
+extension ShippingProvidersViewModel {
     private func predicateExcludingStoreCountry(predicate: NSPredicate) -> NSPredicate {
         guard let excludingStore = predicateNotMatchingSiteCountry else {
             return predicate
@@ -168,7 +172,7 @@ final class ShippingProvidersViewModel {
 }
 
 
-// MARK: - Methods supporting an implementation of UITableViewDataSource
+// MARK: - Methods supporting the implementation of UITableViewDataSource
 //
 extension ShippingProvidersViewModel {
     func numberOfSections() -> Int {
@@ -273,6 +277,8 @@ extension ShippingProvidersViewModel {
 }
 
 
+// MARK: - Constants
+//
 private enum ResultsControllerConstants {
     static let predicateForAllProviders =
         NSPredicate(format: "siteID == %lld",

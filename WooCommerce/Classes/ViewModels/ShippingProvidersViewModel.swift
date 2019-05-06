@@ -11,6 +11,8 @@ final class ShippingProvidersViewModel {
     let title = NSLocalizedString("Shipping Providers",
                                   comment: "Title of view displaying all available Shipment Tracking Providers")
 
+    // MARK: - Store country
+
     /// Encapsulates the logic to figure out the current store's country
     /// and translate that into a readable string
     private let siteCountry = SiteCountry()
@@ -19,6 +21,8 @@ final class ShippingProvidersViewModel {
     private lazy var siteCountryName: String? = {
         return self.siteCountry.siteCountryName
     }()
+
+    // MARK: - Support for results controller
 
     /// Predicate to match all the providers that correspond
     /// to the store's country
@@ -42,16 +46,13 @@ final class ShippingProvidersViewModel {
                                     name)
     }()
 
-
-    /// ResultsController to fetch the list of shipment providers
-    ///
+    /// ResultsController to fetch the list of shipment providers,
+    /// excluding the store country
     private lazy var resultsController: ResultsController<StorageShipmentTrackingProvider> = {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld",
-                                    StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
-
-        let groupNameKeyPath = #keyPath(StorageShipmentTrackingProvider.group.name)
-        let providerNameKeyPath = #keyPath(StorageShipmentTrackingProvider.name)
+        let groupNameKeyPath = ResultsControllerConstants.groupNameKeyPath
+        let providerNameKeyPath = ResultsControllerConstants.providerNameKeyPath
+        let excludingStoreCountry = predicateExcludingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
 
         let providerGroupDescriptor = NSSortDescriptor(key: groupNameKeyPath,
                                                       ascending: true)
@@ -60,19 +61,18 @@ final class ShippingProvidersViewModel {
 
         return ResultsController<StorageShipmentTrackingProvider>(storageManager: storageManager,
                                                                        sectionNameKeyPath: groupNameKeyPath,
-                                                                       matching: predicateExcludingStoreCountry(predicate: predicate),
+                                                                       matching: excludingStoreCountry,
                                                                        sortedBy: [providerGroupDescriptor, providerNameDescriptor])
     }()
 
-    /// Results controller 
-    ///
+    /// Results controller, to fetch the list of shipment providers
+    /// correspoding to the store country
     private lazy var storeCountryResultsController: ResultsController<StorageShipmentTrackingProvider> = {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld",
-                                    StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let groupNameKeyPath = ResultsControllerConstants.groupNameKeyPath
+        let providerNameKeyPath = ResultsControllerConstants.providerNameKeyPath
 
-        let groupNameKeyPath = #keyPath(StorageShipmentTrackingProvider.group.name)
-        let providerNameKeyPath = #keyPath(StorageShipmentTrackingProvider.name)
+        let matchingStoreCountry = predicateMatchingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
 
         let providerGroupDescriptor = NSSortDescriptor(key: groupNameKeyPath,
                                                        ascending: true)
@@ -81,7 +81,7 @@ final class ShippingProvidersViewModel {
 
         return ResultsController<StorageShipmentTrackingProvider>(storageManager: storageManager,
                                                                   sectionNameKeyPath: groupNameKeyPath,
-                                                                  matching: predicateMatchingStoreCountry(predicate: predicate),
+                                                                  matching: matchingStoreCountry,
                                                                   sortedBy: [providerGroupDescriptor, providerNameDescriptor])
     }()
 
@@ -260,6 +260,16 @@ extension ShippingProvidersViewModel {
     func shouldCreateCustomTracking(for groupName: String) -> Bool {
         return groupName == ShipmentStore.customGroupName
     }
+}
+
+
+private enum ResultsControllerConstants {
+    static let predicateForAllProviders =
+        NSPredicate(format: "siteID == %lld",
+                    StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+    static let groupNameKeyPath =
+        #keyPath(StorageShipmentTrackingProvider.group.name)
+    static let providerNameKeyPath = #keyPath(StorageShipmentTrackingProvider.name)
 }
 
 private enum Constants {

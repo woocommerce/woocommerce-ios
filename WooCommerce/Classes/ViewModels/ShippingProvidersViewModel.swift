@@ -217,12 +217,13 @@ extension ShippingProvidersViewModel {
 
         if storeCountryHasProviders &&
             section == Constants.countrySectionIndex {
-            return storeCountrySection()?.name ?? ""
+            return NSLocalizedString(storeCountrySection()?.name ?? "", comment:"") 
         }
 
-        return providersExcludingStoreCountry
+        let sectionTitle = providersExcludingStoreCountry
             .sections[section - delta()]
             .name
+        return NSLocalizedString(sectionTitle, comment: "")
     }
 
     private func storeCountrySection() -> ResultsController<StorageShipmentTrackingProvider>.SectionInfo? {
@@ -248,10 +249,11 @@ extension ShippingProvidersViewModel {
     /// Indicates the name of a group of shipment providers at a given IndexPath
     ///
     func groupName(at indexPath: IndexPath) -> String? {
-        if indexPath.section == Constants.countrySectionIndex {
+        if storeCountryHasProviders &&
+            indexPath.section == Constants.countrySectionIndex {
             return storeCountrySection()?.name
         }
-        return providersExcludingStoreCountry.sections[indexPath.section - Constants.specialSectionsCount].name
+        return providersExcludingStoreCountry.sections[indexPath.section - delta()].name
     }
 
     /// Returns the ShipmentTrackingProvider at a given IndexPath
@@ -265,7 +267,7 @@ extension ShippingProvidersViewModel {
             return provider
         }
 
-        let group = providersExcludingStoreCountry.sections[indexPath.section - Constants.specialSectionsCount]
+        let group = providersExcludingStoreCountry.sections[indexPath.section - delta()]
         let provider = group.objects[indexPath.item]
 
         return provider

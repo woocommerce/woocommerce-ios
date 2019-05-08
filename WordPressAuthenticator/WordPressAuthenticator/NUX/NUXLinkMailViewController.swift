@@ -51,11 +51,13 @@ class NUXLinkMailViewController: LoginViewController {
         let openMailButtonTitle = NSLocalizedString("Open Mail", comment: "Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device.")
         openMailButton?.setTitle(openMailButtonTitle, for: .normal)
         openMailButton?.setTitle(openMailButtonTitle, for: .highlighted)
+        openMailButton?.accessibilityIdentifier = "Open Mail Button"
 
         let usePasswordTitle = NSLocalizedString("Enter your password instead.", comment: "Title of a button on the magic link screen.")
         usePasswordButton?.setTitle(usePasswordTitle, for: .normal)
         usePasswordButton?.setTitle(usePasswordTitle, for: .highlighted)
         usePasswordButton?.titleLabel?.numberOfLines = 0
+        usePasswordButton?.accessibilityIdentifier = "Use Password"
 
         guard let emailMagicLinkSource = emailMagicLinkSource else {
             return

@@ -29,7 +29,7 @@ final class SiteCountry {
 
     /// Returns the name of the country associated with the current store.
     /// The default store country is provided in a format like `HK:KOWLOON`
-    /// This methdo will transform `HK:KOWLOON` into `Hong Kong`
+    /// This methdod will transform `HK:KOWLOON` into `Hong Kong`
     /// Will return nil if it can not figure out a valid country name
     var siteCountryName: String? {
         guard let siteCountryCode = siteCountry,
@@ -50,6 +50,11 @@ final class SiteCountry {
 
 
 // MARK: - Mapping between country codes and readable names
+// The country names were extracted from the response to `/wp-json/wc/v3/settings/general`
+// The default countries are listed under `woocommerce_default_country`
+// in one of the following fomats:
+// - `"COUNTRY_CODE": "READABALE_COUNTRY_NAME"
+// - `"COUNTRY_CODE:COUNTRY_REGION": "READABLE_COUNTRY_NAME - READABLE_COUNTRY_REGION"
 extension SiteCountry {
     enum CountryCode: String, CaseIterable {
         // A

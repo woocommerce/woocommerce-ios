@@ -61,6 +61,7 @@ class LoginLinkRequestViewController: LoginViewController {
         let sendLinkButtonTitle = NSLocalizedString("Send Link", comment: "Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user.")
         sendLinkButton?.setTitle(sendLinkButtonTitle, for: .normal)
         sendLinkButton?.setTitle(sendLinkButtonTitle, for: .highlighted)
+        sendLinkButton?.accessibilityIdentifier = "Send Link Button"
 
         let usePasswordTitle = NSLocalizedString("Enter your password instead.", comment: "Title of a button. ")
         usePasswordButton?.setTitle(usePasswordTitle, for: .normal)

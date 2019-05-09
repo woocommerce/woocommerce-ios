@@ -21,7 +21,7 @@
     NSParameterAssert(secret);
     self = [super init];
     if (self) {
-        self.client = [WordPressComOAuthClient clientWithClientID:client secret:secret];
+        self.client = [WordPressComOAuthClientFacade initializeOAuthClientWithClientID:client secret:secret];
     }
 
     return self;

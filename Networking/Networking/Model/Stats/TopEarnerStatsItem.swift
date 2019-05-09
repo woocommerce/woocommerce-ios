@@ -11,7 +11,7 @@ public struct TopEarnerStatsItem: Decodable {
 
     /// Product name
     ///
-    public let productName: String
+    public let productName: String?
 
     /// Quantity sold
     ///

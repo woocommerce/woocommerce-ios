@@ -1,4 +1,5 @@
 import GoogleSignIn
+import WordPressKit
 
 // MARK: - WordPressAuthenticator Configuration
 //
@@ -19,6 +20,14 @@ public struct WordPressAuthenticatorConfiguration {
     /// WordPress.com Terms of Service URL
     ///
     let wpcomTermsOfServiceURL: String
+    
+    /// WordPress.com Base URL for OAuth
+    ///
+    let wpcomBaseURL: String
+    
+    /// WordPress.com API Base URL
+    ///
+    let wpcomAPIBaseURL: String
 
     /// GoogleLogin Client ID
     ///
@@ -42,6 +51,8 @@ public struct WordPressAuthenticatorConfiguration {
                  wpcomSecret: String,
                  wpcomScheme: String,
                  wpcomTermsOfServiceURL: String,
+                 wpcomBaseURL: String = WordPressComOAuthClient.WordPressComOAuthDefaultBaseUrl,
+                 wpcomAPIBaseURL: String = WordPressComOAuthClient.WordPressComOAuthDefaultApiBaseUrl,
                  googleLoginClientId: String,
                  googleLoginServerClientId: String,
                  googleLoginScheme: String,
@@ -51,6 +62,8 @@ public struct WordPressAuthenticatorConfiguration {
         self.wpcomSecret = wpcomSecret
         self.wpcomScheme = wpcomScheme
         self.wpcomTermsOfServiceURL = wpcomTermsOfServiceURL
+        self.wpcomBaseURL = wpcomBaseURL
+        self.wpcomAPIBaseURL = wpcomAPIBaseURL
         self.googleLoginClientId =  googleLoginClientId
         self.googleLoginServerClientId = googleLoginServerClientId
         self.googleLoginScheme = googleLoginScheme

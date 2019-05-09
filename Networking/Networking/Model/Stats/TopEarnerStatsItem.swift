@@ -36,9 +36,9 @@ public struct TopEarnerStatsItem: Decodable {
 
     /// Designated Initializer.
     ///
-    public init(productID: Int, productName: String, quantity: Int, price: Double, total: Double, currency: String, imageUrl: String?) {
+    public init(productID: Int, productName: String?, quantity: Int, price: Double, total: Double, currency: String, imageUrl: String?) {
         self.productID = productID
-        self.productName = productName
+        self.productName = productName ?? String()
         self.quantity = quantity
         self.price = price
         self.total = total

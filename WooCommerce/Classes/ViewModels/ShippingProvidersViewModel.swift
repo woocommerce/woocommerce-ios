@@ -217,13 +217,12 @@ extension ShippingProvidersViewModel {
 
         if storeCountryHasProviders &&
             section == Constants.countrySectionIndex {
-            return NSLocalizedString(storeCountrySection()?.name ?? "", comment: "")
+            return storeCountrySection()?.name ?? ""
         }
 
-        let sectionTitle = providersExcludingStoreCountry
+        return providersExcludingStoreCountry
             .sections[section - delta()]
             .name
-        return NSLocalizedString(sectionTitle, comment: "")
     }
 
     private func storeCountrySection() -> ResultsController<StorageShipmentTrackingProvider>.SectionInfo? {

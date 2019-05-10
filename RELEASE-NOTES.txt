@@ -1,5 +1,9 @@
 1.8
 -----
+
+1.7.1
+-----
+- Fixed a bug where Order List did not load for some users.
  
 1.7
 -----

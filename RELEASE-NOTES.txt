@@ -1,5 +1,6 @@
 1.9
 -----
+- bugfix: fixes "Unable to load content" error message when attempting to get Top Performers content.
  
 1.8
 -----

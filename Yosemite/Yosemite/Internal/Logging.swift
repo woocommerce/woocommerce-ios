@@ -17,11 +17,11 @@ import CocoaLumberjack
 ///
 /// Example:
 ///     internal var defaultDebugLevel: DDLogLevel = .verbose
-internal var defaultDebugLevel: DDLogLevel = CocoaLumberjack.defaultDebugLevel
+internal var defaultDebugLevel: DDLogLevel = CocoaLumberjack.dynamicLogLevel
 
 /// Reset the logging level threshold to the app-wide default.
 internal func resetDefaultDebugLevel() {
-    defaultDebugLevel = CocoaLumberjack.defaultDebugLevel
+    defaultDebugLevel = CocoaLumberjack.dynamicLogLevel
 }
 
 internal func DDLogDebug(_ message: @autoclosure () -> String,
@@ -33,7 +33,7 @@ internal func DDLogDebug(_ message: @autoclosure () -> String,
                          tag: Any? = nil,
                          asynchronous async: Bool = true,
                          ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogDebug(message,
+    CocoaLumberjack.DDLogDebug(message(),
                                level: level,
                                context: context,
                                file: file,
@@ -53,7 +53,7 @@ internal func DDLogInfo(_ message: @autoclosure () -> String,
                         tag: Any? = nil,
                         asynchronous async: Bool = true,
                         ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogInfo(message,
+    CocoaLumberjack.DDLogInfo(message(),
                               level: level,
                               context: context,
                               file: file,
@@ -73,7 +73,7 @@ internal func DDLogWarn(_ message: @autoclosure () -> String,
                         tag: Any? = nil,
                         asynchronous async: Bool = true,
                         ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogWarn(message,
+    CocoaLumberjack.DDLogWarn(message(),
                               level: level,
                               context: context,
                               file: file,
@@ -93,7 +93,7 @@ internal func DDLogVerbose(_ message: @autoclosure () -> String,
                         tag: Any? = nil,
                         asynchronous async: Bool = true,
                         ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogVerbose(message,
+    CocoaLumberjack.DDLogVerbose(message(),
                                  level: level,
                                  context: context,
                                  file: file,
@@ -113,7 +113,7 @@ internal func DDLogError(_ message: @autoclosure () -> String,
                          tag: Any? = nil,
                          asynchronous async: Bool = false,
                          ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogError(message,
+    CocoaLumberjack.DDLogError(message(),
                                level: level,
                                context: context,
                                file: file,

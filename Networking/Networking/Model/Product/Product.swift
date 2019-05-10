@@ -242,7 +242,19 @@ public struct Product: Decodable {
         let taxStatusKey = try container.decode(String.self, forKey: .taxStatusKey)
         let taxClass = try container.decodeIfPresent(String.self, forKey: .taxClass)
 
-        let manageStock = try container.decode(Bool.self, forKey: .manageStock)
+        // Even though the API docs claim `manageStock` is a bool, it's possible that `"parent"`
+        // could be returned as well (typically with variations) — we need to account for this.
+        // A "parent" value means that stock mgmt is turned on + managed at the parent product-level, therefore
+        // we need to set this var as `true` in this situation.
+        // See: https://github.com/woocommerce/woocommerce-ios/issues/884 for more deets
+        var manageStock = false
+        if let parsedBoolValue = container.failsafeDecodeIfPresent(booleanForKey: .manageStock) {
+            manageStock = parsedBoolValue
+        } else if let parsedStringValue = container.failsafeDecodeIfPresent(stringForKey: .manageStock) {
+            // A bool could not be parsed — check if "parent" is set, and if so, set manageStock to `true`
+            manageStock = parsedStringValue.lowercased() == Values.manageStockParent ? true : false
+        }
+
         let stockQuantity = try container.decodeIfPresent(Int.self, forKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
@@ -528,6 +540,16 @@ extension Product: Comparable {
                 lhs.stockStatusKey == rhs.stockStatusKey &&
                 lhs.averageRating == rhs.averageRating &&
                 lhs.ratingCount < rhs.ratingCount)
+    }
+}
+
+
+// MARK: - Constants!
+//
+private extension Product {
+
+    enum Values {
+        static let manageStockParent = "parent"
     }
 }
 

@@ -50,54 +50,6 @@ public class ProductsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
-
-    // MARK: - Product Variations
-
-    /// Retrieves all of the `ProductVariation`s available.
-    ///
-    /// - Parameters:
-    ///     - siteID: Site for which we'll fetch remote product variations.
-    ///     - productID: Product for which we'll fetch remote variations.
-    ///     - context: view or edit. Scope under which the request is made;
-    ///                determines fields present in response. Default is view.
-    ///     - pageNumber: Number of page that should be retrieved.
-    ///     - pageSize: Number of Orders to be retrieved per page.
-    ///     - completion: Closure to be executed upon completion.
-    ///
-    public func loadAllProductVariations(for siteID: Int,
-                                         productID: Int,
-                                         context: String? = nil,
-                                         pageNumber: Int = Defaults.pageNumber,
-                                         pageSize: Int = Defaults.pageSize,
-                                         completion: @escaping ([ProductVariation]?, Error?) -> Void) {
-        let parameters = [
-            ParameterKeys.page: String(pageNumber),
-            ParameterKeys.perPage: String(pageSize),
-            ParameterKeys.contextKey: context ?? Defaults.context
-        ]
-
-        let path = "\(Paths.products)/" + String(productID) + "/" + "\(Paths.variations)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
-        let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
-
-        enqueue(request, mapper: mapper, completion: completion)
-    }
-
-    /// Retrieves a specific `ProductVariation`
-    ///
-    /// - Parameters:
-    ///     - siteID: Site for which we'll fetch the remote product variation.
-    ///     - productID: Product for which we'll fetch the remote variation.
-    ///     - variationID: Identifier of the Product Variation.
-    ///     - completion: Closure to be executed upon completion.
-    ///
-    public func loadProductVariation(for siteID: Int, productID: Int, variationID: Int, completion: @escaping (ProductVariation?, Error?) -> Void) {
-        let path = "\(Paths.products)/" + String(productID) + "/" + "\(Paths.variations)/" + String(variationID)
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
-        let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
-
-        enqueue(request, mapper: mapper, completion: completion)
-    }
 }
 
 
@@ -112,7 +64,6 @@ public extension ProductsRemote {
 
     private enum Paths {
         static let products   = "products"
-        static let variations = "variations"
     }
 
     private enum ParameterKeys {

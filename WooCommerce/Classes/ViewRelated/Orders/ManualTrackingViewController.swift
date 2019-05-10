@@ -107,7 +107,6 @@ private extension ManualTrackingViewController {
 
     func configureForCommittingTracking() {
         hideKeyboard()
-        disableSecondaryActionButton()
         configureRightButtonItemAsSpinner()
         navigationItem.rightBarButtonItem?.isEnabled = false
     }
@@ -126,26 +125,6 @@ private extension ManualTrackingViewController {
         let rightBarButton = UIBarButtonItem(customView: activityIndicator)
 
         navigationItem.setRightBarButton(rightBarButton, animated: true)
-    }
-
-    func disableSecondaryActionButton() {
-        guard let cell = cellForSecondaryAction() else {
-            return
-        }
-
-        cell.selectionStyle = .none
-        cell.isUserInteractionEnabled = false
-        cell.alpha = Constants.disabledAlpha
-    }
-
-    func enableSecondaryActionButton() {
-        guard let cell = cellForSecondaryAction() else {
-            return
-        }
-
-        cell.selectionStyle = .default
-        cell.isUserInteractionEnabled = true
-        cell.alpha = Constants.enabledAlpha
     }
 
     func showKeyboard() {
@@ -210,12 +189,14 @@ extension ManualTrackingViewController: UITableViewDataSource {
         switch cell {
         case let cell as TitleAndEditableValueTableViewCell where row == .shippingProvider:
             configureShippingProvider(cell: cell)
+        case let cell as TitleAndEditableValueTableViewCell where row == .providerName:
+            configureProviderName(cell: cell)
         case let cell as TitleAndEditableValueTableViewCell where row == .trackingNumber:
             configureTrackingNumber(cell: cell)
+        case let cell as TitleAndEditableValueTableViewCell where row == .trackingLink:
+            configureTrackingLink(cell: cell)
         case let cell as TitleAndEditableValueTableViewCell where row == .dateShipped:
             configureDateShipped(cell: cell)
-        case let cell as BasicTableViewCell where row == .deleteTracking:
-            configureSecondaryAction(cell: cell)
         case let cell as DatePickerTableViewCell where row == .datePicker:
             configurePicker(cell: cell)
         default:
@@ -241,20 +222,6 @@ extension ManualTrackingViewController: UITableViewDataSource {
         return IndexPath(row: requestedIndex, section: section)
     }
 
-    private func cellForSecondaryAction() -> BasicTableViewCell? {
-        // The secondary action only exists when deleting
-        guard viewModel.isAdding == false else {
-            return nil
-        }
-
-        guard let actionIndexPath = indexPathForRow(.deleteTracking, inSection: 1),
-            let cell = table.cellForRow(at: actionIndexPath) as? BasicTableViewCell else {
-                return nil
-        }
-
-        return cell
-    }
-
     private func configureShippingProvider(cell: TitleAndEditableValueTableViewCell) {
         cell.title.text = NSLocalizedString("Shipping provider", comment: "Add / Edit shipping provider. Title of cell presenting name")
         cell.value.text = viewModel.providerCellName
@@ -263,13 +230,39 @@ extension ManualTrackingViewController: UITableViewDataSource {
         cell.accessoryType = viewModel.providerCellAccessoryType
     }
 
+    private func configureProviderName(cell: TitleAndEditableValueTableViewCell) {
+        cell.title.text = NSLocalizedString("Provider name", comment: "Add Custom shipping provider. Title of cell presenting the provider name")
+        cell.value.placeholder = NSLocalizedString("Enter provider name", comment: "Add custom shipping provider. Placeholder of cell presenting provider name")
+
+        cell.value.text = viewModel.providerName
+        cell.value.isEnabled = true
+
+        cell.value.addTarget(self, action: #selector(didChangeProviderName), for: .editingChanged)
+        cell.accessoryType = .none
+    }
+
     private func configureTrackingNumber(cell: TitleAndEditableValueTableViewCell) {
         cell.title.text = NSLocalizedString("Tracking number", comment: "Add / Edit shipping provider. Title of cell presenting tracking number")
 
+        cell.value.placeholder = NSLocalizedString("Enter tracking number",
+                                                   comment: "Add custom shipping provider. Placeholder of cell presenting tracking number")
         cell.value.text = viewModel.trackingNumber
         cell.value.isEnabled = true
 
         cell.value.addTarget(self, action: #selector(didChangeTrackingNumber), for: .editingChanged)
+        cell.accessoryType = .none
+    }
+
+    private func configureTrackingLink(cell: TitleAndEditableValueTableViewCell) {
+        cell.title.text = NSLocalizedString("Tracking link (optional)", comment: "Add custom shipping provider. Title of cell presenting tracking link")
+
+        cell.value.placeholder = NSLocalizedString("Enter tracking link", comment: "Add custom shipping provider. Placeholder of cell presenting tracking link")
+
+        cell.value.text = viewModel.trackingLink
+
+        cell.value.isEnabled = true
+        cell.value.addTarget(self, action: #selector(didChangeTrackingLink), for: .editingChanged)
+
         cell.accessoryType = .none
     }
 
@@ -316,9 +309,19 @@ extension ManualTrackingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let row = rowAtIndexPath(indexPath)
 
-        if row == .deleteTracking {
-            return Constants.deleteRowHeight
+        guard row == .datePicker else {
+            return UITableView.automaticDimension
         }
+
+        guard datePickerVisible else {
+            return CGFloat.leastNonzeroMagnitude
+        }
+
+        return Constants.pickerRowHeight
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        let row = rowAtIndexPath(indexPath)
 
         guard row == .datePicker else {
             return Constants.rowHeight
@@ -343,17 +346,15 @@ extension ManualTrackingViewController: UITableViewDelegate {
 private extension ManualTrackingViewController {
     func executeAction(for indexPath: IndexPath) {
         let row = rowAtIndexPath(indexPath)
-        if row == .deleteTracking {
-            deleteTracking()
-            return
-        }
 
         if row == .dateShipped && viewModel.isAdding {
             displayDatePicker(at: indexPath)
             return
         }
 
-        if row == .shippingProvider && viewModel.isAdding {
+        if row == .shippingProvider &&
+            viewModel.isAdding &&
+            !viewModel.isCustom {
             showAllShipmentProviders()
         }
     }
@@ -365,7 +366,7 @@ private extension ManualTrackingViewController {
     }
 
     func showAllShipmentProviders() {
-        let shippingProviders = ShippingProvidersViewModel(orderID: viewModel.orderID)
+        let shippingProviders = ShippingProvidersViewModel(order: viewModel.order)
         let shippingList = ShipmentProvidersViewController(viewModel: shippingProviders, delegate: self)
         navigationController?.pushViewController(shippingList, animated: true)
     }
@@ -404,12 +405,30 @@ extension ManualTrackingViewController: ShipmentProviderListDelegate {
 // MARK: - Tracking number textfield
 //
 private extension ManualTrackingViewController {
+    @objc func didChangeProviderName(sender: UITextField) {
+        guard let newProviderName = sender.text else {
+            return
+        }
+
+        viewModel.providerName = newProviderName
+        activateActionButtonIfNecessary()
+    }
+
     @objc func didChangeTrackingNumber(sender: UITextField) {
         guard let newTrackingNumber = sender.text else {
             return
         }
 
         viewModel.trackingNumber = newTrackingNumber
+        activateActionButtonIfNecessary()
+    }
+
+    @objc func didChangeTrackingLink(sender: UITextField) {
+        guard let newTrackingLink = sender.text else {
+            return
+        }
+
+        viewModel.trackingLink = newTrackingLink.addHTTPSSchemeIfNecessary()
         activateActionButtonIfNecessary()
     }
 }
@@ -428,36 +447,6 @@ private extension ManualTrackingViewController {
 // MARK: - Actions!
 //
 private extension ManualTrackingViewController {
-    func deleteTracking() {
-        configureForCommittingTracking()
-
-        let siteID = viewModel.siteID
-        let orderID = viewModel.orderID
-        guard let trackingID = viewModel.shipmentTracking?.trackingID else {
-            return
-        }
-
-        let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
-                                                                 orderID: orderID,
-                                                                 trackingID: trackingID) { [weak self] error in
-                                                                    if let error = error {
-                                                                        // TODO: Send error to Tracks
-                                                                        DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
-
-                                                                        self?.configureForEditingTracking()
-
-                                                          self?.enableSecondaryActionButton()
-                                                                        self?.displayDeleteErrorNotice(orderID: orderID)
-                                                                        return
-                                                                    }
-
-                                                                    // Track success in tracks
-                                                                    self?.dismiss()
-        }
-
-        StoresManager.shared.dispatch(deleteTrackingAction)
-    }
-
     func addTracking() {
         configureForCommittingTracking()
         guard let groupName = viewModel.shipmentProviderGroupName,
@@ -467,9 +456,9 @@ private extension ManualTrackingViewController {
         }
 
 
-        let siteID = viewModel.siteID
-        let orderID = viewModel.orderID
-        let statusKey = viewModel.orderStatus
+        let siteID = viewModel.order.siteID
+        let orderID = viewModel.order.orderID
+        let statusKey = viewModel.order.statusKey
         let dateShipped = DateFormatter
             .Defaults
             .yearMonthDayDateFormatter
@@ -507,7 +496,51 @@ private extension ManualTrackingViewController {
     }
 
     func addCustomTracking() {
-        // To be implemented in a follow up PR
+        guard let providerName = viewModel.providerName,
+            let trackingNumber = viewModel.trackingNumber else {
+                //TODO. Present notice
+            return
+        }
+        configureForCommittingTracking()
+
+        let siteID = viewModel.order.siteID
+        let orderID = viewModel.order.orderID
+        let statusKey = viewModel.order.statusKey
+        let trackingLink = viewModel.trackingLink ?? ""
+        let dateShipped = DateFormatter
+            .Defaults
+            .yearMonthDayDateFormatter
+            .string(from: viewModel.shipmentDate)
+
+        WooAnalytics.shared.track(.orderTrackingAdd, withProperties: ["id": orderID,
+                                                                      "status": statusKey,
+                                                                      "carrier": providerName])
+
+        let action = ShipmentAction.addCustomTracking(siteID: siteID,
+                                                      orderID: orderID,
+                                                      trackingProvider: providerName,
+                                                      trackingNumber: trackingNumber,
+                                                      trackingURL: trackingLink,
+                                                      dateShipped: dateShipped) { [weak self] error in
+                                                        if let error = error {
+                                                            DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
+
+                                                            WooAnalytics.shared.track(.orderTrackingFailed,
+                                                                                      withError: error)
+
+                                                            self?.configureForEditingTracking()
+
+                                                            self?.displayAddErrorNotice(orderID: orderID)
+                                                            return
+                                                        }
+
+                                                        WooAnalytics.shared.track(.orderTrackingSuccess)
+
+                                                        self?.dismiss()
+        }
+
+        StoresManager.shared.dispatch(action)
+
     }
 
     func dismiss() {
@@ -537,28 +570,9 @@ private extension ManualTrackingViewController {
 
         noticePresenter.enqueue(notice: notice)
     }
-
-    /// Displays the `Unable to delete tracking` Notice.
-    ///
-    func displayDeleteErrorNotice(orderID: Int) {
-        let title = NSLocalizedString(
-            "Unable to delete tracking for order #\(orderID)",
-            comment: "Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}"
-        )
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title,
-                            message: nil,
-                            feedbackType: .error,
-                            actionTitle: actionTitle) { [weak self] in
-            self?.deleteTracking()
-        }
-
-        noticePresenter.enqueue(notice: notice)
-    }
 }
 
 private struct Constants {
-    static let deleteRowHeight = CGFloat(48)
     static let rowHeight = CGFloat(74)
     static let pickerRowHeight = CGFloat(216)
     static let disabledAlpha = CGFloat(0.7)

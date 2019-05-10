@@ -125,7 +125,7 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Change order status screen - button title for closing the view */
+   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
 "Cancel" = "Cancel";
 
 /* shown in promotional screens during first launch */
@@ -194,7 +194,11 @@
 /* Cell title: the current date. */
 "Current" = "Current";
 
-/* Title of button to add a custom tracking provider if filtering the list yields no results. */
+/* Name of the section for custom shipment tracking providers */
+"Custom" = "Custom";
+
+/* Add custom shipping provider. Content of cell titled Shipping Provider
+   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "Custom Provider";
 
 /* Customer info section title
@@ -214,8 +218,14 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Days";
 
-/* Delete Tracking button title */
+/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
+"Delete" = "Delete";
+
+/* Delete a Shipment Tracking */
 "Delete Tracking" = "Delete Tracking";
+
+/* Accessibility hint for Delete Shipment button in Order fulfillment screen */
+"Deletes a shipment's tracking information." = "Deletes a shipment's tracking information.";
 
 /* The row label to tap for a detailed product list */
 "Details" = "Details";
@@ -257,15 +267,6 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Double tap to toggle setting.";
 
-/* Accessibility hint for Pencil button in an individual Shipment Tracking in the order fulfillment screen */
-"Edit" = "Edit";
-
-/* Edit tracking screen - title. */
-"Edit Tracking" = "Edit Tracking";
-
-/* Accessibility hint for Edit Shipment button in Order fulfillment screen */
-"Edits a shipment." = "Edits a shipment.";
-
 /* Email address text field placeholder */
 "Email" = "Email";
 
@@ -284,6 +285,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Empty URL";
 
+/* Add custom shipping provider. Placeholder of cell presenting provider name */
+"Enter provider name" = "Enter provider name";
+
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "Enter the address of your WooCommerce store you'd like to connect.";
 
@@ -292,6 +296,12 @@
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Enter the password for your WordPress.com account.";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking link */
+"Enter tracking link" = "Enter tracking link";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking number */
+"Enter tracking number" = "Enter tracking number";
 
 /* Title of a button on the magic link screen.
    Title of a button.  */
@@ -688,7 +698,7 @@
 "Private note" = "Private note";
 
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product - Title of product detail screen. */
+   Product section title - Section header title for the product */
 "Product" = "Product";
 
 /* Product section title */
@@ -699,6 +709,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Prompts with the option to call or message the billing customer.";
+
+/* Add Custom shipping provider. Title of cell presenting the provider name */
+"Provider name" = "Provider name";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do.";
@@ -747,9 +760,6 @@
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
 "Reviews" = "Reviews";
-
-/* Edit tracking screen - button title to save a tracking */
-"Save" = "Save";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Search all orders";
@@ -990,6 +1000,9 @@
 /* Top Performers section title - this year */
 "This Year" = "This Year";
 
+/* Product details screen — product title descriptive label */
+"Title" = "Title";
+
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "To create your new WordPress.com account, please enter your email address.";
 
@@ -1026,6 +1039,9 @@
 
 /* Order tracking section title */
 "Tracking" = "Tracking";
+
+/* Add custom shipping provider. Title of cell presenting tracking link */
+"Tracking link (optional)" = "Tracking link (optional)";
 
 /* Add / Edit shipping provider. Title of cell presenting tracking number */
 "Tracking number" = "Tracking number";

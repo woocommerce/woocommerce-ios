@@ -149,7 +149,7 @@ class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.taxStatusKey, "taxable")
         XCTAssertEqual(product.taxClass, "")
 
-        XCTAssertFalse(product.manageStock)
+        XCTAssertTrue(product.manageStock)
         XCTAssertNil(product.stockQuantity)
         XCTAssertEqual(product.stockStatusKey, "instock")
 

@@ -3,6 +3,10 @@
  
 1.8
 -----
+
+1.7.1
+-----
+- Fixed a bug where Order List did not load for some users.
 - update: this app supports iOS 12.0 and up.
 - improvement: improved support for large text sizes.
 - bugfix: fixes Order List not loading for some users.

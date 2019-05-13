@@ -237,6 +237,8 @@
 		CE1AFE622200B1BD00432745 /* ApplicationLogDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1AFE612200B1BD00432745 /* ApplicationLogDetailViewController.swift */; };
 		CE1CCB402056F21C000EE3AC /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* Style.swift */; };
 		CE1CCB4B20570B1F000EE3AC /* OrderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4A20570B1F000EE3AC /* OrderTableViewCell.swift */; };
+		CE1D5A55228A0AD200DF3715 /* TwoColumnTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1D5A53228A0AD200DF3715 /* TwoColumnTableViewCell.swift */; };
+		CE1D5A56228A0AD200DF3715 /* TwoColumnTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1D5A54228A0AD200DF3715 /* TwoColumnTableViewCell.xib */; };
 		CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */; };
 		CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */; };
 		CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */; };
@@ -617,6 +619,8 @@
 		CE1AFE612200B1BD00432745 /* ApplicationLogDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogDetailViewController.swift; sourceTree = "<group>"; };
 		CE1CCB3F2056F21C000EE3AC /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		CE1CCB4A20570B1F000EE3AC /* OrderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTableViewCell.swift; sourceTree = "<group>"; };
+		CE1D5A53228A0AD200DF3715 /* TwoColumnTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnTableViewCell.swift; sourceTree = "<group>"; };
+		CE1D5A54228A0AD200DF3715 /* TwoColumnTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnTableViewCell.xib; sourceTree = "<group>"; };
 		CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTableViewCell.swift; sourceTree = "<group>"; };
 		CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaymentTableViewCell.xib; sourceTree = "<group>"; };
 		CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnLabelView.xib; sourceTree = "<group>"; };
@@ -1474,6 +1478,8 @@
 				CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */,
 				CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */,
 				CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */,
+				CE1D5A53228A0AD200DF3715 /* TwoColumnTableViewCell.swift */,
+				CE1D5A54228A0AD200DF3715 /* TwoColumnTableViewCell.xib */,
 				CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */,
 				CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */,
 				B5A56BEF219F2CE90065A902 /* VerticalButton.swift */,
@@ -1677,6 +1683,7 @@
 				74E0F441211C9AE600A79CCE /* PeriodDataViewController.xib in Resources */,
 				B5F571B021BF149D0010D1B8 /* o.caf in Resources */,
 				B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */,
+				CE1D5A56228A0AD200DF3715 /* TwoColumnTableViewCell.xib in Resources */,
 				B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */,
 				D843D5D422485009001BFA55 /* ShipmentProvidersViewController.xib in Resources */,
 				B557DA1620979904005962F4 /* CustomerNoteTableViewCell.xib in Resources */,
@@ -1940,6 +1947,7 @@
 				B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */,
 				B5DB01B52114AB2D00A4F797 /* FabricManager.swift in Sources */,
 				7459A6C621B0680300F83A78 /* RequirementsChecker.swift in Sources */,
+				CE1D5A55228A0AD200DF3715 /* TwoColumnTableViewCell.swift in Sources */,
 				74460D4222289C7A00D7316A /* StorePickerCoordinator.swift in Sources */,
 				CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */,
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,

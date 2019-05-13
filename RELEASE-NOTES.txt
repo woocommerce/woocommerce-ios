@@ -1,6 +1,7 @@
 1.9
 -----
 - bugfix: fixes "Unable to load content" error message when attempting to get Top Performers content.
+- bugfix: fixes Store Picker: some users are unable to continue after logging in.
  
 1.8
 -----

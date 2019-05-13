@@ -131,7 +131,8 @@ private extension ProductDetailsViewController {
     func registerTableViewCells() {
         let cells = [
             LargeImageTableViewCell.self,
-            TitleBodyTableViewCell.self
+            TitleBodyTableViewCell.self,
+            TwoColumnTableViewCell.self
         ]
 
         for cell in cells {
@@ -235,6 +236,8 @@ private extension ProductDetailsViewController {
             configureProductImage(cell: cell)
         case let cell as TitleBodyTableViewCell:
             configureProductName(cell: cell)
+        case let cell as TwoColumnTableViewCell where row == .totalOrders:
+            configureTotalOrders(cell: cell)
         default:
             fatalError("Unidentified row type")
         }
@@ -260,6 +263,11 @@ private extension ProductDetailsViewController {
         cell.selectionStyle = .none
         cell.titleLabel?.text = NSLocalizedString("Title", comment: "Product details screen — product title descriptive label")
         cell.bodyLabel?.text = product.name
+    }
+
+    func configureTotalOrders(cell: TwoColumnTableViewCell) {
+        cell.leftLabel?.text = NSLocalizedString("Total Orders", comment: "Product details screen - total orders descriptive label")
+        cell.rightLabel?.text = String(product.totalSales)
     }
 }
 
@@ -364,7 +372,24 @@ private extension ProductDetailsViewController {
     /// Rebuild the section struct
     ///
     func reloadSections() {
-        let summary = Section(rows: [.productSummary, .productName])
+        var rows: [Row] = [.productSummary, .productName]
+
+        switch product.productType {
+        case .simple:
+            rows.append(.totalOrders)
+        case .grouped:
+            rows.append(.totalOrders)
+        case .external:  // affiliate
+            break
+        case .variable:
+            rows.append(.totalOrders)
+        case .variation:
+            rows.append(.totalOrders)
+        case .custom(_):
+            break
+        }
+
+        let summary = Section(rows: rows)
         sections = [summary].compactMap { $0 }
     }
 }
@@ -402,6 +427,7 @@ private extension ProductDetailsViewController {
     enum Row {
         case productSummary
         case productName
+        case totalOrders
 
         var reuseIdentifier: String {
             switch self {
@@ -409,6 +435,8 @@ private extension ProductDetailsViewController {
                 return LargeImageTableViewCell.reuseIdentifier
             case .productName:
                 return TitleBodyTableViewCell.reuseIdentifier
+            case .totalOrders:
+                return TwoColumnTableViewCell.reuseIdentifier
             }
         }
     }

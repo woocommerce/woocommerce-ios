@@ -988,7 +988,7 @@ private extension OrderDetailsViewController {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
 
-        actionSheet.addCancelActionWithTitle(TrackingAction.cancel)
+        actionSheet.addCancelActionWithTitle(TrackingAction.dismiss)
 
         if tracking.trackingURL?.isEmpty == false {
             actionSheet.addDefaultActionWithTitle(TrackingAction.trackShipment) { [weak self] _ in
@@ -1148,7 +1148,7 @@ private extension OrderDetailsViewController {
     }
 
     enum TrackingAction {
-        static let cancel = NSLocalizedString("Cancel", comment: "Dismiss the shipment tracking action sheet")
+        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the shipment tracking action sheet")
         static let trackShipment = NSLocalizedString("Track Shipment", comment: "Track shiopment button title")
         static let deleteTracking = NSLocalizedString("Delete Tracking", comment: "Delete tracking button title")
     }

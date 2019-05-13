@@ -575,10 +575,6 @@ private extension OrderDetailsViewController {
 
         cell.showActionButton()
         cell.actionButtonNormalText = viewModel.trackTitle
-
-        cell.onActionTouchUp = { [ weak self ] in
-            self?.trackingWasPressed(at: indexPath)
-        }
     }
 
     func configureShippingAddress(cell: CustomerInfoTableViewCell) {
@@ -666,6 +662,30 @@ private extension OrderDetailsViewController {
 
         return nil
     }
+
+    func deleteTracking(_ tracking: ShipmentTracking) {
+
+        let siteID = viewModel.order.siteID
+        let orderID = viewModel.order.orderID
+        let trackingID = tracking.trackingID
+
+        let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
+                                                                 orderID: orderID,
+                                                                 trackingID: trackingID) { [weak self] error in
+                                                                    if let error = error {
+                                                                        DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
+
+                                                                        //self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
+                                                                        return
+                                                                    }
+
+                                                                    //self?.syncTrackingsHiddingAddButtonIfNecessary()
+                                                                    self?.reloadSections()
+
+        }
+
+        StoresManager.shared.dispatch(deleteTrackingAction)
+    }
 }
 
 
@@ -689,10 +709,14 @@ private extension OrderDetailsViewController {
     }
 
     func trackingWasPressed(at indexPath: IndexPath) {
-        guard let tracking = orderTracking(at: indexPath) else {
+        guard let cell = tableView.cellForRow(at: indexPath) as? OrderTrackingTableViewCell else {
             return
         }
 
+        displayShipmentTrackingAlert(from: cell, indexPath: indexPath)
+    }
+
+    func openTrackingDetails(_ tracking: ShipmentTracking) {
         guard let trackingURL = tracking.trackingURL?.addHTTPSSchemeIfNecessary(),
             let url = URL(string: trackingURL) else {
             return
@@ -804,6 +828,8 @@ extension OrderDetailsViewController: UITableViewDelegate {
         case .productDetails:
             WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
+        case .tracking:
+            trackingWasPressed(at: indexPath)
         default:
             break
         }
@@ -955,6 +981,42 @@ private extension OrderDetailsViewController {
 }
 
 
+// MARK: - Trackings alert
+// Track / delete tracking alert
+private extension OrderDetailsViewController {
+    /// Displays an alert that offers deleting a shipment tracking or opening
+    /// it in a webview
+    ///
+
+    func displayShipmentTrackingAlert(from sourceView: UIView, indexPath: IndexPath) {
+        guard let tracking = orderTracking(at: indexPath) else {
+            return
+        }
+
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+
+        actionSheet.addCancelActionWithTitle(TrackingAction.cancel)
+
+        if tracking.trackingURL?.isEmpty == false {
+            actionSheet.addDefaultActionWithTitle(TrackingAction.trackShipment) { [weak self] _ in
+                self?.openTrackingDetails(tracking)
+            }
+        }
+
+        actionSheet.addDestructiveActionWithTitle(TrackingAction.deleteTracking) { [weak self] _ in
+            self?.deleteTracking(tracking)
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = sourceView
+        popoverController?.sourceRect = sourceView.bounds
+
+        present(actionSheet, animated: true)
+    }
+}
+
+
 // MARK: - Contact Alert
 //
 private extension OrderDetailsViewController {
@@ -1091,6 +1153,12 @@ private extension OrderDetailsViewController {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
         static let call = NSLocalizedString("Call", comment: "Call phone number button title")
         static let message = NSLocalizedString("Message", comment: "Message phone number button title")
+    }
+
+    enum TrackingAction {
+        static let cancel = NSLocalizedString("Cancel", comment: "Dismiss the shipment tracking action sheet")
+        static let trackShipment = NSLocalizedString("Track Shipment", comment: "Track shiopment button title")
+        static let deleteTracking = NSLocalizedString("Delete Tracking", comment: "Delete tracking button title")
     }
 
     enum Constants {

@@ -7,10 +7,6 @@ final class OrderTrackingTableViewCell: UITableViewCell {
     @IBOutlet private var middleLine: UILabel!
     @IBOutlet private var bottomLine: UILabel!
     @IBOutlet private var topBorder: UIView!
-    @IBOutlet private var actionButton: UIButton!
-    @IBOutlet private var internalSeparator: UIView!
-
-    var onActionTouchUp: (() -> Void)?
 
     var topText: String? {
         get {
@@ -42,37 +38,11 @@ final class OrderTrackingTableViewCell: UITableViewCell {
         }
     }
 
-    var actionButtonNormalText: String? {
-        get {
-            return actionButton.title(for: .normal)
-        }
-        set {
-            actionButton.setTitle(newValue, for: .normal)
-            configureActionButtonForVoiceOver()
-        }
-    }
-
-    func showActionButton() {
-        actionButton.isHidden = false
-        internalSeparator.isHidden = false
-    }
-
-    func hideActionButton() {
-        actionButton.isHidden = true
-        internalSeparator.isHidden = true
-    }
-
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureButtonSeparator()
         configureTopLine()
         configureMiddleLine()
         configureBottomLine()
-        configureActionButton()
-    }
-
-    private func configureButtonSeparator() {
-        topBorder.backgroundColor = StyleManager.wooGreyBorder
     }
 
     private func configureTopLine() {
@@ -85,17 +55,6 @@ final class OrderTrackingTableViewCell: UITableViewCell {
 
     private func configureBottomLine() {
         bottomLine.applySubheadlineStyle()
-    }
-
-    private func configureActionButton() {
-        actionButton.applyTertiaryButtonStyle()
-        configureActionButtonForVoiceOver()
-    }
-}
-
-extension OrderTrackingTableViewCell {
-    @IBAction func actionButtonPressed(_ sender: Any) {
-        onActionTouchUp?()
     }
 }
 
@@ -123,14 +82,6 @@ private extension OrderTrackingTableViewCell {
                               comment: "Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018."),
             bottomText ?? "")
     }
-
-    func configureActionButtonForVoiceOver() {
-        actionButton.accessibilityLabel = actionButtonNormalText
-        actionButton.accessibilityTraits = .button
-        actionButton.accessibilityHint = NSLocalizedString("Tracks a shipment.",
-                                                           comment:
-            "Accessibility hint for Track Package button in Order details screen")
-    }
 }
 
 /// MARK: - Expose private outlets for tests
@@ -146,9 +97,5 @@ extension OrderTrackingTableViewCell {
 
     func getBottomLabel() -> UILabel {
         return bottomLine
-    }
-
-    func getActionButton() -> UIButton {
-        return actionButton
     }
 }

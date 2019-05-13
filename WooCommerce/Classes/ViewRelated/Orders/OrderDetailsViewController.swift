@@ -567,14 +567,6 @@ private extension OrderDetailsViewController {
                                                 comment: "Order details > tracking. " +
                 " This is where the shipping date would normally display.")
         }
-
-        guard let url = tracking.trackingURL, url.isEmpty == false else {
-            cell.hideActionButton()
-            return
-        }
-
-        cell.showActionButton()
-        cell.actionButtonNormalText = viewModel.trackTitle
     }
 
     func configureShippingAddress(cell: CustomerInfoTableViewCell) {

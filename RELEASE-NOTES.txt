@@ -1,6 +1,7 @@
 1.9
 -----
 - bugfix: fixes "Unable to load content" error message when attempting to get Top Performers content.
+- new feature: You can now manually add shipment tracking to an Order
  
 1.8
 -----

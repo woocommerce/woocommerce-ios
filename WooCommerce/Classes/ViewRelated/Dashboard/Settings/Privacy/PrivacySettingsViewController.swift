@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import SafariServices
+import AutomatticTracks
 
 
 class PrivacySettingsViewController: UIViewController {
@@ -23,7 +24,7 @@ class PrivacySettingsViewController: UIViewController {
 
     /// Send crash reports
     ///
-    private var reportCrashes = AppDelegate.shared.fabricManager.userHasOptedIn {
+    private var reportCrashes = !CrashLogging.userHasOptedOut {
         didSet {
             reportCrashesWasUpdated(newValue: reportCrashes)
         }
@@ -218,7 +219,7 @@ private extension PrivacySettingsViewController {
 
     func reportCrashesWasUpdated(newValue: Bool) {
         // Save user's preference
-        AppDelegate.shared.fabricManager.setUserHasOptedIn(newValue)
+        CrashLogging.userHasOptedOut = newValue
 
         // This event will only report if the user has Analytics currently on
         WooAnalytics.shared.track(.settingsReportCrashesToggled)

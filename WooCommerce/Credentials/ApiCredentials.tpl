@@ -30,6 +30,10 @@ struct ApiCredentials {
     ///
     static let tracksPrefix = "%{tracks_prefix}"
 
+    /// Sentry API Key
+    ///
+    static let sentryDSN = "%{sentry_dsn}"
+
     /// Zendesk App ID
     ///
     static let zendeskAppId = "%{zendesk_app_id}"

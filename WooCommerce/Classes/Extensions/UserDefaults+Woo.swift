@@ -14,7 +14,7 @@ extension UserDefaults {
         case deviceID
         case deviceToken
         case userOptedInAnalytics
-        case userOptedInCrashlytics
+        case userOptedInCrashLogging = "userOptedInCrashlytics"
         case versionOfLastRun
         case analyticsUsername
         case notificationsLastSeenTime
@@ -31,6 +31,12 @@ extension UserDefaults {
     ///
     func object<T>(forKey key: Key) -> T? {
         return value(forKey: key.rawValue) as? T
+    }
+
+    /// Returns the boolean value (if any) associated with the specified Key.
+    ///
+    func bool(forKey key: Key) -> Bool? {
+        return bool(forKey: key.rawValue)
     }
 
     /// Stores the Key/Value Pair.

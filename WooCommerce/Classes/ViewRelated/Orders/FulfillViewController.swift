@@ -616,11 +616,7 @@ private extension FulfillViewController {
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
-        if FeatureFlag.manualShipmentTracking.enabled {
-            sections =  [products, note, address, tracking, addTracking].compactMap { $0 }
-        } else {
-            sections = [products, note, address].compactMap { $0 }
-        }
+        sections =  [products, note, address, tracking, addTracking].compactMap { $0 }
     }
 }
 

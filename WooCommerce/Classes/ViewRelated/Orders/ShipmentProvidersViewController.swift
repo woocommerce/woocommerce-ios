@@ -324,7 +324,9 @@ private extension ShipmentProvidersViewController {
     }
 
     func addCustomProvider() {
-        let addCustomTrackingViewModel = AddCustomTrackingViewModel(order: viewModel.order)
+        let initialCustomProviderName = searchController.searchBar.text
+        let addCustomTrackingViewModel = AddCustomTrackingViewModel(order: viewModel.order,
+                                                                    initialName: initialCustomProviderName)
         let addCustomTrackingViewController = ManualTrackingViewController(viewModel: addCustomTrackingViewModel)
         navigationController?.pushViewController(addCustomTrackingViewController, animated: true)
     }

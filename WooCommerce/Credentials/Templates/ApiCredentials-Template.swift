@@ -29,6 +29,10 @@ struct ApiCredentials {
     ///
     static let tracksPrefix: String = "<#Tracks Prefix#>"
 
+    /// Sentry API Key
+    ///
+    static let sentryDSN: String = "<#Sentry DSN#>"
+
     /// Zendesk App ID
     ///
     static let zendeskAppId: String = "<#Zendesk App ID#>"

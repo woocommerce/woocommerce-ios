@@ -22,7 +22,9 @@ class WordPressComAccountService {
     /// Connects a WordPress.com account with the specified Social Service.
     ///
     func connect(wpcomAuthToken: String, serviceName: SocialServiceName, serviceToken: String, success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
-        let loggedAPI  = WordPressComRestApi(oAuthToken: wpcomAuthToken, userAgent: configuration.userAgent)
+        let loggedAPI  = WordPressComRestApi(oAuthToken: wpcomAuthToken,
+                                             userAgent: configuration.userAgent,
+                                             baseUrlString: configuration.wpcomAPIBaseURL)
         let remote = AccountServiceRemoteREST(wordPressComRestApi: loggedAPI)
 
         remote.connectToSocialService(serviceName,
@@ -70,7 +72,9 @@ class WordPressComAccountService {
     /// Returns an anonymous WordPressComRestApi Instance.
     ///
     private var anonymousAPI: WordPressComRestApi {
-        return WordPressComRestApi(oAuthToken: nil, userAgent: configuration.userAgent)
+        return WordPressComRestApi(oAuthToken: nil,
+                                   userAgent: configuration.userAgent,
+                                   baseUrlString: configuration.wpcomAPIBaseURL)
     }
 
     /// Returns the current WordPressAuthenticatorConfiguration Instance.

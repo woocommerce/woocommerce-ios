@@ -47,7 +47,9 @@ class SignupService {
 private extension SignupService {
 
     var anonymousAPI: WordPressComRestApi {
-        return WordPressComRestApi(oAuthToken: nil, userAgent: configuration.userAgent)
+        return WordPressComRestApi(oAuthToken: nil,
+                                   userAgent: configuration.userAgent,
+                                   baseUrlString: configuration.wpcomAPIBaseURL)
     }
 
     var configuration: WordPressAuthenticatorConfiguration {

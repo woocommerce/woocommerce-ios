@@ -10,7 +10,8 @@ class WordPressComBlogService {
     ///
     private var anonymousAPI: WordPressComRestApi {
         let userAgent = WordPressAuthenticator.shared.configuration.userAgent
-        return WordPressComRestApi(oAuthToken: nil, userAgent: userAgent)
+        let baseUrl = WordPressAuthenticator.shared.configuration.wpcomAPIBaseURL
+        return WordPressComRestApi(oAuthToken: nil, userAgent: userAgent, baseUrlString: baseUrl)
     }
 
 

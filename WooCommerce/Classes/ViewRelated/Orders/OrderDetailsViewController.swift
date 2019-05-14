@@ -664,7 +664,7 @@ private extension OrderDetailsViewController {
                                                                  orderID: orderID,
                                                                  trackingID: trackingID) { [weak self] error in
                                                                     if let error = error {
-                                                                        DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
+                                                                        DDLogError("⛔️ Order Details - Delete Tracking Failure: orderID \(orderID). Error: \(error)")
 
                                                                         self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
                                                                         return
@@ -1168,7 +1168,7 @@ private extension OrderDetailsViewController {
 
     enum TrackingAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the shipment tracking action sheet")
-        static let trackShipment = NSLocalizedString("Track Shipment", comment: "Track shiopment button title")
+        static let trackShipment = NSLocalizedString("Track Shipment", comment: "Track shipment button title")
         static let deleteTracking = NSLocalizedString("Delete Tracking", comment: "Delete tracking button title")
     }
 

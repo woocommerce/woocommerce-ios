@@ -24,6 +24,8 @@ class ProductReviewsTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        reviewLabel.applyBodyStyle()
+        reviewTotalsLabel.applyBodyStyle()
         configureStarView()
     }
 

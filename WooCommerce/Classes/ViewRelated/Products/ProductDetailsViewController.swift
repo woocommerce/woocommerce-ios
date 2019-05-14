@@ -132,7 +132,8 @@ private extension ProductDetailsViewController {
         let cells = [
             LargeImageTableViewCell.self,
             TitleBodyTableViewCell.self,
-            TwoColumnTableViewCell.self
+            TwoColumnTableViewCell.self,
+            ProductReviewsTableViewCell.self
         ]
 
         for cell in cells {
@@ -238,6 +239,8 @@ private extension ProductDetailsViewController {
             configureProductName(cell: cell)
         case let cell as TwoColumnTableViewCell where row == .totalOrders:
             configureTotalOrders(cell: cell)
+        case let cell as ProductReviewsTableViewCell:
+            configureReviews(cell: cell)
         default:
             fatalError("Unidentified row type")
         }
@@ -268,6 +271,16 @@ private extension ProductDetailsViewController {
     func configureTotalOrders(cell: TwoColumnTableViewCell) {
         cell.leftLabel?.text = NSLocalizedString("Total Orders", comment: "Product details screen - total orders descriptive label")
         cell.rightLabel?.text = String(product.totalSales)
+    }
+
+    func configureReviews(cell: ProductReviewsTableViewCell) {
+        cell.reviewLabel?.text = NSLocalizedString("Reviews", comment: "Reviews descriptive label")
+
+        // 🖐🏼 I solemnly swear I'm not converting currency values to a Double.
+        let ratingCount = Double(product.ratingCount)
+        cell.reviewTotalsLabel?.text = ratingCount.humanReadableString()
+        let averageRating = Double(product.averageRating)
+        cell.starRatingView.rating = CGFloat(averageRating ?? 0)
     }
 }
 
@@ -389,6 +402,8 @@ private extension ProductDetailsViewController {
             break
         }
 
+        rows.append(.reviews)
+
         let summary = Section(rows: rows)
         sections = [summary].compactMap { $0 }
     }
@@ -428,6 +443,7 @@ private extension ProductDetailsViewController {
         case productSummary
         case productName
         case totalOrders
+        case reviews
 
         var reuseIdentifier: String {
             switch self {
@@ -437,6 +453,8 @@ private extension ProductDetailsViewController {
                 return TitleBodyTableViewCell.reuseIdentifier
             case .totalOrders:
                 return TwoColumnTableViewCell.reuseIdentifier
+            case .reviews:
+                return ProductReviewsTableViewCell.reuseIdentifier
             }
         }
     }

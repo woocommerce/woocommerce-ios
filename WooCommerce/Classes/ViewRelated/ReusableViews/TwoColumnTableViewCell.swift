@@ -9,5 +9,8 @@ final class TwoColumnTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+
+        leftLabel.applyBodyStyle()
+        rightLabel.applyBodyStyle()
     }
 }

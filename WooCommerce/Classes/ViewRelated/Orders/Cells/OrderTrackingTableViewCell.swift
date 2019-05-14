@@ -7,6 +7,9 @@ final class OrderTrackingTableViewCell: UITableViewCell {
     @IBOutlet private var middleLine: UILabel!
     @IBOutlet private var bottomLine: UILabel!
     @IBOutlet private var topBorder: UIView!
+    private var ellipsisButton = UIButton(type: .detailDisclosure)
+
+    var onEllipsisTouchUp: (() -> Void)?
 
     var topText: String? {
         get {
@@ -43,6 +46,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
         configureTopLine()
         configureMiddleLine()
         configureBottomLine()
+        configureActionButton()
     }
 
     private func configureTopLine() {
@@ -56,7 +60,29 @@ final class OrderTrackingTableViewCell: UITableViewCell {
     private func configureBottomLine() {
         bottomLine.applySubheadlineStyle()
     }
+
+    private func configureActionButton() {
+        let deleteIcon = UIImage.moreImage
+            .imageFlippedForRightToLeftLayoutDirection()
+            .imageWithTintColor(StyleManager.wooCommerceBrandColor)
+
+        ellipsisButton.setImage(deleteIcon!, for: .normal)
+        ellipsisButton.addTarget(self, action: #selector(iconTapped), for: .touchUpInside)
+
+        self.accessoryView = ellipsisButton
+
+        configureActionButtonForVoiceOver()
+    }
 }
+
+
+/// MARK: - Actions
+private extension OrderTrackingTableViewCell {
+    @objc func iconTapped() {
+        onEllipsisTouchUp?()
+    }
+}
+
 
 /// MARK: - Accessibility
 ///
@@ -82,6 +108,15 @@ private extension OrderTrackingTableViewCell {
                               comment: "Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018."),
             bottomText ?? "")
     }
+
+    func configureActionButtonForVoiceOver() {
+        ellipsisButton.accessibilityLabel = NSLocalizedString("More",
+                                                            comment:
+            "Accessibility hint for more button in an individual Shipment Tracking in the order details screen")
+        ellipsisButton.accessibilityHint = NSLocalizedString("Shows more options.",
+                                                           comment:
+            "Accessibility hint for Delete Shipment button in Order details screen")
+    }
 }
 
 /// MARK: - Expose private outlets for tests
@@ -97,5 +132,9 @@ extension OrderTrackingTableViewCell {
 
     func getBottomLabel() -> UILabel {
         return bottomLine
+    }
+
+    func getActionButton() -> UIButton {
+        return ellipsisButton
     }
 }

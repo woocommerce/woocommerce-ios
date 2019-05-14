@@ -557,6 +557,10 @@ private extension OrderDetailsViewController {
         cell.topText = tracking.trackingProvider
         cell.middleText = tracking.trackingNumber
 
+        cell.onEllipsisTouchUp = { [weak self] in
+            self?.trackingWasPressed(at: indexPath)
+        }
+
         if let dateShipped = tracking.dateShipped?.toString(dateStyle: .medium, timeStyle: .none) {
             cell.bottomText = String.localizedStringWithFormat(
                 NSLocalizedString("Shipped %@",
@@ -817,8 +821,6 @@ extension OrderDetailsViewController: UITableViewDelegate {
         case .productDetails:
             WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
-        case .tracking:
-            trackingWasPressed(at: indexPath)
         default:
             break
         }

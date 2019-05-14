@@ -24,9 +24,9 @@ class PrivacySettingsViewController: UIViewController {
 
     /// Send crash reports
     ///
-    private var reportCrashes = !CrashLogging.userHasOptedOut {
+    private var reportCrashes = CrashLoggingSettings.didOptIn {
         didSet {
-            reportCrashesWasUpdated(newValue: reportCrashes)
+            CrashLoggingSettings.didOptIn = reportCrashes
         }
     }
 
@@ -218,9 +218,6 @@ private extension PrivacySettingsViewController {
     }
 
     func reportCrashesWasUpdated(newValue: Bool) {
-        // Save user's preference
-        CrashLogging.userHasOptedOut = newValue
-
         // This event will only report if the user has Analytics currently on
         WooAnalytics.shared.track(.settingsReportCrashesToggled)
     }

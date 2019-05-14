@@ -1,52 +1,26 @@
 import Foundation
-import UIKit
-
 import AutomatticTracks
 import Yosemite
 
-
-/// CrashLoggingManager: Performs the app-specific tasks required for crash logging.
-///
 class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
 
     init() {
-        self.startListeningToAuthNotifications()
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCrashLoggingSystem(_:)), name: .defaultAccountWasUpdated, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCrashLoggingSystem(_:)), name: .logOutEventReceived, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCrashLoggingSystem(_:)), name: .StoresManagerDidUpdateDefaultSite, object: nil)
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
-    /// Check user opt-in for Crash Reporting
-    ///
     var userHasOptedOut: Bool {
-        get {
-            guard let userHasOptedIn = UserDefaults.standard.bool(forKey: .userOptedInCrashLogging) else {
-                return false // crash reports turned on by default
-            }
-
-            return !userHasOptedIn
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: .userOptedInCrashLogging)
-
-            if newValue {
-                DDLogInfo("🔴 Crash Logging opt-out complete.")
-            }
-            else {
-                DDLogInfo("🔵 Crash Logging reporting restored.")
-            }
-        }
+        return !CrashLoggingSettings.didOptIn
     }
-
-    fileprivate var wooAccount: Yosemite.Account!
 
     var currentUser: TracksUser? {
-        guard wooAccount != nil else {
+
+        guard let account = StoresManager.shared.sessionManager.defaultAccount else {
             return nil
         }
 
-        return TracksUser(userID: "\(wooAccount.userID)", email: wooAccount.email, username: wooAccount.username)
+        return TracksUser(userID: "\(account.userID)", email: account.email, username: account.username)
     }
 
     var sentryDSN: String {
@@ -56,26 +30,31 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
     var buildType: String {
         return BuildConfiguration.current.rawValue
     }
+
+    @objc func updateCrashLoggingSystem(_ notification: Notification) {
+        /// Bumping this call to a later run loop is a little bit hack-y, but because the `StoresManager` fires the events
+        /// we're interested as part of its initialization, we need to wait for that initalization to be complete before
+        /// taking action – otherwise the application will deadlock.
+        DispatchQueue.main.async {
+            CrashLogging.setNeedsDataRefresh()
+        }
+    }
 }
 
-extension WCCrashLoggingDataProvider {
-    /// Starts listening to Authentication Notifications
-    ///
-    func startListeningToAuthNotifications() {
-        let nc = NotificationCenter.default
-        nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
-    }
+struct CrashLoggingSettings {
+    static var didOptIn: Bool {
+        get {
+            return UserDefaults.standard.bool(forKey: .userOptedInCrashLogging) ?? false
+        }
+        set {
+            if newValue {
+                DDLogInfo("🔵 Crash Logging reporting restored.")
+            }
+            else {
+                DDLogInfo("🔴 Crash Logging opt-out complete.")
+            }
 
-    /// Handles the `.sessionWasAuthenticated` notification.
-    ///
-    @objc func defaultAccountWasUpdated(sender: Notification) {
-        let account = sender.object as? Yosemite.Account
-        self.wooAccount = account
-
-        if let username = account?.username {
-            DDLogInfo("🌡 Tracks Account: [\(username)]")
-        } else {
-            DDLogInfo("🌡 Tracks Account Nuked!")
+            UserDefaults.standard.set(newValue, forKey: .userOptedInCrashLogging)
         }
     }
 }

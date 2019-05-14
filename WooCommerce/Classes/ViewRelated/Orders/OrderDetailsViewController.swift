@@ -656,7 +656,6 @@ private extension OrderDetailsViewController {
     }
 
     func deleteTracking(_ tracking: ShipmentTracking) {
-
         let siteID = viewModel.order.siteID
         let orderID = viewModel.order.orderID
         let trackingID = tracking.trackingID
@@ -667,11 +666,9 @@ private extension OrderDetailsViewController {
                                                                     if let error = error {
                                                                         DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
 
-                                                                        //self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
+                                                                        self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
                                                                         return
                                                                     }
-
-                                                                    //self?.syncTrackingsHiddingAddButtonIfNecessary()
                                                                     self?.reloadSections()
 
         }
@@ -1133,6 +1130,28 @@ extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
 
         // Workaround: Restore WC's navBar appearance
         UINavigationBar.applyWooAppearance()
+    }
+}
+
+
+// MARK: - Error notice
+private extension OrderDetailsViewController {
+    /// Displays the `Unable to delete tracking` Notice.
+    ///
+    func displayDeleteErrorNotice(orderID: Int, tracking: ShipmentTracking) {
+        let title = NSLocalizedString(
+            "Unable to delete tracking for order #\(orderID)",
+            comment: "Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}"
+        )
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title,
+                            message: nil,
+                            feedbackType: .error,
+                            actionTitle: actionTitle) { [weak self] in
+                                self?.deleteTracking(tracking)
+        }
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 }
 

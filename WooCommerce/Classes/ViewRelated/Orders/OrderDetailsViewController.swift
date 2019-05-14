@@ -668,7 +668,7 @@ private extension OrderDetailsViewController {
                                                                  orderID: orderID,
                                                                  trackingID: trackingID) { [weak self] error in
                                                                     if let error = error {
-                                                                        DDLogError("⛔️ Order Details - Delete Tracking Failure: orderID \(orderID). Error: \(error)")
+                                                                        DDLogError("⛔️ Order Details - Delete Tracking: orderID \(orderID). Error: \(error)")
 
                                                                         self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
                                                                         return

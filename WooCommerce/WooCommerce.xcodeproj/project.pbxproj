@@ -239,6 +239,8 @@
 		CE1CCB4B20570B1F000EE3AC /* OrderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB4A20570B1F000EE3AC /* OrderTableViewCell.swift */; };
 		CE1D5A55228A0AD200DF3715 /* TwoColumnTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1D5A53228A0AD200DF3715 /* TwoColumnTableViewCell.swift */; };
 		CE1D5A56228A0AD200DF3715 /* TwoColumnTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1D5A54228A0AD200DF3715 /* TwoColumnTableViewCell.xib */; };
+		CE1D5A59228A1C2C00DF3715 /* ProductReviewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1D5A57228A1C2C00DF3715 /* ProductReviewsTableViewCell.swift */; };
+		CE1D5A5A228A1C2C00DF3715 /* ProductReviewsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1D5A58228A1C2C00DF3715 /* ProductReviewsTableViewCell.xib */; };
 		CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */; };
 		CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */; };
 		CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */; };
@@ -621,6 +623,8 @@
 		CE1CCB4A20570B1F000EE3AC /* OrderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTableViewCell.swift; sourceTree = "<group>"; };
 		CE1D5A53228A0AD200DF3715 /* TwoColumnTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnTableViewCell.swift; sourceTree = "<group>"; };
 		CE1D5A54228A0AD200DF3715 /* TwoColumnTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnTableViewCell.xib; sourceTree = "<group>"; };
+		CE1D5A57228A1C2C00DF3715 /* ProductReviewsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewsTableViewCell.swift; sourceTree = "<group>"; };
+		CE1D5A58228A1C2C00DF3715 /* ProductReviewsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductReviewsTableViewCell.xib; sourceTree = "<group>"; };
 		CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTableViewCell.swift; sourceTree = "<group>"; };
 		CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaymentTableViewCell.xib; sourceTree = "<group>"; };
 		CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnLabelView.xib; sourceTree = "<group>"; };
@@ -785,6 +789,8 @@
 			children = (
 				7441EBC7226A71AA008BF83D /* TitleBodyTableViewCell.swift */,
 				7441EBC8226A71AA008BF83D /* TitleBodyTableViewCell.xib */,
+				CE1D5A57228A1C2C00DF3715 /* ProductReviewsTableViewCell.swift */,
+				CE1D5A58228A1C2C00DF3715 /* ProductReviewsTableViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -1679,6 +1685,7 @@
 				CE583A0C2107937F00D73C1C /* TextViewTableViewCell.xib in Resources */,
 				D843D5CC22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib in Resources */,
 				B560D68A2195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib in Resources */,
+				CE1D5A5A228A1C2C00DF3715 /* ProductReviewsTableViewCell.xib in Resources */,
 				B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */,
 				74E0F441211C9AE600A79CCE /* PeriodDataViewController.xib in Resources */,
 				B5F571B021BF149D0010D1B8 /* o.caf in Resources */,
@@ -2117,6 +2124,7 @@
 				B5AA7B3D20ED5D15004DA14F /* SessionManager.swift in Sources */,
 				74C6FEA521C2F1FA009286B6 /* AboutViewController.swift in Sources */,
 				B53B3F37219C75AC00DF1EB6 /* OrderLoaderViewController.swift in Sources */,
+				CE1D5A59228A1C2C00DF3715 /* ProductReviewsTableViewCell.swift in Sources */,
 				CE24BCCF212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift in Sources */,
 				B53B898D20D462A000EDB467 /* StoresManager.swift in Sources */,
 				B5D1AFC020BC67C200DB0E8C /* WooConstants.swift in Sources */,

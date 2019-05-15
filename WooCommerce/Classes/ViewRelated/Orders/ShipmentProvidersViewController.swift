@@ -324,6 +324,8 @@ private extension ShipmentProvidersViewController {
     }
 
     func addCustomProvider() {
+        WooAnalytics.shared.track(.orderShipmentTrackingCustomProviderSelected)
+        
         let initialCustomProviderName = searchController.searchBar.text
         let addCustomTrackingViewModel = AddCustomTrackingViewModel(order: viewModel.order,
                                                                     initialName: initialCustomProviderName)

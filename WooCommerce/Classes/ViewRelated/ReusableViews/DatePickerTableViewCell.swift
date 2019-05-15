@@ -6,9 +6,9 @@ final class DatePickerTableViewCell: UITableViewCell {
 
     var onDateSelected: ((Date) -> Void)?
     @IBOutlet private weak var picker: UIDatePicker!
-    
+
     @IBOutlet weak var bottomBorder: UIView!
-    
+
     @IBAction func dateChanged(_ sender: UIDatePicker) {
         onDateSelected?(sender.date)
     }

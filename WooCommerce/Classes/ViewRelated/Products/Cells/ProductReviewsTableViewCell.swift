@@ -40,12 +40,12 @@ class ProductReviewsTableViewCell: UITableViewCell {
 //
 private extension ProductReviewsTableViewCell {
     enum Star {
-        static let size = Double(13)
+        static let size = Double(20)
         static let filledImage = Gridicon.iconOfType(.star,
                                                      withSize: CGSize(width: Star.size, height: Star.size)
-            ).imageWithTintColor(StyleManager.defaultTextColor)
-        static let emptyImage = Gridicon.iconOfType(.star,
+            ).imageWithTintColor(StyleManager.grayStarColor)
+        static let emptyImage = Gridicon.iconOfType(.starOutline,
                                                     withSize: CGSize(width: Star.size, height: Star.size)
-            ).imageWithTintColor(.clear)
+            ).imageWithTintColor(StyleManager.grayStarColor)
     }
 }

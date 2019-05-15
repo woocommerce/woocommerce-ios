@@ -21,6 +21,12 @@ extension UILabel {
         textColor = StyleManager.defaultTextColor
     }
 
+    func applySecondaryBodyStyle() {
+        adjustsFontForContentSizeCategory = true
+        font = .body
+        textColor = StyleManager.wooGreyTextMin
+    }
+
     func applyFootnoteStyle() {
         adjustsFontForContentSizeCategory = true
         font = .footnote

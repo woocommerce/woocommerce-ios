@@ -241,7 +241,8 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
 
     let isCustom: Bool = true
 
-    init(order: Order) {
+    init(order: Order, initialName: String? = nil) {
         self.order = order
+        self.providerName = initialName
     }
 }

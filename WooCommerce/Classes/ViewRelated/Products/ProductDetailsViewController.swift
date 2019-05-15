@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Gridicons
 
 
 /// ProductDetailsViewController: Displays the details for a given Product.
@@ -133,7 +134,8 @@ private extension ProductDetailsViewController {
             LargeImageTableViewCell.self,
             TitleBodyTableViewCell.self,
             TwoColumnTableViewCell.self,
-            ProductReviewsTableViewCell.self
+            ProductReviewsTableViewCell.self,
+            BasicTableViewCell.self
         ]
 
         for cell in cells {
@@ -241,6 +243,10 @@ private extension ProductDetailsViewController {
             configureTotalOrders(cell: cell)
         case let cell as ProductReviewsTableViewCell:
             configureReviews(cell: cell)
+        case let cell as BasicTableViewCell where row == .productLink:
+            configureProductLink(cell: cell)
+        case let cell as BasicTableViewCell where row == .affiliateLink:
+            configureAffiliateLink(cell: cell)
         default:
             fatalError("Unidentified row type")
         }
@@ -269,11 +275,13 @@ private extension ProductDetailsViewController {
     }
 
     func configureTotalOrders(cell: TwoColumnTableViewCell) {
+        cell.selectionStyle = .none
         cell.leftLabel?.text = NSLocalizedString("Total Orders", comment: "Product details screen - total orders descriptive label")
         cell.rightLabel?.text = String(product.totalSales)
     }
 
     func configureReviews(cell: ProductReviewsTableViewCell) {
+        cell.selectionStyle = .none
         cell.reviewLabel?.text = NSLocalizedString("Reviews", comment: "Reviews descriptive label")
 
         // 🖐🏼 I solemnly swear I'm not converting currency values to a Double.
@@ -281,6 +289,30 @@ private extension ProductDetailsViewController {
         cell.reviewTotalsLabel?.text = ratingCount.humanReadableString()
         let averageRating = Double(product.averageRating)
         cell.starRatingView.rating = CGFloat(averageRating ?? 0)
+    }
+
+    func configureProductLink(cell: BasicTableViewCell) {
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("View product on store", comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
+
+        let accessoryImage = Gridicon.iconOfType(.external)
+        let accessoryImageView = UIImageView(image: accessoryImage)
+        accessoryImageView.tintColor = StyleManager.buttonPrimaryColor
+
+        cell.accessoryView = accessoryImageView
+        cell.textLabel?.textColor = StyleManager.buttonPrimaryColor
+    }
+
+    func configureAffiliateLink(cell: BasicTableViewCell) {
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("View affiliate product", comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
+
+        let accessoryImage = Gridicon.iconOfType(.external)
+        let accessoryImageView = UIImageView(image: accessoryImage)
+        accessoryImageView.tintColor = StyleManager.buttonPrimaryColor
+
+        cell.accessoryView = accessoryImageView
+        cell.textLabel?.textColor = StyleManager.buttonPrimaryColor
     }
 }
 
@@ -403,6 +435,7 @@ private extension ProductDetailsViewController {
         }
 
         rows.append(.reviews)
+        rows.append(.productLink)
 
         let summary = Section(rows: rows)
         sections = [summary].compactMap { $0 }
@@ -444,6 +477,8 @@ private extension ProductDetailsViewController {
         case productName
         case totalOrders
         case reviews
+        case productLink
+        case affiliateLink
 
         var reuseIdentifier: String {
             switch self {
@@ -455,6 +490,10 @@ private extension ProductDetailsViewController {
                 return TwoColumnTableViewCell.reuseIdentifier
             case .reviews:
                 return ProductReviewsTableViewCell.reuseIdentifier
+            case .productLink:
+                return BasicTableViewCell.reuseIdentifier
+            case .affiliateLink:
+                return BasicTableViewCell.reuseIdentifier
             }
         }
     }

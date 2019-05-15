@@ -393,7 +393,7 @@ private extension ManualTrackingViewController {
 //
 extension ManualTrackingViewController: ShipmentProviderListDelegate {
     func shipmentProviderList(_ list: ShipmentProvidersViewController, didSelect: Yosemite.ShipmentTrackingProvider, groupName: String) {
-        WooAnalytics.shared.track(.orderFulfillmentTrackingCarrierSelected,
+        WooAnalytics.shared.track(.orderShipmentTrackingCarrierSelected,
                                   withProperties: ["option": didSelect.name])
 
         viewModel.shipmentProvider = didSelect
@@ -478,7 +478,7 @@ private extension ManualTrackingViewController {
                                                             if let error = error {
                                                                 DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 
-                                                                WooAnalytics.shared.track(.orderTrackingFailed,
+                                                                WooAnalytics.shared.track(.orderTrackingAddFailed,
                                                                                           withError: error)
 
                                                                 self?.configureForEditingTracking()
@@ -487,7 +487,7 @@ private extension ManualTrackingViewController {
                                                                 return
                                                             }
 
-                                                        WooAnalytics.shared.track(.orderTrackingSuccess)
+                                                        WooAnalytics.shared.track(.orderTrackingAddSuccess)
 
                                                             self?.dismiss()
         }
@@ -525,7 +525,7 @@ private extension ManualTrackingViewController {
                                                         if let error = error {
                                                             DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 
-                                                            WooAnalytics.shared.track(.orderTrackingFailed,
+                                                            WooAnalytics.shared.track(.orderTrackingAddFailed,
                                                                                       withError: error)
 
                                                             self?.configureForEditingTracking()
@@ -534,7 +534,7 @@ private extension ManualTrackingViewController {
                                                             return
                                                         }
 
-                                                        WooAnalytics.shared.track(.orderTrackingSuccess)
+                                                        WooAnalytics.shared.track(.orderTrackingAddSuccess)
 
                                                         self?.dismiss()
         }

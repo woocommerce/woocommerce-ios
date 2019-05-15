@@ -6,11 +6,23 @@ final class DatePickerTableViewCell: UITableViewCell {
 
     var onDateSelected: ((Date) -> Void)?
     @IBOutlet private weak var picker: UIDatePicker!
-
+    
+    @IBOutlet weak var bottomBorder: UIView!
+    
     @IBAction func dateChanged(_ sender: UIDatePicker) {
         onDateSelected?(sender.date)
     }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        configureBottomBorder()
+    }
+
+    private func configureBottomBorder() {
+        bottomBorder.backgroundColor = StyleManager.wooGreyBorder
+    }
 }
+
 
 extension DatePickerTableViewCell {
     func getPicker() -> UIDatePicker {

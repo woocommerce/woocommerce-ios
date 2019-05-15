@@ -273,6 +273,8 @@ extension ManualTrackingViewController: UITableViewDataSource {
 
         cell.value.isEnabled = false
         cell.accessoryType = .none
+
+        cell.separatorInset = datePickerVisible ? Constants.cellSeparatorInset : .zero
     }
 
     private func configureSecondaryAction(cell: BasicTableViewCell) {
@@ -287,6 +289,8 @@ extension ManualTrackingViewController: UITableViewDataSource {
             self?.viewModel.shipmentDate = date
             self?.reloadDate()
         }
+
+        cell.separatorInset = .zero
     }
 }
 
@@ -577,6 +581,7 @@ private struct Constants {
     static let pickerRowHeight = CGFloat(216)
     static let disabledAlpha = CGFloat(0.7)
     static let enabledAlpha = CGFloat(1.0)
+    static let cellSeparatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
 }
 
 

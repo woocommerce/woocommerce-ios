@@ -225,9 +225,26 @@ public struct Product: Decodable {
         let briefDescription = try container.decodeIfPresent(String.self, forKey: .briefDescription)
         let sku = try container.decodeIfPresent(String.self, forKey: .sku)
 
-        let price = try container.decode(String.self, forKey: .price)
+        // Even though a plain install of WooCommerce Core provides string values,
+        // some plugins alter the field value from String to Int or Decimal.
+        var price = ""
+        if let parsedStringValue = container.failsafeDecodeIfPresent(stringForKey: .price) {
+            price = parsedStringValue
+        } else if let parsedDecimalValue = container.failsafeDecodeIfPresent(decimalForKey: .price) {
+            price = NSDecimalNumber(decimal: parsedDecimalValue).stringValue
+        }
+
         let regularPrice = try container.decodeIfPresent(String.self, forKey: .regularPrice)
-        let salePrice = try container.decodeIfPresent(String.self, forKey: .salePrice)
+
+        // Even though a plain install of WooCommerce Core provides string values,
+        // some plugins alter the field value from String to Int or Decimal.
+        var salePrice = ""
+        if let parsedSalePriceString = container.failsafeDecodeIfPresent(stringForKey: .salePrice) {
+            salePrice = parsedSalePriceString
+        } else if let parsedSalePriceDecimal = container.failsafeDecodeIfPresent(decimalForKey: .salePrice) {
+            salePrice = NSDecimalNumber(decimal: parsedSalePriceDecimal).stringValue
+        }
+
         let onSale = try container.decode(Bool.self, forKey: .onSale)
 
         let purchasable = try container.decode(Bool.self, forKey: .purchasable)
@@ -449,9 +466,9 @@ extension Product: Comparable {
             lhs.fullDescription == rhs.fullDescription &&
             lhs.briefDescription == rhs.briefDescription &&
             lhs.sku == rhs.sku &&
-            lhs.price == rhs.price &&
+            // lhs.price == rhs.price &&    // can't compare because object type unknown
             lhs.regularPrice == rhs.regularPrice &&
-            lhs.salePrice == rhs.salePrice &&
+            // lhs.salePrice == rhs.salePrice && // can't compare because object type unknown
             lhs.onSale == rhs.onSale &&
             lhs.purchasable == rhs.purchasable &&
             lhs.totalSales == rhs.totalSales &&

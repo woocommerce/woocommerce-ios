@@ -23,9 +23,15 @@ protocol Style {
     var buttonDisabledColor: UIColor { get }
     var buttonDisabledHighlightedColor: UIColor { get }
     var buttonDisabledTitleColor: UIColor { get }
+
     var cellSeparatorColor: UIColor { get }
+
     var defaultTextColor: UIColor { get }
     var destructiveActionColor: UIColor { get }
+
+    var goldStarColor: UIColor { get }
+    var grayStarColor: UIColor { get }
+
     var sectionBackgroundColor: UIColor { get }
     var sectionTitleColor: UIColor { get }
     var statusDangerColor: UIColor { get }
@@ -37,7 +43,7 @@ protocol Style {
     var statusSuccessColor: UIColor { get }
     var statusSuccessBoldColor: UIColor { get }
     var tableViewBackgroundColor: UIColor { get }
-    var goldStarColor: UIColor { get }
+
     var wooCommerceBrandColor: UIColor { get }
     var wooAccent: UIColor { get }
     var wooGreyLight: UIColor { get }
@@ -86,7 +92,6 @@ class DefaultStyle: Style {
     let sectionBackgroundColor          = HandbookColors.wooGreyLight
     let sectionTitleColor               = HandbookColors.wooSecondary
     let tableViewBackgroundColor        = HandbookColors.wooGreyLight
-    let goldStarColor                   = UIColor(red: 238.0/255.0, green: 180.0/255.0, blue: 34.0/255.0, alpha: 1.0)
 
     let statusDangerColor               = HandbookColors.statusRedDimmed
     let statusDangerBoldColor           = HandbookColors.statusRed
@@ -105,6 +110,11 @@ class DefaultStyle: Style {
     let wooGreyMid                      = HandbookColors.wooGreyMid
     let wooGreyTextMin                  = HandbookColors.wooGreyTextMin
     let wooWhite                        = HandbookColors.wooWhite
+
+    /// Stars
+    ///
+    let goldStarColor                   = HandbookColors.goldStarColor
+    let grayStarColor                   = HandbookColors.grayStarColor
 
     /// NavBar
     ///
@@ -131,14 +141,19 @@ private extension DefaultStyle {
         static let statusGreenDimmed     = UIColor(red: 239.00/255.0, green: 249.0/255.0, blue: 230.0/255.0, alpha: 1.0)
         static let statusGreen           = UIColor(red: 201.0/255.0, green: 233.0/255.0, blue: 169.0/255.0, alpha: 1.0)
 
-        static let wooPrimary            = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
+        static let wooPrimary            = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0) // woo purple
         static let wooSecondary          = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
         static let wooAccent             = UIColor(red: 113.0/255.0, green: 176.0/255.0, blue: 47.0/255.0, alpha: 1.0)
+
+        // multiple grays
         static let wooGreyLight          = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1.0)
         static let wooGreyBorder         = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1.0)
         static let wooWhite              = UIColor.white
         static let wooGreyMid            = UIColor(red: 150.0/255.0, green: 150.0/255.0, blue: 150.0/255.0, alpha: 1.0)
         static let wooGreyTextMin        = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
+
+        static let goldStarColor         = UIColor(red: 238.0/255.0, green: 180.0/255.0, blue: 34.0/255.0, alpha: 1.0)
+        static let grayStarColor         = UIColor(red: 0, green: 0, blue: 0, alpha: 0.54)
     }
 }
 
@@ -306,6 +321,10 @@ class StyleManager {
 
     static var wooWhite: UIColor {
         return active.wooWhite
+    }
+
+    static var grayStarColor: UIColor {
+        return active.grayStarColor
     }
 
     // MARK: - NavBar

@@ -266,12 +266,12 @@ private extension ProductDetailsViewController {
             mainImageView.image = StyleManager.wooWhite.image(size)
         }
 
-//        if product.productStatus != .publish {
+        if product.productStatus != .publish {
             cell.textBadge?.applyPaddedLabelSubheadStyles()
             cell.textBadge?.layer.backgroundColor = StyleManager.defaultTextColor.cgColor
             cell.textBadge?.textColor = StyleManager.wooWhite
             cell.textBadge?.text = product.productStatus.description
-//        }
+        }
     }
 
     func configureProductName(cell: TitleBodyTableViewCell) {

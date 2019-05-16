@@ -11,9 +11,31 @@ class StoresManager {
     ///
     static var shared = StoresManager(sessionManager: .standard)
 
+    private let sessionManagerlockQueue = DispatchQueue(label: "StoresManager.sessionManagerLockQueue")
+
     /// SessionManager: Persistent Storage for Session-Y Properties.
-    ///
-    private(set) var sessionManager: SessionManager
+    /// Private property. To be only accessed through `sessionManager` to make
+    /// access thread safe.
+    /// This seems to fix a crash:
+    /// `Thread 1: Simultaneous accesses to <MEMORY_ADDESS>, but modification requires exclusive access`
+    /// https://github.com/woocommerce/woocommerce-ios/issues/878
+    private var _sessionManager: SessionManager
+
+    /// SessionManager: Persistent Storage for Session-Y Properties.
+    /// This property is thread safe
+    private(set) var sessionManager: SessionManager {
+        get {
+            return sessionManagerlockQueue.sync {
+                return _sessionManager
+            }
+        }
+
+        set {
+            sessionManagerlockQueue.sync {
+                _sessionManager = newValue
+            }
+        }
+    }
 
     /// Active StoresManager State.
     ///
@@ -43,7 +65,7 @@ class StoresManager {
     /// Designated Initializer
     ///
     init(sessionManager: SessionManager) {
-        self.sessionManager = sessionManager
+        _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
 
         restoreSessionAccountIfPossible()

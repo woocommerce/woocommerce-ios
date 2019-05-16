@@ -271,12 +271,14 @@ private extension ProductDetailsViewController {
         cell.accessoryType = .none
         cell.selectionStyle = .none
         cell.titleLabel?.text = NSLocalizedString("Title", comment: "Product details screen — product title descriptive label")
+        cell.bodyLabel?.applySecondaryBodyStyle()
         cell.bodyLabel?.text = product.name
     }
 
     func configureTotalOrders(cell: TwoColumnTableViewCell) {
         cell.selectionStyle = .none
         cell.leftLabel?.text = NSLocalizedString("Total Orders", comment: "Product details screen - total orders descriptive label")
+        cell.rightLabel?.applySecondaryBodyStyle()
         cell.rightLabel.textInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 2)
         cell.rightLabel?.text = String(product.totalSales)
     }
@@ -285,6 +287,7 @@ private extension ProductDetailsViewController {
         cell.selectionStyle = .none
         cell.reviewLabel?.text = NSLocalizedString("Reviews", comment: "Reviews descriptive label")
 
+        cell.reviewTotalsLabel?.applySecondaryBodyStyle()
         // 🖐🏼 I solemnly swear I'm not converting currency values to a Double.
         let ratingCount = Double(product.ratingCount)
         cell.reviewTotalsLabel?.text = ratingCount.humanReadableString()

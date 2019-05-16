@@ -79,6 +79,10 @@ public struct Product: Decodable {
 
     /// Computed Properties
     ///
+    public var productStatus: ProductStatus {
+        return ProductStatus(rawValue: statusKey)
+    }
+
     public var productType: ProductType {
         return ProductType(rawValue: productTypeKey)
     }

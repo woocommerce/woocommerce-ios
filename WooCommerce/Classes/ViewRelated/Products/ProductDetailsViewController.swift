@@ -286,7 +286,7 @@ private extension ProductDetailsViewController {
         cell.selectionStyle = .none
         cell.leftLabel?.text = NSLocalizedString("Total Orders", comment: "Product details screen - total orders descriptive label")
         cell.rightLabel?.applySecondaryBodyStyle()
-        cell.rightLabel.textInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 2)
+        cell.rightLabel.textInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
         cell.rightLabel?.text = String(product.totalSales)
     }
 

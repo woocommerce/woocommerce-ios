@@ -5,7 +5,7 @@ import UIKit
 final class TwoColumnTableViewCell: UITableViewCell {
 
     @IBOutlet weak var leftLabel: UILabel!
-    @IBOutlet weak var rightLabel: UILabel!
+    @IBOutlet weak var rightLabel: PaddedLabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()

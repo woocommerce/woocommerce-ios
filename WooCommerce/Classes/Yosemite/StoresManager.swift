@@ -11,7 +11,7 @@ class StoresManager {
     ///
     static var shared = StoresManager(sessionManager: .standard)
 
-    private let sessionManagerlockQueue = DispatchQueue(label: "StoresManager.sessionManagerLockQueue")
+    private let sessionManagerLockQueue = DispatchQueue(label: "StoresManager.sessionManagerLockQueue")
 
     /// SessionManager: Persistent Storage for Session-Y Properties.
     /// Private property. To be only accessed through `sessionManager` to make
@@ -25,13 +25,13 @@ class StoresManager {
     /// This property is thread safe
     private(set) var sessionManager: SessionManager {
         get {
-            return sessionManagerlockQueue.sync {
+            return sessionManagerLockQueue.sync {
                 return _sessionManager
             }
         }
 
         set {
-            sessionManagerlockQueue.sync {
+            sessionManagerLockQueue.sync {
                 _sessionManager = newValue
             }
         }

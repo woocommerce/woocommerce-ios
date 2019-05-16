@@ -243,8 +243,8 @@ private extension ProductDetailsViewController {
             configureTotalOrders(cell: cell)
         case let cell as ProductReviewsTableViewCell:
             configureReviews(cell: cell)
-        case let cell as BasicTableViewCell where row == .productLink:
-            configureProductLink(cell: cell)
+        case let cell as BasicTableViewCell where row == .permalink:
+            configurePermalink(cell: cell)
         case let cell as BasicTableViewCell where row == .affiliateLink:
             configureAffiliateLink(cell: cell)
         default:
@@ -295,7 +295,7 @@ private extension ProductDetailsViewController {
         cell.starRatingView.rating = CGFloat(averageRating ?? 0)
     }
 
-    func configureProductLink(cell: BasicTableViewCell) {
+    func configurePermalink(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("View product on store", comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
 
@@ -384,6 +384,15 @@ extension ProductDetailsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch rowAtIndexPath(indexPath) {
+        case .permalink:
+            if let url = URL(string: product.permalink) {
+                UIApplication.shared.open(url)
+            }
+        case .affiliateLink:
+            if let externalUrlString = product.externalURL,
+                let url = URL(string: externalUrlString) {
+                UIApplication.shared.open(url)
+            }
         default:
             break
         }
@@ -422,24 +431,24 @@ private extension ProductDetailsViewController {
     ///
     func reloadSections() {
         var rows: [Row] = [.productSummary, .productName]
+        var customContent = [Row]()
 
         switch product.productType {
         case .simple:
-            rows.append(.totalOrders)
+            customContent = [.totalOrders, .reviews, .permalink]
         case .grouped:
-            rows.append(.totalOrders)
-        case .external:  // affiliate
-            break
+            customContent = [.totalOrders, .reviews, .permalink]
+        case .external:  // affiliate product
+            customContent = [.totalOrders, .reviews, .permalink, .affiliateLink]
         case .variable:
-            rows.append(.totalOrders)
+            customContent = [.totalOrders, .reviews, .permalink]
         case .variation:
-            rows.append(.totalOrders)
+            customContent = [.totalOrders, .reviews, .permalink]
         case .custom(_):
-            break
+            customContent = [.totalOrders, .reviews, .permalink]
         }
 
-        rows.append(.reviews)
-        rows.append(.productLink)
+        rows.append(contentsOf: customContent)
 
         let summary = Section(rows: rows)
         sections = [summary].compactMap { $0 }
@@ -481,7 +490,7 @@ private extension ProductDetailsViewController {
         case productName
         case totalOrders
         case reviews
-        case productLink
+        case permalink
         case affiliateLink
 
         var reuseIdentifier: String {
@@ -494,7 +503,7 @@ private extension ProductDetailsViewController {
                 return TwoColumnTableViewCell.reuseIdentifier
             case .reviews:
                 return ProductReviewsTableViewCell.reuseIdentifier
-            case .productLink:
+            case .permalink:
                 return BasicTableViewCell.reuseIdentifier
             case .affiliateLink:
                 return BasicTableViewCell.reuseIdentifier

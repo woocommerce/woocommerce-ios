@@ -46,6 +46,13 @@ extension UILabel {
         font = .footnote
     }
 
+    func applyPaddedLabelSubheadStyles() {
+        adjustsFontForContentSizeCategory = true
+        layer.borderWidth = 1.0
+        layer.cornerRadius = 4.0
+        font = .subheadline
+    }
+
     func applyEmptyStateTitleStyle() {
         adjustsFontForContentSizeCategory = true
         font = .body

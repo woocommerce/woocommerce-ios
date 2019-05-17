@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import Gridicons
+import SafariServices
 
 
 /// ProductDetailsViewController: Displays the details for a given Product.
@@ -424,12 +425,16 @@ extension ProductDetailsViewController: UITableViewDelegate {
         switch rowAtIndexPath(indexPath) {
         case .permalink:
             if let url = URL(string: product.permalink) {
-                UIApplication.shared.open(url)
+                let safariViewController = SFSafariViewController(url: url)
+                safariViewController.modalPresentationStyle = .pageSheet
+                present(safariViewController, animated: true, completion: nil)
             }
         case .affiliateLink:
             if let externalUrlString = product.externalURL,
                 let url = URL(string: externalUrlString) {
-                UIApplication.shared.open(url)
+                let safariViewController = SFSafariViewController(url: url)
+                safariViewController.modalPresentationStyle = .pageSheet
+                present(safariViewController, animated: true, completion: nil)
             }
         default:
             break

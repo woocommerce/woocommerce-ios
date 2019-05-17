@@ -2,6 +2,13 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 15 (Release 1.9.0.0)
+- @mindgraffiti 2019-05-03
+    - Delete `ProductVariation` entity
+    - Delete `ProductVariationAttribute` entity
+    - Delete `ProductVariationDimensions` entity
+    - Delete `ProductVariationImage` entity
+
 ## Model 14 (Release 1.8.0.0)
 - @astralbodies 2019-04-22
     - New `AccountSettings` entity with `tracksOptOut` attribute.

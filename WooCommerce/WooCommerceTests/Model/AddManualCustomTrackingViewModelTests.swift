@@ -17,6 +17,7 @@ final class AddManualCustomTrackingViewModelTests: XCTestCase {
                                                          .datePicker]
 
         static let accessoryType = UITableViewCell.AccessoryType.none
+        static let initialName = "Hogsmeade"
     }
 
     override func setUp() {
@@ -110,5 +111,11 @@ final class AddManualCustomTrackingViewModelTests: XCTestCase {
 
     func testCanCommitReturnsFalseWithoutNameAndWithoutTrackingNumber() {
         XCTAssertFalse(subject!.canCommit)
+    }
+
+    func testInitialisingWithProviderNameReturnsName() {
+        let viewModel = AddCustomTrackingViewModel(order: MockData.order, initialName: MockData.initialName)
+
+        XCTAssertEqual(viewModel.providerName, MockData.initialName)
     }
 }

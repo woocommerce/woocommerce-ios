@@ -234,10 +234,14 @@ extension ShipmentProvidersViewController: UITableViewDelegate {
             return
         }
 
-        let provider = viewModel.provider(at: indexPath)
-        let groupName = viewModel.groupName(at: indexPath)
+        guard let provider = viewModel.provider(at: indexPath),
+            let groupName = viewModel.groupName(at: indexPath) else {
+                return
+        }
 
         delegate?.shipmentProviderList(self, didSelect: provider, groupName: groupName)
+
+        navigationController?.popViewController(animated: true)
     }
 }
 
@@ -322,7 +326,9 @@ private extension ShipmentProvidersViewController {
     }
 
     func addCustomProvider() {
-        let addCustomTrackingViewModel = AddCustomTrackingViewModel(order: viewModel.order)
+        let initialCustomProviderName = searchController.searchBar.text
+        let addCustomTrackingViewModel = AddCustomTrackingViewModel(order: viewModel.order,
+                                                                    initialName: initialCustomProviderName)
         let addCustomTrackingViewController = ManualTrackingViewController(viewModel: addCustomTrackingViewModel)
         navigationController?.pushViewController(addCustomTrackingViewController, animated: true)
     }

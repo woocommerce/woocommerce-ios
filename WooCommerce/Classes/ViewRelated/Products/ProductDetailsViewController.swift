@@ -245,31 +245,31 @@ private extension ProductDetailsViewController {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as LargeImageTableViewCell:
-            configureProductImage(cell: cell)
+            configureProductImage(cell)
         case let cell as TitleBodyTableViewCell where row == .productName:
-            configureProductName(cell: cell)
+            configureProductName(cell)
         case let cell as TwoColumnTableViewCell where row == .totalOrders:
-            configureTotalOrders(cell: cell)
+            configureTotalOrders(cell)
         case let cell as ProductReviewsTableViewCell:
-            configureReviews(cell: cell)
+            configureReviews(cell)
         case let cell as WooBasicTableViewCell where row == .permalink:
-            configurePermalink(cell: cell)
+            configurePermalink(cell)
         case let cell as WooBasicTableViewCell where row == .affiliateLink:
-            configureAffiliateLink(cell: cell)
+            configureAffiliateLink(cell)
         case let cell as TitleBodyTableViewCell where row == .price:
-            configurePrice(cell: cell)
+            configurePrice(cell)
         case let cell as TitleBodyTableViewCell where row == .inventory:
-            configureInventory(cell: cell)
+            configureInventory(cell)
         case let cell as TitleBodyTableViewCell where row == .sku:
-            configureSku(cell: cell)
+            configureSku(cell)
         case let cell as TitleBodyTableViewCell where row == .affiliateInventory:
-            configureAffiliateInventory(cell: cell)
+            configureAffiliateInventory(cell)
         default:
             fatalError("Unidentified row type")
         }
     }
 
-    func configureProductImage(cell: LargeImageTableViewCell) {
+    func configureProductImage(_ cell: LargeImageTableViewCell) {
         guard let mainImageView = cell.mainImageView else {
             return
         }
@@ -291,7 +291,7 @@ private extension ProductDetailsViewController {
         }
     }
 
-    func configureProductName(cell: TitleBodyTableViewCell) {
+    func configureProductName(_ cell: TitleBodyTableViewCell) {
         cell.accessoryType = .none
         cell.selectionStyle = .none
         cell.titleLabel?.text = NSLocalizedString("Title", comment: "Product details screen — product title descriptive label")
@@ -300,7 +300,7 @@ private extension ProductDetailsViewController {
         cell.secondBodyLabel?.text = nil
     }
 
-    func configureTotalOrders(cell: TwoColumnTableViewCell) {
+    func configureTotalOrders(_ cell: TwoColumnTableViewCell) {
         cell.selectionStyle = .none
         cell.leftLabel?.text = NSLocalizedString("Total Orders", comment: "Product details screen - total orders descriptive label")
         cell.rightLabel?.applySecondaryBodyStyle()
@@ -308,7 +308,7 @@ private extension ProductDetailsViewController {
         cell.rightLabel?.text = String(product.totalSales)
     }
 
-    func configureReviews(cell: ProductReviewsTableViewCell) {
+    func configureReviews(_ cell: ProductReviewsTableViewCell) {
         cell.selectionStyle = .none
         cell.reviewLabel?.text = NSLocalizedString("Reviews", comment: "Reviews descriptive label")
 
@@ -320,17 +320,17 @@ private extension ProductDetailsViewController {
         cell.starRatingView.rating = CGFloat(averageRating ?? 0)
     }
 
-    func configurePermalink(cell: WooBasicTableViewCell) {
+    func configurePermalink(_ cell: WooBasicTableViewCell) {
         cell.textLabel?.text = NSLocalizedString("View product on store", comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
         cell.accessoryImage = Gridicon.iconOfType(.external)
     }
 
-    func configureAffiliateLink(cell: WooBasicTableViewCell) {
+    func configureAffiliateLink(_ cell: WooBasicTableViewCell) {
         cell.textLabel?.text = NSLocalizedString("View affiliate product", comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
         cell.accessoryImage = Gridicon.iconOfType(.external)
     }
 
-    func configurePrice(cell: TitleBodyTableViewCell) {
+    func configurePrice(_ cell: TitleBodyTableViewCell) {
         cell.titleLabel?.text = NSLocalizedString("Price", comment: "Product Details > Pricing and Inventory section > descriptive label for the Price cell.")
 
         // determine if a `regular_price` exists.
@@ -340,15 +340,15 @@ private extension ProductDetailsViewController {
         // if no, then display the `price` w/ no prefix and w/ currency formatting
     }
 
-    func configureInventory(cell: TitleBodyTableViewCell) {
+    func configureInventory(_ cell: TitleBodyTableViewCell) {
 
     }
 
-    func configureSku(cell: TitleBodyTableViewCell) {
+    func configureSku(_ cell: TitleBodyTableViewCell) {
 
     }
 
-    func configureAffiliateInventory(cell: TitleBodyTableViewCell) {
+    func configureAffiliateInventory(_ cell: TitleBodyTableViewCell) {
 
     }
 }

@@ -26,7 +26,17 @@
                             <constraint firstAttribute="height" priority="999" constant="374" id="mUj-Z1-BpJ"/>
                         </constraints>
                     </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EuO-D4-4LU" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
+                        <rect key="frame" x="16" y="355.5" width="0.0" height="0.0"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="EuO-D4-4LU" secondAttribute="bottom" constant="16" id="HQT-he-9R3"/>
+                    <constraint firstItem="EuO-D4-4LU" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="v86-NX-R8M"/>
+                </constraints>
             </tableViewCellContentView>
             <constraints>
                 <constraint firstItem="ncP-hz-Oe9" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailing" id="EnE-Ci-tdt"/>
@@ -37,6 +47,7 @@
             <connections>
                 <outlet property="heightConstraint" destination="mUj-Z1-BpJ" id="KSx-cm-gQP"/>
                 <outlet property="mainImageView" destination="ncP-hz-Oe9" id="Bi5-iL-CTO"/>
+                <outlet property="textBadge" destination="EuO-D4-4LU" id="fzc-Cf-06q"/>
                 <outlet property="topConstraint" destination="oFt-gA-BbB" id="iXf-N6-UnK"/>
             </connections>
             <point key="canvasLocation" x="137.68115942028987" y="262.5"/>

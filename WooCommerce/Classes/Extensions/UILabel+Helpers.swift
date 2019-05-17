@@ -21,6 +21,12 @@ extension UILabel {
         textColor = StyleManager.defaultTextColor
     }
 
+    func applySecondaryBodyStyle() {
+        adjustsFontForContentSizeCategory = true
+        font = .body
+        textColor = StyleManager.wooGreyTextMin
+    }
+
     func applyFootnoteStyle() {
         adjustsFontForContentSizeCategory = true
         font = .footnote
@@ -38,6 +44,13 @@ extension UILabel {
         layer.borderWidth = 1.0
         layer.cornerRadius = 4.0
         font = .footnote
+    }
+
+    func applyPaddedLabelSubheadStyles() {
+        adjustsFontForContentSizeCategory = true
+        layer.borderWidth = 1.0
+        layer.cornerRadius = 4.0
+        font = .subheadline
     }
 
     func applyEmptyStateTitleStyle() {

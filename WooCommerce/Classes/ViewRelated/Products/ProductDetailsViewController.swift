@@ -431,11 +431,9 @@ private extension ProductDetailsViewController {
             customContent = [.totalOrders, .reviews, .permalink]
         case .grouped:
             customContent = [.totalOrders, .reviews, .permalink]
-        case .external:  // affiliate product
+        case .affiliate:
             customContent = [.totalOrders, .reviews, .permalink, .affiliateLink]
         case .variable:
-            customContent = [.totalOrders, .reviews, .permalink]
-        case .variation:
             customContent = [.totalOrders, .reviews, .permalink]
         case .custom(_):
             customContent = [.totalOrders, .reviews, .permalink]

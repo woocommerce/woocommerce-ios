@@ -10,7 +10,7 @@ final class TitleBodyTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         titleLabel?.applyHeadlineStyle()
-        
+
         bodyLabel?.applySecondaryBodyStyle()
         bodyLabel?.lineBreakMode = .byWordWrapping
         bodyLabel?.numberOfLines = 0

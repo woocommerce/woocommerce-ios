@@ -4,7 +4,7 @@ import Gridicons
 
 // MARK: - ProductReviewsTableViewCell
 //
-class ProductReviewsTableViewCell: UITableViewCell {
+final class ProductReviewsTableViewCell: UITableViewCell {
 
     @IBOutlet weak var reviewLabel: UILabel!
     @IBOutlet weak var reviewTotalsLabel: UILabel!
@@ -24,9 +24,13 @@ class ProductReviewsTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        configureLabels()
+        configureStarView()
+    }
+
+    func configureLabels() {
         reviewLabel.applyBodyStyle()
         reviewTotalsLabel.applyBodyStyle()
-        configureStarView()
     }
 
     func configureStarView() {
@@ -40,12 +44,12 @@ class ProductReviewsTableViewCell: UITableViewCell {
 //
 private extension ProductReviewsTableViewCell {
     enum Star {
-        static let size = Double(20)
+        static let size = CGSize(width: 20, height: 20)
         static let filledImage = Gridicon.iconOfType(.star,
-                                                     withSize: CGSize(width: Star.size, height: Star.size)
+                                                     withSize: Star.size
             ).imageWithTintColor(StyleManager.grayStarColor)
         static let emptyImage = Gridicon.iconOfType(.starOutline,
-                                                    withSize: CGSize(width: Star.size, height: Star.size)
+                                                    withSize: Star.size
             ).imageWithTintColor(StyleManager.grayStarColor)
     }
 }

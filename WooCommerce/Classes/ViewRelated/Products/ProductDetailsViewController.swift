@@ -135,7 +135,7 @@ private extension ProductDetailsViewController {
             TitleBodyTableViewCell.self,
             TwoColumnTableViewCell.self,
             ProductReviewsTableViewCell.self,
-            BasicTableViewCell.self
+            WooBasicTableViewCell.self
         ]
 
         for cell in cells {
@@ -243,9 +243,9 @@ private extension ProductDetailsViewController {
             configureTotalOrders(cell: cell)
         case let cell as ProductReviewsTableViewCell:
             configureReviews(cell: cell)
-        case let cell as BasicTableViewCell where row == .permalink:
+        case let cell as WooBasicTableViewCell where row == .permalink:
             configurePermalink(cell: cell)
-        case let cell as BasicTableViewCell where row == .affiliateLink:
+        case let cell as WooBasicTableViewCell where row == .affiliateLink:
             configureAffiliateLink(cell: cell)
         default:
             fatalError("Unidentified row type")
@@ -302,28 +302,14 @@ private extension ProductDetailsViewController {
         cell.starRatingView.rating = CGFloat(averageRating ?? 0)
     }
 
-    func configurePermalink(cell: BasicTableViewCell) {
-        cell.selectionStyle = .default
+    func configurePermalink(cell: WooBasicTableViewCell) {
         cell.textLabel?.text = NSLocalizedString("View product on store", comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
-
-        let accessoryImage = Gridicon.iconOfType(.external)
-        let accessoryImageView = UIImageView(image: accessoryImage)
-        accessoryImageView.tintColor = StyleManager.buttonPrimaryColor
-
-        cell.accessoryView = accessoryImageView
-        cell.textLabel?.textColor = StyleManager.buttonPrimaryColor
+        cell.accessoryImage = Gridicon.iconOfType(.external)
     }
 
-    func configureAffiliateLink(cell: BasicTableViewCell) {
-        cell.selectionStyle = .default
+    func configureAffiliateLink(cell: WooBasicTableViewCell) {
         cell.textLabel?.text = NSLocalizedString("View affiliate product", comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
-
-        let accessoryImage = Gridicon.iconOfType(.external)
-        let accessoryImageView = UIImageView(image: accessoryImage)
-        accessoryImageView.tintColor = StyleManager.buttonPrimaryColor
-
-        cell.accessoryView = accessoryImageView
-        cell.textLabel?.textColor = StyleManager.buttonPrimaryColor
+        cell.accessoryImage = Gridicon.iconOfType(.external)
     }
 }
 
@@ -511,9 +497,9 @@ private extension ProductDetailsViewController {
             case .reviews:
                 return ProductReviewsTableViewCell.reuseIdentifier
             case .permalink:
-                return BasicTableViewCell.reuseIdentifier
+                return WooBasicTableViewCell.reuseIdentifier
             case .affiliateLink:
-                return BasicTableViewCell.reuseIdentifier
+                return WooBasicTableViewCell.reuseIdentifier
             }
         }
     }

@@ -241,10 +241,6 @@ extension ShipmentProvidersViewController: UITableViewDelegate {
 
         delegate?.shipmentProviderList(self, didSelect: provider, groupName: groupName)
 
-        navigateBack()
-    }
-
-    private func navigateBack() {
         navigationController?.popViewController(animated: true)
     }
 }

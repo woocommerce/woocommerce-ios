@@ -265,7 +265,8 @@ extension FulfillViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let section = sections[section]
 
-        guard let leftTitle = section.title else {
+        guard let leftTitle = section.title,
+            leftTitle.isEmpty != true  else {
             return nil
         }
 
@@ -610,7 +611,7 @@ private extension FulfillViewController {
                 return nil
             }
 
-            let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : ""
+            let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : nil
             let row = Row.trackingAdd
 
             return Section(title: title, secondaryTitle: nil, rows: [row])

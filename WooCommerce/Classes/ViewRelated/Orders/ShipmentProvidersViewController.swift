@@ -240,6 +240,8 @@ extension ShipmentProvidersViewController: UITableViewDelegate {
         }
 
         delegate?.shipmentProviderList(self, didSelect: provider, groupName: groupName)
+
+        navigationController?.popViewController(animated: true)
     }
 }
 
@@ -324,6 +326,8 @@ private extension ShipmentProvidersViewController {
     }
 
     func addCustomProvider() {
+        WooAnalytics.shared.track(.orderShipmentTrackingCustomProviderSelected)
+
         let initialCustomProviderName = searchController.searchBar.text
         let addCustomTrackingViewModel = AddCustomTrackingViewModel(order: viewModel.order,
                                                                     initialName: initialCustomProviderName)

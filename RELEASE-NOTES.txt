@@ -2,6 +2,7 @@
 -----
 - bugfix: fixes "Unable to load content" error message when attempting to get Top Performers content.
 - bugfix: fixes Store Picker: some users are unable to continue after logging in.
+- bugfix: fixes a crash when the network connection is slow
  
 1.8
 -----

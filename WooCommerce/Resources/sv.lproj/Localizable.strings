@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-04-30 12:54:03+0000 */
+/* Translation-Revision-Date: 2019-05-06 15:27:06+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -127,7 +127,7 @@
 "Can Not Request Link" = "Kan inte begära länk";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Change order status screen - button title for closing the view */
+   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
 "Cancel" = "Avbryt";
 
 /* shown in promotional screens during first launch */
@@ -196,7 +196,11 @@
 /* Cell title: the current date. */
 "Current" = "Nuvarande";
 
-/* Title of button to add a custom tracking provider if filtering the list yields no results. */
+/* Name of the section for custom shipment tracking providers */
+"Custom" = "Custom";
+
+/* Add custom shipping provider. Content of cell titled Shipping Provider
+   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "Anpassad leverantör";
 
 /* Customer info section title
@@ -216,8 +220,14 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Dagar";
 
-/* Delete Tracking button title */
+/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
+"Delete" = "Ta bort";
+
+/* Delete a Shipment Tracking */
 "Delete Tracking" = "Ta bort spårning";
+
+/* Accessibility hint for Delete Shipment button in Order fulfillment screen */
+"Deletes a shipment's tracking information." = "Deletes a shipment's tracking information.";
 
 /* The row label to tap for a detailed product list */
 "Details" = "Detaljer";
@@ -259,15 +269,6 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Dubbelpeka för att växla inställning.";
 
-/* Accessibility hint for Pencil button in an individual Shipment Tracking in the order fulfillment screen */
-"Edit" = "Redigera";
-
-/* Edit tracking screen - title. */
-"Edit Tracking" = "Redigera spårning";
-
-/* Accessibility hint for Edit Shipment button in Order fulfillment screen */
-"Edits a shipment." = "Redigerar en försändelse.";
-
 /* Email address text field placeholder */
 "Email" = "E-post";
 
@@ -286,6 +287,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "URL ej angiven";
 
+/* Add custom shipping provider. Placeholder of cell presenting provider name */
+"Enter provider name" = "Enter provider name";
+
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "Ange adressen till den WooCommerce-butik som du vill ansluta.";
 
@@ -294,6 +298,12 @@
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Ange lösenordet för ditt konto på WordPress.com.";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking link */
+"Enter tracking link" = "Enter tracking link";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking number */
+"Enter tracking number" = "Enter tracking number";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
@@ -681,7 +691,7 @@
 "Private note" = "Privat notering";
 
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product - Title of product detail screen. */
+   Product section title - Section header title for the product */
 "Product" = "Produkt";
 
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
@@ -689,6 +699,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Anvisningar med alternativet att ringa eller skicka meddelande till faktureringskunden.";
+
+/* Add Custom shipping provider. Title of cell presenting the provider name */
+"Provider name" = "Provider name";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publicera från parkbänken. Blogga på bussen. Kommentera på ditt favoritkafé. WordPress har du alltid med dig.";
@@ -743,9 +756,6 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS skickat";
-
-/* Edit tracking screen - button title to save a tracking */
-"Save" = "Spara";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Sök alla ordrar";
@@ -977,6 +987,9 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Det gick inte att hämta produkten";
 
+/* Product details screen — product title descriptive label */
+"Title" = "Rubrik";
+
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Fyll i din e-postadress för att skapa ditt nya WordPress.com-konto.";
 
@@ -1010,6 +1023,9 @@
 
 /* Order tracking section title */
 "Tracking" = "Spårning";
+
+/* Add custom shipping provider. Title of cell presenting tracking link */
+"Tracking link (optional)" = "Tracking link (optional)";
 
 /* Add / Edit shipping provider. Title of cell presenting tracking number */
 "Tracking number" = "Spårningsnummer";

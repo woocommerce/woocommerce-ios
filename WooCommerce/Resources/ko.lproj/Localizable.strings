@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-02 06:54:03+0000 */
+/* Translation-Revision-Date: 2019-05-15 08:54:02+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -127,7 +127,7 @@
 "Can Not Request Link" = "링크를 요청할 수 없음";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Change order status screen - button title for closing the view */
+   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
 "Cancel" = "취소";
 
 /* shown in promotional screens during first launch */
@@ -196,7 +196,11 @@
 /* Cell title: the current date. */
 "Current" = "현재";
 
-/* Title of button to add a custom tracking provider if filtering the list yields no results. */
+/* Name of the section for custom shipment tracking providers */
+"Custom" = "사용자 정의";
+
+/* Add custom shipping provider. Content of cell titled Shipping Provider
+   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "사용자 정의 공급업체";
 
 /* Customer info section title
@@ -216,8 +220,14 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "일";
 
-/* Delete Tracking button title */
+/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
+"Delete" = "삭제";
+
+/* Delete a Shipment Tracking */
 "Delete Tracking" = "추적 삭제";
+
+/* Accessibility hint for Delete Shipment button in Order fulfillment screen */
+"Deletes a shipment's tracking information." = "배송 추적 정보를 삭제합니다.";
 
 /* The row label to tap for a detailed product list */
 "Details" = "세부사항";
@@ -259,15 +269,6 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "설정을 전환하려면 두 번 누르세요.";
 
-/* Accessibility hint for Pencil button in an individual Shipment Tracking in the order fulfillment screen */
-"Edit" = "편집";
-
-/* Edit tracking screen - title. */
-"Edit Tracking" = "추적 편집";
-
-/* Accessibility hint for Edit Shipment button in Order fulfillment screen */
-"Edits a shipment." = "배송물을 편집합니다.";
-
 /* Email address text field placeholder */
 "Email" = "이메일";
 
@@ -286,6 +287,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "빈 URL";
 
+/* Add custom shipping provider. Placeholder of cell presenting provider name */
+"Enter provider name" = "공급업체 이름 입력";
+
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "연결하려는 WooCommerce 스토어의 주소를 입력합니다.";
 
@@ -294,6 +298,12 @@
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "워드프레스닷컴 계정에 대한 비밀번호를 입력합니다.";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking link */
+"Enter tracking link" = "추적 링크 입력";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking number */
+"Enter tracking number" = "추적 번호 입력";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
@@ -681,7 +691,7 @@
 "Private note" = "비공개 메모";
 
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product - Title of product detail screen. */
+   Product section title - Section header title for the product */
 "Product" = "상품";
 
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
@@ -689,6 +699,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "청구 고객에게 전화를 걸거나 메시지를 보낼 수 있는 옵션이 표시된 메시지가 나타납니다.";
+
+/* Add Custom shipping provider. Title of cell presenting the provider name */
+"Provider name" = "공급업체 이름";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "공원에서 글을 발행하세요. 버스에서 블로그를 방문하세요. 카페에서 댓글을 다세요. 워드프레스는 어디에서든 사용할 수 있습니다.";
@@ -743,9 +756,6 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS 전송됨";
-
-/* Edit tracking screen - button title to save a tracking */
-"Save" = "저장";
 
 /* Orders Search Placeholder */
 "Search all orders" = "모든 주문 검색";
@@ -977,6 +987,9 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "이 제품을 로드할 수 없음";
 
+/* Product details screen — product title descriptive label */
+"Title" = "제목";
+
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "새 워드프레스닷컴 계정을 만들려면 이메일 주소를 입력하세요.";
 
@@ -1010,6 +1023,9 @@
 
 /* Order tracking section title */
 "Tracking" = "추적";
+
+/* Add custom shipping provider. Title of cell presenting tracking link */
+"Tracking link (optional)" = "추적 링크(옵션)";
 
 /* Add / Edit shipping provider. Title of cell presenting tracking number */
 "Tracking number" = "추적 번호";

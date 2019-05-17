@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-03 07:54:03+0000 */
+/* Translation-Revision-Date: 2019-05-15 07:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -127,7 +127,7 @@
 "Can Not Request Link" = "無法要求連結";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Change order status screen - button title for closing the view */
+   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
 "Cancel" = "取消";
 
 /* shown in promotional screens during first launch */
@@ -196,7 +196,11 @@
 /* Cell title: the current date. */
 "Current" = "最新";
 
-/* Title of button to add a custom tracking provider if filtering the list yields no results. */
+/* Name of the section for custom shipment tracking providers */
+"Custom" = "自訂";
+
+/* Add custom shipping provider. Content of cell titled Shipping Provider
+   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "自訂供應商";
 
 /* Customer info section title
@@ -216,8 +220,14 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "天";
 
-/* Delete Tracking button title */
+/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
+"Delete" = "刪除";
+
+/* Delete a Shipment Tracking */
 "Delete Tracking" = "刪除追蹤";
+
+/* Accessibility hint for Delete Shipment button in Order fulfillment screen */
+"Deletes a shipment's tracking information." = "刪除貨件的追蹤資訊。";
 
 /* The row label to tap for a detailed product list */
 "Details" = "詳細資料";
@@ -259,15 +269,6 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "按兩下即可切換設定。";
 
-/* Accessibility hint for Pencil button in an individual Shipment Tracking in the order fulfillment screen */
-"Edit" = "編輯";
-
-/* Edit tracking screen - title. */
-"Edit Tracking" = "編輯追蹤";
-
-/* Accessibility hint for Edit Shipment button in Order fulfillment screen */
-"Edits a shipment." = "編輯貨件。";
-
 /* Email address text field placeholder */
 "Email" = "電子郵件";
 
@@ -286,6 +287,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空的網址";
 
+/* Add custom shipping provider. Placeholder of cell presenting provider name */
+"Enter provider name" = "輸入供應商名稱";
+
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "請輸入要連結的 WooCommerce 商店位址。";
 
@@ -294,6 +298,12 @@
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "請輸入 WordPress.com 帳號的密碼。";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking link */
+"Enter tracking link" = "輸入追蹤連結";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking number */
+"Enter tracking number" = "輸入追蹤號碼";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
@@ -681,7 +691,7 @@
 "Private note" = "私人備註";
 
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product - Title of product detail screen. */
+   Product section title - Section header title for the product */
 "Product" = "產品";
 
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
@@ -689,6 +699,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "提示致電或傳簡訊給帳單客戶的選項。";
+
+/* Add Custom shipping provider. Title of cell presenting the provider name */
+"Provider name" = "供應商名稱";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "在公園發表文章，在公車上寫網誌，或在咖啡館留言，你走到哪，WordPress 跟你到哪。";
@@ -743,9 +756,6 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "簡訊已傳送";
-
-/* Edit tracking screen - button title to save a tracking */
-"Save" = "儲存";
 
 /* Orders Search Placeholder */
 "Search all orders" = "搜尋全部訂單";
@@ -977,6 +987,9 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "無法載入此產品";
 
+/* Product details screen — product title descriptive label */
+"Title" = "標題";
+
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "若要建立新的 WordPress.com 帳號，請輸入你的電子郵件地址。";
 
@@ -1010,6 +1023,9 @@
 
 /* Order tracking section title */
 "Tracking" = "追蹤中";
+
+/* Add custom shipping provider. Title of cell presenting tracking link */
+"Tracking link (optional)" = "追蹤連結 (選用)";
 
 /* Add / Edit shipping provider. Title of cell presenting tracking number */
 "Tracking number" = "追蹤號碼";

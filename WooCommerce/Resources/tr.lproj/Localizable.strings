@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-02 15:54:03+0000 */
+/* Translation-Revision-Date: 2019-05-15 10:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -127,7 +127,7 @@
 "Can Not Request Link" = "Bağlantı istenemiyor";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Change order status screen - button title for closing the view */
+   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
 "Cancel" = "İptal";
 
 /* shown in promotional screens during first launch */
@@ -196,7 +196,11 @@
 /* Cell title: the current date. */
 "Current" = "Geçerli";
 
-/* Title of button to add a custom tracking provider if filtering the list yields no results. */
+/* Name of the section for custom shipment tracking providers */
+"Custom" = "Özel";
+
+/* Add custom shipping provider. Content of cell titled Shipping Provider
+   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "Özel Sağlayıcı";
 
 /* Customer info section title
@@ -216,8 +220,14 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Günler";
 
-/* Delete Tracking button title */
+/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
+"Delete" = "Sil";
+
+/* Delete a Shipment Tracking */
 "Delete Tracking" = "Takibi Sil";
+
+/* Accessibility hint for Delete Shipment button in Order fulfillment screen */
+"Deletes a shipment's tracking information." = "Bir gönderinin takip bilgilerini siler.";
 
 /* The row label to tap for a detailed product list */
 "Details" = "Detaylar";
@@ -259,15 +269,6 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Ayarı değiştirmek için çift tıklayın.";
 
-/* Accessibility hint for Pencil button in an individual Shipment Tracking in the order fulfillment screen */
-"Edit" = "Düzenle";
-
-/* Edit tracking screen - title. */
-"Edit Tracking" = "Takibi Düzenle";
-
-/* Accessibility hint for Edit Shipment button in Order fulfillment screen */
-"Edits a shipment." = "Bir gönderiyi düzenler.";
-
 /* Email address text field placeholder */
 "Email" = "E-posta";
 
@@ -286,6 +287,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Boş adres";
 
+/* Add custom shipping provider. Placeholder of cell presenting provider name */
+"Enter provider name" = "Sağlayıcı adını girin";
+
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "Bağlanmak istediğiniz WooCommerce mağazasının adresini girin.";
 
@@ -294,6 +298,12 @@
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "WordPress.com hesabınız için parola girin.";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking link */
+"Enter tracking link" = "Takip bağlantısını girin";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking number */
+"Enter tracking number" = "Takip numarasını girin";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
@@ -681,7 +691,7 @@
 "Private note" = "Özel not";
 
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product - Title of product detail screen. */
+   Product section title - Section header title for the product */
 "Product" = "Ürün";
 
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
@@ -689,6 +699,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Müşteriyi arama veya müşteriye mesaj gönderme seçenekli istemler.";
+
+/* Add Custom shipping provider. Title of cell presenting the provider name */
+"Provider name" = "Sağlayıcı adı";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Gönderinizi parktan yayımlayın. Otobüste blog yazısı hazırlayın. Kafeden yorum yapın. WordPress gittiğiniz her yere gelir.";
@@ -743,9 +756,6 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS Gönderildi";
-
-/* Edit tracking screen - button title to save a tracking */
-"Save" = "Kaydet";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Tüm siparişleri ara";
@@ -977,6 +987,9 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Bu ürün yüklenemedi";
 
+/* Product details screen — product title descriptive label */
+"Title" = "Başlık";
+
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Yeni WordPress.com hesabınızı oluşturmak için lütfen e-posta adresinizi girin.";
 
@@ -1010,6 +1023,9 @@
 
 /* Order tracking section title */
 "Tracking" = "İzleme";
+
+/* Add custom shipping provider. Title of cell presenting tracking link */
+"Tracking link (optional)" = "Takip bağlantısı (isteğe bağlı)";
 
 /* Add / Edit shipping provider. Title of cell presenting tracking number */
 "Tracking number" = "İzleme numarası";

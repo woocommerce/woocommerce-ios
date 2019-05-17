@@ -140,6 +140,7 @@ private extension ManualTrackingViewController {
     }
 
     @objc func primaryButtonTapped() {
+        WooAnalytics.shared.track(.orderShipmentTrackingAddButtonTapped)
         viewModel.isCustom ? addCustomTracking() : addTracking()
     }
 }

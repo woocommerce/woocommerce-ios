@@ -240,6 +240,8 @@ extension ShipmentProvidersViewController: UITableViewDelegate {
         }
 
         delegate?.shipmentProviderList(self, didSelect: provider, groupName: groupName)
+
+        navigationController?.popViewController(animated: true)
     }
 }
 

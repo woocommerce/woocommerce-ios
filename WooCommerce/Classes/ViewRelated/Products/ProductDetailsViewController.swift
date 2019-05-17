@@ -297,7 +297,7 @@ private extension ProductDetailsViewController {
         cell.titleLabel?.text = NSLocalizedString("Title", comment: "Product details screen — product title descriptive label")
         cell.bodyLabel?.applySecondaryBodyStyle()
         cell.bodyLabel?.text = product.name
-        cell.secondBodyLabel?.text = nil
+        cell.secondBodyLabel.isHidden = true
     }
 
     func configureTotalOrders(_ cell: TwoColumnTableViewCell) {

@@ -664,15 +664,26 @@ private extension OrderDetailsViewController {
         let orderID = viewModel.order.orderID
         let trackingID = tracking.trackingID
 
+        let statusKey = viewModel.order.statusKey
+        let providerName = tracking.trackingProvider ?? ""
+
+        WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
+                                                                         "status": statusKey,
+                                                                         "carrier": providerName])
+
         let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
                                                                  orderID: orderID,
                                                                  trackingID: trackingID) { [weak self] error in
                                                                     if let error = error {
                                                                         DDLogError("⛔️ Order Details - Delete Tracking: orderID \(orderID). Error: \(error)")
 
+                                                                        WooAnalytics.shared.track(.orderTrackingDeleteFailed,
+                                                                                                  withError: error)
                                                                         self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
                                                                         return
                                                                     }
+
+                                                                    WooAnalytics.shared.track(.orderTrackingDeleteSuccess)
                                                                     self?.reloadSections()
 
         }

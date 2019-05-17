@@ -475,18 +475,27 @@ private extension FulfillViewController {
         let orderID = order.orderID
         let trackingID = tracking.trackingID
 
+        let statusKey = order.statusKey
+        let providerName = tracking.trackingProvider ?? ""
+
+        WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
+                                                                         "status": statusKey,
+                                                                         "carrier": providerName])
+
         let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
                                                                  orderID: orderID,
                                                                  trackingID: trackingID) { [weak self] error in
                                                                     if let error = error {
                                                                         DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
 
+                                                                        WooAnalytics.shared.track(.orderTrackingDeleteFailed,
+                                                                                                  withError: error)
                                                                         self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
                                                                         return
                                                                     }
 
+                                                                    WooAnalytics.shared.track(.orderTrackingDeleteSuccess)
                                                                     self?.syncTrackingsHiddingAddButtonIfNecessary()
-
         }
 
         StoresManager.shared.dispatch(deleteTrackingAction)

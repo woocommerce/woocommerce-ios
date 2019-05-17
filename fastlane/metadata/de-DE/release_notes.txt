@@ -1,1 +1,3 @@
-* Du kannst jetzt eine Website-Adresse anstelle deiner E-Mail-Adresse zur Anmeldung verwenden.
+* Die Unterstützung größerer Texte wurde verbessert.
+* Es wurde ein Fehler behoben, bei dem die Liste der Bestellungen für einige Benutzer nicht geladen wurde.
+* Die App wurde aktualisiert und unterstützt jetzt auch iOS 12.0 und höher.

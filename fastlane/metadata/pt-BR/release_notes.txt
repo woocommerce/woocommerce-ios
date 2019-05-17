@@ -1,1 +1,3 @@
-* Agora você pode fazer login com um endereço de site em vez do endereço de e-mail.
+* A compatibilidade com tamanhos maiores de texto foi aprimorada.
+* O bug em que a Lista de pedidos não era carregada para alguns usuários foi corrigido.
+* O aplicativo foi atualizado para ser compatível com a versão iOS 12.0 e superior.

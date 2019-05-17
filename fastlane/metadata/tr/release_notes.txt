@@ -1,1 +1,3 @@
-* Artık e-posta adresiniz yerine bir site adresi kullanarak oturum açabilirsiniz.
+* Büyük metin boyutlarını destekleme özelliği iyileştirildi.
+* Bazı kullanıcılar için Sipariş Listesinin yüklenmemesi sorunu düzeltildi.
+* Uygulama iOS 12.0 ve üstü sürümleri destekleyecek şekilde güncellendi.

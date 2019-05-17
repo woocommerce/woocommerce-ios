@@ -1,1 +1,3 @@
-* Kini Anda dapat login menggunakan alamat situs sebagai ganti alamat email.
+* Dukungan untuk ukuran teks besar telah ditingkatkan.
+* Memperbaiki bug dengan Daftar Pesanan tidak dimuat untuk beberapa pengguna.
+* Memperbarui aplikasi untuk mendukung iOS 12.0 dan yang di atasnya.

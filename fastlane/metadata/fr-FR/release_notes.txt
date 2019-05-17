@@ -1,1 +1,3 @@
-* Vous pouvez désormais vous connecter en utilisant une adresse de site Web plutôt qu'une adresse e-mail.
+* La prise en charge des grandes tailles de texte a été améliorée.
+* Résolution d'un bug concernant la liste des commandes qui ne se chargeait pas pour certains utilisateurs.
+* Mise à jour de l'application pour prendre en charge iOS 12.0 et version supérieure.

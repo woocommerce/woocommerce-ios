@@ -1,1 +1,3 @@
-* Ahora puedes acceder con la dirección de un sitio en lugar de hacerlo con tu dirección de correo electrónico.
+* Se ha mejorado la compatibilidad con los tamaños de letra grandes.
+* Se ha corregido el error que impedía cargar la lista de pedidos a algunos usuarios.
+* Se ha actualizado la aplicación para que sea compatible con iOS 12.0 y versiones superiores.

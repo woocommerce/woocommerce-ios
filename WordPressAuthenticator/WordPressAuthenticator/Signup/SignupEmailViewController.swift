@@ -140,7 +140,8 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
 
     private func checkEmailAvailability(completion:@escaping (Bool) -> ()) {
 
-        let remote = AccountServiceRemoteREST(wordPressComRestApi: WordPressComRestApi(baseUrlString: WordPressAuthenticator.shared.configuration.wpcomAPIBaseURL))
+        let remote = AccountServiceRemoteREST(
+            wordPressComRestApi: WordPressComRestApi(baseUrlString: WordPressAuthenticator.shared.configuration.wpcomAPIBaseURL))
 
         remote.isEmailAvailable(loginFields.emailAddress, success: { available in
             if !available {

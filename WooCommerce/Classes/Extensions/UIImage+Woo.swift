@@ -52,6 +52,15 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// More icon
+    ///
+    static var moreImage: UIImage {
+        let tintColor = StyleManager.wooCommerceBrandColor
+        return Gridicon.iconOfType(.ellipsis)
+            .imageWithTintColor(tintColor)!
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Jetpack Logo Image
     ///
     static var jetpackLogoImage: UIImage {

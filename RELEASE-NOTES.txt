@@ -1,7 +1,9 @@
 1.9
 -----
 - bugfix: fixes "Unable to load content" error message when attempting to get Top Performers content.
+- new feature: You can now manually add shipment tracking to an Order. This feature is for users who have the [Shipment Tracking plugin](https://woocommerce.com/products/shipment-tracking) installed.
 - bugfix: fixes Store Picker: some users are unable to continue after logging in.
+- bugfix: fixes a crash when the network connection is slow
  
 1.8
 -----

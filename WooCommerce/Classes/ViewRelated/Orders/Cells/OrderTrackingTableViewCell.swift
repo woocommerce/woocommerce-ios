@@ -7,10 +7,9 @@ final class OrderTrackingTableViewCell: UITableViewCell {
     @IBOutlet private var middleLine: UILabel!
     @IBOutlet private var bottomLine: UILabel!
     @IBOutlet private var topBorder: UIView!
-    @IBOutlet private var actionButton: UIButton!
-    @IBOutlet private var internalSeparator: UIView!
+    private var ellipsisButton = UIButton(type: .detailDisclosure)
 
-    var onActionTouchUp: (() -> Void)?
+    var onEllipsisTouchUp: (() -> Void)?
 
     var topText: String? {
         get {
@@ -42,37 +41,12 @@ final class OrderTrackingTableViewCell: UITableViewCell {
         }
     }
 
-    var actionButtonNormalText: String? {
-        get {
-            return actionButton.title(for: .normal)
-        }
-        set {
-            actionButton.setTitle(newValue, for: .normal)
-            configureActionButtonForVoiceOver()
-        }
-    }
-
-    func showActionButton() {
-        actionButton.isHidden = false
-        internalSeparator.isHidden = false
-    }
-
-    func hideActionButton() {
-        actionButton.isHidden = true
-        internalSeparator.isHidden = true
-    }
-
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureButtonSeparator()
         configureTopLine()
         configureMiddleLine()
         configureBottomLine()
         configureActionButton()
-    }
-
-    private func configureButtonSeparator() {
-        topBorder.backgroundColor = StyleManager.wooGreyBorder
     }
 
     private func configureTopLine() {
@@ -88,16 +62,27 @@ final class OrderTrackingTableViewCell: UITableViewCell {
     }
 
     private func configureActionButton() {
-        actionButton.applyTertiaryButtonStyle()
+        let deleteIcon = UIImage.moreImage
+            .imageFlippedForRightToLeftLayoutDirection()
+            .imageWithTintColor(StyleManager.wooCommerceBrandColor)
+
+        ellipsisButton.setImage(deleteIcon!, for: .normal)
+        ellipsisButton.addTarget(self, action: #selector(iconTapped), for: .touchUpInside)
+
+        self.accessoryView = ellipsisButton
+
         configureActionButtonForVoiceOver()
     }
 }
 
-extension OrderTrackingTableViewCell {
-    @IBAction func actionButtonPressed(_ sender: Any) {
-        onActionTouchUp?()
+
+/// MARK: - Actions
+private extension OrderTrackingTableViewCell {
+    @objc func iconTapped() {
+        onEllipsisTouchUp?()
     }
 }
+
 
 /// MARK: - Accessibility
 ///
@@ -125,11 +110,12 @@ private extension OrderTrackingTableViewCell {
     }
 
     func configureActionButtonForVoiceOver() {
-        actionButton.accessibilityLabel = actionButtonNormalText
-        actionButton.accessibilityTraits = .button
-        actionButton.accessibilityHint = NSLocalizedString("Tracks a shipment.",
+        ellipsisButton.accessibilityLabel = NSLocalizedString("More",
+                                                            comment:
+            "Accessibility hint for more button in an individual Shipment Tracking in the order details screen")
+        ellipsisButton.accessibilityHint = NSLocalizedString("Shows more options.",
                                                            comment:
-            "Accessibility hint for Track Package button in Order details screen")
+            "Accessibility hint for Delete Shipment button in Order details screen")
     }
 }
 
@@ -149,6 +135,6 @@ extension OrderTrackingTableViewCell {
     }
 
     func getActionButton() -> UIButton {
-        return actionButton
+        return ellipsisButton
     }
 }

@@ -6,10 +6,6 @@ enum FeatureFlag: Int {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
-    /// Enable the shipment tracking input section/screens
-    ///
-    case manualShipmentTracking
-
     /// Enable the new product details screen (via `FulfillViewController` or `ProductListViewController`)
     ///
     case productDetails
@@ -18,8 +14,6 @@ enum FeatureFlag: Int {
     ///
     var enabled: Bool {
         switch self {
-        case .manualShipmentTracking:
-            return BuildConfiguration.current == .localDeveloper
         case .productDetails:
             return BuildConfiguration.current == .localDeveloper
         default:

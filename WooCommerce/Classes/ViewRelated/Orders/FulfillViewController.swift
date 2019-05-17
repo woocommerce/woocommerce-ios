@@ -79,8 +79,8 @@ final class FulfillViewController: UIViewController {
         reloadSections()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         syncTrackingsHiddingAddButtonIfNecessary()
     }
 
@@ -265,7 +265,8 @@ extension FulfillViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let section = sections[section]
 
-        guard let leftTitle = section.title else {
+        guard let leftTitle = section.title,
+            leftTitle.isEmpty != true  else {
             return nil
         }
 
@@ -474,18 +475,27 @@ private extension FulfillViewController {
         let orderID = order.orderID
         let trackingID = tracking.trackingID
 
+        let statusKey = order.statusKey
+        let providerName = tracking.trackingProvider ?? ""
+
+        WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
+                                                                         "status": statusKey,
+                                                                         "carrier": providerName])
+
         let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
                                                                  orderID: orderID,
                                                                  trackingID: trackingID) { [weak self] error in
                                                                     if let error = error {
                                                                         DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
 
+                                                                        WooAnalytics.shared.track(.orderTrackingDeleteFailed,
+                                                                                                  withError: error)
                                                                         self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
                                                                         return
                                                                     }
 
+                                                                    WooAnalytics.shared.track(.orderTrackingDeleteSuccess)
                                                                     self?.syncTrackingsHiddingAddButtonIfNecessary()
-
         }
 
         StoresManager.shared.dispatch(deleteTrackingAction)
@@ -610,17 +620,13 @@ private extension FulfillViewController {
                 return nil
             }
 
-            let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : ""
+            let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : nil
             let row = Row.trackingAdd
 
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
-        if FeatureFlag.manualShipmentTracking.enabled {
-            sections =  [products, note, address, tracking, addTracking].compactMap { $0 }
-        } else {
-            sections = [products, note, address].compactMap { $0 }
-        }
+        sections =  [products, note, address, tracking, addTracking].compactMap { $0 }
     }
 }
 

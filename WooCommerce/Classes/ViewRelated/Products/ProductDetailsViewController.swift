@@ -67,6 +67,7 @@ final class ProductDetailsViewController: UIViewController {
     ///
     init(product: Product) {
         self.product = product
+        self.viewModel = ProductDetailsViewModel(product: product)
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 

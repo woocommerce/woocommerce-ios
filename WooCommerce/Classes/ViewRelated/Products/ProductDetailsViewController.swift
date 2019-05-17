@@ -7,6 +7,10 @@ import Gridicons
 ///
 final class ProductDetailsViewController: UIViewController {
 
+    /// Product view model
+    ///
+    public var viewModel: ProductDetailsViewModel
+
     /// Product to be displayed
     ///
     private var product: Product {

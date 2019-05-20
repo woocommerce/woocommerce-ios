@@ -295,26 +295,20 @@ extension ProductDetailsViewModel {
     /// Rebuild the section struct
     ///
     func reloadSections() {
-        var rows: [Row] = [.productSummary, .productName]
-        var customContent = [Row]()
+        let summary = configureSummary()
+        sections = [summary].compactMap { $0 }
+    }
 
-        switch product.productType {
-        case .simple:
-            customContent = [.totalOrders, .reviews, .permalink]
-        case .grouped:
-            customContent = [.totalOrders, .reviews, .permalink]
-        case .affiliate:
-            customContent = [.totalOrders, .reviews, .permalink, .affiliateLink]
-        case .variable:
-            customContent = [.totalOrders, .reviews, .permalink]
-        case .custom(_):
-            customContent = [.totalOrders, .reviews, .permalink]
+    /// Summary section.
+    ///
+    func configureSummary() -> Section {
+        var rows: [Row] = [.productSummary, .productName, .totalOrders, .reviews, .permalink]
+        
+        if product.productType == .affiliate {
+            rows.append(.affiliateLink)
         }
 
-        rows.append(contentsOf: customContent)
-
-        let summary = Section(rows: rows)
-        sections = [summary].compactMap { $0 }
+        return Section(rows: rows)
     }
 }
 

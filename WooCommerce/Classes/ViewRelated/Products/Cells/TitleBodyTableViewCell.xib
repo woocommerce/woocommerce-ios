@@ -7,59 +7,50 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="100" id="KGk-i7-Jjw" customClass="TitleBodyTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="86" id="KGk-i7-Jjw" customClass="TitleBodyTableViewCell" customModule="WooCommerce" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="320" height="86"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
                 <rect key="frame" x="0.0" y="0.0" width="320" height="85.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="ZGi-KV-wFc">
-                        <rect key="frame" x="16" y="11" width="288" height="64"/>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="ZGi-KV-wFc">
+                        <rect key="frame" x="16" y="19" width="288" height="48"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SDD-72-x0V">
-                                <rect key="frame" x="0.0" y="0.0" width="288" height="16"/>
+                                <rect key="frame" x="0.0" y="0.0" width="288" height="23"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aos-vn-8pP">
-                                <rect key="frame" x="0.0" y="24" width="288" height="16"/>
+                                <rect key="frame" x="0.0" y="25" width="288" height="23"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Secondary Body Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dHI-PX-sie">
-                                <rect key="frame" x="0.0" y="48" width="288" height="16"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <constraints>
                             <constraint firstItem="aos-vn-8pP" firstAttribute="width" secondItem="ZGi-KV-wFc" secondAttribute="width" id="MKu-qP-bI6"/>
-                            <constraint firstItem="dHI-PX-sie" firstAttribute="width" secondItem="ZGi-KV-wFc" secondAttribute="width" id="bna-Zh-v04"/>
                             <constraint firstItem="SDD-72-x0V" firstAttribute="width" secondItem="ZGi-KV-wFc" secondAttribute="width" id="gPd-fD-xPe"/>
                         </constraints>
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="ZGi-KV-wFc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Dhc-hU-HRx"/>
-                    <constraint firstItem="ZGi-KV-wFc" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="NWe-W6-o27"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="ZGi-KV-wFc" secondAttribute="bottom" id="ZWn-BR-3Dt"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="ZGi-KV-wFc" secondAttribute="trailing" id="saP-xv-RT9"/>
+                    <constraint firstItem="ZGi-KV-wFc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="59y-3z-VKl"/>
+                    <constraint firstItem="ZGi-KV-wFc" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="8" id="Ga9-El-P3p"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="ZGi-KV-wFc" secondAttribute="bottom" constant="8" id="Lah-23-dg3"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="ZGi-KV-wFc" secondAttribute="trailing" id="xUk-b4-JG5"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="bodyLabel" destination="aos-vn-8pP" id="MMl-Yw-lvp"/>
-                <outlet property="secondBodyLabel" destination="dHI-PX-sie" id="ukU-ui-HLI"/>
                 <outlet property="titleLabel" destination="SDD-72-x0V" id="GP2-oH-soc"/>
             </connections>
             <point key="canvasLocation" x="137.68115942028987" y="119.86607142857142"/>

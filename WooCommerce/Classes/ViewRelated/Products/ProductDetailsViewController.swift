@@ -81,8 +81,6 @@ private extension ProductDetailsViewController {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedSectionHeaderHeight = viewModel.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = viewModel.rowHeight
-        tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
         tableView.separatorInset = .zero
         tableView.tableFooterView = UIView(frame: .zero)
@@ -213,6 +211,10 @@ extension ProductDetailsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return viewModel.tableView(tableView, cellForRowAt: indexPath)
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return viewModel.rowHeight
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

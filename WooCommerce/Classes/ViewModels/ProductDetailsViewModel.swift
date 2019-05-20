@@ -223,7 +223,6 @@ extension ProductDetailsViewModel {
         cell.titleLabel?.text = NSLocalizedString("Title", comment: "Product details screen — product title descriptive label")
         cell.bodyLabel?.applySecondaryBodyStyle()
         cell.bodyLabel?.text = product.name
-        cell.secondBodyLabel.isHidden = true
     }
 
     func configureTotalOrders(_ cell: TwoColumnTableViewCell) {
@@ -264,15 +263,14 @@ extension ProductDetailsViewModel {
             let regularPricePrefix = NSLocalizedString("Regular price:", comment: "A descriptive label prefix. Example: 'Regular price: $20.00'")
             let regularPriceFormatted = currencyFormatter.formatAmount(regularPrice) ?? ""
             let bodyText = regularPricePrefix + " " + regularPriceFormatted
-            cell.bodyLabel?.text = bodyText
 
             let salePricePrefix = NSLocalizedString("Sale price:", comment: "A descriptive label prefix. Example: 'Sale price: $18.00'")
             let salePriceFormatted = currencyFormatter.formatAmount(salePrice) ?? ""
             let secondLineText = salePricePrefix + " " + salePriceFormatted
-            cell.secondBodyLabel?.text = secondLineText
+
+            cell.bodyLabel?.text = bodyText + "\n" + secondLineText
         } else if !product.price.isEmpty {
             cell.bodyLabel?.text = currencyFormatter.formatAmount(product.price) ?? ""
-            cell.secondBodyLabel.isHidden = true
         }
     }
 

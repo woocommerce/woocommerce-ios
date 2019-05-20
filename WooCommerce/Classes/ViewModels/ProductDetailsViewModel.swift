@@ -303,7 +303,7 @@ extension ProductDetailsViewModel {
     ///
     func configureSummary() -> Section {
         var rows: [Row] = [.productSummary, .productName, .totalOrders, .reviews, .permalink]
-        
+
         if product.productType == .affiliate {
             rows.append(.affiliateLink)
         }

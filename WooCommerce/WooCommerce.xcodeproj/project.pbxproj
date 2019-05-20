@@ -261,6 +261,7 @@
 		CE227097228F152400C0626C /* WooBasicTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE227096228F152400C0626C /* WooBasicTableViewCell.swift */; };
 		CE227099228F180B00C0626C /* WooBasicTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */; };
 		CE22709B228F362600C0626C /* ProductDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22709A228F362600C0626C /* ProductDetailsViewModel.swift */; };
+		CE22709F2293052700C0626C /* WebviewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22709E2293052700C0626C /* WebviewHelper.swift */; };
 		CE22E3F72170E23C005A6BEF /* PrivacySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22E3F62170E23C005A6BEF /* PrivacySettingsViewController.swift */; };
 		CE22E3FB21714776005A6BEF /* TopLeftImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22E3F921714776005A6BEF /* TopLeftImageTableViewCell.swift */; };
 		CE22E3FC21714776005A6BEF /* TopLeftImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE22E3FA21714776005A6BEF /* TopLeftImageTableViewCell.xib */; };
@@ -648,6 +649,7 @@
 		CE227096228F152400C0626C /* WooBasicTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooBasicTableViewCell.swift; sourceTree = "<group>"; };
 		CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WooBasicTableViewCell.xib; sourceTree = "<group>"; };
 		CE22709A228F362600C0626C /* ProductDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsViewModel.swift; sourceTree = "<group>"; };
+		CE22709E2293052700C0626C /* WebviewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WebviewHelper.swift; path = Classes/Tools/WebviewHelper.swift; sourceTree = SOURCE_ROOT; };
 		CE22E3F62170E23C005A6BEF /* PrivacySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySettingsViewController.swift; sourceTree = "<group>"; };
 		CE22E3F921714776005A6BEF /* TopLeftImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TopLeftImageTableViewCell.swift; path = Classes/ViewRelated/ReusableViews/TopLeftImageTableViewCell.swift; sourceTree = SOURCE_ROOT; };
 		CE22E3FA21714776005A6BEF /* TopLeftImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = TopLeftImageTableViewCell.xib; path = Classes/ViewRelated/ReusableViews/TopLeftImageTableViewCell.xib; sourceTree = SOURCE_ROOT; };
@@ -965,18 +967,19 @@
 			children = (
 				CEEC9B6121E79EBF0055EEF0 /* AppRatings */,
 				CE9B7E3021C94685000F971C /* Currency */,
-				B541B2182189F387008FE7C1 /* StringFormatter */,
-				B5A03699214C0E7000774E2C /* Logging */,
 				B5DB01B32114AB2D00A4F797 /* Fabric */,
+				B5A03699214C0E7000774E2C /* Logging */,
 				B58B4ABC2108F7F800076FDD /* Notices */,
+				B541B2182189F387008FE7C1 /* StringFormatter */,
 				CE14452C2188C0EC00A991D8 /* Zendesk */,
 				74460D3F22289B7600D7316A /* Coordinator.swift */,
-				B54FBE542111F70700390F57 /* ResultsController+UIKit.swift */,
 				7459A6C521B0680300F83A78 /* RequirementsChecker.swift */,
+				B54FBE542111F70700390F57 /* ResultsController+UIKit.swift */,
 				74B5713521CD7604008F9B8E /* SharingHelper.swift */,
+				D8C62470227AE0030011A7D6 /* SiteCountry.swift */,
 				B5D6DC53214802740003E48A /* SyncCoordinator.swift */,
 				B55D4C2620B717C000D7A50F /* UserAgent.swift */,
-				D8C62470227AE0030011A7D6 /* SiteCountry.swift */,
+				CE22709E2293052700C0626C /* WebviewHelper.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1418,10 +1421,8 @@
 				D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */,
 				B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */,
 				CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */,
-				CE22709C2292E4BF00C0626C /* ProductDetailsViewModel.swift */,
-				D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */,
-				D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */,
 				CE22709A228F362600C0626C /* ProductDetailsViewModel.swift */,
+				D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -2111,6 +2112,7 @@
 				CEEC9B5C21E79B3E0055EEF0 /* FeatureFlag.swift in Sources */,
 				74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */,
 				740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */,
+				CE22709F2293052700C0626C /* WebviewHelper.swift in Sources */,
 				744F00D221B582A9007EFA93 /* StarRatingView.swift in Sources */,
 				74AFF2EA211B9B1B0038153A /* StoreStatsViewController.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,

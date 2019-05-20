@@ -1415,8 +1415,10 @@
 		CE85535B209B5B6A00938BDC /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */,
 				B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */,
 				CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */,
+				CE22709C2292E4BF00C0626C /* ProductDetailsViewModel.swift */,
 				D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */,
 				D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */,
 				CE22709A228F362600C0626C /* ProductDetailsViewModel.swift */,

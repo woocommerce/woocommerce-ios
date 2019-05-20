@@ -40,7 +40,8 @@ final class ProductDetailsViewModel {
     /// EntityListener: Update / Deletion Notifications.
     ///
     private lazy var entityListener: EntityListener<Product> = {
-        return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: product)
+        return EntityListener(storageManager: AppDelegate.shared.storageManager,
+                              readOnlyEntity: product)
     }()
 
     /// Grab the first available image for a product.
@@ -258,11 +259,21 @@ extension ProductDetailsViewModel {
     func configurePrice(_ cell: TitleBodyTableViewCell) {
         cell.titleLabel?.text = NSLocalizedString("Price", comment: "Product Details > Pricing and Inventory section > descriptive label for the Price cell.")
 
-        // determine if a `regular_price` exists.
+        if let regularPrice = product.regularPrice, !regularPrice.isEmpty,
+            let salePrice = product.salePrice, !salePrice.isEmpty {
+            let regularPricePrefix = NSLocalizedString("Regular price:", comment: "A descriptive label prefix. Example: 'Regular price: $20.00'")
+            let regularPriceFormatted = currencyFormatter.formatAmount(regularPrice) ?? ""
+            let bodyText = regularPricePrefix + " " + regularPriceFormatted
+            cell.bodyLabel?.text = bodyText
 
-        // if yes, then display Regular Price: / Sale Price: w/ currency formatting
-
-        // if no, then display the `price` w/ no prefix and w/ currency formatting
+            let salePricePrefix = NSLocalizedString("Sale price:", comment: "A descriptive label prefix. Example: 'Sale price: $18.00'")
+            let salePriceFormatted = currencyFormatter.formatAmount(salePrice) ?? ""
+            let secondLineText = salePricePrefix + " " + salePriceFormatted
+            cell.secondBodyLabel?.text = secondLineText
+        } else if !product.price.isEmpty {
+            cell.bodyLabel?.text = currencyFormatter.formatAmount(product.price) ?? ""
+            cell.secondBodyLabel.isHidden = true
+        }
     }
 
     func configureInventory(_ cell: TitleBodyTableViewCell) {
@@ -296,7 +307,8 @@ extension ProductDetailsViewModel {
     ///
     func reloadSections() {
         let summary = configureSummary()
-        sections = [summary].compactMap { $0 }
+        let pricingAndInventory = configurePricingAndInventory()
+        sections = [summary, pricingAndInventory].compactMap { $0 }
     }
 
     /// Summary section.
@@ -309,6 +321,22 @@ extension ProductDetailsViewModel {
         }
 
         return Section(rows: rows)
+    }
+
+    /// Pricing and Inventory Section.
+    ///
+    func configurePricingAndInventory() -> Section {
+        if product.productType == .grouped {
+            let title = NSLocalizedString("Inventory", comment: "Product Details - inventory section title")
+            let rows: [Row] = [.sku]
+
+            return Section(title: title, rightTitle: nil, footer: nil, rows: rows)
+        }
+
+        let title = NSLocalizedString("Pricing and Inventory", comment: "Product Details - pricing and inventory section title")
+        let rows: [Row] = [.price, .inventory]
+
+        return Section(title: title, rightTitle: nil, footer: nil, rows: rows)
     }
 }
 

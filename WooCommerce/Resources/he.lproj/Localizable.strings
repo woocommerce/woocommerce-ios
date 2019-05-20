@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-01 08:54:03+0000 */
+/* Translation-Revision-Date: 2019-05-15 09:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -127,7 +127,7 @@
 "Can Not Request Link" = "לא ניתן לבקש קישור";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Change order status screen - button title for closing the view */
+   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
 "Cancel" = "ביטול";
 
 /* shown in promotional screens during first launch */
@@ -196,7 +196,11 @@
 /* Cell title: the current date. */
 "Current" = "נוכחי";
 
-/* Title of button to add a custom tracking provider if filtering the list yields no results. */
+/* Name of the section for custom shipment tracking providers */
+"Custom" = "התאמה אישית";
+
+/* Add custom shipping provider. Content of cell titled Shipping Provider
+   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "ספק מותאם";
 
 /* Customer info section title
@@ -216,8 +220,14 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "ימים";
 
-/* Delete Tracking button title */
+/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
+"Delete" = "מחיקה";
+
+/* Delete a Shipment Tracking */
 "Delete Tracking" = "מחיקת מעקב";
+
+/* Accessibility hint for Delete Shipment button in Order fulfillment screen */
+"Deletes a shipment's tracking information." = "הפעולה מוחקת את מידע המעקב של המשלוח.";
 
 /* The row label to tap for a detailed product list */
 "Details" = "פרטים";
@@ -259,15 +269,6 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "יש להקיש פעמיים כדי לשנות את ההגדרות.";
 
-/* Accessibility hint for Pencil button in an individual Shipment Tracking in the order fulfillment screen */
-"Edit" = "עריכה";
-
-/* Edit tracking screen - title. */
-"Edit Tracking" = "עריכת מעקב";
-
-/* Accessibility hint for Edit Shipment button in Order fulfillment screen */
-"Edits a shipment." = "לעריכת המשלוח.";
-
 /* Email address text field placeholder */
 "Email" = "אימייל";
 
@@ -286,6 +287,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "קישור ריק";
 
+/* Add custom shipping provider. Placeholder of cell presenting provider name */
+"Enter provider name" = "יש להזין שם ספק";
+
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "יש להזין את הכתובת של חנות ה-WooCommerce שלך שאליה ברצונך להתחבר.";
 
@@ -294,6 +298,12 @@
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "יש להזין את הסיסמה לחשבון WordPress.com שלך.";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking link */
+"Enter tracking link" = "יש להזין קישור מעקב";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking number */
+"Enter tracking number" = "יש להזין מספר מעקב";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
@@ -681,7 +691,7 @@
 "Private note" = "הערה פרטית";
 
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product - Title of product detail screen. */
+   Product section title - Section header title for the product */
 "Product" = "מוצר";
 
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
@@ -689,6 +699,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "הצגת האפשרות להתקשרות או לשליחת הודעה אל הלקוח המשלם.";
+
+/* Add Custom shipping provider. Title of cell presenting the provider name */
+"Provider name" = "שם הספק";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "שליחה לפרסום כשנמצאים בפארק. כתיבת בלוג כשנוסעים באוטובוס. כתיבת תגובה כשיושבים בבית קפה. השירות של WordPress אתך בכל מקום.";
@@ -743,9 +756,6 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS נשלח";
-
-/* Edit tracking screen - button title to save a tracking */
-"Save" = "שמירה";
 
 /* Orders Search Placeholder */
 "Search all orders" = "חיפוש בכל ההזמנות";
@@ -977,6 +987,9 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "לא ניתן לטעון את המוצר";
 
+/* Product details screen — product title descriptive label */
+"Title" = "כותרת";
+
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "כדי ליצור חשבון WordPress.com חדש, יש להזין את כתובת האימייל שלך.";
 
@@ -1010,6 +1023,9 @@
 
 /* Order tracking section title */
 "Tracking" = "מבצע מעקב";
+
+/* Add custom shipping provider. Title of cell presenting tracking link */
+"Tracking link (optional)" = "קישור מעקב (אופציונלי)";
 
 /* Add / Edit shipping provider. Title of cell presenting tracking number */
 "Tracking number" = "מספר מעקב";

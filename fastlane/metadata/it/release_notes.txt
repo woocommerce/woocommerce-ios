@@ -1,1 +1,3 @@
-* Ora puoi accedere utilizzando l'indirizzo di un sito invece del tuo indirizzo e-mail.
+* Il supporto per le dimensioni di testo grandi è stato migliorato.
+* Corretto un bug che comportava il mancato caricamento dell'elenco degli ordini per alcuni utenti.
+* App aggiornata per supportare iOS 12.0 e versioni successive.

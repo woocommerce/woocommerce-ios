@@ -20,13 +20,13 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalCompressionResistancePriority="250" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SDD-72-x0V">
-                        <rect key="frame" x="16" y="11" width="288" height="39.5"/>
+                        <rect key="frame" x="16" y="16" width="288" height="32"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="250" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aos-vn-8pP">
-                        <rect key="frame" x="16" y="54.5" width="288" height="20.5"/>
+                        <rect key="frame" x="16" y="52" width="288" height="20.5"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -35,11 +35,11 @@
                 <constraints>
                     <constraint firstItem="SDD-72-x0V" firstAttribute="leading" secondItem="aos-vn-8pP" secondAttribute="leading" id="8Es-2A-83v"/>
                     <constraint firstItem="SDD-72-x0V" firstAttribute="trailing" secondItem="aos-vn-8pP" secondAttribute="trailing" id="B7V-6t-CiX"/>
-                    <constraint firstItem="SDD-72-x0V" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Pta-Bi-Sme"/>
+                    <constraint firstItem="SDD-72-x0V" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="PUw-Ej-8Tv"/>
+                    <constraint firstItem="SDD-72-x0V" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="Pta-Bi-Sme"/>
                     <constraint firstItem="aos-vn-8pP" firstAttribute="top" secondItem="SDD-72-x0V" secondAttribute="bottom" constant="4" id="W15-Ln-qAa"/>
-                    <constraint firstItem="SDD-72-x0V" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="WTQ-UF-sVY"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="aos-vn-8pP" secondAttribute="bottom" id="ZMQ-Aa-7JA"/>
-                    <constraint firstItem="SDD-72-x0V" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="c4Y-7r-lUj"/>
+                    <constraint firstAttribute="bottom" secondItem="aos-vn-8pP" secondAttribute="bottom" constant="13" id="ZMQ-Aa-7JA"/>
+                    <constraint firstAttribute="trailing" secondItem="SDD-72-x0V" secondAttribute="trailing" constant="16" id="c4Y-7r-lUj"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

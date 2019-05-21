@@ -246,14 +246,12 @@ extension ProductDetailsViewModel {
     }
 
     func configurePermalink(_ cell: WooBasicTableViewCell) {
-        cell.textLabel?.text = NSLocalizedString("View product on store", comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
-        cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
+        cell.bodyLabel?.text = NSLocalizedString("View product on store", comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
         cell.accessoryImage = Gridicon.iconOfType(.external)
     }
 
     func configureAffiliateLink(_ cell: WooBasicTableViewCell) {
-        cell.textLabel?.text = NSLocalizedString("View affiliate product", comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
-        cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
+        cell.bodyLabel?.text = NSLocalizedString("View affiliate product", comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
         cell.accessoryImage = Gridicon.iconOfType(.external)
     }
 

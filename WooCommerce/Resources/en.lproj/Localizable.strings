@@ -186,7 +186,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem.";
@@ -221,7 +221,8 @@
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "Delete";
 
-/* Delete a Shipment Tracking */
+/* Delete a Shipment Tracking
+   Delete tracking button title */
 "Delete Tracking" = "Delete Tracking";
 
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
@@ -237,7 +238,7 @@
 "Discount" = "Discount";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Product details screen - button title for closing the view */
+   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Dismiss";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -267,6 +268,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Double tap to toggle setting.";
 
+/* Display label for the product's draft status */
+"Draft" = "Draft";
+
 /* Email address text field placeholder */
 "Email" = "Email";
 
@@ -284,6 +288,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Empty URL";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "Enter a valid URL eg. example.com.";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Enter provider name";
@@ -308,7 +315,7 @@
 "Enter your password instead." = "Enter your password instead.";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordpress.com";
+"example.com" = "example.com";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Failed to serialize request to the REST API.";
@@ -364,9 +371,6 @@
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "Hide billing";
-
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again.";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "HOW CAN WE HELP?";
@@ -501,6 +505,9 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "Months";
+
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+"More" = "More";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Moves a comment to Spam";
@@ -650,6 +657,9 @@
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of \(totalValue) received via \(order.paymentMethodTitle)" = "Payment of \(totalValue) received via \(order.paymentMethodTitle)";
 
+/* Display label for the product's pending status */
+"Pending" = "Pending";
+
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Phone number: %@";
 
@@ -693,6 +703,9 @@
    Privacy settings screen title */
 "Privacy Settings" = "Privacy Settings";
 
+/* Display label for the product's private status */
+"Private" = "Private";
+
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Private note";
@@ -712,6 +725,9 @@
 
 /* Add Custom shipping provider. Title of cell presenting the provider name */
 "Provider name" = "Provider name";
+
+/* Display label for the product's published status */
+"Publish" = "Publish";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do.";
@@ -758,7 +774,8 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Review, prepare, and ship these pending orders";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
+   Reviews descriptive label */
 "Reviews" = "Reviews";
 
 /* Orders Search Placeholder */
@@ -810,6 +827,9 @@
 
 /* Footer text to show the billing cell */
 "Show billing" = "Show billing";
+
+/* Accessibility hint for Delete Shipment button in Order details screen */
+"Shows more options." = "Shows more options.";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "Sign up";
@@ -964,6 +984,9 @@
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "The site address must be shorter than 64 characters.";
 
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress.";
+
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "The site could not be deleted.";
 
@@ -1028,14 +1051,17 @@
 /* Total label for payment view */
 "Total" = "Total";
 
+/* Product details screen - total orders descriptive label */
+"Total Orders" = "Total Orders";
+
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "Total orders: %ld";
 
 /* Description for Top Performers right column header */
 "Total Spend" = "Total Spend";
 
-/* Track package button title */
-"Track package" = "Track package";
+/* Track shipment button title */
+"Track Shipment" = "Track Shipment";
 
 /* Order tracking section title */
 "Tracking" = "Tracking";
@@ -1048,9 +1074,6 @@
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Tracking number %@";
-
-/* Accessibility hint for Track Package button in Order details screen */
-"Tracks a shipment." = "Tracks a shipment.";
 
 /* Notification status description for 'trash' */
 "trash" = "trash";
@@ -1176,11 +1199,17 @@
 /* Displays the version of the App */
 "Version %@" = "Version %@";
 
+/* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
+"View affiliate product" = "View affiliate product";
+
 /* View application log cell title */
 "View Application Log" = "View Application Log";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "View previously submitted support tickets";
+
+/* The descriptive label. Tapping the row will open the product's page in a web view. */
+"View product on store" = "View product on store";
 
 /* User role badge */
 "Viewer" = "Viewer";

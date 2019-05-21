@@ -197,14 +197,8 @@ private extension StoresManager {
         
         let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] (accountSettings, error) in
             if let `self` = self, let accountSettings = accountSettings, self.isAuthenticated {
-                // TODO: Do something here to turn off tracking if we opted out already
-                WooAnalytics.shared.refreshUserData()
                 // Save the user's preference
                 WooAnalytics.shared.setUserHasOptedOut(accountSettings.tracksOptOut)
-                
-                // This event will only report if the user has turned tracking back on
-                WooAnalytics.shared.track(.settingsCollectInfoToggled)
-
             }
             
             onCompletion(error)

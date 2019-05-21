@@ -242,6 +242,10 @@ private extension PrivacySettingsViewController {
         let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: tracksOptOut) { error in
             // TODO do something here
             guard let error = error else {
+                // TODO :: This should get moved to an EntityListener in StoreManager or something alike
+                // Save the user's preference
+                WooAnalytics.shared.setUserHasOptedOut(tracksOptOut)
+
                 return
             }
         }

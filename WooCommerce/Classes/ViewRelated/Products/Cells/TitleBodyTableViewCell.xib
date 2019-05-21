@@ -15,21 +15,21 @@
         <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="86" id="KGk-i7-Jjw" customClass="TitleBodyTableViewCell" customModule="WooCommerce" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="320" height="86"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
                 <rect key="frame" x="0.0" y="0.0" width="320" height="85.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="ZGi-KV-wFc">
-                        <rect key="frame" x="16" y="19" width="288" height="48"/>
+                        <rect key="frame" x="16" y="11" width="288" height="64"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SDD-72-x0V">
-                                <rect key="frame" x="0.0" y="0.0" width="288" height="23"/>
+                                <rect key="frame" x="0.0" y="0.0" width="288" height="31"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aos-vn-8pP">
-                                <rect key="frame" x="0.0" y="25" width="288" height="23"/>
+                                <rect key="frame" x="0.0" y="33" width="288" height="31"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -43,8 +43,8 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="ZGi-KV-wFc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="59y-3z-VKl"/>
-                    <constraint firstItem="ZGi-KV-wFc" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="8" id="Ga9-El-P3p"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="ZGi-KV-wFc" secondAttribute="bottom" constant="8" id="Lah-23-dg3"/>
+                    <constraint firstItem="ZGi-KV-wFc" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="Ga9-El-P3p"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="ZGi-KV-wFc" secondAttribute="bottom" id="Lah-23-dg3"/>
                     <constraint firstAttribute="trailingMargin" secondItem="ZGi-KV-wFc" secondAttribute="trailing" id="xUk-b4-JG5"/>
                 </constraints>
             </tableViewCellContentView>

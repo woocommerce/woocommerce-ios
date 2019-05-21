@@ -232,7 +232,6 @@ extension ProductDetailsViewModel {
         cell.accessoryType = .none
         cell.selectionStyle = .none
         cell.titleLabel?.text = NSLocalizedString("Title", comment: "Product details screen — product title descriptive label")
-        cell.bodyLabel?.applySecondaryBodyStyle()
         cell.bodyLabel?.text = product.name
     }
 

@@ -18,7 +18,7 @@ class WooBasicTableViewCell: BasicTableViewCell {
         super.awakeFromNib()
 
         configureSelectionStyle()
-        configureLabels()
+        configureLabel()
     }
 
     /// Set up the cell selection style
@@ -29,8 +29,8 @@ class WooBasicTableViewCell: BasicTableViewCell {
 
     /// Style the label(s)
     ///
-    func configureLabels() {
-        textLabel?.textColor = StyleManager.buttonPrimaryColor
+    func configureLabel() {
+        textLabel?.textColor = StyleManager.wooCommerceBrandColor
     }
 
     /// Add the accessoryView image, if any

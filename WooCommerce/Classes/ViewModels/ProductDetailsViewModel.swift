@@ -247,11 +247,13 @@ extension ProductDetailsViewModel {
 
     func configurePermalink(_ cell: WooBasicTableViewCell) {
         cell.textLabel?.text = NSLocalizedString("View product on store", comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
+        cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
         cell.accessoryImage = Gridicon.iconOfType(.external)
     }
 
     func configureAffiliateLink(_ cell: WooBasicTableViewCell) {
         cell.textLabel?.text = NSLocalizedString("View affiliate product", comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
+        cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
         cell.accessoryImage = Gridicon.iconOfType(.external)
     }
 
@@ -275,7 +277,9 @@ extension ProductDetailsViewModel {
     }
 
     func configureInventory(_ cell: TitleBodyTableViewCell) {
+        cell.titleLabel?.text = NSLocalizedString("Inventory", comment: "Product Details > Pricing and Inventory section > descriptive label for the Inventory cell.")
 
+        cell.bodyLabel?.text = "Stock status: \nSKU:"
     }
 
     func configureSku(_ cell: TitleBodyTableViewCell) {
@@ -306,7 +310,7 @@ extension ProductDetailsViewModel {
     func reloadSections() {
         let summary = configureSummary()
         let pricingAndInventory = configurePricingAndInventory()
-        sections = [summary, pricingAndInventory].compactMap { $0 }
+        sections = [summary].compactMap { $0 }
     }
 
     /// Summary section.

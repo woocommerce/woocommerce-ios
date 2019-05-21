@@ -289,9 +289,35 @@ extension ProductDetailsViewModel {
     func configureInventory(_ cell: TitleBodyTableViewCell) {
         cell.titleLabel?.text = NSLocalizedString("Inventory", comment: "Product Details > Pricing and Inventory section > descriptive label for the Inventory cell.")
 
-        let stockStatusPrefix = NSLocalizedString("Stock status:", comment: "A descriptive label prefix. Example: 'Stock status: In stock'")
-        let stockStatus = product.productStockStatus.description
-        var bodyText = stockStatusPrefix + " " + stockStatus
+        guard product.manageStock else {
+            let stockStatusPrefix = NSLocalizedString("Stock status:", comment: "A descriptive label prefix. Example: 'Stock status: In stock'")
+            let stockStatus = product.productStockStatus.description
+            var bodyText = stockStatusPrefix + " " + stockStatus
+
+            if let sku = product.sku,
+                !sku.isEmpty {
+                let skuPrefix = NSLocalizedString("SKU:", comment: "A descriptive label prefix. Example: 'SKU: woo-virtual-beanie'")
+                bodyText += "\n" + skuPrefix + " " + sku
+            }
+
+            cell.bodyLabel?.text = bodyText
+            return
+        }
+
+        var bodyText = ""
+        if let stockQuantity = product.stockQuantity {
+            let stockQuantityPrefix = NSLocalizedString("Stock quantity:", comment: "A descriptive label prefix. Example: 'Stock quantity: 19'")
+            let stockText = stockQuantityPrefix + " " + String(stockQuantity)
+            bodyText += stockText + "\n"
+        }
+
+        var backordersText = ""
+        let backordersPrefix = NSLocalizedString("Backorders:", comment: "A descriptive label prefix. Example: 'Backorders: not allowed'")
+        let allowed = NSLocalizedString("allowed", comment: "Backorders status. Example: 'Backorders: allowed'")
+        let notAllowed = NSLocalizedString("not allowed", comment: "Backorders status. Example: 'Backorders: not allowed'")
+        let backordersSuffix = product.backordersAllowed ? allowed : notAllowed
+        backordersText = backordersPrefix + " " + backordersSuffix
+        bodyText += backordersText
 
         if let sku = product.sku,
             !sku.isEmpty {

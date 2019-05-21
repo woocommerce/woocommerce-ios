@@ -301,7 +301,12 @@ extension ProductDetailsViewModel {
     }
 
     func configureSku(_ cell: TitleBodyTableViewCell) {
-
+        let title = NSLocalizedString("SKU", comment: "A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.")
+        if let sku = product.sku,
+            !sku.isEmpty {
+            cell.bodyLabel?.text = sku
+        }
+        cell.titleLabel?.text = title
     }
 
     // MARK: - Table data retrieval methods

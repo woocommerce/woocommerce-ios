@@ -225,8 +225,16 @@ extension ProductDetailsViewController: UITableViewDataSource {
         return viewModel.heightForHeader(in: section)
     }
 
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return viewModel.heightForFooter(in: section)
+    }
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return viewModel.tableView(tableView, viewForHeaderInSection: section)
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return viewModel.tableView(tableView, viewForFooterInSection: section)
     }
 }
 

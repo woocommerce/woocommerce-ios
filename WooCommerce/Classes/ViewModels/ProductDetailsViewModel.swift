@@ -142,6 +142,15 @@ extension ProductDetailsViewModel {
         return UITableView.automaticDimension
     }
 
+    func heightForFooter(in section: Int) -> CGFloat {
+        if sections[section].title == nil {
+            // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
+            return .leastNonzeroMagnitude
+        }
+
+        return UITableView.automaticDimension
+    }
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let leftText = sections[section].title else {
             return nil
@@ -156,6 +165,10 @@ extension ProductDetailsViewModel {
         headerView.rightText = sections[section].rightTitle
 
         return headerView
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return nil
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -188,8 +201,6 @@ extension ProductDetailsViewModel {
             configureInventory(cell)
         case let cell as TitleBodyTableViewCell where row == .sku:
             configureSku(cell)
-        case let cell as TitleBodyTableViewCell where row == .affiliateInventory:
-            configureAffiliateInventory(cell)
         default:
             fatalError("Unidentified row type")
         }
@@ -276,15 +287,9 @@ extension ProductDetailsViewModel {
 
     func configureInventory(_ cell: TitleBodyTableViewCell) {
         cell.titleLabel?.text = NSLocalizedString("Inventory", comment: "Product Details > Pricing and Inventory section > descriptive label for the Inventory cell.")
-
-        cell.bodyLabel?.text = "Stock status: \nSKU:"
     }
 
     func configureSku(_ cell: TitleBodyTableViewCell) {
-
-    }
-
-    func configureAffiliateInventory(_ cell: TitleBodyTableViewCell) {
 
     }
 
@@ -308,7 +313,7 @@ extension ProductDetailsViewModel {
     func reloadSections() {
         let summary = configureSummary()
         let pricingAndInventory = configurePricingAndInventory()
-        sections = [summary].compactMap { $0 }
+        sections = [summary, pricingAndInventory].compactMap { $0 }
     }
 
     /// Summary section.
@@ -413,7 +418,6 @@ extension ProductDetailsViewModel {
         case price
         case inventory
         case sku
-        case affiliateInventory
 
         var reuseIdentifier: String {
             switch self {
@@ -434,8 +438,6 @@ extension ProductDetailsViewModel {
             case .inventory:
                 return TitleBodyTableViewCell.reuseIdentifier
             case .sku:
-                return TitleBodyTableViewCell.reuseIdentifier
-            case .affiliateInventory:
                 return TitleBodyTableViewCell.reuseIdentifier
             }
         }

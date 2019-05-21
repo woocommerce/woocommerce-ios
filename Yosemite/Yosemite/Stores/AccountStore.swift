@@ -42,6 +42,8 @@ public class AccountStore: Store {
             synchronizeSites(onCompletion: onCompletion)
         case .synchronizeSitePlan(let siteID, let onCompletion):
             synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
+        case .updateAccountSettings(let userID, let tracksOptOut, let onCompletion):
+            updateAccountSettings(userID: userID, tracksOptOut: tracksOptOut, onCompletion: onCompletion)
         }
     }
 }
@@ -137,6 +139,24 @@ private extension AccountStore {
         let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly()
         onCompletion(site)
     }
+    
+    func updateAccountSettings(userID: Int, tracksOptOut: Bool, onCompletion: @escaping (Error?) -> Void) {
+        /// Optimistically update the Tracks Opt Out flag
+        let oldTracksOptOut = updateAccountSettingsTracksOptOut(userID: userID, tracksOptOut: tracksOptOut)
+        onCompletion(nil)
+//        let remote = AccountRemote(network: network)
+//        remote.updateOrder(from: siteID, orderID: orderID, statusKey: statusKey) { [weak self] (_, error) in
+//            guard let error = error else {
+//                // NOTE: We're *not* actually updating the whole entity here. Reason: Prevent UI inconsistencies!!
+//                onCompletion(nil)
+//                return
+//            }
+//
+//            /// Revert Optimistic Update
+//            self?.updateOrderStatus(orderID: orderID, statusKey: oldStatus)
+//            onCompletion(error)
+//        }
+    }
 }
 
 
@@ -197,6 +217,24 @@ extension AccountStore {
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
         }
+    }
+    
+    /// Updates the TracksOptOut of the specified User/Account, as requested.
+    ///
+    /// - Returns: TracksOptOut, prior to performing the Update OP.
+    ///
+    @discardableResult
+    func updateAccountSettingsTracksOptOut(userID: Int, tracksOptOut: Bool) -> Bool {
+        let storage = storageManager.viewStorage
+        guard let accountSettings = storage.loadAccountSettings(userId: userID) else {
+            return tracksOptOut
+        }
+        
+        let oldTracksOptOut = accountSettings.tracksOptOut
+        accountSettings.tracksOptOut = tracksOptOut
+        storage.saveIfNeeded()
+        
+        return oldTracksOptOut
     }
 
 }

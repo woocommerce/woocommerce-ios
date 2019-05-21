@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import SafariServices
+import Yosemite
 
 class PrivacySettingsViewController: UIViewController {
 
@@ -14,12 +15,8 @@ class PrivacySettingsViewController: UIViewController {
 
     /// Collect tracking info
     ///
-    private var collectInfo = WooAnalytics.shared.userHasOptedIn {
-        didSet {
-            collectInfoWasUpdated(newValue: collectInfo)
-        }
-    }
-
+    private var collectInfo = false
+    
     /// Send crash reports
     ///
     private var reportCrashes = AppDelegate.shared.fabricManager.userHasOptedIn {
@@ -39,9 +36,32 @@ class PrivacySettingsViewController: UIViewController {
         configureSections()
 
         registerTableViewCells()
+        
+        loadAccountSettings()
     }
 }
 
+// MARK: - Fetching Account & AccountSettings
+
+private extension PrivacySettingsViewController {
+    
+    func loadAccountSettings() {
+        guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
+            return
+        }
+        
+        let userID = defaultAccount.userID
+        let action = AccountAction.loadAccountSettings(userID: userID) { accountSettings in
+            guard let accountSettings = accountSettings else {
+                return
+            }
+            
+            self.collectInfo = !accountSettings.tracksOptOut // Switch is off when opting out of Tracks
+        }
+        
+        StoresManager.shared.dispatch(action)
+    }
+}
 
 // MARK: - View Configuration
 //
@@ -123,7 +143,7 @@ private extension PrivacySettingsViewController {
         // switch
         cell.isOn = collectInfo
         cell.onChange = { newValue in
-            self.collectInfo = newValue
+            self.collectInfoWasUpdated(newValue: newValue)
         }
     }
 
@@ -209,10 +229,26 @@ private extension PrivacySettingsViewController {
     //
     func collectInfoWasUpdated(newValue: Bool) {
         // Save the user's preference
-//        WooAnalytics.shared.setUserHasOptedOut(!newValue)
+        
+        // TODO Replace this somewhere
+        //        WooAnalytics.shared.setUserHasOptedOut(!newValue)
+        
+        guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
+            return
+        }
+        
+        let userID = defaultAccount.userID
+        let tracksOptOut = !newValue // Tracks Opt Out is true when the switch is false/off
+        let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: tracksOptOut) { error in
+            // TODO do something here
+            guard let error = error else {
+                return
+            }
+        }
+        StoresManager.shared.dispatch(action)
 
         // This event will only report if the user has turned tracking back on
-//        WooAnalytics.shared.track(.settingsCollectInfoToggled)
+        WooAnalytics.shared.track(.settingsCollectInfoToggled)
     }
 
     func reportCrashesWasUpdated(newValue: Bool) {

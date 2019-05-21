@@ -34,6 +34,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="RIm-Dq-v75" secondAttribute="trailing" id="NEW-Q9-DhE"/>
+                            <constraint firstItem="EjV-xl-7FC" firstAttribute="leading" secondItem="TS0-RN-yRd" secondAttribute="leading" id="yU8-2W-7bZ"/>
+                        </constraints>
                     </stackView>
                 </subviews>
                 <constraints>

@@ -201,6 +201,8 @@ extension ProductDetailsViewModel {
             configureInventory(cell)
         case let cell as TitleBodyTableViewCell where row == .sku:
             configureSku(cell)
+        case let cell as TitleBodyTableViewCell where row == .affiliateInventory:
+            configureAffiliateInventory(cell)
         default:
             fatalError("Unidentified row type")
         }
@@ -307,6 +309,19 @@ extension ProductDetailsViewModel {
             cell.bodyLabel?.text = sku
         }
         cell.titleLabel?.text = title
+    }
+
+    func configureAffiliateInventory(_ cell: TitleBodyTableViewCell) {
+        let title = NSLocalizedString("Inventory", comment: "Product Details > Pricing & Inventory > Inventory cell title")
+        cell.titleLabel?.text = title
+
+        let skuPrefix = NSLocalizedString("SKU:", comment: "A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'")
+        if let sku = product.sku,
+            !sku.isEmpty {
+            cell.bodyLabel?.text = skuPrefix + " " + sku
+        } else {
+            cell.bodyLabel?.text = nil
+        }
     }
 
     // MARK: - Table data retrieval methods

@@ -286,6 +286,18 @@ extension ProductDetailsViewModel {
 
     func configureInventory(_ cell: TitleBodyTableViewCell) {
         cell.titleLabel?.text = NSLocalizedString("Inventory", comment: "Product Details > Pricing and Inventory section > descriptive label for the Inventory cell.")
+
+        let stockStatusPrefix = NSLocalizedString("Stock status:", comment: "A descriptive label prefix. Example: 'Stock status: In stock'")
+        let stockStatus = product.productStockStatus.description
+        var bodyText = stockStatusPrefix + " " + stockStatus
+
+        if let sku = product.sku,
+            !sku.isEmpty {
+            let skuPrefix = NSLocalizedString("SKU:", comment: "A descriptive label prefix. Example: 'SKU: woo-virtual-beanie'")
+            bodyText += "\n" + skuPrefix + " " + sku
+        }
+
+        cell.bodyLabel?.text = bodyText
     }
 
     func configureSku(_ cell: TitleBodyTableViewCell) {
@@ -332,13 +344,19 @@ extension ProductDetailsViewModel {
     func configurePricingAndInventory() -> Section {
         if product.productType == .grouped {
             let title = NSLocalizedString("Inventory", comment: "Product Details - inventory section title")
-            let rows: [Row] = [.sku]
+            let row: Row = .sku
 
-            return Section(title: title, rightTitle: nil, footer: nil, rows: rows)
+            return Section(title: title, rightTitle: nil, footer: nil, row: row)
         }
 
         let title = NSLocalizedString("Pricing and Inventory", comment: "Product Details - pricing and inventory section title")
-        let rows: [Row] = [.price, .inventory]
+        var rows: [Row] = [.price]
+
+        if product.productType == .affiliate {
+            rows.append(.affiliateInventory)
+        } else {
+            rows.append(.inventory)
+        }
 
         return Section(title: title, rightTitle: nil, footer: nil, rows: rows)
     }
@@ -417,6 +435,7 @@ extension ProductDetailsViewModel {
         case price
         case inventory
         case sku
+        case affiliateInventory
 
         var reuseIdentifier: String {
             switch self {
@@ -437,6 +456,8 @@ extension ProductDetailsViewModel {
             case .inventory:
                 return TitleBodyTableViewCell.reuseIdentifier
             case .sku:
+                return TitleBodyTableViewCell.reuseIdentifier
+            case .affiliateInventory:
                 return TitleBodyTableViewCell.reuseIdentifier
             }
         }

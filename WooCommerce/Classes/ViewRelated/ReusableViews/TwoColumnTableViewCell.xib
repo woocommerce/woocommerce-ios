@@ -19,16 +19,16 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TS0-RN-yRd">
-                        <rect key="frame" x="16" y="16" width="288" height="18.5"/>
+                        <rect key="frame" x="16" y="16" width="288" height="17.5"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" preservesSuperviewLayoutMargins="YES" text="Total Orders" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EjV-xl-7FC">
-                                <rect key="frame" x="0.0" y="0.0" width="268.5" height="18.5"/>
+                                <rect key="frame" x="0.0" y="0.0" width="268.5" height="17.5"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="27" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RIm-Dq-v75" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                <rect key="frame" x="268.5" y="0.0" width="19.5" height="18.5"/>
+                                <rect key="frame" x="268.5" y="0.0" width="19.5" height="17.5"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -43,7 +43,7 @@
                 <constraints>
                     <constraint firstItem="TS0-RN-yRd" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="0YR-eS-PX9"/>
                     <constraint firstAttribute="trailing" secondItem="TS0-RN-yRd" secondAttribute="trailing" constant="16" id="FMA-9T-asM"/>
-                    <constraint firstAttribute="bottom" secondItem="TS0-RN-yRd" secondAttribute="bottom" constant="13" id="WvZ-WR-BXe"/>
+                    <constraint firstAttribute="bottom" secondItem="TS0-RN-yRd" secondAttribute="bottom" constant="14" id="WvZ-WR-BXe"/>
                     <constraint firstItem="TS0-RN-yRd" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="qiN-ic-3Lq"/>
                 </constraints>
             </tableViewCellContentView>

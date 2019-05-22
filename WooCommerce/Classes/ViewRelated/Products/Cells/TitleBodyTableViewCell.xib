@@ -20,13 +20,13 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalCompressionResistancePriority="250" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SDD-72-x0V">
-                        <rect key="frame" x="16" y="16" width="288" height="32"/>
+                        <rect key="frame" x="16" y="16" width="288" height="31"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="250" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aos-vn-8pP">
-                        <rect key="frame" x="16" y="52" width="288" height="20.5"/>
+                        <rect key="frame" x="16" y="51" width="288" height="20.5"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -38,7 +38,7 @@
                     <constraint firstItem="SDD-72-x0V" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="PUw-Ej-8Tv"/>
                     <constraint firstItem="SDD-72-x0V" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="Pta-Bi-Sme"/>
                     <constraint firstItem="aos-vn-8pP" firstAttribute="top" secondItem="SDD-72-x0V" secondAttribute="bottom" constant="4" id="W15-Ln-qAa"/>
-                    <constraint firstAttribute="bottom" secondItem="aos-vn-8pP" secondAttribute="bottom" constant="13" id="ZMQ-Aa-7JA"/>
+                    <constraint firstAttribute="bottom" secondItem="aos-vn-8pP" secondAttribute="bottom" constant="14" id="ZMQ-Aa-7JA"/>
                     <constraint firstAttribute="trailing" secondItem="SDD-72-x0V" secondAttribute="trailing" constant="16" id="c4Y-7r-lUj"/>
                 </constraints>
             </tableViewCellContentView>

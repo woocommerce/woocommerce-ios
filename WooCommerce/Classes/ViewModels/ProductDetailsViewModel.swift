@@ -451,8 +451,7 @@ extension ProductDetailsViewModel {
 
     func syncProduct(onCompletion: ((Error?) -> ())? = nil) {
         let action = ProductAction.retrieveProduct(siteID: product.siteID,
-                                                   productID: product.productID)
-        { [weak self] (product, error) in
+                                                   productID: product.productID) { [weak self] (product, error) in
             guard let self = self, let product = product else {
                 DDLogError("⛔️ Error synchronizing Product: \(error.debugDescription)")
                 onCompletion?(error)

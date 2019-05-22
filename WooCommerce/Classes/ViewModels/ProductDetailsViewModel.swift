@@ -289,8 +289,8 @@ extension ProductDetailsViewModel {
             let secondLineText = salePricePrefix + " " + salePriceFormatted
 
             cell.bodyLabel?.text = bodyText + "\n" + secondLineText
-        } else if !product.price.isEmpty {
-            cell.bodyLabel?.text = currencyFormatter.formatAmount(product.price) ?? ""
+        } else {
+            cell.bodyLabel?.text = product.price.isEmpty ? "--" : currencyFormatter.formatAmount(product.price)
         }
     }
 

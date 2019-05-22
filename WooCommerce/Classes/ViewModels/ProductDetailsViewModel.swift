@@ -233,13 +233,15 @@ extension ProductDetailsViewModel {
     func configureProductName(_ cell: TitleBodyTableViewCell) {
         cell.accessoryType = .none
         cell.selectionStyle = .none
-        cell.titleLabel?.text = NSLocalizedString("Title", comment: "Product details screen — product title descriptive label")
+        cell.titleLabel?.text = NSLocalizedString("Title",
+                                                  comment: "Product details screen — product title descriptive label")
         cell.bodyLabel?.text = product.name
     }
 
     func configureTotalOrders(_ cell: TwoColumnTableViewCell) {
         cell.selectionStyle = .none
-        cell.leftLabel?.text = NSLocalizedString("Total Orders", comment: "Product details screen - total orders descriptive label")
+        cell.leftLabel?.text = NSLocalizedString("Total Orders",
+                                                 comment: "Product details screen - total orders descriptive label")
         cell.rightLabel?.applySecondaryBodyStyle()
         cell.rightLabel.textInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
         cell.rightLabel?.text = String(product.totalSales)
@@ -247,7 +249,8 @@ extension ProductDetailsViewModel {
 
     func configureReviews(_ cell: ProductReviewsTableViewCell) {
         cell.selectionStyle = .none
-        cell.reviewLabel?.text = NSLocalizedString("Reviews", comment: "Reviews descriptive label")
+        cell.reviewLabel?.text = NSLocalizedString("Reviews",
+                                                   comment: "Reviews descriptive label")
 
         cell.reviewTotalsLabel?.applySecondaryBodyStyle()
         // 🖐🏼 I solemnly swear I'm not converting currency values to a Double.
@@ -292,16 +295,19 @@ extension ProductDetailsViewModel {
     }
 
     func configureInventory(_ cell: TitleBodyTableViewCell) {
-        cell.titleLabel?.text = NSLocalizedString("Inventory", comment: "Product Details > Pricing and Inventory section > descriptive label for the Inventory cell.")
+        cell.titleLabel?.text = NSLocalizedString("Inventory",
+                                                  comment: "Product Details > Pricing and Inventory section > descriptive label for the Inventory cell.")
 
         guard product.manageStock else {
-            let stockStatusPrefix = NSLocalizedString("Stock status:", comment: "A descriptive label prefix. Example: 'Stock status: In stock'")
+            let stockStatusPrefix = NSLocalizedString("Stock status:",
+                                                      comment: "A descriptive label prefix. Example: 'Stock status: In stock'")
             let stockStatus = product.productStockStatus.description
             var bodyText = stockStatusPrefix + " " + stockStatus
 
             if let sku = product.sku,
                 !sku.isEmpty {
-                let skuPrefix = NSLocalizedString("SKU:", comment: "A descriptive label prefix. Example: 'SKU: woo-virtual-beanie'")
+                let skuPrefix = NSLocalizedString("SKU:",
+                                                  comment: "A descriptive label prefix. Example: 'SKU: woo-virtual-beanie'")
                 bodyText += "\n" + skuPrefix + " " + sku
             }
 
@@ -311,22 +317,27 @@ extension ProductDetailsViewModel {
 
         var bodyText = ""
         if let stockQuantity = product.stockQuantity {
-            let stockQuantityPrefix = NSLocalizedString("Stock quantity:", comment: "A descriptive label prefix. Example: 'Stock quantity: 19'")
+            let stockQuantityPrefix = NSLocalizedString("Stock quantity:",
+                                                        comment: "A descriptive label prefix. Example: 'Stock quantity: 19'")
             let stockText = stockQuantityPrefix + " " + String(stockQuantity)
             bodyText += stockText + "\n"
         }
 
         var backordersText = ""
-        let backordersPrefix = NSLocalizedString("Backorders:", comment: "A descriptive label prefix. Example: 'Backorders: not allowed'")
-        let allowed = NSLocalizedString("allowed", comment: "Backorders status. Example: 'Backorders: allowed'")
-        let notAllowed = NSLocalizedString("not allowed", comment: "Backorders status. Example: 'Backorders: not allowed'")
+        let backordersPrefix = NSLocalizedString("Backorders:",
+                                                 comment: "A descriptive label prefix. Example: 'Backorders: not allowed'")
+        let allowed = NSLocalizedString("allowed",
+                                        comment: "Backorders status. Example: 'Backorders: allowed'")
+        let notAllowed = NSLocalizedString("not allowed",
+                                           comment: "Backorders status. Example: 'Backorders: not allowed'")
         let backordersSuffix = product.backordersAllowed ? allowed : notAllowed
         backordersText = backordersPrefix + " " + backordersSuffix
         bodyText += backordersText
 
         if let sku = product.sku,
             !sku.isEmpty {
-            let skuPrefix = NSLocalizedString("SKU:", comment: "A descriptive label prefix. Example: 'SKU: woo-virtual-beanie'")
+            let skuPrefix = NSLocalizedString("SKU:",
+                                              comment: "A descriptive label prefix. Example: 'SKU: woo-virtual-beanie'")
             bodyText += "\n" + skuPrefix + " " + sku
         }
 
@@ -334,7 +345,8 @@ extension ProductDetailsViewModel {
     }
 
     func configureSku(_ cell: TitleBodyTableViewCell) {
-        let title = NSLocalizedString("SKU", comment: "A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.")
+        let title = NSLocalizedString("SKU",
+                                      comment: "A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.")
         if let sku = product.sku,
             !sku.isEmpty {
             cell.bodyLabel?.text = sku
@@ -343,10 +355,12 @@ extension ProductDetailsViewModel {
     }
 
     func configureAffiliateInventory(_ cell: TitleBodyTableViewCell) {
-        let title = NSLocalizedString("Inventory", comment: "Product Details > Pricing & Inventory > Inventory cell title")
+        let title = NSLocalizedString("Inventory",
+                                      comment: "Product Details > Pricing & Inventory > Inventory cell title")
         cell.titleLabel?.text = title
 
-        let skuPrefix = NSLocalizedString("SKU:", comment: "A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'")
+        let skuPrefix = NSLocalizedString("SKU:",
+                                          comment: "A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'")
         if let sku = product.sku,
             !sku.isEmpty {
             cell.bodyLabel?.text = skuPrefix + " " + sku
@@ -394,13 +408,15 @@ extension ProductDetailsViewModel {
     ///
     func configurePricingAndInventory() -> Section {
         if product.productType == .grouped {
-            let title = NSLocalizedString("Inventory", comment: "Product Details - inventory section title")
+            let title = NSLocalizedString("Inventory",
+                                          comment: "Product Details - inventory section title")
             let row: Row = .sku
 
             return Section(title: title, rightTitle: nil, footer: nil, row: row)
         }
 
-        let title = NSLocalizedString("Pricing and Inventory", comment: "Product Details - pricing and inventory section title")
+        let title = NSLocalizedString("Pricing and Inventory",
+                                      comment: "Product Details - pricing and inventory section title")
         var rows: [Row] = [.price]
 
         if product.productType == .affiliate {
@@ -434,7 +450,9 @@ extension ProductDetailsViewModel {
 extension ProductDetailsViewModel {
 
     func syncProduct(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ProductAction.retrieveProduct(siteID: product.siteID, productID: product.productID) { [weak self] (product, error) in
+        let action = ProductAction.retrieveProduct(siteID: product.siteID,
+                                                   productID: product.productID)
+        { [weak self] (product, error) in
             guard let self = self, let product = product else {
                 DDLogError("⛔️ Error synchronizing Product: \(error.debugDescription)")
                 onCompletion?(error)

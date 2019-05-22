@@ -395,11 +395,12 @@ extension ProductDetailsViewModel {
     /// Summary section.
     ///
     func configureSummary() -> Section {
-        var rows: [Row] = [.productSummary, .productName, .totalOrders, .reviews, .permalink]
-
         if product.productType == .affiliate {
-            rows.append(.affiliateLink)
+            let affiliateRows: [Row] = [.productSummary, .productName, .reviews, .permalink, .affiliateLink]
+            return Section(rows: affiliateRows)
         }
+
+        let rows: [Row] = [.productSummary, .productName, .totalOrders, .reviews, .permalink]
 
         return Section(rows: rows)
     }

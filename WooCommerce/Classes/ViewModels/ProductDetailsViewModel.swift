@@ -285,7 +285,8 @@ extension ProductDetailsViewModel {
     }
 
     func configureInventory(_ cell: TitleBodyTableViewCell) {
-        cell.titleLabel?.text = NSLocalizedString("Inventory", comment: "Product Details > Pricing and Inventory section > descriptive label for the Inventory cell.")
+        cell.titleLabel?.text = NSLocalizedString("Inventory",
+                                                  comment: "Product Details > Pricing and Inventory section > descriptive label for the Inventory cell.")
     }
 
     func configureSku(_ cell: TitleBodyTableViewCell) {

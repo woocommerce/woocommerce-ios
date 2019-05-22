@@ -71,13 +71,13 @@ final class ProductDetailsViewModel {
         return Metrics.sectionHeight
     }
 
-    /// Table row height
+    /// Table row height.
     ///
     var rowHeight: CGFloat {
         return Metrics.estimatedRowHeight
     }
 
-    /// Currency Formatter
+    /// Currency Formatter.
     ///
     private var currencyFormatter = CurrencyFormatter()
 
@@ -90,7 +90,7 @@ final class ProductDetailsViewModel {
         self.product = product
     }
 
-    /// Setup: EntityListener
+    /// Setup: EntityListener.
     ///
     func configureEntityListener() {
         entityListener.onUpsert = { [weak self] product in
@@ -371,7 +371,7 @@ extension ProductDetailsViewModel {
 
     // MARK: - Table helper methods
 
-    /// Check if all prices are undefined
+    /// Check if all prices are undefined.
     ///
     func allPricesEmpty() -> Bool {
         let price = product.price
@@ -383,7 +383,7 @@ extension ProductDetailsViewModel {
 
     // MARK: - Table data retrieval methods
 
-    /// Returns the Row enum value for the provided IndexPath
+    /// Returns the Row enum value for the provided IndexPath.
     ///
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
@@ -396,7 +396,7 @@ extension ProductDetailsViewModel {
         onReload?()
     }
 
-    /// Rebuild the section struct
+    /// Rebuild the section struct.
     ///
     func reloadSections() {
         let summary = configureSummary()
@@ -518,7 +518,7 @@ extension ProductDetailsViewModel {
 //
 extension ProductDetailsViewModel {
 
-    /// Table sections struct
+    /// Table sections struct.
     ///
     struct Section {
         let title: String?
@@ -538,7 +538,7 @@ extension ProductDetailsViewModel {
         }
     }
 
-    /// Table rows are organized in the order they appear in the UI
+    /// Table rows are organized in the order they appear in the UI.
     ///
     enum Row {
         case productSummary
@@ -578,7 +578,7 @@ extension ProductDetailsViewModel {
         }
     }
 
-    /// Table measurements
+    /// Table measurements.
     ///
     enum Metrics {
         static let estimatedRowHeight = CGFloat(86)

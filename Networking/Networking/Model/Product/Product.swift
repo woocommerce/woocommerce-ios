@@ -83,6 +83,10 @@ public struct Product: Decodable {
         return ProductStatus(rawValue: statusKey)
     }
 
+    public var productStockStatus: ProductStockStatus {
+        return ProductStockStatus(rawValue: stockStatusKey)
+    }
+
     public var productType: ProductType {
         return ProductType(rawValue: productTypeKey)
     }

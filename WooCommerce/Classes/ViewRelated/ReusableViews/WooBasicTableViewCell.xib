@@ -11,31 +11,31 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="yLa-Up-o0U" customClass="WooBasicTableViewCell" customModule="WooCommerce" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="52" id="yLa-Up-o0U" customClass="WooBasicTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="52"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="yLa-Up-o0U" id="0OS-SE-j2i">
-                <rect key="frame" x="0.0" y="0.0" width="414" height="43.666666666666664"/>
+                <rect key="frame" x="0.0" y="0.0" width="414" height="51.666666666666664"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cKl-VN-2Eo">
-                        <rect key="frame" x="20" y="11" width="374" height="22"/>
+                        <rect key="frame" x="16" y="16" width="382" height="21.666666666666671"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="cKl-VN-2Eo" firstAttribute="top" secondItem="0OS-SE-j2i" secondAttribute="topMargin" id="H4t-Eh-t9N"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="cKl-VN-2Eo" secondAttribute="bottom" id="avS-Td-o7r"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="cKl-VN-2Eo" secondAttribute="trailing" id="mam-te-Cej"/>
-                    <constraint firstItem="cKl-VN-2Eo" firstAttribute="leading" secondItem="0OS-SE-j2i" secondAttribute="leadingMargin" id="s4y-Dh-R5C"/>
+                    <constraint firstItem="cKl-VN-2Eo" firstAttribute="top" secondItem="0OS-SE-j2i" secondAttribute="top" constant="16" id="H4t-Eh-t9N"/>
+                    <constraint firstAttribute="bottom" secondItem="cKl-VN-2Eo" secondAttribute="bottom" constant="14" id="avS-Td-o7r"/>
+                    <constraint firstAttribute="trailing" secondItem="cKl-VN-2Eo" secondAttribute="trailing" constant="16" id="mam-te-Cej"/>
+                    <constraint firstItem="cKl-VN-2Eo" firstAttribute="leading" secondItem="0OS-SE-j2i" secondAttribute="leading" constant="16" id="s4y-Dh-R5C"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="bodyLabel" destination="cKl-VN-2Eo" id="Pb8-c3-7KG"/>
             </connections>
-            <point key="canvasLocation" x="28.985507246376812" y="-23.4375"/>
+            <point key="canvasLocation" x="28.985507246376812" y="-20.758928571428569"/>
         </tableViewCell>
     </objects>
 </document>

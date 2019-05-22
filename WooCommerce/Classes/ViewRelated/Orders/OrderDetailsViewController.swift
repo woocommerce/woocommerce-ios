@@ -205,7 +205,7 @@ private extension OrderDetailsViewController {
             BillingDetailsTableViewCell.self,
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
-            BasicTableViewCell.self,
+            WooBasicTableViewCell.self,
             OrderNoteTableViewCell.self,
             PaymentTableViewCell.self,
             ProductListTableViewCell.self,
@@ -362,7 +362,7 @@ extension OrderDetailsViewController {
 private extension OrderDetailsViewController {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as BasicTableViewCell:
+        case let cell as WooBasicTableViewCell:
             configureProductDetails(cell: cell)
         case let cell as BillingDetailsTableViewCell where row == .billingEmail:
             configureBillingEmail(cell: cell)
@@ -523,8 +523,9 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func configureProductDetails(cell: BasicTableViewCell) {
-        cell.textLabel?.text = viewModel.productDetails
+    func configureProductDetails(cell: WooBasicTableViewCell) {
+        cell.bodyLabel?.text = viewModel.productDetails
+        cell.bodyLabel?.applyBodyStyle() // override the custom purple with black
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
     }
@@ -1246,7 +1247,7 @@ private extension OrderDetailsViewController {
             case .productList:
                 return ProductListTableViewCell.reuseIdentifier
             case .productDetails:
-                return BasicTableViewCell.reuseIdentifier
+                return WooBasicTableViewCell.reuseIdentifier
             case .tracking:
                 return OrderTrackingTableViewCell.reuseIdentifier
             case .customerNote:

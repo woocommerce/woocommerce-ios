@@ -71,13 +71,13 @@ final class ProductDetailsViewModel {
         return Metrics.sectionHeight
     }
 
-    /// Table row height
+    /// Table row height.
     ///
     var rowHeight: CGFloat {
         return Metrics.estimatedRowHeight
     }
 
-    /// Currency Formatter
+    /// Currency Formatter.
     ///
     private var currencyFormatter = CurrencyFormatter()
 
@@ -90,7 +90,7 @@ final class ProductDetailsViewModel {
         self.product = product
     }
 
-    /// Setup: EntityListener
+    /// Setup: EntityListener.
     ///
     func configureEntityListener() {
         entityListener.onUpsert = { [weak self] product in
@@ -126,7 +126,7 @@ extension ProductDetailsViewModel {
 
     func heightForRow(at indexPath: IndexPath) -> CGFloat {
         switch rowAtIndexPath(indexPath) {
-        case .productSummary:
+        case .productPhoto:
             return productImageHeight
         default:
             return UITableView.automaticDimension
@@ -201,6 +201,8 @@ extension ProductDetailsViewModel {
             configureInventory(cell)
         case let cell as TitleBodyTableViewCell where row == .sku:
             configureSku(cell)
+        case let cell as TitleBodyTableViewCell where row == .affiliateInventory:
+            configureAffiliateInventory(cell)
         default:
             fatalError("Unidentified row type")
         }
@@ -231,13 +233,15 @@ extension ProductDetailsViewModel {
     func configureProductName(_ cell: TitleBodyTableViewCell) {
         cell.accessoryType = .none
         cell.selectionStyle = .none
-        cell.titleLabel?.text = NSLocalizedString("Title", comment: "Product details screen — product title descriptive label")
+        cell.titleLabel?.text = NSLocalizedString("Title",
+                                                  comment: "Product details screen — product title descriptive label")
         cell.bodyLabel?.text = product.name
     }
 
     func configureTotalOrders(_ cell: TwoColumnTableViewCell) {
         cell.selectionStyle = .none
-        cell.leftLabel?.text = NSLocalizedString("Total Orders", comment: "Product details screen - total orders descriptive label")
+        cell.leftLabel?.text = NSLocalizedString("Total Orders",
+                                                 comment: "Product details screen - total orders descriptive label")
         cell.rightLabel?.applySecondaryBodyStyle()
         cell.rightLabel.textInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
         cell.rightLabel?.text = String(product.totalSales)
@@ -245,7 +249,8 @@ extension ProductDetailsViewModel {
 
     func configureReviews(_ cell: ProductReviewsTableViewCell) {
         cell.selectionStyle = .none
-        cell.reviewLabel?.text = NSLocalizedString("Reviews", comment: "Reviews descriptive label")
+        cell.reviewLabel?.text = NSLocalizedString("Reviews",
+                                                   comment: "Reviews descriptive label")
 
         cell.reviewTotalsLabel?.applySecondaryBodyStyle()
         // 🖐🏼 I solemnly swear I'm not converting currency values to a Double.
@@ -284,23 +289,101 @@ extension ProductDetailsViewModel {
             let secondLineText = salePricePrefix + " " + salePriceFormatted
 
             cell.bodyLabel?.text = bodyText + "\n" + secondLineText
-        } else if !product.price.isEmpty {
-            cell.bodyLabel?.text = currencyFormatter.formatAmount(product.price) ?? ""
+        } else {
+            cell.bodyLabel?.text = product.price.isEmpty ? "--" : currencyFormatter.formatAmount(product.price)
         }
     }
 
     func configureInventory(_ cell: TitleBodyTableViewCell) {
         cell.titleLabel?.text = NSLocalizedString("Inventory",
                                                   comment: "Product Details > Pricing and Inventory section > descriptive label for the Inventory cell.")
+
+        guard product.manageStock else {
+            let stockStatusPrefix = NSLocalizedString("Stock status:",
+                                                      comment: "A descriptive label prefix. Example: 'Stock status: In stock'")
+            let stockStatus = product.productStockStatus.description
+            var bodyText = stockStatusPrefix + " " + stockStatus
+
+            if let sku = product.sku,
+                !sku.isEmpty {
+                let skuPrefix = NSLocalizedString("SKU:",
+                                                  comment: "A descriptive label prefix. Example: 'SKU: woo-virtual-beanie'")
+                bodyText += "\n" + skuPrefix + " " + sku
+            }
+
+            cell.bodyLabel?.text = bodyText
+            return
+        }
+
+        var bodyText = ""
+        if let stockQuantity = product.stockQuantity {
+            let stockQuantityPrefix = NSLocalizedString("Stock quantity:",
+                                                        comment: "A descriptive label prefix. Example: 'Stock quantity: 19'")
+            let stockText = stockQuantityPrefix + " " + String(stockQuantity)
+            bodyText += stockText + "\n"
+        }
+
+        var backordersText = ""
+        let backordersPrefix = NSLocalizedString("Backorders:",
+                                                 comment: "A descriptive label prefix. Example: 'Backorders: not allowed'")
+        let allowed = NSLocalizedString("allowed",
+                                        comment: "Backorders status. Example: 'Backorders: allowed'")
+        let notAllowed = NSLocalizedString("not allowed",
+                                           comment: "Backorders status. Example: 'Backorders: not allowed'")
+        let backordersSuffix = product.backordersAllowed ? allowed : notAllowed
+        backordersText = backordersPrefix + " " + backordersSuffix
+        bodyText += backordersText
+
+        if let sku = product.sku,
+            !sku.isEmpty {
+            let skuPrefix = NSLocalizedString("SKU:",
+                                              comment: "A descriptive label prefix. Example: 'SKU: woo-virtual-beanie'")
+            bodyText += "\n" + skuPrefix + " " + sku
+        }
+
+        cell.bodyLabel?.text = bodyText
     }
 
     func configureSku(_ cell: TitleBodyTableViewCell) {
+        let title = NSLocalizedString("SKU",
+                                      comment: "A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.")
+        if let sku = product.sku,
+            !sku.isEmpty {
+            cell.bodyLabel?.text = sku
+        }
+        cell.titleLabel?.text = title
+    }
 
+    func configureAffiliateInventory(_ cell: TitleBodyTableViewCell) {
+        let title = NSLocalizedString("Inventory",
+                                      comment: "Product Details > Pricing & Inventory > Inventory cell title")
+        cell.titleLabel?.text = title
+
+        let skuPrefix = NSLocalizedString("SKU:",
+                                          comment: "A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'")
+        if let sku = product.sku,
+            !sku.isEmpty {
+            cell.bodyLabel?.text = skuPrefix + " " + sku
+        } else {
+            cell.bodyLabel?.text = nil
+        }
+    }
+
+    // MARK: - Table helper methods
+
+    /// Check if all prices are undefined.
+    ///
+    func allPricesEmpty() -> Bool {
+        let price = product.price
+        let regularPrice = product.regularPrice ?? ""
+        let salePrice = product.salePrice ?? ""
+
+        return price.isEmpty && regularPrice.isEmpty && salePrice.isEmpty
     }
 
     // MARK: - Table data retrieval methods
 
-    /// Returns the Row enum value for the provided IndexPath
+    /// Returns the Row enum value for the provided IndexPath.
     ///
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
@@ -313,22 +396,30 @@ extension ProductDetailsViewModel {
         onReload?()
     }
 
-    /// Rebuild the section struct
+    /// Rebuild the section struct.
     ///
     func reloadSections() {
+        let photo = configurePhoto()
         let summary = configureSummary()
         let pricingAndInventory = configurePricingAndInventory()
-        sections = [summary, pricingAndInventory].compactMap { $0 }
+        sections = [photo, summary, pricingAndInventory].compactMap { $0 }
+    }
+
+    /// Large photo section.
+    ///
+    func configurePhoto() -> Section {
+        return Section(row: .productPhoto)
     }
 
     /// Summary section.
     ///
     func configureSummary() -> Section {
-        var rows: [Row] = [.productSummary, .productName, .totalOrders, .reviews, .permalink]
-
         if product.productType == .affiliate {
-            rows.append(.affiliateLink)
+            let affiliateRows: [Row] = [.productName, .reviews, .permalink, .affiliateLink]
+            return Section(rows: affiliateRows)
         }
+
+        let rows: [Row] = [.productName, .totalOrders, .reviews, .permalink]
 
         return Section(rows: rows)
     }
@@ -336,15 +427,57 @@ extension ProductDetailsViewModel {
     /// Pricing and Inventory Section.
     ///
     func configurePricingAndInventory() -> Section {
+        // For grouped products
         if product.productType == .grouped {
-            let title = NSLocalizedString("Inventory", comment: "Product Details - inventory section title")
-            let rows: [Row] = [.sku]
-
-            return Section(title: title, rightTitle: nil, footer: nil, rows: rows)
+            return groupedProductInventorySection()
         }
 
-        let title = NSLocalizedString("Pricing and Inventory", comment: "Product Details - pricing and inventory section title")
-        let rows: [Row] = [.price, .inventory]
+        // For non-grouped products that have no prices defined.
+        if allPricesEmpty() == true {
+            return nonGroupedInventorySection()
+        }
+
+        // For non-grouped products that contain at least one price.
+        return pricesAndInventorySection()
+    }
+
+    /// Grouped products.
+    /// Builds the Inventory section with no price cells.
+    ///
+    func groupedProductInventorySection() -> Section {
+        let title = NSLocalizedString("Inventory",
+                                      comment: "Product Details - inventory section title")
+        let row: Row = .sku
+
+        return Section(title: title, row: row)
+    }
+
+    /// Non-grouped products, no prices defined.
+    /// Builds the non-grouped Inventory section with no price cells.
+    ///
+    func nonGroupedInventorySection() -> Section {
+        let title = NSLocalizedString("Inventory",
+                                      comment: "Product Details - inventory section title")
+        if product.productType == .affiliate {
+            return Section(title: title, row: .affiliateInventory)
+        }
+
+        return Section(title: title, row: .inventory)
+    }
+
+    /// Non-grouped products that have at least one price defined.
+    /// Builds the Pricing and Inventory cells.
+    ///
+    func pricesAndInventorySection() -> Section {
+        let title = NSLocalizedString("Pricing and Inventory",
+                                      comment: "Product Details - pricing and inventory section title")
+        var rows: [Row] = [.price]
+
+        if product.productType == .affiliate {
+            rows.append(.affiliateInventory)
+        } else {
+            rows.append(.inventory)
+        }
 
         return Section(title: title, rightTitle: nil, footer: nil, rows: rows)
     }
@@ -371,7 +504,8 @@ extension ProductDetailsViewModel {
 extension ProductDetailsViewModel {
 
     func syncProduct(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ProductAction.retrieveProduct(siteID: product.siteID, productID: product.productID) { [weak self] (product, error) in
+        let action = ProductAction.retrieveProduct(siteID: product.siteID,
+                                                   productID: product.productID) { [weak self] (product, error) in
             guard let self = self, let product = product else {
                 DDLogError("⛔️ Error synchronizing Product: \(error.debugDescription)")
                 onCompletion?(error)
@@ -391,7 +525,7 @@ extension ProductDetailsViewModel {
 //
 extension ProductDetailsViewModel {
 
-    /// Table sections struct
+    /// Table sections struct.
     ///
     struct Section {
         let title: String?
@@ -411,10 +545,10 @@ extension ProductDetailsViewModel {
         }
     }
 
-    /// Table rows are organized in the order they appear in the UI
+    /// Table rows are organized in the order they appear in the UI.
     ///
     enum Row {
-        case productSummary
+        case productPhoto
         case productName
         case totalOrders
         case reviews
@@ -423,10 +557,11 @@ extension ProductDetailsViewModel {
         case price
         case inventory
         case sku
+        case affiliateInventory
 
         var reuseIdentifier: String {
             switch self {
-            case .productSummary:
+            case .productPhoto:
                 return LargeImageTableViewCell.reuseIdentifier
             case .productName:
                 return TitleBodyTableViewCell.reuseIdentifier
@@ -444,11 +579,13 @@ extension ProductDetailsViewModel {
                 return TitleBodyTableViewCell.reuseIdentifier
             case .sku:
                 return TitleBodyTableViewCell.reuseIdentifier
+            case .affiliateInventory:
+                return TitleBodyTableViewCell.reuseIdentifier
             }
         }
     }
 
-    /// Table measurements
+    /// Table measurements.
     ///
     enum Metrics {
         static let estimatedRowHeight = CGFloat(86)

@@ -82,7 +82,6 @@ private extension ProductDetailsViewController {
         tableView.estimatedSectionHeaderHeight = viewModel.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
-        tableView.separatorInset = .zero
         tableView.tableFooterView = UIView(frame: .zero)
     }
 

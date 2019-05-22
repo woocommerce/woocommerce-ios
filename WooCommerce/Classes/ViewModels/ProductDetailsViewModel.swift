@@ -369,6 +369,18 @@ extension ProductDetailsViewModel {
         }
     }
 
+    // MARK: - Table helper methods
+
+    /// Check if all prices are undefined
+    ///
+    func allPricesEmpty() -> Bool {
+        let price = product.price
+        let regularPrice = product.regularPrice ?? ""
+        let salePrice = product.salePrice ?? ""
+
+        return price.isEmpty && regularPrice.isEmpty && salePrice.isEmpty
+    }
+
     // MARK: - Table data retrieval methods
 
     /// Returns the Row enum value for the provided IndexPath
@@ -408,14 +420,48 @@ extension ProductDetailsViewModel {
     /// Pricing and Inventory Section.
     ///
     func configurePricingAndInventory() -> Section {
+        // For grouped products
         if product.productType == .grouped {
-            let title = NSLocalizedString("Inventory",
-                                          comment: "Product Details - inventory section title")
-            let row: Row = .sku
-
-            return Section(title: title, rightTitle: nil, footer: nil, row: row)
+            return groupedProductInventorySection()
         }
 
+        // For non-grouped products that have no prices defined.
+        if allPricesEmpty() == true {
+            return nonGroupedInventorySection()
+        }
+
+        // For non-grouped products that contain at least one price.
+        return pricesAndInventorySection()
+    }
+
+    /// Grouped products.
+    /// Builds the Inventory section with no price cells.
+    ///
+    func groupedProductInventorySection() -> Section {
+        let title = NSLocalizedString("Inventory",
+                                      comment: "Product Details - inventory section title")
+        let row: Row = .sku
+
+        return Section(title: title, row: row)
+    }
+
+    /// Non-grouped products, no prices defined.
+    /// Builds the non-grouped Inventory section with no price cells.
+    ///
+    func nonGroupedInventorySection() -> Section {
+        let title = NSLocalizedString("Inventory",
+                                      comment: "Product Details - inventory section title")
+        if product.productType == .affiliate {
+            return Section(title: title, row: .affiliateInventory)
+        }
+
+        return Section(title: title, row: .inventory)
+    }
+
+    /// Non-grouped products that have at least one price defined.
+    /// Builds the Pricing and Inventory cells.
+    ///
+    func pricesAndInventorySection() -> Section {
         let title = NSLocalizedString("Pricing and Inventory",
                                       comment: "Product Details - pricing and inventory section title")
         var rows: [Row] = [.price]

@@ -256,25 +256,30 @@ extension ProductDetailsViewModel {
     }
 
     func configurePermalink(_ cell: WooBasicTableViewCell) {
-        cell.bodyLabel?.text = NSLocalizedString("View product on store", comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
+        cell.bodyLabel?.text = NSLocalizedString("View product on store",
+                                                 comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
         cell.accessoryImage = Gridicon.iconOfType(.external)
     }
 
     func configureAffiliateLink(_ cell: WooBasicTableViewCell) {
-        cell.bodyLabel?.text = NSLocalizedString("View affiliate product", comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
+        cell.bodyLabel?.text = NSLocalizedString("View affiliate product",
+                                                 comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
         cell.accessoryImage = Gridicon.iconOfType(.external)
     }
 
     func configurePrice(_ cell: TitleBodyTableViewCell) {
-        cell.titleLabel?.text = NSLocalizedString("Price", comment: "Product Details > Pricing and Inventory section > descriptive label for the Price cell.")
+        cell.titleLabel?.text = NSLocalizedString("Price",
+                                                  comment: "Product Details > Pricing and Inventory section > descriptive label for the Price cell.")
 
         if let regularPrice = product.regularPrice, !regularPrice.isEmpty,
             let salePrice = product.salePrice, !salePrice.isEmpty {
-            let regularPricePrefix = NSLocalizedString("Regular price:", comment: "A descriptive label prefix. Example: 'Regular price: $20.00'")
+            let regularPricePrefix = NSLocalizedString("Regular price:",
+                                                       comment: "A descriptive label prefix. Example: 'Regular price: $20.00'")
             let regularPriceFormatted = currencyFormatter.formatAmount(regularPrice) ?? ""
             let bodyText = regularPricePrefix + " " + regularPriceFormatted
 
-            let salePricePrefix = NSLocalizedString("Sale price:", comment: "A descriptive label prefix. Example: 'Sale price: $18.00'")
+            let salePricePrefix = NSLocalizedString("Sale price:",
+                                                    comment: "A descriptive label prefix. Example: 'Sale price: $18.00'")
             let salePriceFormatted = currencyFormatter.formatAmount(salePrice) ?? ""
             let secondLineText = salePricePrefix + " " + salePriceFormatted
 

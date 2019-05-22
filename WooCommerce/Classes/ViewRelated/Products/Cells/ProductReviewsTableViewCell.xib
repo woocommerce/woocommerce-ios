@@ -1,80 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="ProductReviewsTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+        <tableViewCell contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="ProductReviewsTableViewCell" customModule="WooCommerce" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
                 <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="3X1-Tq-m8c">
+                    <stackView opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="3X1-Tq-m8c">
                         <rect key="frame" x="16" y="11" width="288" height="22"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reviews" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vqh-zX-MRV">
-                                <rect key="frame" x="0.0" y="0.0" width="63" height="22"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Reviews" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vqh-zX-MRV">
+                                <rect key="frame" x="0.0" y="0.0" width="142.5" height="22"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="fO6-L6-6dK" userLabel="Spacer">
-                                <rect key="frame" x="71" y="0.0" width="71.5" height="22"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="260" verticalHuggingPriority="260" text="20k" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CZP-oo-f9a">
                                 <rect key="frame" x="150.5" y="0.0" width="29.5" height="22"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" horizontalHuggingPriority="260" verticalHuggingPriority="260" translatesAutoresizingMaskIntoConstraints="NO" id="8uK-v8-jD2" userLabel="Star View" customClass="RatingView" customModule="WooCommerce" customModuleProvider="target">
+                            <view contentMode="scaleToFill" horizontalHuggingPriority="260" verticalHuggingPriority="260" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8uK-v8-jD2" userLabel="Star View" customClass="RatingView" customModule="WooCommerce" customModuleProvider="target">
                                 <rect key="frame" x="188" y="0.0" width="100" height="22"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="22" id="BQT-I1-qKW"/>
-                                    <constraint firstAttribute="width" constant="100" id="pDH-Qa-WoB"/>
+                                    <constraint firstAttribute="width" constant="100" id="BUc-Z2-cVL"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="8uK-v8-jD2" secondAttribute="bottom" id="BBg-ur-mLM"/>
-                            <constraint firstItem="Vqh-zX-MRV" firstAttribute="top" secondItem="3X1-Tq-m8c" secondAttribute="top" id="BXi-Q3-dkh"/>
-                            <constraint firstItem="8uK-v8-jD2" firstAttribute="leading" secondItem="CZP-oo-f9a" secondAttribute="trailing" constant="8" id="Gl5-8T-Sg2"/>
-                            <constraint firstAttribute="trailing" secondItem="8uK-v8-jD2" secondAttribute="trailing" id="LWO-dP-gj1"/>
-                            <constraint firstAttribute="bottom" secondItem="Vqh-zX-MRV" secondAttribute="bottom" id="Lve-tI-gqP"/>
-                            <constraint firstItem="fO6-L6-6dK" firstAttribute="top" secondItem="3X1-Tq-m8c" secondAttribute="top" id="Qmh-23-ozV"/>
-                            <constraint firstAttribute="bottom" secondItem="fO6-L6-6dK" secondAttribute="bottom" id="RRE-wH-DSD"/>
-                            <constraint firstItem="8uK-v8-jD2" firstAttribute="top" secondItem="3X1-Tq-m8c" secondAttribute="top" id="c38-8W-EUz"/>
-                            <constraint firstItem="fO6-L6-6dK" firstAttribute="leading" secondItem="Vqh-zX-MRV" secondAttribute="trailing" constant="8" id="euZ-oJ-HVD"/>
-                            <constraint firstItem="Vqh-zX-MRV" firstAttribute="leading" secondItem="3X1-Tq-m8c" secondAttribute="leading" id="frH-kN-47b"/>
+                            <constraint firstItem="CZP-oo-f9a" firstAttribute="leading" secondItem="Vqh-zX-MRV" secondAttribute="trailing" constant="8" id="RMw-m6-mto"/>
+                            <constraint firstItem="8uK-v8-jD2" firstAttribute="leading" secondItem="CZP-oo-f9a" secondAttribute="trailing" constant="8" id="W9I-6l-ViN"/>
                         </constraints>
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailingMargin" secondItem="3X1-Tq-m8c" secondAttribute="trailing" id="9w3-h1-wXn"/>
-                    <constraint firstItem="3X1-Tq-m8c" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="PY0-JL-OpD"/>
-                    <constraint firstItem="3X1-Tq-m8c" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="pAb-ya-dvK"/>
+                    <constraint firstItem="3X1-Tq-m8c" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="0an-TM-l3N"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="3X1-Tq-m8c" secondAttribute="bottom" id="ISX-qK-icz"/>
+                    <constraint firstItem="3X1-Tq-m8c" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="r74-iY-66b"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="3X1-Tq-m8c" secondAttribute="trailing" id="z9H-cA-KMq"/>
                 </constraints>
             </tableViewCellContentView>
-            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="reviewLabel" destination="Vqh-zX-MRV" id="7vZ-iC-dDP"/>
                 <outlet property="reviewTotalsLabel" destination="CZP-oo-f9a" id="2tv-yE-nUn"/>
                 <outlet property="starRatingView" destination="8uK-v8-jD2" id="XrQ-cz-f39"/>
             </connections>
-            <point key="canvasLocation" x="225" y="99"/>
+            <point key="canvasLocation" x="229" y="94"/>
         </tableViewCell>
     </objects>
 </document>

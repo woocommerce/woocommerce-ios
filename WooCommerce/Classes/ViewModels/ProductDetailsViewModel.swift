@@ -126,7 +126,7 @@ extension ProductDetailsViewModel {
 
     func heightForRow(at indexPath: IndexPath) -> CGFloat {
         switch rowAtIndexPath(indexPath) {
-        case .productSummary:
+        case .productPhoto:
             return productImageHeight
         default:
             return UITableView.automaticDimension
@@ -399,20 +399,27 @@ extension ProductDetailsViewModel {
     /// Rebuild the section struct.
     ///
     func reloadSections() {
+        let photo = configurePhoto()
         let summary = configureSummary()
         let pricingAndInventory = configurePricingAndInventory()
-        sections = [summary, pricingAndInventory].compactMap { $0 }
+        sections = [photo, summary, pricingAndInventory].compactMap { $0 }
+    }
+
+    /// Large photo section.
+    ///
+    func configurePhoto() -> Section {
+        return Section(row: .productPhoto)
     }
 
     /// Summary section.
     ///
     func configureSummary() -> Section {
         if product.productType == .affiliate {
-            let affiliateRows: [Row] = [.productSummary, .productName, .reviews, .permalink, .affiliateLink]
+            let affiliateRows: [Row] = [.productName, .reviews, .permalink, .affiliateLink]
             return Section(rows: affiliateRows)
         }
 
-        let rows: [Row] = [.productSummary, .productName, .totalOrders, .reviews, .permalink]
+        let rows: [Row] = [.productName, .totalOrders, .reviews, .permalink]
 
         return Section(rows: rows)
     }
@@ -541,7 +548,7 @@ extension ProductDetailsViewModel {
     /// Table rows are organized in the order they appear in the UI.
     ///
     enum Row {
-        case productSummary
+        case productPhoto
         case productName
         case totalOrders
         case reviews
@@ -554,7 +561,7 @@ extension ProductDetailsViewModel {
 
         var reuseIdentifier: String {
             switch self {
-            case .productSummary:
+            case .productPhoto:
                 return LargeImageTableViewCell.reuseIdentifier
             case .productName:
                 return TitleBodyTableViewCell.reuseIdentifier

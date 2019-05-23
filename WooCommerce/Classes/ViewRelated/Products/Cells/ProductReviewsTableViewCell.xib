@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait">
+    <device id="retina6_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -16,26 +16,26 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="58"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="57.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="57.666666666666664"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="3X1-Tq-m8c">
-                        <rect key="frame" x="16" y="16" width="288" height="27.5"/>
+                        <rect key="frame" x="16" y="19" width="288" height="20"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Reviews" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vqh-zX-MRV">
-                                <rect key="frame" x="0.0" y="0.0" width="142.5" height="27.5"/>
+                                <rect key="frame" x="0.0" y="0.0" width="142.66666666666666" height="20"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="260" verticalHuggingPriority="260" text="20k" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CZP-oo-f9a">
-                                <rect key="frame" x="150.5" y="0.0" width="29.5" height="27.5"/>
+                                <rect key="frame" x="150.66666666666666" y="0.0" width="29.333333333333343" height="20"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" horizontalHuggingPriority="260" verticalHuggingPriority="260" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8uK-v8-jD2" userLabel="Star View" customClass="RatingView" customModule="WooCommerce" customModuleProvider="target">
-                                <rect key="frame" x="188" y="0.0" width="100" height="27.5"/>
+                                <rect key="frame" x="188" y="0.0" width="100" height="20"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="BUc-Z2-cVL"/>
@@ -44,15 +44,17 @@
                         </subviews>
                         <constraints>
                             <constraint firstItem="CZP-oo-f9a" firstAttribute="leading" secondItem="Vqh-zX-MRV" secondAttribute="trailing" constant="8" id="RMw-m6-mto"/>
+                            <constraint firstItem="Vqh-zX-MRV" firstAttribute="leading" secondItem="3X1-Tq-m8c" secondAttribute="leading" id="TzU-fi-cxx"/>
                             <constraint firstItem="8uK-v8-jD2" firstAttribute="leading" secondItem="CZP-oo-f9a" secondAttribute="trailing" constant="8" id="W9I-6l-ViN"/>
+                            <constraint firstAttribute="trailing" secondItem="8uK-v8-jD2" secondAttribute="trailing" id="two-mb-gTk"/>
                         </constraints>
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="3X1-Tq-m8c" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="0an-TM-l3N"/>
-                    <constraint firstAttribute="bottom" secondItem="3X1-Tq-m8c" secondAttribute="bottom" constant="14" id="ISX-qK-icz"/>
-                    <constraint firstItem="3X1-Tq-m8c" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="r74-iY-66b"/>
-                    <constraint firstAttribute="trailing" secondItem="3X1-Tq-m8c" secondAttribute="trailing" constant="16" id="z9H-cA-KMq"/>
+                    <constraint firstItem="3X1-Tq-m8c" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="CIM-o3-0SR"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="3X1-Tq-m8c" secondAttribute="trailing" id="I4U-ty-AvC"/>
+                    <constraint firstItem="3X1-Tq-m8c" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="8" id="Yue-PJ-M06"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="3X1-Tq-m8c" secondAttribute="bottom" constant="8" id="b78-kq-4JV"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

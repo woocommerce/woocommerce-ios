@@ -33,8 +33,8 @@
                         </label>
                     </subviews>
                     <constraints>
-                        <constraint firstItem="4Fd-ta-Azy" firstAttribute="leading" secondItem="bJe-Cv-606" secondAttribute="leading" id="kaA-J9-ejg"/>
-                        <constraint firstAttribute="trailing" secondItem="nAe-82-c1s" secondAttribute="trailing" id="lWF-zV-ftO"/>
+                        <constraint firstItem="4Fd-ta-Azy" firstAttribute="leading" secondItem="bJe-Cv-606" secondAttribute="leadingMargin" id="kaA-J9-ejg"/>
+                        <constraint firstAttribute="trailingMargin" secondItem="nAe-82-c1s" secondAttribute="trailing" id="lWF-zV-ftO"/>
                     </constraints>
                 </stackView>
             </subviews>

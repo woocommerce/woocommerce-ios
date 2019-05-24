@@ -530,10 +530,15 @@ private extension OrderDetailsViewController {
         }
 
         for (index, item) in viewModel.items.enumerated() {
-            let itemView = TwoColumnLabelView.makeFromNib()
-            itemView.leftText = item.name
-            itemView.rightText = item.quantity.description
-            cell.verticalStackView.insertArrangedSubview(itemView, at: index)
+            let itemCell = ProductDetailsTableViewCell.makeFromNib()
+            let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency)
+            itemCell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
+            itemCell.name = itemViewModel.item.name
+            itemCell.quantity = itemViewModel.quantity
+            itemCell.price = itemViewModel.price
+            itemCell.sku = itemViewModel.sku
+
+            cell.verticalStackView.insertArrangedSubview(itemCell.contentView, at: index)
         }
 
         cell.fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)

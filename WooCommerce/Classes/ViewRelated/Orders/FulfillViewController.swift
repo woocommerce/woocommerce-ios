@@ -316,7 +316,6 @@ private extension FulfillViewController {
         cell.name = viewModel.name
         cell.quantity = viewModel.quantity
         cell.price = viewModel.price
-        cell.tax = viewModel.tax
         cell.sku = viewModel.sku
     }
 

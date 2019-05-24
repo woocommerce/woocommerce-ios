@@ -7,7 +7,7 @@ import Yosemite
 ///
 class ProductDetailsTableViewCell: UITableViewCell {
 
-    /// Label: Image
+    /// ImageView
     ///
     @IBOutlet private var productImageView: UIImageView!
 
@@ -23,23 +23,18 @@ class ProductDetailsTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var priceLabel: UILabel!
 
-    /// Label: Tax
-    ///
-    @IBOutlet private var taxLabel: UILabel!
-
     /// Label: SKU
     ///
     @IBOutlet private var skuLabel: UILabel!
-
 
     /// Product Name
     ///
     var name: String? {
         get {
-            return nameLabel.text
+            return nameLabel?.text
         }
         set {
-            nameLabel.text = newValue
+            nameLabel?.text = newValue
         }
     }
 
@@ -47,10 +42,10 @@ class ProductDetailsTableViewCell: UITableViewCell {
     ///
     var quantity: String? {
         get {
-            return quantityLabel.text
+            return quantityLabel?.text
         }
         set {
-            quantityLabel.text = newValue
+            quantityLabel?.text = newValue
         }
     }
 
@@ -58,21 +53,10 @@ class ProductDetailsTableViewCell: UITableViewCell {
     ///
     var price: String? {
         get {
-            return priceLabel.text
+            return priceLabel?.text
         }
         set {
-            priceLabel.text = newValue
-        }
-    }
-
-    /// Item's Tax
-    ///
-    var tax: String? {
-        get {
-            return taxLabel.text
-        }
-        set {
-            taxLabel.text = newValue
+            priceLabel?.text = newValue
         }
     }
 
@@ -80,25 +64,40 @@ class ProductDetailsTableViewCell: UITableViewCell {
     ///
     var sku: String? {
         get {
-            return skuLabel.text
+            return skuLabel?.text
         }
         set {
-            skuLabel.text = newValue
+            skuLabel?.text = newValue
         }
     }
 
     // MARK: - Overridden Methods
 
+    required init?(coder aDecoder: NSCoder) {
+        // initializers don't call property observers,
+        // so don't set the default for mode here.
+        super.init(coder: aDecoder)
+    }
+
+    class func makeFromNib() -> ProductDetailsTableViewCell {
+        return Bundle.main.loadNibNamed("ProductDetailsTableViewCell", owner: self, options: nil)?.first as! ProductDetailsTableViewCell
+    }
+
     override func awakeFromNib() {
         super.awakeFromNib()
         productImageView.image = Gridicon.iconOfType(.product)
         productImageView.tintColor = StyleManager.wooGreyBorder
+        selectionStyle = .none
+
         nameLabel.applyBodyStyle()
         quantityLabel.applyBodyStyle()
-        priceLabel.applyFootnoteStyle()
-        taxLabel.applyFootnoteStyle()
-        skuLabel.applyFootnoteStyle()
-        selectionStyle = .none
+        priceLabel.applySecondaryFootnoteStyle()
+        skuLabel.applySecondaryFootnoteStyle()
+
+        nameLabel?.text = ""
+        quantityLabel?.text = ""
+        priceLabel?.text = ""
+        skuLabel?.text = ""
     }
 }
 
@@ -106,11 +105,13 @@ class ProductDetailsTableViewCell: UITableViewCell {
 // MARK: - Public Methods
 //
 extension ProductDetailsTableViewCell {
-    func configure(item: OrderItemViewModel, with details: OrderDetailsViewModel) {
-        nameLabel.text = item.name
-        quantityLabel.text = item.quantity
-        priceLabel.text = item.price
-        taxLabel.text = item.tax
-        skuLabel.text = item.sku
+    func configure(item: OrderItemViewModel, image: UIImage? = nil) {
+        if let itemImage = image {
+            productImageView.image = itemImage
+        }
+        name = item.name
+        quantity = item.quantity
+        price = item.price
+        sku = item.sku
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait">
+    <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -20,7 +20,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalCompressionResistancePriority="250" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SDD-72-x0V">
-                        <rect key="frame" x="16" y="16" width="288" height="29.5"/>
+                        <rect key="frame" x="16" y="19" width="288" height="23.5"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="22" id="rz1-Cc-dWc"/>
                         </constraints>
@@ -28,11 +28,8 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="250" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aos-vn-8pP">
-                        <rect key="frame" x="16" y="49.5" width="288" height="22"/>
-                        <constraints>
-                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="22" id="Fz9-dB-WgZ"/>
-                        </constraints>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="250" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aos-vn-8pP">
+                        <rect key="frame" x="16" y="46.5" width="288" height="20.5"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -41,11 +38,11 @@
                 <constraints>
                     <constraint firstItem="SDD-72-x0V" firstAttribute="leading" secondItem="aos-vn-8pP" secondAttribute="leading" id="8Es-2A-83v"/>
                     <constraint firstItem="SDD-72-x0V" firstAttribute="trailing" secondItem="aos-vn-8pP" secondAttribute="trailing" id="B7V-6t-CiX"/>
-                    <constraint firstItem="SDD-72-x0V" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="PUw-Ej-8Tv"/>
-                    <constraint firstItem="SDD-72-x0V" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="Pta-Bi-Sme"/>
+                    <constraint firstItem="SDD-72-x0V" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="8" id="PUw-Ej-8Tv"/>
+                    <constraint firstItem="SDD-72-x0V" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Pta-Bi-Sme"/>
                     <constraint firstItem="aos-vn-8pP" firstAttribute="top" secondItem="SDD-72-x0V" secondAttribute="bottom" constant="4" id="W15-Ln-qAa"/>
-                    <constraint firstAttribute="bottom" secondItem="aos-vn-8pP" secondAttribute="bottom" constant="14" id="ZMQ-Aa-7JA"/>
-                    <constraint firstAttribute="trailing" secondItem="SDD-72-x0V" secondAttribute="trailing" constant="16" id="c4Y-7r-lUj"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="aos-vn-8pP" secondAttribute="bottom" constant="8" id="ZMQ-Aa-7JA"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="SDD-72-x0V" secondAttribute="trailing" id="c4Y-7r-lUj"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

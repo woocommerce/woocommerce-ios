@@ -207,7 +207,7 @@ private extension OrderDetailsViewController {
             WooBasicTableViewCell.self,
             OrderNoteTableViewCell.self,
             PaymentTableViewCell.self,
-            ProductListTableViewCell.self,
+            ProductDetailsTableViewCell.self,
             OrderTrackingTableViewCell.self,
             SummaryTableViewCell.self
         ]
@@ -252,7 +252,13 @@ private extension OrderDetailsViewController {
                 return nil
             }
 
-            let rows: [Row] = viewModel.isProcessingPayment ? [.productList] : [.productList, .productDetails]
+            var rows: [Row] = Array(repeating: .orderItem, count: viewModel.items.count)
+            if viewModel.isProcessingPayment {
+                rows.append(.fulfillButton)
+            } else {
+                rows.append(.details)
+            }
+
             return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
         }()
 
@@ -361,7 +367,7 @@ extension OrderDetailsViewController {
 private extension OrderDetailsViewController {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as WooBasicTableViewCell where row == .productDetails:
+        case let cell as WooBasicTableViewCell where row == .details:
             configureProductDetails(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingEmail:
             configureBillingEmail(cell: cell)
@@ -379,8 +385,8 @@ private extension OrderDetailsViewController {
             configureOrderNote(cell: cell, at: indexPath)
         case let cell as PaymentTableViewCell:
             configurePayment(cell: cell)
-        case let cell as ProductListTableViewCell:
-            configureProductList(cell: cell)
+        case let cell as ProductDetailsTableViewCell:
+            configureOrderItem(cell: cell, at: indexPath)
         case let cell as OrderTrackingTableViewCell:
             configureTracking(cell: cell, at: indexPath)
         case let cell as SummaryTableViewCell:
@@ -524,29 +530,14 @@ private extension OrderDetailsViewController {
         cell.selectionStyle = .default
     }
 
-    func configureProductList(cell: ProductListTableViewCell) {
-        for subView in cell.verticalStackView.arrangedSubviews {
-            subView.removeFromSuperview()
-        }
-
-        for (index, item) in viewModel.items.enumerated() {
-            let itemCell = ProductDetailsTableViewCell.makeFromNib()
-            let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency)
-            itemCell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
-            itemCell.name = itemViewModel.item.name
-            itemCell.quantity = itemViewModel.quantity
-            itemCell.price = itemViewModel.price
-            itemCell.sku = itemViewModel.sku
-
-            cell.verticalStackView.insertArrangedSubview(itemCell.contentView, at: index)
-        }
-
-        cell.fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
-        cell.actionContainerView.isHidden = viewModel.isProcessingPayment == false
-
-        cell.onFullfillTouchUp = { [weak self] in
-            self?.fulfillWasPressed()
-        }
+    func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+        let item = viewModel.items[indexPath.row]
+        let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency)
+        cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
+        cell.name = itemViewModel.item.name
+        cell.quantity = itemViewModel.quantity
+        cell.price = itemViewModel.price
+        cell.sku = itemViewModel.sku
     }
 
     func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
@@ -829,7 +820,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
             let navController = WooNavigationController(rootViewController: newNoteViewController)
             present(navController, animated: true, completion: nil)
-        case .productDetails:
+        case .details:
             WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
         case .billingEmail:
@@ -1232,8 +1223,9 @@ private extension OrderDetailsViewController {
 
     enum Row {
         case summary
-        case productList
-        case productDetails
+        case fulfillButton
+        case orderItem
+        case details
         case tracking
         case customerNote
         case shippingAddress
@@ -1248,9 +1240,11 @@ private extension OrderDetailsViewController {
             switch self {
             case .summary:
                 return SummaryTableViewCell.reuseIdentifier
-            case .productList:
+            case .fulfillButton:
                 return ProductListTableViewCell.reuseIdentifier
-            case .productDetails:
+            case .orderItem:
+                return ProductDetailsTableViewCell.reuseIdentifier
+            case .details:
                 return WooBasicTableViewCell.reuseIdentifier
             case .tracking:
                 return OrderTrackingTableViewCell.reuseIdentifier

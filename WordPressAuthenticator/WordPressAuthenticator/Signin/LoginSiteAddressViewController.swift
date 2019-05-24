@@ -194,7 +194,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         let baseSiteUrl = WordPressAuthenticator.baseSiteURL(string: loginFields.siteAddress)
         let successBlock: (WordPressComSiteInfo) -> Void = { [weak self] siteInfo in
             self?.loginFields.meta.siteInfo = siteInfo
-            if WordPressAuthenticator.shared.delegate?.allowWPComLogin == false {
+            if WordPressAuthenticator.shared.delegate?.allowWPComLogin == false && !siteInfo.hasJetpack {
                 // Hey, you have to log out of your existing WP.com account before logging into another one.
                 self?.promptUserToLogoutBeforeConnectingWPComSite()
                 self?.configureViewLoading(false)

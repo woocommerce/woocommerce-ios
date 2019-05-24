@@ -136,14 +136,18 @@ final class ShippingProvidersViewModel {
     /// Filter results by text
     ///
     func filter(by text: String) {
-        let predicate = NSPredicate(format: "name CONTAINS[cd] %@", text)
-        providersExcludingStoreCountry.predicate = predicate
+        let nameFilter = NSPredicate(format: "name CONTAINS[cd] %@", text)
+        providersExcludingStoreCountry.predicate = predicateExcludingStoreCountry(predicate: nameFilter)
+        providersForStoreCountry.predicate = predicateMatchingStoreCountry(predicate: nameFilter)
     }
 
     /// Clear all filters
     ///
     func clearFilters() {
-        providersExcludingStoreCountry.predicate = nil
+        providersExcludingStoreCountry.predicate =
+            predicateExcludingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
+        providersForStoreCountry.predicate =
+            predicateMatchingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
     }
 
     private func dataWasUpdated() {

@@ -209,7 +209,8 @@ private extension OrderDetailsViewController {
             PaymentTableViewCell.self,
             ProductDetailsTableViewCell.self,
             OrderTrackingTableViewCell.self,
-            SummaryTableViewCell.self
+            SummaryTableViewCell.self,
+            FulfillButtonTableViewCell.self
         ]
 
         for cell in cells {
@@ -368,7 +369,7 @@ private extension OrderDetailsViewController {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as WooBasicTableViewCell where row == .details:
-            configureProductDetails(cell: cell)
+            configureDetails(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingEmail:
             configureBillingEmail(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingPhone:
@@ -387,6 +388,8 @@ private extension OrderDetailsViewController {
             configurePayment(cell: cell)
         case let cell as ProductDetailsTableViewCell:
             configureOrderItem(cell: cell, at: indexPath)
+        case let cell as FulfillButtonTableViewCell:
+            configureFulfillmentButton(cell: cell)
         case let cell as OrderTrackingTableViewCell:
             configureTracking(cell: cell, at: indexPath)
         case let cell as SummaryTableViewCell:
@@ -523,7 +526,7 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func configureProductDetails(cell: WooBasicTableViewCell) {
+    func configureDetails(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = viewModel.productDetails
         cell.bodyLabel?.applyBodyStyle() // override the custom purple with black
         cell.accessoryType = .disclosureIndicator
@@ -538,6 +541,13 @@ private extension OrderDetailsViewController {
         cell.quantity = itemViewModel.quantity
         cell.price = itemViewModel.price
         cell.sku = itemViewModel.sku
+    }
+
+    func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
+        cell.textLabel?.text = NSLocalizedString("Fulfill Order", comment: <#T##String#>)
+        cell.onFullfillTouchUp = { [weak self] in
+            self?.fulfillWasPressed()
+        }
     }
 
     func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
@@ -1241,7 +1251,7 @@ private extension OrderDetailsViewController {
             case .summary:
                 return SummaryTableViewCell.reuseIdentifier
             case .fulfillButton:
-                return ProductListTableViewCell.reuseIdentifier
+                return FulfillButtonTableViewCell.reuseIdentifier
             case .orderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .details:

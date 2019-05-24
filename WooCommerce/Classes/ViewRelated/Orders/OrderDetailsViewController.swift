@@ -544,7 +544,7 @@ private extension OrderDetailsViewController {
     }
 
     func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
-        cell.textLabel?.text = NSLocalizedString("Fulfill Order", comment: <#T##String#>)
+        cell.fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
         cell.onFullfillTouchUp = { [weak self] in
             self?.fulfillWasPressed()
         }

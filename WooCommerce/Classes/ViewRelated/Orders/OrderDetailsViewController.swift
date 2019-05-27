@@ -257,15 +257,6 @@ private extension OrderDetailsViewController {
             return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
         }()
 
-        let tracking: Section? = {
-            guard orderTracking.count > 0 else {
-                return nil
-            }
-
-            let rows: [Row] = Array(repeating: .tracking, count: orderTracking.count)
-            return Section(title: Title.tracking, rows: rows)
-        }()
-
         let customerNote: Section? = {
             guard viewModel.customerNote.isEmpty == false else {
                 return nil
@@ -297,12 +288,21 @@ private extension OrderDetailsViewController {
 
         let payment = Section(title: Title.payment, row: .payment)
 
+        let tracking: Section? = {
+            guard orderTracking.count > 0 else {
+                return nil
+            }
+
+            let rows: [Row] = Array(repeating: .tracking, count: orderTracking.count)
+            return Section(title: Title.tracking, rows: rows)
+        }()
+
         let notes: Section = {
             let rows = [.addOrderNote] + Array(repeating: Row.orderNote, count: orderNotes.count)
             return Section(title: Title.notes, rows: rows)
         }()
 
-        sections = [summary, products, tracking, customerNote, customerInformation, payment, notes].compactMap { $0 }
+        sections = [summary, products, customerNote, customerInformation, payment, tracking, notes].compactMap { $0 }
     }
 }
 

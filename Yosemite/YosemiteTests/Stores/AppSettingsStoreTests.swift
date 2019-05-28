@@ -78,7 +78,8 @@ final class AppSettingsStoreTests: XCTestCase {
         let expectation = self.expectation(description: "A write is requested")
 
         let action = AppSettingsAction.addCustomTrackingProvider(siteID: TestConstants.newSiteID,
-                                                                 providerName: TestConstants.newProviderName, providerURL: TestConstants.newProviderURL) { error in
+                                                                 providerName: TestConstants.newProviderName,
+                                                                 providerURL: TestConstants.newProviderURL) { error in
                                                             XCTAssertNil(error)
 
                                                             if self.fileStorage?.dataWriteIsHit == true {

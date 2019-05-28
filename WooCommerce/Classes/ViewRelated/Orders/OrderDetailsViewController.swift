@@ -1007,6 +1007,7 @@ private extension OrderDetailsViewController {
         }
 
         actionSheet.addDestructiveActionWithTitle(TrackingAction.deleteTracking) { [weak self] _ in
+            WooAnalytics.shared.track(.orderDetailTrackingDeleteButtonTapped)
             self?.deleteTracking(tracking)
         }
 

@@ -84,30 +84,10 @@ private extension AppSettingsStore {
     func addTrackingProvider(siteID: Int,
                              providerName: String,
                              onCompletion: (Error?) -> Void) {
-        guard FileManager.default.fileExists(atPath: selectedProvidersURL.path) else {
-            insertNewProvider(siteID: siteID,
-                              providerName: providerName,
-                              toFileURL: selectedProvidersURL,
-                              onCompletion: onCompletion)
-            onCompletion(nil)
-            return
-        }
-
-        do {
-            let data = try fileStorage.data(for: selectedProvidersURL)
-            let decoder = PropertyListDecoder()
-            let settings = try decoder.decode([PreselectedProvider].self, from: data)
-            upsertTrackingProvider(siteID: siteID,
-                                   providerName: providerName,
-                                   preselectedData: settings,
-                                   toFileURL: selectedProvidersURL,
-                                   onCompletion: onCompletion)
-        } catch {
-            let error = AppSettingsStoreErrors.parsePreselectedProvider
-            onCompletion(error)
-
-            DDLogError("⛔️ Saving a tracking provider locally failed: siteID \(siteID). Error: \(error)")
-        }
+        addProvider(siteID: siteID,
+                    providerName: providerName,
+                    fileURL: selectedProvidersURL,
+                    onCompletion: onCompletion)
 
     }
 
@@ -115,25 +95,35 @@ private extension AppSettingsStore {
                              providerName: String,
                              providerURL: String,
                              onCompletion: (Error?) -> Void) {
-        guard FileManager.default.fileExists(atPath: customSelectedProvidersURL.path) else {
+        addProvider(siteID: siteID,
+                    providerName: providerName,
+                    providerURL: providerURL,
+                    fileURL: customSelectedProvidersURL,
+                    onCompletion: onCompletion)
+    }
+
+    func addProvider(siteID: Int,
+                     providerName: String,
+                     providerURL: String? = nil,
+                     fileURL: URL,
+                     onCompletion: (Error?) -> Void) {
+        guard FileManager.default.fileExists(atPath: fileURL.path) else {
             insertNewProvider(siteID: siteID,
                               providerName: providerName,
-                              providerURL: providerURL,
-                              toFileURL: customSelectedProvidersURL,
+                              toFileURL: fileURL,
                               onCompletion: onCompletion)
             onCompletion(nil)
             return
         }
 
         do {
-            let data = try fileStorage.data(for: customSelectedProvidersURL)
+            let data = try fileStorage.data(for: fileURL)
             let decoder = PropertyListDecoder()
             let settings = try decoder.decode([PreselectedProvider].self, from: data)
             upsertTrackingProvider(siteID: siteID,
                                    providerName: providerName,
-                                   providerURL: providerURL,
                                    preselectedData: settings,
-                                   toFileURL: selectedProvidersURL,
+                                   toFileURL: fileURL,
                                    onCompletion: onCompletion)
         } catch {
             let error = AppSettingsStoreErrors.parsePreselectedProvider

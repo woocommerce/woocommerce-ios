@@ -28,6 +28,15 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.shipmentProvidersFileName)
     }()
 
+    /// URL to the plist file that we use to store the user selected
+    /// custom shipment tracing provider. Not declared as `private` so it can
+    /// be overridden in tests
+    ///
+    lazy var customSelectedProvidersURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.customShipmentProvidersFileName)
+    }()
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -47,10 +56,21 @@ public class AppSettingsStore: Store {
             addTrackingProvider(siteID: siteID,
                                 providerName: providerName,
                                 onCompletion: onCompletion)
-
         case .loadTrackingProvider(let siteID, let onCompletion):
             loadTrackingProvider(siteID: siteID,
                                  onCompletion: onCompletion)
+        case .addCustomTrackingProvider(let siteID,
+                                        let providerName,
+                                        let providerURL,
+                                        let onCompletion):
+            addCustomTrackingProvider(siteID: siteID,
+                                      providerName: providerName,
+                                      providerURL: providerURL,
+                                      onCompletion: onCompletion)
+        case .loadCustomTrackingProvider(let siteID,
+                                         let onCompletion):
+            loadCustomTrackingProvider(siteID: siteID,
+                                        onCompletion: onCompletion)
         case .resetStoredProviders(let onCompletion):
             resetStoredProviders(onCompletion: onCompletion)
         }
@@ -67,6 +87,7 @@ private extension AppSettingsStore {
         guard FileManager.default.fileExists(atPath: selectedProvidersURL.path) else {
             insertNewProvider(siteID: siteID,
                               providerName: providerName,
+                              toFileURL: selectedProvidersURL,
                               onCompletion: onCompletion)
             onCompletion(nil)
             return
@@ -79,6 +100,7 @@ private extension AppSettingsStore {
             upsertTrackingProvider(siteID: siteID,
                                    providerName: providerName,
                                    preselectedData: settings,
+                                   toFileURL: selectedProvidersURL,
                                    onCompletion: onCompletion)
         } catch {
             let error = AppSettingsStoreErrors.parsePreselectedProvider
@@ -87,6 +109,38 @@ private extension AppSettingsStore {
             DDLogError("⛔️ Saving a tracking provider locally failed: siteID \(siteID). Error: \(error)")
         }
 
+    }
+
+    func addCustomTrackingProvider(siteID: Int,
+                             providerName: String,
+                             providerURL: String,
+                             onCompletion: (Error?) -> Void) {
+        guard FileManager.default.fileExists(atPath: customSelectedProvidersURL.path) else {
+            insertNewProvider(siteID: siteID,
+                              providerName: providerName,
+                              providerURL: providerURL,
+                              toFileURL: customSelectedProvidersURL,
+                              onCompletion: onCompletion)
+            onCompletion(nil)
+            return
+        }
+
+        do {
+            let data = try fileStorage.data(for: customSelectedProvidersURL)
+            let decoder = PropertyListDecoder()
+            let settings = try decoder.decode([PreselectedProvider].self, from: data)
+            upsertTrackingProvider(siteID: siteID,
+                                   providerName: providerName,
+                                   providerURL: providerURL,
+                                   preselectedData: settings,
+                                   toFileURL: selectedProvidersURL,
+                                   onCompletion: onCompletion)
+        } catch {
+            let error = AppSettingsStoreErrors.parsePreselectedProvider
+            onCompletion(error)
+
+            DDLogError("⛔️ Saving a tracking provider locally failed: siteID \(siteID). Error: \(error)")
+        }
     }
 
     func loadTrackingProvider(siteID: Int,
@@ -115,12 +169,19 @@ private extension AppSettingsStore {
         onCompletion(provider?.toReadOnly(), provider?.group?.toReadOnly(), nil)
     }
 
+    func loadCustomTrackingProvider(siteID: Int,
+                              onCompletion: (ShipmentTrackingProvider?, Error?) -> Void) {
+    }
+
     func upsertTrackingProvider(siteID: Int,
                                 providerName: String,
+                                providerURL: String? = nil,
                                 preselectedData: [PreselectedProvider],
+                                toFileURL: URL,
                                 onCompletion: (Error?) -> Void) {
         let newPreselectedProvider = PreselectedProvider(siteID: siteID,
-                                                         providerName: providerName)
+                                                         providerName: providerName,
+                                                         providerURL: providerURL)
 
         var dataToSave = preselectedData
 
@@ -131,24 +192,27 @@ private extension AppSettingsStore {
             dataToSave.append(newPreselectedProvider)
         }
 
-        write(dataToSave, onCompletion: onCompletion)
+        write(dataToSave, to: toFileURL, onCompletion: onCompletion)
     }
 
     func insertNewProvider(siteID: Int,
                            providerName: String,
+                           providerURL: String? = nil,
+                           toFileURL: URL,
                            onCompletion: (Error?) -> Void) {
         let preselectedProvider = PreselectedProvider(siteID: siteID,
-                                                      providerName: providerName)
+                                                      providerName: providerName,
+                                                      providerURL: providerURL)
 
-        write([preselectedProvider], onCompletion: onCompletion)
+        write([preselectedProvider], to: toFileURL, onCompletion: onCompletion)
     }
 
-    func write(_ data: [PreselectedProvider], onCompletion: (Error?) -> Void) {
+    func write(_ data: [PreselectedProvider], to fileURL: URL, onCompletion: (Error?) -> Void) {
         let encoder = PropertyListEncoder()
         encoder.outputFormat = .xml
         do {
             let encodedData = try encoder.encode(data)
-            try fileStorage.write(encodedData, to: selectedProvidersURL)
+            try fileStorage.write(encodedData, to: fileURL)
             onCompletion(nil)
         } catch {
             let error = AppSettingsStoreErrors.writePreselectedProvider
@@ -196,4 +260,5 @@ enum AppSettingsStoreErrors: Error {
 ///
 private enum Constants {
     static let shipmentProvidersFileName = "shipment-providers.plist"
+    static let customShipmentProvidersFileName = "custom-shipment-providers.plist"
 }

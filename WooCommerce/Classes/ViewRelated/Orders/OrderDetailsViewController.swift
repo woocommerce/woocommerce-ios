@@ -82,6 +82,11 @@ class OrderDetailsViewController: UIViewController {
         return trackingResultsController.fetchedObjects
     }
 
+    /// Indicates if we consider the shipment tracking plugin as reachable
+    /// https://github.com/woocommerce/woocommerce-ios/issues/852#issuecomment-482308373
+    ///
+    private var trackingIsReachable: Bool = false
+
     /// Order statuses list
     ///
     private var currentSiteStatuses: [OrderStatus] {
@@ -109,7 +114,18 @@ class OrderDetailsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         syncNotes()
-        syncTracking()
+        syncTrackingsHiddingAddButtonIfNecessary()
+    }
+
+    private func syncTrackingsHiddingAddButtonIfNecessary() {
+        syncTracking { [weak self] error in
+            if error == nil {
+                self?.trackingIsReachable = true
+            }
+
+            self?.reloadSections()
+            self?.tableView.reloadData()
+        }
     }
 }
 
@@ -266,6 +282,19 @@ private extension OrderDetailsViewController {
             return Section(title: Title.tracking, rows: rows)
         }()
 
+        let addTracking: Section? = {
+            // Hide the section if the shipment
+            // tracking plugin is not installed
+            guard trackingIsReachable else {
+                return nil
+            }
+
+            let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : nil
+            let row = Row.trackingAdd
+
+            return Section(title: title, secondaryTitle: nil, rows: [row])
+        }()
+
         let customerNote: Section? = {
             guard viewModel.customerNote.isEmpty == false else {
                 return nil
@@ -374,7 +403,7 @@ private extension OrderDetailsViewController {
             configureShippingAddress(cell: cell)
         case let cell as CustomerNoteTableViewCell:
             configureCustomerNote(cell: cell)
-        case let cell as LeftImageTableViewCell:
+        case let cell as LeftImageTableViewCell where row == .addOrderNote:
             configureNewNote(cell: cell)
         case let cell as OrderNoteTableViewCell:
             configureOrderNote(cell: cell, at: indexPath)
@@ -384,6 +413,8 @@ private extension OrderDetailsViewController {
             configureProductList(cell: cell)
         case let cell as OrderTrackingTableViewCell:
             configureTracking(cell: cell, at: indexPath)
+        case let cell as LeftImageTableViewCell where row == .trackingAdd:
+            configureNewTracking(cell: cell)
         case let cell as SummaryTableViewCell:
             configureSummary(cell: cell)
         default:
@@ -571,6 +602,23 @@ private extension OrderDetailsViewController {
                                                 comment: "Order details > tracking. " +
                 " This is where the shipping date would normally display.")
         }
+    }
+
+    func configureNewTracking(cell: LeftImageTableViewCell) {
+        let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
+        cell.leftImage = .addOutlineImage
+        cell.labelText = cellTextContent
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString(
+            "Add a tracking button",
+            comment: "Accessibility label for the 'Add a tracking' button"
+        )
+
+        cell.accessibilityHint = NSLocalizedString(
+            "Adds tracking to an order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period."
+        )
     }
 
     func configureShippingAddress(cell: CustomerInfoTableViewCell) {
@@ -821,6 +869,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch sections[indexPath.section].rows[indexPath.row] {
+
         case .addOrderNote:
             WooAnalytics.shared.track(.orderDetailAddNoteButtonTapped)
 
@@ -829,6 +878,15 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
             let navController = WooNavigationController(rootViewController: newNoteViewController)
             present(navController, animated: true, completion: nil)
+
+        case .trackingAdd:
+            //WooAnalytics.shared.track(.orderDetailAddT)
+
+            let addTrackingViewModel = AddTrackingViewModel(order: viewModel.order)
+            let addTracking = ManualTrackingViewController(viewModel: addTrackingViewModel)
+            let navController = WooNavigationController(rootViewController: addTracking)
+            present(navController, animated: true, completion: nil)
+
         case .productDetails:
             WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
@@ -1230,6 +1288,7 @@ private extension OrderDetailsViewController {
         case productList
         case productDetails
         case tracking
+        case trackingAdd
         case customerNote
         case shippingAddress
         case billingAddress
@@ -1249,6 +1308,8 @@ private extension OrderDetailsViewController {
                 return BasicTableViewCell.reuseIdentifier
             case .tracking:
                 return OrderTrackingTableViewCell.reuseIdentifier
+            case .trackingAdd:
+                return LeftImageTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:

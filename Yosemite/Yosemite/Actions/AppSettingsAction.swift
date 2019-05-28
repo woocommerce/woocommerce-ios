@@ -18,7 +18,7 @@ public enum AppSettingsAction: Action {
     ///
     case addCustomTrackingProvider(siteID: Int,
         providerName: String,
-        providerURL: String,
+        providerURL: String?,
         onCompletion: (Error?) -> Void)
 
     /// Loads the stored shipment tracking provider associated with the `siteID`

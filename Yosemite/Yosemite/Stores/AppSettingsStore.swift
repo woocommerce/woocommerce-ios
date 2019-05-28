@@ -93,7 +93,7 @@ private extension AppSettingsStore {
 
     func addCustomTrackingProvider(siteID: Int,
                              providerName: String,
-                             providerURL: String,
+                             providerURL: String?,
                              onCompletion: (Error?) -> Void) {
         addProvider(siteID: siteID,
                     providerName: providerName,
@@ -110,6 +110,7 @@ private extension AppSettingsStore {
         guard FileManager.default.fileExists(atPath: fileURL.path) else {
             insertNewProvider(siteID: siteID,
                               providerName: providerName,
+                              providerURL: providerURL,
                               toFileURL: fileURL,
                               onCompletion: onCompletion)
             onCompletion(nil)
@@ -135,7 +136,7 @@ private extension AppSettingsStore {
 
     func loadTrackingProvider(siteID: Int,
                               onCompletion: (ShipmentTrackingProvider?, ShipmentTrackingProviderGroup?, Error?) -> Void) {
-        guard let allSavedProviders = read() else {
+        guard let allSavedProviders = read(from: selectedProvidersURL) else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
             onCompletion(nil, nil, error)
             return
@@ -161,6 +162,30 @@ private extension AppSettingsStore {
 
     func loadCustomTrackingProvider(siteID: Int,
                               onCompletion: (ShipmentTrackingProvider?, Error?) -> Void) {
+        guard let allSavedProviders = read(from: customSelectedProvidersURL) else {
+            let error = AppSettingsStoreErrors.readPreselectedProvider
+            onCompletion(nil, error)
+            return
+        }
+
+        let providerName = allSavedProviders.filter {
+            $0.siteID == siteID
+            }.first?.providerName
+
+        let providerURL = allSavedProviders.filter {
+            $0.siteID == siteID
+            }.first?.providerURL
+
+        guard let name = providerName else {
+            let error = AppSettingsStoreErrors.readPreselectedProvider
+            onCompletion(nil, error)
+            return
+        }
+
+        let customProvider = ShipmentTrackingProvider(siteID: siteID,
+                                                      name: name,
+                                                      url: providerURL ?? "")
+        onCompletion(customProvider, nil)
     }
 
     func upsertTrackingProvider(siteID: Int,
@@ -210,9 +235,9 @@ private extension AppSettingsStore {
         }
     }
 
-    func read() -> [PreselectedProvider]? {
+    func read(from url: URL) -> [PreselectedProvider]? {
         do {
-            let data = try fileStorage.data(for: selectedProvidersURL)
+            let data = try fileStorage.data(for: url)
             let decoder = PropertyListDecoder()
             return try decoder.decode([PreselectedProvider].self, from: data)
         } catch {
@@ -223,6 +248,7 @@ private extension AppSettingsStore {
     func resetStoredProviders(onCompletion: ((Error?) -> Void)? = nil) {
         do {
             try fileStorage.deleteFile(at: selectedProvidersURL)
+            try fileStorage.deleteFile(at: customSelectedProvidersURL)
             onCompletion?(nil)
         } catch {
             let error = AppSettingsStoreErrors.deletePreselectedProvider

@@ -116,10 +116,8 @@ final class ProductDetailsViewModel {
     ///
     init(product: Product) {
         self.product = product
-        self.weightUnit = lookupProductSettings(Keys.weightUnit)
-        self.dimensionUnit = lookupProductSettings(Keys.dimensionUnit)
 
-        configureResultsController()
+        refreshResultsController()
     }
 
     /// Setup: EntityListener.
@@ -144,8 +142,13 @@ final class ProductDetailsViewModel {
 
     /// Setup: Results Controller.
     ///
-    func configureResultsController() {
+    func refreshResultsController() {
         try? resultsController.performFetch()
+
+        // After refreshing the results controller,
+        // let's look up some product settings it holds.
+        weightUnit = lookupProductSettings(Keys.weightUnit)
+        dimensionUnit = lookupProductSettings(Keys.dimensionUnit)
     }
 
     /// Look up Product Settings
@@ -440,6 +443,7 @@ extension ProductDetailsViewModel {
     /// Reloads the tableView's sections and data.
     ///
     func reloadTableViewSectionsAndData() {
+        refreshResultsController()
         reloadSections()
         onReload?()
     }

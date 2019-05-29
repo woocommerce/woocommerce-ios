@@ -17,7 +17,7 @@ public class WordPressComSiteInfo {
     ///
     public let url: String
 
-    /// Indicates if Jetpack is available, or not,
+    /// Indicates if Jetpack is available, or not.
     ///
     public let hasJetpack: Bool
 
@@ -25,6 +25,8 @@ public class WordPressComSiteInfo {
     ///
     public let icon: String
     
+    /// Indicates whether the site is WordPressDotCom, or not.
+    ///
     public let isWPCom: Bool
 
 

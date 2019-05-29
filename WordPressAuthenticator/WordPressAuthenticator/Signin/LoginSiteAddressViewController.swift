@@ -197,16 +197,12 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                 return
             }
             self.configureViewLoading(false)
-            if siteInfo.isWPCom {
-                if WordPressAuthenticator.shared.delegate?.allowWPComLogin == true {
-                    self.presentNextControllerIfPossible(siteInfo: siteInfo)
-                } else {
-                    // Hey, you have to log out of your existing WP.com account before logging into another one.
-                    self.promptUserToLogoutBeforeConnectingWPComSite()
-                }
-            } else {
-                self.presentNextControllerIfPossible(siteInfo: siteInfo)
+            if siteInfo.isWPCom && WordPressAuthenticator.shared.delegate?.allowWPComLogin == false {
+                // Hey, you have to log out of your existing WP.com account before logging into another one.
+                self.promptUserToLogoutBeforeConnectingWPComSite()
+                return
             }
+            self.presentNextControllerIfPossible(siteInfo: siteInfo)
         }
         service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] error in
             self?.configureViewLoading(false)

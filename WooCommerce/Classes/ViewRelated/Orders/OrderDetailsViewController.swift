@@ -875,7 +875,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
             present(navController, animated: true, completion: nil)
 
         case .trackingAdd:
-            //WooAnalytics.shared.track(.orderDetailAddT)
+            WooAnalytics.shared.track(.orderDetailAddTrackingButtonTapped)
 
             let addTrackingViewModel = AddTrackingViewModel(order: viewModel.order)
             let addTracking = ManualTrackingViewController(viewModel: addTrackingViewModel)

@@ -14,16 +14,11 @@ class ProductListTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         fulfillButton.applyPrimaryButtonStyle()
-        verticalStackView.setCustomSpacing(Constants.spacing, after: fulfillButton)
     }
 }
 
 extension ProductListTableViewCell {
     @IBAction func fulfillWasPressed() {
         onFullfillTouchUp?()
-    }
-
-    struct Constants {
-        static let spacing = CGFloat(8.0)
     }
 }

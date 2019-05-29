@@ -202,7 +202,6 @@ private extension OrderDetailsViewController {
     func registerTableViewCells() {
         let cells = [
             LeftImageTableViewCell.self,
-            BillingDetailsTableViewCell.self,
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
             WooBasicTableViewCell.self,
@@ -362,11 +361,11 @@ extension OrderDetailsViewController {
 private extension OrderDetailsViewController {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as WooBasicTableViewCell:
+        case let cell as WooBasicTableViewCell where row == .productDetails:
             configureProductDetails(cell: cell)
-        case let cell as BillingDetailsTableViewCell where row == .billingEmail:
+        case let cell as WooBasicTableViewCell where row == .billingEmail:
             configureBillingEmail(cell: cell)
-        case let cell as BillingDetailsTableViewCell where row == .billingPhone:
+        case let cell as WooBasicTableViewCell where row == .billingPhone:
             configureBillingPhone(cell: cell)
         case let cell as CustomerInfoTableViewCell where row == .billingAddress:
             configureBillingAddress(cell: cell)
@@ -401,18 +400,15 @@ private extension OrderDetailsViewController {
                               comment: "Order details > customer info > billing details. This is where the address would normally display.")
     }
 
-    func configureBillingEmail(cell: BillingDetailsTableViewCell) {
+    func configureBillingEmail(cell: WooBasicTableViewCell) {
         guard let email = viewModel.order.billingAddress?.email else {
             // TODO: This should actually be an assert. To be revisited!
             return
         }
 
-        cell.textLabel?.text = email
-        cell.accessoryImageView.image = Gridicon.iconOfType(.mail)
-        cell.onTouchUp = { [weak self] _ in
-            WooAnalytics.shared.track(.orderDetailCustomerEmailTapped)
-            self?.displayEmailComposerIfPossible()
-        }
+        cell.bodyLabel?.text = email
+        cell.bodyLabel?.applyBodyStyle() // override the woo purple text
+        cell.accessoryImage = Gridicon.iconOfType(.mail)
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button
@@ -428,17 +424,15 @@ private extension OrderDetailsViewController {
         )
     }
 
-    func configureBillingPhone(cell: BillingDetailsTableViewCell) {
+    func configureBillingPhone(cell: WooBasicTableViewCell) {
         guard let phoneNumber = viewModel.order.billingAddress?.phone else {
             // TODO: This should actually be an assert. To be revisited!
             return
         }
 
-        cell.textLabel?.text = phoneNumber
-        cell.accessoryImageView.image = Gridicon.iconOfType(.ellipsis)
-        cell.onTouchUp = { [weak self] sender in
-            self?.displayContactCustomerAlert(from: sender)
-        }
+        cell.bodyLabel?.text = phoneNumber
+        cell.bodyLabel?.applyBodyStyle() // override the woo purple text
+        cell.accessoryImage = Gridicon.iconOfType(.ellipsis)
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button
@@ -833,6 +827,11 @@ extension OrderDetailsViewController: UITableViewDelegate {
         case .productDetails:
             WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
+        case .billingEmail:
+            WooAnalytics.shared.track(.orderDetailCustomerEmailTapped)
+            displayEmailComposerIfPossible()
+        case .billingPhone:
+            displayContactCustomerAlert(from: view)
         default:
             break
         }
@@ -1257,9 +1256,9 @@ private extension OrderDetailsViewController {
             case .billingAddress:
                 return CustomerInfoTableViewCell.reuseIdentifier
             case .billingPhone:
-                return BillingDetailsTableViewCell.reuseIdentifier
+                return WooBasicTableViewCell.reuseIdentifier
             case .billingEmail:
-                return BillingDetailsTableViewCell.reuseIdentifier
+                return WooBasicTableViewCell.reuseIdentifier
             case .addOrderNote:
                 return LeftImageTableViewCell.reuseIdentifier
             case .orderNote:

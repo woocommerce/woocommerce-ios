@@ -10,7 +10,5 @@ final class TitleBodyTableViewCell: UITableViewCell {
 
         titleLabel?.applyHeadlineStyle()
         bodyLabel?.applySecondaryBodyStyle()
-        bodyLabel?.lineBreakMode = .byWordWrapping
-        bodyLabel?.numberOfLines = 0
     }
 }

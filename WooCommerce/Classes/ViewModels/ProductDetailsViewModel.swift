@@ -265,6 +265,8 @@ extension ProductDetailsViewModel {
         }
     }
 
+    /// Product Image cell.
+    ///
     func configureProductImage(_ cell: LargeImageTableViewCell) {
         guard let mainImageView = cell.mainImageView else {
             return
@@ -287,6 +289,8 @@ extension ProductDetailsViewModel {
         }
     }
 
+    /// Product Title cell.
+    ///
     func configureProductName(_ cell: TitleBodyTableViewCell) {
         cell.accessoryType = .none
         cell.selectionStyle = .none
@@ -295,6 +299,8 @@ extension ProductDetailsViewModel {
         cell.bodyLabel?.text = product.name
     }
 
+    /// Total Orders cell.
+    ///
     func configureTotalOrders(_ cell: TwoColumnTableViewCell) {
         cell.selectionStyle = .none
         cell.leftLabel?.text = NSLocalizedString("Total Orders",
@@ -304,6 +310,8 @@ extension ProductDetailsViewModel {
         cell.rightLabel?.text = String(product.totalSales)
     }
 
+    /// Reviews cell.
+    ///
     func configureReviews(_ cell: ProductReviewsTableViewCell) {
         cell.selectionStyle = .none
         cell.reviewLabel?.text = NSLocalizedString("Reviews",
@@ -317,18 +325,24 @@ extension ProductDetailsViewModel {
         cell.starRatingView.rating = CGFloat(averageRating ?? 0)
     }
 
+    /// Product permalink cell.
+    ///
     func configurePermalink(_ cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = NSLocalizedString("View product on store",
                                                  comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
         cell.accessoryImage = Gridicon.iconOfType(.external)
     }
 
+    /// Affiliate (External) link cell.
+    ///
     func configureAffiliateLink(_ cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = NSLocalizedString("View affiliate product",
                                                  comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
         cell.accessoryImage = Gridicon.iconOfType(.external)
     }
 
+    /// Price cell.
+    ///
     func configurePrice(_ cell: TitleBodyTableViewCell) {
         cell.titleLabel?.text = NSLocalizedString("Price",
                                                   comment: "Product Details > Pricing and Inventory section > descriptive label for the Price cell.")
@@ -351,6 +365,8 @@ extension ProductDetailsViewModel {
         }
     }
 
+    /// Inventory cell.
+    ///
     func configureInventory(_ cell: TitleBodyTableViewCell) {
         cell.titleLabel?.text = NSLocalizedString("Inventory",
                                                   comment: "Product Details > Pricing and Inventory section > descriptive label for the Inventory cell.")
@@ -401,6 +417,8 @@ extension ProductDetailsViewModel {
         cell.bodyLabel?.text = bodyText
     }
 
+    /// SKU cell.
+    ///
     func configureSku(_ cell: TitleBodyTableViewCell) {
         let title = NSLocalizedString("SKU",
                                       comment: "A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.")
@@ -411,6 +429,8 @@ extension ProductDetailsViewModel {
         cell.titleLabel?.text = title
     }
 
+    /// Affiliate Inventory cell.
+    ///
     func configureAffiliateInventory(_ cell: TitleBodyTableViewCell) {
         let title = NSLocalizedString("Inventory",
                                       comment: "Product Details > Pricing & Inventory > Inventory cell title")
@@ -426,6 +446,8 @@ extension ProductDetailsViewModel {
         }
     }
 
+    /// Shipping cell.
+    ///
     func configureShipping(_ cell: TitleBodyTableViewCell) {
         let title = NSLocalizedString("Shipping",
                                       comment: "Product Details > Purchase Details > Shipping cell title")
@@ -544,18 +566,20 @@ extension ProductDetailsViewModel {
                                       comment: "Product Details - purchase details section title")
         switch product.productType {
         case .simple:
-            let rows: [Row] = product.virtual == true ? [.downloads, .purchaseNote] :
-                [.shipping, .downloads, .purchaseNote]
+            let rows: [Row] = product.downloadable == true ? [.downloads, .purchaseNote] :
+                [.shipping, .purchaseNote]
             return Section(title: title, rows: rows)
         case .affiliate:
             return nil
         case .grouped:
             return nil
         case .variable:
-            let rows: [Row] = [.shipping, .downloads, .purchaseNote]
+            let rows: [Row] = product.downloadable == true ? [.downloads, .purchaseNote] :
+                [.shipping, .purchaseNote]
             return Section(title: title, rows: rows)
         case .custom(_):
-            let rows: [Row] = [.shipping, .downloads, .purchaseNote]
+            let rows: [Row] = product.downloadable == true ? [.downloads, .purchaseNote] :
+                [.shipping, .purchaseNote]
             return Section(title: title, rows: rows)
         }
     }

@@ -44,6 +44,34 @@ final class ProductDetailsViewModel {
                               readOnlyEntity: product)
     }()
 
+    /// ResultsController for `WC > Settings > Products > General` from the site.
+    ///
+    private lazy var resultsController: ResultsController<StorageSiteSetting> = {
+        let storageManager = AppDelegate.shared.storageManager
+
+        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let settingTypePredicate = NSPredicate(format: "settingGroupKey ==[c] %@", SiteSettingGroup.product.rawValue)
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingTypePredicate])
+
+        let descriptor = NSSortDescriptor(keyPath: \StorageSiteSetting.siteID, ascending: false)
+
+        return ResultsController<StorageSiteSetting>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    /// Yosemite.SiteSetting
+    ///
+    var productSettings: [SiteSetting] {
+        return resultsController.fetchedObjects
+    }
+
+    /// Weight unit.
+    ///
+    var weightUnit: String?
+
+    /// Dimension unit.
+    ///
+    var dimensionUnit: String?
+
     /// Grab the first available image for a product.
     ///
     private var imageURL: URL? {
@@ -88,6 +116,10 @@ final class ProductDetailsViewModel {
     ///
     init(product: Product) {
         self.product = product
+        self.weightUnit = lookupProductSettings(Keys.weightUnit)
+        self.dimensionUnit = lookupProductSettings(Keys.dimensionUnit)
+
+        configureResultsController()
     }
 
     /// Setup: EntityListener.
@@ -108,6 +140,22 @@ final class ProductDetailsViewModel {
 
             self.onError?()
         }
+    }
+
+    /// Setup: Results Controller.
+    ///
+    func configureResultsController() {
+        try? resultsController.performFetch()
+    }
+
+    /// Look up Product Settings
+    ///
+    func lookupProductSettings(_ settingID: String) -> String? {
+        for setting in productSettings where setting.settingID == settingID {
+            return setting.value
+        }
+
+        return nil
     }
 }
 
@@ -592,5 +640,10 @@ extension ProductDetailsViewModel {
         static let sectionHeight = CGFloat(44)
         static let productImageHeight = CGFloat(374)
         static let emptyProductImageHeight = CGFloat(86)
+    }
+
+    enum Keys {
+        static let weightUnit = "woocommerce_weight_unit"
+        static let dimensionUnit = "woocommerce_dimension_unit"
     }
 }

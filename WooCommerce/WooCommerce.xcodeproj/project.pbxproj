@@ -1584,7 +1584,6 @@
 				B5650B1020A4CD7F009702D0 /* Embed Frameworks */,
 				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
 				20B459508F75052BDBC0902F /* [CP] Copy Pods Resources */,
-				93BCF01B20DC21EF00EBF7A1 /* Fabric / Crashlytics */,
 				CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */,
 			);
 			buildRules = (
@@ -1825,20 +1824,6 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
-		};
-		93BCF01B20DC21EF00EBF7A1 /* Fabric / Crashlytics */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Fabric / Crashlytics";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "[ -f ${SOURCE_ROOT}/DerivedSources/bash_secrets ] && source ${SOURCE_ROOT}/DerivedSources/bash_secrets\n\nif [[ \"Debug\" == \"${CONFIGURATION}\" ]]; then\necho \"Skipping Fabric\";\nexit 0;\nfi\n\nif [ \"x$FABRIC_SCRIPT_KEY\" != \"x\" ]; then\n\"${PODS_ROOT}/Fabric/run\" $FABRIC_API_KEY $FABRIC_SCRIPT_KEY\nelse\necho \"warning: Fabric API Key not found\"\nfi";
 		};
 		B55D4C1320B612FE00D7A50F /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

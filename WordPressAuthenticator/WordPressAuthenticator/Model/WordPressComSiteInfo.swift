@@ -17,13 +17,17 @@ public class WordPressComSiteInfo {
     ///
     public let url: String
 
-    /// Indicates if Jetpack is available, or not,
+    /// Indicates if Jetpack is available, or not.
     ///
     public let hasJetpack: Bool
 
     /// URL of the Site's Blavatar.
     ///
     public let icon: String
+    
+    /// Indicates whether the site is WordPressDotCom, or not.
+    ///
+    public let isWPCom: Bool
 
 
 
@@ -35,5 +39,7 @@ public class WordPressComSiteInfo {
         url         = remote["URL"] as? String          ?? ""
         hasJetpack  = remote["jetpack"] as? Bool        ?? false
         icon        = remote["icon.img"] as? String     ?? ""
+        isWPCom     = remote["isWordPressDotCom"] as? Bool ?? false
+        
     }
 }

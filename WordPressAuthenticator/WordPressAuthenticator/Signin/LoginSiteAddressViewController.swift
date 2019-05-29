@@ -188,68 +188,31 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             }
         })
     }
-
-
+    
     @objc func fetchSiteInfo() {
         let baseSiteUrl = WordPressAuthenticator.baseSiteURL(string: loginFields.siteAddress)
+        let service = WordPressComBlogService()
         let successBlock: (WordPressComSiteInfo) -> Void = { [weak self] siteInfo in
-            self?.loginFields.meta.siteInfo = siteInfo
-            if WordPressAuthenticator.shared.delegate?.allowWPComLogin == false {
-                // Hey, you have to log out of your existing WP.com account before logging into another one.
-                self?.promptUserToLogoutBeforeConnectingWPComSite()
-                self?.configureViewLoading(false)
-            } else {
-                self?.configureViewLoading(false)
-                guard let self = self else {
-                    return
-                }
-                self.presentNextControllerIfPossible(siteInfo: siteInfo)
+            guard let self = self else {
+                return
             }
+            self.configureViewLoading(false)
+            if siteInfo.isWPCom && WordPressAuthenticator.shared.delegate?.allowWPComLogin == false {
+                // Hey, you have to log out of your existing WP.com account before logging into another one.
+                self.promptUserToLogoutBeforeConnectingWPComSite()
+                return
+            }
+            self.presentNextControllerIfPossible(siteInfo: siteInfo)
         }
-
-        // Is this a WP.com site address?
-        if let siteAddress = baseSiteUrl.components(separatedBy: "://").last {
-            let service = WordPressComBlogService()
-            // Yes. Then let's attempt to grab the site info.
-            service.fetchSiteInfo(for: siteAddress, success: successBlock, failure: { [weak self] (error) in
-                // If fetchSiteInfo failed because the site is private (errorCode == .authorizationRequired),
-                // then we try to fetch the site info with a call to the `connect/site-info` endpoint.
-                // If this call succeeds, we check if login is allowed.
-                let originalError = error as NSError
-                let errorCode = WordPressComRestApiError(rawValue: originalError.code)
-                if errorCode == .authorizationRequired {
-                    service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { error in
-                        // The un-authed site info request failed.
-                        self?.configureViewLoading(false)
-                        guard let self = self else {
-                            return
-                        }
-
-                        self.presentNextControllerIfPossible(siteInfo: nil)
-                    })
-                } else {
-                    // Failed to get the site info.
-                    self?.configureViewLoading(false)
-                    guard let self = self else {
-                        return
-                    }
-
-                    self.presentNextControllerIfPossible(siteInfo: nil)
-                }
-            })
-        } else {
-            // Not a WP.com site. Let's make an un-authenticated site info request.
-            let service = WordPressComBlogService()
-            service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] error in
-                self?.configureViewLoading(false)
-                guard let self = self else {
-                    return
-                }
-
-                self.presentNextControllerIfPossible(siteInfo: nil)
-            })
-        }
+        service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] error in
+            self?.configureViewLoading(false)
+            guard let self = self else {
+                return
+            }
+            self.presentNextControllerIfPossible(siteInfo: nil)
+        })
     }
+
 
     func presentNextControllerIfPossible(siteInfo: WordPressComSiteInfo?) {
         WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { (error, isSelfHosted) in

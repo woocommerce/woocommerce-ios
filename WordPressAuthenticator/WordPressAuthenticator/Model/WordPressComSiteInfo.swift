@@ -24,6 +24,8 @@ public class WordPressComSiteInfo {
     /// URL of the Site's Blavatar.
     ///
     public let icon: String
+    
+    public let isWPCom: Bool
 
 
 
@@ -35,5 +37,7 @@ public class WordPressComSiteInfo {
         url         = remote["URL"] as? String          ?? ""
         hasJetpack  = remote["jetpack"] as? Bool        ?? false
         icon        = remote["icon.img"] as? String     ?? ""
+        isWPCom     = remote["isWordPressDotCom"] as? Bool ?? false
+        
     }
 }

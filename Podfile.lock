@@ -4,6 +4,7 @@ PODS:
   - Automattic-Tracks-iOS (0.3.5):
     - CocoaLumberjack (~> 3.5.2)
     - Reachability (~> 3.1)
+    - Sentry (~> 4)
     - UIDeviceIdentifier (~> 1.1.4)
   - Charts (3.2.2):
     - Charts/Core (= 3.2.2)
@@ -13,9 +14,6 @@ PODS:
   - CocoaLumberjack/Core (3.5.3)
   - CocoaLumberjack/Swift (3.5.3):
     - CocoaLumberjack/Core
-  - Crashlytics (3.12.0):
-    - Fabric (~> 1.9.0)
-  - Fabric (1.9.0)
   - FormatterKit/Resources (1.8.2)
   - FormatterKit/TimeIntervalFormatter (1.8.2):
     - FormatterKit/Resources
@@ -38,6 +36,9 @@ PODS:
   - NSObject-SafeExpectations (0.0.3)
   - "NSURL+IDN (0.3)"
   - Reachability (3.2)
+  - Sentry (4.3.4):
+    - Sentry/Core (= 4.3.4)
+  - Sentry/Core (4.3.4)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (1.1.4)
   - WordPressAuthenticator (1.4.1):
@@ -77,11 +78,10 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
-  - Automattic-Tracks-iOS (~> 0.3.5)
+  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, branch `develop`)
   - Charts (~> 3.2)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
-  - Crashlytics (~> 3.10)
   - Gridicons (~> 0.18)
   - KeychainAccess (~> 3.2)
   - WordPressAuthenticator (~> 1.4.0)
@@ -94,11 +94,8 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - 1PasswordExtension
     - Alamofire
-    - Automattic-Tracks-iOS
     - Charts
     - CocoaLumberjack
-    - Crashlytics
-    - Fabric
     - FormatterKit
     - GoogleSignIn
     - GoogleToolboxForMac
@@ -109,6 +106,7 @@ SPEC REPOS:
     - NSObject-SafeExpectations
     - "NSURL+IDN"
     - Reachability
+    - Sentry
     - SVProgressHUD
     - UIDeviceIdentifier
     - WordPressAuthenticator
@@ -119,14 +117,22 @@ SPEC REPOS:
     - XLPagerTabStrip
     - ZendeskSDK
 
+EXTERNAL SOURCES:
+  Automattic-Tracks-iOS:
+    :branch: develop
+    :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
+
+CHECKOUT OPTIONS:
+  Automattic-Tracks-iOS:
+    :commit: 9e92dcf9e4a6a1313b9a06b82e457f1b667b1dd1
+    :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
+
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  Automattic-Tracks-iOS: 1ba339ac16d6aff577b7f0ec16546be2a7ccd64a
+  Automattic-Tracks-iOS: f70428b35a07ede94edbddf403e56637b758ec66
   Charts: f69cf0518b6d1d62608ca504248f1bbe0b6ae77e
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
-  Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
-  Fabric: f988e33c97f08930a413e08123064d2e5f68d655
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
   GoogleToolboxForMac: b3553629623a3b1bff17f555e736cd5a6d95ad55
@@ -137,6 +143,7 @@ SPEC CHECKSUMS:
   NSObject-SafeExpectations: b989b68a8a9b7b9f2b264a8b52ba9d7aab8f3129
   "NSURL+IDN": 82355a0afd532fe1de08f6417c134b49b1a1c4b3
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  Sentry: 26f0e6492b103e87434d1a5eea2d241a36f2c2a2
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 8f8a24b257a4d978c8d40ad1e7355b944ffbfa8c
   WordPressAuthenticator: 1741b00c58c4e57a0505cbff32528c7a049b24e6
@@ -147,6 +154,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: cbd49d65efb2f2cdbdcaac84e618896ae87b861e
 
-PODFILE CHECKSUM: 26c5bf86ea4d7c07a35aae289a51366c7adb4872
+PODFILE CHECKSUM: 4b9d4bd8f8ac0aab452f2af0a8c79ac169b807b2
 
 COCOAPODS: 1.6.1

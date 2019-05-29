@@ -254,6 +254,12 @@ extension ProductDetailsViewModel {
             configureSku(cell)
         case let cell as TitleBodyTableViewCell where row == .affiliateInventory:
             configureAffiliateInventory(cell)
+        case let cell as TitleBodyTableViewCell where row == .shipping:
+            configureShipping(cell)
+        case let cell as TitleBodyTableViewCell where row == .downloads:
+            break
+        case let cell as TitleBodyTableViewCell where row == .purchaseNote:
+            break
         default:
             fatalError("Unidentified row type")
         }
@@ -420,6 +426,43 @@ extension ProductDetailsViewModel {
         }
     }
 
+    func configureShipping(_ cell: TitleBodyTableViewCell) {
+        let title = NSLocalizedString("Shipping",
+                                      comment: "Product Details > Purchase Details > Shipping cell title")
+        var bodyText = ""
+
+        // first line - weight
+        let weightPrefix = NSLocalizedString("Weight:",
+                                            comment: "Label prefix. Example: 'Weight: 1kg'")
+        let weightAmount = product.weight ?? ""
+        let wUnit = weightUnit ?? ""
+        let weightText = weightPrefix + " " + weightAmount + wUnit
+
+        // second line - dimensions
+        let sizePrefix = NSLocalizedString("Size:",
+                                           comment: "Label prefix. Example: 'Size: 8 x 10 x 10 cm'")
+        let length = product.dimensions.length
+        let width = product.dimensions.width
+        let height = product.dimensions.height
+        let dimensions = length + " × " + width + " × " + height
+        let sizeUnit = dimensionUnit ?? ""
+        let sizeText = sizePrefix + " " + dimensions + " " + sizeUnit
+
+        bodyText = weightText + "\n" + sizeText
+
+        // third line - shipping class
+        if let shippingClass = product.shippingClass,
+            !shippingClass.isEmpty {
+            let shippingClassPrefix = NSLocalizedString("Shipping class:",
+                                                        comment: "Label prefix. Example: 'Shipping class: Free Shipping'")
+            let shippingClassText = "\n" + shippingClassPrefix + " " + shippingClass
+            bodyText += shippingClassText
+        }
+
+        cell.titleLabel.text = title
+        cell.bodyLabel.text = bodyText
+    }
+
     // MARK: - Table helper methods
 
     /// Check if all prices are undefined.
@@ -454,7 +497,8 @@ extension ProductDetailsViewModel {
         let photo = configurePhoto()
         let summary = configureSummary()
         let pricingAndInventory = configurePricingAndInventory()
-        sections = [photo, summary, pricingAndInventory].compactMap { $0 }
+        let purchaseDetails = configurePurchaseDetails()
+        sections = [photo, summary, pricingAndInventory, purchaseDetails].compactMap { $0 }
     }
 
     /// Large photo section.
@@ -491,6 +535,29 @@ extension ProductDetailsViewModel {
 
         // For non-grouped products that contain at least one price.
         return pricesAndInventorySection()
+    }
+
+    /// Purchase Details Section.
+    ///
+    func configurePurchaseDetails() -> Section? {
+        let title = NSLocalizedString("Purchase Details",
+                                      comment: "Product Details - purchase details section title")
+        switch product.productType {
+        case .simple:
+            let rows: [Row] = product.virtual == true ? [.downloads, .purchaseNote] :
+                [.shipping, .downloads, .purchaseNote]
+            return Section(title: title, rows: rows)
+        case .affiliate:
+            return nil
+        case .grouped:
+            return nil
+        case .variable:
+            let rows: [Row] = [.shipping, .downloads, .purchaseNote]
+            return Section(title: title, rows: rows)
+        case .custom(_):
+            let rows: [Row] = [.shipping, .downloads, .purchaseNote]
+            return Section(title: title, rows: rows)
+        }
     }
 
     /// Grouped products.
@@ -610,6 +677,9 @@ extension ProductDetailsViewModel {
         case inventory
         case sku
         case affiliateInventory
+        case shipping
+        case downloads
+        case purchaseNote
 
         var reuseIdentifier: String {
             switch self {
@@ -632,6 +702,12 @@ extension ProductDetailsViewModel {
             case .sku:
                 return TitleBodyTableViewCell.reuseIdentifier
             case .affiliateInventory:
+                return TitleBodyTableViewCell.reuseIdentifier
+            case .shipping:
+                return TitleBodyTableViewCell.reuseIdentifier
+            case .downloads:
+                return TitleBodyTableViewCell.reuseIdentifier
+            case .purchaseNote:
                 return TitleBodyTableViewCell.reuseIdentifier
             }
         }

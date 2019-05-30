@@ -136,14 +136,18 @@ final class ShippingProvidersViewModel {
     /// Filter results by text
     ///
     func filter(by text: String) {
-        let predicate = NSPredicate(format: "name CONTAINS[cd] %@", text)
-        providersExcludingStoreCountry.predicate = predicate
+        let nameFilter = NSPredicate(format: "name CONTAINS[cd] %@", text)
+        providersExcludingStoreCountry.predicate = predicateExcludingStoreCountry(predicate: nameFilter)
+        providersForStoreCountry.predicate = predicateMatchingStoreCountry(predicate: nameFilter)
     }
 
     /// Clear all filters
     ///
     func clearFilters() {
-        providersExcludingStoreCountry.predicate = nil
+        providersExcludingStoreCountry.predicate =
+            predicateExcludingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
+        providersForStoreCountry.predicate =
+            predicateMatchingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
     }
 
     private func dataWasUpdated() {
@@ -180,7 +184,13 @@ extension ShippingProvidersViewModel {
     }
 
     func numberOfRowsInSection(_ section: Int) -> Int {
-        if section == Constants.customSectionIndex {
+        if !storeCountryHasProviders &&
+            section == 0 {
+            return 1
+        }
+
+        if storeCountryHasProviders &&
+            section == Constants.customSectionIndex {
             return 1
         }
 
@@ -195,7 +205,13 @@ extension ShippingProvidersViewModel {
     }
 
     func titleForCellAt(_ indexPath: IndexPath) -> String {
-        if indexPath.section == Constants.customSectionIndex {
+        if !storeCountryHasProviders &&
+            indexPath.section == 0 {
+            return Constants.customProvider
+        }
+
+        if storeCountryHasProviders &&
+            indexPath.section == Constants.customSectionIndex {
             return Constants.customProvider
         }
 
@@ -211,7 +227,13 @@ extension ShippingProvidersViewModel {
     }
 
     func titleForHeaderInSection(_ section: Int) -> String {
-        if section == Constants.customSectionIndex {
+        if !storeCountryHasProviders &&
+            section == 0 {
+            return Constants.customGroup
+        }
+
+        if storeCountryHasProviders &&
+            section == Constants.customSectionIndex {
             return Constants.customGroup
         }
 
@@ -242,6 +264,10 @@ extension ShippingProvidersViewModel {
     /// Indicates if the item at a given IndexPath is a custom shipment provider
     ///
     func isCustom(indexPath: IndexPath) -> Bool {
+        if !storeCountryHasProviders {
+            return indexPath.section == 0
+        }
+
         return indexPath.section == Constants.customSectionIndex
     }
 
@@ -290,8 +316,8 @@ private enum ResultsControllerConstants {
 }
 
 private enum Constants {
-    static let customSectionIndex = 0
-    static let countrySectionIndex = 1
+    static let countrySectionIndex = 0
+    static let customSectionIndex = 1
     static let specialSectionsCount = 2
     static let customGroup = NSLocalizedString("Custom",
                                                comment: "Name of the section for custom shipment tracking providers")

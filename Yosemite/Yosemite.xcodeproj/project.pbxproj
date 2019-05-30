@@ -109,6 +109,7 @@
 		D87F614C22657B150031A13B /* AppSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F614B22657B150031A13B /* AppSettingsStore.swift */; };
 		D87F615E2265B1BC0031A13B /* AppSettingsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F615D2265B1BC0031A13B /* AppSettingsStoreTests.swift */; };
 		D87F61602265B2400031A13B /* shipment-provider.plist in Resources */ = {isa = PBXBuildFile; fileRef = D87F615F2265B2400031A13B /* shipment-provider.plist */; };
+		D8BD6A4C229D07C9007CAD6C /* custom-shipment-provider.plist in Resources */ = {isa = PBXBuildFile; fileRef = D8BD6A4B229D07C8007CAD6C /* custom-shipment-provider.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -231,6 +232,7 @@
 		D87F614B22657B150031A13B /* AppSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsStore.swift; sourceTree = "<group>"; };
 		D87F615D2265B1BC0031A13B /* AppSettingsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsStoreTests.swift; sourceTree = "<group>"; };
 		D87F615F2265B2400031A13B /* shipment-provider.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "shipment-provider.plist"; sourceTree = "<group>"; };
+		D8BD6A4B229D07C8007CAD6C /* custom-shipment-provider.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "custom-shipment-provider.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -475,6 +477,7 @@
 		B5C9DE1D2087FF20006B910A /* Mockups */ = {
 			isa = PBXGroup;
 			children = (
+				D8BD6A4B229D07C8007CAD6C /* custom-shipment-provider.plist */,
 				D87F615F2265B2400031A13B /* shipment-provider.plist */,
 				B5C9DE1E2087FF20006B910A /* MockupProcessor.swift */,
 				B5C9DE202087FF20006B910A /* MockupAcount.swift */,
@@ -627,6 +630,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8BD6A4C229D07C9007CAD6C /* custom-shipment-provider.plist in Resources */,
 				B5BC71DD21139EDD005CF5AA /* Responses in Resources */,
 				D87F61602265B2400031A13B /* shipment-provider.plist in Resources */,
 			);

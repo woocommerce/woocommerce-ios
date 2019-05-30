@@ -218,15 +218,15 @@ private extension OrderDetailsViewController {
     func registerTableViewCells() {
         let cells = [
             LeftImageTableViewCell.self,
-            BillingDetailsTableViewCell.self,
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
-            BasicTableViewCell.self,
+            WooBasicTableViewCell.self,
             OrderNoteTableViewCell.self,
             PaymentTableViewCell.self,
-            ProductListTableViewCell.self,
+            ProductDetailsTableViewCell.self,
             OrderTrackingTableViewCell.self,
-            SummaryTableViewCell.self
+            SummaryTableViewCell.self,
+            FulfillButtonTableViewCell.self
         ]
 
         for cell in cells {
@@ -269,7 +269,13 @@ private extension OrderDetailsViewController {
                 return nil
             }
 
-            let rows: [Row] = viewModel.isProcessingPayment ? [.productList] : [.productList, .productDetails]
+            var rows: [Row] = Array(repeating: .orderItem, count: viewModel.items.count)
+            if viewModel.isProcessingPayment {
+                rows.append(.fulfillButton)
+            } else {
+                rows.append(.details)
+            }
+
             return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
         }()
 
@@ -391,11 +397,11 @@ extension OrderDetailsViewController {
 private extension OrderDetailsViewController {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as BasicTableViewCell:
-            configureProductDetails(cell: cell)
-        case let cell as BillingDetailsTableViewCell where row == .billingEmail:
+        case let cell as WooBasicTableViewCell where row == .details:
+            configureDetails(cell: cell)
+        case let cell as WooBasicTableViewCell where row == .billingEmail:
             configureBillingEmail(cell: cell)
-        case let cell as BillingDetailsTableViewCell where row == .billingPhone:
+        case let cell as WooBasicTableViewCell where row == .billingPhone:
             configureBillingPhone(cell: cell)
         case let cell as CustomerInfoTableViewCell where row == .billingAddress:
             configureBillingAddress(cell: cell)
@@ -409,8 +415,10 @@ private extension OrderDetailsViewController {
             configureOrderNote(cell: cell, at: indexPath)
         case let cell as PaymentTableViewCell:
             configurePayment(cell: cell)
-        case let cell as ProductListTableViewCell:
-            configureProductList(cell: cell)
+        case let cell as ProductDetailsTableViewCell:
+            configureOrderItem(cell: cell, at: indexPath)
+        case let cell as FulfillButtonTableViewCell:
+            configureFulfillmentButton(cell: cell)
         case let cell as OrderTrackingTableViewCell:
             configureTracking(cell: cell, at: indexPath)
         case let cell as LeftImageTableViewCell where row == .trackingAdd:
@@ -432,18 +440,15 @@ private extension OrderDetailsViewController {
                               comment: "Order details > customer info > billing details. This is where the address would normally display.")
     }
 
-    func configureBillingEmail(cell: BillingDetailsTableViewCell) {
+    func configureBillingEmail(cell: WooBasicTableViewCell) {
         guard let email = viewModel.order.billingAddress?.email else {
             // TODO: This should actually be an assert. To be revisited!
             return
         }
 
-        cell.textLabel?.text = email
-        cell.accessoryImageView.image = Gridicon.iconOfType(.mail)
-        cell.onTouchUp = { [weak self] _ in
-            WooAnalytics.shared.track(.orderDetailCustomerEmailTapped)
-            self?.displayEmailComposerIfPossible()
-        }
+        cell.bodyLabel?.text = email
+        cell.bodyLabel?.applyBodyStyle() // override the woo purple text
+        cell.accessoryImage = Gridicon.iconOfType(.mail)
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button
@@ -459,17 +464,15 @@ private extension OrderDetailsViewController {
         )
     }
 
-    func configureBillingPhone(cell: BillingDetailsTableViewCell) {
+    func configureBillingPhone(cell: WooBasicTableViewCell) {
         guard let phoneNumber = viewModel.order.billingAddress?.phone else {
             // TODO: This should actually be an assert. To be revisited!
             return
         }
 
-        cell.textLabel?.text = phoneNumber
-        cell.accessoryImageView.image = Gridicon.iconOfType(.ellipsis)
-        cell.onTouchUp = { [weak self] sender in
-            self?.displayContactCustomerAlert(from: sender)
-        }
+        cell.bodyLabel?.text = phoneNumber
+        cell.bodyLabel?.applyBodyStyle() // override the woo purple text
+        cell.accessoryImage = Gridicon.iconOfType(.ellipsis)
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button
@@ -554,27 +557,25 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func configureProductDetails(cell: BasicTableViewCell) {
-        cell.textLabel?.text = viewModel.productDetails
+    func configureDetails(cell: WooBasicTableViewCell) {
+        cell.bodyLabel?.text = viewModel.productDetails
+        cell.bodyLabel?.applyBodyStyle() // override the custom purple with black
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
     }
 
-    func configureProductList(cell: ProductListTableViewCell) {
-        for subView in cell.verticalStackView.arrangedSubviews {
-            subView.removeFromSuperview()
-        }
+    func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+        let item = viewModel.items[indexPath.row]
+        let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency)
+        cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
+        cell.name = itemViewModel.item.name
+        cell.quantity = itemViewModel.quantity
+        cell.price = itemViewModel.price
+        cell.sku = itemViewModel.sku
+    }
 
-        for (index, item) in viewModel.items.enumerated() {
-            let itemView = TwoColumnLabelView.makeFromNib()
-            itemView.leftText = item.name
-            itemView.rightText = item.quantity.description
-            cell.verticalStackView.insertArrangedSubview(itemView, at: index)
-        }
-
+    func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
         cell.fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
-        cell.actionContainerView.isHidden = viewModel.isProcessingPayment == false
-
         cell.onFullfillTouchUp = { [weak self] in
             self?.fulfillWasPressed()
         }
@@ -874,7 +875,6 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
             let navController = WooNavigationController(rootViewController: newNoteViewController)
             present(navController, animated: true, completion: nil)
-
         case .trackingAdd:
             WooAnalytics.shared.track(.orderDetailAddTrackingButtonTapped)
 
@@ -882,10 +882,14 @@ extension OrderDetailsViewController: UITableViewDelegate {
             let addTracking = ManualTrackingViewController(viewModel: addTrackingViewModel)
             let navController = WooNavigationController(rootViewController: addTracking)
             present(navController, animated: true, completion: nil)
-
-        case .productDetails:
+        case .details:
             WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
+        case .billingEmail:
+            WooAnalytics.shared.track(.orderDetailCustomerEmailTapped)
+            displayEmailComposerIfPossible()
+        case .billingPhone:
+            displayContactCustomerAlert(from: view)
         default:
             break
         }
@@ -1282,8 +1286,9 @@ private extension OrderDetailsViewController {
 
     enum Row {
         case summary
-        case productList
-        case productDetails
+        case fulfillButton
+        case orderItem
+        case details
         case tracking
         case trackingAdd
         case customerNote
@@ -1299,10 +1304,12 @@ private extension OrderDetailsViewController {
             switch self {
             case .summary:
                 return SummaryTableViewCell.reuseIdentifier
-            case .productList:
-                return ProductListTableViewCell.reuseIdentifier
-            case .productDetails:
-                return BasicTableViewCell.reuseIdentifier
+            case .fulfillButton:
+                return FulfillButtonTableViewCell.reuseIdentifier
+            case .orderItem:
+                return ProductDetailsTableViewCell.reuseIdentifier
+            case .details:
+                return WooBasicTableViewCell.reuseIdentifier
             case .tracking:
                 return OrderTrackingTableViewCell.reuseIdentifier
             case .trackingAdd:
@@ -1314,9 +1321,9 @@ private extension OrderDetailsViewController {
             case .billingAddress:
                 return CustomerInfoTableViewCell.reuseIdentifier
             case .billingPhone:
-                return BillingDetailsTableViewCell.reuseIdentifier
+                return WooBasicTableViewCell.reuseIdentifier
             case .billingEmail:
-                return BillingDetailsTableViewCell.reuseIdentifier
+                return WooBasicTableViewCell.reuseIdentifier
             case .addOrderNote:
                 return LeftImageTableViewCell.reuseIdentifier
             case .orderNote:

@@ -3,10 +3,8 @@ import UIKit
 
 /// Displays the list of Products associated to an Order.
 ///
-class ProductListTableViewCell: UITableViewCell {
-    @IBOutlet public var verticalStackView: UIStackView!
+final class FulfillButtonTableViewCell: UITableViewCell {
     @IBOutlet public var fulfillButton: UIButton!
-    @IBOutlet public var actionContainerView: UIView!
 
     var onFullfillTouchUp: (() -> Void)?
 
@@ -14,16 +12,11 @@ class ProductListTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         fulfillButton.applyPrimaryButtonStyle()
-        verticalStackView.setCustomSpacing(Constants.spacing, after: fulfillButton)
     }
 }
 
-extension ProductListTableViewCell {
+extension FulfillButtonTableViewCell {
     @IBAction func fulfillWasPressed() {
         onFullfillTouchUp?()
-    }
-
-    struct Constants {
-        static let spacing = CGFloat(8.0)
     }
 }

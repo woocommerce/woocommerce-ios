@@ -72,7 +72,8 @@ extension ProductListViewController: UITableViewDataSource {
             fatalError()
         }
         cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
-        cell.configure(item: itemViewModel, with: viewModel)
+        cell.configure(item: itemViewModel)
+
         return cell
     }
 

@@ -95,6 +95,7 @@ private extension LoginPrologueViewController {
 
     func setupDisclaimerLabel() {
         disclaimerTextView.attributedText = disclaimerAttributedText
+        disclaimerTextView.adjustsFontForContentSizeCategory = true
         disclaimerTextView.textContainerInset = .zero
         disclaimerTextView.linkTextAttributes = [
             .foregroundColor: UIColor.white,
@@ -172,7 +173,7 @@ private extension LoginPrologueViewController {
                              comment: "Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language."
         )
         let disclaimerAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.font(forStyle: .caption1, weight: .thin),
+            .font: StyleManager.thinCaptionFont,
             .foregroundColor: UIColor.white
         ]
 

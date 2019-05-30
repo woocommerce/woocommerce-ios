@@ -13,6 +13,7 @@ protocol Style {
     var chartLabelFont: UIFont { get }
     var subheadlineFont: UIFont { get }
     var subheadlineBoldFont: UIFont { get }
+    var thinCaptionFont: UIFont { get }
 
     /// Colors
     ///
@@ -72,7 +73,7 @@ class DefaultStyle: Style {
 
     /// Fonts!
     ///
-    static let maxFontSize              = CGFloat(32.0)
+    static let maxFontSize              = CGFloat(28.0)
     let actionButtonTitleFont           = UIFont.font(forStyle: .headline, weight: .semibold)
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
     let subheadlineFont                 = UIFont.font(forStyle: .subheadline, weight: .regular)
@@ -81,6 +82,10 @@ class DefaultStyle: Style {
                           weight: .bold,
                           maximumPointSize: DefaultStyle.maxFontSize)
     let chartLabelFont                  = UIFont.font(forStyle: .caption2, weight: .ultraLight)
+    let thinCaptionFont                 = DefaultStyle
+        .fontForTextStyle(.caption1,
+                          weight: .thin,
+                          maximumPointSize: DefaultStyle.maxFontSize)
 
     /// Colors!
     ///
@@ -228,6 +233,10 @@ class StyleManager {
 
     static var subheadlineBoldFont: UIFont {
         return active.subheadlineBoldFont
+    }
+
+    static var thinCaptionFont: UIFont {
+        return active.thinCaptionFont
     }
 
     // MARK: - Colors

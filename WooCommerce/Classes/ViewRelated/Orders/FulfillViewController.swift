@@ -456,6 +456,7 @@ private extension FulfillViewController {
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
         actionSheet.addCancelActionWithTitle(DeleteAction.cancel)
         actionSheet.addDestructiveActionWithTitle(DeleteAction.delete) { [weak self] _ in
+            WooAnalytics.shared.track(.orderFulfillmentDeleteTrackingButtonTapped)
             self?.deleteTracking(shipmentTracking)
         }
 

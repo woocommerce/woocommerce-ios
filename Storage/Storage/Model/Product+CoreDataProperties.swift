@@ -8,61 +8,61 @@ extension Product {
         return NSFetchRequest<Product>(entityName: "Product")
     }
 
-    @NSManaged public var averageRating: String?
-    @NSManaged public var backordered: Bool
-    @NSManaged public var backordersAllowed: Bool
-    @NSManaged public var backordersKey: String?
-    @NSManaged public var briefDescription: String?
-    @NSManaged public var catalogVisibilityKey: String?
-    @NSManaged public var crossSellIDs: [Int64]?
+
+    @NSManaged public var siteID: Int64
+    @NSManaged public var productID: Int64
+    @NSManaged public var productTypeKey: String
+    @NSManaged public var name: String
+    @NSManaged public var slug: String
+    @NSManaged public var permalink: String
     @NSManaged public var dateCreated: Date
     @NSManaged public var dateModified: Date?
-    @NSManaged public var downloadable: Bool
-    @NSManaged public var downloadExpiry: Int64
-    @NSManaged public var downloadLimit: Int64
-    @NSManaged public var externalURL: String?
+    @NSManaged public var statusKey: String
     @NSManaged public var featured: Bool
+    @NSManaged public var catalogVisibilityKey: String
     @NSManaged public var fullDescription: String?
-    @NSManaged public var groupedProducts: [Int64]?
-    @NSManaged public var manageStock: Bool
-    @NSManaged public var menuOrder: Int64
-    @NSManaged public var name: String?
-    @NSManaged public var onSale: Bool
-    @NSManaged public var parentID: Int64
-    @NSManaged public var permalink: String?
-    @NSManaged public var price: String?
-    @NSManaged public var productID: Int64
-    @NSManaged public var productTypeKey: String?
-    @NSManaged public var purchasable: Bool
-    @NSManaged public var purchaseNote: String?
-    @NSManaged public var ratingCount: Int64
+    @NSManaged public var briefDescription: String?
+    @NSManaged public var sku: String?
+    @NSManaged public var price: String
     @NSManaged public var regularPrice: String?
-    @NSManaged public var relatedIDs: [Int64]?
-    @NSManaged public var reviewsAllowed: Bool
     @NSManaged public var salePrice: String?
-    @NSManaged public var shippingClass: String?
-    @NSManaged public var shippingClassID: Int64
+    @NSManaged public var onSale: Bool
+    @NSManaged public var purchasable: Bool
+    @NSManaged public var totalSales: Int64
+    @NSManaged public var virtual: Bool
+    @NSManaged public var downloadable: Bool
+    @NSManaged public var downloadLimit: Int64
+    @NSManaged public var downloadExpiry: Int64
+    @NSManaged public var externalURL: String?
+    @NSManaged public var taxStatusKey: String
+    @NSManaged public var taxClass: String?
+    @NSManaged public var manageStock: Bool
+    @NSManaged public var stockQuantity: String?
+    @NSManaged public var stockStatusKey: String
+    @NSManaged public var soldIndividually: Bool
+    @NSManaged public var weight: String?
     @NSManaged public var shippingRequired: Bool
     @NSManaged public var shippingTaxable: Bool
-    @NSManaged public var siteID: Int64
-    @NSManaged public var sku: String?
-    @NSManaged public var slug: String?
-    @NSManaged public var soldIndividually: Bool
-    @NSManaged public var statusKey: String?
-    @NSManaged public var stockQuantity: String?
-    @NSManaged public var stockStatusKey: String?
-    @NSManaged public var taxClass: String?
-    @NSManaged public var taxStatusKey: String?
-    @NSManaged public var totalSales: Int64
+    @NSManaged public var shippingClass: String?
+    @NSManaged public var shippingClassID: Int64
+    @NSManaged public var reviewsAllowed: Bool
+    @NSManaged public var averageRating: String
+    @NSManaged public var ratingCount: Int64
+    @NSManaged public var relatedIDs: [Int64]?
     @NSManaged public var upsellIDs: [Int64]?
+    @NSManaged public var crossSellIDs: [Int64]?
+    @NSManaged public var parentID: Int64
+    @NSManaged public var purchaseNote: String?
     @NSManaged public var variations: [Int64]?
-    @NSManaged public var virtual: Bool
-    @NSManaged public var weight: String?
+    @NSManaged public var groupedProducts: [Int64]?
+    @NSManaged public var menuOrder: Int64
+    @NSManaged public var backordersKey: String
+    @NSManaged public var backordersAllowed: Bool
+    @NSManaged public var backordered: Bool
+    @NSManaged public var dimensions: ProductDimensions?
     @NSManaged public var attributes: Set<ProductAttribute>?
     @NSManaged public var categories: Set<ProductCategory>?
     @NSManaged public var defaultAttributes: Set<ProductDefaultAttribute>?
-    @NSManaged public var dimensions: ProductDimensions?
-    @NSManaged public var downloads: Set<ProductDownload>?
     @NSManaged public var images: Set<ProductImage>?
     @NSManaged public var tags: Set<ProductTag>?
 
@@ -116,23 +116,6 @@ extension Product {
 
     @objc(removeDefaultAttributes:)
     @NSManaged public func removeFromDefaultAttributes(_ values: NSSet)
-
-}
-
-// MARK: Generated accessors for downloads
-extension Product {
-
-    @objc(addDownloadsObject:)
-    @NSManaged public func addToDownloads(_ value: ProductDownload)
-
-    @objc(removeDownloadsObject:)
-    @NSManaged public func removeFromDownloads(_ value: ProductDownload)
-
-    @objc(addDownloads:)
-    @NSManaged public func addToDownloads(_ values: NSSet)
-
-    @objc(removeDownloads:)
-    @NSManaged public func removeFromDownloads(_ values: NSSet)
 
 }
 

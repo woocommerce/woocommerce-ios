@@ -1,5 +1,6 @@
 2.0
 -----
+- improvement: improved support for larger font sizes in the login screen
  
 1.9
 -----

@@ -6,7 +6,7 @@ import WordPressAuthenticator
 
 /// Displays the WooCommerce Prologue UI.
 ///
-class LoginPrologueViewController: UIViewController {
+final class LoginPrologueViewController: UIViewController {
 
     /// Background View, to be placed surrounding the bottom area.
     ///
@@ -49,6 +49,11 @@ class LoginPrologueViewController: UIViewController {
         setupBackgroundView()
         setupContainerView()
         setupJetpackImage()
+
+        setupLabels()
+    }
+
+    private func setupLabels() {
         setupDisclaimerLabel()
         setupUpperLabel()
         setupLoginButton()
@@ -89,6 +94,7 @@ private extension LoginPrologueViewController {
 
     func setupDisclaimerLabel() {
         disclaimerTextView.attributedText = disclaimerAttributedText
+        //disclaimerTextView.attributedText = NSAttributedString(string: "cesar")
         disclaimerTextView.textContainerInset = .zero
         disclaimerTextView.linkTextAttributes = [
             .foregroundColor: UIColor.white,
@@ -141,6 +147,16 @@ extension LoginPrologueViewController {
 
         navigationController?.pushViewController(loginViewController, animated: true)
         navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+}
+
+
+extension LoginPrologueViewController {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
+            setupLabels()
+        }
     }
 }
 

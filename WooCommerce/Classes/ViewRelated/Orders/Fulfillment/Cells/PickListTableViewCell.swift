@@ -5,7 +5,7 @@ import Yosemite
 
 /// Pick List: Renders a row that displays a single Product.
 ///
-class PickListTableViewCell: UITableViewCell {
+final class PickListTableViewCell: UITableViewCell {
 
     /// ImageView
     ///
@@ -70,16 +70,32 @@ class PickListTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        productImageView.image = Gridicon.iconOfType(.product)
-        productImageView.tintColor = StyleManager.wooGreyBorder
+
         selectionStyle = .none
 
-        nameLabel.applyBodyStyle()
-        quantityLabel.applyBodyStyle()
-        skuLabel.applySecondaryFootnoteStyle()
+        setupImageView()
+        setupNameLabel()
+        setupQuantityLabel()
+        setupSkuLabel()
+    }
 
+    func setupImageView() {
+        productImageView.image = Gridicon.iconOfType(.product)
+        productImageView.tintColor = StyleManager.wooGreyBorder
+    }
+
+    func setupNameLabel() {
+        nameLabel.applyBodyStyle()
         nameLabel?.text = ""
+    }
+
+    func setupQuantityLabel() {
+        quantityLabel.applyBodyStyle()
         quantityLabel?.text = ""
+    }
+
+    func setupSkuLabel() {
+        skuLabel.applySecondaryFootnoteStyle()
         skuLabel?.text = ""
     }
 }

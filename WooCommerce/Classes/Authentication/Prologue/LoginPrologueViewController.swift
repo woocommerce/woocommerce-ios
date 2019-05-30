@@ -84,6 +84,7 @@ private extension LoginPrologueViewController {
 
     func setupUpperLabel() {
         upperLabel.text = NSLocalizedString("Manage orders, track sales and monitor store activity with real-time alerts.", comment: "Login Prologue Legend")
+        upperLabel.adjustsFontForContentSizeCategory = true
         upperLabel.font = StyleManager.subheadlineBoldFont
         upperLabel.textColor = StyleManager.wooCommerceBrandColor
     }
@@ -94,7 +95,6 @@ private extension LoginPrologueViewController {
 
     func setupDisclaimerLabel() {
         disclaimerTextView.attributedText = disclaimerAttributedText
-        //disclaimerTextView.attributedText = NSAttributedString(string: "cesar")
         disclaimerTextView.textContainerInset = .zero
         disclaimerTextView.linkTextAttributes = [
             .foregroundColor: UIColor.white,

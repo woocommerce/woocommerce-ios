@@ -32,6 +32,7 @@ public struct Product: Decodable {
     public let virtual: Bool
 
     public let downloadable: Bool
+    public let downloads: [ProductDownload]
     public let downloadLimit: Int       // defaults to -1
     public let downloadExpiry: Int      // defaults to -1
 
@@ -115,6 +116,7 @@ public struct Product: Decodable {
                 totalSales: Int,
                 virtual: Bool,
                 downloadable: Bool,
+                downloads: [ProductDownload],
                 downloadLimit: Int,
                 downloadExpiry: Int,
                 externalURL: String?,
@@ -171,6 +173,7 @@ public struct Product: Decodable {
         self.totalSales = totalSales
         self.virtual = virtual
         self.downloadable = downloadable
+        self.downloads = downloads
         self.downloadLimit = downloadLimit
         self.downloadExpiry = downloadExpiry
         self.externalURL = externalURL
@@ -260,6 +263,7 @@ public struct Product: Decodable {
         let virtual = try container.decode(Bool.self, forKey: .virtual)
 
         let downloadable = try container.decode(Bool.self, forKey: .downloadable)
+        let downloads = try container.decode([ProductDownload].self, forKey: .downloads)
         let downloadLimit = try container.decode(Int.self, forKey: .downloadLimit)
         let downloadExpiry = try container.decode(Int.self, forKey: .downloadExpiry)
 
@@ -409,6 +413,7 @@ private extension Product {
         case virtual        = "virtual"
 
         case downloadable   = "downloadable"
+        case downloads      = "downloads"
         case downloadLimit  = "download_limit"
         case downloadExpiry = "download_expiry"
 

@@ -136,7 +136,7 @@ private extension FulfillViewController {
             CustomerInfoTableViewCell.self,
             LeftImageTableViewCell.self,
             EditableOrderTrackingTableViewCell.self,
-            ProductDetailsTableViewCell.self
+            PickListTableViewCell.self
         ]
 
         for cell in cells {
@@ -307,7 +307,7 @@ private extension FulfillViewController {
     /// Setup: Product Cell
     ///
     private func setupProductCell(_ cell: UITableViewCell, with item: OrderItem) {
-        guard let cell = cell as? ProductDetailsTableViewCell else {
+        guard let cell = cell as? PickListTableViewCell else {
             fatalError()
         }
 
@@ -315,8 +315,6 @@ private extension FulfillViewController {
         cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
         cell.name = viewModel.name
         cell.quantity = viewModel.quantity
-        cell.price = viewModel.price
-        cell.tax = viewModel.tax
         cell.sku = viewModel.sku
     }
 
@@ -456,6 +454,7 @@ private extension FulfillViewController {
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
         actionSheet.addCancelActionWithTitle(DeleteAction.cancel)
         actionSheet.addDestructiveActionWithTitle(DeleteAction.delete) { [weak self] _ in
+            WooAnalytics.shared.track(.orderFulfillmentDeleteTrackingButtonTapped)
             self?.deleteTracking(shipmentTracking)
         }
 
@@ -480,7 +479,8 @@ private extension FulfillViewController {
 
         WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
                                                                          "status": statusKey,
-                                                                         "carrier": providerName])
+                                                                         "carrier": providerName,
+                                                                         "source": "order_fulfill"])
 
         let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
                                                                  orderID: orderID,
@@ -672,7 +672,7 @@ private enum Row {
         case .note:
             return LeftImageTableViewCell.self
         case .product:
-            return ProductDetailsTableViewCell.self
+            return PickListTableViewCell.self
         case .trackingAdd:
             return LeftImageTableViewCell.self
         case .tracking:

@@ -3,9 +3,9 @@ import Gridicons
 import Yosemite
 
 
-/// Product Details: Renders a row that displays a single Product.
+/// Pick List: Renders a row that displays a single Product.
 ///
-class ProductDetailsTableViewCell: UITableViewCell {
+final class PickListTableViewCell: UITableViewCell {
 
     /// ImageView
     ///
@@ -18,10 +18,6 @@ class ProductDetailsTableViewCell: UITableViewCell {
     /// Label: Quantity
     ///
     @IBOutlet private var quantityLabel: UILabel!
-
-    /// Label: Price
-    ///
-    @IBOutlet private var priceLabel: UILabel!
 
     /// Label: SKU
     ///
@@ -49,17 +45,6 @@ class ProductDetailsTableViewCell: UITableViewCell {
         }
     }
 
-    /// Item's Price
-    ///
-    var price: String? {
-        get {
-            return priceLabel?.text
-        }
-        set {
-            priceLabel?.text = newValue
-        }
-    }
-
     /// Item's SKU
     ///
     var sku: String? {
@@ -79,24 +64,38 @@ class ProductDetailsTableViewCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
 
-    class func makeFromNib() -> ProductDetailsTableViewCell {
-        return Bundle.main.loadNibNamed("ProductDetailsTableViewCell", owner: self, options: nil)?.first as! ProductDetailsTableViewCell
+    class func makeFromNib() -> PickListTableViewCell {
+        return Bundle.main.loadNibNamed("ProductDetailsTableViewCell", owner: self, options: nil)?.first as! PickListTableViewCell
     }
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        productImageView.image = Gridicon.iconOfType(.product)
-        productImageView.tintColor = StyleManager.wooGreyBorder
+
         selectionStyle = .none
 
-        nameLabel.applyBodyStyle()
-        quantityLabel.applyBodyStyle()
-        priceLabel.applySecondaryFootnoteStyle()
-        skuLabel.applySecondaryFootnoteStyle()
+        setupImageView()
+        setupNameLabel()
+        setupQuantityLabel()
+        setupSkuLabel()
+    }
 
+    func setupImageView() {
+        productImageView.image = Gridicon.iconOfType(.product)
+        productImageView.tintColor = StyleManager.wooGreyBorder
+    }
+
+    func setupNameLabel() {
+        nameLabel.applyBodyStyle()
         nameLabel?.text = ""
+    }
+
+    func setupQuantityLabel() {
+        quantityLabel.applyBodyStyle()
         quantityLabel?.text = ""
-        priceLabel?.text = ""
+    }
+
+    func setupSkuLabel() {
+        skuLabel.applySecondaryFootnoteStyle()
         skuLabel?.text = ""
     }
 }
@@ -104,14 +103,13 @@ class ProductDetailsTableViewCell: UITableViewCell {
 
 // MARK: - Public Methods
 //
-extension ProductDetailsTableViewCell {
+extension PickListTableViewCell {
     func configure(item: OrderItemViewModel, image: UIImage? = nil) {
         if let itemImage = image {
             productImageView.image = itemImage
         }
         name = item.name
         quantity = item.quantity
-        price = item.price
         sku = item.sku
     }
 }

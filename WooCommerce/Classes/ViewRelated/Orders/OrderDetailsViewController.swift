@@ -114,10 +114,10 @@ final class OrderDetailsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         syncNotes()
-        syncTrackingsHiddingAddButtonIfNecessary()
+        syncTrackingsHidingAddButtonIfNecessary()
     }
 
-    private func syncTrackingsHiddingAddButtonIfNecessary() {
+    private func syncTrackingsHidingAddButtonIfNecessary() {
         syncTracking { [weak self] error in
             if error == nil {
                 self?.trackingIsReachable = true

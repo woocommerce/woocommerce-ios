@@ -717,7 +717,8 @@ private extension OrderDetailsViewController {
 
         WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
                                                                          "status": statusKey,
-                                                                         "carrier": providerName])
+                                                                         "carrier": providerName,
+                                                                         "source": "order_detail"])
 
         let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
                                                                  orderID: orderID,

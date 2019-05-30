@@ -11,6 +11,7 @@ protocol Style {
     var alternativeLoginsTitleFont: UIFont { get }
     var chartLabelFont: UIFont { get }
     var subheadlineFont: UIFont { get }
+    var subheadlineBoldFont: UIFont { get }
 
     /// Colors
     ///
@@ -73,6 +74,7 @@ class DefaultStyle: Style {
     let actionButtonTitleFont           = UIFont.font(forStyle: .headline, weight: .semibold)
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
     let subheadlineFont                 = UIFont.font(forStyle: .subheadline, weight: .regular)
+    let subheadlineBoldFont             = UIFont.font(forStyle: .subheadline, weight: .bold)
     let chartLabelFont                  = UIFont.font(forStyle: .caption2, weight: .ultraLight)
 
     /// Colors!
@@ -191,6 +193,10 @@ class StyleManager {
 
     static var subheadlineFont: UIFont {
         return active.subheadlineFont
+    }
+
+    static var subheadlineBoldFont: UIFont {
+        return active.subheadlineBoldFont
     }
 
     // MARK: - Colors

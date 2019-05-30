@@ -153,6 +153,8 @@ extension LoginPrologueViewController {
 }
 
 
+// MARK: - Handling updated trait collections
+//
 extension LoginPrologueViewController {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)

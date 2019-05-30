@@ -63,6 +63,7 @@ extension Product {
     @NSManaged public var attributes: Set<ProductAttribute>?
     @NSManaged public var categories: Set<ProductCategory>?
     @NSManaged public var defaultAttributes: Set<ProductDefaultAttribute>?
+    @NSManaged public var downloads: Set<ProductDownload>?
     @NSManaged public var images: Set<ProductImage>?
     @NSManaged public var tags: Set<ProductTag>?
 
@@ -116,6 +117,23 @@ extension Product {
 
     @objc(removeDefaultAttributes:)
     @NSManaged public func removeFromDefaultAttributes(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for downloads
+extension Product {
+
+    @objc(addDownloadsObject:)
+    @NSManaged public func addToDownloads(_ value: ProductDownload)
+
+    @objc(removeDownloadsObject:)
+    @NSManaged public func removeFromDownloads(_ value: ProductDownload)
+
+    @objc(addDownloads:)
+    @NSManaged public func addToDownloads(_ values: NSSet)
+
+    @objc(removeDownloads:)
+    @NSManaged public func removeFromDownloads(_ values: NSSet)
 
 }
 

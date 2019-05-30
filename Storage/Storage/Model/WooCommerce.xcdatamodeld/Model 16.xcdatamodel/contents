@@ -238,7 +238,7 @@
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="dimensions" inverseEntity="Product" syncable="YES"/>
     </entity>
     <entity name="ProductDownload" representedClassName="ProductDownload" syncable="YES" codeGenerationType="class">
-        <attribute name="downloadID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="downloadID" attributeType="String" syncable="YES"/>
         <attribute name="fileURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="downloads" inverseEntity="Product" syncable="YES"/>
@@ -338,6 +338,7 @@
         <element name="ProductCategory" positionX="-773.3125" positionY="94.1328125" width="128" height="103"/>
         <element name="ProductDefaultAttribute" positionX="-819.42578125" positionY="224.1171875" width="145.12109375" height="103"/>
         <element name="ProductDimensions" positionX="-830.15234375" positionY="345.6328125" width="128" height="105"/>
+        <element name="ProductDownload" positionX="-684" positionY="45" width="128" height="105"/>
         <element name="ProductImage" positionX="-859.9296875" positionY="471.46484375" width="128" height="148"/>
         <element name="ProductTag" positionX="-896.65234375" positionY="645.7421875" width="128" height="103"/>
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
@@ -349,6 +350,5 @@
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="ProductDownload" positionX="-684" positionY="45" width="128" height="105"/>
     </elements>
 </model>

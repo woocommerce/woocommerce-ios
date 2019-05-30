@@ -106,9 +106,10 @@ private extension LoginPrologueViewController {
 
     func setupLoginButton() {
         let title = NSLocalizedString("Log in with Jetpack", comment: "Authentication Login Button")
+        loginButton.titleLabel?.adjustsFontForContentSizeCategory = true
         loginButton.setTitle(title, for: .normal)
         loginButton.setTitleColor(StyleManager.wooSecondary, for: .normal)
-        loginButton.titleLabel?.font = UIFont.font(forStyle: .headline, weight: .semibold)
+        loginButton.titleLabel?.font = StyleManager.headlineSemiBold
         loginButton.backgroundColor = .white
         loginButton.layer.cornerRadius = Settings.buttonCornerRadius
     }

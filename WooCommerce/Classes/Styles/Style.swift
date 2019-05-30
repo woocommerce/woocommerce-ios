@@ -11,6 +11,7 @@ protocol Style {
     var actionButtonTitleFont: UIFont { get }
     var alternativeLoginsTitleFont: UIFont { get }
     var chartLabelFont: UIFont { get }
+    var headlineSemiBold: UIFont { get }
     var subheadlineFont: UIFont { get }
     var subheadlineBoldFont: UIFont { get }
     var thinCaptionFont: UIFont { get }
@@ -76,6 +77,10 @@ class DefaultStyle: Style {
     static let maxFontSize              = CGFloat(28.0)
     let actionButtonTitleFont           = UIFont.font(forStyle: .headline, weight: .semibold)
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
+    let headlineSemiBold                = DefaultStyle
+        .fontForTextStyle(.headline,
+                          weight: .semibold,
+                          maximumPointSize: DefaultStyle.maxFontSize)
     let subheadlineFont                 = UIFont.font(forStyle: .subheadline, weight: .regular)
     let subheadlineBoldFont             = DefaultStyle
         .fontForTextStyle(.subheadline,
@@ -225,6 +230,10 @@ class StyleManager {
 
     static var chartLabelFont: UIFont {
         return active.chartLabelFont
+    }
+
+    static var headlineSemiBold: UIFont {
+        return active.headlineSemiBold
     }
 
     static var subheadlineFont: UIFont {

@@ -8,7 +8,7 @@ class DateFormatterWooTests: XCTestCase {
 
     /// Sample Date
     ///
-    let datetimeAsString = "2018-01-24T16:21:48"
+    let datetimeAsString = "2018-01-24T12:00:00"
 
 
     /// Verifies that a Woo Datetime is properly parsed by `DateFormatter.Defaults.dateTimeFormatter`.

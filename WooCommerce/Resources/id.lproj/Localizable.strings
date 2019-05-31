@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-14 14:54:03+0000 */
+/* Translation-Revision-Date: 2019-05-28 11:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -188,7 +188,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Tidak dapat terhubung. Metode XML-RPC yang diperlukan tidak ditemukan di server.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Tidak dapat terhubung. Kami menerima error 403 saat mencoba mengakses titik akhir XMLRPC situs Anda. Aplikasi ini memerlukannya agar dapat berkomunikasi dengan situs Anda. Hubungi host Anda untuk mengatasi masalah ini.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Tidak dapat terhubung. Kami menerima error 403 saat mencoba mengakses titik akhir XMLRPC situs Anda. Aplikasi ini memerlukannya agar dapat berkomunikasi dengan situs Anda. Hubungi host Anda untuk mengatasi masalah ini.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Tidak dapat terhubung. Host Anda memblokir permintaan POST, dan aplikasi memerlukannya untuk berkomunikasi dengan situs Anda. Hubungi host Anda untuk mengatasi masalah ini.";
@@ -223,7 +223,8 @@
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "Hapus";
 
-/* Delete a Shipment Tracking */
+/* Delete a Shipment Tracking
+   Delete tracking button title */
 "Delete Tracking" = "Hapus Pelacakan";
 
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
@@ -239,7 +240,7 @@
 "Discount" = "Diskon";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Product details screen - button title for closing the view */
+   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Hentikan";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -269,6 +270,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Ketuk dua kali untuk mengaktifkan\/menonaktifkan pengaturan.";
 
+/* Display label for the product's draft status */
+"Draft" = "Konsep";
+
 /* Email address text field placeholder */
 "Email" = "Surel";
 
@@ -286,6 +290,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "URL Kosong";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "Masukkan URL yang valid mis. contoh.com.";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Masukkan nama penyedia";
@@ -366,9 +373,6 @@
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "Sembunyikan tagihan";
-
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hmm, sepertinya tidak ada situs WordPress di URL ini. Periksa lagi ejaannya dan coba lagi.";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Jika dinonaktifkan, catatan akan diatur sebagai pribadi";
@@ -497,6 +501,9 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "Bulan";
+
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+"More" = "Lainnya";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Pindahkan komentar ke Spam";
@@ -643,6 +650,9 @@
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "Pembayaran sebesar (totalValue) diterima melalui (order.paymentMethodTitle)";
 
+/* Display label for the product's pending status */
+"Pending" = "Tertunda";
+
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Nomor telepon: %@";
 
@@ -686,6 +696,9 @@
    Privacy settings screen title */
 "Privacy Settings" = "Pengaturan Privasi";
 
+/* Display label for the product's private status */
+"Private" = "Privat";
+
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Catatan privat";
@@ -702,6 +715,9 @@
 
 /* Add Custom shipping provider. Title of cell presenting the provider name */
 "Provider name" = "Nama penyedia";
+
+/* Display label for the product's published status */
+"Publish" = "Terbitkan";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publikasikan dari taman. Tulis blog dari bus. Beri komentar dari kafe. WordPress ada di mana pun Anda berada.";
@@ -748,7 +764,8 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Tinjau, siapkan, dan kirimkan pesanan yang tertunda ini";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
+   Reviews descriptive label */
 "Reviews" = "Ulasan";
 
 /* SKU label */
@@ -806,6 +823,9 @@
 
 /* Footer text to show the billing cell */
 "Show billing" = "Tampilkan tagihan";
+
+/* Accessibility hint for Delete Shipment button in Order details screen */
+"Shows more options." = "Menampilkan lebih banyak pilihan.";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "Mendaftar";
@@ -954,6 +974,9 @@
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "Alamat situs harus lebih pendek dari 64 karakter.";
 
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Situs di alamat ini bukan situs WordPress. Agar kami dapat menghubungkannya, situs harus menggunakan WordPress.";
+
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "Situs tidak dapat dihapus.";
 
@@ -1012,14 +1035,17 @@
 /* Total label for payment view */
 "Total" = "Total";
 
+/* Product details screen - total orders descriptive label */
+"Total Orders" = "Total Pesanan";
+
 /* Description for Top Performers right column header */
 "Total Spend" = "Total Pengeluaran";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "Total pesanan: %ld";
 
-/* Track package button title */
-"Track package" = "Lacak paket";
+/* Track shipment button title */
+"Track Shipment" = "Lacak Pengiriman";
 
 /* Order tracking section title */
 "Tracking" = "Pelacakan";
@@ -1032,9 +1058,6 @@
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Nomor pelacakan %@";
-
-/* Accessibility hint for Track Package button in Order details screen */
-"Tracks a shipment." = "Melacak pengiriman.";
 
 /* Move a comment to the trash */
 "Trash" = "Buang";
@@ -1154,8 +1177,14 @@
 /* View application log cell title */
 "View Application Log" = "Lihat Log Aplikasi";
 
+/* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
+"View affiliate product" = "Lihat produk afiliasi";
+
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Lihat tiket dukungan yang dikirimkan sebelumnya";
+
+/* The descriptive label. Tapping the row will open the product's page in a web view. */
+"View product on store" = "Lihat produk di toko";
 
 /* User role badge */
 "Viewer" = "Pemirsa";
@@ -1248,7 +1277,7 @@
 "approved" = "disetujui";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordress.com";
+"example.com" = "contoh.com";
 
 /* Later today */
 "later today" = "belakangan hari ini";

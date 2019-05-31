@@ -1,3 +1,4 @@
-* Die Unterstützung größerer Texte wurde verbessert.
-* Es wurde ein Fehler behoben, bei dem die Liste der Bestellungen für einige Benutzer nicht geladen wurde.
-* Die App wurde aktualisiert und unterstützt jetzt auch iOS 12.0 und höher.
+* Do you use the Shipment Tracking plugin? Now you can manually add shipment tracking to orders.
+* Sometimes when you’d try to view your store’s Top Performers you’d get an “Unable to load content” error, which was an ironic lack of top performance on the app’s part. That’s fixed now.
+* If you ever tried to use the Store Picker but weren’t able to continue after logging in, that’s fixed too.
+* Occasionally, the app would crash when it had a slow network connection. Now it doesn’t, because iffy wifi should never stop you from managing your business.

@@ -1,3 +1,4 @@
-* Il supporto per le dimensioni di testo grandi è stato migliorato.
-* Corretto un bug che comportava il mancato caricamento dell'elenco degli ordini per alcuni utenti.
-* App aggiornata per supportare iOS 12.0 e versioni successive.
+*Utilizzi il plugin per la tracciabilità della spedizione? Ora puoi aggiungere manualmente la tracciabilità della spedizione agli ordini.
+*A volte, provando a visualizzare i migliori esecutori del negozio, veniva visualizzato un errore "Impossibile caricare i contenuti", un'ironica mancanza di prestazioni al top dell'app. Il problema ora è stato risolto.
+*È stato risolto anche il problema che non permetteva di continuare a utilizzare il Selezionatore negozio dopo l'accesso.
+*A volte l'app si poteva arrestare con un connessione di rete lenta. Ora non succede: la connessione WiFi non dovrebbe mai impedire la gestione della propria attività.

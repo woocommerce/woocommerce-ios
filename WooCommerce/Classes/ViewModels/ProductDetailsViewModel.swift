@@ -257,7 +257,7 @@ extension ProductDetailsViewModel {
         case let cell as TitleBodyTableViewCell where row == .shipping:
             configureShipping(cell)
         case let cell as TitleBodyTableViewCell where row == .downloads:
-            break
+            configureDownloads(cell)
         case let cell as TitleBodyTableViewCell where row == .purchaseNote:
             break
         default:
@@ -484,6 +484,41 @@ extension ProductDetailsViewModel {
         cell.titleLabel.text = title
         cell.bodyLabel.text = bodyText
     }
+
+    /// Downloads cell.
+    ///
+    func configureDownloads(_ cell: TitleBodyTableViewCell) {
+        // Number of files line
+        let numberOfFilesPrefix = NSLocalizedString("Number of files:",
+                                                    comment: "Label prefix. Example: 'Number of files: 2'")
+        let fileCount = String(product.downloads.count)
+        let numberOfFilesText = numberOfFilesPrefix + " " + fileCount
+
+        // Limits line
+        let limitSingular = NSLocalizedString("Limit: %ld download",
+                                              comment: "'Limit: 1 download', for example.")
+        let limitPlural = NSLocalizedString("Limit: %ld downloads",
+                                            comment: "'Limit: 2 downloads', for example.")
+        let limitText = String.pluralize(product.downloadLimit,
+                                         singular: limitSingular,
+                                         plural: limitPlural)
+
+        // Downloads expiration line
+        let expirationSingular = NSLocalizedString("Expiry: %ld day", comment: "Expiry: 1 day")
+        let expirationPlural = NSLocalizedString("Expiry: %ld days",
+                                                 comment: "For example: 'Expiry: 30 days'")
+        let expirationText = String.pluralize(product.downloadExpiry,
+                                              singular: expirationSingular,
+                                              plural: expirationPlural)
+
+        // Full text for cell labels
+        let title = NSLocalizedString("Downloads",
+                                      comment: "Product Details > Purchase Details > Downloads cell title")
+        let bodyText = numberOfFilesText + "\n" + limitText + "\n" + expirationText
+        cell.titleLabel?.text = title
+        cell.bodyLabel?.text = bodyText
+    }
+
 
     // MARK: - Table helper methods
 

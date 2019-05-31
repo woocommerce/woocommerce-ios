@@ -454,6 +454,7 @@ private extension FulfillViewController {
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
         actionSheet.addCancelActionWithTitle(DeleteAction.cancel)
         actionSheet.addDestructiveActionWithTitle(DeleteAction.delete) { [weak self] _ in
+            WooAnalytics.shared.track(.orderFulfillmentDeleteTrackingButtonTapped)
             self?.deleteTracking(shipmentTracking)
         }
 
@@ -478,7 +479,8 @@ private extension FulfillViewController {
 
         WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
                                                                          "status": statusKey,
-                                                                         "carrier": providerName])
+                                                                         "carrier": providerName,
+                                                                         "source": "order_fulfill"])
 
         let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
                                                                  orderID: orderID,

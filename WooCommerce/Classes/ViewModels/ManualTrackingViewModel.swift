@@ -224,6 +224,7 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
     }
 
     var shipmentProvider: ShipmentTrackingProvider?
+
     var shipmentProviderGroupName: String?
 
     var providerCellName: String {
@@ -233,8 +234,14 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
     let providerCellAccessoryType = UITableViewCell.AccessoryType.none
 
     var canCommit: Bool {
-        return providerName?.isEmpty == false &&
+        let returnValue = providerName?.isEmpty == false &&
             trackingNumber?.isEmpty == false
+
+        if returnValue {
+            saveSelectedCustomShipmentProvider()
+        }
+
+        return returnValue
     }
 
     let isAdding: Bool = true
@@ -244,5 +251,44 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
     init(order: Order, initialName: String? = nil) {
         self.order = order
         self.providerName = initialName
+
+        loadSelectedCustomShipmentProvider()
+    }
+}
+
+
+private extension AddCustomTrackingViewModel {
+    func saveSelectedCustomShipmentProvider() {
+        guard let providerName = providerName else {
+            return
+        }
+
+        let siteID = order.siteID
+
+        let action = AppSettingsAction.addCustomTrackingProvider(siteID: siteID, providerName: providerName, providerURL: trackingLink) { error in
+            guard let error = error else {
+                return
+            }
+
+            DDLogError("⛔️ Save selected Custom Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
+    func loadSelectedCustomShipmentProvider() {
+        let siteID = order.siteID
+
+        let action = AppSettingsAction.loadCustomTrackingProvider(siteID: siteID) { [weak self] (provider, error) in
+            guard let error = error else {
+                self?.providerName = provider?.name
+                self?.trackingLink = provider?.url
+                return
+            }
+
+            DDLogError("⛔️ Read selected Custom Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
+        }
+
+        StoresManager.shared.dispatch(action)
     }
 }

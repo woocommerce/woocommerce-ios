@@ -105,6 +105,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        totalSales: Int(totalSales),
                        virtual: virtual,
                        downloadable: downloadable,
+                       downloads: productDownloads.sorted(),
                        downloadLimit: Int(downloadLimit),
                        downloadExpiry: Int(downloadExpiry),
                        externalURL: externalURL,
@@ -136,7 +137,6 @@ extension Storage.Product: ReadOnlyConvertible {
                        images: productImages.sorted(),
                        attributes: productAttributes.sorted(),
                        defaultAttributes: productDefaultAttributes.sorted(),
-                       downloads: productDownloads.sorted(),
                        variations: convertIDArray(variations),
                        groupedProducts: convertIDArray(groupedProducts),
                        menuOrder: Int(menuOrder))

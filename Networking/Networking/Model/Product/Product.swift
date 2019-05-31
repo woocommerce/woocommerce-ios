@@ -343,6 +343,7 @@ public struct Product: Decodable {
                   totalSales: totalSales,
                   virtual: virtual,
                   downloadable: downloadable,
+                  downloads: downloads,
                   downloadLimit: downloadLimit,
                   downloadExpiry: downloadExpiry,
                   externalURL: externalURL,

@@ -17,7 +17,7 @@ extension Storage.ProductDownload: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.ProductDownload {
-        return ProductDownload(downloadID: downloadID ?? "",
+        return ProductDownload(downloadID: downloadID,
                                name: name ?? "",
                                fileURL: fileURL ?? "")
     }

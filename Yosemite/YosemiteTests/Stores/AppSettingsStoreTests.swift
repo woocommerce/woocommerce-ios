@@ -8,11 +8,15 @@ import XCTest
 private struct TestConstants {
     static let fileURL = Bundle(for: AppSettingsStoreTests.self)
         .url(forResource: "shipment-provider", withExtension: "plist")
+    static let customFileURL = Bundle(for: AppSettingsStoreTests.self)
+        .url(forResource: "custom-shipment-provider", withExtension: "plist")
     static let siteID = 156590080
     static let providerName = "post.at"
+    static let providerURL = "http://some.where"
 
     static let newSiteID = 1234
     static let newProviderName = "Some provider"
+    static let newProviderURL = "http://some.where"
 }
 
 
@@ -42,6 +46,7 @@ final class AppSettingsStoreTests: XCTestCase {
         fileStorage = MockFileLoader()
         subject = AppSettingsStore(dispatcher: dispatcher!, storageManager: storageManager!, fileStorage: fileStorage!)
         subject?.selectedProvidersURL = TestConstants.fileURL!
+        subject?.customSelectedProvidersURL = TestConstants.customFileURL!
     }
 
     override func tearDown() {
@@ -57,6 +62,24 @@ final class AppSettingsStoreTests: XCTestCase {
 
         let action = AppSettingsAction.addTrackingProvider(siteID: TestConstants.newSiteID,
                                                            providerName: TestConstants.newProviderName) { error in
+                                                            XCTAssertNil(error)
+
+                                                            if self.fileStorage?.dataWriteIsHit == true {
+                                                                expectation.fulfill()
+                                                            }
+        }
+
+        subject?.onAction(action)
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    func testFileStorageIsRequestedToWriteWhenAddingANewCustomShipmentProvider() {
+        let expectation = self.expectation(description: "A write is requested")
+
+        let action = AppSettingsAction.addCustomTrackingProvider(siteID: TestConstants.newSiteID,
+                                                                 providerName: TestConstants.newProviderName,
+                                                                 providerURL: TestConstants.newProviderURL) { error in
                                                             XCTAssertNil(error)
 
                                                             if self.fileStorage?.dataWriteIsHit == true {
@@ -86,12 +109,52 @@ final class AppSettingsStoreTests: XCTestCase {
         waitForExpectations(timeout: 2, handler: nil)
     }
 
+    func testFileStorageIsRequestedToWriteWhenAddingACustomShipmentProviderForExistingSite() {
+        let expectation = self.expectation(description: "A write is requested")
+
+        let action = AppSettingsAction.addCustomTrackingProvider(siteID: TestConstants.siteID,
+                                                           providerName: TestConstants.providerName,
+                                                           providerURL: TestConstants.providerURL) { error in
+                                                            XCTAssertNil(error)
+
+                                                            if self.fileStorage?.dataWriteIsHit == true {
+                                                                expectation.fulfill()
+                                                            }
+        }
+
+        subject?.onAction(action)
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
     func testAddingNewProviderToExistingSiteUpdatesFile() {
         let expectation = self.expectation(description: "File is updated")
 
         let action = AppSettingsAction
             .addTrackingProvider(siteID: TestConstants.siteID,
                                  providerName: TestConstants.newProviderName) { error in
+                                    XCTAssertNil(error)
+                                    let fileData = self.fileStorage?.fileData
+                                    let updatedProvider = fileData?.filter({ $0.siteID == TestConstants.siteID}).first
+
+                                    if updatedProvider?.providerName == TestConstants.newProviderName {
+                                        expectation.fulfill()
+                                    }
+
+        }
+
+        subject?.onAction(action)
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    func testAddingNewCustomProviderToExistingSiteUpdatesFile() {
+        let expectation = self.expectation(description: "File is updated")
+
+        let action = AppSettingsAction
+            .addCustomTrackingProvider(siteID: TestConstants.siteID,
+                                 providerName: TestConstants.newProviderName,
+                                 providerURL: TestConstants.newProviderURL) { error in
                                     XCTAssertNil(error)
                                     let fileData = self.fileStorage?.fileData
                                     let updatedProvider = fileData?.filter({ $0.siteID == TestConstants.siteID}).first

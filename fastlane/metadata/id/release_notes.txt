@@ -1,3 +1,4 @@
-* Dukungan untuk ukuran teks besar telah ditingkatkan.
-* Memperbaiki bug dengan Daftar Pesanan tidak dimuat untuk beberapa pengguna.
-* Memperbarui aplikasi untuk mendukung iOS 12.0 dan yang di atasnya.
+* Apakah Anda menggunakan plugin Pelacakan Pengiriman? Sekarang Anda bisa menambahkan pelacakan pengiriman ke pesanan secara manual.
+* Terkadang saat mencoba melihat Performa Tertinggi toko, Anda mendapati error “Tidak dapat memuat konten”, yang ini justru merupakan sebuah kekurangan yang ironis dari performa teratas di bagian aplikasi. Sekarang sudah diperbaiki.
+* Jika Anda pernah mencoba menggunakan Pemilih Toko namun tidak bisa lanjut setelah login, masalah ini juga sudah diperbaiki.
+* Terkadang, aplikasi mengalami crash saat koneksi jaringan sedang lambat. Sekarang tidak lagi, karena seharusnya bisnis Anda tidak boleh terganggu hanya karena wifi yang tidak stabil.

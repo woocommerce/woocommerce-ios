@@ -33,6 +33,12 @@ extension UILabel {
         textColor = StyleManager.defaultTextColor
     }
 
+    func applySecondaryFootnoteStyle() {
+        adjustsFontForContentSizeCategory = true
+        font = .footnote
+        textColor = StyleManager.wooGreyTextMin
+    }
+
     func applyTitleStyle() {
         adjustsFontForContentSizeCategory = true
         font = .title1

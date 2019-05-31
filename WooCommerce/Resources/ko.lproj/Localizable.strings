@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-15 08:54:02+0000 */
+/* Translation-Revision-Date: 2019-05-28 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -188,7 +188,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "연결할 수 없습니다. 필수 XML-RPC 함수가 서버에 없습니다.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "연결할 수 없습니다. 회원님의 사이트 XMLRPC 엔드포인트에 액세스하려고 할 때 403 오류가 발생했습니다. 사이트와 통신하려면 이 앱에 해당 요청이 필요합니다. 호스트에 문의하여 이 문제를 해결하세요.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "연결할 수 없습니다. 회원님의 사이트 XMLRPC 엔드포인트에 액세스하려고 할 때 403 오류가 발생했습니다. 사이트와 통신하려면 이 앱에 해당 요청이 필요합니다. 호스트에 문의하여 이 문제를 해결하세요.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "연결할 수 없습니다. 호스트에서 POST 요청을 차단하고 있으나 앱에서 회원님의 사이트와 통신하려면 이 요청이 필요합니다. 호스트에 문의하여 이 문제를 해결하세요.";
@@ -223,7 +223,8 @@
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "삭제";
 
-/* Delete a Shipment Tracking */
+/* Delete a Shipment Tracking
+   Delete tracking button title */
 "Delete Tracking" = "추적 삭제";
 
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
@@ -239,7 +240,7 @@
 "Discount" = "할인";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Product details screen - button title for closing the view */
+   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "무시";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -269,6 +270,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "설정을 전환하려면 두 번 누르세요.";
 
+/* Display label for the product's draft status */
+"Draft" = "임시글";
+
 /* Email address text field placeholder */
 "Email" = "이메일";
 
@@ -286,6 +290,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "빈 URL";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "유효한 URL을 입력하세요(예: example.com).";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "공급업체 이름 입력";
@@ -366,9 +373,6 @@
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "청구 숨기기";
-
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "이 URL에는 워드프레스 사이트가 없는 것 같습니다. 맞춤법을 확인하고 다시 시도하세요.";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "해제된 경우 메모는 비공개가 됩니다.";
@@ -497,6 +501,9 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "월";
+
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+"More" = "더 보기";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "댓글을 스팸으로 이동";
@@ -643,6 +650,9 @@
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "(order.paymentMethodTitle)을(를) 통해 (totalValue) 결제 받음";
 
+/* Display label for the product's pending status */
+"Pending" = "대기중";
+
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "전화번호: %@";
 
@@ -686,6 +696,9 @@
    Privacy settings screen title */
 "Privacy Settings" = "개인 정보 설정";
 
+/* Display label for the product's private status */
+"Private" = "비공개";
+
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "비공개 메모";
@@ -702,6 +715,9 @@
 
 /* Add Custom shipping provider. Title of cell presenting the provider name */
 "Provider name" = "공급업체 이름";
+
+/* Display label for the product's published status */
+"Publish" = "게시";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "공원에서 글을 발행하세요. 버스에서 블로그를 방문하세요. 카페에서 댓글을 다세요. 워드프레스는 어디에서든 사용할 수 있습니다.";
@@ -748,7 +764,8 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "대기 중인 주문 검토, 준비 및 배송";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
+   Reviews descriptive label */
 "Reviews" = "검토";
 
 /* SKU label */
@@ -806,6 +823,9 @@
 
 /* Footer text to show the billing cell */
 "Show billing" = "청구 표시";
+
+/* Accessibility hint for Delete Shipment button in Order details screen */
+"Shows more options." = "옵션 더 보기.";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "가입";
@@ -954,6 +974,9 @@
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "사이트 주소는 64 글자보다 적어야합니다.";
 
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "이 주소의 사이트는 워드프레스 사이트가 아닙니다. 연결하려면 사이트에서 워드프레스를 사용해야 합니다.";
+
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "사이트를 삭제할 수 없습니다.";
 
@@ -1012,14 +1035,17 @@
 /* Total label for payment view */
 "Total" = "총";
 
+/* Product details screen - total orders descriptive label */
+"Total Orders" = "총 주문 수";
+
 /* Description for Top Performers right column header */
 "Total Spend" = "총 지출";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "총 주문 수: %ld";
 
-/* Track package button title */
-"Track package" = "패키지 추적";
+/* Track shipment button title */
+"Track Shipment" = "배송 추적";
 
 /* Order tracking section title */
 "Tracking" = "추적";
@@ -1032,9 +1058,6 @@
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "추적 번호 %@";
-
-/* Accessibility hint for Track Package button in Order details screen */
-"Tracks a shipment." = "배송을 추적합니다.";
 
 /* Move a comment to the trash */
 "Trash" = "휴지통";
@@ -1154,8 +1177,14 @@
 /* View application log cell title */
 "View Application Log" = "애플리케이션 로그 보기";
 
+/* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
+"View affiliate product" = "제휴 제품 보기";
+
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "이전에 제출한 지원 티켓 보기";
+
+/* The descriptive label. Tapping the row will open the product's page in a web view. */
+"View product on store" = "스토어에서 제품 보기";
 
 /* User role badge */
 "Viewer" = "독자";
@@ -1248,7 +1277,7 @@
 "approved" = "승인됨";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordress.com";
+"example.com" = "example.com";
 
 /* Later today */
 "later today" = "오늘 중";

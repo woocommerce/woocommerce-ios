@@ -274,9 +274,11 @@
 		CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */; };
 		CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */; };
 		CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */; };
-		CE32B11520BF8779006FBCF4 /* ProductListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11320BF8779006FBCF4 /* ProductListTableViewCell.swift */; };
-		CE32B11620BF8779006FBCF4 /* ProductListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B11420BF8779006FBCF4 /* ProductListTableViewCell.xib */; };
+		CE32B11520BF8779006FBCF4 /* FulfillButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11320BF8779006FBCF4 /* FulfillButtonTableViewCell.swift */; };
+		CE32B11620BF8779006FBCF4 /* FulfillButtonTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B11420BF8779006FBCF4 /* FulfillButtonTableViewCell.xib */; };
 		CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11920BF8E32006FBCF4 /* UIButton+Helpers.swift */; };
+		CE37C04422984E81008DCB39 /* PickListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE37C04222984E81008DCB39 /* PickListTableViewCell.swift */; };
+		CE37C04522984E81008DCB39 /* PickListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE37C04322984E81008DCB39 /* PickListTableViewCell.xib */; };
 		CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */; };
 		CE4DA5C621DD755E00074607 /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DA5C521DD755E00074607 /* CurrencyFormatter.swift */; };
 		CE4DA5C821DD759400074607 /* CurrencyFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DA5C721DD759400074607 /* CurrencyFormatterTests.swift */; };
@@ -660,9 +662,11 @@
 		CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ValueOneTableViewCell.xib; sourceTree = "<group>"; };
 		CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnSectionHeaderView.xib; sourceTree = "<group>"; };
 		CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnSectionHeaderView.swift; sourceTree = "<group>"; };
-		CE32B11320BF8779006FBCF4 /* ProductListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListTableViewCell.swift; sourceTree = "<group>"; };
-		CE32B11420BF8779006FBCF4 /* ProductListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductListTableViewCell.xib; sourceTree = "<group>"; };
+		CE32B11320BF8779006FBCF4 /* FulfillButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FulfillButtonTableViewCell.swift; sourceTree = "<group>"; };
+		CE32B11420BF8779006FBCF4 /* FulfillButtonTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FulfillButtonTableViewCell.xib; sourceTree = "<group>"; };
 		CE32B11920BF8E32006FBCF4 /* UIButton+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Helpers.swift"; sourceTree = "<group>"; };
+		CE37C04222984E81008DCB39 /* PickListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PickListTableViewCell.swift; sourceTree = "<group>"; };
+		CE37C04322984E81008DCB39 /* PickListTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PickListTableViewCell.xib; sourceTree = "<group>"; };
 		CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContact+Helpers.swift"; sourceTree = "<group>"; };
 		CE4DA5C521DD755E00074607 /* CurrencyFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyFormatter.swift; sourceTree = "<group>"; };
 		CE4DA5C721DD759400074607 /* CurrencyFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyFormatterTests.swift; sourceTree = "<group>"; };
@@ -1317,6 +1321,7 @@
 		CE1CCB4920570B05000EE3AC /* Orders */ = {
 			isa = PBXGroup;
 			children = (
+				CE37C04022984E12008DCB39 /* Fulfillment */,
 				B5FD111321D3D12E00560344 /* Views */,
 				CEE006022077D0F80079161F /* Cells */,
 				CEE005F52076C4040079161F /* Orders.storyboard */,
@@ -1325,8 +1330,6 @@
 				B53B3F36219C75AC00DF1EB6 /* OrderLoaderViewController.swift */,
 				B5F355EE21CD500200A7077A /* OrderSearchViewController.swift */,
 				B5F355F021CD504400A7077A /* OrderSearchViewController.xib */,
-				B5A82EE121025C450053ADC8 /* FulfillViewController.swift */,
-				B5A82EE421025E550053ADC8 /* FulfillViewController.xib */,
 				CE583A0321076C0100D73C1C /* NewNoteViewController.swift */,
 				B5FD111121D3CE7700560344 /* NewNoteViewController.xib */,
 				D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */,
@@ -1409,6 +1412,25 @@
 				CE1AFE612200B1BD00432745 /* ApplicationLogDetailViewController.swift */,
 			);
 			path = Help;
+			sourceTree = "<group>";
+		};
+		CE37C04022984E12008DCB39 /* Fulfillment */ = {
+			isa = PBXGroup;
+			children = (
+				CE37C04122984E50008DCB39 /* Cells */,
+				B5A82EE121025C450053ADC8 /* FulfillViewController.swift */,
+				B5A82EE421025E550053ADC8 /* FulfillViewController.xib */,
+			);
+			path = Fulfillment;
+			sourceTree = "<group>";
+		};
+		CE37C04122984E50008DCB39 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				CE37C04222984E81008DCB39 /* PickListTableViewCell.swift */,
+				CE37C04322984E81008DCB39 /* PickListTableViewCell.xib */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		CE85535B209B5B6A00938BDC /* ViewModels */ = {
@@ -1522,8 +1544,8 @@
 				CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */,
 				CE21B3DE20FFC59700A259D5 /* ProductDetailsTableViewCell.swift */,
 				CE21B3DF20FFC59700A259D5 /* ProductDetailsTableViewCell.xib */,
-				CE32B11320BF8779006FBCF4 /* ProductListTableViewCell.swift */,
-				CE32B11420BF8779006FBCF4 /* ProductListTableViewCell.xib */,
+				CE32B11320BF8779006FBCF4 /* FulfillButtonTableViewCell.swift */,
+				CE32B11420BF8779006FBCF4 /* FulfillButtonTableViewCell.xib */,
 				CEE006032077D1280079161F /* SummaryTableViewCell.swift */,
 				CEE006042077D1280079161F /* SummaryTableViewCell.xib */,
 			);
@@ -1719,6 +1741,7 @@
 				CE85FD5C20F7A7740080B73E /* TableFooterView.xib in Resources */,
 				B57C744C20F564B400EEFC87 /* EmptyStoresTableViewCell.xib in Resources */,
 				B59C09DC2188D70200AB41D6 /* Notifications.storyboard in Resources */,
+				CE37C04522984E81008DCB39 /* PickListTableViewCell.xib in Resources */,
 				D85B8334222FABD1002168F3 /* StatusListTableViewCell.xib in Resources */,
 				CE855367209BA6A700938BDC /* ShowHideSectionFooter.xib in Resources */,
 				B5F571A621BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib in Resources */,
@@ -1745,7 +1768,7 @@
 				B5A82EE521025E550053ADC8 /* FulfillViewController.xib in Resources */,
 				740ADFE521C33688009EE5A9 /* licenses.html in Resources */,
 				B554016B2170D6010067DC90 /* ChartPlaceholderView.xib in Resources */,
-				CE32B11620BF8779006FBCF4 /* ProductListTableViewCell.xib in Resources */,
+				CE32B11620BF8779006FBCF4 /* FulfillButtonTableViewCell.xib in Resources */,
 				B557652D20F6827900185843 /* StoreTableViewCell.xib in Resources */,
 				7493BB8F2149852A003071A9 /* TopPerformersHeaderView.xib in Resources */,
 				CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */,
@@ -2080,10 +2103,11 @@
 				D83F5930225B269C00626E75 /* DatePickerTableViewCell.swift in Sources */,
 				B59D1EDF219072CC009D1978 /* NoteTableViewCell.swift in Sources */,
 				74AAF6A5212A04A900C612B0 /* ChartMarker.swift in Sources */,
-				CE32B11520BF8779006FBCF4 /* ProductListTableViewCell.swift in Sources */,
+				CE32B11520BF8779006FBCF4 /* FulfillButtonTableViewCell.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				CE14452E2188C11700A991D8 /* ZendeskManager.swift in Sources */,
 				B5BE75DB213F1D1E00909A14 /* OverlayMessageView.swift in Sources */,
+				CE37C04422984E81008DCB39 /* PickListTableViewCell.swift in Sources */,
 				B5A56BF5219F5AB20065A902 /* NSNotificationName+Woo.swift in Sources */,
 				B555530D21B57DC300449E71 /* UserNotificationsCenterAdapter.swift in Sources */,
 				B541B2152189EEA1008FE7C1 /* Scanner+Helpers.swift in Sources */,

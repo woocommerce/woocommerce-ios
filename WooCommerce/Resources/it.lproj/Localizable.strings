@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-15 13:54:03+0000 */
+/* Translation-Revision-Date: 2019-05-28 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -188,7 +188,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Impossibile connettersi. I metodi XML-RPC richiesti non sono presenti su questo server.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Impossibile connettersi. Abbiamo ricevuto un messaggio di errore 403 durante il tentativo di accedere all'endpoint XMLRPC del tuo sito. Per l'app questo è necessario per comunicare con il tuo sito. Contatta il tuo fornitore del servizio di hosting per risolvere questo problema.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Impossibile connettersi. Abbiamo ricevuto un messaggio di errore 403 durante il tentativo di accedere all'endpoint XMLRPC del tuo sito. Per l'app questo è necessario per comunicare con il tuo sito. Contatta il tuo fornitore del servizio di hosting per risolvere questo problema.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Impossibile connettersi. L’host sta bloccando le richieste POST ma queste sono necessarie per la corretta comunicazione dell'app con il sito. Contatta il tuo fornitore del servizio di hosting per risolvere questo problema.";
@@ -223,7 +223,8 @@
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "Elimina";
 
-/* Delete a Shipment Tracking */
+/* Delete a Shipment Tracking
+   Delete tracking button title */
 "Delete Tracking" = "Elimina tracciabilità";
 
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
@@ -239,7 +240,7 @@
 "Discount" = "Sconto";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Product details screen - button title for closing the view */
+   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Respinto";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -269,6 +270,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Tocca due volte per attivare\/disattivare l'impostazione.";
 
+/* Display label for the product's draft status */
+"Draft" = "Bozza";
+
 /* Email address text field placeholder */
 "Email" = "E-mail";
 
@@ -286,6 +290,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "URL vuota";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "Inserisci un URL valido, come esempio.com.";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Inserisci nome del fornitore";
@@ -366,9 +373,6 @@
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "Nascondi fatturazione";
-
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Mm, sembra che non ci sia un sito WordPress associato a questa URL. Verifica di aver scritto correttamente e riprova.";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Se disabilitata, la nota diventerà privata";
@@ -497,6 +501,9 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "Mesi";
+
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+"More" = "Altro";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Sposta un commento nella cartella spam";
@@ -643,6 +650,9 @@
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "Pagamento di (totalValue) ricevuto tramite (order.paymentMethodTitle)";
 
+/* Display label for the product's pending status */
+"Pending" = "In sospeso";
+
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Numero di telefono: %@";
 
@@ -686,6 +696,9 @@
    Privacy settings screen title */
 "Privacy Settings" = "Impostazioni privacy";
 
+/* Display label for the product's private status */
+"Private" = "Privato";
+
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Nota privata";
@@ -702,6 +715,9 @@
 
 /* Add Custom shipping provider. Title of cell presenting the provider name */
 "Provider name" = "Nome del fornitore";
+
+/* Display label for the product's published status */
+"Publish" = "Pubblica";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Pubblica dal parco. Lavora al blog sull'autobus. Commenta dal bar. WordPress si sposta con te.";
@@ -748,7 +764,8 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Rivedi, prepara e invia questi ordini in attesa";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
+   Reviews descriptive label */
 "Reviews" = "Recensioni";
 
 /* SKU label */
@@ -806,6 +823,9 @@
 
 /* Footer text to show the billing cell */
 "Show billing" = "Mostra fatturazione";
+
+/* Accessibility hint for Delete Shipment button in Order details screen */
+"Shows more options." = "Mostra più opzioni.";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "Registrati";
@@ -954,6 +974,9 @@
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "L'indirizzo del sito deve essere più corto di 64 caratteri.";
 
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Il sito a questo indirizzo non è un sito WordPress. Per permettere la connessione, il sito deve utilizzare WordPress.";
+
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "Il sito non può essere eliminato.";
 
@@ -1012,14 +1035,17 @@
 /* Total label for payment view */
 "Total" = "Totale";
 
+/* Product details screen - total orders descriptive label */
+"Total Orders" = "Ordini totali";
+
 /* Description for Top Performers right column header */
 "Total Spend" = "Spesa totale";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "Ordini totali: %ld";
 
-/* Track package button title */
-"Track package" = "Traccia pacchetto";
+/* Track shipment button title */
+"Track Shipment" = "Traccia spedizione";
 
 /* Order tracking section title */
 "Tracking" = "Tracciabilità";
@@ -1032,9 +1058,6 @@
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Numero di tracciabilità %@";
-
-/* Accessibility hint for Track Package button in Order details screen */
-"Tracks a shipment." = "Traccia una spedizione.";
 
 /* Move a comment to the trash */
 "Trash" = "Cestino";
@@ -1154,8 +1177,14 @@
 /* View application log cell title */
 "View Application Log" = "Visualizza log applicazione";
 
+/* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
+"View affiliate product" = "Visualizza il prodotto affiliato";
+
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Visualizza ticket di supporto inviati in precedenza";
+
+/* The descriptive label. Tapping the row will open the product's page in a web view. */
+"View product on store" = "Visualizza il prodotto in negozio";
 
 /* User role badge */
 "Viewer" = "Visitatore";
@@ -1248,7 +1277,7 @@
 "approved" = "approvato";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordress.com";
+"example.com" = "esempio.com";
 
 /* Later today */
 "later today" = "Più tardi";

@@ -8,7 +8,7 @@ import SafariServices
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
-class OrderDetailsViewController: UIViewController {
+final class OrderDetailsViewController: UIViewController {
 
     /// Main TableView.
     ///
@@ -82,6 +82,11 @@ class OrderDetailsViewController: UIViewController {
         return trackingResultsController.fetchedObjects
     }
 
+    /// Indicates if we consider the shipment tracking plugin as reachable
+    /// https://github.com/woocommerce/woocommerce-ios/issues/852#issuecomment-482308373
+    ///
+    private var trackingIsReachable: Bool = false
+
     /// Order statuses list
     ///
     private var currentSiteStatuses: [OrderStatus] {
@@ -109,7 +114,18 @@ class OrderDetailsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         syncNotes()
-        syncTracking()
+        syncTrackingsHidingAddButtonIfNecessary()
+    }
+
+    private func syncTrackingsHidingAddButtonIfNecessary() {
+        syncTracking { [weak self] error in
+            if error == nil {
+                self?.trackingIsReachable = true
+            }
+
+            self?.reloadSections()
+            self?.tableView.reloadData()
+        }
     }
 }
 
@@ -207,9 +223,10 @@ private extension OrderDetailsViewController {
             WooBasicTableViewCell.self,
             OrderNoteTableViewCell.self,
             PaymentTableViewCell.self,
-            ProductListTableViewCell.self,
+            ProductDetailsTableViewCell.self,
             OrderTrackingTableViewCell.self,
-            SummaryTableViewCell.self
+            SummaryTableViewCell.self,
+            FulfillButtonTableViewCell.self
         ]
 
         for cell in cells {
@@ -252,17 +269,14 @@ private extension OrderDetailsViewController {
                 return nil
             }
 
-            let rows: [Row] = viewModel.isProcessingPayment ? [.productList] : [.productList, .productDetails]
-            return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
-        }()
-
-        let tracking: Section? = {
-            guard orderTracking.count > 0 else {
-                return nil
+            var rows: [Row] = Array(repeating: .orderItem, count: viewModel.items.count)
+            if viewModel.isProcessingPayment {
+                rows.append(.fulfillButton)
+            } else {
+                rows.append(.details)
             }
 
-            let rows: [Row] = Array(repeating: .tracking, count: orderTracking.count)
-            return Section(title: Title.tracking, rows: rows)
+            return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
         }()
 
         let customerNote: Section? = {
@@ -296,12 +310,34 @@ private extension OrderDetailsViewController {
 
         let payment = Section(title: Title.payment, row: .payment)
 
+        let tracking: Section? = {
+            guard orderTracking.count > 0 else {
+                return nil
+            }
+
+            let rows: [Row] = Array(repeating: .tracking, count: orderTracking.count)
+            return Section(title: Title.tracking, rows: rows)
+        }()
+
+        let addTracking: Section? = {
+            // Hide the section if the shipment
+            // tracking plugin is not installed
+            guard trackingIsReachable else {
+                return nil
+            }
+
+            let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : nil
+            let row = Row.trackingAdd
+
+            return Section(title: title, rightTitle: nil, rows: [row])
+        }()
+
         let notes: Section = {
             let rows = [.addOrderNote] + Array(repeating: Row.orderNote, count: orderNotes.count)
             return Section(title: Title.notes, rows: rows)
         }()
 
-        sections = [summary, products, tracking, customerNote, customerInformation, payment, notes].compactMap { $0 }
+        sections = [summary, products, customerNote, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
     }
 }
 
@@ -361,8 +397,8 @@ extension OrderDetailsViewController {
 private extension OrderDetailsViewController {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as WooBasicTableViewCell where row == .productDetails:
-            configureProductDetails(cell: cell)
+        case let cell as WooBasicTableViewCell where row == .details:
+            configureDetails(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingEmail:
             configureBillingEmail(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingPhone:
@@ -373,16 +409,20 @@ private extension OrderDetailsViewController {
             configureShippingAddress(cell: cell)
         case let cell as CustomerNoteTableViewCell:
             configureCustomerNote(cell: cell)
-        case let cell as LeftImageTableViewCell:
+        case let cell as LeftImageTableViewCell where row == .addOrderNote:
             configureNewNote(cell: cell)
         case let cell as OrderNoteTableViewCell:
             configureOrderNote(cell: cell, at: indexPath)
         case let cell as PaymentTableViewCell:
             configurePayment(cell: cell)
-        case let cell as ProductListTableViewCell:
-            configureProductList(cell: cell)
+        case let cell as ProductDetailsTableViewCell:
+            configureOrderItem(cell: cell, at: indexPath)
+        case let cell as FulfillButtonTableViewCell:
+            configureFulfillmentButton(cell: cell)
         case let cell as OrderTrackingTableViewCell:
             configureTracking(cell: cell, at: indexPath)
+        case let cell as LeftImageTableViewCell where row == .trackingAdd:
+            configureNewTracking(cell: cell)
         case let cell as SummaryTableViewCell:
             configureSummary(cell: cell)
         default:
@@ -517,28 +557,25 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func configureProductDetails(cell: WooBasicTableViewCell) {
+    func configureDetails(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = viewModel.productDetails
         cell.bodyLabel?.applyBodyStyle() // override the custom purple with black
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
     }
 
-    func configureProductList(cell: ProductListTableViewCell) {
-        for subView in cell.verticalStackView.arrangedSubviews {
-            subView.removeFromSuperview()
-        }
+    func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+        let item = viewModel.items[indexPath.row]
+        let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency)
+        cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
+        cell.name = itemViewModel.item.name
+        cell.quantity = itemViewModel.quantity
+        cell.price = itemViewModel.price
+        cell.sku = itemViewModel.sku
+    }
 
-        for (index, item) in viewModel.items.enumerated() {
-            let itemView = TwoColumnLabelView.makeFromNib()
-            itemView.leftText = item.name
-            itemView.rightText = item.quantity.description
-            cell.verticalStackView.insertArrangedSubview(itemView, at: index)
-        }
-
+    func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
         cell.fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
-        cell.actionContainerView.isHidden = viewModel.isProcessingPayment == false
-
         cell.onFullfillTouchUp = { [weak self] in
             self?.fulfillWasPressed()
         }
@@ -566,6 +603,23 @@ private extension OrderDetailsViewController {
                                                 comment: "Order details > tracking. " +
                 " This is where the shipping date would normally display.")
         }
+    }
+
+    func configureNewTracking(cell: LeftImageTableViewCell) {
+        let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
+        cell.leftImage = .addOutlineImage
+        cell.labelText = cellTextContent
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString(
+            "Add a tracking button",
+            comment: "Accessibility label for the 'Add a tracking' button"
+        )
+
+        cell.accessibilityHint = NSLocalizedString(
+            "Adds tracking to an order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period."
+        )
     }
 
     func configureShippingAddress(cell: CustomerInfoTableViewCell) {
@@ -664,7 +718,8 @@ private extension OrderDetailsViewController {
 
         WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
                                                                          "status": statusKey,
-                                                                         "carrier": providerName])
+                                                                         "carrier": providerName,
+                                                                         "source": "order_detail"])
 
         let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
                                                                  orderID: orderID,
@@ -751,11 +806,6 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if sections[section].title == nil {
-            // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
-            return .leastNonzeroMagnitude
-        }
-
         return UITableView.automaticDimension
     }
 
@@ -816,6 +866,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch sections[indexPath.section].rows[indexPath.row] {
+
         case .addOrderNote:
             WooAnalytics.shared.track(.orderDetailAddNoteButtonTapped)
 
@@ -824,7 +875,14 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
             let navController = WooNavigationController(rootViewController: newNoteViewController)
             present(navController, animated: true, completion: nil)
-        case .productDetails:
+        case .trackingAdd:
+            WooAnalytics.shared.track(.orderDetailAddTrackingButtonTapped)
+
+            let addTrackingViewModel = AddTrackingViewModel(order: viewModel.order)
+            let addTracking = ManualTrackingViewController(viewModel: addTrackingViewModel)
+            let navController = WooNavigationController(rootViewController: addTracking)
+            present(navController, animated: true, completion: nil)
+        case .details:
             WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
         case .billingEmail:
@@ -1007,6 +1065,7 @@ private extension OrderDetailsViewController {
         }
 
         actionSheet.addDestructiveActionWithTitle(TrackingAction.deleteTracking) { [weak self] _ in
+            WooAnalytics.shared.track(.orderDetailTrackingDeleteButtonTapped)
             self?.deleteTracking(tracking)
         }
 
@@ -1227,9 +1286,11 @@ private extension OrderDetailsViewController {
 
     enum Row {
         case summary
-        case productList
-        case productDetails
+        case fulfillButton
+        case orderItem
+        case details
         case tracking
+        case trackingAdd
         case customerNote
         case shippingAddress
         case billingAddress
@@ -1243,12 +1304,16 @@ private extension OrderDetailsViewController {
             switch self {
             case .summary:
                 return SummaryTableViewCell.reuseIdentifier
-            case .productList:
-                return ProductListTableViewCell.reuseIdentifier
-            case .productDetails:
+            case .fulfillButton:
+                return FulfillButtonTableViewCell.reuseIdentifier
+            case .orderItem:
+                return ProductDetailsTableViewCell.reuseIdentifier
+            case .details:
                 return WooBasicTableViewCell.reuseIdentifier
             case .tracking:
                 return OrderTrackingTableViewCell.reuseIdentifier
+            case .trackingAdd:
+                return LeftImageTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:

@@ -519,6 +519,7 @@ private extension ProductStoreTests {
                        totalSales: 0,
                        virtual: true,
                        downloadable: false,
+                       downloads: [],
                        downloadLimit: -1,
                        downloadExpiry: -1,
                        externalURL: "http://somewhere.com",
@@ -613,6 +614,19 @@ private extension ProductStoreTests {
         return [defaultAttribute1, defaultAttribute2]
     }
 
+    func sampleDownloads() -> [Networking.ProductDownload] {
+        let download1 = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
+                                        name: "Song #1",
+                                        fileURL: "https://woocommerce.files.wordpress.com/2017/06/woo-single-1.ogg")
+        let download2 = ProductDownload(downloadID: "ec87d8b5-1361-4562-b4b8-18980b5a2cae",
+                                        name: "Artwork",
+                                        fileURL: "https://thuy-test.mystagingwebsite.com/wp-content/uploads/2018/01/cd_4_angle.jpg")
+        let download3 = ProductDownload(downloadID: "240cd543-5457-498e-95e2-6b51fdaf15cc",
+                                        name: "Artwork 2",
+                                        fileURL: "https://thuy-test.mystagingwebsite.com/wp-content/uploads/2018/01/cd_4_flat.jpg")
+        return [download1, download2, download3]
+    }
+
     func sampleProductMutated(_ siteID: Int? = nil) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
 
@@ -643,8 +657,9 @@ private extension ProductStoreTests {
                        totalSales: 66,
                        virtual: false,
                        downloadable: true,
-                       downloadLimit: -1,
-                       downloadExpiry: -1,
+                       downloads: sampleDownloads(),
+                       downloadLimit: 1,
+                       downloadExpiry: 1,
                        externalURL: "http://somewhere.com.net",
                        taxStatusKey: "taxable",
                        taxClass: "",
@@ -756,6 +771,7 @@ private extension ProductStoreTests {
                        totalSales: 0,
                        virtual: false,
                        downloadable: false,
+                       downloads: [],
                        downloadLimit: -1,
                        downloadExpiry: -1,
                        externalURL: "",

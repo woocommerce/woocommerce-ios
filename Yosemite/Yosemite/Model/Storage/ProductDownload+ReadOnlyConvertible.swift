@@ -22,4 +22,3 @@ extension Storage.ProductDownload: ReadOnlyConvertible {
                                fileURL: fileURL ?? "")
     }
 }
-

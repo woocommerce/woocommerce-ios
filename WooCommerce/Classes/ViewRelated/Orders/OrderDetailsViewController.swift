@@ -517,7 +517,7 @@ private extension OrderDetailsViewController {
 
         cell.isSystemAuthor = note.isSystemAuthor
         cell.isCustomerNote = note.isCustomerNote
-        cell.dateCreated = note.dateCreated.toString(dateStyle: .medium, timeStyle: .short)
+        cell.dateCreated = note.dateCreated.toString(dateStyle: .long, timeStyle: .short)
         cell.contents = note.note.strippedHTML
     }
 
@@ -593,7 +593,7 @@ private extension OrderDetailsViewController {
             self?.trackingWasPressed(at: indexPath)
         }
 
-        if let dateShipped = tracking.dateShipped?.toString(dateStyle: .medium, timeStyle: .none) {
+        if let dateShipped = tracking.dateShipped?.toString(dateStyle: .long, timeStyle: .none) {
             cell.bottomText = String.localizedStringWithFormat(
                 NSLocalizedString("Shipped %@",
                                   comment: "Date an item was shipped"),

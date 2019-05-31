@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-15 09:54:03+0000 */
+/* Translation-Revision-Date: 2019-05-28 15:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -55,7 +55,7 @@
 "All" = "全部";
 
 /* Mark all notifications as read notice */
-"All notifications marked as read" = "All notifications marked as read";
+"All notifications marked as read" = "所有通知标为已读";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "马上就好！请输入验证器应用程序中的验证码。";
@@ -170,7 +170,7 @@
 "Continue reading" = "继续阅读";
 
 /* Copy address text button title — should be one word and as short as possible. */
-"Copy" = "Copy";
+"Copy" = "复制";
 
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "无法检测站点购买内容。";
@@ -188,7 +188,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "无法连接。服务器上没有所需的 XML-RPC 方法。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "无法连接。尝试访问您的站点 XMLRPC 终端时收到了 403 错误。与您的站点进行通信所需要的应用程序。请联系您的托管服务提供商以解决此问题。";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "无法连接。尝试访问您的站点 XMLRPC 终端时收到了 403 错误。与您的站点进行通信所需要的应用程序。请联系您的托管服务提供商以解决此问题。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "无法连接。您的主机会阻止 POST 请求，而应用程序需要通过该请求与您的站点通信。请联系您的托管服务提供商以解决此问题。";
@@ -223,7 +223,8 @@
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "删除";
 
-/* Delete a Shipment Tracking */
+/* Delete a Shipment Tracking
+   Delete tracking button title */
 "Delete Tracking" = "删除跟踪信息";
 
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
@@ -239,7 +240,7 @@
 "Discount" = "折扣";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Product details screen - button title for closing the view */
+   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "关闭";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -269,6 +270,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "双击切换设置。";
 
+/* Display label for the product's draft status */
+"Draft" = "草稿";
+
 /* Email address text field placeholder */
 "Email" = "E-mail";
 
@@ -286,6 +290,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空 URL";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "请输入有效的 URL，例如 example.com。";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "输入提供商名称";
@@ -366,9 +373,6 @@
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "隐藏账单";
-
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "此 URL 可能并未指向 WordPress 站点。请仔细检查拼写，然后重试。";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "如果禁用，备注将不会公开";
@@ -498,6 +502,9 @@
 /* Plural of 'month' — a statistical unit */
 "Months" = "月";
 
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+"More" = "更多";
+
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "将评论移动至垃圾评论";
 
@@ -565,7 +572,7 @@
 "Notifications" = "Notifications";
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "Notifications: %@";
+"Notifications: %@" = "通知：%@";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -625,7 +632,7 @@
 "Orders" = "订单";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
-"Orders: %@" = "Orders: %@";
+"Orders: %@" = "订单：%@";
 
 /* My Store > Settings > Other app section */
 "Other" = "其他";
@@ -642,6 +649,9 @@
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "通过 (order.paymentMethodTitle) 接受 (totalValue) 的付款";
+
+/* Display label for the product's pending status */
+"Pending" = "待审";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "电话号码：%@";
@@ -686,6 +696,9 @@
    Privacy settings screen title */
 "Privacy Settings" = "隐私设置";
 
+/* Display label for the product's private status */
+"Private" = "非公开";
+
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "私人备注";
@@ -702,6 +715,9 @@
 
 /* Add Custom shipping provider. Title of cell presenting the provider name */
 "Provider name" = "提供商名称";
+
+/* Display label for the product's published status */
+"Publish" = "发布";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "在公园中发布文章，在公共汽车上写博客，在咖啡馆中发表评论，WordPress 永远都陪着您。";
@@ -748,7 +764,8 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "审核、准备和配送这些待处理订单";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
+   Reviews descriptive label */
 "Reviews" = "评论";
 
 /* SKU label */
@@ -806,6 +823,9 @@
 
 /* Footer text to show the billing cell */
 "Show billing" = "显示账单";
+
+/* Accessibility hint for Delete Shipment button in Order details screen */
+"Shows more options." = "显示更多选项。";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "注册";
@@ -954,6 +974,9 @@
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "站点地址必须短于64个字符。";
 
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "此地址下的站点不是 WordPress 站点。站点必须使用 WordPress，我们才能建立连接。";
+
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "无法删除该站点。";
 
@@ -1012,14 +1035,17 @@
 /* Total label for payment view */
 "Total" = "总计";
 
+/* Product details screen - total orders descriptive label */
+"Total Orders" = "订单总数";
+
 /* Description for Top Performers right column header */
 "Total Spend" = "总花费";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "订单总数：%ld";
 
-/* Track package button title */
-"Track package" = "跟踪包裹";
+/* Track shipment button title */
+"Track Shipment" = "跟踪配送";
 
 /* Order tracking section title */
 "Tracking" = "跟踪";
@@ -1032,9 +1058,6 @@
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "跟踪编号 %@";
-
-/* Accessibility hint for Track Package button in Order details screen */
-"Tracks a shipment." = "跟踪配送。";
 
 /* Move a comment to the trash */
 "Trash" = "移到回收站";
@@ -1091,7 +1114,7 @@
 "Unable to refresh list" = "无法刷新列表";
 
 /* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
-"Unable to successfully connect to %@" = "Unable to successfully connect to %@";
+"Unable to successfully connect to %@" = "无法成功连接到 %@";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "无法验证电子邮件地址。请稍后重试。";
@@ -1154,8 +1177,14 @@
 /* View application log cell title */
 "View Application Log" = "查看应用程序日志";
 
+/* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
+"View affiliate product" = "查看关联产品";
+
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "查看之前提交的支持申请单";
+
+/* The descriptive label. Tapping the row will open the product's page in a web view. */
+"View product on store" = "查看商店中的产品";
 
 /* User role badge */
 "Viewer" = "查看者";
@@ -1248,7 +1277,7 @@
 "approved" = "已批准";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordress.com";
+"example.com" = "example.com";
 
 /* Later today */
 "later today" = "稍后再说";

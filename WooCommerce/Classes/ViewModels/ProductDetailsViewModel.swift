@@ -600,22 +600,15 @@ extension ProductDetailsViewModel {
         let title = NSLocalizedString("Purchase Details",
                                       comment: "Product Details - purchase details section title")
         switch product.productType {
-        case .simple:
-            let rows: [Row] = product.downloadable == true ? [.downloads, .purchaseNote] :
-                [.shipping, .purchaseNote]
+        case .simple, .variable, .custom(_):
+            var rows: [Row] = product.downloadable ? [.downloads] : [.shipping]
+            if let purchaseNote = product.purchaseNote,
+                !purchaseNote.isEmpty {
+                rows.append(.purchaseNote)
+            }
             return Section(title: title, rows: rows)
-        case .affiliate:
+        case .affiliate, .grouped:
             return nil
-        case .grouped:
-            return nil
-        case .variable:
-            let rows: [Row] = product.downloadable == true ? [.downloads, .purchaseNote] :
-                [.shipping, .purchaseNote]
-            return Section(title: title, rows: rows)
-        case .custom(_):
-            let rows: [Row] = product.downloadable == true ? [.downloads, .purchaseNote] :
-                [.shipping, .purchaseNote]
-            return Section(title: title, rows: rows)
         }
     }
 

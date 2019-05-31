@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-14 11:54:02+0000 */
+/* Translation-Revision-Date: 2019-05-28 15:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -188,7 +188,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "تعذر الاتصال. تكون طرق XML-RPC المطلوبة مفقودة على الخادم.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "تعذر الاتصال. تلقينا الخطأ 403 عند محاولة الوصول إلى نقطة نهاية موقعك XMLRPC. يحتاج التطبيق إلى ذلك للاتصال بموقعك. يُرجى الاتصال بالمضيف لحل هذه المشكلة.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "تعذر الاتصال. تلقينا الخطأ 403 عند محاولة الوصول إلى نقطة نهاية موقعك XMLRPC. يحتاج التطبيق إلى ذلك للاتصال بموقعك. يُرجى الاتصال بالمضيف لحل هذه المشكلة.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "تعذر الاتصال. يحظر مضيفك طلبات POST، ويحتاج التطبيق إلى ذلك للاتصال بموقعك. يُرجى الاتصال بالمضيف لحل هذه المشكلة.";
@@ -223,7 +223,8 @@
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "حذف";
 
-/* Delete a Shipment Tracking */
+/* Delete a Shipment Tracking
+   Delete tracking button title */
 "Delete Tracking" = "حذف التعقب";
 
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
@@ -239,7 +240,7 @@
 "Discount" = "خصم";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Product details screen - button title for closing the view */
+   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "رفض";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -249,7 +250,7 @@
 "Dotcom Error: [(code)] (theMessage)" = "خطأ في الدوت كوم: [(رمز)] (theMessage)";
 
 /* WordPress.com error thrown when the the request REST API url is invalid. */
-"Dotcom Invalid REST Route" = "دوت كوم غير صالح - مسار REST";
+"Dotcom Invalid REST Route" = "مسار REST غير صالح في Dotcom";
 
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "رمز الدوت كوم المميز مفقود";
@@ -269,6 +270,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "اضغط ضغطًا مزدوجًا لتبديل الإعداد.";
 
+/* Display label for the product's draft status */
+"Draft" = "مسودة";
+
 /* Email address text field placeholder */
 "Email" = "البريد الإلكتروني";
 
@@ -286,6 +290,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "عنوان URL فارغ";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "أدخل عنوان URL صالحًا، على سبيل المثال example.com.";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "إدخال اسم المزوِّد";
@@ -366,9 +373,6 @@
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "إخفاء الفوترة";
-
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "عذرًا، لا يبدو أن هناك موقعًا لوردبرس على عنوان URL هذا. تحقق مجددًا من التهجئة وحاول مجددًا.";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "في حالة تعطيلها، فستكون الملاحظة خاصة";
@@ -497,6 +501,9 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "أشهر";
+
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+"More" = "المزيد";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "ينقل تعليقًا إلى البريد المزعج";
@@ -643,6 +650,9 @@
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "تم استلام المبلغ (totalValue) عبر (order.paymentMethodTitle)";
 
+/* Display label for the product's pending status */
+"Pending" = "انتظار";
+
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "رقم الهاتف: %@";
 
@@ -686,6 +696,9 @@
    Privacy settings screen title */
 "Privacy Settings" = "إعدادات الخصوصية";
 
+/* Display label for the product's private status */
+"Private" = "خاص";
+
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "ملاحظة خاصة";
@@ -702,6 +715,9 @@
 
 /* Add Custom shipping provider. Title of cell presenting the provider name */
 "Provider name" = "اسم المزوِّد";
+
+/* Display label for the product's published status */
+"Publish" = "نشر";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "نشر من قائمة الانتظار. تدوين من قائمة النقل. تعليق من المقهى. يذهب وردبرس حيثما تُحدد.";
@@ -748,7 +764,8 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "مراجعة هذه الطلبات المُعلّقة وإعدادها وشحنها";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
+   Reviews descriptive label */
 "Reviews" = "مراجعات";
 
 /* SKU label */
@@ -806,6 +823,9 @@
 
 /* Footer text to show the billing cell */
 "Show billing" = "إظهار الفوترة";
+
+/* Accessibility hint for Delete Shipment button in Order details screen */
+"Shows more options." = "إظهار المزيد من الخيارات.";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "التسجيل";
@@ -954,6 +974,9 @@
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "يجب أن يكون طول عنوان الموقع أقل من 64 حرفًا.";
 
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "الموقع الموجود على هذا العنوان ليس موقع وردبرس. لكي نتصل بالموقع، يجب أن يستخدم وردبرس.";
+
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "تعذر حذف الموقع.";
 
@@ -1012,14 +1035,17 @@
 /* Total label for payment view */
 "Total" = "الإجمالي";
 
+/* Product details screen - total orders descriptive label */
+"Total Orders" = "إجمالي الطلبات";
+
 /* Description for Top Performers right column header */
 "Total Spend" = "إجمالي الإنفاق";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "إجمالي الطلبات: %ld";
 
-/* Track package button title */
-"Track package" = "تعقب الحزمة";
+/* Track shipment button title */
+"Track Shipment" = "تعقب الشحنة";
 
 /* Order tracking section title */
 "Tracking" = "التعقب";
@@ -1032,9 +1058,6 @@
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "رقم التعقب %@";
-
-/* Accessibility hint for Track Package button in Order details screen */
-"Tracks a shipment." = "يقوم بتعقب شحنة.";
 
 /* Move a comment to the trash */
 "Trash" = "سلة المهملات";
@@ -1070,7 +1093,7 @@
 "Unable to find WooCommerce stores connected to this account" = "يتعذر العثور على متاجر WooCommerce المتصلة بهذا الحساب";
 
 /* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
-"Unable to fulfill order #(orderID)" = "تعذر تنفيذ الطلب #(orderID)";
+"Unable to fulfill order #(orderID)" = "تعذر تنفيذ الطلب (orderID)";
 
 /* Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers */
 "Unable to load Shipment Providers" = "تعذر تحميل مزوّدي الشحنة";
@@ -1154,8 +1177,14 @@
 /* View application log cell title */
 "View Application Log" = "عرض سجل التطبيق";
 
+/* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
+"View affiliate product" = "عرض منتج تابع";
+
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "عرض تذاكر الدعم التي تم إرسالها مسبقًا";
+
+/* The descriptive label. Tapping the row will open the product's page in a web view. */
+"View product on store" = "عرض منتج على المتجر";
 
 /* User role badge */
 "Viewer" = "المشاهد";
@@ -1248,7 +1277,7 @@
 "approved" = "تمت الموافقة عليها";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordress.com";
+"example.com" = "example.com";
 
 /* Later today */
 "later today" = "في وقتٍ لاحقٍ اليوم";

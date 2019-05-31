@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-06 15:27:06+0000 */
+/* Translation-Revision-Date: 2019-05-29 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -55,7 +55,7 @@
 "All" = "Alla";
 
 /* Mark all notifications as read notice */
-"All notifications marked as read" = "Alla notiser markerade som lästa";
+"All notifications marked as read" = "Alla meddelanden markerade som lästa";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Nästan klart! Skriv in verifieringskoden från din autentiserings-app.";
@@ -188,7 +188,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Kunde inte ansluta. XML-RPC-metoder som krävs saknas på servern.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Det gick inte att ansluta. När vi försökte ansluta till XMLRPC-ändpunkten för din webbplats fick vi felkod 403. Appen behöver detta för att kommunicera med webbplatsen. Kontakta webbhotellet för att lösa problemet.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Det gick inte att ansluta. När vi försökte ansluta till XMLRPC-ändpunkten för din webbplats fick vi felkod 403. Appen behöver detta för att kommunicera med webbplatsen. Kontakta webbhotellet för att lösa problemet.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Det gick inte att ansluta. Din webbserver blockerar POST-transaktioner, vilket appen behöver för att kommunicera med webbplatsen. Kontakta webbhotellet för att lösa problemet.";
@@ -197,7 +197,7 @@
 "Current" = "Nuvarande";
 
 /* Name of the section for custom shipment tracking providers */
-"Custom" = "Custom";
+"Custom" = "Anpassad";
 
 /* Add custom shipping provider. Content of cell titled Shipping Provider
    Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
@@ -223,11 +223,12 @@
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "Ta bort";
 
-/* Delete a Shipment Tracking */
+/* Delete a Shipment Tracking
+   Delete tracking button title */
 "Delete Tracking" = "Ta bort spårning";
 
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
-"Deletes a shipment's tracking information." = "Deletes a shipment's tracking information.";
+"Deletes a shipment's tracking information." = "Raderar spårningsinformationen för en försändning.";
 
 /* The row label to tap for a detailed product list */
 "Details" = "Detaljer";
@@ -239,7 +240,7 @@
 "Discount" = "Rabatt";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Product details screen - button title for closing the view */
+   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Stäng";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -269,6 +270,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Dubbelpeka för att växla inställning.";
 
+/* Display label for the product's draft status */
+"Draft" = "Utkast";
+
 /* Email address text field placeholder */
 "Email" = "E-post";
 
@@ -287,8 +291,11 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "URL ej angiven";
 
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "Ange en giltig URL, t.ex. exempel.com.";
+
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
-"Enter provider name" = "Enter provider name";
+"Enter provider name" = "Ange leverantörens namn";
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "Ange adressen till den WooCommerce-butik som du vill ansluta.";
@@ -300,10 +307,10 @@
 "Enter the password for your WordPress.com account." = "Ange lösenordet för ditt konto på WordPress.com.";
 
 /* Add custom shipping provider. Placeholder of cell presenting tracking link */
-"Enter tracking link" = "Enter tracking link";
+"Enter tracking link" = "Ange spårningslänk";
 
 /* Add custom shipping provider. Placeholder of cell presenting tracking number */
-"Enter tracking number" = "Enter tracking number";
+"Enter tracking number" = "Ange spårningsnummer";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
@@ -366,9 +373,6 @@
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "Dölj fakturering";
-
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hmm. Det verkar inte finnas någon WordPress-webbplats på denna URL. Kolla stavningen och försök igen.";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Om detta inaktiveras kommer noteringen att vara privat";
@@ -498,6 +502,9 @@
 /* Plural of 'month' — a statistical unit */
 "Months" = "Månader";
 
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+"More" = "Mer";
+
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Markerar kommentaren som skräppost";
 
@@ -565,7 +572,7 @@
 "Notifications" = "Notiser";
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "Notis: %@";
+"Notifications: %@" = "Aviseringar: %@";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -625,7 +632,7 @@
 "Orders" = "Ordrar";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
-"Orders: %@" = "Order: %@";
+"Orders: %@" = "Ordrar: %@";
 
 /* My Store > Settings > Other app section */
 "Other" = "Andra";
@@ -642,6 +649,9 @@
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "Betalning på (totalValue) mottagen via (order.paymentMethodTitle)";
+
+/* Display label for the product's pending status */
+"Pending" = "Inväntar granskning";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Telefonnummer %@";
@@ -686,6 +696,9 @@
    Privacy settings screen title */
 "Privacy Settings" = "Inställningar för integritet";
 
+/* Display label for the product's private status */
+"Private" = "Privat";
+
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Privat notering";
@@ -701,7 +714,10 @@
 "Prompts with the option to call or message the billing customer." = "Anvisningar med alternativet att ringa eller skicka meddelande till faktureringskunden.";
 
 /* Add Custom shipping provider. Title of cell presenting the provider name */
-"Provider name" = "Provider name";
+"Provider name" = "Namn på leverantör";
+
+/* Display label for the product's published status */
+"Publish" = "Publicera";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publicera från parkbänken. Blogga på bussen. Kommentera på ditt favoritkafé. WordPress har du alltid med dig.";
@@ -748,7 +764,8 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Granska, förbered och skicka dessa väntande ordrar";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
+   Reviews descriptive label */
 "Reviews" = "Recensioner";
 
 /* SKU label */
@@ -806,6 +823,9 @@
 
 /* Footer text to show the billing cell */
 "Show billing" = "Visa fakturering";
+
+/* Accessibility hint for Delete Shipment button in Order details screen */
+"Shows more options." = "Visa fler alternativ.";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "Skapa konto";
@@ -954,6 +974,9 @@
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "Adressen till webbplatsen måste vara kortare än 64 tecken.";
 
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Webbplatsen på den här adressen är inte en WordPress-webbplats. Webbplatsen måste använda WordPress för att vi ska kunna ansluta till den.";
+
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "Webbplatsen kunde inte raderas.";
 
@@ -1012,29 +1035,29 @@
 /* Total label for payment view */
 "Total" = "Totalt";
 
+/* Product details screen - total orders descriptive label */
+"Total Orders" = "Totalt antal ordrar";
+
 /* Description for Top Performers right column header */
 "Total Spend" = "Spenderat totalt";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "Totalt antal ordrar: %ld";
 
-/* Track package button title */
-"Track package" = "Spåra paket";
+/* Track shipment button title */
+"Track Shipment" = "Spåra leverans";
 
 /* Order tracking section title */
 "Tracking" = "Spårning";
 
 /* Add custom shipping provider. Title of cell presenting tracking link */
-"Tracking link (optional)" = "Tracking link (optional)";
+"Tracking link (optional)" = "Spårningslänk (tillval)";
 
 /* Add / Edit shipping provider. Title of cell presenting tracking number */
 "Tracking number" = "Spårningsnummer";
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Spårningsnummer %@";
-
-/* Accessibility hint for Track Package button in Order details screen */
-"Tracks a shipment." = "Spårar en leverans.";
 
 /* Move a comment to the trash */
 "Trash" = "Ta bort";
@@ -1091,7 +1114,7 @@
 "Unable to refresh list" = "Kunde inte uppdatera listan";
 
 /* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
-"Unable to successfully connect to %@" = "Kan inte ansluta till %@";
+"Unable to successfully connect to %@" = "Det går inte att ansluta till %@";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Kunde inte verifiera e-postadressen. Försök igen senare.";
@@ -1154,8 +1177,14 @@
 /* View application log cell title */
 "View Application Log" = "Visa programloggen";
 
+/* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
+"View affiliate product" = "Visa relaterad produkt";
+
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Visa tidigare inskickade supportärenden";
+
+/* The descriptive label. Tapping the row will open the product's page in a web view. */
+"View product on store" = "Visa produkt i butik";
 
 /* User role badge */
 "Viewer" = "Läsare";
@@ -1248,7 +1277,7 @@
 "approved" = "godkänd";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "exempel.wordress.com";
+"example.com" = "exempel.com";
 
 /* Later today */
 "later today" = "senare idag";

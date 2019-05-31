@@ -6,7 +6,7 @@ import WordPressAuthenticator
 
 /// Displays the WooCommerce Prologue UI.
 ///
-class LoginPrologueViewController: UIViewController {
+final class LoginPrologueViewController: UIViewController {
 
     /// Background View, to be placed surrounding the bottom area.
     ///
@@ -49,6 +49,11 @@ class LoginPrologueViewController: UIViewController {
         setupBackgroundView()
         setupContainerView()
         setupJetpackImage()
+
+        setupLabels()
+    }
+
+    private func setupLabels() {
         setupDisclaimerLabel()
         setupUpperLabel()
         setupLoginButton()
@@ -79,7 +84,8 @@ private extension LoginPrologueViewController {
 
     func setupUpperLabel() {
         upperLabel.text = NSLocalizedString("Manage orders, track sales and monitor store activity with real-time alerts.", comment: "Login Prologue Legend")
-        upperLabel.font = UIFont.font(forStyle: .subheadline, weight: .bold)
+        upperLabel.adjustsFontForContentSizeCategory = true
+        upperLabel.font = StyleManager.subheadlineBoldFont
         upperLabel.textColor = StyleManager.wooCommerceBrandColor
     }
 
@@ -89,6 +95,7 @@ private extension LoginPrologueViewController {
 
     func setupDisclaimerLabel() {
         disclaimerTextView.attributedText = disclaimerAttributedText
+        disclaimerTextView.adjustsFontForContentSizeCategory = true
         disclaimerTextView.textContainerInset = .zero
         disclaimerTextView.linkTextAttributes = [
             .foregroundColor: UIColor.white,
@@ -99,9 +106,10 @@ private extension LoginPrologueViewController {
 
     func setupLoginButton() {
         let title = NSLocalizedString("Log in with Jetpack", comment: "Authentication Login Button")
+        loginButton.titleLabel?.adjustsFontForContentSizeCategory = true
         loginButton.setTitle(title, for: .normal)
         loginButton.setTitleColor(StyleManager.wooSecondary, for: .normal)
-        loginButton.titleLabel?.font = UIFont.font(forStyle: .headline, weight: .semibold)
+        loginButton.titleLabel?.font = StyleManager.headlineSemiBold
         loginButton.backgroundColor = .white
         loginButton.layer.cornerRadius = Settings.buttonCornerRadius
     }
@@ -145,6 +153,18 @@ extension LoginPrologueViewController {
 }
 
 
+// MARK: - Handling updated trait collections
+//
+extension LoginPrologueViewController {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
+            setupLabels()
+        }
+    }
+}
+
+
 // MARK: - Private Methods
 //
 private extension LoginPrologueViewController {
@@ -156,7 +176,7 @@ private extension LoginPrologueViewController {
                              comment: "Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language."
         )
         let disclaimerAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.font(forStyle: .caption1, weight: .thin),
+            .font: StyleManager.thinCaptionFont,
             .foregroundColor: UIColor.white
         ]
 

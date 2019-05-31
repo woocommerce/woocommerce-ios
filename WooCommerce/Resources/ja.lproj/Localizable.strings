@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-15 09:54:03+0000 */
+/* Translation-Revision-Date: 2019-05-31 04:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -188,7 +188,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "接続できませんでした。必要な XML-RPC メソッドがサーバーにありません。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "接続できませんでした。あなたのサイトの XMLRPC エンドポイントにアクセスする際に、403エラーが発生しました。これは、アプリからあなたのサイトと通信するために必要です。ホスティングサービスに連絡して、この問題を解決してください。";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "接続できませんでした。あなたのサイトの XMLRPC エンドポイントにアクセスする際に、403エラーが発生しました。これは、アプリからあなたのサイトと通信するために必要です。ホスティングサービスに連絡して、この問題を解決してください。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "接続できませんでした。ご利用のホスティングサービスは POST 要求をブロックしていますが、アプリはあなたのサイトとの通信に POST 要求を必要としています。ホスティングサービスに連絡して、この問題を解決してください。";
@@ -223,7 +223,8 @@
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "削除";
 
-/* Delete a Shipment Tracking */
+/* Delete a Shipment Tracking
+   Delete tracking button title */
 "Delete Tracking" = "追跡を削除";
 
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
@@ -239,7 +240,7 @@
 "Discount" = "割引";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Product details screen - button title for closing the view */
+   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "非表示";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -269,6 +270,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "設定を切り替えるにはダブルタップします。";
 
+/* Display label for the product's draft status */
+"Draft" = "下書き";
+
 /* Email address text field placeholder */
 "Email" = "メール";
 
@@ -286,6 +290,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空の URL";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "有効な URL を example.com のように入力します。";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "プロバイダ名を入力";
@@ -366,9 +373,6 @@
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "請求情報を非表示";
-
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "この URL の WordPress サイトはないようです。綴りをもう一度確認してから、やり直してください。";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "無効の場合はメモが非公開になります";
@@ -497,6 +501,9 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "月";
+
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+"More" = "その他";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "コメントをスパムに移動する";
@@ -643,6 +650,9 @@
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "Payment of (totalValue) received via (order.paymentMethodTitle)";
 
+/* Display label for the product's pending status */
+"Pending" = "承認待ち";
+
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "電話番号: %@";
 
@@ -686,6 +696,9 @@
    Privacy settings screen title */
 "Privacy Settings" = "プライバシー設定";
 
+/* Display label for the product's private status */
+"Private" = "プライベート";
+
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "プライベートメモ";
@@ -702,6 +715,9 @@
 
 /* Add Custom shipping provider. Title of cell presenting the provider name */
 "Provider name" = "プロバイダ名";
+
+/* Display label for the product's published status */
+"Publish" = "公開";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "公園で投稿を公開。バスからブログに投稿。カフェでコメントを送信。WordPress をどこでも使えます。";
@@ -748,7 +764,8 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "保留中の注文を確認して準備し、配送してください";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
+   Reviews descriptive label */
 "Reviews" = "レビュー";
 
 /* SKU label */
@@ -806,6 +823,9 @@
 
 /* Footer text to show the billing cell */
 "Show billing" = "請求情報を表示";
+
+/* Accessibility hint for Delete Shipment button in Order details screen */
+"Shows more options." = "オプションをさらに表示します。";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "登録";
@@ -954,6 +974,9 @@
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "サイトアドレスは64文字以下にしてください。";
 
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "このアドレスのサイトは WordPress のサイトではありません。接続するには、接続先のサイトが WordPress を使用している必要があります。";
+
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "サイトを削除できませんでした。";
 
@@ -1012,14 +1035,17 @@
 /* Total label for payment view */
 "Total" = "合計:";
 
+/* Product details screen - total orders descriptive label */
+"Total Orders" = "注文合計";
+
 /* Description for Top Performers right column header */
 "Total Spend" = "支払い合計額";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "注文合計:%ld";
 
-/* Track package button title */
-"Track package" = "荷物を追跡";
+/* Track shipment button title */
+"Track Shipment" = "発送を追跡";
 
 /* Order tracking section title */
 "Tracking" = "追跡";
@@ -1032,9 +1058,6 @@
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "追跡番号: %@";
-
-/* Accessibility hint for Track Package button in Order details screen */
-"Tracks a shipment." = "荷物を追跡します。";
 
 /* Move a comment to the trash */
 "Trash" = "ゴミ箱";
@@ -1154,8 +1177,14 @@
 /* View application log cell title */
 "View Application Log" = "アプリケーションログを表示";
 
+/* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
+"View affiliate product" = "アフィリエイト向け商品を表示";
+
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "送信済みのサポートチケットを表示";
+
+/* The descriptive label. Tapping the row will open the product's page in a web view. */
+"View product on store" = "ストアで商品を表示";
 
 /* User role badge */
 "Viewer" = "読者";
@@ -1248,7 +1277,7 @@
 "approved" = "承認";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordress.com";
+"example.com" = "example.com";
 
 /* Later today */
 "later today" = "今日あとで";

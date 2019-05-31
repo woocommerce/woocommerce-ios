@@ -77,20 +77,17 @@ class DefaultStyle: Style {
     static let maxFontSize              = CGFloat(28.0)
     let actionButtonTitleFont           = UIFont.font(forStyle: .headline, weight: .semibold)
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
-    let headlineSemiBold                = DefaultStyle
-        .fontForTextStyle(.headline,
-                          weight: .semibold,
-                          maximumPointSize: DefaultStyle.maxFontSize)
+    let headlineSemiBold                = DefaultStyle.fontForTextStyle(.headline,
+                                                                        weight: .semibold,
+                                                                        maximumPointSize: DefaultStyle.maxFontSize)
     let subheadlineFont                 = UIFont.font(forStyle: .subheadline, weight: .regular)
-    let subheadlineBoldFont             = DefaultStyle
-        .fontForTextStyle(.subheadline,
-                          weight: .bold,
-                          maximumPointSize: DefaultStyle.maxFontSize)
+    let subheadlineBoldFont             = DefaultStyle.fontForTextStyle(.subheadline,
+                                                                        weight: .bold,
+                                                                        maximumPointSize: DefaultStyle.maxFontSize)
     let chartLabelFont                  = UIFont.font(forStyle: .caption2, weight: .ultraLight)
-    let thinCaptionFont                 = DefaultStyle
-        .fontForTextStyle(.caption1,
-                          weight: .thin,
-                          maximumPointSize: DefaultStyle.maxFontSize)
+    let thinCaptionFont                 = DefaultStyle.fontForTextStyle(.caption1,
+                                                                        weight: .thin,
+                                                                        maximumPointSize: DefaultStyle.maxFontSize)
 
     /// Colors!
     ///

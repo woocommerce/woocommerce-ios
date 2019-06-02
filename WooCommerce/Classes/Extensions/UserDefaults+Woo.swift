@@ -33,12 +33,6 @@ extension UserDefaults {
         return value(forKey: key.rawValue) as? T
     }
 
-    /// Returns the boolean value (if any) associated with the specified Key.
-    ///
-    func bool(forKey key: Key) -> Bool? {
-        return bool(forKey: key.rawValue)
-    }
-
     /// Stores the Key/Value Pair.
     ///
     func set<T>(_ value: T?, forKey key: Key) {

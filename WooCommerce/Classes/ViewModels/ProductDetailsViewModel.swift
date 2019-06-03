@@ -254,7 +254,7 @@ extension ProductDetailsViewModel {
             configureShipping(cell)
         case let cell as TitleBodyTableViewCell where row == .downloads:
             configureDownloads(cell)
-        case let cell as TitleBodyTableViewCell where row == .purchaseNote:
+        case _ as TitleBodyTableViewCell where row == .purchaseNote:
             break
         default:
             fatalError("Unidentified row type")

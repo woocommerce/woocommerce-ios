@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -28,18 +28,30 @@
                             <action selector="dateChanged:" destination="KGk-i7-Jjw" eventType="valueChanged" id="5QC-MP-oPB"/>
                         </connections>
                     </datePicker>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r88-F3-jXj">
+                        <rect key="frame" x="0.0" y="215" width="320" height="1"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="1" id="OQ8-I9-Tcy"/>
+                        </constraints>
+                    </view>
                 </subviews>
             </tableViewCellContentView>
             <constraints>
+                <constraint firstItem="njF-e1-oar" firstAttribute="trailing" secondItem="r88-F3-jXj" secondAttribute="trailing" id="3xc-ca-Hpe"/>
                 <constraint firstItem="Jym-fu-gTL" firstAttribute="top" secondItem="njF-e1-oar" secondAttribute="top" id="916-d2-5BV"/>
+                <constraint firstItem="r88-F3-jXj" firstAttribute="leading" secondItem="njF-e1-oar" secondAttribute="leading" id="JFR-2h-1fi"/>
                 <constraint firstItem="njF-e1-oar" firstAttribute="bottom" secondItem="Jym-fu-gTL" secondAttribute="bottom" id="NMK-Zt-uDN"/>
                 <constraint firstItem="Jym-fu-gTL" firstAttribute="leading" secondItem="njF-e1-oar" secondAttribute="leading" id="Ra1-Po-U9n"/>
                 <constraint firstItem="njF-e1-oar" firstAttribute="trailing" secondItem="Jym-fu-gTL" secondAttribute="trailing" id="YY6-YI-s0p"/>
+                <constraint firstItem="njF-e1-oar" firstAttribute="bottom" secondItem="r88-F3-jXj" secondAttribute="bottom" id="bIp-SK-JvX"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="bottomBorder" destination="r88-F3-jXj" id="6I7-ce-JED"/>
                 <outlet property="picker" destination="Jym-fu-gTL" id="sId-5O-xO6"/>
             </connections>
+            <point key="canvasLocation" x="137.59999999999999" y="118.74062968515743"/>
         </tableViewCell>
     </objects>
 </document>

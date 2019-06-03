@@ -15,7 +15,6 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
                                                trackingURL: "http://automattic.com",
                                                dateShipped: Date(timeIntervalSince1970: 0))
 
-        static let buttonTitle = "Track shipment"
     }
 
     override func setUp() {
@@ -45,18 +44,6 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
         populateCell()
 
         XCTAssertEqual(cell?.getBottomLabel().text, MockData.localizedShipmentDate)
-    }
-
-    func testActionButtonExecutesCallback() {
-        let expect = expectation(description: "The action assigned gets called")
-
-        cell?.onActionTouchUp = {
-            expect.fulfill()
-        }
-
-        cell?.getActionButton().sendActions(for: .touchUpInside)
-
-        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func testTopLabelHasSubheadlineStyle() {
@@ -89,21 +76,6 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
         XCTAssertEqual(cellLabel?.textColor, mockLabel.textColor)
     }
 
-    func testActionButtonHasSecondaryButtonStyle() {
-        let mockButton = UIButton()
-        mockButton.applyTertiaryButtonStyle()
-
-        let cellButton = cell?.getActionButton()
-
-        XCTAssertEqual(cellButton?.backgroundColor, mockButton.backgroundColor)
-        XCTAssertEqual(cellButton?.contentEdgeInsets, mockButton.contentEdgeInsets)
-        XCTAssertEqual(cellButton?.tintColor, mockButton.tintColor)
-        XCTAssertEqual(cellButton?.layer.borderWidth, mockButton.layer.borderWidth)
-        XCTAssertEqual(cellButton?.layer.cornerRadius, mockButton.layer.cornerRadius)
-
-        XCTAssertEqual(cellButton?.titleLabel?.font, mockButton.titleLabel?.font)
-    }
-
     func testTopLabelAccessibilityLabelMatchesExpectation() {
         populateCell()
 
@@ -122,24 +94,9 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
         XCTAssertEqual(cell?.getMiddleLabel().accessibilityLabel, expectedLabel)
     }
 
-    func testButtonAccessibilityLabelMatchesExpectation() {
-        populateCell()
-
-        XCTAssertEqual(cell?.getActionButton().accessibilityLabel, MockData.buttonTitle)
-    }
-
-    func testButtonAccessibilityhintMatchesExpectation() {
-        populateCell()
-
-        let expectedHint = "Tracks a shipment."
-
-        XCTAssertEqual(cell?.getActionButton().accessibilityHint, expectedHint)
-    }
-
     private func populateCell() {
         cell?.topText = MockData.tracking.trackingProvider
         cell?.middleText = MockData.tracking.trackingNumber
         cell?.bottomText = MockData.localizedShipmentDate
-        cell?.actionButtonNormalText = MockData.buttonTitle
     }
 }

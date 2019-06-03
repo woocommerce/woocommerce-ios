@@ -34,7 +34,7 @@ public struct MIContainer {
     let fieldNames: [String]
 
     func fetchStringValue<T: RawRepresentable>(for field: T) -> String where T.RawValue == String {
-        guard let index = fieldNames.index(of: field.rawValue) else {
+        guard let index = fieldNames.firstIndex(of: field.rawValue) else {
             return ""
         }
 
@@ -51,7 +51,7 @@ public struct MIContainer {
     }
 
     func fetchIntValue<T: RawRepresentable>(for field: T) -> Int where T.RawValue == String {
-        guard let index = fieldNames.index(of: field.rawValue),
+        guard let index = fieldNames.firstIndex(of: field.rawValue),
             let returnValue = self.data[index] as? Int else {
                 return 0
         }
@@ -59,7 +59,7 @@ public struct MIContainer {
     }
 
     func fetchDoubleValue<T: RawRepresentable>(for field: T) -> Double where T.RawValue == String {
-        guard let index = fieldNames.index(of: field.rawValue) else {
+        guard let index = fieldNames.firstIndex(of: field.rawValue) else {
             return 0
         }
 

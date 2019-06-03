@@ -12,6 +12,13 @@ public extension StorageType {
         return firstObject(ofType: Account.self, matching: predicate)
     }
 
+    /// Retrieves the Stores AccountSettings.
+    ///
+    func loadAccountSettings(userId: Int) -> AccountSettings? {
+        let predicate = NSPredicate(format: "userID = %ld", userId)
+        return firstObject(ofType: AccountSettings.self, matching: predicate)
+    }
+
     /// Retrieves the Stored Site.
     ///
     func loadSite(siteID: Int) -> Site? {
@@ -233,30 +240,5 @@ public extension StorageType {
     func loadProductTag(siteID: Int, productID: Int, tagID: Int) -> ProductTag? {
         let predicate = NSPredicate(format: "product.siteID = %ld AND product.productID = %ld AND tagID = %ld", siteID, productID, tagID)
         return firstObject(ofType: ProductTag.self, matching: predicate)
-    }
-
-    /// Retrieves all of the stored ProductVariations for the provided siteID and productID.
-    ///
-    func loadProductVariations(siteID: Int, productID: Int) -> [ProductVariation]? {
-        let predicate = NSPredicate(format: "siteID = %ld AND productID = %ld", siteID, productID)
-        let descriptor = NSSortDescriptor(keyPath: \ProductVariation.variationID, ascending: false)
-        return allObjects(ofType: ProductVariation.self, matching: predicate, sortedBy: [descriptor])
-    }
-
-    /// Retrieves a stored ProductVariation for the provided siteID, productID, and variationID.
-    ///
-    func loadProductVariation(siteID: Int, productID: Int, variationID: Int) -> ProductVariation? {
-        let predicate = NSPredicate(format: "siteID = %ld AND productID = %ld AND variationID = %ld", siteID, productID, variationID)
-        return firstObject(ofType: ProductVariation.self, matching: predicate)
-    }
-
-    /// Retrieves the Stored Product Variation Attribute.
-    ///
-    /// Note: WC variation attribute ID's often have an ID of `0`, so we need to also look them up by name 😏
-    ///
-    func loadProductVariationAttribute(siteID: Int, variationID: Int, attributeID: Int, name: String) -> ProductVariationAttribute? {
-        let predicate = NSPredicate(format: "productVariation.siteID = %ld AND productVariation.variationID = %ld AND attributeID = %ld AND name ==[c] %@",
-                                    siteID, variationID, attributeID, name)
-        return firstObject(ofType: ProductVariationAttribute.self, matching: predicate)
     }
 }

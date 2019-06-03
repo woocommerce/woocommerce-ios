@@ -211,7 +211,8 @@ final class ShipmentsRemoteTests: XCTestCase {
                                                         orderID: orderID,
                                                         trackingProvider: "Some provider",
                                                         trackingNumber: "1111",
-                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s") { (shipmentTracking, error) in
+                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s",
+                                                        dateShipped: "12345") { (shipmentTracking, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(shipmentTracking)
             XCTAssertEqual(shipmentTracking?.orderID, orderID)
@@ -231,7 +232,8 @@ final class ShipmentsRemoteTests: XCTestCase {
                                                         orderID: sampleOrderID,
                                                         trackingProvider: "Some provider",
                                                         trackingNumber: "11111",
-                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s") { (shipmentTracking, error) in
+                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s",
+                                                        dateShipped: "12345") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -252,7 +254,8 @@ final class ShipmentsRemoteTests: XCTestCase {
                                                         orderID: sampleOrderID,
                                                         trackingProvider: "Some provider",
                                                         trackingNumber: "1111",
-                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s") { (shipmentTracking, error) in
+                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s",
+                                                        dateShipped: "1234") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -273,7 +276,8 @@ final class ShipmentsRemoteTests: XCTestCase {
                                                         orderID: sampleOrderID,
                                                         trackingProvider: "some tracking provider",
                                                         trackingNumber: "1111",
-                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s") { (shipmentTracking, error) in
+                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s",
+                                                        dateShipped: "1234") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
 

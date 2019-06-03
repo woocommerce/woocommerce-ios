@@ -1,1 +1,4 @@
-* Ora puoi accedere utilizzando l'indirizzo di un sito invece del tuo indirizzo e-mail.
+*Utilizzi il plugin per la tracciabilità della spedizione? Ora puoi aggiungere manualmente la tracciabilità della spedizione agli ordini.
+*A volte, provando a visualizzare i migliori esecutori del negozio, veniva visualizzato un errore "Impossibile caricare i contenuti", un'ironica mancanza di prestazioni al top dell'app. Il problema ora è stato risolto.
+*È stato risolto anche il problema che non permetteva di continuare a utilizzare il Selezionatore negozio dopo l'accesso.
+*A volte l'app si poteva arrestare con un connessione di rete lenta. Ora non succede: la connessione WiFi non dovrebbe mai impedire la gestione della propria attività.

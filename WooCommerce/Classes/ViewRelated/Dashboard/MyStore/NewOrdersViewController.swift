@@ -15,7 +15,6 @@ class NewOrdersViewController: UIViewController {
     @IBOutlet private weak var descriptionLabel: PaddedLabel!
     @IBOutlet private weak var chevronImageView: UIImageView!
     @IBOutlet private weak var actionButton: UIButton!
-    @IBOutlet private weak var bottomSpacerView: UIView!
 
     private var orderStatuses: [OrderStatus]? {
         didSet {
@@ -42,6 +41,17 @@ class NewOrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        calculatePreferredSize()
+    }
+
+    private func calculatePreferredSize() {
+        let targetSize = CGSize(width: view.bounds.width,
+                                height: UIView.layoutFittingCompressedSize.height)
+        preferredContentSize = view.systemLayoutSizeFitting(targetSize)
     }
 }
 
@@ -75,7 +85,6 @@ extension NewOrdersViewController {
 private extension NewOrdersViewController {
 
     func configureView() {
-        bottomSpacerView.backgroundColor = StyleManager.tableViewBackgroundColor
         topBorder.backgroundColor = StyleManager.wooGreyBorder
         bottomBorder.backgroundColor = StyleManager.wooGreyBorder
         titleLabel.applyHeadlineStyle()

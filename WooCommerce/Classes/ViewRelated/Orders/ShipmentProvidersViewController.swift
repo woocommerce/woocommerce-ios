@@ -30,6 +30,10 @@ final class ShipmentProvidersViewController: UIViewController {
         return noticePresenter
     }()
 
+    /// Footer spinner shown when loading data for the first time
+    ///
+    private lazy var footerSpinnerView = FooterSpinnerView()
+
     /// Deinitializer
     ///
     deinit {
@@ -40,6 +44,8 @@ final class ShipmentProvidersViewController: UIViewController {
         self.viewModel = viewModel
         self.delegate = delegate
         super.init(nibName: type(of: self).nibName, bundle: nil)
+
+        self.configureViewModel()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -52,13 +58,39 @@ final class ShipmentProvidersViewController: UIViewController {
         configureNavigation()
         configureSearchController()
         configureTable()
-        configureViewModel()
+        fetchGroups()
         startListeningToNotifications()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         searchController.dismiss(animated: false, completion: nil)
+    }
+}
+
+
+// MARK: - Fetch data
+//
+private extension ShipmentProvidersViewController {
+    /// Loads shipment tracking groups
+    ///
+    func fetchGroups() {
+        footerSpinnerView.startAnimating()
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let orderID = viewModel.order.orderID
+
+        let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID,
+                                                                                   orderID: orderID) { [weak self] error in
+                                                                                    if let error = error {
+                                                                                        self?.presentNotice(error)
+                                                                                    }
+                                                                                    self?.footerSpinnerView.stopAnimating()
+        }
+
+        StoresManager.shared.dispatch(loadGroupsAction)
     }
 }
 
@@ -91,6 +123,10 @@ private extension ShipmentProvidersViewController {
         registerTableViewCells()
         styleTableView()
 
+        if viewModel.isListEmpty {
+            table.tableFooterView = footerSpinnerView
+        }
+
         table.dataSource = self
         table.delegate = self
     }
@@ -121,6 +157,7 @@ private extension ShipmentProvidersViewController {
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        nc.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
     /// Unregisters from the Notification Center
@@ -138,6 +175,13 @@ private extension ShipmentProvidersViewController {
         table.scrollIndicatorInsets.bottom = bottomInset
     }
 
+    /// Executed whenever `UIResponder.keyboardWillhideNotification` note is posted
+    ///
+    @objc func keyboardWillHide(_ note: Notification) {
+        table.contentInset.bottom = .zero
+        table.scrollIndicatorInsets.bottom = .zero
+    }
+
     /// Returns the Keyboard Height from a (hopefully) Keyboard Notification.
     ///
     func keyboardHeight(from note: Notification) -> CGFloat {
@@ -152,10 +196,11 @@ private extension ShipmentProvidersViewController {
 //
 private extension ShipmentProvidersViewController {
     func configureViewModel() {
-        viewModel.configureResultsController(table: table)
-        viewModel.onError = { [weak self] error in
-            self?.presentNotice(error)
+        viewModel.onDataLoaded = { [weak self] in
+            self?.table.reloadData()
         }
+
+        viewModel.configureResultsController()
     }
 }
 
@@ -164,12 +209,11 @@ private extension ShipmentProvidersViewController {
 //
 extension ShipmentProvidersViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.resultsController.sections.count
+        return viewModel.numberOfSections()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let group = viewModel.resultsController.sections[section]
-        return group.objects.count
+        return viewModel.numberOfRowsInSection(section)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -178,15 +222,13 @@ extension ShipmentProvidersViewController: UITableViewDataSource {
                                                         fatalError()
         }
 
-        let group = viewModel.resultsController.sections[indexPath.section]
-        let providerName = group.objects[indexPath.item].name
-        cell.textLabel?.text = providerName
+        cell.textLabel?.text = viewModel.titleForCellAt(indexPath)
 
         return cell
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return viewModel.resultsController.sections[section].name
+        return viewModel.titleForHeaderInSection(section)
     }
 }
 
@@ -195,12 +237,19 @@ extension ShipmentProvidersViewController: UITableViewDataSource {
 //
 extension ShipmentProvidersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let group = viewModel.resultsController.sections[indexPath.section]
-        let provider = group.objects[indexPath.item]
+        if viewModel.isCustom(indexPath: indexPath) {
+            addCustomProvider()
+            return
+        }
 
-        let groupName = viewModel.resultsController.sections[indexPath.section].name
+        guard let provider = viewModel.provider(at: indexPath),
+            let groupName = viewModel.groupName(at: indexPath) else {
+                return
+        }
 
         delegate?.shipmentProviderList(self, didSelect: provider, groupName: groupName)
+
+        navigationController?.popViewController(animated: true)
     }
 }
 
@@ -220,6 +269,26 @@ extension ShipmentProvidersViewController: UISearchControllerDelegate {
     }
 }
 
+
+// MARK: - Error handling
+//
+private extension ShipmentProvidersViewController {
+    func presentNotice(_ error: Error) {
+        let title = NSLocalizedString(
+            "Unable to load Shipment Providers",
+            comment: "Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers"
+        )
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title,
+                            message: nil,
+                            feedbackType: .error,
+                            actionTitle: actionTitle) { [weak self] in
+                                self?.fetchGroups()
+        }
+
+        noticePresenter.enqueue(notice: notice)
+    }
+}
 
 // MARK: - Empty state
 //
@@ -265,28 +334,13 @@ private extension ShipmentProvidersViewController {
     }
 
     func addCustomProvider() {
-        // TO be implemented as part of #846:
-        // https://github.com/woocommerce/woocommerce-ios/issues/846
-    }
-}
+        WooAnalytics.shared.track(.orderShipmentTrackingCustomProviderSelected)
 
-// MARK: - Error handling
-//
-private extension ShipmentProvidersViewController {
-    func presentNotice(_ error: Error) {
-        let title = NSLocalizedString(
-            "Unable to load Shipment Providers",
-            comment: "Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers"
-        )
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title,
-                            message: nil,
-                            feedbackType: .error,
-                            actionTitle: actionTitle) { [weak self] in
-                                self?.viewModel.fetchGroups()
-        }
-
-        noticePresenter.enqueue(notice: notice)
+        let initialCustomProviderName = searchController.searchBar.text
+        let addCustomTrackingViewModel = AddCustomTrackingViewModel(order: viewModel.order,
+                                                                    initialName: initialCustomProviderName)
+        let addCustomTrackingViewController = ManualTrackingViewController(viewModel: addCustomTrackingViewModel)
+        navigationController?.pushViewController(addCustomTrackingViewController, animated: true)
     }
 }
 

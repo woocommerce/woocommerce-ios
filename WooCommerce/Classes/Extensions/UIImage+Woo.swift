@@ -43,6 +43,24 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Delete icon
+    ///
+    static var deleteImage: UIImage {
+        let tintColor = StyleManager.wooCommerceBrandColor
+        return Gridicon.iconOfType(.crossCircle)
+            .imageWithTintColor(tintColor)!
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// More icon
+    ///
+    static var moreImage: UIImage {
+        let tintColor = StyleManager.wooCommerceBrandColor
+        return Gridicon.iconOfType(.ellipsis)
+            .imageWithTintColor(tintColor)!
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Jetpack Logo Image
     ///
     static var jetpackLogoImage: UIImage {

@@ -79,8 +79,12 @@ final class FulfillViewController: UIViewController {
         reloadSections()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        syncTrackingsHiddingAddButtonIfNecessary()
+    }
+
+    private func syncTrackingsHiddingAddButtonIfNecessary() {
         syncTracking { [weak self] error in
             if error == nil {
                 self?.trackingIsReachable = true
@@ -261,7 +265,8 @@ extension FulfillViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let section = sections[section]
 
-        guard let leftTitle = section.title else {
+        guard let leftTitle = section.title,
+            leftTitle.isEmpty != true  else {
             return nil
         }
 
@@ -366,6 +371,9 @@ private extension FulfillViewController {
 
         cell.topText = tracking.trackingProvider
         cell.middleText = tracking.trackingNumber
+        cell.onDeleteTouchUp = { [weak self] in
+            self?.presentDeleteAlert(at: indexPath)
+        }
 
         if let dateShipped = tracking.dateShipped?.toString(dateStyle: .medium, timeStyle: .none) {
             cell.bottomText = String.localizedStringWithFormat(
@@ -421,22 +429,98 @@ extension FulfillViewController: UITableViewDelegate {
 
         case .product(let item):
             if FeatureFlag.productDetails.enabled {
-                productWasPressed(for: item.productID)
+                let productIDToLoad = item.variationID == 0 ? item.productID : item.variationID
+                productWasPressed(for: productIDToLoad)
             }
 
         case .tracking:
-            guard let shipmentTracking = orderTracking(at: indexPath) else {
-                return
-            }
-            let viewModel = EditTrackingViewModel(order: order, shipmentTracking: shipmentTracking)
-            let addTracking = ManualTrackingViewController(viewModel: viewModel)
-            let navController = WooNavigationController(rootViewController: addTracking)
-            present(navController, animated: true, completion: nil)
+            break
 
         default:
             break
         }
     }
+}
+
+
+// MARK: - Shipment Tracking deletion
+//
+private extension FulfillViewController {
+    func presentDeleteAlert(at indexPath: IndexPath) {
+        guard let shipmentTracking = orderTracking(at: indexPath),
+        let cell = tableView.cellForRow(at: indexPath) as? EditableOrderTrackingTableViewCell else {
+            return
+        }
+
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+        actionSheet.addCancelActionWithTitle(DeleteAction.cancel)
+        actionSheet.addDestructiveActionWithTitle(DeleteAction.delete) { [weak self] _ in
+            WooAnalytics.shared.track(.orderFulfillmentDeleteTrackingButtonTapped)
+            self?.deleteTracking(shipmentTracking)
+        }
+
+        let button = cell.getActionButton()
+        let buttonRect = button.convert(button.bounds, to: tableView)
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = tableView
+        popoverController?.sourceRect = buttonRect
+
+        present(actionSheet, animated: true)
+    }
+
+    func deleteTracking(_ tracking: ShipmentTracking) {
+
+        let siteID = order.siteID
+        let orderID = order.orderID
+        let trackingID = tracking.trackingID
+
+        let statusKey = order.statusKey
+        let providerName = tracking.trackingProvider ?? ""
+
+        WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
+                                                                         "status": statusKey,
+                                                                         "carrier": providerName,
+                                                                         "source": "order_fulfill"])
+
+        let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
+                                                                 orderID: orderID,
+                                                                 trackingID: trackingID) { [weak self] error in
+                                                                    if let error = error {
+                                                                        DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
+
+                                                                        WooAnalytics.shared.track(.orderTrackingDeleteFailed,
+                                                                                                  withError: error)
+                                                                        self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
+                                                                        return
+                                                                    }
+
+                                                                    WooAnalytics.shared.track(.orderTrackingDeleteSuccess)
+                                                                    self?.syncTrackingsHiddingAddButtonIfNecessary()
+        }
+
+        StoresManager.shared.dispatch(deleteTrackingAction)
+    }
+
+    /// Displays the `Unable to delete tracking` Notice.
+    ///
+    func displayDeleteErrorNotice(orderID: Int, tracking: ShipmentTracking) {
+        let title = NSLocalizedString(
+            "Unable to delete tracking for order #\(orderID)",
+            comment: "Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}"
+        )
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title,
+                            message: nil,
+                            feedbackType: .error,
+                            actionTitle: actionTitle) { [weak self] in
+                                self?.deleteTracking(tracking)
+        }
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+
 }
 
 
@@ -538,17 +622,13 @@ private extension FulfillViewController {
                 return nil
             }
 
-            let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : ""
+            let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : nil
             let row = Row.trackingAdd
 
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
-        if FeatureFlag.manualShipmentTracking.enabled {
-            sections =  [products, note, address, tracking, addTracking].compactMap { $0 }
-        } else {
-            sections = [products, note, address].compactMap { $0 }
-        }
+        sections =  [products, note, address, tracking, addTracking].compactMap { $0 }
     }
 }
 
@@ -619,4 +699,13 @@ private struct Section {
     /// Section's Row(s)
     ///
     let rows: [Row]
+}
+
+
+// MARK: - Alerts
+private enum DeleteAction {
+    static let cancel = NSLocalizedString("Cancel",
+                                          comment: "Cancel the action sheet")
+    static let delete = NSLocalizedString("Delete Tracking",
+                                          comment: "Delete a Shipment Tracking")
 }

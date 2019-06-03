@@ -2,6 +2,7 @@ import UIKit
 import Gridicons
 import SafariServices
 
+
 class PrivacySettingsViewController: UIViewController {
 
     /// Main TableView

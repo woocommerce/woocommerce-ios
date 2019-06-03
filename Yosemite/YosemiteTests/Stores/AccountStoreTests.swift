@@ -131,6 +131,45 @@ class AccountStoreTests: XCTestCase {
         compare(storageAccount: storageAccount, remoteAccount: remoteAccount)
     }
 
+    // MARK: - AccountAction.synchronizeAccountSettings
+
+    /// Verifies that `synchronizeAccountSettings` returns an error, whenever there is no backend reply.
+    ///
+    func testSynchronizeAccountSettingsReturnsErrorOnEmptyResponse() {
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectation = self.expectation(description: "Synchronize")
+
+        let action = AccountAction.synchronizeAccountSettings(userID: 10) { _, error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        accountStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `synchronizeAccountSettings` effectively persists any retrieved settings.
+    ///
+    func testSynchronizeAccountSettingsEffectivelyPersistsRetrievedSettings() {
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectation = self.expectation(description: "Synchronize")
+
+        network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.AccountSettings.self), 0)
+
+        let action = AccountAction.synchronizeAccountSettings(userID: 10) { _, error in
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
+            XCTAssertNil(error)
+            expectation.fulfill()
+        }
+
+        accountStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
     // MARK: - AccountAction.synchronizeSites
 
     /// Verifies that `synchronizeSites` returns an error, whenever there is no backend reply.
@@ -200,6 +239,45 @@ class AccountStoreTests: XCTestCase {
 
         let action = AccountAction.loadAccount(userID: 9999) { account in
             XCTAssertNil(account)
+            expectation.fulfill()
+        }
+
+        accountStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - AccountAction.loadAccountSettings
+
+    func testLoadAccountSettingsActionReturnsExpectedAccount() {
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectation = self.expectation(description: "Load AccountSettings Action Success")
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 0)
+        accountStore.upsertStoredAccountSettings(readOnlyAccountSettings: AccountSettings(userID: 10, tracksOptOut: true))
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
+
+        let action = AccountAction.loadAccountSettings(userID: 10) { accountSettings in
+            XCTAssertNotNil(accountSettings)
+            XCTAssertEqual(accountSettings!, AccountSettings(userID: 10, tracksOptOut: true))
+            expectation.fulfill()
+        }
+
+        accountStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func testLoadAccountSettingsActionReturnsNilForUnknownAccount() {
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectation = self.expectation(description: "Load AccountSettings Action Error")
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 0)
+        accountStore.upsertStoredAccountSettings(readOnlyAccountSettings: AccountSettings(userID: 10, tracksOptOut: true))
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
+
+        let action = AccountAction.loadAccountSettings(userID: 9999) { accountSettings in
+            XCTAssertNil(accountSettings)
             expectation.fulfill()
         }
 

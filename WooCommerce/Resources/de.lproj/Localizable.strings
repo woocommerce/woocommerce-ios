@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-02 10:54:03+0000 */
+/* Translation-Revision-Date: 2019-05-28 16:07:41+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -127,7 +127,7 @@
 "Can Not Request Link" = "Kann den Link nicht anfordern.";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Change order status screen - button title for closing the view */
+   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
 "Cancel" = "Abbrechen";
 
 /* shown in promotional screens during first launch */
@@ -188,7 +188,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Verbindung nicht möglich. Die erforderlichen XML-RPC-Methoden sind auf dem Server nicht vorhanden.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Verbindung fehlgeschlagen. Wir haben einen 403-Fehler erhalten, als wir versucht haben, den XMLRPC-Endpunkt deiner Website aufzurufen. Die App braucht diesen, um mit deiner Website zu kommunizieren. Kontaktiere deinen Host, um dieses Problem zu beheben.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Verbindung fehlgeschlagen. Wir haben einen 403-Fehler erhalten, als wir versucht haben, den XMLRPC-Endpunkt deiner Website aufzurufen. Die App braucht diesen, um mit deiner Website zu kommunizieren. Kontaktiere deinen Host, um dieses Problem zu beheben.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Verbindung fehlgeschlagen. Dein Host blockiert POST-Anforderungen und die App benötigt diese, um mit deiner Website zu kommunizieren. Kontaktiere deinen Host, um dieses Problem zu beheben.";
@@ -196,7 +196,11 @@
 /* Cell title: the current date. */
 "Current" = "Aktuell";
 
-/* Title of button to add a custom tracking provider if filtering the list yields no results. */
+/* Name of the section for custom shipment tracking providers */
+"Custom" = "Individuell";
+
+/* Add custom shipping provider. Content of cell titled Shipping Provider
+   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "Individueller Anbieter";
 
 /* Customer info section title
@@ -216,8 +220,15 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Tage";
 
-/* Delete Tracking button title */
+/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
+"Delete" = "Löschen";
+
+/* Delete a Shipment Tracking
+   Delete tracking button title */
 "Delete Tracking" = "Sendungsverfolgung löschen";
+
+/* Accessibility hint for Delete Shipment button in Order fulfillment screen */
+"Deletes a shipment's tracking information." = "Löscht die Tracking-Informationen einer Lieferung.";
 
 /* The row label to tap for a detailed product list */
 "Details" = "Details";
@@ -229,7 +240,7 @@
 "Discount" = "Rabatt";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Product details screen - button title for closing the view */
+   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Überspringen";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -259,14 +270,8 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Zum Umschalten der Einstellung doppeltippen.";
 
-/* Accessibility hint for Pencil button in an individual Shipment Tracking in the order fulfillment screen */
-"Edit" = "Bearbeiten";
-
-/* Edit tracking screen - title. */
-"Edit Tracking" = "Sendungsverfolgung bearbeiten";
-
-/* Accessibility hint for Edit Shipment button in Order fulfillment screen */
-"Edits a shipment." = "Bearbeitet eine Lieferung.";
+/* Display label for the product's draft status */
+"Draft" = "Entwurf";
 
 /* Email address text field placeholder */
 "Email" = "E-Mail";
@@ -286,6 +291,12 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Leere URL";
 
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "Enter a valid URL eg. example.com.";
+
+/* Add custom shipping provider. Placeholder of cell presenting provider name */
+"Enter provider name" = "Name des Anbieters eingeben";
+
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "Gib die Adresse deines WooCommerce-Shops ein, den du verbinden möchtest.";
 
@@ -294,6 +305,12 @@
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Gib das Passwort für dein WordPress.com-Konto ein.";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking link */
+"Enter tracking link" = "Tracking-Link eingeben";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking number */
+"Enter tracking number" = "Sendungsverfolgungsnummer eingeben";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
@@ -356,9 +373,6 @@
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "Abrechnung ausblenden";
-
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hmm, unter dieser URL gibt es anscheinend keine WordPress-Website. Überprüfe die Schreibweise und versuche es noch einmal.";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Bei Deaktivierung wird der Hinweis privat";
@@ -487,6 +501,9 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "Monate";
+
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+"More" = "Mehr";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Verschiebt einen Kommentar in den Spam-Ordner";
@@ -633,6 +650,9 @@
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "Bezahlung in Höhe von (totalValue) per (order.paymentMethodTitle) erhalten";
 
+/* Display label for the product's pending status */
+"Pending" = "Ausstehend";
+
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Telefonnummer: %@";
 
@@ -676,12 +696,15 @@
    Privacy settings screen title */
 "Privacy Settings" = "Datenschutzeinstellungen";
 
+/* Display label for the product's private status */
+"Private" = "Privat";
+
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Privater Hinweis";
 
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product - Title of product detail screen. */
+   Product section title - Section header title for the product */
 "Product" = "Produkt";
 
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
@@ -689,6 +712,12 @@
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Zeigt eine Aufforderung mit der Option an, den Rechnungskunden anzurufen oder diesem eine Nachricht zu senden.";
+
+/* Add Custom shipping provider. Title of cell presenting the provider name */
+"Provider name" = "Name des Anbieters";
+
+/* Display label for the product's published status */
+"Publish" = "Veröffentlichen";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Veröffentliche deine Beiträge im Park. Blogge im Bus. Kommentiere im Café. WordPress ist immer und überall für dich verfügbar.";
@@ -735,7 +764,8 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Diese ausstehenden Bestellungen prüfen, vorbereiten und versenden";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
+   Reviews descriptive label */
 "Reviews" = "Rezensionen";
 
 /* SKU label */
@@ -743,9 +773,6 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS gesendet";
-
-/* Edit tracking screen - button title to save a tracking */
-"Save" = "Speichern";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Alle Bestellungen durchsuchen";
@@ -796,6 +823,9 @@
 
 /* Footer text to show the billing cell */
 "Show billing" = "Abrechnung einblenden";
+
+/* Accessibility hint for Delete Shipment button in Order details screen */
+"Shows more options." = "Zeigt weitere Optionen an.";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "Registrieren";
@@ -944,6 +974,9 @@
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "Die Website-Adresse muss kürzer als 64 Zeichen sein.";
 
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Die Website mit dieser Adresse ist keine WordPress-Website. Damit wir uns mit ihr verbinden können, muss die Website WordPress verwenden.";
+
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "Die Website konnte nicht gelöscht werden.";
 
@@ -966,7 +999,7 @@
 "This Year" = "Dieses Jahr";
 
 /* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
-"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "Für diese App muss Jetpack mit deinem Shop verbunden sein. <br \/> Lies dir die <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">Konfigurationsanleitung<\/a> durch.";
+"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "Um sich mit deinem Shop verbinden zu können, muss Jetpack vorhanden sein. <br \/> Lies dir die <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">Konfigurationsanleitung<\/a> durch.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Diese E-Mail-Adresse ist auf WordPress.com nicht registriert.";
@@ -976,6 +1009,9 @@
 
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Fehler beim Laden des Produkts";
+
+/* Product details screen — product title descriptive label */
+"Title" = "Titel";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Um dein neues WordPress.com-Konto zu erstellen, gib deine E-Mail-Adresse ein.";
@@ -999,26 +1035,29 @@
 /* Total label for payment view */
 "Total" = "Gesamt";
 
+/* Product details screen - total orders descriptive label */
+"Total Orders" = "Total Orders";
+
 /* Description for Top Performers right column header */
 "Total Spend" = "Gesamtausgaben";
 
 /* Top performers — label for the total number of products ordered */
-"Total orders: %ld" = "Aufträge gesamt: %ld";
+"Total orders: %ld" = "Bestellungen gesamt: %ld";
 
-/* Track package button title */
-"Track package" = "Paket verfolgen";
+/* Track shipment button title */
+"Track Shipment" = "Track Shipment";
 
 /* Order tracking section title */
 "Tracking" = "Sendungsverfolgung";
+
+/* Add custom shipping provider. Title of cell presenting tracking link */
+"Tracking link (optional)" = "Tracking-Link (optional)";
 
 /* Add / Edit shipping provider. Title of cell presenting tracking number */
 "Tracking number" = "Sendungsverfolgungsnummer";
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Sendungsverfolgungsnummer %@";
-
-/* Accessibility hint for Track Package button in Order details screen */
-"Tracks a shipment." = "Verfolgt eine Sendung.";
 
 /* Move a comment to the trash */
 "Trash" = "In den Papierkorb";
@@ -1117,7 +1156,7 @@
 "Updated %ld minutes ago" = "Vor %ld Minuten aktualisiert";
 
 /* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
-"Updated moments ago" = "Gerade aktualisiert";
+"Updated moments ago" = "Gerade eben aktualisiert";
 
 /* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
 "Updated on %@" = "Aktualisiert am %@";
@@ -1138,8 +1177,14 @@
 /* View application log cell title */
 "View Application Log" = "Anwendungsprotokoll anzeigen";
 
+/* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
+"View affiliate product" = "Affiliate-Produkt anzeigen";
+
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Bislang gesendete Support-Tickets anzeigen";
+
+/* The descriptive label. Tapping the row will open the product's page in a web view. */
+"View product on store" = "Produkt im Shop anzeigen";
 
 /* User role badge */
 "Viewer" = "Besucher";
@@ -1232,7 +1277,7 @@
 "approved" = "genehmigt";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordress.com";
+"example.com" = "example.com";
 
 /* Later today */
 "later today" = "später heute";

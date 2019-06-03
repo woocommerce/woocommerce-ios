@@ -68,6 +68,18 @@ extension KeyedDecodingContainer {
 
         return nil
     }
+
+    func failsafeDecodeIfPresent(decimalForKey key: KeyedDecodingContainer<K>.Key) -> Decimal? {
+        if let decimal = failsafeDecodeIfPresent(Decimal.self, forKey: key) {
+            return decimal
+        }
+
+        if let integerAsDecimal = failsafeDecodeIfPresent(Int.self, forKey: key) {
+            return Decimal(integerLiteral: integerAsDecimal)
+        }
+
+        return nil
+    }
 }
 
 

@@ -154,11 +154,7 @@ final class ProductDetailsViewModel {
     /// Look up Product Settings
     ///
     func lookupProductSettings(_ settingID: String) -> String? {
-        for setting in productSettings where setting.settingID == settingID {
-            return setting.value
-        }
-
-        return nil
+        return productSettings.filter({$0.settingID == settingID}).first?.value
     }
 }
 

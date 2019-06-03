@@ -597,12 +597,35 @@ extension ProductDetailsViewModel {
                                       comment: "Product Details - purchase details section title")
         switch product.productType {
         case .simple, .variable, .custom(_):
-            var rows: [Row] = product.downloadable ? [.downloads] : [.shipping]
+            var rows = [Row]()
+
+            // downloadable and a download is specified
+            if product.downloadable && product.downloads.count > 0 {
+                rows.append(.downloads)
+            }
+
+            // is not a download,
+            // and ship weight exists,
+            // and dimension width exists
+            if product.downloadable == false
+                && product.weight != nil
+                && !product.dimensions.width.isEmpty {
+                rows.append(.shipping)
+            }
+
+            // has a product note
             if let purchaseNote = product.purchaseNote,
                 !purchaseNote.isEmpty {
                 rows.append(.purchaseNote)
             }
+
+            // don't create this section if there are no rows
+            if rows.count == 0 {
+                return nil
+            }
+
             return Section(title: title, rows: rows)
+
         case .affiliate, .grouped:
             return nil
         }

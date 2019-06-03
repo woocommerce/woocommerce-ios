@@ -237,7 +237,7 @@
         <attribute name="width" attributeType="String" syncable="YES"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="dimensions" inverseEntity="Product" syncable="YES"/>
     </entity>
-    <entity name="ProductDownload" representedClassName="ProductDownload" syncable="YES" codeGenerationType="class">
+    <entity name="ProductDownload" representedClassName="ProductDownload" syncable="YES">
         <attribute name="downloadID" attributeType="String" syncable="YES"/>
         <attribute name="fileURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>

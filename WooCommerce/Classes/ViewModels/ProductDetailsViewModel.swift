@@ -44,6 +44,34 @@ final class ProductDetailsViewModel {
                               readOnlyEntity: product)
     }()
 
+    /// ResultsController for `WC > Settings > Products > General` from the site.
+    ///
+    private lazy var resultsController: ResultsController<StorageSiteSetting> = {
+        let storageManager = AppDelegate.shared.storageManager
+
+        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let settingTypePredicate = NSPredicate(format: "settingGroupKey ==[c] %@", SiteSettingGroup.product.rawValue)
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingTypePredicate])
+
+        let descriptor = NSSortDescriptor(keyPath: \StorageSiteSetting.siteID, ascending: false)
+
+        return ResultsController<StorageSiteSetting>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    /// Yosemite.SiteSetting
+    ///
+    var productSettings: [SiteSetting] {
+        return resultsController.fetchedObjects
+    }
+
+    /// Weight unit.
+    ///
+    var weightUnit: String?
+
+    /// Dimension unit.
+    ///
+    var dimensionUnit: String?
+
     /// Grab the first available image for a product.
     ///
     private var imageURL: URL? {
@@ -88,6 +116,8 @@ final class ProductDetailsViewModel {
     ///
     init(product: Product) {
         self.product = product
+
+        refreshResultsController()
     }
 
     /// Setup: EntityListener.
@@ -108,6 +138,23 @@ final class ProductDetailsViewModel {
 
             self.onError?()
         }
+    }
+
+    /// Setup: Results Controller.
+    ///
+    func refreshResultsController() {
+        try? resultsController.performFetch()
+
+        // After refreshing the results controller,
+        // let's look up some product settings it holds.
+        weightUnit = lookupProductSettings(Keys.weightUnit)
+        dimensionUnit = lookupProductSettings(Keys.dimensionUnit)
+    }
+
+    /// Look up Product Settings
+    ///
+    func lookupProductSettings(_ settingID: String) -> String? {
+        return productSettings.filter({$0.settingID == settingID}).first?.value
     }
 }
 
@@ -203,11 +250,19 @@ extension ProductDetailsViewModel {
             configureSku(cell)
         case let cell as TitleBodyTableViewCell where row == .affiliateInventory:
             configureAffiliateInventory(cell)
+        case let cell as TitleBodyTableViewCell where row == .shipping:
+            configureShipping(cell)
+        case let cell as TitleBodyTableViewCell where row == .downloads:
+            configureDownloads(cell)
+        case _ as TitleBodyTableViewCell where row == .purchaseNote:
+            break
         default:
             fatalError("Unidentified row type")
         }
     }
 
+    /// Product Image cell.
+    ///
     func configureProductImage(_ cell: LargeImageTableViewCell) {
         guard let mainImageView = cell.mainImageView else {
             return
@@ -230,6 +285,8 @@ extension ProductDetailsViewModel {
         }
     }
 
+    /// Product Title cell.
+    ///
     func configureProductName(_ cell: TitleBodyTableViewCell) {
         cell.accessoryType = .none
         cell.selectionStyle = .none
@@ -238,6 +295,8 @@ extension ProductDetailsViewModel {
         cell.bodyLabel?.text = product.name
     }
 
+    /// Total Orders cell.
+    ///
     func configureTotalOrders(_ cell: TwoColumnTableViewCell) {
         cell.selectionStyle = .none
         cell.leftLabel?.text = NSLocalizedString("Total Orders",
@@ -247,6 +306,8 @@ extension ProductDetailsViewModel {
         cell.rightLabel?.text = String(product.totalSales)
     }
 
+    /// Reviews cell.
+    ///
     func configureReviews(_ cell: ProductReviewsTableViewCell) {
         cell.selectionStyle = .none
         cell.reviewLabel?.text = NSLocalizedString("Reviews",
@@ -260,18 +321,24 @@ extension ProductDetailsViewModel {
         cell.starRatingView.rating = CGFloat(averageRating ?? 0)
     }
 
+    /// Product permalink cell.
+    ///
     func configurePermalink(_ cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = NSLocalizedString("View product on store",
                                                  comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
         cell.accessoryImage = Gridicon.iconOfType(.external)
     }
 
+    /// Affiliate (External) link cell.
+    ///
     func configureAffiliateLink(_ cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = NSLocalizedString("View affiliate product",
                                                  comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
         cell.accessoryImage = Gridicon.iconOfType(.external)
     }
 
+    /// Price cell.
+    ///
     func configurePrice(_ cell: TitleBodyTableViewCell) {
         cell.titleLabel?.text = NSLocalizedString("Price",
                                                   comment: "Product Details > Pricing and Inventory section > descriptive label for the Price cell.")
@@ -294,6 +361,8 @@ extension ProductDetailsViewModel {
         }
     }
 
+    /// Inventory cell.
+    ///
     func configureInventory(_ cell: TitleBodyTableViewCell) {
         cell.titleLabel?.text = NSLocalizedString("Inventory",
                                                   comment: "Product Details > Pricing and Inventory section > descriptive label for the Inventory cell.")
@@ -344,6 +413,8 @@ extension ProductDetailsViewModel {
         cell.bodyLabel?.text = bodyText
     }
 
+    /// SKU cell.
+    ///
     func configureSku(_ cell: TitleBodyTableViewCell) {
         let title = NSLocalizedString("SKU",
                                       comment: "A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.")
@@ -354,6 +425,8 @@ extension ProductDetailsViewModel {
         cell.titleLabel?.text = title
     }
 
+    /// Affiliate Inventory cell.
+    ///
     func configureAffiliateInventory(_ cell: TitleBodyTableViewCell) {
         let title = NSLocalizedString("Inventory",
                                       comment: "Product Details > Pricing & Inventory > Inventory cell title")
@@ -368,6 +441,80 @@ extension ProductDetailsViewModel {
             cell.bodyLabel?.text = nil
         }
     }
+
+    /// Shipping cell.
+    ///
+    func configureShipping(_ cell: TitleBodyTableViewCell) {
+        let title = NSLocalizedString("Shipping",
+                                      comment: "Product Details > Purchase Details > Shipping cell title")
+        var bodyText = ""
+
+        // first line - weight
+        let weightPrefix = NSLocalizedString("Weight:",
+                                            comment: "Label prefix. Example: 'Weight: 1kg'")
+        let weightAmount = product.weight ?? ""
+        let wUnit = weightUnit ?? ""
+        let weightText = weightPrefix + " " + weightAmount + wUnit
+
+        // second line - dimensions
+        let sizePrefix = NSLocalizedString("Size:",
+                                           comment: "Label prefix. Example: 'Size: 8 x 10 x 10 cm'")
+        let length = product.dimensions.length
+        let width = product.dimensions.width
+        let height = product.dimensions.height
+        let dimensions = length + " × " + width + " × " + height
+        let sizeUnit = dimensionUnit ?? ""
+        let sizeText = sizePrefix + " " + dimensions + " " + sizeUnit
+
+        bodyText = weightText + "\n" + sizeText
+
+        // third line - shipping class
+        if let shippingClass = product.shippingClass,
+            !shippingClass.isEmpty {
+            let shippingClassPrefix = NSLocalizedString("Shipping class:",
+                                                        comment: "Label prefix. Example: 'Shipping class: Free Shipping'")
+            let shippingClassText = "\n" + shippingClassPrefix + " " + shippingClass
+            bodyText += shippingClassText
+        }
+
+        cell.titleLabel.text = title
+        cell.bodyLabel.text = bodyText
+    }
+
+    /// Downloads cell.
+    ///
+    func configureDownloads(_ cell: TitleBodyTableViewCell) {
+        // Number of files line
+        let numberOfFilesPrefix = NSLocalizedString("Number of files:",
+                                                    comment: "Label prefix. Example: 'Number of files: 2'")
+        let fileCount = String(product.downloads.count)
+        let numberOfFilesText = numberOfFilesPrefix + " " + fileCount
+
+        // Limits line
+        let limitSingular = NSLocalizedString("Limit: %ld download",
+                                              comment: "'Limit: 1 download', for example.")
+        let limitPlural = NSLocalizedString("Limit: %ld downloads",
+                                            comment: "'Limit: 2 downloads', for example.")
+        let limitText = String.pluralize(product.downloadLimit,
+                                         singular: limitSingular,
+                                         plural: limitPlural)
+
+        // Downloads expiration line
+        let expirationSingular = NSLocalizedString("Expiry: %ld day", comment: "Expiry: 1 day")
+        let expirationPlural = NSLocalizedString("Expiry: %ld days",
+                                                 comment: "For example: 'Expiry: 30 days'")
+        let expirationText = String.pluralize(product.downloadExpiry,
+                                              singular: expirationSingular,
+                                              plural: expirationPlural)
+
+        // Full text for cell labels
+        let title = NSLocalizedString("Downloads",
+                                      comment: "Product Details > Purchase Details > Downloads cell title")
+        let bodyText = numberOfFilesText + "\n" + limitText + "\n" + expirationText
+        cell.titleLabel?.text = title
+        cell.bodyLabel?.text = bodyText
+    }
+
 
     // MARK: - Table helper methods
 
@@ -392,6 +539,7 @@ extension ProductDetailsViewModel {
     /// Reloads the tableView's sections and data.
     ///
     func reloadTableViewSectionsAndData() {
+        refreshResultsController()
         reloadSections()
         onReload?()
     }
@@ -402,7 +550,8 @@ extension ProductDetailsViewModel {
         let photo = configurePhoto()
         let summary = configureSummary()
         let pricingAndInventory = configurePricingAndInventory()
-        sections = [photo, summary, pricingAndInventory].compactMap { $0 }
+        let purchaseDetails = configurePurchaseDetails()
+        sections = [photo, summary, pricingAndInventory, purchaseDetails].compactMap { $0 }
     }
 
     /// Large photo section.
@@ -439,6 +588,47 @@ extension ProductDetailsViewModel {
 
         // For non-grouped products that contain at least one price.
         return pricesAndInventorySection()
+    }
+
+    /// Purchase Details Section.
+    ///
+    func configurePurchaseDetails() -> Section? {
+        let title = NSLocalizedString("Purchase Details",
+                                      comment: "Product Details - purchase details section title")
+        switch product.productType {
+        case .simple, .variable, .custom(_):
+            var rows = [Row]()
+
+            // downloadable and a download is specified
+            if product.downloadable && product.downloads.count > 0 {
+                rows.append(.downloads)
+            }
+
+            // is not a download,
+            // and ship weight exists,
+            // and dimension width exists
+            if product.downloadable == false
+                && product.weight != nil
+                && !product.dimensions.width.isEmpty {
+                rows.append(.shipping)
+            }
+
+            // has a product note
+            if let purchaseNote = product.purchaseNote,
+                !purchaseNote.isEmpty {
+                rows.append(.purchaseNote)
+            }
+
+            // don't create this section if there are no rows
+            if rows.count == 0 {
+                return nil
+            }
+
+            return Section(title: title, rows: rows)
+
+        case .affiliate, .grouped:
+            return nil
+        }
     }
 
     /// Grouped products.
@@ -558,6 +748,9 @@ extension ProductDetailsViewModel {
         case inventory
         case sku
         case affiliateInventory
+        case shipping
+        case downloads
+        case purchaseNote
 
         var reuseIdentifier: String {
             switch self {
@@ -581,6 +774,12 @@ extension ProductDetailsViewModel {
                 return TitleBodyTableViewCell.reuseIdentifier
             case .affiliateInventory:
                 return TitleBodyTableViewCell.reuseIdentifier
+            case .shipping:
+                return TitleBodyTableViewCell.reuseIdentifier
+            case .downloads:
+                return TitleBodyTableViewCell.reuseIdentifier
+            case .purchaseNote:
+                return TitleBodyTableViewCell.reuseIdentifier
             }
         }
     }
@@ -592,5 +791,10 @@ extension ProductDetailsViewModel {
         static let sectionHeight = CGFloat(44)
         static let productImageHeight = CGFloat(374)
         static let emptyProductImageHeight = CGFloat(86)
+    }
+
+    enum Keys {
+        static let weightUnit = "woocommerce_weight_unit"
+        static let dimensionUnit = "woocommerce_dimension_unit"
     }
 }

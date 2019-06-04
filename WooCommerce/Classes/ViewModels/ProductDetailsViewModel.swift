@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import UIKit
 import Gridicons
+import WordPressShared
 
 
 // MARK: - Product details view model
@@ -254,8 +255,8 @@ extension ProductDetailsViewModel {
             configureShipping(cell)
         case let cell as TitleBodyTableViewCell where row == .downloads:
             configureDownloads(cell)
-        case _ as TitleBodyTableViewCell where row == .purchaseNote:
-            break
+        case let cell as TitleBodyTableViewCell where row == .purchaseNote:
+            configurePurchaseNote(cell)
         default:
             fatalError("Unidentified row type")
         }
@@ -513,6 +514,48 @@ extension ProductDetailsViewModel {
         let bodyText = numberOfFilesText + "\n" + limitText + "\n" + expirationText
         cell.titleLabel?.text = title
         cell.bodyLabel?.text = bodyText
+    }
+
+    /// Purchase Note cell.
+    ///
+    func configurePurchaseNote(_ cell: TitleBodyTableViewCell) {
+        cell.titleLabel?.text = NSLocalizedString("Purchase note",
+                                                  comment: "Product Details > Purchase Details > Purchase note cell title")
+
+        printTimeElapsedWhenRunningCode(title: "stripped HTML in purchase note") {
+            guard var cleanedString = product.purchaseNote?.strippedHTML else {
+                return
+            }
+
+//            let lastChar = cleanedString.suffix(1)
+//            let newline = String(lastChar)
+//            if newline == Constants.newline {
+//                cleanedString.removeSuffix(newline)
+//            }
+//
+//            cell.bodyLabel?.text = cleanedString
+        }
+
+        printTimeElapsedWhenRunningCode(title: "old fashioned strip HTML") {
+            guard var oldFashionedString = product.purchaseNote?.replacingOccurrences(of: "<[^>]+>", with: "") else {
+                return
+            }
+
+//            let lastChar = oldFashionedString.suffix(1)
+//            let newline = String(lastChar)
+//            if newline == Constants.newline {
+//                oldFashionedString.removeSuffix(newline)
+//            }
+//
+//            cell.bodyLabel?.text = oldFashionedString
+        }
+    }
+
+    func printTimeElapsedWhenRunningCode(title:String, operation:()->()) {
+        let startTime = CFAbsoluteTimeGetCurrent()
+        operation()
+        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        print("Time elapsed for \(title): \(timeElapsed) s.")
     }
 
 
@@ -796,5 +839,9 @@ extension ProductDetailsViewModel {
     enum Keys {
         static let weightUnit = "woocommerce_weight_unit"
         static let dimensionUnit = "woocommerce_dimension_unit"
+    }
+
+    enum Constants {
+        static let newline = "\n"
     }
 }

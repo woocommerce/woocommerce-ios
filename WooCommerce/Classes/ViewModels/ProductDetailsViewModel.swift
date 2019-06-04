@@ -531,14 +531,7 @@ extension ProductDetailsViewModel {
 
         cell.titleLabel?.text = NSLocalizedString("Purchase note",
                                                   comment: "Product Details > Purchase Details > Purchase note cell title")
-        cell.bodyLabel?.text = cleanedString
-    }
-
-    func printTimeElapsedWhenRunningCode(title: String, operation:()->()) {
-        let startTime = CFAbsoluteTimeGetCurrent()
-        operation()
-        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-        print("Time elapsed for \(title): \(timeElapsed) sec.") // time in seconds
+        cell.bodyLabel?.text = cleanedPurchaseNote
     }
 
 

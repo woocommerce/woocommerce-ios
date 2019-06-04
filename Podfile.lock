@@ -1,7 +1,7 @@
 PODS:
   - 1PasswordExtension (1.8.5)
   - Alamofire (4.7.3)
-  - Automattic-Tracks-iOS (0.3.5):
+  - Automattic-Tracks-iOS (0.3.6):
     - CocoaLumberjack (~> 3.5.2)
     - Reachability (~> 3.1)
     - Sentry (~> 4)
@@ -78,7 +78,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
-  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, branch `develop`)
+  - Automattic-Tracks-iOS (~> 0.3.6)
   - Charts (~> 3.2)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
@@ -94,6 +94,7 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - 1PasswordExtension
     - Alamofire
+    - Automattic-Tracks-iOS
     - Charts
     - CocoaLumberjack
     - FormatterKit
@@ -117,20 +118,10 @@ SPEC REPOS:
     - XLPagerTabStrip
     - ZendeskSDK
 
-EXTERNAL SOURCES:
-  Automattic-Tracks-iOS:
-    :branch: develop
-    :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
-
-CHECKOUT OPTIONS:
-  Automattic-Tracks-iOS:
-    :commit: 9e92dcf9e4a6a1313b9a06b82e457f1b667b1dd1
-    :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
-
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  Automattic-Tracks-iOS: f70428b35a07ede94edbddf403e56637b758ec66
+  Automattic-Tracks-iOS: 65f6d57d6ea3b6a5716dabff72db68d36e672761
   Charts: f69cf0518b6d1d62608ca504248f1bbe0b6ae77e
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
@@ -154,6 +145,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: cbd49d65efb2f2cdbdcaac84e618896ae87b861e
 
-PODFILE CHECKSUM: 4b9d4bd8f8ac0aab452f2af0a8c79ac169b807b2
+PODFILE CHECKSUM: 90de45e98dc29f73b44e76d21f09b55cecb99711
 
 COCOAPODS: 1.6.1

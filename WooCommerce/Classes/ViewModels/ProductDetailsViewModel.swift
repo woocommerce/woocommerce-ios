@@ -79,6 +79,7 @@ final class ProductDetailsViewModel {
         guard let productImageURLString = product.images.first?.src else {
             return nil
         }
+
         return URL(string: productImageURLString)
     }
 
@@ -183,7 +184,8 @@ extension ProductDetailsViewModel {
 
     func heightForHeader(in section: Int) -> CGFloat {
         if sections[section].title == nil {
-            // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
+            // iOS 11 table bug.
+            // Must return a tiny value to collapse `nil` or `empty` section headers.
             return .leastNonzeroMagnitude
         }
 

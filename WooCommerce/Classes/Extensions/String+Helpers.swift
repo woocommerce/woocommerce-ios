@@ -23,4 +23,23 @@ extension String {
             return String.localizedStringWithFormat(plural, count)
         }
     }
+
+    /// Helper method to remove the last newline character in a given string.
+    ///
+    /// - Parameters:
+    ///   - string: the string to format
+    /// - Returns: a string with the newline character removed, if the
+    ///            newline character is the last character in the string.
+    ///
+    func stripLastNewline(in string: String) -> String {
+        var newText = string
+        let lastChar = newText.suffix(1)
+
+        let newline = String(lastChar)
+        if newline == "\n" {
+            newText.removeSuffix(newline)
+        }
+
+        return newText
+    }
 }

@@ -519,43 +519,26 @@ extension ProductDetailsViewModel {
     /// Purchase Note cell.
     ///
     func configurePurchaseNote(_ cell: TitleBodyTableViewCell) {
+        guard var cleanedString = product.purchaseNote?.strippedHTML else {
+            return
+        }
+
+        let lastChar = cleanedString.suffix(1)
+        let newline = String(lastChar)
+        if newline == Constants.newline {
+            cleanedString.removeSuffix(newline)
+        }
+
         cell.titleLabel?.text = NSLocalizedString("Purchase note",
                                                   comment: "Product Details > Purchase Details > Purchase note cell title")
-
-        printTimeElapsedWhenRunningCode(title: "stripped HTML in purchase note") {
-            guard var cleanedString = product.purchaseNote?.strippedHTML else {
-                return
-            }
-
-//            let lastChar = cleanedString.suffix(1)
-//            let newline = String(lastChar)
-//            if newline == Constants.newline {
-//                cleanedString.removeSuffix(newline)
-//            }
-//
-//            cell.bodyLabel?.text = cleanedString
-        }
-
-        printTimeElapsedWhenRunningCode(title: "old fashioned strip HTML") {
-            guard var oldFashionedString = product.purchaseNote?.replacingOccurrences(of: "<[^>]+>", with: "") else {
-                return
-            }
-
-//            let lastChar = oldFashionedString.suffix(1)
-//            let newline = String(lastChar)
-//            if newline == Constants.newline {
-//                oldFashionedString.removeSuffix(newline)
-//            }
-//
-//            cell.bodyLabel?.text = oldFashionedString
-        }
+        cell.bodyLabel?.text = cleanedString
     }
 
-    func printTimeElapsedWhenRunningCode(title:String, operation:()->()) {
+    func printTimeElapsedWhenRunningCode(title: String, operation:()->()) {
         let startTime = CFAbsoluteTimeGetCurrent()
         operation()
         let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-        print("Time elapsed for \(title): \(timeElapsed) s.")
+        print("Time elapsed for \(title): \(timeElapsed) sec.") // time in seconds
     }
 
 

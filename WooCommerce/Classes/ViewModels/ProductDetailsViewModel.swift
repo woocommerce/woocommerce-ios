@@ -95,6 +95,25 @@ final class ProductDetailsViewModel {
         return productHasImage ? Metrics.productImageHeight : Metrics.emptyProductImageHeight
     }
 
+    /// Purchase Note
+    /// - stripped of HTML
+    /// - no ending newline character
+    /// - cannot be a lazy var because it's a computed property
+    ///
+    private var cleanedPurchaseNote: String? {
+        guard var cleanedString = product.purchaseNote?.strippedHTML else {
+            return nil
+        }
+
+        let lastChar = cleanedString.suffix(1)
+        let newline = String(lastChar)
+        if newline == Constants.newline {
+            cleanedString.removeSuffix(newline)
+        }
+
+        return cleanedString
+    }
+
     /// Table section height.
     ///
     var sectionHeight: CGFloat {
@@ -521,16 +540,6 @@ extension ProductDetailsViewModel {
     /// Purchase Note cell.
     ///
     func configurePurchaseNote(_ cell: TitleBodyTableViewCell) {
-        guard var cleanedString = product.purchaseNote?.strippedHTML else {
-            return
-        }
-
-        let lastChar = cleanedString.suffix(1)
-        let newline = String(lastChar)
-        if newline == Constants.newline {
-            cleanedString.removeSuffix(newline)
-        }
-
         cell.titleLabel?.text = NSLocalizedString("Purchase note",
                                                   comment: "Product Details > Purchase Details > Purchase note cell title")
         cell.bodyLabel?.text = cleanedPurchaseNote
